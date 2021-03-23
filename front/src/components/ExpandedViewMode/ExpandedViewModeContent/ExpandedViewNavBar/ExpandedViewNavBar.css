@@ -1,0 +1,51 @@
+.expanded-view-nav-bar {
+  display: flex;
+  flex-direction: row;
+  /* justify-content is temporarily disabled other NavTab items are developed */
+  /* justify-content: space-between; */
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 16px;
+}
+
+.expanded-view-nav-bar-item {
+  color: #a3a3a3;
+  padding: 5px 0px;
+  display: flex;
+  flex-direction: row;
+  font-size: 14px;
+  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-weight: normal;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  /* margin-raight is temporary until other NavTab items are developed */
+  margin-right: 20px;
+  align-items: center;
+}
+
+/* NavBar Item Hover State */
+
+.expanded-view-nav-bar-item:hover {
+  color: #5f65ff;
+  transition: all 0.3s;
+}
+
+.expanded-view-nav-bar-item:hover .icon:not(.not-hoverable) .inner-icon {
+  background-color: #5f65ff;
+  transition: all 0.3s;
+}
+
+/* NavBar Item Active State */
+
+.expanded-view-nav-bar-item.active-tab {
+  color: #5f65ff;
+  border-bottom: 3px solid #5f65ff;
+}
+
+.expanded-view-nav-bar-item.active-tab .icon:not(.not-hoverable) .inner-icon {
+  background-color: #5f65ff;
+}
+
+.expanded-view-nav-bar-item .icon.very-small.grey {
+  margin-right: 4px;
+  margin-top: 4px;
+}

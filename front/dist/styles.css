@@ -1,0 +1,285 @@
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+canvas {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: hidden;
+}
+
+body {
+  background-color: #ebe9e2;
+  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+}
+
+div.react {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* Fonts */
+
+/* HK Grotesk */
+
+@font-face {
+  font-family: 'hk-grotesk-regular';
+  src: url('fonts/hk-grotesk/hkgrotesk-regular-webfont.woff2') format('woff2'),
+    url('fonts/hk-grotesk/hkgrotesk-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  margin-bottom: 1px;
+}
+
+@font-face {
+  font-family: 'hk-grotesk-medium';
+  src: url('fonts/hk-grotesk/hkgrotesk-medium-webfont.woff2') format('woff2'),
+    url('fonts/hk-grotesk/hkgrotesk-medium-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  margin-bottom: 1px;
+}
+
+@font-face {
+  font-family: 'hk-grotesk-semibold';
+  src: url('fonts/hk-grotesk/hkgrotesk-semibold-webfont.woff2') format('woff2'),
+    url('fonts/hk-grotesk/hkgrotesk-semibold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'hk-grotesk-bold';
+  src: url('fonts/hk-grotesk/hkgrotesk-bold-webfont.woff2') format('woff2'),
+    url('fonts/hk-grotesk/hkgrotesk-bold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'hk-grotesk-extrabold';
+  src: url('fonts/hk-grotesk/hkgrotesk-extrabold-webfont.woff2') format('woff2'),
+    url('fonts/hk-grotesk/hkgrotesk-extrabold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Gilroy Font */
+
+@font-face {
+  font-family: 'gilroyextrabold';
+  src: url('fonts/gilroy/gilroy-extrabold-webfont.woff2') format('woff2'),
+    url('fonts/gilroy/gilroy-extrabold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'gilroylight';
+  src: url('fonts/gilroy/gilroy-light-webfont.woff2') format('woff2'),
+    url('fonts/gilroy/gilroy-light-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* features in development */
+
+.feature-in-development {
+  opacity: 0.1;
+}
+
+/* headers */
+
+h1 {
+  font-size: 26px;
+  line-height: 32px;
+  font-family: 'now-Bold', Helvetica, sans-serif;
+  font-weight: normal;
+}
+
+h2 {
+  font-size: 22px;
+  line-height: 28px;
+  font-family: 'now-Bold', Helvetica, sans-serif;
+  font-weight: normal;
+}
+
+h3 {
+  font-size: 20px;
+  line-height: 24px;
+  font-family: 'now-Medium', Helvetica, sans-serif;
+  font-weight: normal;
+}
+
+h4 {
+  font-size: 16px;
+  line-height: 20px;
+  font-family: 'now-Medium', Helvetica, sans-serif;
+  font-weight: normal;
+  color: #717171;
+}
+
+/* transform */
+
+.transform-container {
+  position: fixed;
+}
+
+/* GoalForm */
+
+.goal_form_wrapper {
+  display: flex;
+}
+
+.goal_form {
+  width: 360px;
+}
+
+.goal_form textarea {
+  background-color: transparent;
+  border: 0;
+  outline: none;
+  margin: 24px 22px 25px 27px;
+  width: 309px;
+  height: 70px;
+  resize: none;
+  color: #4d4d4d;
+  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.goal_form ::selection {
+  background: #77fff5;
+}
+
+/* HoverOverlay */
+
+.hover_overlay {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  margin: 0 0 0 -85px; /* (36:width * 2) + 6:between-margin + 6:edge-margin */
+  padding: 0;
+}
+
+.hover_overlay li:first-child {
+  margin-right: 6px; /* same as distance from buttons to edges of goal */
+}
+
+.hover_overlay li {
+  cursor: pointer;
+}
+
+/* VerticalActionsList */
+
+.vertical_actions_list {
+  margin-left: 10px;
+}
+
+.vertical_action_close {
+  cursor: pointer;
+  top: 20px;
+  right: 20px;
+  position: absolute;
+  height: 14px;
+}
+
+.action_list_item {
+  background-color: rgba(134, 134, 134, 0.95);
+  border: 1px solid rgba(134, 134, 134, 0.95);
+  border-radius: 16px;
+  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+  padding: 5px 25px 5px 15px;
+  outline: 0;
+  font-size: 16px;
+  line-height: 18px;
+  color: #fff;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: 0.1s all;
+}
+
+.action_list_item:hover {
+  background-color: #5f65ff;
+  border: 1px solid #5f65ff;
+}
+
+.action_list_item .icon {
+  margin-right: 5px;
+}
+.action_list_item .icon.not-hoverable .inner-icon:hover {
+  background-color: #ffffff;
+}
+
+/* StatusPicker */
+
+.status_list {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: row;
+}
+
+/* status colors */
+
+.border_Uncertain {
+  border: 2px solid #ff5d36;
+}
+
+.border_Incomplete {
+  border: 2px solid #ffc400;
+}
+
+.border_InProcess {
+  border: 2px solid #ff9cab;
+}
+
+.border_InReview {
+  border: 2px solid #00e2ff;
+}
+
+.border_Complete {
+  border: 2px solid #83e300;
+}
+
+.bg_Uncertain {
+  background-color: #ff5d36;
+  color: #ffffff;
+}
+
+.tooltip.bg_Uncertain {
+  color: white;
+}
+
+.bg_Incomplete {
+  background-color: #ffc400;
+}
+
+.bg_InProcess {
+  background-color: #ff9cab;
+}
+
+.bg_InReview {
+  background-color: #00e2ff;
+}
+
+.bg_Complete {
+  background-color: #83e300;
+}
+
+/* textarea placeholder */
+
+textarea::placeholder {
+  color: #aaaaaa;
+}

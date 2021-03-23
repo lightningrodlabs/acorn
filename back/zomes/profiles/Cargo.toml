@@ -1,0 +1,13 @@
+[package]
+name = "profiles"
+version = "0.0.1"
+edition = "2018"
+
+[lib]
+name = "profiles"
+crate-type = [ "cdylib", "rlib" ]
+
+[dependencies]
+hdk = "0.0.100"
+serde = "1"
+dna_help = { path = "../../crates/dna_help" }

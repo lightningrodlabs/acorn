@@ -1,0 +1,63 @@
+{
+  "name": "acorn2",
+  "version": "1.0.0",
+  "description": "Acorn is software that helps people create the future",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/h-be/acorn2.git"
+  },
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "install-holochain": ". back/scripts/install-binaries.sh",
+    "pack-happ": "hc dna pack back/workdir/dna/profiles && hc dna pack back/workdir/dna/projects && hc app pack back/workdir/happ",
+    "compile-wasm": "CARGO_TARGET_DIR=target cargo build --release --target wasm32-unknown-unknown",
+    "setup-sandbox": "hc sandbox generate back/workdir",
+    "sandbox": "hc sandbox run 0 --ports 8888",
+    "install-ui": "cd front && npm install",
+    "start-ui": "cd front && npx webpack-dev-server --config webpack.dev.js",
+    "build-ui": "cd front && npx webpack --config webpack.prod.js"
+  },
+  "author": "Connor Turland <connor@sprillow.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
+    "electron": "^12.0.1"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "acorn2"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  }
+}

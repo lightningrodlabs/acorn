@@ -1,0 +1,385 @@
+.header-wrapper {
+  position: fixed;
+  width: 100%;
+  top: 0;
+}
+
+.header {
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  max-height: 46px;
+}
+
+/* Top Left Panel */
+
+.top-left-panel {
+  display: flex;
+  width: auto;
+  margin-left: 10px;
+}
+
+.logo {
+  padding-right: 12px;
+  padding-left: 10px;
+  background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
+  border-radius: 10px;
+  display: -webkit-flex;
+  /* Safari */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  display: flex;
+  align-items: center;
+  margin-right: 5px;
+}
+
+.logo .icon {
+  width: 15px;
+  height: 15px;
+  padding: 2px 2px;
+  display: inline-block;
+  position: relative;
+  top: 1px;
+  background: transparent;
+  cursor: default;
+  vertical-align: middle;
+}
+
+.logo-name {
+  margin: 1px;
+  font-family: 'quebecsemibold', Helvetica, Sans-Serif;
+  font-weight: normal;
+  font-size: 22px;
+  margin-top: -12px;
+}
+
+.logo h3 {
+  margin-top: 16px;
+}
+
+.current-project-wrapper {
+  background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
+  border-radius: 10px;
+  display: -webkit-flex;
+  /* Safari */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  display: flex;
+  align-items: center;
+}
+
+.current-project-content {
+  margin-left: 10px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.current-project-name {
+  margin: 0 12px 2px 6px;
+  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+  font-weight: normal;
+  font-size: 14px;
+  color: #4d4d4d;
+}
+
+.current-project-content .icon {
+  padding: 4px;
+  height: 24px;
+  width: 24px;
+  display: inline-block;
+  position: relative;
+  margin-top: 0;
+  margin-left: 0;
+  box-sizing: border-box;
+}
+
+.home-link {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.logo p {
+  text-align: left;
+  letter-spacing: 0.1px;
+  color: #2b2b2b;
+  margin-top: -2px;
+  font-family: 'gilroyextrabold', Helvetica, sans-serif;
+}
+
+.logo:hover .icon .inner-icon {
+  cursor: pointer;
+}
+
+.divider-line {
+  border-right: 1px solid #d9d9d9;
+  height: 24px;
+  margin-right: 10px;
+}
+
+/* Export */
+
+.export-wrapper {
+  position: relative;
+  height: 24px;
+}
+
+.export-list-wrapper {
+  position: absolute;
+  border-radius: 14px;
+  background-color: #ffffff;
+  padding: 12px 0;
+  box-shadow: 0px 0px 6px #00000029;
+  list-style: none;
+}
+
+.export-list-wrapper a {
+  padding: 12px 25px;
+  color: black;
+  outline: none;
+  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 14px;
+  background: none;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  align-items: center;
+  display: block;
+  white-space: nowrap;
+}
+
+.export-list-wrapper a:hover {
+  background: #f4f4f4 none repeat scroll 0% 0%;
+  color: #5f65ff;
+}
+
+/* Current Entry Points Tab */
+
+.active-entry-point {
+  position: relative;
+  font-size: 13px;
+  margin-left: 5px;
+  background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
+  border-radius: 10px;
+  display: -webkit-flex;
+  /* Safari */
+  -webkit-align-items: center;
+  /* Safari 7.0+ */
+  display: flex;
+  align-items: center;
+  padding: 0 26px 0 12px;
+  color: #4d4d4d;
+}
+
+.active-entry-point-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.active-entry-point img {
+  height: 14px;
+  width: 14px;
+  margin-right: 6px;
+}
+
+.active-entry-point-close {
+  position: absolute;
+  right: 8px;
+  visibility: hidden;
+}
+
+.active-entry-point:hover>.active-entry-point-close {
+  visibility: visible;
+}
+
+/* Top Right Panel */
+
+.top-right-panel {
+  position: relative;
+  margin-right: 10px;
+  margin-left: 10px;
+  padding: 5px 20px 5px 20px;
+  background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.top-right-panel-icon {
+  height: 24px;
+  width: 24px;
+  padding: 1px;
+  display: inline-block;
+  position: relative;
+  margin-top: 0;
+  margin-right: 20px;
+  margin-left: 0;
+}
+
+.stop-right-panel div .icon {
+  width: 100%;
+  display: block;
+}
+
+/* Guidebook */
+
+.guidebook-modal.modal-wrapper {
+  width: 660px;
+  padding: 40px;
+}
+
+/* profile section on header */
+
+.top-right-panel icon {
+  margin-right: 10px;
+}
+
+.avatar-and-status-wrapper {
+  position: relative;
+}
+
+.avatar-container {
+  height: 36px;
+  width: 36px;
+}
+
+.avatar-container img {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+}
+
+.user-status-icon-wrapper {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  right: 0px;
+  bottom: -2px;
+  border-radius: 50%;
+}
+
+.profile-wrapper {
+  position: absolute;
+  right: 0;
+  top: 52px;
+  border-radius: 14px;
+  background-color: #ffffff;
+  padding: 12px 0;
+  box-shadow: 0px 0px 6px #00000029;
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+}
+
+.profile-wrapper button p {
+  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+  font-size: 14px;
+  padding: 0 20px;
+}
+
+.profile-wrapper button:hover {
+  background: #f4f4f4 none repeat scroll 0% 0%;
+  color: #5f65ff;
+}
+
+.profile-wrapper button .icon {
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+}
+
+.profile-wrapper button {
+  outline: none;
+  background: none;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* User Status on header */
+
+.btn:hover {
+  background-color: #f2f2f2;
+}
+
+.purple .avatar-container+span {
+  background-color: #5f65ff;
+}
+
+.green .avatar-container+span {
+  background-color: #00d0c0;
+}
+
+.yellow .avatar-container+span {
+  background-color: #ffc400;
+}
+
+.gray .avatar-container+span {
+  background-color: #d1d1d1;
+}
+
+button.green .icon {
+  background-color: #00d0c0;
+}
+
+/* button.purple .icon {
+  background-color: #5f65ff;
+} */
+
+button.yellow .icon {
+  background-color: #ffc400;
+}
+
+button.gray .icon {
+  background-color: #d1d1d1;
+}
+
+.user-status-wrapper {
+  position: absolute;
+  top: 52px;
+  right: 0;
+  border-radius: 14px;
+  background-color: #ffffff;
+  padding: 12px 0;
+  box-shadow: 0px 0px 6px #00000029;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-status-wrapper button {
+  padding: 0 25px;
+  outline: none;
+  background: none;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.user-status-wrapper button .icon {
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+}
+
+.user-status-wrapper button p {
+  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+  font-size: 14px;
+  padding-left: 10px;
+}
+
+.user-status-wrapper button:hover {
+  background: #f4f4f4 none repeat scroll 0% 0%;
+  color: #5f65ff;
+}

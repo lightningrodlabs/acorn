@@ -1,0 +1,9 @@
+.profile_edit_wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  box-shadow: 0px 0px 6px #00000041;
+  border-radius: 10px;
+}

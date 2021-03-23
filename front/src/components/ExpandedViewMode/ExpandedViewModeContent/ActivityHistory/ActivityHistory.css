@@ -1,0 +1,48 @@
+.history-Body-Container {
+  display: flex;
+  margin-bottom: 14px;
+}
+
+.history {
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.history-Body-Avatar {
+  padding: 0 8px;
+}
+
+.status-icon-activity-history {
+  margin: 0px;
+  width: 20px;
+  height: 20px;
+}
+
+.history-Author {
+  color: #4e566f;
+  font-family: 'hk-grotesk-medium', Arial, Helvetica, sans-serif;
+}
+
+.history-info {
+  color: #4e566f;
+  font-size: 13px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  line-height: 1.4;
+}
+
+.history-Header {
+  display: flex;
+  align-items: center;
+}
+
+.history-Body {
+  width: 80%;
+  overflow-wrap: break-word;
+}
+
+.history-date {
+  margin-bottom: 2px;
+  font-size: 11px;
+  color: #a3a3a3;
+}

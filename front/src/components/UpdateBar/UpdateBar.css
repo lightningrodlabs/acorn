@@ -1,0 +1,50 @@
+.update-bar-enter {
+  opacity: 0;
+  margin-top: -45px;
+}
+
+.update-bar-enter-active {
+  opacity: 1;
+  margin-top: 0;
+  transition: 0.4s all;
+}
+
+.update-bar-exit {
+  opacity: 1;
+  margin-top: 0;
+}
+
+.update-bar-exit-active {
+  opacity: 0;
+  margin-top: -46px;
+  transition: 0.4s all;
+}
+
+.update-bar-wrapper {
+  background-color: #00BEB0;
+  color: #ffffff;
+  padding: 10px;
+  font-family: 'hk-grotesk-bold', Helvetica, Sans-Serif;
+  line-height: 1.45;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  box-sizing: border-box;
+}
+
+.update-bar-link {
+  text-decoration: underline;
+  margin-left: 4px;
+  cursor: pointer;
+  opacity: 1;
+  transition: 0.2s opacity;
+}
+
+.update-bar-link:hover {
+  opacity: 0.8;
+}
+
+.update-bar-close {
+  position: absolute;
+  right: 10px;
+}

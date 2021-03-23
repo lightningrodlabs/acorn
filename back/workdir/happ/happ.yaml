@@ -1,0 +1,25 @@
+---
+manifest_version: "1"
+name: Acorn
+description: Acorn helps you create the future
+slots:
+  - id: profiles-slot
+    provisioning:
+      strategy: create
+      deferred: false
+    dna:
+      bundled: "../dna/profiles.dna"
+      properties: ~
+      uuid: ~
+      version: ~
+      clone_limit: 0
+  - id: projects-slot
+    provisioning:
+      strategy: create
+      deferred: true
+    dna:
+      bundled: "../dna/projects.dna"
+      properties: ~
+      uuid: ~
+      version: ~
+      clone_limit: 0

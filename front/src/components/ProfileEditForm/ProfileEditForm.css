@@ -1,0 +1,77 @@
+.profile_edit_form {
+  /* width: 510px; */
+  text-align: center;
+  margin: 0 auto;
+}
+
+.profile_edit_form .small-close {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  cursor: pointer;
+}
+
+.profile_edit_form_title {
+  margin-bottom: 64px;
+}
+
+.profile_edit_form h1 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 32px;
+  color: #4d4d4d;
+  font-family: 'gilroyextrabold', 'gilroyextrabold', Helvetica, sans-serif;
+  font-weight: normal;
+  letter-spacing: 0.5px;
+}
+
+.profile_edit_form h4 {
+  font-size: 14px;
+  line-height: 17px;
+  color: #717171;
+  font-weight: normal;
+}
+
+.help_text {
+  flex: 1;
+}
+
+.profile_edit_form form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 26px;
+}
+
+.profile_edit_form .row {
+  flex: 1;
+  display: flex;
+}
+
+.profile_edit_form .row.halfSize {
+  width: 50%;
+}
+
+.profile_edit_form .profile_edit_form_avatar {
+  margin-top: 26px;
+  margin-left: 6px;
+  height: 40px;
+  width: 40px;
+  overflow: hidden;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.profile_edit_form button {
+  margin: 0 auto;
+}
+
+@media only screen and (max-height: 800px) {
+  .profile_edit_form {
+    text-align: center;
+    margin: 0 auto;
+  }
+  .validating_form_input {
+    margin-bottom: 30px;
+  }
+}

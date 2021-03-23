@@ -1,0 +1,10 @@
+node_modules
+out/
+
+front/dist/*.js
+front/dist/*.js.map
+
+Cargo.lock
+target/
+back/.cargo/
+.hc

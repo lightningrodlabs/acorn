@@ -1,0 +1,82 @@
+.footer {
+}
+
+/* Buttom Left Panel */
+
+.bottom-left-panel {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.bottom-left-panel-entry-points {
+  background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
+  border-radius: 10px;
+  height: 46px;
+  width: 46px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.bottom-left-panel-entry-points .icon {
+  height: 26px;
+  width: 26px;
+  padding: 2px;
+  display: inline-block;
+  position: relative;
+}
+
+/* when Entry Point Icon is open: */
+.bottom-left-panel-entry-points .icon.active .inner-icon {
+  background-color: #5f65ff;
+}
+
+/* Buttom Right Panel */
+
+.bottom-right-panel {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
+  border-radius: 10px;
+  max-height: 50px;
+  padding: 12px 0px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.bottom-right-panel-not-map {
+  box-shadow: 0px 0px 6px #00000038;
+}
+
+.bottom-right-panel-view-modes {
+  margin-left: 16px;
+}
+
+.bottom-right-panel-view-modes .icon {
+  margin: 0 16px 0 0;
+  height: 22px;
+  width: 22px;
+  padding: 2px;
+  display: inline-block;
+  position: relative;
+}
+
+.view-mode-active .icon .inner-icon {
+  background-color: #5f65ff;
+}
+
+a.bottom-right-panel-view-modes {
+  vertical-align: middle;
+}
+
+a.view-mode-link {
+  vertical-align: middle;
+}

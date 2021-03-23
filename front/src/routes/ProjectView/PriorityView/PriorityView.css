@@ -1,0 +1,98 @@
+.priority-view-wrapper {
+  background: white;
+  width: 100vw;
+  top: 70px;
+  bottom: 0px;
+  position: absolute;
+}
+
+.indented-view-wrapper {
+  height: calc(100vh - 70px);
+  float: left;
+  background: #f2f2f2 0% 0% no-repeat padding-box;
+  box-shadow: 0px 0px 6px #00000038;
+  border-top-right-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.priority-menu-wrapper {
+  height: 52px;
+  background: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 10px;
+  border-bottom: solid 1px #d9d9d9;
+}
+
+.priority-menu-item {
+  padding: 17px 10px 17px 10px;
+  margin-right: 20px;
+  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 14px;
+  text-decoration: none;
+  color: #898989;
+}
+
+.priority-menu-item.active {
+  border-bottom: 3px solid #5f65ff;
+  color: #5f65ff;
+  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-weight: normal;
+}
+
+.priority-quadrants-wrapper {
+  height: calc(100% - 52px);
+  margin-left: 210px;
+}
+
+.priority-quadrants-content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  height: 100%;
+}
+
+.priority-quadrants-row {
+  display: flex;
+  flex-direction: row;
+  height: calc(50% - 40px);
+}
+
+.priority-wrapper-full-height {
+  height: calc(100% - 120px);
+  margin-left: 210px;
+}
+
+.priority-quadrants-row .priority-quadrant {
+  width: 50%;
+}
+
+.priority-quadrants-vertical-divider {
+  border-right: solid 1px #d9d9d9;
+}
+
+.priority-quadrants-horizontal-divider {
+  border-top: solid 1px #d9d9d9;
+  margin: 0 20px 0 20px;
+}
+
+.priority-view-picker-animation {
+  transition: opacity 0.3s ease;
+  position: absolute;
+  top: 20%;
+  left: 40px;
+}
+.priority-view-picker-animation.exit,
+.priority-view-picker-animation.enter-done,
+.priority-view-picker-animation.enter-active {
+  opacity: 1;
+}
+.priority-view-picker-animation.enter,
+.priority-view-picker-animation.exit-done,
+.priority-view-picker-animation.exit-active {
+  opacity: 0;
+}
