@@ -2,12 +2,16 @@
 ## built with Holochain
 
 To set up fresh: 
+
 __back__
+
 - run `npm run install-holochain`
 - run `npm run pack-happ`
 - run `npm run run-happ`, this starts holochain service
 - in a separate terminal, run `npm run install-happ`
+
 __front__ (user interface)
+
 - in a separate terminal than `back` commands
 - Use nodejs version 14
 - run `npm install`
