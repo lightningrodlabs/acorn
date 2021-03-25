@@ -8,6 +8,20 @@ name = "projects"
 crate-type = [ "cdylib", "rlib" ]
 
 [dependencies]
-hdk = "0.0.100"
-serde = "1"
+#hdk = "0.0.100"
 dna_help = { path = "../../crates/dna_help" }
+hdk = { git = "https://github.com/holochain/holochain", branch = "2021-03-22-deepkey-tweaks" }
+paste = "1.0.3"
+serde = "1"
+thiserror = "1"
+mockall = "0.9"
+
+[dev-dependencies]
+fixt = { git = "https://github.com/holochain/holochain", branch = "2021-03-22-deepkey-tweaks" }
+holochain_types = { git = "https://github.com/holochain/holochain", branch = "2021-03-22-deepkey-tweaks" }
+rand = "0.7"
+strum = "0.18.0"
+strum_macros = "0.18.0"
+
+[features]
+mock = ["hdk/mock", "hdk/test_utils"]
