@@ -12,3 +12,5 @@ back/workdir/profiles.dna
 back/workdir/projects.dna
 .hc
 databases
+
+.DS_Store
