@@ -12,6 +12,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "install-holochain": ". back/scripts/install-binaries.sh",
+    "test-happ": ". back/scripts/test-happ.sh",
     "pack-happ": ". back/scripts/pack-happ.sh",
     "install-happ": ". back/scripts/install-happ.sh",
     "run-happ": "holochain -c back/conductor-config.yml",

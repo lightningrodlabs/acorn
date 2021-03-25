@@ -15,6 +15,9 @@ __front__ (user interface)
 - run `npm run run-ui`
 - Open up http://localhost:8080/ OR to view in Electron, run `npm start`
 
+To test backend:
+- run `npm run test-happ`
+
 If you make changes to back/crates or back/zomes, you will need to restart your database from scratch: 
 - stop a running `npm run run-happ` service
 - delete `databases` folder
