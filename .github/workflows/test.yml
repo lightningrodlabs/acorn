@@ -13,4 +13,4 @@ jobs:
        with:
          toolchain: nightly
          target: wasm32-unknown-unknown
-     - run: ./back/scripts/test.sh
+     - run: ./back/scripts/test-happ.sh
