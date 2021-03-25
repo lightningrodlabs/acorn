@@ -4,7 +4,7 @@
 To set up fresh: 
 
 __back__
-
+- Have rust language (stable) installed on your system
 - run `npm run install-holochain`
 - run `npm run pack-happ`
 - run `npm run run-happ`, this starts holochain service
