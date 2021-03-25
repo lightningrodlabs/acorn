@@ -1,11 +1,14 @@
-import { AdminWebsocket, AppWebsocket } from '@holochain/conductor-api'
+import { AppWebsocket } from '@holochain/conductor-api/lib/websocket/app'
+import { AdminWebsocket } from '@holochain/conductor-api/lib/websocket/admin'
 
 // export for use by holochainMiddleware (redux)
+// @ts-ignore
 export const APP_WS_URL = `ws://localhost:${__APP_PORT__}`
+// @ts-ignore
 const ADMIN_WS_URL = `ws://localhost:${__ADMIN_PORT__}`
 
-let appWs
-let adminWs
+let appWs: AppWebsocket
+let adminWs: AdminWebsocket
 let agentPubKey
 
 export async function getAdminWs() {
@@ -21,7 +24,8 @@ export async function getAppWs(signalsHandler) {
   if (appWs) {
     return appWs
   } else {
-    appWs = await AppWebsocket.connect(APP_WS_URL, signalsHandler)
+    // undefined is for default timeout
+    appWs = await AppWebsocket.connect(APP_WS_URL, undefined, signalsHandler)
     return appWs
   }
 }

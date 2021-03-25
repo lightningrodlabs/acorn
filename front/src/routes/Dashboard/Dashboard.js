@@ -13,7 +13,12 @@ import JoinProjectModal from '../../components/JoinProjectModal/JoinProjectModal
 import InviteMembersModal from '../../components/InviteMembersModal/InviteMembersModal'
 // import new modals here
 
-import { PROJECTS_DNA_PATH, PROJECTS_ZOME_NAME } from '../../holochainConfig'
+import {
+  MAIN_APP_ID,
+  PROJECTS_SLOT_NAME,
+  PROJECTS_ZOME_NAME,
+  PROJECT_APP_PREFIX,
+} from '../../holochainConfig'
 import { passphraseToUuid } from '../../secrets'
 import { getAdminWs, getAppWs, getAgentPubKey } from '../../hcWebsockets'
 import { fetchEntryPoints } from '../../projects/entry-points/actions'
@@ -30,7 +35,7 @@ import {
 } from './DashboardListProject'
 import { joinProjectCellId } from '../../cells/actions'
 
-function Dashboard ({
+function Dashboard({
   agentAddress,
   cells,
   projects,
@@ -44,7 +49,7 @@ function Dashboard ({
 }) {
   // cells is an array of cellId strings
   useEffect(() => {
-    cells.forEach(cellId => {
+    cells.forEach((cellId) => {
       fetchProjectMeta(cellId)
       fetchMembers(cellId)
       fetchEntryPoints(cellId)
@@ -64,11 +69,11 @@ function Dashboard ({
     return createProject(agentAddress, project, passphrase)
   }
 
-  const onJoinProject = passphrase => joinProject(passphrase)
+  const onJoinProject = (passphrase) => joinProject(passphrase)
 
   const hasProjects = cells.length > 0 // write 'false' if want to see Empty State
 
-  const setSortBy = sortBy => () => {
+  const setSortBy = (sortBy) => () => {
     setSelectedSort(sortBy)
     setShowSortPicker(false)
   }
@@ -94,7 +99,8 @@ function Dashboard ({
           </NavLink>
           <NavLink
             to='/settings'
-            className='dashboard-left-menu-item feature-in-development'>
+            className='dashboard-left-menu-item feature-in-development'
+          >
             <Icon name='setting.svg' size='very-small' className='grey' />
             Settings
           </NavLink>
@@ -106,12 +112,14 @@ function Dashboard ({
             <div className='my-projects-header-buttons'>
               <div
                 className='my-projects-button create-project-button'
-                onClick={() => setShowCreateModal(true)}>
+                onClick={() => setShowCreateModal(true)}
+              >
                 Create a project
               </div>
               <div
                 className='my-projects-button'
-                onClick={() => setShowJoinModal(true)}>
+                onClick={() => setShowJoinModal(true)}
+              >
                 Join a project
               </div>
             </div>
@@ -119,7 +127,8 @@ function Dashboard ({
               <div>Sort by</div>
               <div
                 className='my-projects-sorting-selected'
-                onClick={() => setShowSortPicker(!showSortPicker)}>
+                onClick={() => setShowSortPicker(!showSortPicker)}
+              >
                 {selectedSort === 'created_at' && 'Last Created'}
                 {selectedSort === 'name' && 'Name'}
                 <Icon
@@ -132,7 +141,8 @@ function Dashboard ({
                 in={showSortPicker}
                 timeout={100}
                 unmountOnExit
-                classNames='my-projects-sorting-select'>
+                classNames='my-projects-sorting-select'
+              >
                 <ul className='my-projects-sorting-select'>
                   <li onClick={setSortBy('created_at')}>Last Created</li>
                   <li onClick={setSortBy('name')}>Name</li>
@@ -143,12 +153,12 @@ function Dashboard ({
           <div className='my-projects-content'>
             {/* Only render the sorted projects with their real metadata */}
             {cells.length !== projects.length &&
-              cells.map(cellId => (
+              cells.map((cellId) => (
                 <DashboardListProjectLoading key={'dlpl-key' + cellId} />
               ))}
             {/* if they are all loaded */}
             {cells.length === projects.length &&
-              sortedProjects.map(project => {
+              sortedProjects.map((project) => {
                 return (
                   <DashboardListProject
                     updateIsAvailable={updateIsAvailable}
@@ -188,7 +198,7 @@ function Dashboard ({
   )
 }
 
-async function installProjectApp (passphrase) {
+async function installProjectApp(passphrase) {
   const uuid = passphraseToUuid(passphrase)
   // add a bit of randomness so that
   // the same passphrase can be tried multiple different times
@@ -196,16 +206,26 @@ async function installProjectApp (passphrase) {
   // in order to eventually find their peers
   // note that this will leave a graveyard of deactivated apps for attempted
   // joins
-  const installed_app_id = `${Math.random()
+  const installed_app_id = `${PROJECT_APP_PREFIX}-${Math.random()
     .toString()
     .slice(-6)}-${uuid}`
   const adminWs = await getAdminWs()
+  const appWs = await getAppWs()
   const agent_key = getAgentPubKey()
   if (!agent_key) {
     throw new Error(
       'Cannot install a new project because no AgentPubKey is known locally'
     )
   }
+  const appInfo = await appWs.appInfo({
+    installed_app_id: MAIN_APP_ID,
+  })
+  // find the dna hash of the 'projects' dna, for cloning
+  const {
+    cell_id: [dnaHash, agentHash],
+  } = appInfo.cell_data.find(
+    ({ cell_nick }) => cell_nick === PROJECTS_SLOT_NAME
+  )
   // INSTALL
   const installedApp = await adminWs.installApp({
     agent_key,
@@ -213,7 +233,7 @@ async function installProjectApp (passphrase) {
     dnas: [
       {
         nick: uuid,
-        path: PROJECTS_DNA_PATH,
+        hash: dnaHash,
         properties: { uuid },
       },
     ],
@@ -223,9 +243,12 @@ async function installProjectApp (passphrase) {
   return installedApp
 }
 
-async function createProject (passphrase, projectMeta, agentAddress, dispatch) {
+async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
   const installedApp = await installProjectApp(passphrase)
-  const cellIdString = cellIdToString(installedApp.cell_data[0][0])
+  const slotIds = Object.keys(installedApp.slots)
+  const cellIdString = cellIdToString(
+    installedApp.slots[slotIds[0]].base_cell_id
+  )
   // because we are acting optimistically,
   // because holochain is taking 18 s to respond to this first call
   // we will directly set ourselves as a member of this cell
@@ -238,15 +261,16 @@ async function createProject (passphrase, projectMeta, agentAddress, dispatch) {
   console.log('duration in MS over createProjectMeta ', b2 - b1)
 }
 
-async function joinProject (passphrase, dispatch) {
+async function joinProject(passphrase, dispatch) {
   // joinProject
   // join a DNA
   // then try to get the project metadata
   // if that DOESN'T work, the attempt is INVALID
   // remove the instance again immediately
   const installedApp = await installProjectApp(passphrase)
-  const cellId = installedApp.cell_data[0][0]
-  const cellIdString = cellIdToString(installedApp.cell_data[0][0])
+  const slotIds = Object.keys(installedApp.slots)
+  const cellId = installedApp.slots[slotIds[0]].base_cell_id
+  const cellIdString = cellIdToString(cellId)
   const appWs = await getAppWs()
   try {
     await appWs.callZome({
@@ -271,7 +295,7 @@ async function joinProject (passphrase, dispatch) {
         provenance: getAgentPubKey(), // FIXME: this will need correcting after holochain changes this
       })
       .then(() => console.log('succesfully triggered init_signal'))
-      .catch(e => console.error('failed while triggering init_signal: ', e))
+      .catch((e) => console.error('failed while triggering init_signal: ', e))
     return true
   } catch (e) {
     // deactivate app
@@ -291,15 +315,15 @@ async function joinProject (passphrase, dispatch) {
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
-    fetchEntryPoints: cellIdString => {
+    fetchEntryPoints: (cellIdString) => {
       return dispatch(fetchEntryPoints.create({ cellIdString, payload: null }))
     },
-    fetchMembers: cellIdString => {
+    fetchMembers: (cellIdString) => {
       return dispatch(fetchMembers.create({ cellIdString, payload: null }))
     },
-    fetchProjectMeta: cellIdString => {
+    fetchProjectMeta: (cellIdString) => {
       return dispatch(fetchProjectMeta.create({ cellIdString, payload: null }))
     },
     createProject: async (agentAddress, project, passphrase) => {
@@ -312,19 +336,19 @@ function mapDispatchToProps (dispatch) {
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },
-    joinProject: passphrase => joinProject(passphrase, dispatch),
+    joinProject: (passphrase) => joinProject(passphrase, dispatch),
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     agentAddress: state.agentAddress,
     cells: state.cells.projects,
-    projects: Object.keys(state.projects.projectMeta).map(cellId => {
+    projects: Object.keys(state.projects.projectMeta).map((cellId) => {
       const project = state.projects.projectMeta[cellId]
       const members = state.projects.members[cellId] || {}
       const memberProfiles = Object.keys(members).map(
-        agentAddress => state.agents[agentAddress]
+        (agentAddress) => state.agents[agentAddress]
       )
       const entryPoints = selectEntryPoints(state, cellId)
       return {

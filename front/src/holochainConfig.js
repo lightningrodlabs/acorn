@@ -1,17 +1,22 @@
-export const PROFILES_ZOME_NAME = 'acorn_profiles'
-export const PROJECTS_ZOME_NAME = 'acorn_projects'
+// this corresponds with the zome name used in
+// `back/workdir/dna/profiles/dna.yaml`
+export const PROFILES_ZOME_NAME = 'profiles'
 
-export const PROFILES_DNA_NAME = 'profiles.dna.gz'
+// this corresponds with the zome name used in
+// `back/workdir/dna/projects/dna.yaml`
+export const PROJECTS_ZOME_NAME = 'projects'
 
-// THIS IS DEFINED IN holochain-run-dna
-// lib in use by acorn-hc
-export const PROFILES_APP_ID = __APP_NAME__
+// this corresponds with the app id used to install the app
+// defined in `config-profiles-app-id`
+export const MAIN_APP_ID = __MAIN_APP_ID__
 
-console.log('PROFILES_APP_ID: ', PROFILES_APP_ID)
+// this corresponds with the `id` field of the profiles slot
+// defined in `back/workdir/happ/happ.yaml`
+export const PROFILES_SLOT_NAME = 'profiles-slot'
 
-export const PROJECTS_DNA_PATH =
-  process.env.NODE_ENV === 'production'
-    ? './dna/projects.dna.gz'
-    : './dnas/projects/projects.dna.gz'
+// this corresponds with the `id` field of the projects slot
+// defined in `back/workdir/happ/happ.yaml`
+export const PROJECTS_SLOT_NAME = 'projects-slot'
 
-console.log('PROJECTS_DNA_PATH: ', PROJECTS_DNA_PATH)
+// is used as a prefix for the creation of new Project apps/DHTs
+export const PROJECT_APP_PREFIX = 'acorn-project'

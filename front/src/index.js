@@ -17,7 +17,7 @@ import { holochainMiddleware } from 'connoropolous-hc-redux-middleware'
 import { cellIdToString } from 'connoropolous-hc-redux-middleware/build/main/lib/actionCreator'
 
 // Local Imports
-import { PROFILES_APP_ID, PROFILES_DNA_NAME } from './holochainConfig'
+import { MAIN_APP_ID, PROFILES_SLOT_NAME } from './holochainConfig'
 import acorn from './reducer'
 import signalsHandlers from './signalsHandlers'
 import { setProfilesCellId, setProjectsCellIds } from './cells/actions'
@@ -49,25 +49,30 @@ let store = createStore(
 )
 
 // initialize the appWs with the signals handler
-getAppWs(signalsHandlers(store)).then(async client => {
-  const profilesInfo = await client.appInfo({
-    installed_app_id: PROFILES_APP_ID,
-  })
-  const [cellId, _] = profilesInfo.cell_data.find(
-    ([_cellId, dnaName]) => dnaName === PROFILES_DNA_NAME
-  )
-  const [_dnaHash, agentPubKey] = cellId
-  // cache buffer version of agentPubKey
-  setAgentPubKey(agentPubKey)
-  const cellIdString = cellIdToString(cellId)
-  store.dispatch(setProfilesCellId(cellIdString))
-  // all functions of the Profiles DNA
-  store.dispatch(fetchAgents.create({ cellIdString, payload: null }))
-  store.dispatch(whoami.create({ cellIdString, payload: null }))
-  store.dispatch(fetchAgentAddress.create({ cellIdString, payload: null }))
-  // which projects do we have installed?
-  const projectCellIds = await getProjectCellIdStrings()
-  store.dispatch(setProjectsCellIds(projectCellIds))
+getAppWs(signalsHandlers(store)).then(async (client) => {
+  try {
+    const profilesInfo = await client.appInfo({
+      installed_app_id: MAIN_APP_ID,
+    })
+    const { cell_id: cellId } = profilesInfo.cell_data.find(
+      ({ cell_nick }) => cell_nick === PROFILES_SLOT_NAME
+    )
+    const [_dnaHash, agentPubKey] = cellId
+    // cache buffer version of agentPubKey
+    setAgentPubKey(agentPubKey)
+    const cellIdString = cellIdToString(cellId)
+    store.dispatch(setProfilesCellId(cellIdString))
+    // all functions of the Profiles DNA
+    store.dispatch(fetchAgents.create({ cellIdString, payload: null }))
+    store.dispatch(whoami.create({ cellIdString, payload: null }))
+    store.dispatch(fetchAgentAddress.create({ cellIdString, payload: null }))
+    // which projects do we have installed?
+    const projectCellIds = await getProjectCellIdStrings()
+    store.dispatch(setProjectsCellIds(projectCellIds))
+  } catch (e) {
+    console.log(e)
+    return
+  }
 })
 
 // By passing the `store` in as a wrapper around our React component

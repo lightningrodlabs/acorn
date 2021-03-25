@@ -1,17 +1,20 @@
 import { cellIdToString } from 'connoropolous-hc-redux-middleware/build/main/lib/actionCreator'
 import { getAppWs, getAdminWs } from './hcWebsockets'
-import { PROFILES_APP_ID } from './holochainConfig'
+import { PROJECT_APP_PREFIX } from './holochainConfig'
 
 export async function getAllApps() {
   const adminWs = await getAdminWs()
   const appWs = await getAppWs()
   const appIds = await adminWs.listActiveApps()
+  // this function assumes a one-dna-per-app
+  // which could become wrong at some point
+  console.log(appIds)
   const appProjects = await Promise.all(
     appIds.map(async installed_app_id => {
       const appInfo = await appWs.appInfo({ installed_app_id })
       return {
         ...appInfo,
-        cellIdString: cellIdToString(appInfo.cell_data[0][0])
+        cellIdString: cellIdToString(appInfo.cell_data[0].cell_id)
       }
     })
   )
@@ -22,8 +25,7 @@ export async function getProjectCellIdStrings() {
   const allApps = await getAllApps()
   return Object
     .keys(allApps)
-    // the PROFILES app is not a PROJECTS app so rule it out
-    .filter(appId => appId !== PROFILES_APP_ID)
+    .filter(appId => appId.startsWith(PROJECT_APP_PREFIX))
     .map(appId => allApps[appId].cellIdString)
 }
 

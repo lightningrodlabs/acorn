@@ -1,4 +1,4 @@
-use std::time::Duration;
+// use std::time::Duration;
 
 use dna_help::{create_receive_signal_cap_grant, fetch_links, signal_peers, WrappedAgentPubKey};
 use hdk::prelude::*;
@@ -18,8 +18,8 @@ use project::{
 
 #[hdk_extern]
 fn init(_: ()) -> ExternResult<InitCallbackResult> {
-    let start_init_time: Duration = sys_time()?;
-    debug!("start of init time {:?}", start_init_time.clone());
+    // let start_init_time: Duration = sys_time()?;
+    // debug!("start of init time {:?}", start_init_time.clone());
     // authorize receive_signal
     // not the issue, takes about 2 ms
     create_receive_signal_cap_grant()?;
@@ -36,12 +36,12 @@ fn init(_: ()) -> ExternResult<InitCallbackResult> {
     let member_entry_hash = hash_entry(&member)?;
     create_link(member_path_address, member_entry_hash, ())?;
 
-    let end_init_time: Duration = sys_time()?;
-    debug!("end of init time {:?}", end_init_time.clone());
-    debug!(
-        "difference in init time {:?}",
-        end_init_time - start_init_time
-    );
+    // let end_init_time: Duration = sys_time()?;
+    // debug!("end of init time {:?}", end_init_time.clone());
+    // debug!(
+    //     "difference in init time {:?}",
+    //     end_init_time - start_init_time
+    // );
     Ok(InitCallbackResult::Pass)
 }
 

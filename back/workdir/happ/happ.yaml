@@ -8,7 +8,7 @@ slots:
       strategy: create
       deferred: false
     dna:
-      bundled: "../dna/profiles.dna"
+      bundled: "../profiles.dna"
       properties: ~
       uuid: ~
       version: ~
@@ -18,8 +18,33 @@ slots:
       strategy: create
       deferred: true
     dna:
-      bundled: "../dna/projects.dna"
+      bundled: "../projects.dna"
       properties: ~
       uuid: ~
       version: ~
       clone_limit: 0
+
+# Provisioning options
+# as seen on March 25, from here:
+# https://github.com/holochain/holochain/blob/d2ce21aa51672328e162f9a5c8137ccba9efd5b8/crates/holochain_types/src/app/app_manifest/app_manifest_v1.rs#L156-L176
+# /// Rules to determine if and how a Cell will be created for this Dna
+# #[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+# #[serde(rename_all = "snake_case")]
+# #[serde(tag = "strategy")]
+# #[allow(missing_docs)]
+# pub enum CellProvisioning {
+#     /// Always create a new Cell when installing this App
+#     Create { deferred: bool },
+#     /// Always create a new Cell when installing the App,
+#     /// and use a unique UUID to ensure a distinct DHT network
+#     CreateClone { deferred: bool },
+#     /// Require that a Cell is already installed which matches the DNA version
+#     /// spec, and which has an Agent that's associated with this App's agent
+#     /// via DPKI. If no such Cell exists, *app installation fails*.
+#     UseExisting { deferred: bool },
+#     /// Try `UseExisting`, and if that fails, fallback to `Create`
+#     CreateIfNotExists { deferred: bool },
+#     /// Disallow provisioning altogether. In this case, we expect
+#     /// `clone_limit > 0`: otherwise, no Cells will ever be created.
+#     Disabled,
+# }

@@ -100,7 +100,7 @@ MapView.propTypes = {
     address: PropTypes.string,
   }),
   createWhoami: PropTypes.func,
-  showExpandedViewMode: PropTypes.bool.isRequired,
+  showExpandedViewMode: PropTypes.bool,
   showEmptyState: PropTypes.bool,
 }
 
