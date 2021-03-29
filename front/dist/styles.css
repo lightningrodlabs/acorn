@@ -3,9 +3,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-html,
-body,
-canvas {
+html, body, canvas {
   height: 100%;
   width: 100%;
   margin: 0;
@@ -31,8 +29,7 @@ div.react {
 
 @font-face {
   font-family: 'hk-grotesk-regular';
-  src: url('fonts/hk-grotesk/hkgrotesk-regular-webfont.woff2') format('woff2'),
-    url('fonts/hk-grotesk/hkgrotesk-regular-webfont.woff') format('woff');
+  src: url('fonts/hk-grotesk/hkgrotesk-regular-webfont.woff2') format('woff2'), url('fonts/hk-grotesk/hkgrotesk-regular-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   margin-bottom: 1px;
@@ -40,8 +37,7 @@ div.react {
 
 @font-face {
   font-family: 'hk-grotesk-medium';
-  src: url('fonts/hk-grotesk/hkgrotesk-medium-webfont.woff2') format('woff2'),
-    url('fonts/hk-grotesk/hkgrotesk-medium-webfont.woff') format('woff');
+  src: url('fonts/hk-grotesk/hkgrotesk-medium-webfont.woff2') format('woff2'), url('fonts/hk-grotesk/hkgrotesk-medium-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   margin-bottom: 1px;
@@ -49,24 +45,21 @@ div.react {
 
 @font-face {
   font-family: 'hk-grotesk-semibold';
-  src: url('fonts/hk-grotesk/hkgrotesk-semibold-webfont.woff2') format('woff2'),
-    url('fonts/hk-grotesk/hkgrotesk-semibold-webfont.woff') format('woff');
+  src: url('fonts/hk-grotesk/hkgrotesk-semibold-webfont.woff2') format('woff2'), url('fonts/hk-grotesk/hkgrotesk-semibold-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'hk-grotesk-bold';
-  src: url('fonts/hk-grotesk/hkgrotesk-bold-webfont.woff2') format('woff2'),
-    url('fonts/hk-grotesk/hkgrotesk-bold-webfont.woff') format('woff');
+  src: url('fonts/hk-grotesk/hkgrotesk-bold-webfont.woff2') format('woff2'), url('fonts/hk-grotesk/hkgrotesk-bold-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'hk-grotesk-extrabold';
-  src: url('fonts/hk-grotesk/hkgrotesk-extrabold-webfont.woff2') format('woff2'),
-    url('fonts/hk-grotesk/hkgrotesk-extrabold-webfont.woff') format('woff');
+  src: url('fonts/hk-grotesk/hkgrotesk-extrabold-webfont.woff2') format('woff2'), url('fonts/hk-grotesk/hkgrotesk-extrabold-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -75,16 +68,14 @@ div.react {
 
 @font-face {
   font-family: 'gilroyextrabold';
-  src: url('fonts/gilroy/gilroy-extrabold-webfont.woff2') format('woff2'),
-    url('fonts/gilroy/gilroy-extrabold-webfont.woff') format('woff');
+  src: url('fonts/gilroy/gilroy-extrabold-webfont.woff2') format('woff2'), url('fonts/gilroy/gilroy-extrabold-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'gilroylight';
-  src: url('fonts/gilroy/gilroy-light-webfont.woff2') format('woff2'),
-    url('fonts/gilroy/gilroy-light-webfont.woff') format('woff');
+  src: url('fonts/gilroy/gilroy-light-webfont.woff2') format('woff2'), url('fonts/gilroy/gilroy-light-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -100,28 +91,28 @@ div.react {
 h1 {
   font-size: 26px;
   line-height: 32px;
-  font-family: 'now-Bold', Helvetica, sans-serif;
+  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
   font-weight: normal;
 }
 
 h2 {
   font-size: 22px;
   line-height: 28px;
-  font-family: 'now-Bold', Helvetica, sans-serif;
+  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
   font-weight: normal;
 }
 
 h3 {
   font-size: 20px;
   line-height: 24px;
-  font-family: 'now-Medium', Helvetica, sans-serif;
+  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
   font-weight: normal;
 }
 
 h4 {
   font-size: 16px;
   line-height: 20px;
-  font-family: 'now-Medium', Helvetica, sans-serif;
+  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
   font-weight: normal;
   color: #717171;
 }
@@ -167,12 +158,14 @@ h4 {
   display: flex;
   flex-direction: row;
   list-style: none;
-  margin: 0 0 0 -85px; /* (36:width * 2) + 6:between-margin + 6:edge-margin */
+  margin: 0 0 0 -85px;
+  /* (36:width * 2) + 6:between-margin + 6:edge-margin */
   padding: 0;
 }
 
 .hover_overlay li:first-child {
-  margin-right: 6px; /* same as distance from buttons to edges of goal */
+  margin-right: 6px;
+  /* same as distance from buttons to edges of goal */
 }
 
 .hover_overlay li {
@@ -219,6 +212,7 @@ h4 {
 .action_list_item .icon {
   margin-right: 5px;
 }
+
 .action_list_item .icon.not-hoverable .inner-icon:hover {
   background-color: #ffffff;
 }

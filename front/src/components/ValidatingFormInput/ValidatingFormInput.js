@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import './ValidatingFormInput.css'
 
-function ValidatingFormInput({
+function ValidatingFormInput ({
   withAtSymbol,
   readOnly,
   placeholder,
@@ -13,7 +13,7 @@ function ValidatingFormInput({
   errorText,
   invalidInput,
   validInput,
-  defaultInput,
+  defaultInput
 }) {
   const innerOnChange = e => {
     e.preventDefault()
@@ -46,7 +46,7 @@ function ValidatingFormInput({
           readOnly={readOnly}
         />
         {errorText && <div className='error_text'>{errorText}</div>}
-        {withAtSymbol && <div className='at_symbol'>@</div>}
+        {withAtSymbol && <div className='at_symbol'>@ </div>}
         {invalidInput && (
           <img src='img/invalid-mark.svg' className='validation-mark' />
         )}
@@ -65,7 +65,7 @@ ValidatingFormInput.propTypes = {
   label: PropTypes.string,
   placeholder: PropTypes.string,
   readOnly: PropTypes.bool,
-  withAtSymbol: PropTypes.bool,
+  withAtSymbol: PropTypes.bool
 }
 
 export default ValidatingFormInput
