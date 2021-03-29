@@ -20,7 +20,7 @@
     "@babel/runtime": "^7.7.4",
     "@holochain/conductor-api": "github:holochain/holochain-conductor-api#Connoropolous-patch-2",
     "@material-ui/core": "^4.6.1",
-    "connoropolous-hc-redux-middleware": "^1.1.26",
+    "connoropolous-hc-redux-middleware": "^1.1.28",
     "core-js": "^3.6.5",
     "dagre": "^0.8.5",
     "diceware-word": "^1.0.0",

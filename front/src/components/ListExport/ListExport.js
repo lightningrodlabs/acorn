@@ -98,6 +98,7 @@ function mapStateToProps(state) {
   return {
     projectName,
     data: {
+      projectMeta: activeProjectMeta,
       agents: state.agents,
       goals,
       edges,
