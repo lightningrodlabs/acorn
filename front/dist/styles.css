@@ -1,6 +1,8 @@
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* disable ugly mouse plugged in scrollbar */
+  scrollbar-width: none;
 }
 
 html,
