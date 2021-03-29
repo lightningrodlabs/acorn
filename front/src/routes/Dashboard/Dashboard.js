@@ -35,6 +35,7 @@ import {
   DashboardListProjectLoading,
 } from './DashboardListProject'
 import { joinProjectCellId } from '../../cells/actions'
+import importAllProjectData from '../../import'
 
 function Dashboard({
   agentAddress,
@@ -337,14 +338,21 @@ async function importProject(agentAddress, projectData, passphrase, dispatch) {
     ...projectData.projectMeta,
     created_at: Date.now(),
     creator_address: agentAddress,
-    passphrase: passphrase
+    passphrase: passphrase,
   }
   // this is not an actual field
   delete projectMeta.address
-  
-  const cellIdString = await createProject(passphrase, projectMeta, agentAddress, dispatch)
+
+  const cellIdString = await createProject(
+    passphrase,
+    projectMeta,
+    agentAddress,
+    dispatch
+  )
   // next step is to import the rest of the data into that project
+  await importAllProjectData(projectData, agentAddress, cellIdString, dispatch)
 }
+
 
 function mapDispatchToProps(dispatch) {
   return {
