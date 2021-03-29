@@ -9,6 +9,7 @@ import Icon from '../../components/Icon/Icon'
 import DashboardEmptyState from '../../components/DashboardEmptyState/DashboardEmptyState'
 
 import CreateProjectModal from '../../components/CreateProjectModal/CreateProjectModal'
+import ImportProjectModal from '../../components/ImportProjectModal/ImportProjectModal'
 import JoinProjectModal from '../../components/JoinProjectModal/JoinProjectModal'
 import InviteMembersModal from '../../components/InviteMembersModal/InviteMembersModal'
 // import new modals here
@@ -44,6 +45,7 @@ function Dashboard({
   fetchProjectMeta,
   createProject,
   joinProject,
+  importProject,
   updateIsAvailable,
   setShowUpdatePromptModal,
 }) {
@@ -61,15 +63,18 @@ function Dashboard({
   const [showSortPicker, setShowSortPicker] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showJoinModal, setShowJoinModal] = useState(false)
+  const [showImportModal, setShowImportModal] = useState(false)
   // call set for this one with the actual passphrase to render inside
   const [showInviteMembersModal, setShowInviteMembersModal] = useState(null)
   // add new modal state managers here
 
-  const onCreateProject = (project, passphrase) => {
-    return createProject(agentAddress, project, passphrase)
-  }
+  const onCreateProject = (project, passphrase) =>
+    createProject(agentAddress, project, passphrase)
 
   const onJoinProject = (passphrase) => joinProject(passphrase)
+
+  const onImportProject = (projectData, passphrase) =>
+    importProject(agentAddress, projectData, passphrase)
 
   const hasProjects = cells.length > 0 // write 'false' if want to see Empty State
 
@@ -121,6 +126,12 @@ function Dashboard({
                 onClick={() => setShowJoinModal(true)}
               >
                 Join a project
+              </div>
+              <div
+                className='my-projects-button'
+                onClick={() => setShowImportModal(true)}
+              >
+                Import
               </div>
             </div>
             <div className='my-projects-sorting'>
@@ -188,6 +199,11 @@ function Dashboard({
         showModal={showJoinModal}
         onClose={() => setShowJoinModal(false)}
       />
+      <ImportProjectModal
+        onImportProject={onImportProject}
+        showModal={showImportModal}
+        onClose={() => setShowImportModal(false)}
+      />
       <InviteMembersModal
         passphrase={showInviteMembersModal}
         showModal={showInviteMembersModal}
@@ -250,7 +266,6 @@ async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
     installedApp.slots[slotIds[0]].base_cell_id
   )
   // because we are acting optimistically,
-  // because holochain is taking 18 s to respond to this first call
   // we will directly set ourselves as a member of this cell
   await dispatch(setMember(cellIdString, { address: agentAddress }))
   const b1 = Date.now()
@@ -259,6 +274,7 @@ async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
   )
   const b2 = Date.now()
   console.log('duration in MS over createProjectMeta ', b2 - b1)
+  return cellIdString
 }
 
 async function joinProject(passphrase, dispatch) {
@@ -315,6 +331,21 @@ async function joinProject(passphrase, dispatch) {
   }
 }
 
+async function importProject(agentAddress, projectData, passphrase, dispatch) {
+  // first step is to create new project
+  const projectMeta = {
+    ...projectData.projectMeta,
+    created_at: Date.now(),
+    creator_address: agentAddress,
+    passphrase: passphrase
+  }
+  // this is not an actual field
+  delete projectMeta.address
+  
+  const cellIdString = await createProject(passphrase, projectMeta, agentAddress, dispatch)
+  // next step is to import the rest of the data into that project
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     fetchEntryPoints: (cellIdString) => {
@@ -337,6 +368,8 @@ function mapDispatchToProps(dispatch) {
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },
     joinProject: (passphrase) => joinProject(passphrase, dispatch),
+    importProject: (agentAddress, projectData, passphrase) =>
+      importProject(agentAddress, projectData, passphrase, dispatch),
   }
 }
 
