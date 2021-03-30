@@ -15,7 +15,7 @@ import InviteMembersModal from '../../components/InviteMembersModal/InviteMember
 // import new modals here
 
 import {
-  MAIN_APP_ID,
+  PROJECTS_DNA_PATH,
   PROJECTS_ZOME_NAME,
   PROJECT_APP_PREFIX,
 } from '../../holochainConfig'
@@ -38,6 +38,7 @@ import importAllProjectData from '../../import'
 
 function Dashboard({
   agentAddress,
+  profilesCellIdString,
   cells,
   projects,
   fetchEntryPoints,
@@ -74,7 +75,7 @@ function Dashboard({
   const onJoinProject = (passphrase) => joinProject(passphrase)
 
   const onImportProject = (projectData, passphrase) =>
-    importProject(agentAddress, projectData, passphrase)
+    importProject(agentAddress, projectData, passphrase, profilesCellIdString)
 
   const hasProjects = cells.length > 0 // write 'false' if want to see Empty State
 
@@ -226,17 +227,17 @@ async function installProjectApp(passphrase) {
     .toString()
     .slice(-6)}-${uuid}`
   const adminWs = await getAdminWs()
-  const appWs = await getAppWs()
   const agent_key = getAgentPubKey()
   if (!agent_key) {
     throw new Error(
       'Cannot install a new project because no AgentPubKey is known locally'
     )
   }
-  // find the dna hash of the 'projects' dna, for cloning
+  // the dna hash HAS to act deterministically
+  // in order for the 'joining' of Projects to work
   const hash = await adminWs.registerDna({
     path: PROJECTS_DNA_PATH,
-    properties: { uuid }
+    properties: { uuid },
   })
   // INSTALL
   const installedApp = await adminWs.installApp({
@@ -277,7 +278,9 @@ async function joinProject(passphrase, dispatch) {
   // then try to get the project metadata
   // if that DOESN'T work, the attempt is INVALID
   // remove the instance again immediately
-  const [cellIdString, cellId, installedAppId] = await installProjectApp(passphrase)
+  const [cellIdString, cellId, installedAppId] = await installProjectApp(
+    passphrase
+  )
   const appWs = await getAppWs()
   try {
     await appWs.callZome({
@@ -322,7 +325,26 @@ async function joinProject(passphrase, dispatch) {
   }
 }
 
-async function importProject(agentAddress, projectData, passphrase, dispatch) {
+async function importProject(
+  agentAddress,
+  projectData,
+  passphrase,
+  profilesCellIdString,
+  dispatch
+) {
+  // first step is to install the dna
+  const [projectsCellIdString] = await installProjectApp(passphrase)
+  // next step is to import the rest of the data into that project
+  await importAllProjectData(
+    projectData,
+    agentAddress,
+    projectsCellIdString,
+    profilesCellIdString,
+    dispatch
+  )
+
+  // only add the project meta after the rest has been imported
+  // so it doesn't list itself early in the process
   // first step is to create new project
   const projectMeta = {
     ...projectData.projectMeta,
@@ -332,17 +354,14 @@ async function importProject(agentAddress, projectData, passphrase, dispatch) {
   }
   // this is not an actual field
   delete projectMeta.address
-
-  const cellIdString = await createProject(
-    passphrase,
-    projectMeta,
-    agentAddress,
-    dispatch
+  await dispatch(setMember(projectsCellIdString, { address: agentAddress }))
+  await dispatch(
+    createProjectMeta.create({
+      cellIdString: projectsCellIdString,
+      payload: projectMeta,
+    })
   )
-  // next step is to import the rest of the data into that project
-  await importAllProjectData(projectData, agentAddress, cellIdString, dispatch)
 }
-
 
 function mapDispatchToProps(dispatch) {
   return {
@@ -366,14 +385,21 @@ function mapDispatchToProps(dispatch) {
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },
     joinProject: (passphrase) => joinProject(passphrase, dispatch),
-    importProject: (agentAddress, projectData, passphrase) =>
-      importProject(agentAddress, projectData, passphrase, dispatch),
+    importProject: (agentAddress, projectData, passphrase, profilesCellIdString) =>
+      importProject(
+        agentAddress,
+        projectData,
+        passphrase,
+        profilesCellIdString,
+        dispatch
+      ),
   }
 }
 
 function mapStateToProps(state) {
   return {
     agentAddress: state.agentAddress,
+    profilesCellIdString: state.cells.profiles,
     cells: state.cells.projects,
     projects: Object.keys(state.projects.projectMeta).map((cellId) => {
       const project = state.projects.projectMeta[cellId]

@@ -40,6 +40,7 @@ function ProfileEditForm({
         avatar_url: avatarUrl,
         address: agentAddress,
         handle,
+        is_imported: false
       })
     }
   }

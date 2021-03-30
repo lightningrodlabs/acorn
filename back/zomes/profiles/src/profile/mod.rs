@@ -15,6 +15,7 @@ pub struct Profile {
     status: Status,
     avatar_url: String,
     address: WrappedAgentPubKey,
+    is_imported: bool
 }
 
 impl From<Profile> for AgentPubKey {
@@ -143,6 +144,29 @@ pub fn create_whoami(entry: Profile) -> ExternResult<WireEntry> {
     Ok(wire_entry)
 }
 
+/*
+// LATER, to link from an imported profile to claim as your own
+// user profile
+// list me so I can specifically and quickly look up my profile
+    let agent_pubkey = agent_info()?.agent_initial_pubkey;
+    let agent_entry_hash = EntryHash::from(agent_pubkey);
+    create_link(agent_entry_hash, entry_hash, ())?;
+*/
+
+#[hdk_extern]
+pub fn create_imported_profile(entry: Profile) -> ExternResult<WireEntry> {
+    // commit this new profile
+    let header_hash = create_entry(&entry)?;
+    let entry_hash = hash_entry(&entry)?;
+    // list profile so anyone can see it
+    let agents_path_address = Path::from(AGENTS_PATH).hash()?;
+    create_link(agents_path_address, entry_hash.clone(), ())?;
+    Ok(WireEntry {
+        entry,
+        address: WrappedHeaderHash(header_hash),
+    })
+}
+
 fn agent_signal_entry_type() -> String {
     "agent".to_string()
 }
@@ -171,7 +195,10 @@ pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
     // // do it this way so that we always keep the original profile entry address
     // // from the UI perspective
     match maybe_profile_link {
-        Some(profile_link) => match get_latest_for_entry::<Profile>(profile_link.target.clone(), GetOptions::content())? {
+        Some(profile_link) => match get_latest_for_entry::<Profile>(
+            profile_link.target.clone(),
+            GetOptions::content(),
+        )? {
             Some(entry_and_hash) => Ok(WhoAmIOutput(Some(WireEntry::from(entry_and_hash)))),
             None => Ok(WhoAmIOutput(None)),
         },
@@ -207,8 +234,8 @@ fn get_peers() -> ExternResult<Vec<AgentPubKey>> {
     let agent_info = agent_info()?;
     Ok(entries
         .into_iter()
-        // eliminate yourself as a peer
-        .filter(|x| x.address.0 != agent_info.agent_initial_pubkey)
+        // eliminate yourself as a peer, along with imports
+        .filter(|x| x.address.0 != agent_info.agent_initial_pubkey && !x.is_imported)
         .map(|x| AgentPubKey::from(x))
         .collect::<Vec<AgentPubKey>>())
 }
