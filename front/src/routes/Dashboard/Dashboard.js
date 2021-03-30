@@ -16,7 +16,6 @@ import InviteMembersModal from '../../components/InviteMembersModal/InviteMember
 
 import {
   MAIN_APP_ID,
-  PROJECTS_SLOT_NAME,
   PROJECTS_ZOME_NAME,
   PROJECT_APP_PREFIX,
 } from '../../holochainConfig'
@@ -234,15 +233,11 @@ async function installProjectApp(passphrase) {
       'Cannot install a new project because no AgentPubKey is known locally'
     )
   }
-  const appInfo = await appWs.appInfo({
-    installed_app_id: MAIN_APP_ID,
-  })
   // find the dna hash of the 'projects' dna, for cloning
-  const {
-    cell_id: [dnaHash, agentHash],
-  } = appInfo.cell_data.find(
-    ({ cell_nick }) => cell_nick === PROJECTS_SLOT_NAME
-  )
+  const hash = await adminWs.registerDna({
+    path: PROJECTS_DNA_PATH,
+    properties: { uuid }
+  })
   // INSTALL
   const installedApp = await adminWs.installApp({
     agent_key,
@@ -250,22 +245,20 @@ async function installProjectApp(passphrase) {
     dnas: [
       {
         nick: uuid,
-        hash: dnaHash,
-        properties: { uuid },
+        hash,
       },
     ],
   })
+  const slotIds = Object.keys(installedApp.slots)
+  const cellId = installedApp.slots[slotIds[0]].base_cell_id
+  const cellIdString = cellIdToString(cellId)
   // ACTIVATE
   await adminWs.activateApp({ installed_app_id })
-  return installedApp
+  return [cellIdString, cellId, installed_app_id]
 }
 
 async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
-  const installedApp = await installProjectApp(passphrase)
-  const slotIds = Object.keys(installedApp.slots)
-  const cellIdString = cellIdToString(
-    installedApp.slots[slotIds[0]].base_cell_id
-  )
+  const [cellIdString] = await installProjectApp(passphrase)
   // because we are acting optimistically,
   // we will directly set ourselves as a member of this cell
   await dispatch(setMember(cellIdString, { address: agentAddress }))
@@ -284,10 +277,7 @@ async function joinProject(passphrase, dispatch) {
   // then try to get the project metadata
   // if that DOESN'T work, the attempt is INVALID
   // remove the instance again immediately
-  const installedApp = await installProjectApp(passphrase)
-  const slotIds = Object.keys(installedApp.slots)
-  const cellId = installedApp.slots[slotIds[0]].base_cell_id
-  const cellIdString = cellIdToString(cellId)
+  const [cellIdString, cellId, installedAppId] = await installProjectApp(passphrase)
   const appWs = await getAppWs()
   try {
     await appWs.callZome({
@@ -318,7 +308,7 @@ async function joinProject(passphrase, dispatch) {
     // deactivate app
     const adminWs = await getAdminWs()
     await adminWs.deactivateApp({
-      installed_app_id: installedApp.installed_app_id,
+      installed_app_id: installedAppId,
     })
     if (
       e.type === 'error' &&

@@ -38,4 +38,6 @@ export default async function importAllProjectData(
     goalAddressMap[oldGoal.address] = newGoal.address
   }
   // do the rest
+
+  
 }
