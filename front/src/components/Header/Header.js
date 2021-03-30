@@ -6,7 +6,6 @@ import {
   useLocation,
   withRouter,
 } from 'react-router-dom'
-import { CSSTransition } from 'react-transition-group'
 import onClickOutside from 'react-onclickoutside'
 import GuideBook from '../GuideBook/GuideBook'
 import { GUIDE_IS_OPEN } from '../GuideBook/guideIsOpen'
@@ -14,7 +13,6 @@ import './Header.css'
 import Avatar from '../Avatar/Avatar'
 import Icon from '../Icon/Icon'
 import ListExport from '../ListExport/ListExport'
-import Preferences from '../Preferences/Preferences'
 import Modal from '../Modal/Modal'
 import UpdateBar from '../UpdateBar/UpdateBar'
 

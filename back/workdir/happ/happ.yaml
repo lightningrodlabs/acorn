@@ -13,16 +13,6 @@ slots:
       uuid: ~
       version: ~
       clone_limit: 0
-  - id: projects-slot
-    provisioning:
-      strategy: create
-      deferred: true
-    dna:
-      bundled: "../projects.dna"
-      properties: ~
-      uuid: ~
-      version: ~
-      clone_limit: 0
 
 # Provisioning options
 # as seen on March 25, from here:

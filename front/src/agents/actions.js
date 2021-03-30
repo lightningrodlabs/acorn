@@ -21,9 +21,14 @@ const setAgent = agent => {
   }
 }
 
+const createImportedProfile = createZomeCallAsyncAction(
+  PROFILES_ZOME_NAME,
+  'create_imported_profile'
+)
+
 const fetchAgents = createZomeCallAsyncAction(
   PROFILES_ZOME_NAME,
   'fetch_agents'
 )
 
-export { SET_AGENT, setAgent, fetchAgents }
+export { SET_AGENT, setAgent, createImportedProfile, fetchAgents }
