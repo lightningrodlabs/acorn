@@ -151,8 +151,10 @@ function mapStateToProps(state, ownProps) {
       .map(address => goalMembers[address])
       .filter(goalMember => goalMember.goal_address === goal.address)
       .map(goalMember => {
-        const squirrel = state.agents[goalMember.agent_address]
-        squirrel.goalMemberAddress = goalMember.address
+        const squirrel = {
+          ...state.agents[goalMember.agent_address],
+          goalMemberAddress: goalMember.address
+        }
         return squirrel
       })
     Object.keys(state.agents).forEach(value => {

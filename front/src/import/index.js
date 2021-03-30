@@ -8,7 +8,6 @@ import { createEntryPoint } from '../projects/entry-points/actions'
 
 export default async function importAllProjectData(
   projectData,
-  agentAddress,
   projectsCellIdString,
   profilesCellIdString,
   dispatch

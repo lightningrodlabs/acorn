@@ -337,7 +337,6 @@ async function importProject(
   // next step is to import the rest of the data into that project
   await importAllProjectData(
     projectData,
-    agentAddress,
     projectsCellIdString,
     profilesCellIdString,
     dispatch
