@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './ImportProjectModal.css'
 
 import Modal from '../Modal/Modal'
@@ -19,86 +19,113 @@ async function generatePassphrase () {
   return `${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()}`
 }
 
-function ImportProjectForm ({
-  importingProject,
-  onSubmit,
-  projectImported,
-  projectData,
-  setProjectData
-}) {
-  const subheading = (
-    <div>
-      Import a previously exported Acorn project in <b>JSON format</b>.
-    </div>
+function ImportProjectFilePicker ({ showModal, onFilePicked, onCancel }) {
+  const [fileFormatInvalidMessage, setFileFormatInvalidMessage] = useState(
+    false
   )
-
-  const actionButtonContent = (
-    <ButtonWithPendingState
-      pending={importingProject}
-      pendingText='Importing...'
-      actionText='Import'
-    />
-  )
-
-  // validate before firing event
-  const submit = () => {
-    // set this to trigger the invalid field to show
-    // setShouldInvalidateProjectName(true)
-    if (projectData && !importingProject) {
-      onSubmit()
-    }
-  }
-
-  const onFilePicked = e => {
+  const handleFilePicked = e => {
     const reader = new FileReader()
     reader.onload = async e => {
       const text = e.target.result
       try {
         const parsed = JSON.parse(text)
-        setProjectData(parsed)
+        onFilePicked(parsed)
       } catch (e) {
-        console.log('parse error')
+        setFileFormatInvalidMessage(true)
       }
     }
     reader.readAsText(e.target.files[0])
   }
 
+  // browse files button
+  const fileInput = useRef(null)
+  const onBrowseFilesClick = () => {
+    // `current` points to the mounted hidden file input element
+    fileInput.current.click()
+  }
+
   return (
-    <div
-      className={`import-project-form ${
-        projectImported ? 'project-imported' : ''
-      }`}
+    <Modal
+      white
+      active={showModal}
+      onClose={onCancel}
+      className='import-project-modal-wrapper'
     >
-      <ProjectModalHeading title='Import a project' />
-      <ProjectModalSubHeading title={subheading} />
+      {/* <div className='import-project-form'> */}
+      <ProjectModalHeading
+        title={
+          fileFormatInvalidMessage
+            ? 'File format is invalid'
+            : 'Import a project'
+        }
+      />
       <ProjectModalContentSpacer>
-        <ProjectModalContent></ProjectModalContent>
+        <ProjectModalContent>
+          {!fileFormatInvalidMessage && (
+            <div className='import-project-content-wrapper'>
+              Import an Acorn project from a previously exported{' '}
+              <strong>JSON</strong> formatted file.
+            </div>
+          )}
+          {fileFormatInvalidMessage && (
+            <div>
+              The content of selected file does not follow JSON format. :'(
+            </div>
+          )}
+        </ProjectModalContent>
       </ProjectModalContentSpacer>
       <input
+        ref={fileInput}
         className='browse-files-button'
         type='file'
-        onChange={onFilePicked}
+        accept='application/json, .json, .JSON'
+        onChange={handleFilePicked}
       />
-      <ProjectModalButton text={actionButtonContent} onClick={submit} />
-    </div>
+      <ProjectModalButton text='Browse Files' onClick={onBrowseFilesClick} />
+      {/* </div> */}
+    </Modal>
   )
 }
 
-function ProjectImportedModal ({ onDone, projectImported, projectSecret }) {
+function ImportingProjectModal ({ showModal }) {
   return (
-    <div
-      className={`project-created-modal ${
-        projectImported ? 'project-created' : ''
-      }`}
+    <Modal white active={showModal} className='import-project-modal-wrapper'>
+      {/* <div className='import-project-form'> */}
+      {/* <ProjectModalContent> */}
+      <div className='importing-modal-content'>
+        <img src='img/acorn-logo.svg' />
+        <div className='importing-modal-content-title'>
+          Importing your project
+        </div>
+        <div>This might take up to a few minutes</div>
+      </div>
+      {/* </ProjectModalContent> */}
+      {/* </div> */}
+    </Modal>
+  )
+}
+
+function ProjectImportedModal ({ showModal, onDone, projectName, goalCount }) {
+  return (
+    <Modal
+      white
+      active={showModal}
+      onClose={onDone}
+      className='import-project-modal-wrapper'
     >
-      <ProjectModalHeading title='New project created!' />
+      {/* <div className='import-project-form'> */}
+      <ProjectModalHeading title='Project imported!' />
       <ProjectModalContentSpacer>
         <ProjectModalContent>
-          <ProjectSecret passphrase={projectSecret} />
+          <div className='import-project-content-wrapper'>
+            <strong>{projectName}</strong> with{' '}
+            <strong>{goalCount} goals</strong> was successfully imported.
+          </div>
         </ProjectModalContent>
       </ProjectModalContentSpacer>
       <ProjectModalButton text='Done' onClick={onDone} />
-    </div>
+      {/* </div> */}
+    </Modal>
   )
 }
 
@@ -111,18 +138,17 @@ export default function ImportProjectModal ({
   const [importingProject, setImportingProject] = useState(false)
   const [projectImported, setProjectImported] = useState(false)
   const [projectSecret, setProjectSecret] = useState('')
-  const [projectData, setProjectData] = useState(null)
+  const [projectName, setProjectName] = useState('')
+  const [goalCount, setGoalCount] = useState('')
   let hasUnmounted = false
 
-  const reset = () => {
-    setProjectData(null)
-  }
-  const onSubmit = async () => {
+  const onFilePicked = async projectData => {
     setImportingProject(true)
+    setProjectName(projectData.projectMeta.name)
+    setGoalCount(Object.keys(projectData.goals).length)
     await onImportProject(projectData, projectSecret)
     setImportingProject(false)
     setProjectImported(true)
-    reset()
   }
   const genAndSetPassphrase = async () => {
     try {
@@ -148,29 +174,31 @@ export default function ImportProjectModal ({
   }, [])
 
   return (
-    <Modal
-      white
-      active={showModal}
-      onClose={projectImported ? onDone : onClose}
-      className='import-project-modal-wrapper'
-    >
-      {!projectImported && (
-        <ImportProjectForm
-          onSubmit={onSubmit}
-          importingProject={importingProject}
-          projectImported={projectImported}
-          projectData={projectData}
-          setProjectData={setProjectData}
-        />
-      )}
-
-      {projectImported && (
-        <ProjectImportedModal
-          projectSecret={projectSecret}
-          onDone={onDone}
-          projectImported={projectImported}
-        />
-      )}
-    </Modal>
+    <>
+      <ImportProjectFilePicker
+        showModal={showModal && !projectImported && !importingProject}
+        onCancel={onDone}
+        onFilePicked={onFilePicked}
+      />
+      <ImportingProjectModal
+        showModal={showModal && importingProject}
+        projectSecret={projectSecret}
+        onDone={onDone}
+        projectImported={projectImported}
+      />
+      <ProjectImportedModal
+        showModal={showModal && projectImported}
+        projectSecret={projectSecret}
+        onDone={onDone}
+        projectName={projectName}
+        goalCount={goalCount}
+      />
+      {/* <FileInvalidModal
+        showModal={showModal && projectImported}
+        projectSecret={projectSecret}
+        onDone={onDone}
+        projectImported={projectImported}
+      /> */}
+    </>
   )
 }

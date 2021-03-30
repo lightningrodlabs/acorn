@@ -14,7 +14,7 @@ function ModalContent ({
   primaryButton,
   primaryButtonAction,
   altButton,
-  altButtonAction,
+  altButtonAction
 }) {
   return (
     <>
@@ -67,18 +67,20 @@ export default function Modal ({
   active,
   className,
   onClose,
-  children,
+  children
 }) {
   return (
     <CSSTransition in={active} timeout={100} unmountOnExit classNames='modal'>
       <div className={`modal ${white ? 'modal-white' : ''}`}>
         <div className={`${className} modal-wrapper`}>
-          <Icon
-            name='x.svg'
-            size='small-close'
-            className='grey'
-            onClick={() => onClose()}
-          />
+          {onClose && (
+            <Icon
+              name='x.svg'
+              size='small-close'
+              className='grey'
+              onClick={() => onClose()}
+            />
+          )}
           {children}
         </div>
       </div>
