@@ -7,28 +7,30 @@ import {
   ProjectModalContent,
   ProjectModalContentSpacer,
   ProjectModalHeading,
-  ProjectModalSubHeading,
+  ProjectModalSubHeading
 } from '../ProjectModal/ProjectModal'
 import ProjectSecret from '../ProjectSecret/ProjectSecret'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
 
 // since this is a big wordset, dynamically import it
 // instead of including in the main bundle
-async function generatePassphrase() {
+async function generatePassphrase () {
   const { default: randomWord } = await import('diceware-word')
   return `${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()}`
 }
 
-function ImportProjectForm({
+function ImportProjectForm ({
   importingProject,
   onSubmit,
   projectImported,
   projectData,
-  setProjectData,
+  setProjectData
 }) {
-
-  const subheading =
-    'You can share the project with people or just keep it to yourself'
+  const subheading = (
+    <div>
+      Import a previously exported Acorn project in <b>JSON format</b>.
+    </div>
+  )
 
   const actionButtonContent = (
     <ButtonWithPendingState
@@ -47,9 +49,9 @@ function ImportProjectForm({
     }
   }
 
-  const onFilePicked = (e) => {
+  const onFilePicked = e => {
     const reader = new FileReader()
-    reader.onload = async (e) => {
+    reader.onload = async e => {
       const text = e.target.result
       try {
         const parsed = JSON.parse(text)
@@ -63,23 +65,26 @@ function ImportProjectForm({
 
   return (
     <div
-      className={`create-project-form ${
-        projectImported ? 'project-created' : ''
+      className={`import-project-form ${
+        projectImported ? 'project-imported' : ''
       }`}
     >
       <ProjectModalHeading title='Import a project' />
       <ProjectModalSubHeading title={subheading} />
       <ProjectModalContentSpacer>
-        <ProjectModalContent>
-          <input type='file' onChange={onFilePicked} />
-        </ProjectModalContent>
+        <ProjectModalContent></ProjectModalContent>
       </ProjectModalContentSpacer>
+      <input
+        className='browse-files-button'
+        type='file'
+        onChange={onFilePicked}
+      />
       <ProjectModalButton text={actionButtonContent} onClick={submit} />
     </div>
   )
 }
 
-function ProjectCreatedModal({ onDone, projectImported, projectSecret }) {
+function ProjectImportedModal ({ onDone, projectImported, projectSecret }) {
   return (
     <div
       className={`project-created-modal ${
@@ -97,17 +102,18 @@ function ProjectCreatedModal({ onDone, projectImported, projectSecret }) {
   )
 }
 
-export default function ImportProjectModal({
+export default function ImportProjectModal ({
   showModal,
   onClose,
-  onImportProject,
+  onImportProject
 }) {
+  // actively importing
   const [importingProject, setImportingProject] = useState(false)
   const [projectImported, setProjectImported] = useState(false)
   const [projectSecret, setProjectSecret] = useState('')
   const [projectData, setProjectData] = useState(null)
   let hasUnmounted = false
-  
+
   const reset = () => {
     setProjectData(null)
   }
@@ -146,20 +152,25 @@ export default function ImportProjectModal({
       white
       active={showModal}
       onClose={projectImported ? onDone : onClose}
-      className='create-project-modal-wrapper'
+      className='import-project-modal-wrapper'
     >
-      <ProjectCreatedModal
-        projectSecret={projectSecret}
-        onDone={onDone}
-        projectImported={projectImported}
-      />
-      <ImportProjectForm
-        onSubmit={onSubmit}
-        importingProject={importingProject}
-        projectImported={projectImported}
-        projectData={projectData}
-        setProjectData={setProjectData}
-      />
+      {!projectImported && (
+        <ImportProjectForm
+          onSubmit={onSubmit}
+          importingProject={importingProject}
+          projectImported={projectImported}
+          projectData={projectData}
+          setProjectData={setProjectData}
+        />
+      )}
+
+      {projectImported && (
+        <ProjectImportedModal
+          projectSecret={projectSecret}
+          onDone={onDone}
+          projectImported={projectImported}
+        />
+      )}
     </Modal>
   )
 }

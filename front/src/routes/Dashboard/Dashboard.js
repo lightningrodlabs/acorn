@@ -18,7 +18,7 @@ import {
   MAIN_APP_ID,
   PROJECTS_SLOT_NAME,
   PROJECTS_ZOME_NAME,
-  PROJECT_APP_PREFIX,
+  PROJECT_APP_PREFIX
 } from '../../holochainConfig'
 import { passphraseToUuid } from '../../secrets'
 import { getAdminWs, getAppWs, getAgentPubKey } from '../../hcWebsockets'
@@ -26,17 +26,17 @@ import { fetchEntryPoints } from '../../projects/entry-points/actions'
 import { fetchMembers, setMember } from '../../projects/members/actions'
 import {
   createProjectMeta,
-  fetchProjectMeta,
+  fetchProjectMeta
 } from '../../projects/project-meta/actions'
 import selectEntryPoints from '../../projects/entry-points/select'
 
 import {
   DashboardListProject,
-  DashboardListProjectLoading,
+  DashboardListProjectLoading
 } from './DashboardListProject'
 import { joinProjectCellId } from '../../cells/actions'
 
-function Dashboard({
+function Dashboard ({
   agentAddress,
   cells,
   projects,
@@ -47,11 +47,11 @@ function Dashboard({
   joinProject,
   importProject,
   updateIsAvailable,
-  setShowUpdatePromptModal,
+  setShowUpdatePromptModal
 }) {
   // cells is an array of cellId strings
   useEffect(() => {
-    cells.forEach((cellId) => {
+    cells.forEach(cellId => {
       fetchProjectMeta(cellId)
       fetchMembers(cellId)
       fetchEntryPoints(cellId)
@@ -71,14 +71,14 @@ function Dashboard({
   const onCreateProject = (project, passphrase) =>
     createProject(agentAddress, project, passphrase)
 
-  const onJoinProject = (passphrase) => joinProject(passphrase)
+  const onJoinProject = passphrase => joinProject(passphrase)
 
   const onImportProject = (projectData, passphrase) =>
     importProject(agentAddress, projectData, passphrase)
 
   const hasProjects = cells.length > 0 // write 'false' if want to see Empty State
 
-  const setSortBy = (sortBy) => () => {
+  const setSortBy = sortBy => () => {
     setSelectedSort(sortBy)
     setShowSortPicker(false)
   }
@@ -131,7 +131,8 @@ function Dashboard({
                 className='my-projects-button'
                 onClick={() => setShowImportModal(true)}
               >
-                Import
+                <Icon name='import.svg' size='very-small' className='black' />
+                <div>Import</div>
               </div>
             </div>
             <div className='my-projects-sorting'>
@@ -164,12 +165,12 @@ function Dashboard({
           <div className='my-projects-content'>
             {/* Only render the sorted projects with their real metadata */}
             {cells.length !== projects.length &&
-              cells.map((cellId) => (
+              cells.map(cellId => (
                 <DashboardListProjectLoading key={'dlpl-key' + cellId} />
               ))}
             {/* if they are all loaded */}
             {cells.length === projects.length &&
-              sortedProjects.map((project) => {
+              sortedProjects.map(project => {
                 return (
                   <DashboardListProject
                     updateIsAvailable={updateIsAvailable}
@@ -214,7 +215,7 @@ function Dashboard({
   )
 }
 
-async function installProjectApp(passphrase) {
+async function installProjectApp (passphrase) {
   const uuid = passphraseToUuid(passphrase)
   // add a bit of randomness so that
   // the same passphrase can be tried multiple different times
@@ -234,11 +235,11 @@ async function installProjectApp(passphrase) {
     )
   }
   const appInfo = await appWs.appInfo({
-    installed_app_id: MAIN_APP_ID,
+    installed_app_id: MAIN_APP_ID
   })
   // find the dna hash of the 'projects' dna, for cloning
   const {
-    cell_id: [dnaHash, agentHash],
+    cell_id: [dnaHash, agentHash]
   } = appInfo.cell_data.find(
     ({ cell_nick }) => cell_nick === PROJECTS_SLOT_NAME
   )
@@ -250,16 +251,16 @@ async function installProjectApp(passphrase) {
       {
         nick: uuid,
         hash: dnaHash,
-        properties: { uuid },
-      },
-    ],
+        properties: { uuid }
+      }
+    ]
   })
   // ACTIVATE
   await adminWs.activateApp({ installed_app_id })
   return installedApp
 }
 
-async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
+async function createProject (passphrase, projectMeta, agentAddress, dispatch) {
   const installedApp = await installProjectApp(passphrase)
   const slotIds = Object.keys(installedApp.slots)
   const cellIdString = cellIdToString(
@@ -277,7 +278,7 @@ async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
   return cellIdString
 }
 
-async function joinProject(passphrase, dispatch) {
+async function joinProject (passphrase, dispatch) {
   // joinProject
   // join a DNA
   // then try to get the project metadata
@@ -295,7 +296,7 @@ async function joinProject(passphrase, dispatch) {
       zome_name: PROJECTS_ZOME_NAME,
       fn_name: 'fetch_project_meta',
       payload: null,
-      provenance: getAgentPubKey(), // FIXME: this will need correcting after holochain changes this
+      provenance: getAgentPubKey() // FIXME: this will need correcting after holochain changes this
     })
     await dispatch(joinProjectCellId(cellIdString))
     // trigger a side effect...
@@ -308,16 +309,16 @@ async function joinProject(passphrase, dispatch) {
         zome_name: PROJECTS_ZOME_NAME,
         fn_name: 'init_signal',
         payload: null,
-        provenance: getAgentPubKey(), // FIXME: this will need correcting after holochain changes this
+        provenance: getAgentPubKey() // FIXME: this will need correcting after holochain changes this
       })
       .then(() => console.log('succesfully triggered init_signal'))
-      .catch((e) => console.error('failed while triggering init_signal: ', e))
+      .catch(e => console.error('failed while triggering init_signal: ', e))
     return true
   } catch (e) {
     // deactivate app
     const adminWs = await getAdminWs()
     await adminWs.deactivateApp({
-      installed_app_id: installedApp.installed_app_id,
+      installed_app_id: installedApp.installed_app_id
     })
     if (
       e.type === 'error' &&
@@ -331,7 +332,7 @@ async function joinProject(passphrase, dispatch) {
   }
 }
 
-async function importProject(agentAddress, projectData, passphrase, dispatch) {
+async function importProject (agentAddress, projectData, passphrase, dispatch) {
   // first step is to create new project
   const projectMeta = {
     ...projectData.projectMeta,
@@ -341,20 +342,25 @@ async function importProject(agentAddress, projectData, passphrase, dispatch) {
   }
   // this is not an actual field
   delete projectMeta.address
-  
-  const cellIdString = await createProject(passphrase, projectMeta, agentAddress, dispatch)
+
+  const cellIdString = await createProject(
+    passphrase,
+    projectMeta,
+    agentAddress,
+    dispatch
+  )
   // next step is to import the rest of the data into that project
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
-    fetchEntryPoints: (cellIdString) => {
+    fetchEntryPoints: cellIdString => {
       return dispatch(fetchEntryPoints.create({ cellIdString, payload: null }))
     },
-    fetchMembers: (cellIdString) => {
+    fetchMembers: cellIdString => {
       return dispatch(fetchMembers.create({ cellIdString, payload: null }))
     },
-    fetchProjectMeta: (cellIdString) => {
+    fetchProjectMeta: cellIdString => {
       return dispatch(fetchProjectMeta.create({ cellIdString, payload: null }))
     },
     createProject: async (agentAddress, project, passphrase) => {
@@ -363,34 +369,34 @@ function mapDispatchToProps(dispatch) {
         ...project, // name and image
         passphrase,
         creator_address: agentAddress,
-        created_at: Date.now(),
+        created_at: Date.now()
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },
-    joinProject: (passphrase) => joinProject(passphrase, dispatch),
+    joinProject: passphrase => joinProject(passphrase, dispatch),
     importProject: (agentAddress, projectData, passphrase) =>
-      importProject(agentAddress, projectData, passphrase, dispatch),
+      importProject(agentAddress, projectData, passphrase, dispatch)
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   return {
     agentAddress: state.agentAddress,
     cells: state.cells.projects,
-    projects: Object.keys(state.projects.projectMeta).map((cellId) => {
+    projects: Object.keys(state.projects.projectMeta).map(cellId => {
       const project = state.projects.projectMeta[cellId]
       const members = state.projects.members[cellId] || {}
       const memberProfiles = Object.keys(members).map(
-        (agentAddress) => state.agents[agentAddress]
+        agentAddress => state.agents[agentAddress]
       )
       const entryPoints = selectEntryPoints(state, cellId)
       return {
         ...project,
         cellId,
         members: memberProfiles,
-        entryPoints,
+        entryPoints
       }
-    }),
+    })
   }
 }
 

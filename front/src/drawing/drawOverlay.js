@@ -1,4 +1,4 @@
-export default function render(ctx, x, y, width, height) {
-  ctx.fillStyle = 'rgba(31, 31, 31, 0.4)'
+export default function render (ctx, x, y, width, height) {
+  ctx.fillStyle = 'rgb(220 214 204 / 90%)'
   ctx.fillRect(x, y, width, height)
 }

@@ -12,6 +12,14 @@
   cursor: pointer;
 }
 
+.status-color-very-small {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
 .status-color-small-MultiEditBar {
   margin: 6px;
   box-sizing: border-box;

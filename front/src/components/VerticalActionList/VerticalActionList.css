@@ -1,0 +1,56 @@
+/* VerticalActionsList */
+
+.vertical_actions_list {
+    margin-left: 10px;
+}
+
+.vertical_action_close {
+    cursor: pointer;
+    top: 20px;
+    right: 20px;
+    position: absolute;
+    height: 14px;
+}
+
+.action_list_item {
+    box-shadow: 0px 0px 10px #0000001f;
+    height: 28px;
+    background-color: #f3f0eb;
+    border: 1px solid #f3f0eb;
+    border-radius: 16px;
+    font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+    padding: 10px 25px;
+    outline: 0;
+    font-size: 16px;
+    line-height: 18px;
+    color: black;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: 0.2s all ease-in-out;
+}
+
+.action_list_item:hover {
+    background-color: #5f65ff;
+    border: 1px solid #5f65ff;
+    color: #fff;
+}
+
+.action_list_item .icon {
+    margin-right: 5px;
+}
+
+.action_list_item:hover>.icon.not-hoverable .inner-icon {
+    background-color: #fff;
+}
+
+.action_list_item span {
+    margin-left: 3px;
+    margin-bottom: 2px;
+}
+
+/* .action_list_item .icon.not-hoverable .inner-icon:hover {
+    background-color: #fff;
+} */

@@ -8,13 +8,13 @@ import { closeGoalForm, updateContent } from '../goal-form/actions'
 import layoutFormula from '../drawing/layoutFormula'
 import { goalWidth } from '../drawing/dimensions'
 import moment from 'moment'
-import VerticalActionsList from './VerticalActionsList'
+import VerticalActionsList from './VerticalActionList/VerticalActionsList'
 
 // a React Component is defined as a class that extends the basic
 // React Component class. Usually of the form
 // class MyComponent extends Component
 class GoalForm extends Component {
-  constructor() {
+  constructor () {
     // calls the constructor of the `super` (parent) class,
     // which does its own initialization steps.
     // important, always call this.
@@ -36,27 +36,27 @@ class GoalForm extends Component {
   /*
     EVENT HANDLERS
   */
-  handleFocus(event) {
+  handleFocus (event) {
     event.target.select()
   }
-  handleChange(event) {
+  handleChange (event) {
     this.props.updateContent(event.target.value)
   }
-  handleKeyDown(event) {
+  handleKeyDown (event) {
     if (event.key === 'Enter') {
       event.preventDefault()
       this.handleSubmit()
     }
   }
 
-  handleBlur(event) {
+  handleBlur (event) {
     if (!this.props.editAddress) {
       event.preventDefault()
       this.handleSubmit()
     }
   }
 
-  handleSubmit(event) {
+  handleSubmit (event) {
     if (event) {
       // this is to prevent the page from refreshing
       // when the form is submitted, which is the
@@ -82,7 +82,7 @@ class GoalForm extends Component {
     this.props.closeGoalForm()
   }
 
-  async createGoal() {
+  async createGoal () {
     // dispatch the action to create a goal
     // with the contents from the form
     // inserted into it
@@ -93,13 +93,13 @@ class GoalForm extends Component {
         timestamp_created: moment().unix(),
         hierarchy: 'NoHierarchy',
         status: 'Uncertain',
-        description: '',
+        description: ''
       },
       this.props.parentAddress
     )
   }
 
-  updateGoal() {
+  updateGoal () {
     this.props.updateGoal(
       {
         content: this.props.content,
@@ -109,7 +109,7 @@ class GoalForm extends Component {
         hierarchy: this.props.hierarchy,
         status: this.props.status,
         time_frame: this.props.time_frame,
-        description: this.props.description,
+        description: this.props.description
       },
       this.props.editAddress
     )
@@ -118,7 +118,7 @@ class GoalForm extends Component {
   /*
     RENDER FUNCTION
   */
-  render() {
+  render () {
     // Contained within the `render` function of a React component
     // is the strict definition of what HTML should appear on screen
     // depending on the data that is given to the component
@@ -134,7 +134,8 @@ class GoalForm extends Component {
       <>
         <div
           className='goal_form_wrapper'
-          style={{ position: 'absolute', top: `${yLoc}px`, left: `${xLoc}px` }}>
+          style={{ position: 'absolute', top: `${yLoc}px`, left: `${xLoc}px` }}
+        >
           <form className={'goal_form'} onSubmit={this.handleSubmit}>
             <TextareaAutosize
               placeholder='Add a title...'
@@ -151,8 +152,9 @@ class GoalForm extends Component {
           style={{
             position: 'absolute',
             top: `${yLoc}px`,
-            left: `${xLoc + goalWidth}px`,
-          }}>
+            left: `${xLoc + goalWidth}px`
+          }}
+        >
           {editAddress && <VerticalActionsList projectId={projectId} />}
         </div>
       </>
@@ -173,21 +175,21 @@ GoalForm.propTypes = {
   yLoc: PropTypes.number.isRequired,
   createGoalWithEdge: PropTypes.func.isRequired,
   updateGoal: PropTypes.func.isRequired,
-  closeGoalForm: PropTypes.func.isRequired,
+  closeGoalForm: PropTypes.func.isRequired
 }
 
 // https://react-redux.js.org/using-react-redux/connect-mapstate
 // Designed to grab selective data off of a redux state tree in order
 // to pass it to a component for rendering, as specific properties that
 // that component expects
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   // all the state for this component is store under state->ui->goalForm
   const { parentAddress, editAddress, content, xLoc, yLoc } = state.ui.goalForm
   const {
     ui: {
       activeProject,
-      screensize: { width },
-    },
+      screensize: { width }
+    }
   } = state
   let goalCoord
   if (editAddress) {
@@ -216,14 +218,14 @@ function mapStateToProps(state) {
       ? state.projects.goals[activeProject][editAddress].timestamp_created
       : null,
     xLoc: editAddress ? goalCoord.x : xLoc,
-    yLoc: editAddress ? goalCoord.y : yLoc,
+    yLoc: editAddress ? goalCoord.y : yLoc
   }
 }
 
 // https://react-redux.js.org/using-react-redux/connect-mapdispatch
 // Designed to pass functions into components which are already wrapped as
 // action dispatchers for redux action types
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps (dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   return {
     updateContent: content => {
@@ -233,7 +235,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       return dispatch(
         createGoalWithEdge.create({
           cellIdString,
-          payload: { entry, maybe_parent_address },
+          payload: { entry, maybe_parent_address }
         })
       )
     },
@@ -244,7 +246,7 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
     closeGoalForm: () => {
       dispatch(closeGoalForm())
-    },
+    }
   }
 }
 

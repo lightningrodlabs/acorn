@@ -48,9 +48,9 @@
 /* Icons Sizes */
 
 .icon.very-small {
-  width: 17px;
-  height: 17px;
-  padding: 1px;
+  width: 16px;
+  height: 16px;
+  padding: 2px;
   cursor: pointer;
 }
 

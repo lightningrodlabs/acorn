@@ -20,7 +20,7 @@
   bottom: 10px;
 }
 
-.multi-edit-bar > .icon {
+.multi-edit-bar>.icon {
   padding: 8px;
   width: 44px;
   height: 36px;
@@ -48,6 +48,7 @@
 }
 
 /* classes ralated to status picker on MultiEditBar */
+
 .status-popup.modal-wrapper .modal-header .inner-icon {
   background-color: #ff5d36;
 }
@@ -63,3 +64,7 @@
   height: 22px;
   margin: 6px;
 }
+
+/* archive popup modal */
+
+.archive-popup.modal-wrapper {}

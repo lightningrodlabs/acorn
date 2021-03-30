@@ -3,19 +3,21 @@ import moment from 'moment'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import Icon from './Icon/Icon'
-import StatusPicker from './StatusPicker'
-import PeoplePicker from './PeoplePicker/PeoplePicker'
-import DatePicker from './DatePicker/DatePicker'
-import HierarchyPicker from './HierarchyPicker/HierarchyPicker'
-import PriorityPicker from './PriorityPicker/PriorityPicker'
-import StatusIcon from './StatusIcon/StatusIcon'
+import Icon from '../Icon/Icon'
+import StatusPicker from '../StatusPicker'
+import PeoplePicker from '../PeoplePicker/PeoplePicker'
+import DatePicker from '../DatePicker/DatePicker'
+import HierarchyPicker from '../HierarchyPicker/HierarchyPicker'
+import PriorityPicker from '../PriorityPicker/PriorityPicker'
+import StatusIcon from '../StatusIcon/StatusIcon'
 
-import { archiveGoalFully, updateGoal } from '../projects/goals/actions'
-import { closeGoalForm } from '../goal-form/actions'
-import Modal, { ModalContent } from './Modal/Modal'
+import { archiveGoalFully, updateGoal } from '../../projects/goals/actions'
+import { closeGoalForm } from '../../goal-form/actions'
+import Modal, { ModalContent } from '../Modal/Modal'
 
-function VerticalActionListItem({ onClick, label, icon }) {
+import './VerticalActionList.css'
+
+function VerticalActionListItem ({ onClick, label, icon }) {
   return (
     <div className='action_list_item' onClick={onClick}>
       {icon}
@@ -24,19 +26,19 @@ function VerticalActionListItem({ onClick, label, icon }) {
   )
 }
 
-function VerticalActionsList({
+function VerticalActionsList ({
   projectId,
   goalAddress,
   goal,
   onArchiveClick,
-  updateGoal,
+  updateGoal
 }) {
   const defaultViews = {
     status: false,
     squirrels: false,
     timeframe: false,
     priority: false,
-    hierarchy: false,
+    hierarchy: false
   }
   const [viewsOpen, setViews] = useState(defaultViews)
 
@@ -45,7 +47,7 @@ function VerticalActionsList({
       {
         ...goal,
         timestamp_updated: moment().unix(),
-        [key]: val,
+        [key]: val
       },
       goalAddress
     )
@@ -71,7 +73,7 @@ function VerticalActionsList({
     if (start && end) {
       timeframe = {
         from_date: start,
-        to_date: end,
+        to_date: end
       }
     }
 
@@ -79,7 +81,7 @@ function VerticalActionsList({
       {
         ...goal,
         timestamp_updated: moment().unix(),
-        time_frame: timeframe,
+        time_frame: timeframe
       },
       goalAddress
     )
@@ -95,27 +97,53 @@ function VerticalActionsList({
       <div className='vertical_actions_list'>
         <VerticalActionListItem
           label='status'
-          icon={<StatusIcon size='small' status={goal.status} hideTooltip />}
+          icon={
+            <StatusIcon size='very-small' status={goal.status} hideTooltip />
+          }
           onClick={() => toggleView('status')}
         />
         <VerticalActionListItem
           label='squirrels'
-          icon={<Icon name='squirrel.svg' className='white not-hoverable' />}
+          icon={
+            <Icon
+              size='small'
+              name='squirrel.svg'
+              className='black not-hoverable'
+            />
+          }
           onClick={() => toggleView('squirrels')}
         />
         <VerticalActionListItem
           label='timeframe'
-          icon={<Icon name='calendar.svg' className='white not-hoverable' />}
+          icon={
+            <Icon
+              size='small'
+              name='calendar.svg'
+              className='black not-hoverable'
+            />
+          }
           onClick={() => toggleView('timeframe')}
         />
         <VerticalActionListItem
           label='hierarchy'
-          icon={<Icon name='hierarchy.svg' className='white not-hoverable' />}
+          icon={
+            <Icon
+              size='small'
+              name='hierarchy.svg'
+              className='black not-hoverable'
+            />
+          }
           onClick={() => toggleView('hierarchy')}
         />
         <VerticalActionListItem
           label='priority'
-          icon={<Icon name='priority.svg' className='white not-hoverable' />}
+          icon={
+            <Icon
+              size='small'
+              name='priority.svg'
+              className='black not-hoverable'
+            />
+          }
           onClick={() => toggleView('priority')}
         />
         {/* TODO : make the Alert Popup screen and certain elements */}
@@ -169,7 +197,8 @@ function VerticalActionsList({
       <Modal
         active={viewsOpen.archive}
         onClose={() => setViews({ ...defaultViews })}
-        className='archive_popup'>
+        className='archive_popup'
+      >
         <ModalContent
           heading='Archiving'
           content={archiveContent}
@@ -192,23 +221,23 @@ VerticalActionsList.propTypes = {
     user_hash: PropTypes.string.isRequired,
     timestamp_created: PropTypes.number.isRequired,
     hierarchy: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired
   }).isRequired,
   onArchiveClick: PropTypes.func.isRequired,
-  updateGoal: PropTypes.func.isRequired,
+  updateGoal: PropTypes.func.isRequired
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps (state, ownProps) {
   const goalAddress = state.ui.goalForm.editAddress
   const { projectId } = ownProps
   const goals = state.projects.goals[projectId] || {}
   return {
     goalAddress,
-    goal: goals[goalAddress],
+    goal: goals[goalAddress]
   }
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps (dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   return {
     onArchiveClick: payload => {
@@ -218,7 +247,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       return dispatch(
         updateGoal.create({ cellIdString, payload: { address, entry } })
       )
-    },
+    }
   }
 }
 

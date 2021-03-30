@@ -1,13 +1,15 @@
-.create-project-modal-wrapper {
+.browse-files-button {}
+
+.import-project-modal-wrapper {
   /* width: 550px; */
-  height: 523px;
+  height: 380px;
   overflow: hidden;
   position: relative;
   justify-content: space-between;
   align-items: center;
 }
 
-.create-project-modal-wrapper .validating_form_input {
+.import-project-modal-wrapper .validating_form_input {
   margin-bottom: 28px;
 }
 
@@ -15,18 +17,18 @@
   /* margin-bottom: 50px; */
 }
 
-.create-project-image-row {
+.import-project-image-row {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   margin-bottom: 28px;
 }
 
-.create-project-image-row .validating_form_input {
+.import-project-image-row .validating_form_input {
   margin-bottom: 0;
 }
 
-.create-project-image {
+.import-project-image {
   margin-left: 8px;
   width: 38px;
   height: 38px;
@@ -38,14 +40,14 @@
 
 /* create project modal animation */
 
-.create-project-form {
+.import-project-form {
   position: absolute;
   opacity: 1;
   transition: opacity 0.3s, transform 0.4s;
   width: 420px;
 }
 
-.create-project-form.project-created {
+.import-project-form.project-created {
   /* background-color: blue; */
   opacity: 0;
   -webkit-transform: translateX(-300px);
@@ -56,7 +58,7 @@
 
 /* default is to be hidden */
 
-.project-created-modal {
+.project-imported-modal {
   /* position: absolute; */
   opacity: 0;
   -webkit-transform: scale(0.8);
@@ -66,13 +68,13 @@
 
 /* then it shows */
 
-.project-created-modal.project-created {
+.project-imported-modal.project-imported {
   opacity: 1;
   -webkit-transform: scale(1);
   transform: scale(1);
 }
 
-.project-created-modal.project-created .project-modal-content-spacer {
+.project-imported-modal.project-imported .project-modal-content-spacer {
   margin-bottom: 104px;
   margin-top: 104px;
 }

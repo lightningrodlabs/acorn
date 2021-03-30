@@ -5,7 +5,7 @@
   align-items: center;
   position: fixed;
   top: 0;
-  background: #EBE9E2;
+  background: #f2f0ed;
   z-index: 10000;
 }
 
@@ -34,11 +34,13 @@
     -moz-transform: rotate(360deg);
   }
 }
+
 @-webkit-keyframes spin {
   100% {
     -webkit-transform: rotate(360deg);
   }
 }
+
 @keyframes spin {
   100% {
     -webkit-transform: rotate(360deg);

@@ -1,7 +1,8 @@
 .modal {
   top: 0;
   left: 0;
-  background: rgba(31, 31, 31, 0.4);
+  background: rgb(239 236 231 / 90%);
+  /* background: rgba(31, 31, 31, 0.4); */
   width: 100vw;
   height: 100vh;
   position: fixed;
@@ -30,7 +31,7 @@
 }
 
 .modal.modal-white {
-  background: rgb(243 241 233 / 70%);
+  background: rgb(239 236 231 / 80%);
 }
 
 .modal-wrapper::-webkit-scrollbar {
@@ -45,7 +46,7 @@
   padding: 60px;
   background-color: #ffff;
   border-radius: 10px;
-  box-shadow: 0px 0px 6px #00000041;
+  box-shadow: 0px 0px 10px #0000001f;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -81,6 +82,8 @@
 
 .modal-content {
   color: #4d4d4d;
+  margin-top: 20px;
+  margin-bottom: 40px;
 }
 
 .dont-show-again-option {
