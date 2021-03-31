@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 import Modal, { ModalContent } from '../Modal/Modal'
 
-const ListExport = ({ download, title, type, data, projectName }) => {
+const ExportMenuItem = ({ download, title, type, data, projectName }) => {
   const [popup, setPopup] = useState(false)
 
   return (
@@ -110,4 +110,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ListExport)
+export default connect(mapStateToProps, mapDispatchToProps)(ExportMenuItem)

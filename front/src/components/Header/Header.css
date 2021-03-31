@@ -312,23 +312,23 @@
   background-color: #f2f2f2;
 }
 
-.purple .avatar-container+span {
+/* .user-status-icon-wrapper.user-status-is-active .avatar-container+span {
   background-color: #5f65ff;
-}
+} */
 
-.green .avatar-container+span {
+.status-online .avatar-container+span {
   background-color: #00d0c0;
 }
 
-.yellow .avatar-container+span {
+.status-away .avatar-container+span {
   background-color: #ffc400;
 }
 
-.gray .avatar-container+span {
+.status-offline .avatar-container+span {
   background-color: #d1d1d1;
 }
 
-button.green .icon {
+button.status-online .icon {
   background-color: #00d0c0;
 }
 
@@ -336,11 +336,11 @@ button.green .icon {
   background-color: #5f65ff;
 } */
 
-button.yellow .icon {
+button.status-away .icon {
   background-color: #ffc400;
 }
 
-button.gray .icon {
+button.status-offline .icon {
   background-color: #d1d1d1;
 }
 
