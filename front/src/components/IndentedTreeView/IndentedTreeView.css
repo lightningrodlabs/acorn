@@ -15,6 +15,10 @@
   cursor: ew-resize;
 }
 
+.indented-view-resizer:hover {
+  border-right: 2px solid grey;
+}
+
 .indented-view-search input {
   font-size: 12px;
   line-height: 18px;
@@ -50,7 +54,7 @@
 }
 
 .indented-view-goal-content {
-  margin-left: 6px;
+  margin: 0 6px;
   cursor: pointer;
   padding: 11px;
   border-radius: 10px;
@@ -85,13 +89,11 @@
   background: #f9f9f9;
 }
 
-.indented-view-goal-content.active > .indented-view-goal-content-text,
-.indented-view-goal-content:focus > .indented-view-goal-content-text {
+.indented-view-goal-content.active>.indented-view-goal-content-text, .indented-view-goal-content:focus>.indented-view-goal-content-text {
   color: #5f65ff;
 }
 
-.indented-view-goal-content.active,
-.indented-view-goal-content:focus {
+.indented-view-goal-content.active, .indented-view-goal-content:focus {
   color: #5f65ff;
   background: #f9f9f9;
   font-family: 'gilroyextrabold';

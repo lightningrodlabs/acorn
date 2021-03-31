@@ -5,7 +5,7 @@ import {
   useParams,
   Switch,
   Route,
-  Redirect,
+  Redirect
 } from 'react-router-dom'
 import { connect } from 'react-redux'
 import _ from 'lodash'
@@ -18,14 +18,14 @@ import PriorityPicker from '../../../components/PriorityPicker/PriorityPicker'
 import goalsAsTree from '../../../projects/goals/goalsAsTrees'
 import { CSSTransition } from 'react-transition-group'
 
-function Quadrants({
+function Quadrants ({
   projectId,
   topLeft,
   topRight,
   bottomLeft,
   bottomRight,
   whoami,
-  setPriorityPickerAddress,
+  setPriorityPickerAddress
 }) {
   return (
     <div className='priority-quadrants-wrapper'>
@@ -74,13 +74,13 @@ function Quadrants({
   )
 }
 
-function getSubsetOfGoalsBasedOnContext(goalTrees, contextGoalAddress) {
+function getSubsetOfGoalsBasedOnContext (goalTrees, contextGoalAddress) {
   if (!contextGoalAddress) {
     return goalTrees
   }
 
   // use recursion to find the goal down in the tree
-  function checkForGoalInChildren(goal) {
+  function checkForGoalInChildren (goal) {
     const foundInChildren = goal.children.find(
       g => g.address === contextGoalAddress
     )
@@ -107,11 +107,11 @@ function getSubsetOfGoalsBasedOnContext(goalTrees, contextGoalAddress) {
   }
 }
 
-function UrgencyImportanceQuadrants({
+function UrgencyImportanceQuadrants ({
   projectId,
   goalTrees,
   goalVotes,
-  setPriorityPickerAddress,
+  setPriorityPickerAddress
 }) {
   const location = useLocation()
   const contextGoalAddress = new URLSearchParams(location.search).get(
@@ -126,20 +126,20 @@ function UrgencyImportanceQuadrants({
   )
 
   const topLeft = {
-    title: 'more urgent & more important',
-    goals: goalLists[0],
+    title: 'More Urgent & More Important',
+    goals: goalLists[0]
   }
   const topRight = {
-    title: 'more urgent & less important',
-    goals: goalLists[1],
+    title: 'More Urgent & Less Important',
+    goals: goalLists[1]
   }
   const bottomLeft = {
-    title: 'less urgent & more important',
-    goals: goalLists[2],
+    title: 'Less Urgent & More Important',
+    goals: goalLists[2]
   }
   const bottomRight = {
-    title: 'less urgent & less important',
-    goals: goalLists[3],
+    title: 'Less Urgent & Less important',
+    goals: goalLists[3]
   }
   return (
     <Quadrants
@@ -149,17 +149,17 @@ function UrgencyImportanceQuadrants({
         topRight,
         bottomLeft,
         bottomRight,
-        setPriorityPickerAddress,
+        setPriorityPickerAddress
       }}
     />
   )
 }
 
-function ImpactEffortQuadrants({
+function ImpactEffortQuadrants ({
   projectId,
   goalTrees,
   goalVotes,
-  setPriorityPickerAddress,
+  setPriorityPickerAddress
 }) {
   const location = useLocation()
   const contextGoalAddress = new URLSearchParams(location.search).get(
@@ -174,20 +174,20 @@ function ImpactEffortQuadrants({
   )
 
   const topLeft = {
-    title: 'more impact & less effort',
-    goals: goalLists[0],
+    title: 'More Impact & Less Effort',
+    goals: goalLists[0]
   }
   const topRight = {
-    title: 'less impact & less effort',
-    goals: goalLists[1],
+    title: 'Less Impact & Less Effort',
+    goals: goalLists[1]
   }
   const bottomLeft = {
-    title: 'more impact & more effort',
-    goals: goalLists[2],
+    title: 'More Impact & More Effort',
+    goals: goalLists[2]
   }
   const bottomRight = {
-    title: 'less impact & more effort',
-    goals: goalLists[3],
+    title: 'Less Impact & More Effort',
+    goals: goalLists[3]
   }
   return (
     <Quadrants
@@ -197,17 +197,17 @@ function ImpactEffortQuadrants({
         topRight,
         bottomLeft,
         bottomRight,
-        setPriorityPickerAddress,
+        setPriorityPickerAddress
       }}
     />
   )
 }
 
-function Uncategorized({
+function Uncategorized ({
   projectId,
   goalTrees,
   goalVotes,
-  setPriorityPickerAddress,
+  setPriorityPickerAddress
 }) {
   const location = useLocation()
   const contextGoalAddress = new URLSearchParams(location.search).get(
@@ -222,7 +222,7 @@ function Uncategorized({
     <div className='priority-wrapper-full-height'>
       <PriorityQuadrant
         projectId={projectId}
-        title='uncategorized'
+        title='Uncategorized'
         titleClassname='bottom-left'
         goals={goalList}
         setPriorityPickerAddress={setPriorityPickerAddress}
@@ -231,19 +231,20 @@ function Uncategorized({
   )
 }
 
-function PriorityMenuItem({ exact, title, slug, projectId }) {
+function PriorityMenuItem ({ exact, title, slug, projectId }) {
   return (
     <NavLink
       exact={exact}
       to={slug.replace(':projectId', projectId)}
       className='priority-menu-item'
-      activeClassName='active'>
+      activeClassName='active'
+    >
       {title}
     </NavLink>
   )
 }
 
-function PriorityView({ projectId, goalTrees, goalVotes }) {
+function PriorityView ({ projectId, goalTrees, goalVotes }) {
   const priorityMenuItems = [
     ['Urgency x Importance', `/project/:projectId/priority/urgency-importance`],
     ['Impact x Effort', '/project/:projectId/priority/impact-effort'],
@@ -251,7 +252,7 @@ function PriorityView({ projectId, goalTrees, goalVotes }) {
     // ['Importance', '/project/:projectId/priority/importance'],
     // ['Impact', '/project/:projectId/priority/impact'],
     // ['Effort', '/project/:projectId/priority/effort'],
-    ['Uncategorized', '/project/:projectId/priority/uncategorized'],
+    ['Uncategorized', '/project/:projectId/priority/uncategorized']
   ]
 
   const [priorityPickerAddress, setPriorityPickerAddress] = useState(null)
@@ -319,7 +320,8 @@ function PriorityView({ projectId, goalTrees, goalVotes }) {
         timeout={300}
         unmountOnExit
         className='priority-view-picker-animation'
-        onExited={() => setPriorityPickerAddress(null)}>
+        onExited={() => setPriorityPickerAddress(null)}
+      >
         <div>
           <PriorityPicker
             projectId={projectId}
@@ -333,12 +335,12 @@ function PriorityView({ projectId, goalTrees, goalVotes }) {
   )
 }
 
-function PriorityRedirect() {
+function PriorityRedirect () {
   const { projectId } = useParams()
   return <Redirect to={`/project/${projectId}/priority/urgency-importance`} />
 }
 
-function getSortedAveragesGoalLists(
+function getSortedAveragesGoalLists (
   allGoals,
   goalVotes,
   voteKeyOne,
@@ -369,12 +371,12 @@ function getSortedAveragesGoalLists(
       return {
         ...goal,
         averageValues,
-        averageAverage,
+        averageAverage
       }
     })
     .filter(goal => goal.averageValues !== NO_VOTES)
 
-  function sortByAverageAverage(a, b) {
+  function sortByAverageAverage (a, b) {
     return a.averageAverage < b.averageAverage ? 1 : -1
   }
 
@@ -402,15 +404,15 @@ function getSortedAveragesGoalLists(
       .filter(goal => {
         return goal.averageValues[0] <= 50 && goal.averageValues[1] <= 50
       })
-      .sort(sortByAverageAverage),
+      .sort(sortByAverageAverage)
   ]
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {}
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const projectId = state.ui.activeProject
   const goalVotes = state.projects.goalVotes[projectId] || {}
 
@@ -419,7 +421,7 @@ function mapStateToProps(state) {
   return {
     projectId,
     goalTrees,
-    goalVotes: Object.values(goalVotes),
+    goalVotes: Object.values(goalVotes)
   }
 }
 

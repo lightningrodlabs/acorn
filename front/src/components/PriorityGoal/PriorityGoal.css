@@ -6,7 +6,7 @@
 }
 
 .priority-quadrant-goal-item:hover {
-  background: #f9f9f9;
+  background: #f5f2ef;
 }
 
 .priority-quadrant-goal-content {
@@ -83,7 +83,7 @@
   display: flex;
 }
 
-.priority-quadrant-goal-squirrels > * {
+.priority-quadrant-goal-squirrels>* {
   margin-left: 5px;
 }
 
@@ -102,8 +102,7 @@
   float: right;
 }
 
-.priority-quadrant-goal-view-mode-icons .icon {
-}
+.priority-quadrant-goal-view-mode-icons .icon {}
 
 .priority-quadrant-goal-view-mode-icons .icon:hover {
   background: white;
@@ -122,8 +121,7 @@
   transition: all 0.2s;
 }
 
-.priority-quadrant-goal-item:hover .weigh_in_button,
-.priority-quadrant-goal-item:focus .weigh_in_button {
+.priority-quadrant-goal-item:hover .weigh_in_button, .priority-quadrant-goal-item:focus .weigh_in_button {
   opacity: 1;
   transition: all 0.2s;
 }

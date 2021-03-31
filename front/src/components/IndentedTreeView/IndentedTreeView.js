@@ -9,7 +9,7 @@ import './IndentedTreeView.css'
 
 // Recursive because we don't know
 // how deep the nesting goes
-function NestedTreeGoal({ goal, level, filterText }) {
+function NestedTreeGoal ({ goal, level, filterText }) {
   level = level || 1
   // set expanded open by default only if
   // at the first or second level
@@ -42,7 +42,8 @@ function NestedTreeGoal({ goal, level, filterText }) {
               (isUsingGoalAsContext ? '' : `?contextGoal=${goal.address}`)
             }
             className='indented-view-goal-content'
-            isActive={match => match && isUsingGoalAsContext}>
+            isActive={match => match && isUsingGoalAsContext}
+          >
             {goal.hierarchy === 'NoHierarchy' ? (
               <StatusIcon
                 status={goal.status}
@@ -86,24 +87,24 @@ const testGoalTrees = [
         content: 'tt',
         children: [
           {
-            content: 'test',
-          },
-        ],
+            content: 'test'
+          }
+        ]
       },
       {
-        content: 'xx',
-      },
-    ],
-  },
+        content: 'xx'
+      }
+    ]
+  }
 ]
 
-const DEFAULT_WIDTH = 300
+const DEFAULT_WIDTH = 260
 const MIN_WIDTH = 230
 const MAX_WIDTH = 600
 // associated with .indented-view-goals class
 const INDENTED_VIEW_GOALS_MARGIN = 15
 
-export default function IndentedTreeView({ goalTrees }) {
+export default function IndentedTreeView ({ goalTrees }) {
   const [filterText, setFilterText] = useState('')
   const [isResizing, setIsResizing] = useState(false)
   const [width, setWidth] = useState(DEFAULT_WIDTH)
@@ -161,14 +162,16 @@ export default function IndentedTreeView({ goalTrees }) {
             onClick={() => {
               setFilterText('')
             }}
-            className='clear-button'>
+            className='clear-button'
+          >
             clear
           </button>
         )}
       </div>
       <div
         className='indented-view-goals'
-        style={{ width: `${width - INDENTED_VIEW_GOALS_MARGIN}px` }}>
+        style={{ width: `${width - INDENTED_VIEW_GOALS_MARGIN}px` }}
+      >
         {/* {testGoalTrees.map(goal => (
           <NestedTreeGoal goal={goal} />
         ))} */}

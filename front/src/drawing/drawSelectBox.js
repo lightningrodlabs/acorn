@@ -1,4 +1,4 @@
-function SelectBox(ctx, x, y, w, h, radius, color, stroke, strokeWidth) {
+function SelectBox (ctx, x, y, w, h, radius, color, stroke, strokeWidth) {
   const r = x + w
   const b = y + h
 
@@ -8,7 +8,7 @@ function SelectBox(ctx, x, y, w, h, radius, color, stroke, strokeWidth) {
   if (stroke) ctx.strokeStyle = color
   else ctx.fillStyle = color
 
-  ctx.lineWidth = stroke ? strokeWidth : '1'
+  ctx.lineWidth = stroke ? strokeWidth : '1.5'
   ctx.moveTo(x + radius, y)
   ctx.lineTo(r - radius, y)
   ctx.quadraticCurveTo(r, y, r, y + radius)
@@ -26,7 +26,7 @@ function SelectBox(ctx, x, y, w, h, radius, color, stroke, strokeWidth) {
 }
 
 // render a goal card
-export default function render({ x, y }, { w, h }, ctx) {
+export default function render ({ x, y }, { w, h }, ctx) {
   if (w < 0) {
     x += w
     w *= -1

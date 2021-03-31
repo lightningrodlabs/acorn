@@ -11,7 +11,7 @@ import {
   fontSizeInt,
   lineSpacing,
   getGoalHeight,
-  getLinesForParagraphs,
+  getLinesForParagraphs
 } from './dimensions'
 
 import { selectedColor, colors, pickColorForString } from '../styles'
@@ -21,7 +21,7 @@ import moment from 'moment'
 import roundRect from './drawRoundRect'
 
 // render a goal card
-export default function render(
+export default function render (
   goal,
   members,
   { x, y },
@@ -75,7 +75,7 @@ export default function render(
     backgroundColor,
     false
   )
-  // border
+  // card border
   roundRect(
     ctx,
     x + halfBorder,
@@ -85,7 +85,7 @@ export default function render(
     cornerRadius,
     borderColor,
     true,
-    '2'
+    '3'
   )
 
   // selection outline

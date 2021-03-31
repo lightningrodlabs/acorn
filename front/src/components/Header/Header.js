@@ -4,7 +4,7 @@ import {
   Route,
   NavLink,
   useLocation,
-  withRouter,
+  withRouter
 } from 'react-router-dom'
 import onClickOutside from 'react-onclickoutside'
 import GuideBook from '../GuideBook/GuideBook'
@@ -30,7 +30,8 @@ function ActiveEntryPoint ({ entryPoint, activeEntryPointAddresses }) {
       </div>
       <NavLink
         to={`${location.pathname}?entryPoints=${entryPointsAbsentThisOne}`}
-        className='active-entry-point-close'>
+        className='active-entry-point-close'
+      >
         <Icon name='x.svg' size='very-small-close' className='grey' />
       </NavLink>
     </div>
@@ -62,7 +63,7 @@ class Header extends React.Component {
       avatar: false,
       isExportOpen: false,
       listaProfile: {},
-      listaExport: {},
+      listaExport: {}
     }
   }
 
@@ -75,17 +76,21 @@ class Header extends React.Component {
       lista: [
         { color: 'green', img: 'checkmark-circle.svg', title: 'Online' },
         { color: 'yellow', img: 'user-status-away.svg', title: 'Away' },
-        { color: 'gray', img: 'user-status-offline.svg', title: 'Offline' },
+        { color: 'gray', img: 'user-status-offline.svg', title: 'Offline' }
       ],
       avatar: false,
       listaProfile: [
         { title: 'Profile Settings', click: this.clickProfile },
-        { title: 'Preferences', click: this.clickPreferences },
+        { title: 'Preferences', click: this.clickPreferences }
       ],
       listaExport: [
-        { title: 'Export as JSON', type: 'json', download: 'table.json' },
-        { title: 'Export as CSV', type: 'csv', download: 'table.csv' },
-      ],
+        {
+          title: 'Export as JSON (Importable)',
+          type: 'json',
+          download: 'table.json'
+        },
+        { title: 'Export as CSV', type: 'csv', download: 'table.csv' }
+      ]
     })
   }
 
@@ -93,7 +98,7 @@ class Header extends React.Component {
     this.setState({
       isProfileOpen: false,
       isExportOpen: false,
-      isStatusOpen: false,
+      isStatusOpen: false
     })
   }
   clickProfile (e) {
@@ -101,7 +106,7 @@ class Header extends React.Component {
     this.setState({
       isProfileOpen: false,
       isExportOpen: false,
-      isStatusOpen: false,
+      isStatusOpen: false
     })
   }
   clickPreferences (e) {
@@ -110,14 +115,14 @@ class Header extends React.Component {
       isProfileOpen: false,
       isExportOpen: false,
       isStatusOpen: false,
-      isGuideOpen: false,
+      isGuideOpen: false
     })
   }
   clickAvatar (e) {
     this.setState({
       isProfileOpen: !this.state.isProfileOpen,
       isExportOpen: false,
-      isStatusOpen: false,
+      isStatusOpen: false
     })
   }
   hover (bool) {
@@ -128,14 +133,14 @@ class Header extends React.Component {
     this.setState({
       isStatusOpen: !this.state.isStatusOpen,
       isExportOpen: false,
-      isProfileOpen: false,
+      isProfileOpen: false
     })
   }
   clickExport (e) {
     this.setState({
       isExportOpen: !this.state.isExportOpen,
       isStatusOpen: false,
-      isProfileOpen: false,
+      isProfileOpen: false
     })
   }
   clickSearch (e) {}
@@ -147,17 +152,17 @@ class Header extends React.Component {
     switch (status) {
       case 'Online':
         this.setState({
-          online: { color: 'green', img: 'checkmark-circle.svg' },
+          online: { color: 'green', img: 'checkmark-circle.svg' }
         })
         break
       case 'Away':
         this.setState({
-          online: { color: 'yellow', img: 'user-status-away.svg' },
+          online: { color: 'yellow', img: 'user-status-away.svg' }
         })
         break
       case 'Offline':
         this.setState({
-          online: { color: 'gray', img: 'user-status-offline.svg' },
+          online: { color: 'gray', img: 'user-status-offline.svg' }
         })
         break
       default:
@@ -166,7 +171,7 @@ class Header extends React.Component {
     }
     this.setState({
       isProfileOpen: false,
-      isStatusOpen: false,
+      isStatusOpen: false
     })
   }
   handleStatusEnter () {
@@ -276,12 +281,14 @@ class Header extends React.Component {
                   className='top-right-panel-icon'
                   to={`${this.props.location.pathname}${
                     isGuideOpen ? '' : '?' + GUIDE_IS_OPEN + '=1'
-                  }`}>
+                  }`}
+                >
                   <Icon name='guidebook.svg' className='top-right-panel-icon' />
                 </NavLink>
               </Route>
               <div
-                className={`avatar-and-status-wrapper ${this.state.online.color}`}>
+                className={`avatar-and-status-wrapper ${this.state.online.color}`}
+              >
                 <div
                   className='avatar-container'
                   onMouseEnter={e => {
@@ -289,7 +296,8 @@ class Header extends React.Component {
                   }}
                   onMouseLeave={e => {
                     this.hover(false)
-                  }}>
+                  }}
+                >
                   <Avatar
                     first_name={this.props.whoami.entry.first_name}
                     last_name={this.props.whoami.entry.last_name}
@@ -303,7 +311,8 @@ class Header extends React.Component {
                 <span
                   className='user-status-icon-wrapper'
                   onMouseEnter={this.handleStatusEnter}
-                  onMouseLeave={this.handleStatusLeave}>
+                  onMouseLeave={this.handleStatusLeave}
+                >
                   {!this.state.isStatusOpen && !this.state.isStatusHover && (
                     <Icon
                       name={this.state.online.img}
@@ -326,7 +335,8 @@ class Header extends React.Component {
                   className='guidebook-modal'
                   white
                   active={isGuideOpen}
-                  onClose={this.closeGuidebook}>
+                  onClose={this.closeGuidebook}
+                >
                   <GuideBook />
                 </Modal>
               </Route>
@@ -367,7 +377,8 @@ const ListStatus = props => {
       className={props.color + ' btn'}
       onClick={color => {
         props.changeStatus(props.title)
-      }}>
+      }}
+    >
       <Icon name={props.img} className='user-status white not-hoverable' />
       <p>{props.title}</p>
     </button>

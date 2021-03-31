@@ -14,7 +14,8 @@ html, body, canvas {
 }
 
 body {
-  background-color: #f2f0ed;
+  background-color: #fbf9f7;
+  /* background-color: #f2f0ed; */
   /* background-color: #ecebe5; */
   /* background-color: #ebe9e2; */
   font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
@@ -187,23 +188,23 @@ h4 {
 /* status colors */
 
 .border_Uncertain {
-  border: 2px solid #ff5d36;
+  border: 3px solid #ff5d36;
 }
 
 .border_Incomplete {
-  border: 2px solid #ffc400;
+  border: 3px solid #ffc400;
 }
 
 .border_InProcess {
-  border: 2px solid #ff9cab;
+  border: 3px solid #ff9cab;
 }
 
 .border_InReview {
-  border: 2px solid #00e2ff;
+  border: 3px solid #00e2ff;
 }
 
 .border_Complete {
-  border: 2px solid #83e300;
+  border: 3px solid #83e300;
 }
 
 .bg_Uncertain {

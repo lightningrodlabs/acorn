@@ -18,7 +18,7 @@ import ActivityHistory from './ActivityHistory/ActivityHistory'
 import Attachments from './Attachments/Attachments'
 import ExpandedViewNavBar from './ExpandedViewNavBar/ExpandedViewNavBar'
 
-function SquirrelInfoPopup({ squirrel, onClose, archiveGoalMember }) {
+function SquirrelInfoPopup ({ squirrel, onClose, archiveGoalMember }) {
   const ref = useRef()
   useOnClickOutside(ref, onClose)
 
@@ -37,14 +37,15 @@ function SquirrelInfoPopup({ squirrel, onClose, archiveGoalMember }) {
         onClick={e => {
           onClose()
           archiveGoalMember(squirrel.goalMemberAddress)
-        }}>
+        }}
+      >
         remove from goal
       </div>
     </div>
   )
 }
 
-export default function ExpandedViewModeContent({
+export default function ExpandedViewModeContent ({
   projectId,
   goalAddress,
   goal,
@@ -52,14 +53,14 @@ export default function ExpandedViewModeContent({
   goalDescription,
   updateGoal,
   squirrels,
-  archiveGoalMember,
+  archiveGoalMember
 }) {
   // you can use these as values for
   // testing/ development, instead of `squirrels`
   const testSquirrels = [
     { avatar_url: 'img/profile.png' },
     { avatar_url: 'img/profile.png' },
-    { avatar_url: 'img/profile.png' },
+    { avatar_url: 'img/profile.png' }
   ]
 
   const [activeTab, setActiveTab] = useState('comments')
@@ -94,7 +95,7 @@ export default function ExpandedViewModeContent({
         ...goal,
         timestamp_updated: moment().unix(),
         content,
-        description,
+        description
       },
       goalAddress
     )
@@ -106,7 +107,7 @@ export default function ExpandedViewModeContent({
     if (start && end) {
       timeframe = {
         from_date: start,
-        to_date: end,
+        to_date: end
       }
     }
 
@@ -114,7 +115,7 @@ export default function ExpandedViewModeContent({
       {
         ...goal,
         timestamp_updated: moment().unix(),
-        time_frame: timeframe,
+        time_frame: timeframe
       },
       goalAddress
     )
@@ -197,7 +198,8 @@ export default function ExpandedViewModeContent({
           <div className='expanded_view_timeframe_title'>timeframe</div>
           <div
             className='expanded_view_timeframe_display'
-            onClick={() => setEditTimeframe(!editTimeframe)}>
+            onClick={() => setEditTimeframe(!editTimeframe)}
+          >
             {fromDate && fromDate.format('MMM D, YYYY')}
             {toDate && ' - '}
             {toDate && toDate.format('MMM D, YYYY')}

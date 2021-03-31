@@ -101,7 +101,7 @@ function Dashboard ({
         <div className='dashboard-left-menu'>
           <NavLink to='/dashboard' className='dashboard-left-menu-item'>
             <Icon name='folder.svg' size='very-small' className='grey' />
-            My projects
+            My Projects
           </NavLink>
           <NavLink
             to='/settings'
@@ -112,7 +112,7 @@ function Dashboard ({
           </NavLink>
         </div>
         <div className='dashboard-my-projects'>
-          <div className='my-projects-heading'>My projects</div>
+          <div className='my-projects-heading'>My Projects</div>
           {/* dashboard header */}
           <div className='my-projects-header'>
             <div className='my-projects-header-buttons'>
@@ -132,7 +132,11 @@ function Dashboard ({
                 className='my-projects-button'
                 onClick={() => setShowImportModal(true)}
               >
-                <Icon name='import.svg' size='very-small' className='black' />
+                <Icon
+                  name='import.svg'
+                  size='very-small'
+                  className='black not-hoverable'
+                />
                 <div>Import</div>
               </div>
             </div>

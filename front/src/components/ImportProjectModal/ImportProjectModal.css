@@ -14,8 +14,8 @@
   margin-bottom: 28px;
 }
 
-.project-modal-content {
-  /* margin-bottom: 50px; */
+.import-project-modal-wrapper .project-modal-content-spacer {
+  margin-top: 30px;
 }
 
 .import-project-image-row {
@@ -39,21 +39,7 @@
   border: 1.2px solid #e2e2e2;
 }
 
-/* create project modal animation */
-
-.import-project-form {
-  /* position: absolute;
-  opacity: 1;
-  transition: opacity 0.3s, transform 0.4s;
-  width: 420px; */
-}
-
-.import-project-form.project-created {
-  /* background-color: blue; */
-  opacity: 0;
-  -webkit-transform: translateX(-300px);
-  transform: translateX(-300px);
-}
+.import-project-form {}
 
 /* project created modal animation */
 
@@ -92,13 +78,14 @@
 }
 
 .importing-modal-content-title {
-  font-size: 18px;
+  font-size: 20px;
   font-family: 'gilroyextrabold', Helvetica, sans-serif;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  margin-top: 4px;
 }
 
 .importing-modal-content img {
-  height: 50px;
+  height: 40px;
   padding: 20px;
   -webkit-animation: spin 2s linear infinite;
   -moz-animation: spin 2s linear infinite;

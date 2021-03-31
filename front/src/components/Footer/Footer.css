@@ -1,5 +1,4 @@
-.footer {
-}
+.footer {}
 
 /* Buttom Left Panel */
 
@@ -32,6 +31,7 @@
 }
 
 /* when Entry Point Icon is open: */
+
 .bottom-left-panel-entry-points .icon.active .inner-icon {
   background-color: #5f65ff;
 }
@@ -53,7 +53,7 @@
 }
 
 .bottom-right-panel-not-map {
-  box-shadow: 0px 0px 6px #00000038;
+  box-shadow: 0px 0px 10px #0000001f;
 }
 
 .bottom-right-panel-view-modes {
