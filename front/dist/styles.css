@@ -169,7 +169,7 @@ h4 {
 }
 
 .hover_overlay li:first-child {
-  margin-right: 6px;
+  margin-right: 4px;
   /* same as distance from buttons to edges of goal */
 }
 

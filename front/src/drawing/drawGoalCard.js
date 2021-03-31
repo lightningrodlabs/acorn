@@ -41,7 +41,7 @@ export default function render (
 
   let backgroundColor = '#FFFFFF'
   if (isHovered) {
-    backgroundColor = '#E8E8E8'
+    backgroundColor = '#f2f1ef'
   }
 
   const halfBorder = borderWidth / 2 // for use with 'stroke' of the border
