@@ -277,11 +277,15 @@ class Header extends React.Component {
               <Route path='/project'>
                 {/* open or close the guidebook, depending on if it */}
                 {/* is currently open or closed */}
+                {/* Guidebook Button */}
                 <NavLink
                   className='top-right-panel-icon'
                   to={`${this.props.location.pathname}${
                     isGuideOpen ? '' : '?' + GUIDE_IS_OPEN + '=1'
                   }`}
+                  // if clicked on guidebook for the first time, remove the help message
+                  // and remember not to show that in the future (store that locally) aka persist
+                  onClick={this.props.hideGuidebookHelpMessage}
                 >
                   <Icon name='guidebook.svg' className='top-right-panel-icon' />
                 </NavLink>

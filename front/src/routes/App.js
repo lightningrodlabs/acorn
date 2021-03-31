@@ -6,7 +6,10 @@ import { connect } from 'react-redux'
 import './App.css'
 
 import { updateWhoami } from '../who-am-i/actions'
-import { setNavigationPreference } from '../local-preferences/actions'
+import {
+  setHasAccessedGuidebook,
+  setNavigationPreference
+} from '../local-preferences/actions'
 
 // import components here
 import Header from '../components/Header/Header'
@@ -37,6 +40,7 @@ function App (props) {
     updateWhoami,
     navigationPreference,
     setNavigationPreference,
+    hideGuidebookHelpMessage
   } = props
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
@@ -59,7 +63,7 @@ function App (props) {
     await updateWhoami(
       {
         ...whoami.entry,
-        status: statusString,
+        status: statusString
       },
       whoami.address
     )
@@ -88,10 +92,13 @@ function App (props) {
     }
     const timerID = setInterval(checkForGithubUpdates, 1000 * 10 * 60)
     if (window.require) {
-      window.require('electron').ipcRenderer.invoke('get-version').then((version) => {
-        thisVersion = version
-        checkForGithubUpdates()
-      })
+      window
+        .require('electron')
+        .ipcRenderer.invoke('get-version')
+        .then(version => {
+          thisVersion = version
+          checkForGithubUpdates()
+        })
     }
 
     return () => {
@@ -119,12 +126,16 @@ function App (props) {
             )}
           />
           <Route path='/project/:projectId' component={ProjectView} />
-          <Route path='/run-update' render={() => <RunUpdate preRestart version={updateAvailable} />} />
+          <Route
+            path='/run-update'
+            render={() => <RunUpdate preRestart version={updateAvailable} />}
+          />
           <Route path='/finish-update' render={() => <RunUpdate />} />
           <Route path='/' render={() => <Redirect to='/dashboard' />} />
         </Switch>
         {agentAddress && (
           <Header
+            hideGuidebookHelpMessage={hideGuidebookHelpMessage}
             showUpdateBar={showUpdateBar}
             setShowUpdateBar={setShowUpdateBar}
             setShowUpdatePromptModal={setShowUpdatePromptModal}
@@ -141,7 +152,8 @@ function App (props) {
         <Modal
           white
           active={showProfileEditForm}
-          onClose={() => setShowProfileEditForm(false)}>
+          onClose={() => setShowProfileEditForm(false)}
+        >
           <ProfileEditForm
             onSubmit={onProfileSubmit}
             whoami={whoami ? whoami.entry : null}
@@ -179,9 +191,9 @@ App.propTypes = {
     last_name: PropTypes.string,
     handle: PropTypes.string,
     avatar_url: PropTypes.string,
-    address: PropTypes.string,
+    address: PropTypes.string
   }),
-  updateWhoami: PropTypes.func,
+  updateWhoami: PropTypes.func
 }
 
 function mapDispatchToProps (dispatch) {
@@ -190,6 +202,10 @@ function mapDispatchToProps (dispatch) {
     setNavigationPreference: preference => {
       return dispatch(setNavigationPreference(preference))
     },
+    hideGuidebookHelpMessage: () => {
+      const hideAction = setHasAccessedGuidebook(true)
+      return dispatch(hideAction)
+    }
   }
 }
 
@@ -199,9 +215,9 @@ function mapStateToProps (state) {
       hasFetchedForWhoami,
       activeProject,
       activeEntryPoints,
-      localPreferences: { navigation },
+      localPreferences: { navigation }
     },
-    cells: { profiles: profilesCellIdString },
+    cells: { profiles: profilesCellIdString }
   } = state
   // defensive coding for loading phase
   const activeProjectMeta = state.projects.projectMeta[activeProject] || {}
@@ -226,7 +242,7 @@ function mapStateToProps (state) {
     whoami: state.whoami,
     hasFetchedForWhoami,
     agentAddress: state.agentAddress,
-    navigationPreference: navigation,
+    navigationPreference: navigation
   }
 }
 
@@ -240,10 +256,10 @@ function mergeProps (stateProps, dispatchProps, _ownProps) {
       return dispatch(
         updateWhoami.create({
           payload: { entry, address },
-          cellIdString: profilesCellIdString,
+          cellIdString: profilesCellIdString
         })
       )
-    },
+    }
   }
 }
 

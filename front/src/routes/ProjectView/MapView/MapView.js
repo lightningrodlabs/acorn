@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { connect, useStore } from 'react-redux'
-import './MapView.css'
 
 import './MapView.css'
 
@@ -10,7 +9,7 @@ import render from '../../../drawing'
 import setupEventListeners from '../../../event-listeners'
 import {
   openExpandedView,
-  closeExpandedView,
+  closeExpandedView
 } from '../../../expanded-view/actions'
 import { setScreenDimensions } from '../../../screensize/actions'
 import EmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
@@ -20,7 +19,7 @@ import HoverOverlay from '../../../components/HoverOverlay'
 import ExpandedViewMode from '../../../components/ExpandedViewMode/ExpandedViewMode'
 import EdgeConnectors from '../../../components/EdgeConnectors/EdgeConnectors'
 
-function MapView({
+function MapView ({
   projectId,
   hasSelection,
   hasHover,
@@ -30,6 +29,7 @@ function MapView({
   openExpandedView,
   closeExpandedView,
   showEmptyState,
+  showGuidebookHelpMessage
 }) {
   const store = useStore()
   const refCanvas = useRef()
@@ -52,22 +52,23 @@ function MapView({
       render(store, canvas)
     })
 
-    return function cleanup() {
+    return function cleanup () {
       unsub()
       removeEventListeners()
     }
   }, []) // only run on initial mount
 
   const transform = {
-    transform: `matrix(${scale}, 0, 0, ${scale}, ${translate.x}, ${translate.y})`,
+    transform: `matrix(${scale}, 0, 0, ${scale}, ${translate.x}, ${translate.y})`
   }
   return (
     <>
-      {/* TODO: make this show based on whether the user has just recently created their profile (registered) */}
-      <div className='guidebook_open_help'>
-        <div>Click on the Guidebook to learn more</div>
-        <img src='img/arrow-curved.svg' />
-      </div>
+      {showGuidebookHelpMessage && (
+        <div className='guidebook_open_help'>
+          <div>Click on the Guidebook to learn more</div>
+          <img src='img/arrow-curved.svg' />
+        </div>
+      )}
       <canvas ref={refCanvas} />
       {showEmptyState && <EmptyState />}
       <div className='transform-container' style={transform}>
@@ -89,7 +90,7 @@ MapView.propTypes = {
   goalFormIsOpen: PropTypes.bool.isRequired,
   translate: PropTypes.shape({
     x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired
   }),
   scale: PropTypes.number.isRequired,
   whoami: PropTypes.shape({
@@ -97,27 +98,29 @@ MapView.propTypes = {
     last_name: PropTypes.string,
     handle: PropTypes.string,
     avatar_url: PropTypes.string,
-    address: PropTypes.string,
+    address: PropTypes.string
   }),
   createWhoami: PropTypes.func,
   showExpandedViewMode: PropTypes.bool,
-  showEmptyState: PropTypes.bool,
+  showEmptyState: PropTypes.bool
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
   return {
     openExpandedView: address => {
       return dispatch(openExpandedView(address))
     },
     closeExpandedView: () => {
       return dispatch(closeExpandedView())
-    },
+    }
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps (state) {
   const projectId = state.ui.activeProject
   return {
+    // if have not opened the guidebook ever, then show guidebook tip message
+    showGuidebookHelpMessage: !state.ui.localPreferences.hasAccessedGuidebook,
     projectId,
     // map from an array type (the selectedGoals) to a simple boolean type
     hasSelection: state.ui.selection.selectedGoals.length > 0,
@@ -133,7 +136,7 @@ function mapStateToProps(state) {
       ((state.projects.goals[projectId] &&
         Object.values(state.projects.goals[projectId]).length === 0) ||
         // project is loading
-        !state.projects.goals[projectId]),
+        !state.projects.goals[projectId])
   }
 }
 
