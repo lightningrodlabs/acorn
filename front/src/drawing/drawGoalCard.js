@@ -18,7 +18,7 @@ import { selectedColor, colors, pickColorForString } from '../styles'
 import { getOrSetImageForUrl } from './imageCache'
 import moment from 'moment'
 
-import roundRect from './drawRoundRect'
+import drawRoundCornerRectangle from './drawRoundCornerRectangle'
 
 // render a goal card
 export default function render (
@@ -63,32 +63,34 @@ export default function render (
       ctx.drawImage(leafImg, x - 24, y - 24, 30, 30)
     }
   }
-
-  // background
-  roundRect(
-    ctx,
-    x + borderWidth,
-    y + borderWidth,
-    goalWidth - twiceBorder,
-    goalHeight - twiceBorder,
-    cornerRadius - 1,
-    backgroundColor,
-    false
-  )
+  // card background
+  drawRoundCornerRectangle({
+    context: ctx,
+    xPosition: x + borderWidth,
+    yPosition: y + borderWidth,
+    width: goalWidth - twiceBorder,
+    height: goalHeight - twiceBorder,
+    radius: cornerRadius - 1,
+    color: backgroundColor,
+    stroke: false,
+    strokeWidth: '0',
+    boxShadow: true
+  })
   // card border
-  roundRect(
-    ctx,
-    x + halfBorder,
-    y + halfBorder,
-    goalWidth - borderWidth,
-    goalHeight - borderWidth,
-    cornerRadius,
-    borderColor,
-    true,
-    '3'
-  )
+  drawRoundCornerRectangle({
+    context: ctx,
+    xPosition: x + halfBorder,
+    yPosition: y + halfBorder,
+    width: goalWidth - borderWidth,
+    height: goalHeight - borderWidth,
+    radius: cornerRadius,
+    color: borderColor,
+    stroke: true,
+    strokeWidth: '3',
+    boxShadow: false
+  })
 
-  // selection outline
+  // selection outline (purple)
   if (isSelected) {
     let xStart =
       x - selectedOutlineMargin + 1 - halfBorder - selectedOutlineWidth / 2
@@ -105,17 +107,19 @@ export default function render (
       borderWidth +
       Number(selectedOutlineWidth)
     let cr = cornerRadius + selectedOutlineMargin * 2 + 2
-    roundRect(
-      ctx,
-      xStart,
-      yStart,
-      w,
-      h,
-      cr,
-      selectedColor,
-      true,
-      selectedOutlineWidth
-    )
+
+    drawRoundCornerRectangle({
+      context: ctx,
+      xPosition: xStart,
+      yPosition: yStart,
+      width: w,
+      height: h,
+      radius: cr,
+      color: selectedColor,
+      stroke: true,
+      strokeWidth: selectedOutlineWidth,
+      boxShadow: false
+    })
   }
 
   // render text, if not in edit mode
