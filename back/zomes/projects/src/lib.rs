@@ -6,7 +6,7 @@ use hdk::prelude::*;
 mod project;
 
 use project::{
-    edge::{Edge, EdgeSignal},
+    edge::edge::{Edge, EdgeSignal},
     entry_point::{EntryPoint, EntryPointSignal},
     goal::{ArchiveGoalFullySignal, Goal, GoalSignal, GoalWithEdgeSignal},
     goal_comment::{GoalComment, GoalCommentSignal},

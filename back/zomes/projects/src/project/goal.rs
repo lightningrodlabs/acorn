@@ -1,5 +1,5 @@
 use super::{
-    edge::{inner_archive_edge, inner_create_edge, inner_fetch_edges, Edge, EdgeWireEntry},
+    edge::edge::{inner_archive_edge, inner_create_edge, inner_fetch_edges, Edge, EdgeWireEntry},
     entry_point::{inner_archive_entry_point, inner_fetch_entry_points, EntryPointWireEntry},
     goal_comment::{inner_archive_goal_comment, inner_fetch_goal_comments, GoalCommentWireEntry},
     goal_member::archive_goal_members,
@@ -26,6 +26,34 @@ pub struct Goal {
     tags: Option<Vec<String>>,
     description: String,
     time_frame: Option<TimeFrame>,
+}
+
+impl Goal {
+    pub fn new(
+        content: String,
+        user_hash: WrappedAgentPubKey,
+        user_edit_hash: Option<WrappedAgentPubKey>,
+        timestamp_created: f64,
+        timestamp_updated: Option<f64>,
+        hierarchy: Hierarchy,
+        status: Status,
+        tags: Option<Vec<String>>,
+        description: String,
+        time_frame: Option<TimeFrame>,
+    ) -> Self {
+        Self {
+            content,
+            user_hash,
+            user_edit_hash,
+            timestamp_created,
+            timestamp_updated,
+            hierarchy,
+            status,
+            tags,
+            description,
+            time_frame,
+        }
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes, Clone, PartialEq)]
@@ -102,11 +130,23 @@ pub struct TimeFrame {
     to_date: f64,
 }
 
+impl TimeFrame {
+    pub fn new(from_date: f64, to_date: f64) -> Self {
+        Self { from_date, to_date }
+    }
+}
+
 fn convert_to_receiver_signal(signal: GoalSignal) -> SignalType {
     SignalType::Goal(signal)
 }
 
-crud!(Goal, goal, "goal", get_peers_content, convert_to_receiver_signal);
+crud!(
+    Goal,
+    goal,
+    "goal",
+    get_peers_content,
+    convert_to_receiver_signal
+);
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 pub struct CreateGoalWithEdgeInput {
