@@ -12,12 +12,6 @@ pub enum Error {
     #[error("Parent and Child entries are not different")]
     IdenticalParentChild,
 
-    #[error("Edge parent Goal is missing")]
-    ParentEntryMissing,
-
-    #[error("Edge child Goal is missing")]
-    ChildEntryMissing,
-
     #[error("Attempted to update an Edge")]
     UpdateAttempted,
 
