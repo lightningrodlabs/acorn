@@ -1,47 +1,28 @@
-// use std::time::Duration;
-
-use dna_help::{create_receive_signal_cap_grant, fetch_links, signal_peers, WrappedAgentPubKey};
+use dna_help::{create_receive_signal_cap_grant, fetch_links};
 use hdk::prelude::*;
 
 mod project;
 
 use project::{
-    edge::edge::{Edge, EdgeSignal},
-    entry_point::{EntryPoint, EntryPointSignal},
-    goal::{ArchiveGoalFullySignal, Goal, GoalSignal, GoalWithEdgeSignal},
-    goal_comment::{GoalComment, GoalCommentSignal},
-    goal_member::{GoalMember, GoalMemberSignal},
-    goal_vote::{GoalVote, GoalVoteSignal},
-    member::{Member, MemberSignal, MEMBER_PATH},
-    project_meta::{ProjectMeta, ProjectMetaSignal},
+    edge::crud::{Edge, EdgeSignal},
+    entry_point::crud::{EntryPoint, EntryPointSignal},
+    goal::crud::{ArchiveGoalFullySignal, Goal, GoalSignal, GoalWithEdgeSignal},
+    goal_comment::crud::{GoalComment, GoalCommentSignal},
+    goal_member::crud::{GoalMember, GoalMemberSignal},
+    goal_vote::crud::{GoalVote, GoalVoteSignal},
+    member::entry::{join_project_during_init, Member, MemberSignal, MEMBER_PATH},
+    project_meta::crud::{ProjectMeta, ProjectMetaSignal},
 };
 
 #[hdk_extern]
 fn init(_: ()) -> ExternResult<InitCallbackResult> {
-    // let start_init_time: Duration = sys_time()?;
-    // debug!("start of init time {:?}", start_init_time.clone());
     // authorize receive_signal
     // not the issue, takes about 2 ms
     create_receive_signal_cap_grant()?;
 
-    Path::from(MEMBER_PATH).ensure()?;
+    // add our member entry to the project
+    join_project_during_init()?;
 
-    // while joining, list me in the list of members
-    // so that all peers can become aware of the new presence
-    let member_path_address = Path::from(MEMBER_PATH).hash()?;
-    let member = Member {
-        address: WrappedAgentPubKey(agent_info()?.agent_initial_pubkey),
-    };
-    create_entry(&member)?;
-    let member_entry_hash = hash_entry(&member)?;
-    create_link(member_path_address, member_entry_hash, ())?;
-
-    // let end_init_time: Duration = sys_time()?;
-    // debug!("end of init time {:?}", end_init_time.clone());
-    // debug!(
-    //     "difference in init time {:?}",
-    //     end_init_time - start_init_time
-    // );
     Ok(InitCallbackResult::Pass)
 }
 
@@ -104,18 +85,10 @@ pub fn get_peers(get_options: GetOptions) -> ExternResult<Vec<AgentPubKey>> {
         .collect::<Vec<AgentPubKey>>())
 }
 
-// receiver (and forward to UI)
+// receiver
+// (forwards signals to the UI)
 #[hdk_extern]
 pub fn recv_remote_signal(sb: SerializedBytes) -> ExternResult<()> {
     let signal: SignalType = SignalType::try_from(sb)?;
     Ok(emit_signal(&signal)?)
-}
-
-// send update to peers alerting them that you joined
-#[hdk_extern]
-pub fn init_signal(_: ()) -> ExternResult<()> {
-    let member = Member {
-        address: WrappedAgentPubKey(agent_info()?.agent_initial_pubkey),
-    };
-    signal_peers(&MemberSignal::new(member.clone()), get_peers_latest)
 }

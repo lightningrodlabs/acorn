@@ -1,7 +1,7 @@
 #[cfg(test)]
 pub(crate) mod fixtures {
-    use crate::project::goal::{Goal, Hierarchy, Status};
-    use crate::project::{edge::edge::Edge, goal::TimeFrame};
+    use crate::project::goal::crud::{Goal, Hierarchy, Status};
+    use crate::project::{edge::crud::Edge, goal::crud::TimeFrame};
     use ::fixt::prelude::*;
     use dna_help::{WrappedAgentPubKey, WrappedHeaderHash};
     use hdk::prelude::*;

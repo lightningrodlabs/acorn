@@ -1,6 +1,6 @@
-use crate::project::edge::edge::Edge;
+use crate::project::edge::crud::Edge;
 use crate::project::edge::error::Error;
-use crate::project::goal::Goal;
+use crate::project::goal::crud::Goal;
 use dna_help::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
 
@@ -219,7 +219,7 @@ pub mod tests {
         mock_hdk
             .expect_get()
             .with(mockall::predicate::eq(GetInput::new(
-              goal_child_wrapped_header_hash.clone().0.into(),
+                goal_child_wrapped_header_hash.clone().0.into(),
                 GetOptions::content(),
             )))
             .times(1)
@@ -230,8 +230,8 @@ pub mod tests {
         // we should see that the ValidateCallbackResult
         // is finally valid
         assert_eq!(
-          super::validate_create_entry_edge(validate_data.clone()),
-          Ok(ValidateCallbackResult::Valid),
-      );
+            super::validate_create_entry_edge(validate_data.clone()),
+            Ok(ValidateCallbackResult::Valid),
+        );
     }
 }

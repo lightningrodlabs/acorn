@@ -1,0 +1,31 @@
+
+
+entry_point
+- depends on existing goal
+- creator_address must be the one who signed it
+- delete: allowed
+
+goal
+- create: user_hash must be the one who signed it , user_edit_hash should be None
+- update: user_hash should be the same as create, user_edit_hash should be some, and the one signed it
+- delete: allowed
+
+goal_comment
+- create: depends on goal at goal_address existing, agent_address should match the signer
+- update: depends on goal at goal_address existing, only original author can update
+- delete: allowed
+
+goal_member
+- create: depends on goal at goal_address existing, agent_address should match the signer, user_edit_hash should be None
+- update: depends on goal at goal_address existing, agent_address should not change from orig, user_edit_hash should be Some and match the signer
+- delete: allowed
+
+goal_vote (same as goal comment)
+- create: depends on goal at goal_address existing, agent_address should match the signer
+- update: depends on goal at goal_address existing, only original author can update
+- delete: allowed
+
+project_meta
+- create: creator_address should be the signer, only ONE can/should be created (can't be 100 certain but don't let one more be created if another exists already)
+- update: anyone can update, but cannot change creator_address from original
+- delete: can't be deleted, for now
