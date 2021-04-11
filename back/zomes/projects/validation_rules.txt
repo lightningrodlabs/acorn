@@ -1,31 +1,31 @@
 
 
 entry_point
-- depends on existing goal
-- creator_address must be the one who signed it
-- delete: allowed
+- create: depends on goal at `goal_address` existing, `creator_address` must match the agent committing
+- update: not allowed
+- delete: allowed by anyone
 
 goal
-- create: user_hash must be the one who signed it , user_edit_hash should be None
-- update: user_hash should be the same as create, user_edit_hash should be some, and the one signed it
-- delete: allowed
+- create: `user_hash` must be the agent committing, `user_edit_hash` should be None
+- update: `user_hash` should be the same as create, `user_edit_hash` should be Some, and match the agent committing
+- delete: allowed by anyone
 
 goal_comment
-- create: depends on goal at goal_address existing, agent_address should match the signer
-- update: depends on goal at goal_address existing, only original author can update
-- delete: allowed
+- create: depends on goal at `goal_address` existing, `agent_address` should match the agent committing
+- update: depends on goal at `goal_address` existing, `agent_address` should not change from its original value, AND only the original author can update
+- delete: allowed only the original author, as identified in headers and `agent_address` field
 
 goal_member
-- create: depends on goal at goal_address existing, agent_address should match the signer, user_edit_hash should be None
-- update: depends on goal at goal_address existing, agent_address should not change from orig, user_edit_hash should be Some and match the signer
-- delete: allowed
+- create: depends on goal at `goal_address` existing, `agent_address` should match the signer, `user_edit_hash` should be None
+- update: depends on goal at `goal_address` existing, `agent_address` should not change from its original value, `user_edit_hash` should be Some and match the agent committing
+- delete: allowed by anyone
 
 goal_vote (same as goal comment)
-- create: depends on goal at goal_address existing, agent_address should match the signer
-- update: depends on goal at goal_address existing, only original author can update
-- delete: allowed
+- create: depends on goal at `goal_address` existing, `agent_address` should match the agent committing
+- update: depends on goal at `goal_address` existing, `agent_address` should not change from its original value, AND only the original author can update
+- delete: allowed only by the original author, as identified in headers and `agent_address` field
 
 project_meta
-- create: creator_address should be the signer, only ONE can/should be created (can't be 100 certain but don't let one more be created if another exists already)
-- update: anyone can update, but cannot change creator_address from original
-- delete: can't be deleted, for now
+- create: `creator_address` should match the agent committing, only ONE can/should be created (can't be 100% certain but don't let one more be created if another known exists already)
+- update: anyone can update, `creator_address` should not change from its original value
+- delete: cannot be deleted, for now
