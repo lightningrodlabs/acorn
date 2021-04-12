@@ -62,7 +62,7 @@ export default function ExpandedViewModeContent({
         onChange={(newTab) => setActiveTab(newTab)}
         commentCount={comments.length}
       />
-      <div className="expanded-view-tabs">
+      <div className="expanded-view-inner-content">
         {activeTab === 0 && (
           <Details
             projectId={projectId}
