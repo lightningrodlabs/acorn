@@ -82,84 +82,87 @@ export default function RightMenu({
 
   return (
     <div className='expanded_view_right_menu'>
-      {/* priority */}
-      <Icon
-        name='priority.svg'
-        className={rightMenuPriorityClass}
-        key='priority'
-        onClick={() => toggleView('priority')}
-      />
-      {viewsOpen.priority && (
-        <PriorityPicker
-          projectId={projectId}
-          goalAddress={goalAddress}
-          onClose={() => setViews({ ...defaultViews })}
+      <div className='right-menu-icons'>
+        {/* priority */}
+        <Icon
+          name='priority.svg'
+          className={rightMenuPriorityClass}
+          key='priority'
+          onClick={() => toggleView('priority')}
         />
-      )}
-      {/* squirrels */}
-      <Icon
-        name='squirrel.svg'
-        className={rightMenuSquirrelsClass}
-        key='squirrels'
-        onClick={() => toggleView('squirrels')}
-      />
-      {viewsOpen.squirrels && (
-        <PeoplePicker
-          projectId={projectId}
-          onClose={() => setViews({ ...defaultViews })}
+        {/* squirrels */}
+        <Icon
+          name='squirrel.svg'
+          className={rightMenuSquirrelsClass}
+          key='squirrels'
+          onClick={() => toggleView('squirrels')}
         />
-      )}
-      {/* timeframe */}
-      <Icon
-        name='calendar.svg'
-        className={rightMenuTimeframeClass}
-        key='timeframe'
-        onClick={() => toggleView('timeframe')}
-      />
-      {viewsOpen.timeframe && (
-        <DatePicker
-          onClose={() => setViews({ ...defaultViews })}
-          onSet={updateTimeframe}
-          fromDate={fromDate}
-          toDate={toDate}
+        {/* timeframe */}
+        <Icon
+          name='calendar.svg'
+          className={rightMenuTimeframeClass}
+          key='timeframe'
+          onClick={() => toggleView('timeframe')}
         />
-      )}
-      {/* hierarchy */}
-      <Icon
-        name='hierarchy.svg'
-        className={rightMenuHierarchyClass}
-        key='hierarchy'
-        onClick={() => toggleView('hierarchy')}
-      />
-      {viewsOpen.hierarchy && (
-        <HierarchyPicker
-          onClose={() => setViews({ ...defaultViews })}
-          selectedHierarchy={goal.hierarchy}
-          hierarchyClicked={innerUpdateGoal('hierarchy')}
+        {/* hierarchy */}
+        <Icon
+          name='hierarchy.svg'
+          className={rightMenuHierarchyClass}
+          key='hierarchy'
+          onClick={() => toggleView('hierarchy')}
         />
-      )}
-
-      <Icon name='tag.svg' className='right_menu_tag feature-in-development' />
-      <Icon
-        name='help.svg'
-        className='right_menu_help feature-in-development'
-      />
-      <Icon
-        name='link.svg'
-        className='right_menu_link feature-in-development'
-      />
-      <Icon
-        name='archive.svg'
-        className='right_menu_archive feature-in-development'
-      />
-      <Icon
-        name='share.svg'
-        className='right_menu_share feature-in-development'
-      />
-      <Icon
-        name='github.svg'
-        className='right_menu_github feature-in-development'
-      />
+        <Icon name='tag.svg' className='right_menu_tag feature-in-development' />
+        <Icon
+          name='help.svg'
+          className='right_menu_help feature-in-development'
+        />
+        <Icon
+          name='link.svg'
+          className='right_menu_link feature-in-development'
+        />
+        <Icon
+          name='archive.svg'
+          className='right_menu_archive feature-in-development'
+        />
+        <Icon
+          name='share.svg'
+          className='right_menu_share feature-in-development'
+        />
+        <Icon
+          name='github.svg'
+          className='right_menu_github feature-in-development'
+        />
+      </div>
+      <div className='right-menu-open-picker'>
+        {viewsOpen.priority && (
+          <PriorityPicker
+            projectId={projectId}
+            goalAddress={goalAddress}
+            onClose={() => setViews({ ...defaultViews })}
+          />
+        )}
+        {viewsOpen.squirrels && (
+          <PeoplePicker
+            projectId={projectId}
+            onClose={() => setViews({ ...defaultViews })}
+          />
+        )}
+        {viewsOpen.timeframe && (
+          <DatePicker
+            onClose={() => setViews({ ...defaultViews })}
+            onSet={updateTimeframe}
+            fromDate={fromDate}
+            toDate={toDate}
+          />
+        )}
+        {viewsOpen.hierarchy && (
+          <HierarchyPicker
+            onClose={() => setViews({ ...defaultViews })}
+            selectedHierarchy={goal.hierarchy}
+            hierarchyClicked={innerUpdateGoal('hierarchy')}
+          />
+        )}
+      </div>
     </div>
   )
 }

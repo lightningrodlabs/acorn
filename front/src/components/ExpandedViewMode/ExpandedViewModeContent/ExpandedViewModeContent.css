@@ -1,6 +1,8 @@
 .expanded_view_content {
   padding: 20px;
-  width: 496px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   overflow-y: scroll;
 }
 
@@ -64,6 +66,7 @@
   padding: 12px 10px 8px 14px;
   color: #a3a3a3;
   margin-bottom: 16px;
+  overflow-y: scroll;
 }
 
 /* squirrels & timeframe wrapper */
@@ -197,6 +200,5 @@
 
 .expanded-view-tabs {
   /* flex: 1; */
-  height: 30vh;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }

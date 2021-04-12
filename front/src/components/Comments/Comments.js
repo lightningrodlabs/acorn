@@ -116,14 +116,9 @@ function Comments({
   )
 }
 
-function mapStateToProps(state, ownProps) {
-  const { projectId } = ownProps
+function mapStateToProps(state) {
   const goalAddress = state.ui.expandedView.goalAddress
-  const goalComments = state.projects.goalComments[projectId] || {}
   return {
-    comments: Object.values(goalComments).filter(
-      goalComment => goalComment.goal_address === goalAddress
-    ),
     goalAddress,
     avatarAddress: state.whoami.entry.address,
     avatarUrl: state.whoami.entry.avatar_url,
