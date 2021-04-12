@@ -33,7 +33,7 @@
   min-height: 500px;
   max-height: calc(100vh - 70px);
   background: #ffffff;
-  border-radius: 10px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -41,6 +41,7 @@
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+  z-index: 2;
 }
 
 .expanded-view-wrapper-enter {
@@ -71,7 +72,7 @@
 
 .expanded-view-wrapper .small-close {
   position: absolute;
-  top: 13px;
+  top: 16px;
   right: 15px;
   cursor: pointer;
 }
@@ -79,6 +80,8 @@
 .expanded-view-main {
   display: flex;
   flex-direction: row;
+  height: 100%;
+  overflow-y: hidden;
 }
 
 .expanded-view-right-menu {

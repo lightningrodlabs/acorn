@@ -1,6 +1,7 @@
 .expanded_view_content {
   padding: 20px;
   width: 496px;
+  overflow-y: scroll;
 }
 
 /* title */
@@ -28,6 +29,7 @@
   border: none;
   color: #4d4d4d;
   font-size: 22px;
+  line-height: 30px;
   padding: 0;
   font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
   resize: none;
@@ -52,10 +54,12 @@
   font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
   font-size: 14px;
   line-height: 17px;
+  background-color: #f9f9f9;
 }
 
 .expanded_view_description {
-  border: 1px solid #f2f2f2;
+  border: 1px solid #f9f9f9;
+  background-color: #f9f9f9;
   border-radius: 15px;
   padding: 12px 10px 8px 14px;
   color: #a3a3a3;
@@ -64,8 +68,7 @@
 
 /* squirrels & timeframe wrapper */
 
-.expanded_view_squirrels_title,
-.expanded_view_timeframe_title {
+.expanded_view_squirrels_title, .expanded_view_timeframe_title {
   margin-bottom: 8px;
   font-family: 'hk-grotesk-semibold';
 }
@@ -94,18 +97,17 @@
   flex-direction: row;
 }
 
-.expanded_view_squirrels_content .avatar.medium.clickable,
-.expanded_view_squirrels_content .initials-avatar.medium {
+.expanded_view_squirrels_content .avatar.medium.clickable, .expanded_view_squirrels_content .initials-avatar.medium {
   margin-right: 4px;
 }
 
 .icon.medium.add_squirrel_plus_icon {
   padding: 8px;
   transition: box-shadow 0.1s ease;
+  border: 2px solid #f4f4f4;
 }
 
-.expanded_view_squirrels_content .avatar.medium.clickable:hover,
-.icon.medium.add_squirrel_plus_icon:hover {
+.expanded_view_squirrels_content .avatar.medium.clickable:hover, .icon.medium.add_squirrel_plus_icon:hover {
   box-shadow: 0 0 0 2px #5f65ff;
 }
 
@@ -166,8 +168,8 @@
 /* timeframe */
 
 .expanded_view_timeframe_display {
-  background: #f2f2f2;
-  border: 1.5px solid #f2f2f2;
+  background: #f9f9f9;
+  border: 1.5px solid #f9f9f9;
   border-radius: 10px;
   padding: 8px 12px;
   font-size: 12px;
@@ -176,9 +178,7 @@
   transition: border 0.1s ease;
 }
 
-.expanded_view_timeframe_display:hover,
-.expanded_view_timeframe_display:active,
-.expanded_view_timeframe_display:focus {
+.expanded_view_timeframe_display:hover, .expanded_view_timeframe_display:active, .expanded_view_timeframe_display:focus {
   border: 1.5px solid #5f65ff;
 }
 
@@ -196,6 +196,7 @@
 /* tabs section */
 
 .expanded-view-tabs {
+  /* flex: 1; */
   height: 30vh;
   overflow-x: hidden;
 }

@@ -2,7 +2,7 @@ import { fontFamily } from './dimensions'
 import drawRoundCornerRectangle from './drawRoundCornerRectangle'
 import { getBoundingRec } from './layoutFormula'
 
-export default function drawEntryPoints (
+export default function drawEntryPoints(
   ctx,
   activeEntryPoints,
   goals,
@@ -11,7 +11,7 @@ export default function drawEntryPoints (
 ) {
   // recursively calls itself
   // so that it constructs the full sub-tree for each root Goal
-  function getGoal (goalAddress) {
+  function getGoal(goalAddress) {
     return {
       ...goals[goalAddress],
       children: edgesAsArray
@@ -43,12 +43,13 @@ export default function drawEntryPoints (
       radius: 15,
       color: entryPoint.color,
       stroke: true,
-      strokeWidth: 3,
+      strokeWidth: 2,
       boxShadow: false
     })
     ctx.fillStyle = entryPoint.color
-    ctx.font = '25px ' + fontFamily
-    ctx.fillText(goal.content, left, top - 40)
+    ctx.font = '25px ' + 'hk-grotesk-bold'
+    // distance of entry point title from dotted rectangle
+    ctx.fillText(goal.content, left, top - 20)
     ctx.restore()
   })
 }

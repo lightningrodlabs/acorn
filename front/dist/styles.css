@@ -149,11 +149,11 @@ h4 {
   color: #4d4d4d;
   font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
   font-size: 20px;
-  line-height: 24px;
+  line-height: 28px;
 }
 
 .goal_form ::selection {
-  background: #77fff5;
+  background: #cdf0ee;
 }
 
 /* HoverOverlay */
@@ -163,7 +163,7 @@ h4 {
   display: flex;
   flex-direction: row;
   list-style: none;
-  margin: 0 0 0 -85px;
+  margin: 0 0 0 -83px;
   /* (36:width * 2) + 6:between-margin + 6:edge-margin */
   padding: 0;
 }

@@ -21,7 +21,7 @@ import moment from 'moment'
 import drawRoundCornerRectangle from './drawRoundCornerRectangle'
 
 // render a goal card
-export default function render (
+export default function render(
   goal,
   members,
   { x, y },
@@ -135,19 +135,25 @@ export default function render (
     })
   }
 
+  const goalMetaPadding = 8
+
   if (goal.time_frame) {
-    const calendarWidth = 13,
-      calendarHeight = 13
+    const calendarWidth = 12,
+      calendarHeight = 12
     const img = getOrSetImageForUrl(
-      'img/calendar.svg',
+      '',
       calendarWidth,
       calendarHeight
     )
+    // wait for the image to load before
+    // trying to draw
     if (!img) return
-    const xImgDraw = x + goalWidth / 2 - calendarWidth - 140
-    const yImgDraw = y + goalHeight / 2 - calendarHeight + 46
-    const textBoxLeft = xImgDraw + textBoxMarginLeft - 8
-    const textBoxTop = yImgDraw + textBoxMarginTop / 4 - 6
+    // image will draw, so calculate where to put it
+    // and the text
+    const xImgDraw = x + goalMetaPadding + 4
+    const yImgDraw = y + goalHeight - calendarHeight - goalMetaPadding - 6
+    const textBoxLeft = xImgDraw + textBoxMarginLeft - 12
+    const textBoxTop = yImgDraw + textBoxMarginTop / 4 - 8
     let text = goal.time_frame.from_date
       ? String(moment.unix(goal.time_frame.from_date).format('MMM D, YYYY - '))
       : ''
@@ -157,7 +163,7 @@ export default function render (
     ctx.drawImage(img, xImgDraw, yImgDraw, calendarWidth, calendarHeight)
     ctx.save()
     ctx.fillStyle = '#898989'
-    ctx.font = '13px hk-grotesk-medium'
+    ctx.font = '13px hk-grotesk-semibold'
     ctx.fillText(text, textBoxLeft, textBoxTop)
     ctx.restore()
   }
@@ -167,8 +173,8 @@ export default function render (
     // adjust the x position according to the index of this member
     // since there can be many
     const xAvatarDraw =
-      x + goalWidth - (index + 1) * (avatarWidth + avatarSpace)
-    const yAvatarDraw = y + goalHeight - avatarHeight - avatarSpace
+      x + goalWidth - goalMetaPadding - (index + 1) * (avatarWidth) - (index * avatarSpace)
+    const yAvatarDraw = y + goalHeight - goalMetaPadding - avatarHeight
 
     // first of all, render the initials
     // if there's no image set
@@ -191,7 +197,7 @@ export default function render (
       ctx.restore()
       ctx.save()
       ctx.fillStyle = '#FFF'
-      ctx.font = '11px hk-grotesk-medium'
+      ctx.font = '11px hk-grotesk-bold'
       ctx.fillText(initials, xAvatarDraw + 5, yAvatarDraw + 7)
       ctx.restore()
       return
@@ -220,8 +226,27 @@ export default function render (
     ctx.closePath()
     ctx.clip()
 
+
     // url, x coordinate, y coordinate, width, height
-    ctx.drawImage(img, xAvatarDraw, yAvatarDraw, avatarWidth, avatarHeight)
+    let imgHeightToDraw = avatarHeight, imgWidthToDraw = avatarWidth
+    let imgXToDraw = xAvatarDraw, imgYToDraw = yAvatarDraw
+    // make sure avatar image doesn't stretch on canvas
+    // if image width is more that image height (landscape)
+    if (img.width / img.height > 1) {
+      imgHeightToDraw = avatarHeight
+      imgWidthToDraw = img.width / img.height * avatarWidth
+      // move to the left by the amount that would center the image
+      imgXToDraw = xAvatarDraw - (imgWidthToDraw - avatarWidth) / 2
+    }
+    // if image height is more that image width (portrait)
+    else if (img.width / img.height < 1) {
+      imgWidthToDraw = avatarWidth
+      imgHeightToDraw = img.height / img.width * avatarHeight
+      // move upwards by the amount that would center the image
+      imgYToDraw = yAvatarDraw - (imgHeightToDraw - avatarHeight) / 2
+    }
+
+    ctx.drawImage(img, imgXToDraw, imgYToDraw, imgWidthToDraw, imgHeightToDraw)
 
     ctx.beginPath()
     ctx.arc(xAvatarDraw, yAvatarDraw, avatarRadius, 0, Math.PI * 2, true)

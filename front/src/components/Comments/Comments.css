@@ -19,7 +19,7 @@
   flex-wrap: nowrap;
 }
 
-.comment > div:last-child {
+.comment>div:last-child {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -35,6 +35,11 @@
   display: flex;
   width: 100%;
   position: relative;
+  box-sizing: border-box;
+  border: 1.2px solid #d1d1d1;
+  box-shadow: inset 0 0px 1px rgba(0, 0, 0, 0.075);
+  border-radius: 18px;
+  background-color: #f9f9f9;
 }
 
 .input_comment_wrapper textarea {
@@ -51,14 +56,7 @@
   line-height: 16px;
 }
 
-.input_comment_wrapper {
-  box-sizing: border-box;
-  border: 1.2px solid #d1d1d1;
-  box-shadow: inset 0 0px 1px rgba(0, 0, 0, 0.075);
-  border-radius: 18px;
-}
-
-.input_comment textarea:focus > .input_comment_wrapper {
+.input_comment textarea:focus>.input_comment_wrapper {
   border: 1.5px solid #5f65ff;
 }
 
@@ -68,11 +66,11 @@
   margin-top: 0px;
 }
 
-.comment_save_button > .icon {
+.comment_save_button>.icon {
   padding: 4px;
 }
 
-.comment_save_button > .icon .inner-icon {
+.comment_save_button>.icon .inner-icon {
   background: #00beb0;
   transition: background 0.2s ease;
 }
@@ -82,7 +80,7 @@
   margin-right: 10px;
 }
 
-.avatar_comment_container > .avatar {
+.avatar_comment_container>.avatar {
   height: 36px;
   width: 36px;
   border-radius: 50%;

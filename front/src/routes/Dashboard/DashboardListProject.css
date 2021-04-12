@@ -34,7 +34,7 @@
 .dashboard-list-project-wrapper {
   display: flex;
   flex-direction: column;
-  border-bottom: 2px solid #ebebeb;
+  border-bottom: 1px solid #f1ece9;
   padding-top: 20px;
   padding-bottom: 20px;
   position: relative;
@@ -67,7 +67,7 @@
 }
 
 .dashboard-list-project-name {
-  font-size: 24px;
+  font-size: 22px;
   font-family: 'hk-grotesk-extrabold', Helvetica, sans-serif;
   text-decoration: none;
   color: #535353;

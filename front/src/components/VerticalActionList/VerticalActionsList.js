@@ -96,14 +96,14 @@ function VerticalActionsList ({
     <>
       <div className='vertical_actions_list'>
         <VerticalActionListItem
-          label='status'
+          label='Status'
           icon={
             <StatusIcon size='very-small' status={goal.status} hideTooltip />
           }
           onClick={() => toggleView('status')}
         />
         <VerticalActionListItem
-          label='squirrels'
+          label='Squirrels'
           icon={
             <Icon
               size='small'
@@ -114,7 +114,7 @@ function VerticalActionsList ({
           onClick={() => toggleView('squirrels')}
         />
         <VerticalActionListItem
-          label='timeframe'
+          label='Timeframe'
           icon={
             <Icon
               size='small'
@@ -125,7 +125,7 @@ function VerticalActionsList ({
           onClick={() => toggleView('timeframe')}
         />
         <VerticalActionListItem
-          label='hierarchy'
+          label='Hierarchy'
           icon={
             <Icon
               size='small'
@@ -136,7 +136,7 @@ function VerticalActionsList ({
           onClick={() => toggleView('hierarchy')}
         />
         <VerticalActionListItem
-          label='priority'
+          label='Priority'
           icon={
             <Icon
               size='small'

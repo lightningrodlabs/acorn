@@ -2,6 +2,11 @@
 
 .vertical_actions_list {
     margin-left: 10px;
+    box-shadow: 0px 0px 10px #0000001f;
+    border-radius: 12px;
+    background-color: #f3f0eb;
+    background-color: #ffffff;
+    padding: 10px 0;
 }
 
 .vertical_action_close {
@@ -13,18 +18,18 @@
 }
 
 .action_list_item {
-    box-shadow: 0px 0px 10px #0000001f;
+    /* box-shadow: 0px 0px 10px #0000001f; */
     height: 28px;
-    background-color: #f3f0eb;
-    border: 1px solid #f3f0eb;
-    border-radius: 16px;
+    /* background-color: #f3f0eb; */
+    /* border: 1px solid #f3f0eb; */
+    /* border-radius: 12px; */
     font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
-    padding: 10px 25px;
+    padding: 12px 22px;
     outline: 0;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 18px;
     color: black;
-    margin-bottom: 5px;
+    /* margin-bottom: 5px; */
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -33,9 +38,9 @@
 }
 
 .action_list_item:hover {
-    background-color: #5f65ff;
-    border: 1px solid #5f65ff;
-    color: #fff;
+    background-color: #ecebe8;
+    /* border: 1px solid #5f65ff; */
+    /* color: #fff; */
 }
 
 .action_list_item .icon {
@@ -43,7 +48,7 @@
 }
 
 .action_list_item:hover>.icon.not-hoverable .inner-icon {
-    background-color: #fff;
+    /* background-color: #fff; */
 }
 
 .action_list_item span {

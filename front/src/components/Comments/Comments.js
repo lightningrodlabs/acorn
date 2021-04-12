@@ -90,7 +90,7 @@ function Comments({
             <TextareaAutosize
               type='text'
               value={value}
-              placeholder='write your comment here'
+              placeholder='Write your comment here'
               onChange={e => setValue(e.target.value)}
             />
             <div className='comment_save_button'>

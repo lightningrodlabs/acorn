@@ -1,7 +1,7 @@
 .create_profile_page {
   width: 100%;
   height: 100vh;
-  background: #ffffff;
+  background: #fbf9f7;
   display: flex;
   flex-direction: row;
 }
@@ -26,11 +26,9 @@
   .validating_form_input {
     margin-bottom: 35px;
   }
-
   .profile_edit_form_title {
     margin-bottom: 46px;
   }
-
   .profile_edit_form h4 {
     margin-top: 12px;
   }
