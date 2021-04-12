@@ -30,18 +30,18 @@ import IntroScreen from '../components/IntroScreen/IntroScreen'
 import selectEntryPoints from '../projects/entry-points/select'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 
-function App (props) {
-  const {
-    activeEntryPoints,
-    projectName,
-    agentAddress,
-    whoami, // .entry and .address
-    hasFetchedForWhoami,
-    updateWhoami,
-    navigationPreference,
-    setNavigationPreference,
-    hideGuidebookHelpMessage
-  } = props
+function App({
+  activeEntryPoints,
+  projectName,
+  projectId,
+  agentAddress,
+  whoami, // .entry and .address
+  hasFetchedForWhoami,
+  updateWhoami,
+  navigationPreference,
+  setNavigationPreference,
+  hideGuidebookHelpMessage
+}) {
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
 
@@ -141,6 +141,7 @@ function App (props) {
             setShowUpdatePromptModal={setShowUpdatePromptModal}
             activeEntryPoints={activeEntryPoints}
             projectName={projectName}
+            projectId={projectId}
             whoami={whoami}
             updateStatus={updateStatus}
             setShowProfileEditForm={setShowProfileEditForm}
@@ -196,7 +197,7 @@ App.propTypes = {
   updateWhoami: PropTypes.func
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
     dispatch,
     setNavigationPreference: preference => {
@@ -209,7 +210,7 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const {
     ui: {
       hasFetchedForWhoami,
@@ -239,6 +240,7 @@ function mapStateToProps (state) {
     profilesCellIdString,
     activeEntryPoints: activeEntryPointsObjects,
     projectName,
+    projectId: activeProject,
     whoami: state.whoami,
     hasFetchedForWhoami,
     agentAddress: state.agentAddress,
@@ -246,7 +248,7 @@ function mapStateToProps (state) {
   }
 }
 
-function mergeProps (stateProps, dispatchProps, _ownProps) {
+function mergeProps(stateProps, dispatchProps, _ownProps) {
   const { profilesCellIdString } = stateProps
   const { dispatch } = dispatchProps
   return {

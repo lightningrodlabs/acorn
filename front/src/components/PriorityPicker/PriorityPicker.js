@@ -135,8 +135,8 @@ function PrioritySlider({
   withLabels,
   value,
   disabled = false,
-  onChange = () => {},
-  onChangeCommitted = () => {},
+  onChange = () => { },
+  onChangeCommitted = () => { },
 }) {
   const classes = useStyles()
   return (
@@ -342,12 +342,12 @@ function Priority({
                 <div
                   className='save-my-vote'
                   onClick={myVote ? onUpdateVote : createVote}>
-                  {myVote ? 'update' : 'save'} my vote
+                  {myVote ? 'Update' : 'Save'} my vote
                 </div>
                 {/* remove my vote */}
                 {myVote && (
                   <div className='remove-my-vote' onClick={handleArchive}>
-                    remove my vote
+                    Remove my vote
                   </div>
                 )}
               </div>
@@ -359,9 +359,8 @@ function Priority({
       <CSSTransition
         in={!openMyVote}
         timeout={400}
-        className={`aggregated-votes-animation priority-tabs aggregated-priority-wrapper ${
-          openMyVote ? 'closed' : ''
-        }`}>
+        className={`aggregated-votes-animation priority-tabs aggregated-priority-wrapper ${openMyVote ? 'closed' : ''
+          }`}>
         <div>
           <div
             className={`${aggClassName} priority-tab-with-icon`}

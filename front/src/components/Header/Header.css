@@ -5,19 +5,18 @@
 }
 
 .header {
-  width: 100%;
-  margin-top: 8px;
+  /* width: 100%; */
+  margin: 8px;
   display: flex;
   justify-content: space-between;
   max-height: 46px;
 }
 
-/* Top Left Panel */
+/* Header Left Panel */
 
-.top-left-panel {
+.header-left-panel {
   display: flex;
-  width: auto;
-  margin-left: 10px;
+  margin-right: 8px;
 }
 
 .logo {
@@ -126,6 +125,7 @@
 }
 
 .export-list-wrapper {
+  margin-top: 4px;
   position: absolute;
   border-radius: 14px;
   background-color: #ffffff;
@@ -161,7 +161,7 @@
   position: relative;
   font-size: 13px;
   margin-left: 5px;
-  background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
   display: -webkit-flex;
   /* Safari */
@@ -196,30 +196,64 @@
   visibility: visible;
 }
 
-/* Top Right Panel */
+/* Header Middle Panel */
 
-.top-right-panel {
+.header-middle-panel {
+  flex: 1
+}
+
+.priority-menu-wrapper {
+  height: 100%;
+  box-shadow: 0px 0px 6px #00000010;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* margin: 0 8px; */
+  padding: 0 14px;
+  border-radius: 10px;
+  flex: 1;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.priority-menu-item {
+  padding: 12px 2px;
+  margin-right: 16px;
+  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 13px;
+  text-decoration: none;
+  color: #4d4d4d;
+  transform: 0.2s all ease-in-out;
+}
+
+.priority-menu-item:hover {
+  color: #5f65ff;
+}
+
+.priority-menu-item.active {
+  border-bottom: 3px solid #5f65ff;
+  color: #5f65ff;
+}
+
+/* Header Right Panel */
+
+.header-right-panel {
+  margin-left: 8px;
   position: relative;
-  margin-right: 10px;
-  margin-left: 10px;
-  padding: 5px 20px 5px 20px;
-  background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
+  padding: 5px 10px;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  /* align-items: center; */
+  align-content: center;
   box-sizing: border-box;
 }
 
-.top-right-panel-icon {
-  height: 24px;
-  width: 24px;
-  padding: 1px;
+.header-right-panel-icon {
   display: inline-block;
   position: relative;
-  margin-top: 0;
-  margin-right: 20px;
-  margin-left: 0;
+  margin-right: 4px;
 }
 
 .stop-right-panel div .icon {

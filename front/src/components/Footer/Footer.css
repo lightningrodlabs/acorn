@@ -42,7 +42,7 @@
   position: fixed;
   bottom: 10px;
   right: 10px;
-  background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
   max-height: 50px;
   padding: 12px 0px;

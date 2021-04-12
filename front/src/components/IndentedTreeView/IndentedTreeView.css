@@ -1,10 +1,10 @@
 .indented-view-search {
   display: flex;
   align-items: center;
-  padding: 5px 8px;
-  border-radius: 10px;
+  padding: 6px 8px;
+  border-radius: 8px;
   background: #ffffff;
-  margin: 15px;
+  margin: 8px;
 }
 
 .indented-view-resizer {
@@ -36,11 +36,11 @@
 }
 
 .indented-view-goals {
-  margin-left: 15px;
+  margin-left: 8px;
 }
 
 .indented-view-goal {
-  margin-top: 8px;
+  margin-top: 4px;
   font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
   font-size: 13px;
   line-height: 17px;
@@ -53,11 +53,15 @@
   align-items: center;
 }
 
+.indented-view-goal-item-arrow .icon {
+  padding: 3px;
+}
+
 .indented-view-goal-content {
-  margin: 0 6px;
+  margin: 0 2px;
   cursor: pointer;
-  padding: 11px;
-  border-radius: 10px;
+  padding: 8px;
+  border-radius: 8px;
   text-decoration: none;
   flex: 1;
   display: flex;
@@ -70,9 +74,9 @@
 }
 
 .indented-view-goal-content-status-color {
-  width: 11px;
-  height: 11px;
-  margin: 0 4px 0 0;
+  width: 8px;
+  height: 8px;
+  margin: 1px 0 0 0;
   padding: 1px;
 }
 

@@ -24,6 +24,15 @@ function ErrorScreen({ stackTrace }) {
             </a>
             . Try pressing 'Reload' and if that doesn't work, try fully restarting the application.
           </div>
+          <div className='error-screen-buttons'>
+            <a
+              className='error-screen-report-issue-button'
+              href='https://github.com/h-be/acorn-release/issues/new?assignees=&labels=bug&template=bug_report.md&title='
+              target='_blank'>
+              <Button text='Report Issue' size='medium' className='green' />
+            </a>
+            <Button text='Reload' size='medium' className='purple' onClick={() => window.location.reload()} />
+          </div>
           <div className='show-stack-trace-wrapper'>
             <div
               className='show-stack-trace-button'
@@ -43,15 +52,7 @@ function ErrorScreen({ stackTrace }) {
               </textarea>
             )}
           </div>
-          <div className='error-screen-buttons'>
-            <a
-              className='error-screen-report-issue-button'
-              href='https://github.com/h-be/acorn-release/issues/new?assignees=&labels=bug&template=bug_report.md&title='
-              target='_blank'>
-              <Button text='Report Issue' size='medium' className='green' />
-            </a>
-            <Button text='Reload' size='medium' className='purple' onClick={() => window.location.reload()}/>
-          </div>
+
         </div>
         <div className='error-screen-column-right'>
           <img src='img/error-screen-image.png' />

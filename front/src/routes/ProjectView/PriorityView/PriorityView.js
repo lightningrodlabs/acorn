@@ -10,15 +10,16 @@ import {
 import { connect } from 'react-redux'
 import _ from 'lodash'
 
-import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeView'
-
 import './PriorityView.css'
+
+import priorityMenuItems from '../../../components/Header/priorityMenuItems'
+import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeView'
 import PriorityQuadrant from '../../../components/PriorityQuadrant/PriorityQuadrant'
 import PriorityPicker from '../../../components/PriorityPicker/PriorityPicker'
 import goalsAsTree from '../../../projects/goals/goalsAsTrees'
 import { CSSTransition } from 'react-transition-group'
 
-function Quadrants ({
+function Quadrants({
   projectId,
   topLeft,
   topRight,
@@ -29,58 +30,45 @@ function Quadrants ({
 }) {
   return (
     <div className='priority-quadrants-wrapper'>
-      <div className='priority-quadrants-content'>
-        <div className='priority-quadrants-row'>
-          <PriorityQuadrant
-            projectId={projectId}
-            title={topLeft.title}
-            titleClassname='top-left'
-            goals={topLeft.goals}
-            whoami={whoami}
-            setPriorityPickerAddress={setPriorityPickerAddress}
-          />
-          <div className='priority-quadrants-vertical-divider'></div>
-          <PriorityQuadrant
-            projectId={projectId}
-            title={topRight.title}
-            titleClassname='top-right'
-            goals={topRight.goals}
-            whoami={whoami}
-            setPriorityPickerAddress={setPriorityPickerAddress}
-          />
-        </div>
-        <div className='priority-quadrants-horizontal-divider'></div>
-        <div className='priority-quadrants-row'>
-          <PriorityQuadrant
-            projectId={projectId}
-            title={bottomLeft.title}
-            titleClassname='bottom-left'
-            goals={bottomLeft.goals}
-            whoami={whoami}
-            setPriorityPickerAddress={setPriorityPickerAddress}
-          />
-          <div className='priority-quadrants-vertical-divider'></div>
-          <PriorityQuadrant
-            projectId={projectId}
-            title={bottomRight.title}
-            titleClassname='bottom-right'
-            goals={bottomRight.goals}
-            whoami={whoami}
-            setPriorityPickerAddress={setPriorityPickerAddress}
-          />
-        </div>
-      </div>
+      <PriorityQuadrant
+        projectId={projectId}
+        title={topLeft.title}
+        goals={topLeft.goals}
+        whoami={whoami}
+        setPriorityPickerAddress={setPriorityPickerAddress}
+      />
+      <PriorityQuadrant
+        projectId={projectId}
+        title={topRight.title}
+        goals={topRight.goals}
+        whoami={whoami}
+        setPriorityPickerAddress={setPriorityPickerAddress}
+      />
+      <PriorityQuadrant
+        projectId={projectId}
+        title={bottomLeft.title}
+        goals={bottomLeft.goals}
+        whoami={whoami}
+        setPriorityPickerAddress={setPriorityPickerAddress}
+      />
+      <PriorityQuadrant
+        projectId={projectId}
+        title={bottomRight.title}
+        goals={bottomRight.goals}
+        whoami={whoami}
+        setPriorityPickerAddress={setPriorityPickerAddress}
+      />
     </div>
   )
 }
 
-function getSubsetOfGoalsBasedOnContext (goalTrees, contextGoalAddress) {
+function getSubsetOfGoalsBasedOnContext(goalTrees, contextGoalAddress) {
   if (!contextGoalAddress) {
     return goalTrees
   }
 
   // use recursion to find the goal down in the tree
-  function checkForGoalInChildren (goal) {
+  function checkForGoalInChildren(goal) {
     const foundInChildren = goal.children.find(
       g => g.address === contextGoalAddress
     )
@@ -107,7 +95,7 @@ function getSubsetOfGoalsBasedOnContext (goalTrees, contextGoalAddress) {
   }
 }
 
-function UrgencyImportanceQuadrants ({
+function UrgencyImportanceQuadrants({
   projectId,
   goalTrees,
   goalVotes,
@@ -155,7 +143,7 @@ function UrgencyImportanceQuadrants ({
   )
 }
 
-function ImpactEffortQuadrants ({
+function ImpactEffortQuadrants({
   projectId,
   goalTrees,
   goalVotes,
@@ -203,7 +191,7 @@ function ImpactEffortQuadrants ({
   )
 }
 
-function Uncategorized ({
+function Uncategorized({
   projectId,
   goalTrees,
   goalVotes,
@@ -231,30 +219,7 @@ function Uncategorized ({
   )
 }
 
-function PriorityMenuItem ({ exact, title, slug, projectId }) {
-  return (
-    <NavLink
-      exact={exact}
-      to={slug.replace(':projectId', projectId)}
-      className='priority-menu-item'
-      activeClassName='active'
-    >
-      {title}
-    </NavLink>
-  )
-}
-
-function PriorityView ({ projectId, goalTrees, goalVotes }) {
-  const priorityMenuItems = [
-    ['Urgency x Importance', `/project/:projectId/priority/urgency-importance`],
-    ['Impact x Effort', '/project/:projectId/priority/impact-effort'],
-    // ['Urgency', '/project/:projectId/priority/urgency'],
-    // ['Importance', '/project/:projectId/priority/importance'],
-    // ['Impact', '/project/:projectId/priority/impact'],
-    // ['Effort', '/project/:projectId/priority/effort'],
-    ['Uncategorized', '/project/:projectId/priority/uncategorized']
-  ]
-
+function PriorityView({ projectId, goalTrees, goalVotes }) {
   const [priorityPickerAddress, setPriorityPickerAddress] = useState(null)
   const [priorityPickerOpen, setPriorityPickerOpen] = useState(false)
 
@@ -267,19 +232,7 @@ function PriorityView ({ projectId, goalTrees, goalVotes }) {
   return (
     <div className='priority-view-wrapper'>
       <IndentedTreeView goalTrees={goalTrees} />
-      <div className='priority-menu-wrapper'>
-        {priorityMenuItems.map(([menuTitle, menuSlugs], index) => {
-          return (
-            <PriorityMenuItem
-              key={index}
-              exact={index === 0}
-              title={menuTitle}
-              slug={menuSlugs}
-              projectId={projectId}
-            />
-          )
-        })}
-      </div>
+
       <Switch>
         {/* impact - effort */}
         <Route path={priorityMenuItems[1][1]}>
@@ -335,12 +288,12 @@ function PriorityView ({ projectId, goalTrees, goalVotes }) {
   )
 }
 
-function PriorityRedirect () {
+function PriorityRedirect() {
   const { projectId } = useParams()
   return <Redirect to={`/project/${projectId}/priority/urgency-importance`} />
 }
 
-function getSortedAveragesGoalLists (
+function getSortedAveragesGoalLists(
   allGoals,
   goalVotes,
   voteKeyOne,
@@ -376,7 +329,7 @@ function getSortedAveragesGoalLists (
     })
     .filter(goal => goal.averageValues !== NO_VOTES)
 
-  function sortByAverageAverage (a, b) {
+  function sortByAverageAverage(a, b) {
     return a.averageAverage < b.averageAverage ? 1 : -1
   }
 
@@ -408,11 +361,11 @@ function getSortedAveragesGoalLists (
   ]
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {}
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   const projectId = state.ui.activeProject
   const goalVotes = state.projects.goalVotes[projectId] || {}
 

@@ -18,7 +18,7 @@ import ActivityHistory from './ActivityHistory/ActivityHistory'
 import Attachments from './Attachments/Attachments'
 import ExpandedViewNavBar from './ExpandedViewNavBar/ExpandedViewNavBar'
 
-function SquirrelInfoPopup ({ squirrel, onClose, archiveGoalMember }) {
+function SquirrelInfoPopup({ squirrel, onClose, archiveGoalMember }) {
   const ref = useRef()
   useOnClickOutside(ref, onClose)
 
@@ -45,7 +45,7 @@ function SquirrelInfoPopup ({ squirrel, onClose, archiveGoalMember }) {
   )
 }
 
-export default function ExpandedViewModeContent ({
+export default function ExpandedViewModeContent({
   projectId,
   goalAddress,
   goal,
@@ -217,7 +217,7 @@ export default function ExpandedViewModeContent ({
       </div>
       <div className='expanded_view_description'>
         <TextareaAutosize
-          placeholder='add description here'
+          placeholder='Add description here'
           value={description}
           onBlur={updateContent}
           onChange={handleOnChangeDescription}
