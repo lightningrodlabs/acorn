@@ -24,3 +24,19 @@ crud!(
     get_peers_content,
     convert_to_receiver_signal
 );
+
+impl EntryPoint {
+    pub fn new(
+        color: String,
+        creator_address: WrappedAgentPubKey,
+        created_at: f64,
+        goal_address: WrappedHeaderHash,
+    ) -> Self {
+        Self {
+            color,
+            creator_address,
+            created_at,
+            goal_address,
+        }
+    }
+}

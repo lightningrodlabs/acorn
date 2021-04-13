@@ -12,7 +12,10 @@ pub enum Error {
     #[error("Parent and Child entries are not different")]
     IdenticalParentChild,
 
-    #[error("Attempted to update an Edge")]
+    #[error("Should not use an AgentPubKey other than your own here")]
+    CorruptAgentPubKeyReference,
+
+    #[error("Updates not allowed for this entry type")]
     UpdateAttempted,
 
     #[error("Wasm error {0}")]

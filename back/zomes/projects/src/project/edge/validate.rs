@@ -1,5 +1,5 @@
 use crate::project::edge::crud::Edge;
-use crate::project::edge::error::Error;
+use crate::project::error::Error;
 use crate::project::goal::crud::Goal;
 use dna_help::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
@@ -22,10 +22,6 @@ impl TryFrom<&Element> for Edge {
 }
 
 #[hdk_extern]
-/// Create only.
-// Throughout this method we early return
-// and for validation calls, instead of returning an Err if it's invalid
-// we return a ValidateCallbackResult::Invalid
 fn validate_create_entry_edge(validate_data: ValidateData) -> ExternResult<ValidateCallbackResult> {
     let proposed_edge = match Edge::try_from(&validate_data.element) {
         Ok(edge) => edge,
@@ -64,20 +60,20 @@ fn validate_create_entry_edge(validate_data: ValidateData) -> ExternResult<Valid
 }
 
 #[hdk_extern]
-/// Updates are not allowed for Edge.
+/// Updates are not allowed
 fn validate_update_entry_edge(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
     Error::UpdateAttempted.into()
 }
 
 #[hdk_extern]
-/// Deletes are allowed for Edge.
+/// Deletes are allowed by anyone
 fn validate_delete_entry_edge(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
 }
 
 #[cfg(test)]
 pub mod tests {
-    use crate::project::edge::error::Error;
+    use crate::project::error::Error;
     use crate::project::fixtures::fixtures::{
         EdgeFixturator, GoalFixturator, WrappedHeaderHashFixturator,
     };

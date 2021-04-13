@@ -1,7 +1,7 @@
 #[cfg(test)]
 pub(crate) mod fixtures {
     use crate::project::goal::crud::{Goal, Hierarchy, Status};
-    use crate::project::{edge::crud::Edge, goal::crud::TimeFrame};
+    use crate::project::{edge::crud::Edge, entry_point::crud::EntryPoint, goal::crud::TimeFrame};
     use ::fixt::prelude::*;
     use dna_help::{WrappedAgentPubKey, WrappedHeaderHash};
     use hdk::prelude::*;
@@ -20,6 +20,11 @@ pub(crate) mod fixtures {
     fixturator!(
       Edge;
         constructor fn new(WrappedHeaderHash, WrappedHeaderHash, f64);
+    );
+
+    fixturator!(
+      EntryPoint;
+        constructor fn new(String, WrappedAgentPubKey, f64, WrappedHeaderHash);
     );
 
     type OptionWrappedAgentPubKey = Option<WrappedAgentPubKey>;
