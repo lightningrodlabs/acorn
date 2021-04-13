@@ -8,11 +8,11 @@ impl TryFrom<&Element> for EntryPoint {
     type Error = Error;
     fn try_from(element: &Element) -> Result<Self, Self::Error> {
         match element.header() {
-            // Only creates are allowed for a Edge.
+            // Only creates are allowed
             Header::Create(_) => Ok(match element.entry() {
-                ElementEntry::Present(serialized_edge) => {
-                    match EntryPoint::try_from(serialized_edge) {
-                        Ok(edge) => edge,
+                ElementEntry::Present(serialized_entry) => {
+                    match EntryPoint::try_from(serialized_entry) {
+                        Ok(entry) => entry,
                         Err(e) => return Err(Error::Wasm(e)),
                     }
                 }
@@ -24,10 +24,6 @@ impl TryFrom<&Element> for EntryPoint {
 }
 
 #[hdk_extern]
-/// Create only.
-// Throughout this method we early return
-// and for validation calls, instead of returning an Err if it's invalid
-// we return a ValidateCallbackResult::Invalid
 fn validate_create_entry_entry_point(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
@@ -38,7 +34,7 @@ fn validate_create_entry_entry_point(
 
     if let Header::Create(header) = validate_data.element.header().clone() {
         // creator_address must match header author
-        if header.author.as_hash().clone() != proposed_entry.creator_address.0 {
+        if proposed_entry.creator_address.0 != header.author.as_hash().clone() {
             return Ok(Error::CorruptAgentPubKeyReference.into());
         }
 
@@ -127,15 +123,17 @@ pub mod tests {
             Error::CorruptAgentPubKeyReference.into(),
         );
 
+        // make the creator_address valid by making it equal the
+        // AgentPubKey of the agent committing,
+        // but it will still be missing the goal dependency so it will
+        // return UnresolvedDependencies
+        entry_point.creator_address =
+        WrappedAgentPubKey::new(create_header.author.as_hash().clone());
+        *validate_data.element.as_entry_mut() =
+        ElementEntry::Present(entry_point.clone().try_into().unwrap());
+        
         // now, since validation is dependent on other entries, we begin
         // to have to mock `get` calls to the HDK
-
-        // make the creator_address valid by making it equal the
-        // AgentPubKey of the agent committing
-        entry_point.creator_address =
-            WrappedAgentPubKey::new(create_header.author.as_hash().clone());
-        *validate_data.element.as_entry_mut() =
-            ElementEntry::Present(entry_point.clone().try_into().unwrap());
 
         let mut mock_hdk = MockHdkT::new();
         // the resolve_dependencies `get` call of the parent goal
@@ -151,7 +149,7 @@ pub mod tests {
         set_hdk(mock_hdk);
 
         // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
-        // equal to the Hash of the child Goal address
+        // equal to the Hash of the parent Goal address
         assert_eq!(
             super::validate_create_entry_entry_point(validate_data.clone()),
             Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
@@ -165,7 +163,7 @@ pub mod tests {
         // the parent goal is found/exists
         // -> good to go
 
-        // now it is as if there is a Goal at the parent_address, and so only the child_address fails now
+        // now it is as if there is a Goal at the parent_address
         let goal = fixt!(Goal);
         let mut goal_element = fixt!(Element);
         *goal_element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
