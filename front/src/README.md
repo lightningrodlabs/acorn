@@ -135,8 +135,8 @@ The UI element that allows users to create a new Goal
       parentAddress: null,
       content: '',
       isOpen: false,
-      xLoc: 0,
-      yLoc: 0
+      leftEdgeXPosition: 0,
+      topEdgeYPosition: 0
     },
 
 Which goals are currently selected

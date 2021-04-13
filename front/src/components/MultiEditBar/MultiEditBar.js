@@ -118,7 +118,7 @@ function MultiEditBar({
       You're about to archive the following {selectedGoals.length} card(s):
       <div className='modal-goals-list'>
         {selectedGoals.map(goal => (
-          <div key={goal.address}>{goal.content}</div>
+          <div key={goal.address}>- {goal.content}</div>
         ))}
       </div>
       You will be able to see these cards in the archive view mode in the

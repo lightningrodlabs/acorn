@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: row;
   /* justify-content is temporarily disabled other NavTab items are developed */
-  /* justify-content: space-between; */
-  border-bottom: 1px solid #e8e8e8;
+  justify-content: space-between;
+  /* border-bottom: 1px solid #e8e8e8; */
 }
 
 .expanded-view-nav-bar-item {

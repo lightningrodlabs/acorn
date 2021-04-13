@@ -1,15 +1,15 @@
 /* VerticalActionsList */
 
-.vertical_actions_list {
+.vertical-actions-list {
+    position: absolute;
     margin-left: 10px;
     box-shadow: 0px 0px 10px #0000001f;
     border-radius: 12px;
-    background-color: #f3f0eb;
     background-color: #ffffff;
     padding: 10px 0;
 }
 
-.vertical_action_close {
+.vertical-actions-close {
     cursor: pointer;
     top: 20px;
     right: 20px;
@@ -17,19 +17,14 @@
     height: 14px;
 }
 
-.action_list_item {
-    /* box-shadow: 0px 0px 10px #0000001f; */
+.actions-list-item {
     height: 28px;
-    /* background-color: #f3f0eb; */
-    /* border: 1px solid #f3f0eb; */
-    /* border-radius: 12px; */
     font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
     padding: 12px 22px;
     outline: 0;
     font-size: 15px;
     line-height: 18px;
     color: black;
-    /* margin-bottom: 5px; */
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -37,25 +32,19 @@
     transition: 0.2s all ease-in-out;
 }
 
-.action_list_item:hover {
+.actions-list-item:hover {
     background-color: #ecebe8;
-    /* border: 1px solid #5f65ff; */
-    /* color: #fff; */
 }
 
-.action_list_item .icon {
+.actions-list-item span {
+    margin-left: 2px;
+}
+
+.actions-list-item .icon {
     margin-right: 5px;
 }
 
-.action_list_item:hover>.icon.not-hoverable .inner-icon {
-    /* background-color: #fff; */
-}
-
-.action_list_item span {
+.action-list-item span {
     margin-left: 3px;
     margin-bottom: 2px;
 }
-
-/* .action_list_item .icon.not-hoverable .inner-icon:hover {
-    background-color: #fff;
-} */

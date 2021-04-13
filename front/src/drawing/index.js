@@ -207,8 +207,8 @@ function render(store, canvas) {
       if (state.ui.goalForm.parentAddress) {
         const parentCoords = coordinates[state.ui.goalForm.parentAddress]
         const newGoalCoords = {
-          x: state.ui.goalForm.xLoc,
-          y: state.ui.goalForm.yLoc,
+          x: state.ui.goalForm.leftEdgeXPosition,
+          y: state.ui.goalForm.topEdgeYPosition,
         }
         const parentGoalText = state.projects.goals[
           state.ui.goalForm.parentAddress
@@ -318,7 +318,7 @@ function render(store, canvas) {
     drawGoalCard(
       { status: 'Uncertain' },
       [],
-      { x: state.ui.goalForm.xLoc, y: state.ui.goalForm.yLoc },
+      { x: state.ui.goalForm.leftEdgeXPosition, y: state.ui.goalForm.topEdgeYPosition },
       isEditing,
       state.ui.goalForm.content,
       isSelected,

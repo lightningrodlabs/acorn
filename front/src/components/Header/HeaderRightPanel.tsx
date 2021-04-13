@@ -30,7 +30,6 @@ function StatusMenuItem({ color, title, onClick }) {
     <button onClick={onClick}>
       {/* @ts-ignore */}
       <div className={`status-circle ${color}`} />
-      {/* <Icon name={img} className="user-status white not-hoverable" /> */}
       <p>{title}</p>
     </button>
   )

@@ -264,8 +264,10 @@
 /* Guidebook */
 
 .guidebook-modal.modal-wrapper {
-  width: 660px;
+  width: 620px;
   padding: 40px;
+  max-height: 1000px;
+  height: calc(100vh - 120px);
 }
 
 /* profile section on header */
@@ -281,7 +283,7 @@
 .status-circle-wrapper .status-circle {
   height: 10px;
   width: 10px;
-  box-shadow: 0px 0px 4px #0000001f;
+  box-shadow: 0px 0px 1px #00000030;
 }
 
 .avatar-and-status-wrapper {

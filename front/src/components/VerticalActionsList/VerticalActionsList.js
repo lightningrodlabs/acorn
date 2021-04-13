@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import moment from 'moment'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
+
+import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
+import layoutFormula from '../../drawing/layoutFormula'
+import { goalWidth } from '../../drawing/dimensions'
 
 import Icon from '../Icon/Icon'
 import StatusPicker from '../StatusPicker'
@@ -15,45 +18,47 @@ import { archiveGoalFully, updateGoal } from '../../projects/goals/actions'
 import { closeGoalForm } from '../../goal-form/actions'
 import Modal, { ModalContent } from '../Modal/Modal'
 
-import './VerticalActionList.css'
+import './VerticalActionsList.css'
 
-function VerticalActionListItem ({ onClick, label, icon }) {
+function VerticalActionListItem({ onClick, label, icon }) {
   return (
-    <div className='action_list_item' onClick={onClick}>
+    <div className="actions-list-item" onClick={onClick}>
       {icon}
       <span>{label}</span>
     </div>
   )
 }
 
-function VerticalActionsList ({
+function VerticalActionsList({
   projectId,
   goalAddress,
   goal,
   onArchiveClick,
-  updateGoal
+  updateGoal,
+  leftEdgeXPosition,
+  topEdgeYPosition,
 }) {
   const defaultViews = {
     status: false,
     squirrels: false,
     timeframe: false,
     priority: false,
-    hierarchy: false
+    hierarchy: false,
   }
   const [viewsOpen, setViews] = useState(defaultViews)
 
-  const innerUpdateGoal = key => val => {
+  const innerUpdateGoal = (key) => (val) => {
     updateGoal(
       {
         ...goal,
         timestamp_updated: moment().unix(),
-        [key]: val
+        [key]: val,
       },
       goalAddress
     )
   }
 
-  const toggleView = key => {
+  const toggleView = (key) => {
     setViews({ ...defaultViews, [key]: !viewsOpen[key] })
   }
 
@@ -73,7 +78,7 @@ function VerticalActionsList ({
     if (start && end) {
       timeframe = {
         from_date: start,
-        to_date: end
+        to_date: end,
       }
     }
 
@@ -81,7 +86,7 @@ function VerticalActionsList ({
       {
         ...goal,
         timestamp_updated: moment().unix(),
-        time_frame: timeframe
+        time_frame: timeframe,
       },
       goalAddress
     )
@@ -94,54 +99,60 @@ function VerticalActionsList ({
 
   return (
     <>
-      <div className='vertical_actions_list'>
+      <div
+        className="vertical-actions-list"
+        style={{
+          left: `${leftEdgeXPosition}px`,
+          top: `${topEdgeYPosition}px`,
+        }}
+      >
         <VerticalActionListItem
-          label='Status'
+          label="Status"
           icon={
-            <StatusIcon size='very-small' status={goal.status} hideTooltip />
+            <StatusIcon size="very-small" status={goal.status} hideTooltip />
           }
           onClick={() => toggleView('status')}
         />
         <VerticalActionListItem
-          label='Squirrels'
+          label="Squirrels"
           icon={
             <Icon
-              size='small'
-              name='squirrel.svg'
-              className='black not-hoverable'
+              size="small"
+              name="squirrel.svg"
+              className="black not-hoverable"
             />
           }
           onClick={() => toggleView('squirrels')}
         />
         <VerticalActionListItem
-          label='Timeframe'
+          label="Timeframe"
           icon={
             <Icon
-              size='small'
-              name='calendar.svg'
-              className='black not-hoverable'
+              size="small"
+              name="calendar.svg"
+              className="black not-hoverable"
             />
           }
           onClick={() => toggleView('timeframe')}
         />
         <VerticalActionListItem
-          label='Hierarchy'
+          label="Hierarchy"
           icon={
             <Icon
-              size='small'
-              name='hierarchy.svg'
-              className='black not-hoverable'
+              size="small"
+              name="hierarchy.svg"
+              className="black not-hoverable"
             />
           }
           onClick={() => toggleView('hierarchy')}
         />
         <VerticalActionListItem
-          label='Priority'
+          label="Priority"
           icon={
             <Icon
-              size='small'
-              name='priority.svg'
-              className='black not-hoverable'
+              size="small"
+              name="priority.svg"
+              className="black not-hoverable"
             />
           }
           onClick={() => toggleView('priority')}
@@ -197,14 +208,14 @@ function VerticalActionsList ({
       <Modal
         active={viewsOpen.archive}
         onClose={() => setViews({ ...defaultViews })}
-        className='archive_popup'
+        className="archive-popup"
       >
         <ModalContent
-          heading='Archiving'
+          heading="Archiving"
           content={archiveContent}
-          icon='archive.svg'
-          primaryButton='Yes, Archive'
-          altButton='Nevermind'
+          icon="archive.svg"
+          primaryButton="Yes, Archive"
+          altButton="Nevermind"
           primaryButtonAction={() => onArchiveClick(goalAddress)}
           altButtonAction={() => setViews({ ...defaultViews })}
         />
@@ -213,41 +224,51 @@ function VerticalActionsList ({
   )
 }
 
-VerticalActionsList.propTypes = {
-  projectId: PropTypes.string,
-  goalAddress: PropTypes.string.isRequired,
-  goal: PropTypes.shape({
-    content: PropTypes.string.isRequired,
-    user_hash: PropTypes.string.isRequired,
-    timestamp_created: PropTypes.number.isRequired,
-    hierarchy: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired
-  }).isRequired,
-  onArchiveClick: PropTypes.func.isRequired,
-  updateGoal: PropTypes.func.isRequired
-}
-
-function mapStateToProps (state, ownProps) {
+function mapStateToProps(state, ownProps) {
+  // goal address
   const goalAddress = state.ui.goalForm.editAddress
+  // project ID
   const { projectId } = ownProps
   const goals = state.projects.goals[projectId] || {}
+
+  // Figure out where is that goal on the canvas:
+  // figure out where on the canvas the goal being edited is
+  // located, according to the canvas coordinate system
+  // x, y
+  const width = state.ui.screensize.width
+  const goalCoordinate = layoutFormula(width, state)[goalAddress]
+
+  // Figure out where is that goal is relation to the window:
+  // coordinates translation to css from canvas
+  const translate = state.ui.viewport.translate
+  const scale = state.ui.viewport.scale
+  // position it at the right of the goal, by moving to the right
+  // by the width of a Goal
+  const cssCoordinates = coordsCanvasToPage(
+    { x: (goalCoordinate.x + goalWidth), y: goalCoordinate.y },
+    translate,
+    scale
+  )
+
   return {
     goalAddress,
-    goal: goals[goalAddress]
+    goal: goals[goalAddress],
+    leftEdgeXPosition: cssCoordinates.x,
+    topEdgeYPosition: cssCoordinates.y,
   }
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
+function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   return {
-    onArchiveClick: payload => {
+    onArchiveClick: (payload) => {
       return dispatch(archiveGoalFully.create({ cellIdString, payload }))
     },
     updateGoal: (entry, address) => {
       return dispatch(
         updateGoal.create({ cellIdString, payload: { address, entry } })
       )
-    }
+    },
   }
 }
 

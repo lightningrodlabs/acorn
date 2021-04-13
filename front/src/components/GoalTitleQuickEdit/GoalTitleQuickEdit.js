@@ -1,0 +1,228 @@
+import React from 'react'
+import { connect } from 'react-redux'
+import TextareaAutosize from 'react-textarea-autosize'
+import moment from 'moment'
+
+import layoutFormula from '../../drawing/layoutFormula'
+import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
+
+import { createGoalWithEdge, updateGoal } from '../../projects/goals/actions'
+import { closeGoalForm, updateContent } from '../../goal-form/actions'
+
+import './GoalTitleQuickEdit.css'
+
+// if editAddress is present (as a Goal address) it means we are currently EDITING that Goal
+function GoalTitleQuickEdit({
+  whoami,
+  content, // the value of the text input
+  parentAddress,
+  editAddress,
+  // coordinates in css terms for the box
+  leftEdgeXPosition,
+  topEdgeYPosition,
+  // existing or default properties of the goal
+  status,
+  description,
+  hierarchy,
+  time_frame,
+  timestamp_created,
+  // callbacks
+  updateContent,
+  createGoalWithEdge,
+  updateGoal,
+  closeGoalForm,
+}) {
+  /* EVENT HANDLERS */
+
+  // when the text value changes
+  const handleChange = (event) => {
+    updateContent(event.target.value)
+  }
+  // when a key is pressed
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      handleSubmit()
+    }
+  }
+  // when the input comes into focus
+  const handleFocus = (event) => {
+    // select the text
+    event.target.select()
+  }
+  // when the input leaves focus (not focused on editing title)
+  const handleBlur = (event) => {
+    // if creating a goal (not editing it)
+    if (!editAddress) {
+      event.preventDefault()
+      handleSubmit()
+    }
+  }
+
+  const handleSubmit = (event) => {
+    if (event) {
+      // this is to prevent the page from refreshing
+      // when the form is submitted, which is the
+      // default behaviour
+      event.preventDefault()
+    }
+
+    // do not allow submit with no content
+    if (!content || content === '') {
+      return
+    }
+
+    // depending on editAddress, this
+    // might be an update to an existing...
+    // otherwise it's a new Goal being created
+    if (editAddress) {
+      innerUpdateGoal()
+    } else {
+      innerCreateGoalWithEdge()
+    }
+
+    // reset the textarea value to empty
+    updateContent('')
+    closeGoalForm()
+  }
+
+  const innerCreateGoalWithEdge = () => {
+    // dispatch the action to create a goal
+    // with the contents from the form
+    // inserted into it
+    createGoalWithEdge(
+      {
+        content: content,
+        user_hash: whoami.entry.address,
+        timestamp_created: moment().unix(),
+        // defaults
+        hierarchy: 'NoHierarchy',
+        status: 'Uncertain',
+        description: '',
+      },
+      parentAddress
+    )
+  }
+
+  const innerUpdateGoal = () => {
+    updateGoal(
+      {
+        content,
+        user_hash: whoami.entry.address,
+        timestamp_created,
+        timestamp_updated: moment().unix(),
+        hierarchy,
+        status,
+        time_frame,
+        description: description,
+      },
+      editAddress
+    )
+  }
+
+  return (
+    <div
+      className="goal-title-quick-edit-wrapper"
+      style={{
+        top: `${topEdgeYPosition}px`,
+        left: `${leftEdgeXPosition}px`,
+      }}
+    >
+      <form className="goal-title-quick-edit-form" onSubmit={handleSubmit}>
+        <TextareaAutosize
+          autoFocus
+          placeholder="Add a title..."
+          value={content}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+        />
+      </form>
+    </div>
+  )
+}
+
+// https://react-redux.js.org/using-react-redux/connect-mapstate
+// Designed to grab selective data off of a redux state tree in order
+// to pass it to a component for rendering, as specific properties that
+// that component expects
+
+function mapStateToProps(state) {
+  // all the state for this component is store under state->ui->goalForm
+  const {
+    parentAddress,
+    editAddress,
+    content,
+    leftEdgeXPosition,
+    topEdgeYPosition,
+  } = state.ui.goalForm
+
+  const {
+    ui: {
+      activeProject,
+      screensize: { width },
+    },
+  } = state
+  // use the values of the goal being edited,
+  // or else, if this is not being edited, but created,
+  // then use these defaults:
+  const editingGoal = state.projects.goals[activeProject][editAddress]
+  const status = editAddress ? editingGoal.status : 'Uncertain'
+  const description = editAddress ? editingGoal.description : ''
+  const hierarchy = editAddress ? editingGoal.hierarchy : 'NoHierarchy'
+  const time_frame = editAddress ? editingGoal.time_frame : null
+  const timestamp_created = editAddress ? editingGoal.timestamp_created : null
+
+  let goalCoord
+  if (editAddress) {
+    goalCoord = layoutFormula(width, state)[editAddress]
+  }
+
+  return {
+    whoami: state.whoami,
+    editAddress,
+    // the address of the "parent" Goal that we are maybe creating this "under"
+    parentAddress,
+    content,
+    leftEdgeXPosition: editAddress ? goalCoord.x : leftEdgeXPosition,
+    topEdgeYPosition: editAddress ? goalCoord.y : topEdgeYPosition,
+    // default states for the goal when creating it
+    status,
+    description,
+    hierarchy,
+    time_frame,
+    timestamp_created,
+  }
+}
+
+// https://react-redux.js.org/using-react-redux/connect-mapdispatch
+// Designed to pass functions into components which are already wrapped as
+// action dispatchers for redux action types
+
+function mapDispatchToProps(dispatch, ownProps) {
+  const { projectId: cellIdString } = ownProps
+  return {
+    updateContent: (content) => {
+      dispatch(updateContent(content))
+    },
+    createGoalWithEdge: (entry, maybe_parent_address) => {
+      return dispatch(
+        createGoalWithEdge.create({
+          cellIdString,
+          payload: { entry, maybe_parent_address },
+        })
+      )
+    },
+    updateGoal: (entry, address) => {
+      return dispatch(
+        updateGoal.create({ cellIdString, payload: { entry, address } })
+      )
+    },
+    closeGoalForm: () => {
+      dispatch(closeGoalForm())
+    },
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GoalTitleQuickEdit)
