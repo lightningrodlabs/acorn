@@ -270,8 +270,18 @@
 
 /* profile section on header */
 
-.top-right-panel icon {
-  margin-right: 10px;
+/* Status circle */
+
+.status-circle-wrapper {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+}
+
+.status-circle-wrapper .status-circle {
+  height: 10px;
+  width: 10px;
+  box-shadow: 0px 0px 4px #0000001f;
 }
 
 .avatar-and-status-wrapper {
@@ -293,11 +303,12 @@
 
 .user-status-icon-wrapper {
   position: absolute;
-  width: 16px;
-  height: 16px;
+  width: 10px;
+  height: 10px;
   right: 0px;
   bottom: -2px;
   border-radius: 50%;
+  background: #4caf50;
 }
 
 .profile-wrapper {
@@ -313,21 +324,8 @@
   white-space: nowrap;
 }
 
-.profile-wrapper button p {
-  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
-  font-size: 14px;
-  padding: 0 20px;
-}
-
-.profile-wrapper button:hover {
-  background: #f4f4f4 none repeat scroll 0% 0%;
-  color: #5f65ff;
-}
-
-.profile-wrapper button .icon {
-  border-radius: 50%;
-  height: 16px;
-  width: 16px;
+.profile-wrapper button {
+  padding: 0 16px;
 }
 
 .profile-wrapper button {
@@ -340,27 +338,46 @@
   align-items: center;
 }
 
+.profile-wrapper button:hover, .profile-wrapper button.active {
+  background: #f4f4f4;
+  color: #5f65ff;
+}
+
+/* .profile-wrapper button .icon {
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+} */
+
+.profile-wrapper button p {
+  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+  font-size: 14px;
+}
+
 /* User Status on header */
 
-.btn:hover {
-  background-color: #f2f2f2;
+.status-circle {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  background-color: grey;
+}
+
+.status-circle.status-online {
+  background-color: #00d0c0;
+}
+
+.status-circle.status-away {
+  background-color: #ffc400;
+}
+
+.status-circle.status-offline {
+  background-color: #d1d1d1;
 }
 
 /* .user-status-icon-wrapper.user-status-is-active .avatar-container+span {
   background-color: #5f65ff;
 } */
-
-.status-online .avatar-container+span {
-  background-color: #00d0c0;
-}
-
-.status-away .avatar-container+span {
-  background-color: #ffc400;
-}
-
-.status-offline .avatar-container+span {
-  background-color: #d1d1d1;
-}
 
 button.status-online .icon {
   background-color: #00d0c0;
@@ -380,8 +397,8 @@ button.status-offline .icon {
 
 .user-status-wrapper {
   position: absolute;
-  top: 52px;
-  right: 0;
+  top: 0px;
+  right: 132px;
   border-radius: 14px;
   background-color: #ffffff;
   padding: 12px 0;
@@ -391,7 +408,7 @@ button.status-offline .icon {
 }
 
 .user-status-wrapper button {
-  padding: 0 25px;
+  padding: 0 20px;
   outline: none;
   background: none;
   border: none;

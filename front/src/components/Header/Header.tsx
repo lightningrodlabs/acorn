@@ -22,10 +22,8 @@ function Header({
   hideGuidebookHelpMessage,
 }) {
   const [isExportOpen, setIsExportOpen] = useState(false)
-  const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false)
-  const [isStatusOpen, setIsStatusOpen] = useState(false)
 
-  const [_status, setStatus] = useState<Status>(
+  const [status, setStatus] = useState<Status>(
     whoami ? whoami.entry.status : Status.Online
   )
 
@@ -33,27 +31,11 @@ function Header({
   const ref = useRef()
   useOnClickOutside(ref, () => {
     setIsExportOpen(false)
-    setIsAvatarMenuOpen(false)
-    setIsStatusOpen(false)
   })
-  const onClickAvatar = () => {
-    setIsAvatarMenuOpen(!isAvatarMenuOpen)
-    setIsExportOpen(false)
-    setIsStatusOpen(false)
-  }
-  const onClickStatus = () => {
-    setIsStatusOpen(!isStatusOpen)
-    setIsAvatarMenuOpen(false)
-    setIsExportOpen(false)
-  }
   const onClickExport = () => {
-    setIsStatusOpen(false)
-    setIsAvatarMenuOpen(false)
     setIsExportOpen(!isExportOpen)
   }
   const onClickEditProfile = () => {
-    setIsStatusOpen(false)
-    setIsAvatarMenuOpen(false)
     setIsExportOpen(false)
     setShowProfileEditForm(true)
   }
@@ -66,12 +48,8 @@ function Header({
     updateStatus(status)
     // change local to the component
     changeStatus(status)
-    // close this menu
-    setIsStatusOpen(false)
   }
   const onClickPreferences = () => {
-    setIsStatusOpen(false)
-    setIsAvatarMenuOpen(false)
     setIsExportOpen(false)
     // call the prop function
     setShowPreferences(true)
@@ -97,12 +75,9 @@ function Header({
           // add all these values as props
           <HeaderRightPanel
             {...{
+              status,
               hideGuidebookHelpMessage,
               whoami,
-              isAvatarMenuOpen,
-              onClickAvatar,
-              isStatusOpen,
-              onClickStatus,
               onClickEditProfile,
               onClickPreferences,
               saveStatus,

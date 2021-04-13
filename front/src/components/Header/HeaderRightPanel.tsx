@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { NavLink, Route, useHistory, useLocation } from 'react-router-dom'
 
 import { GUIDE_IS_OPEN } from '../GuideBook/guideIsOpen'
@@ -7,20 +7,30 @@ import { Status, StatusCssColorClass, StatusIcons } from './Status'
 import Modal from '../Modal/Modal'
 import Icon from '../Icon/Icon'
 import Avatar from '../Avatar/Avatar'
+import useOnClickOutside from 'use-onclickoutside'
 
-function AvatarMenuItem({ title, onClick }) {
+function AvatarMenuItem({
+  title,
+  onClick,
+  className,
+}: {
+  title: string
+  onClick: () => void
+  className?: string
+}) {
   return (
-    <button onClick={onClick}>
+    <button className={className} onClick={onClick}>
       <p>{title}</p>
     </button>
   )
 }
 
-function StatusMenuItem({ color, title, img, onClick }) {
+function StatusMenuItem({ color, title, onClick }) {
   return (
-    <button className={color + ' btn'} onClick={onClick}>
+    <button onClick={onClick}>
       {/* @ts-ignore */}
-      <Icon name={img} className="user-status white not-hoverable" />
+      <div className={`status-circle ${color}`} />
+      {/* <Icon name={img} className="user-status white not-hoverable" /> */}
       <p>{title}</p>
     </button>
   )
@@ -29,26 +39,23 @@ function StatusMenuItem({ color, title, img, onClick }) {
 function HeaderRightPanel({
   hideGuidebookHelpMessage,
   whoami,
-  isAvatarMenuOpen,
-  onClickAvatar,
-  isStatusOpen,
-  onClickStatus,
   onClickEditProfile,
   onClickPreferences,
   saveStatus,
+  status,
 }) {
+  const ref = useRef()
+  useOnClickOutside(ref, () => {
+    setIsAvatarMenuOpen(false)
+    setIsStatusOpen(false)
+  })
+  const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false)
+  const [isStatusOpen, setIsStatusOpen] = useState(false)
   const location = useLocation()
   const history = useHistory()
   // hover states
-  const [isStatusHover, setIsStatusHover] = useState(false)
   const [isAvatarHover, setIsAvatarHover] = useState(false)
   // hover handlers
-  const onHoverStatusEnter = () => {
-    setIsStatusHover(true)
-  }
-  const onHoverStatusLeave = () => {
-    setIsStatusHover(false)
-  }
   const onHoverAvatarEnter = () => {
     setIsAvatarHover(true)
   }
@@ -86,9 +93,7 @@ function HeaderRightPanel({
           <Icon name="guidebook.svg" className="header-right-panel-icon" />
         </NavLink>
       </Route>
-      <div
-        className={`avatar-and-status-wrapper ${StatusCssColorClass[status]}`}
-      >
+      <div className="avatar-and-status-wrapper">
         <div
           className="avatar-container"
           onMouseEnter={onHoverAvatarEnter}
@@ -101,38 +106,13 @@ function HeaderRightPanel({
             avatar_url={whoami.entry.avatar_url}
             highlighted={isAvatarMenuOpen || isAvatarHover}
             clickable
-            onClick={onClickAvatar}
+            onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}
           />
         </div>
-
-        <span
-          className={`user-status-icon-wrapper ${
-            isStatusOpen || isStatusHover ? 'user-status-is-active' : ''
-          }`}
-          onMouseEnter={onHoverStatusEnter}
-          onMouseLeave={onHoverStatusLeave}
-        >
-          {!isStatusOpen && !isStatusHover && (
-            <>
-              {/* @ts-ignore */}
-              <Icon
-                name={StatusIcons[status]}
-                onClick={onClickStatus}
-                className="user-status white"
-              />
-            </>
-          )}
-          {(isStatusOpen || isStatusHover) && (
-            <>
-              {/* @ts-ignore */}
-              <Icon
-                name="user-status-hover.svg"
-                onClick={onClickStatus}
-                className="user-status white not-hoverable"
-              />
-            </>
-          )}
-        </span>
+        {/* Current status circle color under avatar*/}
+        <div className="status-circle-wrapper">
+          <div className={`status-circle ${StatusCssColorClass[status]}`}></div>
+        </div>
       </div>
       {/* Guidebook */}
       <Route path="/project">
@@ -145,26 +125,44 @@ function HeaderRightPanel({
           <GuideBook />
         </Modal>
       </Route>
+      {/* Profile Menu */}
       {isAvatarMenuOpen && (
-        <div className="profile-wrapper">
+        <div className="profile-wrapper" ref={ref}>
+          <AvatarMenuItem
+            className={isStatusOpen ? 'active' : ''}
+            title="Change Status"
+            onClick={() => setIsStatusOpen(true)}
+          />
+          {isStatusOpen && (
+            <div className="user-status-wrapper">
+              {Object.keys(Status).map((key) => (
+                <StatusMenuItem
+                  key={key}
+                  color={StatusCssColorClass[key]}
+                  title={key}
+                  onClick={() => {
+                    saveStatus(Status[key])
+                    setIsAvatarMenuOpen(false)
+                    setIsStatusOpen(false)
+                  }}
+                />
+              ))}
+            </div>
+          )}
           <AvatarMenuItem
             title="Profile Settings"
-            onClick={onClickEditProfile}
+            onClick={() => {
+              onClickEditProfile()
+              setIsAvatarMenuOpen(false)
+            }}
           />
-          <AvatarMenuItem title="Preferences" onClick={onClickPreferences} />
-        </div>
-      )}
-      {isStatusOpen && (
-        <div className="user-status-wrapper">
-          {Object.keys(Status).map((key) => (
-            <StatusMenuItem
-              key={key}
-              img={StatusIcons[key]}
-              color={StatusCssColorClass[key]}
-              title={key}
-              onClick={() => saveStatus(Status[key])}
-            />
-          ))}
+          <AvatarMenuItem
+            title="Preferences"
+            onClick={() => {
+              onClickPreferences()
+              setIsAvatarMenuOpen(false)
+            }}
+          />
         </div>
       )}
     </div>
