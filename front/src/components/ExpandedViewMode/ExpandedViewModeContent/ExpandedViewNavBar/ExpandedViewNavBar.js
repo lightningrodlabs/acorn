@@ -7,7 +7,7 @@ function ExpandedViewNavBar({ onChange, activeTab, commentCount }) {
   const navItems = [
     {
       text: 'details',
-      icon: 'comment.svg'
+      icon: 'quick-edit.svg'
     },
     {
       text: `comments (${commentCount})`,
