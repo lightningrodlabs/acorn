@@ -129,7 +129,7 @@ function ExpandedViewMode({
           <div className={`expanded-view-wrapper border_${goalState.status}`}>
             <Icon
               onClick={onClose}
-              name='x.svg'
+              name='x-bold.svg'
               size='small-close'
               className='grey'
             />

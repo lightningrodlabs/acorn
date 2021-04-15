@@ -75,17 +75,24 @@ function Comments({
   }
 
   return (
+    <>
     <div className='comments'>
-      <div className='comments_avatarANDInput_wrapper'>
-        {/* <div className='avatar_comment_container'>
-         <Avatar
-            first_name={firstName}
-            last_name={lastName}
-            avatar_url={avatarUrl}
-            mediumLarge
-          />
-        </div> */}
-        <div className='input_comment_row'>
+      <div className='comment-history-container'>
+        
+        {Object.keys(comments)
+          .map(key => comments[key])
+          // order the comments by most recent, to least recent
+          .sort((a, b) => (a.unix_timestamp < b.unix_timestamp ? -1 : 1))
+          .map(comment => (
+            <Comment
+              key={comment.address}
+              comment={comment}
+              agent={agents[comment.agent_address]}
+            />
+          ))}
+         
+      </div>
+      <div className='input_comment_row'>
           <div className='input_comment_wrapper'>
             <TextareaAutosize
               type='text'
@@ -94,25 +101,15 @@ function Comments({
               onChange={e => setValue(e.target.value)}
             />
             <div className='comment_save_button'>
-              <Icon name='send.svg' onClick={sendClick} />
+              <Icon name='line-angle-right.svg' className="medium white not-hoverable" onClick={sendClick} />
             </div>
           </div>
         </div>
-      </div>
-      <div className='comment_history_container_scrollable'>
-        {Object.keys(comments)
-          .map(key => comments[key])
-          // order the comments by most recent, to least recent
-          .sort((a, b) => (a.unix_timestamp > b.unix_timestamp ? -1 : 1))
-          .map(comment => (
-            <Comment
-              key={comment.address}
-              comment={comment}
-              agent={agents[comment.agent_address]}
-            />
-          ))}
-      </div>
+      
     </div>
+
+   
+    </>
   )
 }
 

@@ -1,23 +1,20 @@
 .expanded-view-nav-bar {
+  height: 40px;
   display: flex;
   flex-direction: row;
-  /* justify-content is temporarily disabled other NavTab items are developed */
   justify-content: space-between;
-  /* border-bottom: 1px solid #e8e8e8; */
+  padding: 8px 16px 0 16px;
 }
 
 .expanded-view-nav-bar-item {
   color: #a3a3a3;
-  padding: 5px 0px;
   display: flex;
   flex-direction: row;
   font-size: 14px;
-  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
   font-weight: normal;
   cursor: pointer;
   border-bottom: 3px solid transparent;
-  /* margin-raight is temporary until other NavTab items are developed */
-  margin-right: 20px;
   align-items: center;
 }
 

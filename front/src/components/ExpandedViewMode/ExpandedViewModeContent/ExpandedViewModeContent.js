@@ -160,7 +160,7 @@ function Details({
 
   return (
     <>
-      <div className="expanded-view-scroll-content">
+      <div className="expanded-view-details-wrapper">
         <div className="expanded_view_title">
           <TextareaAutosize
             value={content}

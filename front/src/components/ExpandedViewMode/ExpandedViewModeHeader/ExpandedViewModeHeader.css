@@ -10,7 +10,8 @@
 
 .expanded_view_header .icon {
   margin-right: 16px;
-  height: 22;
+  height: 26px;
+  padding: 2px;
 }
 
 .expanded_view_header .icon.very-small-close.grey {

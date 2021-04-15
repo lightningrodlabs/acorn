@@ -29,7 +29,7 @@
 
 .expanded-view-wrapper {
   box-shadow: 0px 0px 10px #0000001f;
-  width: 460px;
+  width: 480px;
   background: #ffffff;
   border-radius: 12px;
   display: flex;
@@ -70,9 +70,10 @@
 
 .expanded-view-wrapper .small-close {
   position: absolute;
-  top: 16px;
-  right: 15px;
+  top: 14px;
+  right: 14px;
   cursor: pointer;
+  padding: 6px;
 }
 
 /* expanded view date picker */
@@ -86,9 +87,6 @@
 .expanded-view-main {
   display: flex;
   flex-direction: row;
-  flex: 1;
-  min-height: 200px;
-  max-height: calc(100vh - 140px);
 }
 
 .expanded-view-right-menu {
