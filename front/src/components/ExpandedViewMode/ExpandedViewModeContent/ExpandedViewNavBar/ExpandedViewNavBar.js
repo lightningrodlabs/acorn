@@ -7,7 +7,7 @@ function ExpandedViewNavBar({ onChange, activeTab, commentCount }) {
   const navItems = [
     {
       text: 'details',
-      icon: 'quick-edit.svg'
+      icon: 'quick-edit.svg',
     },
     {
       text: `comments (${commentCount})`,
@@ -20,15 +20,18 @@ function ExpandedViewNavBar({ onChange, activeTab, commentCount }) {
   ]
 
   return (
-    <div className='expanded-view-nav-bar'>
+    <div className="expanded-view-nav-bar">
       {navItems.map(({ text, icon }, index) => {
         const activeClass = activeTab === index ? 'active-tab' : ''
         return (
           <div
-            className={`expanded-view-nav-bar-item ${activeClass}`}
+            className={`expanded-view-nav-bar-item ${activeClass} ${
+              index === 2 ? 'feature-in-development' : ''
+            }`}
             key={index}
-            onClick={() => onChange(index)}>
-            <Icon name={icon} size='very-small' className='grey' />
+            onClick={() => index !== 2 && onChange(index)}
+          >
+            <Icon name={icon} size="very-small" className="grey" />
             {text}
           </div>
         )

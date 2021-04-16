@@ -52,9 +52,9 @@
 
 .people-picker-people li .person-name {
   flex: 1;
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
   font-size: 14px;
-  line-height: 12px;
+  line-height: 14px;
 }
 
 .person-nameANDhandle {

@@ -30,9 +30,9 @@
   border-radius: 10px 0px 0px 10px;
   border: none;
   z-index: 1;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .expanded_view_right_menu .picker-popup {
-  left: 66px;
+  left: 60px;
 }

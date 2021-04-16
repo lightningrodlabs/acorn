@@ -123,6 +123,8 @@
   font-size: 14px;
   font-family: 'hk-grotesk-extrabold', Helvetica, sans-serif;
   margin-right: 6px;
+  display: flex;
+  flex-direction: row;
 }
 
 .comment_history_date {

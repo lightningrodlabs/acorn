@@ -167,7 +167,9 @@ function mapStateToProps(state) {
   // use the values of the goal being edited,
   // or else, if this is not being edited, but created,
   // then use these defaults:
-  const editingGoal = state.projects.goals[activeProject][editAddress]
+  const editingGoal = editAddress
+    ? state.projects.goals[activeProject][editAddress]
+    : null
   const status = editAddress ? editingGoal.status : 'Uncertain'
   const description = editAddress ? editingGoal.description : ''
   const hierarchy = editAddress ? editingGoal.hierarchy : 'NoHierarchy'

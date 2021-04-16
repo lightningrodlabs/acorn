@@ -21,7 +21,8 @@ function SquirrelInfoPopup({ squirrel, onClose, archiveGoalMember }) {
     <div className="squirrel-info-popup-wrapper" ref={ref}>
       <div className="squirrel-info-popup-nameANDhandle">
         <div className="squirrel-info-popup-name">
-          {squirrel.first_name} {squirrel.last_name}
+          {squirrel.first_name} {squirrel.last_name}{' '}
+          {squirrel.is_imported ? <div>(Imported)</div> : ''}
         </div>
         <div className="squirrel-info-popup-handle">{squirrel.handle}</div>
       </div>
@@ -32,7 +33,7 @@ function SquirrelInfoPopup({ squirrel, onClose, archiveGoalMember }) {
           archiveGoalMember(squirrel.goalMemberAddress)
         }}
       >
-        remove from goal
+        Remove from goal
       </div>
     </div>
   )
@@ -173,7 +174,7 @@ function Details({
 
         <div className="squirrels_timeframe_row">
           <div className="expanded_view_squirrels_wrapper">
-            <div className="expanded_view_squirrels_title">squirrels</div>
+            <div className="expanded_view_squirrels_title">Squirrels</div>
             <div className="expanded_view_squirrels_content">
               {squirrels.map((squirrel, index) => {
                 const highlighted = squirrelInfoPopup
@@ -185,6 +186,7 @@ function Details({
                     first_name={squirrel.first_name}
                     last_name={squirrel.last_name}
                     avatar_url={squirrel.avatar_url}
+                    imported={squirrel.is_imported}
                     medium
                     clickable
                     onClick={() =>
@@ -218,7 +220,7 @@ function Details({
             </div>
           </div>
           <div className="timeframe_wrapper">
-            <div className="expanded_view_timeframe_title">timeframe</div>
+            <div className="expanded_view_timeframe_title">Timeframe</div>
             <div
               className="expanded_view_timeframe_display"
               onClick={() => setEditTimeframe(!editTimeframe)}
@@ -226,9 +228,8 @@ function Details({
               {fromDate && fromDate.format('MMM D, YYYY')}
               {toDate && ' - '}
               {toDate && toDate.format('MMM D, YYYY')}
-              {!fromDate && !toDate && 'not set'}
+              {!fromDate && !toDate && 'Click to set timeframe'}
             </div>
-
           </div>
         </div>
         <div className="expanded_view_description">

@@ -103,6 +103,7 @@ function HeaderRightPanel({
             first_name={whoami.entry.first_name}
             last_name={whoami.entry.last_name}
             avatar_url={whoami.entry.avatar_url}
+            imported={whoami.entry.is_imported}
             highlighted={isAvatarMenuOpen || isAvatarHover}
             clickable
             onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}

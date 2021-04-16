@@ -11,7 +11,7 @@ import {
   fontSizeInt,
   lineSpacing,
   getGoalHeight,
-  getLinesForParagraphs
+  getLinesForParagraphs,
 } from './dimensions'
 
 import { selectedColor, colors, pickColorForString } from '../styles'
@@ -74,7 +74,7 @@ export default function render(
     color: backgroundColor,
     stroke: false,
     strokeWidth: '0',
-    boxShadow: true
+    boxShadow: true,
   })
   // card border
   drawRoundCornerRectangle({
@@ -87,7 +87,7 @@ export default function render(
     color: borderColor,
     stroke: true,
     strokeWidth: '3',
-    boxShadow: false
+    boxShadow: false,
   })
 
   // selection outline (purple)
@@ -118,7 +118,7 @@ export default function render(
       color: selectedColor,
       stroke: true,
       strokeWidth: selectedOutlineWidth,
-      boxShadow: false
+      boxShadow: false,
     })
   }
 
@@ -140,11 +140,7 @@ export default function render(
   if (goal.time_frame) {
     const calendarWidth = 12,
       calendarHeight = 12
-    const img = getOrSetImageForUrl(
-      '',
-      calendarWidth,
-      calendarHeight
-    )
+    const img = getOrSetImageForUrl('', calendarWidth, calendarHeight)
     // wait for the image to load before
     // trying to draw
     if (!img) return
@@ -173,7 +169,11 @@ export default function render(
     // adjust the x position according to the index of this member
     // since there can be many
     const xAvatarDraw =
-      x + goalWidth - goalMetaPadding - (index + 1) * (avatarWidth) - (index * avatarSpace)
+      x +
+      goalWidth -
+      goalMetaPadding -
+      (index + 1) * avatarWidth -
+      index * avatarSpace
     const yAvatarDraw = y + goalHeight - goalMetaPadding - avatarHeight
 
     // first of all, render the initials
@@ -181,6 +181,7 @@ export default function render(
     if (!member.avatar_url) {
       const backgroundInitialsAvatar = pickColorForString(member.first_name)
       const initials = `${member.first_name[0].toUpperCase()}${member.last_name[0].toUpperCase()}`
+      // the background for the initial avatar:
       ctx.save()
       ctx.fillStyle = backgroundInitialsAvatar
       ctx.beginPath()
@@ -192,10 +193,23 @@ export default function render(
         Math.PI * 2,
         true
       )
+      // to be consistent with Avatar component
+      // if avatar belongs to an imported project and not connected an active memeber
+      if (member.is_imported) {
+        // set an opacity
+        ctx.globalAlpha = 0.5
+      }
       ctx.closePath()
       ctx.fill()
       ctx.restore()
+      // the text for the initials avatar:
       ctx.save()
+      // to be consistent with Avatar component
+      // if avatar belongs to an imported project and not connected an active memeber
+      if (member.is_imported) {
+        // set an opacity
+        ctx.globalAlpha = 0.5
+      }
       ctx.fillStyle = '#FFF'
       ctx.font = '11px hk-grotesk-bold'
       ctx.fillText(initials, xAvatarDraw + 5, yAvatarDraw + 7)
@@ -226,24 +240,32 @@ export default function render(
     ctx.closePath()
     ctx.clip()
 
-
     // url, x coordinate, y coordinate, width, height
-    let imgHeightToDraw = avatarHeight, imgWidthToDraw = avatarWidth
-    let imgXToDraw = xAvatarDraw, imgYToDraw = yAvatarDraw
+    let imgHeightToDraw = avatarHeight,
+      imgWidthToDraw = avatarWidth
+    let imgXToDraw = xAvatarDraw,
+      imgYToDraw = yAvatarDraw
     // make sure avatar image doesn't stretch on canvas
     // if image width is more that image height (landscape)
     if (img.width / img.height > 1) {
       imgHeightToDraw = avatarHeight
-      imgWidthToDraw = img.width / img.height * avatarWidth
+      imgWidthToDraw = (img.width / img.height) * avatarWidth
       // move to the left by the amount that would center the image
       imgXToDraw = xAvatarDraw - (imgWidthToDraw - avatarWidth) / 2
     }
     // if image height is more that image width (portrait)
     else if (img.width / img.height < 1) {
       imgWidthToDraw = avatarWidth
-      imgHeightToDraw = img.height / img.width * avatarHeight
+      imgHeightToDraw = (img.height / img.width) * avatarHeight
       // move upwards by the amount that would center the image
       imgYToDraw = yAvatarDraw - (imgHeightToDraw - avatarHeight) / 2
+    }
+
+    // to be consistent with Avatar component
+    // if avatar belongs to an imported project and not connected an active memeber
+    if (member.is_imported) {
+      // set an opacity
+      ctx.globalAlpha = 0.5
     }
 
     ctx.drawImage(img, imgXToDraw, imgYToDraw, imgWidthToDraw, imgHeightToDraw)

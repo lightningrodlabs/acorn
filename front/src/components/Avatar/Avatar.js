@@ -14,7 +14,7 @@ function Avatar({
   large,
   clickable,
   onClick,
-  imported
+  imported,
 }) {
   let classes = []
   if (highlighted) classes.push('highlighted')

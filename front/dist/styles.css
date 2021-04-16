@@ -89,6 +89,8 @@ div.react {
 
 .feature-in-development {
   opacity: 0.1;
+  cursor: default;
+  z-index: -1;
 }
 
 /* headers */
