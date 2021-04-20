@@ -19,6 +19,7 @@ import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar'
 import GoalHoverOverlayButtons from '../../../components/GoalHoverOverlayButtons/GoalHoverOverlayButtons'
 import ExpandedViewMode from '../../../components/ExpandedViewMode/ExpandedViewMode'
 import EdgeConnectors from '../../../components/EdgeConnectors/EdgeConnectors'
+import { firstZoomThreshold } from '../../../drawing/dimensions'
 
 function MapView({
   projectId,
@@ -77,7 +78,10 @@ function MapView({
       {/* to the same scaling and tranlating as the canvas */}
       {/* is being scaled and translated, using css matrix transforms */}
       <div className="transform-container" style={transform}>
-        {goalFormIsOpen && <GoalTitleQuickEdit projectId={projectId} />}
+        {/* Only present this GoalTitleQuickEdit */}
+        {/* if the scale is greater than or equal to 60% */}
+        {/* because otherwise the font size gets to small and the text is cut off */}
+        {goalFormIsOpen && scale >= firstZoomThreshold && <GoalTitleQuickEdit projectId={projectId} />}
       </div>
       {/* below items inside 'goal-form-position-container' maintain their normal scale */}
       {/* while positioning themselves absolutely (position: absolute) on the screen */}

@@ -9,9 +9,15 @@ import {
   textBoxMarginLeft,
   textBoxMarginTop,
   fontSizeInt,
+  fontSizeLargeInt,
+  fontSizeExtraLargeInt,
   lineSpacing,
   getGoalHeight,
   getLinesForParagraphs,
+  firstZoomThreshold,
+  secondZoomThreshold,
+  lineSpacingExtraLarge,
+  lineSpacingLarge,
 } from './dimensions'
 
 import { selectedColor, colors, pickColorForString } from '../styles'
@@ -22,6 +28,7 @@ import drawRoundCornerRectangle from './drawRoundCornerRectangle'
 
 // render a goal card
 export default function render(
+  scale,
   goal,
   members,
   { x, y },
@@ -34,7 +41,7 @@ export default function render(
   // use the editText for measuring,
   // even though it's not getting drawn on the canvas
   const text = isEditing ? editText : goal.content
-  const goalHeight = getGoalHeight(ctx, text)
+  const goalHeight = getGoalHeight(ctx, text, scale, isEditing)
 
   // set up border color
   let borderColor = colors[goal.status]
@@ -125,13 +132,37 @@ export default function render(
   // render text, if not in edit mode
   // in which case the text is being rendered in the textarea
   // html element being overlaid on top of this Goal
-  if (!isEditing) {
+  if (!isEditing || scale < firstZoomThreshold) {
     const textBoxLeft = x + textBoxMarginLeft
     const textBoxTop = y + textBoxMarginTop
-    const lines = getLinesForParagraphs(ctx, text)
-    lines.forEach((line, index) => {
-      let linePosition = index * (fontSizeInt + lineSpacing)
-      ctx.fillText(line, textBoxLeft, textBoxTop + linePosition)
+    const lines = getLinesForParagraphs(ctx, text, scale)
+    // for space reasons
+    // we limit the number of visible lines of the Goal Title to 2 or 3, 
+    // and provide an ellipsis if there are more lines than that
+    let lineLimit = 3
+    // for extra large text, reduce to only two lines
+    if (scale < secondZoomThreshold) {
+      lineLimit = 2
+    }
+    let lineSpacingToUse = lineSpacing // the default
+    let fontSizeToUse = fontSizeInt
+    if (scale < secondZoomThreshold) {
+      lineSpacingToUse = lineSpacingExtraLarge
+      fontSizeToUse = fontSizeExtraLargeInt
+    } else if (scale < firstZoomThreshold) {
+      lineSpacingToUse = lineSpacingLarge
+      fontSizeToUse = fontSizeLargeInt
+    }
+    lines.slice(0, lineLimit).forEach((line, index) => {
+      let linePosition = index * (fontSizeToUse + lineSpacingToUse)
+      let lineText = line
+      // if we're on the last line and there's more than the visible number of lines
+      if (lines.length > lineLimit && index === lineLimit - 1) {
+        // then replace the last characters with an ellipsis
+        // to indicate that there's more that's hidden
+        lineText = `${line.slice(0, line.length - 3)}...`
+      }
+      ctx.fillText(lineText, textBoxLeft, textBoxTop + linePosition)
     })
   }
 

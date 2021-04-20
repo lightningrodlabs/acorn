@@ -138,6 +138,7 @@ function render(store, canvas) {
         .filter(goalMember => goalMember.goal_address === goal.address)
         .map(goalMember => state.agents[goalMember.agent_address])
       drawGoalCard(
+        scale,
         goal,
         membersOfGoal,
         coordinates[goal.address],
@@ -191,6 +192,7 @@ function render(store, canvas) {
         .filter(goalMember => goalMember.goal_address === goal.address)
         .map(goalMember => state.agents[goalMember.agent_address])
       drawGoalCard(
+        scale,
         goal,
         membersOfGoal,
         coordinates[goal.address],
@@ -298,6 +300,7 @@ function render(store, canvas) {
         .filter(goalMember => goalMember.goal_address === editingGoal.address)
         .map(goalMember => state.agents[goalMember.agent_address])
       drawGoalCard(
+        scale,
         editingGoal,
         membersOfGoal,
         coordinates[editingGoal.address],
@@ -316,6 +319,7 @@ function render(store, canvas) {
     const isSelected = false
     const isEditing = true
     drawGoalCard(
+      scale,
       { status: 'Uncertain' },
       [],
       { x: state.ui.goalForm.leftEdgeXPosition, y: state.ui.goalForm.topEdgeYPosition },

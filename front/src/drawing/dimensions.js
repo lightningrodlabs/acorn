@@ -4,17 +4,37 @@ export const avatarWidth = 24
 export const avatarHeight = 24
 export const avatarRadius = 12
 export const goalWidth = 360
-export const goalHeight = 130
+export const goalHeight = 160
 export const cornerRadius = 15
 export const borderWidth = 2
 export const textBoxMarginLeft = 29
 export const textBoxMarginTop = 32
 export const textBoxWidth = 310
+
+
+export const firstZoomThreshold = 0.6
+export const secondZoomThreshold = 0.4
+// this is the regular font size, for
+// a regular level of zoom
+// and this is for the Goal Titles
+// on the canvas
 // these two values fontSize and fontSizeInt should match
 export const fontSize = '20px'
 export const fontSizeInt = 20
-export const lineHeight = 28
-export const lineSpacing = 8 // slice off px from font size to get font height as number
+export const lineSpacing = 6
+
+// this is the "zoomed out" font size
+// for creating still readable text
+export const fontSizeLarge = '30px'
+export const fontSizeLargeInt = 30
+export const lineSpacingLarge = 2
+
+// this is the "extra zoomed out" font size
+// for creating still readable text
+export const fontSizeExtraLarge = '40px'
+export const fontSizeExtraLargeInt = 40
+export const lineSpacingExtraLarge = 2
+
 export const fontFamily = 'hk-grotesk-medium'
 
 // line wrapping code from https://stackoverflow.com/questions/2936112/
@@ -37,10 +57,17 @@ function getLines(ctx, text, maxWidth) {
   return lines
 }
 
-export function getLinesForParagraphs(ctx, textWithParagraphs) {
+export function getLinesForParagraphs(ctx, textWithParagraphs, scale) {
   // set so that measurements are proper
   ctx.fillStyle = '#4D4D4D'
-  ctx.font = fontSize + ' ' + fontFamily
+  // adjust font size based on scale (zoom factor)
+  if (scale >= firstZoomThreshold) {
+    ctx.font = fontSize + ' ' + fontFamily
+  } else if (scale > secondZoomThreshold && scale < firstZoomThreshold) {
+    ctx.font = fontSizeLarge + ' ' + fontFamily
+  } else {
+    ctx.font = fontSizeExtraLarge + ' ' + fontFamily
+  }
   ctx.textBaseline = 'top'
 
   return textWithParagraphs
@@ -49,14 +76,28 @@ export function getLinesForParagraphs(ctx, textWithParagraphs) {
     .reduce((a, b) => a.concat(b))
 }
 
-export function getGoalHeight(ctx, goalText) {
+export function getGoalHeight(ctx, goalText, scale, isEditing) {
+
+  // if this goal is not being edited
+  // then its height is a known/constant
+  // because the title text is being limited 
+  // to a fixed number of lines of text
+  if (!isEditing || scale < firstZoomThreshold) {
+    return goalHeight
+  }
+
+  // if this goal is being edited then
+  // its height is a variable that we need to
+  // measure because we are rendering an unknown number of 
+  // lines of text
+
   if (!ctx) {
     ctx = document.createElement('canvas').getContext('2d')
   }
 
   // get lines after font and font size are set up, since ctx.measureText()
   // takes font and font size into account
-  const lines = getLinesForParagraphs(ctx, goalText)
+  const lines = getLinesForParagraphs(ctx, goalText, scale)
 
   const totalTextHeight = lines.length * (fontSizeInt + lineSpacing)
 
