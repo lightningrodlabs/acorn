@@ -18,8 +18,11 @@ pub enum Error {
     #[error("Updates not allowed for this entry type")]
     UpdateAttempted,
 
-    #[error("Wasm error {0}")]
-    Wasm(WasmError)
+    #[error("Deserialization Failed")]
+    DeserializationFailed,
+
+    #[error("Wasm Error {0}")]
+    Wasm(WasmError),
 }
 
 impl From<Error> for ValidateCallbackResult {

@@ -1,4 +1,8 @@
-use crate::{get_peers_content, SignalType};
+use crate::{
+    get_peers_content,
+    project::{error::Error, validate::entry_from_element_create_or_update},
+    SignalType,
+};
 use dna_help::{crud, WrappedAgentPubKey};
 use hdk::prelude::*;
 
@@ -10,6 +14,14 @@ pub struct ProjectMeta {
     pub name: String,
     pub image: Option<String>,
     pub passphrase: String,
+}
+
+// can be updated
+impl TryFrom<&Element> for ProjectMeta {
+    type Error = Error;
+    fn try_from(element: &Element) -> Result<Self, Self::Error> {
+        entry_from_element_create_or_update::<ProjectMeta>(element)
+    }
 }
 
 fn convert_to_receiver_signal(signal: ProjectMetaSignal) -> SignalType {

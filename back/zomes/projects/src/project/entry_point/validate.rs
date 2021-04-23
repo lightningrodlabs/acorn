@@ -4,25 +4,6 @@ use crate::project::goal::crud::Goal;
 use dna_help::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
 
-impl TryFrom<&Element> for EntryPoint {
-    type Error = Error;
-    fn try_from(element: &Element) -> Result<Self, Self::Error> {
-        match element.header() {
-            // Only creates are allowed
-            Header::Create(_) => Ok(match element.entry() {
-                ElementEntry::Present(serialized_entry) => {
-                    match EntryPoint::try_from(serialized_entry) {
-                        Ok(entry) => entry,
-                        Err(e) => return Err(Error::Wasm(e)),
-                    }
-                }
-                _ => return Err(Error::EntryMissing),
-            }),
-            _ => Err(Error::WrongHeader),
-        }
-    }
-}
-
 #[hdk_extern]
 fn validate_create_entry_entry_point(
     validate_data: ValidateData,
@@ -128,10 +109,10 @@ pub mod tests {
         // but it will still be missing the goal dependency so it will
         // return UnresolvedDependencies
         entry_point.creator_address =
-        WrappedAgentPubKey::new(create_header.author.as_hash().clone());
+            WrappedAgentPubKey::new(create_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
-        ElementEntry::Present(entry_point.clone().try_into().unwrap());
-        
+            ElementEntry::Present(entry_point.clone().try_into().unwrap());
+
         // now, since validation is dependent on other entries, we begin
         // to have to mock `get` calls to the HDK
 

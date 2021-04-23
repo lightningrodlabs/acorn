@@ -1,4 +1,8 @@
-use crate::{get_peers_content, SignalType};
+use crate::{
+    get_peers_content,
+    project::{error::Error, validate::entry_from_element_create_only},
+    SignalType,
+};
 use dna_help::{crud, WrappedAgentPubKey, WrappedHeaderHash};
 use hdk::prelude::*;
 
@@ -12,18 +16,6 @@ pub struct EntryPoint {
     pub created_at: f64,
     pub goal_address: WrappedHeaderHash,
 }
-
-fn convert_to_receiver_signal(signal: EntryPointSignal) -> SignalType {
-    SignalType::EntryPoint(signal)
-}
-
-crud!(
-    EntryPoint,
-    entry_point,
-    "entry_point",
-    get_peers_content,
-    convert_to_receiver_signal
-);
 
 impl EntryPoint {
     pub fn new(
@@ -40,3 +32,23 @@ impl EntryPoint {
         }
     }
 }
+
+// can't be updated
+impl TryFrom<&Element> for EntryPoint {
+    type Error = Error;
+    fn try_from(element: &Element) -> Result<Self, Self::Error> {
+        entry_from_element_create_only::<EntryPoint>(element)
+    }
+}
+
+fn convert_to_receiver_signal(signal: EntryPointSignal) -> SignalType {
+    SignalType::EntryPoint(signal)
+}
+
+crud!(
+    EntryPoint,
+    entry_point,
+    "entry_point",
+    get_peers_content,
+    convert_to_receiver_signal
+);

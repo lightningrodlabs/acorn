@@ -1,11 +1,13 @@
 use crate::project::{
     edge::crud::{inner_archive_edge, inner_create_edge, inner_fetch_edges, Edge, EdgeWireEntry},
     entry_point::crud::{inner_archive_entry_point, inner_fetch_entry_points, EntryPointWireEntry},
+    error::Error,
     goal_comment::crud::{
         inner_archive_goal_comment, inner_fetch_goal_comments, GoalCommentWireEntry,
     },
     goal_member::crud::{archive_goal_members, GoalMember},
     goal_vote::crud::{inner_archive_goal_vote, inner_fetch_goal_votes, GoalVoteWireEntry},
+    validate::entry_from_element_create_or_update,
 };
 use crate::{get_peers_content, SignalType};
 use dna_help::{crud, signal_peers, ActionType, WrappedAgentPubKey, WrappedHeaderHash};
@@ -28,6 +30,14 @@ pub struct Goal {
     tags: Option<Vec<String>>,
     description: String,
     time_frame: Option<TimeFrame>,
+}
+
+// can be updated
+impl TryFrom<&Element> for Goal {
+    type Error = Error;
+    fn try_from(element: &Element) -> Result<Self, Self::Error> {
+        entry_from_element_create_or_update::<Goal>(element)
+    }
 }
 
 impl Goal {

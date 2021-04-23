@@ -1,3 +1,4 @@
+use crate::project::{error::Error, validate::entry_from_element_create_only};
 use dna_help::{ActionType, EntryAndHash, WrappedAgentPubKey};
 use hdk::prelude::*;
 
@@ -33,6 +34,14 @@ impl MemberSignal {
             action: ActionType::Create,
             data: member,
         }
+    }
+}
+
+// can't be updated
+impl TryFrom<&Element> for Member {
+    type Error = Error;
+    fn try_from(element: &Element) -> Result<Self, Self::Error> {
+        entry_from_element_create_only::<Member>(element)
     }
 }
 

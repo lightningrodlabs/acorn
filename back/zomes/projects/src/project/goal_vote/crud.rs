@@ -1,4 +1,8 @@
-use crate::{get_peers_content, SignalType};
+use crate::{
+    get_peers_content,
+    project::{error::Error, validate::entry_from_element_create_or_update},
+    SignalType,
+};
 use dna_help::{crud, WrappedAgentPubKey, WrappedHeaderHash};
 use hdk::prelude::*;
 
@@ -12,6 +16,14 @@ pub struct GoalVote {
     pub effort: f64,
     pub agent_address: WrappedAgentPubKey,
     pub unix_timestamp: f64,
+}
+
+// can be updated
+impl TryFrom<&Element> for GoalVote {
+    type Error = Error;
+    fn try_from(element: &Element) -> Result<Self, Self::Error> {
+        entry_from_element_create_or_update::<GoalVote>(element)
+    }
 }
 
 fn convert_to_receiver_signal(signal: GoalVoteSignal) -> SignalType {

@@ -4,23 +4,6 @@ use crate::project::goal::crud::Goal;
 use dna_help::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
 
-impl TryFrom<&Element> for Edge {
-    type Error = Error;
-    fn try_from(element: &Element) -> Result<Self, Self::Error> {
-        match element.header() {
-            // Only creates are allowed for a Edge.
-            Header::Create(_) => Ok(match element.entry() {
-                ElementEntry::Present(serialized_edge) => match Edge::try_from(serialized_edge) {
-                    Ok(edge) => edge,
-                    Err(e) => return Err(Error::Wasm(e)),
-                },
-                _ => return Err(Error::EntryMissing),
-            }),
-            _ => Err(Error::WrongHeader),
-        }
-    }
-}
-
 #[hdk_extern]
 fn validate_create_entry_edge(validate_data: ValidateData) -> ExternResult<ValidateCallbackResult> {
     let proposed_edge = match Edge::try_from(&validate_data.element) {

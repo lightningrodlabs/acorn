@@ -1,15 +1,30 @@
-use crate::{get_peers_content, SignalType};
+use crate::{
+    get_peers_content,
+    project::{error::Error, validate::entry_from_element_create_only},
+    SignalType,
+};
 use dna_help::{crud, WrappedAgentPubKey, WrappedHeaderHash};
 use hdk::prelude::*;
 
 // a relationship between a Goal and an Agent
+// representing roughly the idea of someone being "assigned to"
+// or "responsible for" or "working on"
 #[hdk_entry(id = "goal_member")]
 #[derive(Clone, PartialEq)]
 pub struct GoalMember {
     pub goal_address: WrappedHeaderHash,
     pub agent_address: WrappedAgentPubKey,
+    // TODO: I don't think this should be an 'Option'
     pub user_edit_hash: Option<WrappedAgentPubKey>,
     pub unix_timestamp: f64,
+}
+
+// can't be updated
+impl TryFrom<&Element> for GoalMember {
+    type Error = Error;
+    fn try_from(element: &Element) -> Result<Self, Self::Error> {
+        entry_from_element_create_only::<GoalMember>(element)
+    }
 }
 
 fn convert_to_receiver_signal(signal: GoalMemberSignal) -> SignalType {
