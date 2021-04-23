@@ -1,10 +1,21 @@
 
 
-entry_point
+entry_point (structurally same as goal_member)
 - create: depends on goal at `goal_address` existing,
           `creator_address` must match the agent committing
 - update: not allowed
 - delete: allowed by anyone
+
+goal_member (structurally same as entry_point)
+- create: depends on goal at `goal_address` existing,
+          `user_edit_hash` should match the agent committing
+          `agent_address` is not validated because the agent is not necessarily in this DNA as a member, could be over in profiles dna
+- update: not allowed
+- delete: allowed by anyone
+
+___________________________________________
+___________________________________________
+
 
 goal
 - create: `user_hash` must be the agent committing,
@@ -22,12 +33,6 @@ goal_comment
 - delete: allowed only the original author,
           as identified in headers and `agent_address` field
 
-goal_member
-- create: depends on goal at `goal_address` existing,
-          `agent_address` can be any project member,
-          `user_edit_hash` should be Some and match the agent committing
-- update: not allowed
-- delete: allowed by anyone
 
 goal_vote (same as goal comment)
 - create: depends on goal at `goal_address` existing,

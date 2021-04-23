@@ -1,19 +1,19 @@
 use crate::project::goal::crud::Goal;
-use crate::project::{entry_point::crud::EntryPoint, validate::validate_value_matches_author};
 use crate::project::{error::Error, validate::confirm_resolved_dependency};
+use crate::project::{goal_member::crud::GoalMember, validate::validate_value_matches_author};
 use hdk::prelude::*;
 
 #[hdk_extern]
-fn validate_create_entry_entry_point(
+fn validate_create_entry_goal_member(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         // element must have an entry that must deserialize correctly
-        match EntryPoint::try_from(&validate_data.element) {
+        match GoalMember::try_from(&validate_data.element) {
             Ok(proposed_entry) => {
                 // creator_address must match header author
                 match validate_value_matches_author(
-                    &proposed_entry.creator_address.0,
+                    &proposed_entry.user_edit_hash.0,
                     validate_data,
                 ) {
                     ValidateCallbackResult::Valid => {
@@ -30,13 +30,13 @@ fn validate_create_entry_entry_point(
 
 #[hdk_extern]
 /// Updates are not allowed
-fn validate_update_entry_entry_point(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+fn validate_update_entry_goal_member(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
     Error::UpdateAttempted.into()
 }
 
 #[hdk_extern]
 /// Deletes are allowed by anyone
-fn validate_delete_entry_entry_point(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+fn validate_delete_entry_goal_member(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
 }
 
@@ -44,7 +44,7 @@ fn validate_delete_entry_entry_point(_: ValidateData) -> ExternResult<ValidateCa
 pub mod tests {
     use crate::project::error::Error;
     use crate::project::fixtures::fixtures::{
-        EntryPointFixturator, GoalFixturator, WrappedAgentPubKeyFixturator,
+        GoalMemberFixturator, GoalFixturator, WrappedAgentPubKeyFixturator,
         WrappedHeaderHashFixturator,
     };
     use ::fixt::prelude::*;
@@ -54,56 +54,56 @@ pub mod tests {
     use holochain_types::prelude::ValidateDataFixturator;
 
     #[test]
-    fn test_validate_update_entry_entry_point() {
+    fn test_validate_update_entry_goal_member() {
         assert_eq!(
-            super::validate_update_entry_entry_point(fixt!(ValidateData)),
+            super::validate_update_entry_goal_member(fixt!(ValidateData)),
             Error::UpdateAttempted.into(),
         );
     }
 
     #[test]
-    fn test_validate_delete_entry_entry_point() {
+    fn test_validate_delete_entry_goal_member() {
         assert_eq!(
-            super::validate_delete_entry_entry_point(fixt!(ValidateData)),
+            super::validate_delete_entry_goal_member(fixt!(ValidateData)),
             Ok(ValidateCallbackResult::Valid),
         );
     }
 
     #[test]
-    fn test_validate_create_entry_entry_point() {
+    fn test_validate_create_entry_goal_member() {
         let mut validate_data = fixt!(ValidateData);
         let create_header = fixt!(Create);
-        let mut entry_point = fixt!(EntryPoint);
+        let mut goal_member = fixt!(GoalMember);
 
         *validate_data.element.as_header_mut() = Header::Create(create_header.clone());
 
         // without an Element containing an Entry, validation will fail
         assert_eq!(
-            super::validate_create_entry_entry_point(validate_data.clone()),
+            super::validate_create_entry_goal_member(validate_data.clone()),
             Error::EntryMissing.into(),
         );
 
         // with an entry with a random
-        // creator_address it will fail (not the agent committing)
+        // user_edit_hash it will fail (not the agent committing)
         let goal_wrapped_header_hash = fixt!(WrappedHeaderHash);
         let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
-        entry_point.goal_address = goal_wrapped_header_hash.clone();
-        entry_point.creator_address = random_wrapped_agent_pub_key.clone();
+        goal_member.goal_address = goal_wrapped_header_hash.clone();
+        goal_member.user_edit_hash = random_wrapped_agent_pub_key.clone();
         *validate_data.element.as_entry_mut() =
-            ElementEntry::Present(entry_point.clone().try_into().unwrap());
+            ElementEntry::Present(goal_member.clone().try_into().unwrap());
         assert_eq!(
-            super::validate_create_entry_entry_point(validate_data.clone()),
+            super::validate_create_entry_goal_member(validate_data.clone()),
             Error::CorruptAgentPubKeyReference.into(),
         );
 
-        // make the creator_address valid by making it equal the
+        // make the user_edit_hash valid by making it equal the
         // AgentPubKey of the agent committing,
         // but it will still be missing the goal dependency so it will
         // return UnresolvedDependencies
-        entry_point.creator_address =
+        goal_member.user_edit_hash =
             WrappedAgentPubKey::new(create_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
-            ElementEntry::Present(entry_point.clone().try_into().unwrap());
+            ElementEntry::Present(goal_member.clone().try_into().unwrap());
 
         // now, since validation is dependent on other entries, we begin
         // to have to mock `get` calls to the HDK
@@ -124,7 +124,7 @@ pub mod tests {
         // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
         // equal to the Hash of the parent Goal address
         assert_eq!(
-            super::validate_create_entry_entry_point(validate_data.clone()),
+            super::validate_create_entry_goal_member(validate_data.clone()),
             Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
                 goal_wrapped_header_hash.clone().0.into()
             ])),
@@ -157,7 +157,7 @@ pub mod tests {
         // we should see that the ValidateCallbackResult
         // is finally valid
         assert_eq!(
-            super::validate_create_entry_entry_point(validate_data.clone()),
+            super::validate_create_entry_goal_member(validate_data.clone()),
             Ok(ValidateCallbackResult::Valid),
         );
     }

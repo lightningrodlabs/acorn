@@ -13,10 +13,27 @@ use hdk::prelude::*;
 #[derive(Clone, PartialEq)]
 pub struct GoalMember {
     pub goal_address: WrappedHeaderHash,
+    // the "assignee"
     pub agent_address: WrappedAgentPubKey,
-    // TODO: I don't think this should be an 'Option'
-    pub user_edit_hash: Option<WrappedAgentPubKey>,
+    // the person who authored this entry
+    pub user_edit_hash: WrappedAgentPubKey,
     pub unix_timestamp: f64,
+}
+
+impl GoalMember {
+    pub fn new(
+        goal_address: WrappedHeaderHash,
+        agent_address: WrappedAgentPubKey,
+        user_edit_hash: WrappedAgentPubKey,
+        unix_timestamp: f64,
+    ) -> Self {
+        Self {
+            goal_address,
+            agent_address,
+            user_edit_hash,
+            unix_timestamp,
+        }
+    }
 }
 
 // can't be updated
