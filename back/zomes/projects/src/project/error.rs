@@ -12,6 +12,9 @@ pub enum Error {
     #[error("Parent and Child entries are not different")]
     IdenticalParentChild,
 
+    #[error("Should not try to modify the original author of this entry")]
+    TamperCreateAgentPubKeyReference,
+
     #[error("Should only use your own AgentPubKey to claim you created this entry")]
     CorruptCreateAgentPubKeyReference,
 

@@ -14,7 +14,7 @@ fn validate_create_entry_goal_member(
                 // creator_address must match header author
                 match validate_value_matches_create_author(
                     &proposed_entry.user_edit_hash.0,
-                    validate_data,
+                    &validate_data,
                 ) {
                     ValidateCallbackResult::Valid => {
                         // parent goal at goal_address must be determined to exist

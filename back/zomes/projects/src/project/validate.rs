@@ -33,7 +33,7 @@ pub fn entry_from_element_create_or_update<
 
 pub fn validate_value_matches_create_author(
     value: &AgentPubKey,
-    validate_data: ValidateData,
+    validate_data: &ValidateData,
 ) -> ValidateCallbackResult {
     match value == validate_data.element.header().author() {
         true => ValidateCallbackResult::Valid,
@@ -43,11 +43,21 @@ pub fn validate_value_matches_create_author(
 
 pub fn validate_value_matches_edit_author(
     value: &AgentPubKey,
-    validate_data: ValidateData,
+    validate_data: &ValidateData,
 ) -> ValidateCallbackResult {
     match value == validate_data.element.header().author() {
         true => ValidateCallbackResult::Valid,
         false => Error::CorruptEditAgentPubKeyReference.into(),
+    }
+}
+
+pub fn validate_value_matches_original_author(
+    value: &AgentPubKey,
+    original_element: &Element,
+) -> ValidateCallbackResult {
+    match value == original_element.header().author() {
+        true => ValidateCallbackResult::Valid,
+        false => Error::TamperCreateAgentPubKeyReference.into(),
     }
 }
 

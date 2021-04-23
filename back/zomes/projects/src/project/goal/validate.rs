@@ -2,10 +2,10 @@ use crate::project::{
   goal::crud::Goal,
   validate::{
     validate_value_is_none, validate_value_is_some, validate_value_matches_create_author,
-    validate_value_matches_edit_author,
+    validate_value_matches_edit_author, validate_value_matches_original_author,
   },
 };
-use dna_help::WrappedAgentPubKey;
+use dna_help::{resolve_dependency, ResolvedDependency, WrappedAgentPubKey};
 use hdk::prelude::*;
 
 #[hdk_extern]
@@ -15,7 +15,7 @@ fn validate_create_entry_goal(validate_data: ValidateData) -> ExternResult<Valid
     match Goal::try_from(&validate_data.element) {
       Ok(proposed_entry) => {
         // creator_address must match header author
-        match validate_value_matches_create_author(&proposed_entry.user_hash.0, validate_data) {
+        match validate_value_matches_create_author(&proposed_entry.user_hash.0, &validate_data) {
           ValidateCallbackResult::Valid => {
             // user_edit_hash must not be Some during create
             validate_value_is_none::<WrappedAgentPubKey>(&proposed_entry.user_edit_hash)
@@ -39,14 +39,33 @@ fn validate_update_entry_goal(validate_data: ValidateData) -> ExternResult<Valid
           ValidateCallbackResult::Valid => {
             // user_edit_hash must match header author
             match validate_value_matches_edit_author(
+              // can safely unwrap because we just checked
+              // the value is Some
               &proposed_entry.user_edit_hash.unwrap().0,
-              validate_data,
+              &validate_data,
             ) {
               ValidateCallbackResult::Valid => {
-                ValidateCallbackResult::Valid
                 // go a little more complicated here
                 // -> check the original header and make sure that
                 // `user_hash` still matches that original author
+                if let Header::Update(header) = validate_data.element.header() {
+                  match resolve_dependency::<Goal>(header.original_header_address.clone().into())? {
+                    Ok(ResolvedDependency(el, _)) => {
+                      // the final return value
+                      // if this passes, all have passed
+
+                      // here we are checking to make sure that
+                      // this user is not suggesting that someone other than
+                      // the original author of the original goal WAS the original
+                      validate_value_matches_original_author(&proposed_entry.user_hash.0, &el)
+                    }
+                    // the unresolved dependency case
+                    Err(validate_callback_result) => validate_callback_result,
+                  }
+                } else {
+                  // Holochain passed the wrong header!
+                  return unreachable!();
+                }
               }
               validate_callback_result => validate_callback_result,
             }
@@ -72,6 +91,7 @@ pub mod tests {
   use ::fixt::prelude::*;
   use dna_help::WrappedAgentPubKey;
   use hdk::prelude::*;
+  use holochain_types::prelude::ElementFixturator;
   use holochain_types::prelude::ValidateDataFixturator;
 
   #[test]
@@ -172,19 +192,96 @@ pub mod tests {
       Error::CorruptEditAgentPubKeyReference.into(),
     );
 
-    // SUCCESS case
-    // the element exists and deserializes
-    // user_edit_hash is Some(the author)
-    // user_hash is ...
-    // -> good to go
+    // with a valid user_edit_hash, we move on to the issue
+    // of the `user_hash`. Is it equal to the original author?
+    // to know this, we need to resolve that dependency
     goal.user_edit_hash = Some(WrappedAgentPubKey::new(
       update_header.author.as_hash().clone(),
     ));
     // update the goal value in the validate_data
     *validate_data.element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
 
+    // now, since validation is dependent on other entries, we begin
+    // to have to mock `get` calls to the HDK
+
+    let mut mock_hdk = MockHdkT::new();
+    // the resolve_dependencies `get` call of the original goal, via its header
+    // return Ok(None) for now, as if it can't be found
+    mock_hdk
+      .expect_get()
+      .with(mockall::predicate::eq(GetInput::new(
+        update_header.original_header_address.clone().into(),
+        GetOptions::content(),
+      )))
+      .times(1)
+      .return_const(Ok(None));
+
+    set_hdk(mock_hdk);
+
+    assert_eq!(
+      super::validate_update_entry_goal(validate_data.clone()),
+      Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
+        update_header.original_header_address.clone().into()
+      ])),
+    );
+
+    // now assuming it can be found, we have the question of the header
+    // of the original, which we will be checking the author against
+    // in the case where it's a different original author, FAIL
+    // suggests inappropriate data tampering
+
+    let original_goal = fixt!(Goal);
+    let mut original_goal_element = fixt!(Element);
+    *original_goal_element.as_entry_mut() =
+      ElementEntry::Present(original_goal.clone().try_into().unwrap());
+
+    let mut mock_hdk = MockHdkT::new();
+    // the resolve_dependencies `get` call of the original goal, via its header
+    // return a result, as if it can be found
+    mock_hdk
+      .expect_get()
+      .with(mockall::predicate::eq(GetInput::new(
+        update_header.original_header_address.clone().into(),
+        GetOptions::content(),
+      )))
+      .times(1)
+      .return_const(Ok(Some(original_goal_element.clone())));
+
+    set_hdk(mock_hdk);
+
+    assert_eq!(
+      super::validate_update_entry_goal(validate_data.clone()),
+      Ok(Error::TamperCreateAgentPubKeyReference.into()),
+    );
+
+    // SUCCESS case
+    // the element exists and deserializes
+    // user_edit_hash is Some(the author)
+    // original_header_address exists, and the author
+    // of that original header
+    // is equal to the new `user_hash` value
+    // -> good to go
     // we should see that the ValidateCallbackResult
     // is finally valid
+
+    // set the user_hash on the goal equal to the "original header author address"
+    goal.user_hash = WrappedAgentPubKey::new(original_goal_element.header().author().clone());
+    *validate_data.element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
+
+    let mut mock_hdk = MockHdkT::new();
+    // the resolve_dependencies `get` call of the original goal, via its header
+    // return a result, as if it can be found
+    mock_hdk
+      .expect_get()
+      .with(mockall::predicate::eq(GetInput::new(
+        update_header.original_header_address.clone().into(),
+        GetOptions::content(),
+      )))
+      .times(1)
+      .return_const(Ok(Some(original_goal_element.clone())));
+
+    set_hdk(mock_hdk);
+
     assert_eq!(
       super::validate_update_entry_goal(validate_data.clone()),
       Ok(ValidateCallbackResult::Valid),

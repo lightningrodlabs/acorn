@@ -14,7 +14,7 @@ fn validate_create_entry_entry_point(
     match EntryPoint::try_from(&validate_data.element) {
       Ok(proposed_entry) => {
         // creator_address must match header author
-        match validate_value_matches_create_author(&proposed_entry.creator_address.0, validate_data)
+        match validate_value_matches_create_author(&proposed_entry.creator_address.0, &validate_data)
         {
           ValidateCallbackResult::Valid => {
             // parent goal at goal_address must be determined to exist
