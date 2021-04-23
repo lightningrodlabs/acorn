@@ -20,7 +20,7 @@ ___________________________________________
 goal
 - create: `user_hash` must be the agent committing,
           `user_edit_hash` should be None
-- update: `user_hash` should be the same as create,
+- update: `user_hash` should be the same as author of create (meaning must resolve the original_header_address),
           `user_edit_hash` should be Some, and match the agent committing
 - delete: allowed by anyone
 

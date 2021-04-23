@@ -12,8 +12,17 @@ pub enum Error {
     #[error("Parent and Child entries are not different")]
     IdenticalParentChild,
 
-    #[error("Should not use an AgentPubKey other than your own here")]
-    CorruptAgentPubKeyReference,
+    #[error("Should only use your own AgentPubKey to claim you created this entry")]
+    CorruptCreateAgentPubKeyReference,
+
+    #[error("user_edit_hash is Some but should be None during create")]
+    SomeNotNoneDuringCreate,
+
+    #[error("user_edit_hash is None but should be Some during edit")]
+    NoneNotSomeDuringEdit,
+
+    #[error("Should only use your own AgentPubKey to claim you edited this entry")]
+    CorruptEditAgentPubKeyReference,
 
     #[error("Updates not allowed for this entry type")]
     UpdateAttempted,

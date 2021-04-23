@@ -1,6 +1,6 @@
 use crate::project::goal::crud::Goal;
 use crate::project::{error::Error, validate::confirm_resolved_dependency};
-use crate::project::{goal_member::crud::GoalMember, validate::validate_value_matches_author};
+use crate::project::{goal_member::crud::GoalMember, validate::validate_value_matches_create_author};
 use hdk::prelude::*;
 
 #[hdk_extern]
@@ -12,7 +12,7 @@ fn validate_create_entry_goal_member(
         match GoalMember::try_from(&validate_data.element) {
             Ok(proposed_entry) => {
                 // creator_address must match header author
-                match validate_value_matches_author(
+                match validate_value_matches_create_author(
                     &proposed_entry.user_edit_hash.0,
                     validate_data,
                 ) {
@@ -93,7 +93,7 @@ pub mod tests {
             ElementEntry::Present(goal_member.clone().try_into().unwrap());
         assert_eq!(
             super::validate_create_entry_goal_member(validate_data.clone()),
-            Error::CorruptAgentPubKeyReference.into(),
+            Error::CorruptCreateAgentPubKeyReference.into(),
         );
 
         // make the user_edit_hash valid by making it equal the

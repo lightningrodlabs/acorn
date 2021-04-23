@@ -31,13 +31,41 @@ pub fn entry_from_element_create_or_update<
     }
 }
 
-pub fn validate_value_matches_author(
+pub fn validate_value_matches_create_author(
     value: &AgentPubKey,
     validate_data: ValidateData,
 ) -> ValidateCallbackResult {
     match value == validate_data.element.header().author() {
         true => ValidateCallbackResult::Valid,
-        false => Error::CorruptAgentPubKeyReference.into(),
+        false => Error::CorruptCreateAgentPubKeyReference.into(),
+    }
+}
+
+pub fn validate_value_matches_edit_author(
+    value: &AgentPubKey,
+    validate_data: ValidateData,
+) -> ValidateCallbackResult {
+    match value == validate_data.element.header().author() {
+        true => ValidateCallbackResult::Valid,
+        false => Error::CorruptEditAgentPubKeyReference.into(),
+    }
+}
+
+pub fn validate_value_is_some<O>(
+    value: &Option<O>,
+) -> ValidateCallbackResult {
+    match value {
+      Some(_) => ValidateCallbackResult::Valid,
+      None => Error::NoneNotSomeDuringEdit.into(),
+    }
+}
+
+pub fn validate_value_is_none<O>(
+    value: &Option<O>,
+) -> ValidateCallbackResult {
+    match value {
+      Some(_) => Error::SomeNotNoneDuringCreate.into(),
+      None => ValidateCallbackResult::Valid,
     }
 }
 

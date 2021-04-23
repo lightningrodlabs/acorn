@@ -20,16 +20,16 @@ use std::fmt;
 #[hdk_entry(id = "goal")]
 #[derive(Clone, PartialEq)]
 pub struct Goal {
-    content: String,
-    user_hash: WrappedAgentPubKey,
-    user_edit_hash: Option<WrappedAgentPubKey>,
-    timestamp_created: f64,
-    timestamp_updated: Option<f64>,
-    hierarchy: Hierarchy,
-    status: Status,
-    tags: Option<Vec<String>>,
-    description: String,
-    time_frame: Option<TimeFrame>,
+    pub content: String,
+    pub user_hash: WrappedAgentPubKey,
+    pub user_edit_hash: Option<WrappedAgentPubKey>,
+    pub timestamp_created: f64,
+    pub timestamp_updated: Option<f64>,
+    pub hierarchy: Hierarchy,
+    pub status: Status,
+    pub tags: Option<Vec<String>>,
+    pub description: String,
+    pub time_frame: Option<TimeFrame>,
 }
 
 // can be updated
