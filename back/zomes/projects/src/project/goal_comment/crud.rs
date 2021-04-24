@@ -23,6 +23,22 @@ impl TryFrom<&Element> for GoalComment {
     }
 }
 
+impl GoalComment {
+  pub fn new(
+      goal_address: WrappedHeaderHash,
+      content: String,
+      agent_address: WrappedAgentPubKey,
+      unix_timestamp: f64,
+  ) -> Self {
+      Self {
+          goal_address,
+          content,
+          agent_address,
+          unix_timestamp,
+      }
+  }
+}
+
 fn convert_to_receiver_signal(signal: GoalCommentSignal) -> SignalType {
     SignalType::GoalComment(signal)
 }

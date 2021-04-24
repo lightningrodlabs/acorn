@@ -27,8 +27,17 @@ pub enum Error {
     #[error("Should only use your own AgentPubKey to claim you edited this entry")]
     CorruptEditAgentPubKeyReference,
 
+    #[error("Only the original entry author can update this entry")]
+    UpdateOnNonAuthoredOriginal,
+    
     #[error("Updates not allowed for this entry type")]
     UpdateAttempted,
+    
+    #[error("Deletes not allowed for this entry type")]
+    DeleteAttempted,
+
+    #[error("Only the original entry author can delete this entry")]
+    DeleteOnNonAuthoredOriginal,
 
     #[error("Deserialization Failed")]
     DeserializationFailed,

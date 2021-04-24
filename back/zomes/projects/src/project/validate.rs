@@ -61,6 +61,26 @@ pub fn validate_value_matches_original_author(
     }
 }
 
+pub fn validate_value_matches_original_author_for_edit(
+    value: &AgentPubKey,
+    original_element: &Element,
+) -> ValidateCallbackResult {
+    match value == original_element.header().author() {
+        true => ValidateCallbackResult::Valid,
+        false => Error::UpdateOnNonAuthoredOriginal.into(),
+    }
+}
+
+pub fn validate_value_matches_original_author_for_delete(
+  value: &AgentPubKey,
+  original_element: &Element,
+) -> ValidateCallbackResult {
+  match value == original_element.header().author() {
+      true => ValidateCallbackResult::Valid,
+      false => Error::DeleteOnNonAuthoredOriginal.into(),
+  }
+}
+
 pub fn validate_value_is_some<O>(
     value: &Option<O>,
 ) -> ValidateCallbackResult {

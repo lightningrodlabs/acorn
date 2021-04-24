@@ -13,10 +13,6 @@ goal_member (structurally same as entry_point)
 - update: not allowed
 - delete: allowed by anyone
 
-___________________________________________
-___________________________________________
-
-
 goal
 - create: `user_hash` must be the agent committing,
           `user_edit_hash` should be None
@@ -31,8 +27,10 @@ goal_comment
           `agent_address` should not change from its original value,
           AND only the original author can update
 - delete: allowed only the original author,
-          as identified in headers and `agent_address` field
+          as identified in headers, and by resolving the original goal_comment
 
+___________________________________________
+___________________________________________
 
 goal_vote (same as goal comment)
 - create: depends on goal at `goal_address` existing,
@@ -40,8 +38,8 @@ goal_vote (same as goal comment)
 - update: depends on goal at `goal_address` existing,
           `agent_address` should not change from its original value,
           AND only the original author can update
-- delete: allowed only by the original author,
-          as identified in headers and `agent_address` field
+- delete: allowed only the original author,
+          as identified in headers, and by resolving the original goal_comment
 
 project_meta
 - create: `creator_address` should match the agent committing,
