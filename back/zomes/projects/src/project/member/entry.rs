@@ -11,6 +11,16 @@ pub struct Member {
     pub address: WrappedAgentPubKey,
 }
 
+impl Member {
+  pub fn new(
+    address: WrappedAgentPubKey,
+  ) -> Self {
+    Self {
+      address,
+    }
+  }
+}
+
 impl From<EntryAndHash<Member>> for Member {
     fn from(entry_and_hash: EntryAndHash<Member>) -> Self {
         entry_and_hash.0

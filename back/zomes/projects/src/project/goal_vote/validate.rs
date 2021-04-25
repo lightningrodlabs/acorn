@@ -1,7 +1,7 @@
 use crate::project::goal::crud::Goal;
 use crate::project::validate::confirm_resolved_dependency;
 use crate::project::{
-  goal_comment::crud::GoalComment,
+  goal_vote::crud::GoalVote,
   validate::{
     validate_value_matches_create_author, validate_value_matches_original_author_for_delete,
     validate_value_matches_original_author_for_edit,
@@ -11,12 +11,12 @@ use dna_help::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
 
 #[hdk_extern]
-fn validate_create_entry_goal_comment(
+fn validate_create_entry_goal_vote(
   validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
   Ok(
     // element must have an entry that must deserialize correctly
-    match GoalComment::try_from(&validate_data.element) {
+    match GoalVote::try_from(&validate_data.element) {
       Ok(proposed_entry) => {
         // agent_address must match header author
         match validate_value_matches_create_author(&proposed_entry.agent_address.0, &validate_data)
@@ -34,12 +34,12 @@ fn validate_create_entry_goal_comment(
 }
 
 #[hdk_extern]
-fn validate_update_entry_goal_comment(
+fn validate_update_entry_goal_vote(
   validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
   Ok(
     // element must have an entry that must deserialize correctly
-    match GoalComment::try_from(&validate_data.element) {
+    match GoalVote::try_from(&validate_data.element) {
       Ok(proposed_entry) => {
         // agent_address must match header author
         // and then it will also be validated that the header
@@ -51,7 +51,7 @@ fn validate_update_entry_goal_comment(
             // -> check the original header and make sure that
             // this header author matches that original author
             if let Header::Update(header) = validate_data.element.header() {
-              match resolve_dependency::<GoalComment>(
+              match resolve_dependency::<GoalVote>(
                 header.original_header_address.clone().into(),
               )? {
                 Ok(ResolvedDependency(el, _)) => {
@@ -80,13 +80,13 @@ fn validate_update_entry_goal_comment(
 
 #[hdk_extern]
 /// Deletes are allowed only by original author
-fn validate_delete_entry_goal_comment(
+fn validate_delete_entry_goal_vote(
   validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
   Ok(match validate_data.element.header() {
     Header::Delete(header) => {
-      // the original GoalComment should exist
-      match resolve_dependency::<GoalComment>(header.deletes_address.clone().into())? {
+      // the original GoalVote should exist
+      match resolve_dependency::<GoalVote>(header.deletes_address.clone().into())? {
         Ok(ResolvedDependency(el, _)) => {
           // the final return value
           // if this passes, all have passed
@@ -110,7 +110,7 @@ fn validate_delete_entry_goal_comment(
 pub mod tests {
   use crate::project::error::Error;
   use crate::project::fixtures::fixtures::{
-    GoalCommentFixturator, GoalFixturator, WrappedAgentPubKeyFixturator,
+    GoalVoteFixturator, GoalFixturator, WrappedAgentPubKeyFixturator,
     WrappedHeaderHashFixturator,
   };
   use ::fixt::prelude::*;
@@ -120,16 +120,16 @@ pub mod tests {
   use holochain_types::prelude::ValidateDataFixturator;
 
   #[test]
-  fn test_validate_create_entry_goal_comment() {
+  fn test_validate_create_entry_goal_vote() {
     let mut validate_data = fixt!(ValidateData);
     let create_header = fixt!(Create);
-    let mut goal_comment = fixt!(GoalComment);
+    let mut goal_vote = fixt!(GoalVote);
 
     *validate_data.element.as_header_mut() = Header::Create(create_header.clone());
 
     // without an Element containing an Entry, validation will fail
     assert_eq!(
-      super::validate_create_entry_goal_comment(validate_data.clone()),
+      super::validate_create_entry_goal_vote(validate_data.clone()),
       Error::EntryMissing.into(),
     );
 
@@ -137,12 +137,12 @@ pub mod tests {
     // agent_address it will fail (not the agent committing)
     let goal_wrapped_header_hash = fixt!(WrappedHeaderHash);
     let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
-    goal_comment.goal_address = goal_wrapped_header_hash.clone();
-    goal_comment.agent_address = random_wrapped_agent_pub_key.clone();
+    goal_vote.goal_address = goal_wrapped_header_hash.clone();
+    goal_vote.agent_address = random_wrapped_agent_pub_key.clone();
     *validate_data.element.as_entry_mut() =
-      ElementEntry::Present(goal_comment.clone().try_into().unwrap());
+      ElementEntry::Present(goal_vote.clone().try_into().unwrap());
     assert_eq!(
-      super::validate_create_entry_goal_comment(validate_data.clone()),
+      super::validate_create_entry_goal_vote(validate_data.clone()),
       Error::CorruptCreateAgentPubKeyReference.into(),
     );
 
@@ -150,9 +150,9 @@ pub mod tests {
     // AgentPubKey of the agent committing,
     // but it will still be missing the goal dependency so it will
     // return UnresolvedDependencies
-    goal_comment.agent_address = WrappedAgentPubKey::new(create_header.author.as_hash().clone());
+    goal_vote.agent_address = WrappedAgentPubKey::new(create_header.author.as_hash().clone());
     *validate_data.element.as_entry_mut() =
-      ElementEntry::Present(goal_comment.clone().try_into().unwrap());
+      ElementEntry::Present(goal_vote.clone().try_into().unwrap());
 
     // now, since validation is dependent on other entries, we begin
     // to have to mock `get` calls to the HDK
@@ -173,7 +173,7 @@ pub mod tests {
     // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
     // equal to the Hash of the parent Goal address
     assert_eq!(
-      super::validate_create_entry_goal_comment(validate_data.clone()),
+      super::validate_create_entry_goal_vote(validate_data.clone()),
       Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
         goal_wrapped_header_hash.clone().0.into()
       ])),
@@ -206,21 +206,21 @@ pub mod tests {
     // we should see that the ValidateCallbackResult
     // is finally valid
     assert_eq!(
-      super::validate_create_entry_goal_comment(validate_data.clone()),
+      super::validate_create_entry_goal_vote(validate_data.clone()),
       Ok(ValidateCallbackResult::Valid),
     );
   }
 
   #[test]
-  fn test_validate_update_entry_goal_comment() {
+  fn test_validate_update_entry_goal_vote() {
     let mut validate_data = fixt!(ValidateData);
     let update_header = fixt!(Update);
-    let mut goal_comment = fixt!(GoalComment);
+    let mut goal_vote = fixt!(GoalVote);
     *validate_data.element.as_header_mut() = Header::Update(update_header.clone());
 
     // without an Element containing an Entry, validation will fail
     assert_eq!(
-      super::validate_update_entry_goal_comment(validate_data.clone()),
+      super::validate_update_entry_goal_vote(validate_data.clone()),
       Error::EntryMissing.into(),
     );
 
@@ -228,29 +228,29 @@ pub mod tests {
     // agent_address it will fail (not the agent committing)
     let goal_wrapped_header_hash = fixt!(WrappedHeaderHash);
     let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
-    goal_comment.goal_address = goal_wrapped_header_hash.clone();
-    goal_comment.agent_address = random_wrapped_agent_pub_key.clone();
+    goal_vote.goal_address = goal_wrapped_header_hash.clone();
+    goal_vote.agent_address = random_wrapped_agent_pub_key.clone();
     *validate_data.element.as_entry_mut() =
-      ElementEntry::Present(goal_comment.clone().try_into().unwrap());
+      ElementEntry::Present(goal_vote.clone().try_into().unwrap());
     assert_eq!(
-      super::validate_update_entry_goal_comment(validate_data.clone()),
+      super::validate_update_entry_goal_vote(validate_data.clone()),
       Error::CorruptCreateAgentPubKeyReference.into(),
     );
 
     // make the agent_address valid by making it equal the
     // AgentPubKey of the agent committing,
-    // but it will still be missing the original GoalComment
+    // but it will still be missing the original GoalVote
     // dependency so it will
     // return UnresolvedDependencies
-    goal_comment.agent_address = WrappedAgentPubKey::new(update_header.author.as_hash().clone());
+    goal_vote.agent_address = WrappedAgentPubKey::new(update_header.author.as_hash().clone());
     *validate_data.element.as_entry_mut() =
-      ElementEntry::Present(goal_comment.clone().try_into().unwrap());
+      ElementEntry::Present(goal_vote.clone().try_into().unwrap());
 
     // now, since validation is dependent on other entries, we begin
     // to have to mock `get` calls to the HDK
 
     let mut mock_hdk = MockHdkT::new();
-    // the resolve_dependencies `get` call of the original GoalComment
+    // the resolve_dependencies `get` call of the original GoalVote
     mock_hdk
       .expect_get()
       .with(mockall::predicate::eq(GetInput::new(
@@ -266,23 +266,23 @@ pub mod tests {
     // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
     // equal to the Hash of the original_header_address of the Update
     assert_eq!(
-      super::validate_update_entry_goal_comment(validate_data.clone()),
+      super::validate_update_entry_goal_vote(validate_data.clone()),
       Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
         update_header.original_header_address.clone().into()
       ])),
     );
 
-    // make it now resolve the original GoalComment
-    // but now be invalid according to the original GoalComment
+    // make it now resolve the original GoalVote
+    // but now be invalid according to the original GoalVote
     // being authored by a different author than this update
 
-    // now it is as if there is a GoalComment at the original address
-    let original_goal_comment = fixt!(GoalComment);
+    // now it is as if there is a GoalVote at the original address
+    let original_goal_vote = fixt!(GoalVote);
     // but due to being random, it will have a different author
     // than our Update header
-    let mut goal_comment_element = fixt!(Element);
-    *goal_comment_element.as_entry_mut() =
-      ElementEntry::Present(original_goal_comment.clone().try_into().unwrap());
+    let mut goal_vote_element = fixt!(Element);
+    *goal_vote_element.as_entry_mut() =
+      ElementEntry::Present(original_goal_vote.clone().try_into().unwrap());
 
     let mut mock_hdk = MockHdkT::new();
     // the resolve_dependencies `get` call of the original_header_address
@@ -293,32 +293,32 @@ pub mod tests {
         GetOptions::content(),
       )))
       .times(1)
-      .return_const(Ok(Some(goal_comment_element.clone())));
+      .return_const(Ok(Some(goal_vote_element.clone())));
 
     set_hdk(mock_hdk);
 
     assert_eq!(
-      super::validate_update_entry_goal_comment(validate_data.clone()),
+      super::validate_update_entry_goal_vote(validate_data.clone()),
       Error::UpdateOnNonAuthoredOriginal.into(),
     );
 
     // SUCCESS case
     // the element exists
     // agent_address refers to the agent committing
-    // the original GoalComment header and entry exist
+    // the original GoalVote header and entry exist
     // and the author of the update matches the original author
     // -> good to go
-    let original_goal_comment = fixt!(GoalComment);
-    let mut goal_comment_element = fixt!(Element);
+    let original_goal_vote = fixt!(GoalVote);
+    let mut goal_vote_element = fixt!(Element);
     let mut original_create_header = fixt!(Create);
     // make the authors equal
     original_create_header = Create {
       author: update_header.author.as_hash().clone(),
       ..original_create_header
     };
-    *goal_comment_element.as_header_mut() = Header::Create(original_create_header.clone());
-    *goal_comment_element.as_entry_mut() =
-      ElementEntry::Present(original_goal_comment.clone().try_into().unwrap());
+    *goal_vote_element.as_header_mut() = Header::Create(original_create_header.clone());
+    *goal_vote_element.as_entry_mut() =
+      ElementEntry::Present(original_goal_vote.clone().try_into().unwrap());
 
     let mut mock_hdk = MockHdkT::new();
     // the resolve_dependencies `get` call of the original_header_address
@@ -329,25 +329,25 @@ pub mod tests {
         GetOptions::content(),
       )))
       .times(1)
-      .return_const(Ok(Some(goal_comment_element.clone())));
+      .return_const(Ok(Some(goal_vote_element.clone())));
 
     set_hdk(mock_hdk);
 
     // we should see that the ValidateCallbackResult
     // is finally valid
     assert_eq!(
-      super::validate_update_entry_goal_comment(validate_data.clone()),
+      super::validate_update_entry_goal_vote(validate_data.clone()),
       Ok(ValidateCallbackResult::Valid),
     );
   }
 
   #[test]
-  fn test_validate_delete_entry_goal_comment() {
+  fn test_validate_delete_entry_goal_vote() {
     let mut validate_data = fixt!(ValidateData);
     let delete_header = fixt!(Delete);
     *validate_data.element.as_header_mut() = Header::Delete(delete_header.clone());
 
-    // it will be missing the original GoalComment
+    // it will be missing the original GoalVote
     // dependency so it will
     // return UnresolvedDependencies
     *validate_data.element.as_entry_mut() = ElementEntry::NotApplicable;
@@ -356,7 +356,7 @@ pub mod tests {
     // to have to mock `get` calls to the HDK
 
     let mut mock_hdk = MockHdkT::new();
-    // the resolve_dependencies `get` call of the original GoalComment
+    // the resolve_dependencies `get` call of the original GoalVote
     mock_hdk
       .expect_get()
       .with(mockall::predicate::eq(GetInput::new(
@@ -372,23 +372,23 @@ pub mod tests {
     // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
     // equal to the Hash of the deletes_address of the Delete
     assert_eq!(
-      super::validate_delete_entry_goal_comment(validate_data.clone()),
+      super::validate_delete_entry_goal_vote(validate_data.clone()),
       Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
         delete_header.deletes_address.clone().into()
       ])),
     );
 
-    // make it now resolve the original GoalComment
-    // but now be invalid according to the original GoalComment
+    // make it now resolve the original GoalVote
+    // but now be invalid according to the original GoalVote
     // being authored by a different author than this delete
 
-    // now it is as if there is a GoalComment at the original address
-    let original_goal_comment = fixt!(GoalComment);
+    // now it is as if there is a GoalVote at the original address
+    let original_goal_vote = fixt!(GoalVote);
     // but due to being random, it will have a different author
     // than our Update header
-    let mut goal_comment_element = fixt!(Element);
-    *goal_comment_element.as_entry_mut() =
-      ElementEntry::Present(original_goal_comment.clone().try_into().unwrap());
+    let mut goal_vote_element = fixt!(Element);
+    *goal_vote_element.as_entry_mut() =
+      ElementEntry::Present(original_goal_vote.clone().try_into().unwrap());
 
     let mut mock_hdk = MockHdkT::new();
     // the resolve_dependencies `get` call of the original_header_address
@@ -399,30 +399,30 @@ pub mod tests {
         GetOptions::content(),
       )))
       .times(1)
-      .return_const(Ok(Some(goal_comment_element.clone())));
+      .return_const(Ok(Some(goal_vote_element.clone())));
 
     set_hdk(mock_hdk);
 
     assert_eq!(
-      super::validate_delete_entry_goal_comment(validate_data.clone()),
+      super::validate_delete_entry_goal_vote(validate_data.clone()),
       Error::DeleteOnNonAuthoredOriginal.into(),
     );
 
     // SUCCESS case
-    // the original GoalComment header and entry exist
+    // the original GoalVote header and entry exist
     // and the author of the delete matches the original author
     // -> good to go
-    let original_goal_comment = fixt!(GoalComment);
-    let mut goal_comment_element = fixt!(Element);
+    let original_goal_vote = fixt!(GoalVote);
+    let mut goal_vote_element = fixt!(Element);
     let mut original_create_header = fixt!(Create);
     // make the authors equal
     original_create_header = Create {
       author: delete_header.author.as_hash().clone(),
       ..original_create_header
     };
-    *goal_comment_element.as_header_mut() = Header::Create(original_create_header.clone());
-    *goal_comment_element.as_entry_mut() =
-      ElementEntry::Present(original_goal_comment.clone().try_into().unwrap());
+    *goal_vote_element.as_header_mut() = Header::Create(original_create_header.clone());
+    *goal_vote_element.as_entry_mut() =
+      ElementEntry::Present(original_goal_vote.clone().try_into().unwrap());
 
     let mut mock_hdk = MockHdkT::new();
     // the resolve_dependencies `get` call of the original_header_address
@@ -433,14 +433,14 @@ pub mod tests {
         GetOptions::content(),
       )))
       .times(1)
-      .return_const(Ok(Some(goal_comment_element.clone())));
+      .return_const(Ok(Some(goal_vote_element.clone())));
 
     set_hdk(mock_hdk);
 
     // we should see that the ValidateCallbackResult
     // is finally valid
     assert_eq!(
-      super::validate_delete_entry_goal_comment(validate_data.clone()),
+      super::validate_delete_entry_goal_vote(validate_data.clone()),
       Ok(ValidateCallbackResult::Valid),
     );
   }

@@ -9,6 +9,9 @@ pub enum Error {
     #[error("Element is missing its Entry")]
     EntryMissing,
 
+    #[error("Only one of this entry type should exist and an existing one was found")]
+    OnlyOneOfEntryType,
+
     #[error("Parent and Child entries are not different")]
     IdenticalParentChild,
 

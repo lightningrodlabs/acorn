@@ -3,7 +3,8 @@ pub(crate) mod fixtures {
   use crate::project::goal::crud::{Goal, Hierarchy, Status};
   use crate::project::{
     edge::crud::Edge, entry_point::crud::EntryPoint, goal::crud::TimeFrame,
-    goal_comment::crud::GoalComment, goal_member::crud::GoalMember,
+    goal_comment::crud::GoalComment, goal_member::crud::GoalMember, goal_vote::crud::GoalVote,
+    member::entry::Member, project_meta::crud::ProjectMeta,
   };
   use ::fixt::prelude::*;
   use dna_help::{WrappedAgentPubKey, WrappedHeaderHash};
@@ -40,7 +41,23 @@ pub(crate) mod fixtures {
       constructor fn new(WrappedHeaderHash, String, WrappedAgentPubKey, f64);
   );
 
+  fixturator!(
+    GoalVote;
+      constructor fn new(WrappedHeaderHash, f64, f64, f64, f64, WrappedAgentPubKey, f64);
+  );
+
+  fixturator!(
+    Member;
+      constructor fn new(WrappedAgentPubKey);
+  );
+
+  fixturator!(
+    ProjectMeta;
+      constructor fn new(WrappedAgentPubKey, f64, String, OptionString, String);
+  );
+
   type OptionWrappedAgentPubKey = Option<WrappedAgentPubKey>;
+  type OptionString = Option<String>;
   type Optionf64 = Option<f64>;
   type OptionVecString = Option<Vec<String>>;
   type OptionTimeFrame = Option<TimeFrame>;
@@ -70,6 +87,19 @@ pub(crate) mod fixtures {
     };
     curve Predictable {
       Some(WrappedAgentPubKeyFixturator::new(Predictable).next().unwrap())
+    };
+  );
+
+  fixturator!(
+    OptionString;
+    curve Empty {
+        None
+    };
+    curve Unpredictable {
+      Some(fixt!(String))
+    };
+    curve Predictable {
+      Some(fixt!(String, Predictable))
     };
   );
 

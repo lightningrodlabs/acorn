@@ -29,9 +29,6 @@ goal_comment
 - delete: allowed only the original author,
           as identified in headers, and by resolving the original goal_comment
 
-___________________________________________
-___________________________________________
-
 goal_vote (same as goal comment)
 - create: depends on goal at `goal_address` existing,
           `agent_address` should match the agent committing
@@ -41,11 +38,20 @@ goal_vote (same as goal comment)
 - delete: allowed only the original author,
           as identified in headers, and by resolving the original goal_comment
 
+member
+- create: `address` field must match the agent committing
+- update: not allowed
+- delete: not allowed
+
+___________________________________________
+___________________________________________
+
+
 project_meta
 - create: `creator_address` should match the agent committing,
           only ONE can/should be created
           (can't be 100% certain but don't let one more be
           created if another known exists already)
 - update: anyone can update,
-          `creator_address` should not change from its original value
+          but only `name` and `image` can change from its original value
 - delete: cannot be deleted, for now
