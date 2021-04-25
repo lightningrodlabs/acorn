@@ -79,31 +79,11 @@ fn validate_update_entry_goal_comment(
 }
 
 #[hdk_extern]
-/// Deletes are allowed only by original author
+/// Deletes are allowed by anyone
 fn validate_delete_entry_goal_comment(
-  validate_data: ValidateData,
+  _: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
-  Ok(match validate_data.element.header() {
-    Header::Delete(header) => {
-      // the original GoalComment should exist
-      match resolve_dependency::<GoalComment>(header.deletes_address.clone().into())? {
-        Ok(ResolvedDependency(el, _)) => {
-          // the final return value
-          // if this passes, all have passed
-
-          // here we are checking to make sure that
-          // only original author can make this delete
-          validate_value_matches_original_author_for_delete(&header.author, &el)
-        }
-        // the unresolved dependency case
-        Err(validate_callback_result) => validate_callback_result,
-      }
-    }
-    _ => {
-      // Holochain passed the wrong header!
-      return unreachable!();
-    }
-  })
+  Ok(ValidateCallbackResult::Valid)
 }
 
 #[cfg(test)]
@@ -346,99 +326,6 @@ pub mod tests {
     let mut validate_data = fixt!(ValidateData);
     let delete_header = fixt!(Delete);
     *validate_data.element.as_header_mut() = Header::Delete(delete_header.clone());
-
-    // it will be missing the original GoalComment
-    // dependency so it will
-    // return UnresolvedDependencies
-    *validate_data.element.as_entry_mut() = ElementEntry::NotApplicable;
-
-    // now, since validation is dependent on other entries, we begin
-    // to have to mock `get` calls to the HDK
-
-    let mut mock_hdk = MockHdkT::new();
-    // the resolve_dependencies `get` call of the original GoalComment
-    mock_hdk
-      .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
-        delete_header.deletes_address.clone().into(),
-        GetOptions::content(),
-      )))
-      .times(1)
-      // act as if not present / not found
-      .return_const(Ok(None));
-
-    set_hdk(mock_hdk);
-
-    // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
-    // equal to the Hash of the deletes_address of the Delete
-    assert_eq!(
-      super::validate_delete_entry_goal_comment(validate_data.clone()),
-      Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
-        delete_header.deletes_address.clone().into()
-      ])),
-    );
-
-    // make it now resolve the original GoalComment
-    // but now be invalid according to the original GoalComment
-    // being authored by a different author than this delete
-
-    // now it is as if there is a GoalComment at the original address
-    let original_goal_comment = fixt!(GoalComment);
-    // but due to being random, it will have a different author
-    // than our Update header
-    let mut goal_comment_element = fixt!(Element);
-    *goal_comment_element.as_entry_mut() =
-      ElementEntry::Present(original_goal_comment.clone().try_into().unwrap());
-
-    let mut mock_hdk = MockHdkT::new();
-    // the resolve_dependencies `get` call of the original_header_address
-    mock_hdk
-      .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
-        delete_header.deletes_address.clone().into(),
-        GetOptions::content(),
-      )))
-      .times(1)
-      .return_const(Ok(Some(goal_comment_element.clone())));
-
-    set_hdk(mock_hdk);
-
-    assert_eq!(
-      super::validate_delete_entry_goal_comment(validate_data.clone()),
-      Error::DeleteOnNonAuthoredOriginal.into(),
-    );
-
-    // SUCCESS case
-    // the original GoalComment header and entry exist
-    // and the author of the delete matches the original author
-    // -> good to go
-    let original_goal_comment = fixt!(GoalComment);
-    let mut goal_comment_element = fixt!(Element);
-    let mut original_create_header = fixt!(Create);
-    // make the authors equal
-    original_create_header = Create {
-      author: delete_header.author.as_hash().clone(),
-      ..original_create_header
-    };
-    *goal_comment_element.as_header_mut() = Header::Create(original_create_header.clone());
-    *goal_comment_element.as_entry_mut() =
-      ElementEntry::Present(original_goal_comment.clone().try_into().unwrap());
-
-    let mut mock_hdk = MockHdkT::new();
-    // the resolve_dependencies `get` call of the original_header_address
-    mock_hdk
-      .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
-        delete_header.deletes_address.clone().into(),
-        GetOptions::content(),
-      )))
-      .times(1)
-      .return_const(Ok(Some(goal_comment_element.clone())));
-
-    set_hdk(mock_hdk);
-
-    // we should see that the ValidateCallbackResult
-    // is finally valid
     assert_eq!(
       super::validate_delete_entry_goal_comment(validate_data.clone()),
       Ok(ValidateCallbackResult::Valid),
