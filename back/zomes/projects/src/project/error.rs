@@ -15,6 +15,9 @@ pub enum Error {
     #[error("Parent and Child entries are not different")]
     IdenticalParentChild,
 
+    #[error("Updates can only be to name and image for ProjectMeta entries")]
+    OnlyEditNameAndImage,
+
     #[error("Should not try to modify the original author of this entry")]
     TamperCreateAgentPubKeyReference,
 

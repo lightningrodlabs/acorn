@@ -43,10 +43,6 @@ member
 - update: not allowed
 - delete: not allowed
 
-___________________________________________
-___________________________________________
-
-
 project_meta
 - create: `creator_address` should match the agent committing,
           only ONE can/should be created
