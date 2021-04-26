@@ -64,6 +64,7 @@ fn validate_update_entry_goal(validate_data: ValidateData) -> ExternResult<Valid
                   }
                 } else {
                   // Holochain passed the wrong header!
+                  #[allow(unreachable_code)]
                   return unreachable!();
                 }
               }

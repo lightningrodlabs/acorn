@@ -60,6 +60,7 @@ fn validate_update_entry_project_meta(
         }
         _ => {
           // Holochain passed the wrong header!
+          #[allow(unreachable_code)]
           return unreachable!();
         }
       },
