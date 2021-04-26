@@ -324,11 +324,7 @@ macro_rules! crud {
             let address = create_entry(&entry)?;
             let entry_hash = hash_entry(&entry)?;
             let path = Path::from([<$i:upper _PATH>]);
-            // let start_ensure_time: std::time::Duration = sys_time()?;
-            // debug!("start! of Path.ensure() time {:?}", start_ensure_time.clone());
             path.ensure()?;
-            // let end_ensure_time: std::time::Duration = sys_time()?;
-            // debug!("end! of Path.ensure() time {:?}", end_ensure_time.clone());
             let path_hash = path.hash()?;
             create_link(path_hash, entry_hash.clone(), ())?;
             let wire_entry = [<$crud_type WireEntry>] {
@@ -337,16 +333,12 @@ macro_rules! crud {
               entry_address: $crate::WrappedEntryHash(entry_hash)
             };
             if (send_signal) {
-              // let start_signal_time: std::time::Duration = sys_time()?;
-              // debug!("start!! of signal time {:?}", start_signal_time.clone());
               let signal = $convert_to_receiver_signal([<$crud_type Signal>] {
                 entry_type: $path.to_string(),
                 action: $crate::ActionType::Create,
                 data: [<$crud_type SignalData>]::Create(wire_entry.clone()),
               });
               let _ = $crate::signal_peers(&signal, $get_peers);
-              // let end_signal_time: std::time::Duration = sys_time()?;
-              // debug!("end!! of signal time {:?}", end_signal_time.clone());
             }
             Ok(wire_entry)
           }

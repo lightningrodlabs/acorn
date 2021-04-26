@@ -3,7 +3,7 @@ use crate::{
   project::{error::Error, validate::entry_from_element_create_or_update},
   SignalType,
 };
-use dna_help::{crud, WrappedAgentPubKey};
+use dna_help::{crud, WrappedAgentPubKey, WrappedEntryHash, WrappedHeaderHash};
 use hdk::prelude::*;
 
 #[hdk_entry(id = "project_meta")]
@@ -53,6 +53,27 @@ crud!(
   get_peers_content,
   convert_to_receiver_signal
 );
+
+#[hdk_extern]
+pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<ProjectMetaWireEntry> {
+  let address = create_entry(&entry)?;
+  let entry_hash = hash_entry(&entry)?;
+  let wire_entry = ProjectMetaWireEntry {
+    entry,
+    address: WrappedHeaderHash(address),
+    entry_address: WrappedEntryHash(entry_hash),
+  };
+  Ok(wire_entry)
+}
+
+#[hdk_extern]
+pub fn simple_create_project_meta_link(entry_hash: WrappedEntryHash) -> ExternResult<()> {
+  let path = Path::from(PROJECT_META_PATH);
+  path.ensure()?;
+  let path_hash = path.hash()?;
+  create_link(path_hash, entry_hash.0, ())?;
+  Ok(())
+}
 
 // READ
 #[hdk_extern]

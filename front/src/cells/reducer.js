@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import {
-  createProjectMeta,
+  simpleCreateProjectMeta,
 } from '../projects/project-meta/actions'
 import { SET_PROFILES_CELL_ID, SET_PROJECTS_CELL_IDS, JOIN_PROJECT_CELL_ID } from './actions'
 
@@ -22,7 +22,7 @@ export default function (state = defaultState, action) {
         ...state,
         projects: payload,
       }
-    case createProjectMeta.success().type:
+    case simpleCreateProjectMeta.success().type:
       return {
         ...state,
         projects: [...state.projects, meta.cellIdString],

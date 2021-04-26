@@ -17,26 +17,27 @@ import InviteMembersModal from '../../components/InviteMembersModal/InviteMember
 import {
   PROJECTS_DNA_PATH,
   PROJECTS_ZOME_NAME,
-  PROJECT_APP_PREFIX
+  PROJECT_APP_PREFIX,
 } from '../../holochainConfig'
 import { passphraseToUuid } from '../../secrets'
 import { getAdminWs, getAppWs, getAgentPubKey } from '../../hcWebsockets'
 import { fetchEntryPoints } from '../../projects/entry-points/actions'
 import { fetchMembers, setMember } from '../../projects/members/actions'
 import {
-  createProjectMeta,
-  fetchProjectMeta
+  simpleCreateProjectMeta,
+  simpleCreateProjectMetaLink,
+  fetchProjectMeta,
 } from '../../projects/project-meta/actions'
 import selectEntryPoints from '../../projects/entry-points/select'
 
 import {
   DashboardListProject,
-  DashboardListProjectLoading
+  DashboardListProjectLoading,
 } from './DashboardListProject'
 import { joinProjectCellId } from '../../cells/actions'
 import importAllProjectData from '../../import'
 
-function Dashboard ({
+function Dashboard({
   agentAddress,
   profilesCellIdString,
   cells,
@@ -48,11 +49,11 @@ function Dashboard ({
   joinProject,
   importProject,
   updateIsAvailable,
-  setShowUpdatePromptModal
+  setShowUpdatePromptModal,
 }) {
   // cells is an array of cellId strings
   useEffect(() => {
-    cells.forEach(cellId => {
+    cells.forEach((cellId) => {
       fetchProjectMeta(cellId)
       fetchMembers(cellId)
       fetchEntryPoints(cellId)
@@ -72,14 +73,14 @@ function Dashboard ({
   const onCreateProject = (project, passphrase) =>
     createProject(agentAddress, project, passphrase)
 
-  const onJoinProject = passphrase => joinProject(passphrase)
+  const onJoinProject = (passphrase) => joinProject(passphrase)
 
   const onImportProject = (projectData, passphrase) =>
     importProject(agentAddress, projectData, passphrase, profilesCellIdString)
 
   const hasProjects = cells.length > 0 // write 'false' if want to see Empty State
 
-  const setSortBy = sortBy => () => {
+  const setSortBy = (sortBy) => () => {
     setSelectedSort(sortBy)
     setShowSortPicker(false)
   }
@@ -170,12 +171,12 @@ function Dashboard ({
           <div className='my-projects-content'>
             {/* Only render the sorted projects with their real metadata */}
             {cells.length !== projects.length &&
-              cells.map(cellId => (
+              cells.map((cellId) => (
                 <DashboardListProjectLoading key={'dlpl-key' + cellId} />
               ))}
             {/* if they are all loaded */}
             {cells.length === projects.length &&
-              sortedProjects.map(project => {
+              sortedProjects.map((project) => {
                 return (
                   <DashboardListProject
                     updateIsAvailable={updateIsAvailable}
@@ -220,7 +221,7 @@ function Dashboard ({
   )
 }
 
-async function installProjectApp (passphrase) {
+async function installProjectApp(passphrase) {
   const uuid = passphraseToUuid(passphrase)
   // add a bit of randomness so that
   // the same passphrase can be tried multiple different times
@@ -242,7 +243,7 @@ async function installProjectApp (passphrase) {
   // in order for the 'joining' of Projects to work
   const hash = await adminWs.registerDna({
     path: PROJECTS_DNA_PATH,
-    properties: { uuid }
+    properties: { uuid },
   })
   // INSTALL
   const installedApp = await adminWs.installApp({
@@ -251,9 +252,9 @@ async function installProjectApp (passphrase) {
     dnas: [
       {
         nick: uuid,
-        hash
-      }
-    ]
+        hash,
+      },
+    ],
   })
   const slotIds = Object.keys(installedApp.slots)
   const cellId = installedApp.slots[slotIds[0]].base_cell_id
@@ -263,21 +264,32 @@ async function installProjectApp (passphrase) {
   return [cellIdString, cellId, installed_app_id]
 }
 
-async function createProject (passphrase, projectMeta, agentAddress, dispatch) {
+async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
   const [cellIdString] = await installProjectApp(passphrase)
   // because we are acting optimistically,
   // we will directly set ourselves as a member of this cell
   await dispatch(setMember(cellIdString, { address: agentAddress }))
   const b1 = Date.now()
+  // we separate this into two calls so that
+  // validation can happen effectively on the ProjectMeta create_entry
+  const response = await dispatch(
+    simpleCreateProjectMeta.create({ cellIdString, payload: projectMeta })
+  )
+  // we then proceed to create a link so this entry can be found
   await dispatch(
-    createProjectMeta.create({ cellIdString, payload: projectMeta })
+    simpleCreateProjectMetaLink.create({
+      cellIdString,
+      // we send the entry_address which is the thing that
+      // needs to be linked to the PROJECT_META_PATH
+      payload: response.entry_address,
+    })
   )
   const b2 = Date.now()
   console.log('duration in MS over createProjectMeta ', b2 - b1)
   return cellIdString
 }
 
-async function joinProject (passphrase, dispatch) {
+async function joinProject(passphrase, dispatch) {
   // joinProject
   // join a DNA
   // then try to get the project metadata
@@ -294,7 +306,7 @@ async function joinProject (passphrase, dispatch) {
       zome_name: PROJECTS_ZOME_NAME,
       fn_name: 'fetch_project_meta',
       payload: null,
-      provenance: getAgentPubKey() // FIXME: this will need correcting after holochain changes this
+      provenance: getAgentPubKey(), // FIXME: this will need correcting after holochain changes this
     })
     await dispatch(joinProjectCellId(cellIdString))
     // trigger a side effect...
@@ -307,16 +319,16 @@ async function joinProject (passphrase, dispatch) {
         zome_name: PROJECTS_ZOME_NAME,
         fn_name: 'init_signal',
         payload: null,
-        provenance: getAgentPubKey() // FIXME: this will need correcting after holochain changes this
+        provenance: getAgentPubKey(), // FIXME: this will need correcting after holochain changes this
       })
       .then(() => console.log('succesfully triggered init_signal'))
-      .catch(e => console.error('failed while triggering init_signal: ', e))
+      .catch((e) => console.error('failed while triggering init_signal: ', e))
     return true
   } catch (e) {
     // deactivate app
     const adminWs = await getAdminWs()
     await adminWs.deactivateApp({
-      installed_app_id: installedAppId
+      installed_app_id: installedAppId,
     })
     if (
       e.type === 'error' &&
@@ -330,7 +342,7 @@ async function joinProject (passphrase, dispatch) {
   }
 }
 
-async function importProject (
+async function importProject(
   agentAddress,
   projectData,
   passphrase,
@@ -354,7 +366,7 @@ async function importProject (
     ...projectData.projectMeta,
     created_at: Date.now(),
     creator_address: agentAddress,
-    passphrase: passphrase
+    passphrase: passphrase,
   }
   // this is not an actual field
   delete projectMeta.address
@@ -362,20 +374,20 @@ async function importProject (
   await dispatch(
     createProjectMeta.create({
       cellIdString: projectsCellIdString,
-      payload: projectMeta
+      payload: projectMeta,
     })
   )
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   return {
-    fetchEntryPoints: cellIdString => {
+    fetchEntryPoints: (cellIdString) => {
       return dispatch(fetchEntryPoints.create({ cellIdString, payload: null }))
     },
-    fetchMembers: cellIdString => {
+    fetchMembers: (cellIdString) => {
       return dispatch(fetchMembers.create({ cellIdString, payload: null }))
     },
-    fetchProjectMeta: cellIdString => {
+    fetchProjectMeta: (cellIdString) => {
       return dispatch(fetchProjectMeta.create({ cellIdString, payload: null }))
     },
     createProject: async (agentAddress, project, passphrase) => {
@@ -384,11 +396,11 @@ function mapDispatchToProps (dispatch) {
         ...project, // name and image
         passphrase,
         creator_address: agentAddress,
-        created_at: Date.now()
+        created_at: Date.now(),
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },
-    joinProject: passphrase => joinProject(passphrase, dispatch),
+    joinProject: (passphrase) => joinProject(passphrase, dispatch),
     importProject: (
       agentAddress,
       projectData,
@@ -401,29 +413,29 @@ function mapDispatchToProps (dispatch) {
         passphrase,
         profilesCellIdString,
         dispatch
-      )
+      ),
   }
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   return {
     agentAddress: state.agentAddress,
     profilesCellIdString: state.cells.profiles,
     cells: state.cells.projects,
-    projects: Object.keys(state.projects.projectMeta).map(cellId => {
+    projects: Object.keys(state.projects.projectMeta).map((cellId) => {
       const project = state.projects.projectMeta[cellId]
       const members = state.projects.members[cellId] || {}
       const memberProfiles = Object.keys(members).map(
-        agentAddress => state.agents[agentAddress]
+        (agentAddress) => state.agents[agentAddress]
       )
       const entryPoints = selectEntryPoints(state, cellId)
       return {
         ...project,
         cellId,
         members: memberProfiles,
-        entryPoints
+        entryPoints,
       }
-    })
+    }),
   }
 }
 
