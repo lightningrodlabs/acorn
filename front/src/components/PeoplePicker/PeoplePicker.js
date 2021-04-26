@@ -14,6 +14,7 @@ import Avatar from '../Avatar/Avatar'
 import moment from 'moment'
 
 function PeoplePicker({
+  agentAddress,
   people,
   goalAddress,
   createGoalMember,
@@ -70,7 +71,7 @@ function PeoplePicker({
             const onClick = () => {
               if (person.is_member)
                 archiveGoalMember(person.goal_member_address)
-              else createGoalMember(goalAddress, person.address)
+              else createGoalMember(goalAddress, person.address, agentAddress)
             }
             return (
               <li
@@ -144,6 +145,7 @@ function mapStateToProps(state, ownProps) {
     .filter((goalMember) => goalMember.goal_address === goalAddress)
   const agents = Object.keys(members).map((address) => state.agents[address])
   return {
+    agentAddress: state.agentAddress,
     people: agents.map((agent) => {
       const member = membersOfGoal.find(
         (goalMember) => goalMember.agent_address === agent.address
@@ -162,13 +164,14 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   return {
-    createGoalMember: (goal_address, agent_address) => {
+    createGoalMember: (goal_address, agent_address, user_edit_hash) => {
       return dispatch(
         createGoalMember.create({
           cellIdString,
           payload: {
             goal_address,
             agent_address,
+            user_edit_hash,
             unix_timestamp: moment().unix(),
           },
         })

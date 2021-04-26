@@ -135,6 +135,7 @@ function ExpandedViewMode({
               className='grey'
             />
             <ExpandedViewModeHeader
+              agentAddress={agentAddress}
               goalAddress={goalAddress}
               goal={goalState}
               updateGoal={updateGoal}

@@ -30,6 +30,7 @@ function VerticalActionListItem({ onClick, label, icon }) {
 }
 
 function VerticalActionsList({
+  agentAddress,
   projectId,
   goalAddress,
   goal,
@@ -51,6 +52,7 @@ function VerticalActionsList({
     updateGoal(
       {
         ...goal,
+        user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         [key]: val,
       },
@@ -85,6 +87,7 @@ function VerticalActionsList({
     updateGoal(
       {
         ...goal,
+        user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         time_frame: timeframe,
       },
@@ -251,6 +254,7 @@ function mapStateToProps(state, ownProps) {
   )
 
   return {
+    agentAddress: state.agentAddress,
     goalAddress,
     goal: goals[goalAddress],
     leftEdgeXPosition: cssCoordinates.x,
