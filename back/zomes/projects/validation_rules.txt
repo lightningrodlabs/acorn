@@ -1,5 +1,18 @@
 
 
+goal
+- create: `user_hash` must be the agent committing,
+          `user_edit_hash` should be None
+- update: `user_hash` should be the same as author of create (meaning must resolve the original_header_address),
+          `user_edit_hash` should be Some, and match the agent committing
+- delete: allowed by anyone
+
+edge
+- create: `parent_address` can't equal `child_address`, no self-referential edges
+          `parent_address` and `child_address` depends on the `Goal`s at those addresses
+- update: not allowed
+- delete: allowed by anyone
+
 entry_point (structurally same as goal_member)
 - create: depends on goal at `goal_address` existing,
           `creator_address` must match the agent committing
@@ -13,12 +26,6 @@ goal_member (structurally same as entry_point)
 - update: not allowed
 - delete: allowed by anyone
 
-goal
-- create: `user_hash` must be the agent committing,
-          `user_edit_hash` should be None
-- update: `user_hash` should be the same as author of create (meaning must resolve the original_header_address),
-          `user_edit_hash` should be Some, and match the agent committing
-- delete: allowed by anyone
 
 goal_comment
 - create: depends on goal at `goal_address` existing,

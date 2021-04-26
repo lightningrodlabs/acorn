@@ -42,9 +42,6 @@ pub enum Error {
     #[error("Deletes not allowed for this entry type")]
     DeleteAttempted,
 
-    #[error("Only the original entry author can delete this entry")]
-    DeleteOnNonAuthoredOriginal,
-
     #[error("Deserialization Failed")]
     DeserializationFailed,
 

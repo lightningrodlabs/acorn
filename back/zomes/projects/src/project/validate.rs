@@ -71,16 +71,6 @@ pub fn validate_value_matches_original_author_for_edit(
     }
 }
 
-pub fn validate_value_matches_original_author_for_delete(
-  value: &AgentPubKey,
-  original_element: &Element,
-) -> ValidateCallbackResult {
-  match value == original_element.header().author() {
-      true => ValidateCallbackResult::Valid,
-      false => Error::DeleteOnNonAuthoredOriginal.into(),
-  }
-}
-
 pub fn validate_value_is_some<O>(
     value: &Option<O>,
 ) -> ValidateCallbackResult {
@@ -114,20 +104,20 @@ where
 
 
 
-/// if any ValidateCallbackResult is Invalid, then ValidateResult::Invalid
-/// If none are Invalid and there is an UnresolvedDependencies, then ValidateResult::UnresolvedDependencies
-/// If all ValidateCallbackResult are Valid, then ValidateResult::Valid
-pub fn reduce_callback_results(
-    callback_results: Vec<ValidateCallbackResult>,
-) -> ValidateCallbackResult {
-    callback_results
-        .into_iter()
-        .fold(ValidateCallbackResult::Valid, |acc, x| match x {
-            ValidateCallbackResult::Invalid(i) => ValidateCallbackResult::Invalid(i),
-            ValidateCallbackResult::UnresolvedDependencies(ud) => match acc {
-                ValidateCallbackResult::Invalid(_) => acc,
-                _ => ValidateCallbackResult::UnresolvedDependencies(ud),
-            },
-            ValidateCallbackResult::Valid => acc,
-        })
-}
+// if any ValidateCallbackResult is Invalid, then ValidateResult::Invalid
+// If none are Invalid and there is an UnresolvedDependencies, then ValidateResult::UnresolvedDependencies
+// If all ValidateCallbackResult are Valid, then ValidateResult::Valid
+// pub fn reduce_callback_results(
+//     callback_results: Vec<ValidateCallbackResult>,
+// ) -> ValidateCallbackResult {
+//     callback_results
+//         .into_iter()
+//         .fold(ValidateCallbackResult::Valid, |acc, x| match x {
+//             ValidateCallbackResult::Invalid(i) => ValidateCallbackResult::Invalid(i),
+//             ValidateCallbackResult::UnresolvedDependencies(ud) => match acc {
+//                 ValidateCallbackResult::Invalid(_) => acc,
+//                 _ => ValidateCallbackResult::UnresolvedDependencies(ud),
+//             },
+//             ValidateCallbackResult::Valid => acc,
+//         })
+// }

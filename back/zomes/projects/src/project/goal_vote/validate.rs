@@ -3,7 +3,7 @@ use crate::project::validate::confirm_resolved_dependency;
 use crate::project::{
   goal_vote::crud::GoalVote,
   validate::{
-    validate_value_matches_create_author, validate_value_matches_original_author_for_delete,
+    validate_value_matches_create_author,
     validate_value_matches_original_author_for_edit,
   },
 };
