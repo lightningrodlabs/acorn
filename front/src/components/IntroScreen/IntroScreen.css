@@ -1,6 +1,6 @@
 .intro-screen-wrapper {
   height: 100vh;
-  background: white;
+  background: #fbf9f7;
   display: flex;
   flex-direction: column;
 }
@@ -97,6 +97,7 @@
   left: 0;
   position: absolute;
 }
+
 .intro-screen-content-frame .button-next {
   top: 41.2%;
   right: 0;

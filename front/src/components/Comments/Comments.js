@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { connect } from 'react-redux'
 import {
   createGoalComment,
-  fetchGoalComments,
   archiveGoalComment,
   updateGoalComment,
 } from '../../projects/goal-comments/actions'
@@ -14,25 +13,26 @@ import './Comments.css'
 
 import Icon from '../Icon/Icon'
 import Avatar from '../Avatar/Avatar'
-import Button from '../Button/Button'
 
 function Comment({ comment, agent }) {
   return (
-    <div className='comment_history_item'>
-      <div className='avatar_comment_container'>
+    <div className="comment_history_item">
+      <div className="avatar_comment_container">
         <Avatar
           first_name={agent.first_name}
           last_name={agent.last_name}
           avatar_url={agent.avatar_url}
+          imported={agent.is_imported}
           medium
         />
       </div>
-      <div className='comment_history_content'>
-        <div className='comment_history_info'>
-          <div className='comment_history_name'>
+      <div className="comment_history_content">
+        <div className="comment_history_info">
+          <div className="comment_history_name">
             {agent.first_name + ' ' + agent.last_name}
+            {agent.is_imported ? ' (Imported)' : ''}
           </div>
-          <div className='comment_history_date'>
+          <div className="comment_history_date">
             {moment.unix(comment.unix_timestamp).calendar(null, {
               lastDay: '[Yesterday at] LT',
               sameDay: '[Today at] LT',
@@ -43,7 +43,7 @@ function Comment({ comment, agent }) {
             })}
           </div>
         </div>
-        <div className='comment_history_text'>{comment.content}</div>
+        <div className="comment_history_text">{comment.content}</div>
       </div>
     </div>
   )
@@ -51,84 +51,105 @@ function Comment({ comment, agent }) {
 
 function Comments({
   goalAddress,
-  avatarUrl,
-  firstName,
-  lastName,
   agents,
   comments,
   createGoalComment,
   avatarAddress,
 }) {
+  const commentHistoryRef = useRef()
   const [value, setValue] = useState('')
 
-  const sendClick = e => {
+  useEffect(() => {
+    // .current is on any ref,
+    // its whatever the ref is right now,
+    // which in this case a reference
+    // to the .comment-history-container div
+    setTimeout(() => {
+      commentHistoryRef.current.scrollTop =
+        commentHistoryRef.current.scrollHeight
+    }, 10)
+  }, [])
+
+  const onKeyDown = (e) => {
+    // 13 is key code for Enter/Return
+    const ENTER_KEY_CODE = 13
+    // metaKey is Cmd on Mac, and Ctrl on Windows & Linux
+    if (e.keyCode === ENTER_KEY_CODE && !e.metaKey) {
+      // if you press Enter without holding
+      // the "meta" key for your platform, then the comment
+      // will submit
+      submitComment()
+    } else if (e.keyCode === ENTER_KEY_CODE) {
+      setValue(value + '\n')
+    }
+  }
+
+  const submitComment = async (e) => {
     if (value === '') {
       return
     }
-    createGoalComment({
-      goal_address: goalAddress,
-      content: value,
-      agent_address: avatarAddress,
-      unix_timestamp: moment().unix(),
-    })
-    setValue('')
+    try {
+      // when new comment created
+      await createGoalComment({
+        goal_address: goalAddress,
+        content: value,
+        agent_address: avatarAddress,
+        unix_timestamp: moment().unix(),
+      })
+      // then scroll to bottom
+      commentHistoryRef.current.scrollTop =
+        commentHistoryRef.current.scrollHeight
+      // then reset the typing input
+      setValue('')
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   return (
-    <div className='comments'>
-      <div className='comments_avatarANDInput_wrapper'>
-        {/* <div className='avatar_comment_container'>
-         <Avatar
-            first_name={firstName}
-            last_name={lastName}
-            avatar_url={avatarUrl}
-            mediumLarge
-          />
-        </div> */}
-        <div className='input_comment_row'>
-          <div className='input_comment_wrapper'>
+    <>
+      <div className="comments">
+        <div className="comment-history-container" ref={commentHistoryRef}>
+          {Object.keys(comments)
+            .map((key) => comments[key])
+            // order the comments by most recent, to least recent
+            .sort((a, b) => (a.unix_timestamp < b.unix_timestamp ? -1 : 1))
+            .map((comment) => (
+              <Comment
+                key={comment.address}
+                comment={comment}
+                agent={agents[comment.agent_address]}
+              />
+            ))}
+        </div>
+        <div className="input_comment_row">
+          <div className="input_comment_wrapper">
             <TextareaAutosize
-              type='text'
+              type="text"
               value={value}
-              placeholder='write your comment here'
-              onChange={e => setValue(e.target.value)}
+              placeholder="Write your comment here"
+              onChange={(e) => setValue(e.target.value)}
+              onKeyDown={onKeyDown}
             />
-            <div className='comment_save_button'>
-              <Icon name='send.svg' onClick={sendClick} />
+            <div className="comment_save_button">
+              <Icon
+                name="line-angle-right.svg"
+                className="medium white not-hoverable"
+                onClick={submitComment}
+              />
             </div>
           </div>
         </div>
       </div>
-      <div className='comment_history_container_scrollable'>
-        {Object.keys(comments)
-          .map(key => comments[key])
-          // order the comments by most recent, to least recent
-          .sort((a, b) => (a.unix_timestamp > b.unix_timestamp ? -1 : 1))
-          .map(comment => (
-            <Comment
-              key={comment.address}
-              comment={comment}
-              agent={agents[comment.agent_address]}
-            />
-          ))}
-      </div>
-    </div>
+    </>
   )
 }
 
-function mapStateToProps(state, ownProps) {
-  const { projectId } = ownProps
+function mapStateToProps(state) {
   const goalAddress = state.ui.expandedView.goalAddress
-  const goalComments = state.projects.goalComments[projectId] || {}
   return {
-    comments: Object.values(goalComments).filter(
-      goalComment => goalComment.goal_address === goalAddress
-    ),
     goalAddress,
     avatarAddress: state.whoami.entry.address,
-    avatarUrl: state.whoami.entry.avatar_url,
-    firstName: state.whoami.entry.first_name,
-    lastName: state.whoami.entry.last_name,
     agents: state.agents,
   }
 }
@@ -136,10 +157,10 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   return {
-    createGoalComment: payload => {
+    createGoalComment: (payload) => {
       return dispatch(createGoalComment.create({ cellIdString, payload }))
     },
-    archiveGoalComment: payload => {
+    archiveGoalComment: (payload) => {
       return dispatch(archiveGoalComment.create({ cellIdString, payload }))
     },
     updateGoalComment: (entry, address) => {

@@ -1,5 +1,5 @@
 import { fontFamily } from './dimensions'
-import roundRect from './drawRoundRect'
+import drawRoundCornerRectangle from './drawRoundCornerRectangle'
 import { getBoundingRec } from './layoutFormula'
 
 export default function drawEntryPoints(
@@ -18,7 +18,7 @@ export default function drawEntryPoints(
         // find the edges indicating the children of this goal
         .filter(edge => edge.parent_address === goalAddress)
         // actually nest the children Goals, recurse
-        .map(edge => getGoal(edge.child_address)),
+        .map(edge => getGoal(edge.child_address))
     }
   }
 
@@ -34,10 +34,22 @@ export default function drawEntryPoints(
     ctx.setLineDash([5, 3]) /*dashes are 5px and spaces are 3px*/
     const width = right - left
     const height = bottom - top
-    roundRect(ctx, left, top, width, height, 15, entryPoint.color, true, 3)
+    drawRoundCornerRectangle({
+      context: ctx,
+      xPosition: left,
+      yPosition: top,
+      width: width,
+      height: height,
+      radius: 15,
+      color: entryPoint.color,
+      stroke: true,
+      strokeWidth: 2,
+      boxShadow: false
+    })
     ctx.fillStyle = entryPoint.color
-    ctx.font = '25px ' + fontFamily
-    ctx.fillText(goal.content, left, top - 40)
+    ctx.font = '25px ' + 'hk-grotesk-bold'
+    // distance of entry point title from dotted rectangle
+    ctx.fillText(goal.content, left, top - 20)
     ctx.restore()
   })
 }

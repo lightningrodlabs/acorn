@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import './ExpandedViewMode.css'
-import Icon from '../Icon/Icon'
+import moment from 'moment'
 import { CSSTransition } from 'react-transition-group'
 
+import './ExpandedViewMode.css'
 import {
   createEntryPoint,
   archiveEntryPoint,
 } from '../../projects/entry-points/actions'
 import { updateGoal } from '../../projects/goals/actions'
-
-import ExpandedViewModeHeader from './ExpandedViewModeHeader/ExpandedViewModeHeader'
-import RightMenu from './RightMenu/RightMenu'
-import ExpandedViewModeContent from './ExpandedViewModeContent/ExpandedViewModeContent'
-
 import { archiveGoalMember } from '../../projects/goal-members/actions'
 
-import ExpandedViewModeFooter from './ExpandedViewModeFooter/ExpandedViewModeFooter'
 import { pickColorForString } from '../../styles'
+import Icon from '../Icon/Icon'
+import DatePicker from '../DatePicker/DatePicker'
+import RightMenu from './RightMenu/RightMenu'
+import ExpandedViewModeHeader from './ExpandedViewModeHeader/ExpandedViewModeHeader'
+import ExpandedViewModeContent from './ExpandedViewModeContent/ExpandedViewModeContent'
+import ExpandedViewModeFooter from './ExpandedViewModeFooter/ExpandedViewModeFooter'
+
 
 function ExpandedViewMode({
   projectId,
@@ -28,6 +29,7 @@ function ExpandedViewMode({
   onClose,
   creator,
   squirrels,
+  comments,
   archiveGoalMember,
   createEntryPoint,
   archiveEntryPoint,
@@ -38,6 +40,7 @@ function ExpandedViewMode({
   const [squirrelsState, setSquirrelsState] = useState()
   const [creatorState, setCreatorState] = useState()
   const [showing, setShowing] = useState(false)
+  const [editTimeframe, setEditTimeframe] = useState(false)
 
   useEffect(() => {
     if (showing && !goalAddress) {
@@ -80,6 +83,34 @@ function ExpandedViewMode({
     ? unmakeAsEntryPoint
     : turnIntoEntryPoint
 
+  const updateTimeframe = (start, end) => {
+    let timeframe = null
+
+    if (start && end) {
+      timeframe = {
+        from_date: start,
+        to_date: end,
+      }
+    }
+
+    updateGoal(
+      {
+        ...goal,
+        timestamp_updated: moment().unix(),
+        time_frame: timeframe,
+      },
+      goalAddress
+    )
+  }
+
+  let fromDate, toDate
+  if (goal) {
+    fromDate = goal.time_frame
+      ? moment.unix(goal.time_frame.from_date)
+      : null
+    toDate = goal.time_frame ? moment.unix(goal.time_frame.to_date) : null
+  }
+
   return (
     <>
       <CSSTransition
@@ -98,7 +129,7 @@ function ExpandedViewMode({
           <div className={`expanded-view-wrapper border_${goalState.status}`}>
             <Icon
               onClick={onClose}
-              name='x.svg'
+              name='x-bold.svg'
               size='small-close'
               className='grey'
             />
@@ -112,7 +143,10 @@ function ExpandedViewMode({
             <div className='expanded-view-main'>
               <ExpandedViewModeContent
                 projectId={projectId}
+                editTimeframe={editTimeframe}
+                setEditTimeframe={setEditTimeframe}
                 squirrels={squirrelsState}
+                comments={comments}
                 goalAddress={goalAddress}
                 updateGoal={updateGoal}
                 goal={goalState}
@@ -128,9 +162,18 @@ function ExpandedViewMode({
               />
             </div>
             <ExpandedViewModeFooter goal={goalState} creator={creatorState} />
+            {editTimeframe && (
+              <DatePicker
+                onClose={() => setEditTimeframe(false)}
+                onSet={updateTimeframe}
+                fromDate={fromDate}
+                toDate={toDate}
+              />
+            )}
           </div>
-        </CSSTransition>
-      )}
+        </CSSTransition >
+      )
+      }
     </>
   )
 }
@@ -138,15 +181,20 @@ function ExpandedViewMode({
 function mapStateToProps(state, ownProps) {
   let goal,
     creator = null,
-    squirrels = []
+    squirrels = [],
+    comments = []
 
   const { projectId } = ownProps
   const goals = state.projects.goals[projectId] || {}
   const goalMembers = state.projects.goalMembers[projectId] || {}
   const entryPoints = state.projects.entryPoints[projectId] || {}
+  const goalComments = state.projects.goalComments[projectId] || {}
 
   if (state.ui.expandedView.goalAddress) {
     goal = goals[state.ui.expandedView.goalAddress]
+    comments = Object.values(goalComments).filter(
+      goalComment => goalComment.goal_address === state.ui.expandedView.goalAddress
+    )
     squirrels = Object.keys(goalMembers)
       .map(address => goalMembers[address])
       .filter(goalMember => goalMember.goal_address === goal.address)
@@ -178,6 +226,7 @@ function mapStateToProps(state, ownProps) {
     creator,
     goal,
     squirrels,
+    comments
   }
 }
 

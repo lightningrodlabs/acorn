@@ -36,7 +36,7 @@
 }
 
 .validating_form_input .input_wrapper input {
-  border: 1.2px solid #e2e2e2;
+  border: 1.2px solid #f3efeb;
   outline: none;
   font-size: 14px;
   line-height: 21px;
@@ -64,8 +64,9 @@
 
 .validating_form_input .at_symbol {
   position: absolute;
-  top: 6px;
+  top: 9px;
   left: 11px;
+  font-size: 14px;
 }
 
 .error_text {

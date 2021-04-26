@@ -3,36 +3,35 @@ import './ExpandedViewNavBar.css'
 
 import Icon from '../../../Icon/Icon'
 
-function ExpandedViewNavBar({ onChange, activeTab }) {
+function ExpandedViewNavBar({ onChange, activeTab, commentCount }) {
   const navItems = [
-    // {
-    // text: 'priority',
-    // icon: 'priority.svg'
-    // },
     {
-      text: 'comments',
+      text: 'details',
+      icon: 'quick-edit.svg',
+    },
+    {
+      text: `comments (${commentCount})`,
       icon: 'comment.svg',
     },
     {
       text: 'activity history',
       icon: 'activity-history.svg',
     },
-    //{
-    // text: 'attachments',
-    // icon: 'attachment.svg'
-    //},
   ]
 
   return (
-    <div className='expanded-view-nav-bar'>
+    <div className="expanded-view-nav-bar">
       {navItems.map(({ text, icon }, index) => {
-        const activeClass = activeTab === text ? 'active-tab' : ''
+        const activeClass = activeTab === index ? 'active-tab' : ''
         return (
           <div
-            className={`expanded-view-nav-bar-item ${activeClass}`}
+            className={`expanded-view-nav-bar-item ${activeClass} ${
+              index === 2 ? 'feature-in-development' : ''
+            }`}
             key={index}
-            onClick={() => onChange(text)}>
-            <Icon name={icon} size='very-small' className='grey' />
+            onClick={() => index !== 2 && onChange(index)}
+          >
+            <Icon name={icon} size="very-small" className="grey" />
             {text}
           </div>
         )

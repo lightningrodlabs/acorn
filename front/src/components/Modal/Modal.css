@@ -69,8 +69,7 @@
 }
 
 .modal-heading {
-  font-size: 23px;
-  line-height: 2.2;
+  font-size: 22px;
   font-family: 'gilroyextrabold', Helvetica, sans-serif;
   font-weight: normal;
 }
@@ -112,7 +111,7 @@
   overflow-y: scroll;
   overflow-x: hidden;
   font-size: 12px;
-  font-family: 'gilroyextrabold', Helvetica, sans-serif;
+  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
   margin-bottom: 10px;
   margin-top: 10px;
   line-height: 16px;

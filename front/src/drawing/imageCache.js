@@ -5,7 +5,7 @@ export function getOrSetImageForUrl(url, width, height) {
     return imgCache[url]
   }
 
-  const newImage = new Image(width, height)
+  const newImage = new Image()
   newImage.src = url
   imgCache[url] = newImage
   return null

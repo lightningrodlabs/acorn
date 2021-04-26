@@ -26,12 +26,10 @@
 .priority-quadrant-goal-title {
   display: flex;
   flex-direction: row;
-  padding-bottom: 12px;
-  padding-right: 30px;
   font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
   font-weight: normal;
-  font-size: 16px;
-  line-height: 22px;
+  font-size: 14px;
+  line-height: 20px;
   color: #4d4d4d;
 }
 
@@ -51,7 +49,7 @@
   background-color: #5f65ff;
   border-radius: 50%;
   display: inline-block;
-  margin-top: 18px;
+  margin-top: 8px;
   margin-left: -8px;
 }
 
@@ -61,7 +59,7 @@
   align-items: center;
   color: #898989;
   font-size: 11px;
-  padding-right: 30px;
+  margin-top: 4px;
 }
 
 .priority-quadrant-goal-info .icon {
@@ -112,8 +110,6 @@
 
 .weigh_in_button {
   padding: 4px;
-  margin-right: 10px;
-  margin-bottom: 0;
 }
 
 .priority-quadrant-goal-item .weigh_in_button {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import './EdgeConnectors.css'
+import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import layoutFormula from '../../drawing/layoutFormula'
 import { Transition, TransitionGroup } from 'react-transition-group'
 import {
@@ -21,7 +22,7 @@ import handleEdgeConnectMouseUp from '../../edge-connector/handler'
 // e.g. we can walk straight up the tree to the top
 function isAncestor(descendantAddress, checkAddress, edges) {
   const edgeWithParent = edges.find(
-    edge => edge.child_address === descendantAddress
+    (edge) => edge.child_address === descendantAddress
   )
   if (edgeWithParent) {
     if (edgeWithParent.parent_address === checkAddress) {
@@ -38,10 +39,10 @@ function isAncestor(descendantAddress, checkAddress, edges) {
 // as long as there are no cycles in the tree this will work wonderfully
 function allDescendants(ancestorAddress, edges, accumulator = []) {
   const children = edges
-    .filter(edge => edge.parent_address === ancestorAddress)
-    .map(edge => edge.child_address)
+    .filter((edge) => edge.parent_address === ancestorAddress)
+    .map((edge) => edge.child_address)
   return accumulator
-    .concat(children.map(address => allDescendants(address, edges, children)))
+    .concat(children.map((address) => allDescendants(address, edges, children)))
     .flat()
 }
 
@@ -53,7 +54,7 @@ relation as child, other node MUST
 */
 function calculateValidParents(fromAddress, edges, goalAddresses) {
   const descendants = allDescendants(fromAddress, edges)
-  return goalAddresses.filter(goalAddress => {
+  return goalAddresses.filter((goalAddress) => {
     return (
       // filter out self-address in the process
       goalAddress !== fromAddress &&
@@ -71,13 +72,13 @@ relation as parent, other node MUST
 - not be the root ancestor of 'from' node, to prevent cycles in the tree
 */
 export function calculateValidChildren(fromAddress, edges, goalAddresses) {
-  return goalAddresses.filter(goalAddress => {
+  return goalAddresses.filter((goalAddress) => {
     return (
       // filter out self-address in the process
       goalAddress !== fromAddress &&
       // find the Goal objects without parent Goals
       // since they will sit at the top level
-      !edges.find(edge => edge.child_address === goalAddress) &&
+      !edges.find((edge) => edge.child_address === goalAddress) &&
       !isAncestor(fromAddress, goalAddress, edges)
     )
   })
@@ -97,8 +98,9 @@ const EdgeConnectorHtml = ({
       style={{ top: `${pixelTop}px`, left: `${pixelLeft}px` }}
       onClick={onClick}
       onMouseOver={onMouseOver}
-      onMouseOut={onMouseOut}>
-      <div className='edge-connector-blue-dot' />
+      onMouseOut={onMouseOut}
+    >
+      <div className="edge-connector-blue-dot" />
     </div>
   )
 }
@@ -113,6 +115,7 @@ const EdgeConnector = ({
   toAddress,
   address,
   goalCoordinates,
+  coordsCanvasToPage,
   canvas,
   setEdgeConnectorFrom,
   setEdgeConnectorTo,
@@ -124,12 +127,16 @@ const EdgeConnector = ({
   const ctx = canvas.getContext('2d')
   const goalHeight = getGoalHeight(ctx, goal.content)
 
-  const topConnectorLeft = goalCoordinates.x + goalWidth / 2
-  const topConnectorTop = goalCoordinates.y - CONNECTOR_VERTICAL_SPACING
-
-  const bottomConnectorLeft = goalCoordinates.x + goalWidth / 2
-  const bottomConnectorTop =
-    goalCoordinates.y + goalHeight + CONNECTOR_VERTICAL_SPACING
+  // calculate the coordinates on the page, based
+  // on what the coordinates on the canvas would be
+  const { x: topConnectorLeft, y: topConnectorTop } = coordsCanvasToPage({
+    x: goalCoordinates.x + goalWidth / 2,
+    y: goalCoordinates.y - CONNECTOR_VERTICAL_SPACING,
+  })
+  const { x: bottomConnectorLeft, y: bottomConnectorTop } = coordsCanvasToPage({
+    x: goalCoordinates.x + goalWidth / 2,
+    y: goalCoordinates.y + goalHeight + CONNECTOR_VERTICAL_SPACING,
+  })
 
   const topConnectorActive =
     (address === fromAddress && relation === RELATION_AS_CHILD) ||
@@ -222,6 +229,7 @@ const EdgeConnectors = ({
   edges,
   goalAddresses,
   coordinates,
+  coordsCanvasToPage,
   fromAddress,
   relation,
   toAddress,
@@ -239,15 +247,15 @@ const EdgeConnectors = ({
   )
   return (
     <TransitionGroup>
-      {connectorAddresses.map(connectorAddress => {
+      {connectorAddresses.map((connectorAddress) => {
         const goalCoordinates = coordinates[connectorAddress]
         const goal = goals[connectorAddress]
         const hasParent = edges.find(
-          edge => edge.child_address === connectorAddress
+          (edge) => edge.child_address === connectorAddress
         )
         return (
           <Transition key={connectorAddress} timeout={1000}>
-            {state => (
+            {(state) => (
               <EdgeConnector
                 state={state}
                 activeProject={activeProject}
@@ -263,6 +271,7 @@ const EdgeConnectors = ({
                 setEdgeConnectorTo={setEdgeConnectorTo}
                 setHoveredEdgeConnector={setHoveredEdgeConnector}
                 goalCoordinates={goalCoordinates}
+                coordsCanvasToPage={coordsCanvasToPage}
                 canvas={canvas}
                 dispatch={dispatch}
               />
@@ -276,7 +285,10 @@ const EdgeConnectors = ({
 
 function mapStateToProps(state) {
   const {
-    ui: { activeProject },
+    ui: {
+      activeProject,
+      viewport: { translate, scale },
+    },
   } = state
   const goals = state.projects.goals[activeProject] || {}
   const edges = state.projects.edges[activeProject] || {}
@@ -305,6 +317,9 @@ function mapStateToProps(state) {
   return {
     activeProject,
     coordinates,
+    coordsCanvasToPage: (coordinate) => {
+      return coordsCanvasToPage(coordinate, translate, scale)
+    },
     goals,
     edges: Object.values(edges), // convert from object to array
     goalAddresses: Object.keys(goals), // convert from object to array
@@ -320,7 +335,7 @@ function mapDispatchToProps(dispatch) {
     setEdgeConnectorFrom: (address, relation, validToAddresses) => {
       return dispatch(setEdgeConnectorFrom(address, relation, validToAddresses))
     },
-    setEdgeConnectorTo: address => {
+    setEdgeConnectorTo: (address) => {
       return dispatch(setEdgeConnectorTo(address))
     },
     dispatch,

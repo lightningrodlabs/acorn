@@ -164,7 +164,7 @@ class ActivityHistory extends Component {
           }
         }
       })
-      history.members.map(members => {
+      history.members.map((members) => {
         members.map((member, index) => {
           if (index === 0) {
             vector.push({
@@ -197,7 +197,7 @@ class ActivityHistory extends Component {
   }
   render() {
     return (
-      <div className='history'>
+      <div className="history">
         {this.differents(this.props.goalHistory)
           .sort((a, b) => {
             if (a.time < b.time) {
@@ -207,11 +207,11 @@ class ActivityHistory extends Component {
           })
           .map((value, index) => (
             <React.Fragment key={index}>
-              <div className='history-Body-Container'>
+              <div className="history-Body-Container">
                 {value.statusIcon && (
                   <StatusIcon
                     status={value.statusIcon}
-                    className='status-icon-activity-history'
+                    className="status-icon-activity-history"
                     notHoverable
                     hideTooltip
                   />
@@ -219,29 +219,30 @@ class ActivityHistory extends Component {
                 {!value.statusIcon && !value.hierarchyIcon && (
                   <Icon
                     name={value.icon}
-                    size='small'
-                    className='grey not-hoverable'
+                    size="small"
+                    className="grey not-hoverable"
                   />
                 )}
                 {value.hierarchyIcon && (
                   <HierarchyIcon
                     hierarchy={value.hierarchyIcon}
-                    size='small'
-                    className='grey'
+                    size="small"
+                    className="grey"
                   />
                 )}
-                <div className='history-Body-Avatar'>
+                <div className="history-Body-Avatar">
                   <Avatar
                     first_name={this.props.agents[value.user].first_name}
                     last_name={this.props.agents[value.user].last_name}
                     avatar_url={this.props.agents[value.user].avatar_url}
+                    imported={this.props.agents[value.user].is_imported}
                     small={true}
                   />
                 </div>
 
-                <div className='history-Body'>
-                  <div className='history-Header'>
-                    <span className='history-date'>
+                <div className="history-Body">
+                  <div className="history-Header">
+                    <span className="history-date">
                       {moment.unix(value.time).calendar(null, {
                         lastDay: '[Yesterday at] LT',
                         sameDay: '[Today at] LT',
@@ -252,9 +253,9 @@ class ActivityHistory extends Component {
                       })}
                     </span>
                   </div>
-                  <div className='history-content'>
-                    <p className='history-info'>
-                      <span className='history-Author'>
+                  <div className="history-content">
+                    <p className="history-info">
+                      <span className="history-Author">
                         {this.props.agents[value.user].first_name +
                           ' ' +
                           this.props.agents[value.user].last_name}
@@ -285,7 +286,7 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   return {
-    fetchGoalHistory: payload => {
+    fetchGoalHistory: (payload) => {
       return dispatch(fetchGoalHistory.create({ cellIdString, payload }))
     },
   }

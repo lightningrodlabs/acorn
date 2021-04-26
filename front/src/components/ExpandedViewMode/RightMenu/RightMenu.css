@@ -1,35 +1,36 @@
-.expanded_view_right_menu > .icon:hover .inner-icon,
-.expanded_view_right_menu > .icon.active .inner-icon {
+.expanded_view_right_menu {
+  position: relative;
+  display: flex;
+  /* box-shadow: 0px 0px 6px #0000000f; */
+}
+
+.right-menu-icons {
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.right-menu-icons>.icon:hover .inner-icon, .right-menu-icons>.icon.active .inner-icon {
   background-color: #ffffff;
 }
 
-.expanded_view_right_menu {
-  background: transparent;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  height: 100%;
-}
-
-.expanded_view_right_menu > .icon {
+.right-menu-icons>.icon {
   margin-top: -1px;
   width: 50px;
-  border: 1px solid #e6e6e6;
   border-right: none;
-  padding: 12px;
+  padding: 14px;
   height: 46px;
+  border-radius: 10px 0px 0px 10px;
 }
 
-.expanded_view_right_menu > .icon:hover,
-.expanded_view_right_menu > .icon.active {
+.right-menu-icons>.icon:hover, .right-menu-icons>.icon.active {
   background: #5f65ff;
-  width: 58px;
-  margin-left: -8px;
   box-shadow: 0px 0px 6px #00000029;
   border-radius: 10px 0px 0px 10px;
   border: none;
   z-index: 1;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .expanded_view_right_menu .picker-popup {

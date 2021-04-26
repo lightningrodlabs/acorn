@@ -9,7 +9,7 @@ import './IndentedTreeView.css'
 
 // Recursive because we don't know
 // how deep the nesting goes
-function NestedTreeGoal ({ goal, level, filterText }) {
+function NestedTreeGoal({ goal, level, filterText }) {
   level = level || 1
   // set expanded open by default only if
   // at the first or second level
@@ -29,13 +29,15 @@ function NestedTreeGoal ({ goal, level, filterText }) {
       {match && (
         <div className='indented-view-goal-item'>
           <div className='indented-view-goal-item-arrow'>
-            <Icon
+            {goal.children.length > 0 && <Icon
               name={expanded ? 'line-angle-down.svg' : 'line-angle-right.svg'}
               size='very-small'
               className='grey'
               onClick={() => setExpanded(!expanded)}
-            />
+            />}
+            {goal.children.length == 0 && <div></div>}
           </div>
+
           <NavLink
             to={
               location.pathname +
@@ -66,14 +68,14 @@ function NestedTreeGoal ({ goal, level, filterText }) {
       {/* since only what matches the filter will show anyways */}
       {(filterText.length || expanded) && goal.children
         ? goal.children.map((childGoal, index) => (
-            <div className='indented-view-nested-goal' key={index}>
-              <NestedTreeGoal
-                filterText={filterText}
-                goal={childGoal}
-                level={level + 1}
-              />
-            </div>
-          ))
+          <div className='indented-view-nested-goal' key={index}>
+            <NestedTreeGoal
+              filterText={filterText}
+              goal={childGoal}
+              level={level + 1}
+            />
+          </div>
+        ))
         : null}
     </div>
   )
@@ -104,7 +106,7 @@ const MAX_WIDTH = 600
 // associated with .indented-view-goals class
 const INDENTED_VIEW_GOALS_MARGIN = 15
 
-export default function IndentedTreeView ({ goalTrees }) {
+export default function IndentedTreeView({ goalTrees }) {
   const [filterText, setFilterText] = useState('')
   const [isResizing, setIsResizing] = useState(false)
   const [width, setWidth] = useState(DEFAULT_WIDTH)

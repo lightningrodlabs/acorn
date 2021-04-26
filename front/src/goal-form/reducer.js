@@ -9,8 +9,8 @@ const defaultState = {
   parentAddress: null,
   content: '',
   isOpen: false,
-  xLoc: 0,
-  yLoc: 0,
+  leftEdgeXPosition: 0,
+  topEdgeYPosition: 0,
 }
 
 export default function (state = defaultState, action) {
@@ -36,8 +36,8 @@ export default function (state = defaultState, action) {
       return {
         ...state,
         isOpen: true,
-        xLoc: payload.x,
-        yLoc: payload.y,
+        leftEdgeXPosition: payload.x,
+        topEdgeYPosition: payload.y,
         parentAddress: payload.parentAddress,
         editAddress: payload.editAddress,
       }

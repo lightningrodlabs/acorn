@@ -1,6 +1,7 @@
 .expanded_view_header {
-  border-bottom: 1px solid #e8e8e8;
-  padding: 11px 20px;
+  /* border-bottom: 1px solid #e8e8e8; */
+  /* box-shadow: 0px 0px 6px #0000000f; */
+  padding: 12px 16px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -9,20 +10,19 @@
 
 .expanded_view_header .icon {
   margin-right: 16px;
-  height: 22;
+  height: 26px;
+  padding: 2px;
 }
 
-.expanded_view_header .icon.small-close.grey {
+.expanded_view_header .icon.very-small-close.grey {
   margin-right: 0;
 }
 
-.expanded_view_status_icon
-  > .status-color.tooltip-container.status-color-small.bg_Uncertain.can-click.not-hoverable {
+.expanded_view_status_icon .status-color-small, .expanded_view_status_icon .status-color.can-click.not-hoverable:hover {
   margin: 0 16px 0 0;
 }
 
-.expanded_view_status_icon .status_color_small,
-.expanded_view_status_icon .status_color_small:hover {
+.expanded_view_status_icon .status_color_small, .expanded_view_status_icon .status_color_small:hover {
   width: 26px;
   height: 26px;
   border-radius: 14px;

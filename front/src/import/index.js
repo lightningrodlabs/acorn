@@ -21,6 +21,7 @@ export default async function importAllProjectData(
   // AGENTS
   // first import the old agents
   // they must be imported through the profiles dna
+  // only import agents that AREN'T already in your data store
   for (let address of Object.keys(projectData.agents)) {
     const old = projectData.agents[address]
     const clone = {
@@ -52,14 +53,14 @@ export default async function importAllProjectData(
     // to keep of which new addresses map to which old addresses
     goalAddressMap[oldGoal.address] = newGoal.address
   }
-  
+
   // EDGES
   for (let address of Object.keys(projectData.edges)) {
     const old = projectData.edges[address]
     const clone = {
       ...old,
       parent_address: goalAddressMap[old.parent_address],
-      child_address: goalAddressMap[old.child_address]
+      child_address: goalAddressMap[old.child_address],
     }
     delete clone.address // an assigned field
     await dispatch(

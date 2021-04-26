@@ -9,19 +9,26 @@ import {
   textBoxMarginLeft,
   textBoxMarginTop,
   fontSizeInt,
+  fontSizeLargeInt,
+  fontSizeExtraLargeInt,
   lineSpacing,
   getGoalHeight,
-  getLinesForParagraphs
+  getLinesForParagraphs,
+  firstZoomThreshold,
+  secondZoomThreshold,
+  lineSpacingExtraLarge,
+  lineSpacingLarge,
 } from './dimensions'
 
 import { selectedColor, colors, pickColorForString } from '../styles'
 import { getOrSetImageForUrl } from './imageCache'
 import moment from 'moment'
 
-import roundRect from './drawRoundRect'
+import drawRoundCornerRectangle from './drawRoundCornerRectangle'
 
 // render a goal card
-export default function render (
+export default function render(
+  scale,
   goal,
   members,
   { x, y },
@@ -34,7 +41,7 @@ export default function render (
   // use the editText for measuring,
   // even though it's not getting drawn on the canvas
   const text = isEditing ? editText : goal.content
-  const goalHeight = getGoalHeight(ctx, text)
+  const goalHeight = getGoalHeight(ctx, text, scale, isEditing)
 
   // set up border color
   let borderColor = colors[goal.status]
@@ -63,32 +70,34 @@ export default function render (
       ctx.drawImage(leafImg, x - 24, y - 24, 30, 30)
     }
   }
-
-  // background
-  roundRect(
-    ctx,
-    x + borderWidth,
-    y + borderWidth,
-    goalWidth - twiceBorder,
-    goalHeight - twiceBorder,
-    cornerRadius - 1,
-    backgroundColor,
-    false
-  )
+  // card background
+  drawRoundCornerRectangle({
+    context: ctx,
+    xPosition: x + borderWidth,
+    yPosition: y + borderWidth,
+    width: goalWidth - twiceBorder,
+    height: goalHeight - twiceBorder,
+    radius: cornerRadius - 1,
+    color: backgroundColor,
+    stroke: false,
+    strokeWidth: '0',
+    boxShadow: true,
+  })
   // card border
-  roundRect(
-    ctx,
-    x + halfBorder,
-    y + halfBorder,
-    goalWidth - borderWidth,
-    goalHeight - borderWidth,
-    cornerRadius,
-    borderColor,
-    true,
-    '3'
-  )
+  drawRoundCornerRectangle({
+    context: ctx,
+    xPosition: x + halfBorder,
+    yPosition: y + halfBorder,
+    width: goalWidth - borderWidth,
+    height: goalHeight - borderWidth,
+    radius: cornerRadius,
+    color: borderColor,
+    stroke: true,
+    strokeWidth: '3',
+    boxShadow: false,
+  })
 
-  // selection outline
+  // selection outline (purple)
   if (isSelected) {
     let xStart =
       x - selectedOutlineMargin + 1 - halfBorder - selectedOutlineWidth / 2
@@ -105,45 +114,73 @@ export default function render (
       borderWidth +
       Number(selectedOutlineWidth)
     let cr = cornerRadius + selectedOutlineMargin * 2 + 2
-    roundRect(
-      ctx,
-      xStart,
-      yStart,
-      w,
-      h,
-      cr,
-      selectedColor,
-      true,
-      selectedOutlineWidth
-    )
+
+    drawRoundCornerRectangle({
+      context: ctx,
+      xPosition: xStart,
+      yPosition: yStart,
+      width: w,
+      height: h,
+      radius: cr,
+      color: selectedColor,
+      stroke: true,
+      strokeWidth: selectedOutlineWidth,
+      boxShadow: false,
+    })
   }
 
   // render text, if not in edit mode
   // in which case the text is being rendered in the textarea
   // html element being overlaid on top of this Goal
-  if (!isEditing) {
+  if (!isEditing || scale < firstZoomThreshold) {
     const textBoxLeft = x + textBoxMarginLeft
     const textBoxTop = y + textBoxMarginTop
-    const lines = getLinesForParagraphs(ctx, text)
-    lines.forEach((line, index) => {
-      let linePosition = index * (fontSizeInt + lineSpacing)
-      ctx.fillText(line, textBoxLeft, textBoxTop + linePosition)
+    const lines = getLinesForParagraphs(ctx, text, scale)
+    // for space reasons
+    // we limit the number of visible lines of the Goal Title to 2 or 3, 
+    // and provide an ellipsis if there are more lines than that
+    let lineLimit = 3
+    // for extra large text, reduce to only two lines
+    if (scale < secondZoomThreshold) {
+      lineLimit = 2
+    }
+    let lineSpacingToUse = lineSpacing // the default
+    let fontSizeToUse = fontSizeInt
+    if (scale < secondZoomThreshold) {
+      lineSpacingToUse = lineSpacingExtraLarge
+      fontSizeToUse = fontSizeExtraLargeInt
+    } else if (scale < firstZoomThreshold) {
+      lineSpacingToUse = lineSpacingLarge
+      fontSizeToUse = fontSizeLargeInt
+    }
+    lines.slice(0, lineLimit).forEach((line, index) => {
+      let linePosition = index * (fontSizeToUse + lineSpacingToUse)
+      let lineText = line
+      // if we're on the last line and there's more than the visible number of lines
+      if (lines.length > lineLimit && index === lineLimit - 1) {
+        // then replace the last characters with an ellipsis
+        // to indicate that there's more that's hidden
+        lineText = `${line.slice(0, line.length - 3)}...`
+      }
+      ctx.fillText(lineText, textBoxLeft, textBoxTop + linePosition)
     })
   }
 
+  const goalMetaPadding = 8
+
   if (goal.time_frame) {
-    const calendarWidth = 13,
-      calendarHeight = 13
-    const img = getOrSetImageForUrl(
-      'img/calendar.svg',
-      calendarWidth,
-      calendarHeight
-    )
+    const calendarWidth = 12,
+      calendarHeight = 12
+    const img = getOrSetImageForUrl('', calendarWidth, calendarHeight)
+    // wait for the image to load before
+    // trying to draw
     if (!img) return
-    const xImgDraw = x + goalWidth / 2 - calendarWidth - 140
-    const yImgDraw = y + goalHeight / 2 - calendarHeight + 46
-    const textBoxLeft = xImgDraw + textBoxMarginLeft - 8
-    const textBoxTop = yImgDraw + textBoxMarginTop / 4 - 6
+    // image will draw, so calculate where to put it
+    // and the text
+    const xImgDraw = x + goalMetaPadding + 4
+    const yImgDraw = y + goalHeight - calendarHeight - goalMetaPadding - 6
+    const textBoxLeft = xImgDraw + textBoxMarginLeft - 12
+    const textBoxTop = yImgDraw + textBoxMarginTop / 4 - 8
     let text = goal.time_frame.from_date
       ? String(moment.unix(goal.time_frame.from_date).format('MMM D, YYYY - '))
       : ''
@@ -153,7 +190,7 @@ export default function render (
     ctx.drawImage(img, xImgDraw, yImgDraw, calendarWidth, calendarHeight)
     ctx.save()
     ctx.fillStyle = '#898989'
-    ctx.font = '13px hk-grotesk-medium'
+    ctx.font = '13px hk-grotesk-semibold'
     ctx.fillText(text, textBoxLeft, textBoxTop)
     ctx.restore()
   }
@@ -163,14 +200,19 @@ export default function render (
     // adjust the x position according to the index of this member
     // since there can be many
     const xAvatarDraw =
-      x + goalWidth - (index + 1) * (avatarWidth + avatarSpace)
-    const yAvatarDraw = y + goalHeight - avatarHeight - avatarSpace
+      x +
+      goalWidth -
+      goalMetaPadding -
+      (index + 1) * avatarWidth -
+      index * avatarSpace
+    const yAvatarDraw = y + goalHeight - goalMetaPadding - avatarHeight
 
     // first of all, render the initials
     // if there's no image set
     if (!member.avatar_url) {
       const backgroundInitialsAvatar = pickColorForString(member.first_name)
       const initials = `${member.first_name[0].toUpperCase()}${member.last_name[0].toUpperCase()}`
+      // the background for the initial avatar:
       ctx.save()
       ctx.fillStyle = backgroundInitialsAvatar
       ctx.beginPath()
@@ -182,12 +224,25 @@ export default function render (
         Math.PI * 2,
         true
       )
+      // to be consistent with Avatar component
+      // if avatar belongs to an imported project and not connected an active memeber
+      if (member.is_imported) {
+        // set an opacity
+        ctx.globalAlpha = 0.5
+      }
       ctx.closePath()
       ctx.fill()
       ctx.restore()
+      // the text for the initials avatar:
       ctx.save()
+      // to be consistent with Avatar component
+      // if avatar belongs to an imported project and not connected an active memeber
+      if (member.is_imported) {
+        // set an opacity
+        ctx.globalAlpha = 0.5
+      }
       ctx.fillStyle = '#FFF'
-      ctx.font = '11px hk-grotesk-medium'
+      ctx.font = '11px hk-grotesk-bold'
       ctx.fillText(initials, xAvatarDraw + 5, yAvatarDraw + 7)
       ctx.restore()
       return
@@ -217,7 +272,34 @@ export default function render (
     ctx.clip()
 
     // url, x coordinate, y coordinate, width, height
-    ctx.drawImage(img, xAvatarDraw, yAvatarDraw, avatarWidth, avatarHeight)
+    let imgHeightToDraw = avatarHeight,
+      imgWidthToDraw = avatarWidth
+    let imgXToDraw = xAvatarDraw,
+      imgYToDraw = yAvatarDraw
+    // make sure avatar image doesn't stretch on canvas
+    // if image width is more that image height (landscape)
+    if (img.width / img.height > 1) {
+      imgHeightToDraw = avatarHeight
+      imgWidthToDraw = (img.width / img.height) * avatarWidth
+      // move to the left by the amount that would center the image
+      imgXToDraw = xAvatarDraw - (imgWidthToDraw - avatarWidth) / 2
+    }
+    // if image height is more that image width (portrait)
+    else if (img.width / img.height < 1) {
+      imgWidthToDraw = avatarWidth
+      imgHeightToDraw = (img.height / img.width) * avatarHeight
+      // move upwards by the amount that would center the image
+      imgYToDraw = yAvatarDraw - (imgHeightToDraw - avatarHeight) / 2
+    }
+
+    // to be consistent with Avatar component
+    // if avatar belongs to an imported project and not connected an active memeber
+    if (member.is_imported) {
+      // set an opacity
+      ctx.globalAlpha = 0.5
+    }
+
+    ctx.drawImage(img, imgXToDraw, imgYToDraw, imgWidthToDraw, imgHeightToDraw)
 
     ctx.beginPath()
     ctx.arc(xAvatarDraw, yAvatarDraw, avatarRadius, 0, Math.PI * 2, true)

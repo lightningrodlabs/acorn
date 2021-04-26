@@ -24,3 +24,9 @@
 canvas {
   position: absolute;
 }
+
+/* transform */
+
+.transform-container, .goal-form-position-container {
+  position: fixed;
+}

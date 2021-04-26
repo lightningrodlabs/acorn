@@ -1,3 +1,7 @@
+.avatar.imported, .initials-avatar.imported {
+  opacity: 0.5;
+}
+
 .avatar.clickable {
   cursor: pointer;
 }

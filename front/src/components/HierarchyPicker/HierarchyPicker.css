@@ -78,7 +78,7 @@
   margin-left: 10px;
 }
 
-.hierarchy_option_content > span {
+.hierarchy_option_content>span {
   display: block;
   width: 100%;
 }
@@ -99,4 +99,8 @@
   font-size: 12px;
   padding: 6px 30px;
   margin-bottom: 0;
+}
+
+.hierarchy_option_icon .icon.medium {
+  width: 40px;
 }

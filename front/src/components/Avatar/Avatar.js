@@ -14,6 +14,7 @@ function Avatar({
   large,
   clickable,
   onClick,
+  imported,
 }) {
   let classes = []
   if (highlighted) classes.push('highlighted')
@@ -22,6 +23,7 @@ function Avatar({
   else if (mediumLarge) classes.push('medium-large')
   else if (large) classes.push('large')
   if (clickable) classes.push('clickable')
+  if (imported) classes.push('imported')
 
   if (!avatar_url) {
     const backgroundInitialsAvatar = pickColorForString(first_name)

@@ -24,16 +24,17 @@ function PeoplePicker({
 
   return (
     <PickerTemplate
-      className='people-picker'
-      heading='squirrels'
-      onClose={onClose}>
-      <div className='people-picker-search'>
-        <Icon name='search.svg' size='small' className='not-hoverable' />
+      className="people-picker"
+      heading="squirrels"
+      onClose={onClose}
+    >
+      <div className="people-picker-search">
+        <Icon name="search.svg" size="small" className="not-hoverable" />
         <input
-          type='text'
-          onChange={e => setFilterText(e.target.value)}
+          type="text"
+          onChange={(e) => setFilterText(e.target.value)}
           value={filterText}
-          placeholder='search squirrels...'
+          placeholder="search squirrels..."
           autoFocus
         />
         {filterText !== '' && (
@@ -41,17 +42,18 @@ function PeoplePicker({
             onClick={() => {
               setFilterText('')
             }}
-            className='clear-button'>
+            className="clear-button"
+          >
             clear
           </button>
         )}
       </div>
-      <div className='people-picker-spacer' />
-      <ul className='people-picker-people'>
+      <div className="people-picker-spacer" />
+      <ul className="people-picker-people">
         {people
           // filter people out if there's filter text defined, and don't bother case matching
           // also match anywhere in the string, not just the start
-          .filter(person => {
+          .filter((person) => {
             const name = `${person.first_name} ${person.last_name}`
             return (
               !filterText ||
@@ -74,31 +76,33 @@ function PeoplePicker({
               <li
                 key={index}
                 className={person.is_member ? 'member' : ''}
-                onClick={onClick}>
+                onClick={onClick}
+              >
                 <Avatar
                   first_name={person.first_name}
                   last_name={person.last_name}
                   avatar_url={person.avatar_url}
+                  imported={person.is_imported}
                   medium
                 />
-                <div className='person-nameANDhandle'>
-                  <span className='person-name'>
+                <div className="person-nameANDhandle">
+                  <span className="person-name">
                     {person.first_name} {person.last_name}
                   </span>
-                  <div className='person-handle'>{person.handle}</div>
+                  <div className="person-handle">{person.handle}</div>
                 </div>
                 {!person.is_member && (
                   <Icon
-                    name='radio-button.svg'
-                    size='small'
-                    className='light-grey radio-button'
+                    name="radio-button.svg"
+                    size="small"
+                    className="light-grey radio-button"
                   />
                 )}
                 {person.is_member && (
                   <Icon
-                    name='radio-button-checked.svg'
-                    size='small'
-                    className='purple radio-button'
+                    name="radio-button-checked.svg"
+                    size="small"
+                    className="purple radio-button"
                   />
                 )}
               </li>
@@ -136,13 +140,13 @@ function mapStateToProps(state, ownProps) {
   const goalMembers = state.projects.goalMembers[projectId] || {}
   const members = state.projects.members[projectId] || {}
   const membersOfGoal = Object.keys(goalMembers)
-    .map(address => goalMembers[address])
-    .filter(goalMember => goalMember.goal_address === goalAddress)
-  const agents = Object.keys(members).map(address => state.agents[address])
+    .map((address) => goalMembers[address])
+    .filter((goalMember) => goalMember.goal_address === goalAddress)
+  const agents = Object.keys(members).map((address) => state.agents[address])
   return {
-    people: agents.map(agent => {
+    people: agents.map((agent) => {
       const member = membersOfGoal.find(
-        goalMember => goalMember.agent_address === agent.address
+        (goalMember) => goalMember.agent_address === agent.address
       )
 
       return {
@@ -170,7 +174,7 @@ function mapDispatchToProps(dispatch, ownProps) {
         })
       )
     },
-    archiveGoalMember: payload => {
+    archiveGoalMember: (payload) => {
       return dispatch(archiveGoalMember.create({ cellIdString, payload }))
     },
   }

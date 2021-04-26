@@ -6,9 +6,8 @@
 }
 
 .error-screen-content-frame {
-  margin: auto auto;
+  margin: auto;
   max-width: 1000px;
-  height: 520px;
   position: relative;
   display: flex;
   flex-direction: row;
@@ -38,9 +37,9 @@
 .error-screen-description {
   font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
   font-size: 16px;
-  line-height: 30px;
+  line-height: 26px;
   color: #535353;
-  margin-bottom: 20px;
+  margin-bottom: 32px;
 }
 
 .error-screen-description a {
@@ -48,11 +47,13 @@
   color: #5f65ff;
   transition: color 0.2s ease-in-out;
 }
+
 .error-screen-description a:hover {
   color: #00afa4;
 }
 
 .show-stack-trace-wrapper {
+  margin-top: 24px;
   height: 150px;
 }
 
@@ -70,6 +71,7 @@
 
 .show-stack-trace-button-text {
   width: 110px;
+  margin-bottom: 3px;
 }
 
 .show-stack-trace-button .icon {
@@ -89,7 +91,7 @@
   white-space: pre;
   overflow: scroll;
   width: 100%;
-  resize: none;
+  resize: auto;
 }
 
 .error-screen-buttons {
@@ -104,5 +106,5 @@
 
 .error-screen-column-right img {
   padding: 40px;
-  width: 320px;
+  width: 280px;
 }

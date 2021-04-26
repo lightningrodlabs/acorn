@@ -85,11 +85,11 @@ export default function ExpandedViewModeHeader({
         className='edibility_permission feature-in-development'
         size='medium-expanded-view'
       />
-      <Icon
+      {/* <Icon
         name='eye.svg'
         className='visiblity feature-in-development'
         size='medium-expanded-view'
-      />
+      /> */}
       <Icon
         name='notification.svg'
         className='follow feature-in-development'

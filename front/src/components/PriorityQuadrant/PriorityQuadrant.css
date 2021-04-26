@@ -1,7 +1,8 @@
 .priority-quadrant {
   display: flex;
+  flex: 1;
   flex-direction: column;
-  margin: 8px;
+  /* margin: 8px; */
   box-shadow: 0px 0px 10px #00000010;
   border-radius: 10px;
   background: #ffffff70;
@@ -14,24 +15,8 @@
   color: #4d4d4d;
   font-family: 'gilroyextrabold', Helvetica, sans-serif;
   font-weight: normal;
-  padding: 14px 20px;
-  border-bottom: 1px solid #f2f2f2;
-}
-
-.priority-quadrant-title.top-left {
-  /* color: #ff5d36; */
-}
-
-.priority-quadrant-title.top-right {
-  /* color: #00bcae; */
-}
-
-.priority-quadrant-title.bottom-left {
-  /* color: #ff9c39; */
-}
-
-.priority-quadrant-title.bottom-right {
-  /* color: #6db7ce; */
+  padding: 14px 20px 12px;
+  /* border-bottom: 1px solid #f2f2f2; */
 }
 
 .priority-quadrant-goals {

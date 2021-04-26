@@ -1,0 +1,20 @@
+/* HoverOverlay */
+
+.hover-overlay-buttons-wrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  list-style: none;
+  margin: 0 0 0 -83px;
+  /* (36:width * 2) + 6:between-margin + 6:edge-margin */
+  padding: 0;
+}
+
+.hover-overlay-buttons-wrapper li:first-child {
+  margin-right: 4px;
+  /* same as distance from buttons to edges of goal */
+}
+
+.hover-overlay-buttons-wrapper li {
+  cursor: pointer;
+}

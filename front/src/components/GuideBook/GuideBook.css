@@ -1,5 +1,4 @@
-.guidebook-outer-wrapper {
-}
+.guidebook-outer-wrapper {}
 
 .guidebook-outer-wrapper button {
   margin: 0;
@@ -26,7 +25,7 @@
 
 .how-tos-nav {
   width: 290px;
-  margin-right: 40px;
+  margin-right: 24px;
   height: 100%;
   overflow-y: scroll;
 }
@@ -169,7 +168,6 @@
   font-size: 20px;
   font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
   margin-bottom: 24px;
-  margin-left: 10px;
 }
 
 .guidebook-shortcut-row {
@@ -178,7 +176,6 @@
   border-bottom: 1px solid #efefef;
   padding-bottom: 14px;
   margin-bottom: 14px;
-  margin-left: 30px;
 }
 
 .guidebook-shortcut-key {

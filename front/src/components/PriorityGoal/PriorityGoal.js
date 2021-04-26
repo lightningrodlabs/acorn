@@ -24,39 +24,39 @@ function PriorityGoal({ whoami, goal, votes, setPriorityPickerAddress }) {
 
   const myVote =
     whoami &&
-    votes.find(value => {
+    votes.find((value) => {
       return value.agent_address === whoami.entry.address
     })
 
   return (
-    <div className='priority-quadrant-goal-item'>
-      <div className='priority-quadrant-goal-iconANDmark'>
-        <div className='priority-quadrant-goal-icon'>
+    <div className="priority-quadrant-goal-item">
+      <div className="priority-quadrant-goal-iconANDmark">
+        <div className="priority-quadrant-goal-icon">
           <HierarchyIcon
-            size='small'
+            size="small"
             hierarchy={goal.hierarchy}
             status={goal.status}
           />
         </div>
-        {myVote && <div className='priority-myvote-mark' />}
+        {myVote && <div className="priority-myvote-mark" />}
       </div>
-      <div className='priority-quadrant-goal-content'>
-        <div className='priority-quadrant-goal-titleANDinfo'>
-          <div className='priority-quadrant-goal-title'>{goal.content}</div>
-          <div className='priority-quadrant-goal-info'>
+      <div className="priority-quadrant-goal-content">
+        <div className="priority-quadrant-goal-titleANDinfo">
+          <div className="priority-quadrant-goal-title">{goal.content}</div>
+          <div className="priority-quadrant-goal-info">
             {goal.time_frame && (
-              <div className='priority-quadrant-goal-timeframe'>
+              <div className="priority-quadrant-goal-timeframe">
                 <Icon
-                  name='calendar.svg'
-                  size='very-small'
-                  className='grey not-hoverable'
+                  name="calendar.svg"
+                  size="very-small"
+                  className="grey not-hoverable"
                 />
                 {fromDate && fromDate.format('MMM D, YYYY')}
                 {toDate && ' - '}
                 {toDate && toDate.format('MMM D, YYYY')}
               </div>
             )}
-            <div className='priority-quadrant-goal-squirrels'>
+            <div className="priority-quadrant-goal-squirrels">
               {goal.members
                 ? goal.members.map((goalMember, index) => (
                     <Avatar
@@ -64,6 +64,7 @@ function PriorityGoal({ whoami, goal, votes, setPriorityPickerAddress }) {
                       first_name={goalMember.first_name}
                       last_name={goalMember.last_name}
                       avatar_url={goalMember.avatar_url}
+                      imported={goalMember.is_imported}
                       small
                     />
                   ))
@@ -71,12 +72,12 @@ function PriorityGoal({ whoami, goal, votes, setPriorityPickerAddress }) {
             </div>
           </div>
         </div>
-        <div className='priority-quadrant-goal-right-menu'>
-          <div className='weigh_in_button'>
+        <div className="priority-quadrant-goal-right-menu">
+          <div className="weigh_in_button">
             <Button
-              key='priority'
-              size='small'
-              color='purple'
+              key="priority"
+              size="small"
+              color="purple"
               text={myVote ? 'See My Vote' : 'Weigh In'}
               onClick={() => setPriorityPickerAddress(goal.address)}
             />
