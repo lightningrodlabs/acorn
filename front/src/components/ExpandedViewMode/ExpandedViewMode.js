@@ -96,6 +96,7 @@ function ExpandedViewMode({
     updateGoal(
       {
         ...goal,
+        user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         time_frame: timeframe,
       },
@@ -142,6 +143,7 @@ function ExpandedViewMode({
             />
             <div className='expanded-view-main'>
               <ExpandedViewModeContent
+                agentAddress={agentAddress}
                 projectId={projectId}
                 editTimeframe={editTimeframe}
                 setEditTimeframe={setEditTimeframe}

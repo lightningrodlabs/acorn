@@ -287,7 +287,7 @@ MultiEditBar.propTypes = {
       content: PropTypes.string.isRequired,
       user_hash: PropTypes.string.isRequired,
       timestamp_created: PropTypes.number.isRequired,
-      timestamp_updated: PropTypes.number.isRequired,
+      timestamp_updated: PropTypes.number,
       hierarchy: PropTypes.string.isRequired,
       status: PropTypes.string.isRequired,
       address: PropTypes.string,
