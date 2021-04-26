@@ -136,7 +136,7 @@ where
 }
 
 pub fn create_receive_signal_cap_grant() -> ExternResult<()> {
-    let mut functions: GrantedFunctions = HashSet::new();
+    let mut functions: GrantedFunctions = BTreeSet::new();
     functions.insert((zome_info()?.zome_name, "recv_remote_signal".into()));
 
     create_cap_grant(CapGrantEntry {
