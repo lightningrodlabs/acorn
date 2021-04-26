@@ -5,8 +5,9 @@ import Icon from '../../Icon/Icon'
 import HierarchyIcon from '../../HierarchyIcon/HierarchyIcon'
 import StatusPicker from '../../StatusPicker'
 import StatusIcon from '../../StatusIcon/StatusIcon'
-import moment from 'moment'
+
 export default function ExpandedViewModeHeader({
+  agentAddress,
   goalAddress,
   goal,
   updateGoal,
@@ -28,6 +29,7 @@ export default function ExpandedViewModeHeader({
     updateGoal(
       {
         ...goal,
+        user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         status,
       },

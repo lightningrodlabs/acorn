@@ -18,6 +18,7 @@ import EdgeConnectorPicker from '../EdgeConnectorPicker/EdgeConnectorPicker'
 import Modal, { ModalContent } from '../Modal/Modal'
 
 function MultiEditBar({
+  agentAddress,
   selectedGoals = [],
   updateGoal,
   hasSelection,
@@ -56,6 +57,7 @@ function MultiEditBar({
       updateGoal(
         {
           ...goal,
+          user_edit_hash: agentAddress,
           timestamp_updated: moment().unix(),
           [key]: val,
         },
@@ -287,7 +289,7 @@ MultiEditBar.propTypes = {
       content: PropTypes.string.isRequired,
       user_hash: PropTypes.string.isRequired,
       timestamp_created: PropTypes.number.isRequired,
-      timestamp_updated: PropTypes.number.isRequired,
+      timestamp_updated: PropTypes.number,
       hierarchy: PropTypes.string.isRequired,
       status: PropTypes.string.isRequired,
       address: PropTypes.string,

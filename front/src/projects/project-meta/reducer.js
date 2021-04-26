@@ -1,10 +1,8 @@
 import _ from 'lodash'
 import {
-  createProjectMeta,
-  fetchProjectMetas,
+  simpleCreateProjectMeta,
   fetchProjectMeta,
   updateProjectMeta,
-  archiveProjectMeta,
 } from './actions'
 // import { isCrud, crudReducer } from '../../crudRedux'
 
@@ -13,7 +11,7 @@ const defaultState = {}
 export default function (state = defaultState, action) {
   const { payload, type } = action
   switch (type) {
-    case createProjectMeta.success().type:
+    case simpleCreateProjectMeta.success().type:
     case fetchProjectMeta.success().type:
     case updateProjectMeta.success().type:
       return {

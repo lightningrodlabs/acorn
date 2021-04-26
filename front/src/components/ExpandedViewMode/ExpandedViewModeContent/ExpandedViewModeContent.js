@@ -41,6 +41,7 @@ function SquirrelInfoPopup({ squirrel, onClose, archiveGoalMember }) {
 
 export default function ExpandedViewModeContent({
   projectId,
+  agentAddress,
   goalAddress,
   goal,
   goalContent,
@@ -66,8 +67,9 @@ export default function ExpandedViewModeContent({
       <div className="expanded-view-inner-content">
         {activeTab === 0 && (
           <Details
-            projectId={projectId}
             {...{
+              projectId,
+              agentAddress,
               setActiveTab,
               editTimeframe,
               setEditTimeframe,
@@ -92,6 +94,7 @@ export default function ExpandedViewModeContent({
 
 function Details({
   projectId,
+  agentAddress,
   setActiveTab,
   editTimeframe,
   setEditTimeframe,
@@ -139,6 +142,7 @@ function Details({
     updateGoal(
       {
         ...goal,
+        user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         content,
         description,

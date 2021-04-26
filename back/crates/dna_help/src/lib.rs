@@ -1,6 +1,10 @@
 use hdk::prelude::*;
 pub use paste;
 use std::fmt;
+use thiserror::Error;
+
+#[cfg(test)]
+use ::fixt::prelude::*;
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, SerializedBytes)]
 #[serde(from = "UIEnum")]
@@ -47,10 +51,22 @@ pub struct UIStringHash(String);
 #[serde(into = "UIStringHash")]
 pub struct WrappedAgentPubKey(pub AgentPubKey);
 
+impl WrappedAgentPubKey {
+  pub fn new(agent_pubkey: AgentPubKey) -> Self {
+      Self(agent_pubkey)
+  }
+}
+
 #[derive(Debug, Serialize, Deserialize, SerializedBytes, Clone, PartialEq)]
 #[serde(try_from = "UIStringHash")]
 #[serde(into = "UIStringHash")]
 pub struct WrappedHeaderHash(pub HeaderHash);
+
+impl WrappedHeaderHash {
+  pub fn new(header_hash: HeaderHash) -> Self {
+      Self(header_hash)
+  }
+}
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes, Clone, PartialEq)]
 #[serde(try_from = "UIStringHash")]
@@ -120,7 +136,7 @@ where
 }
 
 pub fn create_receive_signal_cap_grant() -> ExternResult<()> {
-    let mut functions: GrantedFunctions = HashSet::new();
+    let mut functions: GrantedFunctions = BTreeSet::new();
     functions.insert((zome_info()?.zome_name, "recv_remote_signal".into()));
 
     create_cap_grant(CapGrantEntry {
@@ -203,6 +219,50 @@ pub fn fetch_links<
         .collect())
 }
 
+#[derive(Error, Debug)]
+pub enum Error {
+    #[error("Element missing its Entry")]
+    EntryMissing,
+}
+
+impl From<Error> for ValidateCallbackResult {
+    fn from(e: Error) -> Self {
+        ValidateCallbackResult::Invalid(e.to_string())
+    }
+}
+
+impl From<Error> for ExternResult<ValidateCallbackResult> {
+    fn from(e: Error) -> Self {
+        Ok(e.into())
+    }
+}
+
+pub struct ResolvedDependency<D>(pub Element, pub D);
+
+pub fn resolve_dependency<'a, O>(
+    hash: AnyDhtHash,
+) -> ExternResult<Result<ResolvedDependency<O>, ValidateCallbackResult>>
+where
+    O: TryFrom<SerializedBytes, Error = SerializedBytesError>,
+{
+    let element = match get(hash.clone(), GetOptions::content())? {
+        Some(element) => element,
+        None => {
+            return Ok(Err(ValidateCallbackResult::UnresolvedDependencies(vec![
+                hash,
+            ])))
+        }
+    };
+
+    let output: O = match element.entry().to_app_option() {
+        Ok(Some(output)) => output,
+        Ok(None) => return Ok(Err(Error::EntryMissing.into())),
+        Err(e) => return Ok(Err(ValidateCallbackResult::Invalid(e.to_string()))),
+    };
+
+    Ok(Ok(ResolvedDependency(element, output)))
+}
+
 #[macro_export]
 macro_rules! crud {
     (
@@ -264,11 +324,7 @@ macro_rules! crud {
             let address = create_entry(&entry)?;
             let entry_hash = hash_entry(&entry)?;
             let path = Path::from([<$i:upper _PATH>]);
-            // let start_ensure_time: std::time::Duration = sys_time()?;
-            // debug!("start! of Path.ensure() time {:?}", start_ensure_time.clone());
             path.ensure()?;
-            // let end_ensure_time: std::time::Duration = sys_time()?;
-            // debug!("end! of Path.ensure() time {:?}", end_ensure_time.clone());
             let path_hash = path.hash()?;
             create_link(path_hash, entry_hash.clone(), ())?;
             let wire_entry = [<$crud_type WireEntry>] {
@@ -277,16 +333,12 @@ macro_rules! crud {
               entry_address: $crate::WrappedEntryHash(entry_hash)
             };
             if (send_signal) {
-              // let start_signal_time: std::time::Duration = sys_time()?;
-              // debug!("start!! of signal time {:?}", start_signal_time.clone());
               let signal = $convert_to_receiver_signal([<$crud_type Signal>] {
                 entry_type: $path.to_string(),
                 action: $crate::ActionType::Create,
                 data: [<$crud_type SignalData>]::Create(wire_entry.clone()),
               });
               let _ = $crate::signal_peers(&signal, $get_peers);
-              // let end_signal_time: std::time::Duration = sys_time()?;
-              // debug!("end!! of signal time {:?}", end_signal_time.clone());
             }
             Ok(wire_entry)
           }
