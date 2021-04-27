@@ -104,6 +104,8 @@ const pickCrudAction = (entryTypeName, actionType) => {
 export default store => signal => {
   const { cellId } = signal.data
   let { payload } = signal.data
+  // TODO: update holochain-conductor-api to latest
+  // which should deserialize this automatically
   payload = msgpack.decode(payload)
 
   // switch to CamelCasing if defined
