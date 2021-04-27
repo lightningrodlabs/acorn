@@ -6,6 +6,7 @@ the same events types, because their payload signatures match,
 and the reducers handle them the same way
 */
 
+import * as msgpack from '@msgpack/msgpack/dist'
 import * as edgeActions from './projects/edges/actions'
 import * as goalActions from './projects/goals/actions'
 import * as goalVoteActions from './projects/goal-votes/actions'
@@ -101,8 +102,9 @@ const pickCrudAction = (entryTypeName, actionType) => {
 }
 
 export default store => signal => {
-  console.log(signal)
-  const { cellId, payload } = signal.data
+  const { cellId } = signal.data
+  let { payload } = signal.data
+  payload = msgpack.decode(payload)
 
   // switch to CamelCasing if defined
   const crudType = crudTypes[payload.entry_type]
