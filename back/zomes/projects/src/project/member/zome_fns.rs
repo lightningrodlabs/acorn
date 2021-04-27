@@ -1,6 +1,6 @@
 use super::entry::{Member, MemberSignal, VecMember, MEMBER_PATH};
 use crate::get_peers_latest;
-use dna_help::{fetch_links, signal_peers, WrappedAgentPubKey};
+use dna_help::{fetch_links, WrappedAgentPubKey};
 use hdk::prelude::*;
 
 // returns a list of the agent addresses of those who
@@ -19,5 +19,9 @@ pub fn init_signal(_: ()) -> ExternResult<()> {
     let member = Member {
         address: WrappedAgentPubKey(agent_info()?.agent_initial_pubkey),
     };
-    signal_peers(&MemberSignal::new(member.clone()), get_peers_latest)
+    let signal = MemberSignal::new(member.clone());
+    let payload = ExternIO::encode(signal)?;
+    let peers = get_peers_latest()?;
+    remote_signal( payload, peers )?;
+    Ok(())
 }

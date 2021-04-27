@@ -1,7 +1,7 @@
 ---
 manifest_version: "1"
 name: profiles-dna
-uuid: ~
+uid: "0004"
 properties: ~
 zomes: 
   - name: profiles

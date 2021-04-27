@@ -8,10 +8,18 @@ signing_service_uri: ~
 encryption_service_uri: ~
 decryption_service_uri: ~
 dpki: ~
-keystore_path: ~
+keystore_path: keystore
 passphrase_service: ~
 admin_interfaces:
   - driver:
       type: websocket
       port: 1234 # must match config-admin-ws value
-network: ~
+network:
+  bootstrap_service: https://bootstrap-staging.holo.host
+  transport_pool:
+    - type: proxy
+      sub_transport:
+        type: quic
+      proxy_config:
+        type: local_proxy_server
+  network_type: quic_bootstrap

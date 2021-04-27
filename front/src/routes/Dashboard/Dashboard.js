@@ -300,6 +300,7 @@ async function joinProject(passphrase, dispatch) {
   )
   const appWs = await getAppWs()
   try {
+    await new Promise((resolve) => setTimeout(resolve, 5000))
     await appWs.callZome({
       cap: null,
       cell_id: cellId,
@@ -330,6 +331,7 @@ async function joinProject(passphrase, dispatch) {
     await adminWs.deactivateApp({
       installed_app_id: installedAppId,
     })
+    console.log(e)
     if (
       e.type === 'error' &&
       e.data.type === 'ribosome_error' &&

@@ -15,7 +15,9 @@
     "test-happ": ". back/scripts/test-happ.sh",
     "pack-happ": ". back/scripts/pack-happ.sh",
     "install-happ": ". back/scripts/install-happ.sh",
+    "install-happ-2": ". back/scripts/2-install-happ.sh",
     "run-happ": "holochain -c back/conductor-config.yml",
+    "run-happ-2": "holochain -c back/2-conductor-config.yml",
     "install-ui": "cd front && npm install",
     "run-ui": "cd front && npx webpack-dev-server --config webpack.dev.js",
     "build-ui": "cd front && npx webpack --config webpack.prod.js"

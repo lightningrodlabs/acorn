@@ -122,19 +122,6 @@ impl From<WrappedEntryHash> for UIStringHash {
   SIGNALS
 */
 
-// sender
-pub fn signal_peers<'a, I: 'a>(
-    signal: &'a I,
-    get_peers: fn() -> ExternResult<Vec<AgentPubKey>>,
-) -> ExternResult<()>
-where
-    I: serde::Serialize + std::fmt::Debug,
-{
-    let peers = get_peers()?;
-    remote_signal(&signal, peers)?;
-    Ok(())
-}
-
 pub fn create_receive_signal_cap_grant() -> ExternResult<()> {
     let mut functions: GrantedFunctions = BTreeSet::new();
     functions.insert((zome_info()?.zome_name, "recv_remote_signal".into()));
@@ -338,7 +325,9 @@ macro_rules! crud {
                 action: $crate::ActionType::Create,
                 data: [<$crud_type SignalData>]::Create(wire_entry.clone()),
               });
-              let _ = $crate::signal_peers(&signal, $get_peers);
+              let payload = ExternIO::encode(signal)?;
+              let peers = $get_peers()?;
+              remote_signal(payload, peers)?;
             }
             Ok(wire_entry)
           }
@@ -379,7 +368,9 @@ macro_rules! crud {
                 action: $crate::ActionType::Update,
                 data: [<$crud_type SignalData>]::Update(wire_entry.clone()),
               });
-              let _ = $crate::signal_peers(&signal, $get_peers);
+              let payload = ExternIO::encode(signal)?;
+              let peers = $get_peers()?;
+              remote_signal(payload, peers)?;
             }
             Ok(wire_entry)
           }
@@ -400,7 +391,9 @@ macro_rules! crud {
                 action: $crate::ActionType::Delete,
                 data: [<$crud_type SignalData>]::Delete(address.clone()),
               });
-              let _ = $crate::signal_peers(&signal, $get_peers);
+              let payload = ExternIO::encode(signal)?;
+              let peers = $get_peers()?;
+              remote_signal(payload, peers)?;
             }
             Ok(address)
           }

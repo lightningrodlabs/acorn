@@ -10,7 +10,7 @@ slots:
     dna:
       bundled: "../profiles.dna"
       properties: ~
-      uuid: ~
+      uid: "0004"
       version: ~
       clone_limit: 0
 
