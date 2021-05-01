@@ -20,7 +20,7 @@ url = { version = "2.2", features = ["serde"] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { git = "https://github.com/tauri-apps/tauri.git", branch = "dev", features =["api-all"]}
-# embedded_holochain_runner = { git = "https://github.com/Sprillow/embedded-holochain-runner.git" }
+embedded_holochain_runner = { git = "https://github.com/Sprillow/embedded-holochain-runner.git", branch = "main" }
 
 [features]
 default = [ "custom-protocol" ]
