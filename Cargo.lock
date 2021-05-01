@@ -112,11 +112,13 @@ checksum = "28b2cd92db5cbd74e8e5028f7e27dd7aa3090e89e4f2a197cc7c8dfb69c7063b"
 name = "app"
 version = "0.1.0"
 dependencies = [
+ "derivative",
  "embedded_holochain_runner",
  "serde",
  "serde_json",
  "tauri",
  "tauri-build",
+ "tokio 1.5.0",
  "url 2.2.1",
 ]
 
@@ -1466,7 +1468,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 [[package]]
 name = "embedded_holochain_runner"
 version = "0.0.1"
-source = "git+https://github.com/Sprillow/embedded-holochain-runner.git?branch=main#54ba4b776011bfbd2fe47fc99d1401a8b7bdc2a6"
+source = "git+https://github.com/Sprillow/embedded-holochain-runner.git?rev=7c3837d#7c3837d3fbb6ced9fea3558d4b2883646a906651"
 dependencies = [
  "futures",
  "hdk",
@@ -5679,8 +5681,7 @@ dependencies = [
 [[package]]
 name = "tauri-build"
 version = "1.0.0-beta-rc.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72c0791792e5b01df47ff580f7bdca3600d2e5fd98451471d75458f4dbddf2d8"
+source = "git+https://github.com/tauri-apps/tauri.git?branch=dev#9fadbf3350b432192ad36477a189229a127ae7f5"
 dependencies = [
  "anyhow",
  "proc-macro2",

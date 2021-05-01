@@ -1,0 +1,124 @@
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* HK Grotesk */
+
+@font-face {
+  font-family: 'hk-grotesk-regular';
+  src: url('fonts/hk-grotesk/hkgrotesk-regular-webfont.woff2') format('woff2'), url('fonts/hk-grotesk/hkgrotesk-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  margin-bottom: 1px;
+}
+
+@font-face {
+  font-family: 'hk-grotesk-medium';
+  src: url('fonts/hk-grotesk/hkgrotesk-medium-webfont.woff2') format('woff2'), url('fonts/hk-grotesk/hkgrotesk-medium-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  margin-bottom: 1px;
+}
+
+@font-face {
+  font-family: 'hk-grotesk-semibold';
+  src: url('fonts/hk-grotesk/hkgrotesk-semibold-webfont.woff2') format('woff2'), url('fonts/hk-grotesk/hkgrotesk-semibold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'hk-grotesk-bold';
+  src: url('fonts/hk-grotesk/hkgrotesk-bold-webfont.woff2') format('woff2'), url('fonts/hk-grotesk/hkgrotesk-bold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Gilroy Font */
+
+@font-face {
+  font-family: 'gilroyextrabold';
+  src: url('fonts/gilroy/gilroy-extrabold-webfont.woff2') format('woff2'), url('fonts/gilroy/gilroy-extrabold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+html {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  /* to match the main window */
+  background-color: #fbf9f7;
+}
+
+.splash-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+
+.splash-image-wrapper {
+    background-image: url('img/acorn-splash-andrey-svistunov-unsplash.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 320px;
+    height: 450px;
+    padding: 30px;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
+.splash-image-caption {
+    font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+    color: #ffffff;
+    font-size: 12px;
+}
+
+.splash-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 30px 40px;
+}
+
+.splash-logo {
+    font-family: 'gilroyextrabold', Helvetica, sans-serif;
+    font-size: 40px;
+    color: #222222;
+    margin-bottom: 2px;
+}
+
+.splash-version {
+    font-family: 'gilroyextrabold', Helvetica, sans-serif;
+    font-size: 14px;
+    color: #898989;
+    margin-left: 2px;
+}
+
+.splash-loading-message {
+    font-family: 'gilroyextrabold', Helvetica, sans-serif;
+    font-size: 18px;
+    color: #222222;
+}
+
+.splash-description {
+    font-family: 'hk-grotesk-regular', Helvetica, sans-serif;
+    font-size: 14px;
+    color: #585858;
+    width: 365px;
+}
+
+.splash-license {
+    font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+    font-size: 14px;
+    color: #898989;
+}

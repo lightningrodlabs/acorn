@@ -3,6 +3,8 @@ members = [
   "src-tauri",
 ]
 
+resolver = "2"
+
 [patch.crates-io]
 rkv = { git = "https://github.com/holochain/rkv.git", branch = "master" }
 lmdb-rkv = { git = "https://github.com/holochain/lmdb-rs.git" }
