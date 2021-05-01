@@ -8,9 +8,6 @@
     "url": "git+https://github.com/h-be/acorn2.git"
   },
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
     "install-holochain": ". back/scripts/install-binaries.sh",
     "test-happ": ". back/scripts/test-happ.sh",
     "pack-happ": ". back/scripts/pack-happ.sh",
@@ -25,42 +22,10 @@
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "ISC",
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.54",
-    "@electron-forge/maker-deb": "^6.0.0-beta.54",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
-    "@electron-forge/maker-zip": "^6.0.0-beta.54",
-    "electron": "^12.0.1",
     "prettier": "2.2.1"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
-  },
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "acorn2"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
+    "@tauri-apps/api": "github:",
+    "@tauri-apps/cli": "^1.0.0-beta-rc.4"
   }
 }
