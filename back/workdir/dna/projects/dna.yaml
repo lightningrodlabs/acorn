@@ -1,8 +1,8 @@
 ---
 manifest_version: "1"
 name: projects-dna
-uid: "0003"
+uid: "0004"
 properties: ~
 zomes: 
   - name: projects
-    bundled: ../../../../target/wasm32-unknown-unknown/release/projects.wasm
+    bundled: ../../../zomes/target/wasm32-unknown-unknown/release/projects.wasm

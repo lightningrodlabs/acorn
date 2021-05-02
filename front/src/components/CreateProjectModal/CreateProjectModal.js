@@ -15,12 +15,12 @@ import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingS
 
 // since this is a big wordset, dynamically import it
 // instead of including in the main bundle
-async function generatePassphrase () {
+async function generatePassphrase() {
   const { default: randomWord } = await import('diceware-word')
   return `${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()}`
 }
 
-function CreateProjectForm ({
+function CreateProjectForm({
   creatingProject,
   onSubmit,
   projectCreated,
@@ -39,7 +39,7 @@ function CreateProjectForm ({
   const [isValidProjectCoverUrl, setisValidProjectCoverUrl] = useState(true)
   const [errorProjectCoverUrl, setErrorProjectCoverUrl] = useState('')
 
-  const changeProjectName = name => {
+  const changeProjectName = (name) => {
     setShouldInvalidateProjectName(true)
     setProjectName(name)
   }
@@ -71,8 +71,8 @@ function CreateProjectForm ({
   const actionButtonContent = (
     <ButtonWithPendingState
       pending={creatingProject}
-      pendingText='Creating...'
-      actionText='Create Project'
+      pendingText="Creating..."
+      actionText="Create Project"
     />
   )
 
@@ -89,8 +89,9 @@ function CreateProjectForm ({
     <div
       className={`create-project-form ${
         projectCreated ? 'project-created' : ''
-      }`}>
-      <ProjectModalHeading title='Create a new project' />
+      }`}
+    >
+      <ProjectModalHeading title="Create a new project" />
       <ProjectModalSubHeading title={subheading} />
       <ProjectModalContentSpacer>
         <ProjectModalContent>
@@ -101,16 +102,16 @@ function CreateProjectForm ({
             invalidInput={!isValidProjectName}
             validInput={projectName.length > 0 && isValidProjectName}
             errorText={errorProjectName}
-            label='Project Name'
-            placeholder='The best project ever'
+            label="Project Name"
+            placeholder="The best project ever"
           />
           {/* project cover image */}
-          <div className='create-project-image-row'>
+          <div className="create-project-image-row">
             <ValidatingFormInput
               value={projectCoverUrl}
               onChange={setProjectCoverUrl}
-              label='Project Cover Image'
-              placeholder='Paste in your project image URL here'
+              label="Project Cover Image"
+              placeholder="Paste in your project image URL here"
               invalidInput={
                 projectCoverUrl.length > 0 && !isValidProjectCoverUrl
               }
@@ -118,7 +119,7 @@ function CreateProjectForm ({
               errorText={errorProjectCoverUrl}
             />
             <div
-              className='create-project-image'
+              className="create-project-image"
               style={{ backgroundImage: `url(${projectCoverUrl})` }}
             />
           </div>
@@ -129,24 +130,25 @@ function CreateProjectForm ({
   )
 }
 
-function ProjectCreatedModal ({ onDone, projectCreated, projectSecret }) {
+function ProjectCreatedModal({ onDone, projectCreated, projectSecret }) {
   return (
     <div
       className={`project-created-modal ${
         projectCreated ? 'project-created' : ''
-      }`}>
-      <ProjectModalHeading title='New project created!' />
+      }`}
+    >
+      <ProjectModalHeading title="New project created!" />
       <ProjectModalContentSpacer>
         <ProjectModalContent>
           <ProjectSecret passphrase={projectSecret} />
         </ProjectModalContent>
       </ProjectModalContentSpacer>
-      <ProjectModalButton text='Done' onClick={onDone} />
+      <ProjectModalButton text="Done" onClick={onDone} />
     </div>
   )
 }
 
-export default function CreateProjectModal ({
+export default function CreateProjectModal({
   showModal,
   onClose,
   onCreateProject,
@@ -159,16 +161,20 @@ export default function CreateProjectModal ({
 
   const onSubmit = async () => {
     setCreatingProject(true)
-    await onCreateProject(
-      {
-        name: projectName,
-        image: projectCoverUrl,
-      },
-      projectSecret
-    )
-    setCreatingProject(false)
-    setProjectCreated(true)
-    reset()
+    try {
+      await onCreateProject(
+        {
+          name: projectName,
+          image: projectCoverUrl,
+        },
+        projectSecret
+      )
+      setCreatingProject(false)
+      setProjectCreated(true)
+      reset()
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   let hasUnmounted = false
@@ -207,7 +213,8 @@ export default function CreateProjectModal ({
       white
       active={showModal}
       onClose={projectCreated ? onDone : onClose}
-      className='create-project-modal-wrapper'>
+      className="create-project-modal-wrapper"
+    >
       <ProjectCreatedModal
         projectSecret={projectSecret}
         onDone={onDone}

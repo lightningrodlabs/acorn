@@ -22,4 +22,4 @@ export const PROJECTS_SLOT_NAME = 'projects-slot'
 export const PROJECT_APP_PREFIX = 'acorn-project'
 
 // is used as a path relative to the root folder
-export const PROJECTS_DNA_PATH = 'back/workdir/projects.dna'
+export const PROJECTS_DNA_PATH = '../back/workdir/projects.dna'

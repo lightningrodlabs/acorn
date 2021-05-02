@@ -1,7 +1,9 @@
+const fs = require('fs')
+const path = require('path')
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
 const webpack = require('webpack')
-const mainAppId = fs.readFileSync(path.join(__dirname, '../config-profiles-app-id'), 'utf-8')
+const mainAppId = fs.readFileSync(path.join(__dirname, '../config-main-app-id'), 'utf-8')
 
 module.exports = merge(common, {
   mode: 'production',
@@ -12,8 +14,8 @@ module.exports = merge(common, {
   plugins: [
     new webpack.DefinePlugin({
       __MAIN_APP_ID__: JSON.stringify(mainAppId),
-      __ADMIN_PORT__: 1235,
-      __APP_PORT__: 8889,
+      __ADMIN_PORT__: 1234,
+      __APP_PORT__: 8888,
     }),
   ],
 })

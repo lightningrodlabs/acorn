@@ -6,6 +6,7 @@ import { ProjectPriorityViewOnly } from '../ViewFilters/ViewFilters'
 
 function PriorityMenuItem({ exact, title, slug, projectId }) {
   return (
+    // @ts-ignore
     <NavLink
       exact={exact}
       to={slug.replace(':projectId', projectId)}

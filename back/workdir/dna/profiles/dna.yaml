@@ -1,8 +1,8 @@
 ---
 manifest_version: "1"
 name: profiles-dna
-uid: "0004"
+uid: "0006"
 properties: ~
 zomes: 
   - name: profiles
-    bundled: ../../../../target/wasm32-unknown-unknown/release/profiles.wasm
+    bundled: ../../../zomes/target/wasm32-unknown-unknown/release/profiles.wasm

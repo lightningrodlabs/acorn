@@ -79,6 +79,7 @@ function HeaderRightPanel({
         {/* open or close the guidebook, depending on if it */}
         {/* is currently open or closed */}
         {/* Guidebook Button */}
+        {/* @ts-ignore */}
         <NavLink
           className="header-right-panel-icon"
           to={`${location.pathname}${
