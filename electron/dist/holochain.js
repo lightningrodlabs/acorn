@@ -85,7 +85,6 @@ function stdoutToStateSignal(string) {
 }
 var MAIN_APP_ID = 'main-app';
 var COMMUNITY_PROXY_URL = 'kitsune-proxy://SYVd4CF3BdJ4DS7KwLLgeU3_DbHoZ34Y-qroZ79DOs8/kitsune-quic/h/165.22.32.11/p/5779/--';
-console.log(__dirname);
 var devOptions = {
     datastorePath: '../tmp/databases',
     appId: MAIN_APP_ID,
@@ -119,11 +118,11 @@ var constructOptions = function (options) {
         options.datastorePath,
     ];
 };
-var runHolochain = function (emitter, options) { return __awaiter(void 0, void 0, void 0, function () {
+var runHolochain = function (emitter, options, binaryPath) { return __awaiter(void 0, void 0, void 0, function () {
     var optionsArray, holochainHandle;
     return __generator(this, function (_a) {
         optionsArray = constructOptions(options);
-        holochainHandle = childProcess.spawn("../binaries/acorn", optionsArray);
+        holochainHandle = childProcess.spawn(binaryPath, optionsArray);
         return [2 /*return*/, new Promise(function (resolve, reject) {
                 // split divides up the stream line by line
                 holochainHandle.stdout.pipe(split()).on('data', function (line) {

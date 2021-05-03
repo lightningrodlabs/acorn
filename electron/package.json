@@ -1,8 +1,8 @@
 {
   "name": "acorn",
-  "productName": "acorn",
-  "version": "1.0.0",
-  "description": "My Electron application description",
+  "productName": "Acorn",
+  "version": "0.5.0-alpha",
+  "description": "Create the future",
   "main": "dist/index.js",
   "scripts": {
     "start": "tsc && electron-forge start",

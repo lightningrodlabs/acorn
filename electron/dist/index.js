@@ -46,6 +46,7 @@ if (require('electron-squirrel-startup')) {
     electron_1.app.quit();
 }
 var BACKGROUND_COLOR = '#fbf9f7';
+var BINARY_PATH = '../binaries/acorn';
 var createMainWindow = function () {
     // Create the browser window.
     var mainWindow = new electron_1.BrowserWindow({
@@ -55,13 +56,17 @@ var createMainWindow = function () {
         backgroundColor: BACKGROUND_COLOR
     });
     // and load the index.html of the app.
-    mainWindow.loadFile(path.join(__dirname, '../../web/dist/index.html'));
+    if (electron_1.app.isPackaged) {
+        mainWindow.loadFile(path.join(__dirname, '../../web/dist/index.html'));
+    }
+    else {
+        // development
+        mainWindow.loadURL('http://localhost:8080');
+    }
     // once its ready to show, show
     mainWindow.once('ready-to-show', function () {
         mainWindow.show();
     });
-    // Open the DevTools.
-    // mainWindow.webContents.openDevTools();
     return mainWindow;
 };
 var createSplashWindow = function () {
@@ -74,6 +79,8 @@ var createSplashWindow = function () {
         frame: false,
         show: false,
         backgroundColor: BACKGROUND_COLOR,
+        // use these settings so that the ui
+        // can listen for status change events
         webPreferences: {
             contextIsolation: false,
             nodeIntegration: true
@@ -93,7 +100,7 @@ var createSplashWindow = function () {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 electron_1.app.on('ready', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var splashWindow, events, e_1;
+    var splashWindow, events, opts, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -102,10 +109,11 @@ electron_1.app.on('ready', function () { return __awaiter(void 0, void 0, void 0
                 events.on('status', function (details) {
                     splashWindow.webContents.send('status', details);
                 });
+                opts = electron_1.app.isPackaged ? holochain_1.prodOptions : holochain_1.devOptions;
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, holochain_1.runHolochain(events, holochain_1.devOptions)];
+                return [4 /*yield*/, holochain_1.runHolochain(events, opts, BINARY_PATH)];
             case 2:
                 _a.sent();
                 splashWindow.close();

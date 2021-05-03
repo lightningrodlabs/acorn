@@ -10,6 +10,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 const BACKGROUND_COLOR = '#fbf9f7'
+const BINARY_PATH = '../binaries/acorn'
 
 const createMainWindow = (): BrowserWindow => {
   // Create the browser window.
@@ -19,16 +20,17 @@ const createMainWindow = (): BrowserWindow => {
     show: false,
     backgroundColor: BACKGROUND_COLOR,
   })
-
   // and load the index.html of the app.
-  mainWindow.loadFile(path.join(__dirname, '../../web/dist/index.html'))
+  if (app.isPackaged) {
+    mainWindow.loadFile(path.join(__dirname, '../../web/dist/index.html'))
+  } else {
+    // development
+    mainWindow.loadURL('http://localhost:8080')
+  }
   // once its ready to show, show
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools();
   return mainWindow
 }
 
@@ -42,10 +44,12 @@ const createSplashWindow = (): BrowserWindow => {
     frame: false,
     show: false,
     backgroundColor: BACKGROUND_COLOR,
+    // use these settings so that the ui
+    // can listen for status change events
     webPreferences: {
       contextIsolation: false,
-      nodeIntegration: true
-    }
+      nodeIntegration: true,
+    },
   })
 
   // and load the splashscreen.html of the app.
@@ -71,8 +75,9 @@ app.on('ready', async () => {
   events.on('status', (details: StateSignal) => {
     splashWindow.webContents.send('status', details)
   })
+  const opts = app.isPackaged ? prodOptions : devOptions
   try {
-    await runHolochain(events, devOptions)
+    await runHolochain(events, opts, BINARY_PATH)
     splashWindow.close()
     createMainWindow()
   } catch (e) {

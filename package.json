@@ -7,18 +7,15 @@
     "url": "git+https://github.com/h-be/acorn.git"
   },
   "scripts": {
-    "install-holochain": ". dna/scripts/install-binaries.sh",
+    "install-hc-tools": ". dna/scripts/install-hc-tools.sh",
     "test-happ": ". dna/scripts/test-happ.sh",
     "pack-happ": ". dna/scripts/pack-happ.sh",
-    "install-happ": ". dna/scripts/install-happ.sh",
     "install-ui": "cd web && npm install",
     "run-ui": "cd web && npx webpack-dev-server --config webpack.dev.js",
     "build-ui": "cd web && npx webpack --config webpack.prod.js",
+    "install-electron": "cd electron && npm install",
     "run-electron": "cd electron && npm run start"
   },
   "author": "Connor Turland <connor@sprillow.com>",
-  "license": "AGPL",
-  "devDependencies": {
-    "prettier": "2.2.1"
-  }
+  "license": "CAL-1.0"
 }

@@ -14,8 +14,8 @@ module.exports = merge(common, {
   plugins: [
     new webpack.DefinePlugin({
       __MAIN_APP_ID__: JSON.stringify(mainAppId),
-      __ADMIN_PORT__: 1234,
-      __APP_PORT__: 8888,
+      __ADMIN_PORT__: 1235,
+      __APP_PORT__: 8889,
     }),
   ],
 })

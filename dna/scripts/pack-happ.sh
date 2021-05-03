@@ -4,5 +4,3 @@ CARGO_TARGET_DIR=dna/zomes/target cargo build --release --target wasm32-unknown-
 # Pack DNAs
 hc dna pack --output=dna/workdir/profiles.dna dna/workdir/dna/profiles
 hc dna pack --output=dna/workdir/projects.dna dna/workdir/dna/projects
-# Pack the Happ with everything
-hc app pack --output=dna/workdir/acorn.happ dna/workdir/happ

@@ -3,16 +3,14 @@
 
 To set up fresh: 
 
-__back__
+__dna__
 - Have rust language (stable) installed on your system
-- run `npm run install-holochain`
+- run `npm run install-hc-tools`
 - run `npm run pack-happ`
-- run `npm run run-happ`, this starts holochain service
-- in a separate terminal, run `npm run install-happ`
 
-__front__ (user interface)
+__web__ (user interface)
 
-- in a separate terminal than `back` commands
+- in a separate terminal than `dna` commands
 - Use nodejs version 14
 - run `npm install`
 - run `npm run install-ui`
