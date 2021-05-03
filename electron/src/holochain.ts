@@ -1,18 +1,22 @@
 import * as childProcess from 'child_process'
+import { EventEmitter } from 'events'
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import * as split from 'split'
 
+// these messages get seen on the splash page
 enum StateSignal {
-  IsFirstRun,
-  IsNotFirstRun,
-  CreatingKeys,
-  RegisteringDna,
-  InstallingApp,
-  ActivatingApp,
-  SettingUpCells,
-  AddingAppInterface,
-  IsReady,
+  IsFirstRun = 'Welcome to Acorn...',
+  IsNotFirstRun = 'Loading...',
+  CreatingKeys = 'Creating cryptographic keys...',
+  RegisteringDna = 'Registering Profiles DNA to Holochain...',
+  InstallingApp = 'Installing DNA bundle to Holochain...',
+  ActivatingApp = 'Activating DNA bundle...',
+  SettingUpCells = 'Writing first entries to source chain...',
+  AddingAppInterface = 'Attaching API network port...',
+  // this one doesn't show to UI, it's
+  // used to close the splash screen and launch the main window
+  IsReady = 'IsReady',
 }
 
 function stdoutToStateSignal(string: string): StateSignal {
@@ -42,21 +46,67 @@ function stdoutToStateSignal(string: string): StateSignal {
   }
 }
 
-const constructOptions = (): string[] => {
-  return ['']
+const MAIN_APP_ID = 'main-app'
+const COMMUNITY_PROXY_URL =
+  'kitsune-proxy://SYVd4CF3BdJ4DS7KwLLgeU3_DbHoZ34Y-qroZ79DOs8/kitsune-quic/h/165.22.32.11/p/5779/--'
+
+const devOptions: HolochainOptions = {
+  datastorePath: '../tmp/databases',
+  appId: MAIN_APP_ID,
+  appWsPort: 8888,
+  adminWsPort: 1234,
+  keystorePath: '../tmp/keystore',
+  proxyUrl: COMMUNITY_PROXY_URL,
+}
+const prodOptions: HolochainOptions = {
+  datastorePath: '../tmp/prod/databases',
+  appId: MAIN_APP_ID,
+  appWsPort: 8889,
+  adminWsPort: 1235,
+  keystorePath: '../tmp/prod/keystore',
+  proxyUrl: COMMUNITY_PROXY_URL,
 }
 
-const runHolochain = async (): Promise<void> => {
-  // const options = constructOptions()
-  const holochainHandle = childProcess.spawn(`../acorn`, [])
+const constructOptions = (options: HolochainOptions): string[] => {
+  return [
+    '--app-id',
+    options.appId,
+    '--app-ws-port',
+    options.appWsPort.toString(),
+    '--admin-ws-port',
+    options.adminWsPort.toString(),
+    '--keystore-path',
+    options.keystorePath,
+    '--proxy-url',
+    options.proxyUrl,
+    options.datastorePath,
+  ]
+}
+
+interface HolochainOptions {
+  datastorePath: string
+  appId: string
+  appWsPort: number
+  adminWsPort: number
+  keystorePath: string
+  proxyUrl: string
+}
+
+const runHolochain = async (
+  emitter: EventEmitter,
+  options: HolochainOptions
+): Promise<void> => {
+  const optionsArray = constructOptions(options)
+  const holochainHandle = childProcess.spawn(`../binaries/acorn`, optionsArray)
   return new Promise<void>((resolve, reject) => {
     // split divides up the stream line by line
     holochainHandle.stdout.pipe(split()).on('data', (line: string) => {
       console.log(line)
       const checkIfSignal = stdoutToStateSignal(line)
-      switch (checkIfSignal) {
-        case StateSignal.IsReady:
-          resolve()
+      if (checkIfSignal === StateSignal.IsReady) {
+        resolve()
+      } else if (checkIfSignal !== null) {
+        emitter.emit('status', checkIfSignal)
       }
     })
     holochainHandle.stdout.on('error', (e) => {
@@ -70,4 +120,4 @@ const runHolochain = async (): Promise<void> => {
   })
 }
 
-export { runHolochain }
+export { devOptions, prodOptions, runHolochain, StateSignal }

@@ -19,18 +19,11 @@
         <div class="splash-license">© 2020 - 2021 Cryptographic Autonomy License v1.0 (CAL)</div>
       </div>
     </div>
-
-    <script type="text/javascript">
+    <script>
       const el = document.getElementById('activity')
-      const messages = [
-        "Generating keys...",
-        "Configuring networking...",
-        "Launching..."
-      ]
-      window.setInterval(() => {
-        const i = Math.floor((Math.random() * messages.length))
-        el.innerHTML = messages[i]
-      }, 2000)
+      require('electron').ipcRenderer.on('status', (event, message) => {
+        el.innerHTML = message
+      })
     </script>
   </body>
 </html>

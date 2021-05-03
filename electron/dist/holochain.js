@@ -36,23 +36,27 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.runHolochain = void 0;
+exports.StateSignal = exports.runHolochain = exports.prodOptions = exports.devOptions = void 0;
 var childProcess = require("child_process");
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 var split = require("split");
+// these messages get seen on the splash page
 var StateSignal;
 (function (StateSignal) {
-    StateSignal[StateSignal["IsFirstRun"] = 0] = "IsFirstRun";
-    StateSignal[StateSignal["IsNotFirstRun"] = 1] = "IsNotFirstRun";
-    StateSignal[StateSignal["CreatingKeys"] = 2] = "CreatingKeys";
-    StateSignal[StateSignal["RegisteringDna"] = 3] = "RegisteringDna";
-    StateSignal[StateSignal["InstallingApp"] = 4] = "InstallingApp";
-    StateSignal[StateSignal["ActivatingApp"] = 5] = "ActivatingApp";
-    StateSignal[StateSignal["SettingUpCells"] = 6] = "SettingUpCells";
-    StateSignal[StateSignal["AddingAppInterface"] = 7] = "AddingAppInterface";
-    StateSignal[StateSignal["IsReady"] = 8] = "IsReady";
+    StateSignal["IsFirstRun"] = "Welcome to Acorn...";
+    StateSignal["IsNotFirstRun"] = "Loading...";
+    StateSignal["CreatingKeys"] = "Creating cryptographic keys...";
+    StateSignal["RegisteringDna"] = "Registering Profiles DNA to Holochain...";
+    StateSignal["InstallingApp"] = "Installing DNA bundle to Holochain...";
+    StateSignal["ActivatingApp"] = "Activating DNA bundle...";
+    StateSignal["SettingUpCells"] = "Writing first entries to source chain...";
+    StateSignal["AddingAppInterface"] = "Attaching API network port...";
+    // this one doesn't show to UI, it's
+    // used to close the splash screen and launch the main window
+    StateSignal["IsReady"] = "IsReady";
 })(StateSignal || (StateSignal = {}));
+exports.StateSignal = StateSignal;
 function stdoutToStateSignal(string) {
     switch (string) {
         case '0':
@@ -79,21 +83,57 @@ function stdoutToStateSignal(string) {
             return null;
     }
 }
-var constructOptions = function () {
-    return [''];
+var MAIN_APP_ID = 'main-app';
+var COMMUNITY_PROXY_URL = 'kitsune-proxy://SYVd4CF3BdJ4DS7KwLLgeU3_DbHoZ34Y-qroZ79DOs8/kitsune-quic/h/165.22.32.11/p/5779/--';
+console.log(__dirname);
+var devOptions = {
+    datastorePath: '../tmp/databases',
+    appId: MAIN_APP_ID,
+    appWsPort: 8888,
+    adminWsPort: 1234,
+    keystorePath: '../tmp/keystore',
+    proxyUrl: COMMUNITY_PROXY_URL
 };
-var runHolochain = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var holochainHandle;
+exports.devOptions = devOptions;
+var prodOptions = {
+    datastorePath: '../tmp/prod/databases',
+    appId: MAIN_APP_ID,
+    appWsPort: 8889,
+    adminWsPort: 1235,
+    keystorePath: '../tmp/prod/keystore',
+    proxyUrl: COMMUNITY_PROXY_URL
+};
+exports.prodOptions = prodOptions;
+var constructOptions = function (options) {
+    return [
+        '--app-id',
+        options.appId,
+        '--app-ws-port',
+        options.appWsPort.toString(),
+        '--admin-ws-port',
+        options.adminWsPort.toString(),
+        '--keystore-path',
+        options.keystorePath,
+        '--proxy-url',
+        options.proxyUrl,
+        options.datastorePath,
+    ];
+};
+var runHolochain = function (emitter, options) { return __awaiter(void 0, void 0, void 0, function () {
+    var optionsArray, holochainHandle;
     return __generator(this, function (_a) {
-        holochainHandle = childProcess.spawn("../acorn", []);
+        optionsArray = constructOptions(options);
+        holochainHandle = childProcess.spawn("../binaries/acorn", optionsArray);
         return [2 /*return*/, new Promise(function (resolve, reject) {
                 // split divides up the stream line by line
                 holochainHandle.stdout.pipe(split()).on('data', function (line) {
                     console.log(line);
                     var checkIfSignal = stdoutToStateSignal(line);
-                    switch (checkIfSignal) {
-                        case StateSignal.IsReady:
-                            resolve();
+                    if (checkIfSignal === StateSignal.IsReady) {
+                        resolve();
+                    }
+                    else if (checkIfSignal !== null) {
+                        emitter.emit('status', checkIfSignal);
                     }
                 });
                 holochainHandle.stdout.on('error', function (e) {

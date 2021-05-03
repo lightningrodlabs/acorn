@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
+var events_1 = require("events");
 var electron_1 = require("electron");
 var path = require("path");
 var holochain_1 = require("./holochain");
@@ -72,7 +73,11 @@ var createSplashWindow = function () {
         resizable: false,
         frame: false,
         show: false,
-        backgroundColor: BACKGROUND_COLOR
+        backgroundColor: BACKGROUND_COLOR,
+        webPreferences: {
+            contextIsolation: false,
+            nodeIntegration: true
+        }
     });
     // and load the splashscreen.html of the app.
     splashWindow.loadFile(path.join(__dirname, '../../web/dist/splashscreen.html'));
@@ -88,15 +93,19 @@ var createSplashWindow = function () {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 electron_1.app.on('ready', function () { return __awaiter(void 0, void 0, void 0, function () {
-    var splashWindow, e_1;
+    var splashWindow, events, e_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 splashWindow = createSplashWindow();
+                events = new events_1.EventEmitter();
+                events.on('status', function (details) {
+                    splashWindow.webContents.send('status', details);
+                });
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, holochain_1.runHolochain()];
+                return [4 /*yield*/, holochain_1.runHolochain(events, holochain_1.devOptions)];
             case 2:
                 _a.sent();
                 splashWindow.close();
@@ -104,7 +113,7 @@ electron_1.app.on('ready', function () { return __awaiter(void 0, void 0, void 0
                 return [3 /*break*/, 4];
             case 3:
                 e_1 = _a.sent();
-                alert("there was an error while starting holochain");
+                alert('there was an error while starting holochain');
                 console.log(e_1);
                 electron_1.app.quit();
                 return [3 /*break*/, 4];

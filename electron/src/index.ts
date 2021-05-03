@@ -1,6 +1,7 @@
+import { EventEmitter } from 'events'
 import { app, BrowserWindow } from 'electron'
 import * as path from 'path'
-import { runHolochain } from './holochain'
+import { devOptions, prodOptions, runHolochain, StateSignal } from './holochain'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -41,6 +42,10 @@ const createSplashWindow = (): BrowserWindow => {
     frame: false,
     show: false,
     backgroundColor: BACKGROUND_COLOR,
+    webPreferences: {
+      contextIsolation: false,
+      nodeIntegration: true
+    }
   })
 
   // and load the splashscreen.html of the app.
@@ -62,12 +67,16 @@ const createSplashWindow = (): BrowserWindow => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
   const splashWindow = createSplashWindow()
+  const events = new EventEmitter()
+  events.on('status', (details: StateSignal) => {
+    splashWindow.webContents.send('status', details)
+  })
   try {
-    await runHolochain()
+    await runHolochain(events, devOptions)
     splashWindow.close()
     createMainWindow()
   } catch (e) {
-    alert("there was an error while starting holochain")
+    alert('there was an error while starting holochain')
     console.log(e)
     app.quit()
   }

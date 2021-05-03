@@ -1,5 +1,7 @@
+binaries
 node_modules
 out/
+tmp
 
 front/dist/*.js
 front/dist/*.js.map
