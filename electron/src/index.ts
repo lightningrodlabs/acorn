@@ -10,7 +10,10 @@ if (require('electron-squirrel-startup')) {
 }
 
 const BACKGROUND_COLOR = '#fbf9f7'
-const BINARY_PATH = '../binaries/acorn'
+const HOLOCHAIN_BINARY_PATH = path.join(__dirname, '../binaries/acorn')
+const LAIR_KEYSTORE_PATH = path.join(__dirname, '../binaries/lair-keystore')
+const MAIN_FILE = path.join(__dirname, '../web/index.html')
+const SPLASH_FILE = path.join(__dirname, '../web/splashscreen.html')
 
 const createMainWindow = (): BrowserWindow => {
   // Create the browser window.
@@ -22,7 +25,7 @@ const createMainWindow = (): BrowserWindow => {
   })
   // and load the index.html of the app.
   if (app.isPackaged) {
-    mainWindow.loadFile(path.join(__dirname, '../../web/dist/index.html'))
+    mainWindow.loadFile(MAIN_FILE)
   } else {
     // development
     mainWindow.loadURL('http://localhost:8080')
@@ -53,9 +56,7 @@ const createSplashWindow = (): BrowserWindow => {
   })
 
   // and load the splashscreen.html of the app.
-  splashWindow.loadFile(
-    path.join(__dirname, '../../web/dist/splashscreen.html')
-  )
+  splashWindow.loadFile(SPLASH_FILE)
   // once its ready to show, show
   splashWindow.once('ready-to-show', () => {
     splashWindow.show()
@@ -77,7 +78,7 @@ app.on('ready', async () => {
   })
   const opts = app.isPackaged ? prodOptions : devOptions
   try {
-    await runHolochain(events, opts, BINARY_PATH)
+    await runHolochain(events, opts, HOLOCHAIN_BINARY_PATH, LAIR_KEYSTORE_PATH)
     splashWindow.close()
     createMainWindow()
   } catch (e) {

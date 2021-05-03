@@ -95,10 +95,12 @@ interface HolochainOptions {
 const runHolochain = async (
   emitter: EventEmitter,
   options: HolochainOptions,
-  binaryPath: string,
+  holochainBinaryPath: string,
+  lairBinaryPath: string,
 ): Promise<void> => {
+  childProcess.spawn(lairBinaryPath, ['--lair-dir', options.keystorePath])
   const optionsArray = constructOptions(options)
-  const holochainHandle = childProcess.spawn(binaryPath, optionsArray)
+  const holochainHandle = childProcess.spawn(holochainBinaryPath, optionsArray)
   return new Promise<void>((resolve, reject) => {
     // split divides up the stream line by line
     holochainHandle.stdout.pipe(split()).on('data', (line: string) => {
