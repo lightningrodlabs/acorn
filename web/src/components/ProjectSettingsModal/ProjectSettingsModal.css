@@ -1,0 +1,73 @@
+.edit-project-modal-wrapper {
+    /* width: 550px; */
+    height: 500px;
+    overflow: hidden;
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.edit-project-modal-wrapper .validating_form_input {
+    margin-bottom: 28px;
+}
+
+.project-modal-content {
+    /* margin-bottom: 50px; */
+}
+
+.edit-project-image-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    margin-bottom: 28px;
+}
+
+.edit-project-image-row .validating_form_input {
+    margin-bottom: 0;
+}
+
+.edit-project-image {
+    margin-left: 8px;
+    width: 38px;
+    height: 38px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 5px;
+    border: 1.2px solid #e2e2e2;
+}
+
+/* create project modal animation */
+
+.edit-project-form {
+    position: absolute;
+    opacity: 1;
+    transition: opacity 0.3s, transform 0.4s;
+    width: 420px;
+}
+
+.edit-project-form.project-created {
+    /* background-color: blue; */
+    opacity: 0;
+    -webkit-transform: translateX(-300px);
+    transform: translateX(-300px);
+}
+
+/* project created modal animation */
+
+/* default is to be hidden */
+
+.project-created-modal {
+    /* position: absolute; */
+    opacity: 0;
+    -webkit-transform: scale(0.8);
+    transform: scale(0.8);
+    transition: opacity 0.3s, transform 0.4s;
+}
+
+/* then it shows */
+
+.project-created-modal.project-created {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}

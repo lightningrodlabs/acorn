@@ -1,0 +1,169 @@
+.entry-point-picker.picker-popup {
+  top: unset;
+  /* this overrides defult top position set for picker-popup which is 0*/
+  bottom: 68px;
+  left: 10px;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0px 0px 10px #0000001f;
+  padding: 20px 0px;
+  z-index: 10;
+  position: fixed;
+  box-sizing: border-box;
+  width: 360px;
+  height: 360px;
+  display: flex;
+  flex-direction: column;
+}
+
+.entry-point-picker-wrapper-enter {
+  opacity: 0;
+}
+
+.entry-point-picker-wrapper-enter-active {
+  opacity: 1;
+  transition: opacity 0.1s ease-in;
+}
+
+.entry-point-picker-wrapper-exit {
+  opacity: 1;
+}
+
+.entry-point-picker-wrapper-exit-active {
+  opacity: 0;
+  transition: opacity 0.1s ease-out;
+}
+
+.entry-point-picker-pointer {
+  bottom: -7px;
+  right: 189px;
+  position: absolute;
+}
+
+/* Entry Points Search */
+
+.entry-point-picker-search {
+  display: flex;
+  align-items: center;
+  padding: 0 20px 5px 20px;
+}
+
+.entry-point-picker-search .icon {
+  padding-left: 0;
+}
+
+.entry-point-picker-search input {
+  font-size: 14px;
+  line-height: 23px;
+  color: #4d4d4d;
+  border: 0;
+  outline: 0;
+  padding: 0px;
+  margin-left: 8px;
+  margin-right: 8px;
+  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+  width: 260px;
+}
+
+.entry-point-picker-spacer {
+  margin: 0 20px 10px 20px;
+  border: 0.5px solid #f2f2f2;
+}
+
+.entry-point-picker-search input::placeholder {
+  color: #a3a3a3;
+}
+
+/* Entry Point Picker List */
+
+.entry-point-picker-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  overflow-y: scroll;
+}
+
+.entry-point-picker-item {
+  padding: 14px 20px;
+  font-size: 14px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+  background-color: transparent;
+  transition: background-color 0.1s ease-in, color 0.1s ease-in;
+  text-decoration: none;
+  color: #535353;
+}
+
+.entry-point-picker-item.active {
+  color: #5f65ff;
+}
+
+.entry-point-picker-item:hover {
+  background: #f2f2f2;
+  color: #00a599;
+}
+
+.entry-point-picker-dot {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 12px;
+  margin-left: 4px;
+}
+
+.entry-point-picker-name {
+  flex: 1;
+}
+
+.entry-point-picker-switch {
+  visibility: hidden;
+}
+
+.entry-point-picker-switch, .entry-point-picker-radio {
+  margin-left: 8px;
+}
+
+.entry-point-picker-item:hover>.entry-point-picker-switch {
+  visibility: visible;
+}
+
+/* Entry Points Empty State */
+
+.entry-points-empty-state-content {
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #4d4d4d;
+  height: 190px;
+  position: relative;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.entry-points-empty-state-content span {}
+
+.entry-points-empty-state-image-circle {
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+  background-color: #eadbff;
+  margin-bottom: 20px;
+}
+
+.entry-points-empty-state-image {
+  position: fixed;
+  margin-bottom: 20px;
+  height: 70px;
+  opacity: 0.7;
+}
+
+.entry-points-empty-state-content-link {
+  text-decoration: underline;
+  cursor: pointer;
+  color: #4d4d4d;
+}

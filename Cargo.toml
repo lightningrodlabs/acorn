@@ -1,9 +1,9 @@
 [workspace]
 members = [
-  "src-tauri",
+  "conductor",
 ]
 
-resolver = "2"
+# resolver = "2"
 
 [patch.crates-io]
 rkv = { git = "https://github.com/holochain/rkv.git", branch = "master" }

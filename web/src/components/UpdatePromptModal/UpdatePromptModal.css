@@ -1,0 +1,35 @@
+.update-prompt-modal.modal-wrapper {
+  width: 540px;
+  min-height: 540px;
+  padding: 70px;
+}
+
+.modal-content {
+  /* font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif; */
+  line-height: 1.45;
+}
+
+.update-details-wrapper {
+  color: #696969;
+  margin: 30px 0;
+}
+
+.update-details-title {
+  font-family: 'hk-grotesk-bold', Helvetica, Sans-Serif;
+  margin-bottom: 8px;
+}
+
+.update-details-content {
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.update-details-content li {
+  list-style-type: '🌰';
+  padding-inline-start: 0.5ch;
+  margin-bottom: 2px;
+}
+
+li::marker {
+  font-size: 12px;
+}

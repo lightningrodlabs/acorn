@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="83.142" height="70.775" viewBox="0 0 83.142 70.775">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #707070;
+        stroke-linecap: round;
+        stroke-width: 2.5px;
+      }
+
+      .cls-2 {
+        fill: #717171;
+      }
+    </style>
+  </defs>
+  <g id="arrow_curved" transform="translate(-1647.545 -70)">
+    <path id="Path_38" data-name="Path 38" class="cls-1" d="M10960.818,1917.728c38.884.738,57.011-15.219,65.489-31.811,8.559-16.746,6.824-34.158,6.824-34.158" transform="translate(-9312 -1778.229)"/>
+    <path id="line-angle-down" class="cls-2" d="M1.808,156.91a1.014,1.014,0,0,1-1.525-.023,1.261,1.261,0,0,1,.021-1.67l8.59-9.12.752.847-.753-.85a1.017,1.017,0,0,1,1.529.026c.012.013.023.027.035.041l8.458,9.056a1.261,1.261,0,0,1,.022,1.67,1.014,1.014,0,0,1-1.525.023l-7.77-8.318L1.808,156.91Z" transform="translate(1711.443 -75.759)"/>
+  </g>
+</svg>

@@ -1,0 +1,190 @@
+.icon {
+  width: 36px;
+  height: 36px;
+  box-sizing: border-box;
+  padding: 6px;
+  cursor: pointer;
+  position: relative;
+}
+
+.inner-icon {
+  /* default: black */
+  background-color: #000000;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+  width: 100%;
+  height: 100%;
+}
+
+.icon:not(.not-hoverable):hover .inner-icon {
+  background-color: #5f65ff;
+}
+
+.icon.not-hoverable {
+  cursor: default;
+}
+
+.icon.grey .inner-icon {
+  background-color: #898989;
+}
+
+.icon.light-grey .inner-icon {
+  background-color: #d1d1d1;
+}
+
+.icon.purple .inner-icon {
+  background-color: #5f65ff;
+}
+
+.icon.white .inner-icon {
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+/* Icons Sizes */
+
+.icon.very-small {
+  width: 16px;
+  height: 16px;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.icon.small {
+  width: 20px;
+  height: 20px;
+  padding: 1px;
+  cursor: pointer;
+}
+
+.icon.small-close {
+  width: 24px;
+  height: 24px;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.icon.very-small-close {
+  width: 18px;
+  height: 18px;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.icon.medium {
+  width: 32px;
+  height: 32px;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.icon.medium-MultiEditBar {
+  width: 40px;
+  height: 32px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.icon.medium-expanded-view {
+  height: 26px;
+  padding: 1px;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+}
+
+.icon.logo {
+  width: 28px;
+  height: 18px;
+  padding: 1.25px;
+  display: inline-block;
+  position: relative;
+  right: -2px;
+  background: transparent;
+}
+
+.icon.view-mode-small {
+  height: 24px;
+  width: 24px;
+  padding: 4px;
+  display: inline-block;
+  position: relative;
+  margin-top: 2;
+  margin-left: 0;
+  box-sizing: border-box;
+}
+
+.icon.user-status {
+  width: 18px;
+  height: 18px;
+  padding: 0px;
+  cursor: pointer;
+}
+
+.icon.with_background {
+  background-color: rgba(44, 44, 44, 0.51);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.icon.with_background:hover {
+  background-color: rgba(44, 44, 44, 0.75);
+  padding: 8px;
+}
+
+/* Hierarchy Icons with Status Color */
+
+.icon.Uncertain .inner-icon {
+  background-color: #ff5d36;
+}
+
+.icon.Incomplete .inner-icon {
+  background-color: #ffc400;
+}
+
+.icon.InProcess .inner-icon {
+  background-color: #ff9cab;
+}
+
+.icon.InReview .inner-icon {
+  background-color: #00e2ff;
+}
+
+.icon.Complete .inner-icon {
+  background-color: #83e300;
+}
+
+/* Tooltips */
+
+.icon.withTooltip:hover .icon-tooltip {
+  display: block;
+  transition-delay: 0.9s;
+  visibility: visible;
+  transition-property: visibility;
+  z-index: 9999;
+}
+
+.icon-tooltip {
+  transition: 0.3s all;
+  position: absolute;
+  visibility: hidden;
+  padding: 7px 8px;
+  border-radius: 3px;
+  color: white;
+  font-size: 11px;
+  line-height: 12px;
+  bottom: -30px;
+  white-space: nowrap;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #5f65ff;
+  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+}
+
+.icon-tooltip.top {
+  bottom: 30px;
+}

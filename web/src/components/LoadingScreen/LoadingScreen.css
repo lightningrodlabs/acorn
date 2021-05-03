@@ -1,0 +1,49 @@
+.loading_screen_wrapper {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  background: #fbf9f7;
+  z-index: 10000;
+}
+
+.loading_screen {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  width: 345px;
+  text-align: center;
+  margin: 0 auto;
+  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+  font-weight: normal;
+  color: #717171;
+}
+
+.loading_screen img {
+  height: 50px;
+  padding: 20px;
+  -webkit-animation: spin 2s linear infinite;
+  -moz-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}

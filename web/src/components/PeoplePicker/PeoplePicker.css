@@ -1,0 +1,81 @@
+/* PeoplePicker */
+
+.people-picker {
+  min-width: 253px;
+  max-width: 290px;
+}
+
+.people-picker-spacer {
+  margin: 0 20px 10px 20px;
+  border: 0.5px solid #f2f2f2;
+}
+
+.people-picker-search {
+  display: flex;
+  align-items: center;
+  padding: 0 20px 5px 20px;
+}
+
+.people-picker-search input {
+  font-size: 14px;
+  line-height: 23px;
+  color: #4d4d4d;
+  border: 0;
+  outline: 0;
+  padding: 2px;
+  margin-left: 14px;
+  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+}
+
+.people-picker-search input::placeholder {
+  color: #a3a3a3;
+}
+
+.people-picker-people {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.people-picker-people li {
+  color: #4d4d4d;
+  padding: 6px 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.people-picker-people li:hover {
+  background: #f2f2f2;
+  color: #00a599;
+}
+
+.people-picker-people li .person-name {
+  flex: 1;
+  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 14px;
+}
+
+.person-nameANDhandle {
+  display: flex;
+  flex-direction: column;
+  padding-left: 6px;
+}
+
+.person-handle {
+  font-size: 12px;
+  color: #a3a3a3;
+  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+}
+
+.radio-button {
+  right: 20px;
+  position: absolute;
+}
+
+/* when person is a member styles */
+
+.people-picker-people li.member .person-name {
+  color: #5f65ff;
+}

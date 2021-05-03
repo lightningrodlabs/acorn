@@ -1,0 +1,24 @@
+.project-empty-state-wrapper {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  z-index: -1;
+  position: absolute;
+}
+
+.project-empty-state {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.project-empty-state-text {
+  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  margin: 20px auto;
+  color: #4d4d4d;
+  width: 300px;
+  line-height: 28px;
+}

@@ -1,0 +1,21 @@
+.edge-connector {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  transform: translate(-15px, -15px);
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+}
+
+.edge-connector-blue-dot {
+  background-color: #b1b9ff;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  margin: 10px;
+}
+
+.edge-connector:hover .edge-connector-blue-dot,
+.edge-connector.active .edge-connector-blue-dot {
+  background-color: #6772ff;
+}

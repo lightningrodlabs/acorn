@@ -1,0 +1,123 @@
+.priority-quadrant-goal-item {
+  display: flex;
+  flex-direction: row;
+  border-bottom: solid 1px #f2f2f2;
+  padding: 12px;
+}
+
+.priority-quadrant-goal-item:hover {
+  background: #f5f2ef;
+}
+
+.priority-quadrant-goal-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+}
+
+.priority-quadrant-goal-titleANDinfo {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+}
+
+.priority-quadrant-goal-title {
+  display: flex;
+  flex-direction: row;
+  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  color: #4d4d4d;
+}
+
+.priority-quadrant-goal-iconANDmark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.priority-quadrant-goal-icon {
+  margin-right: 10px;
+}
+
+.priority-myvote-mark {
+  height: 10px;
+  width: 10px;
+  background-color: #5f65ff;
+  border-radius: 50%;
+  display: inline-block;
+  margin-top: 8px;
+  margin-left: -8px;
+}
+
+.priority-quadrant-goal-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: #898989;
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.priority-quadrant-goal-info .icon {
+  margin-right: 6px;
+}
+
+.priority-quadrant-goal-info span {
+  margin-right: 10px;
+}
+
+.priority-quadrant-goal-timeframe {
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.priority-quadrant-goal-squirrels {
+  flex-direction: row;
+  display: flex;
+}
+
+.priority-quadrant-goal-squirrels>* {
+  margin-left: 5px;
+}
+
+.priority-quadrant-goal-squirrels img {
+  margin-right: -10px;
+}
+
+.priority-quadrant-goal-right-menu {
+  align-items: center;
+  display: flex;
+}
+
+.priority-quadrant-goal-view-mode-icons {
+  display: flex;
+  flex-direction: column;
+  float: right;
+}
+
+.priority-quadrant-goal-view-mode-icons .icon {}
+
+.priority-quadrant-goal-view-mode-icons .icon:hover {
+  background: white;
+  padding: 4px;
+  border-radius: 5px;
+}
+
+.weigh_in_button {
+  padding: 4px;
+}
+
+.priority-quadrant-goal-item .weigh_in_button {
+  opacity: 0;
+  transition: all 0.2s;
+}
+
+.priority-quadrant-goal-item:hover .weigh_in_button, .priority-quadrant-goal-item:focus .weigh_in_button {
+  opacity: 1;
+  transition: all 0.2s;
+}
