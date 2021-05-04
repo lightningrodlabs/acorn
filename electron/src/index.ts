@@ -9,6 +9,8 @@ if (require('electron-squirrel-startup')) {
   app.quit()
 }
 
+app.setAppLogsPath()
+
 const BACKGROUND_COLOR = '#fbf9f7'
 const HOLOCHAIN_BINARY_PATH = path.join(__dirname, '../binaries/acorn')
 const LAIR_KEYSTORE_PATH = path.join(__dirname, '../binaries/lair-keystore')
@@ -78,7 +80,11 @@ app.on('ready', async () => {
   })
   const opts = app.isPackaged ? prodOptions : devOptions
   try {
-    await runHolochain(events, opts, HOLOCHAIN_BINARY_PATH, LAIR_KEYSTORE_PATH)
+    const [lairHandle, holochainHandle] = await runHolochain(events, opts, HOLOCHAIN_BINARY_PATH, LAIR_KEYSTORE_PATH)
+    app.on('will-quit', () => {
+      lairHandle.kill('SIGINT')
+      holochainHandle.kill('SIGINT')
+    })
     splashWindow.close()
     createMainWindow()
   } catch (e) {

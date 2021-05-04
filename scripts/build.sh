@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # backend
-. scripts/install-hc-tools.sh
+# . scripts/install-hc-tools.sh
 . scripts/dna-pack.sh
 cargo build --release
 rm -rf electron/binaries
@@ -12,4 +12,6 @@ cp $(which lair-keystore) electron/binaries/lair-keystore
 rm -rf electron/web
 npm run web-build
 cp -r web/dist electron/web
+cd electron
+npm run make
 

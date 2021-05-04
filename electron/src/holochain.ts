@@ -59,11 +59,11 @@ const devOptions: HolochainOptions = {
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 const prodOptions: HolochainOptions = {
-  datastorePath: '../tmp/prod/databases',
+  datastorePath: 'databases',
   appId: MAIN_APP_ID,
   appWsPort: 8889,
   adminWsPort: 1235,
-  keystorePath: '../tmp/prod/keystore',
+  keystorePath: 'keystore',
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 
@@ -96,31 +96,36 @@ const runHolochain = async (
   emitter: EventEmitter,
   options: HolochainOptions,
   holochainBinaryPath: string,
-  lairBinaryPath: string,
-): Promise<void> => {
-  childProcess.spawn(lairBinaryPath, ['--lair-dir', options.keystorePath])
+  lairBinaryPath: string
+): Promise<childProcess.ChildProcessWithoutNullStreams[]> => {
+  const lairHandle = childProcess.spawn(lairBinaryPath, [
+    '--lair-dir',
+    options.keystorePath,
+  ])
   const optionsArray = constructOptions(options)
   const holochainHandle = childProcess.spawn(holochainBinaryPath, optionsArray)
-  return new Promise<void>((resolve, reject) => {
-    // split divides up the stream line by line
-    holochainHandle.stdout.pipe(split()).on('data', (line: string) => {
-      console.log(line)
-      const checkIfSignal = stdoutToStateSignal(line)
-      if (checkIfSignal === StateSignal.IsReady) {
-        resolve()
-      } else if (checkIfSignal !== null) {
-        emitter.emit('status', checkIfSignal)
-      }
-    })
-    holochainHandle.stdout.on('error', (e) => {
-      console.log(e)
-      // reject()
-    })
-    holochainHandle.stderr.on('data', (e) => {
-      console.log(e.toString())
-      // reject()
-    })
-  })
+  return new Promise<childProcess.ChildProcessWithoutNullStreams[]>(
+    (resolve, reject) => {
+      // split divides up the stream line by line
+      holochainHandle.stdout.pipe(split()).on('data', (line: string) => {
+        console.log(line)
+        const checkIfSignal = stdoutToStateSignal(line)
+        if (checkIfSignal === StateSignal.IsReady) {
+          resolve([lairHandle, holochainHandle])
+        } else if (checkIfSignal !== null) {
+          emitter.emit('status', checkIfSignal)
+        }
+      })
+      holochainHandle.stdout.on('error', (e) => {
+        console.log(e)
+        // reject()
+      })
+      holochainHandle.stderr.on('data', (e) => {
+        console.log(e.toString())
+        // reject()
+      })
+    }
+  )
 }
 
 export { devOptions, prodOptions, runHolochain, StateSignal }
