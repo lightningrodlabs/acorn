@@ -1,8 +1,11 @@
 import * as childProcess from 'child_process'
+import * as path from 'path'
 import { EventEmitter } from 'events'
+import log from 'electron-log'
 // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
 // @ts-ignore
 import * as split from 'split'
+import { app } from 'electron'
 
 // these messages get seen on the splash page
 enum StateSignal {
@@ -59,11 +62,11 @@ const devOptions: HolochainOptions = {
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 const prodOptions: HolochainOptions = {
-  datastorePath: 'databases',
+  datastorePath: path.join(app.getPath('userData'), 'databases'),
   appId: MAIN_APP_ID,
   appWsPort: 8889,
   adminWsPort: 1235,
-  keystorePath: 'keystore',
+  keystorePath: path.join(app.getPath('userData'), 'keystore'),
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 
@@ -108,7 +111,7 @@ const runHolochain = async (
     (resolve, reject) => {
       // split divides up the stream line by line
       holochainHandle.stdout.pipe(split()).on('data', (line: string) => {
-        console.log(line)
+        log.info(line)
         const checkIfSignal = stdoutToStateSignal(line)
         if (checkIfSignal === StateSignal.IsReady) {
           resolve([lairHandle, holochainHandle])
@@ -117,11 +120,11 @@ const runHolochain = async (
         }
       })
       holochainHandle.stdout.on('error', (e) => {
-        console.log(e)
+        log.error(e)
         // reject()
       })
       holochainHandle.stderr.on('data', (e) => {
-        console.log(e.toString())
+        log.error(e.toString())
         // reject()
       })
     }

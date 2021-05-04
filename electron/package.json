@@ -1,14 +1,11 @@
 {
   "name": "acorn",
-  "productName": "Acorn",
   "version": "0.5.0-alpha",
   "description": "Create the future",
   "main": "dist/index.js",
   "scripts": {
-    "start": "tsc && electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
+    "start": "tsc && electron .",
+    "build": "tsc && electron-builder build",
     "lint": "eslint --ext .ts ."
   },
   "keywords": [],
@@ -17,39 +14,24 @@
     "email": "connor@sprillow.com"
   },
   "license": "CAL-1.0",
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "acorn"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
+  "build": {
+    "productName": "Acorn",
+    "appId": "com.harris-braun-enterprises.acorn",
+    "copyright": "Copyright © 2021 Harris-Braun Enterprises LLC",
+    "asarUnpack": "binaries/**/*",
+    "files": [
+      "dist/**/*",
+      "web/**/*",
+      "binaries/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "out"
     }
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.54",
-    "@electron-forge/maker-deb": "^6.0.0-beta.54",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
-    "@electron-forge/maker-zip": "^6.0.0-beta.54",
+    "electron-builder": "^22.10.5",
     "@types/split": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
@@ -59,7 +41,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0",
+    "electron-log": "^4.3.5",
     "split": "^1.0.1"
   }
 }

@@ -1,19 +1,24 @@
 import { EventEmitter } from 'events'
 import { app, BrowserWindow } from 'electron'
 import * as path from 'path'
+import log from 'electron-log'
 import { devOptions, prodOptions, runHolochain, StateSignal } from './holochain'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
-  // eslint-disable-line global-require
-  app.quit()
-}
-
-app.setAppLogsPath()
+// if (require('electron-squirrel-startup')) {
+// eslint-disable-line global-require
+// app.quit()
+// }
 
 const BACKGROUND_COLOR = '#fbf9f7'
-const HOLOCHAIN_BINARY_PATH = path.join(__dirname, '../binaries/acorn')
-const LAIR_KEYSTORE_PATH = path.join(__dirname, '../binaries/lair-keystore')
+// must point to unpacked versions, not in an asar archive
+// in production
+const HOLOCHAIN_BINARY_PATH = app.isPackaged
+  ? path.join(__dirname, '../../app.asar.unpacked/binaries/acorn')
+  : path.join(__dirname, '../binaries/acorn')
+const LAIR_KEYSTORE_PATH = app.isPackaged
+  ? path.join(__dirname, '../../app.asar.unpacked/binaries/lair-keystore')
+  : path.join(__dirname, '../binaries/lair-keystore')
 const MAIN_FILE = path.join(__dirname, '../web/index.html')
 const SPLASH_FILE = path.join(__dirname, '../web/splashscreen.html')
 
@@ -80,16 +85,21 @@ app.on('ready', async () => {
   })
   const opts = app.isPackaged ? prodOptions : devOptions
   try {
-    const [lairHandle, holochainHandle] = await runHolochain(events, opts, HOLOCHAIN_BINARY_PATH, LAIR_KEYSTORE_PATH)
+    const [lairHandle, holochainHandle] = await runHolochain(
+      events,
+      opts,
+      HOLOCHAIN_BINARY_PATH,
+      LAIR_KEYSTORE_PATH
+    )
     app.on('will-quit', () => {
-      lairHandle.kill('SIGINT')
-      holochainHandle.kill('SIGINT')
+      // sigterm is the default, and that's good
+      lairHandle.kill()
+      holochainHandle.kill()
     })
     splashWindow.close()
     createMainWindow()
   } catch (e) {
-    alert('there was an error while starting holochain')
-    console.log(e)
+    log.error(e)
     app.quit()
   }
 })
