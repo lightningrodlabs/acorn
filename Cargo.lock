@@ -1002,7 +1002,7 @@ checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 [[package]]
 name = "embedded_holochain_runner"
 version = "0.0.1"
-source = "git+https://github.com/Sprillow/embedded-holochain-runner.git?rev=8d1945a#8d1945a1e610de7d6b9d8b4e79c57533ceeb0131"
+source = "git+https://github.com/Sprillow/embedded-holochain-runner.git?rev=24084fb#24084fb7570d23b422fcee32be8d81ebdb505ec8"
 dependencies = [
  "futures",
  "hdk",

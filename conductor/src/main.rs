@@ -1,4 +1,5 @@
 use embedded_holochain_runner::*;
+use tokio::signal::unix::{signal, SignalKind};
 use structopt::StructOpt;
 
 const PROFILES_DNA: &'static [u8] = include_bytes!("../../dna/workdir/profiles.dna");
@@ -61,18 +62,29 @@ fn main() {
   let opt = Opt::from_args();
   // String is like "CellNick"/"SlotId"
   let dnas: Vec<(Vec<u8>, String)> = vec![(PROFILES_DNA.into(), "profiles-slot".into())];
-  // TODO: change these two to use directories crate
+
+  // An infinite stream of hangup signals.
+  let mut stream = signal(SignalKind::terminate()).unwrap();
+
   tokio::task::block_in_place(|| {
-    rt.block_on(async_main(HcConfig {
-      app_id: opt.app_id,
-      dnas,
-      admin_ws_port: opt.admin_ws_port,
-      app_ws_port: opt.app_ws_port,
-      datastore_path: opt.datastore_path,
-      keystore_path: opt.keystore_path,
-      proxy_url: opt.proxy_url,
-      event_channel: Some(sender),
-    }))
+    rt.block_on(async {
+      let sender = async_main(HcConfig {
+        app_id: opt.app_id,
+        dnas,
+        admin_ws_port: opt.admin_ws_port,
+        app_ws_port: opt.app_ws_port,
+        datastore_path: opt.datastore_path,
+        keystore_path: opt.keystore_path,
+        proxy_url: opt.proxy_url,
+        event_channel: Some(sender),
+      }).await;
+      // wait for SIGTERM
+      stream.recv().await;
+      println!("got sigterm");
+      // send shutdown signal
+      sender.send(true).unwrap();
+      println!("sent shutdown signal");
+    })
   });
 }
 
