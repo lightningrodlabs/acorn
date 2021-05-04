@@ -73,41 +73,41 @@ function App({
   const subText = ''
   const submitText = 'Save Changes'
 
-  useEffect(() => {
-    let thisVersion = 'v0.4.0'
-    // every 10 minutes, fetch from github releases
-    // to see if there is any new update available for the app
-    const checkForGithubUpdates = () => {
-      fetch('https://api.github.com/repos/h-be/acorn-release/releases')
-        .then(response => response.json())
-        .then(releases => {
-          const latestRelease = releases[0]
-          const latestTagName = latestRelease.tag_name
-          if (latestTagName !== thisVersion) {
-            setShowUpdatePromptModal(true)
-            clearInterval(timerID)
-            setUpdateAvailable(latestTagName)
-          }
-        })
-    }
-    const timerID = setInterval(checkForGithubUpdates, 1000 * 10 * 60)
-    if (window.require) {
-      window
-        .require('electron')
-        .ipcRenderer.invoke('get-version')
-        .then(version => {
-          thisVersion = version
-          checkForGithubUpdates()
-        })
-    }
+  // useEffect(() => {
+  //   let thisVersion = 'v0.4.0'
+  //   // every 10 minutes, fetch from github releases
+  //   // to see if there is any new update available for the app
+  //   const checkForGithubUpdates = () => {
+  //     fetch('https://api.github.com/repos/h-be/acorn-release/releases')
+  //       .then(response => response.json())
+  //       .then(releases => {
+  //         const latestRelease = releases[0]
+  //         const latestTagName = latestRelease.tag_name
+  //         if (latestTagName !== thisVersion) {
+  //           setShowUpdatePromptModal(true)
+  //           clearInterval(timerID)
+  //           setUpdateAvailable(latestTagName)
+  //         }
+  //       })
+  //   }
+  //   const timerID = setInterval(checkForGithubUpdates, 1000 * 10 * 60)
+  //   if (window.require) {
+  //     window
+  //       .require('electron')
+  //       .ipcRenderer.invoke('get-version')
+  //       .then(version => {
+  //         thisVersion = version
+  //         checkForGithubUpdates()
+  //       })
+  //   }
 
-    return () => {
-      // this function will be called
-      // when this component unmounts:
-      // 'tear down the timer'
-      clearInterval(timerID)
-    }
-  }, [])
+  //   return () => {
+  //     // this function will be called
+  //     // when this component unmounts:
+  //     // 'tear down the timer'
+  //     clearInterval(timerID)
+  //   }
+  // }, [])
 
   return (
     <ErrorBoundaryScreen>

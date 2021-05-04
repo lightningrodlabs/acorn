@@ -15,7 +15,6 @@ import InviteMembersModal from '../../components/InviteMembersModal/InviteMember
 // import new modals here
 
 import {
-  PROJECTS_DNA_PATH,
   PROJECTS_ZOME_NAME,
   PROJECT_APP_PREFIX,
 } from '../../holochainConfig'
@@ -241,8 +240,11 @@ async function installProjectApp(passphrase) {
   }
   // the dna hash HAS to act deterministically
   // in order for the 'joining' of Projects to work
+  const dnaPath = window.require
+    ? await window.require('electron').ipcRenderer.invoke('getProjectsPath')
+    : '../dna/workdir/projects.dna'
   const hash = await adminWs.registerDna({
-    path: PROJECTS_DNA_PATH,
+    path: dnaPath,
     properties: { uuid },
   })
   // INSTALL

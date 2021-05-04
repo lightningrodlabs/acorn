@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import * as path from 'path'
 import log from 'electron-log'
 import { devOptions, prodOptions, runHolochain, StateSignal } from './holochain'
@@ -29,6 +29,12 @@ const createMainWindow = (): BrowserWindow => {
     width: 1920,
     show: false,
     backgroundColor: BACKGROUND_COLOR,
+    // use these settings so that the ui
+    // can check paths
+    webPreferences: {
+      contextIsolation: false,
+      nodeIntegration: true,
+    },
   })
   // and load the index.html of the app.
   if (app.isPackaged) {
@@ -119,4 +125,10 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createMainWindow()
   }
+})
+
+ipcMain.handle('getProjectsPath', () => {
+  return app.isPackaged
+    ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/projects.dna')
+    : path.join(app.getAppPath(), '../dna/workdir/projects.dna')
 })

@@ -4,8 +4,8 @@ out/
 tmp
 electron/web
 
-front/dist/*.js
-front/dist/*.js.map
+web/dist/*.js
+web/dist/*.js.map
 
 target/
 back/.cargo/

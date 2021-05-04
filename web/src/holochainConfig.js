@@ -17,6 +17,3 @@ export const PROFILES_SLOT_NAME = 'profiles-slot'
 
 // is used as a prefix for the creation of new Project apps/DHTs
 export const PROJECT_APP_PREFIX = 'acorn-project'
-
-// is used as a path relative to the root folder
-export const PROJECTS_DNA_PATH = '../dna/workdir/projects.dna'
