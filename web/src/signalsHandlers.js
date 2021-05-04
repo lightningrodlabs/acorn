@@ -101,7 +101,7 @@ const pickCrudAction = (entryTypeName, actionType) => {
   return actionSet[actionName]
 }
 
-export default store => signal => {
+export default (store) => (signal) => {
   const { cellId } = signal.data
   let { payload } = signal.data
   // TODO: update holochain-conductor-api to latest

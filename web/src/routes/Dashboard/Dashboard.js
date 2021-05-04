@@ -300,6 +300,9 @@ async function joinProject(passphrase, dispatch) {
   )
   const appWs = await getAppWs()
   try {
+    // we are waiting five seconds before we call because holochain
+    // doesn't seem to be taking the time to check the network fully
+    // with a long timeout, even though we say GetOptions::latest
     await new Promise((resolve) => setTimeout(resolve, 5000))
     await appWs.callZome({
       cap: null,

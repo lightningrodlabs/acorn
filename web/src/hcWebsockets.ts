@@ -11,7 +11,7 @@ let appWs: AppWebsocket
 let adminWs: AdminWebsocket
 let agentPubKey
 
-export async function getAdminWs() {
+export async function getAdminWs(): Promise<AdminWebsocket> {
   if (adminWs) {
     return adminWs
   } else {
@@ -20,7 +20,7 @@ export async function getAdminWs() {
   }
 }
 
-export async function getAppWs(signalsHandler) {
+export async function getAppWs(signalsHandler): Promise<AppWebsocket> {
   if (appWs) {
     return appWs
   } else {
