@@ -1,0 +1,27 @@
+[package]
+name = "profiles"
+version = "0.0.1"
+edition = "2018"
+
+[lib]
+name = "profiles"
+crate-type = [ "cdylib", "rlib" ]
+
+[dependencies]
+#hdk = "0.0.100"
+dna_help = { path = "../../crates/dna_help" }
+hdk = { git = "https://github.com/holochain/holochain", rev = "a6ac0439670ba367c723a80d3b8bc7c419aa5f6e" }
+paste = "*"
+serde = "*"
+thiserror = "1"
+mockall = "0.9"
+
+[dev-dependencies]
+fixt = { git = "https://github.com/holochain/holochain", rev = "a6ac0439670ba367c723a80d3b8bc7c419aa5f6e" }
+holochain_types = { git = "https://github.com/holochain/holochain", rev = "a6ac0439670ba367c723a80d3b8bc7c419aa5f6e" }
+rand = "0.7"
+strum = "0.18.0"
+strum_macros = "0.18.0"
+
+# [features]
+# mock = ["hdk/mock", "hdk/test_utils"]

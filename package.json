@@ -1,64 +1,22 @@
 {
-  "name": "acorn2",
+  "name": "acorn",
   "version": "1.0.0",
   "description": "Acorn is software that helps people create the future",
-  "main": "main.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/h-be/acorn2.git"
+    "url": "git+https://github.com/h-be/acorn.git"
   },
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "install-holochain": ". back/scripts/install-binaries.sh",
-    "test-happ": ". back/scripts/test-happ.sh",
-    "pack-happ": ". back/scripts/pack-happ.sh",
-    "install-happ": ". back/scripts/install-happ.sh",
-    "run-happ": "holochain -c back/conductor-config.yml",
-    "install-ui": "cd front && npm install",
-    "run-ui": "cd front && npx webpack-dev-server --config webpack.dev.js",
-    "build-ui": "cd front && npx webpack --config webpack.prod.js"
+    "dna-install-deps": ". scripts/install-hc-tools.sh",
+    "dna-test": ". scripts/test-dna.sh",
+    "dna-pack": ". scripts/pack-dna.sh",
+    "web-install": "cd web && npm install",
+    "web": "cd web && npx webpack-dev-server --config webpack.dev.js",
+    "web-build": "cd web && npx webpack --config webpack.prod.js",
+    "install-electron": "cd electron && npm install",
+    "electron": "cd electron && npm run start",
+    "build": ". scripts/build.sh"
   },
   "author": "Connor Turland <connor@sprillow.com>",
-  "license": "ISC",
-  "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.54",
-    "@electron-forge/maker-deb": "^6.0.0-beta.54",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
-    "@electron-forge/maker-zip": "^6.0.0-beta.54",
-    "electron": "^12.0.1",
-    "prettier": "2.2.1"
-  },
-  "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
-  },
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "acorn2"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
-  }
+  "license": "CAL-1.0"
 }

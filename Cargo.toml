@@ -1,11 +1,10 @@
 [workspace]
 members = [
-  "back/zomes/profiles",
-  "back/zomes/projects",
+  "conductor",
 ]
 
-[profile.dev]
-opt-level = "z"
+# resolver = "2"
 
-[profile.release]
-opt-level = "z"
+[patch.crates-io]
+rkv = { git = "https://github.com/holochain/rkv.git", branch = "master" }
+lmdb-rkv = { git = "https://github.com/holochain/lmdb-rs.git" }

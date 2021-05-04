@@ -1,8 +1,0 @@
----
-manifest_version: "1"
-name: projects-dna
-uuid: ~
-properties: ~
-zomes: 
-  - name: projects
-    bundled: ../../../../target/wasm32-unknown-unknown/release/projects.wasm

@@ -1,16 +1,26 @@
+binaries
 node_modules
 out/
+tmp
+electron/web
 
-front/dist/*.js
-front/dist/*.js.map
+web/dist/*.js
+web/dist/*.js.map
 
 target/
 back/.cargo/
-back/workdir/acorn.happ
-back/workdir/profiles.dna
-back/workdir/projects.dna
+dna/workdir/profiles.dna
+dna/workdir/projects.dna
+back/2-conductor-config.yml
+back/scripts/2-install-happ.sh
+2-config-admin-ws
+2-config-app-ws
 .hc
 databases
+databases2
+keystore
+keystore2
+my-proxy-cert.cert
 
 **/.DS_Store
 .DS_Store
