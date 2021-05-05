@@ -197,6 +197,8 @@ export default function render(
 
   // draw members avatars
   members.forEach((member, index) => {
+    // defensive coding
+    if (!member) return
     // adjust the x position according to the index of this member
     // since there can be many
     const xAvatarDraw =

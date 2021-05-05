@@ -18,7 +18,7 @@ function ErrorScreen({ stackTrace }) {
           <div className='error-screen-description'>
             Please help us improve the app's performance by{' '}
             <a
-              href='https://github.com/h-be/acorn-release/issues/new?assignees=&labels=bug&template=bug_report.md&title='
+              href='https://github.com/h-be/acorn/issues/new'
               target='_blank'>
               reporting the issue
             </a>
@@ -27,7 +27,7 @@ function ErrorScreen({ stackTrace }) {
           <div className='error-screen-buttons'>
             <a
               className='error-screen-report-issue-button'
-              href='https://github.com/h-be/acorn-release/issues/new?assignees=&labels=bug&template=bug_report.md&title='
+              href='https://github.com/h-be/acorn/issues/new'
               target='_blank'>
               <Button text='Report Issue' size='medium' className='green' />
             </a>

@@ -14,13 +14,18 @@ fn validate_create_entry_goal(validate_data: ValidateData) -> ExternResult<Valid
     // element must have an entry that must deserialize correctly
     match Goal::try_from(&validate_data.element) {
       Ok(proposed_entry) => {
-        // creator_address must match header author
-        match validate_value_matches_create_author(&proposed_entry.user_hash.0, &validate_data) {
-          ValidateCallbackResult::Valid => {
-            // user_edit_hash must not be Some during create
-            validate_value_is_none::<WrappedAgentPubKey>(&proposed_entry.user_edit_hash)
+        // an imported entry can have another listed as author, and an edit history
+        if proposed_entry.is_imported {
+          ValidateCallbackResult::Valid
+        } else {
+          // creator_address must match header author
+          match validate_value_matches_create_author(&proposed_entry.user_hash.0, &validate_data) {
+            ValidateCallbackResult::Valid => {
+              // user_edit_hash must not be Some during create
+              validate_value_is_none::<WrappedAgentPubKey>(&proposed_entry.user_edit_hash)
+            }
+            validate_callback_result => validate_callback_result,
           }
-          validate_callback_result => validate_callback_result,
         }
       }
       Err(e) => e.into(), // ValidateCallbackResult

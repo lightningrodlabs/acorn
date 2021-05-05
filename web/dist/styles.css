@@ -4,6 +4,9 @@
   /* disable ugly mouse plugged in scrollbar */
   scrollbar-width: none;
 }
+*::-webkit-scrollbar {
+  display: none;
+}
 
 html, body, canvas {
   height: 100%;

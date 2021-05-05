@@ -16,6 +16,7 @@ pub struct GoalVote {
   pub effort: f64,
   pub agent_address: WrappedAgentPubKey,
   pub unix_timestamp: f64,
+  pub is_imported: bool,
 }
 
 impl GoalVote {
@@ -27,6 +28,7 @@ impl GoalVote {
     effort: f64,
     agent_address: WrappedAgentPubKey,
     unix_timestamp: f64,
+    is_imported: bool,
   ) -> Self {
     Self {
       goal_address,
@@ -36,6 +38,7 @@ impl GoalVote {
       effort,
       agent_address,
       unix_timestamp,
+      is_imported,
     }
   }
 }

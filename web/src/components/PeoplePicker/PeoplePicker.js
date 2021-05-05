@@ -173,6 +173,7 @@ function mapDispatchToProps(dispatch, ownProps) {
             agent_address,
             user_edit_hash,
             unix_timestamp: moment().unix(),
+            is_imported: false
           },
         })
       )

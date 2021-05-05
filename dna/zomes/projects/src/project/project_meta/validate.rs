@@ -1,6 +1,6 @@
 use crate::project::{
   error::Error,
-  project_meta::crud::{inner_fetch_project_metas, ProjectMeta},
+  project_meta::crud::ProjectMeta,
   validate::validate_value_matches_create_author,
 };
 use dna_help::{resolve_dependency, ResolvedDependency};
@@ -15,20 +15,7 @@ fn validate_create_entry_project_meta(
     match ProjectMeta::try_from(&validate_data.element) {
       Ok(proposed_entry) => {
         // `address` must match header author
-        match validate_value_matches_create_author(
-          &proposed_entry.creator_address.0,
-          &validate_data,
-        ) {
-          ValidateCallbackResult::Valid => {
-            // no project_meta entry should exist at least
-            // that we can know about
-            match inner_fetch_project_metas(GetOptions::content())?.0.len() {
-              0 => ValidateCallbackResult::Valid,
-              _ => Error::OnlyOneOfEntryType.into(),
-            }
-          }
-          validate_callback_result => validate_callback_result,
-        }
+        validate_value_matches_create_author(&proposed_entry.creator_address.0, &validate_data)
       }
       Err(e) => e.into(), // ValidateCallbackResult
     },

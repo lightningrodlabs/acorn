@@ -30,6 +30,7 @@ pub struct Goal {
   pub tags: Option<Vec<String>>,
   pub description: String,
   pub time_frame: Option<TimeFrame>,
+  pub is_imported: bool,
 }
 
 // can be updated
@@ -52,6 +53,7 @@ impl Goal {
     tags: Option<Vec<String>>,
     description: String,
     time_frame: Option<TimeFrame>,
+    is_imported: bool,
   ) -> Self {
     Self {
       content,
@@ -64,6 +66,7 @@ impl Goal {
       tags,
       description,
       time_frame,
+      is_imported,
     }
   }
 }
@@ -192,6 +195,7 @@ pub fn create_goal_with_edge(
         parent_address: header_hash,
         child_address: wire_entry.address.clone(),
         randomizer: sys_time()?.as_secs_f64(),
+        is_imported: false
       };
       let edge_wire_entry = inner_create_edge(edge, false)?;
       Some(edge_wire_entry)

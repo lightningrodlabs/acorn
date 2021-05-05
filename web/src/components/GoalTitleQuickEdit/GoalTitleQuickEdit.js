@@ -26,6 +26,9 @@ function GoalTitleQuickEdit({
   hierarchy,
   time_frame,
   timestamp_created,
+  is_imported,
+  user_hash, // creator
+  user_edit_hash, // editor
   // callbacks
   updateContent,
   createGoalWithEdge,
@@ -93,12 +96,14 @@ function GoalTitleQuickEdit({
     createGoalWithEdge(
       {
         content: content,
-        user_hash: whoami.entry.address,
         timestamp_created: moment().unix(),
         // defaults
-        hierarchy: 'NoHierarchy',
-        status: 'Uncertain',
-        description: '',
+        user_edit_hash,
+        user_hash,
+        hierarchy,
+        status,
+        description,
+        is_imported,
       },
       parentAddress
     )
@@ -107,14 +112,18 @@ function GoalTitleQuickEdit({
   const innerUpdateGoal = () => {
     updateGoal(
       {
-        content,
-        user_hash: whoami.entry.address,
-        timestamp_created,
+        // new
+        user_edit_hash: whoami.entry.address,
+        description: description,
         timestamp_updated: moment().unix(),
+        // carryover
+        content,
+        user_hash,
+        timestamp_created,
         hierarchy,
         status,
         time_frame,
-        description: description,
+        is_imported,
       },
       editAddress
     )
@@ -149,19 +158,18 @@ function GoalTitleQuickEdit({
 // that component expects
 
 function mapStateToProps(state) {
-  // all the state for this component is store under state->ui->goalForm
-  const {
-    parentAddress,
-    editAddress,
-    content,
-    leftEdgeXPosition,
-    topEdgeYPosition,
-  } = state.ui.goalForm
-
   const {
     ui: {
       activeProject,
       screensize: { width },
+      // all the state for this component is store under state->ui->goalForm
+      goalForm: {
+        parentAddress,
+        editAddress,
+        content,
+        leftEdgeXPosition,
+        topEdgeYPosition,
+      }
     },
   } = state
   // use the values of the goal being edited,
@@ -170,11 +178,14 @@ function mapStateToProps(state) {
   const editingGoal = editAddress
     ? state.projects.goals[activeProject][editAddress]
     : null
+  const user_hash = editAddress ? editingGoal.user_hash : state.whoami.entry.address
+  const user_edit_hash = editAddress ? state.whoami.entry.address : null 
   const status = editAddress ? editingGoal.status : 'Uncertain'
   const description = editAddress ? editingGoal.description : ''
   const hierarchy = editAddress ? editingGoal.hierarchy : 'NoHierarchy'
   const time_frame = editAddress ? editingGoal.time_frame : null
   const timestamp_created = editAddress ? editingGoal.timestamp_created : null
+  const is_imported = editAddress ? editingGoal.is_imported : false
 
   let goalCoord
   if (editAddress) {
@@ -190,11 +201,15 @@ function mapStateToProps(state) {
     leftEdgeXPosition: editAddress ? goalCoord.x : leftEdgeXPosition,
     topEdgeYPosition: editAddress ? goalCoord.y : topEdgeYPosition,
     // default states for the goal when creating it
+    // plus existing fields for "edit"
+    user_hash,
+    user_edit_hash,
     status,
     description,
     hierarchy,
     time_frame,
     timestamp_created,
+    is_imported
   }
 }
 

@@ -185,6 +185,7 @@ function mapDispatchToProps(dispatch) {
                 child_address: childAddress,
                 parent_address: parentAddress,
                 randomizer: Date.now(),
+                is_imported: false
               },
             })
           )

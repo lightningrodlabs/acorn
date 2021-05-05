@@ -18,6 +18,7 @@ pub struct GoalMember {
     // the person who authored this entry
     pub user_edit_hash: WrappedAgentPubKey,
     pub unix_timestamp: f64,
+    pub is_imported: bool,
 }
 
 impl GoalMember {
@@ -26,12 +27,14 @@ impl GoalMember {
         agent_address: WrappedAgentPubKey,
         user_edit_hash: WrappedAgentPubKey,
         unix_timestamp: f64,
+        is_imported: bool,
     ) -> Self {
         Self {
             goal_address,
             agent_address,
             user_edit_hash,
             unix_timestamp,
+            is_imported,
         }
     }
 }

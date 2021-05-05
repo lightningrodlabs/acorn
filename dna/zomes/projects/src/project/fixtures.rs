@@ -23,27 +23,27 @@ pub(crate) mod fixtures {
 
   fixturator!(
     Edge;
-      constructor fn new(WrappedHeaderHash, WrappedHeaderHash, f64);
+      constructor fn new(WrappedHeaderHash, WrappedHeaderHash, f64, bool);
   );
 
   fixturator!(
     EntryPoint;
-      constructor fn new(String, WrappedAgentPubKey, f64, WrappedHeaderHash);
+      constructor fn new(String, WrappedAgentPubKey, f64, WrappedHeaderHash, bool);
   );
 
   fixturator!(
     GoalMember;
-      constructor fn new(WrappedHeaderHash, WrappedAgentPubKey, WrappedAgentPubKey, f64);
+      constructor fn new(WrappedHeaderHash, WrappedAgentPubKey, WrappedAgentPubKey, f64, bool);
   );
 
   fixturator!(
     GoalComment;
-      constructor fn new(WrappedHeaderHash, String, WrappedAgentPubKey, f64);
+      constructor fn new(WrappedHeaderHash, String, WrappedAgentPubKey, f64, bool);
   );
 
   fixturator!(
     GoalVote;
-      constructor fn new(WrappedHeaderHash, f64, f64, f64, f64, WrappedAgentPubKey, f64);
+      constructor fn new(WrappedHeaderHash, f64, f64, f64, f64, WrappedAgentPubKey, f64, bool);
   );
 
   fixturator!(
@@ -53,7 +53,7 @@ pub(crate) mod fixtures {
 
   fixturator!(
     ProjectMeta;
-      constructor fn new(WrappedAgentPubKey, f64, String, OptionString, String);
+      constructor fn new(WrappedAgentPubKey, f64, String, OptionString, String, bool);
   );
 
   type OptionWrappedAgentPubKey = Option<WrappedAgentPubKey>;

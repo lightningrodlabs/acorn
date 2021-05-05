@@ -68,6 +68,7 @@
 
 .tooltip {
   position: absolute;
+  z-index: 2;
   display: none;
   padding: 5px 7px;
   border-radius: 3px;

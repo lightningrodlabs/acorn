@@ -14,6 +14,7 @@ pub struct Edge {
     pub parent_address: WrappedHeaderHash,
     pub child_address: WrappedHeaderHash,
     pub randomizer: f64,
+    pub is_imported: bool,
 }
 
 // can't be updated
@@ -29,11 +30,13 @@ impl Edge {
         parent_address: WrappedHeaderHash,
         child_address: WrappedHeaderHash,
         randomizer: f64,
+        is_imported: bool,
     ) -> Self {
         Self {
             parent_address,
             child_address,
             randomizer,
+            is_imported,
         }
     }
 }
