@@ -13,6 +13,7 @@ pub struct GoalComment {
     pub content: String,
     pub agent_address: WrappedAgentPubKey,
     pub unix_timestamp: f64,
+    pub is_imported: bool,
 }
 
 // can be updated
@@ -29,12 +30,14 @@ impl GoalComment {
       content: String,
       agent_address: WrappedAgentPubKey,
       unix_timestamp: f64,
+      is_imported: bool,
   ) -> Self {
       Self {
           goal_address,
           content,
           agent_address,
           unix_timestamp,
+          is_imported,
       }
   }
 }

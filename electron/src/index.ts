@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, Menu, shell } from 'electron'
 import * as path from 'path'
 import log from 'electron-log'
 import { devOptions, prodOptions, runHolochain, StateSignal } from './holochain'
@@ -43,6 +43,11 @@ const createMainWindow = (): BrowserWindow => {
     // development
     mainWindow.loadURL('http://localhost:8080')
   }
+  // Open <a href='' target='_blank'> with default system browser
+  mainWindow.webContents.on('new-window', function (event, url) {
+    event.preventDefault()
+    shell.openExternal(url)
+  })
   // once its ready to show, show
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()

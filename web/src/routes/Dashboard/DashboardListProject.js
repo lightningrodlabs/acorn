@@ -181,6 +181,7 @@ function DashboardListProject({
         creatorAddress={project.creator_address}
         createdAt={project.created_at}
         passphrase={project.passphrase}
+        isImported={project.is_imported}
       />
     </div>
   )

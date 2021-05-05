@@ -95,6 +95,7 @@ function Comments({
         content: value,
         agent_address: avatarAddress,
         unix_timestamp: moment().unix(),
+        is_imported: false
       })
       // then scroll to bottom
       commentHistoryRef.current.scrollTop =

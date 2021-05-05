@@ -28,15 +28,8 @@ const simpleCreateProjectMeta = createZomeCallAsyncAction(
   SIMPLE_CREATE_PROJECT_META
 )
 
-const SIMPLE_CREATE_PROJECT_META_LINK = 'simple_create_project_meta_link'
-const simpleCreateProjectMetaLink = createZomeCallAsyncAction(
-  PROJECTS_ZOME_NAME,
-  SIMPLE_CREATE_PROJECT_META_LINK
-)
-
 export {
   simpleCreateProjectMeta,
-  simpleCreateProjectMetaLink,
   fetchProjectMetas,
   updateProjectMeta,
   fetchProjectMeta,

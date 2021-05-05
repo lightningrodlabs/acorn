@@ -40,6 +40,7 @@ export default function cloneGoals(store) {
                 agent_address: member.agent_address,
                 user_edit_hash: member.user_edit_hash,
                 unix_timestamp: moment().unix(),
+                is_imported: false
               },
             })
           )

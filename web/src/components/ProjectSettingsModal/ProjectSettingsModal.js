@@ -143,6 +143,7 @@ function ProjectSettingsModal ({
   projectAddress,
   creatorAddress,
   createdAt,
+  isImported,
   passphrase,
   cellIdString,
   projectNameProp,
@@ -159,6 +160,7 @@ function ProjectSettingsModal ({
         creator_address: creatorAddress,
         created_at: createdAt,
         passphrase: passphrase,
+        is_imported: isImported
       },
       projectAddress,
       cellIdString

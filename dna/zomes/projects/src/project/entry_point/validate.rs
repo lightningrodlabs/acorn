@@ -13,12 +13,17 @@ fn validate_create_entry_entry_point(
     // element must have an entry that must deserialize correctly
     match EntryPoint::try_from(&validate_data.element) {
       Ok(proposed_entry) => {
-        // creator_address must match header author
-        match validate_value_matches_create_author(&proposed_entry.creator_address.0, &validate_data)
+        // parent goal at goal_address must be determined to exist
+        match confirm_resolved_dependency::<Goal>(proposed_entry.goal_address.0.into())?
         {
           ValidateCallbackResult::Valid => {
-            // parent goal at goal_address must be determined to exist
-            confirm_resolved_dependency::<Goal>(proposed_entry.goal_address.0.into())?
+            // an imported entry can have another listed as author
+            if proposed_entry.is_imported {
+              ValidateCallbackResult::Valid
+            } else {
+              // creator_address must match header author
+              validate_value_matches_create_author(&proposed_entry.creator_address.0, &validate_data)
+            }
           }
           validate_callback_result => validate_callback_result,
         }

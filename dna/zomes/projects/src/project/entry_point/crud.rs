@@ -15,6 +15,7 @@ pub struct EntryPoint {
     pub creator_address: WrappedAgentPubKey,
     pub created_at: f64,
     pub goal_address: WrappedHeaderHash,
+    pub is_imported: bool,
 }
 
 impl EntryPoint {
@@ -23,12 +24,14 @@ impl EntryPoint {
         creator_address: WrappedAgentPubKey,
         created_at: f64,
         goal_address: WrappedHeaderHash,
-    ) -> Self {
+        is_imported: bool,
+      ) -> Self {
         Self {
-            color,
-            creator_address,
-            created_at,
-            goal_address,
+          color,
+          creator_address,
+          created_at,
+          goal_address,
+          is_imported,
         }
     }
 }

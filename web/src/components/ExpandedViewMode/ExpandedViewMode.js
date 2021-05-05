@@ -74,6 +74,7 @@ function ExpandedViewMode({
       creator_address: agentAddress,
       created_at: Date.now(),
       goal_address: goalAddress,
+      is_imported: false
     })
   }
   const unmakeAsEntryPoint = () => {

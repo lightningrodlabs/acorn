@@ -14,6 +14,7 @@ pub struct ProjectMeta {
   pub name: String,
   pub image: Option<String>,
   pub passphrase: String,
+  pub is_imported: bool,
 }
 
 impl ProjectMeta {
@@ -23,6 +24,7 @@ impl ProjectMeta {
     name: String,
     image: Option<String>,
     passphrase: String,
+    is_imported: bool,
   ) -> Self {
     Self {
       creator_address,
@@ -30,6 +32,7 @@ impl ProjectMeta {
       name,
       image,
       passphrase,
+      is_imported,
     }
   }
 }
@@ -56,23 +59,24 @@ crud!(
 
 #[hdk_extern]
 pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<ProjectMetaWireEntry> {
+  // no project_meta entry should exist at least
+  // that we can know about
+  match inner_fetch_project_metas(GetOptions::latest())?.0.len() {
+    0 => {},
+    _ => return Err(WasmError::Guest(Error::OnlyOneOfEntryType.to_string())),
+  };
   let address = create_entry(&entry)?;
   let entry_hash = hash_entry(&entry)?;
+  let path = Path::from(PROJECT_META_PATH);
+  path.ensure()?;
+  let path_hash = path.hash()?;
+  create_link(path_hash, entry_hash.clone(), ())?;
   let wire_entry = ProjectMetaWireEntry {
     entry,
     address: WrappedHeaderHash(address),
     entry_address: WrappedEntryHash(entry_hash),
   };
   Ok(wire_entry)
-}
-
-#[hdk_extern]
-pub fn simple_create_project_meta_link(entry_hash: WrappedEntryHash) -> ExternResult<()> {
-  let path = Path::from(PROJECT_META_PATH);
-  path.ensure()?;
-  let path_hash = path.hash()?;
-  create_link(path_hash, entry_hash.0, ())?;
-  Ok(())
 }
 
 // READ

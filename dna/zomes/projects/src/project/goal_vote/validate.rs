@@ -3,8 +3,7 @@ use crate::project::validate::confirm_resolved_dependency;
 use crate::project::{
   goal_vote::crud::GoalVote,
   validate::{
-    validate_value_matches_create_author,
-    validate_value_matches_original_author_for_edit,
+    validate_value_matches_create_author, validate_value_matches_original_author_for_edit,
   },
 };
 use dna_help::{resolve_dependency, ResolvedDependency};
@@ -18,12 +17,16 @@ fn validate_create_entry_goal_vote(
     // element must have an entry that must deserialize correctly
     match GoalVote::try_from(&validate_data.element) {
       Ok(proposed_entry) => {
-        // agent_address must match header author
-        match validate_value_matches_create_author(&proposed_entry.agent_address.0, &validate_data)
-        {
+        // parent goal at goal_address must be determined to exist
+        match confirm_resolved_dependency::<Goal>(proposed_entry.goal_address.0.into())? {
           ValidateCallbackResult::Valid => {
-            // parent goal at goal_address must be determined to exist
-            confirm_resolved_dependency::<Goal>(proposed_entry.goal_address.0.into())?
+            // an imported entry can have another listed as author, and an edit history
+            if proposed_entry.is_imported {
+              ValidateCallbackResult::Valid
+            } else {
+              // agent_address must match header author
+              validate_value_matches_create_author(&proposed_entry.agent_address.0, &validate_data)
+            }
           }
           validate_callback_result => validate_callback_result,
         }
@@ -51,9 +54,7 @@ fn validate_update_entry_goal_vote(
             // -> check the original header and make sure that
             // this header author matches that original author
             if let Header::Update(header) = validate_data.element.header() {
-              match resolve_dependency::<GoalVote>(
-                header.original_header_address.clone().into(),
-              )? {
+              match resolve_dependency::<GoalVote>(header.original_header_address.clone().into())? {
                 Ok(ResolvedDependency(el, _)) => {
                   // the final return value
                   // if this passes, all have passed
@@ -81,9 +82,7 @@ fn validate_update_entry_goal_vote(
 
 #[hdk_extern]
 /// Deletes are allowed only by original author
-fn validate_delete_entry_goal_vote(
-  _: ValidateData,
-) -> ExternResult<ValidateCallbackResult> {
+fn validate_delete_entry_goal_vote(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Ok(ValidateCallbackResult::Valid)
 }
 
@@ -91,8 +90,7 @@ fn validate_delete_entry_goal_vote(
 pub mod tests {
   use crate::project::error::Error;
   use crate::project::fixtures::fixtures::{
-    GoalVoteFixturator, GoalFixturator, WrappedAgentPubKeyFixturator,
-    WrappedHeaderHashFixturator,
+    GoalFixturator, GoalVoteFixturator, WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator,
   };
   use ::fixt::prelude::*;
   use dna_help::WrappedAgentPubKey;

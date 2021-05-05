@@ -20,11 +20,11 @@ import {
 } from '../../holochainConfig'
 import { passphraseToUuid } from '../../secrets'
 import { getAdminWs, getAppWs, getAgentPubKey } from '../../hcWebsockets'
+import { setProjectsCellIds } from '../../cells/actions'
 import { fetchEntryPoints } from '../../projects/entry-points/actions'
 import { fetchMembers, setMember } from '../../projects/members/actions'
 import {
   simpleCreateProjectMeta,
-  simpleCreateProjectMetaLink,
   fetchProjectMeta,
 } from '../../projects/project-meta/actions'
 import selectEntryPoints from '../../projects/entry-points/select'
@@ -37,10 +37,12 @@ import { joinProjectCellId } from '../../cells/actions'
 import importAllProjectData from '../../import'
 
 function Dashboard({
+  existingAgents,
   agentAddress,
   profilesCellIdString,
   cells,
   projects,
+  setProjectsCellIds,
   fetchEntryPoints,
   fetchMembers,
   fetchProjectMeta,
@@ -50,15 +52,7 @@ function Dashboard({
   updateIsAvailable,
   setShowUpdatePromptModal,
 }) {
-  // cells is an array of cellId strings
-  useEffect(() => {
-    cells.forEach((cellId) => {
-      fetchProjectMeta(cellId)
-      fetchMembers(cellId)
-      fetchEntryPoints(cellId)
-    })
-  }, [JSON.stringify(cells)])
-
+  
   // created_at, name
   const [selectedSort, setSelectedSort] = useState('created_at')
   const [showSortPicker, setShowSortPicker] = useState(false)
@@ -69,13 +63,26 @@ function Dashboard({
   const [showInviteMembersModal, setShowInviteMembersModal] = useState(null)
   // add new modal state managers here
 
+  // cells is an array of cellId strings
+  useEffect(() => {
+    cells.forEach((cellId) => {
+      fetchProjectMeta(cellId).catch(e => {
+        // if something went wrong, let's not show it in the list
+        // which is making it block everything else from working
+        setProjectsCellIds(cells.filter((s => s !== cellId)))
+      })
+      fetchMembers(cellId)
+      fetchEntryPoints(cellId)
+    })
+  }, [JSON.stringify(cells)])
+
   const onCreateProject = (project, passphrase) =>
     createProject(agentAddress, project, passphrase)
 
   const onJoinProject = (passphrase) => joinProject(passphrase)
 
   const onImportProject = (projectData, passphrase) =>
-    importProject(agentAddress, projectData, passphrase, profilesCellIdString)
+    importProject(existingAgents, agentAddress, projectData, passphrase, profilesCellIdString)
 
   const hasProjects = cells.length > 0 // write 'false' if want to see Empty State
 
@@ -272,19 +279,8 @@ async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
   // we will directly set ourselves as a member of this cell
   await dispatch(setMember(cellIdString, { address: agentAddress }))
   const b1 = Date.now()
-  // we separate this into two calls so that
-  // validation can happen effectively on the ProjectMeta create_entry
-  const response = await dispatch(
-    simpleCreateProjectMeta.create({ cellIdString, payload: projectMeta })
-  )
-  // we then proceed to create a link so this entry can be found
   await dispatch(
-    simpleCreateProjectMetaLink.create({
-      cellIdString,
-      // we send the entry_address which is the thing that
-      // needs to be linked to the PROJECT_META_PATH
-      payload: response.entry_address,
-    })
+    simpleCreateProjectMeta.create({ cellIdString, payload: projectMeta })
   )
   const b2 = Date.now()
   console.log('duration in MS over createProjectMeta ', b2 - b1)
@@ -350,6 +346,7 @@ async function joinProject(passphrase, dispatch) {
 }
 
 async function importProject(
+  existingAgents,
   agentAddress,
   projectData,
   passphrase,
@@ -360,6 +357,7 @@ async function importProject(
   const [projectsCellIdString] = await installProjectApp(passphrase)
   // next step is to import the rest of the data into that project
   await importAllProjectData(
+    existingAgents,
     projectData,
     projectsCellIdString,
     profilesCellIdString,
@@ -379,7 +377,7 @@ async function importProject(
   delete projectMeta.address
   await dispatch(setMember(projectsCellIdString, { address: agentAddress }))
   await dispatch(
-    createProjectMeta.create({
+    simpleCreateProjectMeta.create({
       cellIdString: projectsCellIdString,
       payload: projectMeta,
     })
@@ -388,6 +386,9 @@ async function importProject(
 
 function mapDispatchToProps(dispatch) {
   return {
+    setProjectsCellIds: (projectsCellIds) => {
+      return dispatch(setProjectsCellIds(projectsCellIds))
+    },
     fetchEntryPoints: (cellIdString) => {
       return dispatch(fetchEntryPoints.create({ cellIdString, payload: null }))
     },
@@ -404,17 +405,20 @@ function mapDispatchToProps(dispatch) {
         passphrase,
         creator_address: agentAddress,
         created_at: Date.now(),
+        is_imported: false
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },
     joinProject: (passphrase) => joinProject(passphrase, dispatch),
     importProject: (
+      existingAgents,
       agentAddress,
       projectData,
       passphrase,
       profilesCellIdString
-    ) =>
+      ) =>
       importProject(
+        existingAgents,
         agentAddress,
         projectData,
         passphrase,
@@ -426,6 +430,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   return {
+    existingAgents: state.agents,
     agentAddress: state.agentAddress,
     profilesCellIdString: state.cells.profiles,
     cells: state.cells.projects,

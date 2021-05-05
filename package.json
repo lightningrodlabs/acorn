@@ -8,8 +8,8 @@
   },
   "scripts": {
     "dna-install-deps": ". scripts/install-hc-tools.sh",
-    "dna-test": ". scripts/test-dna.sh",
-    "dna-pack": ". scripts/pack-dna.sh",
+    "dna-test": ". scripts/dna-test.sh",
+    "dna-pack": ". scripts/dna-pack.sh",
     "web-install": "cd web && npm install",
     "web": "cd web && npx webpack-dev-server --config webpack.dev.js",
     "web-build": "cd web && npx webpack --config webpack.prod.js",

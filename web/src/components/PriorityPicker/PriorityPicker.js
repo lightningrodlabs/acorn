@@ -262,6 +262,7 @@ function Priority({
       goal_address: goalAddress,
       agent_address: whoami.entry.address,
       unix_timestamp: moment().unix(),
+      is_imported: false
     }
     updateGoalVote(goal_vote, myVote.address)
   }
@@ -272,6 +273,7 @@ function Priority({
       goal_address: goalAddress,
       agent_address: whoami.entry.address,
       unix_timestamp: moment().unix(),
+      is_imported: false
     })
     setOpenMyVote(true)
   }

@@ -34,7 +34,7 @@ function StatusPicker({ selectedStatus, statusClicked, onClose }) {
 }
 
 StatusPicker.propTypes = {
-  selectedStatus: PropTypes.string.isRequired,
+  selectedStatus: PropTypes.string,
   statusClicked: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
 }
