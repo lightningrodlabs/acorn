@@ -102,7 +102,7 @@ export function getGoalHeight(ctx, goalText, scale, isEditing) {
   const lines = getLinesForParagraphs(ctx, goalText, scale)
 
   // adjust font size based on scale (zoom factor)
-  let fontSizeToUse = fontSize // default
+  let fontSizeToUse = fontSizeInt // default
   if (scale < secondZoomThreshold) {
     fontSizeToUse = fontSizeExtraLargeInt
   } else if (scale < firstZoomThreshold) {
