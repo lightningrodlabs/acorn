@@ -10,10 +10,12 @@ import { createGoalWithEdge, updateGoal } from '../../projects/goals/actions'
 import { closeGoalForm, updateContent } from '../../goal-form/actions'
 
 import './GoalTitleQuickEdit.css'
+import { firstZoomThreshold, fontSize, fontSizeExtraLarge, fontSizeLarge, lineHeightMultiplier, secondZoomThreshold } from '../../drawing/dimensions'
 
 // if editAddress is present (as a Goal address) it means we are currently EDITING that Goal
 function GoalTitleQuickEdit({
   whoami,
+  scale,
   content, // the value of the text input
   parentAddress,
   editAddress,
@@ -129,6 +131,18 @@ function GoalTitleQuickEdit({
     )
   }
 
+   // the default
+  let fontSizeToUse = fontSize
+  if (scale < secondZoomThreshold) {
+    fontSizeToUse = fontSizeExtraLarge
+  } else if (scale < firstZoomThreshold) {
+    fontSizeToUse = fontSizeLarge
+  }
+  const textStyle = {
+    fontSize: fontSizeToUse,
+    lineHeight: `${parseInt(fontSizeToUse) * lineHeightMultiplier}px`
+  }
+
   return (
     <div
       className="goal-title-quick-edit-wrapper"
@@ -146,6 +160,7 @@ function GoalTitleQuickEdit({
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          style={textStyle}
         />
       </form>
     </div>
@@ -162,6 +177,7 @@ function mapStateToProps(state) {
     ui: {
       activeProject,
       screensize: { width },
+      viewport: { scale },
       // all the state for this component is store under state->ui->goalForm
       goalForm: {
         parentAddress,
@@ -194,6 +210,7 @@ function mapStateToProps(state) {
 
   return {
     whoami: state.whoami,
+    scale,
     editAddress,
     // the address of the "parent" Goal that we are maybe creating this "under"
     parentAddress,

@@ -15,7 +15,7 @@ import {
   RELATION_AS_PARENT,
   RELATION_AS_CHILD,
 } from '../edge-connector/actions'
-import { CONNECTOR_VERTICAL_SPACING } from './dimensions'
+import { CONNECTOR_VERTICAL_SPACING, firstZoomThreshold } from './dimensions'
 
 function setupCanvas(canvas) {
   // Get the device pixel ratio, falling back to 1.
@@ -293,7 +293,10 @@ function render(store, canvas) {
     if (state.ui.goalForm.editAddress) {
       // editing an existing Goal
       const editingGoal = goals[state.ui.goalForm.editAddress]
-      const isEditing = true
+      // we only allow this goal
+      // to be edited using 'quickedit'
+      // above the first zoom threshold
+      const isEditing = scale >= firstZoomThreshold
       const editText = state.ui.goalForm.content
       const membersOfGoal = Object.keys(goalMembers)
         .map(address => goalMembers[address])

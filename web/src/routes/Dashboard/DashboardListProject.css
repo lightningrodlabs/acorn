@@ -196,6 +196,10 @@
 .entry-point-name {
   flex: 1;
   color: #535353;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  padding-right: 40px;
 }
 
 .dashboard-list-project-members-settings {

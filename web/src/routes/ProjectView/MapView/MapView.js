@@ -81,7 +81,7 @@ function MapView({
         {/* Only present this GoalTitleQuickEdit */}
         {/* if the scale is greater than or equal to 60% */}
         {/* because otherwise the font size gets to small and the text is cut off */}
-        {goalFormIsOpen && scale >= firstZoomThreshold && <GoalTitleQuickEdit projectId={projectId} />}
+        {goalFormIsOpen && (scale >= firstZoomThreshold || !goalIsBeingEdited) && <GoalTitleQuickEdit projectId={projectId} />}
       </div>
       {/* below items inside 'goal-form-position-container' maintain their normal scale */}
       {/* while positioning themselves absolutely (position: absolute) on the screen */}

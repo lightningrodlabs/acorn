@@ -49,7 +49,8 @@ export default function drawEntryPoints(
     ctx.fillStyle = entryPoint.color
     ctx.font = '25px ' + 'hk-grotesk-bold'
     // distance of entry point title from dotted rectangle
-    ctx.fillText(goal.content, left, top - 20)
+    let content = goal.content.length < 40 ? goal.content : goal.content.slice(0, 40) + '...'
+    ctx.fillText(content, left, top - 20)
     ctx.restore()
   })
 }

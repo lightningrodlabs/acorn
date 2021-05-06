@@ -41,6 +41,7 @@ export default function render(
   // use the editText for measuring,
   // even though it's not getting drawn on the canvas
   const text = isEditing ? editText : goal.content
+
   const goalHeight = getGoalHeight(ctx, text, scale, isEditing)
 
   // set up border color
@@ -132,7 +133,7 @@ export default function render(
   // render text, if not in edit mode
   // in which case the text is being rendered in the textarea
   // html element being overlaid on top of this Goal
-  if (!isEditing || scale < firstZoomThreshold) {
+  if (!isEditing) {
     const textBoxLeft = x + textBoxMarginLeft
     const textBoxTop = y + textBoxMarginTop
     const lines = getLinesForParagraphs(ctx, text, scale)

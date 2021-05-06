@@ -14,6 +14,8 @@ export const textBoxWidth = 310
 
 export const firstZoomThreshold = 0.6
 export const secondZoomThreshold = 0.4
+
+export const lineHeightMultiplier = 1.2
 // this is the regular font size, for
 // a regular level of zoom
 // and this is for the Goal Titles
@@ -82,7 +84,7 @@ export function getGoalHeight(ctx, goalText, scale, isEditing) {
   // then its height is a known/constant
   // because the title text is being limited 
   // to a fixed number of lines of text
-  if (!isEditing || scale < firstZoomThreshold) {
+  if (!isEditing) {
     return goalHeight
   }
 
@@ -99,7 +101,14 @@ export function getGoalHeight(ctx, goalText, scale, isEditing) {
   // takes font and font size into account
   const lines = getLinesForParagraphs(ctx, goalText, scale)
 
-  const totalTextHeight = lines.length * (fontSizeInt + lineSpacing)
+  // adjust font size based on scale (zoom factor)
+  let fontSizeToUse = fontSize // default
+  if (scale < secondZoomThreshold) {
+    fontSizeToUse = fontSizeExtraLargeInt
+  } else if (scale < firstZoomThreshold) {
+    fontSizeToUse = fontSizeLargeInt
+  }
+  const totalTextHeight = lines.length * (fontSizeToUse * lineHeightMultiplier)
 
   // calculate the goalHeight
   // from the top and bottom margins + the height
@@ -107,5 +116,6 @@ export function getGoalHeight(ctx, goalText, scale, isEditing) {
   const detectedGoalHeight =
     textBoxMarginTop * 2 + totalTextHeight + avatarHeight + avatarSpace * 2
 
+  // create a minimum height equal to the goalHeight
   return Math.max(detectedGoalHeight, goalHeight)
 }

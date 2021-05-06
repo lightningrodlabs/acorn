@@ -16,6 +16,7 @@ export default function handleEdgeConnectMouseUp(
         parent_address: fromAsParent ? fromAddress : toAddress,
         child_address: fromAsParent ? toAddress : fromAddress,
         randomizer: Date.now(),
+        is_imported: false
       },
     })
     dispatch(createEdgeAction)
