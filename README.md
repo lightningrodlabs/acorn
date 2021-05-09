@@ -13,7 +13,7 @@ __web__ (user interface)
 - Use nodejs version 14
 - run `npm run web-install`
 - run `npm run web`
-- Open up http://localhost:8080/ OR to view in Electron, run `npm start`
+- Open up http://localhost:8080/ OR to view in Electron, run `npm run electron`
 
 __electron__
 
