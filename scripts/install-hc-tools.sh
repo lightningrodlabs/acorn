@@ -8,5 +8,5 @@ cargo install holochain_cli \
   --rev $REV
 # v0.0.1-alpha.12
 cargo install \
-  --git https://github.com/holochain/lair.git
+  --git https://github.com/holochain/lair.git \
   --rev 3bd7105108ab241d6719e200dd15905cd3e74da1

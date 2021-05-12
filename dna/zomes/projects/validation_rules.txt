@@ -52,7 +52,7 @@ project_meta
 - create: `creator_address` should match the agent committing,
           only ONE can/should be created
           (can't be 100% certain but don't let one more be
-          created if another known exists already)
+          created if another known exists already. Perform during zome call not validate hook)
 - update: anyone can update,
           but only `name` and `image` can change from its original value
 - delete: cannot be deleted, for now
