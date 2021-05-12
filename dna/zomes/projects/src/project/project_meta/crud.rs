@@ -87,3 +87,14 @@ pub fn fetch_project_meta(_: ()) -> ExternResult<ProjectMetaWireEntry> {
     None => Err(WasmError::Guest("no project meta exists".into())),
   }
 }
+
+// Since get_links can't be controlled with GetOptions right
+// now, we need to check the Path instead, and use GetOptions::latest
+// this is used while trying to join a project
+#[hdk_extern]
+pub fn check_project_meta_exists(_: ()) -> ExternResult<bool> {
+  let path = Path::from(PROJECT_META_PATH);
+  Ok(get(path.hash()?, GetOptions::latest())?.is_some())
+}
+
+

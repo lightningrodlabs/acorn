@@ -13,8 +13,9 @@ import * as goalVoteActions from './projects/goal-votes/actions'
 import * as goalMemberActions from './projects/goal-members/actions'
 import * as goalCommentActions from './projects/goal-comments/actions'
 import * as entryPointActions from './projects/entry-points/actions'
+import * as projectMetaActions from './projects/project-meta/actions'
 import { setMember } from './projects/members/actions'
-import { setAgent } from './agents/actions'
+import { fetchAgents, setAgent } from './agents/actions'
 import { cellIdToString } from 'connoropolous-hc-redux-middleware'
 
 // We directly use the 'success' type, since these actions
@@ -67,6 +68,7 @@ const crudActionSets = {
   GoalMember: goalMemberActions,
   GoalComment: goalCommentActions,
   EntryPoint: entryPointActions,
+  ProjectMeta: projectMetaActions,
 }
 const crudTypes = {
   edge: 'Edge',
@@ -75,6 +77,7 @@ const crudTypes = {
   goal_member: 'GoalMember',
   goal_comment: 'GoalComment',
   entry_point: 'EntryPoint',
+  project_meta: 'ProjectMeta', // only 'update' is default crud
 }
 
 // entryTypeName = CamelCase
@@ -119,14 +122,30 @@ export default (store) => (signal) => {
 
   // otherwise use non-crud actions
   switch (payload.entry_type) {
-    // profiles zome
+    /*
+      PROFILES Zome
+    */
     case SignalType.Agent:
       // this one is different than the rest on purpose
       // there's no "local action" equivalent
       store.dispatch(setAgent(payload.data))
       break
-    // projects zome
+    /* 
+      PROJECTS Zomes
+    */
     case SignalType.Member:
+      const stateCheck = store.getState()
+      // check if this member is in our list of agents whose
+      // profiles we already have, if not, then we should
+      // refetch the agents list
+      if (!stateCheck.agents[payload.data.address]) {
+        store.dispatch(
+          fetchAgents.create({
+            cellIdString: cellIdToString(cellId),
+            payload: null,
+          })
+        )
+      }
       // this one is different than the rest on purpose
       // there's no "local action" equivalent
       store.dispatch(setMember(cellIdToString(cellId), payload.data))

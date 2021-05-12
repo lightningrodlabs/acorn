@@ -106,6 +106,9 @@ pub mod tests {
     let mut validate_data = fixt!(ValidateData);
     let create_header = fixt!(Create);
     let mut goal_comment = fixt!(GoalComment);
+    // set is_imported to false so that we don't skip
+    // important validation
+    goal_comment.is_imported = false;
 
     *validate_data.element.as_header_mut() = Header::Create(create_header.clone());
 
@@ -115,24 +118,8 @@ pub mod tests {
       Error::EntryMissing.into(),
     );
 
-    // with an entry with a random
-    // agent_address it will fail (not the agent committing)
     let goal_wrapped_header_hash = fixt!(WrappedHeaderHash);
-    let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
     goal_comment.goal_address = goal_wrapped_header_hash.clone();
-    goal_comment.agent_address = random_wrapped_agent_pub_key.clone();
-    *validate_data.element.as_entry_mut() =
-      ElementEntry::Present(goal_comment.clone().try_into().unwrap());
-    assert_eq!(
-      super::validate_create_entry_goal_comment(validate_data.clone()),
-      Error::CorruptCreateAgentPubKeyReference.into(),
-    );
-
-    // make the agent_address valid by making it equal the
-    // AgentPubKey of the agent committing,
-    // but it will still be missing the goal dependency so it will
-    // return UnresolvedDependencies
-    goal_comment.agent_address = WrappedAgentPubKey::new(create_header.author.as_hash().clone());
     *validate_data.element.as_entry_mut() =
       ElementEntry::Present(goal_comment.clone().try_into().unwrap());
 
@@ -161,13 +148,49 @@ pub mod tests {
       ])),
     );
 
+    // now make it as if there is a Goal at the parent_address
+    // so that we pass the dependency validation
+    let goal = fixt!(Goal);
+    let mut goal_element = fixt!(Element);
+    *goal_element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
+
+    let mut mock_hdk = MockHdkT::new();
+    // the resolve_dependencies `get` call of the goal_address
+    mock_hdk
+      .expect_get()
+      .with(mockall::predicate::eq(GetInput::new(
+        goal_wrapped_header_hash.clone().0.into(),
+        GetOptions::content(),
+      )))
+      .times(1)
+      .return_const(Ok(Some(goal_element.clone())));
+
+    set_hdk(mock_hdk);
+
+    // with an entry with a random
+    // agent_address it will fail (not the agent committing)
+    let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
+    goal_comment.agent_address = random_wrapped_agent_pub_key.clone();
+    *validate_data.element.as_entry_mut() =
+      ElementEntry::Present(goal_comment.clone().try_into().unwrap());
+    assert_eq!(
+      super::validate_create_entry_goal_comment(validate_data.clone()),
+      Error::CorruptCreateAgentPubKeyReference.into(),
+    );
+
     // SUCCESS case
     // the element exists
-    // agent_address refers to the agent committing
     // the parent goal is found/exists
+    // agent_address refers to the agent committing
     // -> good to go
+    
+    // make the agent_address valid by making it equal the
+    // AgentPubKey of the agent committing
+    goal_comment.agent_address = WrappedAgentPubKey::new(create_header.author.as_hash().clone());
+    *validate_data.element.as_entry_mut() =
+      ElementEntry::Present(goal_comment.clone().try_into().unwrap());
 
-    // now it is as if there is a Goal at the parent_address
+    // it is as if there is a Goal at the parent_address
     let goal = fixt!(Goal);
     let mut goal_element = fixt!(Element);
     *goal_element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());

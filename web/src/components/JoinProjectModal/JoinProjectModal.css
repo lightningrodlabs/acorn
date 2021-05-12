@@ -1,10 +1,47 @@
 .join-project-modal-wrapper {
-  /* width: 550px; */
-  /* height: 453px; */
+  height: 523px;
   overflow: hidden;
   position: relative;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .project-modal-button .button.large {
   width: 170px;
+}
+
+/* join project modal animation */
+
+.join-project-form {
+  position: absolute;
+  opacity: 1;
+  transition: opacity 0.3s, transform 0.4s;
+  width: 420px;
+}
+
+.join-project-form.project-join-check-is-done {
+  /* background-color: blue; */
+  opacity: 0;
+  -webkit-transform: translateX(-300px);
+  transform: translateX(-300px);
+}
+
+/* project join follow up modal animation */
+
+/* default is to be hidden */
+
+.project-join-follow-up {
+  /* position: absolute; */
+  opacity: 0;
+  -webkit-transform: scale(0.8);
+  transform: scale(0.8);
+  transition: opacity 0.3s, transform 0.4s;
+}
+
+/* then it shows */
+
+.project-join-follow-up.project-join-check-is-done {
+  opacity: 1;
+  -webkit-transform: scale(1);
+  transform: scale(1);
 }

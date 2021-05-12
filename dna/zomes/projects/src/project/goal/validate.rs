@@ -105,6 +105,9 @@ pub mod tests {
     let mut validate_data = fixt!(ValidateData);
     let create_header = fixt!(Create);
     let mut goal = fixt!(Goal);
+    // set is_imported to false so that we don't skip
+    // important validation
+    goal.is_imported = false;
 
     *validate_data.element.as_header_mut() = Header::Create(create_header.clone());
 

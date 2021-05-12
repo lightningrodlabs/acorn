@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { app, BrowserWindow, ipcMain, Menu, shell } from 'electron'
+import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import * as path from 'path'
 import log from 'electron-log'
 import { devOptions, prodOptions, runHolochain, StateSignal } from './holochain'
@@ -14,8 +14,8 @@ const BACKGROUND_COLOR = '#fbf9f7'
 // must point to unpacked versions, not in an asar archive
 // in production
 const HOLOCHAIN_BINARY_PATH = app.isPackaged
-  ? path.join(__dirname, '../../app.asar.unpacked/binaries/acorn')
-  : path.join(__dirname, '../binaries/acorn')
+  ? path.join(__dirname, '../../app.asar.unpacked/binaries/acorn-conductor')
+  : path.join(__dirname, '../binaries/acorn-conductor')
 const LAIR_KEYSTORE_PATH = app.isPackaged
   ? path.join(__dirname, '../../app.asar.unpacked/binaries/lair-keystore')
   : path.join(__dirname, '../binaries/lair-keystore')
@@ -41,7 +41,7 @@ const createMainWindow = (): BrowserWindow => {
     mainWindow.loadFile(MAIN_FILE)
   } else {
     // development
-    mainWindow.loadURL('http://localhost:8080')
+    mainWindow.loadURL('http://localhost:8081')
   }
   // Open <a href='' target='_blank'> with default system browser
   mainWindow.webContents.on('new-window', function (event, url) {

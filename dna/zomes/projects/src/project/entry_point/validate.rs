@@ -78,6 +78,9 @@ pub mod tests {
     let mut validate_data = fixt!(ValidateData);
     let create_header = fixt!(Create);
     let mut entry_point = fixt!(EntryPoint);
+    // set is_imported to false so that we don't skip
+    // important validation
+    entry_point.is_imported = false;
 
     *validate_data.element.as_header_mut() = Header::Create(create_header.clone());
 
@@ -87,29 +90,17 @@ pub mod tests {
       Error::EntryMissing.into(),
     );
 
-    // with an entry with a random
-    // creator_address it will fail (not the agent committing)
+    // now make it pass EntryMissing by adding an ElementEntry::Present
     let goal_wrapped_header_hash = fixt!(WrappedHeaderHash);
-    let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
     entry_point.goal_address = goal_wrapped_header_hash.clone();
-    entry_point.creator_address = random_wrapped_agent_pub_key.clone();
     *validate_data.element.as_entry_mut() =
       ElementEntry::Present(entry_point.clone().try_into().unwrap());
-    assert_eq!(
-      super::validate_create_entry_entry_point(validate_data.clone()),
-      Error::CorruptCreateAgentPubKeyReference.into(),
-    );
-
-    // make the creator_address valid by making it equal the
-    // AgentPubKey of the agent committing,
-    // but it will still be missing the goal dependency so it will
-    // return UnresolvedDependencies
-    entry_point.creator_address = WrappedAgentPubKey::new(create_header.author.as_hash().clone());
-    *validate_data.element.as_entry_mut() =
-      ElementEntry::Present(entry_point.clone().try_into().unwrap());
-
+    
     // now, since validation is dependent on other entries, we begin
     // to have to mock `get` calls to the HDK
+
+    // it will be missing the goal dependency so it will
+    // return UnresolvedDependencies
 
     let mut mock_hdk = MockHdkT::new();
     // the resolve_dependencies `get` call of the parent goal
@@ -133,13 +124,8 @@ pub mod tests {
       ])),
     );
 
-    // SUCCESS case
-    // the element exists
-    // creator_address refers to the agent committing
-    // the parent goal is found/exists
-    // -> good to go
-
-    // now it is as if there is a Goal at the parent_address
+    // now make it valid by making it
+    // as if there is a Goal at the parent_address
     let goal = fixt!(Goal);
     let mut goal_element = fixt!(Element);
     *goal_element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
@@ -156,6 +142,48 @@ pub mod tests {
       .return_const(Ok(Some(goal_element.clone())));
 
     set_hdk(mock_hdk);
+
+    // with an entry with a random (not the agent committing)
+    // creator_address it will fail
+    let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
+    entry_point.creator_address = random_wrapped_agent_pub_key.clone();
+    *validate_data.element.as_entry_mut() =
+      ElementEntry::Present(entry_point.clone().try_into().unwrap());
+
+    assert_eq!(
+      super::validate_create_entry_entry_point(validate_data.clone()),
+      Error::CorruptCreateAgentPubKeyReference.into(),
+    );
+
+    // SUCCESS case
+    // the element exists
+    // the parent goal is found/exists
+    // is_imported is false and creator_address refers to the agent committing (or is_imported = true)
+    // -> good to go
+
+    // make it as if there is a Goal at the parent_address
+    let goal = fixt!(Goal);
+    let mut goal_element = fixt!(Element);
+    *goal_element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
+
+    let mut mock_hdk = MockHdkT::new();
+    // the resolve_dependencies `get` call of the goal_address
+    mock_hdk
+      .expect_get()
+      .with(mockall::predicate::eq(GetInput::new(
+        goal_wrapped_header_hash.clone().0.into(),
+        GetOptions::content(),
+      )))
+      .times(1)
+      .return_const(Ok(Some(goal_element.clone())));
+
+    set_hdk(mock_hdk);
+
+    // make the creator_address valid by making it equal the
+    // AgentPubKey of the agent committing,
+    entry_point.creator_address = WrappedAgentPubKey::new(create_header.author.as_hash().clone());
+    *validate_data.element.as_entry_mut() =
+      ElementEntry::Present(entry_point.clone().try_into().unwrap());
 
     // we should see that the ValidateCallbackResult
     // is finally valid

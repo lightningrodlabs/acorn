@@ -54,11 +54,11 @@ const COMMUNITY_PROXY_URL =
   'kitsune-proxy://SYVd4CF3BdJ4DS7KwLLgeU3_DbHoZ34Y-qroZ79DOs8/kitsune-quic/h/165.22.32.11/p/5779/--'
 
 const devOptions: HolochainOptions = {
-  datastorePath: '../tmp/databases',
+  datastorePath: '../tmp2/databases',
   appId: MAIN_APP_ID,
-  appWsPort: 8888,
-  adminWsPort: 1234,
-  keystorePath: '../tmp/keystore',
+  appWsPort: 8889,
+  adminWsPort: 1235,
+  keystorePath: '../tmp2/keystore',
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 const prodOptions: HolochainOptions = {

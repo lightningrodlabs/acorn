@@ -207,3 +207,9 @@
   flex: 1;
   scrollbar-width: none;
 }
+
+.pending-projects-for-sync {
+  padding: 8px;
+  background: green;
+  color: #FFF;
+}

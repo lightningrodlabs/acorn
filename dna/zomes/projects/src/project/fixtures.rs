@@ -144,6 +144,6 @@ pub(crate) mod fixtures {
 
   fixturator!(
     Goal;
-      constructor fn new(String, WrappedAgentPubKey, OptionWrappedAgentPubKey, f64, Optionf64, Hierarchy, Status, OptionVecString, String, OptionTimeFrame);
+      constructor fn new(String, WrappedAgentPubKey, OptionWrappedAgentPubKey, f64, Optionf64, Hierarchy, Status, OptionVecString, String, OptionTimeFrame, bool);
   );
 }

@@ -14,11 +14,8 @@ import JoinProjectModal from '../../components/JoinProjectModal/JoinProjectModal
 import InviteMembersModal from '../../components/InviteMembersModal/InviteMembersModal'
 // import new modals here
 
-import {
-  PROJECTS_ZOME_NAME,
-  PROJECT_APP_PREFIX,
-} from '../../holochainConfig'
-import { passphraseToUuid } from '../../secrets'
+import { PROJECTS_ZOME_NAME, PROJECT_APP_PREFIX } from '../../holochainConfig'
+import { passphraseToUid } from '../../secrets'
 import { getAdminWs, getAppWs, getAgentPubKey } from '../../hcWebsockets'
 import { setProjectsCellIds } from '../../cells/actions'
 import { fetchEntryPoints } from '../../projects/entry-points/actions'
@@ -52,8 +49,8 @@ function Dashboard({
   updateIsAvailable,
   setShowUpdatePromptModal,
 }) {
-  
   // created_at, name
+  const [pendingProjects, setPendingProjects] = useState([])
   const [selectedSort, setSelectedSort] = useState('created_at')
   const [showSortPicker, setShowSortPicker] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
@@ -66,15 +63,45 @@ function Dashboard({
   // cells is an array of cellId strings
   useEffect(() => {
     cells.forEach((cellId) => {
-      fetchProjectMeta(cellId).catch(e => {
-        // if something went wrong, let's not show it in the list
-        // which is making it block everything else from working
-        setProjectsCellIds(cells.filter((s => s !== cellId)))
+      fetchProjectMeta(cellId).catch((e) => {
+        // this means 'no project meta found'
+        // so we add it to 'pending projects'
+        // because it clearly hasn't synced yet
+        setPendingProjects((pending) => pending.concat([cellId]))
       })
       fetchMembers(cellId)
       fetchEntryPoints(cellId)
     })
   }, [JSON.stringify(cells)])
+
+  // handle the regular checking for those projects
+  // that haven't synced yet
+  useEffect(() => {
+    const checkAgainInterval = setInterval(async () => {
+      const found = await Promise.all(
+        pendingProjects.map(async (pendingProjectCellId) => {
+          try {
+            // fetchProjectMeta, if it succeeds
+            // will automatically change the redux state since this
+            // is a function wrapped in a dispatch call
+            await fetchProjectMeta(pendingProjectCellId)
+            return pendingProjectCellId
+          } catch (e) {
+            // project meta not found
+            return false
+          }
+        })
+      )
+      // only keep the ones that still didn't
+      // return a result
+      setPendingProjects((pendingProjects) => {
+        return pendingProjects.filter((c) => !found.find((ci) => c === ci))
+      })
+    }, 60000)
+    return () => {
+      clearInterval(checkAgainInterval)
+    }
+  }, [JSON.stringify(pendingProjects)])
 
   const onCreateProject = (project, passphrase) =>
     createProject(agentAddress, project, passphrase)
@@ -82,9 +109,15 @@ function Dashboard({
   const onJoinProject = (passphrase) => joinProject(passphrase)
 
   const onImportProject = (projectData, passphrase) =>
-    importProject(existingAgents, agentAddress, projectData, passphrase, profilesCellIdString)
+    importProject(
+      existingAgents,
+      agentAddress,
+      projectData,
+      passphrase,
+      profilesCellIdString
+    )
 
-  const hasProjects = cells.length > 0 // write 'false' if want to see Empty State
+  const hasProjects = cells.length > 0 && projects.length > 0 // write 'false' if want to see Empty State
 
   const setSortBy = (sortBy) => () => {
     setSelectedSort(sortBy)
@@ -102,62 +135,69 @@ function Dashboard({
     })
   }
 
+  // being in 'projects' means succesful fetchProjectMeta
+  // being in 'pendingProjects' means unsuccessful fetchProjectMeta
+  // that's why the combination of the two means that all calls to holochain
+  // to check have completed
+  const hasFetchedForAllProjects =
+    cells.length === projects.length + pendingProjects.length
+
   return (
     <>
-      <div className='dashboard-background'>
-        <div className='dashboard-left-menu'>
-          <NavLink to='/dashboard' className='dashboard-left-menu-item'>
-            <Icon name='folder.svg' size='very-small' className='grey' />
+      <div className="dashboard-background">
+        <div className="dashboard-left-menu">
+          <NavLink to="/dashboard" className="dashboard-left-menu-item">
+            <Icon name="folder.svg" size="very-small" className="grey" />
             My Projects
           </NavLink>
           <NavLink
-            to='/settings'
-            className='dashboard-left-menu-item feature-in-development'
+            to="/settings"
+            className="dashboard-left-menu-item feature-in-development"
           >
-            <Icon name='setting.svg' size='very-small' className='grey' />
+            <Icon name="setting.svg" size="very-small" className="grey" />
             Settings
           </NavLink>
         </div>
-        <div className='dashboard-my-projects'>
-          <div className='my-projects-heading'>My Projects</div>
+        <div className="dashboard-my-projects">
+          <div className="my-projects-heading">My Projects</div>
           {/* dashboard header */}
-          <div className='my-projects-header'>
-            <div className='my-projects-header-buttons'>
+          <div className="my-projects-header">
+            <div className="my-projects-header-buttons">
               <div
-                className='my-projects-button create-project-button'
+                className="my-projects-button create-project-button"
                 onClick={() => setShowCreateModal(true)}
               >
                 Create a project
               </div>
               <div
-                className='my-projects-button'
+                className="my-projects-button"
                 onClick={() => setShowJoinModal(true)}
               >
                 Join a project
               </div>
               <div
-                className='my-projects-button'
+                className="my-projects-button"
                 onClick={() => setShowImportModal(true)}
               >
                 <Icon
-                  name='import.svg'
-                  size='very-small'
-                  className='black not-hoverable'
+                  name="import.svg"
+                  size="very-small"
+                  className="black not-hoverable"
                 />
                 <div>Import</div>
               </div>
             </div>
-            <div className='my-projects-sorting'>
+            <div className="my-projects-sorting">
               <div>Sort by</div>
               <div
-                className='my-projects-sorting-selected'
+                className="my-projects-sorting-selected"
                 onClick={() => setShowSortPicker(!showSortPicker)}
               >
                 {selectedSort === 'created_at' && 'Last Created'}
                 {selectedSort === 'name' && 'Name'}
                 <Icon
-                  name='line-angle-down.svg'
-                  size='very-small'
+                  name="line-angle-down.svg"
+                  size="very-small"
                   className={`grey ${showSortPicker ? 'active' : ''}`}
                 />
               </div>
@@ -165,23 +205,28 @@ function Dashboard({
                 in={showSortPicker}
                 timeout={100}
                 unmountOnExit
-                classNames='my-projects-sorting-select'
+                classNames="my-projects-sorting-select"
               >
-                <ul className='my-projects-sorting-select'>
+                <ul className="my-projects-sorting-select">
                   <li onClick={setSortBy('created_at')}>Last Created</li>
                   <li onClick={setSortBy('name')}>Name</li>
                 </ul>
               </CSSTransition>
             </div>
           </div>
-          <div className='my-projects-content'>
+          <div className="my-projects-content">
+            {pendingProjects.length > 0 && (
+              <div className="pending-projects-for-sync">
+                {pendingProjects.length} projects queued for sync...
+              </div>
+            )}
             {/* Only render the sorted projects with their real metadata */}
-            {cells.length !== projects.length &&
+            {!hasFetchedForAllProjects &&
               cells.map((cellId) => (
                 <DashboardListProjectLoading key={'dlpl-key' + cellId} />
               ))}
             {/* if they are all loaded */}
-            {cells.length === projects.length &&
+            {hasFetchedForAllProjects &&
               sortedProjects.map((project) => {
                 return (
                   <DashboardListProject
@@ -228,7 +273,7 @@ function Dashboard({
 }
 
 async function installProjectApp(passphrase) {
-  const uuid = passphraseToUuid(passphrase)
+  const uid = passphraseToUid(passphrase)
   // add a bit of randomness so that
   // the same passphrase can be tried multiple different times
   // without conflicting
@@ -237,7 +282,7 @@ async function installProjectApp(passphrase) {
   // joins
   const installed_app_id = `${PROJECT_APP_PREFIX}-${Math.random()
     .toString()
-    .slice(-6)}-${uuid}`
+    .slice(-6)}-${uid}`
   const adminWs = await getAdminWs()
   const agent_key = getAgentPubKey()
   if (!agent_key) {
@@ -249,10 +294,10 @@ async function installProjectApp(passphrase) {
   // in order for the 'joining' of Projects to work
   const dnaPath = window.require
     ? await window.require('electron').ipcRenderer.invoke('getProjectsPath')
-    : '../dna/workdir/projects.dna'
+    : './dna/workdir/projects.dna'
   const hash = await adminWs.registerDna({
     path: dnaPath,
-    properties: { uuid },
+    uid,
   })
   // INSTALL
   const installedApp = await adminWs.installApp({
@@ -260,13 +305,12 @@ async function installProjectApp(passphrase) {
     installed_app_id,
     dnas: [
       {
-        nick: uuid,
+        nick: uid,
         hash,
       },
     ],
   })
-  const slotIds = Object.keys(installedApp.slots)
-  const cellId = installedApp.slots[slotIds[0]].base_cell_id
+  const cellId = installedApp.cell_data[0].cell_id
   const cellIdString = cellIdToString(cellId)
   // ACTIVATE
   await adminWs.activateApp({ installed_app_id })
@@ -290,27 +334,39 @@ async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
 async function joinProject(passphrase, dispatch) {
   // joinProject
   // join a DNA
-  // then try to get the project metadata
-  // if that DOESN'T work, the attempt is INVALID
-  // remove the instance again immediately
+  // then try to find a peer
+  // either way, just push the project into the 'queue'
   const [cellIdString, cellId, installedAppId] = await installProjectApp(
     passphrase
   )
   const appWs = await getAppWs()
   try {
-    // we are waiting five seconds before we call because holochain
-    // doesn't seem to be taking the time to check the network fully
-    // with a long timeout, even though we say GetOptions::latest
-    await new Promise((resolve) => setTimeout(resolve, 5000))
-    await appWs.callZome({
-      cap: null,
-      cell_id: cellId,
-      zome_name: PROJECTS_ZOME_NAME,
-      fn_name: 'fetch_project_meta',
-      payload: null,
-      provenance: getAgentPubKey(), // FIXME: this will need correcting after holochain changes this
-    })
-    await dispatch(joinProjectCellId(cellIdString))
+    const adminWs = await getAdminWs()
+    // check whether we immediately connect to any peers
+    // within 10-15 seconds
+    // if not, we will push this into 'pending projects' status
+    async function checkForPeer(iteration) {
+      const stateDump = await adminWs.dumpState({
+        cell_id: cellId,
+      })
+      if (stateDump[0].peer_dump.peers.length === 0) {
+        if (iteration < 3) {
+          console.log(
+            'found no peers but will wait 5 seconds and check again...'
+          )
+          // wait 5 seconds and check again
+          await new Promise((resolve) => setTimeout(resolve, 5000))
+          await checkForPeer(iteration + 1)
+        } else {
+          // otherwise just exit
+          console.log(
+            'found no peers but maxed out iterations, throwing no peers error...'
+          )
+          throw new Error('no peers')
+        }
+      }
+    }
+    await checkForPeer(0)
     // trigger a side effect...
     // this will let other project members know you're here
     // without 'blocking' the thread or the UX
@@ -325,21 +381,25 @@ async function joinProject(passphrase, dispatch) {
       })
       .then(() => console.log('succesfully triggered init_signal'))
       .catch((e) => console.error('failed while triggering init_signal: ', e))
+    // this will trigger the fetching of project meta
+    // checks and other things
+    await dispatch(joinProjectCellId(cellIdString))
+    // since we have, in this case, found a peer
+    // we will return true to indicate that
     return true
   } catch (e) {
-    // deactivate app
-    const adminWs = await getAdminWs()
-    await adminWs.deactivateApp({
-      installed_app_id: installedAppId,
-    })
-    console.log(e)
-    if (
-      e.type === 'error' &&
-      e.data.type === 'ribosome_error' &&
-      e.data.data.includes('no project meta exists')
-    ) {
+    if (e.message === 'no peers') {
+      // this will trigger the fetching of project meta
+      // checks and other things
+      await dispatch(joinProjectCellId(cellIdString))
       return false
     } else {
+      console.log(e)
+      // deactivate app
+      // const adminWs = await getAdminWs()
+      // await adminWs.deactivateApp({
+      //   installed_app_id: installedAppId,
+      // })
       throw e
     }
   }
@@ -405,7 +465,7 @@ function mapDispatchToProps(dispatch) {
         passphrase,
         creator_address: agentAddress,
         created_at: Date.now(),
-        is_imported: false
+        is_imported: false,
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },
@@ -416,7 +476,7 @@ function mapDispatchToProps(dispatch) {
       projectData,
       passphrase,
       profilesCellIdString
-      ) =>
+    ) =>
       importProject(
         existingAgents,
         agentAddress,

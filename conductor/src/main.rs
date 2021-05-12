@@ -1,8 +1,9 @@
 use embedded_holochain_runner::*;
-use tokio::signal::unix::{signal, SignalKind};
 use structopt::StructOpt;
+use tokio::signal::unix::{signal, SignalKind};
 
 const PROFILES_DNA: &'static [u8] = include_bytes!("../../dna/workdir/profiles.dna");
+const PROJECTS_DNA: &'static [u8] = include_bytes!("../../dna/workdir/projects.dna");
 
 #[derive(Debug, StructOpt)]
 #[structopt(
@@ -61,14 +62,17 @@ fn main() {
 
   let opt = Opt::from_args();
   // String is like "CellNick"/"SlotId"
-  let dnas: Vec<(Vec<u8>, String)> = vec![(PROFILES_DNA.into(), "profiles-slot".into())];
+  let dnas: Vec<(Vec<u8>, String)> = vec![
+    (PROFILES_DNA.into(), "profiles-slot".into()),
+    (PROJECTS_DNA.into(), "projects-slot".into()),
+  ];
 
   // An infinite stream of hangup signals.
   let mut stream = signal(SignalKind::terminate()).unwrap();
 
   tokio::task::block_in_place(|| {
     rt.block_on(async {
-      let sender = async_main(HcConfig {
+      let shutdown_sender = async_main(HcConfig {
         app_id: opt.app_id,
         dnas,
         admin_ws_port: opt.admin_ws_port,
@@ -77,12 +81,13 @@ fn main() {
         keystore_path: opt.keystore_path,
         proxy_url: opt.proxy_url,
         event_channel: Some(sender),
-      }).await;
+      })
+      .await;
       // wait for SIGTERM
       stream.recv().await;
       println!("got sigterm");
       // send shutdown signal
-      sender.send(true).unwrap();
+      shutdown_sender.send(true).unwrap();
       println!("sent shutdown signal");
     })
   });

@@ -1,9 +1,9 @@
-const passphraseToUuid = passphrase => `uuid-${passphrase.split(' ').join('-')}`
+const passphraseToUid = passphrase => `uid-${passphrase.split(' ').join('-')}`
 
-const uuidToPassphrase = uuid =>
-  uuid
-    .replace('uuid-', '')
+const uidToPassphrase = uid =>
+  uid
+    .replace('uid-', '')
     .split('-')
     .join(' ')
 
-export { passphraseToUuid, uuidToPassphrase }
+export { passphraseToUid, uidToPassphrase }

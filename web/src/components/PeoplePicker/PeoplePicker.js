@@ -143,7 +143,9 @@ function mapStateToProps(state, ownProps) {
   const membersOfGoal = Object.keys(goalMembers)
     .map((address) => goalMembers[address])
     .filter((goalMember) => goalMember.goal_address === goalAddress)
-  const agents = Object.keys(members).map((address) => state.agents[address])
+  // just in case we've received a 'member' before the agents profile
+  // filter out any missing profiles for now
+  const agents = Object.keys(members).map((address) => state.agents[address]).filter((agent) => agent)
   return {
     agentAddress: state.agentAddress,
     people: agents.map((agent) => {

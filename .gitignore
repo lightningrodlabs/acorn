@@ -2,6 +2,7 @@ binaries
 node_modules
 out/
 tmp
+tmp2
 electron/web
 
 web/dist/*.js

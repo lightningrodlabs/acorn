@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 #hdk = "0.0.100"
-hdk = { git = "https://github.com/holochain/holochain", rev = "a6ac0439670ba367c723a80d3b8bc7c419aa5f6e", version = "0.0.101-alpha.0" }
+hdk = { git = "https://github.com/holochain/holochain", branch = "2021-05-12-deepkey-tweaks" }
 paste = "*"
 # use whatever serde hdk uses
 serde = "*"
@@ -14,12 +14,12 @@ thiserror = "1"
 mockall = "0.9"
 
 [dev-dependencies]
-fixt = { git = "https://github.com/holochain/holochain", rev = "a6ac0439670ba367c723a80d3b8bc7c419aa5f6e" }
-holochain_types = { git = "https://github.com/holochain/holochain", rev = "a6ac0439670ba367c723a80d3b8bc7c419aa5f6e" }
+fixt = { git = "https://github.com/holochain/holochain", branch = "2021-05-12-deepkey-tweaks" }
+holochain_types = { git = "https://github.com/holochain/holochain", branch = "2021-05-12-deepkey-tweaks" }
 rand = "0.7"
 strum = "0.18.0"
 strum_macros = "0.18.0"
 
-# [features]
-# mock = ["hdk/mock", "hdk/test_utils"]
+[features]
+mock = ["hdk/mock", "hdk/test_utils"]
 
