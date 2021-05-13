@@ -16,7 +16,7 @@ export default function GuideBook() {
   return (
     <div className='guidebook-outer-wrapper'>
       <div className='guidebook-wrapper'>
-        <h2 className='guidebook-title'>Guidebook</h2>
+        <div className='guidebook-title'>Guidebook</div>
         <Tabs tabs={tabs} selected={tabSelected} toSelectTab={setTabSelected}>
           <HowTos />
           <Shortcuts />

@@ -1,9 +1,8 @@
 .join-project-modal-wrapper {
-  height: 523px;
+  height: 426px;
   overflow: hidden;
   position: relative;
   justify-content: space-between;
-  align-items: center;
 }
 
 .project-modal-button .button.large {
@@ -24,6 +23,11 @@
   opacity: 0;
   -webkit-transform: translateX(-300px);
   transform: translateX(-300px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+    
 }
 
 /* project join follow up modal animation */

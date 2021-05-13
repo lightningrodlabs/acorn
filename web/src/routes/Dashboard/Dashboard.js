@@ -117,8 +117,6 @@ function Dashboard({
       profilesCellIdString
     )
 
-  const hasProjects = cells.length > 0 && projects.length > 0 // write 'false' if want to see Empty State
-
   const setSortBy = (sortBy) => () => {
     setSelectedSort(sortBy)
     setShowSortPicker(false)
@@ -216,10 +214,25 @@ function Dashboard({
           </div>
           <div className="my-projects-content">
             {pendingProjects.length > 0 && (
+              <>
+              
               <div className="pending-projects-for-sync">
-                {pendingProjects.length} projects queued for sync...
+              <div className="pending-projects-for-sync-message-icon">
+              <Icon
+                name='acorn-logo-stroked.svg'
+                className='not-hoverable very-small grey'
+              />
+              <div className="pending-projects-for-sync-message">
+                {pendingProjects.length} {pendingProjects.length === 1 ? "project" : "projects" } queued for sync...
+                </div>
+                </div>
+            
+                <div className="pending-projects-for-sync-button">Show details</div>
               </div>
+              
+              </>
             )}
+            
             {/* Only render the sorted projects with their real metadata */}
             {!hasFetchedForAllProjects &&
               cells.map((cellId) => (
@@ -238,7 +251,7 @@ function Dashboard({
                   />
                 )
               })}
-            {!hasProjects && (
+            {hasFetchedForAllProjects && projects.length === 0 && (
               <DashboardEmptyState
                 onJoinClick={() => setShowJoinModal(true)}
                 onCreateClick={() => setShowCreateModal(true)}

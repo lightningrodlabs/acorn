@@ -75,24 +75,22 @@ function HeaderRightPanel({
   return (
     <div className="header-right-panel">
       {/* <Icon name="search-line.svg" onClick={clickSearch}/> */}
-      <Route path="/project">
-        {/* open or close the guidebook, depending on if it */}
-        {/* is currently open or closed */}
-        {/* Guidebook Button */}
+      {/* open or close the guidebook, depending on if it */}
+      {/* is currently open or closed */}
+      {/* Guidebook Button */}
+      {/* @ts-ignore */}
+      <NavLink
+        className="header-right-panel-icon"
+        to={`${location.pathname}${
+          isGuideOpen ? '' : '?' + GUIDE_IS_OPEN + '=1'
+        }`}
+        // if clicked on guidebook for the first time, remove the help message
+        // and remember not to show that in the future (store that locally) aka persist
+        onClick={hideGuidebookHelpMessage}
+      >
         {/* @ts-ignore */}
-        <NavLink
-          className="header-right-panel-icon"
-          to={`${location.pathname}${
-            isGuideOpen ? '' : '?' + GUIDE_IS_OPEN + '=1'
-          }`}
-          // if clicked on guidebook for the first time, remove the help message
-          // and remember not to show that in the future (store that locally) aka persist
-          onClick={hideGuidebookHelpMessage}
-        >
-          {/* @ts-ignore */}
-          <Icon name="guidebook.svg" className="header-right-panel-icon" />
-        </NavLink>
-      </Route>
+        <Icon name="guidebook.svg" className="header-right-panel-icon" />
+      </NavLink>
       <div className="avatar-and-status-wrapper">
         <div
           className="avatar-container"
@@ -116,16 +114,14 @@ function HeaderRightPanel({
         </div>
       </div>
       {/* Guidebook */}
-      <Route path="/project">
-        <Modal
-          className="guidebook-modal"
-          white
-          active={isGuideOpen}
-          onClose={onCloseGuidebook}
-        >
-          <GuideBook />
-        </Modal>
-      </Route>
+      <Modal
+        className="guidebook-modal"
+        white
+        active={isGuideOpen}
+        onClose={onCloseGuidebook}
+      >
+        <GuideBook />
+      </Modal>
       {/* Profile Menu */}
       {isAvatarMenuOpen && (
         <div className="profile-wrapper" ref={ref}>

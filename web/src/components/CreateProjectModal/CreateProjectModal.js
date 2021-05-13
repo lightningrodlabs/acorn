@@ -66,7 +66,7 @@ function CreateProjectForm({
   }, [projectCoverUrl])
 
   const subheading =
-    'You can share the project with people or just keep it to yourself'
+    'You can share the project with people or just keep it to yourself.'
 
   const actionButtonContent = (
     <ButtonWithPendingState

@@ -16,7 +16,7 @@
   color: #222222;
   line-height: 22px;
   font-size: 16px;
-  margin-bottom: 7px;
+  margin-bottom: 2px;
   display: block;
   font-family: 'hk-grotesk-bold';
 }
@@ -25,7 +25,7 @@
   color: #898989;
   font-size: 14px;
   line-height: 18px;
-  margin: 0 0 10px 0;
+  margin: 2px 0 4px 0;
   flex: 1;
 }
 
@@ -33,6 +33,7 @@
   flex: 1;
   display: flex;
   position: relative;
+  margin-top: 6px;
 }
 
 .validating_form_input .input_wrapper input {
@@ -55,7 +56,7 @@
 }
 
 .validating_form_input .input_wrapper input::placeholder {
-  color: #d1d1d1;
+  color: #bdbdbd;
 }
 
 .validating_form_input input.with_at_symbol {

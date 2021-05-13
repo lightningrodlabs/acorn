@@ -25,8 +25,8 @@ function JoinProjectForm({
   const validateButtonContent = (
     <ButtonWithPendingState
       pending={validatingSecret}
-      pendingText="Validating..."
-      actionText="Join"
+      pendingText="Searching for peers..."
+      actionText="Join Project"
     />
   )
 
@@ -37,24 +37,19 @@ function JoinProjectForm({
       }`}
     >
       <ProjectModalHeading title="Join an existing project" />
+      <ProjectModalSubHeading title="You will need to sync with a peer to get started" />
+      <ProjectModalContentSpacer>
       <ProjectModalContent>
-        <ProjectModalContentSpacer>
-          <div>
-            As you join, one of your peers will need to be reachable through the
-            network by you, in order for you to synchronize with them. If no one
-            is reachable right now, Acorn will sync this project with them at
-            the first opportunity.
-          </div>
-          <ValidatingFormInput
-            value={projectSecret}
-            onChange={onSecretChange}
-            invalidInput={invalidText}
-            errorText={invalidText}
-            label="Project invitation secret"
-            helpText="Copy-paste in the 5 word secret phrase the project host has shared with you."
-          />
-        </ProjectModalContentSpacer>
+        <ValidatingFormInput
+          value={projectSecret}
+          onChange={onSecretChange}
+          invalidInput={invalidText}
+          errorText={invalidText}
+          label="Project Invitation Secret"
+          helpText="Paste the 5 word secret you received from the project host"
+        />
       </ProjectModalContent>
+      </ProjectModalContentSpacer>
       <ProjectModalButton text={validateButtonContent} onClick={onValidate} />
     </div>
   )
@@ -67,14 +62,26 @@ function ProjectJoinFollowUp({ onDone, peerFound, checkDone }) {
         checkDone ? 'project-join-check-is-done' : ''
       }`}
     >
-      <ProjectModalHeading title={peerFound ? "Found a peer" : "Did not find a peer"} />
-      <ProjectModalSubHeading title={peerFound ? "Say this" : "Say that"} />
-      {/* <ProjectModalContentSpacer>
+      <ProjectModalHeading
+        title={
+          peerFound
+            ? 'Project joined successfully'
+            : 'No peers were found right now'
+        }
+      />
+      {!peerFound && (
+        <ProjectModalSubHeading title="Project has been queued for syncing" />
+      )}
+      <ProjectModalContentSpacer>
         <ProjectModalContent>
-          <ProjectSecret passphrase={projectSecret} />
+          <div className="project-join-follow-up-content-wrapper">
+            {peerFound
+              ? 'Say this'
+              : `Be aware that if you have entered an invalid secret phrase, Acorn cannot know, so if your project does not sync as expected you will need to double-check the accuracy of the phrase you used with the project host directly.`}
+          </div>
         </ProjectModalContent>
-      </ProjectModalContentSpacer> */}
-      <ProjectModalButton text="Done" onClick={onDone} />
+      </ProjectModalContentSpacer>
+      <ProjectModalButton text="I understand" onClick={onDone} />
     </div>
   )
 }
@@ -92,6 +99,10 @@ export default function JoinProjectModal({
     setCheckDone(false)
   }
   const onValidate = async () => {
+    if (invalidText || projectSecret.length === 0) {
+      setInvalidText('Secret must be 5 words.')
+      return
+    }
     setValidatingSecret(true)
     try {
       const peerWasFound = await onJoinProject(projectSecret)
@@ -109,7 +120,7 @@ export default function JoinProjectModal({
   }
 
   const [checkDone, setCheckDone] = useState(false)
-  const [peerFound, setPeerFound] = useState(false)
+  const [peerFound, setPeerFound] = useState(true)
   const [projectSecret, setProjectSecret] = useState('')
   const [invalidText, setInvalidText] = useState('')
 
@@ -121,8 +132,8 @@ export default function JoinProjectModal({
     setProjectSecret(val)
     if (!val) {
       setInvalidText('')
-    } else if (val.split(' ').length !== 5) {
-      setInvalidText('secret must be 5 words')
+    } else if (val.split(' ').length !== 5 || !val.split(' ').every(word => word.length)) {
+      setInvalidText('Secret must be 5 words.')
     }
   }
 

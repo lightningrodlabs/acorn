@@ -9,12 +9,12 @@
 }
 
 .guidebook-title {
+  font-size: 24px;
+  line-height: 32px;
+  color: #4d4d4d;
+  font-family: 'gilroyextrabold', 'gilroyextrabold', Helvetica, sans-serif;
   text-align: center;
-  margin-bottom: 30px;
-  font-size: 18px;
-  font-family: 'gilroyextrabold', Helvetica, sans-serif;
-  font-weight: normal;
-  margin-top: -2px;
+  margin-bottom: 20px;
 }
 
 .howtos {

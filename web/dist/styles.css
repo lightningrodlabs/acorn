@@ -185,5 +185,9 @@ h4 {
 /* textarea placeholder */
 
 textarea::placeholder {
-  color: #aaaaaa;
+  color: #bdbdbd;
+}
+
+::placeholder {
+  color: #bdbdbd;
 }

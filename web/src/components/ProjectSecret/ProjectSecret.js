@@ -20,8 +20,8 @@ export default function ProjectSecret({ passphrase }) {
       <div className='project-secret-row'>
         <ValidatingFormInput
           value={passphrase}
-          label='Project invitation secret'
-          helpText='Share this secret phrase with people you want to invite to this project'
+          label='Project Invitation Secret'
+          helpText='Share this secret phrase with people you want to invite to this project.'
         />
         <div
           onClick={copySecretToClipboard}

@@ -6,6 +6,23 @@ import { GUIDE_IS_OPEN, CREATE_ENTRY_POINT_KEY } from '../guideIsOpen'
 const howTosItems = [
   /* Cards */
   {
+    title: 'Projects',
+    submenu: [
+      {
+        title: 'Join a project',
+        guide_id: 'join_a_project',
+        description: (
+          <ol>
+            <li>
+              When the project goes in your queue...
+            </li>
+          </ol>
+        ),
+      },
+    ],
+  },
+  /* Cards */
+  {
     title: 'Cards',
     submenu: [
       {
@@ -51,7 +68,7 @@ const howTosItems = [
         guide_id: 'select_multiple_cards',
         description: (
           <ol>
-            <div className='guidebook-separate-line'>Either:</div>
+            <div className="guidebook-separate-line">Either:</div>
             <li>
               Hold shift and drag your mouse over the cards, then release to
               enter the Multi Edit Mode.
@@ -69,11 +86,11 @@ const howTosItems = [
 
         description: (
           <ol>
-            <div className='guidebook-separate-line'>
+            <div className="guidebook-separate-line">
               To deselect certain selected cards, hold Shift and left click on
               the cards you wish to deselect.
             </div>
-            <div className='guidebook-separate-line'>
+            <div className="guidebook-separate-line">
               To deselect all the cards at once click on an empty space on
               canvas.
             </div>
@@ -86,7 +103,7 @@ const howTosItems = [
 
         description: (
           <ol>
-            <div className='guidebook-separate-line'>
+            <div className="guidebook-separate-line">
               You can do it in three ways:
             </div>
             <li>
@@ -112,30 +129,30 @@ const howTosItems = [
         guide_id: 'change_card_status',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Quick Edit Mode
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click on “status” button and select the status you want for the
                 card.
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Expanded View Mode
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click on the Hierarchy icon on top left corner of the expanded
                 card which matches the color of card status. Click on the status
                 color that you want for the card.
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Multi Edit Mode
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click on the Squirrels icon from the Multi Edit Bar and select
                 the members that you want to associate with the card from the
                 list.
@@ -149,20 +166,20 @@ const howTosItems = [
         guide_id: 'associate_members_with_cards',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Quick Edit Mode
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click on “squirrels” button and select the members that you want
                 to associate with the card from the list.
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Expanded View Mode
               </div>
-              <div className='guidebook-separate-line'>Either:</div>
+              <div className="guidebook-separate-line">Either:</div>
               <li>
                 Hold shift and drag your mouse over the cards, then release to
                 enter the Multi Edit Mode.
@@ -198,20 +215,20 @@ const howTosItems = [
         guide_id: 'edit_timeframe_of_cards',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Quick Edit Mode
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click on “timeframe” button and select or type in Start Date and
                 End Date.
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Expanded View Mode
               </div>
-              <div className='guidebook-separate-line'>Either:</div>
+              <div className="guidebook-separate-line">Either:</div>
               <li>
                 Click on the grey field under “timeframe” and select or type in
                 Start Date and End Date.
@@ -222,11 +239,11 @@ const howTosItems = [
                 in Start Date and End Date.
               </li>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Multi Edit Mode
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click on the Calendar icon from the Multi Edit Bar and select or
                 type in Start Date and End Date. Please note, this function will
                 override all the existing settings for timeframe in all of the
@@ -241,11 +258,11 @@ const howTosItems = [
         guide_id: 'set_hierarchy_level_of_cards',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 Introduction to goal hierarchy levels
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Hierarchy adds another level of metadata to your goals. On
                 Acorn, there 4 hierarchy level options available inspired by a
                 tree mataphore: Root (primary goal) Trunk (high-level goal)
@@ -259,29 +276,29 @@ const howTosItems = [
                 made, feel accomplished, and know clearly where they are headed.
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Quick Edit Mode
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click on "hierarchy" button and select the "hierarchy" level
                 that you want.
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Expanded View Mode
               </div>
-              <div className='guidebook-separate-line'>Either:</div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">Either:</div>
+              <div className="guidebook-separate-line">
                 Click on the Hierarchy icon on the Right Menu.
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Multi Edit Mode
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click on the Hierarchy icon from the Multi Edit Bar. Please
                 note, this function will override all the existing settings for
                 hierarchy in all of the selected cards.
@@ -295,33 +312,33 @@ const howTosItems = [
         guide_id: 'aggregated_priority',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Quick Edit Mode
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click on “priority” button. You will be able to see the
                 aggregated votes for 4 factors that determine priority of the
                 card. For more information on how the prioritization system
                 works in Acorn see Prioritization.
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Expanded View Mode
               </div>
-              <div className='guidebook-separate-line'>Either:</div>
+              <div className="guidebook-separate-line">Either:</div>
               <li>
                 Click on priority tab on Expanded View Navbar under the
                 description field.
               </li>
               <li>Click on the Priority icon on the Right Menu</li>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Multi Edit Mode
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click on the Hierarchy icon from the Multi Edit Bar. Please
                 note, this function will override all the existing settings for
                 hierarchy in all of the selected cards.
@@ -335,33 +352,33 @@ const howTosItems = [
         guide_id: 'vote_for_priority_of_a_card',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Quick Edit Mode
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click on “priority” button. Then click on the "Weigh In" button.
                 The default vote is “medium” for all 4 factors. You can slide
                 the factor bars to set your own. For more information about
                 prioritization go to Priority View Mode.
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Expanded View Mode
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click on “priority” button. Then click on the "Weigh In" button.
                 The default vote is “medium” for all 4 factors. You can slide
                 the factor bars to set your own. For more information about
                 prioritization go to Priority View Mode.
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 In Multi Edit Mode
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click on the Priority icon from the Multi Edit Bar. Then Click
                 on the "Weigh In" button.
               </div>
@@ -422,15 +439,15 @@ const howTosItems = [
         guide_id: 'point-connector',
         description: (
           <div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line">
                 Point Connector is a feature that lets you connect your existing
                 cards quickly by connecting them 'point-to-point'. In Acorn
                 cards can only have one parent, but can have many children.
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line">
                 When you hover over or select an existing card, you will see the
                 Point Connector dots near the top and/or bottom of the card. In
                 order to connect the chosen card to another card simply click on
@@ -445,8 +462,8 @@ const howTosItems = [
                 parent in the relationship.
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line">
                 When you have initiated a point-to-point connection, but you
                 want to cancel it, you can press the Escape key.
               </div>
@@ -458,8 +475,8 @@ const howTosItems = [
         title: 'Connect Multiple',
         guide_id: 'connect-multiple',
         description: (
-          <div className='guidebook-description-section'>
-            <div className='guidebook-separate-line'>
+          <div className="guidebook-description-section">
+            <div className="guidebook-separate-line">
               If you would like to connect multiple cards to another card at
               once, you can use the Connector feature in Multi Edit Mode:
               <br />
@@ -497,13 +514,13 @@ const howTosItems = [
         guide_id: 'archive-connection',
         description: (
           <>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line">
                 If you would like to archive a connection:
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line">
                 <ol>
                   <li>select it by clicking on it once (it will turn blue)</li>
                   <li>press Delete (Mac) / Backspace (Linux). </li>
@@ -526,20 +543,20 @@ const howTosItems = [
         guide_id: 'pan_around',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 Trackpad
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Scroll the map in any direction by sliding two fingers on the
                 trackpad
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 Mouse or trackpad
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Click and drag the canvas to pan around
               </div>
             </div>
@@ -559,27 +576,27 @@ const howTosItems = [
         guide_id: 'zooming_in_and_out',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 Trackpad
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Zoom by pinching in and out
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>Mouse</div>
-              <div className='guidebook-separate-line'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">Mouse</div>
+              <div className="guidebook-separate-line">
                 {/* Use the mouse wheel while holding Ctrl/Cmd to zoom in and out */}
                 Click on the "-" and "+" icons on Map View Mode. They are
                 located at the bottom right corner of the Map View Mode.
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 Current Zoom
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 The number next to the "-" and "+" icons in the bottom right
                 corner of the Map View Mode represents the current level of
                 zoom.
@@ -601,11 +618,11 @@ const howTosItems = [
         guide_id: 'switch_between_view_modes',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line sub-heading'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line sub-heading">
                 General View Mode Switching
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 Use the Priority Icon and Map View icon on bottom right corner
                 of the screen to switch between the two views.
               </div>
@@ -636,35 +653,35 @@ const howTosItems = [
         guide_id: 'introduction_to_priority_view_mode',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line">
                 Priority View Mode is an alternative view mode to the Map View
                 Mode, specifically designed for helping you and your team with
                 decision making on priority of the goals that you set on the
                 map. For determining the priority of goals we have allocated 4
                 factors:
-                <div className='guidebook-description-bold'>Urgency</div>
-                <div className='guidebook-description-bold'>Importance</div>
-                <div className='guidebook-description-bold'>Effort</div>
-                <div className='guidebook-description-bold'>Impact</div>
+                <div className="guidebook-description-bold">Urgency</div>
+                <div className="guidebook-description-bold">Importance</div>
+                <div className="guidebook-description-bold">Effort</div>
+                <div className="guidebook-description-bold">Impact</div>
               </div>
             </div>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line">
                 The{' '}
-                <text className='guidebook-description-bold'>
+                <text className="guidebook-description-bold">
                   urgency-importance
                 </text>{' '}
                 integration is inspired from a principle called Eisenhower
                 Matrix.
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 The{' '}
-                <text className='guidebook-description-bold'>
+                <text className="guidebook-description-bold">
                   effort-impact
                 </text>{' '}
                 integration is another way of prioritizing goals.{' '}
-                <a href='https://zapier.com/blog/how-to-prioritize/'>
+                <a href="https://zapier.com/blog/how-to-prioritize/">
                   “In the effort-impact matrix, you evaluate tasks based on how
                   much effort they’ll require to complete and the impact that
                   completing them will have.”
@@ -673,19 +690,19 @@ const howTosItems = [
                 are where you would start to work on tasks from, depending on
                 whether you are prepared for low or high effort.
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 In complex projects as the number of goals (and sometimes number
                 of team members) expands, it gets more difficult to determine
                 ‘what to focus on next’.
               </div>
-              <div className='guidebook-separate-line'>
+              <div className="guidebook-separate-line">
                 All the team members (who have editing permssion) would be able
                 to “weigh in” their vote for these 4 factors for each goal
                 (either in map view or priority view) The “aggregated priority”
                 that results from this collective poll will determine where each
                 goal will stand on the priority view mode.
               </div>
-              <div className='guidebook-separate-line guidebook-description-bold'>
+              <div className="guidebook-separate-line guidebook-description-bold">
                 If you have a diverse team and not sure if everyone is having a
                 shared understing of what each of these priority factors mean,
                 we recommend having an onboarding meeting/session with your team
@@ -701,7 +718,7 @@ const howTosItems = [
         guide_id: 'indented_tree_view',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
+            <div className="guidebook-description-section">
               This column on the left side of Priority view page helps you with
               finding and filtering by a specific goal. By selecting that goal
               you would be able to filter the visiblity of the goals down to
@@ -715,7 +732,7 @@ const howTosItems = [
         guide_id: 'priority_metrics_tabs',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
+            <div className="guidebook-description-section">
               These tabs help you switch between priority matrixes (urgency x
               important and impact x effort), single priority factors (feature
               in developement), or uncategorized (not voted on) goals. This
@@ -730,11 +747,11 @@ const howTosItems = [
         guide_id: 'weigh_in_and_see_my_votes_buttons',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
+            <div className="guidebook-description-section">
               If you haven’t voted for the priority of the goal, When hovering
               over goals in the priority view, “Weigh In” button apprears.
             </div>
-            <div className='guidebook-description-section'>
+            <div className="guidebook-description-section">
               If you have already voted for the priority of a goal, a purple dot
               shows up under the goal title and when hovering on the goal, “See
               My Vote” button appears.
@@ -753,8 +770,8 @@ const howTosItems = [
         guide_id: 'introduction_to_entry_points',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line">
                 Entry points (shown as open door icons) are like openings to
                 different parts of your project's tree. You can set any card on
                 your tree as an entry point. You can then access them either in
@@ -772,8 +789,8 @@ const howTosItems = [
         guide_id: 'creating_entry_points',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line">
                 To set a card as an entry point to your project's tree, hover
                 over the card, and click on the expanded view icon. In the
                 expanded view mode, you'll see a closed door icon on the top
@@ -796,8 +813,8 @@ const howTosItems = [
         guide_id: 'export_my_data',
         description: (
           <ol>
-            <div className='guidebook-description-section'>
-              <div className='guidebook-separate-line'>
+            <div className="guidebook-description-section">
+              <div className="guidebook-separate-line">
                 Click on the Export icon on header (next to the project name),
                 and select one of the availble formats to export your data.
               </div>
@@ -810,9 +827,9 @@ const howTosItems = [
 ]
 
 const Content = ({ title, description }) => (
-  <div className='guidebook-section'>
-    <div className='guidebook-section-title'>{title}</div>
-    <div className='guidebook-section-description'>{description}</div>
+  <div className="guidebook-section">
+    <div className="guidebook-section-title">{title}</div>
+    <div className="guidebook-section-description">{description}</div>
   </div>
 )
 
@@ -822,11 +839,11 @@ function NavItem({ navItem: { submenu, title }, expanded, expand }) {
   const openEntry = searchParams.get(GUIDE_IS_OPEN)
   return (
     <section>
-      <div className='nav-item' onClick={expand}>
+      <div className="nav-item" onClick={expand}>
         <Icon
           name={expanded ? 'line-angle-down.svg' : 'line-angle-right.svg'}
-          size='very-small'
-          className='grey'
+          size="very-small"
+          className="grey"
         />
         {title}
       </div>
@@ -836,7 +853,8 @@ function NavItem({ navItem: { submenu, title }, expanded, expand }) {
             <li key={i}>
               <NavLink
                 to={`${location.pathname}?${GUIDE_IS_OPEN}=${subNavItem.guide_id}`}
-                isActive={match => match && subNavItem.guide_id === openEntry}>
+                isActive={(match) => match && subNavItem.guide_id === openEntry}
+              >
                 {subNavItem.title}
               </NavLink>
             </li>
@@ -865,7 +883,7 @@ function HowTosNav({ navList, openNav }) {
     }
   }, [openNav])
   return (
-    <nav className='how-tos-nav'>
+    <nav className="how-tos-nav">
       {navList.map((navItem, i) => (
         <NavItem
           key={i}
@@ -886,13 +904,13 @@ export default function HowTos() {
   function isOpenEntry(subItem) {
     return subItem.guide_id === openEntryKey
   }
-  const openNav = howTosItems.find(navItem => {
+  const openNav = howTosItems.find((navItem) => {
     return navItem.submenu.find(isOpenEntry)
   })
   const openEntry = openNav && openNav.submenu.find(isOpenEntry)
 
   return (
-    <div className='howtos'>
+    <div className="howtos">
       <HowTosNav navList={howTosItems} openNav={openNav} />
       {openEntry && (
         <Content title={openEntry.title} description={openEntry.description} />
