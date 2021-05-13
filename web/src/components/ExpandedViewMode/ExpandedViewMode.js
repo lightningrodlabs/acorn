@@ -160,6 +160,7 @@ function ExpandedViewMode({
               />
               <RightMenu
                 projectId={projectId}
+                agentAddress={agentAddress}
                 goalAddress={goalAddress}
                 goal={goalState}
                 updateGoal={updateGoal}

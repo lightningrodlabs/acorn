@@ -11,6 +11,7 @@ import HierarchyPicker from '../../HierarchyPicker/HierarchyPicker'
 
 export default function RightMenu({
   projectId,
+  agentAddress,
   goalAddress,
   goal,
   updateGoal,
@@ -27,6 +28,7 @@ export default function RightMenu({
     updateGoal(
       {
         ...goal,
+        user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         [key]: val,
       },
@@ -68,6 +70,7 @@ export default function RightMenu({
     updateGoal(
       {
         ...goal,
+        user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         time_frame: timeframe,
       },
