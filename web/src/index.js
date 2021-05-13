@@ -15,9 +15,6 @@ import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
 import { holochainMiddleware } from 'connoropolous-hc-redux-middleware'
 import { cellIdToString } from 'connoropolous-hc-redux-middleware/build/main/lib/actionCreator'
-// import tauri from '@tauri-apps/api'
-
-// console.log(tauri)
 
 // Local Imports
 import { MAIN_APP_ID, PROFILES_SLOT_NAME } from './holochainConfig'

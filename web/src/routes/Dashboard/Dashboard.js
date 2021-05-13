@@ -17,7 +17,6 @@ import InviteMembersModal from '../../components/InviteMembersModal/InviteMember
 import { PROJECTS_ZOME_NAME, PROJECT_APP_PREFIX } from '../../holochainConfig'
 import { passphraseToUid } from '../../secrets'
 import { getAdminWs, getAppWs, getAgentPubKey } from '../../hcWebsockets'
-import { setProjectsCellIds } from '../../cells/actions'
 import { fetchEntryPoints } from '../../projects/entry-points/actions'
 import { fetchMembers, setMember } from '../../projects/members/actions'
 import {
@@ -32,6 +31,7 @@ import {
 } from './DashboardListProject'
 import { joinProjectCellId } from '../../cells/actions'
 import importAllProjectData from '../../import'
+import PendingProjects from '../../components/PendingProjects/PendingProjects.tsx'
 
 function Dashboard({
   existingAgents,
@@ -39,7 +39,6 @@ function Dashboard({
   profilesCellIdString,
   cells,
   projects,
-  setProjectsCellIds,
   fetchEntryPoints,
   fetchMembers,
   fetchProjectMeta,
@@ -73,35 +72,6 @@ function Dashboard({
       fetchEntryPoints(cellId)
     })
   }, [JSON.stringify(cells)])
-
-  // handle the regular checking for those projects
-  // that haven't synced yet
-  useEffect(() => {
-    const checkAgainInterval = setInterval(async () => {
-      const found = await Promise.all(
-        pendingProjects.map(async (pendingProjectCellId) => {
-          try {
-            // fetchProjectMeta, if it succeeds
-            // will automatically change the redux state since this
-            // is a function wrapped in a dispatch call
-            await fetchProjectMeta(pendingProjectCellId)
-            return pendingProjectCellId
-          } catch (e) {
-            // project meta not found
-            return false
-          }
-        })
-      )
-      // only keep the ones that still didn't
-      // return a result
-      setPendingProjects((pendingProjects) => {
-        return pendingProjects.filter((c) => !found.find((ci) => c === ci))
-      })
-    }, 60000)
-    return () => {
-      clearInterval(checkAgainInterval)
-    }
-  }, [JSON.stringify(pendingProjects)])
 
   const onCreateProject = (project, passphrase) =>
     createProject(agentAddress, project, passphrase)
@@ -214,31 +184,16 @@ function Dashboard({
           </div>
           <div className="my-projects-content">
             {pendingProjects.length > 0 && (
-              <>
-              
-              <div className="pending-projects-for-sync">
-              <div className="pending-projects-for-sync-message-icon">
-              <Icon
-                name='acorn-logo-stroked.svg'
-                className='not-hoverable very-small grey'
+              <PendingProjects
+                pendingProjects={pendingProjects}
+                fetchProjectMeta={fetchProjectMeta}
+                setPendingProjects={setPendingProjects}
               />
-              <div className="pending-projects-for-sync-message">
-                {pendingProjects.length} {pendingProjects.length === 1 ? "project" : "projects" } queued for sync...
-                </div>
-                </div>
-            
-                <div className="pending-projects-for-sync-button">Show details</div>
-              </div>
-              
-              </>
             )}
-            
-            {/* Only render the sorted projects with their real metadata */}
             {!hasFetchedForAllProjects &&
               cells.map((cellId) => (
                 <DashboardListProjectLoading key={'dlpl-key' + cellId} />
               ))}
-            {/* if they are all loaded */}
             {hasFetchedForAllProjects &&
               sortedProjects.map((project) => {
                 return (
@@ -459,9 +414,6 @@ async function importProject(
 
 function mapDispatchToProps(dispatch) {
   return {
-    setProjectsCellIds: (projectsCellIds) => {
-      return dispatch(setProjectsCellIds(projectsCellIds))
-    },
     fetchEntryPoints: (cellIdString) => {
       return dispatch(fetchEntryPoints.create({ cellIdString, payload: null }))
     },
