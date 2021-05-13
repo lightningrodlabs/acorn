@@ -254,7 +254,7 @@ const EdgeConnectors = ({
           (edge) => edge.child_address === connectorAddress
         )
         return (
-          <Transition key={connectorAddress} timeout={1000}>
+          <Transition key={connectorAddress} timeout={300}>
             {(state) => (
               <EdgeConnector
                 state={state}
