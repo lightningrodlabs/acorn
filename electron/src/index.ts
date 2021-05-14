@@ -21,10 +21,12 @@ const LAIR_KEYSTORE_PATH = app.isPackaged
   : path.join(__dirname, '../binaries/lair-keystore')
 const MAIN_FILE = path.join(__dirname, '../web/index.html')
 const SPLASH_FILE = path.join(__dirname, '../web/splashscreen.html')
+const LINUX_ICON_FILE = path.join(__dirname, '../web/logo/acorn-logo-desktop-512px@2x.png')
+
 
 const createMainWindow = (): BrowserWindow => {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  const options: Electron.BrowserWindowConstructorOptions = {
     height: 1080,
     width: 1920,
     show: false,
@@ -35,7 +37,11 @@ const createMainWindow = (): BrowserWindow => {
       contextIsolation: false,
       nodeIntegration: true,
     },
-  })
+  }
+  if (process.platform === 'linux') {
+    options.icon = LINUX_ICON_FILE
+  }
+  const mainWindow = new BrowserWindow(options)
   // and load the index.html of the app.
   if (app.isPackaged) {
     mainWindow.loadFile(MAIN_FILE)

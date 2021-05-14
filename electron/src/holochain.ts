@@ -56,8 +56,8 @@ const COMMUNITY_PROXY_URL =
 const devOptions: HolochainOptions = {
   datastorePath: '../tmp2/databases',
   appId: MAIN_APP_ID,
-  appWsPort: 8889,
-  adminWsPort: 1235,
+  appWsPort: 8888,
+  adminWsPort: 1234,
   keystorePath: '../tmp2/keystore',
   proxyUrl: COMMUNITY_PROXY_URL,
 }
