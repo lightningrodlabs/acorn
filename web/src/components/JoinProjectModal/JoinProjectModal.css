@@ -1,5 +1,5 @@
 .join-project-modal-wrapper {
-  height: 426px;
+  height: 427px;
   overflow: hidden;
   position: relative;
   justify-content: space-between;
@@ -48,4 +48,12 @@
   opacity: 1;
   -webkit-transform: scale(1);
   transform: scale(1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 420px;
+}
+
+.project-join-follow-up-content-wrapper {
+  margin-bottom: 40px;
 }
