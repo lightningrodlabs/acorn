@@ -107,8 +107,8 @@ app.on('ready', async () => {
       lairHandle.kill()
       holochainHandle.kill()
     })
-    splashWindow.close()
     createMainWindow()
+    splashWindow.close()
   } catch (e) {
     log.error(e)
     app.quit()

@@ -25,7 +25,7 @@ function JoinProjectForm({
   const validateButtonContent = (
     <ButtonWithPendingState
       pending={validatingSecret}
-      pendingText="Searching for peers..."
+      pendingText="Searching..."
       actionText="Join Project"
     />
   )
@@ -62,6 +62,7 @@ function ProjectJoinFollowUp({ onDone, peerFound, checkDone }) {
         checkDone ? 'project-join-check-is-done' : ''
       }`}
     >
+      <div>
       <ProjectModalHeading
         title={
           peerFound
@@ -72,15 +73,14 @@ function ProjectJoinFollowUp({ onDone, peerFound, checkDone }) {
       {!peerFound && (
         <ProjectModalSubHeading title="Project has been queued for syncing" />
       )}
-      <ProjectModalContentSpacer>
+      </div>
         <ProjectModalContent>
           <div className="project-join-follow-up-content-wrapper">
             {peerFound
-              ? 'Say this'
+              ? 'Peers in this project were found so now you will get synced with them.'
               : `Be aware that if you have entered an invalid secret phrase, Acorn cannot know, so if your project does not sync as expected you will need to double-check the accuracy of the phrase you used with the project host directly.`}
           </div>
         </ProjectModalContent>
-      </ProjectModalContentSpacer>
       <ProjectModalButton text="I understand" onClick={onDone} />
     </div>
   )

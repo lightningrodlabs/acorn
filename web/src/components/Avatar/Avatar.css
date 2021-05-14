@@ -47,8 +47,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 14px;
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-size: 13px;
+  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
 }
 
 .initials-avatar.clickable {

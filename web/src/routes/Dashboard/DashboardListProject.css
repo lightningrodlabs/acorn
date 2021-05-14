@@ -59,6 +59,7 @@
   height: 68px;
   background-size: cover;
   background-repeat: no-repeat;
+  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
 }
 
 .dashboard-list-project-content {

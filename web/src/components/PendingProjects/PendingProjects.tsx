@@ -64,31 +64,41 @@ function PendingProjects({
         }`}
       >
         <div className="pending-projects-for-sync">
-        <div className="pending-projects-for-sync-message-icon">
-          {/* @ts-ignore */}
-          <Icon
-            name="acorn-logo-stroked.svg"
-            className="not-hoverable very-small grey"
-          />
-          <div className="pending-projects-for-sync-message">
-            {pendingProjects.length}{' '}
-            {pendingProjects.length === 1 ? 'project' : 'projects'} queued for
-            sync...
+          <div className="pending-projects-for-sync-message-icon">
+            {/* @ts-ignore */}
+            <Icon
+              name="acorn-logo-stroked.svg"
+              className="not-hoverable very-small grey"
+            />
+            <div className="pending-projects-for-sync-message">
+              {pendingProjects.length}{' '}
+              {pendingProjects.length === 1 ? 'project' : 'projects'} queued for
+              sync...
+            </div>
           </div>
-        </div>
-        <div
-          className="pending-projects-for-sync-button"
-          onClick={() => setExpanded(!expanded)}
-        >
-          {expanded ? 'Hide' : 'Show'} details
-        </div>
+          <div
+            className="pending-projects-for-sync-button"
+            onClick={() => setExpanded(!expanded)}
+          >
+            {expanded ? 'Hide' : 'Show'} details
+          </div>
         </div>
         <div className="pending-projects-details-wrapper">
           {expanded && (
             <div>
-              {pendingProjects.map((pendingProjectCellId) => {
-                return <div>{uidToPassphrase(passphrases[pendingProjectCellId])}</div>
-              })}
+              {pendingProjects.map((pendingProjectCellId) => (
+                <div className="pending-projects-details-item">
+                  <div>
+                    {passphrases[pendingProjectCellId]
+                      ? uidToPassphrase(passphrases[pendingProjectCellId])
+                      : ''}
+                  </div>
+                  
+                  <div className="pending-project-cancel-queue-button">
+                    Cancel
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
