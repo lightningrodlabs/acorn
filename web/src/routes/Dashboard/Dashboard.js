@@ -29,12 +29,13 @@ import {
   DashboardListProject,
   DashboardListProjectLoading,
 } from './DashboardListProject'
-import { joinProjectCellId } from '../../cells/actions'
+import { joinProjectCellId, removeProjectCellId } from '../../cells/actions'
 import importAllProjectData from '../../import'
 import PendingProjects from '../../components/PendingProjects/PendingProjects.tsx'
 
 function Dashboard({
   existingAgents,
+  deactivateApp,
   agentAddress,
   profilesCellIdString,
   cells,
@@ -188,6 +189,7 @@ function Dashboard({
                 pendingProjects={pendingProjects}
                 fetchProjectMeta={fetchProjectMeta}
                 setPendingProjects={setPendingProjects}
+                deactivateApp={deactivateApp}
               />
             )}
             {!hasFetchedForAllProjects &&
@@ -412,8 +414,19 @@ async function importProject(
   )
 }
 
+async function deactivateApp(appId, cellId, dispatch) {
+  const adminWs = await getAdminWs()
+  await adminWs.deactivateApp({
+    installed_app_id: appId
+  })
+  await dispatch(removeProjectCellId(cellId))
+}
+
 function mapDispatchToProps(dispatch) {
   return {
+    deactivateApp: (appId, cellId) => {
+      return deactivateApp(appId, cellId, dispatch)
+    },
     fetchEntryPoints: (cellIdString) => {
       return dispatch(fetchEntryPoints.create({ cellIdString, payload: null }))
     },

@@ -2,7 +2,7 @@ import _ from 'lodash'
 import {
   simpleCreateProjectMeta,
 } from '../projects/project-meta/actions'
-import { SET_PROFILES_CELL_ID, SET_PROJECTS_CELL_IDS, JOIN_PROJECT_CELL_ID } from './actions'
+import { SET_PROFILES_CELL_ID, SET_PROJECTS_CELL_IDS, JOIN_PROJECT_CELL_ID, REMOVE_PROJECT_CELL_ID } from './actions'
 
 const defaultState = {
   profiles: null,
@@ -31,6 +31,11 @@ export default function (state = defaultState, action) {
       return {
         ...state,
         projects: [...state.projects, payload],
+      }
+    case REMOVE_PROJECT_CELL_ID:
+      return {
+        ...state,
+        projects: state.projects.filter(p => p !== payload),
       }
     default:
       return state

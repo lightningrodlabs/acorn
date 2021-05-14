@@ -21,7 +21,7 @@ const LAIR_KEYSTORE_PATH = app.isPackaged
   : path.join(__dirname, '../binaries/lair-keystore')
 const MAIN_FILE = path.join(__dirname, '../web/index.html')
 const SPLASH_FILE = path.join(__dirname, '../web/splashscreen.html')
-const LINUX_ICON_FILE = path.join(__dirname, '../web/logo/acorn-logo-desktop-512px@2x.png')
+const LINUX_ICON_FILE = path.join(__dirname, '../web/logo/acorn-logo-desktop-512px.png')
 
 
 const createMainWindow = (): BrowserWindow => {
