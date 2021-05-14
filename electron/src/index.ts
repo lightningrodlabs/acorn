@@ -41,7 +41,7 @@ const createMainWindow = (): BrowserWindow => {
     mainWindow.loadFile(MAIN_FILE)
   } else {
     // development
-    mainWindow.loadURL('http://localhost:8081')
+    mainWindow.loadURL('http://localhost:8080')
   }
   // Open <a href='' target='_blank'> with default system browser
   mainWindow.webContents.on('new-window', function (event, url) {
@@ -107,8 +107,11 @@ app.on('ready', async () => {
       lairHandle.kill()
       holochainHandle.kill()
     })
-    splashWindow.close()
+    // important that this line comes before the next one
+    // otherwise this triggers the 'all-windows-closed'
+    // event
     createMainWindow()
+    splashWindow.close()
   } catch (e) {
     log.error(e)
     app.quit()
