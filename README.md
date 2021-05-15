@@ -6,7 +6,7 @@
 
 [**Check out the Acorn overview**](https://github.com/h-be/acorn-docs)
 
-[**Check out our releases**](https:/github.com/h-be/acorn/releases)
+[**Check out our releases**](https://github.com/h-be/acorn/releases)
 
 
 ## Developers
