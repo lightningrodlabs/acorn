@@ -13,10 +13,11 @@ __web__ (user interface)
 - Use nodejs version 14
 - run `npm run web-install`
 - run `npm run web`
-- Open up http://localhost:8080/ OR to view in Electron, run `npm run electron`
+- Open up http://localhost:8080/
 
 __electron__
 
+- run `npm run install-electron`
 - run `npm run electron`
 
 To test backend:
