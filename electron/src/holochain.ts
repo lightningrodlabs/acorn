@@ -62,11 +62,11 @@ const devOptions: HolochainOptions = {
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 const prodOptions: HolochainOptions = {
-  datastorePath: path.join(app.getPath('userData'), 'databases'),
+  datastorePath: path.join(app.getPath('userData'), 'databases-0-5-1'),
   appId: MAIN_APP_ID,
   appWsPort: 8889,
   adminWsPort: 1235,
-  keystorePath: path.join(app.getPath('userData'), 'keystore'),
+  keystorePath: path.join(app.getPath('userData'), 'keystore-0-5-1'),
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 
