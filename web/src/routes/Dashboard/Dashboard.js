@@ -67,7 +67,14 @@ function Dashboard({
         // this means 'no project meta found'
         // so we add it to 'pending projects'
         // because it clearly hasn't synced yet
-        setPendingProjects((pending) => pending.concat([cellId]))
+        setPendingProjects((pending) => {
+          // only add it if it wasn't already in the list of pending projects
+          if (!pending.includes(cellId)) {
+            return pending.concat([cellId])
+          } else {
+            return pending
+          }
+        })
       })
       fetchMembers(cellId)
       fetchEntryPoints(cellId)
