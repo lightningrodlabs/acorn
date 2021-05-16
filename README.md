@@ -15,6 +15,7 @@ To set up fresh:
 
 __dna__
 - Have rust language (stable) installed on your system
+- Have WebAssembly compile target for Rust installed (if you haven't, run `rustup target install wasm32-unknown-unknown`)
 - run `npm run dna-install-deps`
 - run `npm run dna-pack`
 
