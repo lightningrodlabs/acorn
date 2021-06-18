@@ -45,7 +45,7 @@ To build:
 
 ## Technical Overview
 
-Acorn functions at a high level according to this pattern: 
+Acorn functions at a high level according to these patterns: 
 - an 'electron' wrapper is responsible for
   - creating a 'BrowserWindow' application window through which users interact with the HTML/JS/CSS GUI of Acorn
   -  starting up and stopping background processes for Holochain related services, including the main holochain engine, and the holochain "keystore" which handles cryptographic signing functions. It is necessary for these background processes to be running while the application is open, and for them to stop when it is closed/quit, because the GUI must talk to these components in order for it to perform any of its primary functions such as reading and writing data.
