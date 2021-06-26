@@ -80,7 +80,12 @@ const createSplashWindow = (): BrowserWindow => {
   })
 
   // and load the splashscreen.html of the app.
-  splashWindow.loadFile(SPLASH_FILE)
+  if (app.isPackaged) {
+    splashWindow.loadFile(SPLASH_FILE)
+  } else {
+    // development
+    splashWindow.loadURL('http://localhost:8080/splashscreen.html')
+  }
   // once its ready to show, show
   splashWindow.once('ready-to-show', () => {
     splashWindow.show()
