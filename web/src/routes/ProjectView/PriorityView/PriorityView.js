@@ -16,7 +16,7 @@ import priorityMenuItems from '../../../components/Header/priorityMenuItems'
 import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeView'
 import PriorityQuadrant from '../../../components/PriorityQuadrant/PriorityQuadrant'
 import PriorityPicker from '../../../components/PriorityPicker/PriorityPicker'
-import goalsAsTree from '../../../projects/goals/goalsAsTrees'
+import goalsAsTrees from '../../../projects/goals/goalsAsTrees'
 import { CSSTransition } from 'react-transition-group'
 
 function Quadrants({
@@ -369,7 +369,16 @@ function mapStateToProps(state) {
   const projectId = state.ui.activeProject
   const goalVotes = state.projects.goalVotes[projectId] || {}
 
-  const goalTrees = goalsAsTree(state, { withMembers: true })
+  const data = {
+    agents: state.agents,
+    goals: state.projects.goals[projectId] || {},
+    edges: state.projects.edges[projectId] || {},
+    goalMembers: state.projects.goalMembers[projectId] || {},
+    goalVotes: state.projects.goalVotes[projectId] || {},
+    goalComments: state.projects.goalComments[projectId] || {}
+  }
+
+  const goalTrees = goalsAsTrees(data, { withMembers: true })
 
   return {
     projectId,

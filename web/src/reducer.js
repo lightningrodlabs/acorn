@@ -17,6 +17,7 @@ import goalForm from './goal-form/reducer'
 import selection from './selection/reducer'
 import hover from './hover/reducer'
 import keyboard from './keyboard/reducer'
+import layout from './layout/reducer'
 import mouse from './mouse/reducer'
 import screensize from './screensize/reducer'
 import viewport from './viewport/reducer'
@@ -36,6 +37,7 @@ export default combineReducers({
   whoami,
   agentAddress,
   ui: combineReducers({
+    layout,
     hasFetchedForWhoami,
     edgeConnector,
     localPreferences,

@@ -131,7 +131,7 @@ function GoalTitleQuickEdit({
     )
   }
 
-   // the default
+  // the default
   let fontSizeToUse = fontSize
   if (scale < secondZoomThreshold) {
     fontSizeToUse = fontSizeExtraLarge
@@ -195,7 +195,7 @@ function mapStateToProps(state) {
     ? state.projects.goals[activeProject][editAddress]
     : null
   const user_hash = editAddress ? editingGoal.user_hash : state.whoami.entry.address
-  const user_edit_hash = editAddress ? state.whoami.entry.address : null 
+  const user_edit_hash = editAddress ? state.whoami.entry.address : null
   const status = editAddress ? editingGoal.status : 'Uncertain'
   const description = editAddress ? editingGoal.description : ''
   const hierarchy = editAddress ? editingGoal.hierarchy : 'NoHierarchy'
@@ -205,7 +205,7 @@ function mapStateToProps(state) {
 
   let goalCoord
   if (editAddress) {
-    goalCoord = layoutFormula(width, state)[editAddress]
+    goalCoord = state.ui.layout[editAddress]
   }
 
   return {

@@ -77,7 +77,7 @@ function render(store, canvas) {
     // convert the edges object to an array
     const edgesAsArray = Object.keys(edges).map(address => edges[address])
 
-    const coordinates = layoutFormula(state.ui.screensize.width, state)
+    const coordinates = state.ui.layout
 
     const activeEntryPointsObjects = activeEntryPoints.map(
       entryPointAddress => entryPoints[entryPointAddress]
@@ -251,12 +251,12 @@ function render(store, canvas) {
       if (toAddress) {
         toCoords = coordinates[toAddress]
         toContent = goals[toAddress].content
-        ;[toAsChildCoord, toAsParentCoord] = calculateEdgeCoordsByGoalCoords(
-          toCoords,
-          toCoords,
-          toContent,
-          ctx
-        )
+          ;[toAsChildCoord, toAsParentCoord] = calculateEdgeCoordsByGoalCoords(
+            toCoords,
+            toCoords,
+            toContent,
+            ctx
+          )
       }
 
       // in drawEdge, it draws at exactly the two coordinates given,

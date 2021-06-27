@@ -13,7 +13,7 @@ function NestedTreeGoal({ goal, level, filterText }) {
   level = level || 1
   // set expanded open by default only if
   // at the first or second level
-  const [expanded, setExpanded] = useState(level < 3)
+  const [expanded, setExpanded] = useState(false)
 
   const location = useLocation()
 
@@ -39,10 +39,7 @@ function NestedTreeGoal({ goal, level, filterText }) {
           </div>
 
           <NavLink
-            to={
-              location.pathname +
-              (isUsingGoalAsContext ? '' : `?contextGoal=${goal.address}`)
-            }
+            to={`${location.pathname}?contextGoal=${goal.address}`}
             className='indented-view-goal-content'
             isActive={match => match && isUsingGoalAsContext}
           >
@@ -150,6 +147,7 @@ export default function IndentedTreeView({ goalTrees }) {
 
   return (
     <div className='indented-view-wrapper' style={{ width: `${width}px` }}>
+      {/* search/filter */}
       <div className='indented-view-search'>
         <Icon name='search.svg' size='very-small' />
         <input
@@ -170,10 +168,12 @@ export default function IndentedTreeView({ goalTrees }) {
           </button>
         )}
       </div>
+      {/* goal items list */}
       <div
         className='indented-view-goals'
         style={{ width: `${width - INDENTED_VIEW_GOALS_MARGIN}px` }}
       >
+        <div className='highest-level-view'>Highest Level View</div>
         {/* {testGoalTrees.map(goal => (
           <NestedTreeGoal goal={goal} />
         ))} */}

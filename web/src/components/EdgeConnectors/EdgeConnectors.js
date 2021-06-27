@@ -292,7 +292,7 @@ function mapStateToProps(state) {
   } = state
   const goals = state.projects.goals[activeProject] || {}
   const edges = state.projects.edges[activeProject] || {}
-  const coordinates = layoutFormula(state.ui.screensize.width, state)
+  const coordinates = state.ui.layout
   const selectedGoalAddresses = state.ui.selection.selectedGoals
   const hoveredGoalAddress = state.ui.hover.hoveredGoal
   const { fromAddress, relation, toAddress } = state.ui.edgeConnector

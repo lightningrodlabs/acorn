@@ -1,4 +1,6 @@
-.footer {}
+.footer {
+  max-height: 48px
+}
 
 /* Buttom Left Panel */
 
@@ -9,6 +11,7 @@
   display: flex;
   align-items: center;
   flex-direction: row;
+  height: 48px;
 }
 
 .bottom-left-panel-entry-points {
@@ -50,6 +53,7 @@
   display: flex;
   align-items: center;
   flex-direction: row;
+  height: 48px;
 }
 
 .bottom-right-panel-not-map {

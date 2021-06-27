@@ -30,7 +30,7 @@ function Footer() {
           target='_blank'>
           <Button text='Report Issue' size='small' className='green' />
         </a>
-        <Route path='/project'>
+        <Route path='/project/:projectId/map'>
           <div className='bottom-left-panel-entry-points'>
             <Icon
               name='door-open.png'

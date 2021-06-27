@@ -1,13 +1,8 @@
-export default function goalsAsTree(
-  state,
+export default function goalsAsTrees(
+  data,
   { withMembers = false, withComments = false, withVotes = false } = {}
 ) {
-  const projectId = state.ui.activeProject
-  const goals = state.projects.goals[projectId] || {}
-  const edges = state.projects.edges[projectId] || {}
-  const goalMembers = state.projects.goalMembers[projectId] || {}
-  const goalVotes = state.projects.goalVotes[projectId] || {}
-  const goalComments = state.projects.goalComments[projectId] || {}
+  const { goals, edges, goalMembers, goalVotes, goalComments, agents } = data
 
   // modify so that all goals have their related things, if in opts
   let allGoals = goals
@@ -17,7 +12,7 @@ export default function goalsAsTree(
       if (withMembers) {
         extensions.members = Object.values(goalMembers)
           .filter(gm => gm.goal_address === goal.address)
-          .map(gm => state.agents[gm.agent_address])
+          .map(gm => agents[gm.agent_address])
       }
       if (withComments) {
         extensions.comments = Object.values(goalComments).filter(

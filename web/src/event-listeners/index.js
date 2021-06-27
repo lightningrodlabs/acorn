@@ -197,7 +197,7 @@ export default function setupEventListeners(store, canvas) {
         screensize: { width },
       },
     } = state
-    const goalCoordinates = layoutFormula(width, state)
+    const goalCoordinates = state.ui.layout
     const convertedMouse = coordsPageToCanvas(
       {
         x: event.clientX,
@@ -358,7 +358,7 @@ export default function setupEventListeners(store, canvas) {
           screensize: { width },
         },
       } = state
-      const goalCoordinates = layoutFormula(width, state)
+      const goalCoordinates = state.ui.layout
 
       const clickedEdgeAddress = checkForEdgeAtCoordinates(
         canvas.getContext('2d'),
@@ -437,7 +437,7 @@ export default function setupEventListeners(store, canvas) {
       },
     } = state
     const goals = state.projects.goals[activeProject] || {}
-    const goalCoordinates = layoutFormula(width, state)
+    const goalCoordinates = state.ui.layout
     const goalAddress = checkForGoalAtCoordinates(
       canvas.getContext('2d'),
       translate,

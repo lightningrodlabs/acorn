@@ -55,9 +55,7 @@ function mapStateToProps(state) {
     goalContent,
     cssCoordinates = {}
   if (hoveredAddress) {
-    goalCoordinate = layoutFormula(state.ui.screensize.width, state)[
-      hoveredAddress
-    ]
+    goalCoordinate = state.ui.layout[hoveredAddress]
     // Figure out where is that goal is relation to the window:
     // coordinates translation to css from canvas
     cssCoordinates = coordsCanvasToPage(

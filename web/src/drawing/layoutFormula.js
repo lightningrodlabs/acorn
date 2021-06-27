@@ -42,7 +42,7 @@ function layoutForTree(tree) {
   // create a graph
   const graph = new dagre.graphlib.Graph()
     .setGraph({})
-    .setDefaultEdgeLabel(function() {
+    .setDefaultEdgeLabel(function () {
       return {}
     })
 
@@ -76,8 +76,8 @@ function layoutForTree(tree) {
   return coordinates
 }
 
-export default function layoutFormula(screenWidth, state) {
-  const trees = goalsAsTrees(state)
+export default function layoutFormula(data) {
+  const trees = goalsAsTrees(data)
 
   let coordinates = {}
   const layouts = trees.map(tree => ({
