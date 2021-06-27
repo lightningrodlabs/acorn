@@ -48,7 +48,7 @@ function HeaderLeftPanel({
       {/* @ts-ignore */}
       <NavLink to="/" className="home-link logo">
         {/* @ts-ignore */}
-        <Icon name="acorn-logo-stroked.svg" className="not-hoverable" />
+        {/* <Icon name="acorn-logo-stroked.svg" className="not-hoverable" /> */}
         <p className="logo-name">acorn</p>
       </NavLink>
       {whoami && (

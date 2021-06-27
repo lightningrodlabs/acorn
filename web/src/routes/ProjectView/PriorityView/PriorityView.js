@@ -276,12 +276,14 @@ function PriorityView({ projectId, goalTrees, goalVotes }) {
         onExited={() => setPriorityPickerAddress(null)}
       >
         <div>
-          <PriorityPicker
-            projectId={projectId}
-            openToMyVote
-            goalAddress={priorityPickerAddress}
-            onClose={() => setPriorityPickerOpen(false)}
-          />
+          <div className="priority-view-picker-background">
+            <PriorityPicker
+              projectId={projectId}
+              openToMyVote
+              goalAddress={priorityPickerAddress}
+              onClose={() => setPriorityPickerOpen(false)}
+            />
+          </div>
         </div>
       </CSSTransition>
     </div>

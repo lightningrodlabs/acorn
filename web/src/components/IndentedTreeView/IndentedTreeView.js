@@ -109,6 +109,8 @@ export default function IndentedTreeView({ goalTrees }) {
   const [width, setWidth] = useState(DEFAULT_WIDTH)
   const [lastMouseXPosition, setLastMouseXPosition] = useState()
 
+  const location = useLocation()
+
   useEffect(() => {
     const isNotResizing = () => setIsResizing(false)
     document.body.addEventListener('mouseup', isNotResizing)
@@ -168,12 +170,23 @@ export default function IndentedTreeView({ goalTrees }) {
           </button>
         )}
       </div>
+      {/* highest level view */}
+      <NavLink
+        to={location.pathname}
+        className='highest-level-view'
+        isActive={match => {
+          const searchParams = new URLSearchParams(location.search)
+          return match && !searchParams.get('contextGoal')
+        }}
+      >
+        Highest Level View
+        </NavLink>
       {/* goal items list */}
       <div
         className='indented-view-goals'
         style={{ width: `${width - INDENTED_VIEW_GOALS_MARGIN}px` }}
       >
-        <div className='highest-level-view'>Highest Level View</div>
+
         {/* {testGoalTrees.map(goal => (
           <NestedTreeGoal goal={goal} />
         ))} */}

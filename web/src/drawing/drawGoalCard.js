@@ -31,13 +31,24 @@ export default function render(
   scale,
   goal,
   members,
-  { x, y },
+  coordinates,
   isEditing,
   editText,
   isSelected,
   isHovered,
   ctx
 ) {
+  let x, y
+  if (coordinates) {
+    x = coordinates.x
+    y = coordinates.y
+  } else {
+    // do not render if we don't have coordinates
+    // this can happen if we've just became aware of the goal
+    // and the layout has not been re-calculated using layoutFormula
+    return
+  }
+
   // use the editText for measuring,
   // even though it's not getting drawn on the canvas
   const text = isEditing ? editText : goal.content

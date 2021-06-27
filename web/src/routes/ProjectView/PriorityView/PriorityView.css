@@ -34,11 +34,33 @@
   width: 50%;
 }
 
+.priority-view-picker-background {
+  width: 100%;
+  height: 100%;
+  background-color: teal;
+  /* position: absolute; */
+  top: 0;
+  left: 0;
+  background: rgb(239 236 231 / 90%);
+  /* background: rgba(31, 31, 31, 0.4); */
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.priority-view-picker-background .priority-picker-wrapper.picker-popup {
+  position: relative;
+}
+
 .priority-view-picker-animation {
   transition: opacity 0.3s ease;
   position: absolute;
-  top: 20%;
-  left: 40px;
+  /* top: 20%;
+  left: 40px; */
 }
 
 .priority-view-picker-animation.exit, .priority-view-picker-animation.enter-done, .priority-view-picker-animation.enter-active {

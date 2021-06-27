@@ -14,7 +14,7 @@
 
 .priority-tab {
   padding: 10px;
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'gilroyextrabold', Helvetica, sans-serif;
   cursor: pointer;
   align-items: center;
   color: #4d4d4d;
@@ -33,7 +33,7 @@
   /* border-bottom: 3px solid #5f65ff; */
 }
 
-.priority-tab.active > .icon.very-small.enter-icon {
+.priority-tab.active>.icon.very-small.enter-icon {
   display: none;
 }
 
@@ -45,6 +45,7 @@
   margin-left: 6px;
   display: block;
 }
+
 .icon.very-small.enter-icon .inner-icon {
   background-color: #00a599;
 }
@@ -58,8 +59,7 @@
   padding: 0 24px 22px 24px;
 }
 
-.my-vote,
-.aggregated-votes-wrapper {
+.my-vote, .aggregated-votes-wrapper {
   -webkit-transition: transform 1s ease-in-out;
   transition: transform 1s ease-in-out;
   padding: 10px;
@@ -72,18 +72,20 @@
 .aggregated-votes-animation.closed {
   transform: translateY(280px);
 }
-.aggregated-votes-animation.exit,
-.aggregated-votes-animation.enter-done {
+
+.aggregated-votes-animation.exit, .aggregated-votes-animation.enter-done {
   transform: translateY(0);
 }
+
 .aggregated-votes-animation.exit-active {
   transform: translateY(280px);
   transition: transform 0.4s ease-out;
 }
-.aggregated-votes-animation.enter,
-.aggregated-votes-animation.exit-done {
+
+.aggregated-votes-animation.enter, .aggregated-votes-animation.exit-done {
   transform: translateY(280px);
 }
+
 .aggregated-votes-animation.enter-active {
   transform: translateY(0);
   transition: transform 0.4s ease-in;
@@ -95,17 +97,15 @@
   margin-top: 20px;
 }
 
-.remove-my-vote,
-.save-my-vote {
+.remove-my-vote, .save-my-vote {
   cursor: pointer;
-  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-family: 'gilroyextrabold', Helvetica, sans-serif;
   color: #00a599;
   transition: color 0.2s ease;
   padding: 4px 0;
 }
 
-.remove-my-vote:hover,
-.save-my-vote:hover {
+.remove-my-vote:hover, .save-my-vote:hover {
   color: #6600ff;
 }
 

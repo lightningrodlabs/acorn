@@ -89,7 +89,7 @@ function HeaderRightPanel({
         onClick={hideGuidebookHelpMessage}
       >
         {/* @ts-ignore */}
-        <Icon name="guidebook.svg" className="header-right-panel-icon" />
+        <Icon name="guidebook.svg" className="header-right-panel-icon" medium />
       </NavLink>
       <div className="avatar-and-status-wrapper">
         <div
@@ -106,6 +106,7 @@ function HeaderRightPanel({
             highlighted={isAvatarMenuOpen || isAvatarHover}
             clickable
             onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}
+            medium
           />
         </div>
         {/* Current status circle color under avatar*/}

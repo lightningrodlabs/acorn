@@ -316,7 +316,7 @@ function Priority({
               onClick={() => setOpenMyVote(!openMyVote)}>
               {myVote ? 'My Vote' : 'Weigh In'}
               <Icon
-                name='arrow-enter.svg'
+                name='arrow-right.svg'
                 size='very-small'
                 className='enter-icon'
               />
@@ -369,7 +369,7 @@ function Priority({
             onClick={() => setOpenMyVote(!openMyVote)}>
             Aggregated Priority
             <Icon
-              name='arrow-enter.svg'
+              name='arrow-right.svg'
               size='very-small'
               className='enter-icon'
             />
