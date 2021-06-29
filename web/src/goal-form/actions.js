@@ -12,15 +12,17 @@ const UPDATE_CONTENT = 'UPDATE_CONTENT'
 
 /* action creator functions */
 
-// parentAddress is optional
-function openGoalForm(x, y, editAddress, parentAddress) {
+// fromAddress and relation are optional
+// but should be passed together
+function openGoalForm(x, y, editAddress, fromAddress, relation) {
   return {
     type: OPEN_GOAL_FORM,
     payload: {
       editAddress,
       x,
       y,
-      parentAddress,
+      fromAddress,
+      relation
     },
   }
 }

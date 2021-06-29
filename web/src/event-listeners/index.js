@@ -58,6 +58,20 @@ import {
 } from '../edge-connector/actions'
 import handleEdgeConnectMouseUp from '../edge-connector/handler'
 
+function handleMouseUpForGoalForm(state, event, store, fromAddress, relation) {
+  const calcedPoint = coordsPageToCanvas(
+    {
+      x: event.clientX,
+      y: event.clientY,
+    },
+    state.ui.viewport.translate,
+    state.ui.viewport.scale
+  )
+  store.dispatch(
+    openGoalForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation)
+  )
+}
+
 export default function setupEventListeners(store, canvas) {
   function windowResize(event) {
     // Get the device pixel ratio, falling back to 1.
@@ -273,7 +287,7 @@ export default function setupEventListeners(store, canvas) {
 
   // don't allow this function to be called more than every 200 milliseconds
   const debouncedWheelHandler = _.debounce(
-    event => {
+    (event) => {
       const state = store.getState()
       const {
         ui: {
@@ -328,26 +342,11 @@ export default function setupEventListeners(store, canvas) {
     // opening the GoalForm is dependent on
     // holding down the `g` keyboard key modifier
     else if (state.ui.keyboard.gKeyDown) {
-      let parentAddress
-      if (state.ui.selection.selectedGoals.length) {
-        // use first
-        parentAddress = state.ui.selection.selectedGoals[0]
-      }
-      const calcedPoint = coordsPageToCanvas(
-        {
-          x: event.clientX,
-          y: event.clientY,
-        },
-        state.ui.viewport.translate,
-        state.ui.viewport.scale
-      )
-      store.dispatch(
-        openGoalForm(calcedPoint.x, calcedPoint.y, null, parentAddress)
-      )
+      handleMouseUpForGoalForm(state, event, store)
     }
     // finishing a drag box selection action
     else if (goalsAddresses) {
-      goalsAddresses.forEach(value => store.dispatch(selectGoal(value)))
+      goalsAddresses.forEach((value) => store.dispatch(selectGoal(value)))
     } else {
       // check for node in clicked area
       // select it if so
@@ -416,13 +415,26 @@ export default function setupEventListeners(store, canvas) {
     const state = store.getState()
     const { fromAddress, relation, toAddress } = state.ui.edgeConnector
     const { activeProject } = state.ui
-    handleEdgeConnectMouseUp(
-      fromAddress,
-      relation,
-      toAddress,
-      activeProject,
-      store.dispatch
-    )
+    if (fromAddress) {
+      // covers the case where we are hovered over a Goal
+      // and thus making a connection to an existing Goal
+      // AS WELL AS the case where we are not
+      // (to reset the edge connector)
+      handleEdgeConnectMouseUp(
+        fromAddress,
+        relation,
+        toAddress,
+        activeProject,
+        store.dispatch
+      )
+      // covers the case where we are not hovered over a Goal
+      // and thus making a new Goal and connection/Edge
+      if (!toAddress) {
+        handleMouseUpForGoalForm(state, event, store, fromAddress, relation)
+      }
+    }
+
+    // update the mouse aware state
     store.dispatch(unsetMousedown())
   }
 

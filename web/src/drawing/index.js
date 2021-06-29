@@ -205,26 +205,33 @@ function render(store, canvas) {
     })
 
     // render the edge that is pending to be created to the open goal form
-    if (state.ui.goalForm.isOpen) {
-      if (state.ui.goalForm.parentAddress) {
-        const parentCoords = coordinates[state.ui.goalForm.parentAddress]
+    if (state.ui.goalForm.isOpen && state.ui.goalForm.fromAddress) {
+        const fromGoalCoords = coordinates[state.ui.goalForm.fromAddress]
         const newGoalCoords = {
           x: state.ui.goalForm.leftEdgeXPosition,
           y: state.ui.goalForm.topEdgeYPosition,
         }
-        const parentGoalText = state.projects.goals[
-          state.ui.goalForm.parentAddress
+        const fromGoalText = state.projects.goals[
+          state.ui.goalForm.fromAddress
         ]
-          ? goals[state.ui.goalForm.parentAddress].content
+          ? goals[state.ui.goalForm.fromAddress].content
           : ''
+        let childCoords, parentCoords
+        const { relation } = state.ui.goalForm
+        if (relation === RELATION_AS_CHILD) {
+          childCoords = fromGoalCoords
+          parentCoords = newGoalCoords
+        } else if (relation === RELATION_AS_PARENT) {
+          childCoords = newGoalCoords
+          parentCoords = fromGoalCoords
+        }
         const [edge1port, edge2port] = calculateEdgeCoordsByGoalCoords(
-          newGoalCoords,
+          childCoords,
           parentCoords,
-          parentGoalText,
+          fromGoalText,
           ctx
         )
         drawEdge(edge1port, edge2port, ctx)
-      }
     }
 
     // render the edge that is pending to be created between existing Goals

@@ -6,11 +6,13 @@ import { archiveGoalFully } from '../projects/goals/actions'
 
 const defaultState = {
   editAddress: null,
-  parentAddress: null,
   content: '',
   isOpen: false,
   leftEdgeXPosition: 0,
   topEdgeYPosition: 0,
+  // these two go together
+  fromAddress: null,
+  relation: null,
 }
 
 export default function (state = defaultState, action) {
@@ -20,8 +22,10 @@ export default function (state = defaultState, action) {
     ...state,
     isOpen: false,
     content: '',
-    parentAddress: null,
     editAddress: null,
+    // these two go together
+    fromAddress: null,
+    relation: null,
   }
 
   switch (type) {
@@ -38,8 +42,10 @@ export default function (state = defaultState, action) {
         isOpen: true,
         leftEdgeXPosition: payload.x,
         topEdgeYPosition: payload.y,
-        parentAddress: payload.parentAddress,
         editAddress: payload.editAddress,
+        // these two go together
+        fromAddress: payload.fromAddress,
+        relation: payload.relation,
       }
     case CLOSE_GOAL_FORM:
       return resetVersion

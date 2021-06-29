@@ -3,9 +3,6 @@ import { connect } from 'react-redux'
 import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
 
-import layoutFormula from '../../drawing/layoutFormula'
-import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
-
 import { createGoalWithEdge, updateGoal } from '../../projects/goals/actions'
 import { closeGoalForm, updateContent } from '../../goal-form/actions'
 
@@ -16,8 +13,14 @@ import { firstZoomThreshold, fontSize, fontSizeExtraLarge, fontSizeLarge, lineHe
 function GoalTitleQuickEdit({
   whoami,
   scale,
-  content, // the value of the text input
-  parentAddress,
+  // the value of the text input
+  content,
+  // (optional) the address of a Goal to connect this Goal to
+  // in the case of creating a Goal
+  fromAddress,
+  // (optional) the relation (relation_as_{child|parent}) between the two
+  // in the case of creating a Goal
+  relation, 
   editAddress,
   // coordinates in css terms for the box
   leftEdgeXPosition,
@@ -107,7 +110,7 @@ function GoalTitleQuickEdit({
         description,
         is_imported,
       },
-      parentAddress
+      fromAddress ? { goal_address: fromAddress, relation } : null
     )
   }
 
@@ -180,7 +183,8 @@ function mapStateToProps(state) {
       viewport: { scale },
       // all the state for this component is store under state->ui->goalForm
       goalForm: {
-        parentAddress,
+        fromAddress,
+        relation,
         editAddress,
         content,
         leftEdgeXPosition,
@@ -212,8 +216,12 @@ function mapStateToProps(state) {
     whoami: state.whoami,
     scale,
     editAddress,
-    // the address of the "parent" Goal that we are maybe creating this "under"
-    parentAddress,
+    // optional, the address of the Goal that we are relating this to
+    fromAddress,
+    // optional, the relation (relation_as_{child|parent})
+    // between the potential fromAddress Goal
+    // and a new Goal to be created
+    relation,
     content,
     leftEdgeXPosition: editAddress ? goalCoord.x : leftEdgeXPosition,
     topEdgeYPosition: editAddress ? goalCoord.y : topEdgeYPosition,
@@ -240,11 +248,11 @@ function mapDispatchToProps(dispatch, ownProps) {
     updateContent: (content) => {
       dispatch(updateContent(content))
     },
-    createGoalWithEdge: (entry, maybe_parent_address) => {
+    createGoalWithEdge: (entry, maybe_linked_goal) => {
       return dispatch(
         createGoalWithEdge.create({
           cellIdString,
-          payload: { entry, maybe_parent_address },
+          payload: { entry, maybe_linked_goal },
         })
       )
     },
