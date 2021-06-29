@@ -118,11 +118,11 @@ function UrgencyImportanceQuadrants({
     goals: goalLists[0]
   }
   const topRight = {
-    title: 'More Urgent & Less Important',
+    title: 'Less Urgent & More Important',
     goals: goalLists[1]
   }
   const bottomLeft = {
-    title: 'Less Urgent & More Important',
+    title: 'More Urgent & Less Important',
     goals: goalLists[2]
   }
   const bottomRight = {
