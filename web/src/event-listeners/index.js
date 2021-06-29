@@ -49,7 +49,6 @@ import { changeTranslate, changeScale } from '../viewport/actions'
 import { openExpandedView } from '../expanded-view/actions'
 import { MOUSE, TRACKPAD } from '../local-preferences/reducer'
 
-import layoutFormula from '../drawing/layoutFormula'
 import { setGoalClone } from '../goal-clone/actions'
 
 import cloneGoals from './cloneGoals'
@@ -403,16 +402,6 @@ export default function setupEventListeners(store, canvas) {
       }
     }
 
-    const { fromAddress, relation, toAddress } = state.ui.edgeConnector
-    const { activeProject } = state.ui
-    handleEdgeConnectMouseUp(
-      fromAddress,
-      relation,
-      toAddress,
-      activeProject,
-      store.dispatch
-    )
-
     // clear box selection vars
     store.dispatch(unsetCoordinate())
     store.dispatch(unsetGoals())
@@ -424,6 +413,16 @@ export default function setupEventListeners(store, canvas) {
   }
 
   function canvasMouseup(event) {
+    const state = store.getState()
+    const { fromAddress, relation, toAddress } = state.ui.edgeConnector
+    const { activeProject } = state.ui
+    handleEdgeConnectMouseUp(
+      fromAddress,
+      relation,
+      toAddress,
+      activeProject,
+      store.dispatch
+    )
     store.dispatch(unsetMousedown())
   }
 

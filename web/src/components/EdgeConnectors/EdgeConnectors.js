@@ -88,7 +88,8 @@ const EdgeConnectorHtml = ({
   active,
   pixelTop,
   pixelLeft,
-  onClick,
+  onMouseDown,
+  onMouseUp,
   onMouseOver,
   onMouseOut,
 }) => {
@@ -96,7 +97,8 @@ const EdgeConnectorHtml = ({
     <div
       className={`edge-connector ${active ? 'active' : ''}`}
       style={{ top: `${pixelTop}px`, left: `${pixelLeft}px` }}
-      onClick={onClick}
+      onMouseDown={onMouseDown}
+      onMouseUp={onMouseUp}
       onMouseOver={onMouseOver}
       onMouseOut={onMouseOut}
     >
@@ -106,7 +108,6 @@ const EdgeConnectorHtml = ({
 }
 
 const EdgeConnector = ({
-  state,
   activeProject,
   goal,
   hasParent,
@@ -158,32 +159,34 @@ const EdgeConnector = ({
   const canShowBottomConnector =
     !topConnectorActive && (!relation || relation === RELATION_AS_CHILD)
 
-  // shared code for click handlers
-  const edgeConnectClick = (direction, validity) => () => {
+  // shared code for mouse event handlers
+  const edgeConnectMouseDown = (direction, validity) => () => {
     if (!fromAddress) {
       setEdgeConnectorFrom(
         address,
         direction,
         validity(address, edges, goalAddresses)
       )
-    } else {
-      handleEdgeConnectMouseUp(
-        fromAddress,
-        relation,
-        toAddress,
-        activeProject,
-        dispatch
-      )
     }
   }
-  const topConnectorOnClick = edgeConnectClick(
+  const edgeConnectMouseUp = () => {
+    handleEdgeConnectMouseUp(
+      fromAddress,
+      relation,
+      toAddress,
+      activeProject,
+      dispatch
+    )
+  }
+  const topConnectorOnMouseDown = edgeConnectMouseDown(
     RELATION_AS_CHILD,
     calculateValidParents
   )
-  const bottomConnectorOnClick = edgeConnectClick(
+  const bottomConnectorOnMouseDown = edgeConnectMouseDown(
     RELATION_AS_PARENT,
     calculateValidChildren
   )
+
   const connectorOnMouseOver = () => {
     setHoveredEdgeConnector(address)
     // cannot set 'to' the very same Goal
@@ -202,7 +205,8 @@ const EdgeConnector = ({
           active={topConnectorActive}
           pixelTop={topConnectorTop}
           pixelLeft={topConnectorLeft}
-          onClick={topConnectorOnClick}
+          onMouseDown={topConnectorOnMouseDown}
+          onMouseUp={edgeConnectMouseUp}
           onMouseOver={connectorOnMouseOver}
           onMouseOut={connectorOnMouseOut}
         />
@@ -214,7 +218,8 @@ const EdgeConnector = ({
           active={bottomConnectorActive}
           pixelTop={bottomConnectorTop}
           pixelLeft={bottomConnectorLeft}
-          onClick={bottomConnectorOnClick}
+          onMouseDown={bottomConnectorOnMouseDown}
+          onMouseUp={edgeConnectMouseUp}
           onMouseOver={connectorOnMouseOver}
           onMouseOut={connectorOnMouseOut}
         />
