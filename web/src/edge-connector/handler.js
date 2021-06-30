@@ -9,6 +9,9 @@ export default function handleEdgeConnectMouseUp(
   dispatch
 ) {
   if (fromAddress && toAddress) {
+    // TODO: delete the existing edge first
+    // if we are replacing an edge with this one
+
     const fromAsParent = relation === RELATION_AS_PARENT
     const createEdgeAction = createEdge.create({
       cellIdString: activeProject,

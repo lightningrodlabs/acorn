@@ -20,7 +20,7 @@ function GoalTitleQuickEdit({
   fromAddress,
   // (optional) the relation (relation_as_{child|parent}) between the two
   // in the case of creating a Goal
-  relation, 
+  relation,
   editAddress,
   // coordinates in css terms for the box
   leftEdgeXPosition,
@@ -95,6 +95,9 @@ function GoalTitleQuickEdit({
   }
 
   const innerCreateGoalWithEdge = () => {
+    // TODO: delete the existing edge first
+    // if we are replacing an edge with this one
+
     // dispatch the action to create a goal
     // with the contents from the form
     // inserted into it

@@ -151,7 +151,6 @@ const EdgeConnector = ({
   // if there is one
   const canShowTopConnector =
     !bottomConnectorActive &&
-    !hasParent &&
     (!relation || relation === RELATION_AS_PARENT)
 
   // a connection to this lower port would make this Goal a parent of the current 'from' Goal of the edge connector
