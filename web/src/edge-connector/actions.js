@@ -8,13 +8,15 @@ const RELATION_AS_PARENT = 'ExistingGoalAsParent'
 const RELATION_AS_CHILD = 'ExistingGoalAsChild'
 
 // relation should be RELATION_AS_PARENT or RELATION_AS_CHILD
-function setEdgeConnectorFrom(address, relation, validToAddresses) {
+// existingParentEdgeAddress is optional
+function setEdgeConnectorFrom(address, relation, validToAddresses, existingParentEdgeAddress) {
   return {
     type: SET_EDGE_CONNECTOR_FROM,
     payload: {
       address,
       relation,
       validToAddresses,
+      existingParentEdgeAddress
     },
   }
 }

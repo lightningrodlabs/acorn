@@ -14,7 +14,7 @@ const UPDATE_CONTENT = 'UPDATE_CONTENT'
 
 // fromAddress and relation are optional
 // but should be passed together
-function openGoalForm(x, y, editAddress, fromAddress, relation) {
+function openGoalForm(x, y, editAddress, fromAddress, relation, existingParentEdgeAddress) {
   return {
     type: OPEN_GOAL_FORM,
     payload: {
@@ -22,7 +22,8 @@ function openGoalForm(x, y, editAddress, fromAddress, relation) {
       x,
       y,
       fromAddress,
-      relation
+      relation,
+      existingParentEdgeAddress,
     },
   }
 }

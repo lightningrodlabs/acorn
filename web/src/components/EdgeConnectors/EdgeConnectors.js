@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import './EdgeConnectors.css'
 import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
-import layoutFormula from '../../drawing/layoutFormula'
 import { Transition, TransitionGroup } from 'react-transition-group'
 import {
   goalWidth,
@@ -110,7 +109,8 @@ const EdgeConnectorHtml = ({
 const EdgeConnector = ({
   activeProject,
   goal,
-  hasParent,
+  ownExistingParentEdgeAddress,
+  presetExistingParentEdgeAddress,
   fromAddress,
   relation,
   toAddress,
@@ -150,8 +150,7 @@ const EdgeConnector = ({
   // a connection to this upper port would make this Goal a child of the current 'from' Goal of the edge connector
   // if there is one
   const canShowTopConnector =
-    !bottomConnectorActive &&
-    (!relation || relation === RELATION_AS_PARENT)
+    !bottomConnectorActive && (!relation || relation === RELATION_AS_PARENT)
 
   // a connection to this lower port would make this Goal a parent of the current 'from' Goal of the edge connector
   // if there is one
@@ -164,7 +163,8 @@ const EdgeConnector = ({
       setEdgeConnectorFrom(
         address,
         direction,
-        validity(address, edges, goalAddresses)
+        validity(address, edges, goalAddresses),
+        ownExistingParentEdgeAddress
       )
     }
   }
@@ -173,6 +173,7 @@ const EdgeConnector = ({
       fromAddress,
       relation,
       toAddress,
+      presetExistingParentEdgeAddress,
       activeProject,
       dispatch
     )
@@ -237,6 +238,7 @@ const EdgeConnectors = ({
   fromAddress,
   relation,
   toAddress,
+  existingParentEdgeAddress,
   connectorAddresses,
   canvas,
   setEdgeConnectorFrom,
@@ -254,6 +256,9 @@ const EdgeConnectors = ({
       {connectorAddresses.map((connectorAddress) => {
         const goalCoordinates = coordinates[connectorAddress]
         const goal = goals[connectorAddress]
+        // look for an existing edge that defines a parent
+        // of this Goal, so that it can be deleted
+        // if it is to be changed and a new one added
         const hasParent = edges.find(
           (edge) => edge.child_address === connectorAddress
         )
@@ -269,7 +274,8 @@ const EdgeConnectors = ({
                 fromAddress={fromAddress}
                 relation={relation}
                 toAddress={toAddress}
-                hasParent={hasParent}
+                ownExistingParentEdgeAddress={hasParent && hasParent.address}
+                presetExistingParentEdgeAddress={existingParentEdgeAddress}
                 address={connectorAddress}
                 setEdgeConnectorFrom={setEdgeConnectorFrom}
                 setEdgeConnectorTo={setEdgeConnectorTo}
@@ -299,7 +305,12 @@ function mapStateToProps(state) {
   const coordinates = state.ui.layout
   const selectedGoalAddresses = state.ui.selection.selectedGoals
   const hoveredGoalAddress = state.ui.hover.hoveredGoal
-  const { fromAddress, relation, toAddress } = state.ui.edgeConnector
+  const {
+    fromAddress,
+    relation,
+    toAddress,
+    existingParentEdgeAddress,
+  } = state.ui.edgeConnector
   let connectorAddresses
   // only set validToAddresses if we are actually utilizing the edge connector right now
   if (fromAddress) {
@@ -330,14 +341,15 @@ function mapStateToProps(state) {
     fromAddress,
     relation,
     toAddress,
+    existingParentEdgeAddress,
     connectorAddresses,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    setEdgeConnectorFrom: (address, relation, validToAddresses) => {
-      return dispatch(setEdgeConnectorFrom(address, relation, validToAddresses))
+    setEdgeConnectorFrom: (address, relation, validToAddresses, existingParentEdgeAddress) => {
+      return dispatch(setEdgeConnectorFrom(address, relation, validToAddresses, existingParentEdgeAddress))
     },
     setEdgeConnectorTo: (address) => {
       return dispatch(setEdgeConnectorTo(address))

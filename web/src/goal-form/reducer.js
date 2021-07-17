@@ -23,9 +23,10 @@ export default function (state = defaultState, action) {
     isOpen: false,
     content: '',
     editAddress: null,
-    // these two go together
+    // these three go together
     fromAddress: null,
     relation: null,
+    existingParentEdgeAddress: null // this is optional though
   }
 
   switch (type) {
@@ -43,9 +44,10 @@ export default function (state = defaultState, action) {
         leftEdgeXPosition: payload.x,
         topEdgeYPosition: payload.y,
         editAddress: payload.editAddress,
-        // these two go together
+        // these three go together
         fromAddress: payload.fromAddress,
         relation: payload.relation,
+        existingParentEdgeAddress: payload.existingParentEdgeAddress, // this is optional though
       }
     case CLOSE_GOAL_FORM:
       return resetVersion

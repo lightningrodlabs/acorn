@@ -9,6 +9,7 @@ const defaultState = {
   relation: null,
   validToAddresses: [],
   toAddress: null,
+  existingParentEdgeAddress: null
 }
 
 export default function reducer(state = defaultState, action) {
@@ -20,6 +21,7 @@ export default function reducer(state = defaultState, action) {
         fromAddress: payload.address,
         relation: payload.relation,
         validToAddresses: payload.validToAddresses,
+        existingParentEdgeAddress: payload.existingParentEdgeAddress
       }
     case SET_EDGE_CONNECTOR_TO:
       return {

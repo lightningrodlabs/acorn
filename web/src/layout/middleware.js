@@ -27,6 +27,9 @@ const isOneOfLayoutAffectingActions = (action) => {
 // and update the layout when we see an action like that
 // it is useful to have this layout cached in the state for performance reasons
 const layoutWatcher = store => next => action => {
+    // first integrate the new data
+    // that way the layout recalculation
+    // will include it
     let result = next(action)
     if (isOneOfLayoutAffectingActions(action)) {
         const nextState = store.getState()

@@ -1,16 +1,23 @@
 import { RELATION_AS_PARENT, resetEdgeConnector } from './actions'
-import { createEdge } from '../projects/edges/actions'
+import { createEdge, archiveEdge } from '../projects/edges/actions'
 
-export default function handleEdgeConnectMouseUp(
+export default async function handleEdgeConnectMouseUp(
   fromAddress,
   relation,
   toAddress,
+  existingParentEdgeAddress,
   activeProject,
   dispatch
 ) {
   if (fromAddress && toAddress) {
-    // TODO: delete the existing edge first
     // if we are replacing an edge with this one
+    // delete the existing edge first
+    if (existingParentEdgeAddress) {
+      await dispatch(archiveEdge.create({
+        cellIdString: activeProject,
+        payload: existingParentEdgeAddress,
+      }))
+    }
 
     const fromAsParent = relation === RELATION_AS_PARENT
     const createEdgeAction = createEdge.create({

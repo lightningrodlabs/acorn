@@ -58,7 +58,7 @@ import {
 } from '../edge-connector/actions'
 import handleEdgeConnectMouseUp from '../edge-connector/handler'
 
-function handleMouseUpForGoalForm(state, event, store, fromAddress, relation) {
+function handleMouseUpForGoalForm(state, event, store, fromAddress, relation, existingParentEdgeAddress) {
   const calcedPoint = coordsPageToCanvas(
     {
       x: event.clientX,
@@ -68,7 +68,7 @@ function handleMouseUpForGoalForm(state, event, store, fromAddress, relation) {
     state.ui.viewport.scale
   )
   store.dispatch(
-    openGoalForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation)
+    openGoalForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation, existingParentEdgeAddress)
   )
 }
 
@@ -413,7 +413,7 @@ export default function setupEventListeners(store, canvas) {
 
   function canvasMouseup(event) {
     const state = store.getState()
-    const { fromAddress, relation, toAddress } = state.ui.edgeConnector
+    const { fromAddress, relation, toAddress, existingParentEdgeAddress } = state.ui.edgeConnector
     const { activeProject } = state.ui
     if (fromAddress) {
       // covers the case where we are hovered over a Goal
@@ -424,13 +424,14 @@ export default function setupEventListeners(store, canvas) {
         fromAddress,
         relation,
         toAddress,
+        existingParentEdgeAddress,
         activeProject,
         store.dispatch
       )
       // covers the case where we are not hovered over a Goal
       // and thus making a new Goal and connection/Edge
       if (!toAddress) {
-        handleMouseUpForGoalForm(state, event, store, fromAddress, relation)
+        handleMouseUpForGoalForm(state, event, store, fromAddress, relation, existingParentEdgeAddress)
       }
     }
 
