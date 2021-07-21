@@ -43,7 +43,7 @@ import {
   updateContent,
 } from '../goal-form/actions'
 import { archiveGoalFully } from '../projects/goals/actions'
-import { archiveEdge } from '../projects/edges/actions'
+import { archiveEdge, layoutAffectingArchiveEdge } from '../projects/edges/actions'
 import { setScreenDimensions } from '../screensize/actions'
 import { changeTranslate, changeScale } from '../viewport/actions'
 import { openExpandedView } from '../expanded-view/actions'
@@ -58,6 +58,7 @@ import {
 } from '../edge-connector/actions'
 import handleEdgeConnectMouseUp from '../edge-connector/handler'
 
+// ASSUMPTION: one parent (existingParentEdgeAddress)
 function handleMouseUpForGoalForm(state, event, store, fromAddress, relation, existingParentEdgeAddress) {
   const calcedPoint = coordsPageToCanvas(
     {
@@ -68,6 +69,7 @@ function handleMouseUpForGoalForm(state, event, store, fromAddress, relation, ex
     state.ui.viewport.scale
   )
   store.dispatch(
+    // ASSUMPTION: one parent (existingParentEdgeAddress)
     openGoalForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation, existingParentEdgeAddress)
   )
 }
@@ -127,11 +129,11 @@ export default function setupEventListeners(store, canvas) {
           !state.ui.expandedView.isOpen
         ) {
           let firstOfSelection = selection.selectedEdges[0]
+          // affectLayout means this action will trigger a recalc
+          // and layout animation update, which is natural in this context
+          const affectLayout = true
           store.dispatch(
-            archiveEdge.create({
-              cellIdString: activeProject,
-              payload: firstOfSelection,
-            })
+            layoutAffectingArchiveEdge(activeProject, firstOfSelection, affectLayout)
           )
           // if on firefox, and matched this case
           // prevent the browser from navigating back to the last page
@@ -413,6 +415,7 @@ export default function setupEventListeners(store, canvas) {
 
   function canvasMouseup(event) {
     const state = store.getState()
+    // ASSUMPTION: one parent (existingParentEdgeAddress)
     const { fromAddress, relation, toAddress, existingParentEdgeAddress } = state.ui.edgeConnector
     const { activeProject } = state.ui
     if (fromAddress) {
@@ -424,6 +427,7 @@ export default function setupEventListeners(store, canvas) {
         fromAddress,
         relation,
         toAddress,
+        // ASSUMPTION: one parent
         existingParentEdgeAddress,
         activeProject,
         store.dispatch

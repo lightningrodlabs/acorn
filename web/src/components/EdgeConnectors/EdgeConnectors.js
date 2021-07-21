@@ -146,8 +146,8 @@ const EdgeConnector = ({
     (address === fromAddress && relation === RELATION_AS_PARENT) ||
     (toAddress && address === toAddress && relation === RELATION_AS_CHILD)
 
-  // should only show when the Goal has no parent, since it can only have one
-  // a connection to this upper port would make this Goal a child of the current 'from' Goal of the edge connector
+  // a connection to this upper port would make this Goal a child of the
+  // current 'from' Goal of the edge connector
   // if there is one
   const canShowTopConnector =
     !bottomConnectorActive && (!relation || relation === RELATION_AS_PARENT)
@@ -164,7 +164,10 @@ const EdgeConnector = ({
         address,
         direction,
         validity(address, edges, goalAddresses),
-        ownExistingParentEdgeAddress
+        // we don't think about overriding the existing
+        // parent when it comes to children, since it can have many
+        // ASSUMPTION: one parent
+        direction === RELATION_AS_CHILD ? ownExistingParentEdgeAddress : undefined
       )
     }
   }
@@ -173,6 +176,7 @@ const EdgeConnector = ({
       fromAddress,
       relation,
       toAddress,
+      // ASSUMPTION: one parent
       presetExistingParentEdgeAddress,
       activeProject,
       dispatch

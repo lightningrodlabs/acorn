@@ -4,7 +4,7 @@ import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
 
 import { createGoalWithEdge, updateGoal } from '../../projects/goals/actions'
-import { archiveEdge } from '../../projects/edges/actions'
+import { layoutAffectingArchiveEdge } from '../../projects/edges/actions'
 import { closeGoalForm, updateContent } from '../../goal-form/actions'
 
 import './GoalTitleQuickEdit.css'
@@ -24,6 +24,7 @@ function GoalTitleQuickEdit({
   relation,
   // (optional) the address of an existing edge that
   // indicates this Goal as the child of another (a.k.a has a parent)
+  // ASSUMPTION: one parent
   existingParentEdgeAddress,
   editAddress,
   // coordinates in css terms for the box
@@ -72,7 +73,7 @@ function GoalTitleQuickEdit({
     }
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     if (event) {
       // this is to prevent the page from refreshing
       // when the form is submitted, which is the
@@ -89,9 +90,9 @@ function GoalTitleQuickEdit({
     // might be an update to an existing...
     // otherwise it's a new Goal being created
     if (editAddress) {
-      innerUpdateGoal()
+      await innerUpdateGoal()
     } else {
-      innerCreateGoalWithEdge()
+      await innerCreateGoalWithEdge()
     }
 
     // reset the textarea value to empty
@@ -102,6 +103,7 @@ function GoalTitleQuickEdit({
   const innerCreateGoalWithEdge = async () => {
     // if we are replacing an edge with this one
     // delete the existing edge first
+    // ASSUMPTION: one parent
     if (existingParentEdgeAddress) {
       await archiveEdge(existingParentEdgeAddress)
     }
@@ -125,8 +127,8 @@ function GoalTitleQuickEdit({
     )
   }
 
-  const innerUpdateGoal = () => {
-    updateGoal(
+  const innerUpdateGoal = async () => {
+    await updateGoal(
       {
         // new
         user_edit_hash: whoami.entry.address,
@@ -201,6 +203,7 @@ function mapStateToProps(state) {
         // these three go together
         fromAddress,
         relation,
+        // ASSUMPTION: one parent
         existingParentEdgeAddress, // this is optional though
       }
     },
@@ -237,6 +240,7 @@ function mapStateToProps(state) {
     relation,
     // optional, the address of an existing edge that
     // indicates this Goal as the child of another (a.k.a has a parent)
+    // ASSUMPTION: one parent
     existingParentEdgeAddress,
     content,
     leftEdgeXPosition: editAddress ? goalCoord.x : leftEdgeXPosition,
@@ -265,11 +269,17 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(updateContent(content))
     },
     archiveEdge: (address) => {
+      // false because we will only be archiving
+      // an edge here in the context of immediately replacing
+      // it with another during a createGoalWithEdge
+      // thus we don't want a glitchy animation
+      const affectLayout = false
       return dispatch(
-        archiveEdge.create({
+        layoutAffectingArchiveEdge(
           cellIdString,
-          payload: address,
-        })
+          address,
+          affectLayout
+        )
       )
     },
     createGoalWithEdge: (entry, maybe_linked_goal) => {

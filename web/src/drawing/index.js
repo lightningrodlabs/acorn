@@ -5,7 +5,6 @@
   and use well defined functions for rendering those specific parts
   to the canvas.
 */
-import layoutFormula from './layoutFormula'
 import drawGoalCard from './drawGoalCard'
 import drawEdge, { calculateEdgeCoordsByGoalCoords } from './drawEdge'
 import drawOverlay from './drawOverlay'
@@ -103,8 +102,9 @@ function render(store, canvas) {
 
       // if in the pending re-parenting mode for the child card of an existing edge,
       // temporarily omit/hide the existing edge from view
-      const pendingReParent = (state.ui.edgeConnector.fromAddress === edge.child_address)
-        || (state.ui.goalForm.isOpen && state.ui.goalForm.fromAddress === edge.child_address)
+      // ASSUMPTION: one parent
+      const pendingReParent = (state.ui.edgeConnector.fromAddress === edge.child_address && state.ui.edgeConnector.relation === RELATION_AS_CHILD)
+        || (state.ui.goalForm.isOpen && state.ui.goalForm.fromAddress === edge.child_address  && state.ui.goalForm.relation === RELATION_AS_CHILD)
       if (pendingReParent) return
 
       const childCoords = coordinates[edge.child_address]

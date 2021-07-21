@@ -3,6 +3,7 @@ import { createZomeCallAsyncAction } from 'connoropolous-hc-redux-middleware'
 import { PROJECTS_ZOME_NAME } from '../../holochainConfig'
 import { createCrudActionCreators } from '../../crudRedux'
 
+
 const CREATE_GOAL_WITH_EDGE = 'create_goal_with_edge'
 const ARCHIVE_GOAL_FULLY = 'archive_goal_fully'
 
