@@ -17,6 +17,7 @@ import * as projectMetaActions from './projects/project-meta/actions'
 import { setMember } from './projects/members/actions'
 import { fetchAgents, setAgent } from './agents/actions'
 import { cellIdToString } from 'connoropolous-hc-redux-middleware'
+import { triggerUpdateLayout } from './layout/actions'
 
 // We directly use the 'success' type, since these actions
 // have already succeeded on another machine, and we're just reflecting them locally
@@ -116,6 +117,14 @@ export default (store) => (signal) => {
   if (crudType) {
     const action = pickCrudAction(crudType, payload.action)
     store.dispatch(createSignalAction(action, cellId, payload.data))
+    // in case of the special situation with archiving edges
+    // where the layout reflow doesn't happen automatically
+    // we have to manually trigger it to do so
+    // the other cases are covered in src/layout/middleware.js ->
+    // isOneOfLayoutAffectingActions()
+    if (action.success().type === edgeActions.archiveEdge.success().type) {
+      store.dispatch(triggerUpdateLayout())
+    }
     // we captured the action for this signal, so early exit
     return
   }

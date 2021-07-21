@@ -10,13 +10,15 @@ import {
     AFFECT_LAYOUT_ARCHIVE_EDGE,
 } from '../projects/edges/actions'
 import {
-    updateLayout
+  TRIGGER_UPDATE_LAYOUT,
+  updateLayout
 } from '../layout/actions'
 import layoutFormula from '../drawing/layoutFormula'
 
 const isOneOfLayoutAffectingActions = (action) => {
     const { type } = action
-    return type === createGoalWithEdge.success().type
+    return type === TRIGGER_UPDATE_LAYOUT
+        || type === createGoalWithEdge.success().type
         || type === fetchGoals.success().type
         || type === archiveGoalFully.success().type
         || type === createEdge.success().type
@@ -122,14 +124,14 @@ function performAnimation(store, action, currentState) {
     // do this to add any new ones
     // that will just start out in their final position
     ...newLayout,
-    // do this to override any new ones with existing ones
-    // to begin with
-    ...currentState.ui.layout,
     // do this to override the coordinates of the newly 
     // created Goal when handling a create action
     // and make its original position equal to the position
     // of the Goal Form when it was open
     ...goalCreatedCoord,
+    // do this to override any new ones with existing ones
+    // to begin with
+    ...currentState.ui.layout,
   }
   // transition currentLayoutTween object
   // into newLayout object
