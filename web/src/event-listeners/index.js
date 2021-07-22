@@ -43,7 +43,7 @@ import {
   updateContent,
 } from '../goal-form/actions'
 import { archiveGoalFully } from '../projects/goals/actions'
-import { archiveEdge } from '../projects/edges/actions'
+import { archiveEdge, layoutAffectingArchiveEdge } from '../projects/edges/actions'
 import { setScreenDimensions } from '../screensize/actions'
 import { changeTranslate, changeScale } from '../viewport/actions'
 import { openExpandedView } from '../expanded-view/actions'
@@ -58,7 +58,8 @@ import {
 } from '../edge-connector/actions'
 import handleEdgeConnectMouseUp from '../edge-connector/handler'
 
-function handleMouseUpForGoalForm(state, event, store, fromAddress, relation) {
+// ASSUMPTION: one parent (existingParentEdgeAddress)
+function handleMouseUpForGoalForm(state, event, store, fromAddress, relation, existingParentEdgeAddress) {
   const calcedPoint = coordsPageToCanvas(
     {
       x: event.clientX,
@@ -68,7 +69,8 @@ function handleMouseUpForGoalForm(state, event, store, fromAddress, relation) {
     state.ui.viewport.scale
   )
   store.dispatch(
-    openGoalForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation)
+    // ASSUMPTION: one parent (existingParentEdgeAddress)
+    openGoalForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation, existingParentEdgeAddress)
   )
 }
 
@@ -127,11 +129,11 @@ export default function setupEventListeners(store, canvas) {
           !state.ui.expandedView.isOpen
         ) {
           let firstOfSelection = selection.selectedEdges[0]
+          // affectLayout means this action will trigger a recalc
+          // and layout animation update, which is natural in this context
+          const affectLayout = true
           store.dispatch(
-            archiveEdge.create({
-              cellIdString: activeProject,
-              payload: firstOfSelection,
-            })
+            layoutAffectingArchiveEdge(activeProject, firstOfSelection, affectLayout)
           )
           // if on firefox, and matched this case
           // prevent the browser from navigating back to the last page
@@ -413,7 +415,8 @@ export default function setupEventListeners(store, canvas) {
 
   function canvasMouseup(event) {
     const state = store.getState()
-    const { fromAddress, relation, toAddress } = state.ui.edgeConnector
+    // ASSUMPTION: one parent (existingParentEdgeAddress)
+    const { fromAddress, relation, toAddress, existingParentEdgeAddress } = state.ui.edgeConnector
     const { activeProject } = state.ui
     if (fromAddress) {
       // covers the case where we are hovered over a Goal
@@ -424,13 +427,15 @@ export default function setupEventListeners(store, canvas) {
         fromAddress,
         relation,
         toAddress,
+        // ASSUMPTION: one parent
+        existingParentEdgeAddress,
         activeProject,
         store.dispatch
       )
       // covers the case where we are not hovered over a Goal
       // and thus making a new Goal and connection/Edge
       if (!toAddress) {
-        handleMouseUpForGoalForm(state, event, store, fromAddress, relation)
+        handleMouseUpForGoalForm(state, event, store, fromAddress, relation, existingParentEdgeAddress)
       }
     }
 

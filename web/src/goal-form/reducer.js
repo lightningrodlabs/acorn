@@ -10,9 +10,16 @@ const defaultState = {
   isOpen: false,
   leftEdgeXPosition: 0,
   topEdgeYPosition: 0,
-  // these two go together
+  // these three go together
+  // where the fromAddress is the address of the 
+  // Goal that is the 'origin' of the edge
+  // and relation indicates the 'port' in a sense, to be parent or child
   fromAddress: null,
-  relation: null,
+  relation: null, // RELATION_AS_CHILD or RELATION_AS_PARENT
+  // existingParentEdgeAddress is the address of the edge that
+  // we would delete in order to create a new one
+  // ASSUMPTION: one parent
+  existingParentEdgeAddress: null, // this is optional though
 }
 
 export default function (state = defaultState, action) {
@@ -23,9 +30,11 @@ export default function (state = defaultState, action) {
     isOpen: false,
     content: '',
     editAddress: null,
-    // these two go together
+    // these three go together
     fromAddress: null,
     relation: null,
+    // ASSUMPTION: one parent
+    existingParentEdgeAddress: null // this is optional though
   }
 
   switch (type) {
@@ -43,9 +52,11 @@ export default function (state = defaultState, action) {
         leftEdgeXPosition: payload.x,
         topEdgeYPosition: payload.y,
         editAddress: payload.editAddress,
-        // these two go together
+        // these three go together
         fromAddress: payload.fromAddress,
         relation: payload.relation,
+        // ASSUMPTION: one parent
+        existingParentEdgeAddress: payload.existingParentEdgeAddress, // this is optional though
       }
     case CLOSE_GOAL_FORM:
       return resetVersion

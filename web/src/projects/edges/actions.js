@@ -38,7 +38,27 @@ const [
   archiveEdge,
 ] = createCrudActionCreators(PROJECTS_ZOME_NAME, 'edge')
 
+
+const AFFECT_LAYOUT_ARCHIVE_EDGE = 'affect_layout_archive_edge'
+// this action gets caught and
+// handled in the web/src/layout/middleware.js
+// it allows the dispatcher of a usual 'archiveEdge' action
+// to specify whether that action should or shouldn't trigger
+// a layout update on its successful completion of the call
+const layoutAffectingArchiveEdge = (cellIdString, payload, affectLayout) => {
+  const asyncAction = archiveEdge.create({
+    cellIdString,
+    payload,
+  })
+  return {
+    type: AFFECT_LAYOUT_ARCHIVE_EDGE,
+    affectLayout,
+    asyncAction
+  }
+}
+
 export {
+  AFFECT_LAYOUT_ARCHIVE_EDGE,
   PREVIEW_EDGES,
   CLEAR_EDGES_PREVIEW,
   previewEdges,
@@ -47,4 +67,5 @@ export {
   updateEdge,
   fetchEdges,
   archiveEdge,
+  layoutAffectingArchiveEdge
 }
