@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 
 import priorityMenuItems from './priorityMenuItems'
 import { ProjectPriorityViewOnly } from '../ViewFilters/ViewFilters'
+import { PriorityModeOptions } from '../../constants'
 
 function PriorityMenuItem({ exact, title, slug, projectId }) {
   const location = useLocation()
@@ -27,24 +28,26 @@ function PriorityMenuItem({ exact, title, slug, projectId }) {
   )
 }
 
-function HeaderMiddlePanel({ projectId }) {
+function HeaderMiddlePanel({ projectId, projectPriorityMode }) {
   return (
     <div className="header-middle-panel">
-      <ProjectPriorityViewOnly>
-        <div className="priority-menu-wrapper">
-          {priorityMenuItems.map(([menuTitle, menuSlugs], index) => {
-            return (
-              <PriorityMenuItem
-                key={index}
-                exact={index === 0}
-                title={menuTitle}
-                slug={menuSlugs}
-                projectId={projectId}
-              />
-            )
-          })}
-        </div>
-      </ProjectPriorityViewOnly>
+      {projectPriorityMode === PriorityModeOptions.Vote && (
+        <ProjectPriorityViewOnly>
+          <div className="priority-menu-wrapper">
+            {priorityMenuItems.map(([menuTitle, menuSlugs], index) => {
+              return (
+                <PriorityMenuItem
+                  key={index}
+                  exact={index === 0}
+                  title={menuTitle}
+                  slug={menuSlugs}
+                  projectId={projectId}
+                />
+              )
+            })}
+          </div>
+        </ProjectPriorityViewOnly>
+      )}
     </div>
   )
 }

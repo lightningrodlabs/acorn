@@ -33,6 +33,7 @@ import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 function App({
   activeEntryPoints,
   projectName,
+  projectPriorityMode,
   projectId,
   agentAddress,
   whoami, // .entry and .address
@@ -141,6 +142,7 @@ function App({
             setShowUpdatePromptModal={setShowUpdatePromptModal}
             activeEntryPoints={activeEntryPoints}
             projectName={projectName}
+            projectPriorityMode={projectPriorityMode}
             projectId={projectId}
             whoami={whoami}
             updateStatus={updateStatus}
@@ -223,6 +225,7 @@ function mapStateToProps(state) {
   // defensive coding for loading phase
   const activeProjectMeta = state.projects.projectMeta[activeProject] || {}
   const projectName = activeProjectMeta.name || ''
+  const projectPriorityMode = activeProjectMeta.priority_mode || ''
 
   const allProjectEntryPoints = activeProject
     ? selectEntryPoints(state, activeProject)
@@ -240,6 +243,7 @@ function mapStateToProps(state) {
     profilesCellIdString,
     activeEntryPoints: activeEntryPointsObjects,
     projectName,
+    projectPriorityMode,
     projectId: activeProject,
     whoami: state.whoami,
     hasFetchedForWhoami,

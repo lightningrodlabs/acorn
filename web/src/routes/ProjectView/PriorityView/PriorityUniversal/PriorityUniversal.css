@@ -1,0 +1,73 @@
+/* Universal Priority Mode */
+
+.universal-priority-wrapper {
+  flex: 1;
+  background: #ffffff;
+  margin-left: 8px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px #0000001f;
+}
+
+.universal-priority-header {
+  padding: 30px 40px 20px 40px;
+}
+
+.universal-priority-divider-line {
+  border-top: 4px solid #F3F0ED;
+}
+
+.universal-priority-goals-list-wrapper {
+  padding: 20px 40px 30px 40px;
+  display: flex;
+  flex-direction: row;
+}
+
+.universal-priority-goals-list-row {
+  display: flex;
+  flex-direction: row;
+  /* align-items: center; */
+}
+
+.universal-priority-number-slots {
+  margin-right: 16px;
+}
+
+.universal-priority-order-number {
+  height: 78px;
+  padding-top: 16px;
+  font-family: 'gilroyextrabold', Helvetica, sans-serif;
+  font-size: 20px;
+  line-height: 24px;
+  box-sizing: border-box;
+}
+
+.universal-priority-goal-item-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  flex: 1;
+  padding: 12px 8px 16px 8px;
+}
+
+.universal-priority-goal-item-border {
+  border-bottom: 1px solid #F3F0ED02;
+}
+
+.universal-priority-goal-item-title {
+  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 24px;
+  color: #4D4D4D;
+  width: 600px;
+  margin-left: 8px;
+  margin-right: 20px;
+}
+
+.universal-priority-goal-item-metadata {}
+
+.universal-priority-goal-item-date {
+  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  color: #535353;
+}

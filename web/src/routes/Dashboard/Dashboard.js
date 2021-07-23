@@ -451,6 +451,8 @@ function mapDispatchToProps(dispatch) {
         creator_address: agentAddress,
         created_at: Date.now(),
         is_imported: false,
+        priority_mode: "Universal", // default
+        top_priority_goals: []
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },

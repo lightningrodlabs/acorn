@@ -4,7 +4,7 @@ pub(crate) mod fixtures {
   use crate::project::{
     edge::crud::Edge, entry_point::crud::EntryPoint, goal::crud::TimeFrame,
     goal_comment::crud::GoalComment, goal_member::crud::GoalMember, goal_vote::crud::GoalVote,
-    member::entry::Member, project_meta::crud::ProjectMeta,
+    member::entry::Member, project_meta::crud::{ProjectMeta, PriorityMode},
   };
   use ::fixt::prelude::*;
   use dna_help::{WrappedAgentPubKey, WrappedHeaderHash};
@@ -61,6 +61,11 @@ pub(crate) mod fixtures {
   type Optionf64 = Option<f64>;
   type OptionVecString = Option<Vec<String>>;
   type OptionTimeFrame = Option<TimeFrame>;
+
+  fixturator!(
+    PriorityMode;
+    unit variants [ Universal Vote ] empty Universal;
+  );
 
   fixturator!(
     TimeFrame;

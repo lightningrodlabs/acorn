@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { updateProjectMeta } from '../../projects/project-meta/actions'
 
 import './ProjectSettingsModal.css'
-
+import { updateProjectMeta } from '../../projects/project-meta/actions'
+import { PriorityModeOptions } from '../../constants'
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import Modal from '../Modal/Modal'
 import {
@@ -15,21 +15,24 @@ import {
 } from '../ProjectModal/ProjectModal'
 import ProjectSecret from '../ProjectSecret/ProjectSecret'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
+import PreferenceSelect, { PreferenceSelectExtra, PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
 
 // since this is a big wordset, dynamically import it
 // instead of including in the main bundle
-async function generatePassphrase () {
+async function generatePassphrase() {
   const { default: randomWord } = await import('diceware-word')
   return `${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()}`
 }
 
-function EditProjectForm ({
+function EditProjectForm({
   updatingProject,
   onSubmit,
   projectName,
   setProjectName,
   projectCoverUrl,
   setProjectCoverUrl,
+  priorityMode,
+  setPriorityMode,
 }) {
   const [
     shouldInvalidateProjectName,
@@ -78,6 +81,21 @@ function EditProjectForm ({
     }
   }
 
+  const universalOption = <PreferenceSelectOption
+    active={priorityMode === PriorityModeOptions.Universal}
+    onClick={() => setPriorityMode(PriorityModeOptions.Universal)}
+    iconName='trackpad.svg' // TODO
+    iconExtraClassName=""
+    title="Universal"
+  />
+  const voteOption = <PreferenceSelectOption
+    active={priorityMode === PriorityModeOptions.Vote}
+    onClick={() => setPriorityMode(PriorityModeOptions.Vote)}
+    iconName='mouse.svg' // TODO
+    iconExtraClassName=""
+    title="Vote"
+  />
+
   return (
     <div className='edit-project-form'>
       <ProjectModalHeading title='Edit project' />
@@ -112,6 +130,8 @@ function EditProjectForm ({
               style={{ backgroundImage: `url(${projectCoverUrl})` }}
             />
           </div>
+          {/* project priority mode setting */}
+          <PreferenceSelect title="Prioritization Mode" subtitle="Select your preferred prioritization mode for you and your team in this project. Changes will apply for all team members" options={[universalOption, voteOption]} />
         </ProjectModalContent>
       </ProjectModalContentSpacer>
       <ProjectModalButton text='Update' onClick={submit} />
@@ -119,24 +139,7 @@ function EditProjectForm ({
   )
 }
 
-// function projectUpdatedModal ({ onDone, projectUpdated, projectSecret }) {
-//   return (
-//     <div
-//       className={`project-created-modal ${
-//         projectUpdated ? 'project-created' : ''
-//       }`}>
-//       <ProjectModalHeading title='New project created!' />
-//       <ProjectModalContent>
-//         <ProjectModalContentSpacer>
-//           <ProjectSecret passphrase={projectSecret} />
-//         </ProjectModalContentSpacer>
-//       </ProjectModalContent>
-//       <ProjectModalButton text='Done' onClick={onDone} />
-//     </div>
-//   )
-// }
-
-function ProjectSettingsModal ({
+function ProjectSettingsModal({
   showModal,
   onClose,
   updateProjectMeta,
@@ -144,6 +147,8 @@ function ProjectSettingsModal ({
   creatorAddress,
   createdAt,
   isImported,
+  priorityModeProp,
+  topPriorityGoals,
   passphrase,
   cellIdString,
   projectNameProp,
@@ -160,7 +165,9 @@ function ProjectSettingsModal ({
         creator_address: creatorAddress,
         created_at: createdAt,
         passphrase: passphrase,
-        is_imported: isImported
+        is_imported: isImported,
+        priority_mode: priorityMode,
+        top_priority_goals: topPriorityGoals,
       },
       projectAddress,
       cellIdString
@@ -171,6 +178,7 @@ function ProjectSettingsModal ({
 
   const [projectName, setProjectName] = useState(projectNameProp)
   const [projectCoverUrl, setProjectCoverUrl] = useState(projectCoverUrlProp)
+  const [priorityMode, setPriorityMode] = useState(priorityModeProp)
 
   return (
     <Modal
@@ -185,18 +193,20 @@ function ProjectSettingsModal ({
         setProjectName={setProjectName}
         projectCoverUrl={projectCoverUrl}
         setProjectCoverUrl={setProjectCoverUrl}
+        priorityMode={priorityMode}
+        setPriorityMode={setPriorityMode}
       />
     </Modal>
   )
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
   // props for the component
 
   return {}
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   // props for the component
   return {
     updateProjectMeta: (entry, address, cellIdString) => {

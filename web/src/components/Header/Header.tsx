@@ -18,6 +18,7 @@ function Header({
   setShowUpdateBar,
   setShowUpdatePromptModal,
   projectName,
+  projectPriorityMode,
   projectId,
   hideGuidebookHelpMessage,
 }) {
@@ -70,7 +71,10 @@ function Header({
           onClickExport={onClickExport}
           activeEntryPoints={activeEntryPoints}
         />
-        <HeaderMiddlePanel projectId={projectId} />
+        <HeaderMiddlePanel
+          projectId={projectId}
+          projectPriorityMode={projectPriorityMode}
+        />
         {whoami && (
           // add all these values as props
           <HeaderRightPanel

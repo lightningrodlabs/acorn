@@ -174,10 +174,14 @@ function DashboardListProject({
       <ProjectSettingsModal
         showModal={showProjectSettingsModal}
         onClose={() => setShowProjectSettingsModal(false)}
+        // editable
         projectNameProp={project.name}
         projectCoverUrlProp={project.image}
+        priorityModeProp={project.priority_mode}
+        // not editable
         projectAddress={project.address}
         cellIdString={project.cellId}
+        topPriorityGoals={project.top_priority_goals}
         creatorAddress={project.creator_address}
         createdAt={project.created_at}
         passphrase={project.passphrase}

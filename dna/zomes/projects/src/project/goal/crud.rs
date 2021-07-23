@@ -72,7 +72,7 @@ impl Goal {
 }
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes, Clone, PartialEq)]
-pub struct UIEnum(String);
+pub struct UIEnum(pub String);
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 #[serde(from = "UIEnum")]
