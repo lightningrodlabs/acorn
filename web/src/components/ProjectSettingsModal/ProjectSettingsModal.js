@@ -15,7 +15,7 @@ import {
 } from '../ProjectModal/ProjectModal'
 import ProjectSecret from '../ProjectSecret/ProjectSecret'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
-import PreferenceSelect, { PreferenceSelectExtra, PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
+import PreferenceSelect, { PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
 
 // since this is a big wordset, dynamically import it
 // instead of including in the main bundle
@@ -82,6 +82,7 @@ function EditProjectForm({
   }
 
   const universalOption = <PreferenceSelectOption
+    key='preference-select-universal'
     active={priorityMode === PriorityModeOptions.Universal}
     onClick={() => setPriorityMode(PriorityModeOptions.Universal)}
     iconName='trackpad.svg' // TODO
@@ -89,6 +90,7 @@ function EditProjectForm({
     title="Universal"
   />
   const voteOption = <PreferenceSelectOption
+    key='preference-select-vote'
     active={priorityMode === PriorityModeOptions.Vote}
     onClick={() => setPriorityMode(PriorityModeOptions.Vote)}
     iconName='mouse.svg' // TODO

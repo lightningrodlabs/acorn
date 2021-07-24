@@ -118,7 +118,7 @@ function PriorityUniversal(
   // and render goals that exist or are
   // known about
   const topPriorityGoals = projectMeta ? projectMeta.top_priority_goals
-    .filter(goalAddress => goals[goalAddress]) : []
+    .filter(goalAddress => goals[goalAddress]).map(goalAddress => goals[goalAddress]) : []
 
   return (
     <div className='universal-priority-wrapper'>
