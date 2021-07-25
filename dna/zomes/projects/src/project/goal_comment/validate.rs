@@ -6,8 +6,8 @@ use crate::project::{
     validate_value_matches_create_author, validate_value_matches_original_author_for_edit,
   },
 };
-use dna_help::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
+use hdk_crud::{resolve_dependency, ResolvedDependency};
 
 #[hdk_extern]
 fn validate_create_entry_goal_comment(
@@ -91,13 +91,13 @@ fn validate_delete_entry_goal_comment(_: ValidateData) -> ExternResult<ValidateC
 #[cfg(test)]
 pub mod tests {
   use crate::project::error::Error;
-  use crate::project::fixtures::fixtures::{
-    GoalCommentFixturator, GoalFixturator, WrappedAgentPubKeyFixturator,
-    WrappedHeaderHashFixturator,
-  };
+  use crate::project::fixtures::fixtures::{GoalCommentFixturator, GoalFixturator};
   use ::fixt::prelude::*;
-  use dna_help::WrappedAgentPubKey;
   use hdk::prelude::*;
+  use hdk_crud::{
+    fixtures::{WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator},
+    WrappedAgentPubKey,
+  };
   use holochain_types::prelude::ElementFixturator;
   use holochain_types::prelude::ValidateDataFixturator;
 
@@ -183,7 +183,7 @@ pub mod tests {
     // the parent goal is found/exists
     // agent_address refers to the agent committing
     // -> good to go
-    
+
     // make the agent_address valid by making it equal the
     // AgentPubKey of the agent committing
     goal_comment.agent_address = WrappedAgentPubKey::new(create_header.author.as_hash().clone());

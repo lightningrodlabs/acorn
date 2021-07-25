@@ -47,12 +47,13 @@ fn validate_delete_entry_goal_member(_: ValidateData) -> ExternResult<ValidateCa
 #[cfg(test)]
 pub mod tests {
   use crate::project::error::Error;
-  use crate::project::fixtures::fixtures::{
-    GoalFixturator, GoalMemberFixturator, WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator,
-  };
+  use crate::project::fixtures::fixtures::{GoalFixturator, GoalMemberFixturator};
   use ::fixt::prelude::*;
-  use dna_help::WrappedAgentPubKey;
   use hdk::prelude::*;
+  use hdk_crud::{
+    fixtures::{WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator},
+    WrappedAgentPubKey,
+  };
   use holochain_types::prelude::ElementFixturator;
   use holochain_types::prelude::ValidateDataFixturator;
 
@@ -150,7 +151,7 @@ pub mod tests {
       super::validate_create_entry_goal_member(validate_data.clone()),
       Error::CorruptCreateAgentPubKeyReference.into(),
     );
-    
+
     // SUCCESS case
     // the element exists
     // the parent goal is found/exists

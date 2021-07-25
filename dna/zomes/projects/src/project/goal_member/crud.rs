@@ -3,7 +3,7 @@ use crate::{
     project::{error::Error, validate::entry_from_element_create_only},
     SignalType,
 };
-use dna_help::{crud, WrappedAgentPubKey, WrappedHeaderHash};
+use hdk_crud::{crud, WrappedAgentPubKey, WrappedHeaderHash};
 use hdk::prelude::*;
 
 // a relationship between a Goal and an Agent

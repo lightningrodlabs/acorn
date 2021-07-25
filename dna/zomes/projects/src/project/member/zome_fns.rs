@@ -1,6 +1,6 @@
 use super::entry::{Member, MemberSignal, VecMember, MEMBER_PATH};
 use crate::get_peers_latest;
-use dna_help::{fetch_links, WrappedAgentPubKey};
+use hdk_crud::{fetch_links, WrappedAgentPubKey};
 use hdk::prelude::*;
 
 // returns a list of the agent addresses of those who

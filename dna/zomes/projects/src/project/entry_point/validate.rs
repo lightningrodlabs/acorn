@@ -14,15 +14,17 @@ fn validate_create_entry_entry_point(
     match EntryPoint::try_from(&validate_data.element) {
       Ok(proposed_entry) => {
         // parent goal at goal_address must be determined to exist
-        match confirm_resolved_dependency::<Goal>(proposed_entry.goal_address.0.into())?
-        {
+        match confirm_resolved_dependency::<Goal>(proposed_entry.goal_address.0.into())? {
           ValidateCallbackResult::Valid => {
             // an imported entry can have another listed as author
             if proposed_entry.is_imported {
               ValidateCallbackResult::Valid
             } else {
               // creator_address must match header author
-              validate_value_matches_create_author(&proposed_entry.creator_address.0, &validate_data)
+              validate_value_matches_create_author(
+                &proposed_entry.creator_address.0,
+                &validate_data,
+              )
             }
           }
           validate_callback_result => validate_callback_result,
@@ -48,12 +50,13 @@ fn validate_delete_entry_entry_point(_: ValidateData) -> ExternResult<ValidateCa
 #[cfg(test)]
 pub mod tests {
   use crate::project::error::Error;
-  use crate::project::fixtures::fixtures::{
-    EntryPointFixturator, GoalFixturator, WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator,
-  };
+  use crate::project::fixtures::fixtures::{EntryPointFixturator, GoalFixturator};
   use ::fixt::prelude::*;
-  use dna_help::WrappedAgentPubKey;
   use hdk::prelude::*;
+  use hdk_crud::{
+    fixtures::{WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator},
+    WrappedAgentPubKey,
+  };
   use holochain_types::prelude::ElementFixturator;
   use holochain_types::prelude::ValidateDataFixturator;
 
@@ -95,7 +98,7 @@ pub mod tests {
     entry_point.goal_address = goal_wrapped_header_hash.clone();
     *validate_data.element.as_entry_mut() =
       ElementEntry::Present(entry_point.clone().try_into().unwrap());
-    
+
     // now, since validation is dependent on other entries, we begin
     // to have to mock `get` calls to the HDK
 

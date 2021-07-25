@@ -3,7 +3,7 @@ use crate::{
     project::{error::Error, validate::entry_from_element_create_or_update},
     SignalType,
 };
-use dna_help::{crud, WrappedAgentPubKey, WrappedHeaderHash};
+use hdk_crud::{crud, WrappedAgentPubKey, WrappedHeaderHash};
 use hdk::prelude::*;
 
 #[hdk_entry(id = "goal_comment")]

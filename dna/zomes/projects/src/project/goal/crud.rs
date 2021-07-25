@@ -10,7 +10,7 @@ use crate::project::{
   validate::entry_from_element_create_or_update,
 };
 use crate::{get_peers_content, SignalType};
-use dna_help::{crud, ActionType, WrappedAgentPubKey, WrappedHeaderHash};
+use hdk_crud::{crud, ActionType, WrappedAgentPubKey, WrappedHeaderHash};
 use hdk::prelude::*;
 use std::fmt;
 

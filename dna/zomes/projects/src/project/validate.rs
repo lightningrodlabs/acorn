@@ -1,5 +1,5 @@
 use crate::project::error::Error;
-use dna_help::{resolve_dependency, ResolvedDependency};
+use hdk_crud::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
 
 pub fn entry_from_element_create_only<E: TryFrom<SerializedBytes, Error = SerializedBytesError>>(

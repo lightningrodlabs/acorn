@@ -3,7 +3,7 @@ use crate::project::{
   project_meta::crud::ProjectMeta,
   validate::validate_value_matches_create_author,
 };
-use dna_help::{resolve_dependency, ResolvedDependency};
+use hdk_crud::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
 
 #[hdk_extern]
@@ -68,7 +68,7 @@ pub mod tests {
   use crate::project::fixtures::fixtures::ProjectMetaFixturator;
   use crate::project::project_meta::crud::ProjectMeta;
   use ::fixt::prelude::*;
-  use dna_help::WrappedAgentPubKey;
+  use hdk_crud::WrappedAgentPubKey;
   use hdk::prelude::*;
   use holochain_types::prelude::ElementFixturator;
   use holochain_types::prelude::ValidateDataFixturator;

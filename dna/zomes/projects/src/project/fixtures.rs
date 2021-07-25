@@ -2,24 +2,21 @@
 pub(crate) mod fixtures {
   use crate::project::goal::crud::{Goal, Hierarchy, Status};
   use crate::project::{
-    edge::crud::Edge, entry_point::crud::EntryPoint, goal::crud::TimeFrame,
-    goal_comment::crud::GoalComment, goal_member::crud::GoalMember, goal_vote::crud::GoalVote,
-    member::entry::Member, project_meta::crud::{ProjectMeta, PriorityMode},
+    edge::crud::Edge,
+    entry_point::crud::EntryPoint,
+    goal::crud::TimeFrame,
+    goal_comment::crud::GoalComment,
+    goal_member::crud::GoalMember,
+    goal_vote::crud::GoalVote,
+    member::entry::Member,
+    project_meta::crud::{PriorityMode, ProjectMeta},
   };
   use ::fixt::prelude::*;
-  use dna_help::{WrappedAgentPubKey, WrappedHeaderHash};
-  use hdk::prelude::*;
-
-  // why can't I put this one in dna_help crate?
-  fixturator!(
-    WrappedHeaderHash;
-      constructor fn new(HeaderHash);
-  );
-
-  fixturator!(
-    WrappedAgentPubKey;
-      constructor fn new(AgentPubKey);
-  );
+  use hdk_crud::{
+    fixtures::{WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator},
+    WrappedHeaderHash,
+    WrappedAgentPubKey,
+  };
 
   fixturator!(
     Edge;
@@ -53,9 +50,10 @@ pub(crate) mod fixtures {
 
   fixturator!(
     ProjectMeta;
-      constructor fn new(WrappedAgentPubKey, f64, String, OptionString, String, bool);
+      constructor fn new(WrappedAgentPubKey, f64, String, OptionString, String, bool, PriorityMode, VecWrappedHeaderHash);
   );
 
+  type VecWrappedHeaderHash = Vec<WrappedHeaderHash>;
   type OptionWrappedAgentPubKey = Option<WrappedAgentPubKey>;
   type OptionString = Option<String>;
   type Optionf64 = Option<f64>;
@@ -80,6 +78,23 @@ pub(crate) mod fixtures {
   fixturator!(
     Hierarchy;
     unit variants [Root Trunk Branch Leaf NoHierarchy ] empty NoHierarchy;
+  );
+
+  fixturator!(
+    VecWrappedHeaderHash;
+    curve Empty {
+        Vec::new()
+    };
+    curve Unpredictable {
+      let mut vec = Vec::new();
+      vec.push(WrappedHeaderHashFixturator::new(Unpredictable).next().unwrap());
+      vec
+    };
+    curve Predictable {
+      let mut vec = Vec::new();
+      vec.push(WrappedHeaderHashFixturator::new(Predictable).next().unwrap());
+      vec
+    };
   );
 
   fixturator!(

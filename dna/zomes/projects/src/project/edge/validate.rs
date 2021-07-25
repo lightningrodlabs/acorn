@@ -54,11 +54,10 @@ fn validate_delete_entry_edge(_: ValidateData) -> ExternResult<ValidateCallbackR
 #[cfg(test)]
 pub mod tests {
   use crate::project::error::Error;
-  use crate::project::fixtures::fixtures::{
-    EdgeFixturator, GoalFixturator, WrappedHeaderHashFixturator,
-  };
+  use crate::project::fixtures::fixtures::{EdgeFixturator, GoalFixturator};
   use ::fixt::prelude::*;
   use hdk::prelude::*;
+  use hdk_crud::fixtures::WrappedHeaderHashFixturator;
   use holochain_types::prelude::ElementFixturator;
   use holochain_types::prelude::ValidateDataFixturator;
 

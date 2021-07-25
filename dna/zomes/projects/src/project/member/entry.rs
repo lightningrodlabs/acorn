@@ -1,5 +1,5 @@
 use crate::project::{error::Error, validate::entry_from_element_create_only};
-use dna_help::{ActionType, EntryAndHash, WrappedAgentPubKey};
+use hdk_crud::{ActionType, EntryAndHash, WrappedAgentPubKey};
 use hdk::prelude::*;
 
 pub const MEMBER_PATH: &str = "member";

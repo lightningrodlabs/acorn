@@ -6,8 +6,8 @@ use crate::project::{
     validate_value_matches_create_author, validate_value_matches_original_author_for_edit,
   },
 };
-use dna_help::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
+use hdk_crud::{resolve_dependency, ResolvedDependency};
 
 #[hdk_extern]
 fn validate_create_entry_goal_vote(
@@ -89,12 +89,13 @@ fn validate_delete_entry_goal_vote(_: ValidateData) -> ExternResult<ValidateCall
 #[cfg(test)]
 pub mod tests {
   use crate::project::error::Error;
-  use crate::project::fixtures::fixtures::{
-    GoalFixturator, GoalVoteFixturator, WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator,
-  };
+  use crate::project::fixtures::fixtures::{GoalFixturator, GoalVoteFixturator};
   use ::fixt::prelude::*;
-  use dna_help::WrappedAgentPubKey;
   use hdk::prelude::*;
+  use hdk_crud::{
+    fixtures::{WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator},
+    WrappedAgentPubKey,
+  };
   use holochain_types::prelude::ElementFixturator;
   use holochain_types::prelude::ValidateDataFixturator;
 
@@ -122,7 +123,7 @@ pub mod tests {
     goal_vote.goal_address = goal_wrapped_header_hash.clone();
     *validate_data.element.as_entry_mut() =
       ElementEntry::Present(goal_vote.clone().try_into().unwrap());
-    
+
     // it will be missing the goal dependency so it will
     // return UnresolvedDependencies
 

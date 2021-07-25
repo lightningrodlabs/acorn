@@ -5,8 +5,8 @@ use crate::project::{
     validate_value_matches_edit_author, validate_value_matches_original_author,
   },
 };
-use dna_help::{resolve_dependency, ResolvedDependency, WrappedAgentPubKey};
 use hdk::prelude::*;
+use hdk_crud::{resolve_dependency, ResolvedDependency, WrappedAgentPubKey};
 
 #[hdk_extern]
 fn validate_create_entry_goal(validate_data: ValidateData) -> ExternResult<ValidateCallbackResult> {
@@ -93,10 +93,10 @@ fn validate_delete_entry_goal(_: ValidateData) -> ExternResult<ValidateCallbackR
 #[cfg(test)]
 pub mod tests {
   use crate::project::error::Error;
-  use crate::project::fixtures::fixtures::{GoalFixturator, WrappedAgentPubKeyFixturator};
+  use crate::project::fixtures::fixtures::GoalFixturator;
   use ::fixt::prelude::*;
-  use dna_help::WrappedAgentPubKey;
   use hdk::prelude::*;
+  use hdk_crud::{WrappedAgentPubKey, fixtures::WrappedAgentPubKeyFixturator};
   use holochain_types::prelude::ElementFixturator;
   use holochain_types::prelude::ValidateDataFixturator;
 

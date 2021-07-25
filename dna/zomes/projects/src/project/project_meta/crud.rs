@@ -7,7 +7,7 @@ use crate::{
   },
   SignalType,
 };
-use dna_help::{crud, WrappedAgentPubKey, WrappedEntryHash, WrappedHeaderHash};
+use hdk_crud::{crud, WrappedAgentPubKey, WrappedEntryHash, WrappedHeaderHash};
 use hdk::prelude::*;
 use std::*;
 

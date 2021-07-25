@@ -36,7 +36,7 @@ pub mod tests {
   use crate::project::error::Error;
   use crate::project::fixtures::fixtures::MemberFixturator;
   use ::fixt::prelude::*;
-  use dna_help::WrappedAgentPubKey;
+  use hdk_crud::WrappedAgentPubKey;
   use hdk::prelude::*;
   use holochain_types::prelude::ValidateDataFixturator;
 
