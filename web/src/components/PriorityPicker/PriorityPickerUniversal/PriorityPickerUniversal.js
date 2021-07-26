@@ -1,12 +1,9 @@
 import React, { useState } from 'react'
 import './PriorityPickerUniversal.css'
 import { connect } from 'react-redux'
-import Switch from '@material-ui/core/Switch'
-
-// import { useAirbnbSwitchStyles } from '@mui-treasury/styles/switch/airbnb'
-import useAirbnbSwitchStyles from './useAirbnbSwitchStyles'
 
 import { updateProjectMeta } from '../../../projects/project-meta/actions'
+import ToggleSwitch from '../../ToggleSwitch/ToggleSwitch'
 
 function PriorityPickerUniversal({
   projectMeta,
@@ -39,11 +36,11 @@ function PriorityPickerUniversal({
     setPending(false)
     setPendingState(null)
   }
-  const switchStyles = useAirbnbSwitchStyles()
+
   return (
     <div className="priority-picker-universal">
       <div className="priority-picker-universal-label">This goal is top priority</div>
-      <Switch classes={switchStyles} color="primary" checked={pending ? pendingState : isTopPriorityGoal} onChange={onChange} />
+      <ToggleSwitch checked={pending ? pendingState : isTopPriorityGoal} onChange={onChange} />
     </div>
   )
 }
