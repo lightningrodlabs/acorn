@@ -26,14 +26,14 @@ function DatePicker({ fromDate, toDate, onClose, onSet }) {
 
   return (
     <PickerTemplate
-      heading='timeframe'
+      heading='Timeframe'
       className='date_picker_wrapper'
       onClose={onClose}>
       <div className='date_picker_content'>
         <DateRangePicker
           numberOfMonths={1}
           minimumNights={0}
-          onClose={() => {}}
+          onClose={() => { }}
           showClearDates
           keepOpenOnDateSelect
           customCloseIcon={<button className='clear-button'>clear all</button>}

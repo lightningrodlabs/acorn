@@ -17,15 +17,13 @@ function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints }) {
   }
   const location = useLocation()
 
-  const pathWithEntryPoint = `${
-    location.pathname
-  }?entryPoints=${activeEntryPoints.concat([entryPoint.address]).join(',')}`
+  const pathWithEntryPoint = `${location.pathname
+    }?entryPoints=${activeEntryPoints.concat([entryPoint.address]).join(',')}`
 
-  const pathWithoutEntryPoint = `${
-    location.pathname
-  }?entryPoints=${activeEntryPoints
-    .filter(address => address !== entryPoint.address)
-    .join(',')}`
+  const pathWithoutEntryPoint = `${location.pathname
+    }?entryPoints=${activeEntryPoints
+      .filter(address => address !== entryPoint.address)
+      .join(',')}`
 
   return (
     <li>
@@ -73,7 +71,7 @@ function EntryPointPicker({ entryPoints, isOpen, onClose, activeEntryPoints }) {
       classNames='entry-point-picker-wrapper'>
       <PickerTemplate
         className='entry-point-picker'
-        heading='entry points'
+        heading='Entry Points'
         onClose={onClose}>
         {/* Entry Point Picker Search */}
         <div className='entry-point-picker-search'>

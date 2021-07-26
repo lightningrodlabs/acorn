@@ -70,9 +70,12 @@ function render(store, canvas) {
   const edges = state.projects.edges[projectId]
   const goalMembers = state.projects.goalMembers[projectId]
   const entryPoints = state.projects.entryPoints[projectId]
+  const projectMeta = state.projects.projectMeta[projectId]
 
   // draw things relating to the project, if the project has fully loaded
-  if (goals && edges && goalMembers && entryPoints) {
+  if (goals && edges && goalMembers && entryPoints && projectMeta) {
+    const topPriorityGoals = projectMeta.top_priority_goals
+    console.log(topPriorityGoals)
     // converts the goals object to an array
     const goalsAsArray = Object.keys(goals).map(address => goals[address])
     // convert the edges object to an array
@@ -104,7 +107,7 @@ function render(store, canvas) {
       // temporarily omit/hide the existing edge from view
       // ASSUMPTION: one parent
       const pendingReParent = (state.ui.edgeConnector.fromAddress === edge.child_address && state.ui.edgeConnector.relation === RELATION_AS_CHILD)
-        || (state.ui.goalForm.isOpen && state.ui.goalForm.fromAddress === edge.child_address  && state.ui.goalForm.relation === RELATION_AS_CHILD)
+        || (state.ui.goalForm.isOpen && state.ui.goalForm.fromAddress === edge.child_address && state.ui.goalForm.relation === RELATION_AS_CHILD)
       if (pendingReParent) return
 
       const childCoords = coordinates[edge.child_address]
@@ -160,17 +163,20 @@ function render(store, canvas) {
         .map(address => goalMembers[address])
         .filter(goalMember => goalMember.goal_address === goal.address)
         .map(goalMember => state.agents[goalMember.agent_address])
-      drawGoalCard(
-        scale,
-        goal,
-        membersOfGoal,
-        coordinates[goal.address],
-        isEditing,
-        '',
-        isSelected,
-        isHovered,
-        ctx
-      )
+      const isTopPriorityGoal = !!topPriorityGoals.find(address => address === goal.address)
+      drawGoalCard({
+        scale: scale,
+        goal: goal,
+        members: membersOfGoal,
+        coordinates: coordinates[goal.address],
+        isEditing: isEditing,
+        editText: '',
+        isSelected: isSelected,
+        isHovered: isHovered,
+        ctx: ctx,
+        isBeingEdited: false, // TODO
+        isTopPriorityGoal: isTopPriorityGoal // TODO
+      })
     })
 
     /*
@@ -223,17 +229,20 @@ function render(store, canvas) {
         .map(address => goalMembers[address])
         .filter(goalMember => goalMember.goal_address === goal.address)
         .map(goalMember => state.agents[goalMember.agent_address])
-      drawGoalCard(
-        scale,
-        goal,
-        membersOfGoal,
-        coordinates[goal.address],
-        isEditing,
-        '',
-        isSelected,
-        isHovered,
-        ctx
-      )
+      const isTopPriorityGoal = !!topPriorityGoals.find(address => address === goal.address)
+      drawGoalCard({
+        scale: scale,
+        goal: goal,
+        members: membersOfGoal,
+        coordinates: coordinates[goal.address],
+        isEditing: isEditing,
+        editText: '',
+        isSelected: isSelected,
+        isHovered: isHovered,
+        ctx: ctx,
+        isBeingEdited: false, // TODO
+        isTopPriorityGoal: isTopPriorityGoal // TODO
+      })
     })
 
     /*
@@ -344,17 +353,20 @@ function render(store, canvas) {
         .map(address => goalMembers[address])
         .filter(goalMember => goalMember.goal_address === editingGoal.address)
         .map(goalMember => state.agents[goalMember.agent_address])
-      drawGoalCard(
-        scale,
-        editingGoal,
-        membersOfGoal,
-        coordinates[editingGoal.address],
-        isEditing,
-        editText,
-        false,
-        false,
-        ctx
-      )
+      const isTopPriorityGoal = !!topPriorityGoals.find(address => address === state.ui.goalForm.editAddress)
+      drawGoalCard({
+        scale: scale,
+        goal: editingGoal,
+        members: membersOfGoal,
+        coordinates: coordinates[editingGoal.address],
+        isEditing: isEditing,
+        editText: editText,
+        isSelected: false,
+        isHovered: false,
+        ctx: ctx,
+        isBeingEdited: false, // TODO
+        isTopPriorityGoal: isTopPriorityGoal // TODO
+      })
     }
   }
 
@@ -366,17 +378,20 @@ function render(store, canvas) {
     const isHovered = false
     const isSelected = false
     const isEditing = true
-    drawGoalCard(
-      scale,
-      { status: 'Uncertain' },
-      [],
-      { x: state.ui.goalForm.leftEdgeXPosition, y: state.ui.goalForm.topEdgeYPosition },
-      isEditing,
-      state.ui.goalForm.content,
-      isSelected,
-      isHovered,
-      ctx
-    )
+    const isTopPriorityGoal = false
+    drawGoalCard({
+      scale: scale,
+      goal: { status: 'Uncertain' },
+      members: [],
+      coordinates: { x: state.ui.goalForm.leftEdgeXPosition, y: state.ui.goalForm.topEdgeYPosition },
+      isEditing: isEditing,
+      editText: state.ui.goalForm.content,
+      isSelected: isSelected,
+      isHovered: isHovered,
+      ctx: ctx,
+      isBeingEdited: false, // TODO
+      isTopPriorityGoal: isTopPriorityGoal // TODO
+    })
   }
 }
 

@@ -27,7 +27,7 @@ import moment from 'moment'
 import drawRoundCornerRectangle from './drawRoundCornerRectangle'
 
 // render a goal card
-export default function render(
+export default function render({
   scale,
   goal,
   members,
@@ -37,8 +37,9 @@ export default function render(
   isSelected,
   isHovered,
   ctx,
-  isBeingEdited = true
-) {
+  isBeingEdited,
+  isTopPriorityGoal
+}) {
   let x, y
   if (coordinates) {
     x = coordinates.x
@@ -98,6 +99,7 @@ export default function render(
     stroke: false,
     strokeWidth: '0',
     boxShadow: true,
+    topPriorityGoalGlow: isTopPriorityGoal ? borderColor : null
   })
   // card border
   drawRoundCornerRectangle({
@@ -111,6 +113,7 @@ export default function render(
     stroke: true,
     strokeWidth: '3',
     boxShadow: false,
+    topPriorityGoalGlow: false
   })
 
   // selection outline (purple)

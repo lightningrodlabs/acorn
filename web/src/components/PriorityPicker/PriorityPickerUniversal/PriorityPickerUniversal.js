@@ -3,6 +3,9 @@ import './PriorityPickerUniversal.css'
 import { connect } from 'react-redux'
 import Switch from '@material-ui/core/Switch'
 
+// import { useAirbnbSwitchStyles } from '@mui-treasury/styles/switch/airbnb'
+import useAirbnbSwitchStyles from './useAirbnbSwitchStyles'
+
 import { updateProjectMeta } from '../../../projects/project-meta/actions'
 
 function PriorityPickerUniversal({
@@ -12,6 +15,8 @@ function PriorityPickerUniversal({
   updateProjectMeta,
 }) {
   const [pending, setPending] = useState(false)
+  // can be null, true, or false
+  const [pendingState, setPendingState] = useState(null)
   const onChange = async (e) => {
     if (pending) return
     setPending(true)
@@ -23,19 +28,22 @@ function PriorityPickerUniversal({
     let projectMetaAddress = toPass.address
     delete toPass.address
     if (e.target.checked) {
+      setPendingState(true)
       toPass.top_priority_goals = toPass.top_priority_goals.concat([goalAddress])
       await updateProjectMeta(toPass, projectMetaAddress)
     } else {
+      setPendingState(false)
       toPass.top_priority_goals = toPass.top_priority_goals.filter(address => address !== goalAddress)
       await updateProjectMeta(toPass, projectMetaAddress)
     }
     setPending(false)
+    setPendingState(null)
   }
+  const switchStyles = useAirbnbSwitchStyles()
   return (
     <div className="priority-picker-universal">
       <div className="priority-picker-universal-label">This goal is top priority</div>
-      {/* TODO: wire up onChange */}
-      <Switch color="primary" checked={isTopPriorityGoal} onChange={onChange} />
+      <Switch classes={switchStyles} color="primary" checked={pending ? pendingState : isTopPriorityGoal} onChange={onChange} />
     </div>
   )
 }

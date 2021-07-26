@@ -8,7 +8,7 @@ import {
   Redirect
 } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import _ from 'lodash'
 
 import './PriorityUniversal.css'
@@ -89,6 +89,12 @@ function PriorityUniversalDroppable({ goals }) {
 function PriorityUniversal(
   { goals, projectMeta, projectId, updateProjectMeta }
 ) {
+  const [pending, setPending] = useState(false)
+  // temporarily store the list order that
+  // is being persisted to holochain during
+  // an updateProjectMeta call, it will temporarily render from this during
+  // pending->true status
+  const [pendingList, setPendingList] = useState([])
   // a little function to help us with reordering the result
   const reorder = (list, startIndex, endIndex) => {
     const result = Array.from(list)
@@ -96,29 +102,51 @@ function PriorityUniversal(
     result.splice(endIndex, 0, removed)
     return result
   }
-  const onDragEnd = (result) => {
-    /*
+  const onDragEnd = async (result) => {
+    if (pending) return
     // dropped outside the list
-    if (!result.destination) {
-      return;
-    }
-    const items = reorder(
-      this.state.items,
+    if (!result.destination) return
+    setPending(true)
+    const reordered = reorder(
+      projectMeta.top_priority_goals,
       result.source.index,
       result.destination.index
     )
-    this.setState({
-      items
-    });
-    */
+    // cache it locally for display purposes
+    // while the call is going through
+    setPendingList(reordered)
+    // make a clone of the state object
+    // for modifying and passing to the api
+    const toPass = {
+      ...projectMeta,
+      // assign new ordering
+      top_priority_goals: reordered
+    }
+    const projectMetaAddress = toPass.address
+    delete toPass.address
+    try {
+      await updateProjectMeta(toPass, projectMetaAddress, projectId)
+    } catch (e) {
+      // TODO
+    }
+    setPending(false)
+    setPendingList([])
   }
 
-
-  // make sure we only try to pick
-  // and render goals that exist or are
-  // known about
-  const topPriorityGoals = projectMeta ? projectMeta.top_priority_goals
-    .filter(goalAddress => goals[goalAddress]).map(goalAddress => goals[goalAddress]) : []
+  let topPriorityGoalAddresses = []
+  if (pending) {
+    // make sure we only try to pick
+    // and render goals that exist or are
+    // known about
+    topPriorityGoalAddresses = pendingList.filter(goalAddress => goals[goalAddress])
+  } else if (projectMeta) {
+    // make sure we only try to pick
+    // and render goals that exist or are
+    // known about
+    topPriorityGoalAddresses = projectMeta.top_priority_goals
+      .filter(goalAddress => goals[goalAddress])
+  }
+  const topPriorityGoals = topPriorityGoalAddresses.map(goalAddress => goals[goalAddress])
 
   return (
     <div className='universal-priority-wrapper'>
@@ -141,6 +169,17 @@ function PriorityUniversal(
   )
 }
 
+function mapStateToProps(state) {
+  const projectId = state.ui.activeProject
+  const goals = state.projects.goals[projectId] || {}
+  const projectMeta = state.projects.projectMeta[projectId]
+  return {
+    projectId,
+    projectMeta,
+    goals
+  }
+}
+
 function mapDispatchToProps(dispatch) {
   return {
     updateProjectMeta: (projectMeta, address, cellIdString) => {
@@ -152,17 +191,6 @@ function mapDispatchToProps(dispatch) {
         }
       }))
     }
-  }
-}
-
-function mapStateToProps(state) {
-  const projectId = state.ui.activeProject
-  const goals = state.projects.goals[projectId] || {}
-  const projectMeta = state.projects.projectMeta[projectId]
-  return {
-    projectId,
-    projectMeta,
-    goals
   }
 }
 

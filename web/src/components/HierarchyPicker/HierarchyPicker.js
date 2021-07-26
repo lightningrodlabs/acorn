@@ -44,7 +44,7 @@ export default function HierarchyPicker({
   return (
     <PickerTemplate
       className='hierarchy_picker'
-      heading='hierarchy'
+      heading='Hierarchy'
       onClose={onClose}>
       <div className='hierarchy_content_wrapper'>
         {hierarchies.map((hierarchy, index) => (

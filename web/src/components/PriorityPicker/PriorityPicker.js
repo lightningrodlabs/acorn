@@ -15,7 +15,7 @@ function PriorityPicker({
   return (
     <PickerTemplate
       className='priority-picker-wrapper'
-      heading='priority'
+      heading='Priority'
       onClose={onClose}>
       {priorityMode === PriorityModeOptions.Universal
         ? <PriorityPickerUniversal projectId={projectId} goalAddress={goalAddress} />

@@ -26,7 +26,7 @@ function PeoplePicker({
   return (
     <PickerTemplate
       className="people-picker"
-      heading="squirrels"
+      heading="Squirrels"
       onClose={onClose}
     >
       <div className="people-picker-search">
