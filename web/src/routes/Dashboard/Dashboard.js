@@ -393,7 +393,7 @@ async function importProject(
   // first step is to install the dna
   const [projectsCellIdString] = await installProjectApp(passphrase)
   // next step is to import the rest of the data into that project
-  await importAllProjectData(
+  const oldToNewAddressMap = await importAllProjectData(
     existingAgents,
     projectData,
     projectsCellIdString,
@@ -406,6 +406,7 @@ async function importProject(
   // first step is to create new project
   const projectMeta = {
     ...projectData.projectMeta,
+    top_priority_goals: projectData.projectMeta.top_priority_goals.map(oldAddress => oldToNewAddressMap[oldAddress]),
     created_at: Date.now(),
     creator_address: agentAddress,
     passphrase: passphrase,

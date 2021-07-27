@@ -144,4 +144,7 @@ export default async function importAllProjectData(
       })
     )
   }
+
+  // return the list of old addresses mapped to new addresses
+  return goalAddressMap
 }
