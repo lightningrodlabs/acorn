@@ -117,7 +117,7 @@ function DashboardListProject({
             >
               <Icon
                 name="plus.svg"
-                size="very-small"
+                size="small"
                 withTooltip
                 tooltipText="Invite Members"
                 className="grey"

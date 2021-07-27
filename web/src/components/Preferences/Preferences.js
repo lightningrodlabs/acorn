@@ -13,7 +13,7 @@ function Descriptions({ navigation }) {
       <div className='navigation-mode-description-title-wrapper'>
         <div className='navigation-mode-description-icon'>
           <Icon
-            name='zooming.svg'
+            name='zoom-in.svg'
             size='very-small'
             className='not-hoverable'
           />
@@ -31,7 +31,7 @@ function Descriptions({ navigation }) {
       <div className='navigation-mode-description-title-wrapper'>
         <div className='navigation-mode-description-icon'>
           <Icon
-            name='panning.svg'
+            name='navigation.svg'
             size='very-small'
             className='not-hoverable'
           />

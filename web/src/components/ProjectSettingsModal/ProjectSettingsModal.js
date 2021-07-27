@@ -70,7 +70,7 @@ function EditProjectForm({
     // }
   }, [projectCoverUrl])
 
-  const subheading = `Change this project's name or image`
+  const subheading = `Any changes will apply for all team members.`
 
   // validate before firing event
   const submit = () => {
@@ -132,7 +132,7 @@ function EditProjectForm({
           />
         </div>
         {/* project priority mode setting */}
-        <PreferenceSelect title="Prioritization Mode" subtitle="Select your preferred prioritization mode for you and your team in this project. Changes will apply for all team members" options={[universalOption, voteOption]} />
+        <PreferenceSelect title="Prioritization Mode" subtitle="Select your preferred prioritization mode for you and your team in this project." options={[universalOption, voteOption]} />
       </ProjectModalContent>
       <ProjectModalButton text='Update' onClick={submit} />
     </div>

@@ -57,10 +57,10 @@ function PreferenceSelect({
   return (
     <div className="preference-select">
       <div className="preference-select-title-wrapper">
-        {iconName && (
+        {/* {iconName && (
           // @ts-ignore
           <Icon name={iconName} size="very-small" className="not-hoverable" />
-        )}
+        )} */}
         <div className="preference-select-title">{title}</div>
       </div>
       <div className="preference-select-subtitle">{subtitle}</div>
