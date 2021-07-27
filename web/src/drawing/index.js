@@ -175,7 +175,7 @@ function render(store, canvas) {
         isHovered: isHovered,
         ctx: ctx,
         isBeingEdited: false, // TODO
-        isTopPriorityGoal: isTopPriorityGoal // TODO
+        isTopPriorityGoal: isTopPriorityGoal
       })
     })
 
@@ -241,7 +241,7 @@ function render(store, canvas) {
         isHovered: isHovered,
         ctx: ctx,
         isBeingEdited: false, // TODO
-        isTopPriorityGoal: isTopPriorityGoal // TODO
+        isTopPriorityGoal: isTopPriorityGoal
       })
     })
 
@@ -365,7 +365,7 @@ function render(store, canvas) {
         isHovered: false,
         ctx: ctx,
         isBeingEdited: false, // TODO
-        isTopPriorityGoal: isTopPriorityGoal // TODO
+        isTopPriorityGoal: isTopPriorityGoal
       })
     }
   }
@@ -390,7 +390,7 @@ function render(store, canvas) {
       isHovered: isHovered,
       ctx: ctx,
       isBeingEdited: false, // TODO
-      isTopPriorityGoal: isTopPriorityGoal // TODO
+      isTopPriorityGoal: isTopPriorityGoal
     })
   }
 }

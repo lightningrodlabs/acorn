@@ -6,11 +6,11 @@ import Icon from '../../../Icon/Icon'
 function ExpandedViewNavBar({ onChange, activeTab, commentCount }) {
   const navItems = [
     {
-      text: 'details',
-      icon: 'quick-edit.svg',
+      text: 'Details',
+      icon: 'pencil.svg',
     },
     {
-      text: `comments (${commentCount})`,
+      text: `Comments (${commentCount})`,
       icon: 'comment.svg',
     },
     {
@@ -25,9 +25,8 @@ function ExpandedViewNavBar({ onChange, activeTab, commentCount }) {
         const activeClass = activeTab === index ? 'active-tab' : ''
         return (
           <div
-            className={`expanded-view-nav-bar-item ${activeClass} ${
-              index === 2 ? 'feature-in-development' : ''
-            }`}
+            className={`expanded-view-nav-bar-item ${activeClass} ${index === 2 ? 'feature-in-development' : ''
+              }`}
             key={index}
             onClick={() => index !== 2 && onChange(index)}
           >

@@ -143,7 +143,7 @@ function VerticalActionsList({
           icon={
             <Icon
               size="small"
-              name="hierarchy.svg"
+              name="hierarchy-leaf.svg"
               className="black not-hoverable"
             />
           }
@@ -154,7 +154,7 @@ function VerticalActionsList({
           icon={
             <Icon
               size="small"
-              name="priority.svg"
+              name="sort-asc.svg"
               className="black not-hoverable"
             />
           }

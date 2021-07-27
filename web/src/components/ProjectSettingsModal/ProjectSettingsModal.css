@@ -1,6 +1,12 @@
+.edit-project-modal-heading {
+    font-size: 24px;
+    line-height: 32px;
+    color: #4d4d4d;
+}
+
 .edit-project-modal-wrapper {
     /* width: 550px; */
-    height: 800px;
+    height: 772px;
     overflow: hidden;
     position: relative;
     justify-content: space-between;

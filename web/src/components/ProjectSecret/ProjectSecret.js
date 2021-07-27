@@ -29,8 +29,8 @@ export default function ProjectSecret({ passphrase }) {
           <Icon
             withTooltip
             size='small'
-            tooltipText='copy'
-            name='copy-line.svg'
+            tooltipText='Copy'
+            name='file-copy.svg'
           />
         </div>
       </div>

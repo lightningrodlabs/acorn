@@ -36,7 +36,7 @@ function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints }) {
         <NavLink
           to={`${location.pathname}?entryPoints=${entryPoint.address}`}
           className='entry-point-picker-switch'>
-          <Icon name='enter.png' size='small' className='grey' />
+          <Icon name='enter.svg' size='small' className='grey' />
         </NavLink>
         <div className='entry-point-picker-radio'>
           <Icon
@@ -113,7 +113,7 @@ function EntryPointPicker({ entryPoints, isOpen, onClose, activeEntryPoints }) {
           {entryPoints.length === 0 && (
             <li className='entry-points-empty-state-content'>
               <img
-                src='img/door-closed.png'
+                src='img/door-closed.svg'
                 className='entry-points-empty-state-image'
               />
               <div className='entry-points-empty-state-image-circle'></div>

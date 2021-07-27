@@ -89,7 +89,13 @@ function HeaderRightPanel({
         onClick={hideGuidebookHelpMessage}
       >
         {/* @ts-ignore */}
-        <Icon name="guidebook.svg" className="header-right-panel-icon" medium />
+        <Icon
+          name="booklet.svg"
+          className="header-right-panel-icon"
+          withTooltip
+          tooltipText="Guidebook"
+          size="small"
+        />
       </NavLink>
       <div className="avatar-and-status-wrapper">
         <div

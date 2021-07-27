@@ -142,7 +142,7 @@ function DashboardListProject({
             className="dashboard-list-project-entry-point-button"
             onClick={() => setShowEntryPoints(!showEntryPoints)}
           >
-            {/*<img className='entry-point-button-image' src='img/door-open.png' />*/}
+            {/*<img className='entry-point-button-image' src='img/door-open.svg' />*/}
             {project.entryPoints.length} entry point
             {project.entryPoints.length === 1 ? '' : 's'}
             <Icon
@@ -174,18 +174,7 @@ function DashboardListProject({
       <ProjectSettingsModal
         showModal={showProjectSettingsModal}
         onClose={() => setShowProjectSettingsModal(false)}
-        // editable
-        projectNameProp={project.name}
-        projectCoverUrlProp={project.image}
-        priorityModeProp={project.priority_mode}
-        // not editable
-        projectAddress={project.address}
-        cellIdString={project.cellId}
-        topPriorityGoals={project.top_priority_goals}
-        creatorAddress={project.creator_address}
-        createdAt={project.created_at}
-        passphrase={project.passphrase}
-        isImported={project.is_imported}
+        project={project}
       />
     </div>
   )

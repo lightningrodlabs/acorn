@@ -39,8 +39,8 @@ export default function ExpandedViewModeHeader({
   }
 
   const entryPointToggleIcon = isEntryPoint
-    ? 'door-open.png'
-    : 'door-closed.png'
+    ? 'door-open.svg'
+    : 'door-closed.svg'
 
   return (
     <div className='expanded_view_header'>

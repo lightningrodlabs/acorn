@@ -5,7 +5,7 @@
   background: #ffffff;
   margin-left: 8px;
   border-radius: 10px;
-  box-shadow: 0px 0px 10px #0000001f;
+  box-shadow: 0px 0px 10px #00000010;
 }
 
 .universal-priority-header {
@@ -28,17 +28,30 @@
   /* align-items: center; */
 }
 
+.universal-priority-goals-list-row:hover {
+  background-color: #F8F7F5;
+  border-radius: 10px;
+}
+
 .universal-priority-number-slots {
   margin-right: 16px;
 }
 
-.universal-priority-order-number {
+.universal-priority-number-wrapper {
+  padding: 16px 0 16px 0;
+  box-sizing: border-box;
   height: 78px;
-  padding-top: 16px;
+}
+
+.universal-priority-order-number {
   font-family: 'gilroyextrabold', Helvetica, sans-serif;
   font-size: 20px;
   line-height: 24px;
-  box-sizing: border-box;
+}
+
+.universal-priority-goal-slots {
+  display: flex;
+  flex: 1;
 }
 
 .universal-priority-goal-item-wrapper {
@@ -47,6 +60,24 @@
   align-items: baseline;
   flex: 1;
   padding: 12px 8px 16px 8px;
+  height: 78px;
+  box-sizing: border-box;
+  position: relative;
+  /* justify-content: space-between; */
+}
+
+.universal-priority-goal-item-expand {
+  float: right;
+  position: absolute;
+  right: 10px;
+}
+
+.universal-priority-goal-item-expand .icon {
+  display: none;
+}
+
+.universal-priority-goal-item-wrapper:hover>.universal-priority-goal-item-expand .icon {
+  display: flex;
 }
 
 .universal-priority-goal-item-border {
@@ -58,16 +89,24 @@
   font-size: 18px;
   line-height: 24px;
   color: #4D4D4D;
-  width: 600px;
+  /* width: 600px; */
   margin-left: 8px;
   margin-right: 20px;
+  flex: 1;
+  max-width: 700px;
 }
 
-.universal-priority-goal-item-metadata {}
+.universal-priority-goal-item-metadata {
+  width: 220px;
+}
 
 .universal-priority-goal-item-date {
   font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
-  font-size: 16px;
-  line-height: 20px;
-  color: #535353;
+  font-size: 14px;
+  line-height: 28px;
+  color: #959595;
+}
+
+.universal-priority-droppable-wrapper {
+  width: 100%;
 }

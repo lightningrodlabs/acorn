@@ -13,13 +13,16 @@ import _ from 'lodash'
 
 import './PriorityUniversal.css'
 
+import { openExpandedView } from '../../../../expanded-view/actions'
+
 import Avatar from '../../../../components/Avatar/Avatar'
-import goalsAsTrees from '../../../../projects/goals/goalsAsTrees'
 import Icon from '../../../../components/Icon/Icon'
 import StatusIcon from '../../../../components/StatusIcon/StatusIcon'
 import { updateProjectMeta } from '../../../../projects/project-meta/actions'
+import TimeframeFormat from '../../../../components/TimeframeFormat'
 
-function UniversalGoal({ goal }) {
+// an individual list item
+function UniversalGoal({ goal, openExpandedView }) {
   return <div className='universal-priority-goals-list-row'>
     <div className='universal-priority-goal-item-wrapper'>
       <div className='universal-priority-goal-item-status'>
@@ -37,9 +40,13 @@ function UniversalGoal({ goal }) {
           avatar_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fprofile.alumnius.net%2F226519719.jpg&f=1&nofb=1"
           small
         />
-        <div className='universal-priority-goal-item-date'>Aug 12 - 16, 2021</div>
+        <div className='universal-priority-goal-item-date'>
+          <TimeframeFormat timeFrame={goal.time_frame} />
+        </div>
       </div>
+      <div className='universal-priority-goal-item-expand' onClick={() => openExpandedView(goal.address)}><Icon name='expand.svg' size='small' className='grey' /></div>
     </div>
+
     <div className='universal-priority-goal-item-border'></div>
   </div>
 }
@@ -47,12 +54,13 @@ function UniversalGoal({ goal }) {
 // for PriorityUniversalDraggableGoal
 const getItemStyle = (isDragging, draggableStyle) => ({
   // change background colour if dragging
-  background: isDragging ? "#FCF9F9" : "white",
+  background: isDragging ? "#F8F7F5" : "white",
   borderRadius: isDragging ? "10px" : "0",
   // styles we need to apply on draggables
   ...draggableStyle
 })
-function PriorityUniversalDraggableGoal({ goal, index }) {
+// wraps an individual list item in a draggable wrapper
+function PriorityUniversalDraggableGoal({ goal, index, openExpandedView }) {
   return <Draggable key={goal.address} draggableId={goal.address} index={index}>
     {(provided, snapshot) => (
       <div
@@ -64,21 +72,23 @@ function PriorityUniversalDraggableGoal({ goal, index }) {
           provided.draggableProps.style
         )}
       >
-        <UniversalGoal goal={goal} />
+        <UniversalGoal goal={goal} openExpandedView={openExpandedView} />
       </div>
     )}
   </Draggable>
 }
 
-function PriorityUniversalDroppable({ goals }) {
+// the area within which goals are droppable
+function PriorityUniversalDroppable({ goals, openExpandedView }) {
   return <Droppable droppableId="droppable">
     {(provided, _snapshot) => (
       <div
         {...provided.droppableProps}
         ref={provided.innerRef}
+        className="universal-priority-droppable-wrapper"
       >
         {goals.map((goal, index) => (
-          <PriorityUniversalDraggableGoal goal={goal} index={index} />
+          <PriorityUniversalDraggableGoal key={goal.address} goal={goal} index={index} openExpandedView={openExpandedView} />
         ))}
         {provided.placeholder}
       </div>
@@ -86,8 +96,9 @@ function PriorityUniversalDroppable({ goals }) {
   </Droppable>
 }
 
+// the default export, and main high level component here
 function PriorityUniversal(
-  { goals, projectMeta, projectId, updateProjectMeta }
+  { goals, projectMeta, projectId, updateProjectMeta, openExpandedView }
 ) {
   const [pending, setPending] = useState(false)
   // temporarily store the list order that
@@ -157,11 +168,11 @@ function PriorityUniversal(
       <div className='universal-priority-divider-line'></div>
       <div className='universal-priority-goals-list-wrapper'>
         <div className='universal-priority-number-slots'>
-          {topPriorityGoals.map((_g, index) => <div key={index} className='universal-priority-order-number'>{index + 1}.</div>)}
+          {topPriorityGoals.map((_goal, index) => <div key={index} className='universal-priority-number-wrapper'><div className='universal-priority-order-number'>{index + 1}.</div> </div>)}
         </div>
         <div className='universal-priority-goal-slots'>
           <DragDropContext onDragEnd={onDragEnd}>
-            <PriorityUniversalDroppable goals={topPriorityGoals} />
+            <PriorityUniversalDroppable goals={topPriorityGoals} openExpandedView={openExpandedView} />
           </DragDropContext>
         </div>
       </div>
@@ -182,6 +193,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    openExpandedView: (address) => dispatch(openExpandedView(address)),
     updateProjectMeta: (projectMeta, address, cellIdString) => {
       return dispatch(updateProjectMeta.create({
         cellIdString,

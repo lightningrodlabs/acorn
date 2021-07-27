@@ -12,12 +12,13 @@ function PriorityPicker({
   priorityMode,
   onClose,
 }) {
+  const isUniversal = priorityMode === PriorityModeOptions.Universal
   return (
     <PickerTemplate
-      className='priority-picker-wrapper'
+      className={`priority-picker-wrapper ${isUniversal ? "universal-priority" : "vote-priority"}`}
       heading='Priority'
       onClose={onClose}>
-      {priorityMode === PriorityModeOptions.Universal
+      {isUniversal
         ? <PriorityPickerUniversal projectId={projectId} goalAddress={goalAddress} />
         : <PriorityPickerVote projectId={projectId} goalAddress={goalAddress} />}
     </PickerTemplate>

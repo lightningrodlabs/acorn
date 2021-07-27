@@ -8,8 +8,8 @@
 }
 
 .inner-icon {
-  /* default: black */
-  background-color: #000000;
+  /* default: dark grey */
+  background-color: #222222;
   mask-repeat: no-repeat;
   mask-position: center;
   mask-size: contain;
@@ -55,24 +55,24 @@
 }
 
 .icon.small {
-  width: 20px;
-  height: 20px;
-  padding: 1px;
+  width: 24px;
+  height: 24px;
+  padding: 2px;
   cursor: pointer;
 }
 
 .icon.small-close {
-  width: 24px;
+  /* width: 24px;
   height: 24px;
   padding: 4px;
-  cursor: pointer;
+  cursor: pointer; */
 }
 
 .icon.very-small-close {
-  width: 18px;
-  height: 18px;
-  padding: 2px;
-  cursor: pointer;
+  /* width: 20px;
+  height: 20px;
+  padding: 0;
+  cursor: pointer; */
 }
 
 .icon.medium {
@@ -126,13 +126,16 @@
 }
 
 .icon.with_background {
-  background-color: rgba(44, 44, 44, 0.51);
+  /* background-color: rgba(173, 166, 157, 0.75); */
+  background-color: #ffffff80;
   border-radius: 8px;
   padding: 8px;
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.16);
 }
 
 .icon.with_background:hover {
-  background-color: rgba(44, 44, 44, 0.75);
+  /* background-color: rgba(173, 166, 157, 0.9); */
+  background-color: #ffffff;
   padding: 8px;
 }
 

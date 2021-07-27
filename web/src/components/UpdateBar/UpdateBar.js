@@ -4,7 +4,7 @@ import './UpdateBar.css'
 
 import Icon from '../Icon/Icon'
 
-export default function UpdateBar ({
+export default function UpdateBar({
   active,
   onClose,
   setShowUpdatePromptModal,
@@ -24,7 +24,7 @@ export default function UpdateBar ({
         </a>
         <div className='update-bar-close'>
           <Icon
-            name='x-bold.svg'
+            name='x.svg'
             size='very-small-close'
             className='white'
             onClick={() => onClose()}

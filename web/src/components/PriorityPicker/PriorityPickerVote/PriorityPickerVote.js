@@ -381,7 +381,7 @@ function PriorityPickerVote({
               <Aggregated votes={votes} />
               {/* TODO: built this locate card on view feature */}
               {/* <div className='priority-wrapper-footer'>
-              <Icon size='small' name='priority.svg' />
+              <Icon size='small' name='sort-asc.svg' />
               Locate this card on priority view mode
             </div> */}
             </div>

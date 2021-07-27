@@ -32,7 +32,7 @@ const ConnectedPriorityMode = connect(function (state) {
   }
 })(PriorityMode)
 
-function PriorityView({ goalTrees, priorityMode }) {
+function PriorityView({ goalTrees }) {
   return (
     <div className='priority-view-wrapper'>
       <IndentedTreeView goalTrees={goalTrees} />

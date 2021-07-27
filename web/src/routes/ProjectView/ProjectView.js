@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 
 import MapView from './MapView/MapView'
 import PriorityView from './PriorityView/PriorityView'
+import ExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode'
 
 // data
 import { fetchProjectMeta } from '../../projects/project-meta/actions'
@@ -30,6 +31,7 @@ import { resetTranslateAndScale } from '../../viewport/actions'
 
 function ProjectViewInner({
   projectId,
+  closeExpandedView,
   entryPointAddresses,
   resetProjectView,
   setActiveProject,
@@ -63,12 +65,14 @@ function ProjectViewInner({
   }, [JSON.stringify(entryPointAddresses)])
 
   return (
-    <Switch>
-      <Route path='/project/:projectId/map' component={MapView} />
-      <Route path='/project/:projectId/priority' component={PriorityView} />
-      <Route exact path='/project/:projectId' component={ProjectRedirect} />
-    </Switch>
-  )
+    <>
+      <Switch>
+        <Route path='/project/:projectId/map' component={MapView} />
+        <Route path='/project/:projectId/priority' component={PriorityView} />
+        <Route exact path='/project/:projectId' component={ProjectRedirect} />
+      </Switch>
+      <ExpandedViewMode projectId={projectId} onClose={closeExpandedView} />
+    </>)
 }
 
 function ProjectRedirect() {
@@ -92,6 +96,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(unselectAll())
       dispatch(resetTranslateAndScale())
     },
+    closeExpandedView: () => dispatch(closeExpandedView()),
     fetchProjectMeta: () =>
       dispatch(fetchProjectMeta.create({ cellIdString, payload: null })),
     fetchEntryPoints: () =>

@@ -6,18 +6,14 @@ import './MapView.css'
 import render from '../../../drawing'
 
 import setupEventListeners from '../../../event-listeners'
-import {
-  openExpandedView,
-  closeExpandedView,
-} from '../../../expanded-view/actions'
 import { setScreenDimensions } from '../../../screensize/actions'
+import { openExpandedView } from '../../../expanded-view/actions'
 
 import EmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
 import GoalTitleQuickEdit from '../../../components/GoalTitleQuickEdit/GoalTitleQuickEdit'
 import VerticalActionsList from '../../../components/VerticalActionsList/VerticalActionsList'
 import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar'
 import GoalHoverOverlayButtons from '../../../components/GoalHoverOverlayButtons/GoalHoverOverlayButtons'
-import ExpandedViewMode from '../../../components/ExpandedViewMode/ExpandedViewMode'
 import EdgeConnectors from '../../../components/EdgeConnectors/EdgeConnectors'
 import { firstZoomThreshold } from '../../../drawing/dimensions'
 
@@ -30,7 +26,6 @@ function MapView({
   translate,
   scale,
   openExpandedView,
-  closeExpandedView,
   showEmptyState,
   showGuidebookHelpMessage,
 }) {
@@ -96,25 +91,18 @@ function MapView({
       </div>
 
       <MultiEditBar projectId={projectId} hasSelection={hasSelection} />
-      <ExpandedViewMode projectId={projectId} onClose={closeExpandedView} />
     </>
   )
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    openExpandedView: (address) => {
-      return dispatch(openExpandedView(address))
-    },
-    closeExpandedView: () => {
-      return dispatch(closeExpandedView())
-    },
+    openExpandedView: (address) => dispatch(openExpandedView(address)),
   }
 }
 
 function mapStateToProps(state) {
   const projectId = state.ui.activeProject
-  const { editAddress } = state.ui.goalForm
   return {
     // if have not opened the guidebook ever, then show guidebook tip message
     showGuidebookHelpMessage: !state.ui.localPreferences.hasAccessedGuidebook,

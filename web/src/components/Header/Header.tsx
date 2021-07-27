@@ -7,6 +7,7 @@ import { Status } from './Status'
 import HeaderLeftPanel from './HeaderLeftPanel'
 import HeaderRightPanel from './HeaderRightPanel'
 import HeaderMiddlePanel from './HeaderMiddlePanel'
+import ProjectSettingsModal from '../ProjectSettingsModal/ProjectSettingsModal'
 
 function Header({
   whoami,
@@ -14,14 +15,11 @@ function Header({
   setShowPreferences,
   updateStatus,
   activeEntryPoints,
-  showUpdateBar,
-  setShowUpdateBar,
-  setShowUpdatePromptModal,
-  projectName,
-  projectPriorityMode,
+  project,
   projectId,
   hideGuidebookHelpMessage,
 }) {
+  const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
   const [isExportOpen, setIsExportOpen] = useState(false)
 
   const [status, setStatus] = useState<Status>(
@@ -58,22 +56,23 @@ function Header({
 
   return (
     <div className="header-wrapper" ref={ref}>
-      <UpdateBar
+      {/* <UpdateBar
         active={showUpdateBar}
         onClose={() => setShowUpdateBar(false)}
         setShowUpdatePromptModal={setShowUpdatePromptModal}
-      />
+      /> */}
       <div className="header">
         <HeaderLeftPanel
           whoami={whoami}
-          projectName={projectName}
+          setShowProjectSettingsOpen={setShowProjectSettingsOpen}
+          projectName={project.name}
           isExportOpen={isExportOpen}
           onClickExport={onClickExport}
           activeEntryPoints={activeEntryPoints}
         />
         <HeaderMiddlePanel
           projectId={projectId}
-          projectPriorityMode={projectPriorityMode}
+          projectPriorityMode={project.priority_mode}
         />
         {whoami && (
           // add all these values as props
@@ -89,6 +88,11 @@ function Header({
           />
         )}
       </div>
+      <ProjectSettingsModal
+        showModal={showProjectSettingsModal}
+        onClose={() => setShowProjectSettingsOpen(false)}
+        project={project}
+      />
     </div>
   )
 }

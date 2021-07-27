@@ -33,14 +33,14 @@ function Footer() {
         <Route path='/project/:projectId/map'>
           <div className='bottom-left-panel-entry-points'>
             <Icon
-              name='door-open.png'
+              name='door-open.svg'
               size=''
               className={`grey ${openEntryPointPicker ? 'active' : ''}`}
               withTooltipTop
-              tooltipText='entry points'
+              tooltipText='Entry Points'
               onClick={() => setOpenEntryPointPicker(!openEntryPointPicker)}
             />
-            {/* <img src='img/door-open.png' /> entry points */}
+            {/* <img src='img/door-open.svg' /> entry points */}
           </div>
           <EntryPointPicker
             isOpen={openEntryPointPicker}
@@ -61,7 +61,7 @@ function Footer() {
                 size=''
                 className='grey'
                 withTooltipTop
-                tooltipText='map view'
+                tooltipText='Map View'
               />
             </NavLink>
             <NavLink
@@ -69,11 +69,11 @@ function Footer() {
               activeClassName='view-mode-active'
               className='view-mode-link'>
               <Icon
-                name='priority.svg'
+                name='sort-asc.svg'
                 size='view-mode'
                 className='grey'
                 withTooltipTop
-                tooltipText='priority view'
+                tooltipText='Priority View'
               />
             </NavLink>
             {/* <Icon name='timeline.svg' className='grey' size='view-mode' /> */}

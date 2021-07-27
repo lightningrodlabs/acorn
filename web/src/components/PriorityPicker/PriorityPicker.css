@@ -1,7 +1,15 @@
 .priority-picker-wrapper {
-  width: 360px;
-  height: 452px;
+  width: 320px;
   overflow: hidden;
+}
+
+.priority-picker-wrapper.universal-priority {
+  height: 140px;
+}
+
+.priority-picker-wrapper.vote-priority {
+  height: 140px;
+  height: 452px;
 }
 
 .priority-tabs {

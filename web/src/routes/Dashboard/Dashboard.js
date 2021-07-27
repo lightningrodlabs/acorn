@@ -130,7 +130,7 @@ function Dashboard({
             to="/settings"
             className="dashboard-left-menu-item feature-in-development"
           >
-            <Icon name="setting.svg" size="very-small" className="grey" />
+            <Icon name="settings.svg" size="very-small" className="grey" />
             Settings
           </NavLink>
         </div>

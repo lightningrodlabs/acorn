@@ -32,8 +32,7 @@ import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 
 function App({
   activeEntryPoints,
-  projectName,
-  projectPriorityMode,
+  activeProjectMeta,
   projectId,
   agentAddress,
   whoami, // .entry and .address
@@ -45,16 +44,6 @@ function App({
 }) {
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
-
-  // update releated states
-  const [updateAvailable, setUpdateAvailable] = useState(false)
-  const [showUpdatePromptModal, setShowUpdatePromptModal] = useState(false)
-  const [showUpdateBar, setShowUpdateBar] = useState(false)
-
-  const onCloseUpdatePromptModal = () => {
-    setShowUpdatePromptModal(false)
-    setShowUpdateBar(true)
-  }
 
   const onProfileSubmit = async profile => {
     await updateWhoami(profile, whoami.address)
@@ -74,42 +63,6 @@ function App({
   const subText = ''
   const submitText = 'Save Changes'
 
-  // useEffect(() => {
-  //   let thisVersion = 'v0.4.0'
-  //   // every 10 minutes, fetch from github releases
-  //   // to see if there is any new update available for the app
-  //   const checkForGithubUpdates = () => {
-  //     fetch('https://api.github.com/repos/h-be/acorn-release/releases')
-  //       .then(response => response.json())
-  //       .then(releases => {
-  //         const latestRelease = releases[0]
-  //         const latestTagName = latestRelease.tag_name
-  //         if (latestTagName !== thisVersion) {
-  //           setShowUpdatePromptModal(true)
-  //           clearInterval(timerID)
-  //           setUpdateAvailable(latestTagName)
-  //         }
-  //       })
-  //   }
-  //   const timerID = setInterval(checkForGithubUpdates, 1000 * 10 * 60)
-  //   if (window.require) {
-  //     window
-  //       .require('electron')
-  //       .ipcRenderer.invoke('get-version')
-  //       .then(version => {
-  //         thisVersion = version
-  //         checkForGithubUpdates()
-  //       })
-  //   }
-
-  //   return () => {
-  //     // this function will be called
-  //     // when this component unmounts:
-  //     // 'tear down the timer'
-  //     clearInterval(timerID)
-  //   }
-  // }, [])
-
   return (
     <ErrorBoundaryScreen>
       <Router>
@@ -119,12 +72,7 @@ function App({
           <Route path='/register' component={CreateProfilePage} />
           <Route
             path='/dashboard'
-            render={() => (
-              <Dashboard
-                updateIsAvailable={updateAvailable}
-                setShowUpdatePromptModal={setShowUpdatePromptModal}
-              />
-            )}
+            component={Dashboard}
           />
           <Route path='/project/:projectId' component={ProjectView} />
           <Route
@@ -137,12 +85,8 @@ function App({
         {agentAddress && (
           <Header
             hideGuidebookHelpMessage={hideGuidebookHelpMessage}
-            showUpdateBar={showUpdateBar}
-            setShowUpdateBar={setShowUpdateBar}
-            setShowUpdatePromptModal={setShowUpdatePromptModal}
             activeEntryPoints={activeEntryPoints}
-            projectName={projectName}
-            projectPriorityMode={projectPriorityMode}
+            project={activeProjectMeta}
             projectId={projectId}
             whoami={whoami}
             updateStatus={updateStatus}
@@ -171,10 +115,10 @@ function App({
           setShowPreferences={setShowPreferences}
         />
         {/* Update Prompt Modal */}
-        <UpdatePromptModal
+        {/* <UpdatePromptModal
           show={showUpdatePromptModal}
           onClose={onCloseUpdatePromptModal}
-        />
+        /> */}
         {/* Loading Screen if no user agent */}
         {!agentAddress && <LoadingScreen />}
         {agentAddress && hasFetchedForWhoami && !whoami && (
@@ -184,19 +128,6 @@ function App({
       </Router>
     </ErrorBoundaryScreen>
   )
-}
-
-App.propTypes = {
-  projectName: PropTypes.string,
-  agentAddress: PropTypes.string,
-  whoami: PropTypes.shape({
-    first_name: PropTypes.string,
-    last_name: PropTypes.string,
-    handle: PropTypes.string,
-    avatar_url: PropTypes.string,
-    address: PropTypes.string
-  }),
-  updateWhoami: PropTypes.func
 }
 
 function mapDispatchToProps(dispatch) {
@@ -224,8 +155,6 @@ function mapStateToProps(state) {
   } = state
   // defensive coding for loading phase
   const activeProjectMeta = state.projects.projectMeta[activeProject] || {}
-  const projectName = activeProjectMeta.name || ''
-  const projectPriorityMode = activeProjectMeta.priority_mode || ''
 
   const allProjectEntryPoints = activeProject
     ? selectEntryPoints(state, activeProject)
@@ -242,9 +171,8 @@ function mapStateToProps(state) {
   return {
     profilesCellIdString,
     activeEntryPoints: activeEntryPointsObjects,
-    projectName,
-    projectPriorityMode,
     projectId: activeProject,
+    activeProjectMeta,
     whoami: state.whoami,
     hasFetchedForWhoami,
     agentAddress: state.agentAddress,

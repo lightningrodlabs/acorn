@@ -62,12 +62,13 @@
 
 .bottom-right-panel-view-modes {
   margin-left: 16px;
+  margin-right: 8px;
 }
 
 .bottom-right-panel-view-modes .icon {
-  margin: 0 16px 0 0;
-  height: 22px;
-  width: 22px;
+  margin: 0 8px 0 0;
+  height: 24px;
+  width: 24px;
   padding: 2px;
   display: inline-block;
   position: relative;

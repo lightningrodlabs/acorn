@@ -131,9 +131,9 @@ function ExpandedViewMode({
           <div className={`expanded-view-wrapper border_${goalState.status}`}>
             <Icon
               onClick={onClose}
-              name='x-bold.svg'
+              name='x.svg'
               size='small-close'
-              className='grey'
+              className='light-grey'
             />
             <ExpandedViewModeHeader
               agentAddress={agentAddress}

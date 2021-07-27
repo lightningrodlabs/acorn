@@ -27,7 +27,7 @@ function GoalHoverOverlayButtons({
       <li onClick={() => onExpandClick(hoveredAddress)}>
         <Icon
           name="expand.svg"
-          className="white not-hoverable"
+          className="not-hoverable"
           withBackground
         />
       </li>
@@ -35,8 +35,8 @@ function GoalHoverOverlayButtons({
         onClick={() => onEditClick(hoveredAddress, goalCoordinate, goalContent)}
       >
         <Icon
-          name="quick-edit.svg"
-          className="white not-hoverable"
+          name="pencil.svg"
+          className="not-hoverable"
           withBackground
         />
       </li>

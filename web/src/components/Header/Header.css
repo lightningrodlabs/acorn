@@ -65,13 +65,13 @@
 
 .current-project-content {
   margin-left: 12px;
-  margin-right: 12px;
+  margin-right: 10px;
   display: flex;
   align-items: center;
 }
 
 .current-project-name {
-  margin: 0 12px 2px 6px;
+  margin: 0 12px 2px 0px;
   font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
   font-weight: normal;
   font-size: 14px;
@@ -84,7 +84,7 @@
   width: 24px;
   display: inline-block;
   position: relative;
-  margin: 0;
+  margin: 0 8px 0 0;
   box-sizing: border-box;
 }
 
