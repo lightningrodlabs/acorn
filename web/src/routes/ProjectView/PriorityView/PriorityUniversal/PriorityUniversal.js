@@ -14,10 +14,13 @@ import { updateProjectMeta } from '../../../../projects/project-meta/actions'
 import TimeframeFormat from '../../../../components/TimeframeFormat'
 
 // an individual list item
-function UniversalGoal({ goal, openExpandedView }) {
+function UniversalGoal({ liveIndex, goal, openExpandedView }) {
   return (
     <div className="universal-priority-goals-list-row">
       <div className="universal-priority-goal-item-wrapper">
+        <div className="universal-priority-number-wrapper">
+          <div className="universal-priority-order-number">{liveIndex}.</div>{' '}
+        </div>
         <div className="universal-priority-goal-item-status">
           <StatusIcon
             status={goal.status}
@@ -60,28 +63,52 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
 })
 // wraps an individual list item in a draggable wrapper
-function PriorityUniversalDraggableGoal({ goal, index, openExpandedView }) {
+function PriorityUniversalDraggableGoal({ goal, index, whileDraggingIndexes, openExpandedView }) {
+  let liveIndex
+  if (!whileDraggingIndexes) {
+    // no dragging happening
+    liveIndex = index + 1
+  } else if (whileDraggingIndexes.source === index) {
+     // item being rendered IS the item being dragged
+     liveIndex = whileDraggingIndexes.destination + 1
+  } else if (index < whileDraggingIndexes.source && index < whileDraggingIndexes.destination) {
+    // item is above the list than what is being dragged and where it
+    // is being dragged to
+    liveIndex = index + 1
+  } else if (index > whileDraggingIndexes.source && index <= whileDraggingIndexes.destination) {
+    liveIndex = index // means it has gained a spot
+  } else if (index < whileDraggingIndexes.source && index >= whileDraggingIndexes.destination) {
+    liveIndex = index + 2 // means it has lost a spots
+  } else {
+    liveIndex = index + 1
+  }
   return (
     <Draggable key={goal.address} draggableId={goal.address} index={index}>
-      {(provided, snapshot) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          style={getItemStyle(
-            snapshot.isDragging,
-            provided.draggableProps.style
-          )}
-        >
-          <UniversalGoal goal={goal} openExpandedView={openExpandedView} />
-        </div>
-      )}
+      {(provided, snapshot) => {
+        return (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            style={getItemStyle(
+              snapshot.isDragging,
+              provided.draggableProps.style
+            )}
+          >
+            <UniversalGoal
+              goal={goal}
+              liveIndex={liveIndex}
+              openExpandedView={openExpandedView}
+            />
+          </div>
+        )
+      }}
     </Draggable>
   )
 }
 
 // the area within which goals are droppable
-function PriorityUniversalDroppable({ goals, openExpandedView }) {
+function PriorityUniversalDroppable({ goals, whileDraggingIndexes, openExpandedView }) {
   return (
     <Droppable droppableId="droppable">
       {(provided, _snapshot) => (
@@ -89,12 +116,14 @@ function PriorityUniversalDroppable({ goals, openExpandedView }) {
           {...provided.droppableProps}
           ref={provided.innerRef}
           className="universal-priority-droppable-wrapper"
+          style={{ overflow: 'scroll' }}
         >
           {goals.map((goal, index) => (
             <PriorityUniversalDraggableGoal
               key={goal.address}
               goal={goal}
               index={index}
+              whileDraggingIndexes={whileDraggingIndexes}
               openExpandedView={openExpandedView}
             />
           ))}
@@ -113,6 +142,9 @@ function PriorityUniversal({
   updateProjectMeta,
   openExpandedView,
 }) {
+  /// will be { source: int, destination: int }
+  // both are indexes, if set at all
+  const [whileDraggingIndexes, setWhileDraggingIndexes] = useState(null)
   const [pending, setPending] = useState(false)
   // temporarily store the list order that
   // is being persisted to holochain during
@@ -126,12 +158,17 @@ function PriorityUniversal({
     result.splice(endIndex, 0, removed)
     return result
   }
+  const onDragUpdate = (update) => {
+    setWhileDraggingIndexes({
+      source: update.source.index,
+      destination: update.destination.index
+    })
+  }
   const onDragEnd = async (result) => {
-    console.log(result.destination)
+    setWhileDraggingIndexes(null)
     if (pending) return
     // dropped outside the list
     if (!result.destination) {
-      console.log('early exit')
       return
     }
     setPending(true)
@@ -196,23 +233,16 @@ function PriorityUniversal({
       </div>
       <div className="universal-priority-divider-line"></div>
       <div className="universal-priority-goals-list-wrapper">
-        <div className="universal-priority-number-slots">
-          {topPriorityGoals.map((_goal, index) => (
-            <div key={index} className="universal-priority-number-wrapper">
-              <div className="universal-priority-order-number">
-                {index + 1}.
-              </div>{' '}
-            </div>
-          ))}
-        </div>
-        {/* <div className="universal-priority-goal-slots"> */}
-          <DragDropContext onDragEnd={onDragEnd}>
-            <PriorityUniversalDroppable
-              goals={topPriorityGoals}
-              openExpandedView={openExpandedView}
-            />
-          </DragDropContext>
-        {/* </div> */}
+        <DragDropContext
+          onDragEnd={onDragEnd}
+          onDragUpdate={onDragUpdate}
+        >
+          <PriorityUniversalDroppable
+            goals={topPriorityGoals}
+            whileDraggingIndexes={whileDraggingIndexes}
+            openExpandedView={openExpandedView}
+          />
+        </DragDropContext>
       </div>
     </div>
   )
