@@ -19,10 +19,10 @@
 }
 
 .universal-priority-goals-list-wrapper {
-  padding: 20px 40px 30px 40px;
+  padding: 0 40px;
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 62px - 252px);
+  height: calc(100vh - 264px);
 }
 
 .universal-priority-goals-list-row {
