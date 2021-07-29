@@ -1,10 +1,10 @@
 import React from 'react'
-import {
-  Route,
-} from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import './PriorityView.css'
+
+import { updateProjectMeta } from '../../../projects/project-meta/actions'
 
 import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeView'
 import goalsAsTrees from '../../../projects/goals/goalsAsTrees'
@@ -12,57 +12,71 @@ import PriorityUniversal from './PriorityUniversal/PriorityUniversal'
 import PriorityVote from './PriorityVote/PriorityVote'
 import { PriorityModeOptions } from '../../../constants'
 
-function PriorityMode({ priorityMode }) {
-  switch (priorityMode) {
+function PriorityMode({ projectId, goalTrees, projectMeta, updateProjectMeta }) {
+  let main
+  switch (projectMeta.priority_mode) {
     case PriorityModeOptions.Universal:
-      return <PriorityUniversal />
+      main = <PriorityUniversal />
+      break
     case PriorityModeOptions.Vote:
-      return <PriorityVote />
+      main = <PriorityVote />
+      break
     default:
-      return null
+      main = null
   }
-}
-// pull out the `priority_mode` from the {ProjectMeta}
-const ConnectedPriorityMode = connect(function (state) {
-  const projectId = state.ui.activeProject
-  const projectMeta = state.projects.projectMeta[projectId]
-  const priorityMode = projectMeta ? projectMeta.priority_mode : null
-  return {
-    priorityMode,
+  const wrappedUpdateProjectMeta = (entry, address) => {
+    return updateProjectMeta(entry, address, projectId)
   }
-})(PriorityMode)
-
-function PriorityView({ goalTrees }) {
   return (
-    <div className='priority-view-wrapper'>
-      <IndentedTreeView goalTrees={goalTrees} />
-      <Route
-        path='/project/:projectId/priority'
-        component={ConnectedPriorityMode}
+    <>
+      <IndentedTreeView
+        goalTrees={goalTrees}
+        projectMeta={projectMeta}
+        projectId={projectId}
+        updateProjectMeta={wrappedUpdateProjectMeta}
       />
-    </div>
+      {main}
+    </>
   )
 }
 
-function mapDispatchToProps(dispatch) {
-  return {}
-}
 function mapStateToProps(state) {
   const projectId = state.ui.activeProject
-  const goalVotes = state.projects.goalVotes[projectId] || {}
+  const projectMeta = state.projects.projectMeta[projectId] || {}
   const treeData = {
     agents: state.agents,
     goals: state.projects.goals[projectId] || {},
     edges: state.projects.edges[projectId] || {},
     goalMembers: state.projects.goalMembers[projectId] || {},
     goalVotes: state.projects.goalVotes[projectId] || {},
-    goalComments: state.projects.goalComments[projectId] || {}
+    goalComments: state.projects.goalComments[projectId] || {},
   }
   const goalTrees = goalsAsTrees(treeData, { withMembers: true })
   return {
     projectId,
+    projectMeta,
     goalTrees,
-    goalVotes: Object.values(goalVotes)
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(PriorityView)
+function mapDispatchToProps(dispatch) {
+  return {
+    updateProjectMeta: (entry, address, cellIdString) => {
+      return dispatch(
+        updateProjectMeta.create({ cellIdString, payload: { entry, address } })
+      )
+    },
+  }
+}
+const ConnectedPriorityMode = connect(mapStateToProps, mapDispatchToProps)(PriorityMode)
+
+
+export default function PriorityView() {
+  return (
+    <div className="priority-view-wrapper">
+      <Route
+        path="/project/:projectId/priority"
+        component={ConnectedPriorityMode}
+      />
+    </div>
+  )
+}
