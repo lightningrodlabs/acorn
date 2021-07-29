@@ -1,11 +1,11 @@
 .priority-view-wrapper {
-  margin: 62px 8px 8px;
+  margin: 62px 8px 0 8px;
   display: flex;
   flex-direction: row;
+  height: calc(100vh - 128px);
 }
 
 .indented-view-wrapper {
-  height: calc(100vh - 70px);
   background: #f3f0ed;
   display: flex;
   flex-direction: column;

@@ -6,6 +6,8 @@
   margin-left: 8px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px #00000010;
+  display: flex;
+  flex-direction: column;
 }
 
 .universal-priority-header {
@@ -17,9 +19,12 @@
 }
 
 .universal-priority-goals-list-wrapper {
+  /* flex: 1; */
   padding: 20px 40px 30px 40px;
   display: flex;
   flex-direction: row;
+  height: calc(100vh - 62px - 136px);
+  overflow-y: scroll;
 }
 
 .universal-priority-goals-list-row {
