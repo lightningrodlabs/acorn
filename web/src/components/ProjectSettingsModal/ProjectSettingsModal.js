@@ -143,7 +143,8 @@ function ProjectSettingsModal({
   showModal,
   onClose,
   updateProjectMeta,
-  project
+  project,
+  cellIdString,
 }) {
   const [updatingProject, setUpdatingProject] = useState(false)
 
@@ -163,7 +164,7 @@ function ProjectSettingsModal({
         top_priority_goals: project.top_priority_goals,
       },
       project.address,
-      project.cellId
+      cellIdString,
     )
     setUpdatingProject(false)
     onClose()

@@ -8,6 +8,7 @@
   overflow-y: hidden;
   position: fixed;
   top: 0;
+  z-index: 1;
 }
 
 .expanded-view-overlay-enter {

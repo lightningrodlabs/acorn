@@ -160,6 +160,7 @@ function DashboardListProject({
               }
               return (
                 <NavLink
+                  key={`entry-point-${entryPoint.address}`}
                   to={`/project/${project.cellId}/map?entryPoints=${entryPoint.address}`}
                   className="entry-point-item"
                 >
@@ -175,6 +176,7 @@ function DashboardListProject({
         showModal={showProjectSettingsModal}
         onClose={() => setShowProjectSettingsModal(false)}
         project={project}
+        cellIdString={project.cellId}
       />
     </div>
   )

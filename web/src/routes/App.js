@@ -29,6 +29,7 @@ import RunUpdate from './RunUpdate/RunUpdate'
 import IntroScreen from '../components/IntroScreen/IntroScreen'
 import selectEntryPoints from '../projects/entry-points/select'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
+import ProjectSettingsModal from '../components/ProjectSettingsModal/ProjectSettingsModal'
 
 function App({
   activeEntryPoints,
@@ -42,6 +43,7 @@ function App({
   setNavigationPreference,
   hideGuidebookHelpMessage
 }) {
+  const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
 
@@ -90,6 +92,7 @@ function App({
             projectId={projectId}
             whoami={whoami}
             updateStatus={updateStatus}
+            setShowProjectSettingsOpen={setShowProjectSettingsOpen}
             setShowProfileEditForm={setShowProfileEditForm}
             setShowPreferences={setShowPreferences}
           />
@@ -113,6 +116,13 @@ function App({
           setNavigationPreference={setNavigationPreference}
           showPreferences={showPreferences}
           setShowPreferences={setShowPreferences}
+        />
+        {/* Project Settings Modal */}
+        <ProjectSettingsModal
+          showModal={showProjectSettingsModal}
+          onClose={() => setShowProjectSettingsOpen(false)}
+          project={activeProjectMeta}
+          cellIdString={projectId}
         />
         {/* Update Prompt Modal */}
         {/* <UpdatePromptModal
@@ -176,7 +186,7 @@ function mapStateToProps(state) {
     whoami: state.whoami,
     hasFetchedForWhoami,
     agentAddress: state.agentAddress,
-    navigationPreference: navigation
+    navigationPreference: navigation,
   }
 }
 

@@ -1,8 +1,6 @@
 import React, { useRef, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
 import useOnClickOutside from 'use-onclickoutside'
 import './Header.css'
-import UpdateBar from '../UpdateBar/UpdateBar'
 import { Status } from './Status'
 import HeaderLeftPanel from './HeaderLeftPanel'
 import HeaderRightPanel from './HeaderRightPanel'
@@ -11,6 +9,7 @@ import ProjectSettingsModal from '../ProjectSettingsModal/ProjectSettingsModal'
 
 function Header({
   whoami,
+  setShowProjectSettingsOpen,
   setShowProfileEditForm,
   setShowPreferences,
   updateStatus,
@@ -19,7 +18,6 @@ function Header({
   projectId,
   hideGuidebookHelpMessage,
 }) {
-  const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
   const [isExportOpen, setIsExportOpen] = useState(false)
 
   const [status, setStatus] = useState<Status>(
@@ -88,11 +86,6 @@ function Header({
           />
         )}
       </div>
-      <ProjectSettingsModal
-        showModal={showProjectSettingsModal}
-        onClose={() => setShowProjectSettingsOpen(false)}
-        project={project}
-      />
     </div>
   )
 }

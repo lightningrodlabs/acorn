@@ -75,7 +75,6 @@ function render(store, canvas) {
   // draw things relating to the project, if the project has fully loaded
   if (goals && edges && goalMembers && entryPoints && projectMeta) {
     const topPriorityGoals = projectMeta.top_priority_goals
-    console.log(topPriorityGoals)
     // converts the goals object to an array
     const goalsAsArray = Object.keys(goals).map(address => goals[address])
     // convert the edges object to an array

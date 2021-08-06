@@ -8,6 +8,8 @@ import {
     createEdge,
     fetchEdges,
     AFFECT_LAYOUT_ARCHIVE_EDGE,
+    PREVIEW_EDGES,
+    CLEAR_EDGES_PREVIEW,
 } from '../projects/edges/actions'
 import {
   TRIGGER_UPDATE_LAYOUT,
@@ -18,6 +20,8 @@ import layoutFormula from '../drawing/layoutFormula'
 const isOneOfLayoutAffectingActions = (action) => {
     const { type } = action
     return type === TRIGGER_UPDATE_LAYOUT
+        || type === PREVIEW_EDGES
+        || type === CLEAR_EDGES_PREVIEW
         || type === createGoalWithEdge.success().type
         || type === fetchGoals.success().type
         || type === archiveGoalFully.success().type

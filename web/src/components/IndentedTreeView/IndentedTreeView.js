@@ -73,7 +73,14 @@ function NestedTreeGoal({ goal, level, filterText, projectMeta, updateProjectMet
               />
             )}
             <div className="indented-view-goal-text">{goal.content}</div>
-            {showMakeTopPriorityGoal && <div className="indented-view-goal-make-top-priority" onClick={makeTopPriority}>M</div>}
+            {showMakeTopPriorityGoal && <div className="indented-view-goal-make-top-priority" onClick={makeTopPriority}>
+            <Icon
+              name='plus.svg'
+              size='small'
+              className='grey'
+              
+            />
+              </div>}
           </NavLink>
         </div>
       )}
@@ -174,7 +181,7 @@ export default function IndentedTreeView({ goalTrees, projectMeta, updateProject
           type="text"
           onChange={(e) => setFilterText(e.target.value.toLowerCase())}
           value={filterText}
-          placeholder="Search a card or subtree"
+          placeholder="Search for a Goal"
           autoFocus
         />
         {filterText !== '' && (

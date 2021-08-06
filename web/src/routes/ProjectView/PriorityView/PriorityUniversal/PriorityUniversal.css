@@ -25,6 +25,10 @@
   height: calc(100vh - 264px);
 }
 
+.universal-priority-droppable-wrapper {
+  padding: 20px 0 30px 0;
+}
+
 .universal-priority-goals-list-row {
   display: flex;
   flex-direction: row;
@@ -41,15 +45,14 @@
 }
 
 .universal-priority-number-wrapper {
-  padding: 16px 16px 16px 0;
-  box-sizing: border-box;
-  height: 78px;
+  
 }
 
 .universal-priority-order-number {
   font-family: 'gilroyextrabold', Helvetica, sans-serif;
   font-size: 20px;
   line-height: 24px;
+  width: 32px;
 }
 
 .universal-priority-goal-slots {
@@ -63,7 +66,7 @@
   align-items: baseline;
   flex: 1;
   padding: 12px 8px 16px 8px;
-  height: 78px;
+  min-height: 80px;
   box-sizing: border-box;
   position: relative;
   /* justify-content: space-between; */
@@ -93,8 +96,8 @@
   line-height: 24px;
   color: #4D4D4D;
   /* width: 600px; */
-  margin-left: 8px;
-  margin-right: 20px;
+  margin-left: 12px;
+  margin-right: 24px;
   flex: 1;
   max-width: 700px;
 }
@@ -103,10 +106,22 @@
   width: 220px;
 }
 
+.universal-priority-goal-item-members {
+  display: flex;
+  flex-direction: row;
+  padding-left: 10px;
+}
+.universal-priority-goal-item-member-avatar {
+  margin-left: -10px;
+  border: 2px solid white;
+  border-radius: 50%;
+  z-index: 1;
+  height: 32px;
+}
+
 .universal-priority-goal-item-date {
   font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
   font-size: 14px;
-  line-height: 28px;
   color: #959595;
 }
 

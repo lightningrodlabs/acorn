@@ -76,7 +76,7 @@
 .indented-view-goal-content {
   margin: 0 2px;
   cursor: pointer;
-  padding: 8px;
+  padding: 6px 8px;
   border-radius: 8px;
   text-decoration: none;
   flex: 1;
@@ -102,6 +102,7 @@
   overflow: hidden;
   white-space: nowrap;
   flex: 1;
+  line-height: 1.9;
 }
 
 .indented-view-goal-content:hover, .highest-level-view:hover {
@@ -123,4 +124,14 @@
 
 .indented-view-nested-goal {
   margin-left: 20px;
+}
+
+.indented-view-goal-content .indented-view-goal-make-top-priority { 
+  display: none;
+}
+
+.indented-view-goal-content:hover .indented-view-goal-make-top-priority {
+  background: #ececec;
+  border-radius: 4px;
+  display: block;
 }

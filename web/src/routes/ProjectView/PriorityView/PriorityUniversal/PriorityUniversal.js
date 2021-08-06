@@ -31,12 +31,19 @@ function UniversalGoal({ liveIndex, goal, openExpandedView }) {
         </div>
         <div className="universal-priority-goal-item-title">{goal.content}</div>
         <div className="universal-priority-goal-item-metadata">
-          <Avatar
-            first_name="Pegah"
-            last_name="Vaezi"
-            avatar_url="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fprofile.alumnius.net%2F226519719.jpg&f=1&nofb=1"
-            small
-          />
+          <div className="universal-priority-goal-item-members">
+            {goal.members.map(member => {
+              return <div className="universal-priority-goal-item-member-avatar" key={member.address}>
+              <Avatar
+              first_name={member.first_name}
+              last_name={member.last_name}
+              avatar_url={member.avatar_url}
+              imported={member.is_imported}
+              medium
+            />
+            </div>
+            })}
+          </div>
           <div className="universal-priority-goal-item-date">
             <TimeframeFormat timeFrame={goal.time_frame} />
           </div>
@@ -250,12 +257,29 @@ function PriorityUniversal({
 
 function mapStateToProps(state) {
   const projectId = state.ui.activeProject
+  const agents = state.agents
   const goals = state.projects.goals[projectId] || {}
+  const goalMembers = state.projects.goalMembers[projectId] || {}
   const projectMeta = state.projects.projectMeta[projectId]
+
+  // add members on to goal state objects
+  const allGoalsArray = Object.values(goals).map(goal => {
+    const extensions = {}
+    extensions.members = Object.values(goalMembers)
+      .filter(goalMember => goalMember.goal_address === goal.address)
+      .map(goalMember => agents[goalMember.agent_address])
+      .filter(goalMember => goalMember) // filter out undefined results
+    return {
+      ...goal,
+      ...extensions,
+    }
+  })
+  const allGoals = _.keyBy(allGoalsArray, 'address')
+
   return {
     projectId,
     projectMeta,
-    goals,
+    goals: allGoals,
   }
 }
 
