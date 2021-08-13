@@ -1,5 +1,4 @@
 import React from 'react'
-import Icon from '../../Icon/Icon'
 
 const shortcutsItems = [
   {

@@ -80,6 +80,10 @@
     margin-top: 14px;
 }
 
+.preference-select-option.active .preference-select-option-text {
+  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+}
+
 /* PreferenceSelectExtra */
 
 .preference-select-description-wrapper {

@@ -336,18 +336,13 @@ export default function setupEventListeners(store, canvas) {
       },
     } = state
 
-    // if the GoalForm is open, any click on the
-    // canvas should close it
-    if (state.ui.goalForm.isOpen) {
-      store.dispatch(closeGoalForm())
-    }
-    // opening the GoalForm is dependent on
-    // holding down the `g` keyboard key modifier
-    else if (state.ui.keyboard.gKeyDown) {
+    if (state.ui.keyboard.gKeyDown) {
+      // opening the GoalForm is dependent on
+      // holding down the `g` keyboard key modifier
       handleMouseUpForGoalForm(state, event, store)
     }
-    // finishing a drag box selection action
     else if (goalsAddresses) {
+      // finishing a drag box selection action
       goalsAddresses.forEach((value) => store.dispatch(selectGoal(value)))
     } else {
       // check for node in clicked area
@@ -355,7 +350,6 @@ export default function setupEventListeners(store, canvas) {
       const {
         ui: {
           viewport: { translate, scale },
-          screensize: { width },
         },
       } = state
       const goalCoordinates = state.ui.layout

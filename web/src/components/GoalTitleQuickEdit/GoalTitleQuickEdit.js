@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { connect } from 'react-redux'
+import useOnClickOutside from 'use-onclickoutside'
 import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
 
@@ -46,8 +47,10 @@ function GoalTitleQuickEdit({
   updateGoal,
   closeGoalForm,
 }) {
-  /* EVENT HANDLERS */
 
+  
+
+  /* EVENT HANDLERS */
   // when the text value changes
   const handleChange = (event) => {
     updateContent(event.target.value)
@@ -73,6 +76,8 @@ function GoalTitleQuickEdit({
     }
   }
 
+  // this can get called via keyboard events
+  // or via 'onClickOutside' of the GoalTitleQuickEdit component
   const handleSubmit = async (event) => {
     if (event) {
       // this is to prevent the page from refreshing
@@ -83,6 +88,7 @@ function GoalTitleQuickEdit({
 
     // do not allow submit with no content
     if (!content || content === '') {
+      closeGoalForm()
       return
     }
 
@@ -95,9 +101,15 @@ function GoalTitleQuickEdit({
       await innerCreateGoalWithEdge()
     }
 
-    // reset the textarea value to empty
-    updateContent('')
-    closeGoalForm()
+    const isKeyboardTrigger = !event
+    // don't close this if it was a click on the vertical-actions-list
+    // that caused this 'onClickOutside' event
+    const clickNotOnActionsList = event && !document.querySelector('.vertical-actions-list').contains(event.target)
+    if (isKeyboardTrigger || clickNotOnActionsList) {
+      // reset the textarea value to empty
+      updateContent('')
+      closeGoalForm()
+    }
   }
 
   const innerCreateGoalWithEdge = async () => {
@@ -159,6 +171,10 @@ function GoalTitleQuickEdit({
     lineHeight: `${parseInt(fontSizeToUse) * lineHeightMultiplier}px`
   }
 
+  const ref = useRef()
+  useOnClickOutside(ref, handleSubmit)
+  //
+
   return (
     <div
       className="goal-title-quick-edit-wrapper"
@@ -166,6 +182,7 @@ function GoalTitleQuickEdit({
         top: `${topEdgeYPosition}px`,
         left: `${leftEdgeXPosition}px`,
       }}
+      ref={ref}
     >
       <form className="goal-title-quick-edit-form" onSubmit={handleSubmit}>
         <TextareaAutosize

@@ -74,7 +74,7 @@ function MapView({
       {/* is being scaled and translated, using css matrix transforms */}
       <div className="transform-container" style={transform}>
         {/* Only present this GoalTitleQuickEdit */}
-        {/* if the scale is greater than or equal to 60% */}
+        {/* if the scale is greater than or equal to 60% (or we are creating a Goal) */}
         {/* because otherwise the font size gets to small and the text is cut off */}
         {goalFormIsOpen && (scale >= firstZoomThreshold || !goalIsBeingEdited) && <GoalTitleQuickEdit projectId={projectId} />}
       </div>

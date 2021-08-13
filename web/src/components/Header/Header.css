@@ -256,7 +256,8 @@
 /* Guidebook */
 
 .guidebook-modal.modal-wrapper {
-  width: 620px;
+  width: 800px;
+  max-width: calc(100vw - 120px);
   padding: 60px;
   max-height: 1000px;
   height: calc(100vh - 120px);
