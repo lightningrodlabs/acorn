@@ -10,7 +10,6 @@ pub(crate) mod fixtures {
   use dna_help::{WrappedAgentPubKey, WrappedHeaderHash};
   use hdk::prelude::*;
 
-  // why can't I put this one in dna_help crate?
   fixturator!(
     WrappedHeaderHash;
       constructor fn new(HeaderHash);
@@ -53,9 +52,10 @@ pub(crate) mod fixtures {
 
   fixturator!(
     ProjectMeta;
-      constructor fn new(WrappedAgentPubKey, f64, String, OptionString, String, bool);
+      constructor fn new(WrappedAgentPubKey, f64, String, OptionString, String, bool, PriorityMode, VecWrappedHeaderHash);
   );
 
+  type VecWrappedHeaderHash = Vec<WrappedHeaderHash>;
   type OptionWrappedAgentPubKey = Option<WrappedAgentPubKey>;
   type OptionString = Option<String>;
   type Optionf64 = Option<f64>;
@@ -80,6 +80,19 @@ pub(crate) mod fixtures {
   fixturator!(
     Hierarchy;
     unit variants [Root Trunk Branch Leaf NoHierarchy ] empty NoHierarchy;
+  );
+
+  fixturator!(
+    VecWrappedHeaderHash;
+    curve Empty {
+        Vec::new()
+    };
+    curve Unpredictable {
+      vec![WrappedHeaderHashFixturator::new(Unpredictable).next().unwrap()]
+    };
+    curve Predictable {
+      vec![WrappedHeaderHashFixturator::new(Predictable).next().unwrap()]
+    };
   );
 
   fixturator!(

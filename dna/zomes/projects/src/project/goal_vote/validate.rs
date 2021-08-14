@@ -55,13 +55,13 @@ fn validate_update_entry_goal_vote(
             // this header author matches that original author
             if let Header::Update(header) = validate_data.element.header() {
               match resolve_dependency::<GoalVote>(header.original_header_address.clone().into())? {
-                Ok(ResolvedDependency(el, _)) => {
+                Ok(ResolvedDependency(_el, goal_vote)) => {
                   // the final return value
                   // if this passes, all have passed
 
                   // here we are checking to make sure that
                   // only original author can make this update
-                  validate_value_matches_original_author_for_edit(&header.author, &el)
+                  validate_value_matches_original_author_for_edit(&header.author, &goal_vote.agent_address.0)
                 }
                 // the unresolved dependency case
                 Err(validate_callback_result) => validate_callback_result,

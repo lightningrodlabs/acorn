@@ -140,6 +140,7 @@ function GoalTitleQuickEdit({
   }
 
   const innerUpdateGoal = async () => {
+    console.log('updating user_hash', user_hash)
     await updateGoal(
       {
         // new
@@ -240,6 +241,7 @@ function mapStateToProps(state) {
   const timestamp_created = editAddress ? editingGoal.timestamp_created : null
   const is_imported = editAddress ? editingGoal.is_imported : false
 
+  console.log('original user_hash', user_hash)
   let goalCoord
   if (editAddress) {
     goalCoord = state.ui.layout[editAddress]

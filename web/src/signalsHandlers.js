@@ -147,14 +147,14 @@ export default (store) => (signal) => {
       // check if this member is in our list of agents whose
       // profiles we already have, if not, then we should
       // refetch the agents list
-      if (!stateCheck.agents[payload.data.address]) {
-        store.dispatch(
-          fetchAgents.create({
-            cellIdString: cellIdToString(cellId),
-            payload: null,
-          })
-        )
-      }
+      // if (!stateCheck.agents[payload.data.address]) {
+      //   store.dispatch(
+      //     fetchAgents.create({
+      //       cellIdString: cellIdToString(cellId),
+      //       payload: null,
+      //     })
+      //   )
+      // }
       // this one is different than the rest on purpose
       // there's no "local action" equivalent
       store.dispatch(setMember(cellIdToString(cellId), payload.data))

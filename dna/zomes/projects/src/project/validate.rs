@@ -3,106 +3,105 @@ use dna_help::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
 
 pub fn entry_from_element_create_only<E: TryFrom<SerializedBytes, Error = SerializedBytesError>>(
-    element: &Element,
+  element: &Element,
 ) -> Result<E, Error> {
-    match element.header() {
-        // Only creates are allowed
-        Header::Create(_) => match element.entry().to_app_option() {
-            Ok(Some(entry)) => Ok(entry),
-            Ok(None) => Err(Error::EntryMissing),
-            Err(e) => return Err(Error::Wasm(e.into())),
-        },
-        _ => Err(Error::WrongHeader),
-    }
+  match element.header() {
+    // Only creates are allowed
+    Header::Create(_) => match element.entry().to_app_option() {
+      Ok(Some(entry)) => Ok(entry),
+      Ok(None) => Err(Error::EntryMissing),
+      Err(e) => return Err(Error::Wasm(e.into())),
+    },
+    _ => Err(Error::WrongHeader),
+  }
 }
 
 pub fn entry_from_element_create_or_update<
-    E: TryFrom<SerializedBytes, Error = SerializedBytesError>,
+  E: TryFrom<SerializedBytes, Error = SerializedBytesError>,
 >(
-    element: &Element,
+  element: &Element,
 ) -> Result<E, Error> {
-    match element.header() {
-        Header::Create(_) | Header::Update(_) => match element.entry().to_app_option() {
-            Ok(Some(entry)) => Ok(entry),
-            Ok(None) => Err(Error::EntryMissing),
-            Err(e) => return Err(Error::Wasm(e.into())),
-        },
-        _ => Err(Error::WrongHeader),
-    }
+  match element.header() {
+    Header::Create(_) | Header::Update(_) => match element.entry().to_app_option() {
+      Ok(Some(entry)) => Ok(entry),
+      Ok(None) => Err(Error::EntryMissing),
+      Err(e) => return Err(Error::Wasm(e.into())),
+    },
+    _ => Err(Error::WrongHeader),
+  }
 }
 
 pub fn validate_value_matches_create_author(
-    value: &AgentPubKey,
-    validate_data: &ValidateData,
+  value: &AgentPubKey,
+  validate_data: &ValidateData,
 ) -> ValidateCallbackResult {
-    match value == validate_data.element.header().author() {
-        true => ValidateCallbackResult::Valid,
-        false => Error::CorruptCreateAgentPubKeyReference.into(),
-    }
+  match value == validate_data.element.header().author() {
+    true => ValidateCallbackResult::Valid,
+    false => Error::CorruptCreateAgentPubKeyReference.into(),
+  }
 }
 
 pub fn validate_value_matches_edit_author(
-    value: &AgentPubKey,
-    validate_data: &ValidateData,
+  value: &AgentPubKey,
+  validate_data: &ValidateData,
 ) -> ValidateCallbackResult {
-    match value == validate_data.element.header().author() {
-        true => ValidateCallbackResult::Valid,
-        false => Error::CorruptEditAgentPubKeyReference.into(),
-    }
+  match value == validate_data.element.header().author() {
+    true => ValidateCallbackResult::Valid,
+    false => Error::CorruptEditAgentPubKeyReference.into(),
+  }
 }
 
 pub fn validate_value_matches_original_author(
-    value: &AgentPubKey,
-    original_element: &Element,
+  new_value: &AgentPubKey,
+  original_value: &AgentPubKey,
 ) -> ValidateCallbackResult {
-    match value == original_element.header().author() {
-        true => ValidateCallbackResult::Valid,
-        false => Error::TamperCreateAgentPubKeyReference.into(),
-    }
+  match new_value == original_value {
+    true => ValidateCallbackResult::Valid,
+    false => Error::TamperCreateAgentPubKeyReference.into(),
+  }
 }
 
 pub fn validate_value_matches_original_author_for_edit(
-    value: &AgentPubKey,
-    original_element: &Element,
+  new_value: &AgentPubKey,
+  original_value: &AgentPubKey,
 ) -> ValidateCallbackResult {
-    match value == original_element.header().author() {
-        true => ValidateCallbackResult::Valid,
-        false => Error::UpdateOnNonAuthoredOriginal.into(),
-    }
+  match new_value == original_value {
+    true => ValidateCallbackResult::Valid,
+    false => Error::UpdateOnNonAuthoredOriginal.into(),
+  }
 }
 
-pub fn validate_value_is_some<O>(
-    value: &Option<O>,
-) -> ValidateCallbackResult {
-    match value {
-      Some(_) => ValidateCallbackResult::Valid,
-      None => Error::NoneNotSomeDuringEdit.into(),
-    }
+pub fn validate_value_is_some<O>(value: &Option<O>) -> ValidateCallbackResult {
+  match value {
+    Some(_) => ValidateCallbackResult::Valid,
+    None => Error::NoneNotSomeDuringEdit.into(),
+  }
 }
 
-pub fn validate_value_is_none<O>(
-    value: &Option<O>,
-) -> ValidateCallbackResult {
-    match value {
-      Some(_) => Error::SomeNotNoneDuringCreate.into(),
-      None => ValidateCallbackResult::Valid,
-    }
+pub fn validate_value_is_none<O>(value: &Option<O>) -> ValidateCallbackResult {
+  match value {
+    Some(_) => Error::SomeNotNoneDuringCreate.into(),
+    None => ValidateCallbackResult::Valid,
+  }
 }
 
 pub fn confirm_resolved_dependency<'a, O>(hash: AnyDhtHash) -> ExternResult<ValidateCallbackResult>
 where
-    O: TryFrom<SerializedBytes, Error = SerializedBytesError>,
+  O: TryFrom<SerializedBytes, Error = SerializedBytesError>,
 {
-    match resolve_dependency::<O>(hash)? {
-        Ok(ResolvedDependency(_, _)) => Ok(ValidateCallbackResult::Valid),
-        // we want to forward the validate_callback_result
-        // back to Holochain since it contains a specific UnresolvedDependencies response
-        // including the missing Hashes
-        Err(validate_callback_result) => Ok(validate_callback_result),
+  match resolve_dependency::<O>(hash)? {
+    Ok(ResolvedDependency(_, _)) => Ok(ValidateCallbackResult::Valid),
+    Err(ValidateCallbackResult::Invalid(e)) if e == dna_help::Error::EntryMissing.to_string() => {
+      // valid because it found the header, and we don't need the entry
+      // indicates its a header that really exists
+      Ok(ValidateCallbackResult::Valid)
     }
+    // we want to forward the validate_callback_result
+    // back to Holochain since it contains a specific UnresolvedDependencies response
+    // including the missing Hashes
+    Err(validate_callback_result) => Ok(validate_callback_result),
+  }
 }
-
-
 
 // if any ValidateCallbackResult is Invalid, then ValidateResult::Invalid
 // If none are Invalid and there is an UnresolvedDependencies, then ValidateResult::UnresolvedDependencies

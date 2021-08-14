@@ -19,19 +19,35 @@ fn validate_create_entry_edge(validate_data: ValidateData) -> ExternResult<Valid
 
   // parent goal, and child goal, must be determined to exist to pass validation
   if let Header::Create(_) = validate_data.element.header() {
-    Ok(
-      // parent goal
-      match confirm_resolved_dependency::<Goal>(proposed_edge.parent_address.0.into())? {
-        ValidateCallbackResult::Valid => {
-          // child goal
-          confirm_resolved_dependency::<Goal>(proposed_edge.child_address.0.into())?
+    let parent_res = confirm_resolved_dependency::<Goal>(proposed_edge.parent_address.0.into())?;
+    let child_res = confirm_resolved_dependency::<Goal>(proposed_edge.child_address.0.into())?;
+    match (parent_res, child_res) {
+      (ValidateCallbackResult::Valid, ValidateCallbackResult::Valid) => {
+        Ok(ValidateCallbackResult::Valid)
+      }
+      (
+        ValidateCallbackResult::UnresolvedDependencies(parent_dep),
+        ValidateCallbackResult::UnresolvedDependencies(child_dep),
+      ) => Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
+        parent_dep.first().unwrap().to_owned(),
+        child_dep.first().unwrap().to_owned(),
+      ])),
+      (ValidateCallbackResult::UnresolvedDependencies(parent_dep), _) => {
+        Ok(ValidateCallbackResult::UnresolvedDependencies(parent_dep))
+      }
+      (_, ValidateCallbackResult::UnresolvedDependencies(child_dep)) => {
+        Ok(ValidateCallbackResult::UnresolvedDependencies(child_dep))
+      }
+      validate_callback_results => {
+        if let ValidateCallbackResult::Invalid(e) = validate_callback_results.0 {
+          // parent was invalid
+          Ok(ValidateCallbackResult::Invalid(e))
+        } else {
+          // child was invalid
+          Ok(validate_callback_results.1)
         }
-        // we want to forward the validate_callback_result
-        // back to Holochain since it contains a specific UnresolvedDependencies response
-        // including the missing Hashes
-        validate_callback_result => validate_callback_result,
-      },
-    )
+      }
+    }
   }
   // Holochain sent the wrong header!
   else {

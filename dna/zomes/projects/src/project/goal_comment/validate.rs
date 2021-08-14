@@ -57,13 +57,16 @@ fn validate_update_entry_goal_comment(
               match resolve_dependency::<GoalComment>(
                 header.original_header_address.clone().into(),
               )? {
-                Ok(ResolvedDependency(el, _)) => {
+                Ok(ResolvedDependency(_el, goal_comment)) => {
                   // the final return value
                   // if this passes, all have passed
 
                   // here we are checking to make sure that
                   // only original author can make this update
-                  validate_value_matches_original_author_for_edit(&header.author, &el)
+                  validate_value_matches_original_author_for_edit(
+                    &header.author,
+                    &goal_comment.agent_address.0,
+                  )
                 }
                 // the unresolved dependency case
                 Err(validate_callback_result) => validate_callback_result,
@@ -183,7 +186,7 @@ pub mod tests {
     // the parent goal is found/exists
     // agent_address refers to the agent committing
     // -> good to go
-    
+
     // make the agent_address valid by making it equal the
     // AgentPubKey of the agent committing
     goal_comment.agent_address = WrappedAgentPubKey::new(create_header.author.as_hash().clone());
