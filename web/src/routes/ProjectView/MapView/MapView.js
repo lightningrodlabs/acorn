@@ -76,13 +76,20 @@ function MapView({
         {/* Only present this GoalTitleQuickEdit */}
         {/* if the scale is greater than or equal to 60% (or we are creating a Goal) */}
         {/* because otherwise the font size gets to small and the text is cut off */}
-        {goalFormIsOpen && (scale >= firstZoomThreshold || !goalIsBeingEdited) && <GoalTitleQuickEdit projectId={projectId} />}
+        {goalFormIsOpen && (
+          <GoalTitleQuickEdit
+            projectId={projectId}
+            presentToUser={scale >= firstZoomThreshold || !goalIsBeingEdited}
+          />
+        )}
       </div>
       {/* below items inside 'goal-form-position-container' maintain their normal scale */}
       {/* while positioning themselves absolutely (position: absolute) on the screen */}
       {/* in coordinates that match with the goals being drawn on the canvas */}
       <div className="goal-form-position-container">
-        {goalFormIsOpen && goalIsBeingEdited && <VerticalActionsList projectId={projectId} />}
+        {goalFormIsOpen && goalIsBeingEdited && (
+          <VerticalActionsList projectId={projectId} />
+        )}
         {hasHover && (
           <GoalHoverOverlayButtons onExpandClick={openExpandedView} />
         )}

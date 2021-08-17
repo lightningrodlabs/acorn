@@ -13,6 +13,7 @@ import { firstZoomThreshold, fontSize, fontSizeExtraLarge, fontSizeLarge, lineHe
 
 // if editAddress is present (as a Goal address) it means we are currently EDITING that Goal
 function GoalTitleQuickEdit({
+  presentToUser,
   whoami,
   scale,
   // the value of the text input
@@ -95,10 +96,12 @@ function GoalTitleQuickEdit({
     // depending on editAddress, this
     // might be an update to an existing...
     // otherwise it's a new Goal being created
-    if (editAddress) {
-      await innerUpdateGoal()
-    } else {
-      await innerCreateGoalWithEdge()
+    if (presentToUser) {
+      if (editAddress) {
+        await innerUpdateGoal()
+      } else {
+        await innerCreateGoalWithEdge()
+      }
     }
 
     const isKeyboardTrigger = !event
@@ -140,7 +143,6 @@ function GoalTitleQuickEdit({
   }
 
   const innerUpdateGoal = async () => {
-    console.log('updating user_hash', user_hash)
     await updateGoal(
       {
         // new
@@ -174,7 +176,6 @@ function GoalTitleQuickEdit({
 
   const ref = useRef()
   useOnClickOutside(ref, handleSubmit)
-  //
 
   return (
     <div
@@ -183,9 +184,10 @@ function GoalTitleQuickEdit({
         top: `${topEdgeYPosition}px`,
         left: `${leftEdgeXPosition}px`,
       }}
+      // ref for the sake of onClickOutside
       ref={ref}
     >
-      <form className="goal-title-quick-edit-form" onSubmit={handleSubmit}>
+      {presentToUser && <form className="goal-title-quick-edit-form" onSubmit={handleSubmit}>
         <TextareaAutosize
           autoFocus
           placeholder="Add a title..."
@@ -196,7 +198,7 @@ function GoalTitleQuickEdit({
           onBlur={handleBlur}
           style={textStyle}
         />
-      </form>
+      </form>}
     </div>
   )
 }
@@ -241,7 +243,6 @@ function mapStateToProps(state) {
   const timestamp_created = editAddress ? editingGoal.timestamp_created : null
   const is_imported = editAddress ? editingGoal.is_imported : false
 
-  console.log('original user_hash', user_hash)
   let goalCoord
   if (editAddress) {
     goalCoord = state.ui.layout[editAddress]
