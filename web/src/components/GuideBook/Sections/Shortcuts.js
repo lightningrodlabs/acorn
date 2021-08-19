@@ -9,7 +9,7 @@ const shortcutsItems = [
         shortcutTitle: 'Create a card',
       },
       {
-        shortcutKey: 'Select a card + g + click',
+        shortcutKey: 'Click, drag & release purple dot',
         shortcutTitle: 'Create a child card',
       },
       {

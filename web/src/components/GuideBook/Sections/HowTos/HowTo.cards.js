@@ -89,7 +89,7 @@ export default {
               In Quick Edit Mode
             </div>
             <div className="guidebook-separate-line">
-              Click on “status” button and select the status you want for the
+              Click on "status" button and select the status you want for the
               card.
             </div>
           </div>
@@ -125,7 +125,7 @@ export default {
               In Quick Edit Mode
             </div>
             <div className="guidebook-separate-line">
-              Click on “squirrels” button and select the members that you want
+              Click on "squirrels" button and select the members that you want
               to associate with the card from the list.
             </div>
           </div>
@@ -174,7 +174,7 @@ export default {
               In Quick Edit Mode
             </div>
             <div className="guidebook-separate-line">
-              Click on “timeframe” button and select or type in Start Date and
+              Click on "timeframe" button and select or type in Start Date and
               End Date.
             </div>
           </div>
@@ -184,7 +184,7 @@ export default {
             </div>
             <div className="guidebook-separate-line">Either:</div>
             <li>
-              Click on the grey field under “timeframe” and select or type in
+              Click on the grey field under "timeframe" and select or type in
               Start Date and End Date.
             </li>
             <li>
@@ -221,7 +221,7 @@ export default {
               there 4 hierarchy level options available inspired by a tree
               mataphore: Root (primary goal) Trunk (high-level goal) Branch
               (Sub-goal) Leaf (small goal) There is also the default option of
-              “no hierarchy”. Setting hierarchy for goals in a complex project
+              "no hierarchy". Setting hierarchy for goals in a complex project
               would help you and your team to be able to see how bigger goals
               can break down to smaller units. While having the bigger goals in
               the vision, your team would be able to easily identify leaf
@@ -284,8 +284,8 @@ export default {
               In Quick Edit Mode
             </div>
             <div className="guidebook-separate-line">
-              Click on “priority” button. Then click on the "Weigh In" button.
-              The default vote is “medium” for all 4 factors. You can slide the
+              Click on "priority" button. Then click on the "Weigh In" button.
+              The default vote is "medium" for all 4 factors. You can slide the
               factor bars to set your own. For more information about
               prioritization go to Priority View Mode.
             </div>
@@ -295,8 +295,8 @@ export default {
               In Expanded View Mode
             </div>
             <div className="guidebook-separate-line">
-              Click on “priority” button. Then click on the "Weigh In" button.
-              The default vote is “medium” for all 4 factors. You can slide the
+              Click on "priority" button. Then click on the "Weigh In" button.
+              The default vote is "medium" for all 4 factors. You can slide the
               factor bars to set your own. For more information about
               prioritization go to Priority View Mode.
             </div>

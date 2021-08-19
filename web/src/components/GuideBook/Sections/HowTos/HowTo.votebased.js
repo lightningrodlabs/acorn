@@ -36,9 +36,9 @@ export default {
               <span className="guidebook-description-bold">effort-impact</span>{' '}
               integration is another way of prioritizing goals.{' '}
               <a href="https://zapier.com/blog/how-to-prioritize/">
-                “In the effort-impact matrix, you evaluate tasks based on how
-                much effort they’ll require to complete and the impact that
-                completing them will have.”
+                "In the effort-impact matrix, you evaluate tasks based on how
+                much effort they'll require to complete and the impact that
+                completing them will have."
               </a>{' '}
               The items in the left quadrants, which are both "More Impact", are
               where you would start to work on tasks from, depending on whether
@@ -47,12 +47,12 @@ export default {
             <div className="guidebook-separate-line">
               In complex projects as the number of goals (and sometimes number
               of team members) expands, it gets more difficult to determine
-              ‘what to focus on next’.
+              'what to focus on next'.
             </div>
             <div className="guidebook-separate-line">
               All the team members (who have editing permssion) would be able to
-              “weigh in” their vote for these 4 factors for each goal (either in
-              map view or priority view) The “aggregated priority” that results
+              "weigh in" their vote for these 4 factors for each goal (either in
+              map view or priority view) The "aggregated priority" that results
               from this collective poll will determine where each goal will
               stand on the priority view mode.
             </div>
@@ -100,10 +100,10 @@ export default {
       description: (
         <ol>
           <div className="guidebook-description-section">
-            This column on the left hand side of the Priority View helps you with
-            finding and filtering by a specific goal. By selecting that goal you
-            are able to filter the visiblity of the goals down to only the
-            children of that selected goal on the priority quadrants.
+            This column on the left hand side of the Priority View helps you
+            with finding and filtering by a specific goal. By selecting that
+            goal you are able to filter the visiblity of the goals down to only
+            the children of that selected goal on the priority quadrants.
           </div>
         </ol>
       ),
@@ -118,7 +118,7 @@ export default {
             important and impact x effort), single priority factors (feature in
             development), or uncategorized (not voted on) goals. This gives you
             the flexibility to take action based on a specific factor
-            determining a goal’s priority.
+            determining a goal's priority.
           </div>
         </ol>
       ),
@@ -129,13 +129,13 @@ export default {
       description: (
         <ol>
           <div className="guidebook-description-section">
-            If you haven’t voted for the priority of the goal, when hovering
-            over goals in the Priority View, a “Weigh In” button appears.
+            If you haven't voted for the priority of the goal, when hovering
+            over goals in the Priority View, a "Weigh In" button appears.
           </div>
           <div className="guidebook-description-section">
             If you have already voted for the priority of a goal, a purple dot
-            shows up under the goal title and when hovering on the goal, “See My
-            Vote” button appears.
+            shows up under the goal title and when hovering on the goal, "See My
+            Vote" button appears.
           </div>
         </ol>
       ),

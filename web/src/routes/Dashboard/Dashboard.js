@@ -24,6 +24,7 @@ import {
   fetchProjectMeta,
 } from '../../projects/project-meta/actions'
 import selectEntryPoints from '../../projects/entry-points/select'
+import { PriorityModeOptions } from '../../constants'
 
 import {
   DashboardListProject,
@@ -404,9 +405,14 @@ async function importProject(
   // only add the project meta after the rest has been imported
   // so it doesn't list itself early in the process
   // first step is to create new project
+  const originalTopPriorityGoals = projectData.projectMeta.top_priority_goals
+  const originalPriorityMode = projectData.projectMeta.priority_mode
   const projectMeta = {
     ...projectData.projectMeta,
-    top_priority_goals: projectData.projectMeta.top_priority_goals.map(oldAddress => oldToNewAddressMap[oldAddress]),
+    // the question mark operator for backwards compatibility
+    top_priority_goals: originalTopPriorityGoals ? originalTopPriorityGoals.map(oldAddress => oldToNewAddressMap[oldAddress]) : [],
+    // the question mark operator for backwards compatibility
+    priority_mode: originalPriorityMode ? originalPriorityMode : PriorityModeOptions.Universal,
     created_at: Date.now(),
     creator_address: agentAddress,
     passphrase: passphrase,
