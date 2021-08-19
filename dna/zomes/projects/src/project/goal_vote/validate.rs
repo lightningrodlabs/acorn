@@ -314,16 +314,11 @@ pub mod tests {
     // the original GoalVote header and entry exist
     // and the author of the update matches the original author
     // -> good to go
-    let original_goal_vote = fixt!(GoalVote);
-    let mut goal_vote_element = fixt!(Element);
-    let mut original_create_header = fixt!(Create);
+    let mut original_goal_vote = fixt!(GoalVote);
+    let mut original_goal_vote_element = fixt!(Element);
     // make the authors equal
-    original_create_header = Create {
-      author: update_header.author.as_hash().clone(),
-      ..original_create_header
-    };
-    *goal_vote_element.as_header_mut() = Header::Create(original_create_header.clone());
-    *goal_vote_element.as_entry_mut() =
+    original_goal_vote.agent_address = WrappedAgentPubKey::new(update_header.author.as_hash().clone());
+    *original_goal_vote_element.as_entry_mut() =
       ElementEntry::Present(original_goal_vote.clone().try_into().unwrap());
 
     let mut mock_hdk = MockHdkT::new();
@@ -335,7 +330,7 @@ pub mod tests {
         GetOptions::content(),
       )))
       .times(1)
-      .return_const(Ok(Some(goal_vote_element.clone())));
+      .return_const(Ok(Some(original_goal_vote_element.clone())));
 
     set_hdk(mock_hdk);
 

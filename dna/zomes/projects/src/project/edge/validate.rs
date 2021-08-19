@@ -128,25 +128,22 @@ pub mod tests {
     edge.child_address = goal_child_wrapped_header_hash.clone();
     *validate_data.element.as_entry_mut() = ElementEntry::Present(edge.clone().try_into().unwrap());
 
-    // act as if the parent_address Goal were missing, could not be resolved
+    // act as if the parent_address and child_address Goals were missing, could not be resolved
     let mut mock_hdk = MockHdkT::new();
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
-        goal_parent_wrapped_header_hash.clone().0.into(),
-        GetOptions::content(),
-      )))
-      .times(1)
+      .times(2)
       .return_const(Ok(None));
 
     set_hdk(mock_hdk);
 
     // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
-    // equal to the Hash of the parent Goal address
+    // equal to the Hashes of the parent Goal address and the child Goal address
     assert_eq!(
       super::validate_create_entry_edge(validate_data.clone()),
       Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
-        goal_parent_wrapped_header_hash.clone().0.into()
+        goal_parent_wrapped_header_hash.clone().0.into(),
+        goal_child_wrapped_header_hash.clone().0.into()
       ])),
     );
 
