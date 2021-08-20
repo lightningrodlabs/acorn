@@ -147,6 +147,9 @@ export default (store) => (signal) => {
       // check if this member is in our list of agents whose
       // profiles we already have, if not, then we should
       // refetch the agents list
+      // TODO: re-enable this when there's a straightforward way to have the CellId
+      // for the Profiles Cell here, not the Projects CellId which it currently has access to. 
+      // This was the source of a breaking bug
       // if (!stateCheck.agents[payload.data.address]) {
       //   store.dispatch(
       //     fetchAgents.create({
