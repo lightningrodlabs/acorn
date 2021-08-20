@@ -87,8 +87,7 @@ pub mod tests {
     // without an Element containing an Entry, validation will fail
     assert_eq!(
       super::validate_create_entry_entry_point(validate_data.clone()),
-      // Error::EntryMissing.into(),
-      Error::WrongHeader.into()
+      Error::EntryMissing.into(),
     );
 
     // now make it pass EntryMissing by adding an ElementEntry::Present
