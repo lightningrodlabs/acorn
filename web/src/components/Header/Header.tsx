@@ -1,23 +1,20 @@
 import React, { useRef, useState } from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
 import useOnClickOutside from 'use-onclickoutside'
 import './Header.css'
-import UpdateBar from '../UpdateBar/UpdateBar'
 import { Status } from './Status'
 import HeaderLeftPanel from './HeaderLeftPanel'
 import HeaderRightPanel from './HeaderRightPanel'
 import HeaderMiddlePanel from './HeaderMiddlePanel'
+import ProjectSettingsModal from '../ProjectSettingsModal/ProjectSettingsModal'
 
 function Header({
   whoami,
+  setShowProjectSettingsOpen,
   setShowProfileEditForm,
   setShowPreferences,
   updateStatus,
   activeEntryPoints,
-  showUpdateBar,
-  setShowUpdateBar,
-  setShowUpdatePromptModal,
-  projectName,
+  project,
   projectId,
   hideGuidebookHelpMessage,
 }) {
@@ -57,20 +54,24 @@ function Header({
 
   return (
     <div className="header-wrapper" ref={ref}>
-      <UpdateBar
+      {/* <UpdateBar
         active={showUpdateBar}
         onClose={() => setShowUpdateBar(false)}
         setShowUpdatePromptModal={setShowUpdatePromptModal}
-      />
+      /> */}
       <div className="header">
         <HeaderLeftPanel
           whoami={whoami}
-          projectName={projectName}
+          setShowProjectSettingsOpen={setShowProjectSettingsOpen}
+          projectName={project.name}
           isExportOpen={isExportOpen}
           onClickExport={onClickExport}
           activeEntryPoints={activeEntryPoints}
         />
-        <HeaderMiddlePanel projectId={projectId} />
+        <HeaderMiddlePanel
+          projectId={projectId}
+          projectPriorityMode={project.priority_mode}
+        />
         {whoami && (
           // add all these values as props
           <HeaderRightPanel

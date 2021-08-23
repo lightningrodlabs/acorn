@@ -27,7 +27,7 @@ function GoalHoverOverlayButtons({
       <li onClick={() => onExpandClick(hoveredAddress)}>
         <Icon
           name="expand.svg"
-          className="white not-hoverable"
+          className="not-hoverable"
           withBackground
         />
       </li>
@@ -35,8 +35,8 @@ function GoalHoverOverlayButtons({
         onClick={() => onEditClick(hoveredAddress, goalCoordinate, goalContent)}
       >
         <Icon
-          name="quick-edit.svg"
-          className="white not-hoverable"
+          name="pencil.svg"
+          className="not-hoverable"
           withBackground
         />
       </li>
@@ -55,9 +55,7 @@ function mapStateToProps(state) {
     goalContent,
     cssCoordinates = {}
   if (hoveredAddress) {
-    goalCoordinate = layoutFormula(state.ui.screensize.width, state)[
-      hoveredAddress
-    ]
+    goalCoordinate = state.ui.layout[hoveredAddress]
     // Figure out where is that goal is relation to the window:
     // coordinates translation to css from canvas
     cssCoordinates = coordsCanvasToPage(

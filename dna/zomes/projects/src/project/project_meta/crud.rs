@@ -1,10 +1,15 @@
 use crate::{
   get_peers_content,
-  project::{error::Error, validate::entry_from_element_create_or_update},
+  project::{
+    error::Error,
+    validate::entry_from_element_create_or_update,
+    goal::crud::UIEnum
+  },
   SignalType,
 };
 use dna_help::{crud, WrappedAgentPubKey, WrappedEntryHash, WrappedHeaderHash};
 use hdk::prelude::*;
+use std::*;
 
 #[hdk_entry(id = "project_meta")]
 #[derive(Clone, PartialEq)]
@@ -15,6 +20,8 @@ pub struct ProjectMeta {
   pub image: Option<String>,
   pub passphrase: String,
   pub is_imported: bool,
+  pub priority_mode: PriorityMode,
+  pub top_priority_goals: Vec<WrappedHeaderHash>
 }
 
 impl ProjectMeta {
@@ -25,6 +32,8 @@ impl ProjectMeta {
     image: Option<String>,
     passphrase: String,
     is_imported: bool,
+    priority_mode: PriorityMode,
+    top_priority_goals: Vec<WrappedHeaderHash>
   ) -> Self {
     Self {
       creator_address,
@@ -33,7 +42,36 @@ impl ProjectMeta {
       image,
       passphrase,
       is_imported,
+      priority_mode,
+      top_priority_goals,
     }
+  }
+}
+
+#[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
+#[serde(from = "UIEnum")]
+#[serde(into = "UIEnum")]
+pub enum PriorityMode {
+  Universal,
+  Vote
+}
+impl From<UIEnum> for PriorityMode {
+  fn from(ui_enum: UIEnum) -> Self {
+    match ui_enum.0.as_str() {
+      "Universal" => Self::Universal,
+      "Vote" => Self::Vote,
+      _ => Self::Vote,
+    }
+  }
+}
+impl From<PriorityMode> for UIEnum {
+  fn from(priority_mode: PriorityMode) -> Self {
+    Self(priority_mode.to_string())
+  }
+}
+impl fmt::Display for PriorityMode {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "{:?}", self)
   }
 }
 

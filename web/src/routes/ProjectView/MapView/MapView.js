@@ -6,18 +6,14 @@ import './MapView.css'
 import render from '../../../drawing'
 
 import setupEventListeners from '../../../event-listeners'
-import {
-  openExpandedView,
-  closeExpandedView,
-} from '../../../expanded-view/actions'
 import { setScreenDimensions } from '../../../screensize/actions'
+import { openExpandedView } from '../../../expanded-view/actions'
 
 import EmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
 import GoalTitleQuickEdit from '../../../components/GoalTitleQuickEdit/GoalTitleQuickEdit'
 import VerticalActionsList from '../../../components/VerticalActionsList/VerticalActionsList'
 import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar'
 import GoalHoverOverlayButtons from '../../../components/GoalHoverOverlayButtons/GoalHoverOverlayButtons'
-import ExpandedViewMode from '../../../components/ExpandedViewMode/ExpandedViewMode'
 import EdgeConnectors from '../../../components/EdgeConnectors/EdgeConnectors'
 import { firstZoomThreshold } from '../../../drawing/dimensions'
 
@@ -30,7 +26,6 @@ function MapView({
   translate,
   scale,
   openExpandedView,
-  closeExpandedView,
   showEmptyState,
   showGuidebookHelpMessage,
 }) {
@@ -79,15 +74,22 @@ function MapView({
       {/* is being scaled and translated, using css matrix transforms */}
       <div className="transform-container" style={transform}>
         {/* Only present this GoalTitleQuickEdit */}
-        {/* if the scale is greater than or equal to 60% */}
+        {/* if the scale is greater than or equal to 60% (or we are creating a Goal) */}
         {/* because otherwise the font size gets to small and the text is cut off */}
-        {goalFormIsOpen && (scale >= firstZoomThreshold || !goalIsBeingEdited) && <GoalTitleQuickEdit projectId={projectId} />}
+        {goalFormIsOpen && (
+          <GoalTitleQuickEdit
+            projectId={projectId}
+            presentToUser={scale >= firstZoomThreshold || !goalIsBeingEdited}
+          />
+        )}
       </div>
       {/* below items inside 'goal-form-position-container' maintain their normal scale */}
       {/* while positioning themselves absolutely (position: absolute) on the screen */}
       {/* in coordinates that match with the goals being drawn on the canvas */}
       <div className="goal-form-position-container">
-        {goalFormIsOpen && goalIsBeingEdited && <VerticalActionsList projectId={projectId} />}
+        {goalFormIsOpen && goalIsBeingEdited && (
+          <VerticalActionsList projectId={projectId} />
+        )}
         {hasHover && (
           <GoalHoverOverlayButtons onExpandClick={openExpandedView} />
         )}
@@ -96,25 +98,18 @@ function MapView({
       </div>
 
       <MultiEditBar projectId={projectId} hasSelection={hasSelection} />
-      <ExpandedViewMode projectId={projectId} onClose={closeExpandedView} />
     </>
   )
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    openExpandedView: (address) => {
-      return dispatch(openExpandedView(address))
-    },
-    closeExpandedView: () => {
-      return dispatch(closeExpandedView())
-    },
+    openExpandedView: (address) => dispatch(openExpandedView(address)),
   }
 }
 
 function mapStateToProps(state) {
   const projectId = state.ui.activeProject
-  const { editAddress } = state.ui.goalForm
   return {
     // if have not opened the guidebook ever, then show guidebook tip message
     showGuidebookHelpMessage: !state.ui.localPreferences.hasAccessedGuidebook,

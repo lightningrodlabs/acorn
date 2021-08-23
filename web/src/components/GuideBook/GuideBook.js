@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './GuideBook.css'
 import Tabs from './Tabs/Tabs'
 // import GettingStarted from './Sections/GettingStarted'
-import HowTos from './Sections/HowTos'
+import HowTos from './Sections/HowTos/index'
 import Shortcuts from './Sections/Shortcuts'
 
 export default function GuideBook() {

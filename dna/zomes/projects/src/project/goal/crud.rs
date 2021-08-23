@@ -72,7 +72,7 @@ impl Goal {
 }
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes, Clone, PartialEq)]
-pub struct UIEnum(String);
+pub struct UIEnum(pub String);
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 #[serde(from = "UIEnum")]
@@ -163,10 +163,45 @@ crud!(
   convert_to_receiver_signal
 );
 
+
+
+#[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
+#[serde(from = "UIEnum")]
+#[serde(into = "UIEnum")]
+pub enum RelationInput {
+  ExistingGoalAsChild,
+  ExistingGoalAsParent
+}
+impl From<UIEnum> for RelationInput {
+  fn from(ui_enum: UIEnum) -> Self {
+    match ui_enum.0.as_str() {
+      "ExistingGoalAsChild" => Self::ExistingGoalAsChild,
+      "ExistingGoalAsParent" => Self::ExistingGoalAsParent,
+      _ => Self::ExistingGoalAsChild,
+    }
+  }
+}
+impl From<RelationInput> for UIEnum {
+  fn from(relation_input: RelationInput) -> Self {
+    Self(relation_input.to_string())
+  }
+}
+impl fmt::Display for RelationInput {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "{:?}", self)
+  }
+}
+
+#[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
+pub struct LinkedGoalDetails {
+  goal_address: WrappedHeaderHash,
+  relation: RelationInput
+}
+
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 pub struct CreateGoalWithEdgeInput {
   entry: Goal,
-  maybe_parent_address: Option<WrappedHeaderHash>,
+  maybe_linked_goal: Option<LinkedGoalDetails>,
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
@@ -189,11 +224,18 @@ pub fn create_goal_with_edge(
 ) -> ExternResult<CreateGoalWithEdgeOutput> {
   // false to say don't send a signal
   let wire_entry: GoalWireEntry = inner_create_goal(input.entry.clone(), false)?;
-  let maybe_edge: Option<EdgeWireEntry> = match input.maybe_parent_address {
-    Some(header_hash) => {
+  let new_goal_address = wire_entry.address.clone();
+  let maybe_edge: Option<EdgeWireEntry> = match input.maybe_linked_goal {
+    Some(linked_goal_details) => {
+      let (parent_address, child_address) = match linked_goal_details.relation {
+        // new goal becomes parent
+        RelationInput::ExistingGoalAsChild => (new_goal_address, linked_goal_details.goal_address),
+        // new goal becomes child
+        RelationInput::ExistingGoalAsParent => (linked_goal_details.goal_address, new_goal_address)
+      };
       let edge = Edge {
-        parent_address: header_hash,
-        child_address: wire_entry.address.clone(),
+        parent_address,
+        child_address,
         randomizer: sys_time()?.as_secs_f64(),
         is_imported: false
       };

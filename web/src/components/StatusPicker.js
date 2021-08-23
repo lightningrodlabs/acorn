@@ -16,7 +16,7 @@ function StatusPicker({ selectedStatus, statusClicked, onClose }) {
   return (
     <PickerTemplate
       className='status_picker'
-      heading='status'
+      heading='Status'
       onClose={onClose}>
       <div className='status_list'>
         {statuses.map((status, index) => (

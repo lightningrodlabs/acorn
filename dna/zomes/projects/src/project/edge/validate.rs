@@ -19,19 +19,35 @@ fn validate_create_entry_edge(validate_data: ValidateData) -> ExternResult<Valid
 
   // parent goal, and child goal, must be determined to exist to pass validation
   if let Header::Create(_) = validate_data.element.header() {
-    Ok(
-      // parent goal
-      match confirm_resolved_dependency::<Goal>(proposed_edge.parent_address.0.into())? {
-        ValidateCallbackResult::Valid => {
-          // child goal
-          confirm_resolved_dependency::<Goal>(proposed_edge.child_address.0.into())?
+    let parent_res = confirm_resolved_dependency::<Goal>(proposed_edge.parent_address.0.into())?;
+    let child_res = confirm_resolved_dependency::<Goal>(proposed_edge.child_address.0.into())?;
+    match (parent_res, child_res) {
+      (ValidateCallbackResult::Valid, ValidateCallbackResult::Valid) => {
+        Ok(ValidateCallbackResult::Valid)
+      }
+      (
+        ValidateCallbackResult::UnresolvedDependencies(parent_dep),
+        ValidateCallbackResult::UnresolvedDependencies(child_dep),
+      ) => Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
+        parent_dep.first().unwrap().to_owned(),
+        child_dep.first().unwrap().to_owned(),
+      ])),
+      (ValidateCallbackResult::UnresolvedDependencies(parent_dep), _) => {
+        Ok(ValidateCallbackResult::UnresolvedDependencies(parent_dep))
+      }
+      (_, ValidateCallbackResult::UnresolvedDependencies(child_dep)) => {
+        Ok(ValidateCallbackResult::UnresolvedDependencies(child_dep))
+      }
+      validate_callback_results => {
+        if let ValidateCallbackResult::Invalid(e) = validate_callback_results.0 {
+          // parent was invalid
+          Ok(ValidateCallbackResult::Invalid(e))
+        } else {
+          // child was invalid
+          Ok(validate_callback_results.1)
         }
-        // we want to forward the validate_callback_result
-        // back to Holochain since it contains a specific UnresolvedDependencies response
-        // including the missing Hashes
-        validate_callback_result => validate_callback_result,
-      },
-    )
+      }
+    }
   }
   // Holochain sent the wrong header!
   else {
@@ -112,25 +128,22 @@ pub mod tests {
     edge.child_address = goal_child_wrapped_header_hash.clone();
     *validate_data.element.as_entry_mut() = ElementEntry::Present(edge.clone().try_into().unwrap());
 
-    // act as if the parent_address Goal were missing, could not be resolved
+    // act as if the parent_address and child_address Goals were missing, could not be resolved
     let mut mock_hdk = MockHdkT::new();
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
-        goal_parent_wrapped_header_hash.clone().0.into(),
-        GetOptions::content(),
-      )))
-      .times(1)
+      .times(2)
       .return_const(Ok(None));
 
     set_hdk(mock_hdk);
 
     // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
-    // equal to the Hash of the parent Goal address
+    // equal to the Hashes of the parent Goal address and the child Goal address
     assert_eq!(
       super::validate_create_entry_edge(validate_data.clone()),
       Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
-        goal_parent_wrapped_header_hash.clone().0.into()
+        goal_parent_wrapped_header_hash.clone().0.into(),
+        goal_child_wrapped_header_hash.clone().0.into()
       ])),
     );
 

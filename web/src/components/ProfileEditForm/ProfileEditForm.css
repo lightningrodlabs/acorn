@@ -16,7 +16,6 @@
 }
 
 .profile_edit_form h1 {
-  margin: 0;
   font-size: 24px;
   line-height: 32px;
   color: #4d4d4d;
@@ -52,7 +51,7 @@
 }
 
 .profile_edit_form .profile_edit_form_avatar {
-  margin-top: 26px;
+  margin-top: 30px;
   margin-left: 6px;
   height: 40px;
   width: 40px;

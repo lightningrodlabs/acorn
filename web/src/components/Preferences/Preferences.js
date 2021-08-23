@@ -5,92 +5,85 @@ import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
 import Modal from '../Modal/Modal'
 import { MOUSE, TRACKPAD } from '../../local-preferences/reducer'
+import PreferenceSelect, {
+  PreferenceSelectExtra,
+  PreferenceSelectOption,
+} from '../PreferenceSelect/PreferenceSelect'
+
+function Descriptions({ navigation }) {
+  return (
+    <>
+      <PreferenceSelectExtra>
+        <div className="navigation-mode-description-title-wrapper">
+          <div className="navigation-mode-description-icon">
+            <Icon
+              name="zoom-in.svg"
+              size="very-small"
+              className="not-hoverable"
+            />
+          </div>
+          <div className="navigation-mode-description-title">Zooming</div>
+        </div>
+        <div className="navigation-mode-description-text">
+          {navigation === TRACKPAD &&
+            'Pinch in and out, or hold cmd/ctrl + scroll wheel'}
+          {navigation === MOUSE &&
+            'Use mouse wheel, or slide with two fingers up/down, or pinch in/out'}
+        </div>
+      </PreferenceSelectExtra>
+      <PreferenceSelectExtra>
+        <div className="navigation-mode-description-title-wrapper">
+          <div className="navigation-mode-description-icon">
+            <Icon
+              name="navigation.svg"
+              size="very-small"
+              className="not-hoverable"
+            />
+          </div>
+          <div className="navigation-mode-description-title">Panning</div>
+        </div>
+        <div className="navigation-mode-description-text">
+          {navigation === TRACKPAD &&
+            'Slide on trackpad with two fingers, or click and drag with mouse'}
+          {navigation === MOUSE && 'Click and drag the canvas'}
+        </div>
+      </PreferenceSelectExtra>
+    </>
+  )
+}
 
 function Internal({ navigation, setNavigationSelected, save }) {
+  const options = (
+    <>
+      <PreferenceSelectOption
+        active={navigation === TRACKPAD}
+        onClick={() => setNavigationSelected(TRACKPAD)}
+        iconName="trackpad.svg"
+        iconExtraClassName="navigation-mode-option-icon-trackpad"
+        title="Trackpad"
+      />
+      <PreferenceSelectOption
+        active={navigation === MOUSE}
+        onClick={() => setNavigationSelected(MOUSE)}
+        iconName="mouse.svg"
+        iconExtraClassName="navigation-mode-option-icon-mouse"
+        title="Mouse"
+      />
+    </>
+  )
   return (
-    <div className='preferences-content-wrapper'>
-      <div className='preferences-title'>Preferences</div>
-      <div className='preferences-section'>
-        <div className='preferences-section-title-wrapper'>
-          <Icon
-            name='panning.svg'
-            size='very-small'
-            className='not-hoverable'
-          />
-          <div className='preferences-section-title'>Navigation Mode</div>
-        </div>
-        <div className='preferences-section-subtitle'>
-          Select your preferred navigation mode on canvas based on your primary
-          pointer device{' '}
-        </div>
-        <div className='navigation-mode-options-wrapper'>
-          <div
-            className={`navigation-mode-option ${
-              navigation === TRACKPAD ? 'active' : ''
-            }`}
-            onClick={() => setNavigationSelected(TRACKPAD)}>
-            <div className='navigation-mode-option-content'>
-              <div className='navigation-mode-option-icon-trackpad'>
-                <Icon
-                  name='trackpad.svg'
-                  size='large'
-                  className='not-hoverable'
-                />
-              </div>
-              <div className='navigation-mode-option-text'>Trackpad</div>
-            </div>
-          </div>
-          <div
-            className={`navigation-mode-option ${
-              navigation === MOUSE ? 'active' : ''
-            }`}
-            onClick={() => setNavigationSelected(MOUSE)}>
-            <div className='navigation-mode-option-content'>
-              <div className='navigation-mode-option-icon-mouse'>
-                <Icon name='mouse.svg' size='large' className='not-hoverable' />
-              </div>
-              <div className='navigation-mode-option-text'>Mouse</div>
-            </div>
-          </div>
-        </div>
-        <div className='navigation-mode-description-wrapper'>
-          <div className='navigation-mode-description-title-wrapper'>
-            <div className='navigation-mode-description-icon'>
-              <Icon
-                name='zooming.svg'
-                size='very-small'
-                className='not-hoverable'
-              />
-            </div>
-            <div className='navigation-mode-description-title'>Zooming</div>
-          </div>
-          <div className='navigation-mode-description-text'>
-            {navigation === TRACKPAD &&
-              'Pinch in and out, or hold cmd/ctrl + scroll wheel'}
-            {navigation === MOUSE &&
-              'Use mouse wheel, or slide with two fingers up/down, or pinch in/out'}
-          </div>
-        </div>
-        <div className='navigation-mode-description-wrapper'>
-          <div className='navigation-mode-description-title-wrapper'>
-            <div className='navigation-mode-description-icon'>
-              <Icon
-                name='panning.svg'
-                size='very-small'
-                className='not-hoverable'
-              />
-            </div>
-            <div className='navigation-mode-description-title'>Panning</div>
-          </div>
-          <div className='navigation-mode-description-text'>
-            {navigation === TRACKPAD &&
-              'Slide on trackpad with two fingers, or click and drag with mouse'}
-            {navigation === MOUSE && 'Click and drag the canvas'}
-          </div>
-        </div>
-      </div>
-      <div className='preferences-save-button'>
-        <Button onClick={save} text='Save Changes' />
+    <div className="preferences-content-wrapper">
+      <div className="preferences-title">Preferences</div>
+      <PreferenceSelect
+        iconName="panning.svg"
+        title="Navigation Mode"
+        subtitle="Select your preferred navigation mode on canvas based on your primary
+          pointer device"
+        options={options}
+        descriptions={<Descriptions navigation={navigation} />}
+      />
+      <div className="preferences-save-button">
+        <Button onClick={save} text="Save Changes" />
       </div>
     </div>
   )

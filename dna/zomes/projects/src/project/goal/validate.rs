@@ -55,16 +55,16 @@ fn validate_update_entry_goal(validate_data: ValidateData) -> ExternResult<Valid
                 // `user_hash` still matches that original author
                 if let Header::Update(header) = validate_data.element.header() {
                   match resolve_dependency::<Goal>(header.original_header_address.clone().into())? {
-                    Ok(ResolvedDependency(el, _)) => {
+                    Ok(ResolvedDependency(_el, goal)) => {
                       // the final return value
                       // if this passes, all have passed
 
                       // here we are checking to make sure that
                       // this user is not suggesting that someone other than
                       // the original author of the original goal WAS the original
-                      validate_value_matches_original_author(&proposed_entry.user_hash.0, &el)
+                      validate_value_matches_original_author(&proposed_entry.user_hash.0, &goal.user_hash.0)
                     }
-                    // the unresolved dependency case
+                    // the unresolved dependency case and invalid case
                     Err(validate_callback_result) => validate_callback_result,
                   }
                 } else {
@@ -206,7 +206,7 @@ pub mod tests {
     // to know this, we need to resolve that dependency
     goal.user_edit_hash = Some(WrappedAgentPubKey::new(
       update_header.author.as_hash().clone(),
-    ));
+    )); 
     // update the goal value in the validate_data
     *validate_data.element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
 
@@ -266,15 +266,15 @@ pub mod tests {
     // SUCCESS case
     // the element exists and deserializes
     // user_edit_hash is Some(the author)
-    // original_header_address exists, and the author
-    // of that original header
+    // original_header_address exists, and the value
+    // `user_hash` of the original Goal
     // is equal to the new `user_hash` value
     // -> good to go
     // we should see that the ValidateCallbackResult
     // is finally valid
 
-    // set the user_hash on the goal equal to the "original header author address"
-    goal.user_hash = WrappedAgentPubKey::new(original_goal_element.header().author().clone());
+    // set the user_hash on the goal equal to the original goals user_hash property
+    goal.user_hash = original_goal.user_hash.clone();
     *validate_data.element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
 
     let mut mock_hdk = MockHdkT::new();

@@ -143,7 +143,7 @@ function VerticalActionsList({
           icon={
             <Icon
               size="small"
-              name="hierarchy.svg"
+              name="hierarchy-leaf.svg"
               className="black not-hoverable"
             />
           }
@@ -154,7 +154,7 @@ function VerticalActionsList({
           icon={
             <Icon
               size="small"
-              name="priority.svg"
+              name="sort-asc.svg"
               className="black not-hoverable"
             />
           }
@@ -239,7 +239,7 @@ function mapStateToProps(state, ownProps) {
   // located, according to the canvas coordinate system
   // x, y
   const width = state.ui.screensize.width
-  const goalCoordinate = layoutFormula(width, state)[goalAddress]
+  const goalCoordinate = state.ui.layout[goalAddress]
 
   // Figure out where is that goal is relation to the window:
   // coordinates translation to css from canvas

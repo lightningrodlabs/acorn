@@ -54,19 +54,19 @@ const COMMUNITY_PROXY_URL =
   'kitsune-proxy://SYVd4CF3BdJ4DS7KwLLgeU3_DbHoZ34Y-qroZ79DOs8/kitsune-quic/h/165.22.32.11/p/5779/--'
 
 const devOptions: HolochainOptions = {
-  datastorePath: '../tmp2/databases',
+  datastorePath: process.env.ACORN_TEST_USER_2 ? '../tmp/databases' : '../tmp2/databases',
   appId: MAIN_APP_ID,
-  appWsPort: 8888,
-  adminWsPort: 1234,
-  keystorePath: '../tmp2/keystore',
+  appWsPort: process.env.ACORN_TEST_USER_2 ? 8899 : 8888 ,
+  adminWsPort: process.env.ACORN_TEST_USER_2 ? 1236 :1234,
+  keystorePath: process.env.ACORN_TEST_USER_2 ? '../tmp/keystore' : '../tmp2/keystore',
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 const prodOptions: HolochainOptions = {
-  datastorePath: path.join(app.getPath('userData'), 'databases-0-5-1'),
+  datastorePath: path.join(app.getPath('userData'), 'databases-0-5-2'),
   appId: MAIN_APP_ID,
   appWsPort: 8889,
   adminWsPort: 1235,
-  keystorePath: path.join(app.getPath('userData'), 'keystore-0-5-1'),
+  keystorePath: path.join(app.getPath('userData'), 'keystore-0-5-2'),
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 

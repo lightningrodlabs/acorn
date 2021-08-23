@@ -49,10 +49,10 @@ function EdgeConnectorPicker({
 
   const validChildrenAddresses = parentAddress
     ? calculateValidChildren(
-        parentAddress,
-        edges,
-        selectedGoals.map(g => g.address)
-      )
+      parentAddress,
+      edges,
+      selectedGoals.map(g => g.address)
+    )
     : []
 
   const preview = () => {
@@ -79,7 +79,7 @@ function EdgeConnectorPicker({
       classNames='edge-connector-picker-wrapper'>
       <PickerTemplate
         className='edge-connector-picker'
-        heading='connect'
+        heading='Connect'
         onClose={onClose}>
         <div className='edge-connector-content'>
           {/* Parent */}
@@ -90,7 +90,7 @@ function EdgeConnectorPicker({
               toggleSelectOption={toggleParent}
               toggleLabel={
                 parentAddress &&
-                selectedGoals.find(s => s.address === parentAddress)
+                  selectedGoals.find(s => s.address === parentAddress)
                   ? selectedGoals.find(s => s.address === parentAddress).content
                   : 'Pick one'
               }>
@@ -111,9 +111,8 @@ function EdgeConnectorPicker({
             <Select
               multiple
               toggleSelectOption={toggleChild}
-              toggleLabel={`${childrenAddresses.length} card${
-                childrenAddresses.length === 1 ? '' : 's'
-              }`}>
+              toggleLabel={`${childrenAddresses.length} card${childrenAddresses.length === 1 ? '' : 's'
+                }`}>
               {selectedGoals
                 .filter(g => validChildrenAddresses.includes(g.address))
                 .map(selectedGoal => (

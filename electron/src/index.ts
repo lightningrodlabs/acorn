@@ -23,6 +23,7 @@ const MAIN_FILE = path.join(__dirname, '../web/index.html')
 const SPLASH_FILE = path.join(__dirname, '../web/splashscreen.html')
 const LINUX_ICON_FILE = path.join(__dirname, '../web/logo/acorn-logo-desktop-512px.png')
 
+const DEVELOPMENT_UI_URL = process.env.ACORN_TEST_USER_2 ? 'http://localhost:8081' : 'http://localhost:8080'
 
 const createMainWindow = (): BrowserWindow => {
   // Create the browser window.
@@ -47,7 +48,7 @@ const createMainWindow = (): BrowserWindow => {
     mainWindow.loadFile(MAIN_FILE)
   } else {
     // development
-    mainWindow.loadURL('http://localhost:8080')
+    mainWindow.loadURL(DEVELOPMENT_UI_URL)
   }
   // Open <a href='' target='_blank'> with default system browser
   mainWindow.webContents.on('new-window', function (event, url) {
@@ -80,7 +81,12 @@ const createSplashWindow = (): BrowserWindow => {
   })
 
   // and load the splashscreen.html of the app.
-  splashWindow.loadFile(SPLASH_FILE)
+  if (app.isPackaged) {
+    splashWindow.loadFile(SPLASH_FILE)
+  } else {
+    // development
+    splashWindow.loadURL(`${DEVELOPMENT_UI_URL}/splashscreen.html`)
+  }
   // once its ready to show, show
   splashWindow.once('ready-to-show', () => {
     splashWindow.show()

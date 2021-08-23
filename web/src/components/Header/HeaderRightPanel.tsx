@@ -2,9 +2,7 @@ import React, { useRef, useState } from 'react'
 import { NavLink, Route, useHistory, useLocation } from 'react-router-dom'
 
 import { GUIDE_IS_OPEN } from '../GuideBook/guideIsOpen'
-import GuideBook from '../GuideBook/GuideBook'
 import { Status, StatusCssColorClass, StatusIcons } from './Status'
-import Modal from '../Modal/Modal'
 import Icon from '../Icon/Icon'
 import Avatar from '../Avatar/Avatar'
 import useOnClickOutside from 'use-onclickoutside'
@@ -51,7 +49,6 @@ function HeaderRightPanel({
   const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false)
   const [isStatusOpen, setIsStatusOpen] = useState(false)
   const location = useLocation()
-  const history = useHistory()
   // hover states
   const [isAvatarHover, setIsAvatarHover] = useState(false)
   // hover handlers
@@ -66,11 +63,6 @@ function HeaderRightPanel({
   // and affect the state
   const searchParams = new URLSearchParams(location.search)
   const isGuideOpen = !!searchParams.get(GUIDE_IS_OPEN)
-
-  const onCloseGuidebook = () => {
-    const pathWithoutGuidebook = location.pathname
-    history.push(pathWithoutGuidebook)
-  }
 
   return (
     <div className="header-right-panel">
@@ -89,7 +81,13 @@ function HeaderRightPanel({
         onClick={hideGuidebookHelpMessage}
       >
         {/* @ts-ignore */}
-        <Icon name="guidebook.svg" className="header-right-panel-icon" />
+        <Icon
+          name="booklet.svg"
+          className="header-right-panel-icon"
+          withTooltip
+          tooltipText="Guidebook"
+          size="small"
+        />
       </NavLink>
       <div className="avatar-and-status-wrapper">
         <div
@@ -106,6 +104,7 @@ function HeaderRightPanel({
             highlighted={isAvatarMenuOpen || isAvatarHover}
             clickable
             onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}
+            medium
           />
         </div>
         {/* Current status circle color under avatar*/}
@@ -113,15 +112,6 @@ function HeaderRightPanel({
           <div className={`status-circle ${StatusCssColorClass[status]}`}></div>
         </div>
       </div>
-      {/* Guidebook */}
-      <Modal
-        className="guidebook-modal"
-        white
-        active={isGuideOpen}
-        onClose={onCloseGuidebook}
-      >
-        <GuideBook />
-      </Modal>
       {/* Profile Menu */}
       {isAvatarMenuOpen && (
         <div className="profile-wrapper" ref={ref}>

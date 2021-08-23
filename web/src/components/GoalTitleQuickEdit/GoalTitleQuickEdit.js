@@ -1,12 +1,11 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { connect } from 'react-redux'
+import useOnClickOutside from 'use-onclickoutside'
 import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
 
-import layoutFormula from '../../drawing/layoutFormula'
-import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
-
 import { createGoalWithEdge, updateGoal } from '../../projects/goals/actions'
+import { layoutAffectingArchiveEdge } from '../../projects/edges/actions'
 import { closeGoalForm, updateContent } from '../../goal-form/actions'
 
 import './GoalTitleQuickEdit.css'
@@ -14,10 +13,21 @@ import { firstZoomThreshold, fontSize, fontSizeExtraLarge, fontSizeLarge, lineHe
 
 // if editAddress is present (as a Goal address) it means we are currently EDITING that Goal
 function GoalTitleQuickEdit({
+  presentToUser,
   whoami,
   scale,
-  content, // the value of the text input
-  parentAddress,
+  // the value of the text input
+  content,
+  // (optional) the address of a Goal to connect this Goal to
+  // in the case of creating a Goal
+  fromAddress,
+  // (optional) the relation (relation_as_{child|parent}) between the two
+  // in the case of creating a Goal
+  relation,
+  // (optional) the address of an existing edge that
+  // indicates this Goal as the child of another (a.k.a has a parent)
+  // ASSUMPTION: one parent
+  existingParentEdgeAddress,
   editAddress,
   // coordinates in css terms for the box
   leftEdgeXPosition,
@@ -33,12 +43,15 @@ function GoalTitleQuickEdit({
   user_edit_hash, // editor
   // callbacks
   updateContent,
+  archiveEdge,
   createGoalWithEdge,
   updateGoal,
   closeGoalForm,
 }) {
-  /* EVENT HANDLERS */
 
+  
+
+  /* EVENT HANDLERS */
   // when the text value changes
   const handleChange = (event) => {
     updateContent(event.target.value)
@@ -64,7 +77,9 @@ function GoalTitleQuickEdit({
     }
   }
 
-  const handleSubmit = (event) => {
+  // this can get called via keyboard events
+  // or via 'onClickOutside' of the GoalTitleQuickEdit component
+  const handleSubmit = async (event) => {
     if (event) {
       // this is to prevent the page from refreshing
       // when the form is submitted, which is the
@@ -74,28 +89,44 @@ function GoalTitleQuickEdit({
 
     // do not allow submit with no content
     if (!content || content === '') {
+      closeGoalForm()
       return
     }
 
     // depending on editAddress, this
     // might be an update to an existing...
     // otherwise it's a new Goal being created
-    if (editAddress) {
-      innerUpdateGoal()
-    } else {
-      innerCreateGoalWithEdge()
+    if (presentToUser) {
+      if (editAddress) {
+        await innerUpdateGoal()
+      } else {
+        await innerCreateGoalWithEdge()
+      }
     }
 
-    // reset the textarea value to empty
-    updateContent('')
-    closeGoalForm()
+    const isKeyboardTrigger = !event
+    // don't close this if it was a click on the vertical-actions-list
+    // that caused this 'onClickOutside' event
+    const clickNotOnActionsList = event && !document.querySelector('.vertical-actions-list').contains(event.target)
+    if (isKeyboardTrigger || clickNotOnActionsList) {
+      // reset the textarea value to empty
+      updateContent('')
+      closeGoalForm()
+    }
   }
 
-  const innerCreateGoalWithEdge = () => {
+  const innerCreateGoalWithEdge = async () => {
+    // if we are replacing an edge with this one
+    // delete the existing edge first
+    // ASSUMPTION: one parent
+    if (existingParentEdgeAddress) {
+      await archiveEdge(existingParentEdgeAddress)
+    }
+
     // dispatch the action to create a goal
     // with the contents from the form
     // inserted into it
-    createGoalWithEdge(
+    await createGoalWithEdge(
       {
         content: content,
         timestamp_created: moment().unix(),
@@ -107,12 +138,12 @@ function GoalTitleQuickEdit({
         description,
         is_imported,
       },
-      parentAddress
+      fromAddress ? { goal_address: fromAddress, relation } : null
     )
   }
 
-  const innerUpdateGoal = () => {
-    updateGoal(
+  const innerUpdateGoal = async () => {
+    await updateGoal(
       {
         // new
         user_edit_hash: whoami.entry.address,
@@ -131,7 +162,7 @@ function GoalTitleQuickEdit({
     )
   }
 
-   // the default
+  // the default
   let fontSizeToUse = fontSize
   if (scale < secondZoomThreshold) {
     fontSizeToUse = fontSizeExtraLarge
@@ -143,6 +174,9 @@ function GoalTitleQuickEdit({
     lineHeight: `${parseInt(fontSizeToUse) * lineHeightMultiplier}px`
   }
 
+  const ref = useRef()
+  useOnClickOutside(ref, handleSubmit)
+
   return (
     <div
       className="goal-title-quick-edit-wrapper"
@@ -150,8 +184,10 @@ function GoalTitleQuickEdit({
         top: `${topEdgeYPosition}px`,
         left: `${leftEdgeXPosition}px`,
       }}
+      // ref for the sake of onClickOutside
+      ref={ref}
     >
-      <form className="goal-title-quick-edit-form" onSubmit={handleSubmit}>
+      {presentToUser && <form className="goal-title-quick-edit-form" onSubmit={handleSubmit}>
         <TextareaAutosize
           autoFocus
           placeholder="Add a title..."
@@ -162,7 +198,7 @@ function GoalTitleQuickEdit({
           onBlur={handleBlur}
           style={textStyle}
         />
-      </form>
+      </form>}
     </div>
   )
 }
@@ -180,11 +216,15 @@ function mapStateToProps(state) {
       viewport: { scale },
       // all the state for this component is store under state->ui->goalForm
       goalForm: {
-        parentAddress,
         editAddress,
         content,
         leftEdgeXPosition,
         topEdgeYPosition,
+        // these three go together
+        fromAddress,
+        relation,
+        // ASSUMPTION: one parent
+        existingParentEdgeAddress, // this is optional though
       }
     },
   } = state
@@ -195,7 +235,7 @@ function mapStateToProps(state) {
     ? state.projects.goals[activeProject][editAddress]
     : null
   const user_hash = editAddress ? editingGoal.user_hash : state.whoami.entry.address
-  const user_edit_hash = editAddress ? state.whoami.entry.address : null 
+  const user_edit_hash = editAddress ? state.whoami.entry.address : null
   const status = editAddress ? editingGoal.status : 'Uncertain'
   const description = editAddress ? editingGoal.description : ''
   const hierarchy = editAddress ? editingGoal.hierarchy : 'NoHierarchy'
@@ -205,15 +245,23 @@ function mapStateToProps(state) {
 
   let goalCoord
   if (editAddress) {
-    goalCoord = layoutFormula(width, state)[editAddress]
+    goalCoord = state.ui.layout[editAddress]
   }
 
   return {
     whoami: state.whoami,
     scale,
     editAddress,
-    // the address of the "parent" Goal that we are maybe creating this "under"
-    parentAddress,
+    // optional, the address of the Goal that we are relating this to
+    fromAddress,
+    // optional, the relation (relation_as_{child|parent})
+    // between the potential fromAddress Goal
+    // and a new Goal to be created
+    relation,
+    // optional, the address of an existing edge that
+    // indicates this Goal as the child of another (a.k.a has a parent)
+    // ASSUMPTION: one parent
+    existingParentEdgeAddress,
     content,
     leftEdgeXPosition: editAddress ? goalCoord.x : leftEdgeXPosition,
     topEdgeYPosition: editAddress ? goalCoord.y : topEdgeYPosition,
@@ -240,11 +288,25 @@ function mapDispatchToProps(dispatch, ownProps) {
     updateContent: (content) => {
       dispatch(updateContent(content))
     },
-    createGoalWithEdge: (entry, maybe_parent_address) => {
+    archiveEdge: (address) => {
+      // false because we will only be archiving
+      // an edge here in the context of immediately replacing
+      // it with another during a createGoalWithEdge
+      // thus we don't want a glitchy animation
+      const affectLayout = false
+      return dispatch(
+        layoutAffectingArchiveEdge(
+          cellIdString,
+          address,
+          affectLayout
+        )
+      )
+    },
+    createGoalWithEdge: (entry, maybe_linked_goal) => {
       return dispatch(
         createGoalWithEdge.create({
           cellIdString,
-          payload: { entry, maybe_parent_address },
+          payload: { entry, maybe_linked_goal },
         })
       )
     },

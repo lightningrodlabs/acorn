@@ -16,7 +16,7 @@ function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses }) {
     .join(',')
   return (
     <div className="active-entry-point">
-      <img src="img/door-open.png" />
+      <img src="img/door-open.svg" />
       {/* add title because text-overflow: ellipsis */}
       <div className="active-entry-point-content" title={entryPoint.content}>
         {entryPoint.content}
@@ -34,6 +34,7 @@ function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses }) {
 }
 
 function HeaderLeftPanel({
+  setShowProjectSettingsOpen,
   whoami,
   projectName,
   isExportOpen,
@@ -48,7 +49,7 @@ function HeaderLeftPanel({
       {/* @ts-ignore */}
       <NavLink to="/" className="home-link logo">
         {/* @ts-ignore */}
-        <Icon name="acorn-logo-stroked.svg" className="not-hoverable" />
+        {/* <Icon name="acorn-logo-stroked.svg" className="not-hoverable" /> */}
         <p className="logo-name">acorn</p>
       </NavLink>
       {whoami && (
@@ -62,17 +63,30 @@ function HeaderLeftPanel({
               <ProjectPriorityViewOnly>
                 {/* @ts-ignore */}
                 <Icon
-                  name="priority.svg"
+                  name="sort-asc.svg"
                   className="view-mode grey not-hoverable"
                 />
               </ProjectPriorityViewOnly>
               <div className="current-project-name">{projectName}</div>
               <div className="divider-line"></div>
+              {/* <div
+                className="header-open-project-settings"
+                
+              > */}
+              {/* @ts-ignore */}
+              <Icon
+                name="settings.svg"
+                withTooltip
+                tooltipText="Project Settings"
+                size="header"
+                onClick={() => setShowProjectSettingsOpen(true)}
+              />
+              {/* </div> */}
               <div className="export-wrapper">
                 {/* @ts-ignore */}
                 <Icon
                   withTooltip
-                  tooltipText="export"
+                  tooltipText="Export"
                   name="export.svg"
                   size="header"
                   className={isExportOpen ? 'purple' : ''}

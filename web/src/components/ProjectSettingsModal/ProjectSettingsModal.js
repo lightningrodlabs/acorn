@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { updateProjectMeta } from '../../projects/project-meta/actions'
 
 import './ProjectSettingsModal.css'
-
+import { updateProjectMeta } from '../../projects/project-meta/actions'
+import { PriorityModeOptions } from '../../constants'
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import Modal from '../Modal/Modal'
 import {
@@ -15,21 +15,24 @@ import {
 } from '../ProjectModal/ProjectModal'
 import ProjectSecret from '../ProjectSecret/ProjectSecret'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
+import PreferenceSelect, { PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
 
 // since this is a big wordset, dynamically import it
 // instead of including in the main bundle
-async function generatePassphrase () {
+async function generatePassphrase() {
   const { default: randomWord } = await import('diceware-word')
   return `${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()}`
 }
 
-function EditProjectForm ({
+function EditProjectForm({
   updatingProject,
   onSubmit,
   projectName,
   setProjectName,
   projectCoverUrl,
   setProjectCoverUrl,
+  priorityMode,
+  setPriorityMode,
 }) {
   const [
     shouldInvalidateProjectName,
@@ -67,7 +70,7 @@ function EditProjectForm ({
     // }
   }, [projectCoverUrl])
 
-  const subheading = `Change this project's name or image`
+  const subheading = `Any changes will apply for all team members.`
 
   // validate before firing event
   const submit = () => {
@@ -78,76 +81,70 @@ function EditProjectForm ({
     }
   }
 
+  const universalOption = <PreferenceSelectOption
+    key='preference-select-universal'
+    active={priorityMode === PriorityModeOptions.Universal}
+    onClick={() => setPriorityMode(PriorityModeOptions.Universal)}
+    iconName='earth.svg'
+    iconExtraClassName=""
+    title="Universal"
+  />
+  const voteOption = <PreferenceSelectOption
+    key='preference-select-vote'
+    active={priorityMode === PriorityModeOptions.Vote}
+    onClick={() => setPriorityMode(PriorityModeOptions.Vote)}
+    iconName='team.svg'
+    iconExtraClassName=""
+    title="Vote Based"
+  />
+
   return (
     <div className='edit-project-form'>
-      <ProjectModalHeading title='Edit project' />
+      <ProjectModalHeading title='Project Settings' />
       <ProjectModalSubHeading title={subheading} />
-      <ProjectModalContentSpacer>
-        <ProjectModalContent>
-          {/* project name */}
+      <ProjectModalContent>
+        {/* project name */}
+        <ValidatingFormInput
+          value={projectName}
+          onChange={changeProjectName}
+          invalidInput={!isValidProjectName}
+          validInput={projectName.length > 0 && isValidProjectName}
+          errorText={errorProjectName}
+          label='Project Name'
+          placeholder='The best project ever'
+        />
+        {/* project cover image */}
+        <div className='edit-project-image-row'>
           <ValidatingFormInput
-            value={projectName}
-            onChange={changeProjectName}
-            invalidInput={!isValidProjectName}
-            validInput={projectName.length > 0 && isValidProjectName}
-            errorText={errorProjectName}
-            label='Project Name'
-            placeholder='The best project ever'
+            value={projectCoverUrl}
+            onChange={setProjectCoverUrl}
+            label='Project Cover Image'
+            placeholder='Paste in your project image URL here'
+            invalidInput={
+              projectCoverUrl.length > 0 && !isValidProjectCoverUrl
+            }
+            validInput={projectCoverUrl.length > 0 && isValidProjectCoverUrl}
+            errorText={errorProjectCoverUrl}
           />
-          {/* project cover image */}
-          <div className='edit-project-image-row'>
-            <ValidatingFormInput
-              value={projectCoverUrl}
-              onChange={setProjectCoverUrl}
-              label='Project Cover Image'
-              placeholder='Paste in your project image URL here'
-              invalidInput={
-                projectCoverUrl.length > 0 && !isValidProjectCoverUrl
-              }
-              validInput={projectCoverUrl.length > 0 && isValidProjectCoverUrl}
-              errorText={errorProjectCoverUrl}
-            />
-            <div
-              className='edit-project-image'
-              style={{ backgroundImage: `url(${projectCoverUrl})` }}
-            />
-          </div>
-        </ProjectModalContent>
-      </ProjectModalContentSpacer>
+          <div
+            className='edit-project-image'
+            style={{ backgroundImage: `url(${projectCoverUrl})` }}
+          />
+        </div>
+        {/* project priority mode setting */}
+        <PreferenceSelect title="Prioritization Mode" subtitle="Select your preferred prioritization mode for you and your team in this project." options={[universalOption, voteOption]} />
+      </ProjectModalContent>
       <ProjectModalButton text='Update' onClick={submit} />
     </div>
   )
 }
 
-// function projectUpdatedModal ({ onDone, projectUpdated, projectSecret }) {
-//   return (
-//     <div
-//       className={`project-created-modal ${
-//         projectUpdated ? 'project-created' : ''
-//       }`}>
-//       <ProjectModalHeading title='New project created!' />
-//       <ProjectModalContent>
-//         <ProjectModalContentSpacer>
-//           <ProjectSecret passphrase={projectSecret} />
-//         </ProjectModalContentSpacer>
-//       </ProjectModalContent>
-//       <ProjectModalButton text='Done' onClick={onDone} />
-//     </div>
-//   )
-// }
-
-function ProjectSettingsModal ({
+function ProjectSettingsModal({
   showModal,
   onClose,
   updateProjectMeta,
-  projectAddress,
-  creatorAddress,
-  createdAt,
-  isImported,
-  passphrase,
+  project,
   cellIdString,
-  projectNameProp,
-  projectCoverUrlProp,
 }) {
   const [updatingProject, setUpdatingProject] = useState(false)
 
@@ -155,22 +152,33 @@ function ProjectSettingsModal ({
     setUpdatingProject(true)
     await updateProjectMeta(
       {
+        // editable
         name: projectName,
         image: projectCoverUrl,
-        creator_address: creatorAddress,
-        created_at: createdAt,
-        passphrase: passphrase,
-        is_imported: isImported
+        priority_mode: priorityMode,
+        // not editable
+        creator_address: project.creator_address,
+        created_at: project.created_at,
+        passphrase: project.passphrase,
+        is_imported: project.is_imported,
+        top_priority_goals: project.top_priority_goals,
       },
-      projectAddress,
-      cellIdString
+      project.address,
+      cellIdString,
     )
     setUpdatingProject(false)
     onClose()
   }
 
-  const [projectName, setProjectName] = useState(projectNameProp)
-  const [projectCoverUrl, setProjectCoverUrl] = useState(projectCoverUrlProp)
+  // editable
+  useEffect(() => {
+    setProjectName(project.name)
+    setProjectCoverUrl(project.image)
+    setPriorityMode(project.priority_mode)
+  }, [project])
+  const [projectName, setProjectName] = useState(project.name)
+  const [projectCoverUrl, setProjectCoverUrl] = useState(project.image)
+  const [priorityMode, setPriorityMode] = useState(project.priority_mode)
 
   return (
     <Modal
@@ -185,18 +193,19 @@ function ProjectSettingsModal ({
         setProjectName={setProjectName}
         projectCoverUrl={projectCoverUrl}
         setProjectCoverUrl={setProjectCoverUrl}
+        priorityMode={priorityMode}
+        setPriorityMode={setPriorityMode}
       />
     </Modal>
   )
 }
 
-function mapStateToProps (state) {
-  // props for the component
-
+function mapStateToProps(_state) {
+  // props for the componen
   return {}
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
   // props for the component
   return {
     updateProjectMeta: (entry, address, cellIdString) => {

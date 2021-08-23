@@ -50,7 +50,7 @@ export function crudReducer(state, action, create, fetch, update, archive) {
         },
       }
 
-    // ARCHIVE EDGE
+    // ARCHIVE
     case archive.success().type:
       return {
         ...state,

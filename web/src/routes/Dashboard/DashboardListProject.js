@@ -117,7 +117,7 @@ function DashboardListProject({
             >
               <Icon
                 name="plus.svg"
-                size="very-small"
+                size="small"
                 withTooltip
                 tooltipText="Invite Members"
                 className="grey"
@@ -142,7 +142,7 @@ function DashboardListProject({
             className="dashboard-list-project-entry-point-button"
             onClick={() => setShowEntryPoints(!showEntryPoints)}
           >
-            {/*<img className='entry-point-button-image' src='img/door-open.png' />*/}
+            {/*<img className='entry-point-button-image' src='img/door-open.svg' />*/}
             {project.entryPoints.length} entry point
             {project.entryPoints.length === 1 ? '' : 's'}
             <Icon
@@ -160,6 +160,7 @@ function DashboardListProject({
               }
               return (
                 <NavLink
+                  key={`entry-point-${entryPoint.address}`}
                   to={`/project/${project.cellId}/map?entryPoints=${entryPoint.address}`}
                   className="entry-point-item"
                 >
@@ -174,14 +175,8 @@ function DashboardListProject({
       <ProjectSettingsModal
         showModal={showProjectSettingsModal}
         onClose={() => setShowProjectSettingsModal(false)}
-        projectNameProp={project.name}
-        projectCoverUrlProp={project.image}
-        projectAddress={project.address}
+        project={project}
         cellIdString={project.cellId}
-        creatorAddress={project.creator_address}
-        createdAt={project.created_at}
-        passphrase={project.passphrase}
-        isImported={project.is_imported}
       />
     </div>
   )

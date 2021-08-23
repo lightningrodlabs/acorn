@@ -1,0 +1,130 @@
+/* Universal Priority Mode */
+
+.universal-priority-wrapper {
+  flex: 1;
+  background: #ffffff;
+  margin-left: 8px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px #00000010;
+  display: flex;
+  flex-direction: column;
+}
+
+.universal-priority-header {
+  padding: 30px 40px 20px 40px;
+}
+
+.universal-priority-divider-line {
+  border-top: 4px solid #F3F0ED;
+}
+
+.universal-priority-goals-list-wrapper {
+  padding: 0 40px;
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 264px);
+}
+
+.universal-priority-droppable-wrapper {
+  padding: 20px 0 30px 0;
+}
+
+.universal-priority-goals-list-row {
+  display: flex;
+  flex-direction: row;
+  /* align-items: center; */
+}
+
+.universal-priority-goals-list-row:hover {
+  background-color: #F8F7F5;
+  border-radius: 10px;
+}
+
+.universal-priority-number-slots {
+  margin-right: 16px;
+}
+
+.universal-priority-number-wrapper {
+  
+}
+
+.universal-priority-order-number {
+  font-family: 'gilroyextrabold', Helvetica, sans-serif;
+  font-size: 20px;
+  line-height: 24px;
+  width: 32px;
+}
+
+.universal-priority-goal-slots {
+  display: flex;
+  flex: 1;
+}
+
+.universal-priority-goal-item-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  flex: 1;
+  padding: 12px 8px 16px 8px;
+  min-height: 80px;
+  box-sizing: border-box;
+  position: relative;
+  /* justify-content: space-between; */
+}
+
+.universal-priority-goal-item-expand {
+  float: right;
+  position: absolute;
+  right: 10px;
+}
+
+.universal-priority-goal-item-expand .icon {
+  display: none;
+}
+
+.universal-priority-goal-item-wrapper:hover>.universal-priority-goal-item-expand .icon {
+  display: flex;
+}
+
+.universal-priority-goal-item-border {
+  border-bottom: 1px solid #F3F0ED02;
+}
+
+.universal-priority-goal-item-title {
+  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-size: 18px;
+  line-height: 24px;
+  color: #4D4D4D;
+  /* width: 600px; */
+  margin-left: 12px;
+  margin-right: 24px;
+  flex: 1;
+  max-width: 700px;
+}
+
+.universal-priority-goal-item-metadata {
+  width: 220px;
+}
+
+.universal-priority-goal-item-members {
+  display: flex;
+  flex-direction: row;
+  padding-left: 10px;
+}
+.universal-priority-goal-item-member-avatar {
+  margin-left: -10px;
+  border: 2px solid white;
+  border-radius: 50%;
+  z-index: 1;
+  height: 32px;
+}
+
+.universal-priority-goal-item-date {
+  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-size: 14px;
+  color: #959595;
+}
+
+.universal-priority-droppable-wrapper {
+  width: 100%;
+}

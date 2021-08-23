@@ -21,16 +21,13 @@
 
 .logo {
   padding-right: 12px;
-  padding-left: 10px;
-  background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
+  padding-left: 12px;
+  background: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
-  display: -webkit-flex;
-  /* Safari */
-  -webkit-align-items: center;
-  /* Safari 7.0+ */
   display: flex;
   align-items: center;
   margin-right: 5px;
+  height: 46px;
 }
 
 .logo .icon {
@@ -46,11 +43,9 @@
 }
 
 .logo-name {
-  margin: 1px;
   font-family: 'quebecsemibold', Helvetica, Sans-Serif;
   font-weight: normal;
   font-size: 22px;
-  margin-top: -12px;
 }
 
 .logo h3 {
@@ -69,14 +64,14 @@
 }
 
 .current-project-content {
-  margin-left: 10px;
+  margin-left: 12px;
   margin-right: 10px;
   display: flex;
   align-items: center;
 }
 
 .current-project-name {
-  margin: 0 12px 2px 6px;
+  margin: 0 12px 2px 0px;
   font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
   font-weight: normal;
   font-size: 14px;
@@ -89,8 +84,7 @@
   width: 24px;
   display: inline-block;
   position: relative;
-  margin-top: 0;
-  margin-left: 0;
+  margin: 0 8px 0 0;
   box-sizing: border-box;
 }
 
@@ -100,11 +94,10 @@
 }
 
 .logo p {
-  text-align: left;
-  letter-spacing: 0.1px;
+  letter-spacing: 0.2px;
   color: #2b2b2b;
-  margin-top: -2px;
-  font-family: 'gilroyextrabold', Helvetica, sans-serif;
+  font-family: 'gilroyextrabold', sans-serif;
+  margin: 0 0 1.5px 0;
 }
 
 .logo:hover .icon .inner-icon {
@@ -204,11 +197,9 @@
 
 .priority-menu-wrapper {
   height: 100%;
-  box-shadow: 0px 0px 6px #00000010;
   display: flex;
   flex-direction: row;
   align-items: center;
-  /* margin: 0 8px; */
   padding: 0 14px;
   border-radius: 10px;
   flex: 1;
@@ -233,6 +224,7 @@
 .priority-menu-item.active {
   border-bottom: 3px solid #5f65ff;
   color: #5f65ff;
+  margin-bottom: -3px;
 }
 
 /* Header Right Panel */
@@ -245,15 +237,15 @@
   border-radius: 10px;
   display: flex;
   justify-content: space-between;
-  /* align-items: center; */
+  align-items: center;
   align-content: center;
   box-sizing: border-box;
 }
 
 .header-right-panel-icon {
-  display: inline-block;
   position: relative;
-  margin-right: 4px;
+  margin-right: 8px;
+  display: flex;
 }
 
 .stop-right-panel div .icon {
@@ -264,7 +256,8 @@
 /* Guidebook */
 
 .guidebook-modal.modal-wrapper {
-  width: 620px;
+  width: 800px;
+  max-width: calc(100vw - 120px);
   padding: 60px;
   max-height: 1000px;
   height: calc(100vh - 120px);
@@ -291,13 +284,13 @@
 }
 
 .avatar-container {
-  height: 36px;
-  width: 36px;
+  height: 32px;
+  width: 32px;
 }
 
 .avatar-container img {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   object-fit: cover;
   object-position: center;
   border-radius: 50%;

@@ -4,7 +4,7 @@
   padding: 6px 8px;
   border-radius: 8px;
   background: #ffffff;
-  margin: 8px;
+  margin: 8px 8px 0 8px;
 }
 
 .indented-view-resizer {
@@ -37,6 +37,10 @@
 
 .indented-view-goals {
   margin-left: 8px;
+  height: 100%;
+  overflow-y: scroll;
+  margin-bottom: 44px;
+  border-top: 1px solid #dedede;
 }
 
 .indented-view-goal {
@@ -45,6 +49,18 @@
   font-size: 13px;
   line-height: 17px;
   color: #4d4d4d;
+}
+
+.highest-level-view {
+  margin: 8px;
+  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-size: 13px;
+  line-height: 17px;
+  color: #4d4d4d;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  text-decoration: none;
 }
 
 .indented-view-goal-item {
@@ -60,7 +76,7 @@
 .indented-view-goal-content {
   margin: 0 2px;
   cursor: pointer;
-  padding: 8px;
+  padding: 6px 8px;
   border-radius: 8px;
   text-decoration: none;
   flex: 1;
@@ -86,10 +102,12 @@
   overflow: hidden;
   white-space: nowrap;
   flex: 1;
+  line-height: 1.9;
 }
 
-.indented-view-goal-content:hover {
-  color: #00a599;
+.indented-view-goal-content:hover, .highest-level-view:hover {
+  /* color: #00a599; */
+  color: #5f65ff;
   background: #f9f9f9;
 }
 
@@ -97,12 +115,23 @@
   color: #5f65ff;
 }
 
-.indented-view-goal-content.active, .indented-view-goal-content:focus {
+.indented-view-goal-content.active, .indented-view-goal-content:focus, .highest-level-view.active, .highest-level-view:focus {
   color: #5f65ff;
   background: #f9f9f9;
   font-family: 'gilroyextrabold';
+  text-decoration: none;
 }
 
 .indented-view-nested-goal {
   margin-left: 20px;
+}
+
+.indented-view-goal-content .indented-view-goal-make-top-priority { 
+  display: none;
+}
+
+.indented-view-goal-content:hover .indented-view-goal-make-top-priority {
+  background: #ececec;
+  border-radius: 4px;
+  display: block;
 }

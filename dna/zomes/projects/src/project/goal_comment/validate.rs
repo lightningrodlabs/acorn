@@ -57,13 +57,16 @@ fn validate_update_entry_goal_comment(
               match resolve_dependency::<GoalComment>(
                 header.original_header_address.clone().into(),
               )? {
-                Ok(ResolvedDependency(el, _)) => {
+                Ok(ResolvedDependency(_el, goal_comment)) => {
                   // the final return value
                   // if this passes, all have passed
 
                   // here we are checking to make sure that
                   // only original author can make this update
-                  validate_value_matches_original_author_for_edit(&header.author, &el)
+                  validate_value_matches_original_author_for_edit(
+                    &header.author,
+                    &goal_comment.agent_address.0,
+                  )
                 }
                 // the unresolved dependency case
                 Err(validate_callback_result) => validate_callback_result,
@@ -183,7 +186,7 @@ pub mod tests {
     // the parent goal is found/exists
     // agent_address refers to the agent committing
     // -> good to go
-    
+
     // make the agent_address valid by making it equal the
     // AgentPubKey of the agent committing
     goal_comment.agent_address = WrappedAgentPubKey::new(create_header.author.as_hash().clone());
@@ -285,8 +288,8 @@ pub mod tests {
     let original_goal_comment = fixt!(GoalComment);
     // but due to being random, it will have a different author
     // than our Update header
-    let mut goal_comment_element = fixt!(Element);
-    *goal_comment_element.as_entry_mut() =
+    let mut original_goal_comment_element = fixt!(Element);
+    *original_goal_comment_element.as_entry_mut() =
       ElementEntry::Present(original_goal_comment.clone().try_into().unwrap());
 
     let mut mock_hdk = MockHdkT::new();
@@ -298,7 +301,7 @@ pub mod tests {
         GetOptions::content(),
       )))
       .times(1)
-      .return_const(Ok(Some(goal_comment_element.clone())));
+      .return_const(Ok(Some(original_goal_comment_element.clone())));
 
     set_hdk(mock_hdk);
 
@@ -313,16 +316,12 @@ pub mod tests {
     // the original GoalComment header and entry exist
     // and the author of the update matches the original author
     // -> good to go
-    let original_goal_comment = fixt!(GoalComment);
-    let mut goal_comment_element = fixt!(Element);
-    let mut original_create_header = fixt!(Create);
-    // make the authors equal
-    original_create_header = Create {
-      author: update_header.author.as_hash().clone(),
-      ..original_create_header
-    };
-    *goal_comment_element.as_header_mut() = Header::Create(original_create_header.clone());
-    *goal_comment_element.as_entry_mut() =
+    let mut original_goal_comment = fixt!(GoalComment);
+    let mut original_goal_comment_element = fixt!(Element);
+    // make the author equal to the current `user_hash` value
+    // on the Goal in validate_data
+    original_goal_comment.agent_address = WrappedAgentPubKey::new(update_header.author.as_hash().clone());
+    *original_goal_comment_element.as_entry_mut() =
       ElementEntry::Present(original_goal_comment.clone().try_into().unwrap());
 
     let mut mock_hdk = MockHdkT::new();
@@ -334,7 +333,7 @@ pub mod tests {
         GetOptions::content(),
       )))
       .times(1)
-      .return_const(Ok(Some(goal_comment_element.clone())));
+      .return_const(Ok(Some(original_goal_comment_element.clone())));
 
     set_hdk(mock_hdk);
 

@@ -6,11 +6,20 @@ import { archiveGoalFully } from '../projects/goals/actions'
 
 const defaultState = {
   editAddress: null,
-  parentAddress: null,
   content: '',
   isOpen: false,
   leftEdgeXPosition: 0,
   topEdgeYPosition: 0,
+  // these three go together
+  // where the fromAddress is the address of the 
+  // Goal that is the 'origin' of the edge
+  // and relation indicates the 'port' in a sense, to be parent or child
+  fromAddress: null,
+  relation: null, // RELATION_AS_CHILD or RELATION_AS_PARENT
+  // existingParentEdgeAddress is the address of the edge that
+  // we would delete in order to create a new one
+  // ASSUMPTION: one parent
+  existingParentEdgeAddress: null, // this is optional though
 }
 
 export default function (state = defaultState, action) {
@@ -20,8 +29,12 @@ export default function (state = defaultState, action) {
     ...state,
     isOpen: false,
     content: '',
-    parentAddress: null,
     editAddress: null,
+    // these three go together
+    fromAddress: null,
+    relation: null,
+    // ASSUMPTION: one parent
+    existingParentEdgeAddress: null // this is optional though
   }
 
   switch (type) {
@@ -38,8 +51,12 @@ export default function (state = defaultState, action) {
         isOpen: true,
         leftEdgeXPosition: payload.x,
         topEdgeYPosition: payload.y,
-        parentAddress: payload.parentAddress,
         editAddress: payload.editAddress,
+        // these three go together
+        fromAddress: payload.fromAddress,
+        relation: payload.relation,
+        // ASSUMPTION: one parent
+        existingParentEdgeAddress: payload.existingParentEdgeAddress, // this is optional though
       }
     case CLOSE_GOAL_FORM:
       return resetVersion

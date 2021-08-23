@@ -1,0 +1,25 @@
+/* .priority-picker-wrapper.picker-popup {
+  height: 160px;
+  align-items: center;
+} */
+
+.priority-picker-universal>.priority-picker-wrapper.picker-popup {
+  height: 160px;
+  align-items: center;
+}
+
+.priority-picker-universal {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 90px;
+}
+
+.priority-picker-universal-label {
+  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-size: 16px;
+  margin-right: 10px;
+  color: #4D4D4D;
+  margin-bottom: 4px;
+}

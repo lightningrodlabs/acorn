@@ -24,6 +24,7 @@ import {
   fetchProjectMeta,
 } from '../../projects/project-meta/actions'
 import selectEntryPoints from '../../projects/entry-points/select'
+import { PriorityModeOptions } from '../../constants'
 
 import {
   DashboardListProject,
@@ -130,7 +131,7 @@ function Dashboard({
             to="/settings"
             className="dashboard-left-menu-item feature-in-development"
           >
-            <Icon name="setting.svg" size="very-small" className="grey" />
+            <Icon name="settings.svg" size="very-small" className="grey" />
             Settings
           </NavLink>
         </div>
@@ -393,7 +394,7 @@ async function importProject(
   // first step is to install the dna
   const [projectsCellIdString] = await installProjectApp(passphrase)
   // next step is to import the rest of the data into that project
-  await importAllProjectData(
+  const oldToNewAddressMap = await importAllProjectData(
     existingAgents,
     projectData,
     projectsCellIdString,
@@ -404,8 +405,14 @@ async function importProject(
   // only add the project meta after the rest has been imported
   // so it doesn't list itself early in the process
   // first step is to create new project
+  const originalTopPriorityGoals = projectData.projectMeta.top_priority_goals
+  const originalPriorityMode = projectData.projectMeta.priority_mode
   const projectMeta = {
     ...projectData.projectMeta,
+    // the question mark operator for backwards compatibility
+    top_priority_goals: originalTopPriorityGoals ? originalTopPriorityGoals.map(oldAddress => oldToNewAddressMap[oldAddress]) : [],
+    // the question mark operator for backwards compatibility
+    priority_mode: originalPriorityMode ? originalPriorityMode : PriorityModeOptions.Universal,
     created_at: Date.now(),
     creator_address: agentAddress,
     passphrase: passphrase,
@@ -451,6 +458,8 @@ function mapDispatchToProps(dispatch) {
         creator_address: agentAddress,
         created_at: Date.now(),
         is_imported: false,
+        priority_mode: "Universal", // default
+        top_priority_goals: []
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },

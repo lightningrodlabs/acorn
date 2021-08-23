@@ -6,7 +6,7 @@ pub enum Error {
     #[error("Element with invalid header")]
     WrongHeader,
 
-    #[error("Element is missing its Entry")]
+    #[error("Element missing its Entry")]
     EntryMissing,
 
     #[error("Only one of this entry type should exist and an existing one was found")]

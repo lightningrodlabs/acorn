@@ -17,6 +17,7 @@ import * as projectMetaActions from './projects/project-meta/actions'
 import { setMember } from './projects/members/actions'
 import { fetchAgents, setAgent } from './agents/actions'
 import { cellIdToString } from 'connoropolous-hc-redux-middleware'
+import { triggerUpdateLayout } from './layout/actions'
 
 // We directly use the 'success' type, since these actions
 // have already succeeded on another machine, and we're just reflecting them locally
@@ -116,6 +117,14 @@ export default (store) => (signal) => {
   if (crudType) {
     const action = pickCrudAction(crudType, payload.action)
     store.dispatch(createSignalAction(action, cellId, payload.data))
+    // in case of the special situation with archiving edges
+    // where the layout reflow doesn't happen automatically
+    // we have to manually trigger it to do so
+    // the other cases are covered in src/layout/middleware.js ->
+    // isOneOfLayoutAffectingActions()
+    if (action.success().type === edgeActions.archiveEdge.success().type) {
+      store.dispatch(triggerUpdateLayout())
+    }
     // we captured the action for this signal, so early exit
     return
   }
@@ -138,14 +147,17 @@ export default (store) => (signal) => {
       // check if this member is in our list of agents whose
       // profiles we already have, if not, then we should
       // refetch the agents list
-      if (!stateCheck.agents[payload.data.address]) {
-        store.dispatch(
-          fetchAgents.create({
-            cellIdString: cellIdToString(cellId),
-            payload: null,
-          })
-        )
-      }
+      // TODO: re-enable this when there's a straightforward way to have the CellId
+      // for the Profiles Cell here, not the Projects CellId which it currently has access to. 
+      // This was the source of a breaking bug
+      // if (!stateCheck.agents[payload.data.address]) {
+      //   store.dispatch(
+      //     fetchAgents.create({
+      //       cellIdString: cellIdToString(cellId),
+      //       payload: null,
+      //     })
+      //   )
+      // }
       // this one is different than the rest on purpose
       // there's no "local action" equivalent
       store.dispatch(setMember(cellIdToString(cellId), payload.data))

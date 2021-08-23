@@ -43,13 +43,12 @@ import {
   updateContent,
 } from '../goal-form/actions'
 import { archiveGoalFully } from '../projects/goals/actions'
-import { archiveEdge } from '../projects/edges/actions'
+import { archiveEdge, layoutAffectingArchiveEdge } from '../projects/edges/actions'
 import { setScreenDimensions } from '../screensize/actions'
 import { changeTranslate, changeScale } from '../viewport/actions'
 import { openExpandedView } from '../expanded-view/actions'
 import { MOUSE, TRACKPAD } from '../local-preferences/reducer'
 
-import layoutFormula from '../drawing/layoutFormula'
 import { setGoalClone } from '../goal-clone/actions'
 
 import cloneGoals from './cloneGoals'
@@ -58,6 +57,22 @@ import {
   setEdgeConnectorTo,
 } from '../edge-connector/actions'
 import handleEdgeConnectMouseUp from '../edge-connector/handler'
+
+// ASSUMPTION: one parent (existingParentEdgeAddress)
+function handleMouseUpForGoalForm(state, event, store, fromAddress, relation, existingParentEdgeAddress) {
+  const calcedPoint = coordsPageToCanvas(
+    {
+      x: event.clientX,
+      y: event.clientY,
+    },
+    state.ui.viewport.translate,
+    state.ui.viewport.scale
+  )
+  store.dispatch(
+    // ASSUMPTION: one parent (existingParentEdgeAddress)
+    openGoalForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation, existingParentEdgeAddress)
+  )
+}
 
 export default function setupEventListeners(store, canvas) {
   function windowResize(event) {
@@ -114,11 +129,11 @@ export default function setupEventListeners(store, canvas) {
           !state.ui.expandedView.isOpen
         ) {
           let firstOfSelection = selection.selectedEdges[0]
+          // affectLayout means this action will trigger a recalc
+          // and layout animation update, which is natural in this context
+          const affectLayout = true
           store.dispatch(
-            archiveEdge.create({
-              cellIdString: activeProject,
-              payload: firstOfSelection,
-            })
+            layoutAffectingArchiveEdge(activeProject, firstOfSelection, affectLayout)
           )
           // if on firefox, and matched this case
           // prevent the browser from navigating back to the last page
@@ -197,7 +212,7 @@ export default function setupEventListeners(store, canvas) {
         screensize: { width },
       },
     } = state
-    const goalCoordinates = layoutFormula(width, state)
+    const goalCoordinates = state.ui.layout
     const convertedMouse = coordsPageToCanvas(
       {
         x: event.clientX,
@@ -274,7 +289,7 @@ export default function setupEventListeners(store, canvas) {
 
   // don't allow this function to be called more than every 200 milliseconds
   const debouncedWheelHandler = _.debounce(
-    event => {
+    (event) => {
       const state = store.getState()
       const {
         ui: {
@@ -321,44 +336,23 @@ export default function setupEventListeners(store, canvas) {
       },
     } = state
 
-    // if the GoalForm is open, any click on the
-    // canvas should close it
-    if (state.ui.goalForm.isOpen) {
-      store.dispatch(closeGoalForm())
+    if (state.ui.keyboard.gKeyDown) {
+      // opening the GoalForm is dependent on
+      // holding down the `g` keyboard key modifier
+      handleMouseUpForGoalForm(state, event, store)
     }
-    // opening the GoalForm is dependent on
-    // holding down the `g` keyboard key modifier
-    else if (state.ui.keyboard.gKeyDown) {
-      let parentAddress
-      if (state.ui.selection.selectedGoals.length) {
-        // use first
-        parentAddress = state.ui.selection.selectedGoals[0]
-      }
-      const calcedPoint = coordsPageToCanvas(
-        {
-          x: event.clientX,
-          y: event.clientY,
-        },
-        state.ui.viewport.translate,
-        state.ui.viewport.scale
-      )
-      store.dispatch(
-        openGoalForm(calcedPoint.x, calcedPoint.y, null, parentAddress)
-      )
-    }
-    // finishing a drag box selection action
     else if (goalsAddresses) {
-      goalsAddresses.forEach(value => store.dispatch(selectGoal(value)))
+      // finishing a drag box selection action
+      goalsAddresses.forEach((value) => store.dispatch(selectGoal(value)))
     } else {
       // check for node in clicked area
       // select it if so
       const {
         ui: {
           viewport: { translate, scale },
-          screensize: { width },
         },
       } = state
-      const goalCoordinates = layoutFormula(width, state)
+      const goalCoordinates = state.ui.layout
 
       const clickedEdgeAddress = checkForEdgeAtCoordinates(
         canvas.getContext('2d'),
@@ -403,16 +397,6 @@ export default function setupEventListeners(store, canvas) {
       }
     }
 
-    const { fromAddress, relation, toAddress } = state.ui.edgeConnector
-    const { activeProject } = state.ui
-    handleEdgeConnectMouseUp(
-      fromAddress,
-      relation,
-      toAddress,
-      activeProject,
-      store.dispatch
-    )
-
     // clear box selection vars
     store.dispatch(unsetCoordinate())
     store.dispatch(unsetGoals())
@@ -424,6 +408,32 @@ export default function setupEventListeners(store, canvas) {
   }
 
   function canvasMouseup(event) {
+    const state = store.getState()
+    // ASSUMPTION: one parent (existingParentEdgeAddress)
+    const { fromAddress, relation, toAddress, existingParentEdgeAddress } = state.ui.edgeConnector
+    const { activeProject } = state.ui
+    if (fromAddress) {
+      // covers the case where we are hovered over a Goal
+      // and thus making a connection to an existing Goal
+      // AS WELL AS the case where we are not
+      // (to reset the edge connector)
+      handleEdgeConnectMouseUp(
+        fromAddress,
+        relation,
+        toAddress,
+        // ASSUMPTION: one parent
+        existingParentEdgeAddress,
+        activeProject,
+        store.dispatch
+      )
+      // covers the case where we are not hovered over a Goal
+      // and thus making a new Goal and connection/Edge
+      if (!toAddress) {
+        handleMouseUpForGoalForm(state, event, store, fromAddress, relation, existingParentEdgeAddress)
+      }
+    }
+
+    // update the mouse aware state
     store.dispatch(unsetMousedown())
   }
 
@@ -437,7 +447,7 @@ export default function setupEventListeners(store, canvas) {
       },
     } = state
     const goals = state.projects.goals[activeProject] || {}
-    const goalCoordinates = layoutFormula(width, state)
+    const goalCoordinates = state.ui.layout
     const goalAddress = checkForGoalAtCoordinates(
       canvas.getContext('2d'),
       translate,

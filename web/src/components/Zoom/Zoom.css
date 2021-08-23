@@ -5,23 +5,23 @@
   border-right: 1px solid #d9d9d9;
 }
 
-.zoom-wrapper .icon,
-span {
+.zoom-wrapper .icon, span {
   display: inline-block;
 }
 
 .zoom-wrapper span {
-  font-size: 16px;
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-size: 14px;
+  font-family: 'gilroyextrabold', Helvetica, sans-serif;
   font-weight: normal;
-  margin-right: 12px;
-  width: 44px;
+  margin-right: 10px;
+  width: 40px;
+  color: #535353;
 }
 
 .zoom-wrapper .icon {
-  height: 22px;
+  margin-right: 8px;
+  /* height: 22px;
   width: 22px;
   padding: 4px;
-  margin-right: 12px;
-  box-sizing: border-box;
+  box-sizing: border-box; */
 }

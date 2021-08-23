@@ -1,50 +1,14 @@
 .priority-view-wrapper {
-  margin: 62px 8px 8px;
+  margin: 62px 8px 0 8px;
   display: flex;
   flex-direction: row;
+  height: calc(100vh - 128px);
 }
 
 .indented-view-wrapper {
-  height: calc(100vh - 70px);
   background: #f3f0ed;
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 0px 0px 4px #0000001f;
-  border-radius: 8px;
-}
-
-.priority-quadrants-wrapper {
-  flex: 1;
-  margin-left: 8px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 6px;
-  grid-template-rows: calc(50% - 8px);
-}
-
-.priority-wrapper-full-height {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  margin-left: 8px;
-}
-
-.priority-quadrants-row .priority-quadrant {
-  width: 50%;
-}
-
-.priority-view-picker-animation {
-  transition: opacity 0.3s ease;
-  position: absolute;
-  top: 20%;
-  left: 40px;
-}
-
-.priority-view-picker-animation.exit, .priority-view-picker-animation.enter-done, .priority-view-picker-animation.enter-active {
-  opacity: 1;
-}
-
-.priority-view-picker-animation.enter, .priority-view-picker-animation.exit-done, .priority-view-picker-animation.exit-active {
-  opacity: 0;
+  border-radius: 10px;
 }

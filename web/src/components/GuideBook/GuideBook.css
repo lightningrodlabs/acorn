@@ -33,7 +33,7 @@
 .guidebook-wrapper .nav-item {
   cursor: pointer;
   font-size: 16px;
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'gilroyextrabold', Helvetica, sans-serif;
   margin-bottom: 14px;
   display: flex;
   flex-direction: row;
@@ -84,8 +84,8 @@
   display: inline-block;
   border: none;
   cursor: pointer;
-  font-size: 13px;
-  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-size: 14px;
+  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
   transition: color 0.2s ease-in-out;
   text-decoration: none;
   color: #222222;
@@ -146,7 +146,7 @@
 
 .guidebook-section-title {
   font-size: 24px;
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'gilroyextrabold', Helvetica, sans-serif;
   margin-bottom: 30px;
 }
 

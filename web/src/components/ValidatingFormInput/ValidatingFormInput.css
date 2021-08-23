@@ -13,12 +13,11 @@
 }
 
 .validating_form_input label {
-  color: #222222;
-  line-height: 22px;
-  font-size: 16px;
-  margin-bottom: 2px;
+  color: #4d4d4d;
+  line-height: 18px;
+  font-size: 15px;
   display: block;
-  font-family: 'hk-grotesk-bold';
+  font-family: 'gilroyextrabold', Helvetica, sans-serif;
 }
 
 .validating_form_input .help_text {

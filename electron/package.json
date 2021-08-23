@@ -1,6 +1,6 @@
 {
   "name": "acorn",
-  "version": "0.5.1-alpha",
+  "version": "0.5.2-alpha",
   "description": "Create the future",
   "main": "dist/index.js",
   "scripts": {
@@ -17,8 +17,8 @@
   "build": {
     "productName": "Acorn",
     "afterSign": "./afterSignHook.js",
-    "appId": "com.harris-braun-enterprises.acorn",
-    "copyright": "Copyright © 2021 Harris-Braun Enterprises LLC",
+    "appId": "com.harris-braun.acorn",
+    "copyright": "© 2020-2021 Harris-Braun Enterprises, LLC",
     "asarUnpack": "binaries/**/*",
     "files": [
       "dist/**/*",

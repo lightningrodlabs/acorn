@@ -27,17 +27,30 @@ import moment from 'moment'
 import drawRoundCornerRectangle from './drawRoundCornerRectangle'
 
 // render a goal card
-export default function render(
+export default function render({
   scale,
   goal,
   members,
-  { x, y },
+  coordinates,
   isEditing,
   editText,
   isSelected,
   isHovered,
-  ctx
-) {
+  ctx,
+  isBeingEdited,
+  isTopPriorityGoal
+}) {
+  let x, y
+  if (coordinates) {
+    x = coordinates.x
+    y = coordinates.y
+  } else {
+    // do not render if we don't have coordinates
+    // this can happen if we've just became aware of the goal
+    // and the layout has not been re-calculated using layoutFormula
+    return
+  }
+
   // use the editText for measuring,
   // even though it's not getting drawn on the canvas
   const text = isEditing ? editText : goal.content
@@ -50,6 +63,9 @@ export default function render(
   let backgroundColor = '#FFFFFF'
   if (isHovered) {
     backgroundColor = '#f2f1ef'
+  }
+  else if (isBeingEdited) {
+    backgroundColor = '#EAEAEA'
   }
 
   const halfBorder = borderWidth / 2 // for use with 'stroke' of the border
@@ -83,6 +99,7 @@ export default function render(
     stroke: false,
     strokeWidth: '0',
     boxShadow: true,
+    topPriorityGoalGlow: isTopPriorityGoal ? borderColor : null
   })
   // card border
   drawRoundCornerRectangle({
@@ -96,6 +113,7 @@ export default function render(
     stroke: true,
     strokeWidth: '3',
     boxShadow: false,
+    topPriorityGoalGlow: false
   })
 
   // selection outline (purple)
@@ -129,7 +147,9 @@ export default function render(
       boxShadow: false,
     })
   }
-
+  /*
+  TITLE
+  */
   // render text, if not in edit mode
   // in which case the text is being rendered in the textarea
   // html element being overlaid on top of this Goal
@@ -154,6 +174,11 @@ export default function render(
       lineSpacingToUse = lineSpacingLarge
       fontSizeToUse = fontSizeLargeInt
     }
+    let titleTextColor = '#4D4D4D'
+    if (isBeingEdited) {
+      titleTextColor = '#888888'
+    }
+    ctx.fillStyle = titleTextColor
     lines.slice(0, lineLimit).forEach((line, index) => {
       let linePosition = index * (fontSizeToUse + lineSpacingToUse)
       let lineText = line
@@ -167,8 +192,10 @@ export default function render(
     })
   }
 
-  const goalMetaPadding = 8
-
+  const goalMetaPadding = 12
+  /*
+  TIMEFRAME
+  */
   if (goal.time_frame) {
     const calendarWidth = 12,
       calendarHeight = 12
@@ -181,7 +208,11 @@ export default function render(
     const xImgDraw = x + goalMetaPadding + 4
     const yImgDraw = y + goalHeight - calendarHeight - goalMetaPadding - 6
     const textBoxLeft = xImgDraw + textBoxMarginLeft - 12
-    const textBoxTop = yImgDraw + textBoxMarginTop / 4 - 8
+    const textBoxTop = yImgDraw + textBoxMarginTop / 4 - 6
+    let timeframeTextColor = '#898989'
+    if (isBeingEdited) {
+      timeframeTextColor = '#888888'
+    }
     let text = goal.time_frame.from_date
       ? String(moment.unix(goal.time_frame.from_date).format('MMM D, YYYY - '))
       : ''
@@ -190,12 +221,14 @@ export default function render(
       : ''
     ctx.drawImage(img, xImgDraw, yImgDraw, calendarWidth, calendarHeight)
     ctx.save()
-    ctx.fillStyle = '#898989'
+    ctx.fillStyle = timeframeTextColor
     ctx.font = '13px hk-grotesk-semibold'
     ctx.fillText(text, textBoxLeft, textBoxTop)
     ctx.restore()
   }
-
+  /*
+  MEMBERS
+  */
   // draw members avatars
   members.forEach((member, index) => {
     // defensive coding
@@ -310,4 +343,26 @@ export default function render(
     ctx.closePath()
     ctx.restore()
   })
+
+  /*
+  BEING EDITED INDICATOR 
+  */
+  if (isBeingEdited) {
+    drawRoundCornerRectangle({
+      context: ctx,
+      width: 140,
+      height: 25,
+      color: '#717171',
+      boxShadow: false,
+      xPosition: x + goalWidth / 2 - 70,
+      yPosition: y + goalHeight - 12.5,
+      radius: 6,
+    })
+  }
+  if (isBeingEdited) {
+    let isBeingEditedText = 'Being edited by Eric'
+    ctx.fillStyle = '#fff'
+    ctx.font = '14px hk-grotesk-bold'
+    ctx.fillText(isBeingEditedText, x + goalWidth / 2 - 60, y + goalHeight - 8)
+  }
 }

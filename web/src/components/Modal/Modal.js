@@ -6,7 +6,7 @@ import Button from '../Button/Button'
 
 import './Modal.css'
 
-function ModalContent ({
+function ModalContent({
   content,
   secondaryContent,
   heading,
@@ -62,7 +62,7 @@ function ModalContent ({
 
 export { ModalContent }
 
-export default function Modal ({
+export default function Modal({
   white,
   active,
   className,
@@ -77,7 +77,7 @@ export default function Modal ({
             <Icon
               name='x.svg'
               size='small-close'
-              className='grey'
+              className='light-grey'
               onClick={() => onClose()}
             />
           )}

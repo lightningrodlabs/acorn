@@ -1,10 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="22.522" height="22.187" viewBox="0 0 22.522 22.187">
-  <defs>
-    <style>
-      .cls-1 {
-        fill: #4d4d4d;
-      }
-    </style>
-  </defs>
-  <path id="tag-line" class="cls-1" d="M16.2,3.352a2.584,2.584,0,0,1,1.807.737,2.494,2.494,0,0,1,0,3.561,2.586,2.586,0,0,1-3.615,0,2.494,2.494,0,0,1,0-3.561A2.559,2.559,0,0,1,16.2,3.352Zm5.917,6.885-11.975,11.8a.542.542,0,0,1-.754,0L-.1,12.691a.523.523,0,0,1,0-.742L11.88.151A.529.529,0,0,1,12.257,0h9.173a.524.524,0,0,1,.53.522V.551l.312,9.3A.5.5,0,0,1,22.118,10.237ZM9.766,20.921,21.2,9.657,20.911,1.05H12.474L1.035,12.319ZM17.391,4.7a1.7,1.7,0,0,0-2.379,0,1.635,1.635,0,0,0,0,2.343,1.7,1.7,0,0,0,2.379,0,1.635,1.635,0,0,0,0-2.343Z" transform="translate(0.25)"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="devfont devfont-price-tag"><path d="M22 13l-9 9L3 12l1-8 8-1 10 10z"></path><path d="M8 8h.01"></path><circle cx="8" cy="8" r=".5"></circle></svg>

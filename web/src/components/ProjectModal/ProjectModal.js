@@ -8,7 +8,7 @@ function ProjectModalHeading({ title }) {
 }
 
 function ProjectModalSubHeading({ title }) {
-  return <div className='project-modal-subheading'>{title}</div>
+  return <div className='project-modal-subheading'><h4>{title}</h4></div>
 }
 
 function ProjectModalContent({ children }) {

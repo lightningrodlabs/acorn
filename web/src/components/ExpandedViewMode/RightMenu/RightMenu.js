@@ -88,7 +88,7 @@ export default function RightMenu({
       <div className='right-menu-icons'>
         {/* priority */}
         <Icon
-          name='priority.svg'
+          name='sort-asc.svg'
           className={rightMenuPriorityClass}
           key='priority'
           onClick={() => toggleView('priority')}
@@ -109,7 +109,7 @@ export default function RightMenu({
         />
         {/* hierarchy */}
         <Icon
-          name='hierarchy.svg'
+          name='hierarchy-leaf.svg'
           className={rightMenuHierarchyClass}
           key='hierarchy'
           onClick={() => toggleView('hierarchy')}
