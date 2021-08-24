@@ -39,10 +39,10 @@ fn validate_update_entry_project_meta(
               {
                 ValidateCallbackResult::Valid
               } else {
-                Error::OnlyEditNameAndImage.into()
+                Error::ProjectMetaEditableFields.into()
               }
             }
-            Err(e) => e.into(),
+            Err(e) => e,
           }
         }
         _ => {
@@ -123,7 +123,11 @@ pub mod tests {
     );
 
     // make it pass first step by adding a project meta
-    let project_meta = fixt!(ProjectMeta);
+    let mut project_meta = fixt!(ProjectMeta);
+    // do this because for some reason the fixturator was occasionally 
+    // producing a NaN for the f64 for created_at field. Will
+    // have to watch out for that weird behaviour
+    project_meta.created_at = 102391293.0;
     *validate_data.element.as_entry_mut() =
       ElementEntry::Present(project_meta.clone().try_into().unwrap());
 
@@ -153,14 +157,14 @@ pub mod tests {
       ])),
     );
 
-    let original_project_meta = ProjectMeta {
+    let invalid_original_project_meta = ProjectMeta {
       //make it invalid can't edit passphrase
       passphrase: "test".to_string(),
       ..project_meta.clone()
     };
-    let mut original_project_meta_element = fixt!(Element);
-    *original_project_meta_element.as_entry_mut() =
-      ElementEntry::Present(original_project_meta.clone().try_into().unwrap());
+    let mut invalid_original_project_meta_element = fixt!(Element);
+    *invalid_original_project_meta_element.as_entry_mut() =
+      ElementEntry::Present(invalid_original_project_meta.clone().try_into().unwrap());
 
     let mut mock_hdk = MockHdkT::new();
     // the resolve_dependencies `get` call of the original_header_address
@@ -171,27 +175,27 @@ pub mod tests {
         GetOptions::content(),
       )]))
       .times(1)
-      .return_const(Ok(vec![Some(original_project_meta_element.clone())]));
+      .return_const(Ok(vec![Some(invalid_original_project_meta_element)]));
 
     set_hdk(mock_hdk);
 
     // without an Element containing an Entry, validation will fail
     assert_eq!(
       super::validate_update_entry_project_meta(validate_data.clone()),
-      Error::OnlyEditNameAndImage.into(),
+      Error::ProjectMetaEditableFields.into(),
     );
 
     // SUCCESS CASE, can edit name and image (only)
 
-    let original_project_meta = ProjectMeta {
+    let valid_original_project_meta = ProjectMeta {
       //make it valid, by matching the rest, but name and image
       name: "test".to_string(),
       image: Some("hi".to_string()),
       ..project_meta
     };
-    let mut original_project_meta_element = fixt!(Element);
-    *original_project_meta_element.as_entry_mut() =
-      ElementEntry::Present(original_project_meta.clone().try_into().unwrap());
+    let mut valid_original_project_meta_element = fixt!(Element);
+    *valid_original_project_meta_element.as_entry_mut() =
+      ElementEntry::Present(valid_original_project_meta.clone().try_into().unwrap());
 
     let mut mock_hdk = MockHdkT::new();
     // the resolve_dependencies `get` call of the original_header_address
@@ -202,7 +206,7 @@ pub mod tests {
         GetOptions::content(),
       )]))
       .times(1)
-      .return_const(Ok(vec![Some(original_project_meta_element.clone())]));
+      .return_const(Ok(vec![Some(valid_original_project_meta_element)]));
 
     set_hdk(mock_hdk);
 
