@@ -29,11 +29,13 @@ const BINARY_PATHS: PathOptions | undefined = app.isPackaged
   ? {
       holochainRunnerBinaryPath: path.join(
         __dirname,
-        '../../app.asar.unpacked/binaries/holochain-runner'
+        '../../app.asar.unpacked/binaries/holochain-runner',
+        process.platform === "win32" ? '.exe' : ''
       ),
       lairKeystoreBinaryPath: path.join(
         __dirname,
-        '../../app.asar.unpacked/binaries/lair-keystore'
+        '../../app.asar.unpacked/binaries/lair-keystore',
+        process.platform === "win32" ? '.exe' : ''
       ),
     }
   : undefined

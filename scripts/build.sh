@@ -10,9 +10,9 @@ mkdir electron/binaries
 
 cp dna/workdir/projects.dna electron/binaries/projects.dna
 cp dna/workdir/profiles.dna electron/binaries/profiles.dna
+
 # DO PLATFORM SPECIFIC lair-keystore and holochain-runner BINARIES HERE
-# cp ....../holochain-runner electron/binaries/holochain-runner
-# cp $(which lair-keystore) electron/binaries/lair-keystore
+. scripts/copy-binaries
 
 # ui
 rm -rf electron/web
