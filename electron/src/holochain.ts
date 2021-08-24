@@ -14,8 +14,7 @@ enum StateSignal {
   CreatingKeys = 'Creating cryptographic keys...',
   RegisteringDna = 'Registering Profiles DNA to Holochain...',
   InstallingApp = 'Installing DNA bundle to Holochain...',
-  ActivatingApp = 'Activating DNA bundle...',
-  SettingUpCells = 'Writing first entries to source chain...',
+  EnablingApp = 'Enabling DNA...',
   AddingAppInterface = 'Attaching API network port...',
   // this one doesn't show to UI, it's
   // used to close the splash screen and launch the main window
@@ -36,13 +35,11 @@ function stdoutToStateSignal(string: string): StateSignal {
     case '4':
       return StateSignal.InstallingApp
     case '5':
-      return StateSignal.ActivatingApp
+      return StateSignal.EnablingApp
     case '6':
-      return StateSignal.SettingUpCells
-    case '7':
       return StateSignal.AddingAppInterface
     // Done/Ready Event
-    case '8':
+    case '7':
       return StateSignal.IsReady
     default:
       return null

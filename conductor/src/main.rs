@@ -3,7 +3,6 @@ use structopt::StructOpt;
 use tokio::signal::unix::{signal, SignalKind};
 
 const PROFILES_DNA: &'static [u8] = include_bytes!("../../dna/workdir/profiles.dna");
-const PROJECTS_DNA: &'static [u8] = include_bytes!("../../dna/workdir/projects.dna");
 
 #[derive(Debug, StructOpt)]
 #[structopt(
@@ -64,7 +63,6 @@ fn main() {
   // String is like "CellNick"/"SlotId"
   let dnas: Vec<(Vec<u8>, String)> = vec![
     (PROFILES_DNA.into(), "profiles-slot".into()),
-    (PROJECTS_DNA.into(), "projects-slot".into()),
   ];
 
   // An infinite stream of hangup signals.
@@ -101,10 +99,9 @@ fn state_signal_to_stdout(signal: &StateSignal) -> i16 {
     StateSignal::CreatingKeys => 2,
     StateSignal::RegisteringDna => 3,
     StateSignal::InstallingApp => 4,
-    StateSignal::ActivatingApp => 5,
-    StateSignal::SettingUpCells => 6,
-    StateSignal::AddingAppInterface => 7,
+    StateSignal::EnablingApp => 5,
+    StateSignal::AddingAppInterface => 6,
     // Done/Ready Event
-    StateSignal::IsReady => 8,
+    StateSignal::IsReady => 7,
   }
 }

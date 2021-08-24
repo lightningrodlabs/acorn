@@ -291,6 +291,8 @@ async function installProjectApp(passphrase) {
   const cellId = installedApp.cell_data[0].cell_id
   const cellIdString = cellIdToString(cellId)
   // ACTIVATE
+  // TODO !!! Update to EnableApp when updating
+  // conductor-api version
   await adminWs.activateApp({ installed_app_id })
   return [cellIdString, cellId, installed_app_id]
 }
