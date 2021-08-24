@@ -1,8 +1,7 @@
 
 # will clear existing session, beware!
-# npm run dna-pack
-# cargo build --release
-cp target/release/acorn-conductor electron/binaries/acorn-conductor
+npm run dna-pack
+cp dna/workdir/profiles.dna electron/binaries/profiles.dna
 cp dna/workdir/projects.dna electron/binaries/projects.dna
 rm -rf tmp2
 rm -rf tmp

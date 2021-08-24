@@ -36,14 +36,16 @@ const projectsDnaPath = app.isPackaged
   ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/projects.dna')
   : path.join(app.getAppPath(), '../dna/workdir/projects.dna')
 
-const profilesDnaPath = path.join(app.getAppPath(), '../dna/workdir/profiles.dna')
+const profilesDnaPath = app.isPackaged
+  ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/profiles.dna')
+  : path.join(app.getAppPath(), '../dna/workdir/profiles.dna')
 
 const MAIN_APP_ID = 'main-app'
 const COMMUNITY_PROXY_URL =
   'kitsune-proxy://SYVd4CF3BdJ4DS7KwLLgeU3_DbHoZ34Y-qroZ79DOs8/kitsune-quic/h/165.22.32.11/p/5779/--'
 
 const devOptions: HolochainRunnerOptions = {
-  dnaPath: profilesDnaPath,
+  dnaPath: profilesDnaPath, // preload
   datastorePath: process.env.ACORN_TEST_USER_2
     ? '../tmp/databases'
     : '../tmp2/databases',
@@ -56,7 +58,7 @@ const devOptions: HolochainRunnerOptions = {
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 const prodOptions: HolochainRunnerOptions = {
-  dnaPath: profilesDnaPath,
+  dnaPath: profilesDnaPath, // preload
   datastorePath: path.join(app.getPath('userData'), 'databases-0-5-2'),
   appId: MAIN_APP_ID,
   appWsPort: 8889,
