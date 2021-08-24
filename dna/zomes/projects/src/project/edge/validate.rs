@@ -8,7 +8,10 @@ use hdk::prelude::*;
 fn validate_create_entry_edge(validate_data: ValidateData) -> ExternResult<ValidateCallbackResult> {
   let proposed_edge = match Edge::try_from(&validate_data.element) {
     Ok(edge) => edge,
-    Err(e) => return Ok(ValidateCallbackResult::Invalid(e.to_string())),
+    Err(_e) => {
+      // early exit the whole function
+      return Ok(Error::EntryMissing.into())
+    },
   };
 
   // avoid edges to/from self
@@ -130,10 +133,7 @@ pub mod tests {
 
     // act as if the parent_address and child_address Goals were missing, could not be resolved
     let mut mock_hdk = MockHdkT::new();
-    mock_hdk
-      .expect_get()
-      .times(2)
-      .return_const(Ok(None));
+    mock_hdk.expect_get().times(2).return_const(Ok(vec![None]));
 
     set_hdk(mock_hdk);
 
@@ -156,22 +156,22 @@ pub mod tests {
     // the resolve_dependencies `get` call of the parent goal
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
+      .with(mockall::predicate::eq(vec![GetInput::new(
         goal_parent_wrapped_header_hash.clone().0.into(),
         GetOptions::content(),
-      )))
+      )]))
       .times(1)
-      .return_const(Ok(Some(goal_element.clone())));
+      .return_const(Ok(vec![Some(goal_element.clone())]));
 
     // the resolve_dependencies `get` call of the child goal
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
+      .with(mockall::predicate::eq(vec![GetInput::new(
         goal_child_wrapped_header_hash.clone().0.into(),
         GetOptions::content(),
-      )))
+      )]))
       .times(1)
-      .return_const(Ok(None));
+      .return_const(Ok(vec![None]));
 
     set_hdk(mock_hdk);
 
@@ -195,22 +195,22 @@ pub mod tests {
     // the resolve_dependencies `get` call of the parent goal
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
+      .with(mockall::predicate::eq(vec![GetInput::new(
         goal_parent_wrapped_header_hash.clone().0.into(),
         GetOptions::content(),
-      )))
+      )]))
       .times(1)
-      .return_const(Ok(Some(goal_element.clone())));
+      .return_const(Ok(vec![Some(goal_element.clone())]));
 
     // the resolve_dependencies `get` call of the child goal
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
+      .with(mockall::predicate::eq(vec![GetInput::new(
         goal_child_wrapped_header_hash.clone().0.into(),
         GetOptions::content(),
-      )))
+      )]))
       .times(1)
-      .return_const(Ok(Some(goal_element.clone())));
+      .return_const(Ok(vec![Some(goal_element.clone())]));
 
     set_hdk(mock_hdk);
 

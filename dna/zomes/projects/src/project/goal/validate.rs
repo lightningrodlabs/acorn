@@ -1,5 +1,6 @@
 use crate::project::{
   goal::crud::Goal,
+  error::Error,
   validate::{
     validate_value_is_none, validate_value_is_some, validate_value_matches_create_author,
     validate_value_matches_edit_author, validate_value_matches_original_author,
@@ -28,7 +29,7 @@ fn validate_create_entry_goal(validate_data: ValidateData) -> ExternResult<Valid
           }
         }
       }
-      Err(e) => ValidateCallbackResult::Invalid(e.to_string()),
+      Err(_e) => Error::EntryMissing.into(),
     },
   )
 }
@@ -79,7 +80,7 @@ fn validate_update_entry_goal(validate_data: ValidateData) -> ExternResult<Valid
           validate_callback_result => validate_callback_result,
         }
       }
-      Err(e) => ValidateCallbackResult::Invalid(e.to_string()),
+      Err(_e) => Error::EntryMissing.into(),
     },
   )
 }
@@ -218,12 +219,12 @@ pub mod tests {
     // return Ok(None) for now, as if it can't be found
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
+      .with(mockall::predicate::eq(vec![GetInput::new(
         update_header.original_header_address.clone().into(),
         GetOptions::content(),
-      )))
+      )]))
       .times(1)
-      .return_const(Ok(None));
+      .return_const(Ok(vec![None]));
 
     set_hdk(mock_hdk);
 
@@ -249,12 +250,12 @@ pub mod tests {
     // return a result, as if it can be found
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
+      .with(mockall::predicate::eq(vec![GetInput::new(
         update_header.original_header_address.clone().into(),
         GetOptions::content(),
-      )))
+      )]))
       .times(1)
-      .return_const(Ok(Some(original_goal_element.clone())));
+      .return_const(Ok(vec![Some(original_goal_element.clone())]));
 
     set_hdk(mock_hdk);
 
@@ -282,12 +283,12 @@ pub mod tests {
     // return a result, as if it can be found
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
+      .with(mockall::predicate::eq(vec![GetInput::new(
         update_header.original_header_address.clone().into(),
         GetOptions::content(),
-      )))
+      )]))
       .times(1)
-      .return_const(Ok(Some(original_goal_element.clone())));
+      .return_const(Ok(vec![Some(original_goal_element.clone())]));
 
     set_hdk(mock_hdk);
 

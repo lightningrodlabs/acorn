@@ -19,8 +19,10 @@ thiserror = "1"
 mockall = "0.9"
 
 [dev-dependencies]
-fixt = "0.0.5"
-holochain_types = "0.0.3"
+# fixt = "0.0.5"
+fixt  = { git = "https://github.com/holochain/holochain.git", branch = "Connoropolous-patch-2" }
+# holochain_types = "0.0.3"
+holochain_types = { git = "https://github.com/holochain/holochain.git", branch = "Connoropolous-patch-2" }
 rand = "0.7"
 strum = "0.18.0"
 strum_macros = "0.18.0"

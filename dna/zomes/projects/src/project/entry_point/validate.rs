@@ -14,21 +14,23 @@ fn validate_create_entry_entry_point(
     match EntryPoint::try_from(&validate_data.element) {
       Ok(proposed_entry) => {
         // parent goal at goal_address must be determined to exist
-        match confirm_resolved_dependency::<Goal>(proposed_entry.goal_address.0.into())?
-        {
+        match confirm_resolved_dependency::<Goal>(proposed_entry.goal_address.0.into())? {
           ValidateCallbackResult::Valid => {
             // an imported entry can have another listed as author
             if proposed_entry.is_imported {
               ValidateCallbackResult::Valid
             } else {
               // creator_address must match header author
-              validate_value_matches_create_author(&proposed_entry.creator_address.0, &validate_data)
+              validate_value_matches_create_author(
+                &proposed_entry.creator_address.0,
+                &validate_data,
+              )
             }
           }
           validate_callback_result => validate_callback_result,
         }
       }
-      Err(e) => ValidateCallbackResult::Invalid(e.to_string()),
+      Err(_e) => Error::EntryMissing.into(),
     },
   )
 }
@@ -52,8 +54,8 @@ pub mod tests {
     EntryPointFixturator, GoalFixturator, WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator,
   };
   use ::fixt::prelude::*;
-  use hdk_crud::WrappedAgentPubKey;
   use hdk::prelude::*;
+  use hdk_crud::WrappedAgentPubKey;
   use holochain_types::prelude::ElementFixturator;
   use holochain_types::prelude::ValidateDataFixturator;
 
@@ -95,7 +97,7 @@ pub mod tests {
     entry_point.goal_address = goal_wrapped_header_hash.clone();
     *validate_data.element.as_entry_mut() =
       ElementEntry::Present(entry_point.clone().try_into().unwrap());
-    
+
     // now, since validation is dependent on other entries, we begin
     // to have to mock `get` calls to the HDK
 
@@ -106,12 +108,12 @@ pub mod tests {
     // the resolve_dependencies `get` call of the parent goal
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
+      .with(mockall::predicate::eq(vec![GetInput::new(
         goal_wrapped_header_hash.clone().0.into(),
         GetOptions::content(),
-      )))
+      )]))
       .times(1)
-      .return_const(Ok(None));
+      .return_const(Ok(vec![None]));
 
     set_hdk(mock_hdk);
 
@@ -134,12 +136,12 @@ pub mod tests {
     // the resolve_dependencies `get` call of the goal_address
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
+      .with(mockall::predicate::eq(vec![GetInput::new(
         goal_wrapped_header_hash.clone().0.into(),
         GetOptions::content(),
-      )))
+      )]))
       .times(1)
-      .return_const(Ok(Some(goal_element.clone())));
+      .return_const(Ok(vec![Some(goal_element.clone())]));
 
     set_hdk(mock_hdk);
 
@@ -170,12 +172,12 @@ pub mod tests {
     // the resolve_dependencies `get` call of the goal_address
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
+      .with(mockall::predicate::eq(vec![GetInput::new(
         goal_wrapped_header_hash.clone().0.into(),
         GetOptions::content(),
-      )))
+      )]))
       .times(1)
-      .return_const(Ok(Some(goal_element.clone())));
+      .return_const(Ok(vec![Some(goal_element.clone())]));
 
     set_hdk(mock_hdk);
 

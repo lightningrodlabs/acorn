@@ -14,7 +14,7 @@ fn validate_create_entry_member(
         // `address` must match header author
         validate_value_matches_create_author(&proposed_entry.address.0, &validate_data)
       }
-      Err(e) => ValidateCallbackResult::Invalid(e.to_string()),
+      Err(_e) => Error::EntryMissing.into(),
     },
   )
 }

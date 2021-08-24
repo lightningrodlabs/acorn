@@ -17,7 +17,7 @@ fn validate_create_entry_project_meta(
         // `address` must match header author
         validate_value_matches_create_author(&proposed_entry.creator_address.0, &validate_data)
       }
-      Err(e) => ValidateCallbackResult::Invalid(e.to_string()),
+      Err(_e) => Error::EntryMissing.into(),
     },
   )
 }
@@ -51,7 +51,7 @@ fn validate_update_entry_project_meta(
           return unreachable!();
         }
       },
-      Err(e) => ValidateCallbackResult::Invalid(e.to_string()),
+      Err(_e) => Error::EntryMissing.into(),
     },
   )
 }
@@ -134,13 +134,13 @@ pub mod tests {
     // the resolve_dependencies `get` call of the original ProjectMeta
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
+      .with(mockall::predicate::eq(vec![GetInput::new(
         update_header.original_header_address.clone().into(),
         GetOptions::content(),
-      )))
+      )]))
       .times(1)
       // act as if not present / not found
-      .return_const(Ok(None));
+      .return_const(Ok(vec![None]));
 
     set_hdk(mock_hdk);
 
@@ -166,12 +166,12 @@ pub mod tests {
     // the resolve_dependencies `get` call of the original_header_address
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
+      .with(mockall::predicate::eq(vec![GetInput::new(
         update_header.original_header_address.clone().into(),
         GetOptions::content(),
-      )))
+      )]))
       .times(1)
-      .return_const(Ok(Some(original_project_meta_element.clone())));
+      .return_const(Ok(vec![Some(original_project_meta_element.clone())]));
 
     set_hdk(mock_hdk);
 
@@ -197,12 +197,12 @@ pub mod tests {
     // the resolve_dependencies `get` call of the original_header_address
     mock_hdk
       .expect_get()
-      .with(mockall::predicate::eq(GetInput::new(
+      .with(mockall::predicate::eq(vec![GetInput::new(
         update_header.original_header_address.clone().into(),
         GetOptions::content(),
-      )))
+      )]))
       .times(1)
-      .return_const(Ok(Some(original_project_meta_element.clone())));
+      .return_const(Ok(vec![Some(original_project_meta_element.clone())]));
 
     set_hdk(mock_hdk);
 
