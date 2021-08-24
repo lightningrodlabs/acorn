@@ -1,8 +1,13 @@
-import { EventEmitter } from 'events'
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import * as path from 'path'
 import log from 'electron-log'
-import { devOptions, prodOptions, runHolochain, StateSignal } from './holochain'
+import {
+  devOptions,
+  projectsDnaPath,
+  prodOptions,
+  stateSignalToText,
+} from './holochain'
+import setup, { StateSignal, STATUS_EVENT } from 'electron-holochain'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // if (require('electron-squirrel-startup')) {
@@ -13,17 +18,22 @@ import { devOptions, prodOptions, runHolochain, StateSignal } from './holochain'
 const BACKGROUND_COLOR = '#fbf9f7'
 // must point to unpacked versions, not in an asar archive
 // in production
-const HOLOCHAIN_BINARY_PATH = app.isPackaged
-  ? path.join(__dirname, '../../app.asar.unpacked/binaries/acorn-conductor')
-  : path.join(__dirname, '../binaries/acorn-conductor')
-const LAIR_KEYSTORE_PATH = app.isPackaged
-  ? path.join(__dirname, '../../app.asar.unpacked/binaries/lair-keystore')
-  : path.join(__dirname, '../binaries/lair-keystore')
+// const HOLOCHAIN_BINARY_PATH = app.isPackaged
+//   ? path.join(__dirname, '../../app.asar.unpacked/binaries/holochain-runner')
+//   : path.join(__dirname, '../binaries/holochain-runner')
+// const LAIR_KEYSTORE_PATH = app.isPackaged
+//   ? path.join(__dirname, '../../app.asar.unpacked/binaries/lair-keystore')
+//   : path.join(__dirname, '../binaries/lair-keystore')
 const MAIN_FILE = path.join(__dirname, '../web/index.html')
 const SPLASH_FILE = path.join(__dirname, '../web/splashscreen.html')
-const LINUX_ICON_FILE = path.join(__dirname, '../web/logo/acorn-logo-desktop-512px.png')
+const LINUX_ICON_FILE = path.join(
+  __dirname,
+  '../web/logo/acorn-logo-desktop-512px.png'
+)
 
-const DEVELOPMENT_UI_URL = process.env.ACORN_TEST_USER_2 ? 'http://localhost:8081' : 'http://localhost:8080'
+const DEVELOPMENT_UI_URL = process.env.ACORN_TEST_USER_2
+  ? 'http://localhost:8081'
+  : 'http://localhost:8080'
 
 const createMainWindow = (): BrowserWindow => {
   // Create the browser window.
@@ -102,32 +112,24 @@ const createSplashWindow = (): BrowserWindow => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
   const splashWindow = createSplashWindow()
-  const events = new EventEmitter()
-  events.on('status', (details: StateSignal) => {
-    splashWindow.webContents.send('status', details)
-  })
+  // HOLOCHAIN_BINARY_PATH,
+  // LAIR_KEYSTORE_PATH
   const opts = app.isPackaged ? prodOptions : devOptions
-  try {
-    const [lairHandle, holochainHandle] = await runHolochain(
-      events,
-      opts,
-      HOLOCHAIN_BINARY_PATH,
-      LAIR_KEYSTORE_PATH
-    )
-    app.on('will-quit', () => {
-      // sigterm is the default, and that's good
-      lairHandle.kill()
-      holochainHandle.kill()
-    })
-    // important that this line comes before the next one
-    // otherwise this triggers the 'all-windows-closed'
-    // event
-    createMainWindow()
-    splashWindow.close()
-  } catch (e) {
-    log.error(e)
-    app.quit()
-  }
+  const statusEmitter = await setup(app, opts)
+  statusEmitter.on(STATUS_EVENT, (state: StateSignal) => {
+    console.log(state)
+    switch (state) {
+      case StateSignal.IsReady:
+        // important that this line comes before the next one
+        // otherwise this triggers the 'all-windows-closed'
+        // event
+        createMainWindow()
+        splashWindow.close()
+        break
+      default:
+        splashWindow.webContents.send('status', stateSignalToText(state))
+    }
+  })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -148,7 +150,5 @@ app.on('activate', () => {
 })
 
 ipcMain.handle('getProjectsPath', () => {
-  return app.isPackaged
-    ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/projects.dna')
-    : path.join(app.getAppPath(), '../dna/workdir/projects.dna')
+  return projectsDnaPath
 })
