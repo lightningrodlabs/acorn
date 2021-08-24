@@ -7,7 +7,11 @@ import {
   prodOptions,
   stateSignalToText,
 } from './holochain'
-import setup, { StateSignal, STATUS_EVENT } from 'electron-holochain'
+import setup, {
+  StateSignal,
+  STATUS_EVENT,
+  PathOptions,
+} from 'electron-holochain'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // if (require('electron-squirrel-startup')) {
@@ -16,14 +20,24 @@ import setup, { StateSignal, STATUS_EVENT } from 'electron-holochain'
 // }
 
 const BACKGROUND_COLOR = '#fbf9f7'
-// must point to unpacked versions, not in an asar archive
+
 // in production
-// const HOLOCHAIN_BINARY_PATH = app.isPackaged
-//   ? path.join(__dirname, '../../app.asar.unpacked/binaries/holochain-runner')
-//   : path.join(__dirname, '../binaries/holochain-runner')
-// const LAIR_KEYSTORE_PATH = app.isPackaged
-//   ? path.join(__dirname, '../../app.asar.unpacked/binaries/lair-keystore')
-//   : path.join(__dirname, '../binaries/lair-keystore')
+// must point to unpacked versions, not in an asar archive
+// in development
+// fall back on defaults in the electron-holochain package
+const BINARY_PATHS: PathOptions | undefined = app.isPackaged
+  ? {
+      holochainRunnerBinaryPath: path.join(
+        __dirname,
+        '../../app.asar.unpacked/binaries/holochain-runner'
+      ),
+      lairKeystoreBinaryPath: path.join(
+        __dirname,
+        '../../app.asar.unpacked/binaries/lair-keystore'
+      ),
+    }
+  : undefined
+
 const MAIN_FILE = path.join(__dirname, '../web/index.html')
 const SPLASH_FILE = path.join(__dirname, '../web/splashscreen.html')
 const LINUX_ICON_FILE = path.join(
@@ -112,12 +126,9 @@ const createSplashWindow = (): BrowserWindow => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
   const splashWindow = createSplashWindow()
-  // HOLOCHAIN_BINARY_PATH,
-  // LAIR_KEYSTORE_PATH
   const opts = app.isPackaged ? prodOptions : devOptions
-  const statusEmitter = await setup(app, opts)
+  const statusEmitter = await setup(app, opts, BINARY_PATHS)
   statusEmitter.on(STATUS_EVENT, (state: StateSignal) => {
-    console.log(state)
     switch (state) {
       case StateSignal.IsReady:
         // important that this line comes before the next one
