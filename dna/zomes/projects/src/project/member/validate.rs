@@ -14,7 +14,7 @@ fn validate_create_entry_member(
         // `address` must match header author
         validate_value_matches_create_author(&proposed_entry.address.0, &validate_data)
       }
-      Err(e) => e.into(), // ValidateCallbackResult
+      Err(e) => ValidateCallbackResult::Invalid(e.to_string()),
     },
   )
 }
@@ -36,7 +36,7 @@ pub mod tests {
   use crate::project::error::Error;
   use crate::project::fixtures::fixtures::MemberFixturator;
   use ::fixt::prelude::*;
-  use dna_help::WrappedAgentPubKey;
+  use hdk_crud::WrappedAgentPubKey;
   use hdk::prelude::*;
   use holochain_types::prelude::ValidateDataFixturator;
 

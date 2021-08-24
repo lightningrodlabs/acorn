@@ -3,7 +3,7 @@ use crate::project::{
   project_meta::crud::ProjectMeta,
   validate::validate_value_matches_create_author,
 };
-use dna_help::{resolve_dependency, ResolvedDependency};
+use hdk_crud::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
 
 #[hdk_extern]
@@ -17,7 +17,7 @@ fn validate_create_entry_project_meta(
         // `address` must match header author
         validate_value_matches_create_author(&proposed_entry.creator_address.0, &validate_data)
       }
-      Err(e) => e.into(), // ValidateCallbackResult
+      Err(e) => ValidateCallbackResult::Invalid(e.to_string()),
     },
   )
 }
@@ -51,7 +51,7 @@ fn validate_update_entry_project_meta(
           return unreachable!();
         }
       },
-      Err(e) => e.into(), // ValidateCallbackResult
+      Err(e) => ValidateCallbackResult::Invalid(e.to_string()),
     },
   )
 }
@@ -68,7 +68,7 @@ pub mod tests {
   use crate::project::fixtures::fixtures::ProjectMetaFixturator;
   use crate::project::project_meta::crud::ProjectMeta;
   use ::fixt::prelude::*;
-  use dna_help::WrappedAgentPubKey;
+  use hdk_crud::WrappedAgentPubKey;
   use hdk::prelude::*;
   use holochain_types::prelude::ElementFixturator;
   use holochain_types::prelude::ValidateDataFixturator;

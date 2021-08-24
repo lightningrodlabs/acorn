@@ -1,9 +1,8 @@
 use crate::{
     get_peers_content,
-    project::{error::Error, validate::entry_from_element_create_only},
     SignalType,
 };
-use dna_help::{crud, WrappedAgentPubKey, WrappedHeaderHash};
+use hdk_crud::{crud, WrappedAgentPubKey, WrappedHeaderHash};
 use hdk::prelude::*;
 
 // The "Entry" in EntryPoint is not a reference to Holochain "Entries"
@@ -33,14 +32,6 @@ impl EntryPoint {
           goal_address,
           is_imported,
         }
-    }
-}
-
-// can't be updated
-impl TryFrom<&Element> for EntryPoint {
-    type Error = Error;
-    fn try_from(element: &Element) -> Result<Self, Self::Error> {
-        entry_from_element_create_only::<EntryPoint>(element)
     }
 }
 

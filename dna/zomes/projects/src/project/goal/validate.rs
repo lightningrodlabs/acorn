@@ -5,7 +5,7 @@ use crate::project::{
     validate_value_matches_edit_author, validate_value_matches_original_author,
   },
 };
-use dna_help::{resolve_dependency, ResolvedDependency, WrappedAgentPubKey};
+use hdk_crud::{resolve_dependency, ResolvedDependency, WrappedAgentPubKey};
 use hdk::prelude::*;
 
 #[hdk_extern]
@@ -28,7 +28,7 @@ fn validate_create_entry_goal(validate_data: ValidateData) -> ExternResult<Valid
           }
         }
       }
-      Err(e) => e.into(), // ValidateCallbackResult
+      Err(e) => ValidateCallbackResult::Invalid(e.to_string()),
     },
   )
 }
@@ -79,7 +79,7 @@ fn validate_update_entry_goal(validate_data: ValidateData) -> ExternResult<Valid
           validate_callback_result => validate_callback_result,
         }
       }
-      Err(e) => e.into(), // ValidateCallbackResult
+      Err(e) => ValidateCallbackResult::Invalid(e.to_string()),
     },
   )
 }
@@ -95,7 +95,7 @@ pub mod tests {
   use crate::project::error::Error;
   use crate::project::fixtures::fixtures::{GoalFixturator, WrappedAgentPubKeyFixturator};
   use ::fixt::prelude::*;
-  use dna_help::WrappedAgentPubKey;
+  use hdk_crud::WrappedAgentPubKey;
   use hdk::prelude::*;
   use holochain_types::prelude::ElementFixturator;
   use holochain_types::prelude::ValidateDataFixturator;

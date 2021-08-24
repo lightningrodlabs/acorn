@@ -28,7 +28,7 @@ fn validate_create_entry_entry_point(
           validate_callback_result => validate_callback_result,
         }
       }
-      Err(e) => e.into(), // ValidateCallbackResult
+      Err(e) => ValidateCallbackResult::Invalid(e.to_string()),
     },
   )
 }
@@ -52,7 +52,7 @@ pub mod tests {
     EntryPointFixturator, GoalFixturator, WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator,
   };
   use ::fixt::prelude::*;
-  use dna_help::WrappedAgentPubKey;
+  use hdk_crud::WrappedAgentPubKey;
   use hdk::prelude::*;
   use holochain_types::prelude::ElementFixturator;
   use holochain_types::prelude::ValidateDataFixturator;

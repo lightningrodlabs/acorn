@@ -2,12 +2,11 @@ use crate::{
   get_peers_content,
   project::{
     error::Error,
-    validate::entry_from_element_create_or_update,
     goal::crud::UIEnum
   },
   SignalType,
 };
-use dna_help::{crud, WrappedAgentPubKey, WrappedEntryHash, WrappedHeaderHash};
+use hdk_crud::{crud, WrappedAgentPubKey, WrappedEntryHash, WrappedHeaderHash};
 use hdk::prelude::*;
 use std::*;
 
@@ -72,14 +71,6 @@ impl From<PriorityMode> for UIEnum {
 impl fmt::Display for PriorityMode {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(f, "{:?}", self)
-  }
-}
-
-// can be updated
-impl TryFrom<&Element> for ProjectMeta {
-  type Error = Error;
-  fn try_from(element: &Element) -> Result<Self, Self::Error> {
-    entry_from_element_create_or_update::<ProjectMeta>(element)
   }
 }
 

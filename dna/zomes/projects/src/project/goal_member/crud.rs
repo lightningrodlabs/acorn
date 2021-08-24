@@ -1,9 +1,8 @@
 use crate::{
     get_peers_content,
-    project::{error::Error, validate::entry_from_element_create_only},
     SignalType,
 };
-use dna_help::{crud, WrappedAgentPubKey, WrappedHeaderHash};
+use hdk_crud::{crud, WrappedAgentPubKey, WrappedHeaderHash};
 use hdk::prelude::*;
 
 // a relationship between a Goal and an Agent
@@ -36,14 +35,6 @@ impl GoalMember {
             unix_timestamp,
             is_imported,
         }
-    }
-}
-
-// can't be updated
-impl TryFrom<&Element> for GoalMember {
-    type Error = Error;
-    fn try_from(element: &Element) -> Result<Self, Self::Error> {
-        entry_from_element_create_only::<GoalMember>(element)
     }
 }
 

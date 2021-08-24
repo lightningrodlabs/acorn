@@ -7,7 +7,7 @@ pub(crate) mod fixtures {
     member::entry::Member, project_meta::crud::{ProjectMeta, PriorityMode},
   };
   use ::fixt::prelude::*;
-  use dna_help::{WrappedAgentPubKey, WrappedHeaderHash};
+  use hdk_crud::{WrappedAgentPubKey, WrappedHeaderHash};
   use hdk::prelude::*;
 
   fixturator!(

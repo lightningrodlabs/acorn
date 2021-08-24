@@ -1,35 +1,6 @@
 use crate::project::error::Error;
-use dna_help::{resolve_dependency, ResolvedDependency};
+use hdk_crud::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
-
-pub fn entry_from_element_create_only<E: TryFrom<SerializedBytes, Error = SerializedBytesError>>(
-  element: &Element,
-) -> Result<E, Error> {
-  match element.header() {
-    // Only creates are allowed
-    Header::Create(_) => match element.entry().to_app_option() {
-      Ok(Some(entry)) => Ok(entry),
-      Ok(None) => Err(Error::EntryMissing),
-      Err(e) => return Err(Error::Wasm(e.into())),
-    },
-    _ => Err(Error::WrongHeader),
-  }
-}
-
-pub fn entry_from_element_create_or_update<
-  E: TryFrom<SerializedBytes, Error = SerializedBytesError>,
->(
-  element: &Element,
-) -> Result<E, Error> {
-  match element.header() {
-    Header::Create(_) | Header::Update(_) => match element.entry().to_app_option() {
-      Ok(Some(entry)) => Ok(entry),
-      Ok(None) => Err(Error::EntryMissing),
-      Err(e) => return Err(Error::Wasm(e.into())),
-    },
-    _ => Err(Error::WrongHeader),
-  }
-}
 
 pub fn validate_value_matches_create_author(
   value: &AgentPubKey,
@@ -91,7 +62,7 @@ where
 {
   match resolve_dependency::<O>(hash)? {
     Ok(ResolvedDependency(_, _)) => Ok(ValidateCallbackResult::Valid),
-    Err(ValidateCallbackResult::Invalid(e)) if e == dna_help::Error::EntryMissing.to_string() => {
+    Err(ValidateCallbackResult::Invalid(e)) if e == hdk_crud::Error::EntryMissing.to_string() => {
       // valid because it found the header, and we don't need the entry
       // indicates its a header that really exists
       Ok(ValidateCallbackResult::Valid)

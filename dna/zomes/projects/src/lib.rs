@@ -1,4 +1,4 @@
-use dna_help::{create_receive_signal_cap_grant, fetch_links};
+use hdk_crud::{create_receive_signal_cap_grant, fetch_links};
 use hdk::prelude::*;
 
 mod project;

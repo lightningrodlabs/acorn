@@ -1,9 +1,8 @@
 use crate::{
   get_peers_content,
-  project::{error::Error, validate::entry_from_element_create_or_update},
   SignalType,
 };
-use dna_help::{crud, WrappedAgentPubKey, WrappedHeaderHash};
+use hdk_crud::{crud, WrappedAgentPubKey, WrappedHeaderHash};
 use hdk::prelude::*;
 
 #[hdk_entry(id = "goal_vote")]
@@ -40,14 +39,6 @@ impl GoalVote {
       unix_timestamp,
       is_imported,
     }
-  }
-}
-
-// can be updated
-impl TryFrom<&Element> for GoalVote {
-  type Error = Error;
-  fn try_from(element: &Element) -> Result<Self, Self::Error> {
-    entry_from_element_create_or_update::<GoalVote>(element)
   }
 }
 

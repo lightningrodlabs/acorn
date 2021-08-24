@@ -2,6 +2,8 @@
 members = [
   "conductor",
 ]
+exclude = ["dna"]
+
 
 # resolver = "2"
 
