@@ -6,11 +6,11 @@ import {
   projectsDnaPath,
   prodOptions,
   stateSignalToText,
+  BINARY_PATHS,
 } from './holochain'
 import setup, {
   StateSignal,
   STATUS_EVENT,
-  PathOptions,
 } from 'electron-holochain'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -21,24 +21,7 @@ import setup, {
 
 const BACKGROUND_COLOR = '#fbf9f7'
 
-// in production
-// must point to unpacked versions, not in an asar archive
-// in development
-// fall back on defaults in the electron-holochain package
-const BINARY_PATHS: PathOptions | undefined = app.isPackaged
-  ? {
-      holochainRunnerBinaryPath: path.join(
-        __dirname,
-        '../../app.asar.unpacked/binaries/holochain-runner',
-        process.platform === "win32" ? '.exe' : ''
-      ),
-      lairKeystoreBinaryPath: path.join(
-        __dirname,
-        '../../app.asar.unpacked/binaries/lair-keystore',
-        process.platform === "win32" ? '.exe' : ''
-      ),
-    }
-  : undefined
+
 
 const MAIN_FILE = path.join(__dirname, '../web/index.html')
 const SPLASH_FILE = path.join(__dirname, '../web/splashscreen.html')

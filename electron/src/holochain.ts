@@ -1,6 +1,6 @@
 import * as path from 'path'
 import { app } from 'electron'
-import { HolochainRunnerOptions, StateSignal } from 'electron-holochain'
+import { HolochainRunnerOptions, StateSignal, PathOptions } from 'electron-holochain'
 
 // these messages get seen on the splash page
 export enum StateSignalText {
@@ -40,6 +40,25 @@ const profilesDnaPath = app.isPackaged
   ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/profiles.dna')
   : path.join(app.getAppPath(), '../dna/workdir/profiles.dna')
 
+// in production
+// must point to unpacked versions, not in an asar archive
+// in development
+// fall back on defaults in the electron-holochain package
+const BINARY_PATHS: PathOptions | undefined = app.isPackaged
+  ? {
+      holochainRunnerBinaryPath: path.join(
+        __dirname,
+        '../../app.asar.unpacked/binaries/holochain-runner',
+        process.platform === 'win32' ? '.exe' : ''
+      ),
+      lairKeystoreBinaryPath: path.join(
+        __dirname,
+        '../../app.asar.unpacked/binaries/lair-keystore',
+        process.platform === 'win32' ? '.exe' : ''
+      ),
+    }
+  : undefined
+
 const MAIN_APP_ID = 'main-app'
 const COMMUNITY_PROXY_URL =
   'kitsune-proxy://SYVd4CF3BdJ4DS7KwLLgeU3_DbHoZ34Y-qroZ79DOs8/kitsune-quic/h/165.22.32.11/p/5779/--'
@@ -67,4 +86,4 @@ const prodOptions: HolochainRunnerOptions = {
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 
-export { projectsDnaPath, devOptions, prodOptions }
+export { projectsDnaPath, BINARY_PATHS, devOptions, prodOptions }
