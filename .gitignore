@@ -10,8 +10,6 @@ web/dist/*.js.map
 
 target/
 back/.cargo/
-dna/workdir/profiles.dna
-dna/workdir/projects.dna
 back/2-conductor-config.yml
 back/scripts/2-install-happ.sh
 2-config-admin-ws
