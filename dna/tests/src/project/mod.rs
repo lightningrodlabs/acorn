@@ -7,5 +7,3 @@ pub mod goal_vote;
 pub mod member;
 pub mod project_meta;
 pub mod fixtures;
-pub mod error;
-pub mod validate;
