@@ -1,48 +1,43 @@
-use crate::project::goal::crud::Goal;
 use crate::project::{
-  entry_point::crud::EntryPoint, validate::validate_value_matches_create_author,
+    entry_point::crud::EntryPoint, validate::validate_value_matches_create_author,
 };
-use crate::project::{error::Error, validate::confirm_resolved_dependency};
+use crate::project::{error::Error};
 use hdk::prelude::*;
 
 #[hdk_extern]
 pub fn validate_create_entry_entry_point(
-  validate_data: ValidateData,
+    validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
-  Ok(
-    // element must have an entry that must deserialize correctly
-    match EntryPoint::try_from(&validate_data.element) {
-      Ok(proposed_entry) => {
-        // parent goal at goal_address must be determined to exist
-        match confirm_resolved_dependency::<Goal>(proposed_entry.goal_address.0.into())? {
-          ValidateCallbackResult::Valid => {
-            // an imported entry can have another listed as author
-            if proposed_entry.is_imported {
-              ValidateCallbackResult::Valid
-            } else {
-              // creator_address must match header author
-              validate_value_matches_create_author(
-                &proposed_entry.creator_address.0,
-                &validate_data,
-              )
+    Ok(
+        // element must have an entry that must deserialize correctly
+        match EntryPoint::try_from(&validate_data.element) {
+            Ok(proposed_entry) => {
+                // header for parent Goal at goal_address must be determined to exist
+                must_get_header(proposed_entry.goal_address.0)?;
+                // an imported entry can have another listed as author
+                if proposed_entry.is_imported {
+                    ValidateCallbackResult::Valid
+                } else {
+                    // creator_address must match header author
+                    validate_value_matches_create_author(
+                        &proposed_entry.creator_address.0,
+                        &validate_data,
+                    )
+                }
             }
-          }
-          validate_callback_result => validate_callback_result,
-        }
-      }
-      Err(_e) => Error::EntryMissing.into(),
-    },
-  )
+            Err(_e) => Error::DeserializationFailed.into(),
+        },
+    )
 }
 
 #[hdk_extern]
 /// Updates are not allowed
 pub fn validate_update_entry_entry_point(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
-  Error::UpdateAttempted.into()
+    Error::UpdateAttempted.into()
 }
 
 #[hdk_extern]
 /// Deletes are allowed by anyone
 pub fn validate_delete_entry_entry_point(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
-  Ok(ValidateCallbackResult::Valid)
+    Ok(ValidateCallbackResult::Valid)
 }

@@ -26,7 +26,7 @@ pub mod tests {
         // without an Element containing an Entry, validation will fail
         assert_eq!(
             validate_create_entry_goal_member(validate_data.clone()),
-            Error::EntryMissing.into(),
+            Error::DeserializationFailed.into(),
         );
 
         // now, since validation is dependent on other entries, we begin

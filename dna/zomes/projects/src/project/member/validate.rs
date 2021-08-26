@@ -14,7 +14,7 @@ pub fn validate_create_entry_member(
         // `address` must match header author
         validate_value_matches_create_author(&proposed_entry.address.0, &validate_data)
       }
-      Err(_e) => Error::EntryMissing.into(),
+      Err(_e) => Error::DeserializationFailed.into(),
     },
   )
 }

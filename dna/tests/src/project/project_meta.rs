@@ -20,7 +20,7 @@ pub mod tests {
         // without an Element containing an Entry, validation will fail
         assert_eq!(
             validate_create_entry_project_meta(validate_data.clone()),
-            Error::EntryMissing.into(),
+            Error::DeserializationFailed.into(),
         );
 
         // with an entry with a random
@@ -57,7 +57,7 @@ pub mod tests {
         // without an Element containing an Entry, validation will fail
         assert_eq!(
             validate_update_entry_project_meta(validate_data.clone()),
-            Error::EntryMissing.into(),
+            Error::DeserializationFailed.into(),
         );
 
         // make it pass first step by adding a project meta

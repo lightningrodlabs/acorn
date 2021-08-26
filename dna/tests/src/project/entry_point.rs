@@ -1,16 +1,13 @@
 #[cfg(test)]
 pub mod tests {
+    use crate::project::fixtures::fixtures::{EntryPointFixturator, WrappedAgentPubKeyFixturator};
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_crud::WrappedAgentPubKey;
-    use holochain_types::prelude::ElementFixturator;
+    use hdk_crud::WrappedHeaderHash;
     use holochain_types::prelude::ValidateDataFixturator;
-    use projects::project::error::Error;
-    use crate::project::fixtures::fixtures::{
-        EntryPointFixturator, GoalFixturator, WrappedAgentPubKeyFixturator,
-        WrappedHeaderHashFixturator,
-    };
     use projects::project::entry_point::validate::*;
+    use projects::project::error::Error;
 
     #[test]
     fn test_validate_update_entry_entry_point() {
@@ -42,11 +39,13 @@ pub mod tests {
         // without an Element containing an Entry, validation will fail
         assert_eq!(
             validate_create_entry_entry_point(validate_data.clone()),
-            Error::EntryMissing.into(),
+            Error::DeserializationFailed.into(),
         );
 
-        // now make it pass EntryMissing by adding an ElementEntry::Present
-        let goal_wrapped_header_hash = fixt!(WrappedHeaderHash);
+        // now make it pass DeserializationFailed by adding an ElementEntry::Present
+        let goal_signed_header_hashed = fixt!(SignedHeaderHashed);
+        let goal_wrapped_header_hash =
+            WrappedHeaderHash::new(goal_signed_header_hashed.as_hash().clone());
         entry_point.goal_address = goal_wrapped_header_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(entry_point.clone().try_into().unwrap());
@@ -54,47 +53,17 @@ pub mod tests {
         // now, since validation is dependent on other entries, we begin
         // to have to mock `get` calls to the HDK
 
-        // it will be missing the goal dependency so it will
-        // return UnresolvedDependencies
-
-        let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the parent goal
-        mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                goal_wrapped_header_hash.clone().0.into(),
-                GetOptions::content(),
-            )]))
-            .times(1)
-            .return_const(Ok(vec![None]));
-
-        set_hdk(mock_hdk);
-
-        // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
-        // equal to the Hash of the parent Goal address
-        assert_eq!(
-            validate_create_entry_entry_point(validate_data.clone()),
-            Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
-                goal_wrapped_header_hash.clone().0.into()
-            ])),
-        );
-
         // now make it valid by making it
-        // as if there is a Goal at the parent_address
-        let goal = fixt!(Goal);
-        let mut goal_element = fixt!(Element);
-        *goal_element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
-
+        // as if there is a Goal at the goal_address
         let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the goal_address
+        // the must_get_header call for the goal_address
         mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                goal_wrapped_header_hash.clone().0.into(),
-                GetOptions::content(),
-            )]))
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+                goal_wrapped_header_hash.clone().0,
+            )))
             .times(1)
-            .return_const(Ok(vec![Some(goal_element.clone())]));
+            .return_const(Ok(goal_signed_header_hashed.clone()));
 
         set_hdk(mock_hdk);
 
@@ -116,21 +85,16 @@ pub mod tests {
         // is_imported is false and creator_address refers to the agent committing (or is_imported = true)
         // -> good to go
 
-        // make it as if there is a Goal at the parent_address
-        let goal = fixt!(Goal);
-        let mut goal_element = fixt!(Element);
-        *goal_element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
+        // make it as if there is a Goal at the goal_address
 
         let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the goal_address
         mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                goal_wrapped_header_hash.clone().0.into(),
-                GetOptions::content(),
-            )]))
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+                goal_wrapped_header_hash.clone().0,
+            )))
             .times(1)
-            .return_const(Ok(vec![Some(goal_element.clone())]));
+            .return_const(Ok(goal_signed_header_hashed));
 
         set_hdk(mock_hdk);
 

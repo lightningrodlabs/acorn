@@ -1,11 +1,9 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::project::fixtures::fixtures::{
-        EdgeFixturator, GoalFixturator, WrappedHeaderHashFixturator,
-    };
+    use crate::project::fixtures::fixtures::{EdgeFixturator, WrappedHeaderHashFixturator};
     use ::fixt::prelude::*;
     use hdk::prelude::*;
-    use holochain_types::prelude::ElementFixturator;
+    use hdk_crud::WrappedHeaderHash;
     use holochain_types::prelude::ValidateDataFixturator;
     use projects::project::edge::validate::*;
     use projects::project::error::Error;
@@ -37,10 +35,11 @@ pub mod tests {
         // without an Element containing an Entry, validation will fail
         assert_eq!(
             validate_create_entry_edge(validate_data.clone()),
-            Error::EntryMissing.into(),
+            Error::DeserializationFailed.into(),
         );
 
-        // with an entry with identical hash for parent_address and child_address validation will fail
+        // with an entry with identical hash for parent_address and
+        // child_address validation will fail
         let goal_wrapped_header_hash = fixt!(WrappedHeaderHash);
         edge.parent_address = goal_wrapped_header_hash.clone();
         edge.child_address = goal_wrapped_header_hash.clone();
@@ -54,67 +53,6 @@ pub mod tests {
         // now, since validation is dependent on other entries, we begin
         // to have to mock `get` calls to the HDK
 
-        // we assign different parent and child to pass that level of validation
-        let goal_parent_wrapped_header_hash = fixt!(WrappedHeaderHash);
-        let goal_child_wrapped_header_hash = fixt!(WrappedHeaderHash);
-        edge.parent_address = goal_parent_wrapped_header_hash.clone();
-        edge.child_address = goal_child_wrapped_header_hash.clone();
-        *validate_data.element.as_entry_mut() =
-            ElementEntry::Present(edge.clone().try_into().unwrap());
-
-        // act as if the parent_address and child_address Goals were missing, could not be resolved
-        let mut mock_hdk = MockHdkT::new();
-        mock_hdk.expect_get().times(2).return_const(Ok(vec![None]));
-
-        set_hdk(mock_hdk);
-
-        // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
-        // equal to the Hashes of the parent Goal address and the child Goal address
-        assert_eq!(
-            validate_create_entry_edge(validate_data.clone()),
-            Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
-                goal_parent_wrapped_header_hash.clone().0.into(),
-                goal_child_wrapped_header_hash.clone().0.into()
-            ])),
-        );
-
-        // now it is as if there is a Goal at the parent_address, and so only the child_address fails now
-        let goal = fixt!(Goal);
-        let mut goal_element = fixt!(Element);
-        *goal_element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
-
-        let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the parent goal
-        mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                goal_parent_wrapped_header_hash.clone().0.into(),
-                GetOptions::content(),
-            )]))
-            .times(1)
-            .return_const(Ok(vec![Some(goal_element.clone())]));
-
-        // the resolve_dependencies `get` call of the child goal
-        mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                goal_child_wrapped_header_hash.clone().0.into(),
-                GetOptions::content(),
-            )]))
-            .times(1)
-            .return_const(Ok(vec![None]));
-
-        set_hdk(mock_hdk);
-
-        // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
-        // equal to the Hash of the child Goal address
-        assert_eq!(
-            validate_create_entry_edge(validate_data.clone()),
-            Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
-                goal_child_wrapped_header_hash.clone().0.into()
-            ])),
-        );
-
         // SUCCESS case
         // the element exists
         // parent_address and child_address are not identical
@@ -122,26 +60,36 @@ pub mod tests {
         // the child goal is found/exists
         // -> good to go
 
-        let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the parent goal
-        mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                goal_parent_wrapped_header_hash.clone().0.into(),
-                GetOptions::content(),
-            )]))
-            .times(1)
-            .return_const(Ok(vec![Some(goal_element.clone())]));
+        let parent_signed_header_hashed = fixt!(SignedHeaderHashed);
+        let goal_parent_wrapped_header_hash =
+            WrappedHeaderHash::new(parent_signed_header_hashed.as_hash().clone());
+        let child_signed_header_hashed = fixt!(SignedHeaderHashed);
+        let goal_child_wrapped_header_hash =
+            WrappedHeaderHash::new(child_signed_header_hashed.as_hash().clone());
+        // we assign different parent and child to pass that level of validation
+        edge.parent_address = goal_parent_wrapped_header_hash.clone();
+        edge.child_address = goal_child_wrapped_header_hash.clone();
+        *validate_data.element.as_entry_mut() =
+            ElementEntry::Present(edge.clone().try_into().unwrap());
 
-        // the resolve_dependencies `get` call of the child goal
+        let mut mock_hdk = MockHdkT::new();
+        // the must_get_header call for the parent goal
         mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                goal_child_wrapped_header_hash.clone().0.into(),
-                GetOptions::content(),
-            )]))
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+                goal_parent_wrapped_header_hash.clone().0,
+            )))
             .times(1)
-            .return_const(Ok(vec![Some(goal_element.clone())]));
+            .return_const(Ok(parent_signed_header_hashed));
+
+        // the must_get_header call for the child goal
+        mock_hdk
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+                goal_child_wrapped_header_hash.clone().0,
+            )))
+            .times(1)
+            .return_const(Ok(child_signed_header_hashed));
 
         set_hdk(mock_hdk);
 

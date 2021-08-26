@@ -26,7 +26,7 @@ pub mod tests {
         // without an Element containing an Entry, validation will fail
         assert_eq!(
             validate_create_entry_goal_vote(validate_data.clone()),
-            Error::EntryMissing.into(),
+            Error::DeserializationFailed.into(),
         );
 
         // now, since validation is dependent on other entries, we begin
@@ -141,7 +141,7 @@ pub mod tests {
         // without an Element containing an Entry, validation will fail
         assert_eq!(
             validate_update_entry_goal_vote(validate_data.clone()),
-            Error::EntryMissing.into(),
+            Error::DeserializationFailed.into(),
         );
 
         // with an entry with a random
