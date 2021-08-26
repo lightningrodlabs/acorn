@@ -1,13 +1,13 @@
 #[cfg(test)]
 pub mod tests {
     use crate::project::fixtures::fixtures::{
-        GoalCommentFixturator, GoalFixturator, WrappedAgentPubKeyFixturator,
-        WrappedHeaderHashFixturator,
+        GoalCommentFixturator, WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator,
     };
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_crud::WrappedAgentPubKey;
     use hdk_crud::WrappedHeaderHash;
+    use holochain_types::prelude::option_entry_hashed;
     use holochain_types::prelude::ElementFixturator;
     use holochain_types::prelude::ValidateDataFixturator;
     use projects::project::error::Error;
@@ -114,9 +114,7 @@ pub mod tests {
 
         // with an entry with a random
         // agent_address it will fail (not the agent committing)
-        let goal_signed_header_hashed = fixt!(SignedHeaderHashed);
-        let goal_wrapped_header_hash =
-            WrappedHeaderHash::new(goal_signed_header_hashed.as_hash().clone());
+        let goal_wrapped_header_hash = fixt!(WrappedHeaderHash);
         let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
         goal_comment.goal_address = goal_wrapped_header_hash.clone();
         goal_comment.agent_address = random_wrapped_agent_pub_key.clone();
@@ -143,24 +141,43 @@ pub mod tests {
         // make it now resolve the original GoalComment
         // but now be invalid according to the original GoalComment
         // being authored by a different author than this update
-        
-        let original_goal_comment = fixt!(GoalComment);
+
+        let bad_original_goal_comment = fixt!(GoalComment);
         // but due to being random, it will have a different author
         // than our Update header
-        let mut original_goal_comment_element = fixt!(Element);
-        *original_goal_comment_element.as_entry_mut() =
-        ElementEntry::Present(original_goal_comment.clone().try_into().unwrap());
-        
+        let mut bad_original_goal_comment_element = fixt!(Element);
+        let bad_create_header = fixt!(Create);
+        *bad_original_goal_comment_element.as_header_mut() = Header::Create(bad_create_header.clone());
+        *bad_original_goal_comment_element.as_entry_mut() =
+            ElementEntry::Present(bad_original_goal_comment.clone().try_into().unwrap());
+        let bad_original_entry_hash = bad_original_goal_comment_element
+            .signed_header()
+            .header()
+            .entry_hash()
+            .unwrap();
+
         // it is as if there is a GoalComment at the original address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the goal_address
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                goal_wrapped_header_hash.clone().0,
+                update_header.original_header_address.clone(),
             )))
             .times(1)
-            .return_const(Ok(goal_signed_header_hashed.clone()));
+            .return_const(Ok(bad_original_goal_comment_element
+                .signed_header()
+                .clone()));
+        mock_hdk
+            .expect_must_get_entry()
+            .with(mockall::predicate::eq(MustGetEntryInput::new(
+                bad_original_entry_hash.clone(),
+            )))
+            .times(1)
+            .return_const(Ok(option_entry_hashed(
+                bad_original_goal_comment_element.entry().clone(),
+            )
+            .unwrap()));
         set_hdk(mock_hdk);
 
         assert_eq!(
@@ -174,24 +191,46 @@ pub mod tests {
         // the original GoalComment header and entry exist
         // and the author of the update matches the original author
         // -> good to go
-        let mut original_goal_comment = fixt!(GoalComment);
-        let mut original_goal_comment_element = fixt!(Element);
+        let mut good_original_goal_comment = fixt!(GoalComment);
+        let mut good_original_goal_comment_element = fixt!(Element);
+        let good_create_header = fixt!(Create);
+        *good_original_goal_comment_element.as_header_mut() =
+            Header::Create(good_create_header.clone());
         // make the author equal to the current `user_hash` value
         // on the Goal in validate_data
-        original_goal_comment.agent_address =
+        good_original_goal_comment.agent_address =
             WrappedAgentPubKey::new(update_header.author.as_hash().clone());
-        *original_goal_comment_element.as_entry_mut() =
-            ElementEntry::Present(original_goal_comment.clone().try_into().unwrap());
+        *good_original_goal_comment_element.as_entry_mut() =
+            ElementEntry::Present(good_original_goal_comment.clone().try_into().unwrap());
 
+        let good_original_entry_hash = good_original_goal_comment_element
+            .signed_header()
+            .header()
+            .entry_hash()
+            .unwrap();
+
+        // it is as if there is a GoalComment at the original address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the goal_address
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                goal_wrapped_header_hash.clone().0,
+                update_header.original_header_address,
             )))
             .times(1)
-            .return_const(Ok(goal_signed_header_hashed));
+            .return_const(Ok(good_original_goal_comment_element
+                .signed_header()
+                .clone()));
+        mock_hdk
+            .expect_must_get_entry()
+            .with(mockall::predicate::eq(MustGetEntryInput::new(
+                good_original_entry_hash.clone(),
+            )))
+            .times(1)
+            .return_const(Ok(option_entry_hashed(
+                good_original_goal_comment_element.entry().clone(),
+            )
+            .unwrap()));
         set_hdk(mock_hdk);
 
         // we should see that the ValidateCallbackResult
