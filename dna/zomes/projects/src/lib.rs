@@ -1,7 +1,7 @@
 use hdk_crud::{create_receive_signal_cap_grant, fetch_links};
 use hdk::prelude::*;
 
-mod project;
+pub mod project;
 
 use project::{
   edge::crud::{Edge, EdgeSignal},

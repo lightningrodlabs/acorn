@@ -7,7 +7,7 @@ use hdk_crud::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
 
 #[hdk_extern]
-fn validate_create_entry_project_meta(
+pub fn validate_create_entry_project_meta(
   validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
   Ok(
@@ -23,7 +23,7 @@ fn validate_create_entry_project_meta(
 }
 
 #[hdk_extern]
-fn validate_update_entry_project_meta(
+pub fn validate_update_entry_project_meta(
   validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
   Ok(
@@ -58,7 +58,7 @@ fn validate_update_entry_project_meta(
 
 #[hdk_extern]
 /// Deletes aren't allowed
-fn validate_delete_entry_project_meta(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_delete_entry_project_meta(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Ok(Error::DeleteAttempted.into())
 }
 

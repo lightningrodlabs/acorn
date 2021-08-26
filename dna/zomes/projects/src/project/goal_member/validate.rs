@@ -6,7 +6,7 @@ use crate::project::{
 use hdk::prelude::*;
 
 #[hdk_extern]
-fn validate_create_entry_goal_member(
+pub fn validate_create_entry_goal_member(
   validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
   Ok(
@@ -34,13 +34,13 @@ fn validate_create_entry_goal_member(
 
 #[hdk_extern]
 /// Updates are not allowed
-fn validate_update_entry_goal_member(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_update_entry_goal_member(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Error::UpdateAttempted.into()
 }
 
 #[hdk_extern]
 /// Deletes are allowed by anyone
-fn validate_delete_entry_goal_member(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_delete_entry_goal_member(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Ok(ValidateCallbackResult::Valid)
 }
 

@@ -11,7 +11,7 @@ use hdk::prelude::*;
 use hdk_crud::{resolve_dependency, ResolvedDependency};
 
 #[hdk_extern]
-fn validate_create_entry_goal_vote(
+pub fn validate_create_entry_goal_vote(
   validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
   Ok(
@@ -38,7 +38,7 @@ fn validate_create_entry_goal_vote(
 }
 
 #[hdk_extern]
-fn validate_update_entry_goal_vote(
+pub fn validate_update_entry_goal_vote(
   validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
   Ok(
@@ -86,7 +86,7 @@ fn validate_update_entry_goal_vote(
 
 #[hdk_extern]
 /// Deletes are allowed only by original author
-fn validate_delete_entry_goal_vote(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_delete_entry_goal_vote(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Ok(ValidateCallbackResult::Valid)
 }
 

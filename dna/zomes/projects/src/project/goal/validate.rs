@@ -10,7 +10,7 @@ use hdk_crud::{resolve_dependency, ResolvedDependency, WrappedAgentPubKey};
 use hdk::prelude::*;
 
 #[hdk_extern]
-fn validate_create_entry_goal(validate_data: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_create_entry_goal(validate_data: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Ok(
     // element must have an entry that must deserialize correctly
     match Goal::try_from(&validate_data.element) {
@@ -35,7 +35,7 @@ fn validate_create_entry_goal(validate_data: ValidateData) -> ExternResult<Valid
 }
 
 #[hdk_extern]
-fn validate_update_entry_goal(validate_data: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_update_entry_goal(validate_data: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Ok(
     // element must have an entry that must deserialize correctly
     match Goal::try_from(&validate_data.element) {
@@ -87,7 +87,7 @@ fn validate_update_entry_goal(validate_data: ValidateData) -> ExternResult<Valid
 
 #[hdk_extern]
 /// Deletes are allowed by anyone
-fn validate_delete_entry_goal(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_delete_entry_goal(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Ok(ValidateCallbackResult::Valid)
 }
 

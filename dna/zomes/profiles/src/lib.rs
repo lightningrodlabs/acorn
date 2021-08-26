@@ -1,7 +1,7 @@
 use hdk_crud::create_receive_signal_cap_grant;
 use hdk::prelude::*;
 
-mod profile;
+pub mod profile;
 
 use profile::{Profile, AGENTS_PATH};
 

@@ -4,7 +4,7 @@ use crate::project::{
 use hdk::prelude::*;
 
 #[hdk_extern]
-fn validate_create_entry_member(
+pub fn validate_create_entry_member(
   validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
   Ok(
@@ -21,13 +21,13 @@ fn validate_create_entry_member(
 
 #[hdk_extern]
 /// Updates aren't allowed
-fn validate_update_entry_member(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_update_entry_member(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Ok(Error::UpdateAttempted.into())
 }
 
 #[hdk_extern]
 /// Deletes aren't allowed
-fn validate_delete_entry_member(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_delete_entry_member(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Ok(Error::DeleteAttempted.into())
 }
 

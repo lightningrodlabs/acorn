@@ -5,7 +5,7 @@ use crate::project::validate::confirm_resolved_dependency;
 use hdk::prelude::*;
 
 #[hdk_extern]
-fn validate_create_entry_edge(validate_data: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_create_entry_edge(validate_data: ValidateData) -> ExternResult<ValidateCallbackResult> {
   let proposed_edge = match Edge::try_from(&validate_data.element) {
     Ok(edge) => edge,
     Err(_e) => {
@@ -60,13 +60,13 @@ fn validate_create_entry_edge(validate_data: ValidateData) -> ExternResult<Valid
 
 #[hdk_extern]
 /// Updates are not allowed
-fn validate_update_entry_edge(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_update_entry_edge(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Error::UpdateAttempted.into()
 }
 
 #[hdk_extern]
 /// Deletes are allowed by anyone
-fn validate_delete_entry_edge(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_delete_entry_edge(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Ok(ValidateCallbackResult::Valid)
 }
 

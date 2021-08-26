@@ -6,7 +6,7 @@ use crate::project::{error::Error, validate::confirm_resolved_dependency};
 use hdk::prelude::*;
 
 #[hdk_extern]
-fn validate_create_entry_entry_point(
+pub fn validate_create_entry_entry_point(
   validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
   Ok(
@@ -37,13 +37,13 @@ fn validate_create_entry_entry_point(
 
 #[hdk_extern]
 /// Updates are not allowed
-fn validate_update_entry_entry_point(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_update_entry_entry_point(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Error::UpdateAttempted.into()
 }
 
 #[hdk_extern]
 /// Deletes are allowed by anyone
-fn validate_delete_entry_entry_point(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_delete_entry_entry_point(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
   Ok(ValidateCallbackResult::Valid)
 }
 
