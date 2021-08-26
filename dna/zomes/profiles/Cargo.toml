@@ -8,21 +8,10 @@ name = "profiles"
 crate-type = [ "cdylib", "rlib" ]
 
 [dependencies]
-# hdk_crud = "0.0.103"
-# hdk = "0.0.103"
-hdk_crud = { git = "https://github.com/lightningrodlabs/hdk_crud.git", branch = "test-fork" }
-hdk = { git = "https://github.com/holochain/holochain.git", branch = "Connoropolous-patch-2" }
+hdk_crud = "0.0.103"
+hdk = "0.0.103"
+# hdk_crud = { git = "https://github.com/lightningrodlabs/hdk_crud.git", branch = "test-fork" }
+# hdk = { git = "https://github.com/holochain/holochain.git", branch = "Connoropolous-patch-2" }
 paste = "*"
 serde = "*"
 thiserror = "1"
-mockall = "0.9"
-
-[dev-dependencies]
-fixt = "0.0.5"
-holochain_types = "0.0.3"
-rand = "0.7"
-strum = "0.18.0"
-strum_macros = "0.18.0"
-
-[features]
-mock = ["hdk/mock", "hdk/test_utils"]
