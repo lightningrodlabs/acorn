@@ -10,8 +10,12 @@ crate-type = [ "cdylib", "rlib" ]
 [dependencies]
 hdk_crud = "0.0.103"
 hdk = "0.0.103"
-# hdk_crud = { git = "https://github.com/lightningrodlabs/hdk_crud.git", branch = "test-fork" }
-# hdk = { git = "https://github.com/holochain/holochain.git", branch = "Connoropolous-patch-2" }
 paste = "*"
 serde = "*"
 thiserror = "1"
+
+[profile.dev]
+opt-level = "z"
+
+[profile.release]
+opt-level = "z"
