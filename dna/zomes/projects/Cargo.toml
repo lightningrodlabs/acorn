@@ -14,3 +14,9 @@ paste = "*"
 # use whatever serde hdk uses
 serde = "*"
 thiserror = "1"
+
+[profile.dev]
+opt-level = "z"
+
+[profile.release]
+opt-level = "z"

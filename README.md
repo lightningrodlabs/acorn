@@ -11,37 +11,39 @@
 
 ## Developers
 
-
-## Developers
-
 ### To Run Locally and Develop on your Computer
 To set up fresh: 
 
 __dna__
 - Have rust language (stable) installed on your system
-- Have WebAssembly compile target for Rust installed (if you haven't, run `rustup target install wasm32-unknown-unknown`)
-- run `npm run dna-install-deps`
-- run `npm run dna-pack`
+- Have WebAssembly compile target for Rust installed
+- `npm run dna-install`
+- `npm run dna-pack`
+
+To test backend:
+
+- `npm run dna-test`
 
 __web__ (user interface)
 
 - Use nodejs version 14
-- run `npm run web-install`
-- run `npm run web`
-- Open up http://localhost:8080/
+- `npm run web-install`
+- `npm run web`
 
 __electron__
 
-- run `npm run install-electron`
-- run `npm run electron`
+- `npm run electron-install`
+- `npm run electron`
 
-To test backend:
+#### Second User
 
-- run `npm run test-happ`
+- `npm run web2`
+- `npm run electron2`
+
 
 To build:
 
-- run `npm run build`
+- `npm run build`
 
 ## Technical Overview
 
