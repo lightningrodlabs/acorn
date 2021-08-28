@@ -64,15 +64,15 @@ export default {
             You can do it in three ways:
           </div>
           <li>
-            Double click directly on the title of the card and start typing in.
+            - Double click directly on the title of the card and start typing in.
           </li>
           <li>
             {' '}
-            After entering the Quick Edit Mode for a card, just start typing in.
+            - After entering the Quick Edit Mode for a card, just start typing in.
           </li>
           <li>
             {' '}
-            After Entering the Expanded View Mode for the card, just click or
+            - After Entering the Expanded View Mode for the card, just click or
             double click on the title and start typing in. Changes will take
             effect immediately.
           </li>
@@ -89,7 +89,7 @@ export default {
               In Quick Edit Mode
             </div>
             <div className="guidebook-separate-line">
-              Click on "status" button and select the status you want for the
+              Click on Status button and select the status you want for the
               card.
             </div>
           </div>
@@ -98,7 +98,7 @@ export default {
               In Expanded View Mode
             </div>
             <div className="guidebook-separate-line">
-              Click on the Hierarchy icon on top left corner of the expanded
+              Click on the Hierarchy icon (or circle if the card has no hierarchy) on top left corner of the expanded
               card which matches the color of card status. Click on the status
               color that you want for the card.
             </div>
@@ -125,7 +125,7 @@ export default {
               In Quick Edit Mode
             </div>
             <div className="guidebook-separate-line">
-              Click on "squirrels" button and select the members that you want
+              Click on Squirrels button and select the members that you want
               to associate with the card from the list.
             </div>
           </div>
@@ -217,15 +217,18 @@ export default {
               Introduction to goal hierarchy levels
             </div>
             <div className="guidebook-separate-line">
-              Hierarchy adds another level of metadata to your goals. On Acorn,
-              there 4 hierarchy level options available inspired by a tree
-              mataphore: Root (primary goal) Trunk (high-level goal) Branch
-              (Sub-goal) Leaf (small goal) There is also the default option of
-              "no hierarchy". Setting hierarchy for goals in a complex project
+              Hierarchy adds another level of metadata to your goals. In Acorn
+              there are 4 hierarchy level options available inspired by tree
+              mataphore: Root (primary goal), Trunk (high-level goal), Branch
+              (Sub-goal), and Leaf (small goal). There is also the default option of
+              No Hierarchy.
+            </div>
+            <div className="guidebook-separate-line">
+              Setting hierarchy for goals in a complex project
               would help you and your team to be able to see how bigger goals
-              can break down to smaller units. While having the bigger goals in
-              the vision, your team would be able to easily identify leaf
-              (small) goals to complete. Completing small goals more
+              can break down into smaller units. While having the bigger goals in
+              vision, your team would be able to easily identify leaf
+              small goals (leaf) to complete. By completing small goals more
               effectively, your team can see the progress being made, feel
               accomplished, and know clearly where they are headed.
             </div>
@@ -235,7 +238,7 @@ export default {
               In Quick Edit Mode
             </div>
             <div className="guidebook-separate-line">
-              Click on "hierarchy" button and select the "hierarchy" level that
+              Click on Hierarchy button and select the hierarchy level that
               you want.
             </div>
           </div>
@@ -243,7 +246,7 @@ export default {
             <div className="guidebook-separate-line sub-heading">
               In Expanded View Mode
             </div>
-            <div className="guidebook-separate-line">Either:</div>
+
             <div className="guidebook-separate-line">
               Click on the Hierarchy icon on the Right Menu.
             </div>
@@ -269,10 +272,10 @@ export default {
           {/* Universal Prioritizing */}
           <div className="guidebook-description-section">
             <div className="guidebook-separate-line sub-heading">
-            Universal Prioritizing
+              Universal Prioritizing
             </div>
             <div className="guidebook-separate-line">
-              See <a>Mark a card as top priority</a>.
+              See <a>Mark a Card as Top Priority</a> under Universal Priority Mode section.
             </div>
           </div>
           {/* Vote Based Prioritizing */}
@@ -302,26 +305,26 @@ export default {
             </div>
           </div>
           <div className="guidebook-separate-line sub-heading">
-          See Aggregated Priority of a Card
-           </div>
-         <div className="guidebook-description-section">
-           <div className="guidebook-separate-line sub-heading">
-             In Quick Edit Mode
-           </div>
-           <div className="guidebook-separate-line">
-             Click on Priority button. You will be able to see the aggregated
-             votes for 4 factors that determine priority of the card. For more
-             information on how the prioritization system works in Acorn see
-             Prioritization.
-           </div>
-         </div>
-         <div className="guidebook-description-section">
-           <div className="guidebook-separate-line sub-heading">
-             In Expanded View Mode
-           </div>
-           <li>Click on the Priority icon on the Right Menu.</li>
-         </div>
-       </ol>
+            See Aggregated Priority of a Card
+          </div>
+          <div className="guidebook-description-section">
+            <div className="guidebook-separate-line sub-heading">
+              In Quick Edit Mode
+            </div>
+            <div className="guidebook-separate-line">
+              Click on Priority button. You will be able to see the aggregated
+              votes for 4 factors that determine priority of the card. For more
+              information on how the prioritization system works in Acorn see
+              Prioritization.
+            </div>
+          </div>
+          <div className="guidebook-description-section">
+            <div className="guidebook-separate-line sub-heading">
+              In Expanded View Mode
+            </div>
+            <li>Click on the Priority icon on the Right Menu.</li>
+          </div>
+        </ol>
       ),
     },
 

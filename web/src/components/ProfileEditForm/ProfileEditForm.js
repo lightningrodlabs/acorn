@@ -108,7 +108,7 @@ function ProfileEditForm({
 
   const usernameHelp =
     'Choose something easy for your teammates to use and recall. Avoid space and @.'
-  const avatarShow = avatarUrl || 'img/avatar_placeholder.png'
+  const avatarShow = avatarUrl || 'img/avatar-placeholder.svg'
 
   const actionButton = (
     <ButtonWithPendingState

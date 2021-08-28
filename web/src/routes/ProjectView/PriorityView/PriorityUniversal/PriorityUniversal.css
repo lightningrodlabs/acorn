@@ -18,6 +18,11 @@
   border-top: 4px solid #F3F0ED;
 }
 
+.top-priority-empty-state-wrapper {
+  margin: auto;
+  text-align: center
+}
+
 .universal-priority-goals-list-wrapper {
   padding: 0 40px;
   display: flex;
@@ -44,9 +49,7 @@
   margin-right: 16px;
 }
 
-.universal-priority-number-wrapper {
-  
-}
+.universal-priority-number-wrapper {}
 
 .universal-priority-order-number {
   font-family: 'gilroyextrabold', Helvetica, sans-serif;
@@ -66,7 +69,7 @@
   align-items: baseline;
   flex: 1;
   padding: 12px 8px 16px 8px;
-  min-height: 80px;
+  min-height: 84px;
   box-sizing: border-box;
   position: relative;
   /* justify-content: space-between; */
@@ -90,6 +93,13 @@
   border-bottom: 1px solid #F3F0ED02;
 }
 
+.universal-priority-goal-title-status {
+  display: flex;
+  align-items: baseline;
+  flex-direction: row;
+  width: 70%;
+}
+
 .universal-priority-goal-item-title {
   font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
   font-size: 18px;
@@ -99,7 +109,6 @@
   margin-left: 12px;
   margin-right: 24px;
   flex: 1;
-  max-width: 700px;
 }
 
 .universal-priority-goal-item-metadata {
@@ -111,6 +120,7 @@
   flex-direction: row;
   padding-left: 10px;
 }
+
 .universal-priority-goal-item-member-avatar {
   margin-left: -10px;
   border: 2px solid white;
@@ -127,4 +137,9 @@
 
 .universal-priority-droppable-wrapper {
   width: 100%;
+}
+
+.top-priority-empty-state-image {
+  height: 150px;
+  margin-bottom: 12px;
 }

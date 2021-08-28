@@ -41,8 +41,8 @@ function ErrorScreen({ stackTrace }) {
                 {expanded ? 'Hide stack trace' : 'Show stack trace'}
               </div>
               <Icon
-                name={expanded ? 'line-angle-down.svg' : 'line-angle-right.svg'}
-                size='very-small'
+                name={expanded ? 'chevron-down.svg' : 'chevron-right.svg'}
+                size='small'
                 className='grey'
               />
             </div>

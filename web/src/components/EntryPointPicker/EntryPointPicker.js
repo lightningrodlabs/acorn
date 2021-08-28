@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 import './EntryPointPicker.css'
 
+import GuidebookNavLink from '../GuidebookNavLink/GuidebookNavLink'
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import Icon from '../Icon/Icon'
 import selectEntryPoints from '../../projects/entry-points/select'
@@ -119,12 +120,12 @@ function EntryPointPicker({ entryPoints, isOpen, onClose, activeEntryPoints }) {
               <div className='entry-points-empty-state-image-circle'></div>
               <span>
                 You currently have no entry points for this project.{' '}
-                <NavLink
-                  to={`${location.pathname}?${GUIDE_IS_OPEN}=creating_entry_points`}
+                <GuidebookNavLink
+                  guidebookId='creating_entry_points'
                   onClick={onClose}
                   className='entry-points-empty-state-content-link'>
                   Learn how to create one
-                </NavLink>
+                </GuidebookNavLink>
                 .
               </span>
             </li>

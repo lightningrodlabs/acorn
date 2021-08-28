@@ -58,7 +58,7 @@ export default function ExpandedViewModeContent({
   // 2 is history
   const [activeTab, setActiveTab] = useState(0)
   return (
-    <div className="expanded_view_content">
+    <div className="expanded-view-content">
       <ExpandedViewNavBar
         activeTab={activeTab}
         onChange={(newTab) => setActiveTab(newTab)}
@@ -166,7 +166,7 @@ function Details({
   return (
     <>
       <div className="expanded-view-details-wrapper">
-        <div className="expanded_view_title">
+        <div className="expanded-view-title">
           <TextareaAutosize
             value={content}
             onBlur={updateContent}
@@ -176,28 +176,30 @@ function Details({
           />
         </div>
 
-        <div className="squirrels_timeframe_row">
-          <div className="expanded_view_squirrels_wrapper">
-            <div className="expanded_view_squirrels_title">Squirrels</div>
-            <div className="expanded_view_squirrels_content">
+        <div className="squirrels-timeframe-row">
+          <div className="expanded-view-squirrels-wrapper">
+            <div className="expanded-view-squirrels-title">Squirrels</div>
+            <div className="expanded-view-squirrels-content">
               {squirrels.map((squirrel, index) => {
                 const highlighted = squirrelInfoPopup
                   ? squirrelInfoPopup.address === squirrel.address
                   : false
                 return (
-                  <Avatar
-                    key={index}
-                    first_name={squirrel.first_name}
-                    last_name={squirrel.last_name}
-                    avatar_url={squirrel.avatar_url}
-                    imported={squirrel.is_imported}
-                    medium
-                    clickable
-                    onClick={() =>
-                      setSquirrelInfoPopup(squirrelInfoPopup ? null : squirrel)
-                    }
-                    highlighted={highlighted}
-                  />
+                  <div className="expanded-view-squirrel-wrapper">
+                    <Avatar
+                      key={index}
+                      first_name={squirrel.first_name}
+                      last_name={squirrel.last_name}
+                      avatar_url={squirrel.avatar_url}
+                      imported={squirrel.is_imported}
+                      medium
+                      clickable
+                      onClick={() =>
+                        setSquirrelInfoPopup(squirrelInfoPopup ? null : squirrel)
+                      }
+                      highlighted={highlighted}
+                    />
+                  </div>
                 )
               })}
               {squirrelInfoPopup && (
@@ -207,11 +209,11 @@ function Details({
                   archiveGoalMember={archiveGoalMember}
                 />
               )}
-              <div className="expanded_view_squirrels_add_wrapper">
+              <div className="expanded-view-squirrels-add-wrapper">
                 <Icon
-                  className="add_squirrel_plus_icon"
+                  className="add-squirrel-plus-icon"
                   name="plus.svg"
-                  size="medium"
+                  size="small"
                   onClick={() => setEditSquirrels(!editSquirrels)}
                 />
                 {editSquirrels && (
@@ -223,10 +225,10 @@ function Details({
               </div>
             </div>
           </div>
-          <div className="timeframe_wrapper">
-            <div className="expanded_view_timeframe_title">Timeframe</div>
+          <div className="timeframe-wrapper">
+            <div className="expanded-view-timeframe-title">Timeframe</div>
             <div
-              className="expanded_view_timeframe_display"
+              className="expanded-view-timeframe-display"
               onClick={() => setEditTimeframe(!editTimeframe)}
             >
               {fromDate && fromDate.format('MMM D, YYYY')}
@@ -236,7 +238,7 @@ function Details({
             </div>
           </div>
         </div>
-        <div className="expanded_view_description">
+        <div className="expanded-view-description">
           <TextareaAutosize
             placeholder="Add description here"
             value={description}

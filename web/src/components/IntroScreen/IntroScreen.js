@@ -64,9 +64,8 @@ export default function IntroScreen() {
             return (
               <div
                 key={index}
-                className={`screen screen-${index} ${
-                  index === screenContent ? 'active-screen' : ''
-                }`}>
+                className={`screen screen-${index} ${index === screenContent ? 'active-screen' : ''
+                  }`}>
                 <div className='intro-screen-image'>
                   <img src={screen.image} />
                 </div>
@@ -85,7 +84,7 @@ export default function IntroScreen() {
           {screenContent !== 0 && (
             <div className='button-back'>
               <Icon
-                name='line-angle-left.svg'
+                name='chevron-left.svg'
                 className='light-grey'
                 onClick={goBack}
                 text={'back'}
@@ -95,7 +94,7 @@ export default function IntroScreen() {
           {screenContent !== 3 && (
             <div className='button-next'>
               <Icon
-                name='line-angle-right.svg'
+                name='chevron-right.svg'
                 className='light-grey'
                 onClick={goForward}
                 text={'next'}
@@ -110,9 +109,8 @@ export default function IntroScreen() {
               <div key={num}>
                 <div
                   onClick={() => setScreenContent(num)}
-                  className={`screen-dot ${
-                    num === screenContent ? 'active-screen' : ''
-                  }`}
+                  className={`screen-dot ${num === screenContent ? 'active-screen' : ''
+                    }`}
                 />
               </div>
             )

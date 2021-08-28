@@ -99,14 +99,16 @@ function DashboardListProject({
               {project.members.map(
                 (member) =>
                   member && (
-                    <Avatar
-                      key={member.address}
-                      first_name={member.first_name}
-                      last_name={member.last_name}
-                      avatar_url={member.avatar_url}
-                      imported={member.is_imported}
-                      medium
-                    />
+                    <div className="dashboard-list-project-member-wrapper">
+                      <Avatar
+                        key={member.address}
+                        first_name={member.first_name}
+                        last_name={member.last_name}
+                        avatar_url={member.avatar_url}
+                        imported={member.is_imported}
+                        medium
+                      />
+                    </div>
                   )
               )}
             </div>
@@ -135,23 +137,32 @@ function DashboardListProject({
       </div>
 
       {/* project entry points */}
+
       <div className="dashboard-list-project-entry-points">
         {/* only allow expanding entry points list if there are some */}
         {project.entryPoints.length > 0 && (
-          <div
-            className="dashboard-list-project-entry-point-button"
-            onClick={() => setShowEntryPoints(!showEntryPoints)}
-          >
-            {/*<img className='entry-point-button-image' src='img/door-open.svg' />*/}
-            {project.entryPoints.length} entry point
-            {project.entryPoints.length === 1 ? '' : 's'}
-            <Icon
-              name="line-angle-down.svg"
-              size="very-small"
-              className={`grey ${showEntryPoints ? 'active' : ''}`}
-            />
-          </div>
-        )}
+          <>
+            <div
+              className="dashboard-list-project-entry-point-button"
+              onClick={() => setShowEntryPoints(!showEntryPoints)}
+            >
+              <Icon
+                name='door-open.svg'
+                size='small'
+                className='grey not-clickable'
+
+              />
+              <div className="dashboard-list-project-entry-point-button-text">
+                {project.entryPoints.length} entry point
+                {project.entryPoints.length === 1 ? '' : 's'}
+              </div>
+              <Icon
+                name="chevron-down.svg"
+                size="small"
+                className={`grey ${showEntryPoints ? 'active' : ''}`}
+              />
+            </div>
+          </>)}
         {showEntryPoints && (
           <div className="dashboard-list-project-entry-point-expanded">
             {project.entryPoints.map((entryPoint) => {
