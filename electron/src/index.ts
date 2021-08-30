@@ -1,6 +1,11 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import * as path from 'path'
-import log from 'electron-log'
+// import log from 'electron-log'
+import setup, {
+  StateSignal,
+  STATUS_EVENT,
+} from 'electron-holochain'
+
 import {
   devOptions,
   projectsDnaPath,
@@ -8,10 +13,6 @@ import {
   stateSignalToText,
   BINARY_PATHS,
 } from './holochain'
-import setup, {
-  StateSignal,
-  STATUS_EVENT,
-} from 'electron-holochain'
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // if (require('electron-squirrel-startup')) {
