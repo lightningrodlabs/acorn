@@ -173,8 +173,8 @@ function Dashboard({
                 {selectedSort === 'created_at' && 'Last Created'}
                 {selectedSort === 'name' && 'Name'}
                 <Icon
-                  name="line-angle-down.svg"
-                  size="very-small"
+                  name="chevron-down.svg"
+                  size="small"
                   className={`grey ${showSortPicker ? 'active' : ''}`}
                 />
               </div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import _ from 'lodash'
+import { NavLink } from 'react-router-dom'
 
 import './PriorityUniversal.css'
 
@@ -12,6 +13,7 @@ import Icon from '../../../../components/Icon/Icon'
 import StatusIcon from '../../../../components/StatusIcon/StatusIcon'
 import { updateProjectMeta } from '../../../../projects/project-meta/actions'
 import TimeframeFormat from '../../../../components/TimeframeFormat'
+import GuidebookNavLink from '../../../../components/GuidebookNavLink/GuidebookNavLink'
 
 // an individual list item
 function UniversalGoal({ liveIndex, goal, openExpandedView }) {
@@ -21,27 +23,30 @@ function UniversalGoal({ liveIndex, goal, openExpandedView }) {
         <div className="universal-priority-number-wrapper">
           <div className="universal-priority-order-number">{liveIndex}.</div>{' '}
         </div>
-        <div className="universal-priority-goal-item-status">
-          <StatusIcon
-            status={goal.status}
-            notHoverable
-            hideTooltip
-            className="indented-view-goal-content-status-color"
-          />
+        <div className="universal-priority-goal-title-status" >
+          <div className="universal-priority-goal-item-status">
+            <StatusIcon
+              status={goal.status}
+              notHoverable
+              hideTooltip
+              className="indented-view-goal-content-status-color"
+            />
+          </div>
+
+          <div className="universal-priority-goal-item-title">{goal.content}</div>
         </div>
-        <div className="universal-priority-goal-item-title">{goal.content}</div>
         <div className="universal-priority-goal-item-metadata">
           <div className="universal-priority-goal-item-members">
             {goal.members.map(member => {
               return <div className="universal-priority-goal-item-member-avatar" key={member.address}>
-              <Avatar
-              first_name={member.first_name}
-              last_name={member.last_name}
-              avatar_url={member.avatar_url}
-              imported={member.is_imported}
-              medium
-            />
-            </div>
+                <Avatar
+                  first_name={member.first_name}
+                  last_name={member.last_name}
+                  avatar_url={member.avatar_url}
+                  imported={member.is_imported}
+                  medium
+                />
+              </div>
             })}
           </div>
           <div className="universal-priority-goal-item-date">
@@ -76,8 +81,8 @@ function PriorityUniversalDraggableGoal({ goal, index, whileDraggingIndexes, ope
     // no dragging happening
     liveIndex = index + 1
   } else if (whileDraggingIndexes.source === index) {
-     // item being rendered IS the item being dragged
-     liveIndex = whileDraggingIndexes.destination + 1
+    // item being rendered IS the item being dragged
+    liveIndex = whileDraggingIndexes.destination + 1
   } else if (index < whileDraggingIndexes.source && index < whileDraggingIndexes.destination) {
     // item is above the list than what is being dragged and where it
     // is being dragged to
@@ -239,17 +244,25 @@ function PriorityUniversal({
         </div>
       </div>
       <div className="universal-priority-divider-line"></div>
+
       <div className="universal-priority-goals-list-wrapper">
-        <DragDropContext
-          onDragEnd={onDragEnd}
-          onDragUpdate={onDragUpdate}
-        >
-          <PriorityUniversalDroppable
-            goals={topPriorityGoals}
-            whileDraggingIndexes={whileDraggingIndexes}
-            openExpandedView={openExpandedView}
-          />
-        </DragDropContext>
+        {topPriorityGoals.length === 0 && <div className="top-priority-empty-state-wrapper">
+          <img src="img/intro-screen-image-4.svg" className="top-priority-empty-state-image" />
+          <h4>You haven't marked any goals as top priority.
+            <br />
+            <GuidebookNavLink guidebookId='intro_universal_priority_mode'>Learn how to start prioritizing here.</GuidebookNavLink> </h4></div>}
+        {topPriorityGoals.length == !0 &&
+          <DragDropContext
+            onDragEnd={onDragEnd}
+            onDragUpdate={onDragUpdate}
+          >
+            <PriorityUniversalDroppable
+              goals={topPriorityGoals}
+              whileDraggingIndexes={whileDraggingIndexes}
+              openExpandedView={openExpandedView}
+            />
+          </DragDropContext>
+        }
       </div>
     </div>
   )
