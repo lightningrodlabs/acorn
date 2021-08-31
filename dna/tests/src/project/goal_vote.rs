@@ -1,7 +1,7 @@
 #[cfg(test)]
 pub mod tests {
     use crate::project::fixtures::fixtures::{
-        GoalFixturator, GoalVoteFixturator, WrappedAgentPubKeyFixturator,
+        GoalVoteFixturator, WrappedAgentPubKeyFixturator,
         WrappedHeaderHashFixturator,
     };
     use ::fixt::prelude::*;
@@ -9,6 +9,7 @@ pub mod tests {
     use hdk_crud::WrappedAgentPubKey;
     use holochain_types::prelude::ElementFixturator;
     use holochain_types::prelude::ValidateDataFixturator;
+    use holochain_types::prelude::option_entry_hashed;
     use projects::project::error::Error;
     use projects::project::goal_vote::validate::*;
 
@@ -37,48 +38,22 @@ pub mod tests {
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(goal_vote.clone().try_into().unwrap());
 
-        // it will be missing the goal dependency so it will
-        // return UnresolvedDependencies
+        // make it pass UnresolvedDependencies
+        // by making it as if there is a Goal at the goal_address
+        let mut goal_element_for_invalid = fixt!(Element);
+        let create_header_for_invalid = fixt!(Create);
+        *goal_element_for_invalid.as_header_mut() =
+            Header::Create(create_header_for_invalid.clone());
 
         let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the parent goal
+        // mock the must_get_header call for the goal_address
         mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                goal_wrapped_header_hash.clone().0.into(),
-                GetOptions::content(),
-            )]))
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+                goal_wrapped_header_hash.clone().0,
+            )))
             .times(1)
-            .return_const(Ok(vec![None]));
-
-        set_hdk(mock_hdk);
-
-        // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
-        // equal to the Hash of the parent Goal address
-        assert_eq!(
-            validate_create_entry_goal_vote(validate_data.clone()),
-            Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
-                goal_wrapped_header_hash.clone().0.into()
-            ])),
-        );
-
-        // make it pass UnresolvedDependencies by making it
-        // as if there is a Goal at the parent_address
-        let goal = fixt!(Goal);
-        let mut goal_element = fixt!(Element);
-        *goal_element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
-
-        let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the goal_address
-        mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                goal_wrapped_header_hash.clone().0.into(),
-                GetOptions::content(),
-            )]))
-            .times(1)
-            .return_const(Ok(vec![Some(goal_element.clone())]));
-
+            .return_const(Ok(goal_element_for_invalid.signed_header().clone()));
         set_hdk(mock_hdk);
 
         // with an entry with a random
@@ -99,22 +74,21 @@ pub mod tests {
         // is_imported is false and agent_address refers to the agent committing (or is_imported is true)
         // -> good to go
 
-        // make it as if there is a Goal at the parent_address
-        let goal = fixt!(Goal);
-        let mut goal_element = fixt!(Element);
-        *goal_element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
+        // make it pass UnresolvedDependencies
+        // by making it as if there is a Goal at the goal_address
+        let mut goal_element_for_valid = fixt!(Element);
+        let create_header_for_valid = fixt!(Create);
+        *goal_element_for_valid.as_header_mut() = Header::Create(create_header_for_valid.clone());
 
         let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the goal_address
+        // mock the must_get_header call for the goal_address
         mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                goal_wrapped_header_hash.clone().0.into(),
-                GetOptions::content(),
-            )]))
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+                goal_wrapped_header_hash.clone().0,
+            )))
             .times(1)
-            .return_const(Ok(vec![Some(goal_element.clone())]));
-
+            .return_const(Ok(goal_element_for_valid.signed_header().clone()));
         set_hdk(mock_hdk);
 
         // make the agent_address valid by making it equal the
@@ -169,52 +143,46 @@ pub mod tests {
         // now, since validation is dependent on other entries, we begin
         // to have to mock `get` calls to the HDK
 
-        let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the original GoalVote
-        mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                update_header.original_header_address.clone().into(),
-                GetOptions::content(),
-            )]))
-            .times(1)
-            // act as if not present / not found
-            .return_const(Ok(vec![None]));
-
-        set_hdk(mock_hdk);
-
-        // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
-        // equal to the Hash of the original_header_address of the Update
-        assert_eq!(
-            validate_update_entry_goal_vote(validate_data.clone()),
-            Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
-                update_header.original_header_address.clone().into()
-            ])),
-        );
-
         // make it now resolve the original GoalVote
         // but now be invalid according to the original GoalVote
-        // being authored by a different author than this update
+        // being authored by a different author than this Update
 
-        // now it is as if there is a GoalVote at the original address
-        let original_goal_vote = fixt!(GoalVote);
-        // but due to being random, it will have a different author
+        // due to being random, it will have a different author
         // than our Update header
-        let mut goal_vote_element = fixt!(Element);
-        *goal_vote_element.as_entry_mut() =
-            ElementEntry::Present(original_goal_vote.clone().try_into().unwrap());
+        let bad_original_goal_vote = fixt!(GoalVote);
+        let mut bad_original_goal_vote_element = fixt!(Element);
+        let bad_create_header = fixt!(Create);
+        *bad_original_goal_vote_element.as_header_mut() = Header::Create(bad_create_header.clone());
+        *bad_original_goal_vote_element.as_entry_mut() =
+            ElementEntry::Present(bad_original_goal_vote.clone().try_into().unwrap());
+        let bad_original_entry_hash = bad_original_goal_vote_element
+            .signed_header()
+            .header()
+            .entry_hash()
+            .unwrap();
 
+        // it is as if there is a GoalComment at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the original_header_address
+        // the must_get_header call for the goal_address
         mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                update_header.original_header_address.clone().into(),
-                GetOptions::content(),
-            )]))
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+                update_header.original_header_address.clone(),
+            )))
             .times(1)
-            .return_const(Ok(vec![Some(goal_vote_element.clone())]));
-
+            .return_const(Ok(bad_original_goal_vote_element
+                .signed_header()
+                .clone()));
+        mock_hdk
+            .expect_must_get_entry()
+            .with(mockall::predicate::eq(MustGetEntryInput::new(
+                bad_original_entry_hash.clone(),
+            )))
+            .times(1)
+            .return_const(Ok(option_entry_hashed(
+                bad_original_goal_vote_element.entry().clone(),
+            )
+            .unwrap()));
         set_hdk(mock_hdk);
 
         assert_eq!(
@@ -228,25 +196,46 @@ pub mod tests {
         // the original GoalVote header and entry exist
         // and the author of the update matches the original author
         // -> good to go
-        let mut original_goal_vote = fixt!(GoalVote);
-        let mut original_goal_vote_element = fixt!(Element);
-        // make the authors equal
-        original_goal_vote.agent_address =
+        let mut good_original_goal_vote = fixt!(GoalVote);
+        let mut good_original_goal_vote_element = fixt!(Element);
+        let good_create_header = fixt!(Create);
+        *good_original_goal_vote_element.as_header_mut() =
+            Header::Create(good_create_header.clone());
+        // make the author equal to the current `user_hash` value
+        // on the Goal in validate_data
+        good_original_goal_vote.agent_address =
             WrappedAgentPubKey::new(update_header.author.as_hash().clone());
-        *original_goal_vote_element.as_entry_mut() =
-            ElementEntry::Present(original_goal_vote.clone().try_into().unwrap());
+        *good_original_goal_vote_element.as_entry_mut() =
+            ElementEntry::Present(good_original_goal_vote.clone().try_into().unwrap());
 
+        let good_original_entry_hash = good_original_goal_vote_element
+            .signed_header()
+            .header()
+            .entry_hash()
+            .unwrap();
+
+        // it is as if there is a GoalComment at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the original_header_address
+        // the must_get_header call for the goal_address
         mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                update_header.original_header_address.clone().into(),
-                GetOptions::content(),
-            )]))
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+                update_header.original_header_address,
+            )))
             .times(1)
-            .return_const(Ok(vec![Some(original_goal_vote_element.clone())]));
-
+            .return_const(Ok(good_original_goal_vote_element
+                .signed_header()
+                .clone()));
+        mock_hdk
+            .expect_must_get_entry()
+            .with(mockall::predicate::eq(MustGetEntryInput::new(
+                good_original_entry_hash.clone(),
+            )))
+            .times(1)
+            .return_const(Ok(option_entry_hashed(
+                good_original_goal_vote_element.entry().clone(),
+            )
+            .unwrap()));
         set_hdk(mock_hdk);
 
         // we should see that the ValidateCallbackResult

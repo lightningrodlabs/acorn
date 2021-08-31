@@ -4,6 +4,7 @@ pub mod tests {
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_crud::WrappedAgentPubKey;
+    use holochain_types::prelude::option_entry_hashed;
     use holochain_types::prelude::ElementFixturator;
     use holochain_types::prelude::ValidateDataFixturator;
     use projects::project::error::Error;
@@ -72,49 +73,45 @@ pub mod tests {
         // now, since validation is dependent on other entries, we begin
         // to have to mock `get` calls to the HDK
 
-        let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the original ProjectMeta
-        mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                update_header.original_header_address.clone().into(),
-                GetOptions::content(),
-            )]))
-            .times(1)
-            // act as if not present / not found
-            .return_const(Ok(vec![None]));
-
-        set_hdk(mock_hdk);
-
-        // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
-        // equal to the Hash of the original_header_address of the Update
-        assert_eq!(
-            validate_update_entry_project_meta(validate_data.clone()),
-            Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
-                update_header.original_header_address.clone().into()
-            ])),
-        );
-
         let invalid_original_project_meta = ProjectMeta {
             //make it invalid can't edit passphrase
             passphrase: "test".to_string(),
             ..project_meta.clone()
         };
         let mut invalid_original_project_meta_element = fixt!(Element);
+        let invalid_create_header = fixt!(Create);
+        *invalid_original_project_meta_element.as_header_mut() =
+            Header::Create(invalid_create_header.clone());
         *invalid_original_project_meta_element.as_entry_mut() =
             ElementEntry::Present(invalid_original_project_meta.clone().try_into().unwrap());
+        let invalid_original_entry_hash = invalid_original_project_meta_element
+            .signed_header()
+            .header()
+            .entry_hash()
+            .unwrap();
 
+        // it is as if there is a ProjectMeta at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the original_header_address
+        // the must_get_header call for the goal_address
         mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                update_header.original_header_address.clone().into(),
-                GetOptions::content(),
-            )]))
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+                update_header.original_header_address.clone(),
+            )))
             .times(1)
-            .return_const(Ok(vec![Some(invalid_original_project_meta_element)]));
-
+            .return_const(Ok(invalid_original_project_meta_element
+                .signed_header()
+                .clone()));
+        mock_hdk
+            .expect_must_get_entry()
+            .with(mockall::predicate::eq(MustGetEntryInput::new(
+                invalid_original_entry_hash.clone(),
+            )))
+            .times(1)
+            .return_const(Ok(option_entry_hashed(
+                invalid_original_project_meta_element.entry().clone(),
+            )
+            .unwrap()));
         set_hdk(mock_hdk);
 
         // without an Element containing an Entry, validation will fail
@@ -132,20 +129,39 @@ pub mod tests {
             ..project_meta
         };
         let mut valid_original_project_meta_element = fixt!(Element);
+        let valid_create_header = fixt!(Create);
+        *valid_original_project_meta_element.as_header_mut() =
+            Header::Create(valid_create_header.clone());
         *valid_original_project_meta_element.as_entry_mut() =
             ElementEntry::Present(valid_original_project_meta.clone().try_into().unwrap());
+        let valid_original_entry_hash = valid_original_project_meta_element
+            .signed_header()
+            .header()
+            .entry_hash()
+            .unwrap();
 
+        // it is as if there is a ProjectMeta at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the original_header_address
+        // the must_get_header call for the goal_address
         mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                update_header.original_header_address.clone().into(),
-                GetOptions::content(),
-            )]))
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+                update_header.original_header_address.clone(),
+            )))
             .times(1)
-            .return_const(Ok(vec![Some(valid_original_project_meta_element)]));
-
+            .return_const(Ok(valid_original_project_meta_element
+                .signed_header()
+                .clone()));
+        mock_hdk
+            .expect_must_get_entry()
+            .with(mockall::predicate::eq(MustGetEntryInput::new(
+                valid_original_entry_hash.clone(),
+            )))
+            .times(1)
+            .return_const(Ok(option_entry_hashed(
+                valid_original_project_meta_element.entry().clone(),
+            )
+            .unwrap()));
         set_hdk(mock_hdk);
 
         // valid!

@@ -4,6 +4,7 @@ pub mod tests {
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_crud::WrappedAgentPubKey;
+    use holochain_types::prelude::option_entry_hashed;
     use holochain_types::prelude::ElementFixturator;
     use holochain_types::prelude::ValidateDataFixturator;
     use projects::project::error::Error;
@@ -128,49 +129,43 @@ pub mod tests {
         // now, since validation is dependent on other entries, we begin
         // to have to mock `get` calls to the HDK
 
-        let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the original goal, via its header
-        // return Ok(None) for now, as if it can't be found
-        mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                update_header.original_header_address.clone().into(),
-                GetOptions::content(),
-            )]))
-            .times(1)
-            .return_const(Ok(vec![None]));
-
-        set_hdk(mock_hdk);
-
-        assert_eq!(
-            validate_update_entry_goal(validate_data.clone()),
-            Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
-                update_header.original_header_address.clone().into()
-            ])),
-        );
-
         // now assuming it can be found, we have the question of the header
         // of the original, which we will be checking the author against
         // in the case where it's a different original author, FAIL
         // suggests inappropriate data tampering
 
-        let original_goal = fixt!(Goal);
-        let mut original_goal_element = fixt!(Element);
-        *original_goal_element.as_entry_mut() =
-            ElementEntry::Present(original_goal.clone().try_into().unwrap());
+        let bad_original_goal = fixt!(Goal);
+        let mut bad_original_goal_element = fixt!(Element);
+        let bad_create_header = fixt!(Create);
+        *bad_original_goal_element.as_header_mut() = Header::Create(bad_create_header.clone());
+        *bad_original_goal_element.as_entry_mut() =
+            ElementEntry::Present(bad_original_goal.clone().try_into().unwrap());
+        let bad_original_entry_hash = bad_original_goal_element
+            .signed_header()
+            .header()
+            .entry_hash()
+            .unwrap();
 
+        // it is as if there is a Goal at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the original goal, via its header
-        // return a result, as if it can be found
+        // the must_get_header call for the Goal
         mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                update_header.original_header_address.clone().into(),
-                GetOptions::content(),
-            )]))
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+                update_header.original_header_address.clone(),
+            )))
             .times(1)
-            .return_const(Ok(vec![Some(original_goal_element.clone())]));
-
+            .return_const(Ok(bad_original_goal_element.signed_header().clone()));
+        mock_hdk
+            .expect_must_get_entry()
+            .with(mockall::predicate::eq(MustGetEntryInput::new(
+                bad_original_entry_hash.clone(),
+            )))
+            .times(1)
+            .return_const(Ok(option_entry_hashed(
+                bad_original_goal_element.entry().clone(),
+            )
+            .unwrap()));
         set_hdk(mock_hdk);
 
         assert_eq!(
@@ -188,23 +183,43 @@ pub mod tests {
         // we should see that the ValidateCallbackResult
         // is finally valid
 
+        let good_original_goal = fixt!(Goal);
+        let mut good_original_goal_element = fixt!(Element);
+        let good_create_header = fixt!(Create);
+        *good_original_goal_element.as_header_mut() = Header::Create(good_create_header.clone());
+        *good_original_goal_element.as_entry_mut() =
+            ElementEntry::Present(good_original_goal.clone().try_into().unwrap());
+        let good_original_entry_hash = good_original_goal_element
+            .signed_header()
+            .header()
+            .entry_hash()
+            .unwrap();
         // set the user_hash on the goal equal to the original goals user_hash property
-        goal.user_hash = original_goal.user_hash.clone();
+        // thus making them valid
+        goal.user_hash = good_original_goal.user_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(goal.clone().try_into().unwrap());
 
+        // it is as if there is a Goal at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the original goal, via its header
-        // return a result, as if it can be found
+        // the must_get_header call for the goal_address
         mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                update_header.original_header_address.clone().into(),
-                GetOptions::content(),
-            )]))
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+                update_header.original_header_address,
+            )))
             .times(1)
-            .return_const(Ok(vec![Some(original_goal_element.clone())]));
-
+            .return_const(Ok(good_original_goal_element.signed_header().clone()));
+        mock_hdk
+            .expect_must_get_entry()
+            .with(mockall::predicate::eq(MustGetEntryInput::new(
+                good_original_entry_hash.clone(),
+            )))
+            .times(1)
+            .return_const(Ok(option_entry_hashed(
+                good_original_goal_element.entry().clone(),
+            )
+            .unwrap()));
         set_hdk(mock_hdk);
 
         assert_eq!(

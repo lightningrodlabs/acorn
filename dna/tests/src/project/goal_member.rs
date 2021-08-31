@@ -1,7 +1,7 @@
 #[cfg(test)]
 pub mod tests {
     use crate::project::fixtures::fixtures::{
-        GoalFixturator, GoalMemberFixturator, WrappedAgentPubKeyFixturator,
+        GoalMemberFixturator, WrappedAgentPubKeyFixturator,
         WrappedHeaderHashFixturator,
     };
     use ::fixt::prelude::*;
@@ -38,45 +38,23 @@ pub mod tests {
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(goal_member.clone().try_into().unwrap());
 
-        let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the parent goal
-        mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                goal_wrapped_header_hash.clone().0.into(),
-                GetOptions::content(),
-            )]))
-            .times(1)
-            .return_const(Ok(vec![None]));
-
-        set_hdk(mock_hdk);
-
-        // we should see that the ValidateCallbackResult is that there are UnresolvedDependencies
-        // equal to the Hash of the parent Goal address
-        assert_eq!(
-            validate_create_entry_goal_member(validate_data.clone()),
-            Ok(ValidateCallbackResult::UnresolvedDependencies(vec![
-                goal_wrapped_header_hash.clone().0.into()
-            ])),
-        );
-
-        // now make it pass UnresolvedDependencies
-        // by making it as if there is a Goal at the parent_address
-        let goal = fixt!(Goal);
-        let mut goal_element = fixt!(Element);
-        *goal_element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
+        // make it pass UnresolvedDependencies
+        // by making it as if there is a Goal at the goal_address
+        let mut goal_element_for_invalid = fixt!(Element);
+        let create_header_for_invalid = fixt!(Create);
+        *goal_element_for_invalid.as_header_mut() = Header::Create(create_header_for_invalid.clone());
 
         let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the goal_address
+        // mock the must_get_header call for the goal_address
         mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                goal_wrapped_header_hash.clone().0.into(),
-                GetOptions::content(),
-            )]))
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+              goal_wrapped_header_hash.clone().0,
+            )))
             .times(1)
-            .return_const(Ok(vec![Some(goal_element.clone())]));
-
+            .return_const(Ok(goal_element_for_invalid
+                .signed_header()
+                .clone()));
         set_hdk(mock_hdk);
 
         // with an entry with a random
@@ -97,22 +75,23 @@ pub mod tests {
         // is_imported is false and creator_address refers to the agent committing (or is_imported = true)
         // -> good to go
 
-        // make it as if there is a Goal at the parent_address
-        let goal = fixt!(Goal);
-        let mut goal_element = fixt!(Element);
-        *goal_element.as_entry_mut() = ElementEntry::Present(goal.clone().try_into().unwrap());
+        // make it pass UnresolvedDependencies
+        // by making it as if there is a Goal at the goal_address
+        let mut goal_element_for_valid = fixt!(Element);
+        let create_header_for_valid = fixt!(Create);
+        *goal_element_for_valid.as_header_mut() = Header::Create(create_header_for_valid.clone());
 
         let mut mock_hdk = MockHdkT::new();
-        // the resolve_dependencies `get` call of the goal_address
+        // mock the must_get_header call for the goal_address
         mock_hdk
-            .expect_get()
-            .with(mockall::predicate::eq(vec![GetInput::new(
-                goal_wrapped_header_hash.clone().0.into(),
-                GetOptions::content(),
-            )]))
+            .expect_must_get_header()
+            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+              goal_wrapped_header_hash.clone().0,
+            )))
             .times(1)
-            .return_const(Ok(vec![Some(goal_element.clone())]));
-
+            .return_const(Ok(goal_element_for_valid
+                .signed_header()
+                .clone()));
         set_hdk(mock_hdk);
 
         // make the user_edit_hash valid by making it equal the
