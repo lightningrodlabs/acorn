@@ -1,5 +1,4 @@
 use crate::project::error::Error;
-use hdk_crud::{resolve_dependency, ResolvedDependency};
 use hdk::prelude::*;
 
 pub fn validate_value_matches_create_author(
@@ -81,24 +80,6 @@ where
                 .to_string(),
         )),
     }
-}
-
-pub fn confirm_resolved_dependency<'a, O>(hash: AnyDhtHash) -> ExternResult<ValidateCallbackResult>
-where
-  O: TryFrom<SerializedBytes, Error = SerializedBytesError>,
-{
-  match resolve_dependency::<O>(hash)? {
-    Ok(ResolvedDependency(_, _)) => Ok(ValidateCallbackResult::Valid),
-    Err(ValidateCallbackResult::Invalid(e)) if e == hdk_crud::Error::EntryMissing.to_string() => {
-      // valid because it found the header, and we don't need the entry
-      // indicates its a header that really exists
-      Ok(ValidateCallbackResult::Valid)
-    }
-    // we want to forward the validate_callback_result
-    // back to Holochain since it contains a specific UnresolvedDependencies response
-    // including the missing Hashes
-    Err(validate_callback_result) => Ok(validate_callback_result),
-  }
 }
 
 // if any ValidateCallbackResult is Invalid, then ValidateResult::Invalid
