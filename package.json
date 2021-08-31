@@ -12,7 +12,7 @@
     "dna-install": ". scripts/install-hc-tools.sh",
     "dna-test": ". scripts/dna-test.sh",
     "dna-pack": ". scripts/dna-pack.sh",
-    "dna-dev-reset": "rm -rf tmp && rm -rf tmp2 && mkdir tmp tmp2",
+    "user-data-reset": "rm -rf tmp && rm -rf tmp2 && mkdir tmp tmp2",
     "web-install": "cd web && npm install",
     "web": "cd web && ADMIN_WS_PORT=1234 APP_WS_PORT=8888 npx webpack-dev-server --config webpack.dev.js",
     "web2": "cd web && ADMIN_WS_PORT=1236 APP_WS_PORT=8899 npx webpack-dev-server --config webpack.dev.js",
