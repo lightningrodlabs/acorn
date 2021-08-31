@@ -36,7 +36,7 @@
 
 .people-picker-people li {
   color: #4d4d4d;
-  padding: 6px 20px;
+  padding: 8px 20px;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -49,7 +49,7 @@
 
 .people-picker-people li .person-name {
   flex: 1;
-  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
   font-size: 14px;
   line-height: 14px;
 }

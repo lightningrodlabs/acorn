@@ -44,8 +44,8 @@ function NestedTreeGoal({ goal, level, filterText, projectMeta, updateProjectMet
           <div className="indented-view-goal-item-arrow">
             {goal.children.length > 0 && (
               <Icon
-                name={expanded ? 'line-angle-down.svg' : 'line-angle-right.svg'}
-                size="very-small"
+                name={expanded ? 'chevron-down.svg' : 'chevron-right.svg'}
+                size="small"
                 className="grey"
                 onClick={() => setExpanded(!expanded)}
               />
@@ -74,13 +74,13 @@ function NestedTreeGoal({ goal, level, filterText, projectMeta, updateProjectMet
             )}
             <div className="indented-view-goal-text">{goal.content}</div>
             {showMakeTopPriorityGoal && <div className="indented-view-goal-make-top-priority" onClick={makeTopPriority}>
-            <Icon
-              name='plus.svg'
-              size='small'
-              className='grey'
-              
-            />
-              </div>}
+              <Icon
+                name='plus.svg'
+                size='small'
+                className='grey'
+
+              />
+            </div>}
           </NavLink>
         </div>
       )}
@@ -88,16 +88,16 @@ function NestedTreeGoal({ goal, level, filterText, projectMeta, updateProjectMet
       {/* since only what matches the filter will show anyways */}
       {(filterText.length || expanded) && goal.children
         ? goal.children.map((childGoal, index) => (
-            <div className="indented-view-nested-goal" key={index}>
-              <NestedTreeGoal
-                filterText={filterText}
-                goal={childGoal}
-                level={level + 1}
-                projectMeta={projectMeta}
-                updateProjectMeta={updateProjectMeta}
-              />
-            </div>
-          ))
+          <div className="indented-view-nested-goal" key={index}>
+            <NestedTreeGoal
+              filterText={filterText}
+              goal={childGoal}
+              level={level + 1}
+              projectMeta={projectMeta}
+              updateProjectMeta={updateProjectMeta}
+            />
+          </div>
+        ))
         : null}
     </div>
   )

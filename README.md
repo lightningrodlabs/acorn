@@ -11,37 +11,61 @@
 
 ## Developers
 
-
-## Developers
-
 ### To Run Locally and Develop on your Computer
-To set up fresh: 
+
+#### Commands to start get started easily:
+
+_Prerequisites_
+- Have rust language (stable) installed on your system
+- Have nodejs version 14 installed on your system
+
+Then run
+- `npm run install-deps`
+- `npm run dev`
+
+In the future, just run `npm run dev` anytime to develop.
+
+#### Commands that are more specific to your use case: 
 
 __dna__
-- Have rust language (stable) installed on your system
-- Have WebAssembly compile target for Rust installed (if you haven't, run `rustup target install wasm32-unknown-unknown`)
-- run `npm run dna-install-deps`
-- run `npm run dna-pack`
+- Have rust language (stable) installed on your system, then...
+- `npm run dna-install`
+- `npm run dna-pack` (Run this anytime you change the code in `api` folder)
+
+To test backend:
+
+- `npm run dna-test`
 
 __web__ (user interface)
 
 - Use nodejs version 14
-- run `npm run web-install`
-- run `npm run web`
-- Open up http://localhost:8080/
+- `npm run web-install`
+- `npm run web`
 
 __electron__
 
-- run `npm run install-electron`
-- run `npm run electron`
+- `npm run electron-install`
+- `npm run electron`
 
-To test backend:
+#### Second User
 
-- run `npm run test-happ`
+- `npm run web2`
+- `npm run electron2`
+
+### Building / Packaging
 
 To build:
 
-- run `npm run build`
+- `npm run build`
+
+> Macos: You will need to have set
+> APPLE_ID_EMAIL
+> and 
+> APPLE_ID_PASSWORD
+> as environment variables, in addition to having a certificate for the Apple Developer
+> account installed on the system you are building on.
+
+You will find the packaged executables in `electron/out`.
 
 ## Technical Overview
 

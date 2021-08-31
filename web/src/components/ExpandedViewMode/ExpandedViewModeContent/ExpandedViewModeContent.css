@@ -1,4 +1,4 @@
-.expanded_view_content {
+.expanded-view-content {
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -13,14 +13,14 @@
 
 /* title */
 
-.expanded_view_title {
+.expanded-view-title {
   margin-bottom: 20px;
   font-size: 22px;
   color: #4d4d4d;
   padding: 4px 0;
 }
 
-.expanded_view_title input {
+.expanded-view-title input {
   width: 100%;
   outline: none;
   border: none;
@@ -30,7 +30,7 @@
   font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
 }
 
-.expanded_view_title textarea {
+.expanded-view-title textarea {
   width: 100%;
   outline: none;
   border: none;
@@ -44,13 +44,13 @@
 
 /* tags */
 
-.expanded_view_tags {
+.expanded-view-tags {
   padding-bottom: 20px;
 }
 
 /* description */
 
-.expanded_view_description {
+.expanded-view-description {
   /* border: 1px solid #f9f9f9;
   background-color: #f9f9f9; */
   border-radius: 12px;
@@ -61,7 +61,7 @@
   overflow-y: scroll;
 }
 
-.expanded_view_description textarea {
+.expanded-view-description textarea {
   width: 100%;
   height: 240px;
   padding: 0;
@@ -76,12 +76,12 @@
 
 /* squirrels & timeframe wrapper */
 
-.expanded_view_squirrels_title, .expanded_view_timeframe_title {
+.expanded-view-squirrels-title, .expanded-view-timeframe-title {
   margin-bottom: 8px;
   font-family: 'hk-grotesk-semibold';
 }
 
-.squirrels_timeframe_row {
+.squirrels-timeframe-row {
   display: flex;
   flex-direction: row;
   color: #717171;
@@ -91,37 +91,46 @@
 
 /* squirrels section */
 
-.expanded_view_squirrels_wrapper {
+.expanded-view-squirrels-wrapper {
   width: 50%;
   position: relative;
 }
 
-.expanded_view_squirrels_wrapper .picker-popup {
+.expanded-view-squirrels-wrapper .picker-popup {
   top: 60px;
+  left: 0;
 }
 
-.expanded_view_squirrels_content {
+.expanded-view-squirrels-content {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
-.expanded_view_squirrels_content .avatar.medium.clickable, .expanded_view_squirrels_content .initials-avatar.medium {
-  margin-right: 4px;
+.expanded-view-squirrel-wrapper {
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  margin-right: -7px;
+  display: flex;
 }
 
-.icon.medium.add_squirrel_plus_icon {
-  padding: 4px;
+.expanded-view-squirrels-content .people-picker-people .avatar.medium.clickable, .expanded-view-squirrels-content .people-picker-people .initials-avatar.medium {
+  margin-right: unset;
+}
+
+.icon.add-squirrel-plus-icon {
+  /* padding: 4px;
   transition: box-shadow 0.1s ease;
-  border: 2px solid #f4f4f4;
+  border: 2px solid #f4f4f4; */
 }
 
-.expanded_view_squirrels_content .avatar.medium.clickable:hover, .icon.medium.add_squirrel_plus_icon:hover {
+.expanded-view-squirrels-content .avatar.medium.clickable:hover, .icon.medium.add-squirrel-plus-icon:hover {
   box-shadow: 0 0 0 2px #5f65ff;
 }
 
-.add_squirrel_plus_icon {
-  background: #f4f4f4;
-  border-radius: 50%;
+.add-squirrel-plus-icon {
+  /* background: #f4f4f4;
+  border-radius: 50%; */
 }
 
 /* squirrelInfoPopup */
@@ -174,7 +183,7 @@
 
 /* timeframe */
 
-.expanded_view_timeframe_display {
+.expanded-view-timeframe-display {
   background: #f9f9f9;
   border-radius: 22px;
   padding: 10px 16px 12px 16px;
@@ -184,18 +193,18 @@
   transition: all 0.3s;
 }
 
-.expanded_view_timeframe_display:hover, .expanded_view_timeframe_display:active, .expanded_view_timeframe_display:focus {
+.expanded-view-timeframe-display:hover, .expanded-view-timeframe-display:active, .expanded-view-timeframe-display:focus {
   background-color: #efefef;
 }
 
-.timeframe_wrapper {
+.timeframe-wrapper {
   position: relative;
   display: flex;
   flex-direction: column;
   width: 50%;
 }
 
-.timeframe_wrapper .picker-popup {
+.timeframe-wrapper .picker-popup {
   top: 60px;
 }
 
@@ -205,4 +214,19 @@
   height: calc(100vh - 256px);
   max-height: 600px;
   min-height: 400px;
+}
+
+.expanded-view-squirrels-add-wrapper {
+  height: 32px;
+  width: 32px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f4f4f4;
+}
+
+.expanded-view-squirrels-add-wrapper:hover {
+  color: #f3f3f3
 }

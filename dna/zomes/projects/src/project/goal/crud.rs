@@ -1,16 +1,14 @@
 use crate::project::{
   edge::crud::{inner_archive_edge, inner_create_edge, inner_fetch_edges, Edge, EdgeWireEntry},
   entry_point::crud::{inner_archive_entry_point, inner_fetch_entry_points, EntryPointWireEntry},
-  error::Error,
   goal_comment::crud::{
     inner_archive_goal_comment, inner_fetch_goal_comments, GoalCommentWireEntry,
   },
   goal_member::crud::{archive_goal_members, GoalMember},
   goal_vote::crud::{inner_archive_goal_vote, inner_fetch_goal_votes, GoalVoteWireEntry},
-  validate::entry_from_element_create_or_update,
 };
 use crate::{get_peers_content, SignalType};
-use dna_help::{crud, ActionType, WrappedAgentPubKey, WrappedHeaderHash};
+use hdk_crud::{crud, ActionType, WrappedAgentPubKey, WrappedHeaderHash};
 use hdk::prelude::*;
 use std::fmt;
 
@@ -31,14 +29,6 @@ pub struct Goal {
   pub description: String,
   pub time_frame: Option<TimeFrame>,
   pub is_imported: bool,
-}
-
-// can be updated
-impl TryFrom<&Element> for Goal {
-  type Error = Error;
-  fn try_from(element: &Element) -> Result<Self, Self::Error> {
-    entry_from_element_create_or_update::<Goal>(element)
-  }
 }
 
 impl Goal {
@@ -233,10 +223,12 @@ pub fn create_goal_with_edge(
         // new goal becomes child
         RelationInput::ExistingGoalAsParent => (linked_goal_details.goal_address, new_goal_address)
       };
+      let random = sys_time()?;
+      let r0: f64 = random.1.into();
       let edge = Edge {
         parent_address,
         child_address,
-        randomizer: sys_time()?.as_secs_f64(),
+        randomizer: r0,
         is_imported: false
       };
       let edge_wire_entry = inner_create_edge(edge, false)?;

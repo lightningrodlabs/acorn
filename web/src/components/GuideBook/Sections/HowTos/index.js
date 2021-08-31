@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { useLocation, NavLink } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import Icon from '../../../Icon/Icon'
+import GuidebookNavLink from '../../../GuidebookNavLink/GuidebookNavLink'
 import { GUIDE_IS_OPEN, CREATE_ENTRY_POINT_KEY } from '../../guideIsOpen'
 
 // Guides
@@ -33,15 +34,12 @@ const Content = ({ title, description }) => (
 )
 
 function NavItem({ navItem: { submenu, title }, expanded, expand }) {
-  const location = useLocation()
-  const searchParams = new URLSearchParams(location.search)
-  const openEntry = searchParams.get(GUIDE_IS_OPEN)
   return (
     <section>
       <div className="nav-item" onClick={expand}>
         <Icon
-          name={expanded ? 'line-angle-down.svg' : 'line-angle-right.svg'}
-          size="very-small"
+          name={expanded ? 'chevron-down.svg' : 'chevron-right.svg'}
+          size="small"
           className="grey"
         />
         {title}
@@ -50,12 +48,11 @@ function NavItem({ navItem: { submenu, title }, expanded, expand }) {
         <ul>
           {submenu.map((subNavItem, i) => (
             <li key={i}>
-              <NavLink
-                to={`${location.pathname}?${GUIDE_IS_OPEN}=${subNavItem.guide_id}`}
-                isActive={(match) => match && subNavItem.guide_id === openEntry}
+              <GuidebookNavLink
+                guidebookId={subNavItem.guide_id}
               >
                 {subNavItem.title}
-              </NavLink>
+              </GuidebookNavLink>
             </li>
           ))}
         </ul>

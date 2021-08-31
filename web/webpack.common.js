@@ -1,4 +1,7 @@
 const path = require('path')
+const ReactRefreshTypeScript = require('react-refresh-typescript')
+
+const isDevelopment = process.env.NODE_ENV !== 'production'
 
 module.exports = {
   entry: {
@@ -27,13 +30,29 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-react'],
+            plugins: [
+              // ... other plugins
+              isDevelopment && require.resolve('react-refresh/babel'),
+            ].filter(Boolean),
           },
         },
       },
       {
         test: /\.(ts|tsx)$/,
-        use: 'ts-loader',
         exclude: /node_modules/,
+        use: [
+          {
+            loader: require.resolve('ts-loader'),
+            options: {
+              getCustomTransformers: () => ({
+                before: isDevelopment ? [ReactRefreshTypeScript()] : [],
+              }),
+              // `ts-loader` does not work with HMR unless `transpileOnly` is used.
+              // If you need type checking, `ForkTsCheckerWebpackPlugin` is an alternative.
+              transpileOnly: isDevelopment,
+            },
+          },
+        ],
       },
       {
         test: /\.css$/,

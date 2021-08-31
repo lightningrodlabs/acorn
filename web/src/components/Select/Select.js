@@ -59,7 +59,7 @@ function Select({ toggleSelectOption, multiple, children, toggleLabel }) {
         onClick={() => setSelectOpen(!selectOpen)}>
         <div className='select-toggle-label-text'>{toggleLabel}</div>
         <Icon
-          name='line-angle-down.svg'
+          name='chevron-down.svg'
           size='very-small'
           className={`grey ${selectOpen ? 'active' : ''}`}
         />
@@ -74,9 +74,8 @@ function Select({ toggleSelectOption, multiple, children, toggleLabel }) {
             return (
               <div
                 key={option.props.value}
-                className={`select-option-item-wrapper ${
-                  option.props.selected ? 'active' : ''
-                }`}
+                className={`select-option-item-wrapper ${option.props.selected ? 'active' : ''
+                  }`}
                 title={option.props.label}
                 onClick={handleOptionClick(option.props.value)}>
                 {option}

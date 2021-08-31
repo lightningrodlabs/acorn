@@ -13,7 +13,7 @@ export const MAIN_APP_ID = __MAIN_APP_ID__
 
 // this corresponds with the `id` field of the profiles slot
 // defined in `conductor/src/main.rs`
-export const PROFILES_SLOT_NAME = 'profiles-slot'
+export const PROFILES_SLOT_NAME = 'dna-slot'
 
 // is used as a prefix for the creation of new Project apps/DHTs
 export const PROJECT_APP_PREFIX = 'acorn-project'

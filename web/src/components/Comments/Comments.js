@@ -134,7 +134,7 @@ function Comments({
             />
             <div className="comment_save_button">
               <Icon
-                name="line-angle-right.svg"
+                name="chevron-right.svg"
                 className="medium white not-hoverable"
                 onClick={submitComment}
               />

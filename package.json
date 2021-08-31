@@ -7,21 +7,24 @@
     "url": "git+https://github.com/h-be/acorn.git"
   },
   "scripts": {
-    "dna-install-deps": ". scripts/install-hc-tools.sh",
+    "install-deps": "npm install && npm run dna-install-deps && npm run web-install && npm run electron-install",
+    "dev": "pm2-dev pm2.config.js",
+    "dna-install": ". scripts/install-hc-tools.sh",
     "dna-test": ". scripts/dna-test.sh",
     "dna-pack": ". scripts/dna-pack.sh",
-    "dna-dev": "cargo run -- --keystore-path=tmp/keystore tmp/databases",
-    "dna-dev-2": "cargo run -- --admin-ws-port=1236 --app-ws-port=8899 --keystore-path=tmp2/keystore tmp2/databases",
     "dna-dev-reset": "rm -rf tmp && rm -rf tmp2 && mkdir tmp tmp2",
     "web-install": "cd web && npm install",
     "web": "cd web && ADMIN_WS_PORT=1234 APP_WS_PORT=8888 npx webpack-dev-server --config webpack.dev.js",
     "web2": "cd web && ADMIN_WS_PORT=1236 APP_WS_PORT=8899 npx webpack-dev-server --config webpack.dev.js",
     "web-build": "cd web && npx webpack --config webpack.prod.js",
-    "install-electron": "cd electron && npm install",
+    "electron-install": "cd electron && npm install",
     "electron": "cd electron && npm run start",
     "electron2": "cd electron && ACORN_TEST_USER_2=1 npm run start",
     "build": ". scripts/build.sh"
   },
   "author": "Connor Turland <connor@sprillow.com>",
-  "license": "CAL-1.0"
+  "license": "CAL-1.0",
+  "dependencies": {
+    "pm2": "^5.1.1"
+  }
 }

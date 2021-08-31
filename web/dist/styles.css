@@ -122,12 +122,22 @@ h3 {
 
 h4 {
   font-size: 16px;
-  line-height: 20px;
+  line-height: 24px;
   font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
   font-weight: normal;
   color: #8D8C8C;
   margin-block-start: 0.1em;
   margin-block-end: 0.5em;
+}
+
+h4 a {
+  color: #6600ff;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+h4 a:hover {
+  opacity: 80%;
 }
 
 /* StatusPicker */

@@ -1,13 +1,13 @@
 #[cfg(test)]
 pub(crate) mod fixtures {
-  use crate::project::goal::crud::{Goal, Hierarchy, Status};
-  use crate::project::{
+  use projects::project::goal::crud::{Goal, Hierarchy, Status};
+  use projects::project::{
     edge::crud::Edge, entry_point::crud::EntryPoint, goal::crud::TimeFrame,
     goal_comment::crud::GoalComment, goal_member::crud::GoalMember, goal_vote::crud::GoalVote,
     member::entry::Member, project_meta::crud::{ProjectMeta, PriorityMode},
   };
   use ::fixt::prelude::*;
-  use dna_help::{WrappedAgentPubKey, WrappedHeaderHash};
+  use hdk_crud::{WrappedAgentPubKey, WrappedHeaderHash};
   use hdk::prelude::*;
 
   fixturator!(

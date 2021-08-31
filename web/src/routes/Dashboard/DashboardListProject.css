@@ -69,7 +69,7 @@
 
 .dashboard-list-project-name {
   font-size: 22px;
-  font-family: 'hk-grotesk-extrabold', Helvetica, sans-serif;
+  font-family: 'gilroyextrabold', Helvetica, sans-serif;
   text-decoration: none;
   color: #535353;
   display: block;
@@ -115,7 +115,7 @@
 }
 
 .dashboard-list-project-member-count {
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
   font-size: 16px;
   color: #bcbcbc;
 }
@@ -151,11 +151,15 @@
   width: 150px;
   color: #9b9b9b;
   cursor: pointer;
+  font-family: 'gilroyextrabold', Helvetica, sans-serif;
+}
+
+.dashboard-list-project-entry-point-button-text {
+  margin: 0 2px 0 3px;
 }
 
 .dashboard-list-project-entry-point-button .icon {
-  margin-left: 4px;
-  padding: 3px;
+  padding: 2.5px;
   transition: transform 0.2s ease-in;
 }
 
@@ -219,7 +223,7 @@
 /* dashboard project invite members */
 
 .dashboard-invite-members-button {
-  border: 1.8px solid #d0d0d0;
+  border: 2px solid #d0d0d0;
   border-radius: 50%;
   text-align: center;
   cursor: pointer;
@@ -229,8 +233,8 @@
   justify-content: center;
   width: 28px;
   height: 28px;
-  background-color: transparent;
-  transition: background-color 0.2s ease-in-out,
+  background-color: #fbf9f7;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .dashboard-invite-members-button:hover {
@@ -256,12 +260,14 @@
 }
 
 .dashboard-list-project-member-list {
-  /* margin-bottom: 8px; */
   display: flex;
 }
 
-.dashboard-list-project-member-list * {
-  margin-right: 4px;
+.dashboard-list-project-member-wrapper {
+  border: 2px solid #fbf9f7;
+  border-radius: 50%;
+  margin-right: -7px;
+  display: flex;
 }
 
 /* dashboard project item settings */
