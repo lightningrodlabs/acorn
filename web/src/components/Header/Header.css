@@ -223,7 +223,7 @@
 /* Header Right Panel */
 
 .header-right-panel {
-  margin-left: 8px;
+  margin-left: 5px;
   position: relative;
   padding: 5px 12px;
   background: rgba(255, 255, 255, 0.9);
@@ -241,9 +241,46 @@
   display: flex;
 }
 
-.stop-right-panel div .icon {
-  width: 100%;
-  display: block;
+.search-button-wrapper {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  height: 46px;
+  width: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.search-open-wrapper {
+  width: 300px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 10px;
+  height: 46px;
+  box-shadow: 0px 0px 10px #ba4a4a1f;
+  padding: 5px 12px;
+  box-sizing: border-box;
+}
+
+.search-open-icon {}
+
+.search-open-wrapper input {
+  width: 240px;
+  font-size: 14px;
+  line-height: 18px;
+  color: #4d4d4d;
+  border: 0;
+  outline: 0;
+  padding: 2px;
+  margin-left: 6px;
+  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+  flex: 1;
+}
+
+.search-open-wrapper input::placeholder {
+  color: #bdbdbd;
 }
 
 /* Guidebook */

@@ -181,7 +181,7 @@ export default function IndentedTreeView({ goalTrees, projectMeta, updateProject
           type="text"
           onChange={(e) => setFilterText(e.target.value.toLowerCase())}
           value={filterText}
-          placeholder="Search for a Goal"
+          placeholder="Search for a goal"
           autoFocus
         />
         {filterText !== '' && (
