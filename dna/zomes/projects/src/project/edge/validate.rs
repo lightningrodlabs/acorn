@@ -3,6 +3,7 @@ use crate::project::error::Error;
 use hdk::prelude::*;
 
 #[hdk_extern]
+/// this is a code comment.
 pub fn validate_create_entry_edge(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
