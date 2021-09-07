@@ -99,9 +99,8 @@ function DashboardListProject({
               {project.members.map(
                 (member) =>
                   member && (
-                    <div className="dashboard-list-project-member-wrapper">
+                    <div key={member.address} className="dashboard-list-project-member-wrapper">
                       <Avatar
-                        key={member.address}
                         first_name={member.first_name}
                         last_name={member.last_name}
                         avatar_url={member.avatar_url}
