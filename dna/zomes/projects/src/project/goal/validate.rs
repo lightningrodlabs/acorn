@@ -11,6 +11,8 @@ use hdk::prelude::*;
 use hdk_crud::WrappedAgentPubKey;
 
 #[hdk_extern]
+/// Creates only allowed if `user_hash` of the Goal entry matches the agent
+/// creating the entry, unless the Goal is imported 
 pub fn validate_create_entry_goal(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
@@ -43,6 +45,8 @@ pub fn validate_create_entry_goal(
 }
 
 #[hdk_extern]
+/// Updates only allowed if `user_edit_hash` of the updated Goal entry matches the
+/// agent publishing the update
 pub fn validate_update_entry_goal(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {

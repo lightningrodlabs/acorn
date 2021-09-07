@@ -5,6 +5,9 @@ use crate::project::{error::Error};
 use hdk::prelude::*;
 
 #[hdk_extern]
+/// A goal must exist at the entry point and the creator
+/// of the entry point must be the author of the goal unless
+/// the entry is imported
 pub fn validate_create_entry_entry_point(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {

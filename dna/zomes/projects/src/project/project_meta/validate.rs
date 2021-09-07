@@ -6,6 +6,7 @@ use crate::project::{
 use hdk::prelude::*;
 
 #[hdk_extern]
+/// Creates allowed if `creator_address` matches the agent committing
 pub fn validate_create_entry_project_meta(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
@@ -25,6 +26,7 @@ pub fn validate_create_entry_project_meta(
 }
 
 #[hdk_extern]
+/// Updates allowed by anyone, but only `name` and `image` can be updated
 pub fn validate_update_entry_project_meta(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {

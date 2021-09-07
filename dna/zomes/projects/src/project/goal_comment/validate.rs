@@ -9,6 +9,9 @@ use crate::project::{
 use hdk::prelude::*;
 
 #[hdk_extern]
+/// Goal comments can only be created if the Goal exists and
+/// the `agent_address` must match the address of the agent adding
+/// the comment, unless the entry is imported
 pub fn validate_create_entry_goal_comment(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
@@ -35,6 +38,8 @@ pub fn validate_create_entry_goal_comment(
 }
 
 #[hdk_extern]
+/// Comments can only be updated by the original commentor and the Goal must exists.
+/// `agent_address` should not change from the original value
 pub fn validate_update_entry_goal_comment(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
