@@ -26,7 +26,7 @@ pub fn validate_create_entry_project_meta(
 }
 
 #[hdk_extern]
-/// Updates allowed by anyone, but only `name` and `image` can be updated
+/// Updates allowed by anyone, but `creator_address`, `created_at`, and `passphrase` cannot be changed
 pub fn validate_update_entry_project_meta(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {

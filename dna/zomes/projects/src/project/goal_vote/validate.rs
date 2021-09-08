@@ -9,8 +9,8 @@ use crate::project::{
 use hdk::prelude::*;
 
 #[hdk_extern]
-/// Votes can only be created if the Goal exists and if `agent_address` of the
-/// Vote matches the agent authoring the enrty, unless the vote is imported
+/// `GoalVote`s can only be created if the Goal exists and if `agent_address` of the
+/// `GoalVote` matches the agent authoring the entry, unless the `GoalVote` is imported
 pub fn validate_create_entry_goal_vote(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
@@ -37,7 +37,7 @@ pub fn validate_create_entry_goal_vote(
 }
 
 #[hdk_extern]
-/// Updates allowed if Goal exists and only by the original author
+/// Updates allowed if the original `GoalVote` exists and only by the original author
 /// `agent_address` cannot change from the original address
 pub fn validate_update_entry_goal_vote(
     validate_data: ValidateData,
