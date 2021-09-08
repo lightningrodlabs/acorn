@@ -15,7 +15,7 @@ use project::{
 };
 
 #[hdk_extern]
-fn init(_: ()) -> ExternResult<InitCallbackResult> {
+pub fn init(_: ()) -> ExternResult<InitCallbackResult> {
   // authorize receive_signal
   // not the issue, takes about 2 ms
   create_receive_signal_cap_grant()?;
