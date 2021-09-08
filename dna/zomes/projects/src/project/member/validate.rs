@@ -4,6 +4,7 @@ use crate::project::{
 use hdk::prelude::*;
 
 #[hdk_extern]
+/// Creates allowed if the member `address` matches the author of the entry
 pub fn validate_create_entry_member(
   validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
