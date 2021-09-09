@@ -46,12 +46,16 @@ pub mod tests {
         
         // init also calls join_project_during_init, drilling down, it calls the following hdk functions under the hood
         // TODO: handle cases where a path with 1 or more parents doesn't yet exist in the DHT (this would call `create` and `create_link` additional times)
+        // 1. `Path::from(MEMBER_PATH).ensure()?;`
+        // 2. `let member_path_address = Path::from(MEMBER_PATH).hash()?;`
+        // 3. `let member_entry_hash = hash_entry(&member)?;`
         let entry_hash = fixt!(EntryHash);
         mock_hdk
             .expect_hash_entry()
             .times(3)
             .return_const(Ok(entry_hash.clone()));
 
+        // relates to `Path::from(MEMBER_PATH).ensure()?;`
         let expected_output = fixt!(Element);
         let exp_vec = vec![Some(expected_output)];
         mock_hdk
@@ -60,7 +64,6 @@ pub mod tests {
             .return_const(ExternResult::Ok(exp_vec));
 
         let agent_info = fixt!(AgentInfo);
-
         mock_hdk
             .expect_agent_info()
             .times(1)
