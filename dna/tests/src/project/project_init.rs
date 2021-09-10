@@ -21,9 +21,22 @@ pub mod tests {
     /// and the second function creates a member entry and links it to MEMBER_PATH 
     #[test]
     fn test_init() {
-               
         let mut mock_hdk = MockHdkT::new();
+
+        // make a mutable reference to mock_hdk so that it can be mutated with each function
+        let mock_hdk_ref = &mut mock_hdk;
         
+        // setup a mock of `create_receive_signal_cap_grant` because it is called by `init`
+        setup_create_receive_signal_cap_grant_mock(mock_hdk_ref);
+        
+        // setup a mock of `join_project_during_init` because it is called by `init`
+        setup_join_project_during_init_mock(mock_hdk_ref);
+
+        set_hdk(mock_hdk);
+        let result = init(());
+        assert_matches!(result, Ok(InitCallbackResult::Pass));
+    }
+    fn setup_create_receive_signal_cap_grant_mock(mock_hdk: &mut MockHdkT) {
         let zome_info = fixt!(ZomeInfo);
         // init calls create_receive_signal_cap_grant, which calls zome_info and create_cap_grant
         mock_hdk
@@ -49,8 +62,8 @@ pub mod tests {
             .with(mockall::predicate::eq(expected))
             .times(1)
             .return_const(Ok(header_hash.clone()));
-        
-        // init also calls join_project_during_init, drilling down, it calls the following hdk functions under the hood
+    }
+    fn setup_join_project_during_init_mock(mock_hdk: &mut MockHdkT) {
         // TODO: test when the MEMBER_PATH doesn't exist in DHT
         let member_path = Path::from("member");
         let member_path_entry = Entry::try_from(member_path).unwrap();
@@ -88,6 +101,7 @@ pub mod tests {
         let member = Member {
             address: WrappedAgentPubKey(agent_info.agent_initial_pubkey),
         };
+        let header_hash = fixt!(HeaderHash);
         let create_member_input = EntryWithDefId::try_from(member.clone()).unwrap();
         mock_hdk
             .expect_create()
@@ -112,10 +126,5 @@ pub mod tests {
             .with(mockall::predicate::eq(create_link_input))
             .times(1)
             .return_const(Ok(header_hash));
-
-        set_hdk(mock_hdk);
-
-        let result = init(());
-        assert_matches!(result, Ok(InitCallbackResult::Pass));
-    }
+    }    
 }
