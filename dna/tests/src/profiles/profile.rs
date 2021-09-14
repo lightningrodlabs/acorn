@@ -1,0 +1,111 @@
+#[cfg(test)]
+pub mod tests {
+    use crate::project::fixtures::fixtures::{
+        EdgeFixturator, WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator,
+    };
+    use crate::test_lib::*;
+    use ::fixt::prelude::*;
+    use assert_matches::assert_matches;
+    use hdk::prelude::*;
+    use hdk_crud::{ActionType, WrappedAgentPubKey, WrappedHeaderHash};
+    use holochain_types::prelude::ValidateDataFixturator;
+    use profiles::profile::{
+        agent_signal_entry_type, inner_create_whoami, AgentSignal, Profile, SignalData, Status,
+        WireEntry,
+    };
+    use projects::project::edge::validate::*;
+    use projects::project::error::Error;
+
+    #[test]
+    fn test_create_whoami() {
+        let mut mock_hdk = MockHdkT::new();
+        let mock_hdk_ref = &mut mock_hdk;
+
+        let profile = Profile {
+            first_name: "".to_string(),
+            last_name: "".to_string(),
+            handle: "".to_string(),
+            status: Status::Online,
+            avatar_url: "".to_string(),
+            address: fixt!(WrappedAgentPubKey),
+            is_imported: false,
+        };
+
+        let profile_entry = EntryWithDefId::try_from(profile.clone()).unwrap();
+
+        let profile_header_hash = fixt!(HeaderHash);
+        mock_create(mock_hdk_ref, profile_entry, Ok(profile_header_hash.clone()));
+
+        let profile_hash = fixt!(EntryHash);
+        mock_hash_entry(
+            mock_hdk_ref,
+            Entry::try_from(profile.clone()).unwrap(),
+            Ok(profile_hash.clone()),
+        );
+
+        let agent_path = Path::from("agents");
+        let agent_path_hash = fixt!(EntryHash);
+        mock_hash_entry(
+            mock_hdk_ref,
+            Entry::try_from(agent_path).unwrap(),
+            Ok(agent_path_hash.clone()),
+        );
+
+        let create_link_input = CreateLinkInput::new(
+            agent_path_hash.clone(),
+            profile_hash.clone(),
+            LinkTag::from(()),
+        );
+        let link_header_hash = fixt!(HeaderHash);
+        mock_create_link(
+            mock_hdk_ref,
+            create_link_input,
+            Ok(link_header_hash.clone()),
+        );
+
+        let agent_info = fixt!(AgentInfo);
+        let agent_entry_hash = EntryHash::from(agent_info.clone().agent_initial_pubkey);
+        mock_agent_info(mock_hdk_ref, Ok(agent_info));
+        let create_link_input =
+            CreateLinkInput::new(agent_entry_hash, profile_hash, LinkTag::from(()));
+        mock_create_link(
+            mock_hdk_ref,
+            create_link_input,
+            Ok(link_header_hash.clone()),
+        );
+        let wire_entry = WireEntry {
+            entry: profile.clone(),
+            address: WrappedHeaderHash(profile_header_hash),
+        };
+        let signal = AgentSignal {
+            entry_type: agent_signal_entry_type(),
+            action: ActionType::Create,
+            data: SignalData::Create(wire_entry.clone()),
+        };
+
+        let payload = ExternIO::encode(signal).unwrap();
+        let agents = vec![];
+        let remote_signal = RemoteSignal {
+            signal: ExternIO::encode(payload).unwrap(),
+            agents,
+        };
+        mock_remote_signal(mock_hdk_ref, remote_signal, Ok(()));
+
+        set_hdk(mock_hdk);
+        fn get_peers() -> ExternResult<Vec<AgentPubKey>> {
+            Ok(vec![])
+        }
+        let result = inner_create_whoami(profile, get_peers);
+        assert_matches!(result, Ok(wire_entry));
+    }
+    #[test]
+    fn test_create_imported_profile() {}
+    #[test]
+    fn test_update_whoami() {}
+    #[test]
+    fn test_whoami() {}
+    #[test]
+    fn test_fetch_agents() {}
+    #[test]
+    fn test_fetch_agent_address() {}
+}

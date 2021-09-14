@@ -2985,6 +2985,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "profiles"
+version = "0.0.1"
+dependencies = [
+ "hdk",
+ "hdk_crud",
+ "paste",
+ "serde",
+ "thiserror",
+]
+
+[[package]]
 name = "projects"
 version = "0.0.1"
 dependencies = [
@@ -3999,6 +4010,7 @@ dependencies = [
  "holochain_types",
  "mockall 0.9.1",
  "paste",
+ "profiles",
  "projects",
  "rand 0.7.3",
  "serde",

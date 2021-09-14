@@ -9,6 +9,7 @@ edition = "2018"
 hdk_crud = "0.0.103"
 hdk = "0.0.103"
 projects = { path = "../zomes/projects" }
+profiles = { path = "../zomes/profiles" }
 paste = "*"
 # use whatever serde hdk uses
 serde = "*"
