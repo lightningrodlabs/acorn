@@ -47,3 +47,11 @@ pub fn mock_remote_signal(mock_hdk: &mut MockHdkT, input: RemoteSignal, output: 
         .times(1)
         .return_const(output);
 }
+
+pub fn mock_update(mock_hdk: &mut MockHdkT, expected_input: UpdateInput, expected_output: ExternResult<HeaderHash>) {
+    mock_hdk
+        .expect_update()
+        .with(mockall::predicate::eq(expected_input))
+        .times(1)
+        .return_const(expected_output);
+}

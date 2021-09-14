@@ -177,6 +177,10 @@ pub fn agent_signal_entry_type() -> String {
 
 #[hdk_extern]
 pub fn update_whoami(update: WireEntry) -> ExternResult<WireEntry> {
+  inner_update_whoami(update, get_peers)
+}
+
+pub fn inner_update_whoami(update: WireEntry, get_peers_to_signal: fn() -> ExternResult<Vec<AgentPubKey>>) -> ExternResult<WireEntry> {
   update_entry(update.address.0.clone(), &update.entry)?;
   // // send update to peers
   // we don't want to cause real failure for inability to send to peers
@@ -185,7 +189,7 @@ pub fn update_whoami(update: WireEntry) -> ExternResult<WireEntry> {
     action: ActionType::Update,
     data: SignalData::Update(update.clone()),
   };
-  let _ = send_agent_signal(signal, get_peers);
+  let _ = send_agent_signal(signal, get_peers_to_signal);
   Ok(update)
 }
 
