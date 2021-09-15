@@ -1,6 +1,5 @@
 use hdk::prelude::*;
 
-// should these be inside a module in this file?
 pub fn mock_create(
     mock_hdk: &mut MockHdkT,
     input: EntryWithDefId,

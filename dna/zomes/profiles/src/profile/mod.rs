@@ -18,6 +18,27 @@ pub struct Profile {
   pub is_imported: bool,
 }
 
+impl Profile {
+  pub fn new(
+    first_name: String,
+    last_name: String,
+    handle: String,
+    status: Status,
+    avatar_url: String,
+    address: WrappedAgentPubKey,
+    is_imported: bool,
+  ) -> Self {
+    Self {
+      first_name,
+      last_name,
+      handle,
+      status,
+      avatar_url,
+      address,
+      is_imported,
+    }
+  }
+}
 impl From<Profile> for AgentPubKey {
   fn from(profile: Profile) -> Self {
     profile.address.0

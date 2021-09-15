@@ -1,6 +1,6 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::project::fixtures::fixtures::{EdgeFixturator, WrappedHeaderHashFixturator};
+    use crate::fixtures::fixtures::{EdgeFixturator, WrappedHeaderHashFixturator};
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_crud::WrappedHeaderHash;

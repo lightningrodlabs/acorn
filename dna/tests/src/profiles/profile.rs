@@ -1,7 +1,8 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::project::fixtures::fixtures::{
-        EdgeFixturator, WrappedAgentPubKeyFixturator, WrappedHeaderHashFixturator,
+    use crate::fixtures::fixtures::{
+        EdgeFixturator, ProfileFixturator, WrappedAgentPubKeyFixturator,
+        WrappedHeaderHashFixturator,
     };
     use crate::test_lib::*;
     use ::fixt::prelude::*;
@@ -10,8 +11,8 @@ pub mod tests {
     use hdk_crud::{ActionType, WrappedAgentPubKey, WrappedHeaderHash};
     use holochain_types::prelude::ValidateDataFixturator;
     use profiles::profile::{
-        agent_signal_entry_type, create_imported_profile , inner_create_whoami,
-        inner_update_whoami, AgentSignal, Profile, SignalData, Status, WireEntry,
+        agent_signal_entry_type, create_imported_profile, inner_create_whoami, inner_update_whoami,
+        AgentSignal, Profile, SignalData, Status, WireEntry,
     };
     use projects::project::edge::validate::*;
     use projects::project::error::Error;
@@ -170,18 +171,8 @@ pub mod tests {
 
     /// generate an arbitrary `WireEntry` for unit testing
     fn generate_wire_entry() -> WireEntry {
-        let profile = Profile {
-            first_name: "".to_string(),
-            last_name: "".to_string(),
-            handle: "".to_string(),
-            status: Status::Online,
-            avatar_url: "".to_string(),
-            address: fixt!(WrappedAgentPubKey),
-            is_imported: false,
-        };
-
+        let profile = fixt!(Profile);
         let profile_header_hash = fixt!(HeaderHash);
-
         let wire_entry = WireEntry {
             entry: profile,
             address: WrappedHeaderHash(profile_header_hash),
