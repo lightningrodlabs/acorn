@@ -1,3 +1,11 @@
+// in this file, you will see instances of setting up a type alias, such as `type OptionVecString = Option<Vec<String>>;`
+// this is done to enable passing those to constructor functions for fixturators, like
+// ```
+// fixturator!(
+//      Goal;
+//        constructor fn new(..., OptionVecString, ...);
+//  );
+// ```
 #[cfg(test)]
 pub(crate) mod fixtures {
     use ::fixt::prelude::*;
