@@ -41,6 +41,12 @@ export function checkForEdgeAtCoordinates(
         ? goals[edge.parent_address].content
         : ''
 
+      // do not proceed if we don't have coordinates
+      // for the goals of this edge (yet)
+      if (!parentGoalCoords || !childGoalCoords) {
+        return
+      }
+
       // get the coordinates for the edge end points
       const [
         childEdgeCoords,
@@ -99,6 +105,11 @@ export function checkForGoalAtCoordinates(
     .forEach(goal => {
       // convert the topLeft and bottomRight points of the goal to canvas
       const coords = goalCoordinates[goal.address]
+
+      // do not proceed if we don't have coordinates
+      // for the goal (yet)
+      if (!coords) return
+
       const bottomRight = {
         x: coords.x + goalWidth,
         y: coords.y + getGoalHeight(ctx, goal.content),
@@ -107,7 +118,7 @@ export function checkForGoalAtCoordinates(
       // if click occurred within the box of a Goal
       if (
         convertedClick.x >= coords.x &&
-        (convertedClick.x <= bottomRight.x) & (convertedClick.y >= coords.y) &&
+        (convertedClick.x <= bottomRight.x) && (convertedClick.y >= coords.y) &&
         convertedClick.y <= bottomRight.y
       ) {
         clickedAddress = goal.address
