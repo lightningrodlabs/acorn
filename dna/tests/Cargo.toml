@@ -6,7 +6,7 @@ edition = "2018"
 [lib]
 
 [dependencies]
-hdk_crud = "0.0.103"
+hdk_crud = "0.2.0"
 hdk = "0.0.103"
 projects = { path = "../zomes/projects" }
 profiles = { path = "../zomes/profiles" }
