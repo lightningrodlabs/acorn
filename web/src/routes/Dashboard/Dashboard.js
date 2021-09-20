@@ -17,7 +17,7 @@ import InviteMembersModal from '../../components/InviteMembersModal/InviteMember
 import { PROJECTS_ZOME_NAME, PROJECT_APP_PREFIX } from '../../holochainConfig'
 import { passphraseToUid } from '../../secrets'
 import { getAdminWs, getAppWs, getAgentPubKey } from '../../hcWebsockets'
-import { fetchEntryPoints } from '../../projects/entry-points/actions'
+import { fetchEntryPointDetails } from '../../projects/entry-points/actions'
 import { fetchMembers, setMember } from '../../projects/members/actions'
 import {
   simpleCreateProjectMeta,
@@ -33,7 +33,6 @@ import {
 import { joinProjectCellId, removeProjectCellId } from '../../cells/actions'
 import importAllProjectData from '../../import'
 import PendingProjects from '../../components/PendingProjects/PendingProjects'
-import { fetchGoals } from '../../projects/goals/actions'
 
 function Dashboard({
   existingAgents,
@@ -42,7 +41,7 @@ function Dashboard({
   profilesCellIdString,
   cells,
   projects,
-  fetchEntryPoints,
+  fetchEntryPointDetails,
   fetchMembers,
   fetchProjectMeta,
   createProject,
@@ -79,9 +78,7 @@ function Dashboard({
         })
       })
       fetchMembers(cellId)
-      // TODO: chain this call and do fetchGoals
-      // after, for those specific goals
-      fetchEntryPoints(cellId)
+      fetchEntryPointDetails(cellId)
     })
   }, [JSON.stringify(cells)])
 
@@ -446,11 +443,8 @@ function mapDispatchToProps(dispatch) {
     deactivateApp: (appId, cellId) => {
       return deactivateApp(appId, cellId, dispatch)
     },
-    fetchEntryPoints: (cellIdString) => {
-      return dispatch(fetchEntryPoints.create({ cellIdString, payload: { All: null } }))
-    },
-    fetchGoals: (cellIdString, addresses) => {
-      return dispatch(fetchGoals.create({ cellIdString, payload: { Specific: addresses } }))
+    fetchEntryPointDetails: (cellIdString) => {
+      return dispatch(fetchEntryPointDetails.create({ cellIdString, payload: null }))
     },
     fetchMembers: (cellIdString) => {
       return dispatch(fetchMembers.create({ cellIdString, payload: null }))
