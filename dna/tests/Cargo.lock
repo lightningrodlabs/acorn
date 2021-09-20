@@ -372,11 +372,16 @@ dependencies = [
 [[package]]
 name = "bit-set"
 version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e6e1e6fb1c9e3d6fcdec57216a74eaa03e41f52a22f13a16438251d8e88b89da"
+source = "git+https://github.com/timotree3/bit-set.git?branch=fix-bit-vec-dep#050fed0734794e98383ea13f928e0f66e056a28b"
 dependencies = [
- "bit-vec",
+ "bit-vec 0.4.4",
 ]
+
+[[package]]
+name = "bit-vec"
+version = "0.4.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "02b4ff8b16e6076c3e14220b39fbc1fabb6737522281a388998046859400895f"
 
 [[package]]
 name = "bit-vec"
@@ -430,7 +435,7 @@ version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1cffe85a8b173164000edb6570ff7cf429acc9460b41d963e797df413f1765b4"
 dependencies = [
- "bit-vec",
+ "bit-vec 0.6.3",
  "rand 0.8.4",
  "siphasher",
 ]

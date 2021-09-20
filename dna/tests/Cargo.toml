@@ -27,3 +27,6 @@ strum_macros = "0.18.0"
 [features]
 default = ["mock"]
 mock = ["hdk/mock", "hdk/test_utils"]
+
+[patch.crates-io]
+bit-set = { git = "https://github.com/timotree3/bit-set.git", branch = "fix-bit-vec-dep" }
