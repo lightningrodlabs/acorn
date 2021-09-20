@@ -8,7 +8,7 @@ name = "projects"
 crate-type = [ "cdylib", "rlib" ]
 
 [dependencies]
-hdk_crud = "0.0.103"
+hdk_crud = "0.2.0"
 hdk = "0.0.103"
 paste = "*"
 # use whatever serde hdk uses

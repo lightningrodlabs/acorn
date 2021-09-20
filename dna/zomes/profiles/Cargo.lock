@@ -302,9 +302,9 @@ dependencies = [
 
 [[package]]
 name = "hdk_crud"
-version = "0.0.103"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "664c37d5b7f8db5acd708620dbfd0128d1e870d31bde3a80fd40c23c2b1de5a2"
+checksum = "bb27016cc4d4efd783cac46469bea5356881242d78f7da58a81f3b805c04833a"
 dependencies = [
  "hdk",
  "mockall",

@@ -8,7 +8,7 @@ use crate::project::{
   goal_vote::crud::{inner_archive_goal_vote, inner_fetch_goal_votes, GoalVoteWireEntry},
 };
 use crate::{get_peers_content, SignalType};
-use hdk_crud::{crud, ActionType, WrappedAgentPubKey, WrappedHeaderHash};
+use hdk_crud::{ActionType, FetchOptions, WrappedAgentPubKey, WrappedHeaderHash, crud};
 use hdk::prelude::*;
 use std::fmt;
 
@@ -275,7 +275,7 @@ pub struct ArchiveGoalFullySignal {
 pub fn archive_goal_fully(address: WrappedHeaderHash) -> ExternResult<ArchiveGoalFullyResponse> {
   inner_archive_goal(address.clone(), false)?;
 
-  let archived_edges = inner_fetch_edges(GetOptions::content())?
+  let archived_edges = inner_fetch_edges(FetchOptions::All, GetOptions::content())?
     .0
     .into_iter()
     .filter(|wire_entry: &EdgeWireEntry| {
@@ -297,7 +297,7 @@ pub fn archive_goal_fully(address: WrappedHeaderHash) -> ExternResult<ArchiveGoa
 
   let archived_goal_members = archive_goal_members(address.clone())?;
 
-  let archived_goal_votes = inner_fetch_goal_votes(GetOptions::content())?
+  let archived_goal_votes = inner_fetch_goal_votes(FetchOptions::All, GetOptions::content())?
     .0
     .into_iter()
     .filter(|wire_entry: &GoalVoteWireEntry| wire_entry.entry.goal_address == address.clone())
@@ -312,7 +312,7 @@ pub fn archive_goal_fully(address: WrappedHeaderHash) -> ExternResult<ArchiveGoa
     .filter_map(Result::ok)
     .collect();
 
-  let archived_goal_comments = inner_fetch_goal_comments(GetOptions::content())?
+  let archived_goal_comments = inner_fetch_goal_comments(FetchOptions::All, GetOptions::content())?
     .0
     .into_iter()
     .filter(|wire_entry: &GoalCommentWireEntry| wire_entry.entry.goal_address == address)
@@ -327,7 +327,7 @@ pub fn archive_goal_fully(address: WrappedHeaderHash) -> ExternResult<ArchiveGoa
     .filter_map(Result::ok)
     .collect();
 
-  let archived_entry_points = inner_fetch_entry_points(GetOptions::content())?
+  let archived_entry_points = inner_fetch_entry_points(FetchOptions::All, GetOptions::content())?
     .0
     .into_iter()
     .filter(|wire_entry: &EntryPointWireEntry| wire_entry.entry.goal_address == address)
