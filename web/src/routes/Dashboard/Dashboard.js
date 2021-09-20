@@ -32,7 +32,8 @@ import {
 } from './DashboardListProject'
 import { joinProjectCellId, removeProjectCellId } from '../../cells/actions'
 import importAllProjectData from '../../import'
-import PendingProjects from '../../components/PendingProjects/PendingProjects.tsx'
+import PendingProjects from '../../components/PendingProjects/PendingProjects'
+import { fetchGoals } from '../../projects/goals/actions'
 
 function Dashboard({
   existingAgents,
@@ -78,6 +79,8 @@ function Dashboard({
         })
       })
       fetchMembers(cellId)
+      // TODO: chain this call and do fetchGoals
+      // after, for those specific goals
       fetchEntryPoints(cellId)
     })
   }, [JSON.stringify(cells)])
@@ -444,7 +447,10 @@ function mapDispatchToProps(dispatch) {
       return deactivateApp(appId, cellId, dispatch)
     },
     fetchEntryPoints: (cellIdString) => {
-      return dispatch(fetchEntryPoints.create({ cellIdString, payload: null }))
+      return dispatch(fetchEntryPoints.create({ cellIdString, payload: { All: null } }))
+    },
+    fetchGoals: (cellIdString, addresses) => {
+      return dispatch(fetchGoals.create({ cellIdString, payload: { Specific: addresses } }))
     },
     fetchMembers: (cellIdString) => {
       return dispatch(fetchMembers.create({ cellIdString, payload: null }))
