@@ -81,7 +81,7 @@ pub fn fetch_entry_point_details(_: ()) -> ExternResult<EntryPointDetails> {
         })
         .collect::<Vec<ExternResult<WrappedEntryHash>>>();
 
-    // check if there are any errors and don't return if there are
+    // check if there are any errors and return the first error if there are any
     let any_error = goal_entry_addresses
         .clone()
         .into_iter()
