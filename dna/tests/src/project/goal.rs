@@ -1,6 +1,6 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::project::fixtures::fixtures::{GoalFixturator, WrappedAgentPubKeyFixturator};
+    use crate::fixtures::fixtures::{GoalFixturator, WrappedAgentPubKeyFixturator};
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_crud::WrappedAgentPubKey;
@@ -235,4 +235,6 @@ pub mod tests {
             Ok(ValidateCallbackResult::Valid),
         );
     }
+    #[test]
+    fn test_create_goal_with_edge() {}
 }

@@ -6,6 +6,7 @@ import {
   fetchEntryPoints,
   updateEntryPoint,
   archiveEntryPoint,
+  fetchEntryPointDetails
 } from './actions'
 import { archiveGoalFully } from '../goals/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
@@ -40,15 +41,35 @@ export default function (state = defaultState, action) {
   }
 
   const { payload, type } = action
+  let cellIdString
   switch (type) {
+    case fetchEntryPointDetails.success().type:
+      cellIdString = action.meta.cellIdString
+      const mapped = payload.entry_points.map(r => {
+        return {
+          ...r.entry,
+          address: r.address,
+        }
+      })
+      // mapped is [ { key: val, address: 'QmAsdFg' }, ...]
+      const newVals = _.keyBy(mapped, 'address')
+      // combines pre-existing values of the object with new values from
+      // Holochain fetch
+      return {
+        ...state,
+        [cellIdString]: {
+          ...state[cellIdString],
+          ...newVals,
+        },
+      }
     case archiveGoalFully.success().type:
-      const cellId = action.meta.cellIdString
+      cellIdString = action.meta.cellIdString
       // filter out the entry points whose addresses are listed as having been
       // archived on account of having archived its associated Goal
       return {
         ...state,
-        [cellId]: _.pickBy(
-          state[cellId],
+        [cellIdString]: _.pickBy(
+          state[cellIdString],
           (_value, key) => payload.archived_entry_points.indexOf(key) === -1
         ),
       }

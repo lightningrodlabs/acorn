@@ -1,6 +1,6 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::project::fixtures::fixtures::ProjectMetaFixturator;
+    use crate::fixtures::fixtures::ProjectMetaFixturator;
     use ::fixt::prelude::*;
     use assert_matches::assert_matches;
     use hdk::prelude::*;

@@ -6,7 +6,7 @@ use crate::{
   },
   SignalType,
 };
-use hdk_crud::{crud, WrappedAgentPubKey, WrappedEntryHash, WrappedHeaderHash};
+use hdk_crud::{FetchOptions, WrappedAgentPubKey, WrappedEntryHash, WrappedHeaderHash, crud};
 use hdk::prelude::*;
 use std::*;
 
@@ -90,7 +90,7 @@ crud!(
 pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<ProjectMetaWireEntry> {
   // no project_meta entry should exist at least
   // that we can know about
-  match inner_fetch_project_metas(GetOptions::latest())?.0.len() {
+  match inner_fetch_project_metas(FetchOptions::All, GetOptions::latest())?.0.len() {
     0 => {},
     _ => return Err(WasmError::Guest(Error::OnlyOneOfEntryType.to_string())),
   };
@@ -111,7 +111,7 @@ pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<ProjectMet
 // READ
 #[hdk_extern]
 pub fn fetch_project_meta(_: ()) -> ExternResult<ProjectMetaWireEntry> {
-  match inner_fetch_project_metas(GetOptions::latest())?.0.first() {
+  match inner_fetch_project_metas(FetchOptions::All, GetOptions::latest())?.0.first() {
     Some(wire_entry) => Ok(wire_entry.to_owned()),
     None => Err(WasmError::Guest("no project meta exists".into())),
   }

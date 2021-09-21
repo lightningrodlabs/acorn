@@ -2,7 +2,7 @@ use crate::{
     get_peers_content,
     SignalType,
 };
-use hdk_crud::{crud, WrappedAgentPubKey, WrappedHeaderHash};
+use hdk_crud::{FetchOptions, WrappedAgentPubKey, WrappedHeaderHash, crud};
 use hdk::prelude::*;
 
 // a relationship between a Goal and an Agent
@@ -53,7 +53,7 @@ crud!(
 // DELETE
 // clear all members
 pub fn archive_goal_members(address: WrappedHeaderHash) -> ExternResult<Vec<WrappedHeaderHash>> {
-    Ok(inner_fetch_goal_members(GetOptions::content())?
+    Ok(inner_fetch_goal_members(FetchOptions::All, GetOptions::content())?
         .0
         .into_iter()
         .filter(|wire_entry: &GoalMemberWireEntry| {

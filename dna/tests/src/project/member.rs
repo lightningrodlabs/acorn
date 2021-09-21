@@ -1,6 +1,6 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::project::fixtures::fixtures::MemberFixturator;
+    use crate::fixtures::fixtures::MemberFixturator;
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_crud::WrappedAgentPubKey;
