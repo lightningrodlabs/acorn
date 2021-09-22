@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # backend
-. scripts/install-hc-tools.sh
+# assume dependencies have been installed
+# . scripts/install-hc-tools.sh
 
 . scripts/dna-pack.sh
 
