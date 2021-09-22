@@ -1,6 +1,6 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::project::fixtures::fixtures::{
+    use crate::fixtures::fixtures::{
         GoalMemberFixturator, WrappedAgentPubKeyFixturator,
         WrappedHeaderHashFixturator,
     };

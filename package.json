@@ -20,6 +20,7 @@
     "electron-install": "cd electron && npm install",
     "electron": "cd electron && npm run start",
     "electron2": "cd electron && ACORN_TEST_USER_2=1 npm run start",
+    "electron-tsc": "cd electron && npm run tsc",
     "build": ". scripts/build.sh"
   },
   "author": "Connor Turland <connor@sprillow.com>",

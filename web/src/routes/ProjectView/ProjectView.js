@@ -100,19 +100,19 @@ function mapDispatchToProps(dispatch, ownProps) {
     fetchProjectMeta: () =>
       dispatch(fetchProjectMeta.create({ cellIdString, payload: null })),
     fetchEntryPoints: () =>
-      dispatch(fetchEntryPoints.create({ cellIdString, payload: null })),
+      dispatch(fetchEntryPoints.create({ cellIdString, payload: { All: null } })),
     fetchMembers: () =>
       dispatch(fetchMembers.create({ cellIdString, payload: null })),
     fetchGoals: () =>
-      dispatch(fetchGoals.create({ cellIdString, payload: null })),
+      dispatch(fetchGoals.create({ cellIdString, payload: { All: null } })),
     fetchEdges: () =>
-      dispatch(fetchEdges.create({ cellIdString, payload: null })),
+      dispatch(fetchEdges.create({ cellIdString, payload: { All: null } })),
     fetchGoalMembers: () =>
-      dispatch(fetchGoalMembers.create({ cellIdString, payload: null })),
+      dispatch(fetchGoalMembers.create({ cellIdString, payload: { All: null } })),
     fetchGoalVotes: () =>
-      dispatch(fetchGoalVotes.create({ cellIdString, payload: null })),
+      dispatch(fetchGoalVotes.create({ cellIdString, payload: { All: null } })),
     fetchGoalComments: () =>
-      dispatch(fetchGoalComments.create({ cellIdString, payload: null })),
+      dispatch(fetchGoalComments.create({ cellIdString, payload: { All: null } })),
   }
 }
 

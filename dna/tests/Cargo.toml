@@ -6,9 +6,10 @@ edition = "2018"
 [lib]
 
 [dependencies]
-hdk_crud = "0.0.103"
+hdk_crud = "0.2.0"
 hdk = "0.0.103"
 projects = { path = "../zomes/projects" }
+profiles = { path = "../zomes/profiles" }
 paste = "*"
 # use whatever serde hdk uses
 serde = "*"
@@ -26,3 +27,6 @@ strum_macros = "0.18.0"
 [features]
 default = ["mock"]
 mock = ["hdk/mock", "hdk/test_utils"]
+
+[patch.crates-io]
+bit-set = { git = "https://github.com/timotree3/bit-set.git", branch = "fix-bit-vec-dep" }
