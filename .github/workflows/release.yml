@@ -27,7 +27,7 @@ jobs:
         os:
           - ubuntu-18.04
           - macos-latest
-          - windows-latest
+          # - windows-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -65,10 +65,10 @@ jobs:
         run: |
           cp bin/lair-keystore lair-keystore-x86_64-apple-darwin
           gh release upload "${GITHUB_REF#refs/tags/}" "lair-keystore-x86_64-apple-darwin" --clobber
-      - name: upload binary (Windows only)
-        if: ${{ runner.os == 'Windows' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          Copy-Item bin/lair-keystore.exe -Destination lair-keystore-x86_64-pc-windows-msvc.exe
-          gh release upload "test-release" "lair-keystore-x86_64-pc-windows-msvc.exe" --clobber
+      # - name: upload binary (Windows only)
+      #   if: ${{ runner.os == 'Windows' }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #     Copy-Item bin/lair-keystore.exe -Destination lair-keystore-x86_64-pc-windows-msvc.exe
+      #     gh release upload "test-release" "lair-keystore-x86_64-pc-windows-msvc.exe" --clobber
