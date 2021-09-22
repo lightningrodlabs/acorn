@@ -1,9 +1,15 @@
 name: Release
 
+# on:
+#   push:
+#     tags:
+#       - v[0-9]+.*
+
 on:
   push:
-    tags:
-      - v[0-9]+.*
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   create-release:
@@ -65,4 +71,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           Copy-Item bin/lair-keystore.exe -Destination lair-keystore-x86_64-pc-windows-msvc.exe
-          gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "lair-keystore-x86_64-pc-windows-msvc.exe" --clobber
+          gh release upload "test-release" "lair-keystore-x86_64-pc-windows-msvc.exe" --clobber
