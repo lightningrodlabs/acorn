@@ -31,13 +31,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: taiki-e/upload-rust-binary-action@v1
-        with:
-          # (required)
-          bin: acorn
-        env:
-          # (required)
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - uses: taiki-e/upload-rust-binary-action@v1
+      #   with:
+      #     # (required)
+      #     bin: acorn
+      #   env:
+      #     # (required)
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install dependencies
         # if: ${{ runner.os == 'Linux' }}
         run: npm run install-deps
