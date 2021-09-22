@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         # if: ${{ runner.os == 'Linux' }}
         run: npm run install-deps
-        if: ${{ runner.os == 'Windows' }}
+        # if: ${{ runner.os == 'Windows' }}
         shell: bash
       - name: build acorn
         run: npm run build
