@@ -64,7 +64,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cp bin/lair-keystore lair-keystore-x86_64-apple-darwin
-          gh release upload "${GITHUB_REF#refs/tags/}" "lair-keystore-x86_64-apple-darwin" --clobber
+          gh release upload "test-release" "electron/out/Acorn-0.5.2-alpha.dmg" --clobber
       # - name: upload binary (Windows only)
       #   if: ${{ runner.os == 'Windows' }}
       #   env:
