@@ -9,7 +9,7 @@
   "scripts": {
     "install-deps": "npm install && npm run dna-install && npm run web-install && npm run electron-install && npm run electron-tsc",
     "dev": "pm2-dev pm2.config.js",
-    "dna-install": ". scripts/install-hc-tools.sh",
+    "dna-install": "scripts/install-hc-tools.sh",
     "dna-test": ". scripts/dna-test.sh",
     "dna-pack": ". scripts/dna-pack.sh",
     "user-data-reset": "rm -rf tmp && rm -rf tmp2 && mkdir tmp tmp2",
