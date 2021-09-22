@@ -27,9 +27,9 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-18.04
-          - macos-latest
-          # - windows-latest
+          # - ubuntu-18.04
+          # - macos-latest
+          - windows-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -37,11 +37,12 @@ jobs:
       - name: Install dependencies
         # if: ${{ runner.os == 'Linux' }}
         run: npm run install-deps
-        # run: npm install && npm run web-install && npm run electron-install && npm run electron-tsc
-        # if: ${{ runner.os == 'macOs' }}
+        if: ${{ runner.os == 'Windows' }}
+        shell: bash
       - name: build acorn
-        run: |
-          npm run build
+        run: npm run build
+        if: ${{ runner.os == 'Windows' }}
+        shell: bash
       - name: upload binary (ubuntu only)
         if: ${{ runner.os == 'Linux' }}
         env:
@@ -54,10 +55,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release upload "test-release" "electron/out/Acorn-0.5.2-alpha.dmg" --clobber
-      # - name: upload binary (Windows only)
-      #   if: ${{ runner.os == 'Windows' }}
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: |
-      #     Copy-Item bin/lair-keystore.exe -Destination lair-keystore-x86_64-pc-windows-msvc.exe
-      #     gh release upload "test-release" "lair-keystore-x86_64-pc-windows-msvc.exe" --clobber
+      - name: upload binary (Windows only)
+        if: ${{ runner.os == 'Windows' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Copy-Item bin/lair-keystore.exe -Destination lair-keystore-x86_64-pc-windows-msvc.exe
+          gh release upload "test-release" "electron/out/Acorn-0.5.2-alpha.exe" --clobber
+        shell: bash
