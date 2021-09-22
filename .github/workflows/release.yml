@@ -34,30 +34,30 @@ jobs:
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           # (required)
-          bin: holochain-runner
+          bin: acorn
         env:
           # (required)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Install Sqlcipher Linux
-        if: ${{ runner.os == 'Linux' }}
-        run: sudo apt-get install libsqlcipher-dev
-      - name: Install Sqlcipher MacOs
-        if: ${{ runner.os == 'macOs' }}
-        run: |
-          brew install sqlcipher
-          brew install libsodium
-      - name: build lair
+      - name: Install dependencies
+        # if: ${{ runner.os == 'Linux' }}
+        run: npm run install-deps
+      # - name: Install Sqlcipher MacOs
+        # if: ${{ runner.os == 'macOs' }}
+        # run: |
+          # brew install sqlcipher
+          # brew install libsodium
+      - name: build acorn
         #         env:
         #           SQLCIPHER_STATIC: 1
         run: |
-          cargo install lair_keystore --root . --version 0.0.3
+          npm run build
       - name: upload binary (ubuntu only)
         if: ${{ runner.os == 'Linux' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cp bin/lair-keystore lair-keystore-x86_64-unknown-linux-gnu
-          gh release upload "${GITHUB_REF#refs/tags/}" "lair-keystore-x86_64-unknown-linux-gnu" --clobber
+          # cp bin/lair-keystore lair-keystore-x86_64-unknown-linux-gnu
+          gh release upload "test-release" "electron/out/Acorn-0.5.2-alpha.AppImage" --clobber
       - name: upload binary (macos only)
         if: ${{ runner.os == 'macOs' }}
         env:
