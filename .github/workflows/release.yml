@@ -12,6 +12,7 @@ on:
     branches: [ main ]
 
 jobs:
+  # the create-release would be used once we want to create a specific release based on if the commit has a tag
   # create-release:
   #   runs-on: ubuntu-latest
   #   steps:
@@ -21,6 +22,7 @@ jobs:
   #         # (required)
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # upload the app package for each target os
   upload-assets:
     strategy:
       matrix:
@@ -31,25 +33,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      # - uses: taiki-e/upload-rust-binary-action@v1
-      #   with:
-      #     # (required)
-      #     bin: acorn
-      #   env:
-      #     # (required)
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # depending on the windows command (when we are ready to build for it), may have to check which os currently on
       - name: Install dependencies
         # if: ${{ runner.os == 'Linux' }}
-        # run: npm run install-deps
-        run: npm install && npm run web-install && npm run electron-install && npm run electron-tsc
-      # - name: Install Sqlcipher MacOs
+        run: npm run install-deps
+        # run: npm install && npm run web-install && npm run electron-install && npm run electron-tsc
         # if: ${{ runner.os == 'macOs' }}
-        # run: |
-          # brew install sqlcipher
-          # brew install libsodium
       - name: build acorn
-        #         env:
-        #           SQLCIPHER_STATIC: 1
         run: |
           npm run build
       - name: upload binary (ubuntu only)
@@ -57,14 +47,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # cp bin/lair-keystore lair-keystore-x86_64-unknown-linux-gnu
           gh release upload "test-release" "electron/out/Acorn-0.5.2-alpha.AppImage" --clobber
       - name: upload binary (macos only)
         if: ${{ runner.os == 'macOs' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # cp bin/lair-keystore lair-keystore-x86_64-apple-darwin
           gh release upload "test-release" "electron/out/Acorn-0.5.2-alpha.dmg" --clobber
       # - name: upload binary (Windows only)
       #   if: ${{ runner.os == 'Windows' }}
