@@ -40,7 +40,8 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install dependencies
         # if: ${{ runner.os == 'Linux' }}
-        run: npm run install-deps
+        # run: npm run install-deps
+        run: npm install && npm run web-install && npm run electron-install && npm run electron-tsc
       # - name: Install Sqlcipher MacOs
         # if: ${{ runner.os == 'macOs' }}
         # run: |
