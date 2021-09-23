@@ -21,6 +21,40 @@ jobs:
   #       env:
   #         # (required)
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  # the create-release would be used once we want to create a specific release based on if the commit has a tag
+  build-dna:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # select compatible rust version
+      # bit-set compilation was broken for now with version 1.55 of rust
+      # could later use it again
+      - name: Install Rust minimal toolchain version 1.54
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: 1.54
+          override: true
+      # install hc tool
+      # necessary for Rust 1.54 to be installed before running this step
+      - name: Install hc tool and wasm target
+        shell: bash # important because this runs shell scripts
+        run: |
+          npm run dna-install
+      # build dna
+      - name: Build DNA
+        run: |
+          npm run dna-pack
+      # "upload" dna as build artifact
+      - uses: actions/upload-artifact@master
+        with:
+          name: profiles-artifact
+          path: dna/workdir/profiles.dna
+      - uses: actions/upload-artifact@master
+        with:
+          name: projects-artifact
+          path: dna/workdir/projects.dna
 
   # upload the app package for each target os
   upload-assets:
@@ -41,19 +75,6 @@ jobs:
           npm run electron-install
         # if: ${{ runner.os == 'Windows' }}
         # shell: bash
-      # bit-set compilation was broken for now with version 1.55 of rust
-      # could later use it again
-      - name: Install Rust minimal toolchain version 1.54
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: 1.54
-          override: true
-      # necessary for Rust 1.54 to be installed before running this step
-      - name: Install dependencies
-        shell: bash # important because this runs shell scripts
-        run: |
-          npm run dna-install
       - name: build acorn
         run: npm run build
         shell: bash
