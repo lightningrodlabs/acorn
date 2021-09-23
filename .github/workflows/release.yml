@@ -23,6 +23,8 @@ jobs:
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
   build-dna:
+    strategy:
+      max-parallel: 1
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
