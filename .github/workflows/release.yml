@@ -34,16 +34,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # bit-set compilation was broken for now with version 1.55 of rust
-      - name: Install minimal 1.54
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: 1.54
-          override: true
+      # - name: Install minimal 1.54
+      #   uses: actions-rs/toolchain@v1
+      #   with:
+      #     profile: minimal
+      #     toolchain: 1.54
+      #     override: true
       # depending on the windows command (when we are ready to build for it), may have to check which os currently on
       - name: Install dependencies
         # if: ${{ runner.os == 'Linux' }}
-        run: npm run install-deps
+        # npm run dna-install
+        run: |
+          npm run web-install
+          npm install
+          npm run electron-install
+          npm run electron-tsc
         # if: ${{ runner.os == 'Windows' }}
         shell: bash
       - name: build acorn
