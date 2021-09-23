@@ -7,7 +7,7 @@
     "url": "git+https://github.com/h-be/acorn.git"
   },
   "scripts": {
-    "install-deps": "npm install && npm run dna-install && npm run web-install && npm run electron-install && npm run electron-tsc",
+    "install-deps": "npm run web-install && npm install && npm run dna-install && npm run electron-install && npm run electron-tsc",
     "dev": "pm2-dev pm2.config.js",
     "dna-install": "sh scripts/install-hc-tools.sh",
     "dna-test": ". scripts/dna-test.sh",
