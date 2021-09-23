@@ -70,8 +70,7 @@ jobs:
       # rm the dna files from repository
       - name: clearing precompiled dna files
         run: |
-          rm dna/workdir/profiles.dna
-          rm dna/workdir/projects.dna
+          rm dna/workdir/*.dna
       - uses: actions/download-artifact@master
         with:
           name: profiles-artifact
