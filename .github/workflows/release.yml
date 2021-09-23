@@ -29,22 +29,22 @@ jobs:
       # select compatible rust version
       # bit-set compilation was broken for now with version 1.55 of rust
       # could later use it again
-      - name: Install Rust minimal toolchain version 1.54
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: 1.54
-          override: true
-      # install hc tool
-      # necessary for Rust 1.54 to be installed before running this step
-      - name: Install hc tool and wasm target
-        shell: bash # important because this runs shell scripts
-        run: |
-          npm run dna-install
-      # build dna
-      - name: Build DNA
-        run: |
-          npm run dna-pack
+      # - name: Install Rust minimal toolchain version 1.54
+      #   uses: actions-rs/toolchain@v1
+      #   with:
+      #     profile: minimal
+      #     toolchain: 1.54
+      #     override: true
+      # # install hc tool
+      # # necessary for Rust 1.54 to be installed before running this step
+      # - name: Install hc tool and wasm target
+      #   shell: bash # important because this runs shell scripts
+      #   run: |
+      #     npm run dna-install
+      # # build dna
+      # - name: Build DNA
+      #   run: |
+      #     npm run dna-pack
       # "upload" dna as build artifact
       - uses: actions/upload-artifact@master
         with:
@@ -67,6 +67,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+      # rm the dna files from repository
+      - name: clearing precompiled dna files
+        run: |
+          rm dna/workdir/profiles.dna
+          rm dna/workdir/projects.dna
       - uses: actions/download-artifact@master
         with:
           name: profiles-artifact
