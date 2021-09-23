@@ -108,5 +108,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Copy-Item bin/lair-keystore.exe -Destination lair-keystore-x86_64-pc-windows-msvc.exe
-          gh release upload "test-release" "electron/out/Acorn-0.5.2-alpha.exe" --clobber
+          gh release upload "test-release" "electron/out/Acorn Setup 0.5.2-alpha.exe" --clobber
         shell: bash
