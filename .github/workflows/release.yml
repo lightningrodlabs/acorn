@@ -27,33 +27,35 @@ jobs:
     strategy:
       matrix:
         os:
-          # - ubuntu-18.04
-          # - macos-latest
+          - ubuntu-18.04
+          - macos-latest
           - windows-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      # bit-set compilation was broken for now with version 1.55 of rust
-      # - name: Install minimal 1.54
-      #   uses: actions-rs/toolchain@v1
-      #   with:
-      #     profile: minimal
-      #     toolchain: 1.54
-      #     override: true
       # depending on the windows command (when we are ready to build for it), may have to check which os currently on
-      - name: Install dependencies
-        # if: ${{ runner.os == 'Linux' }}
-        # npm run dna-install
+      - name: Install nodejs dependencies
         run: |
-          npm run web-install
           npm install
+          npm run web-install
           npm run electron-install
-          npm run electron-tsc
         # if: ${{ runner.os == 'Windows' }}
         # shell: bash
+      # bit-set compilation was broken for now with version 1.55 of rust
+      # could later use it again
+      - name: Install Rust minimal toolchain version 1.54
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: 1.54
+          override: true
+      # necessary for Rust 1.54 to be installed before running this step
+      - name: Install dependencies
+        shell: bash # important because this runs shell scripts
+        run: |
+          npm run dna-install
       - name: build acorn
         run: npm run build
-        if: ${{ runner.os == 'Windows' }}
         shell: bash
       - name: upload binary (ubuntu only)
         if: ${{ runner.os == 'Linux' }}

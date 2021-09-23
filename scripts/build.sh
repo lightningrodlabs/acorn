@@ -1,26 +1,23 @@
 #!/bin/bash
 
-# backend
-# assume dependencies have been installed
-# . scripts/install-hc-tools.sh
+# compile the rust code to WASM
+# and package the WASM into DNA files
+sh scripts/dna-pack.sh
 
-. scripts/dna-pack.sh
-
-rm -rf electron/binaries
-mkdir electron/binaries
 
 # ensure all necessary binaries are packaged in the app
+rm -rf electron/binaries
+mkdir electron/binaries
 cp dna/workdir/projects.dna electron/binaries/projects.dna
 cp dna/workdir/profiles.dna electron/binaries/profiles.dna
-
-# DO PLATFORM SPECIFIC lair-keystore and holochain-runner BINARIES HERE
-. scripts/copy-binaries.sh
+sh scripts/copy-binaries.sh
 
 # ui
 rm -rf electron/web
 npm run web-build
 cp -r web/dist electron/web
 
+# built the electron application
 cd electron
 npm run build
 
