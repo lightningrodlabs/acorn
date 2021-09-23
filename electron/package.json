@@ -30,6 +30,7 @@
     ],
     "win": {
       "target": "NSIS"
+      "icon": "build/icon.ico"
     },
     "directories": {
       "output": "out"
