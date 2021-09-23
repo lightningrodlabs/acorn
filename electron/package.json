@@ -28,6 +28,9 @@
       "node_modules/**/*",
       "package.json"
     ],
+    "win": {
+      "target": "NSIS"
+    },
     "directories": {
       "output": "out"
     }
