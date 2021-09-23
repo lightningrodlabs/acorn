@@ -50,7 +50,7 @@ jobs:
           npm run electron-install
           npm run electron-tsc
         # if: ${{ runner.os == 'Windows' }}
-        shell: bash
+        # shell: bash
       - name: build acorn
         run: npm run build
         if: ${{ runner.os == 'Windows' }}
