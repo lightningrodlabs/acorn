@@ -22,7 +22,6 @@ jobs:
   #         # (required)
   #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
-  # the create-release would be used once we want to create a specific release based on if the commit has a tag
   build-dna:
     runs-on: ubuntu-latest
     steps:
@@ -63,10 +62,18 @@ jobs:
         os:
           - ubuntu-18.04
           - macos-latest
-          - windows-latest
+          # - windows-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/download-artifact@master
+        with:
+          name: profiles-artifact
+          path: dna/workdir/profiles.dna
+      - uses: actions/download-artifact@master
+        with:
+          name: projects-artifact
+          path: dna/workdir/projects.dna
       # depending on the windows command (when we are ready to build for it), may have to check which os currently on
       - name: Install nodejs dependencies
         run: |

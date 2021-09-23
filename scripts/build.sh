@@ -2,7 +2,7 @@
 
 # compile the rust code to WASM
 # and package the WASM into DNA files
-sh scripts/dna-pack.sh
+# sh scripts/dna-pack.sh
 
 
 # ensure all necessary binaries are packaged in the app
