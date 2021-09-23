@@ -29,7 +29,7 @@
       "package.json"
     ],
     "win": {
-      "target": "NSIS"
+      "target": "NSIS",
       "icon": "build/icon.ico"
     },
     "directories": {
