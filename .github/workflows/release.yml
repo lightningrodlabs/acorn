@@ -39,6 +39,7 @@ jobs:
         with:
           profile: minimal
           toolchain: 1.54
+          override: true
       # depending on the windows command (when we are ready to build for it), may have to check which os currently on
       - name: Install dependencies
         # if: ${{ runner.os == 'Linux' }}
