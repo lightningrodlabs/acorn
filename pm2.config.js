@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'web-gui',
       script: 'npm run web',
-      // watch: ['data', 'docs'],
+      ignore_watch: ['.'],
       env: {
         NODE_ENV: 'development',
       },

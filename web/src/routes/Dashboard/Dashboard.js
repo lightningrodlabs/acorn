@@ -174,7 +174,7 @@ function Dashboard({
                 {selectedSort === 'name' && 'Name'}
                 <Icon
                   name="chevron-down.svg"
-                  size="small"
+                  size="very-small"
                   className={`grey ${showSortPicker ? 'active' : ''}`}
                 />
               </div>
