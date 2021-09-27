@@ -5,6 +5,8 @@ use crate::project::{error::Error};
 use hdk::prelude::*;
 
 #[hdk_extern]
+/// The `Goal` at the `goal_address` on the `EntryPoint` must exist and the `creator_address` of the
+/// `EntryPoint` must match the agent authoring the `EntryPoint`, unless the entry is imported
 pub fn validate_create_entry_entry_point(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {

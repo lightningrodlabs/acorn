@@ -1,6 +1,6 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::project::fixtures::fixtures::{EntryPointFixturator, WrappedAgentPubKeyFixturator};
+    use crate::fixtures::fixtures::{EntryPointFixturator, WrappedAgentPubKeyFixturator};
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_crud::WrappedAgentPubKey;

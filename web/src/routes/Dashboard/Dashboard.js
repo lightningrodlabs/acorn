@@ -17,7 +17,7 @@ import InviteMembersModal from '../../components/InviteMembersModal/InviteMember
 import { PROJECTS_ZOME_NAME, PROJECT_APP_PREFIX } from '../../holochainConfig'
 import { passphraseToUid } from '../../secrets'
 import { getAdminWs, getAppWs, getAgentPubKey } from '../../hcWebsockets'
-import { fetchEntryPoints } from '../../projects/entry-points/actions'
+import { fetchEntryPointDetails } from '../../projects/entry-points/actions'
 import { fetchMembers, setMember } from '../../projects/members/actions'
 import {
   simpleCreateProjectMeta,
@@ -32,7 +32,7 @@ import {
 } from './DashboardListProject'
 import { joinProjectCellId, removeProjectCellId } from '../../cells/actions'
 import importAllProjectData from '../../import'
-import PendingProjects from '../../components/PendingProjects/PendingProjects.tsx'
+import PendingProjects from '../../components/PendingProjects/PendingProjects'
 
 function Dashboard({
   existingAgents,
@@ -41,7 +41,7 @@ function Dashboard({
   profilesCellIdString,
   cells,
   projects,
-  fetchEntryPoints,
+  fetchEntryPointDetails,
   fetchMembers,
   fetchProjectMeta,
   createProject,
@@ -78,7 +78,7 @@ function Dashboard({
         })
       })
       fetchMembers(cellId)
-      fetchEntryPoints(cellId)
+      fetchEntryPointDetails(cellId)
     })
   }, [JSON.stringify(cells)])
 
@@ -443,8 +443,8 @@ function mapDispatchToProps(dispatch) {
     deactivateApp: (appId, cellId) => {
       return deactivateApp(appId, cellId, dispatch)
     },
-    fetchEntryPoints: (cellIdString) => {
-      return dispatch(fetchEntryPoints.create({ cellIdString, payload: null }))
+    fetchEntryPointDetails: (cellIdString) => {
+      return dispatch(fetchEntryPointDetails.create({ cellIdString, payload: null }))
     },
     fetchMembers: (cellIdString) => {
       return dispatch(fetchMembers.create({ cellIdString, payload: null }))

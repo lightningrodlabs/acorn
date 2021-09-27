@@ -9,15 +9,36 @@ pub const AGENTS_PATH: &str = "agents";
 #[hdk_entry(id = "profile")]
 #[derive(Clone, PartialEq)]
 pub struct Profile {
-  first_name: String,
-  last_name: String,
-  handle: String,
-  status: Status,
-  avatar_url: String,
-  address: WrappedAgentPubKey,
-  is_imported: bool,
+  pub first_name: String,
+  pub last_name: String,
+  pub handle: String,
+  pub status: Status,
+  pub avatar_url: String,
+  pub address: WrappedAgentPubKey,
+  pub is_imported: bool,
 }
 
+impl Profile {
+  pub fn new(
+    first_name: String,
+    last_name: String,
+    handle: String,
+    status: Status,
+    avatar_url: String,
+    address: WrappedAgentPubKey,
+    is_imported: bool,
+  ) -> Self {
+    Self {
+      first_name,
+      last_name,
+      handle,
+      status,
+      avatar_url,
+      address,
+      is_imported,
+    }
+  }
+}
 impl From<Profile> for AgentPubKey {
   fn from(profile: Profile) -> Self {
     profile.address.0
@@ -115,6 +136,10 @@ impl<'de> Deserialize<'de> for Status {
 #[hdk_extern]
 pub fn create_whoami(entry: Profile) -> ExternResult<WireEntry> {
   // commit this new profile
+  inner_create_whoami(entry, get_peers)
+}
+pub fn inner_create_whoami(entry: Profile, get_peers_to_signal: fn() -> ExternResult<Vec<AgentPubKey>>) -> ExternResult<WireEntry> {
+  // commit this new profile
   let header_hash = create_entry(&entry)?;
 
   let entry_hash = hash_entry(&entry)?;
@@ -139,7 +164,7 @@ pub fn create_whoami(entry: Profile) -> ExternResult<WireEntry> {
     action: ActionType::Create,
     data: SignalData::Create(wire_entry.clone()),
   };
-  let _ = send_agent_signal(signal);
+  let _ = send_agent_signal(signal, get_peers_to_signal);
 
   Ok(wire_entry)
 }
@@ -167,12 +192,16 @@ pub fn create_imported_profile(entry: Profile) -> ExternResult<WireEntry> {
   })
 }
 
-fn agent_signal_entry_type() -> String {
+pub fn agent_signal_entry_type() -> String {
   "agent".to_string()
 }
 
 #[hdk_extern]
 pub fn update_whoami(update: WireEntry) -> ExternResult<WireEntry> {
+  inner_update_whoami(update, get_peers)
+}
+
+pub fn inner_update_whoami(update: WireEntry, get_peers_to_signal: fn() -> ExternResult<Vec<AgentPubKey>>) -> ExternResult<WireEntry> {
   update_entry(update.address.0.clone(), &update.entry)?;
   // // send update to peers
   // we don't want to cause real failure for inability to send to peers
@@ -181,7 +210,7 @@ pub fn update_whoami(update: WireEntry) -> ExternResult<WireEntry> {
     action: ActionType::Update,
     data: SignalData::Update(update.clone()),
   };
-  let _ = send_agent_signal(signal);
+  let _ = send_agent_signal(signal, get_peers_to_signal);
   Ok(update)
 }
 
@@ -222,9 +251,9 @@ fn fetch_agent_address(_: ()) -> ExternResult<WrappedAgentPubKey> {
 SIGNALS
 */
 
-fn send_agent_signal(signal: AgentSignal) -> ExternResult<()> {
+fn send_agent_signal(signal: AgentSignal, get_peers_to_signal: fn() -> ExternResult<Vec<AgentPubKey>>) -> ExternResult<()> {
   let payload = ExternIO::encode(signal)?;
-  let peers = get_peers()?;
+  let peers = get_peers_to_signal()?;
   remote_signal(payload, peers)?;
   Ok(())
 }

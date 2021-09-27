@@ -5,6 +5,8 @@ use crate::project::{
 use hdk::prelude::*;
 
 #[hdk_extern]
+/// Creates are allowed if the Goal exists and if `user_edit_hash` matches
+/// the agent authoring the entry (unless `is_imported` is `true`)
 pub fn validate_create_entry_goal_member(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {

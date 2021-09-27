@@ -7,6 +7,14 @@
 
 import { PROJECTS_ZOME_NAME } from '../../holochainConfig'
 import { createCrudActionCreators } from '../../crudRedux'
+import { createZomeCallAsyncAction } from 'connoropolous-hc-redux-middleware'
+
+const FETCH_ENTRY_POINT_DETAILS = 'fetch_entry_point_details'
+
+const fetchEntryPointDetails = createZomeCallAsyncAction(
+  PROJECTS_ZOME_NAME,
+  FETCH_ENTRY_POINT_DETAILS
+)
 
 const [
   createEntryPoint,
@@ -20,4 +28,6 @@ export {
   fetchEntryPoints,
   updateEntryPoint,
   archiveEntryPoint,
+  // non-standard
+  fetchEntryPointDetails,
 }
