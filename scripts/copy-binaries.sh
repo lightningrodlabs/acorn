@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo $OSTYPE
+
 if [[ $OSTYPE == 'darwin'* ]]; then
   cp electron/node_modules/electron-holochain/binaries/mac/lair-keystore electron/binaries/lair-keystore
   cp electron/node_modules/electron-holochain/binaries/mac/holochain-runner electron/binaries/holochain-runner
