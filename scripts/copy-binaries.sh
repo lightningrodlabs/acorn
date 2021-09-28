@@ -4,6 +4,7 @@ if [[ $OSTYPE == 'darwin'* ]]; then
   cp electron/node_modules/electron-holochain/binaries/mac/lair-keystore electron/binaries/lair-keystore
   cp electron/node_modules/electron-holochain/binaries/mac/holochain-runner electron/binaries/holochain-runner
 elif [[ $OSTYPE == 'linux-gnu'* ]]; then
+  echo "hello"
   cp electron/node_modules/electron-holochain/binaries/linux/lair-keystore electron/binaries/lair-keystore
   cp electron/node_modules/electron-holochain/binaries/linux/holochain-runner electron/binaries/holochain-runner
 elif [[ $OSTYPE == "cygwin" ]]; then
