@@ -74,11 +74,14 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: profiles-artifact
-          path: dna/workdir/profiles.dna
+          path: dna/workdir
       - uses: actions/download-artifact@master
         with:
           name: projects-artifact
-          path: dna/workdir/projects.dna
+          path: dna/workdir
+      - name: list downloads
+        run: ls -R
+        working-directory: dna/workdir
       # depending on the windows command (when we are ready to build for it), may have to check which os currently on
       - name: Install nodejs dependencies
         run: |
