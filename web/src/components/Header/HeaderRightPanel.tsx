@@ -6,6 +6,7 @@ import { Status, StatusCssColorClass, StatusIcons } from './Status'
 import Icon from '../Icon/Icon'
 import Avatar from '../Avatar/Avatar'
 import useOnClickOutside from 'use-onclickoutside'
+import { CSSTransition } from 'react-transition-group'
 
 function AvatarMenuItem({
   title,
@@ -30,6 +31,35 @@ function StatusMenuItem({ color, title, onClick }) {
       <div className={`status-circle ${color}`} />
       <p>{title}</p>
     </button>
+  )
+}
+
+function SearchResultItem({}) {
+  return (
+    <div className="search-result-item-wrapper">
+      <Icon
+        name="comment.svg"
+        size="small"
+        className="light-grey not-hoverable"
+      />
+      <div className="search-result-item-text">result</div>
+    </div>
+  )
+}
+
+function SearchResultsFilter({}) {
+  const [isFilterApplied, setIsFilterApplied] = useState(false)
+  return (
+    <div
+      className={`search-results-filter-wrapper ${
+        isFilterApplied ? 'filter-is-applied' : ''
+      } `}
+      onClick={() => {
+        setIsFilterApplied(!isFilterApplied)
+      }}
+    >
+      Titles
+    </div>
   )
 }
 
@@ -71,18 +101,27 @@ function HeaderRightPanel({
       <div
         className={`search-button-wrapper ${
           isSearchOpen ? 'search-is-open' : ''
-        }`}
+        } 
+        ${filterText !== '' ? 'results-dropdown-is-open' : ''}`}
       >
         <div className="search-icon-input">
           <div className="search-open-icon">
             <Icon
               name="search.svg"
               size="small"
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              onClick={() => {
+                setIsSearchOpen(!isSearchOpen)
+                setFilterText('')
+              }}
             />
           </div>
           <div>
-            {isSearchOpen && (
+            <CSSTransition
+              in={isSearchOpen}
+              timeout={100}
+              unmountOnExit
+              classNames="search-input-wrapper"
+            >
               <input
                 type="text"
                 onChange={(e) => setFilterText(e.target.value.toLowerCase())}
@@ -90,30 +129,42 @@ function HeaderRightPanel({
                 placeholder="Search for a goal, comment, and more"
                 autoFocus
               />
-            )}
+            </CSSTransition>
           </div>
           {filterText !== '' && (
-            <button
+            <Icon
+              name="x.svg"
+              size="small"
+              className="light-grey"
               onClick={() => {
                 setFilterText('')
               }}
-              className="clear-button"
-            >
-              clear
-            </button>
+            />
           )}
         </div>
-        <div className="search-results-dropdown">
-          <div className="search-results-filters">
-            <div className="search-results-filter-wrapper">title</div>
-            <div className="search-results-filter-wrapper">description</div>
-            <div className="search-results-filter-wrapper">comment</div>
+        {/* <CSSTransition
+          in={filterText !== ''}
+          timeout={200}
+          unmountOnExit
+          className="search-results-dropdown-wrapper"
+        > */}
+        {filterText !== '' && (
+          <div className="search-results-dropdown">
+            <div className="search-results-filters">
+              <SearchResultsFilter />
+              <SearchResultsFilter />
+              <SearchResultsFilter />
+            </div>
+            <div className="search-results-list">
+              <SearchResultItem />
+              <SearchResultItem />
+              <SearchResultItem />
+              <SearchResultItem />
+              <SearchResultItem />
+            </div>
           </div>
-          <div>results</div>
-          <div>results</div>
-          <div>results</div>
-          <div>results</div>
-        </div>
+        )}
+        {/* </CSSTransition> */}
       </div>
 
       <div className="header-right-panel">
