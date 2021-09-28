@@ -19,6 +19,10 @@
   border-right: 2px solid grey;
 }
 
+.indented-view-search .icon {
+  padding: 4px;
+}
+
 .indented-view-search input {
   font-size: 12px;
   line-height: 18px;
@@ -27,7 +31,7 @@
   outline: 0;
   padding: 2px;
   margin-left: 6px;
-  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+  font-family: 'hk-grotesk-semibold', Helvetica, Sans-Serif;
   flex: 1;
 }
 
@@ -126,7 +130,7 @@
   margin-left: 20px;
 }
 
-.indented-view-goal-content .indented-view-goal-make-top-priority { 
+.indented-view-goal-content .indented-view-goal-make-top-priority {
   display: none;
 }
 

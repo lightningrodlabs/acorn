@@ -48,6 +48,8 @@ function HeaderRightPanel({
   })
   const [isAvatarMenuOpen, setIsAvatarMenuOpen] = useState(false)
   const [isStatusOpen, setIsStatusOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [filterText, setFilterText] = useState('')
   const location = useLocation()
   // hover states
   const [isAvatarHover, setIsAvatarHover] = useState(false)
@@ -65,94 +67,128 @@ function HeaderRightPanel({
   const isGuideOpen = !!searchParams.get(GUIDE_IS_OPEN)
 
   return (
-    <div className="header-right-panel">
-      {/* <Icon name="search-line.svg" onClick={clickSearch}/> */}
-      {/* open or close the guidebook, depending on if it */}
-      {/* is currently open or closed */}
-      {/* Guidebook Button */}
-      {/* @ts-ignore */}
-      <NavLink
-        className="header-right-panel-icon"
-        to={`${location.pathname}${
-          isGuideOpen ? '' : '?' + GUIDE_IS_OPEN + '=1'
-        }`}
-        // if clicked on guidebook for the first time, remove the help message
-        // and remember not to show that in the future (store that locally) aka persist
-        onClick={hideGuidebookHelpMessage}
-      >
-        {/* @ts-ignore */}
-        <Icon
-          name="booklet.svg"
-          className="header-right-panel-icon"
-          withTooltip
-          tooltipText="Guidebook"
-          size="small"
-        />
-      </NavLink>
-      <div className="avatar-and-status-wrapper">
-        <div
-          className="avatar-container"
-          onMouseEnter={onHoverAvatarEnter}
-          onMouseLeave={onHoverAvatarLeave}
-        >
-          {/* @ts-ignore */}
-          <Avatar
-            first_name={whoami.entry.first_name}
-            last_name={whoami.entry.last_name}
-            avatar_url={whoami.entry.avatar_url}
-            imported={whoami.entry.is_imported}
-            highlighted={isAvatarMenuOpen || isAvatarHover}
-            clickable
-            onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}
-            medium
-          />
-        </div>
-        {/* Current status circle color under avatar*/}
-        <div className="status-circle-wrapper">
-          <div className={`status-circle ${StatusCssColorClass[status]}`}></div>
-        </div>
-      </div>
-      {/* Profile Menu */}
-      {isAvatarMenuOpen && (
-        <div className="profile-wrapper" ref={ref}>
-          <AvatarMenuItem
-            className={isStatusOpen ? 'active' : ''}
-            title="Change Status"
-            onClick={() => setIsStatusOpen(true)}
-          />
-          {isStatusOpen && (
-            <div className="user-status-wrapper">
-              {Object.keys(Status).map((key) => (
-                <StatusMenuItem
-                  key={key}
-                  color={StatusCssColorClass[key]}
-                  title={key}
-                  onClick={() => {
-                    saveStatus(Status[key])
-                    setIsAvatarMenuOpen(false)
-                    setIsStatusOpen(false)
-                  }}
-                />
-              ))}
-            </div>
-          )}
-          <AvatarMenuItem
-            title="Profile Settings"
-            onClick={() => {
-              onClickEditProfile()
-              setIsAvatarMenuOpen(false)
-            }}
-          />
-          <AvatarMenuItem
-            title="Preferences"
-            onClick={() => {
-              onClickPreferences()
-              setIsAvatarMenuOpen(false)
-            }}
+    <>
+      {!isSearchOpen && (
+        <div className="search-button-wrapper">
+          <Icon
+            name="search.svg"
+            size="small"
+            onClick={() => setIsSearchOpen(true)}
           />
         </div>
       )}
-    </div>
+
+      {isSearchOpen && (
+        <div className="search-open-wrapper">
+          <div className="search-open-icon">
+            <Icon
+              name="search.svg"
+              size="small"
+              onClick={() => setIsSearchOpen(false)}
+            />
+          </div>
+          <div>
+            <input
+              type="text"
+              onChange={(e) => setFilterText(e.target.value.toLowerCase())}
+              value={filterText}
+              placeholder="Search for a goal, squirrel, and more"
+              autoFocus
+            />
+          </div>
+        </div>
+      )}
+
+      <div className="header-right-panel">
+        {/* open or close the guidebook, depending on if it */}
+        {/* is currently open or closed */}
+        {/* Guidebook Button */}
+        {/* @ts-ignore */}
+        <NavLink
+          className="header-right-panel-icon"
+          to={`${location.pathname}${
+            isGuideOpen ? '' : '?' + GUIDE_IS_OPEN + '=1'
+          }`}
+          // if clicked on guidebook for the first time, remove the help message
+          // and remember not to show that in the future (store that locally) aka persist
+          onClick={hideGuidebookHelpMessage}
+        >
+          {/* @ts-ignore */}
+          <Icon
+            name="booklet.svg"
+            className="header-right-panel-icon"
+            withTooltip
+            tooltipText="Guidebook"
+            size="small"
+          />
+        </NavLink>
+        <div className="avatar-and-status-wrapper">
+          <div
+            className="avatar-container"
+            onMouseEnter={onHoverAvatarEnter}
+            onMouseLeave={onHoverAvatarLeave}
+          >
+            {/* @ts-ignore */}
+            <Avatar
+              first_name={whoami.entry.first_name}
+              last_name={whoami.entry.last_name}
+              avatar_url={whoami.entry.avatar_url}
+              imported={whoami.entry.is_imported}
+              highlighted={isAvatarMenuOpen || isAvatarHover}
+              clickable
+              onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}
+              medium
+            />
+          </div>
+          {/* Current status circle color under avatar*/}
+          <div className="status-circle-wrapper">
+            <div
+              className={`status-circle ${StatusCssColorClass[status]}`}
+            ></div>
+          </div>
+        </div>
+        {/* Profile Menu */}
+        {isAvatarMenuOpen && (
+          <div className="profile-wrapper" ref={ref}>
+            <AvatarMenuItem
+              className={isStatusOpen ? 'active' : ''}
+              title="Change Status"
+              onClick={() => setIsStatusOpen(true)}
+            />
+            {isStatusOpen && (
+              <div className="user-status-wrapper">
+                {Object.keys(Status).map((key) => (
+                  <StatusMenuItem
+                    key={key}
+                    color={StatusCssColorClass[key]}
+                    title={key}
+                    onClick={() => {
+                      saveStatus(Status[key])
+                      setIsAvatarMenuOpen(false)
+                      setIsStatusOpen(false)
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+            <AvatarMenuItem
+              title="Profile Settings"
+              onClick={() => {
+                onClickEditProfile()
+                setIsAvatarMenuOpen(false)
+              }}
+            />
+            <AvatarMenuItem
+              title="Preferences"
+              onClick={() => {
+                onClickPreferences()
+                setIsAvatarMenuOpen(false)
+              }}
+            />
+          </div>
+        )}
+      </div>
+    </>
   )
 }
 

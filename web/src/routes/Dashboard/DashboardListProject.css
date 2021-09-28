@@ -231,8 +231,8 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   background-color: #fbf9f7;
   transition: background-color 0.2s ease-in-out;
 }

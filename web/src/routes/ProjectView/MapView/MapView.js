@@ -63,7 +63,7 @@ function MapView({
     <>
       {showGuidebookHelpMessage && (
         <div className="guidebook_open_help">
-          <div>Click on the Guidebook to learn more</div>
+          <h3>Click on the Guidebook to learn more</h3>
           <img src="img/arrow-curved.svg" />
         </div>
       )}

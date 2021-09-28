@@ -176,12 +176,12 @@ export default function IndentedTreeView({ goalTrees, projectMeta, updateProject
     <div className="indented-view-wrapper" style={{ width: `${width}px` }}>
       {/* search/filter */}
       <div className="indented-view-search">
-        <Icon name="search.svg" size="very-small" />
+        <Icon name="search.svg" size="small" className="not-hoverable" />
         <input
           type="text"
           onChange={(e) => setFilterText(e.target.value.toLowerCase())}
           value={filterText}
-          placeholder="Search for a Goal"
+          placeholder="Search for a goal"
           autoFocus
         />
         {filterText !== '' && (
