@@ -68,36 +68,53 @@ function HeaderRightPanel({
 
   return (
     <>
-      {!isSearchOpen && (
-        <div className="search-button-wrapper">
-          <Icon
-            name="search.svg"
-            size="small"
-            onClick={() => setIsSearchOpen(true)}
-          />
-        </div>
-      )}
-
-      {isSearchOpen && (
-        <div className="search-open-wrapper">
+      <div
+        className={`search-button-wrapper ${
+          isSearchOpen ? 'search-is-open' : ''
+        }`}
+      >
+        <div className="search-icon-input">
           <div className="search-open-icon">
             <Icon
               name="search.svg"
               size="small"
-              onClick={() => setIsSearchOpen(false)}
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
             />
           </div>
           <div>
-            <input
-              type="text"
-              onChange={(e) => setFilterText(e.target.value.toLowerCase())}
-              value={filterText}
-              placeholder="Search for a goal, squirrel, and more"
-              autoFocus
-            />
+            {isSearchOpen && (
+              <input
+                type="text"
+                onChange={(e) => setFilterText(e.target.value.toLowerCase())}
+                value={filterText}
+                placeholder="Search for a goal, comment, and more"
+                autoFocus
+              />
+            )}
           </div>
+          {filterText !== '' && (
+            <button
+              onClick={() => {
+                setFilterText('')
+              }}
+              className="clear-button"
+            >
+              clear
+            </button>
+          )}
         </div>
-      )}
+        <div className="search-results-dropdown">
+          <div className="search-results-filters">
+            <div className="search-results-filter-wrapper">title</div>
+            <div className="search-results-filter-wrapper">description</div>
+            <div className="search-results-filter-wrapper">comment</div>
+          </div>
+          <div>results</div>
+          <div>results</div>
+          <div>results</div>
+          <div>results</div>
+        </div>
+      </div>
 
       <div className="header-right-panel">
         {/* open or close the guidebook, depending on if it */}

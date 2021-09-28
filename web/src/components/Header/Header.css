@@ -248,25 +248,33 @@
   width: 46px;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
+  transition: 0.2s width, box-shadow ease;
+  display: flex;
+  flex-direction: column;
 }
 
-.search-open-wrapper {
-  width: 300px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+.search-button-wrapper.search-is-open {
+  width: 320px;
   background: #ffffff;
   border-radius: 10px;
   height: 46px;
-  box-shadow: 0px 0px 10px #ba4a4a1f;
+  box-shadow: 0px 0px 10px #00000006;
   padding: 5px 12px;
   box-sizing: border-box;
 }
 
+.search-icon-input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  width: 100%;
+}
+
 .search-open-icon {}
 
-.search-open-wrapper input {
+.search-is-open input {
   width: 240px;
   font-size: 14px;
   line-height: 18px;
@@ -279,8 +287,36 @@
   flex: 1;
 }
 
-.search-open-wrapper input::placeholder {
+.search-is-open input::placeholder {
   color: #bdbdbd;
+}
+
+.search-results-dropdown {
+  width: 320px;
+  max-height: 200px;
+  border-radius: 0 0 10px 10px;
+  background: #ffffff;
+  position: absolute;
+  top: 50px;
+  box-sizing: border-box;
+}
+
+.search-results-filters {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  padding: 12px;
+  border-bottom: 2px solid #EBEAE8;
+}
+
+.search-results-filter-wrapper {
+  background-color: #F4F0EC;
+  color: #535353;
+  padding: 4px 16px 7px 16px;
+  border-radius: 20px;
+  margin-right: 8px;
+  font-family: 'hk-grotesk-bold', sans-serif;
+  font-size: 12px;
 }
 
 /* Guidebook */
