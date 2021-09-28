@@ -67,13 +67,13 @@ const devOptions: HolochainRunnerOptions = {
   dnaPath: profilesDnaPath, // preload
   datastorePath: process.env.ACORN_TEST_USER_2
     ? '../tmp/databases'
-    : '../tmp2/databases',
+    : path.join(__dirname, '../../tmp2/databases'),
   appId: MAIN_APP_ID,
   appWsPort: process.env.ACORN_TEST_USER_2 ? 8899 : 8888,
   adminWsPort: process.env.ACORN_TEST_USER_2 ? 1236 : 1234,
   keystorePath: process.env.ACORN_TEST_USER_2
     ? '../tmp/keystore'
-    : '../tmp2/keystore',
+    : path.join(__dirname, '../../tmp2/keystore'),
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 const prodOptions: HolochainRunnerOptions = {
