@@ -4,6 +4,7 @@ const path = require('path')
 const electronNotarize = require('electron-notarize')
 
 module.exports = async function (params) {
+  return
   if (process.platform !== 'darwin') {
     return
   }

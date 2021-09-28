@@ -48,13 +48,11 @@ const BINARY_PATHS: PathOptions | undefined = app.isPackaged
   ? {
       holochainRunnerBinaryPath: path.join(
         __dirname,
-        '../../app.asar.unpacked/binaries/holochain-runner',
-        process.platform === 'win32' ? '.exe' : ''
+        `../../app.asar.unpacked/binaries/holochain-runner${process.platform === 'win32' ? '.exe' : ''}`
       ),
       lairKeystoreBinaryPath: path.join(
         __dirname,
-        '../../app.asar.unpacked/binaries/lair-keystore',
-        process.platform === 'win32' ? '.exe' : ''
+        `../../app.asar.unpacked/binaries/lair-keystore${process.platform === 'win32' ? '.exe' : ''}`,
       ),
     }
   : undefined
@@ -78,11 +76,11 @@ const devOptions: HolochainRunnerOptions = {
 }
 const prodOptions: HolochainRunnerOptions = {
   dnaPath: profilesDnaPath, // preload
-  datastorePath: path.join(app.getPath('userData'), 'databases-0-5-2'),
+  datastorePath: path.join(app.getPath('userData'), 'databases-0-5-4'),
   appId: MAIN_APP_ID,
   appWsPort: 8889,
   adminWsPort: 1235,
-  keystorePath: path.join(app.getPath('userData'), 'keystore-0-5-2'),
+  keystorePath: path.join(app.getPath('userData'), 'keystore-0-5-4'),
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 

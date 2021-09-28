@@ -1,6 +1,6 @@
 {
   "name": "acorn",
-  "version": "0.5.2-alpha",
+  "version": "0.5.4-alpha",
   "description": "Acorn is software that helps people create the future",
   "repository": {
     "type": "git",
@@ -9,11 +9,11 @@
   "scripts": {
     "install-deps": "npm install && npm run dna-install && npm run web-install && npm run electron-install && npm run electron-tsc",
     "dev": "pm2-dev pm2.config.js",
-    "dna-install": ". scripts/install-hc-tools.sh",
+    "dna-install": "bash scripts/install-hc-tools.sh",
     "dna-test": ". scripts/dna-test.sh",
-    "dna-pack": ". scripts/dna-pack.sh",
+    "dna-pack": "bash scripts/dna-pack.sh",
     "user-data-reset": "rm -rf tmp && rm -rf tmp2 && mkdir tmp tmp2",
-    "web-install": "cd web && npm install",
+    "web-install": "cd web && rm package-lock.json && npm install",
     "web": "cd web && ADMIN_WS_PORT=1234 APP_WS_PORT=8888 npx webpack-dev-server --config webpack.dev.js",
     "web2": "cd web && ADMIN_WS_PORT=1236 APP_WS_PORT=8899 npx webpack-dev-server --config webpack.dev.js",
     "web-build": "cd web && npx webpack --config webpack.prod.js",
@@ -21,7 +21,7 @@
     "electron": "cd electron && npm run start",
     "electron2": "cd electron && ACORN_TEST_USER_2=1 npm run start",
     "electron-tsc": "cd electron && npm run tsc",
-    "build": ". scripts/build.sh"
+    "build": "bash scripts/build.sh"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",

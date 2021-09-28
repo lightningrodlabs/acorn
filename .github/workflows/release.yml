@@ -1,0 +1,115 @@
+name: Release
+
+# on:
+#   push:
+#     tags:
+#       - v[0-9]+.*
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # the create-release would be used once we want to create a specific release based on if the commit has a tag
+  # create-release:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: taiki-e/create-gh-release-action@v1
+  #       env:
+  #         # (required)
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  build-dna:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # select compatible rust version
+      # bit-set compilation was broken for now with version 1.55 of rust
+      # could later use it again
+      # - name: Install Rust minimal toolchain version 1.54
+      #   uses: actions-rs/toolchain@v1
+      #   with:
+      #     profile: minimal
+      #     toolchain: 1.54
+      #     override: true
+      # # install hc tool
+      # # necessary for Rust 1.54 to be installed before running this step
+      # - name: Install hc tool and wasm target
+      #   shell: bash # important because this runs shell scripts
+      #   run: |
+      #     npm run dna-install
+      # # build dna
+      # - name: Build DNA
+      #   run: |
+      #     npm run dna-pack
+      # "upload" dna as build artifact
+      - uses: actions/upload-artifact@master
+        with:
+          name: profiles-artifact
+          path: dna/workdir/profiles.dna
+      - uses: actions/upload-artifact@master
+        with:
+          name: projects-artifact
+          path: dna/workdir/projects.dna
+
+  # upload the app package for each target os
+  upload-assets:
+    needs: build-dna
+    strategy:
+      matrix:
+        os:
+          - ubuntu-18.04
+          - macos-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      # rm the dna files from repository
+      - name: clearing precompiled dna files
+        run: |
+          rm dna/workdir/*.dna
+      - uses: actions/download-artifact@master
+        with:
+          name: profiles-artifact
+          path: dna/workdir
+      - uses: actions/download-artifact@master
+        with:
+          name: projects-artifact
+          path: dna/workdir
+      - name: list downloads
+        run: ls -R
+        working-directory: dna/workdir
+      # depending on the windows command (when we are ready to build for it), may have to check which os currently on
+      - name: Install nodejs dependencies
+        run: |
+          npm install
+          npm run web-install
+          npm run electron-install
+        # if: ${{ runner.os == 'Windows' }}
+        # shell: bash
+      - name: build acorn
+        run: npm run build
+        shell: bash
+      - name: upload binary (ubuntu only)
+        if: ${{ runner.os == 'Linux' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "test-release" "electron/out/Acorn-0.5.4-alpha.AppImage" --clobber
+      - name: upload binary (macos only)
+        if: ${{ runner.os == 'macOs' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "test-release" "electron/out/Acorn-0.5.4-alpha.dmg" --clobber
+      - name: upload binary (Windows only)
+        if: ${{ runner.os == 'Windows' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Copy-Item bin/lair-keystore.exe -Destination lair-keystore-x86_64-pc-windows-msvc.exe
+          gh release upload "test-release" "electron/out/Acorn.Setup.0.5.4-alpha.exe" --clobber
+        shell: bash
