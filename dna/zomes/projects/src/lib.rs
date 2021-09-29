@@ -63,6 +63,48 @@ pub enum SignalType {
   GoalVote(GoalVoteSignal),
   Member(MemberSignal),
   ProjectMeta(ProjectMetaSignal),
+  EditingGoal(EditingGoalSignal),
+}
+
+#[derive(Debug, Serialize, Deserialize, SerializedBytes)]
+pub enum GoalField {
+  Title,
+  Description,
+}
+
+#[derive(Debug, Serialize, Deserialize, SerializedBytes)]
+pub struct EditingGoalSignal {
+  pub goal_field: GoalField,
+  pub goal_address: HeaderHash,
+  pub editing_agent: AgentPubKey,
+  pub is_editing: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize, SerializedBytes)]
+pub struct EditingGoalInfo {
+  pub goal_field: GoalField,
+  pub goal_address: HeaderHash,
+  pub is_editing: bool,
+}
+fn convert_to_receiver_signal(signal: EditingGoalSignal) -> SignalType {
+  SignalType::EditingGoal(signal)
+}
+
+#[hdk_extern]
+pub fn emit_editing_goal_signal(editing_goal_info: EditingGoalInfo) -> ExternResult<()> {
+  
+  let editing_goal_signal = EditingGoalSignal {
+    goal_field: editing_goal_info.goal_field,
+    goal_address: editing_goal_info.goal_address,
+    editing_agent: agent_info()?.agent_latest_pubkey,
+    is_editing: editing_goal_info.is_editing,
+  };
+
+  let signal = convert_to_receiver_signal(editing_goal_signal);
+  let payload = ExternIO::encode(signal)?;
+  let peers = get_peers_content()?;
+  remote_signal(payload, peers)?;
+  Ok(())
 }
 
 pub fn get_peers_latest() -> ExternResult<Vec<AgentPubKey>> {
