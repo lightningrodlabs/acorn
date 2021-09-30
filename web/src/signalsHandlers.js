@@ -38,7 +38,7 @@ const ActionType = {
   Delete: 'delete',
 }
 
-// all possible values of `payload.entry_type` off a signal
+// all possible values of `payload.entryType` off a signal
 const SignalType = {
   // Profiles Zome
   Agent: 'agent',
@@ -113,7 +113,7 @@ export default (store) => (signal) => {
   payload = msgpack.decode(payload)
 
   // switch to CamelCasing if defined
-  const crudType = crudTypes[payload.entry_type]
+  const crudType = crudTypes[payload.entryType]
   if (crudType) {
     const action = pickCrudAction(crudType, payload.action)
     store.dispatch(createSignalAction(action, cellId, payload.data))
@@ -130,7 +130,7 @@ export default (store) => (signal) => {
   }
 
   // otherwise use non-crud actions
-  switch (payload.entry_type) {
+  switch (payload.entryType) {
     /*
       PROFILES Zome
     */
@@ -173,6 +173,6 @@ export default (store) => (signal) => {
       )
       break
     default:
-      console.log('unrecognised entry_type received: ', payload.entry_type)
+      console.log('unrecognised entryType received: ', payload.entryType)
   }
 }
