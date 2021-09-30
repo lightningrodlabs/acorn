@@ -22,24 +22,24 @@ export function crudReducer(state, action, create, fetch, update, archive) {
         ...state,
         [cellIdString]: {
           ...state[cellIdString],
-          [payload.address]: {
+          [payload.headerHash]: {
             ...payload.entry,
-            address: payload.address,
+            headerHash: payload.headerHash,
           },
         },
       }
 
     // FETCH
     case fetch.success().type:
-      // payload is [ { entry: { key: val }, address: 'QmAsdFg' }, ... ]
+      // payload is [ { entry: { key: val }, headerHash: 'QmAsdFg' }, ... ]
       const mapped = payload.map(r => {
         return {
           ...r.entry,
-          address: r.address,
+          headerHash: r.headerHash,
         }
       })
-      // mapped is [ { key: val, address: 'QmAsdFg' }, ...]
-      const newVals = _.keyBy(mapped, 'address')
+      // mapped is [ { key: val, headerHash: 'QmAsdFg' }, ...]
+      const newVals = _.keyBy(mapped, 'headerHash')
       // combines pre-existing values of the object with new values from
       // Holochain fetch
       return {

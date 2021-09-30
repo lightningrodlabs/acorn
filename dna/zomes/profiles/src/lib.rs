@@ -1,8 +1,8 @@
-use hdk_crud::create_receive_signal_cap_grant;
 use hdk::prelude::*;
 
 pub mod profile;
 
+use hdk_crud::signals::create_receive_signal_cap_grant;
 use profile::{Profile, AGENTS_PATH};
 
 #[hdk_extern]

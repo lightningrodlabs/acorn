@@ -29,8 +29,8 @@ export default function cloneGoals(store) {
         })
       )
       .then(value => {
-        let newGoalAddress = value.goal.address
-        store.dispatch(selectGoal(value.goal.address))
+        let newGoalAddress = value.goal.headerHash
+        store.dispatch(selectGoal(value.goal.headerHash))
         members.map(member => {
           store.dispatch(
             createGoalMember.create({

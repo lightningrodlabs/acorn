@@ -15,7 +15,7 @@ pub fn validate_create_entry_goal_member(
         match GoalMember::try_from(&validate_data.element) {
             Ok(proposed_entry) => {
                 // parent goal at goal_address must be determined to exist
-                must_get_header(proposed_entry.goal_address.0)?;
+                must_get_header(proposed_entry.goal_address.into())?;
 
                 // an imported entry can have another listed as author, and an edit history
                 if proposed_entry.is_imported {
@@ -23,7 +23,7 @@ pub fn validate_create_entry_goal_member(
                 } else {
                     // creator_address must match header author
                     validate_value_matches_create_author(
-                        &proposed_entry.user_edit_hash.0,
+                        &proposed_entry.user_edit_hash.into(),
                         &validate_data,
                     )
                 }

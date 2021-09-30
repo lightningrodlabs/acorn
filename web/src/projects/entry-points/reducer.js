@@ -15,9 +15,9 @@ import { isCrud, crudReducer } from '../../crudRedux'
 // which are like Projects... EntryPoints exist within Projects
 // so they are contained per project in the top level state
 
-// state is an object where the keys are the entry addresses of "EntryPoints"
+// state is an object where the keys are the entry headerHashes of "EntryPoints"
 // and the values are modified versions of the EntryPoint data structures that
-// also contain their address on those objects
+// also contain their headerHash on those objects
 const defaultState = {}
 
 export default function (state = defaultState, action) {
@@ -48,11 +48,11 @@ export default function (state = defaultState, action) {
       const mapped = payload.entry_points.map(r => {
         return {
           ...r.entry,
-          address: r.address,
+          headerHash: r.headerHash,
         }
       })
-      // mapped is [ { key: val, address: 'QmAsdFg' }, ...]
-      const newVals = _.keyBy(mapped, 'address')
+      // mapped is [ { key: val, headerHash: 'QmAsdFg' }, ...]
+      const newVals = _.keyBy(mapped, 'headerHash')
       // combines pre-existing values of the object with new values from
       // Holochain fetch
       return {
@@ -64,7 +64,7 @@ export default function (state = defaultState, action) {
       }
     case archiveGoalFully.success().type:
       cellIdString = action.meta.cellIdString
-      // filter out the entry points whose addresses are listed as having been
+      // filter out the entry points whose headerHashes are listed as having been
       // archived on account of having archived its associated Goal
       return {
         ...state,

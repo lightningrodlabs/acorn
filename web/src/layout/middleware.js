@@ -111,17 +111,17 @@ function performAnimation(store, action, currentState) {
   // from the position wherever the user was creating it
   // to its new resting place in the new layout
   if (action.type === createGoalWithEdge.success().type) {
-    // at this point we have the address of the new Goal
+    // at this point we have the headerHash of the new Goal
     // and we also have the coordinates where the "Goal Form"
     // was open and being used
-    goalCreatedCoord[action.payload.goal.address] = {
+    goalCreatedCoord[action.payload.goal.headerHash] = {
       x: currentState.ui.goalForm.leftEdgeXPosition,
       y: currentState.ui.goalForm.topEdgeYPosition,
     }
   }
   
   // this is expanding coordinates for Goals
-  // where the key is their address
+  // where the key is their headerHash
   // and the value is an object with `x` and `y` values
   // (tween is going to directly modify this object)
   const currentLayoutTween = {

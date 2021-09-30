@@ -19,7 +19,7 @@ export default function (state = defaultState, action) {
         ...state,
         [cellId]: {
           ...state[cellId],
-          [payload.address]: payload,
+          [payload.headerHash]: payload,
         },
       }
     // DEFAULT

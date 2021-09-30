@@ -234,6 +234,9 @@ function mapStateToProps(state) {
   const editingGoal = editAddress
     ? state.projects.goals[activeProject][editAddress]
     : null
+  // this value of state.whoami.entry.address
+  // should not be changed to headerHash unless the entry type of Profile
+  // is changed
   const user_hash = editAddress ? editingGoal.user_hash : state.whoami.entry.address
   const user_edit_hash = editAddress ? state.whoami.entry.address : null
   const status = editAddress ? editingGoal.status : 'Uncertain'
@@ -310,9 +313,9 @@ function mapDispatchToProps(dispatch, ownProps) {
         })
       )
     },
-    updateGoal: (entry, address) => {
+    updateGoal: (entry, headerHash) => {
       return dispatch(
-        updateGoal.create({ cellIdString, payload: { entry, address } })
+        updateGoal.create({ cellIdString, payload: { entry, headerHash } })
       )
     },
     closeGoalForm: () => {

@@ -3,15 +3,20 @@ use hdk_crud::{create_receive_signal_cap_grant, fetch_links};
 
 pub mod project;
 
+use hdk_crud::{
+    retrieval::fetch_links,
+    signals::{create_receive_signal_cap_grant, ActionSignal},
+};
+use holo_hash::AgentPubKeyB64;
 use project::{
-    edge::crud::{Edge, EdgeSignal},
-    entry_point::crud::{EntryPoint, EntryPointSignal},
-    goal::crud::{ArchiveGoalFullySignal, Goal, GoalSignal, GoalWithEdgeSignal},
-    goal_comment::crud::{GoalComment, GoalCommentSignal},
-    goal_member::crud::{GoalMember, GoalMemberSignal},
-    goal_vote::crud::{GoalVote, GoalVoteSignal},
+    edge::crud::Edge,
+    entry_point::crud::EntryPoint,
+    goal::crud::{ArchiveGoalFullySignal, Goal, GoalWithEdgeSignal},
+    goal_comment::crud::GoalComment,
+    goal_member::crud::GoalMember,
+    goal_vote::crud::GoalVote,
     member::entry::{join_project_during_init, Member, MemberSignal, MEMBER_PATH},
-    project_meta::crud::{ProjectMeta, ProjectMetaSignal},
+    project_meta::crud::ProjectMeta
 };
 
 #[hdk_extern]
@@ -46,9 +51,9 @@ SIGNALS
 // untagged because the useful tagging is done internally on the *Signal objects
 #[serde(untagged)]
 pub enum SignalType {
-    Edge(EdgeSignal),
-    EntryPoint(EntryPointSignal),
-    Goal(GoalSignal),
+    Edge(ActionSignal<Edge>),
+    EntryPoint(ActionSignal<EntryPoint>),
+    Goal(ActionSignal<Goal>),
     // custom signal type for a goal_with_edge
     // this is because it's important to the UI to receive both
     // the new goal, and the edge, at the same moment
@@ -58,12 +63,12 @@ pub enum SignalType {
     // both the archived goal, and everything connected to it that
     // was archived at the same time
     ArchiveGoalFully(ArchiveGoalFullySignal),
-    GoalComment(GoalCommentSignal),
-    GoalMember(GoalMemberSignal),
-    GoalVote(GoalVoteSignal),
-    Member(MemberSignal),
-    ProjectMeta(ProjectMetaSignal),
     EditingGoal(EditingGoalSignal),
+    GoalComment(ActionSignal<GoalComment>),
+    GoalMember(ActionSignal<GoalMember>),
+    GoalVote(ActionSignal<GoalVote>),
+    Member(MemberSignal),
+    ProjectMeta(ActionSignal<ProjectMeta>),
 }
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
@@ -113,13 +118,13 @@ pub fn get_peers_content() -> ExternResult<Vec<AgentPubKey>> {
 // used to get addresses of agents to send signals to
 pub fn get_peers(get_options: GetOptions) -> ExternResult<Vec<AgentPubKey>> {
     let path_hash = Path::from(MEMBER_PATH).hash()?;
-    let entries = fetch_links::<Member, Member>(path_hash, get_options)?;
-    let agent_info = agent_info()?;
+    let entries = fetch_links::<Member>(path_hash, get_options)?;
+    let self_agent_pub_key = AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey);
     Ok(entries
         .into_iter()
         // eliminate yourself as a peer
-        .filter(|x| x.address.0 != agent_info.agent_initial_pubkey)
-        .map(|x| x.address.0)
+        .filter(|x| x.entry.address != self_agent_pub_key)
+        .map(|x| AgentPubKey::from(x.entry.address))
         .collect::<Vec<AgentPubKey>>())
 }
 

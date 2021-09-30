@@ -37,7 +37,7 @@ function App({
   activeProjectMeta,
   projectId,
   agentAddress,
-  whoami, // .entry and .address
+  whoami, // .entry and .headerHash
   hasFetchedForWhoami,
   updateWhoami,
   navigationPreference,
@@ -49,7 +49,7 @@ function App({
   const [showPreferences, setShowPreferences] = useState(false)
 
   const onProfileSubmit = async (profile) => {
-    await updateWhoami(profile, whoami.address)
+    await updateWhoami(profile, whoami.headerHash)
     setShowProfileEditForm(false)
   }
   const updateStatus = async (statusString) => {
@@ -58,7 +58,7 @@ function App({
         ...whoami.entry,
         status: statusString,
       },
-      whoami.address
+      whoami.headerHash
     )
   }
 
@@ -151,9 +151,9 @@ function mapStateToProps(state) {
     ? selectEntryPoints(state, activeProject)
     : []
   const activeEntryPointsObjects = activeEntryPoints
-    .map((address) => {
+    .map((headerHash) => {
       return allProjectEntryPoints.find(
-        (entryPoint) => entryPoint.address === address
+        (entryPoint) => entryPoint.headerHash === headerHash
       )
     })
     // cut out invalid ones
@@ -177,10 +177,10 @@ function mergeProps(stateProps, dispatchProps, _ownProps) {
   return {
     ...stateProps,
     ...dispatchProps,
-    updateWhoami: (entry, address) => {
+    updateWhoami: (entry, headerHash) => {
       return dispatch(
         updateWhoami.create({
-          payload: { entry, address },
+          payload: { entry, headerHash },
           cellIdString: profilesCellIdString,
         })
       )
