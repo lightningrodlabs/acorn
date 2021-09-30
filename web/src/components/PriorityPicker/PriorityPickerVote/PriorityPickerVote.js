@@ -244,7 +244,7 @@ function PriorityPickerVote({
   const [openMyVote, setOpenMyVote] = useState(openToMyVote)
 
   const myVote = votes.find(value => {
-    return value.agent_address === whoami.entry.address
+    return value.agent_address === whoami.entry.headerHash
   })
 
   const defaultValues = {
@@ -258,18 +258,18 @@ function PriorityPickerVote({
     const goal_vote = {
       ...values,
       goal_address: goalAddress,
-      agent_address: whoami.entry.address,
+      agent_address: whoami.entry.headerHash,
       unix_timestamp: moment().unix(),
       is_imported: false
     }
-    updateGoalVote(goal_vote, myVote.address)
+    updateGoalVote(goal_vote, myVote.headerHash)
   }
 
   const createVote = async () => {
     await createGoalVote({
       ...values,
       goal_address: goalAddress,
-      agent_address: whoami.entry.address,
+      agent_address: whoami.entry.headerHash,
       unix_timestamp: moment().unix(),
       is_imported: false
     })
@@ -291,11 +291,11 @@ function PriorityPickerVote({
   }
   const handleArchive = () => {
     const vote = votes.find(value => {
-      return value.agent_address === whoami.entry.address
+      return value.agent_address === whoami.entry.headerHash
     })
     if (!vote) return
     setOpenMyVote(false)
-    archiveGoalVote(vote.address)
+    archiveGoalVote(vote.headerHash)
     setValues(defaultValues)
   }
 
@@ -414,9 +414,9 @@ function mapDispatchToProps(dispatch, ownProps) {
     createGoalVote: payload => {
       return dispatch(createGoalVote.create({ cellIdString, payload }))
     },
-    updateGoalVote: (entry, address) => {
+    updateGoalVote: (entry, headerHash) => {
       return dispatch(
-        updateGoalVote.create({ cellIdString, payload: { entry, address } })
+        updateGoalVote.create({ cellIdString, payload: { entry, headerHash } })
       )
     },
     archiveGoalVote: payload => {

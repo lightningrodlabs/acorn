@@ -64,7 +64,9 @@ getAppWs(signalsHandlers(store)).then(async (client) => {
     const cellIdString = cellIdToString(cellId)
     store.dispatch(setProfilesCellId(cellIdString))
     // all functions of the Profiles DNA
-    store.dispatch(fetchAgents.create({ cellIdString, payload: null }))
+    store.dispatch(fetchAgents.create({ cellIdString, payload: null })).then(c => {
+      console.log(c)
+    })
     store.dispatch(whoami.create({ cellIdString, payload: null }))
     store.dispatch(fetchAgentAddress.create({ cellIdString, payload: null }))
     // which projects do we have installed?

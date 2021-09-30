@@ -420,7 +420,7 @@ async function importProject(
     passphrase: passphrase,
   }
   // this is not an actual field
-  delete projectMeta.address
+  delete projectMeta.headerHash
   await dispatch(setMember(projectsCellIdString, { address: agentAddress }))
   await dispatch(
     simpleCreateProjectMeta.create({

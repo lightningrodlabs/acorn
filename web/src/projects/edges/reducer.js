@@ -64,9 +64,9 @@ export default function (state = defaultState, action) {
           ...state,
           [cellId]: {
             ...state[cellId],
-            [payload.maybe_edge.address]: {
+            [payload.maybe_edge.headerHash]: {
               ...payload.maybe_edge.entry,
-              address: payload.maybe_edge.address,
+              headerHash: payload.maybe_edge.headerHash,
             },
           },
         }
@@ -76,7 +76,7 @@ export default function (state = defaultState, action) {
     // ARCHIVE GOAL
     case archiveGoalFully.success().type:
       cellId = action.meta.cellIdString
-      // filter out the Edges whose addresses are listed as having been
+      // filter out the Edges whose headerHashes are listed as having been
       // archived on account of having archived one of the Goals it links
       return {
         ...state,

@@ -24,8 +24,8 @@ function PriorityMode({ projectId, goalTrees, projectMeta, updateProjectMeta }) 
     default:
       main = null
   }
-  const wrappedUpdateProjectMeta = (entry, address) => {
-    return updateProjectMeta(entry, address, projectId)
+  const wrappedUpdateProjectMeta = (entry, headerHash) => {
+    return updateProjectMeta(entry, headerHash, projectId)
   }
   return (
     <>
@@ -60,9 +60,9 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    updateProjectMeta: (entry, address, cellIdString) => {
+    updateProjectMeta: (entry, headerHash, cellIdString) => {
       return dispatch(
-        updateProjectMeta.create({ cellIdString, payload: { entry, address } })
+        updateProjectMeta.create({ cellIdString, payload: { entry, headerHash } })
       )
     },
   }

@@ -99,7 +99,7 @@ function DashboardListProject({
               {project.members.map(
                 (member) =>
                   member && (
-                    <div key={member.address} className="dashboard-list-project-member-wrapper">
+                    <div key={member.headerHash} className="dashboard-list-project-member-wrapper">
                       <Avatar
                         first_name={member.first_name}
                         last_name={member.last_name}
@@ -170,8 +170,8 @@ function DashboardListProject({
               }
               return (
                 <NavLink
-                  key={`entry-point-${entryPoint.address}`}
-                  to={`/project/${project.cellId}/map?entryPoints=${entryPoint.address}`}
+                  key={`entry-point-${entryPoint.headerHash}`}
+                  to={`/project/${project.cellId}/map?entryPoints=${entryPoint.headerHash}`}
                   className="entry-point-item"
                 >
                   <div className="entry-point-color-dot" style={dotStyle} />

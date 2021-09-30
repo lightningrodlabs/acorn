@@ -13,9 +13,10 @@ export default function (state = defaultState, action) {
     // FETCH_MEMBERS
     case fetchMembers.success().type:
       cellIdString = action.meta.cellIdString
+      const mapped = payload.map((wireElement) => wireElement.entry)
       return {
         ...state,
-        [cellIdString]: _.keyBy(payload, 'address'),
+        [cellIdString]: _.keyBy(mapped, 'address'),
       }
     // SET_MEMBER
     case SET_MEMBER:
@@ -24,7 +25,7 @@ export default function (state = defaultState, action) {
         ...state,
         [cellIdString]: {
           ...state[cellIdString],
-          [payload.member.address]: payload.member,
+          [payload.member.headerHash]: payload.member,
         },
       }
     // DEFAULT

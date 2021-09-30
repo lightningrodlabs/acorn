@@ -38,7 +38,7 @@ function UniversalGoal({ liveIndex, goal, openExpandedView }) {
         <div className="universal-priority-goal-item-metadata">
           <div className="universal-priority-goal-item-members">
             {goal.members.map(member => {
-              return <div className="universal-priority-goal-item-member-avatar" key={member.address}>
+              return <div className="universal-priority-goal-item-member-avatar" key={member.headerHash}>
                 <Avatar
                   first_name={member.first_name}
                   last_name={member.last_name}
@@ -55,7 +55,7 @@ function UniversalGoal({ liveIndex, goal, openExpandedView }) {
         </div>
         <div
           className="universal-priority-goal-item-expand"
-          onClick={() => openExpandedView(goal.address)}
+          onClick={() => openExpandedView(goal.headerHash)}
         >
           <Icon name="expand.svg" size="small" className="grey" />
         </div>
@@ -95,7 +95,7 @@ function PriorityUniversalDraggableGoal({ goal, index, whileDraggingIndexes, ope
     liveIndex = index + 1
   }
   return (
-    <Draggable key={goal.address} draggableId={goal.address} index={index}>
+    <Draggable key={goal.headerHash} draggableId={goal.headerHash} index={index}>
       {(provided, snapshot) => {
         return (
           <div
@@ -132,7 +132,7 @@ function PriorityUniversalDroppable({ goals, whileDraggingIndexes, openExpandedV
         >
           {goals.map((goal, index) => (
             <PriorityUniversalDraggableGoal
-              key={goal.address}
+              key={goal.headerHash}
               goal={goal}
               index={index}
               whileDraggingIndexes={whileDraggingIndexes}
@@ -199,8 +199,8 @@ function PriorityUniversal({
       // assign new ordering
       top_priority_goals: reordered,
     }
-    const projectMetaAddress = toPass.address
-    delete toPass.address
+    const projectMetaAddress = toPass.headerHash
+    delete toPass.headerHash
     try {
       await updateProjectMeta(toPass, projectMetaAddress, projectId)
     } catch (e) {
@@ -279,7 +279,7 @@ function mapStateToProps(state) {
   const allGoalsArray = Object.values(goals).map(goal => {
     const extensions = {}
     extensions.members = Object.values(goalMembers)
-      .filter(goalMember => goalMember.goal_address === goal.address)
+      .filter(goalMember => goalMember.goal_address === goal.headerHash)
       .map(goalMember => agents[goalMember.agent_address])
       .filter(goalMember => goalMember) // filter out undefined results
     return {
@@ -287,7 +287,7 @@ function mapStateToProps(state) {
       ...extensions,
     }
   })
-  const allGoals = _.keyBy(allGoalsArray, 'address')
+  const allGoals = _.keyBy(allGoalsArray, 'headerHash')
 
   return {
     projectId,
@@ -298,14 +298,14 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    openExpandedView: (address) => dispatch(openExpandedView(address)),
-    updateProjectMeta: (projectMeta, address, cellIdString) => {
+    openExpandedView: (address) => dispatch(openExpandedView(headerHash)),
+    updateProjectMeta: (projectMeta, headerHash, cellIdString) => {
       return dispatch(
         updateProjectMeta.create({
           cellIdString,
           payload: {
             entry: projectMeta,
-            address,
+            headerHash,
           },
         })
       )

@@ -22,15 +22,15 @@ function PriorityPickerUniversal({
     const toPass = {
       ...projectMeta
     }
-    let projectMetaAddress = toPass.address
-    delete toPass.address
+    let projectMetaAddress = toPass.headerHash
+    delete toPass.headerHash
     if (e.target.checked) {
       setPendingState(true)
       toPass.top_priority_goals = toPass.top_priority_goals.concat([goalAddress])
       await updateProjectMeta(toPass, projectMetaAddress)
     } else {
       setPendingState(false)
-      toPass.top_priority_goals = toPass.top_priority_goals.filter(address => address !== goalAddress)
+      toPass.top_priority_goals = toPass.top_priority_goals.filter(headerHash => headerHash !== goalAddress)
       await updateProjectMeta(toPass, projectMetaAddress)
     }
     setPending(false)
@@ -51,7 +51,7 @@ function mapStateToProps(state, ownProps) {
   const topPriorityGoals = projectMeta.top_priority_goals || []
   // see if the goal of interest is listed in the set
   // of top priority goals for the project
-  const isTopPriorityGoal = !!topPriorityGoals.find(address => address === goalAddress)
+  const isTopPriorityGoal = !!topPriorityGoals.find(headerHash => headerHash === goalAddress)
   return {
     whoami: state.whoami,
     isTopPriorityGoal,
@@ -62,9 +62,9 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   return {
-    updateProjectMeta: (entry, address) => {
+    updateProjectMeta: (entry, headerHash) => {
       return dispatch(
-        updateProjectMeta.create({ cellIdString, payload: { entry, address } })
+        updateProjectMeta.create({ cellIdString, payload: { entry, headerHash } })
       )
     },
   }

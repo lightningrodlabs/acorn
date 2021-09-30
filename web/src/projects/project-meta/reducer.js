@@ -18,7 +18,7 @@ export default function (state = defaultState, action) {
         ...state,
         [action.meta.cellIdString]: {
           ...payload.entry,
-          address: payload.address,
+          headerHash: payload.headerHash,
         },
       }
     default:

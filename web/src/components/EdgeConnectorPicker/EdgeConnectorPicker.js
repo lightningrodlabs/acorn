@@ -51,7 +51,7 @@ function EdgeConnectorPicker({
     ? calculateValidChildren(
       parentAddress,
       edges,
-      selectedGoals.map(g => g.address)
+      selectedGoals.map(g => g.headerHash)
     )
     : []
 
@@ -90,16 +90,16 @@ function EdgeConnectorPicker({
               toggleSelectOption={toggleParent}
               toggleLabel={
                 parentAddress &&
-                  selectedGoals.find(s => s.address === parentAddress)
-                  ? selectedGoals.find(s => s.address === parentAddress).content
+                  selectedGoals.find(s => s.headerHash === parentAddress)
+                  ? selectedGoals.find(s => s.headerHash === parentAddress).content
                   : 'Pick one'
               }>
               {selectedGoals.map(selectedGoal => (
                 <Option
-                  key={selectedGoal.address}
-                  value={selectedGoal.address}
+                  key={selectedGoal.headerHash}
+                  value={selectedGoal.headerHash}
                   label={selectedGoal.content}
-                  selected={parentAddress === selectedGoal.address}
+                  selected={parentAddress === selectedGoal.headerHash}
                 />
               ))}
             </Select>
@@ -114,13 +114,13 @@ function EdgeConnectorPicker({
               toggleLabel={`${childrenAddresses.length} card${childrenAddresses.length === 1 ? '' : 's'
                 }`}>
               {selectedGoals
-                .filter(g => validChildrenAddresses.includes(g.address))
+                .filter(g => validChildrenAddresses.includes(g.headerHash))
                 .map(selectedGoal => (
                   <Option
-                    key={selectedGoal.address}
-                    value={selectedGoal.address}
+                    key={selectedGoal.headerHash}
+                    value={selectedGoal.headerHash}
                     label={selectedGoal.content}
-                    selected={childrenAddresses.includes(selectedGoal.address)}
+                    selected={childrenAddresses.includes(selectedGoal.headerHash)}
                   />
                 ))}
             </Select>
@@ -147,8 +147,8 @@ function EdgeConnectorPicker({
 }
 
 function mapStateToProps(state) {
-  const selectedGoals = state.ui.selection.selectedGoals.map(address => {
-    return state.projects.goals[state.ui.activeProject][address]
+  const selectedGoals = state.ui.selection.selectedGoals.map(headerHash => {
+    return state.projects.goals[state.ui.activeProject][headerHash]
   })
 
   const edges = Object.values(state.projects.edges[state.ui.activeProject])

@@ -76,9 +76,9 @@ function render(store, canvas) {
   if (goals && edges && goalMembers && entryPoints && projectMeta) {
     const topPriorityGoals = projectMeta.top_priority_goals
     // converts the goals object to an array
-    const goalsAsArray = Object.keys(goals).map(address => goals[address])
+    const goalsAsArray = Object.keys(goals).map(headerHash => goals[headerHash])
     // convert the edges object to an array
-    const edgesAsArray = Object.keys(edges).map(address => edges[address])
+    const edgesAsArray = Object.keys(edges).map(headerHash => edges[headerHash])
 
     const coordinates = state.ui.layout
 
@@ -123,9 +123,9 @@ function render(store, canvas) {
           parentGoalText,
           ctx
         )
-        const isHovered = state.ui.hover.hoveredEdge === edge.address
+        const isHovered = state.ui.hover.hoveredEdge === edge.headerHash
         const isSelected = state.ui.selection.selectedEdges.includes(
-          edge.address
+          edge.headerHash
         )
         drawEdge(edge1port, edge2port, ctx, isHovered, isSelected)
       }
@@ -137,14 +137,14 @@ function render(store, canvas) {
     // in order to create layers behind and in front of the editing highlight overlay
     const unselectedGoals = goalsAsArray.filter(goal => {
       return (
-        state.ui.selection.selectedGoals.indexOf(goal.address) === -1 &&
-        state.ui.goalForm.editAddress !== goal.address
+        state.ui.selection.selectedGoals.indexOf(goal.headerHash) === -1 &&
+        state.ui.goalForm.editAddress !== goal.headerHash
       )
     })
     const selectedGoals = goalsAsArray.filter(goal => {
       return (
-        state.ui.selection.selectedGoals.indexOf(goal.address) > -1 &&
-        state.ui.goalForm.editAddress !== goal.address
+        state.ui.selection.selectedGoals.indexOf(goal.headerHash) > -1 &&
+        state.ui.goalForm.editAddress !== goal.headerHash
       )
     })
 
@@ -155,19 +155,19 @@ function render(store, canvas) {
     unselectedGoals.forEach(goal => {
       // use the set of coordinates at the same index
       // in the coordinates array
-      const isHovered = state.ui.hover.hoveredGoal === goal.address
+      const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
       const isSelected = false
       const isEditing = false
       const membersOfGoal = Object.keys(goalMembers)
-        .map(address => goalMembers[address])
-        .filter(goalMember => goalMember.goal_address === goal.address)
+        .map(headerHash => goalMembers[headerHash])
+        .filter(goalMember => goalMember.goal_address === goal.headerHash)
         .map(goalMember => state.agents[goalMember.agent_address])
-      const isTopPriorityGoal = !!topPriorityGoals.find(address => address === goal.address)
+      const isTopPriorityGoal = !!topPriorityGoals.find(headerHash => headerHash === goal.headerHash)
       drawGoalCard({
         scale: scale,
         goal: goal,
         members: membersOfGoal,
-        coordinates: coordinates[goal.address],
+        coordinates: coordinates[goal.headerHash],
         isEditing: isEditing,
         editText: '',
         isSelected: isSelected,
@@ -221,19 +221,19 @@ function render(store, canvas) {
     selectedGoals.forEach(goal => {
       // use the set of coordinates at the same index
       // in the coordinates array
-      const isHovered = state.ui.hover.hoveredGoal === goal.address
+      const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
       const isSelected = true
       const isEditing = false
       const membersOfGoal = Object.keys(goalMembers)
-        .map(address => goalMembers[address])
-        .filter(goalMember => goalMember.goal_address === goal.address)
+        .map(headerHash => goalMembers[headerHash])
+        .filter(goalMember => goalMember.goal_address === goal.headerHash)
         .map(goalMember => state.agents[goalMember.agent_address])
-      const isTopPriorityGoal = !!topPriorityGoals.find(address => address === goal.address)
+      const isTopPriorityGoal = !!topPriorityGoals.find(headerHash => headerHash === goal.headerHash)
       drawGoalCard({
         scale: scale,
         goal: goal,
         members: membersOfGoal,
-        coordinates: coordinates[goal.address],
+        coordinates: coordinates[goal.headerHash],
         isEditing: isEditing,
         editText: '',
         isSelected: isSelected,
@@ -349,15 +349,15 @@ function render(store, canvas) {
       const isEditing = scale >= firstZoomThreshold
       const editText = state.ui.goalForm.content
       const membersOfGoal = Object.keys(goalMembers)
-        .map(address => goalMembers[address])
-        .filter(goalMember => goalMember.goal_address === editingGoal.address)
+        .map(headerHash => goalMembers[headerHash])
+        .filter(goalMember => goalMember.goal_address === editingGoal.headerHash)
         .map(goalMember => state.agents[goalMember.agent_address])
-      const isTopPriorityGoal = !!topPriorityGoals.find(address => address === state.ui.goalForm.editAddress)
+      const isTopPriorityGoal = !!topPriorityGoals.find(headerHash => headerHash === state.ui.goalForm.editAddress)
       drawGoalCard({
         scale: scale,
         goal: editingGoal,
         members: membersOfGoal,
-        coordinates: coordinates[editingGoal.address],
+        coordinates: coordinates[editingGoal.headerHash],
         isEditing: isEditing,
         editText: editText,
         isSelected: false,

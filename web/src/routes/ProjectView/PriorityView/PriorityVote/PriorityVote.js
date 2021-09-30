@@ -70,7 +70,7 @@ function getSubsetOfGoalsBasedOnContext(goalTrees, contextGoalAddress) {
   // use recursion to find the goal down in the tree
   function checkForGoalInChildren(goal) {
     const foundInChildren = goal.children.find(
-      g => g.address === contextGoalAddress
+      g => g.headerHash === contextGoalAddress
     )
     if (foundInChildren) {
       return foundInChildren
@@ -204,7 +204,7 @@ function Uncategorized({
   const goals = getSubsetOfGoalsBasedOnContext(goalTrees, contextGoalAddress)
   const goalList = goals.filter(goal => {
     // if there are no Votes, this Goal is "uncategorized"
-    return !goalVotes.find(gv => gv.goal_address === goal.address)
+    return !goalVotes.find(gv => gv.goal_address === goal.headerHash)
   })
   return (
     <div className='priority-wrapper-full-height'>
@@ -304,7 +304,7 @@ function getSortedAveragesGoalLists(
   // first calculate averages
   const goalsWithPriorityAverages = allGoals
     .map(goal => {
-      const votes = goalVotes.filter(gv => gv.goal_address === goal.address)
+      const votes = goalVotes.filter(gv => gv.goal_address === goal.headerHash)
       let averageValues = NO_VOTES
       let averageAverage
       if (votes.length > 0) {

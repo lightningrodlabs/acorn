@@ -150,7 +150,7 @@ export default (store) => (signal) => {
       // TODO: re-enable this when there's a straightforward way to have the CellId
       // for the Profiles Cell here, not the Projects CellId which it currently has access to. 
       // This was the source of a breaking bug
-      // if (!stateCheck.agents[payload.data.address]) {
+      // if (!stateCheck.agents[payload.data.headerHash]) {
       //   store.dispatch(
       //     fetchAgents.create({
       //       cellIdString: cellIdToString(cellId),
