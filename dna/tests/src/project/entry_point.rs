@@ -1,10 +1,9 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::{EntryPointFixturator, WrappedAgentPubKeyFixturator};
+    use crate::fixtures::fixtures::{EntryPointFixturator};
     use ::fixt::prelude::*;
     use hdk::prelude::*;
-    use hdk_crud::WrappedAgentPubKey;
-    use hdk_crud::WrappedHeaderHash;
+    use holo_hash::{AgentPubKeyB64, HeaderHashB64};
     use holochain_types::prelude::ValidateDataFixturator;
     use projects::project::entry_point::validate::*;
     use projects::project::error::Error;
@@ -45,7 +44,7 @@ pub mod tests {
         // now make it pass DeserializationFailed by adding an ElementEntry::Present
         let goal_signed_header_hashed = fixt!(SignedHeaderHashed);
         let goal_wrapped_header_hash =
-            WrappedHeaderHash::new(goal_signed_header_hashed.as_hash().clone());
+            HeaderHashB64::new(goal_signed_header_hashed.as_hash().clone());
         entry_point.goal_address = goal_wrapped_header_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(entry_point.clone().try_into().unwrap());
@@ -60,7 +59,7 @@ pub mod tests {
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                goal_wrapped_header_hash.clone().0,
+                goal_wrapped_header_hash.clone().into(),
             )))
             .times(1)
             .return_const(Ok(goal_signed_header_hashed.clone()));
@@ -69,7 +68,7 @@ pub mod tests {
 
         // with an entry with a random (not the agent committing)
         // creator_address it will fail
-        let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
+        let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
         entry_point.creator_address = random_wrapped_agent_pub_key.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(entry_point.clone().try_into().unwrap());
@@ -91,7 +90,7 @@ pub mod tests {
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                goal_wrapped_header_hash.clone().0,
+                goal_wrapped_header_hash.clone().into(),
             )))
             .times(1)
             .return_const(Ok(goal_signed_header_hashed));
@@ -101,7 +100,7 @@ pub mod tests {
         // make the creator_address valid by making it equal the
         // AgentPubKey of the agent committing,
         entry_point.creator_address =
-            WrappedAgentPubKey::new(create_header.author.as_hash().clone());
+            AgentPubKeyB64::new(create_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(entry_point.clone().try_into().unwrap());
 

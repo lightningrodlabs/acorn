@@ -1,12 +1,11 @@
 #[cfg(test)]
 pub mod tests {
     use crate::fixtures::fixtures::{
-        GoalVoteFixturator, WrappedAgentPubKeyFixturator,
-        WrappedHeaderHashFixturator,
+        GoalVoteFixturator
     };
     use ::fixt::prelude::*;
     use hdk::prelude::*;
-    use hdk_crud::WrappedAgentPubKey;
+    use holo_hash::AgentPubKeyB64;
     use holochain_types::prelude::ElementFixturator;
     use holochain_types::prelude::ValidateDataFixturator;
     use holochain_types::prelude::option_entry_hashed;
@@ -33,7 +32,7 @@ pub mod tests {
         // now, since validation is dependent on other entries, we begin
         // to have to mock `get` calls to the HDK
 
-        let goal_wrapped_header_hash = fixt!(WrappedHeaderHash);
+        let goal_wrapped_header_hash = fixt!(HeaderHashB64);
         goal_vote.goal_address = goal_wrapped_header_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(goal_vote.clone().try_into().unwrap());
@@ -50,7 +49,7 @@ pub mod tests {
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                goal_wrapped_header_hash.clone().0,
+                goal_wrapped_header_hash.clone().into(),
             )))
             .times(1)
             .return_const(Ok(goal_element_for_invalid.signed_header().clone()));
@@ -58,7 +57,7 @@ pub mod tests {
 
         // with an entry with a random
         // agent_address it will fail (not the agent committing)
-        let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
+        let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
         goal_vote.agent_address = random_wrapped_agent_pub_key.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(goal_vote.clone().try_into().unwrap());
@@ -85,7 +84,7 @@ pub mod tests {
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                goal_wrapped_header_hash.clone().0,
+                goal_wrapped_header_hash.clone().into(),
             )))
             .times(1)
             .return_const(Ok(goal_element_for_valid.signed_header().clone()));
@@ -93,7 +92,7 @@ pub mod tests {
 
         // make the agent_address valid by making it equal the
         // AgentPubKey of the agent committing,
-        goal_vote.agent_address = WrappedAgentPubKey::new(create_header.author.as_hash().clone());
+        goal_vote.agent_address = AgentPubKeyB64::new(create_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(goal_vote.clone().try_into().unwrap());
 
@@ -120,8 +119,8 @@ pub mod tests {
 
         // with an entry with a random
         // agent_address it will fail (not the agent committing)
-        let goal_wrapped_header_hash = fixt!(WrappedHeaderHash);
-        let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
+        let goal_wrapped_header_hash = fixt!(HeaderHashB64);
+        let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
         goal_vote.goal_address = goal_wrapped_header_hash.clone();
         goal_vote.agent_address = random_wrapped_agent_pub_key.clone();
         *validate_data.element.as_entry_mut() =
@@ -136,7 +135,7 @@ pub mod tests {
         // but it will still be missing the original GoalVote
         // dependency so it will
         // return UnresolvedDependencies
-        goal_vote.agent_address = WrappedAgentPubKey::new(update_header.author.as_hash().clone());
+        goal_vote.agent_address = AgentPubKeyB64::new(update_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(goal_vote.clone().try_into().unwrap());
 
@@ -204,7 +203,7 @@ pub mod tests {
         // make the author equal to the current `user_hash` value
         // on the Goal in validate_data
         good_original_goal_vote.agent_address =
-            WrappedAgentPubKey::new(update_header.author.as_hash().clone());
+            AgentPubKeyB64::new(update_header.author.as_hash().clone());
         *good_original_goal_vote_element.as_entry_mut() =
             ElementEntry::Present(good_original_goal_vote.clone().try_into().unwrap());
 

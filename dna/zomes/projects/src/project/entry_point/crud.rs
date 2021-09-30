@@ -1,10 +1,11 @@
 use crate::{
     get_peers_content,
-    project::goal::crud::{fetch_goals, VecGoalWireEntry},
+    project::goal::crud::{fetch_goals, Goal},
     SignalType,
 };
 use hdk::prelude::*;
-use hdk_crud::{crud, FetchOptions, WrappedAgentPubKey, WrappedEntryHash, WrappedHeaderHash};
+use hdk_crud::{crud, retrieval::FetchOptions, signals::ActionSignal, wire_element::WireElement};
+use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
 
 // The "Entry" in EntryPoint is not a reference to Holochain "Entries"
 // it is rather the concept of an Entrance, as in a doorway, to the tree
@@ -12,18 +13,18 @@ use hdk_crud::{crud, FetchOptions, WrappedAgentPubKey, WrappedEntryHash, Wrapped
 #[derive(Clone, PartialEq)]
 pub struct EntryPoint {
     pub color: String,
-    pub creator_address: WrappedAgentPubKey,
+    pub creator_address: AgentPubKeyB64,
     pub created_at: f64,
-    pub goal_address: WrappedHeaderHash,
+    pub goal_address: HeaderHashB64,
     pub is_imported: bool,
 }
 
 impl EntryPoint {
     pub fn new(
         color: String,
-        creator_address: WrappedAgentPubKey,
+        creator_address: AgentPubKeyB64,
         created_at: f64,
-        goal_address: WrappedHeaderHash,
+        goal_address: HeaderHashB64,
         is_imported: bool,
     ) -> Self {
         Self {
@@ -36,7 +37,7 @@ impl EntryPoint {
     }
 }
 
-fn convert_to_receiver_signal(signal: EntryPointSignal) -> SignalType {
+fn convert_to_receiver_signal(signal: ActionSignal<EntryPoint>) -> SignalType {
     SignalType::EntryPoint(signal)
 }
 
@@ -50,25 +51,27 @@ crud!(
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct EntryPointDetails {
-    pub entry_points: VecEntryPointWireEntry,
-    pub goals: VecGoalWireEntry,
+    pub entry_points: Vec<WireElement<EntryPoint>>,
+    pub goals: Vec<WireElement<Goal>>,
 }
 
 #[hdk_extern]
 pub fn fetch_entry_point_details(_: ()) -> ExternResult<EntryPointDetails> {
     // get the list of entry points
-    let entry_points = inner_fetch_entry_points(hdk_crud::FetchOptions::All, GetOptions::latest())?;
+    let entry_points = inner_fetch_entry_points(FetchOptions::All, GetOptions::latest())?;
 
     // convert from header addresses to entry addresses
     let goal_entry_addresses = entry_points
-        .0
         .clone()
         .iter()
         .map(|e| {
-            let element = get(e.entry.goal_address.0.clone(), GetOptions::content())?;
+            let element = get(
+                HeaderHash::from(e.entry.goal_address.clone()),
+                GetOptions::content(),
+            )?;
             match element {
                 Some(element) => match element.header().entry_hash() {
-                    Some(entry_hash) => Ok(WrappedEntryHash::new(entry_hash.clone())),
+                    Some(entry_hash) => Ok(EntryHashB64::new(entry_hash.clone())),
                     None => Err(WasmError::Guest(
                         "there was no entry_hash on a header for a Goal specified as an entry_point"
                             .to_string(),
@@ -79,7 +82,7 @@ pub fn fetch_entry_point_details(_: ()) -> ExternResult<EntryPointDetails> {
                     ))
             }
         })
-        .collect::<Vec<ExternResult<WrappedEntryHash>>>();
+        .collect::<Vec<ExternResult<EntryHashB64>>>();
 
     // check if there are any errors and return the first error if there are any
     let any_error = goal_entry_addresses
@@ -93,7 +96,7 @@ pub fn fetch_entry_point_details(_: ()) -> ExternResult<EntryPointDetails> {
             let actual_addresses = goal_entry_addresses
                 .into_iter()
                 .filter_map(Result::ok)
-                .collect::<Vec<WrappedEntryHash>>();
+                .collect::<Vec<EntryHashB64>>();
             // use the fetch_goals specific to get only these goals
             let goals = fetch_goals(FetchOptions::Specific(actual_addresses))?;
             Ok(EntryPointDetails {

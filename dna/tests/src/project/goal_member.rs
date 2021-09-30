@@ -1,12 +1,11 @@
 #[cfg(test)]
 pub mod tests {
     use crate::fixtures::fixtures::{
-        GoalMemberFixturator, WrappedAgentPubKeyFixturator,
-        WrappedHeaderHashFixturator,
+        GoalMemberFixturator
     };
     use ::fixt::prelude::*;
     use hdk::prelude::*;
-    use hdk_crud::WrappedAgentPubKey;
+    use holo_hash::AgentPubKeyB64;
     use holochain_types::prelude::ElementFixturator;
     use holochain_types::prelude::ValidateDataFixturator;
     use projects::project::error::Error;
@@ -33,7 +32,7 @@ pub mod tests {
         // to have to mock `get` calls to the HDK
 
         // make it pass EntryMissing by adding the Element
-        let goal_wrapped_header_hash = fixt!(WrappedHeaderHash);
+        let goal_wrapped_header_hash = fixt!(HeaderHashB64);
         goal_member.goal_address = goal_wrapped_header_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(goal_member.clone().try_into().unwrap());
@@ -49,7 +48,7 @@ pub mod tests {
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-              goal_wrapped_header_hash.clone().0,
+              goal_wrapped_header_hash.clone().into(),
             )))
             .times(1)
             .return_const(Ok(goal_element_for_invalid
@@ -59,7 +58,7 @@ pub mod tests {
 
         // with an entry with a random
         // user_edit_hash it will fail (not the agent committing)
-        let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
+        let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
         goal_member.user_edit_hash = random_wrapped_agent_pub_key.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(goal_member.clone().try_into().unwrap());
@@ -86,7 +85,7 @@ pub mod tests {
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-              goal_wrapped_header_hash.clone().0,
+              goal_wrapped_header_hash.clone().into(),
             )))
             .times(1)
             .return_const(Ok(goal_element_for_valid
@@ -99,7 +98,7 @@ pub mod tests {
         // but it will still be missing the goal dependency so it will
         // return UnresolvedDependencies
         goal_member.user_edit_hash =
-            WrappedAgentPubKey::new(create_header.author.as_hash().clone());
+            AgentPubKeyB64::new(create_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(goal_member.clone().try_into().unwrap());
 

@@ -1,5 +1,6 @@
-use hdk_crud::{ActionType, EntryAndHash, WrappedAgentPubKey};
 use hdk::prelude::*;
+use hdk_crud::{retrieval::EntryAndHash, signals::ActionType};
+use holo_hash::AgentPubKeyB64;
 
 pub const MEMBER_PATH: &str = "member";
 
@@ -7,17 +8,13 @@ pub const MEMBER_PATH: &str = "member";
 #[hdk_entry(id = "member")]
 #[derive(Clone, PartialEq)]
 pub struct Member {
-    pub address: WrappedAgentPubKey,
+    pub address: AgentPubKeyB64,
 }
 
 impl Member {
-  pub fn new(
-    address: WrappedAgentPubKey,
-  ) -> Self {
-    Self {
-      address,
+    pub fn new(address: AgentPubKeyB64) -> Self {
+        Self { address }
     }
-  }
 }
 
 impl From<EntryAndHash<Member>> for Member {
@@ -25,9 +22,6 @@ impl From<EntryAndHash<Member>> for Member {
         entry_and_hash.0
     }
 }
-
-#[derive(Debug, Serialize, Deserialize, SerializedBytes)]
-pub struct VecMember(pub Vec<Member>);
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 pub struct MemberSignal {
@@ -54,7 +48,7 @@ pub fn join_project_during_init() -> ExternResult<()> {
     // so that all peers can become aware of the new presence
     let member_path_address = Path::from(MEMBER_PATH).hash()?;
     let member = Member {
-        address: WrappedAgentPubKey(agent_info()?.agent_initial_pubkey),
+        address: AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey),
     };
     create_entry(&member)?;
     let member_entry_hash = hash_entry(&member)?;

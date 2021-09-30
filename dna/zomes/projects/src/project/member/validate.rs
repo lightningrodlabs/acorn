@@ -13,7 +13,7 @@ pub fn validate_create_entry_member(
     match Member::try_from(&validate_data.element) {
       Ok(proposed_entry) => {
         // `address` must match header author
-        validate_value_matches_create_author(&proposed_entry.address.0, &validate_data)
+        validate_value_matches_create_author(&proposed_entry.address.into(), &validate_data)
       }
       Err(_e) => Error::DeserializationFailed.into(),
     },

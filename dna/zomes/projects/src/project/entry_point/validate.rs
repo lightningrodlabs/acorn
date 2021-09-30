@@ -15,14 +15,14 @@ pub fn validate_create_entry_entry_point(
         match EntryPoint::try_from(&validate_data.element) {
             Ok(proposed_entry) => {
                 // header for parent Goal at goal_address must be determined to exist
-                must_get_header(proposed_entry.goal_address.0)?;
+                must_get_header(proposed_entry.goal_address.into())?;
                 // an imported entry can have another listed as author
                 if proposed_entry.is_imported {
                     ValidateCallbackResult::Valid
                 } else {
                     // creator_address must match header author
                     validate_value_matches_create_author(
-                        &proposed_entry.creator_address.0,
+                        &proposed_entry.creator_address.into(),
                         &validate_data,
                     )
                 }

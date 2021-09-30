@@ -1,9 +1,9 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::{EdgeFixturator, WrappedHeaderHashFixturator};
+    use crate::fixtures::fixtures::{EdgeFixturator};
     use ::fixt::prelude::*;
     use hdk::prelude::*;
-    use hdk_crud::WrappedHeaderHash;
+    use holo_hash::HeaderHashB64;
     use holochain_types::prelude::ValidateDataFixturator;
     use projects::project::edge::validate::*;
     use projects::project::error::Error;
@@ -40,7 +40,7 @@ pub mod tests {
 
         // with an entry with identical hash for parent_address and
         // child_address validation will fail
-        let goal_wrapped_header_hash = fixt!(WrappedHeaderHash);
+        let goal_wrapped_header_hash = fixt!(HeaderHashB64);
         edge.parent_address = goal_wrapped_header_hash.clone();
         edge.child_address = goal_wrapped_header_hash.clone();
         *validate_data.element.as_entry_mut() =
@@ -62,10 +62,10 @@ pub mod tests {
 
         let parent_signed_header_hashed = fixt!(SignedHeaderHashed);
         let goal_parent_wrapped_header_hash =
-            WrappedHeaderHash::new(parent_signed_header_hashed.as_hash().clone());
+            HeaderHashB64::new(parent_signed_header_hashed.as_hash().clone());
         let child_signed_header_hashed = fixt!(SignedHeaderHashed);
         let goal_child_wrapped_header_hash =
-            WrappedHeaderHash::new(child_signed_header_hashed.as_hash().clone());
+            HeaderHashB64::new(child_signed_header_hashed.as_hash().clone());
         // we assign different parent and child to pass that level of validation
         edge.parent_address = goal_parent_wrapped_header_hash.clone();
         edge.child_address = goal_child_wrapped_header_hash.clone();
@@ -77,7 +77,7 @@ pub mod tests {
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                goal_parent_wrapped_header_hash.clone().0,
+                goal_parent_wrapped_header_hash.clone().into(),
             )))
             .times(1)
             .return_const(Ok(parent_signed_header_hashed));
@@ -86,7 +86,7 @@ pub mod tests {
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                goal_child_wrapped_header_hash.clone().0,
+                goal_child_wrapped_header_hash.clone().into(),
             )))
             .times(1)
             .return_const(Ok(child_signed_header_hashed));
