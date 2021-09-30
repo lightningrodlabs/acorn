@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import * as path from 'path'
 // import log from 'electron-log'
-import setup, {
+import initAgent, {
   StateSignal,
   STATUS_EVENT,
 } from 'electron-holochain'
@@ -113,7 +113,7 @@ const createSplashWindow = (): BrowserWindow => {
 app.on('ready', async () => {
   const splashWindow = createSplashWindow()
   const opts = app.isPackaged ? prodOptions : devOptions
-  const statusEmitter = await setup(app, opts, BINARY_PATHS)
+  const statusEmitter = await initAgent(app, opts, BINARY_PATHS)
   statusEmitter.on(STATUS_EVENT, (state: StateSignal) => {
     switch (state) {
       case StateSignal.IsReady:
