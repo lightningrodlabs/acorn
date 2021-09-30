@@ -234,8 +234,11 @@ function mapStateToProps(state) {
   const editingGoal = editAddress
     ? state.projects.goals[activeProject][editAddress]
     : null
-  const user_hash = editAddress ? editingGoal.user_hash : state.whoami.entry.headerHash
-  const user_edit_hash = editAddress ? state.whoami.entry.headerHash : null
+  // this value of state.whoami.entry.address
+  // should not be changed to headerHash unless the entry type of Profile
+  // is changed
+  const user_hash = editAddress ? editingGoal.user_hash : state.whoami.entry.address
+  const user_edit_hash = editAddress ? state.whoami.entry.address : null
   const status = editAddress ? editingGoal.status : 'Uncertain'
   const description = editAddress ? editingGoal.description : ''
   const hierarchy = editAddress ? editingGoal.hierarchy : 'NoHierarchy'

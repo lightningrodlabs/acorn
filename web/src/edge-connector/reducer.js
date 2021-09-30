@@ -22,7 +22,7 @@ export default function reducer(state = defaultState, action) {
     case SET_EDGE_CONNECTOR_FROM:
       return {
         ...state,
-        fromAddress: payload.headerHash,
+        fromAddress: payload.address,
         relation: payload.relation,
         validToAddresses: payload.validToAddresses,
         // ASSUMPTION: one parent

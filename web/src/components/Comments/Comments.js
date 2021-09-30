@@ -150,7 +150,7 @@ function mapStateToProps(state) {
   const goalAddress = state.ui.expandedView.goalAddress
   return {
     goalAddress,
-    avatarAddress: state.whoami.entry.headerHash,
+    avatarAddress: state.whoami.entry.address,
     agents: state.agents,
   }
 }
