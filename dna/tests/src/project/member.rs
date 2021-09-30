@@ -3,7 +3,7 @@ pub mod tests {
     use crate::fixtures::fixtures::MemberFixturator;
     use ::fixt::prelude::*;
     use hdk::prelude::*;
-    use hdk_crud::WrappedAgentPubKey;
+    use holo_hash::AgentPubKeyB64;
     use holochain_types::prelude::ValidateDataFixturator;
     use projects::project::error::Error;
     use projects::project::member::validate::*;
@@ -32,7 +32,7 @@ pub mod tests {
 
         // make the `address` field valid by making it equal the
         // AgentPubKey of the agent committing
-        member.address = WrappedAgentPubKey::new(create_header.author.as_hash().clone());
+        member.address = AgentPubKeyB64::new(create_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(member.clone().try_into().unwrap());
 

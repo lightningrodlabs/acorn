@@ -1,9 +1,9 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::{GoalFixturator, WrappedAgentPubKeyFixturator};
+    use crate::fixtures::fixtures::{GoalFixturator};
     use ::fixt::prelude::*;
     use hdk::prelude::*;
-    use hdk_crud::WrappedAgentPubKey;
+    use holo_hash::AgentPubKeyB64;
     use holochain_types::prelude::option_entry_hashed;
     use holochain_types::prelude::ElementFixturator;
     use holochain_types::prelude::ValidateDataFixturator;
@@ -29,7 +29,7 @@ pub mod tests {
 
         // with an entry with a random (not the agent committing)
         // user_hash it will fail
-        let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
+        let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
         goal.user_hash = random_wrapped_agent_pub_key.clone();
         goal.user_edit_hash = None;
         *validate_data.element.as_entry_mut() =
@@ -45,8 +45,8 @@ pub mod tests {
 
         // make the user_hash valid by making it equal the
         // AgentPubKey of the agent committing
-        goal.user_hash = WrappedAgentPubKey::new(create_header.author.as_hash().clone());
-        let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
+        goal.user_hash = AgentPubKeyB64::new(create_header.author.as_hash().clone());
+        let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
         // make the user_edit_hash value bad by filling it with anything
         // even the author's key during create action
         goal.user_edit_hash = Some(random_wrapped_agent_pub_key.clone());
@@ -93,7 +93,7 @@ pub mod tests {
 
         // with an entry with a
         // user_edit_hash None it will fail
-        let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
+        let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
         goal.user_hash = random_wrapped_agent_pub_key.clone();
         goal.user_edit_hash = None;
         *validate_data.element.as_entry_mut() =
@@ -105,7 +105,7 @@ pub mod tests {
 
         // with a random user_edit_hash (not the author agent)
         // it will fail
-        let random_wrapped_agent_pub_key = fixt!(WrappedAgentPubKey);
+        let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
         // make the user_edit_hash value bad by filling it with a random author
         goal.user_edit_hash = Some(random_wrapped_agent_pub_key.clone());
         // update the goal value in the validate_data
@@ -119,7 +119,7 @@ pub mod tests {
         // with a valid user_edit_hash, we move on to the issue
         // of the `user_hash`. Is it equal to the original author?
         // to know this, we need to resolve that dependency
-        goal.user_edit_hash = Some(WrappedAgentPubKey::new(
+        goal.user_edit_hash = Some(AgentPubKeyB64::new(
             update_header.author.as_hash().clone(),
         ));
         // update the goal value in the validate_data

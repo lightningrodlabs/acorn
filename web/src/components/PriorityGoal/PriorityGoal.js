@@ -25,7 +25,7 @@ function PriorityGoal({ whoami, goal, votes, setPriorityPickerAddress }) {
   const myVote =
     whoami &&
     votes.find((value) => {
-      return value.agent_address === whoami.entry.address
+      return value.agent_address === whoami.entry.headerHash
     })
 
   return (
@@ -79,7 +79,7 @@ function PriorityGoal({ whoami, goal, votes, setPriorityPickerAddress }) {
               size="small"
               color="purple"
               text={myVote ? 'See My Vote' : 'Weigh In'}
-              onClick={() => setPriorityPickerAddress(goal.address)}
+              onClick={() => setPriorityPickerAddress(goal.headerHash)}
             />
           </div>
 
@@ -111,7 +111,7 @@ function mapStateToProps(state, ownProps) {
   const goalVotes = state.projects.goalVotes[projectId] || {}
   const allVotesArray = Object.values(goalVotes)
   const votes = allVotesArray.filter(function (goalVote) {
-    return goalVote.goal_address === goal.address
+    return goalVote.goal_address === goal.headerHash
   })
   return {
     // name of the key 'whoami' MUST match the prop name

@@ -12,7 +12,7 @@ import {
 function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses }) {
   const location = useLocation()
   const entryPointsAbsentThisOne = activeEntryPointAddresses
-    .filter((address) => address !== entryPoint.address)
+    .filter((headerHash) => headerHash !== entryPoint.headerHash)
     .join(',')
   return (
     <div className="active-entry-point">
@@ -42,7 +42,7 @@ function HeaderLeftPanel({
   activeEntryPoints,
 }) {
   const activeEntryPointAddresses = activeEntryPoints.map(
-    (entryPoint) => entryPoint.address
+    (entryPoint) => entryPoint.headerHash
   )
   return (
     <div className="header-left-panel">
@@ -117,7 +117,7 @@ function HeaderLeftPanel({
           {/* Current Entry Points Tab */}
           {activeEntryPoints.map((entryPoint) => (
             <ActiveEntryPoint
-              key={entryPoint.address}
+              key={entryPoint.headerHash}
               entryPoint={entryPoint}
               activeEntryPointAddresses={activeEntryPointAddresses}
             />

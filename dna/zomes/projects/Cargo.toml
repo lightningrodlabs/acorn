@@ -5,11 +5,12 @@ edition = "2018"
 
 [lib]
 name = "projects"
-crate-type = [ "cdylib", "rlib" ]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-hdk_crud = "0.2.0"
-hdk = "0.0.103"
+hdk_crud = "0.4.0"
+holo_hash = { version = "0.0.7", features = ["encoding"] }
+hdk = "0.0.108"
 paste = "*"
 # use whatever serde hdk uses
 serde = "*"

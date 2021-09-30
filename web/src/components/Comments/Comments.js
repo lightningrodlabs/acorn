@@ -117,7 +117,7 @@ function Comments({
             .sort((a, b) => (a.unix_timestamp < b.unix_timestamp ? -1 : 1))
             .map((comment) => (
               <Comment
-                key={comment.address}
+                key={comment.headerHash}
                 comment={comment}
                 agent={agents[comment.agent_address]}
               />
@@ -164,9 +164,9 @@ function mapDispatchToProps(dispatch, ownProps) {
     archiveGoalComment: (payload) => {
       return dispatch(archiveGoalComment.create({ cellIdString, payload }))
     },
-    updateGoalComment: (entry, address) => {
+    updateGoalComment: (entry, headerHash) => {
       return dispatch(
-        updateGoalComment.create({ cellIdString, payload: { entry, address } })
+        updateGoalComment.create({ cellIdString, payload: { entry, headerHash } })
       )
     },
   }

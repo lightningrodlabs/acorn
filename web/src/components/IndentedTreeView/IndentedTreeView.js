@@ -23,18 +23,18 @@ function NestedTreeGoal({ goal, level, filterText, projectMeta, updateProjectMet
     (goal.content && goal.content.toLowerCase().includes(filterText))
 
   const searchParams = new URLSearchParams(location.search)
-  const isUsingGoalAsContext = searchParams.get('contextGoal') === goal.address
+  const isUsingGoalAsContext = searchParams.get('contextGoal') === goal.headerHash
   const showMakeTopPriorityGoal =
     projectMeta &&
     projectMeta.priority_mode === PriorityModeOptions.Universal &&
-    !projectMeta.top_priority_goals.find((address) => address === goal.address)
+    !projectMeta.top_priority_goals.find((headerHash) => headerHash === goal.headerHash)
   const makeTopPriority = () => {
     const toPass = {
       ...projectMeta,
-      top_priority_goals: projectMeta.top_priority_goals.concat([goal.address])
+      top_priority_goals: projectMeta.top_priority_goals.concat([goal.headerHash])
     }
-    delete toPass.address
-    updateProjectMeta(toPass, projectMeta.address)
+    delete toPass.headerHash
+    updateProjectMeta(toPass, projectMeta.headerHash)
   }
 
   return (
@@ -54,7 +54,7 @@ function NestedTreeGoal({ goal, level, filterText, projectMeta, updateProjectMet
           </div>
 
           <NavLink
-            to={`${location.pathname}?contextGoal=${goal.address}`}
+            to={`${location.pathname}?contextGoal=${goal.headerHash}`}
             className="indented-view-goal-content"
             isActive={(match) => match && isUsingGoalAsContext}
           >

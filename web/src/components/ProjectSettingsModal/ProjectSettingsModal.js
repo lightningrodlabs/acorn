@@ -163,7 +163,7 @@ function ProjectSettingsModal({
         is_imported: project.is_imported,
         top_priority_goals: project.top_priority_goals,
       },
-      project.address,
+      project.headerHash,
       cellIdString,
     )
     setUpdatingProject(false)
@@ -208,10 +208,10 @@ function mapStateToProps(_state) {
 function mapDispatchToProps(dispatch) {
   // props for the component
   return {
-    updateProjectMeta: (entry, address, cellIdString) => {
+    updateProjectMeta: (entry, headerHash, cellIdString) => {
       return dispatch(
         updateProjectMeta.create({
-          payload: { entry, address },
+          payload: { entry, headerHash },
           cellIdString: cellIdString,
         })
       )

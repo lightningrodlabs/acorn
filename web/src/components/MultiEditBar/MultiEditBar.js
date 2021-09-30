@@ -61,13 +61,13 @@ function MultiEditBar({
           timestamp_updated: moment().unix(),
           [key]: val,
         },
-        goal.address
+        goal.headerHash
       )
     })
   }
 
   const archiveGoals = () => {
-    selectedGoals.forEach(goal => archiveGoalFully(goal.address))
+    selectedGoals.forEach(goal => archiveGoalFully(goal.headerHash))
   }
 
   const multiEditBarSquirrelsClass = viewsOpen.squirrels ? 'active' : ''
@@ -120,7 +120,7 @@ function MultiEditBar({
       You're about to archive the following {selectedGoals.length} card(s):
       <div className='modal-goals-list'>
         {selectedGoals.map(goal => (
-          <div key={goal.address}>- {goal.content}</div>
+          <div key={goal.headerHash}>- {goal.content}</div>
         ))}
       </div>
       You will be able to see these cards in the archive view mode in the
@@ -306,7 +306,7 @@ function mapStateToProps(state) {
   return {
     agentAddress: state.agentAddress,
     selectedGoals: state.ui.selection.selectedGoals.map(
-      address => goals[address]
+      headerHash => goals[headerHash]
     ),
   }
 }
@@ -314,9 +314,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   return {
-    updateGoal: (entry, address) => {
+    updateGoal: (entry, headerHash) => {
       return dispatch(
-        updateGoal.create({ cellIdString, payload: { address, entry } })
+        updateGoal.create({ cellIdString, payload: { headerHash, entry } })
       )
     },
     archiveGoalFully: payload => {

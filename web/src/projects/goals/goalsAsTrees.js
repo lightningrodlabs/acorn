@@ -11,17 +11,17 @@ export default function goalsAsTrees(
       let extensions = {}
       if (withMembers) {
         extensions.members = Object.values(goalMembers)
-          .filter(gm => gm.goal_address === goal.address)
+          .filter(gm => gm.goal_address === goal.headerHash)
           .map(gm => agents[gm.agent_address])
       }
       if (withComments) {
         extensions.comments = Object.values(goalComments).filter(
-          gc => gc.goal_address === goal.address
+          gc => gc.goal_address === goal.headerHash
         )
       }
       if (withVotes) {
         extensions.votes = Object.values(goalVotes).filter(
-          gv => gv.goal_address === goal.address
+          gv => gv.goal_address === goal.headerHash
         )
       }
       return {
@@ -29,12 +29,12 @@ export default function goalsAsTrees(
         ...extensions,
       }
     })
-    allGoals = _.keyBy(allGoalsArray, 'address')
+    allGoals = _.keyBy(allGoalsArray, 'headerHash')
   }
 
   // CONSTRUCT TREES FOR THE INDENTED NAV TREE VIEW
   const edgesAsArray = Object.values(edges)
-  const allGoalAddresses = Object.values(goals).map(goal => goal.address)
+  const allGoalAddresses = Object.values(goals).map(goal => goal.headerHash)
   // find the Goal objects without parent Goals
   // since they will sit at the top level
   const noParentsAddresses = allGoalAddresses.filter(goalAddress => {
