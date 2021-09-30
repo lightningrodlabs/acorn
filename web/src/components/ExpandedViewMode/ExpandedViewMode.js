@@ -211,7 +211,7 @@ function mapStateToProps(state, ownProps) {
         return squirrel
       })
     Object.keys(state.agents).forEach(value => {
-      if (state.agents[value].headerHash === goal.user_hash)
+      if (state.agents[value].address === goal.user_hash)
         creator = state.agents[value]
     })
   }

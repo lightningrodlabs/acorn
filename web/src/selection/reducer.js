@@ -31,12 +31,12 @@ export default function (state = defaultState, action) {
   switch (type) {
     case archiveGoalFully.success().type:
       // unselect if the archived Goal was selected
-      return state.selectedGoals.includes(payload.headerHash)
+      return state.selectedGoals.includes(payload.address)
         ? {
             ...state,
             selectedGoals: arrayWithoutElement(
               state.selectedGoals,
-              payload.headerHash
+              payload.address
             ),
           }
         : { ...state }

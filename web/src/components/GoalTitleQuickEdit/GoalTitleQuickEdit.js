@@ -146,7 +146,7 @@ function GoalTitleQuickEdit({
     await updateGoal(
       {
         // new
-        user_edit_hash: whoami.entry.headerHash,
+        user_edit_hash: whoami.entry.address,
         description: description,
         timestamp_updated: moment().unix(),
         // carryover

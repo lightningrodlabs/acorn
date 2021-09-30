@@ -71,7 +71,7 @@ function PeoplePicker({
             const onClick = () => {
               if (person.is_member)
                 archiveGoalMember(person.goal_member_address)
-              else createGoalMember(goalAddress, person.headerHash, agentAddress)
+              else createGoalMember(goalAddress, person.address, agentAddress)
             }
             return (
               <li
@@ -141,22 +141,22 @@ function mapStateToProps(state, ownProps) {
   const goalMembers = state.projects.goalMembers[projectId] || {}
   const members = state.projects.members[projectId] || {}
   const membersOfGoal = Object.keys(goalMembers)
-    .map((headerHash) => goalMembers[headerHash])
+    .map((address) => goalMembers[address])
     .filter((goalMember) => goalMember.goal_address === goalAddress)
   // just in case we've received a 'member' before the agents profile
   // filter out any missing profiles for now
-  const agents = Object.keys(members).map((headerHash) => state.agents[headerHash]).filter((agent) => agent)
+  const agents = Object.keys(members).map((address) => state.agents[address]).filter((agent) => agent)
   return {
     agentAddress: state.agentAddress,
     people: agents.map((agent) => {
       const member = membersOfGoal.find(
-        (goalMember) => goalMember.agent_address === agent.headerHash
+        (goalMember) => goalMember.agent_address === agent.address
       )
 
       return {
-        ...agent, // headerHash, name, avatar_url
+        ...agent, // address, name, avatar_url
         is_member: member ? true : false,
-        goal_member_address: member ? member.headerHash : null,
+        goal_member_address: member ? member.address : null,
       }
     }),
     goalAddress,

@@ -66,7 +66,7 @@ export default function (state = defaultState, action) {
         ...state,
         [cellIdString]: _.pickBy(
           state[cellIdString],
-          (_value, key) => key !== payload.headerHash
+          (_value, key) => key !== payload.address
         ),
       }
     default:

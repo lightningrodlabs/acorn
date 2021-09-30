@@ -15,7 +15,7 @@ export default function (state = defaultState, action) {
   switch (type) {
     case archiveGoalFully.success().type:
       // unhover if the archived Goal was hovered over
-      return state.hoveredGoal === payload.headerHash
+      return state.hoveredGoal === payload.address
         ? {
             ...state,
             hoveredGoal: null,
