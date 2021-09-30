@@ -19,11 +19,11 @@ function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints }) {
   const location = useLocation()
 
   const pathWithEntryPoint = `${location.pathname
-    }?entryPoints=${activeEntryPoints.concat([entryPoint.address]).join(',')}`
+    }?entryPoints=${activeEntryPoints.concat([entryPoint.headerHash]).join(',')}`
 
   const pathWithoutEntryPoint = `${location.pathname
     }?entryPoints=${activeEntryPoints
-      .filter(address => address !== entryPoint.address)
+      .filter(headerHash => headerHash !== entryPoint.headerHash)
       .join(',')}`
 
   return (
@@ -35,7 +35,7 @@ function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints }) {
         <div className='entry-point-picker-dot' style={dotStyle}></div>
         <div className='entry-point-picker-name'>{entryPoint.content}</div>
         <NavLink
-          to={`${location.pathname}?entryPoints=${entryPoint.address}`}
+          to={`${location.pathname}?entryPoints=${entryPoint.headerHash}`}
           className='entry-point-picker-switch'>
           <Icon name='enter.svg' size='small' className='grey' />
         </NavLink>
@@ -102,10 +102,10 @@ function EntryPointPicker({ entryPoints, isOpen, onClose, activeEntryPoints }) {
         <ul className='entry-point-picker-list'>
           {filteredEntryPoints.map(entryPoint => (
             <EntryPointPickerItem
-              key={entryPoint.address}
+              key={entryPoint.headerHash}
               entryPoint={entryPoint}
               isActive={activeEntryPoints.some(
-                address => address === entryPoint.address
+                headerHash => headerHash === entryPoint.headerHash
               )}
               activeEntryPoints={activeEntryPoints}
             />

@@ -10,7 +10,7 @@ const defaultState = {
   relation: null,
   validToAddresses: [],
   toAddress: null,
-  // existingParentEdgeAddress is the address of the edge that
+  // existingParentEdgeAddress is the headerHash of the edge that
   // we would delete in order to create a new one
   // ASSUMPTION: one parent
   existingParentEdgeAddress: null
@@ -22,7 +22,7 @@ export default function reducer(state = defaultState, action) {
     case SET_EDGE_CONNECTOR_FROM:
       return {
         ...state,
-        fromAddress: payload.address,
+        fromAddress: payload.headerHash,
         relation: payload.relation,
         validToAddresses: payload.validToAddresses,
         // ASSUMPTION: one parent

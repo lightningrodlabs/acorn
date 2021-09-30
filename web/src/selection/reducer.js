@@ -31,23 +31,23 @@ export default function (state = defaultState, action) {
   switch (type) {
     case archiveGoalFully.success().type:
       // unselect if the archived Goal was selected
-      return state.selectedGoals.includes(payload.address)
+      return state.selectedGoals.includes(payload.headerHash)
         ? {
             ...state,
             selectedGoals: arrayWithoutElement(
               state.selectedGoals,
-              payload.address
+              payload.headerHash
             ),
           }
         : { ...state }
     case archiveEdge.success().type:
       // unselect if the archived Goal was selected
-      return state.selectedEdges.includes(payload.address)
+      return state.selectedEdges.includes(payload.headerHash)
         ? {
             ...state,
             selectedEdges: arrayWithoutElement(
               state.selectedEdges,
-              payload.address
+              payload.headerHash
             ),
           }
         : { ...state }
@@ -63,7 +63,7 @@ export default function (state = defaultState, action) {
       return {
         ...state,
         selectedEdges: state.selectedEdges.filter(
-          address => address !== payload
+          headerHash => headerHash !== payload
         ),
       }
     case SELECT_GOAL:
@@ -78,7 +78,7 @@ export default function (state = defaultState, action) {
       return {
         ...state,
         selectedGoals: state.selectedGoals.filter(
-          address => address !== payload
+          headerHash => headerHash !== payload
         ),
       }
     case UNSELECT_ALL:

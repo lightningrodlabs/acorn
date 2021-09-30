@@ -228,7 +228,7 @@ function VerticalActionsList({
 }
 
 function mapStateToProps(state, ownProps) {
-  // goal address
+  // goal headerHash
   const goalAddress = state.ui.goalForm.editAddress
   // project ID
   const { projectId } = ownProps
@@ -268,9 +268,9 @@ function mapDispatchToProps(dispatch, ownProps) {
     onArchiveClick: (payload) => {
       return dispatch(archiveGoalFully.create({ cellIdString, payload }))
     },
-    updateGoal: (entry, address) => {
+    updateGoal: (entry, headerHash) => {
       return dispatch(
-        updateGoal.create({ cellIdString, payload: { address, entry } })
+        updateGoal.create({ cellIdString, payload: { headerHash, entry } })
       )
     },
   }

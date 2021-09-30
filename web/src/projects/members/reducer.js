@@ -15,7 +15,7 @@ export default function (state = defaultState, action) {
       cellIdString = action.meta.cellIdString
       return {
         ...state,
-        [cellIdString]: _.keyBy(payload, 'address'),
+        [cellIdString]: _.keyBy(payload, 'headerHash'),
       }
     // SET_MEMBER
     case SET_MEMBER:
@@ -24,7 +24,7 @@ export default function (state = defaultState, action) {
         ...state,
         [cellIdString]: {
           ...state[cellIdString],
-          [payload.member.address]: payload.member,
+          [payload.member.headerHash]: payload.member,
         },
       }
     // DEFAULT

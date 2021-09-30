@@ -50,13 +50,13 @@ export default async function importAllProjectData(
       ...oldGoal,
       is_imported: true
     }
-    delete clone.address
+    delete clone.headerHash
     const newGoal = await dispatch(
       createGoal.create({ cellIdString: projectsCellIdString, payload: clone })
     )
     // add this new goal address to the goalAddressMap
     // to keep of which new addresses map to which old addresses
-    goalAddressMap[oldGoal.address] = newGoal.address
+    goalAddressMap[oldGoal.headerHash] = newGoal.headerHash
   }
 
   // EDGES
@@ -68,7 +68,7 @@ export default async function importAllProjectData(
       child_address: goalAddressMap[old.child_address],
       is_imported: true
     }
-    delete clone.address // an assigned field
+    delete clone.headerHash // an assigned field
     await dispatch(
       createEdge.create({
         cellIdString: projectsCellIdString,
@@ -85,7 +85,7 @@ export default async function importAllProjectData(
       goal_address: goalAddressMap[old.goal_address],
       is_imported: true
     }
-    delete clone.address // an assigned field
+    delete clone.headerHash // an assigned field
     await dispatch(
       createGoalMember.create({
         cellIdString: projectsCellIdString,
@@ -102,7 +102,7 @@ export default async function importAllProjectData(
       goal_address: goalAddressMap[old.goal_address],
       is_imported: true
     }
-    delete clone.address // an assigned field
+    delete clone.headerHash // an assigned field
     await dispatch(
       createGoalComment.create({
         cellIdString: projectsCellIdString,
@@ -119,7 +119,7 @@ export default async function importAllProjectData(
       goal_address: goalAddressMap[old.goal_address],
       is_imported: true
     }
-    delete clone.address // an assigned field
+    delete clone.headerHash // an assigned field
     await dispatch(
       createGoalVote.create({
         cellIdString: projectsCellIdString,
@@ -136,7 +136,7 @@ export default async function importAllProjectData(
       goal_address: goalAddressMap[old.goal_address],
       is_imported: true
     }
-    delete clone.address // an assigned field
+    delete clone.headerHash // an assigned field
     await dispatch(
       createEntryPoint.create({
         cellIdString: projectsCellIdString,

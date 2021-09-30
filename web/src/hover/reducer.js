@@ -15,7 +15,7 @@ export default function (state = defaultState, action) {
   switch (type) {
     case archiveGoalFully.success().type:
       // unhover if the archived Goal was hovered over
-      return state.hoveredGoal === payload.address
+      return state.hoveredGoal === payload.headerHash
         ? {
             ...state,
             hoveredGoal: null,
@@ -23,7 +23,7 @@ export default function (state = defaultState, action) {
         : { ...state }
     case archiveEdge.success().type:
       // unhover if the archived edge was hovered over
-      return state.hoveredEdge === payload.address
+      return state.hoveredEdge === payload.headerHash
         ? {
             ...state,
             hoveredEdge: null,

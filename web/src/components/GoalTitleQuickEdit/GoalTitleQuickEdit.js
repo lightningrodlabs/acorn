@@ -146,7 +146,7 @@ function GoalTitleQuickEdit({
     await updateGoal(
       {
         // new
-        user_edit_hash: whoami.entry.address,
+        user_edit_hash: whoami.entry.headerHash,
         description: description,
         timestamp_updated: moment().unix(),
         // carryover
@@ -234,8 +234,8 @@ function mapStateToProps(state) {
   const editingGoal = editAddress
     ? state.projects.goals[activeProject][editAddress]
     : null
-  const user_hash = editAddress ? editingGoal.user_hash : state.whoami.entry.address
-  const user_edit_hash = editAddress ? state.whoami.entry.address : null
+  const user_hash = editAddress ? editingGoal.user_hash : state.whoami.entry.headerHash
+  const user_edit_hash = editAddress ? state.whoami.entry.headerHash : null
   const status = editAddress ? editingGoal.status : 'Uncertain'
   const description = editAddress ? editingGoal.description : ''
   const hierarchy = editAddress ? editingGoal.hierarchy : 'NoHierarchy'
@@ -310,9 +310,9 @@ function mapDispatchToProps(dispatch, ownProps) {
         })
       )
     },
-    updateGoal: (entry, address) => {
+    updateGoal: (entry, headerHash) => {
       return dispatch(
-        updateGoal.create({ cellIdString, payload: { entry, address } })
+        updateGoal.create({ cellIdString, payload: { entry, headerHash } })
       )
     },
     closeGoalForm: () => {

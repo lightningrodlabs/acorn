@@ -35,9 +35,9 @@ export default function (state = defaultState, action) {
         ...state,
         [cellIdString]: {
           ...state[cellIdString],
-          [payload.goal.address]: {
+          [payload.goal.headerHash]: {
             ...payload.goal.entry,
-            address: payload.goal.address,
+            headerHash: payload.goal.headerHash,
           },
         },
       }
@@ -46,11 +46,11 @@ export default function (state = defaultState, action) {
       const mapped = payload.goals.map((r) => {
         return {
           ...r.entry,
-          address: r.address,
+          headerHash: r.headerHash,
         }
       })
-      // mapped is [ { key: val, address: 'QmAsdFg' }, ...]
-      const newVals = _.keyBy(mapped, 'address')
+      // mapped is [ { key: val, headerHash: 'QmAsdFg' }, ...]
+      const newVals = _.keyBy(mapped, 'headerHash')
       // combines pre-existing values of the object with new values from
       // Holochain fetch
       return {
@@ -66,7 +66,7 @@ export default function (state = defaultState, action) {
         ...state,
         [cellIdString]: _.pickBy(
           state[cellIdString],
-          (_value, key) => key !== payload.address
+          (_value, key) => key !== payload.headerHash
         ),
       }
     default:
