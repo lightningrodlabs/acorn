@@ -1,5 +1,6 @@
 use hdk::prelude::*;
 use hdk_crud::{create_receive_signal_cap_grant, fetch_links};
+use holo_hash::{HeaderHashB64, AgentPubKeyB64};
 
 pub mod project;
 
@@ -80,15 +81,15 @@ pub enum GoalField {
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 pub struct EditingGoalSignal {
     pub goal_field: GoalField,
-    pub goal_address: HeaderHash,
-    pub editing_agent: AgentPubKey,
+    pub goal_address: HeaderHashB64,
+    pub editing_agent: AgentPubKeyB64,
     pub is_editing: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 pub struct EditingGoalInput {
     pub goal_field: GoalField,
-    pub goal_address: HeaderHash,
+    pub goal_address: HeaderHashB64,
     pub is_editing: bool,
 }
 
