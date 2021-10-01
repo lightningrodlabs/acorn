@@ -1,4 +1,5 @@
 use hdk::prelude::*;
+use holo_hash::{HeaderHashB64, AgentPubKeyB64};
 
 pub mod project;
 
@@ -6,7 +7,6 @@ use hdk_crud::{
     retrieval::fetch_links,
     signals::{create_receive_signal_cap_grant, ActionSignal},
 };
-use holo_hash::AgentPubKeyB64;
 use project::{
     edge::crud::Edge,
     entry_point::crud::EntryPoint,
@@ -15,7 +15,7 @@ use project::{
     goal_member::crud::GoalMember,
     goal_vote::crud::GoalVote,
     member::entry::{join_project_during_init, Member, MemberSignal, MEMBER_PATH},
-    project_meta::crud::ProjectMeta,
+    project_meta::crud::ProjectMeta
 };
 
 #[hdk_extern]
@@ -62,11 +62,49 @@ pub enum SignalType {
     // both the archived goal, and everything connected to it that
     // was archived at the same time
     ArchiveGoalFully(ArchiveGoalFullySignal),
+    EditingGoal(EditingGoalSignal),
     GoalComment(ActionSignal<GoalComment>),
     GoalMember(ActionSignal<GoalMember>),
     GoalVote(ActionSignal<GoalVote>),
     Member(MemberSignal),
     ProjectMeta(ActionSignal<ProjectMeta>),
+}
+
+#[derive(Debug, Serialize, Deserialize, SerializedBytes)]
+pub enum GoalField {
+    Title,
+    Description,
+}
+
+#[derive(Debug, Serialize, Deserialize, SerializedBytes)]
+pub struct EditingGoalSignal {
+    pub goal_field: GoalField,
+    pub goal_address: HeaderHashB64,
+    pub editing_agent: AgentPubKeyB64,
+    pub is_editing: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize, SerializedBytes)]
+pub struct EditingGoalInput {
+    pub goal_field: GoalField,
+    pub goal_address: HeaderHashB64,
+    pub is_editing: bool,
+}
+
+#[hdk_extern]
+pub fn emit_editing_goal_signal(editing_goal_info: EditingGoalInput) -> ExternResult<()> {
+    let editing_goal_signal = EditingGoalSignal {
+        goal_field: editing_goal_info.goal_field,
+        goal_address: editing_goal_info.goal_address,
+        editing_agent: AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey),
+        is_editing: editing_goal_info.is_editing,
+    };
+
+    let signal = SignalType::EditingGoal(editing_goal_signal);
+    let payload = ExternIO::encode(signal)?;
+    let peers = get_peers_content()?;
+    remote_signal(payload, peers)?;
+    Ok(())
 }
 
 pub fn get_peers_latest() -> ExternResult<Vec<AgentPubKey>> {
