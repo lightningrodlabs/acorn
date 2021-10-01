@@ -98,7 +98,7 @@ pub fn emit_editing_goal_signal(editing_goal_info: EditingGoalInput) -> ExternRe
     let editing_goal_signal = EditingGoalSignal {
         goal_field: editing_goal_info.goal_field,
         goal_address: editing_goal_info.goal_address,
-        editing_agent: agent_info()?.agent_latest_pubkey,
+        editing_agent: AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey),
         is_editing: editing_goal_info.is_editing,
     };
 
