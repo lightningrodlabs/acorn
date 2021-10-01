@@ -1,5 +1,6 @@
 use hdk::prelude::*;
-use hdk_crud::{create_receive_signal_cap_grant, fetch_links};
+use hdk_crud::signals::create_receive_signal_cap_grant;
+use hdk_crud::retrieval::fetch_links;
 use holo_hash::{HeaderHashB64, AgentPubKeyB64};
 
 pub mod project;
