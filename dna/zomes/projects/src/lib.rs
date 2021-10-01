@@ -8,7 +8,6 @@ use hdk_crud::{
     retrieval::fetch_links,
     signals::{create_receive_signal_cap_grant, ActionSignal},
 };
-use holo_hash::AgentPubKeyB64;
 use project::{
     edge::crud::Edge,
     entry_point::crud::EntryPoint,
