@@ -204,6 +204,7 @@ function PriorityUniversal({
     try {
       await updateProjectMeta(toPass, projectMetaAddress, projectId)
     } catch (e) {
+      console.log(e)
       // TODO
     }
     setPending(false)
@@ -251,7 +252,7 @@ function PriorityUniversal({
           <h4>You haven't marked any goals as top priority.
             <br />
             <GuidebookNavLink guidebookId='intro_universal_priority_mode'>Learn how to start prioritizing here.</GuidebookNavLink> </h4></div>}
-        {topPriorityGoals.length == !0 &&
+        {topPriorityGoals.length !== 0 &&
           <DragDropContext
             onDragEnd={onDragEnd}
             onDragUpdate={onDragUpdate}

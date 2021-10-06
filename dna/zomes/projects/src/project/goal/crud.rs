@@ -104,6 +104,7 @@ impl fmt::Display for Status {
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 #[serde(from = "UIEnum")]
 #[serde(into = "UIEnum")]
+#[serde(tag = "type")]
 pub enum Hierarchy {
     Root,
     Trunk,
@@ -203,7 +204,8 @@ pub struct CreateGoalWithEdgeOutput {
 }
 
 // custom signal type
-#[derive(Debug, Serialize, Deserialize, SerializedBytes)]
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GoalWithEdgeSignal {
     entry_type: String,
     action: ActionType,
