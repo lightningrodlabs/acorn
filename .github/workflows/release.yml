@@ -26,25 +26,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      # select compatible rust version
-      # bit-set compilation was broken for now with version 1.55 of rust
-      # could later use it again
-      # - name: Install Rust minimal toolchain version 1.54
-      #   uses: actions-rs/toolchain@v1
-      #   with:
-      #     profile: minimal
-      #     toolchain: 1.54
-      #     override: true
       # # install hc tool
-      # # necessary for Rust 1.54 to be installed before running this step
-      # - name: Install hc tool and wasm target
-      #   shell: bash # important because this runs shell scripts
-      #   run: |
-      #     npm run dna-install
+      - name: Install hc tool and wasm target
+        shell: bash # important because this runs shell scripts
+        run: |
+          npm run dna-install
       # # build dna
-      # - name: Build DNA
-      #   run: |
-      #     npm run dna-pack
+      - name: Build DNA
+        run: |
+          npm run dna-pack
       # "upload" dna as build artifact
       - uses: actions/upload-artifact@master
         with:

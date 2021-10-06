@@ -6,9 +6,9 @@ edition = "2018"
 [lib]
 
 [dependencies]
-hdk_crud = "0.4.0"
-hdk = "0.0.108"
-holo_hash = { version = "0.0.7", features = ["encoding"] }
+hdk_crud = "0.4.1"
+hdk = "0.0.109"
+holo_hash = { version = "0.0.8", features = ["encoding"] }
 projects = { path = "../zomes/projects" }
 profiles = { path = "../zomes/profiles" }
 paste = "*"
@@ -20,7 +20,7 @@ assert_matches = "1.5.0"
 
 [dev-dependencies]
 fixt = "0.0.6"
-holochain_types = "0.0.8"
+holochain_types = "0.0.9"
 rand = "0.7"
 strum = "0.18.0"
 strum_macros = "0.18.0"
@@ -28,6 +28,3 @@ strum_macros = "0.18.0"
 [features]
 default = ["mock"]
 mock = ["hdk/mock", "hdk/test_utils"]
-
-[patch.crates-io]
-bit-set = { git = "https://github.com/timotree3/bit-set.git", branch = "fix-bit-vec-dep" }
