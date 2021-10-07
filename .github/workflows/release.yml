@@ -1,15 +1,9 @@
 name: Release
 
-# on:
-#   push:
-#     tags:
-#       - v[0-9]+.*
-
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - v[0-9]+.*
 
 jobs:
   # the create-release would be used once we want to create a specific release based on if the commit has a tag
