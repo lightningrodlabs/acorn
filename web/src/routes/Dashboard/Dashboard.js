@@ -412,22 +412,31 @@ async function importProject(
   const projectMeta = {
     ...projectData.projectMeta,
     // the question mark operator for backwards compatibility
-    top_priority_goals: originalTopPriorityGoals ? originalTopPriorityGoals.map(oldAddress => oldToNewAddressMap[oldAddress]) : [],
+    top_priority_goals: originalTopPriorityGoals ? originalTopPriorityGoals.map(oldAddress => oldToNewAddressMap[oldAddress]).filter(address => address) : [],
     // the question mark operator for backwards compatibility
     priority_mode: originalPriorityMode ? originalPriorityMode : PriorityModeOptions.Universal,
     created_at: Date.now(),
     creator_address: agentAddress,
     passphrase: passphrase,
   }
-  // this is not an actual field
+  // these are not actuals field
+  // v0.5.4-alpha
   delete projectMeta.headerHash
+  // pre v0.5.3-alpha and prior
+  delete projectMeta.address
+
   await dispatch(setMember(projectsCellIdString, { address: agentAddress }))
-  await dispatch(
-    simpleCreateProjectMeta.create({
-      cellIdString: projectsCellIdString,
-      payload: projectMeta,
-    })
-  )
+  try {
+    console.log(projectMeta)
+    await dispatch(
+      simpleCreateProjectMeta.create({
+        cellIdString: projectsCellIdString,
+        payload: projectMeta,
+      })
+    )
+  } catch (e) {
+    throw e
+  }
 }
 
 async function deactivateApp(appId, cellId, dispatch) {

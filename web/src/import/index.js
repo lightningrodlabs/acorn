@@ -48,15 +48,40 @@ export default async function importAllProjectData(
     const oldGoal = projectData.goals[goalAddress]
     const clone = {
       ...oldGoal,
-      is_imported: true
+      is_imported: true,
     }
+    // v0.5.4-alpha
     delete clone.headerHash
-    const newGoal = await dispatch(
-      createGoal.create({ cellIdString: projectsCellIdString, payload: clone })
-    )
+    // pre v0.5.3-alpha and prior
+    delete clone.address
+
+    let newGoal
+    try {
+      newGoal = await dispatch(
+        createGoal.create({
+          cellIdString: projectsCellIdString,
+          payload: clone,
+        })
+      )
+    } catch (e) {
+      console.log('createGoal error', e)
+      throw e
+    }
     // add this new goal address to the goalAddressMap
     // to keep of which new addresses map to which old addresses
-    goalAddressMap[oldGoal.headerHash] = newGoal.headerHash
+    let oldGoalHeaderHash
+    // v0.5.4-alpha
+    if (oldGoal.headerHash) oldGoalHeaderHash = oldGoal.headerHash
+    // pre v0.5.3-alpha and prior
+    else if (oldGoal.address) oldGoalHeaderHash = oldGoal.address
+
+    let newGoalHeaderHash
+    // v0.5.4-alpha
+    if (newGoal.headerHash) newGoalHeaderHash = newGoal.headerHash
+    // pre v0.5.3-alpha and prior
+    else if (newGoal.address) newGoalHeaderHash = newGoal.address
+
+    goalAddressMap[oldGoalHeaderHash] = newGoalHeaderHash
   }
 
   // EDGES
@@ -66,15 +91,31 @@ export default async function importAllProjectData(
       ...old,
       parent_address: goalAddressMap[old.parent_address],
       child_address: goalAddressMap[old.child_address],
-      is_imported: true
+      // randomizer used to be a float, but is now an int
+      randomizer: Number(old.randomizer.toFixed()),
+      is_imported: true,
     }
-    delete clone.headerHash // an assigned field
-    await dispatch(
-      createEdge.create({
-        cellIdString: projectsCellIdString,
-        payload: clone,
-      })
-    )
+    // an assigned field
+    // v0.5.4-alpha
+    delete clone.headerHash
+    // pre v0.5.3-alpha and prior
+    delete clone.address
+
+    if (!clone.child_address || !clone.parent_address) {
+      console.log('weird, invalid edge:', clone)
+      continue
+    }
+    try {
+      await dispatch(
+        createEdge.create({
+          cellIdString: projectsCellIdString,
+          payload: clone,
+        })
+      )
+    } catch (e) {
+      console.log('createEdge error', e)
+      throw e
+    }
   }
 
   // GOAL MEMBERS
@@ -83,15 +124,29 @@ export default async function importAllProjectData(
     const clone = {
       ...old,
       goal_address: goalAddressMap[old.goal_address],
-      is_imported: true
+      is_imported: true,
     }
-    delete clone.headerHash // an assigned field
-    await dispatch(
-      createGoalMember.create({
-        cellIdString: projectsCellIdString,
-        payload: clone,
-      })
-    )
+    // an assigned field
+    // v0.5.4-alpha
+    delete clone.headerHash
+    // pre v0.5.3-alpha and prior
+    delete clone.address
+
+    if (!clone.goal_address) {
+      console.log('weird, invalid goalMember:', clone)
+      continue
+    }
+    try {
+      await dispatch(
+        createGoalMember.create({
+          cellIdString: projectsCellIdString,
+          payload: clone,
+        })
+      )
+    } catch (e) {
+      console.log('createGoalMember error', e)
+      throw e
+    }
   }
 
   // GOAL COMMENTS
@@ -100,15 +155,29 @@ export default async function importAllProjectData(
     const clone = {
       ...old,
       goal_address: goalAddressMap[old.goal_address],
-      is_imported: true
+      is_imported: true,
     }
-    delete clone.headerHash // an assigned field
-    await dispatch(
-      createGoalComment.create({
-        cellIdString: projectsCellIdString,
-        payload: clone,
-      })
-    )
+    // an assigned field
+    // v0.5.4-alpha
+    delete clone.headerHash
+    // pre v0.5.3-alpha and prior
+    delete clone.address
+
+    if (!clone.goal_address) {
+      console.log('weird, invalid goalComment:', clone)
+      continue
+    }
+    try {
+      await dispatch(
+        createGoalComment.create({
+          cellIdString: projectsCellIdString,
+          payload: clone,
+        })
+      )
+    } catch (e) {
+      console.log('createGoalComment error', e)
+      throw e
+    }
   }
 
   // GOAL VOTES
@@ -117,15 +186,29 @@ export default async function importAllProjectData(
     const clone = {
       ...old,
       goal_address: goalAddressMap[old.goal_address],
-      is_imported: true
+      is_imported: true,
     }
-    delete clone.headerHash // an assigned field
-    await dispatch(
-      createGoalVote.create({
-        cellIdString: projectsCellIdString,
-        payload: clone,
-      })
-    )
+    // an assigned field
+    // v0.5.4-alpha
+    delete clone.headerHash
+    // pre v0.5.3-alpha and prior
+    delete clone.address
+
+    if (!clone.goal_address) {
+      console.log('weird, invalid goalVote:', clone)
+      continue
+    }
+    try {
+      await dispatch(
+        createGoalVote.create({
+          cellIdString: projectsCellIdString,
+          payload: clone,
+        })
+      )
+    } catch (e) {
+      console.log('createGoalVote error', e)
+      throw e
+    }
   }
 
   // ENTRY POINTS
@@ -134,15 +217,29 @@ export default async function importAllProjectData(
     const clone = {
       ...old,
       goal_address: goalAddressMap[old.goal_address],
-      is_imported: true
+      is_imported: true,
     }
-    delete clone.headerHash // an assigned field
-    await dispatch(
-      createEntryPoint.create({
-        cellIdString: projectsCellIdString,
-        payload: clone,
-      })
-    )
+    // an assigned field
+    // v0.5.4-alpha
+    delete clone.headerHash
+    // pre v0.5.3-alpha and prior
+    delete clone.address
+
+    if (!clone.goal_address) {
+      console.log('weird, invalid entryPoint:', clone)
+      continue
+    }
+    try {
+      await dispatch(
+        createEntryPoint.create({
+          cellIdString: projectsCellIdString,
+          payload: clone,
+        })
+      )
+    } catch (e) {
+      console.log('createEntryPoint error', e)
+      throw e
+    }
   }
 
   // return the list of old addresses mapped to new addresses
