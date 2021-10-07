@@ -34,7 +34,7 @@ You can run `npm run user-data-reset` if you have user data in development, but 
 
 - Have rust language (stable) installed on your system, then...
 - `npm run dna-install`
-- `npm run dna-pack` (Run this anytime you change the code in `api` folder)
+- `npm run dna-pack` (Run this anytime you change the code in `dna` folder)
 
 To test backend:
 
