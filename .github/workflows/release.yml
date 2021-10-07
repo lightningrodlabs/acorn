@@ -1,9 +1,15 @@
 name: Release
 
+# on:
+#   push:
+#     tags:
+#       - v[0-9]+.*
+
 on:
   push:
-    tags:
-      - v[0-9]+.*
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   # the create-release would be used once we want to create a specific release based on if the commit has a tag
@@ -94,6 +100,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Copy-Item bin/lair-keystore.exe -Destination lair-keystore-x86_64-pc-windows-msvc.exe
           gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "electron/out/Acorn.Setup.0.5.4-alpha.exe" --clobber
-        shell: bash
