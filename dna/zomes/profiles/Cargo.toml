@@ -8,9 +8,9 @@ name = "profiles"
 crate-type = [ "cdylib", "rlib" ]
 
 [dependencies]
-hdk_crud = "0.4.0"
-holo_hash = { version = "0.0.7", features = ["encoding"] }
-hdk = "0.0.108"
+hdk_crud = "0.4.1"
+holo_hash = { version = "0.0.8", features = ["encoding"] }
+hdk = "0.0.109"
 paste = "*"
 serde = "*"
 thiserror = "1"

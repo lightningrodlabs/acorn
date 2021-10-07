@@ -1,50 +1,34 @@
 name: Release
 
-# on:
-#   push:
-#     tags:
-#       - v[0-9]+.*
-
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - v[0-9]+.*
 
 jobs:
   # the create-release would be used once we want to create a specific release based on if the commit has a tag
-  # create-release:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: taiki-e/create-gh-release-action@v1
-  #       env:
-  #         # (required)
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: taiki-e/create-gh-release-action@v1
+        env:
+          # (required)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
   build-dna:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      # select compatible rust version
-      # bit-set compilation was broken for now with version 1.55 of rust
-      # could later use it again
-      # - name: Install Rust minimal toolchain version 1.54
-      #   uses: actions-rs/toolchain@v1
-      #   with:
-      #     profile: minimal
-      #     toolchain: 1.54
-      #     override: true
       # # install hc tool
-      # # necessary for Rust 1.54 to be installed before running this step
-      # - name: Install hc tool and wasm target
-      #   shell: bash # important because this runs shell scripts
-      #   run: |
-      #     npm run dna-install
+      - name: Install hc tool and wasm target
+        shell: bash # important because this runs shell scripts
+        run: |
+          npm run dna-install
       # # build dna
-      # - name: Build DNA
-      #   run: |
-      #     npm run dna-pack
+      - name: Build DNA
+        run: |
+          npm run dna-pack
       # "upload" dna as build artifact
       - uses: actions/upload-artifact@master
         with:
@@ -98,18 +82,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "test-release" "electron/out/Acorn-0.5.4-alpha.AppImage" --clobber
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.5.4-alpha.AppImage" --clobber
       - name: upload binary (macos only)
         if: ${{ runner.os == 'macOs' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "test-release" "electron/out/Acorn-0.5.4-alpha.dmg" --clobber
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.5.4-alpha.dmg" --clobber
       - name: upload binary (Windows only)
         if: ${{ runner.os == 'Windows' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Copy-Item bin/lair-keystore.exe -Destination lair-keystore-x86_64-pc-windows-msvc.exe
-          gh release upload "test-release" "electron/out/Acorn.Setup.0.5.4-alpha.exe" --clobber
+          gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "electron/out/Acorn.Setup.0.5.4-alpha.exe" --clobber
         shell: bash

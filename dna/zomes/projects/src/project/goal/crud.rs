@@ -203,7 +203,8 @@ pub struct CreateGoalWithEdgeOutput {
 }
 
 // custom signal type
-#[derive(Debug, Serialize, Deserialize, SerializedBytes)]
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct GoalWithEdgeSignal {
     entry_type: String,
     action: ActionType,

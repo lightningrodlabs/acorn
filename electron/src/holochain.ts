@@ -76,11 +76,11 @@ const devOptions: HolochainRunnerOptions = {
 }
 const prodOptions: HolochainRunnerOptions = {
   dnaPath: profilesDnaPath, // preload
-  datastorePath: path.join(app.getPath('userData'), 'databases-0-5-4'),
+  datastorePath: path.join(app.getPath('userData'), 'databases-0-5-4-alpha'),
   appId: MAIN_APP_ID,
   appWsPort: 8889,
   adminWsPort: 1235,
-  keystorePath: path.join(app.getPath('userData'), 'keystore-0-5-4'),
+  keystorePath: path.join(app.getPath('userData'), 'keystore-0-5-4-alpha'),
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 
