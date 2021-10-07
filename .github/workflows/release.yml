@@ -1,26 +1,20 @@
 name: Release
 
-# on:
-#   push:
-#     tags:
-#       - v[0-9]+.*
-
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - v[0-9]+.*
 
 jobs:
   # the create-release would be used once we want to create a specific release based on if the commit has a tag
-  # create-release:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: taiki-e/create-gh-release-action@v1
-  #       env:
-  #         # (required)
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: taiki-e/create-gh-release-action@v1
+        env:
+          # (required)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
   build-dna:
     runs-on: ubuntu-latest
@@ -88,18 +82,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "test-release" "electron/out/Acorn-0.5.4-alpha.AppImage" --clobber
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.5.4-alpha.AppImage" --clobber
       - name: upload binary (macos only)
         if: ${{ runner.os == 'macOs' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "test-release" "electron/out/Acorn-0.5.4-alpha.dmg" --clobber
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.5.4-alpha.dmg" --clobber
       - name: upload binary (Windows only)
         if: ${{ runner.os == 'Windows' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Copy-Item bin/lair-keystore.exe -Destination lair-keystore-x86_64-pc-windows-msvc.exe
-          gh release upload "test-release" "electron/out/Acorn.Setup.0.5.4-alpha.exe" --clobber
+          gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "electron/out/Acorn.Setup.0.5.4-alpha.exe" --clobber
         shell: bash
