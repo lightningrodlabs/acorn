@@ -104,7 +104,6 @@ impl fmt::Display for Status {
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 #[serde(from = "UIEnum")]
 #[serde(into = "UIEnum")]
-#[serde(tag = "type")]
 pub enum Hierarchy {
     Root,
     Trunk,
