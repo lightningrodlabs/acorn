@@ -299,7 +299,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    openExpandedView: (address) => dispatch(openExpandedView(headerHash)),
+    openExpandedView: (headerHash) => dispatch(openExpandedView(headerHash)),
     updateProjectMeta: (projectMeta, headerHash, cellIdString) => {
       return dispatch(
         updateProjectMeta.create({
