@@ -135,6 +135,9 @@
   margin-top: 10px;
   font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
   margin-left: 82px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
 }
 
 .entry-point-button-image {
@@ -148,7 +151,6 @@
   flex-direction: row;
   align-items: center;
   transition: color 0.2s ease-in;
-  width: 150px;
   color: #9b9b9b;
   cursor: pointer;
   font-family: 'gilroyextrabold', Helvetica, sans-serif;
@@ -211,12 +213,13 @@
   display: flex;
   /* justify-content: flex-end; */
   flex-direction: column;
+  position: relative;
 }
 
 .dashboard-list-project-settings-button .icon {
   position: absolute;
   right: 0;
-  bottom: 18px;
+  top: 45px;
   padding: 10px 4px;
 }
 
