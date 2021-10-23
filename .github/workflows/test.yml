@@ -13,4 +13,12 @@ jobs:
        with:
          toolchain: 1.56
          target: wasm32-unknown-unknown
+
+     - uses: actions-rs/cargo@v1
+       with:
+         command: check
+
+     - run: rustup component list --installed
+     - run: rustup show
+
      - run: ./scripts/dna-test.sh
