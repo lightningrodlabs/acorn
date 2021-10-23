@@ -14,10 +14,9 @@ jobs:
          toolchain: 1.56
          target: wasm32-unknown-unknown
 
-     - uses: actions-rs/cargo@v1
-       with:
-         command: check
-
+     - run: rustup update stable
+     - run: rustc --version
+     - run: cargo --version
      - run: rustup component list --installed
      - run: rustup show
 
