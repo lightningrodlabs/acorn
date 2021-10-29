@@ -66,8 +66,14 @@ function MultiEditBar({
     })
   }
 
-  const archiveGoals = () => {
-    selectedGoals.forEach(goal => archiveGoalFully(goal.headerHash))
+  const archiveGoals = async () => {
+    // has to be in async series
+    // because Holochain doesn't accept ChainTopOrdering::Relaxed
+    // for `delete` calls yet. TODO update this
+    // when we can, to occur in parallel, like `updateGoals` above
+    for (let goal of selectedGoals) {
+      await archiveGoalFully(goal.headerHash)
+    }
   }
 
   const multiEditBarSquirrelsClass = viewsOpen.squirrels ? 'active' : ''
