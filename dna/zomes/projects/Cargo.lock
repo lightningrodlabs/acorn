@@ -33,6 +33,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
 
 [[package]]
+name = "assert_matches"
+version = "1.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9b34d609dfbaf33d6889b2b7106d3ca345eacad44200913df5ba02bfd31d2ba9"
+
+[[package]]
 name = "autocfg"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -165,10 +171,12 @@ dependencies = [
 
 [[package]]
 name = "hdk_crud"
-version = "0.4.1"
+version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b49d7e90a94035b2cd59b7c8d62879db9183e99ee58e8d23e1d5743b66145b60"
+checksum = "a7eb4e1191ddefa71ed9c5f969e5122b2b4211d079e4c82dabea3ab99e631f79"
 dependencies = [
+ "assert_matches",
+ "chrono",
  "hdk",
  "holo_hash",
  "mockall",
@@ -501,6 +509,7 @@ dependencies = [
 name = "projects"
 version = "0.0.1"
 dependencies = [
+ "chrono",
  "hdk",
  "hdk_crud",
  "holo_hash",

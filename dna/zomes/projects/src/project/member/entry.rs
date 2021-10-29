@@ -1,5 +1,5 @@
 use hdk::prelude::*;
-use hdk_crud::{retrieval::EntryAndHash, signals::ActionType};
+use hdk_crud::{retrieval::retrieval::EntryAndHash, signals::ActionType};
 use holo_hash::AgentPubKeyB64;
 
 pub const MEMBER_PATH: &str = "member";
