@@ -4,7 +4,9 @@ use crate::{
     SignalType,
 };
 use hdk::prelude::*;
-use hdk_crud::{crud, retrieval::FetchOptions, signals::ActionSignal, wire_element::WireElement};
+use hdk_crud::{
+    crud, retrieval::retrieval::FetchOptions, signals::ActionSignal, wire_element::WireElement,
+};
 use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
 use std::*;
 
@@ -109,9 +111,7 @@ pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireElemen
 // READ
 #[hdk_extern]
 pub fn fetch_project_meta(_: ()) -> ExternResult<WireElement<ProjectMeta>> {
-    match inner_fetch_project_metas(FetchOptions::All, GetOptions::latest())?
-        .first()
-    {
+    match inner_fetch_project_metas(FetchOptions::All, GetOptions::latest())?.first() {
         Some(wire_entry) => Ok(wire_entry.to_owned()),
         None => Err(WasmError::Guest("no project meta exists".into())),
     }

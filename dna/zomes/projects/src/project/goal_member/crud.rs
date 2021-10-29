@@ -1,6 +1,6 @@
 use crate::{get_peers_content, SignalType};
 use hdk::prelude::*;
-use hdk_crud::{crud, retrieval::FetchOptions, signals::ActionSignal};
+use hdk_crud::{crud, retrieval::retrieval::FetchOptions, signals::ActionSignal};
 use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 
 // a relationship between a Goal and an Agent

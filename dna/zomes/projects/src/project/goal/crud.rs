@@ -9,7 +9,7 @@ use crate::{get_peers_content, SignalType};
 use hdk::prelude::*;
 use hdk_crud::{
     crud,
-    retrieval::FetchOptions,
+    retrieval::retrieval::FetchOptions,
     signals::{ActionSignal, ActionType},
     wire_element::WireElement,
 };
@@ -216,7 +216,7 @@ pub fn create_goal_with_edge(
     input: CreateGoalWithEdgeInput,
 ) -> ExternResult<CreateGoalWithEdgeOutput> {
     // false to say don't send a signal
-    let wire_element = inner_create_goal(input.entry.clone(), false)?;
+    let wire_element = inner_create_goal(input.entry.clone(), false, None)?;
     let new_goal_address = wire_element.header_hash.clone();
     let maybe_edge: Option<WireElement<Edge>> = match input.maybe_linked_goal {
         Some(linked_goal_details) => {
@@ -238,7 +238,7 @@ pub fn create_goal_with_edge(
                 randomizer: r0,
                 is_imported: false,
             };
-            let edge_wire_element = inner_create_edge(edge, false)?;
+            let edge_wire_element = inner_create_edge(edge, false, None)?;
             Some(edge_wire_element)
         }
         None => None,

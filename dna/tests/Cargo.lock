@@ -1384,13 +1384,18 @@ dependencies = [
 
 [[package]]
 name = "hdk_crud"
-version = "0.4.1"
+version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b49d7e90a94035b2cd59b7c8d62879db9183e99ee58e8d23e1d5743b66145b60"
+checksum = "a7eb4e1191ddefa71ed9c5f969e5122b2b4211d079e4c82dabea3ab99e631f79"
 dependencies = [
+ "assert_matches",
+ "chrono",
+ "fixt",
  "hdk",
  "holo_hash",
+ "holochain_types",
  "mockall 0.9.1",
+ "mockall_double",
  "paste",
  "serde",
  "thiserror",
@@ -2348,6 +2353,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "mockall_double"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3e25b78d34b2b713b1d000d629079755cfc166e6a65f9f4c1c012a94305467c5"
+dependencies = [
+ "cfg-if 1.0.0",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "mr_bundle"
 version = "0.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3011,6 +3028,7 @@ dependencies = [
 name = "profiles"
 version = "0.0.1"
 dependencies = [
+ "chrono",
  "hdk",
  "hdk_crud",
  "holo_hash",
@@ -3023,6 +3041,7 @@ dependencies = [
 name = "projects"
 version = "0.0.1"
 dependencies = [
+ "chrono",
  "hdk",
  "hdk_crud",
  "holo_hash",
