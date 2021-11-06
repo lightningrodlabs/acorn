@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import _ from 'lodash'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useHistory, useLocation } from 'react-router-dom'
 
 import './PriorityUniversal.css'
 
@@ -14,9 +14,10 @@ import StatusIcon from '../../../../components/StatusIcon/StatusIcon'
 import { updateProjectMeta } from '../../../../projects/project-meta/actions'
 import TimeframeFormat from '../../../../components/TimeframeFormat'
 import GuidebookNavLink from '../../../../components/GuidebookNavLink/GuidebookNavLink'
+import { animatePanAndZoom } from '../../../../viewport/actions'
 
 // an individual list item
-function UniversalGoal({ liveIndex, goal, openExpandedView }) {
+function UniversalGoal({ liveIndex, goal, openExpandedView, goToGoal }) {
   return (
     <div className="universal-priority-goals-list-row">
       <div className="universal-priority-goal-item-wrapper">
@@ -53,11 +54,19 @@ function UniversalGoal({ liveIndex, goal, openExpandedView }) {
             <TimeframeFormat timeFrame={goal.time_frame} />
           </div>
         </div>
-        <div
-          className="universal-priority-goal-item-expand"
-          onClick={() => openExpandedView(goal.headerHash)}
-        >
-          <Icon name="expand.svg" size="small" className="grey" />
+        <div className="universal-priority-goal-item-buttons">
+          <div
+            className="universal-priority-goal-item-button goal-item-button-expand"
+            onClick={() => openExpandedView(goal.headerHash)}
+            >
+            <Icon name="expand.svg" size="small" className="grey" />
+          </div>
+          <div
+            className="universal-priority-goal-item-button goal-item-button-map"
+            onClick={() => goToGoal(goal.headerHash)}
+            >
+            <Icon name="map.svg" size="small" className="grey" />
+          </div>
         </div>
       </div>
 
@@ -75,7 +84,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
 })
 // wraps an individual list item in a draggable wrapper
-function PriorityUniversalDraggableGoal({ goal, index, whileDraggingIndexes, openExpandedView }) {
+function PriorityUniversalDraggableGoal({ goal, index, whileDraggingIndexes, openExpandedView, goToGoal }) {
   let liveIndex
   if (!whileDraggingIndexes) {
     // no dragging happening
@@ -111,6 +120,7 @@ function PriorityUniversalDraggableGoal({ goal, index, whileDraggingIndexes, ope
               goal={goal}
               liveIndex={liveIndex}
               openExpandedView={openExpandedView}
+              goToGoal={goToGoal}
             />
           </div>
         )
@@ -120,7 +130,7 @@ function PriorityUniversalDraggableGoal({ goal, index, whileDraggingIndexes, ope
 }
 
 // the area within which goals are droppable
-function PriorityUniversalDroppable({ goals, whileDraggingIndexes, openExpandedView }) {
+function PriorityUniversalDroppable({ goals, whileDraggingIndexes, openExpandedView, goToGoal }) {
   return (
     <Droppable droppableId="droppable">
       {(provided, _snapshot) => (
@@ -137,6 +147,7 @@ function PriorityUniversalDroppable({ goals, whileDraggingIndexes, openExpandedV
               index={index}
               whileDraggingIndexes={whileDraggingIndexes}
               openExpandedView={openExpandedView}
+              goToGoal={goToGoal}
             />
           ))}
           {provided.placeholder}
@@ -153,7 +164,14 @@ function PriorityUniversal({
   projectId,
   updateProjectMeta,
   openExpandedView,
+  goToGoal
 }) {
+  const history = useHistory()
+  const location = useLocation()
+  const navAndGoToGoal = (headerHash) => {
+    history.push(location.pathname.replace('priority', 'map'))
+    goToGoal(headerHash)
+  }
   /// will be { source: int, destination: int }
   // both are indexes, if set at all
   const [whileDraggingIndexes, setWhileDraggingIndexes] = useState(null)
@@ -261,6 +279,7 @@ function PriorityUniversal({
               goals={topPriorityGoals}
               whileDraggingIndexes={whileDraggingIndexes}
               openExpandedView={openExpandedView}
+              goToGoal={navAndGoToGoal}
             />
           </DragDropContext>
         }
@@ -300,6 +319,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     openExpandedView: (headerHash) => dispatch(openExpandedView(headerHash)),
+    goToGoal: (headerHash) => {
+      return dispatch(animatePanAndZoom(headerHash))
+    },
     updateProjectMeta: (projectMeta, headerHash, cellIdString) => {
       return dispatch(
         updateProjectMeta.create({

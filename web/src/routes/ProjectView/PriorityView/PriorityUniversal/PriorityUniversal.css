@@ -75,19 +75,33 @@
   /* justify-content: space-between; */
 }
 
-.universal-priority-goal-item-expand {
+.universal-priority-goal-item-buttons {
   float: right;
   position: absolute;
-  right: 10px;
+  right: 8px;
+  top: 8px;
 }
 
-.universal-priority-goal-item-expand .icon {
+.universal-priority-goal-item-button {
+  padding: 5px;
+  border-radius: 4px;
+  background-color: transparent;
+  transition: 0.2s all ease-in-out;
+}
+
+.universal-priority-goal-item-button:hover {
+  background-color: #F3F0ED;
+}
+
+.universal-priority-goal-item-buttons .icon {
   display: none;
 }
 
-.universal-priority-goal-item-wrapper:hover>.universal-priority-goal-item-expand .icon {
+.universal-priority-goal-item-wrapper:hover > .universal-priority-goal-item-buttons .icon {
   display: flex;
 }
+
+
 
 .universal-priority-goal-item-border {
   border-bottom: 1px solid #F3F0ED02;

@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom'
 import { connect } from 'react-redux'
 
+import { GO_TO_GOAL } from '../../searchParams'
 import MapView from './MapView/MapView'
 import PriorityView from './PriorityView/PriorityView'
 import ExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode'
@@ -27,7 +28,8 @@ import { setActiveProject } from '../../active-project/actions'
 import { closeGoalForm } from '../../goal-form/actions'
 import { unselectAll } from '../../selection/actions'
 import { closeExpandedView } from '../../expanded-view/actions'
-import { resetTranslateAndScale } from '../../viewport/actions'
+import { animatePanAndZoom, resetTranslateAndScale } from '../../viewport/actions'
+import { ENTRY_POINTS } from '../../searchParams'
 
 function ProjectViewInner({
   projectId,
@@ -44,15 +46,47 @@ function ProjectViewInner({
   fetchGoalMembers,
   fetchGoalVotes,
   fetchGoalComments,
+  goToGoal,
 }) {
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search)
+  const goToGoalHeaderHash = searchParams.get(GO_TO_GOAL)
+  
+  function ifMapGoToGoal(goalHeaderHash) {
+      // TODO
+      // HACK
+      // we wait 100 ms because we wait for
+      // any integration and processing of the final location of Goals
+      // this relates to the animation defined in src/animations/layout.js
+      // `performLayoutAnimation`
+      if (location.pathname.includes('map')) {
+        setTimeout(() => {
+          if (goalHeaderHash) {
+            goToGoal(goalHeaderHash)
+          }
+        }, 100)
+      }
+  }
+
+  useEffect(() => {
+    ifMapGoToGoal(goToGoalHeaderHash)
+  },[goToGoalHeaderHash])
+
   useEffect(() => {
     // pushes this new projectId into the store/state
     setActiveProject(projectId)
     fetchProjectMeta()
     fetchMembers()
     fetchEntryPoints()
-    fetchGoals()
-    fetchEdges()
+    // once Goals and Edges, which affect layout are both
+    // 1. fetched, and
+    // 2. animated to their final position
+    // we then animate to a specific goal if it was set in the path
+    // as a search query param
+    Promise.all([fetchGoals(),fetchEdges()]).then(() => {
+      ifMapGoToGoal(goToGoalHeaderHash)
+    })
+    //
     fetchGoalMembers()
     fetchGoalVotes()
     fetchGoalComments()
@@ -113,6 +147,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(fetchGoalVotes.create({ cellIdString, payload: { All: null } })),
     fetchGoalComments: () =>
       dispatch(fetchGoalComments.create({ cellIdString, payload: { All: null } })),
+    goToGoal: (goalHeaderHash) => dispatch(animatePanAndZoom(goalHeaderHash))
   }
 }
 
@@ -125,7 +160,7 @@ function ProjectViewWrapper() {
   const { projectId } = useParams()
   const location = useLocation()
   let entryPointAddresses = new URLSearchParams(location.search).get(
-    'entryPoints'
+    ENTRY_POINTS
   )
   if (entryPointAddresses) {
     entryPointAddresses = entryPointAddresses.split(',')

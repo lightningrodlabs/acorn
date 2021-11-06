@@ -28,7 +28,11 @@ export default function drawEntryPoints(
     // for each goalTree
     // calculate its bounding rectangle
     // by checking the coordinates recursively for it and all its children
-    const [top, right, bottom, left] = getBoundingRec(goal, coordinates)
+    const boundingRec = getBoundingRec(goal, coordinates)
+    if (!boundingRec) {
+      return
+    }
+    const [top, right, bottom, left] = boundingRec
 
     ctx.save()
     ctx.setLineDash([5, 3]) /*dashes are 5px and spaces are 3px*/
