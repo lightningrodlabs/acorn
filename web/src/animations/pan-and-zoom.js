@@ -3,19 +3,6 @@ import { goalHeight, goalWidth } from '../drawing/dimensions'
 import { changeAllDirect } from '../viewport/actions'
 
 export default function panZoomToFrame(store, action, currentState) {
-  // const currentLayoutTween = {
-  //   // do this to add any new ones
-  //   // that will just start out in their final position
-  //   ...newLayout,
-  //   // do this to override the coordinates of the newly 
-  //   // created Goal when handling a create action
-  //   // and make its original position equal to the position
-  //   // of the Goal Form when it was open
-  //   ...goalCreatedCoord,
-  //   // do this to override any new ones with existing ones
-  //   // to begin with
-  //   ...currentState.ui.layout,
-  // }
   const currentLayoutTween = {
     ...currentState.ui.viewport
   }
