@@ -82,16 +82,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.5.5-alpha.AppImage" --clobber
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.5.6-alpha.AppImage" --clobber
       - name: upload binary (macos only)
         if: ${{ runner.os == 'macOs' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.5.5-alpha.dmg" --clobber
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.5.6-alpha.dmg" --clobber
       - name: upload binary (Windows only)
         if: ${{ runner.os == 'Windows' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "electron/out/Acorn.Setup.0.5.5-alpha.exe" --clobber
+          gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "electron/out/Acorn.Setup.0.5.6-alpha.exe" --clobber
