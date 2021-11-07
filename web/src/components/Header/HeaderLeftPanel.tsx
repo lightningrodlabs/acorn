@@ -1,15 +1,15 @@
 import React from 'react'
-import { NavLink, Route, Switch, useLocation } from 'react-router-dom'
+import { NavLink, Route, useLocation } from 'react-router-dom'
 
 import ExportMenuItem from '../ExportMenuItem/ExportMenuItem'
 import Icon from '../Icon/Icon'
-import priorityMenuItems from './priorityMenuItems'
 import {
   ProjectPriorityViewOnly,
   ProjectMapViewOnly,
 } from '../ViewFilters/ViewFilters'
+import { ENTRY_POINTS } from '../../searchParams'
 
-function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses }) {
+function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses, goToGoal }) {
   const location = useLocation()
   const entryPointsAbsentThisOne = activeEntryPointAddresses
     .filter((headerHash) => headerHash !== entryPoint.headerHash)
@@ -18,12 +18,12 @@ function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses }) {
     <div className="active-entry-point">
       <img src="img/door-open.svg" />
       {/* add title because text-overflow: ellipsis */}
-      <div className="active-entry-point-content" title={entryPoint.content}>
+      <div className="active-entry-point-content" title={entryPoint.content} onClick={() => goToGoal(entryPoint.goal_address)}>
         {entryPoint.content}
       </div>
       {/* @ts-ignore */}
       <NavLink
-        to={`${location.pathname}?entryPoints=${entryPointsAbsentThisOne}`}
+        to={`${location.pathname}?${ENTRY_POINTS}=${entryPointsAbsentThisOne}`}
         className="active-entry-point-close"
       >
         {/* @ts-ignore */}
@@ -40,6 +40,7 @@ function HeaderLeftPanel({
   isExportOpen,
   onClickExport,
   activeEntryPoints,
+  goToGoal
 }) {
   const activeEntryPointAddresses = activeEntryPoints.map(
     (entryPoint) => entryPoint.headerHash
@@ -120,6 +121,7 @@ function HeaderLeftPanel({
               key={entryPoint.headerHash}
               entryPoint={entryPoint}
               activeEntryPointAddresses={activeEntryPointAddresses}
+              goToGoal={goToGoal}
             />
           ))}
         </Route>

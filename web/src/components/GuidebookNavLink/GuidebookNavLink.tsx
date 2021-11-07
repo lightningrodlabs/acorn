@@ -1,7 +1,7 @@
 import React, { MouseEventHandler } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 
-import { GUIDE_IS_OPEN } from '../GuideBook/guideIsOpen'
+import { GUIDE_IS_OPEN } from '../../searchParams'
 
 export default function GuidebookNavLink({
   guidebookId,

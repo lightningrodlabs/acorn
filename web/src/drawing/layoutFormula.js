@@ -6,6 +6,9 @@ const VERTICAL_SPACING = 50
 
 function getBoundingRec(goal, allGoalCoordinates) {
   const origCoord = allGoalCoordinates[goal.headerHash]
+  if (!origCoord) {
+    return
+  }
   let boundTop = origCoord.y
   let boundRight = origCoord.x
   let boundBottom = origCoord.y
@@ -13,6 +16,9 @@ function getBoundingRec(goal, allGoalCoordinates) {
 
   function updateLimits(goalToCheck) {
     const topLeftCoord = allGoalCoordinates[goalToCheck.headerHash]
+    if (!topLeftCoord) {
+      return
+    }
     const width = goalWidth
     const height = getGoalHeight(null, goalToCheck.content)
     const top = topLeftCoord.y

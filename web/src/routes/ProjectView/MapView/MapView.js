@@ -17,6 +17,7 @@ import GoalHoverOverlayButtons from '../../../components/GoalHoverOverlayButtons
 import EdgeConnectors from '../../../components/EdgeConnectors/EdgeConnectors'
 import { firstZoomThreshold } from '../../../drawing/dimensions'
 
+
 function MapView({
   projectId,
   hasSelection,

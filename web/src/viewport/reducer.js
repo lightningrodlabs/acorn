@@ -3,6 +3,7 @@ import {
   RESET_TRANSLATE_AND_SCALE,
   CHANGE_TRANSLATE,
   CHANGE_SCALE,
+  CHANGE_ALL_DIRECT,
 } from './actions'
 
 const defaultState = {
@@ -24,6 +25,8 @@ export default function(state = defaultState, action) {
           y: state.translate.y + payload.y,
         },
       }
+    case CHANGE_ALL_DIRECT:
+      return payload
     case CHANGE_SCALE:
       const { zoom, mouseX, mouseY } = payload
       if (state.scale * zoom < 0.3 || state.scale * zoom > 2.5) {

@@ -2,7 +2,7 @@ import React from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 
 import GuideBook from '../components/GuideBook/GuideBook'
-import { GUIDE_IS_OPEN } from '../components/GuideBook/guideIsOpen'
+import { GUIDE_IS_OPEN } from '../searchParams'
 import Modal from '../components/Modal/Modal'
 import Preferences from '../components/Preferences/Preferences'
 import ProfileEditForm from '../components/ProfileEditForm/ProfileEditForm'
