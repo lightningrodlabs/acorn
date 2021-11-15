@@ -79,6 +79,7 @@ jobs:
           APPLE_DEV_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
           APPLE_ID_EMAIL: ${{ secrets.APPLE_ID_EMAIL }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          DEBUG: electron-osx-sign*,electron-notarize*
         run: npm run build
         shell: bash
       - name: upload binary (ubuntu only)
