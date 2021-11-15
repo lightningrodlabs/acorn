@@ -75,6 +75,10 @@ jobs:
         # if: ${{ runner.os == 'Windows' }}
         # shell: bash
       - name: build acorn
+        env:
+          APPLE_DEV_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
+          APPLE_ID_EMAIL: ${{ secrets.APPLE_ID_EMAIL }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
         run: npm run build
         shell: bash
       - name: upload binary (ubuntu only)
