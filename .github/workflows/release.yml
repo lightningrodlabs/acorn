@@ -76,11 +76,19 @@ jobs:
         # shell: bash
       - name: build acorn
         env:
+          HBE_APPLE_CERTIFICATE_BASE64: ${{ secrets.HBE_APPLE_CERTIFICATE_BASE64 }}
+          HBE_APPLE_CERTIFICATE_PASS: ${{ secrets.HBE_APPLE_CERTIFICATE_PASS }}
           APPLE_DEV_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
           APPLE_ID_EMAIL: ${{ secrets.APPLE_ID_EMAIL }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           DEBUG: electron-osx-sign*,electron-notarize*
-        run: npm run build
+        run: |
+          echo $HBE_APPLE_CERTIFICATE_BASE64 | base64 —decode > certificate.p12
+          security create-keychain -p arb-password build.keychain security default-keychain -s build.keychain
+          security unlock-keychain -p arb-password build.keychain
+          security import certificate.p12 -k build.keychain -P $HBE_APPLE_CERTIFICATE_PASS -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k arb-password build.keychain
+          npm run build
         shell: bash
       - name: upload binary (ubuntu only)
         if: ${{ runner.os == 'Linux' }}
