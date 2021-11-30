@@ -83,7 +83,7 @@ jobs:
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           DEBUG: electron-osx-sign*,electron-notarize*
         run: |
-          echo $HBE_APPLE_CERTIFICATE_BASE64 | base64 —decode > certificate.p12
+          echo $HBE_APPLE_CERTIFICATE_BASE64 | base64 --decode > certificate.p12
           security create-keychain -p arb-password build.keychain security default-keychain -s build.keychain
           security unlock-keychain -p arb-password build.keychain
           security import certificate.p12 -k build.keychain -P $HBE_APPLE_CERTIFICATE_PASS -T /usr/bin/codesign
