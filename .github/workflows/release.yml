@@ -27,14 +27,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # # install hc tool
-      - name: Install hc tool and wasm target
-        shell: bash # important because this runs shell scripts
-        run: |
-          npm run dna-install
+#       - name: Install hc tool and wasm target
+#         shell: bash # important because this runs shell scripts
+#         run: |
+#           npm run dna-install
       # # build dna
-      - name: Build DNA
-        run: |
-          npm run dna-pack
+#       - name: Build DNA
+#         run: |
+#           npm run dna-pack
       # "upload" dna as build artifact
       - uses: actions/upload-artifact@master
         with:
