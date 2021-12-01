@@ -82,15 +82,21 @@ jobs:
         # shell: bash
       - name: sign and notarize setup (macos only)
         if: ${{ runner.os == 'macOs' }}
-        env:
-          HBE_APPLE_CERTIFICATE_BASE64: ${{ secrets.HBE_APPLE_CERTIFICATE_BASE64 }}
-          HBE_APPLE_CERTIFICATE_PASS: ${{ secrets.HBE_APPLE_CERTIFICATE_PASS }}
-        run: |
-          echo $HBE_APPLE_CERTIFICATE_BASE64 | base64 --decode > certificate.p12
-          security create-keychain -p arb-password build.keychain security default-keychain -s build.keychain
-          security unlock-keychain -p arb-password build.keychain
-          security import certificate.p12 -k build.keychain -P $HBE_APPLE_CERTIFICATE_PASS -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k arb-password build.keychain
+        uses:  figleafteam/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.HBE_APPLE_CERTIFICATE_BASE64 }}
+          p12-password: ${{ secrets.HBE_APPLE_CERTIFICATE_PASS }}
+#       - name: sign and notarize setup (macos only)
+#         if: ${{ runner.os == 'macOs' }}
+#         env:
+#           HBE_APPLE_CERTIFICATE_BASE64: ${{ secrets.HBE_APPLE_CERTIFICATE_BASE64 }}
+#           HBE_APPLE_CERTIFICATE_PASS: ${{ secrets.HBE_APPLE_CERTIFICATE_PASS }}
+#         run: |
+#           echo $HBE_APPLE_CERTIFICATE_BASE64 | base64 --decode > certificate.p12
+#           security create-keychain -p arb-password build.keychain security default-keychain -s build.keychain
+#           security unlock-keychain -p arb-password build.keychain
+#           security import certificate.p12 -k build.keychain -P $HBE_APPLE_CERTIFICATE_PASS -T /usr/bin/codesign
+#           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k arb-password build.keychain
       - name: build acorn
         env:
           APPLE_DEV_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
