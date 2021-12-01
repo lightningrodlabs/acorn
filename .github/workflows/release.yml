@@ -1,9 +1,15 @@
 name: Release
 
+# on:
+#   push:
+#     tags:
+#       - v[0-9]+.*
+
 on:
   push:
-    tags:
-      - v[0-9]+.*
+    branches: [ try-signing ]
+  pull_request:
+    branches: [ try-signing ]
 
 jobs:
   # the create-release would be used once we want to create a specific release based on if the commit has a tag
@@ -99,16 +105,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.5.6-alpha.AppImage" --clobber
+          gh release upload "test-release" "electron/out/Acorn-0.5.6-alpha.AppImage" --clobber
       - name: upload binary (macos only)
         if: ${{ runner.os == 'macOs' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.5.6-alpha.dmg" --clobber
+          gh release upload "test-release" "electron/out/Acorn-0.5.6-alpha.dmg" --clobber
       - name: upload binary (Windows only)
         if: ${{ runner.os == 'Windows' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "electron/out/Acorn.Setup.0.5.6-alpha.exe" --clobber
+          gh release upload "test-release" "electron/out/Acorn.Setup.0.5.6-alpha.exe" --clobber
