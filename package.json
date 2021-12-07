@@ -13,7 +13,7 @@
     "dna-test": "bash scripts/dna-test.sh",
     "dna-pack": "bash scripts/dna-pack.sh",
     "user-data-reset": "rm -rf tmp && rm -rf tmp2 && mkdir tmp tmp2",
-    "web-install": "cd web && rm package-lock.json && npm install",
+    "web-install": "cd web && npm install",
     "web": "cd web && ADMIN_WS_PORT=1234 APP_WS_PORT=8888 npx webpack-dev-server --config webpack.dev.js",
     "web2": "cd web && ADMIN_WS_PORT=1236 APP_WS_PORT=8899 npx webpack-dev-server --config webpack.dev.js",
     "web-build": "cd web && npx webpack --config webpack.prod.js",
