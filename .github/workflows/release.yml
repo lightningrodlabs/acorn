@@ -20,12 +20,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      # # install hc tool
+      # install hc tool
       - name: Install hc tool and wasm target
         shell: bash # important because this runs shell scripts
         run: |
           npm run dna-install
-      # # build dna
+      # build dna
       - name: Build DNA
         run: |
           npm run dna-pack
@@ -74,8 +74,20 @@ jobs:
           npm run electron-install
         # if: ${{ runner.os == 'Windows' }}
         # shell: bash
-      - name: build acorn
-        run: npm run build
+      - name: setup for codesigning (macos only)
+        if: ${{ runner.os == 'macOs' }}
+        uses:  figleafteam/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.HBE_APPLE_CERTIFICATE_BASE64 }}
+          p12-password: ${{ secrets.HBE_APPLE_CERTIFICATE_PASS }}
+      - name: build acorn (and notarize it- macos only)
+        env:
+          APPLE_DEV_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
+          APPLE_ID_EMAIL: ${{ secrets.APPLE_ID_EMAIL }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          DEBUG: electron-osx-sign*,electron-notarize*
+        run: |    
+          npm run build
         shell: bash
       - name: upload binary (ubuntu only)
         if: ${{ runner.os == 'Linux' }}

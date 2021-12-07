@@ -1,9 +1,12 @@
 #!/bin/bash
 
-# compile the rust code to WASM
-# and package the WASM into DNA files
-# sh scripts/dna-pack.sh
-
+# assumes that 
+# dna/workdir/projects.dna
+# and
+# dna/workdir/profiles.dna
+# are already pre-compiled and up to date
+# In CI this is handled via .github/workflows/release.yml
+# where it calls install-hc-tools and and dna-pack
 
 # ensure all necessary binaries are packaged in the app
 rm -rf electron/binaries
@@ -17,7 +20,7 @@ rm -rf electron/web
 npm run web-build
 cp -r web/dist electron/web
 
-# built the electron application
+# build the electron application
 cd electron
 npm run build
 
