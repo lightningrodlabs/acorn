@@ -1,16 +1,9 @@
 name: Release
 
-# on:
-#   push:
-#     tags:
-#       - v[0-9]+.*
-
-
 on:
   push:
-    branches: [ try-signing ]
-  pull_request:
-    branches: [ try-signing ]
+    tags:
+      - v[0-9]+.*
 
 jobs:
   # the create-release would be used once we want to create a specific release based on if the commit has a tag
@@ -27,15 +20,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      # # install hc tool
-#       - name: Install hc tool and wasm target
-#         shell: bash # important because this runs shell scripts
-#         run: |
-#           npm run dna-install
-      # # build dna
-#       - name: Build DNA
-#         run: |
-#           npm run dna-pack
+      # install hc tool
+      - name: Install hc tool and wasm target
+        shell: bash # important because this runs shell scripts
+        run: |
+          npm run dna-install
+      # build dna
+      - name: Build DNA
+        run: |
+          npm run dna-pack
       # "upload" dna as build artifact
       - uses: actions/upload-artifact@master
         with:
@@ -81,24 +74,13 @@ jobs:
           npm run electron-install
         # if: ${{ runner.os == 'Windows' }}
         # shell: bash
-      - name: sign and notarize setup (macos only)
+      - name: setup for codesigning (macos only)
         if: ${{ runner.os == 'macOs' }}
         uses:  figleafteam/import-codesign-certs@v2
         with:
           p12-file-base64: ${{ secrets.HBE_APPLE_CERTIFICATE_BASE64 }}
           p12-password: ${{ secrets.HBE_APPLE_CERTIFICATE_PASS }}
-#       - name: sign and notarize setup (macos only)
-#         if: ${{ runner.os == 'macOs' }}
-#         env:
-#           HBE_APPLE_CERTIFICATE_BASE64: ${{ secrets.HBE_APPLE_CERTIFICATE_BASE64 }}
-#           HBE_APPLE_CERTIFICATE_PASS: ${{ secrets.HBE_APPLE_CERTIFICATE_PASS }}
-#         run: |
-#           echo $HBE_APPLE_CERTIFICATE_BASE64 | base64 --decode > certificate.p12
-#           security create-keychain -p arb-password build.keychain security default-keychain -s build.keychain
-#           security unlock-keychain -p arb-password build.keychain
-#           security import certificate.p12 -k build.keychain -P $HBE_APPLE_CERTIFICATE_PASS -T /usr/bin/codesign
-#           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k arb-password build.keychain
-      - name: build acorn
+      - name: build acorn (and notarize it- macos only)
         env:
           APPLE_DEV_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
           APPLE_ID_EMAIL: ${{ secrets.APPLE_ID_EMAIL }}
@@ -112,16 +94,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "test-release-2" "electron/out/Acorn-0.5.6-alpha.AppImage" --clobber
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.5.6-alpha.AppImage" --clobber
       - name: upload binary (macos only)
         if: ${{ runner.os == 'macOs' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "test-release-2" "electron/out/Acorn-0.5.6-alpha.dmg" --clobber
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.5.6-alpha.dmg" --clobber
       - name: upload binary (Windows only)
         if: ${{ runner.os == 'Windows' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "test-release-2" "electron/out/Acorn.Setup.0.5.6-alpha.exe" --clobber
+          gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "electron/out/Acorn.Setup.0.5.6-alpha.exe" --clobber
