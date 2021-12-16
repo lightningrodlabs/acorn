@@ -5,7 +5,7 @@ use crate::{
 };
 use hdk::prelude::*;
 use hdk_crud::{
-    crud, retrieval::{inputs::FetchOptions, fetch_entries::FetchEntries, fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry}, signals::ActionSignal, wire_element::WireElement, chain_actions::fetch_action::FetchAction,
+    crud, retrieval::{inputs::FetchOptions, fetch_entries::FetchEntries, fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry}, wire_element::WireElement, chain_actions::fetch_action::FetchAction,
 };
 use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
 use std::*;
@@ -74,10 +74,6 @@ impl fmt::Display for PriorityMode {
     }
 }
 
-fn convert_to_receiver_signal(signal: ActionSignal<ProjectMeta>) -> SignalType {
-    SignalType::ProjectMeta(signal)
-}
-
 crud!(
     ProjectMeta,
     project_meta,
@@ -90,7 +86,6 @@ crud!(
 pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireElement<ProjectMeta>> {
     // no project_meta entry should exist at least
     // that we can know about
-    // match inner_fetch_project_metas(FetchOptions::All, GetOptions::latest())?.len() {
     let fetch_action = FetchAction {};
     let fetch_entries = FetchEntries {};
     let fetch_links = FetchLinks {};
@@ -123,7 +118,6 @@ pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireElemen
 // READ
 #[hdk_extern]
 pub fn fetch_project_meta(_: ()) -> ExternResult<WireElement<ProjectMeta>> {
-    // match inner_fetch_project_metas(FetchOptions::All, GetOptions::latest())?.first() {
     let fetch_action = FetchAction {};
     let fetch_entries = FetchEntries {};
     let fetch_links = FetchLinks {};

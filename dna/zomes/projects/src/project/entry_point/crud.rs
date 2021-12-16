@@ -4,7 +4,7 @@ use crate::{
     SignalType,
 };
 use hdk::prelude::*;
-use hdk_crud::{crud, retrieval::inputs::FetchOptions, signals::ActionSignal, wire_element::WireElement};
+use hdk_crud::{crud, retrieval::inputs::FetchOptions, wire_element::WireElement};
 use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
 
 // The "Entry" in EntryPoint is not a reference to Holochain "Entries"
@@ -35,10 +35,6 @@ impl EntryPoint {
             is_imported,
         }
     }
-}
-
-fn convert_to_receiver_signal(signal: ActionSignal<EntryPoint>) -> SignalType {
-    SignalType::EntryPoint(signal)
 }
 
 crud!(
