@@ -31,6 +31,7 @@ import selectEntryPoints from '../projects/entry-points/select'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 // all global modals in here
 import GlobalModals from './GlobalModals'
+import { animatePanAndZoom } from '../viewport/actions'
 
 function App({
   activeEntryPoints,
@@ -43,6 +44,7 @@ function App({
   navigationPreference,
   setNavigationPreference,
   hideGuidebookHelpMessage,
+  goToGoal
 }) {
   const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
@@ -90,6 +92,7 @@ function App({
               setShowProjectSettingsOpen,
               setShowProfileEditForm,
               setShowPreferences,
+              goToGoal
             }}
           />
         )}
@@ -131,6 +134,9 @@ function mapDispatchToProps(dispatch) {
       const hideAction = setHasAccessedGuidebook(true)
       return dispatch(hideAction)
     },
+    goToGoal: (goalHeaderHash) => {
+      return dispatch(animatePanAndZoom(goalHeaderHash))
+    }
   }
 }
 

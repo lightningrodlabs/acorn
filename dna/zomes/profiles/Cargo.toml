@@ -8,12 +8,15 @@ name = "profiles"
 crate-type = [ "cdylib", "rlib" ]
 
 [dependencies]
-hdk_crud = "0.4.1"
+# hdk_crud = { git = "https://github.com/lightningrodlabs/hdk_crud", branch = "relaxed-chain-ordering"}
+hdk_crud = { version = "0.4.4" }
 holo_hash = { version = "0.0.8", features = ["encoding"] }
 hdk = "0.0.109"
 paste = "*"
 serde = "*"
 thiserror = "1"
+chrono = "0.4.19"
+
 
 [profile.dev]
 opt-level = "z"

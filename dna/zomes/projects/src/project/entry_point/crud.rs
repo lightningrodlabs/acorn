@@ -4,7 +4,7 @@ use crate::{
     SignalType,
 };
 use hdk::prelude::*;
-use hdk_crud::{crud, retrieval::FetchOptions, signals::ActionSignal, wire_element::WireElement};
+use hdk_crud::{crud, retrieval::retrieval::FetchOptions, signals::ActionSignal, wire_element::WireElement};
 use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
 
 // The "Entry" in EntryPoint is not a reference to Holochain "Entries"

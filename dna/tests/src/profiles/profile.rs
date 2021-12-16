@@ -3,7 +3,6 @@ pub mod tests {
     use crate::fixtures::fixtures::ProfileFixturator;
     use crate::test_lib::*;
     use ::fixt::prelude::*;
-    use assert_matches::assert_matches;
     use hdk::prelude::*;
     use hdk_crud::signals::ActionType;
     use hdk_crud::wire_element::WireElement;
@@ -90,7 +89,7 @@ pub mod tests {
             Ok(vec![])
         }
         let result = inner_create_whoami(profile, get_peers);
-        assert_matches!(result, Ok(wire_element));
+        assert_eq!(result, Ok(wire_element));
     }
     #[test]
     fn test_create_imported_profile() {
@@ -101,6 +100,7 @@ pub mod tests {
         let profile = wire_element.clone().entry;
         let profile_entry = CreateInput::try_from(profile.clone()).unwrap();
         let profile_header_hash = wire_element.clone().header_hash;
+        let profile_entry_hash = wire_element.clone().entry_hash;
 
         mock_create(
             mock_hdk_ref,
@@ -108,11 +108,10 @@ pub mod tests {
             Ok(profile_header_hash.clone().into()),
         );
 
-        let profile_hash = fixt!(EntryHash);
         mock_hash_entry(
             mock_hdk_ref,
             Entry::try_from(profile.clone()).unwrap(),
-            Ok(profile_hash.clone()),
+            Ok(profile_entry_hash.clone().into()),
         );
 
         let agent_path = Path::from("agents");
@@ -125,7 +124,7 @@ pub mod tests {
 
         let create_link_input = CreateLinkInput::new(
             agent_path_hash.clone(),
-            profile_hash.clone(),
+            profile_entry_hash.into(),
             LinkTag::from(()),
             ChainTopOrdering::default(),
         );
@@ -138,7 +137,7 @@ pub mod tests {
 
         set_hdk(mock_hdk);
         let result = create_imported_profile(profile);
-        assert_matches!(result, Ok(wire_element));
+        assert_eq!(result, Ok(wire_element));
     }
     #[test]
     fn test_update_whoami() {
@@ -189,7 +188,7 @@ pub mod tests {
             },
             get_peers,
         );
-        assert_matches!(result, Ok(wire_element));
+        assert_eq!(result, Ok(wire_element));
     }
     // #[test]
     // fn test_whoami() {}

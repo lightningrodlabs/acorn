@@ -9,6 +9,7 @@ import './DashboardListProject.css'
 import { pickColorForString } from '../../styles'
 
 import ProjectSettingsModal from '../../components/ProjectSettingsModal/ProjectSettingsModal'
+import { ENTRY_POINTS, GO_TO_GOAL } from '../../searchParams'
 
 function DashboardListProjectLoading() {
   return (
@@ -42,6 +43,7 @@ function DashboardListProject({
   setShowInviteMembersModal,
   updateIsAvailable,
   setShowUpdatePromptModal,
+  goToGoal
 }) {
   const [showEntryPoints, setShowEntryPoints] = useState(false)
 
@@ -171,7 +173,7 @@ function DashboardListProject({
               return (
                 <NavLink
                   key={`entry-point-${entryPoint.headerHash}`}
-                  to={`/project/${project.cellId}/map?entryPoints=${entryPoint.headerHash}`}
+                  to={`/project/${project.cellId}/map?${ENTRY_POINTS}=${entryPoint.headerHash}&${GO_TO_GOAL}=${entryPoint.goal_address}`}
                   className="entry-point-item"
                 >
                   <div className="entry-point-color-dot" style={dotStyle} />

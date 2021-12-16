@@ -1,10 +1,10 @@
 use hdk::prelude::*;
-use holo_hash::{HeaderHashB64, AgentPubKeyB64};
+use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 
 pub mod project;
 
 use hdk_crud::{
-    retrieval::fetch_links,
+    retrieval::{get_latest_for_entry::GetLatestEntry, retrieval::fetch_links},
     signals::{create_receive_signal_cap_grant, ActionSignal},
 };
 use project::{
@@ -15,7 +15,7 @@ use project::{
     goal_member::crud::GoalMember,
     goal_vote::crud::GoalVote,
     member::entry::{join_project_during_init, Member, MemberSignal, MEMBER_PATH},
-    project_meta::crud::ProjectMeta
+    project_meta::crud::ProjectMeta,
 };
 
 #[hdk_extern]
@@ -117,7 +117,8 @@ pub fn get_peers_content() -> ExternResult<Vec<AgentPubKey>> {
 // used to get addresses of agents to send signals to
 pub fn get_peers(get_options: GetOptions) -> ExternResult<Vec<AgentPubKey>> {
     let path_hash = Path::from(MEMBER_PATH).hash()?;
-    let entries = fetch_links::<Member>(path_hash, get_options)?;
+    let get_latest = GetLatestEntry {};
+    let entries = fetch_links::<Member>(&get_latest, path_hash, get_options)?;
     let self_agent_pub_key = AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey);
     Ok(entries
         .into_iter()

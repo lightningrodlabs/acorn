@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 
 import Icon from '../../../Icon/Icon'
 import GuidebookNavLink from '../../../GuidebookNavLink/GuidebookNavLink'
-import { GUIDE_IS_OPEN, CREATE_ENTRY_POINT_KEY } from '../../guideIsOpen'
+import { GUIDE_IS_OPEN, CREATE_ENTRY_POINT_KEY } from '../../../../searchParams'
 
 // Guides
 import projectsGuide from './HowTo.projects'

@@ -5,7 +5,6 @@ import { Status } from './Status'
 import HeaderLeftPanel from './HeaderLeftPanel'
 import HeaderRightPanel from './HeaderRightPanel'
 import HeaderMiddlePanel from './HeaderMiddlePanel'
-import ProjectSettingsModal from '../ProjectSettingsModal/ProjectSettingsModal'
 
 function Header({
   whoami,
@@ -17,6 +16,7 @@ function Header({
   project,
   projectId,
   hideGuidebookHelpMessage,
+  goToGoal,
 }) {
   const [isExportOpen, setIsExportOpen] = useState(false)
 
@@ -67,6 +67,7 @@ function Header({
           isExportOpen={isExportOpen}
           onClickExport={onClickExport}
           activeEntryPoints={activeEntryPoints}
+          goToGoal={goToGoal}
         />
         <HeaderMiddlePanel
           projectId={projectId}

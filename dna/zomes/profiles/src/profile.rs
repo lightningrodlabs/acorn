@@ -1,6 +1,9 @@
 use hdk::prelude::*;
 use hdk_crud::{
-    retrieval::{fetch_links, get_latest_for_entry, EntryAndHash},
+    retrieval::{
+        get_latest_for_entry::GetLatestEntry,
+        retrieval::{fetch_links, EntryAndHash},
+    },
     signals::ActionType,
     wire_element::WireElement,
 };
@@ -188,8 +191,8 @@ pub fn agent_signal_entry_type() -> String {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateInput {
-  pub header_hash: HeaderHashB64,
-  pub entry: Profile
+    pub header_hash: HeaderHashB64,
+    pub entry: Profile,
 }
 
 #[hdk_extern]
@@ -204,9 +207,9 @@ pub fn inner_update_whoami(
     update_entry(update.header_hash.clone().into(), &update.entry)?;
     let entry_hash = hash_entry(update.entry.clone())?;
     let wire_element = WireElement {
-      entry: update.entry,
-      header_hash: update.header_hash,
-      entry_hash: EntryHashB64::new(entry_hash)
+        entry: update.entry,
+        header_hash: update.header_hash,
+        entry_hash: EntryHashB64::new(entry_hash),
     };
     // // send update to peers
     // we don't want to cause real failure for inability to send to peers
@@ -226,11 +229,12 @@ pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
 
     let all_profiles = get_links(agent_entry_hash, None)?.into_inner();
     let maybe_profile_link = all_profiles.last();
+    let get_latest = GetLatestEntry {};
     // // do it this way so that we always keep the original profile entry address
     // // from the UI perspective
     match maybe_profile_link {
         Some(profile_link) => {
-            match get_latest_for_entry::<Profile>(
+            match get_latest.get_latest_for_entry::<Profile>(
                 profile_link.target.clone(),
                 GetOptions::content(),
             )? {
@@ -248,7 +252,8 @@ pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
 #[hdk_extern]
 pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
     let path_hash = Path::from(AGENTS_PATH).hash()?;
-    let entries = fetch_links::<Profile>(path_hash, GetOptions::content())?
+    let get_latest = GetLatestEntry {};
+    let entries = fetch_links::<Profile>(&get_latest, path_hash, GetOptions::content())?
         .into_iter()
         .map(|wire_element| wire_element.entry)
         .collect();
@@ -278,7 +283,8 @@ fn send_agent_signal(
 // used to get addresses of agents to send signals to
 fn get_peers() -> ExternResult<Vec<AgentPubKey>> {
     let path_hash = Path::from(AGENTS_PATH).hash()?;
-    let entries = fetch_links::<Profile>(path_hash, GetOptions::latest())?;
+    let get_latest = GetLatestEntry {};
+    let entries = fetch_links::<Profile>(&get_latest, path_hash, GetOptions::latest())?;
     let self_agent_pub_key = AgentPubKeyB64::from(agent_info()?.agent_latest_pubkey);
     Ok(entries
         .into_iter()
