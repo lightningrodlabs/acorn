@@ -2,7 +2,7 @@ use hdk::prelude::*;
 use hdk_crud::{
     retrieval::{
         get_latest_for_entry::GetLatestEntry,
-        retrieval::{fetch_links, EntryAndHash},
+        utils::EntryAndHash, fetch_links::FetchLinks,
     },
     signals::ActionType,
     wire_element::WireElement,
@@ -227,7 +227,7 @@ pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
     let agent_pubkey = agent_info()?.agent_initial_pubkey;
     let agent_entry_hash = EntryHash::from(agent_pubkey);
 
-    let all_profiles = get_links(agent_entry_hash, None)?.into_inner();
+    let all_profiles = get_links(agent_entry_hash, None)?;
     let maybe_profile_link = all_profiles.last();
     let get_latest = GetLatestEntry {};
     // // do it this way so that we always keep the original profile entry address
@@ -253,7 +253,8 @@ pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
 pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
     let path_hash = Path::from(AGENTS_PATH).hash()?;
     let get_latest = GetLatestEntry {};
-    let entries = fetch_links::<Profile>(&get_latest, path_hash, GetOptions::content())?
+    let fetch_links = FetchLinks {};
+    let entries = fetch_links.fetch_links::<Profile>(&get_latest, path_hash, GetOptions::content())?
         .into_iter()
         .map(|wire_element| wire_element.entry)
         .collect();
@@ -284,7 +285,8 @@ fn send_agent_signal(
 fn get_peers() -> ExternResult<Vec<AgentPubKey>> {
     let path_hash = Path::from(AGENTS_PATH).hash()?;
     let get_latest = GetLatestEntry {};
-    let entries = fetch_links::<Profile>(&get_latest, path_hash, GetOptions::latest())?;
+    let fetch_links = FetchLinks {};
+    let entries = fetch_links.fetch_links::<Profile>(&get_latest, path_hash, GetOptions::latest())?;
     let self_agent_pub_key = AgentPubKeyB64::from(agent_info()?.agent_latest_pubkey);
     Ok(entries
         .into_iter()

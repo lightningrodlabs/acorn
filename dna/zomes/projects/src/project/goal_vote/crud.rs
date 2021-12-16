@@ -49,5 +49,5 @@ crud!(
     goal_vote,
     "goal_vote",
     get_peers_content,
-    convert_to_receiver_signal
+    SignalType
 );

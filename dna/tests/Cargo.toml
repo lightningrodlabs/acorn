@@ -6,10 +6,9 @@ edition = "2018"
 [lib]
 
 [dependencies]
-# hdk_crud = { git = "https://github.com/lightningrodlabs/hdk_crud", branch = "relaxed-chain-ordering"}
-hdk_crud = { version = "0.4.4", features = ["mock"] }
-hdk = "0.0.109"
-holo_hash = { version = "0.0.8", features = ["encoding"] }
+hdk_crud = "0.5.3"
+holo_hash = { version = "=0.0.12", features = ["encoding", "fixturators"] }
+hdk = "0.0.115"
 projects = { path = "../zomes/projects" }
 profiles = { path = "../zomes/profiles" }
 paste = "*"
@@ -20,8 +19,8 @@ mockall = "0.9"
 assert_matches = "1.5.0"
 
 [dev-dependencies]
-fixt = "0.0.6"
-holochain_types = "0.0.9"
+fixt = "0.0.7"
+holochain_types = "0.0.15"
 rand = "0.7"
 strum = "0.18.0"
 strum_macros = "0.18.0"

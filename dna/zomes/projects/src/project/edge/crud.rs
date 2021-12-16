@@ -39,5 +39,5 @@ crud!(
     edge,
     "edge",
     get_peers_content,
-    convert_to_receiver_signal
+    SignalType
 );

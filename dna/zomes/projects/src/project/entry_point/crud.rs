@@ -4,7 +4,7 @@ use crate::{
     SignalType,
 };
 use hdk::prelude::*;
-use hdk_crud::{crud, retrieval::retrieval::FetchOptions, signals::ActionSignal, wire_element::WireElement};
+use hdk_crud::{crud, retrieval::inputs::FetchOptions, signals::ActionSignal, wire_element::WireElement};
 use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
 
 // The "Entry" in EntryPoint is not a reference to Holochain "Entries"
@@ -46,7 +46,7 @@ crud!(
     entry_point,
     "entry_point",
     get_peers_content,
-    convert_to_receiver_signal
+    SignalType
 );
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -58,7 +58,7 @@ pub struct EntryPointDetails {
 #[hdk_extern]
 pub fn fetch_entry_point_details(_: ()) -> ExternResult<EntryPointDetails> {
     // get the list of entry points
-    let entry_points = inner_fetch_entry_points(FetchOptions::All, GetOptions::latest())?;
+    let entry_points = fetch_entry_points(FetchOptions::All)?;
 
     // convert from header addresses to entry addresses
     let goal_entry_addresses = entry_points

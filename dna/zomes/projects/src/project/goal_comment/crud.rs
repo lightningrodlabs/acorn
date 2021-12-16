@@ -43,5 +43,5 @@ crud!(
     goal_comment,
     "goal_comment",
     get_peers_content,
-    convert_to_receiver_signal
+    SignalType
 );

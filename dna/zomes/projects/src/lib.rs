@@ -4,7 +4,7 @@ use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 pub mod project;
 
 use hdk_crud::{
-    retrieval::{get_latest_for_entry::GetLatestEntry, retrieval::fetch_links},
+    retrieval::{get_latest_for_entry::GetLatestEntry, fetch_links::FetchLinks},
     signals::{create_receive_signal_cap_grant, ActionSignal},
 };
 use project::{
@@ -70,6 +70,42 @@ pub enum SignalType {
     ProjectMeta(ActionSignal<ProjectMeta>),
 }
 
+impl From<ActionSignal<Edge>> for SignalType {
+    fn from(value: ActionSignal<Edge>) -> Self {
+        SignalType::Edge(value)
+    }
+}
+impl From<ActionSignal<EntryPoint>> for SignalType {
+    fn from(value: ActionSignal<EntryPoint>) -> Self {
+        SignalType::EntryPoint(value)
+    }
+}
+impl From<ActionSignal<Goal>> for SignalType {
+    fn from(value: ActionSignal<Goal>) -> Self {
+        SignalType::Goal(value)
+    }
+}
+impl From<ActionSignal<GoalComment>> for SignalType {
+    fn from(value: ActionSignal<GoalComment>) -> Self {
+        SignalType::GoalComment(value)
+    }
+}
+impl From<ActionSignal<GoalMember>> for SignalType {
+    fn from(value: ActionSignal<GoalMember>) -> Self {
+        SignalType::GoalMember(value)
+    }
+}
+impl From<ActionSignal<GoalVote>> for SignalType {
+    fn from(value: ActionSignal<GoalVote>) -> Self {
+        SignalType::GoalVote(value)
+    }
+}
+impl From<ActionSignal<ProjectMeta>> for SignalType {
+    fn from(value: ActionSignal<ProjectMeta>) -> Self {
+        SignalType::ProjectMeta(value)
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 pub enum GoalField {
     Title,
@@ -118,7 +154,8 @@ pub fn get_peers_content() -> ExternResult<Vec<AgentPubKey>> {
 pub fn get_peers(get_options: GetOptions) -> ExternResult<Vec<AgentPubKey>> {
     let path_hash = Path::from(MEMBER_PATH).hash()?;
     let get_latest = GetLatestEntry {};
-    let entries = fetch_links::<Member>(&get_latest, path_hash, get_options)?;
+    let fetch_links = FetchLinks {};
+    let entries = fetch_links.fetch_links::<Member>(&get_latest, path_hash, get_options)?;
     let self_agent_pub_key = AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey);
     Ok(entries
         .into_iter()
