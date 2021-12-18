@@ -283,7 +283,7 @@ async function installProjectApp(passphrase) {
     installed_app_id,
     dnas: [
       {
-        nick: uid,
+        role_id: uid,
         hash,
       },
     ],
