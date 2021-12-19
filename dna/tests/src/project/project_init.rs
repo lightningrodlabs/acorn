@@ -40,7 +40,7 @@ pub mod tests {
 
         // create_cap_grant calls just `create` under the hood
         let mut functions: GrantedFunctions = BTreeSet::new();
-        functions.insert((zome_info.zome_name, "recv_remote_signal".into()));
+        functions.insert((zome_info.name, "recv_remote_signal".into()));
         // expected is for the .with, and is b/c create parameter is of type EntryWithDefId
         let expected = CreateInput::new(
             EntryDefId::CapGrant,

@@ -2,7 +2,7 @@ use super::entry::{Member, MemberSignal, MEMBER_PATH};
 use crate::get_peers_latest;
 use hdk::prelude::*;
 use hdk_crud::{
-    retrieval::{get_latest_for_entry::GetLatestEntry, retrieval::fetch_links},
+    retrieval::{get_latest_for_entry::GetLatestEntry, fetch_links::FetchLinks},
     wire_element::WireElement,
 };
 use holo_hash::AgentPubKeyB64;
@@ -13,7 +13,8 @@ use holo_hash::AgentPubKeyB64;
 pub fn fetch_members(_: ()) -> ExternResult<Vec<WireElement<Member>>> {
     let path_hash = Path::from(MEMBER_PATH).hash()?;
     let get_latest = GetLatestEntry {};
-    let entries = fetch_links::<Member>(&get_latest, path_hash, GetOptions::content())?;
+    let fetch_links = FetchLinks {};
+    let entries = fetch_links.fetch_links::<Member>(&get_latest, path_hash, GetOptions::content())?;
     Ok(entries)
 }
 

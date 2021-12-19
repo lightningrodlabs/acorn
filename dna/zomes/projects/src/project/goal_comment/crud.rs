@@ -2,7 +2,7 @@ use crate::{
     get_peers_content,
     SignalType,
 };
-use hdk_crud::{crud, signals::ActionSignal};
+use hdk_crud::crud;
 use hdk::prelude::*;
 use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 
@@ -34,14 +34,10 @@ impl GoalComment {
   }
 }
 
-fn convert_to_receiver_signal(signal: ActionSignal<GoalComment>) -> SignalType {
-    SignalType::GoalComment(signal)
-}
-
 crud!(
     GoalComment,
     goal_comment,
     "goal_comment",
     get_peers_content,
-    convert_to_receiver_signal
+    SignalType
 );

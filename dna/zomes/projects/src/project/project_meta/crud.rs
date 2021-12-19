@@ -5,7 +5,7 @@ use crate::{
 };
 use hdk::prelude::*;
 use hdk_crud::{
-    crud, retrieval::retrieval::FetchOptions, signals::ActionSignal, wire_element::WireElement,
+    crud, retrieval::{inputs::FetchOptions, fetch_entries::FetchEntries, fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry}, wire_element::WireElement, chain_actions::fetch_action::FetchAction,
 };
 use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
 use std::*;
@@ -74,23 +74,30 @@ impl fmt::Display for PriorityMode {
     }
 }
 
-fn convert_to_receiver_signal(signal: ActionSignal<ProjectMeta>) -> SignalType {
-    SignalType::ProjectMeta(signal)
-}
-
 crud!(
     ProjectMeta,
     project_meta,
     "project_meta",
     get_peers_content,
-    convert_to_receiver_signal
+    SignalType
 );
 
 #[hdk_extern]
 pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireElement<ProjectMeta>> {
     // no project_meta entry should exist at least
     // that we can know about
-    match inner_fetch_project_metas(FetchOptions::All, GetOptions::latest())?.len() {
+    let fetch_action = FetchAction {};
+    let fetch_entries = FetchEntries {};
+    let fetch_links = FetchLinks {};
+    let get_latest = GetLatestEntry {};
+    match fetch_action.fetch_action::<ProjectMeta, WasmError>(
+        &fetch_entries,
+        &fetch_links,
+        &get_latest,
+        FetchOptions::All,
+        GetOptions::latest(),
+        get_project_meta_path(),
+    )?.len() {
         0 => {}
         _ => return Err(WasmError::Guest(Error::OnlyOneOfEntryType.to_string())),
     };
@@ -111,7 +118,18 @@ pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireElemen
 // READ
 #[hdk_extern]
 pub fn fetch_project_meta(_: ()) -> ExternResult<WireElement<ProjectMeta>> {
-    match inner_fetch_project_metas(FetchOptions::All, GetOptions::latest())?.first() {
+    let fetch_action = FetchAction {};
+    let fetch_entries = FetchEntries {};
+    let fetch_links = FetchLinks {};
+    let get_latest = GetLatestEntry {};
+    match fetch_action.fetch_action::<ProjectMeta, WasmError>(
+        &fetch_entries,
+        &fetch_links,
+        &get_latest,
+        FetchOptions::All,
+        GetOptions::latest(),
+        get_project_meta_path(),
+    )?.first() {
         Some(wire_entry) => Ok(wire_entry.to_owned()),
         None => Err(WasmError::Guest("no project meta exists".into())),
     }

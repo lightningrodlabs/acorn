@@ -1,6 +1,6 @@
 use crate::{get_peers_content, SignalType};
 use hdk::prelude::*;
-use hdk_crud::{crud, signals::ActionSignal};
+use hdk_crud::crud;
 use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 
 #[hdk_entry(id = "goal_vote")]
@@ -40,14 +40,10 @@ impl GoalVote {
     }
 }
 
-fn convert_to_receiver_signal(signal: ActionSignal<GoalVote>) -> SignalType {
-    SignalType::GoalVote(signal)
-}
-
 crud!(
     GoalVote,
     goal_vote,
     "goal_vote",
     get_peers_content,
-    convert_to_receiver_signal
+    SignalType
 );

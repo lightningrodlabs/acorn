@@ -1,6 +1,6 @@
 use crate::{get_peers_content, SignalType};
 use hdk::prelude::*;
-use hdk_crud::{crud, signals::ActionSignal};
+use hdk_crud::crud;
 use holo_hash::HeaderHashB64;
 
 // An edge. This is an arrow on the SoA Tree which directionally links
@@ -30,14 +30,10 @@ impl Edge {
     }
 }
 
-fn convert_to_receiver_signal(signal: ActionSignal<Edge>) -> SignalType {
-    SignalType::Edge(signal)
-}
-
 crud!(
     Edge,
     edge,
     "edge",
     get_peers_content,
-    convert_to_receiver_signal
+    SignalType
 );

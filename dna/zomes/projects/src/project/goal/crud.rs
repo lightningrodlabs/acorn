@@ -1,16 +1,17 @@
 use crate::project::{
-    edge::crud::{inner_archive_edge, inner_create_edge, inner_fetch_edges, Edge},
-    entry_point::crud::{inner_archive_entry_point, inner_fetch_entry_points},
-    goal_comment::crud::{inner_archive_goal_comment, inner_fetch_goal_comments},
+    edge::crud::{Edge, get_edge_path},
+    entry_point::crud::{EntryPoint, get_entry_point_path},
+    goal_comment::crud::{GoalComment, get_goal_comment_path},
     goal_member::crud::{archive_goal_members, GoalMember},
-    goal_vote::crud::{inner_archive_goal_vote, inner_fetch_goal_votes},
+    goal_vote::crud::{get_goal_vote_path, GoalVote},
 };
+use hdk_crud::{chain_actions::{create_action::{CreateAction, PathOrEntryHash}, delete_action::DeleteAction, fetch_action::FetchAction}, retrieval::{fetch_entries::FetchEntries, fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry}}; //may want to do the mock thing
 use crate::{get_peers_content, SignalType};
 use hdk::prelude::*;
 use hdk_crud::{
     crud,
-    retrieval::retrieval::FetchOptions,
-    signals::{ActionSignal, ActionType},
+    retrieval::inputs::FetchOptions,
+    signals::ActionType,
     wire_element::WireElement,
 };
 use holo_hash::{AgentPubKeyB64, HeaderHashB64};
@@ -145,16 +146,12 @@ impl TimeFrame {
     }
 }
 
-fn convert_to_receiver_signal(signal: ActionSignal<Goal>) -> SignalType {
-    SignalType::Goal(signal)
-}
-
 crud!(
     Goal,
     goal,
     "goal",
     get_peers_content,
-    convert_to_receiver_signal
+    SignalType
 );
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
@@ -212,11 +209,18 @@ pub struct GoalWithEdgeSignal {
 }
 
 #[hdk_extern]
-pub fn create_goal_with_edge(
+pub fn create_goal_with_edge( // TODO: may want to consider having a handler so can pass in the create_action struct for testing
     input: CreateGoalWithEdgeInput,
 ) -> ExternResult<CreateGoalWithEdgeOutput> {
     // false to say don't send a signal
-    let wire_element = inner_create_goal(input.entry.clone(), false, None)?;
+    let create_action = CreateAction {};
+    let wire_element = create_action.create_action::<Goal, WasmError, SignalType>(
+        input.entry.clone(),
+        Some(PathOrEntryHash::Path(get_goal_path())),
+        "goal".to_string(),
+        None,
+        None,
+    )?;
     let new_goal_address = wire_element.header_hash.clone();
     let maybe_edge: Option<WireElement<Edge>> = match input.maybe_linked_goal {
         Some(linked_goal_details) => {
@@ -238,7 +242,13 @@ pub fn create_goal_with_edge(
                 randomizer: r0,
                 is_imported: false,
             };
-            let edge_wire_element = inner_create_edge(edge, false, None)?;
+            let edge_wire_element = create_action.create_action::<Edge, WasmError, SignalType>(
+                edge,
+                Some(PathOrEntryHash::Path(get_edge_path())),
+                "edge".to_string(),
+                None,
+                None,
+            )?;
             Some(edge_wire_element)
         }
         None => None,
@@ -280,9 +290,24 @@ pub struct ArchiveGoalFullySignal {
 
 #[hdk_extern]
 pub fn archive_goal_fully(address: HeaderHashB64) -> ExternResult<ArchiveGoalFullyResponse> {
-    inner_archive_goal(address.clone(), false)?;
-
-    let archived_edges = inner_fetch_edges(FetchOptions::All, GetOptions::content())?
+    let delete_action = DeleteAction {};
+    delete_action.delete_action::<Goal, WasmError,SignalType>(
+        address.clone(),
+        "goal".to_string(),
+        None,
+    )?;
+    let fetch_action = FetchAction {};
+    let fetch_entries = FetchEntries {};
+    let fetch_links = FetchLinks {};
+    let get_latest = GetLatestEntry {};
+    let archived_edges = fetch_action.fetch_action::<Edge,WasmError>(
+        &fetch_entries,
+        &fetch_links,
+        &get_latest,
+        FetchOptions::All,
+        GetOptions::content(),
+        get_edge_path(),
+    )?
         .into_iter()
         .filter(|wire_element| {
             // check whether the parent_address or child_address is equal to the given address.
@@ -292,7 +317,11 @@ pub fn archive_goal_fully(address: HeaderHashB64) -> ExternResult<ArchiveGoalFul
         })
         .map(|wire_element| {
             let edge_address = wire_element.header_hash;
-            match inner_archive_edge(edge_address.clone(), false) {
+            match delete_action.delete_action::<Edge, WasmError, SignalType>(
+                edge_address.clone(),
+                "edge".to_string(),
+                None,
+            ) {
                 Ok(_) => Ok(edge_address),
                 Err(e) => Err(e),
             }
@@ -303,12 +332,23 @@ pub fn archive_goal_fully(address: HeaderHashB64) -> ExternResult<ArchiveGoalFul
 
     let archived_goal_members = archive_goal_members(address.clone())?;
 
-    let archived_goal_votes = inner_fetch_goal_votes(FetchOptions::All, GetOptions::content())?
+    let archived_goal_votes = fetch_action.fetch_action::<GoalVote, WasmError>(
+        &fetch_entries,
+        &fetch_links,
+        &get_latest,
+        FetchOptions::All,
+        GetOptions::content(),
+        get_goal_vote_path(),
+    )?
         .into_iter()
         .filter(|wire_element| wire_element.entry.goal_address == address.clone())
         .map(|wire_element| {
             let goal_vote_address = wire_element.header_hash;
-            match inner_archive_goal_vote(goal_vote_address.clone(), false) {
+            match delete_action.delete_action::<GoalVote, WasmError, SignalType>(
+                goal_vote_address.clone(),
+                "goal_vote".to_string(),
+                None,
+            ) {
                 Ok(_) => Ok(goal_vote_address),
                 Err(e) => Err(e),
             }
@@ -318,12 +358,24 @@ pub fn archive_goal_fully(address: HeaderHashB64) -> ExternResult<ArchiveGoalFul
         .collect();
 
     let archived_goal_comments =
-        inner_fetch_goal_comments(FetchOptions::All, GetOptions::content())?
+        // inner_fetch_goal_comments(FetchOptions::All, GetOptions::content())?
+        fetch_action.fetch_action::<GoalComment, WasmError>(
+            &fetch_entries,
+            &fetch_links,
+            &get_latest,
+            FetchOptions::All,
+            GetOptions::content(),
+            get_goal_comment_path(),
+        )?
             .into_iter()
             .filter(|wire_element| wire_element.entry.goal_address == address)
             .map(|wire_element| {
                 let goal_comment_address = wire_element.header_hash;
-                match inner_archive_goal_comment(goal_comment_address.clone(), false) {
+                match delete_action.delete_action::<GoalComment, WasmError, SignalType>(
+                    goal_comment_address.clone(),
+                    "goal_comment".to_string(),
+                    None,
+                ) {
                     Ok(_) => Ok(goal_comment_address),
                     Err(e) => Err(e),
                 }
@@ -332,12 +384,23 @@ pub fn archive_goal_fully(address: HeaderHashB64) -> ExternResult<ArchiveGoalFul
             .filter_map(Result::ok)
             .collect();
 
-    let archived_entry_points = inner_fetch_entry_points(FetchOptions::All, GetOptions::content())?
+    let archived_entry_points = fetch_action.fetch_action::<EntryPoint, WasmError>(
+        &fetch_entries,
+        &fetch_links,
+        &get_latest,
+        FetchOptions::All,
+        GetOptions::content(),
+        get_entry_point_path(),
+    )?
         .into_iter()
         .filter(|wire_element| wire_element.entry.goal_address == address)
         .map(|wire_element| {
             let entry_point_address = wire_element.header_hash;
-            match inner_archive_entry_point(entry_point_address.clone(), false) {
+            match delete_action.delete_action::<EntryPoint, WasmError, SignalType>(
+                entry_point_address.clone(),
+                "entry_point".to_string(),
+                None,
+            ) {
                 Ok(_) => Ok(entry_point_address),
                 Err(e) => Err(e),
             }
