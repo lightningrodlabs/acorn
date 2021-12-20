@@ -16,7 +16,7 @@ pub fn validate_create_entry_project_meta(
             Ok(proposed_entry) => {
                 // `address` must match header author
                 validate_value_matches_create_author(
-                    &proposed_entry.creator_address.0,
+                    &proposed_entry.creator_address.into(),
                     &validate_data,
                 )
             }

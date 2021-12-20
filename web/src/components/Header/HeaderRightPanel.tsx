@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { NavLink, Route, useHistory, useLocation } from 'react-router-dom'
 
-import { GUIDE_IS_OPEN } from '../GuideBook/guideIsOpen'
+import { GUIDE_IS_OPEN } from '../../searchParams'
 import { Status, StatusCssColorClass, StatusIcons } from './Status'
 import Icon from '../Icon/Icon'
 import Avatar from '../Avatar/Avatar'

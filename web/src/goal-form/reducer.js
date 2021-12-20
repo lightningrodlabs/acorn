@@ -11,12 +11,12 @@ const defaultState = {
   leftEdgeXPosition: 0,
   topEdgeYPosition: 0,
   // these three go together
-  // where the fromAddress is the address of the 
+  // where the fromAddress is the headerHash of the 
   // Goal that is the 'origin' of the edge
   // and relation indicates the 'port' in a sense, to be parent or child
   fromAddress: null,
   relation: null, // RELATION_AS_CHILD or RELATION_AS_PARENT
-  // existingParentEdgeAddress is the address of the edge that
+  // existingParentEdgeAddress is the headerHash of the edge that
   // we would delete in order to create a new one
   // ASSUMPTION: one parent
   existingParentEdgeAddress: null, // this is optional though

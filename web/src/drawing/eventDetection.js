@@ -33,7 +33,7 @@ export function checkForEdgeAtCoordinates(
   // keep track of whether an edge intersects the mouse
   let overEdgeAddress
   Object.keys(edges)
-    .map(address => edges[address])
+    .map(headerHash => edges[headerHash])
     .forEach(edge => {
       const parentGoalCoords = goalCoordinates[edge.parent_address]
       const childGoalCoords = goalCoordinates[edge.child_address]
@@ -68,8 +68,8 @@ export function checkForEdgeAtCoordinates(
           convertedMouse.y
         )
       ) {
-        // set the overEdgeAddress to this edge address
-        overEdgeAddress = edge.address
+        // set the overEdgeAddress to this edge headerHash
+        overEdgeAddress = edge.headerHash
       }
     })
   return overEdgeAddress
@@ -101,10 +101,10 @@ export function checkForGoalAtCoordinates(
   // keep track of whether a goal was selected
   let clickedAddress
   Object.keys(goals)
-    .map(address => goals[address])
+    .map(headerHash => goals[headerHash])
     .forEach(goal => {
       // convert the topLeft and bottomRight points of the goal to canvas
-      const coords = goalCoordinates[goal.address]
+      const coords = goalCoordinates[goal.headerHash]
 
       // do not proceed if we don't have coordinates
       // for the goal (yet)
@@ -121,7 +121,7 @@ export function checkForGoalAtCoordinates(
         (convertedClick.x <= bottomRight.x) && (convertedClick.y >= coords.y) &&
         convertedClick.y <= bottomRight.y
       ) {
-        clickedAddress = goal.address
+        clickedAddress = goal.headerHash
       }
     })
   return clickedAddress
@@ -141,10 +141,10 @@ export function checkForGoalAtCoordinatesInBox(
   // keep track of whether a goal was selected
   let clickedAddresses = {}
   Object.keys(goals)
-    .map(address => goals[address])
+    .map(headerHash => goals[headerHash])
     .forEach(goal => {
       // convert the topLeft and bottomRight points of the goal to canvas
-      const coords = goalCoordinates[goal.address]
+      const coords = goalCoordinates[goal.headerHash]
       const bottomRight = {
         x: coords.x + goalWidth,
         y: coords.y + goalHeight,
@@ -169,7 +169,7 @@ export function checkForGoalAtCoordinatesInBox(
           convertedIni.y > bottomRight.y &&
           coords.y > convertedClick.y)
       ) {
-        clickedAddresses[goal.address] = 1
+        clickedAddresses[goal.headerHash] = 1
       }
     })
   return Object.keys(clickedAddresses)

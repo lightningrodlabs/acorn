@@ -1,34 +1,33 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::{
-        EdgeFixturator, ProfileFixturator, WrappedAgentPubKeyFixturator,
-        WrappedHeaderHashFixturator,
-    };
+    use crate::fixtures::fixtures::ProfileFixturator;
     use crate::test_lib::*;
     use ::fixt::prelude::*;
-    use assert_matches::assert_matches;
     use hdk::prelude::*;
-    use hdk_crud::{ActionType, WrappedAgentPubKey, WrappedHeaderHash};
-    use holochain_types::prelude::ValidateDataFixturator;
+    use hdk_crud::signals::ActionType;
+    use hdk_crud::wire_element::WireElement;
+    use holo_hash::{EntryHashB64, HeaderHashB64};
     use profiles::profile::{
         agent_signal_entry_type, create_imported_profile, inner_create_whoami, inner_update_whoami,
-        AgentSignal, Profile, SignalData, Status, WireEntry,
+        AgentSignal, Profile, SignalData,
     };
-    use projects::project::edge::validate::*;
-    use projects::project::error::Error;
 
     #[test]
     fn test_create_whoami() {
         let mut mock_hdk = MockHdkT::new();
         let mock_hdk_ref = &mut mock_hdk;
 
-        let wire_entry = generate_wire_entry();
-        let profile = wire_entry.clone().entry;
-        let profile_entry = EntryWithDefId::try_from(profile.clone()).unwrap();
-        let profile_header_hash = wire_entry.clone().address.0;
-        mock_create(mock_hdk_ref, profile_entry, Ok(profile_header_hash.clone()));
+        let wire_element = generate_wire_element();
+        let profile = wire_element.clone().entry;
+        let profile_entry = CreateInput::try_from(profile.clone()).unwrap();
+        let profile_header_hash = wire_element.clone().header_hash;
+        mock_create(
+            mock_hdk_ref,
+            profile_entry,
+            Ok(profile_header_hash.clone().into()),
+        );
 
-        let profile_hash = fixt!(EntryHash);
+        let profile_hash: EntryHash = wire_element.entry_hash.clone().into();
         mock_hash_entry(
             mock_hdk_ref,
             Entry::try_from(profile.clone()).unwrap(),
@@ -47,6 +46,7 @@ pub mod tests {
             agent_path_hash.clone(),
             profile_hash.clone(),
             LinkTag::from(()),
+            ChainTopOrdering::default(),
         );
         let link_header_hash = fixt!(HeaderHash);
         mock_create_link(
@@ -58,8 +58,12 @@ pub mod tests {
         let agent_info = fixt!(AgentInfo);
         let agent_entry_hash = EntryHash::from(agent_info.clone().agent_initial_pubkey);
         mock_agent_info(mock_hdk_ref, Ok(agent_info));
-        let create_link_input =
-            CreateLinkInput::new(agent_entry_hash, profile_hash, LinkTag::from(()));
+        let create_link_input = CreateLinkInput::new(
+            agent_entry_hash,
+            profile_hash,
+            LinkTag::from(()),
+            ChainTopOrdering::default(),
+        );
         mock_create_link(
             mock_hdk_ref,
             create_link_input,
@@ -69,7 +73,7 @@ pub mod tests {
         let signal = AgentSignal {
             entry_type: agent_signal_entry_type(),
             action: ActionType::Create,
-            data: SignalData::Create(wire_entry.clone()),
+            data: SignalData::Create(wire_element.clone()),
         };
 
         let payload = ExternIO::encode(signal).unwrap();
@@ -85,25 +89,29 @@ pub mod tests {
             Ok(vec![])
         }
         let result = inner_create_whoami(profile, get_peers);
-        assert_matches!(result, Ok(wire_entry));
+        assert_eq!(result, Ok(wire_element));
     }
     #[test]
     fn test_create_imported_profile() {
         let mut mock_hdk = MockHdkT::new();
         let mock_hdk_ref = &mut mock_hdk;
 
-        let wire_entry = generate_wire_entry();
-        let profile = wire_entry.clone().entry;
-        let profile_entry = EntryWithDefId::try_from(profile.clone()).unwrap();
-        let profile_header_hash = wire_entry.clone().address.0;
+        let wire_element = generate_wire_element();
+        let profile = wire_element.clone().entry;
+        let profile_entry = CreateInput::try_from(profile.clone()).unwrap();
+        let profile_header_hash = wire_element.clone().header_hash;
+        let profile_entry_hash = wire_element.clone().entry_hash;
 
-        mock_create(mock_hdk_ref, profile_entry, Ok(profile_header_hash.clone()));
+        mock_create(
+            mock_hdk_ref,
+            profile_entry,
+            Ok(profile_header_hash.clone().into()),
+        );
 
-        let profile_hash = fixt!(EntryHash);
         mock_hash_entry(
             mock_hdk_ref,
             Entry::try_from(profile.clone()).unwrap(),
-            Ok(profile_hash.clone()),
+            Ok(profile_entry_hash.clone().into()),
         );
 
         let agent_path = Path::from("agents");
@@ -116,8 +124,9 @@ pub mod tests {
 
         let create_link_input = CreateLinkInput::new(
             agent_path_hash.clone(),
-            profile_hash.clone(),
+            profile_entry_hash.into(),
             LinkTag::from(()),
+            ChainTopOrdering::default(),
         );
         let link_header_hash = fixt!(HeaderHash);
         mock_create_link(
@@ -128,25 +137,36 @@ pub mod tests {
 
         set_hdk(mock_hdk);
         let result = create_imported_profile(profile);
-        assert_matches!(result, Ok(wire_entry));
+        assert_eq!(result, Ok(wire_element));
     }
     #[test]
     fn test_update_whoami() {
         let mut mock_hdk = MockHdkT::new();
         let mock_hdk_ref = &mut mock_hdk;
 
-        let wire_entry = generate_wire_entry();
-        let profile_address = wire_entry.address.0.clone();
-        let profile = wire_entry.entry.clone();
-        let update_input =
-            UpdateInput::new(profile_address, EntryWithDefId::try_from(profile).unwrap());
+        let mut wire_element = generate_wire_element();
+        let profile_address = wire_element.header_hash.clone();
+        let profile = wire_element.entry.clone();
+        let update_input = UpdateInput::new(
+            profile_address.clone().into(),
+            CreateInput::try_from(profile.clone()).unwrap(),
+        );
         let update_header_hash = fixt!(HeaderHash);
         mock_update(mock_hdk_ref, update_input, Ok(update_header_hash));
+
+        let update_entry_hash = fixt!(EntryHash);
+        mock_hash_entry(
+            mock_hdk_ref,
+            CreateInput::try_from(profile.clone()).unwrap().entry,
+            Ok(update_entry_hash.clone()),
+        );
+
+        wire_element.entry_hash = EntryHashB64::new(update_entry_hash);
 
         let signal = AgentSignal {
             entry_type: agent_signal_entry_type(),
             action: ActionType::Update,
-            data: SignalData::Update(wire_entry.clone()),
+            data: SignalData::Update(wire_element.clone()),
         };
 
         let payload = ExternIO::encode(signal).unwrap();
@@ -161,8 +181,14 @@ pub mod tests {
         fn get_peers() -> ExternResult<Vec<AgentPubKey>> {
             Ok(vec![])
         }
-        let result = inner_update_whoami(wire_entry, get_peers);
-        assert_matches!(result, Ok(wire_entry));
+        let result = inner_update_whoami(
+            profiles::profile::UpdateInput {
+                header_hash: profile_address,
+                entry: profile,
+            },
+            get_peers,
+        );
+        assert_eq!(result, Ok(wire_element));
     }
     // #[test]
     // fn test_whoami() {}
@@ -170,13 +196,15 @@ pub mod tests {
     // fn test_fetch_agents() {}
 
     /// generate an arbitrary `WireEntry` for unit testing
-    fn generate_wire_entry() -> WireEntry {
+    fn generate_wire_element() -> WireElement<Profile> {
         let profile = fixt!(Profile);
         let profile_header_hash = fixt!(HeaderHash);
-        let wire_entry = WireEntry {
+        let profile_entry_hash = fixt!(EntryHash);
+        let wire_element = WireElement {
             entry: profile,
-            address: WrappedHeaderHash(profile_header_hash),
+            header_hash: HeaderHashB64::new(profile_header_hash),
+            entry_hash: EntryHashB64::new(profile_entry_hash),
         };
-        wire_entry
+        wire_element
     }
 }

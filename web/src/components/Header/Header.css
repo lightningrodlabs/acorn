@@ -155,7 +155,7 @@
   /* Safari 7.0+ */
   display: flex;
   align-items: center;
-  padding: 0 26px 0 12px;
+  padding: 0 30px 0 12px;
   color: #4d4d4d;
 }
 
@@ -164,6 +164,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 200px;
+  cursor: pointer;
 }
 
 .active-entry-point img {
@@ -174,7 +175,7 @@
 
 .active-entry-point-close {
   position: absolute;
-  right: 8px;
+  right: 0px;
   visibility: hidden;
 }
 

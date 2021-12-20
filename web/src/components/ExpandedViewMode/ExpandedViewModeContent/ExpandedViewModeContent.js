@@ -182,7 +182,7 @@ function Details({
             <div className="expanded-view-squirrels-content">
               {squirrels.map((squirrel, index) => {
                 const highlighted = squirrelInfoPopup
-                  ? squirrelInfoPopup.address === squirrel.address
+                  ? squirrelInfoPopup.headerHash === squirrel.headerHash
                   : false
                 return (
                   <div className="expanded-view-squirrel-wrapper">

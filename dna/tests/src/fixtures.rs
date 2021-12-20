@@ -10,7 +10,7 @@
 pub(crate) mod fixtures {
     use ::fixt::prelude::*;
     use hdk::prelude::*;
-    use hdk_crud::{WrappedAgentPubKey, WrappedHeaderHash};
+    use holo_hash::{AgentPubKeyB64, HeaderHashB64};
     use profiles::profile::{Profile, Status as ProfileStatus};
     use projects::project::goal::crud::{Goal, Hierarchy, Status};
     use projects::project::{
@@ -25,52 +25,42 @@ pub(crate) mod fixtures {
     };
 
     fixturator!(
-      WrappedHeaderHash;
-        constructor fn new(HeaderHash);
-    );
-
-    fixturator!(
-      WrappedAgentPubKey;
-        constructor fn new(AgentPubKey);
-    );
-
-    fixturator!(
       Edge;
-        constructor fn new(WrappedHeaderHash, WrappedHeaderHash, f64, bool);
+        constructor fn new(HeaderHashB64, HeaderHashB64, i64, bool);
     );
 
     fixturator!(
       EntryPoint;
-        constructor fn new(String, WrappedAgentPubKey, f64, WrappedHeaderHash, bool);
+        constructor fn new(String, AgentPubKeyB64, f64, HeaderHashB64, bool);
     );
 
     fixturator!(
       GoalMember;
-        constructor fn new(WrappedHeaderHash, WrappedAgentPubKey, WrappedAgentPubKey, f64, bool);
+        constructor fn new(HeaderHashB64, AgentPubKeyB64, AgentPubKeyB64, f64, bool);
     );
 
     fixturator!(
       GoalComment;
-        constructor fn new(WrappedHeaderHash, String, WrappedAgentPubKey, f64, bool);
+        constructor fn new(HeaderHashB64, String, AgentPubKeyB64, f64, bool);
     );
 
     fixturator!(
       GoalVote;
-        constructor fn new(WrappedHeaderHash, f64, f64, f64, f64, WrappedAgentPubKey, f64, bool);
+        constructor fn new(HeaderHashB64, f64, f64, f64, f64, AgentPubKeyB64, f64, bool);
     );
 
     fixturator!(
       Member;
-        constructor fn new(WrappedAgentPubKey);
+        constructor fn new(AgentPubKeyB64);
     );
 
     fixturator!(
       ProjectMeta;
-        constructor fn new(WrappedAgentPubKey, f64, String, OptionString, String, bool, PriorityMode, VecWrappedHeaderHash);
+        constructor fn new(AgentPubKeyB64, f64, String, OptionString, String, bool, PriorityMode, VecHeaderHashB64);
     );
 
-    type VecWrappedHeaderHash = Vec<WrappedHeaderHash>;
-    type OptionWrappedAgentPubKey = Option<WrappedAgentPubKey>;
+    type VecHeaderHashB64 = Vec<HeaderHashB64>;
+    type OptionAgentPubKeyB64 = Option<AgentPubKeyB64>;
     type OptionString = Option<String>;
     type Optionf64 = Option<f64>;
     type OptionVecString = Option<Vec<String>>;
@@ -97,28 +87,28 @@ pub(crate) mod fixtures {
     );
 
     fixturator!(
-      VecWrappedHeaderHash;
+      VecHeaderHashB64;
       curve Empty {
           Vec::new()
       };
       curve Unpredictable {
-        vec![WrappedHeaderHashFixturator::new(Unpredictable).next().unwrap()]
+        vec![HeaderHashB64Fixturator::new(Unpredictable).next().unwrap()]
       };
       curve Predictable {
-        vec![WrappedHeaderHashFixturator::new(Predictable).next().unwrap()]
+        vec![HeaderHashB64Fixturator::new(Predictable).next().unwrap()]
       };
     );
 
     fixturator!(
-      OptionWrappedAgentPubKey;
+      OptionAgentPubKeyB64;
       curve Empty {
           None
       };
       curve Unpredictable {
-        Some(WrappedAgentPubKeyFixturator::new(Unpredictable).next().unwrap())
+        Some(AgentPubKeyB64Fixturator::new(Unpredictable).next().unwrap())
       };
       curve Predictable {
-        Some(WrappedAgentPubKeyFixturator::new(Predictable).next().unwrap())
+        Some(AgentPubKeyB64Fixturator::new(Predictable).next().unwrap())
       };
     );
 
@@ -176,7 +166,7 @@ pub(crate) mod fixtures {
 
     fixturator!(
       Goal;
-        constructor fn new(String, WrappedAgentPubKey, OptionWrappedAgentPubKey, f64, Optionf64, Hierarchy, Status, OptionVecString, String, OptionTimeFrame, bool);
+        constructor fn new(String, AgentPubKeyB64, OptionAgentPubKeyB64, f64, Optionf64, Hierarchy, Status, OptionVecString, String, OptionTimeFrame, bool);
     );
     fixturator!(
       ProfileStatus;
@@ -184,6 +174,6 @@ pub(crate) mod fixtures {
     );
     fixturator!(
       Profile;
-        constructor fn new(String, String, String, ProfileStatus, String, WrappedAgentPubKey, bool);
+        constructor fn new(String, String, String, ProfileStatus, String, AgentPubKeyB64, bool);
     );
 }

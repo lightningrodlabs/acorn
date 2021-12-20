@@ -16,16 +16,16 @@ export default {
             1. In dashboard view click on the Plus icon on top right corner of your project's row (next to your avatar).
           </li>
           <li>
-            2. Copy the unqiue Proejct Invitation Secret phrase.
+            2. Copy the unique Project Invitation Secret phrase.
           </li>
           <li>
-            3. Paste it into your communcation channel with the person you are inviting (outside Acorn!).
+            3. Paste it into your communication channel with the person you are inviting (outside Acorn!).
           </li>
           <li>
             4. Now you just have to wait for them to install Acorn on their device and follow <a>Join a Project</a> steps using the secret passphrase you've shared with them.
           </li>
           <li>
-            5. At least one of you or your aleady-joined team members would need to be "online" for the joining process to be completed. Otherwise the proejct would go to a queue status for the invitee person until Acorn finds an online peer from the project to sync with them.
+            5. At least one of your already-joined team members would need to be "online" for the joining process to be completed. Otherwise the project would go to a queue status for the invitee person until Acorn finds an online peer from the project to sync with them.
           </li>
           <li>
             That's it! Now you can enjoy a truly peer-to-peer collaboration with your team members.

@@ -80,6 +80,7 @@ function GoalTitleQuickEdit({
   // this can get called via keyboard events
   // or via 'onClickOutside' of the GoalTitleQuickEdit component
   const handleSubmit = async (event) => {
+    console.log(event)
     if (event) {
       // this is to prevent the page from refreshing
       // when the form is submitted, which is the
@@ -107,8 +108,10 @@ function GoalTitleQuickEdit({
     const isKeyboardTrigger = !event
     // don't close this if it was a click on the vertical-actions-list
     // that caused this 'onClickOutside' event
-    const clickNotOnActionsList = event && !document.querySelector('.vertical-actions-list').contains(event.target)
-    if (isKeyboardTrigger || clickNotOnActionsList) {
+    const verticalActionsList = document.querySelector('.vertical-actions-list')
+    const clickNotOnActionsList = event && verticalActionsList && !verticalActionsList.contains(event.target)
+    // close it for sure, if this is a Create action (and not an update action)
+    if (isKeyboardTrigger || !editAddress || clickNotOnActionsList) {
       // reset the textarea value to empty
       updateContent('')
       closeGoalForm()
@@ -234,6 +237,9 @@ function mapStateToProps(state) {
   const editingGoal = editAddress
     ? state.projects.goals[activeProject][editAddress]
     : null
+  // this value of state.whoami.entry.address
+  // should not be changed to headerHash unless the entry type of Profile
+  // is changed
   const user_hash = editAddress ? editingGoal.user_hash : state.whoami.entry.address
   const user_edit_hash = editAddress ? state.whoami.entry.address : null
   const status = editAddress ? editingGoal.status : 'Uncertain'
@@ -310,9 +316,9 @@ function mapDispatchToProps(dispatch, ownProps) {
         })
       )
     },
-    updateGoal: (entry, address) => {
+    updateGoal: (entry, headerHash) => {
       return dispatch(
-        updateGoal.create({ cellIdString, payload: { entry, address } })
+        updateGoal.create({ cellIdString, payload: { entry, headerHash } })
       )
     },
     closeGoalForm: () => {

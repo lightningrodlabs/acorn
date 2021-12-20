@@ -114,25 +114,6 @@ function PeoplePicker({
   )
 }
 
-PeoplePicker.propTypes = {
-  projectId: PropTypes.string,
-  people: PropTypes.arrayOf(
-    PropTypes.shape({
-      address: PropTypes.string.isRequired,
-      first_name: PropTypes.string.isRequired,
-      last_name: PropTypes.string.isRequired,
-      handle: PropTypes.string.isRequired,
-      avatar_url: PropTypes.string.isRequired,
-      is_member: PropTypes.bool.isRequired,
-      goal_member_address: PropTypes.string,
-    })
-  ).isRequired,
-  goalAddress: PropTypes.string.isRequired,
-  createGoalMember: PropTypes.func.isRequired,
-  archiveGoalMember: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired,
-}
-
 function mapStateToProps(state, ownProps) {
   const goalAddress = state.ui.goalForm.isOpen
     ? state.ui.goalForm.editAddress
@@ -152,11 +133,11 @@ function mapStateToProps(state, ownProps) {
       const member = membersOfGoal.find(
         (goalMember) => goalMember.agent_address === agent.address
       )
-
+        console.log(member)
       return {
         ...agent, // address, name, avatar_url
         is_member: member ? true : false,
-        goal_member_address: member ? member.address : null,
+        goal_member_address: member ? member.headerHash : null,
       }
     }),
     goalAddress,

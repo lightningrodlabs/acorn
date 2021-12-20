@@ -2,7 +2,7 @@ use hdk::prelude::*;
 
 pub fn mock_create(
     mock_hdk: &mut MockHdkT,
-    input: EntryWithDefId,
+    input: CreateInput,
     output: ExternResult<HeaderHash>,
 ) {
     mock_hdk

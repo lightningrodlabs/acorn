@@ -31,25 +31,27 @@ import selectEntryPoints from '../projects/entry-points/select'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 // all global modals in here
 import GlobalModals from './GlobalModals'
+import { animatePanAndZoom } from '../viewport/actions'
 
 function App({
   activeEntryPoints,
   activeProjectMeta,
   projectId,
   agentAddress,
-  whoami, // .entry and .address
+  whoami, // .entry and .headerHash
   hasFetchedForWhoami,
   updateWhoami,
   navigationPreference,
   setNavigationPreference,
   hideGuidebookHelpMessage,
+  goToGoal
 }) {
   const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
 
   const onProfileSubmit = async (profile) => {
-    await updateWhoami(profile, whoami.address)
+    await updateWhoami(profile, whoami.headerHash)
     setShowProfileEditForm(false)
   }
   const updateStatus = async (statusString) => {
@@ -58,7 +60,7 @@ function App({
         ...whoami.entry,
         status: statusString,
       },
-      whoami.address
+      whoami.headerHash
     )
   }
 
@@ -90,6 +92,7 @@ function App({
               setShowProjectSettingsOpen,
               setShowProfileEditForm,
               setShowPreferences,
+              goToGoal
             }}
           />
         )}
@@ -131,6 +134,9 @@ function mapDispatchToProps(dispatch) {
       const hideAction = setHasAccessedGuidebook(true)
       return dispatch(hideAction)
     },
+    goToGoal: (goalHeaderHash) => {
+      return dispatch(animatePanAndZoom(goalHeaderHash))
+    }
   }
 }
 
@@ -151,9 +157,9 @@ function mapStateToProps(state) {
     ? selectEntryPoints(state, activeProject)
     : []
   const activeEntryPointsObjects = activeEntryPoints
-    .map((address) => {
+    .map((headerHash) => {
       return allProjectEntryPoints.find(
-        (entryPoint) => entryPoint.address === address
+        (entryPoint) => entryPoint.headerHash === headerHash
       )
     })
     // cut out invalid ones
@@ -177,10 +183,10 @@ function mergeProps(stateProps, dispatchProps, _ownProps) {
   return {
     ...stateProps,
     ...dispatchProps,
-    updateWhoami: (entry, address) => {
+    updateWhoami: (entry, headerHash) => {
       return dispatch(
         updateWhoami.create({
-          payload: { entry, address },
+          payload: { entry, headerHash },
           cellIdString: profilesCellIdString,
         })
       )

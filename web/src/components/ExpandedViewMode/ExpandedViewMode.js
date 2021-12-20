@@ -201,12 +201,12 @@ function mapStateToProps(state, ownProps) {
       goalComment => goalComment.goal_address === state.ui.expandedView.goalAddress
     )
     squirrels = Object.keys(goalMembers)
-      .map(address => goalMembers[address])
-      .filter(goalMember => goalMember.goal_address === goal.address)
+      .map(headerHash => goalMembers[headerHash])
+      .filter(goalMember => goalMember.goal_address === goal.headerHash)
       .map(goalMember => {
         const squirrel = {
           ...state.agents[goalMember.agent_address],
-          goalMemberAddress: goalMember.address
+          goalMemberAddress: goalMember.headerHash
         }
         return squirrel
       })
@@ -221,7 +221,7 @@ function mapStateToProps(state, ownProps) {
     entryPoint => entryPoint.goal_address === goalAddress
   )
   const isEntryPoint = entryPoint ? true : false
-  const entryPointAddress = entryPoint ? entryPoint.address : null
+  const entryPointAddress = entryPoint ? entryPoint.headerHash : null
 
   return {
     agentAddress: state.agentAddress,
@@ -244,9 +244,9 @@ function mapDispatchToProps(dispatch, ownProps) {
     archiveEntryPoint: payload => {
       return dispatch(archiveEntryPoint.create({ cellIdString, payload }))
     },
-    updateGoal: (entry, address) => {
+    updateGoal: (entry, headerHash) => {
       return dispatch(
-        updateGoal.create({ cellIdString, payload: { address, entry } })
+        updateGoal.create({ cellIdString, payload: { headerHash, entry } })
       )
     },
     archiveGoalMember: payload => {

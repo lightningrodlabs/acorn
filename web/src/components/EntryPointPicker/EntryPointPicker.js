@@ -10,22 +10,29 @@ import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import Icon from '../Icon/Icon'
 import selectEntryPoints from '../../projects/entry-points/select'
 import { NavLink } from 'react-router-dom'
-import { GUIDE_IS_OPEN } from '../GuideBook/guideIsOpen'
+import { ENTRY_POINTS, GUIDE_IS_OPEN } from '../../searchParams'
+import { animatePanAndZoom } from '../../viewport/actions'
 
-function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints }) {
+function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints, goToGoal }) {
   const dotStyle = {
     backgroundColor: entryPoint.color,
   }
   const location = useLocation()
 
   const pathWithEntryPoint = `${location.pathname
-    }?entryPoints=${activeEntryPoints.concat([entryPoint.address]).join(',')}`
+    }?${ENTRY_POINTS}=${activeEntryPoints.concat([entryPoint.headerHash]).join(',')}`
 
   const pathWithoutEntryPoint = `${location.pathname
-    }?entryPoints=${activeEntryPoints
-      .filter(address => address !== entryPoint.address)
+    }?${ENTRY_POINTS}=${activeEntryPoints
+      .filter(headerHash => headerHash !== entryPoint.headerHash)
       .join(',')}`
 
+  const onClickArrow = (event) => {
+    // prevent the navigation (NavLink)
+    // event that would be triggered
+    event.preventDefault()
+    goToGoal(entryPoint.goal_address)
+  }
   return (
     <li>
       <NavLink
@@ -34,11 +41,10 @@ function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints }) {
         className='entry-point-picker-item'>
         <div className='entry-point-picker-dot' style={dotStyle}></div>
         <div className='entry-point-picker-name'>{entryPoint.content}</div>
-        <NavLink
-          to={`${location.pathname}?entryPoints=${entryPoint.address}`}
+        <div onClick={onClickArrow}
           className='entry-point-picker-switch'>
           <Icon name='enter.svg' size='small' className='grey' />
-        </NavLink>
+        </div>
         <div className='entry-point-picker-radio'>
           <Icon
             name={isActive ? 'radio-button-checked.svg' : 'radio-button.svg'}
@@ -51,10 +57,8 @@ function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints }) {
   )
 }
 
-function EntryPointPicker({ entryPoints, isOpen, onClose, activeEntryPoints }) {
+function EntryPointPicker({ entryPoints, isOpen, onClose, activeEntryPoints, goToGoal }) {
   const [filterText, setFilterText] = useState('')
-
-  const location = useLocation()
 
   // filter people out if there's filter text defined, and don't bother case matching
   const filteredEntryPoints = entryPoints.filter(entryPoint => {
@@ -63,6 +67,11 @@ function EntryPointPicker({ entryPoints, isOpen, onClose, activeEntryPoints }) {
       entryPoint.content.toLowerCase().indexOf(filterText.toLowerCase()) > -1
     )
   })
+
+  const goToGoalWrapped = (goalHeaderHash) => {
+    onClose()
+    goToGoal(goalHeaderHash)
+  }
 
   return (
     <CSSTransition
@@ -102,12 +111,13 @@ function EntryPointPicker({ entryPoints, isOpen, onClose, activeEntryPoints }) {
         <ul className='entry-point-picker-list'>
           {filteredEntryPoints.map(entryPoint => (
             <EntryPointPickerItem
-              key={entryPoint.address}
+              key={entryPoint.headerHash}
               entryPoint={entryPoint}
               isActive={activeEntryPoints.some(
-                address => address === entryPoint.address
+                headerHash => headerHash === entryPoint.headerHash
               )}
               activeEntryPoints={activeEntryPoints}
+              goToGoal={goToGoalWrapped}
             />
           ))}
           {/* Entry Points Empty State */}
@@ -153,7 +163,11 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {}
+  return {
+    goToGoal: (goalHeaderHash) => {
+      return dispatch(animatePanAndZoom(goalHeaderHash))
+    }
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(EntryPointPicker)

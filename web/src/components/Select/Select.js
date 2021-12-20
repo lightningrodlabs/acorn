@@ -21,7 +21,7 @@ function useSelect(multiple, preSelected = multiple ? [] : null) {
     // if value is selected
     if (selected.includes(value)) {
       // unselect it
-      setSelected(selected.filter(address => address !== value))
+      setSelected(selected.filter(headerHash => headerHash !== value))
     } else {
       // if value is not selected, add it
       setSelected(selected.concat([value]))

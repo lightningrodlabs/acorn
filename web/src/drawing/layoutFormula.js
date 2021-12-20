@@ -5,14 +5,20 @@ import goalsAsTrees from '../projects/goals/goalsAsTrees'
 const VERTICAL_SPACING = 50
 
 function getBoundingRec(goal, allGoalCoordinates) {
-  const origCoord = allGoalCoordinates[goal.address]
+  const origCoord = allGoalCoordinates[goal.headerHash]
+  if (!origCoord) {
+    return
+  }
   let boundTop = origCoord.y
   let boundRight = origCoord.x
   let boundBottom = origCoord.y
   let boundLeft = origCoord.x
 
   function updateLimits(goalToCheck) {
-    const topLeftCoord = allGoalCoordinates[goalToCheck.address]
+    const topLeftCoord = allGoalCoordinates[goalToCheck.headerHash]
+    if (!topLeftCoord) {
+      return
+    }
     const width = goalWidth
     const height = getGoalHeight(null, goalToCheck.content)
     const top = topLeftCoord.y
@@ -48,14 +54,14 @@ function layoutForTree(tree) {
 
   // use recursion to add each goal as a node in the graph
   function addGoal(goal) {
-    graph.setNode(goal.address, {
+    graph.setNode(goal.headerHash, {
       width: goalWidth,
       height: getGoalHeight(null, goal.content) + VERTICAL_SPACING,
     })
     goal.children.forEach(childGoal => {
       addGoal(childGoal)
       // add each edge as an edge in the graph
-      graph.setEdge(goal.address, childGoal.address)
+      graph.setEdge(goal.headerHash, childGoal.headerHash)
     })
   }
   // kick off the recursion
@@ -67,10 +73,10 @@ function layoutForTree(tree) {
   // create a coordinates object
   const coordinates = {}
   // update the coordinates object
-  graph.nodes().forEach(address => {
-    coordinates[address] = {
-      x: graph.node(address).x,
-      y: graph.node(address).y,
+  graph.nodes().forEach(headerHash => {
+    coordinates[headerHash] = {
+      x: graph.node(headerHash).x,
+      y: graph.node(headerHash).y,
     }
   })
   return coordinates

@@ -55,8 +55,9 @@ getAppWs(signalsHandlers(store)).then(async (client) => {
     const profilesInfo = await client.appInfo({
       installed_app_id: MAIN_APP_ID,
     })
+    console.log(profilesInfo)
     const { cell_id: cellId } = profilesInfo.cell_data.find(
-      ({ cell_nick }) => cell_nick === PROFILES_SLOT_NAME
+      ({ role_id }) => role_id === PROFILES_SLOT_NAME
     )
     const [_dnaHash, agentPubKey] = cellId
     // cache buffer version of agentPubKey
@@ -64,7 +65,9 @@ getAppWs(signalsHandlers(store)).then(async (client) => {
     const cellIdString = cellIdToString(cellId)
     store.dispatch(setProfilesCellId(cellIdString))
     // all functions of the Profiles DNA
-    store.dispatch(fetchAgents.create({ cellIdString, payload: null }))
+    store.dispatch(fetchAgents.create({ cellIdString, payload: null })).then(c => {
+      console.log(c)
+    })
     store.dispatch(whoami.create({ cellIdString, payload: null }))
     store.dispatch(fetchAgentAddress.create({ cellIdString, payload: null }))
     // which projects do we have installed?

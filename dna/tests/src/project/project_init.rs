@@ -1,18 +1,12 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::ProjectMetaFixturator;
     use ::fixt::prelude::*;
     use assert_matches::assert_matches;
     use hdk::prelude::*;
-    use hdk_crud::WrappedAgentPubKey;
-    use holochain_types::prelude::option_entry_hashed;
+    use holo_hash::AgentPubKeyB64;
     use holochain_types::prelude::ElementFixturator;
-    use holochain_types::prelude::ValidateDataFixturator;
     use projects::init;
-    use projects::project::error::Error;
     use projects::project::member::entry::Member;
-    use projects::project::project_meta::crud::ProjectMeta;
-    use projects::project::project_meta::validate::*;
 
     /// Unit testing the `init()` function that is called to ensure an agent can receive signals
     /// and is listed as a member in the project. There are two main functions called within `init()`: `create_receive_signal_cap_grant()`
@@ -46,15 +40,16 @@ pub mod tests {
 
         // create_cap_grant calls just `create` under the hood
         let mut functions: GrantedFunctions = BTreeSet::new();
-        functions.insert((zome_info.zome_name, "recv_remote_signal".into()));
+        functions.insert((zome_info.name, "recv_remote_signal".into()));
         // expected is for the .with, and is b/c create parameter is of type EntryWithDefId
-        let expected = EntryWithDefId::new(
+        let expected = CreateInput::new(
             EntryDefId::CapGrant,
             Entry::CapGrant(CapGrantEntry {
                 tag: "".into(),
                 access: ().into(),
                 functions,
             }),
+            ChainTopOrdering::default()
         );
         let header_hash = fixt!(HeaderHash);
         mock_hdk
@@ -99,10 +94,10 @@ pub mod tests {
             .return_const(Ok(agent_info.clone()));
 
         let member = Member {
-            address: WrappedAgentPubKey(agent_info.agent_initial_pubkey),
+            address: AgentPubKeyB64::new(agent_info.agent_initial_pubkey),
         };
         let header_hash = fixt!(HeaderHash);
-        let create_member_input = EntryWithDefId::try_from(member.clone()).unwrap();
+        let create_member_input = CreateInput::try_from(member.clone()).unwrap();
         mock_hdk
             .expect_create()
             .with(mockall::predicate::eq(create_member_input))
@@ -117,7 +112,7 @@ pub mod tests {
             .times(1)
             .return_const(Ok(member_hash.clone()));
         let create_link_input =
-            CreateLinkInput::new(member_path_entry_hash, member_hash, LinkTag::from(()));
+            CreateLinkInput::new(member_path_entry_hash, member_hash, LinkTag::from(()), ChainTopOrdering::default());
         mock_hdk
             .expect_create_link()
             .with(mockall::predicate::eq(create_link_input))

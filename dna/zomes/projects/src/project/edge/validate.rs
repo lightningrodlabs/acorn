@@ -22,8 +22,8 @@ pub fn validate_create_entry_edge(
     }
 
     // parent goal, and child goal, must be determined to exist to pass validation
-    must_get_header(proposed_edge.parent_address.0)?;
-    must_get_header(proposed_edge.child_address.0)?;
+    must_get_header(proposed_edge.parent_address.into())?;
+    must_get_header(proposed_edge.child_address.into())?;
     Ok(ValidateCallbackResult::Valid)
 }
 

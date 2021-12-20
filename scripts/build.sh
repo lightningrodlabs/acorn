@@ -1,23 +1,26 @@
 #!/bin/bash
 
-# backend
-. scripts/install-hc-tools.sh
+# assumes that 
+# dna/workdir/projects.dna
+# and
+# dna/workdir/profiles.dna
+# are already pre-compiled and up to date
+# In CI this is handled via .github/workflows/release.yml
+# where it calls install-hc-tools and and dna-pack
 
-. scripts/dna-pack.sh
-
+# ensure all necessary binaries are packaged in the app
 rm -rf electron/binaries
 mkdir electron/binaries
-
 cp dna/workdir/projects.dna electron/binaries/projects.dna
 cp dna/workdir/profiles.dna electron/binaries/profiles.dna
-
-# DO PLATFORM SPECIFIC lair-keystore and holochain-runner BINARIES HERE
-. scripts/copy-binaries
+bash scripts/copy-binaries.sh
 
 # ui
 rm -rf electron/web
 npm run web-build
 cp -r web/dist electron/web
+
+# build the electron application
 cd electron
 npm run build
 

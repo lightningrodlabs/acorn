@@ -10,7 +10,7 @@ const defaultState = {
   relation: null,
   validToAddresses: [],
   toAddress: null,
-  // existingParentEdgeAddress is the address of the edge that
+  // existingParentEdgeAddress is the headerHash of the edge that
   // we would delete in order to create a new one
   // ASSUMPTION: one parent
   existingParentEdgeAddress: null
