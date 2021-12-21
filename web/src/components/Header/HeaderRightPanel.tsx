@@ -71,12 +71,10 @@ function HeaderRightPanel({
   onClickPreferences,
   saveStatus,
   status,
-  goals,
-  goalComments,
+  goalList,
+  commentList,
 }) {
 
-  const goalList = Object.values(goals)
-  const commentList = Object.values(goalComments)
   const ref = useRef()
   useOnClickOutside(ref, () => {
     setIsAvatarMenuOpen(false)
@@ -165,21 +163,21 @@ function HeaderRightPanel({
             </div>
             <div className="search-results-list">
               {goalList.filter((goal) => (
-                  goal["content"].includes(filterText)
+                  goal.content.includes(filterText)
                 )).map((goal) => (
-                  <SearchResultItem text={goal["content"]} name="comment.svg"/>
+                  <SearchResultItem text={goal.content} name="comment.svg"/>
                 ))
               }
               {goalList.filter((goal) => (
-                  goal["description"].includes(filterText)
+                  goal.description.includes(filterText)
                 )).map((goal) => (
-                  <SearchResultItem text={goal["description"]} name="comment.svg"/>
+                  <SearchResultItem text={goal.description} name="comment.svg"/>
                 ))
               }
               {commentList.filter((comment) => (
-                  comment["content"].includes(filterText)
+                  comment.content.includes(filterText)
                 )).map((comment) => (
-                  <SearchResultItem text={comment["content"]} name="comment.svg"/>
+                  <SearchResultItem text={comment.content} name="comment.svg"/>
                 ))
               }
             </div>
@@ -284,9 +282,11 @@ function mapStateToProps(state) {
   const projectId = state.ui.activeProject
   const goals = state.projects.goals[projectId] || {}
   const goalComments = state.projects.goalComments[projectId] || {}
+  const goalList = Object.values(goals)
+  const commentList = Object.values(goalComments)
   return { 
-    goals,
-    goalComments,
+    goalList,
+    commentList,
   }
 }
 function mapDispatchToProps(dispatch) {
