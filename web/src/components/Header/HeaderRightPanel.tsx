@@ -171,13 +171,13 @@ function HeaderRightPanel({
               {(!noFilters || isTextFilter) && (goalList.filter((goal) => (
                   goal.content.includes(filterText)
                 )).map((goal) => (
-                  <SearchResultItem text={goal.content} name="comment.svg"/>
+                  <SearchResultItem text={goal.content} name="acorn-logo.svg"/>
                 )))
               }
               {(!noFilters || isDescriptionFilter) && (goalList.filter((goal) => (
                   goal.description.includes(filterText)
                 )).map((goal) => (
-                  <SearchResultItem text={goal.description} name="comment.svg"/>
+                  <SearchResultItem text={goal.description} name="equalizer.svg"/>
                 )))
               }
               {(!noFilters || isCommentFilter) && (commentList.filter((comment) => (
