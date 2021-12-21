@@ -48,7 +48,7 @@ function SearchResultItem({text, name}) {
   )
 }
 
-function SearchResultsFilter({}) {
+function SearchResultsFilter({name}) {
   const [isFilterApplied, setIsFilterApplied] = useState(false)
   return (
     <div
@@ -59,7 +59,7 @@ function SearchResultsFilter({}) {
         setIsFilterApplied(!isFilterApplied)
       }}
     >
-      Titles
+      {name}
     </div>
   )
 }
@@ -71,10 +71,12 @@ function HeaderRightPanel({
   onClickPreferences,
   saveStatus,
   status,
-  props,
+  goals,
+  goalComments,
 }) {
 
-  const goals = Object.values(props)
+  const goalList = Object.values(goals)
+  const commentList = Object.values(goalComments)
   const ref = useRef()
   useOnClickOutside(ref, () => {
     setIsAvatarMenuOpen(false)
@@ -157,15 +159,27 @@ function HeaderRightPanel({
         {filterText !== '' && (
           <div className="search-results-dropdown">
             <div className="search-results-filters">
-              <SearchResultsFilter />
-              <SearchResultsFilter />
-              <SearchResultsFilter />
+              <SearchResultsFilter name="Titles"/>
+              <SearchResultsFilter name="Desriptions"/>
+              <SearchResultsFilter name="Comments"/>
             </div>
             <div className="search-results-list">
-              {goals.filter((goal) => (
+              {goalList.filter((goal) => (
                   goal["content"].includes(filterText)
                 )).map((goal) => (
                   <SearchResultItem text={goal["content"]} name="comment.svg"/>
+                ))
+              }
+              {goalList.filter((goal) => (
+                  goal["description"].includes(filterText)
+                )).map((goal) => (
+                  <SearchResultItem text={goal["description"]} name="comment.svg"/>
+                ))
+              }
+              {commentList.filter((comment) => (
+                  comment["content"].includes(filterText)
+                )).map((comment) => (
+                  <SearchResultItem text={comment["content"]} name="comment.svg"/>
                 ))
               }
             </div>
@@ -268,8 +282,12 @@ function HeaderRightPanel({
 }
 function mapStateToProps(state) {
   const projectId = state.ui.activeProject
-  const props = state.projects.goals[projectId] || {}
-  return { props }
+  const goals = state.projects.goals[projectId] || {}
+  const goalComments = state.projects.goalComments[projectId] || {}
+  return { 
+    goals,
+    goalComments,
+  }
 }
 function mapDispatchToProps(dispatch) {
   return {}  
