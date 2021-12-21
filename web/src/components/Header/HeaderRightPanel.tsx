@@ -48,7 +48,7 @@ function SearchResultItem({text, name}) {
   )
 }
 
-function SearchResultsFilter({name}) {
+function SearchResultsFilter({name, setFilter}) {
   const [isFilterApplied, setIsFilterApplied] = useState(false)
   return (
     <div
@@ -57,6 +57,7 @@ function SearchResultsFilter({name}) {
       } `}
       onClick={() => {
         setIsFilterApplied(!isFilterApplied)
+        setFilter(!isFilterApplied)
       }}
     >
       {name}
@@ -84,6 +85,9 @@ function HeaderRightPanel({
   const [isStatusOpen, setIsStatusOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [filterText, setFilterText] = useState('')
+  const [isTextFilter, setIsTextFilter] = useState(false)
+  const [isDescriptionFilter, setIsDescriptionFilter] = useState(false)
+  const [isCommentFilter, setIsCommentFilter] = useState(false)
   const location = useLocation()
   // hover states
   const [isAvatarHover, setIsAvatarHover] = useState(false)
@@ -101,6 +105,8 @@ function HeaderRightPanel({
   const isGuideOpen = !!searchParams.get(GUIDE_IS_OPEN)
 
   const searchResults = []
+
+  const noFilters = isTextFilter || isDescriptionFilter || isCommentFilter
 
   return (
     <>
@@ -157,28 +163,28 @@ function HeaderRightPanel({
         {filterText !== '' && (
           <div className="search-results-dropdown">
             <div className="search-results-filters">
-              <SearchResultsFilter name="Titles"/>
-              <SearchResultsFilter name="Desriptions"/>
-              <SearchResultsFilter name="Comments"/>
+              <SearchResultsFilter name="Titles" setFilter={setIsTextFilter}/>
+              <SearchResultsFilter name="Desriptions" setFilter={setIsDescriptionFilter}/>
+              <SearchResultsFilter name="Comments" setFilter={setIsCommentFilter}/>
             </div>
             <div className="search-results-list">
-              {goalList.filter((goal) => (
+              {(!noFilters || isTextFilter) && (goalList.filter((goal) => (
                   goal.content.includes(filterText)
                 )).map((goal) => (
                   <SearchResultItem text={goal.content} name="comment.svg"/>
-                ))
+                )))
               }
-              {goalList.filter((goal) => (
+              {(!noFilters || isDescriptionFilter) && (goalList.filter((goal) => (
                   goal.description.includes(filterText)
                 )).map((goal) => (
                   <SearchResultItem text={goal.description} name="comment.svg"/>
-                ))
+                )))
               }
-              {commentList.filter((comment) => (
+              {(!noFilters || isCommentFilter) && (commentList.filter((comment) => (
                   comment.content.includes(filterText)
                 )).map((comment) => (
                   <SearchResultItem text={comment.content} name="comment.svg"/>
-                ))
+                )))
               }
             </div>
           </div>
