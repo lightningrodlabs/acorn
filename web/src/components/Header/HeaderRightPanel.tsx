@@ -7,6 +7,7 @@ import Icon from '../Icon/Icon'
 import Avatar from '../Avatar/Avatar'
 import useOnClickOutside from 'use-onclickoutside'
 import { CSSTransition } from 'react-transition-group'
+import { connect } from 'react-redux'
 
 function AvatarMenuItem({
   title,
@@ -34,15 +35,15 @@ function StatusMenuItem({ color, title, onClick }) {
   )
 }
 
-function SearchResultItem({}) {
+function SearchResultItem({text, name}) {
   return (
     <div className="search-result-item-wrapper">
       <Icon
-        name="comment.svg"
+        name={name}
         size="small"
         className="light-grey not-hoverable"
       />
-      <div className="search-result-item-text">result</div>
+      <div className="search-result-item-text">{text}</div>
     </div>
   )
 }
@@ -70,7 +71,10 @@ function HeaderRightPanel({
   onClickPreferences,
   saveStatus,
   status,
+  props,
 }) {
+
+  const goals = Object.values(props)
   const ref = useRef()
   useOnClickOutside(ref, () => {
     setIsAvatarMenuOpen(false)
@@ -95,6 +99,8 @@ function HeaderRightPanel({
   // and affect the state
   const searchParams = new URLSearchParams(location.search)
   const isGuideOpen = !!searchParams.get(GUIDE_IS_OPEN)
+
+  const searchResults = []
 
   return (
     <>
@@ -156,11 +162,12 @@ function HeaderRightPanel({
               <SearchResultsFilter />
             </div>
             <div className="search-results-list">
-              <SearchResultItem />
-              <SearchResultItem />
-              <SearchResultItem />
-              <SearchResultItem />
-              <SearchResultItem />
+              {goals.filter((goal) => (
+                  goal["content"].includes(filterText)
+                )).map((goal) => (
+                  <SearchResultItem text={goal["content"]} name="comment.svg"/>
+                ))
+              }
             </div>
           </div>
         )}
@@ -259,5 +266,14 @@ function HeaderRightPanel({
     </>
   )
 }
+function mapStateToProps(state) {
+  const projectId = state.ui.activeProject
+  const props = state.projects.goals[projectId] || {}
+  return { props }
+}
+function mapDispatchToProps(dispatch) {
+  return {}  
+}
+export default connect(mapStateToProps, mapDispatchToProps)(HeaderRightPanel)
 
-export default HeaderRightPanel
+
