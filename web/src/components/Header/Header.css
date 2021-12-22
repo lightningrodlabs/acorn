@@ -268,6 +268,10 @@
   transition: 0.3s width, box-shadow, height ease;
 }
 
+.search-button-wrapper.search-is-open .search-open-icon .inner-icon {
+background-color: #7e7e7e;
+}
+
 .search-button-wrapper.search-is-open.results-dropdown-is-open {
   height: 280px;
   /* align-items: top; */
@@ -364,6 +368,22 @@
   cursor: pointer;
 }
 
+.search-results-filter-wrapper.Titles {
+  background-color: #def3ea;
+  border: 2px solid #def3ea;
+}
+
+.search-results-filter-wrapper.Descriptions {
+  background-color: #d7eff1;
+  border: 2px solid #d7eff1;
+}
+
+
+.search-results-filter-wrapper.Comments {
+  background-color: #f1e5f7;
+  border: 2px solid #f1e5f7;
+}
+
 .search-results-filter-wrapper.filter-is-applied {
   border: 2px solid #5F65F8;
 }
@@ -391,7 +411,7 @@
 
 .search-result-item-wrapper:hover {
   background-color: #F4F3F2;
- 
+
 }
 
 .search-result-item-wrapper .search-result-item-text {
@@ -411,9 +431,13 @@
   display: none;
 }
 
-.search-result-item-wrapper:hover > .search-result-item-buttons {
+.search-result-item-wrapper:hover>.search-result-item-buttons {
   display: flex;
   flex-direction: row;
+}
+
+.search-result-item-buttons .icon {
+  margin-left: 0.2rem;
 }
 
 /* Guidebook */

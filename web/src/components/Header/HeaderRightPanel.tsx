@@ -49,7 +49,7 @@ function SearchResultItem({
     <div className="search-result-item-wrapper">
       <div className="search-result-item-text-icon">
         <Icon
-          name={`${name}.svg`}
+          name={name}
           size="small"
           className="light-grey not-hoverable"
         />
@@ -71,7 +71,7 @@ function SearchResultsFilter({ name, setFilter }) {
   const [isFilterApplied, setIsFilterApplied] = useState(false)
   return (
     <div
-      className={`search-results-filter-wrapper ${
+      className={`search-results-filter-wrapper ${name} ${
         isFilterApplied ? 'filter-is-applied' : ''
       } `}
       onClick={() => {
@@ -203,7 +203,7 @@ function HeaderRightPanel({
                   .map((goal) => (
                     <SearchResultItem
                       text={goal.content}
-                      name="acorn-logo.svg"
+                      name="title.svg"
                       onExpandClick={openExpandedView}
                       panAndZoom={animatePanAndZoom}
                       goalAddress={goal.headerHash}
@@ -217,7 +217,7 @@ function HeaderRightPanel({
                   .map((goal) => (
                     <SearchResultItem
                       text={goal.description}
-                      name="equalizer.svg"
+                      name="text-align-left.svg"
                       onExpandClick={openExpandedView}
                       panAndZoom={animatePanAndZoom}
                       goalAddress={goal.headerHash}
