@@ -184,7 +184,7 @@ function HeaderRightPanel({
               {(!noFilters || isCommentFilter) && (commentList.filter((comment) => (
                   comment.content.includes(filterText)
                 )).map((comment) => (
-                  <SearchResultItem text={comment.content} name="comment.svg" onExpandClick={openExpandedView} goalAddress={comment.headerHash}/>
+                  <SearchResultItem text={comment.content} name="comment.svg" onExpandClick={openExpandedView} goalAddress={comment.goal_address}/>
                 )))
               }
             </div>
