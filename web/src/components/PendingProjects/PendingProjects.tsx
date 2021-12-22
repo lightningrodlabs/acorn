@@ -40,7 +40,7 @@ function PendingProjects({
             ([_appId, appInfo]) => appInfo.cellIdString === pendingCellId
           )
           const appInfoForCellId = {
-            uid: appInfo.cell_data[0].cell_nick,
+            uid: appInfo.cell_data[0].role_id,
             appId,
           }
           newPassphrases[pendingCellId] = appInfoForCellId
