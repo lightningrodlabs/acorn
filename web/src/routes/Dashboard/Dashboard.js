@@ -328,7 +328,7 @@ async function joinProject(passphrase, dispatch) {
     async function checkForPeer(iteration) {
       const stateDump = await adminWs.dumpState({
         cell_id: cellId,
-      })
+      }, 50000)
       if (stateDump[0].peer_dump.peers.length === 0) {
         if (iteration < 3) {
           console.log(
