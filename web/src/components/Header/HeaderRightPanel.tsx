@@ -173,12 +173,12 @@ function HeaderRightPanel({
           <div className="search-results-dropdown">
             <div className="search-results-filters">
               <SearchResultsFilter name="Titles" setFilter={setIsTextFilter}/>
-              <SearchResultsFilter name="Desriptions" setFilter={setIsDescriptionFilter}/>
+              <SearchResultsFilter name="Descriptions" setFilter={setIsDescriptionFilter}/>
               <SearchResultsFilter name="Comments" setFilter={setIsCommentFilter}/>
             </div>
             <div className="search-results-list">
               {(!noFilters || isTextFilter) && (goalList.filter((goal) => (
-                  goal.content.includes(filterText)
+                  goal.content.toLowerCase().includes(filterText)
                 )).map((goal) => (
                   <SearchResultItem
                     text={goal.content}
@@ -189,7 +189,7 @@ function HeaderRightPanel({
                 )))
               }
               {(!noFilters || isDescriptionFilter) && (goalList.filter((goal) => (
-                  goal.description.includes(filterText)
+                  goal.description.toLowerCase().includes(filterText)
                 )).map((goal) => (
                   <SearchResultItem
                     text={goal.description}
@@ -200,7 +200,7 @@ function HeaderRightPanel({
                 )))
               }
               {(!noFilters || isCommentFilter) && (commentList.filter((comment) => (
-                  comment.content.includes(filterText)
+                  comment.content.toLowerCase().includes(filterText)
                 )).map((comment) => (
                   <SearchResultItem
                     text={comment.content}
