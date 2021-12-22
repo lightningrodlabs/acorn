@@ -10,6 +10,7 @@ import { CSSTransition } from 'react-transition-group'
 import { connect } from 'react-redux'
 import { openExpandedView } from '../../expanded-view/actions'
 import { animatePanAndZoom } from '../../viewport/actions'
+import { ProjectMapViewOnly } from '../ViewFilters/ViewFilters'
 
 function AvatarMenuItem({
   title,
@@ -37,26 +38,36 @@ function StatusMenuItem({ color, title, onClick }) {
   )
 }
 
-function SearchResultItem({text, name, onExpandClick, panAndZoom, goalAddress}) {
+function SearchResultItem({
+  text,
+  name,
+  onExpandClick,
+  panAndZoom,
+  goalAddress,
+}) {
   return (
     <div className="search-result-item-wrapper">
-      <Icon
-        name={name}
-        size="small"
-        className="light-grey not-hoverable"
-      />
-      <div className="search-result-item-text">{text}</div>
-      <div onClick={() => panAndZoom(goalAddress)}>
-        <Icon name='enter.svg' size='small' className='grey' />
+      <div className="search-result-item-text-icon">
+        <Icon
+          name={`${name}.svg`}
+          size="small"
+          className="light-grey not-hoverable"
+        />
+        <div className="search-result-item-text">{text}</div>
       </div>
-      <div onClick={() => onExpandClick(goalAddress)}>
-        <Icon name='expand.svg' size='small' className='grey' />
+      <div className="search-result-item-buttons">
+        <div onClick={() => panAndZoom(goalAddress)}>
+          <Icon name="enter.svg" size="small" className="light-grey" />
+        </div>
+        <div onClick={() => onExpandClick(goalAddress)}>
+          <Icon name="expand.svg" size="small" className="light-grey" />
+        </div>
       </div>
     </div>
   )
 }
 
-function SearchResultsFilter({name, setFilter}) {
+function SearchResultsFilter({ name, setFilter }) {
   const [isFilterApplied, setIsFilterApplied] = useState(false)
   return (
     <div
@@ -119,6 +130,7 @@ function HeaderRightPanel({
 
   return (
     <>
+    <ProjectMapViewOnly>
       <div
         className={`search-button-wrapper ${
           isSearchOpen ? 'search-is-open' : ''
@@ -172,49 +184,66 @@ function HeaderRightPanel({
         {filterText !== '' && (
           <div className="search-results-dropdown">
             <div className="search-results-filters">
-              <SearchResultsFilter name="Titles" setFilter={setIsTextFilter}/>
-              <SearchResultsFilter name="Descriptions" setFilter={setIsDescriptionFilter}/>
-              <SearchResultsFilter name="Comments" setFilter={setIsCommentFilter}/>
+              <SearchResultsFilter name="Titles" setFilter={setIsTextFilter} />
+              <SearchResultsFilter
+                name="Descriptions"
+                setFilter={setIsDescriptionFilter}
+              />
+              <SearchResultsFilter
+                name="Comments"
+                setFilter={setIsCommentFilter}
+              />
             </div>
             <div className="search-results-list">
-              {(!noFilters || isTextFilter) && (goalList.filter((goal) => (
-                  goal.content.toLowerCase().includes(filterText)
-                )).map((goal) => (
-                  <SearchResultItem
-                    text={goal.content}
-                    name="acorn-logo.svg"
-                    onExpandClick={openExpandedView}
-                    panAndZoom={animatePanAndZoom}
-                    goalAddress={goal.headerHash}/>
-                )))
-              }
-              {(!noFilters || isDescriptionFilter) && (goalList.filter((goal) => (
-                  goal.description.toLowerCase().includes(filterText)
-                )).map((goal) => (
-                  <SearchResultItem
-                    text={goal.description}
-                    name="equalizer.svg"
-                    onExpandClick={openExpandedView}
-                    panAndZoom={animatePanAndZoom}
-                    goalAddress={goal.headerHash}/>
-                )))
-              }
-              {(!noFilters || isCommentFilter) && (commentList.filter((comment) => (
-                  comment.content.toLowerCase().includes(filterText)
-                )).map((comment) => (
-                  <SearchResultItem
-                    text={comment.content}
-                    name="comment.svg"
-                    onExpandClick={openExpandedView}
-                    panAndZoom={animatePanAndZoom}
-                    goalAddress={comment.goal_address}/>
-                )))
-              }
+              {(!noFilters || isTextFilter) &&
+                goalList
+                  .filter((goal) =>
+                    goal.content.toLowerCase().includes(filterText)
+                  )
+                  .map((goal) => (
+                    <SearchResultItem
+                      text={goal.content}
+                      name="acorn-logo.svg"
+                      onExpandClick={openExpandedView}
+                      panAndZoom={animatePanAndZoom}
+                      goalAddress={goal.headerHash}
+                    />
+                  ))}
+              {(!noFilters || isDescriptionFilter) &&
+                goalList
+                  .filter((goal) =>
+                    goal.description.toLowerCase().includes(filterText)
+                  )
+                  .map((goal) => (
+                    <SearchResultItem
+                      text={goal.description}
+                      name="equalizer.svg"
+                      onExpandClick={openExpandedView}
+                      panAndZoom={animatePanAndZoom}
+                      goalAddress={goal.headerHash}
+                    />
+                  ))}
+              {(!noFilters || isCommentFilter) &&
+                commentList
+                  .filter((comment) =>
+                    comment.content.toLowerCase().includes(filterText)
+                  )
+                  .map((comment) => (
+                    <SearchResultItem
+                      text={comment.content}
+                      name="comment.svg"
+                      onExpandClick={openExpandedView}
+                      panAndZoom={animatePanAndZoom}
+                      goalAddress={comment.goal_address}
+                    />
+                  ))}
             </div>
           </div>
         )}
         {/* </CSSTransition> */}
-      </div>
+      </div> 
+      {/* end search */}
+      </ProjectMapViewOnly>
 
       <div className="header-right-panel">
         {/* open or close the guidebook, depending on if it */}
@@ -314,19 +343,17 @@ function mapStateToProps(state) {
   const goalComments = state.projects.goalComments[projectId] || {}
   const goalList = Object.values(goals)
   const commentList = Object.values(goalComments)
-  return { 
+  return {
     goalList,
     commentList,
   }
 }
 function mapDispatchToProps(dispatch) {
-    return {
-      animatePanAndZoom: (address) => {
-        return dispatch(animatePanAndZoom(address))
-      },
-      openExpandedView: (address) => dispatch(openExpandedView(address)),
-    }
+  return {
+    animatePanAndZoom: (address) => {
+      return dispatch(animatePanAndZoom(address))
+    },
+    openExpandedView: (address) => dispatch(openExpandedView(address)),
+  }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(HeaderRightPanel)
-
-

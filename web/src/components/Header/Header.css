@@ -381,6 +381,7 @@
   padding: 10px 12px;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   cursor: pointer;
 }
 
@@ -390,6 +391,7 @@
 
 .search-result-item-wrapper:hover {
   background-color: #F4F3F2;
+ 
 }
 
 .search-result-item-wrapper .search-result-item-text {
@@ -397,6 +399,21 @@
   font-family: 'hk-grotesk-semibold', sans-serif;
   color: #222222;
   font-size: 14px;
+}
+
+.search-result-item-text-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.search-result-item-buttons {
+  display: none;
+}
+
+.search-result-item-wrapper:hover > .search-result-item-buttons {
+  display: flex;
+  flex-direction: row;
 }
 
 /* Guidebook */
