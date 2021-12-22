@@ -8,6 +8,7 @@ import Avatar from '../Avatar/Avatar'
 import useOnClickOutside from 'use-onclickoutside'
 import { CSSTransition } from 'react-transition-group'
 import { connect } from 'react-redux'
+import { openExpandedView } from '../../expanded-view/actions'
 
 function AvatarMenuItem({
   title,
@@ -35,9 +36,9 @@ function StatusMenuItem({ color, title, onClick }) {
   )
 }
 
-function SearchResultItem({text, name}) {
+function SearchResultItem({text, name, onExpandClick, goalAddress}) {
   return (
-    <div className="search-result-item-wrapper">
+    <div className="search-result-item-wrapper" onClick={() => onExpandClick(goalAddress)}>
       <Icon
         name={name}
         size="small"
@@ -74,8 +75,8 @@ function HeaderRightPanel({
   status,
   goalList,
   commentList,
+  openExpandedView,
 }) {
-
   const ref = useRef()
   useOnClickOutside(ref, () => {
     setIsAvatarMenuOpen(false)
@@ -171,19 +172,19 @@ function HeaderRightPanel({
               {(!noFilters || isTextFilter) && (goalList.filter((goal) => (
                   goal.content.includes(filterText)
                 )).map((goal) => (
-                  <SearchResultItem text={goal.content} name="acorn-logo.svg"/>
+                  <SearchResultItem text={goal.content} name="acorn-logo.svg" onExpandClick={openExpandedView} goalAddress={goal.headerHash}/>
                 )))
               }
               {(!noFilters || isDescriptionFilter) && (goalList.filter((goal) => (
                   goal.description.includes(filterText)
                 )).map((goal) => (
-                  <SearchResultItem text={goal.description} name="equalizer.svg"/>
+                  <SearchResultItem text={goal.description} name="equalizer.svg" onExpandClick={openExpandedView} goalAddress={goal.headerHash}/>
                 )))
               }
               {(!noFilters || isCommentFilter) && (commentList.filter((comment) => (
                   comment.content.includes(filterText)
                 )).map((comment) => (
-                  <SearchResultItem text={comment.content} name="comment.svg"/>
+                  <SearchResultItem text={comment.content} name="comment.svg" onExpandClick={openExpandedView} goalAddress={comment.headerHash}/>
                 )))
               }
             </div>
@@ -296,7 +297,9 @@ function mapStateToProps(state) {
   }
 }
 function mapDispatchToProps(dispatch) {
-  return {}  
+  return {  
+    openExpandedView: (address) => dispatch(openExpandedView(address)),
+  }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(HeaderRightPanel)
 
