@@ -131,7 +131,7 @@ function DashboardListProject({
             className="dashboard-list-project-settings-button"
             onClick={() => setShowProjectSettingsModal(true)}
           >
-            <Icon name="three-dots.svg" size="medium" className="light-grey" />
+            <Icon name="dots-horizontal.svg" size="medium" className="light-grey" />
           </div>
           
         </div>

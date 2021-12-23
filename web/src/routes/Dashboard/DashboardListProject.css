@@ -73,7 +73,7 @@
   text-decoration: none;
   color: #535353;
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
   cursor: pointer;
   transition: color 0.2s ease-in;
 }
@@ -219,8 +219,7 @@
 .dashboard-list-project-settings-button .icon {
   position: absolute;
   right: 0;
-  top: 45px;
-  padding: 10px 4px;
+  top: 42px;
 }
 
 /* dashboard project invite members */
