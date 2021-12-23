@@ -233,15 +233,17 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
+  box-sizing: border-box;
   background-color: #fbf9f7;
-  transition: background-color 0.2s ease-in-out;
+  transition: 0.2s all ease;
 }
 
 .dashboard-invite-members-button:hover {
   /* border: 1.8px solid #5f65ff; */
   background-color: #f5f2ef;
+  border-color: #5f65ff;
 }
 
 .dashboard-invite-members-button .icon {
