@@ -24,7 +24,7 @@
     outline: 0;
     font-size: 15px;
     line-height: 18px;
-    color: black;
+    color: #222222;
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -37,11 +37,15 @@
 }
 
 .actions-list-item span {
-    margin-left: 2px;
+    margin-left: 6px;
 }
 
 .actions-list-item .icon {
     margin-right: 5px;
+}
+
+.actions-list-item .status-color {
+    margin-right: 9px; 
 }
 
 .action-list-item span {
