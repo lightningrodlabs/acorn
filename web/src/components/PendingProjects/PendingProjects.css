@@ -27,12 +27,12 @@
 .pending-projects-for-sync-message {
   padding-left: 6px;
   padding-bottom: 3px;
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   font-size: 14px;
 }
 
 .pending-projects-for-sync-button {
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
   font-size: 13px;
   text-decoration: underline;
   cursor: pointer;
@@ -92,7 +92,7 @@ display: none;
 }
 
 .pending-project-cancel-queue-button {
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   font-size: 13px;
   cursor: pointer;
   color: #535353;

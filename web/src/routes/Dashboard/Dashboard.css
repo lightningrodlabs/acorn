@@ -92,11 +92,24 @@
   border: 1.8px solid #d5d5d5;
   border-radius: 30px;
   font-size: 13.5px;
-  padding: 7px 20px 8px;
-  width: 100px;
+  padding: 10px 20px;
+  width: 108px;
   text-align: center;
   cursor: pointer;
   margin-right: 8px;
+  font-family: 'PlusJakartaSans-bold';
+  color: #4d4d4d;
+  transition: 0.2s background-color ease;
+}
+
+.my-projects-button.invite-members {
+  width: 140px;
+  position: absolute;
+  top: -2px;
+  right: 0;
+  padding: 6px 16px 6px 8px;
+  background-color: #f9f8f6;
+  border: none;
 }
 
 .my-projects-button .icon {
@@ -122,13 +135,13 @@
 .my-projects-sorting-selected {
   border: 1.8px solid #d5d5d5;
   border-radius: 30px;
-  padding: 8px 16px;
+  padding: 10px 20px;
   margin-left: 10px;
   font-size: 13.5px;
   line-height: 17px;
   display: flex;
   cursor: pointer;
-  color: #535353;
+  color: #5d5d5d;
 }
 
 .my-projects-sorting-selected .icon {
@@ -153,8 +166,8 @@
 
 .my-projects-sorting-select {
   position: absolute;
-  right: 0;
-  top: 25px;
+  right: 7px;
+  top: 33px;
   background: #ffffff;
   padding: 8px 0;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);

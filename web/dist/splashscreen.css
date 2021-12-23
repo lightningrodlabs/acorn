@@ -3,38 +3,51 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Plus Jakarta Sans */
+
+@font-face {
+  font-family: 'PlusJakartaSans';
+  font-display: swap;
+  /* it works like this if the file sits in dist and doesn't load through webpack */
+  /* src: url('/fonts/plus-jakarta-sans/PlusJakartaSans.woff2') format('truetype'); */
+
+  /* it works like this if used in webpack */
+  src: url('/fonts/plus-jakarta-sans/PlusJakartaSans.woff2') format('truetype');
+  word-spacing: 0.05em;
+}
+
 /* HK Grotesk */
 
 @font-face {
-  font-family: 'hk-grotesk-regular';
-  src: url('fonts/hk-grotesk/hkgrotesk-regular-webfont.woff2') format('woff2'),
-    url('fonts/hk-grotesk/hkgrotesk-regular-webfont.woff') format('woff');
+  font-family: 'PlusJakartaSans-regular';
+  src: url('fonts/PlusJakartaSans/hkgrotesk-regular-webfont.woff2') format('woff2'),
+    url('fonts/PlusJakartaSans/hkgrotesk-regular-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   margin-bottom: 1px;
 }
 
 @font-face {
-  font-family: 'hk-grotesk-medium';
-  src: url('fonts/hk-grotesk/hkgrotesk-medium-webfont.woff2') format('woff2'),
-    url('fonts/hk-grotesk/hkgrotesk-medium-webfont.woff') format('woff');
+  font-family: 'PlusJakartaSans-medium';
+  src: url('fonts/PlusJakartaSans/hkgrotesk-medium-webfont.woff2') format('woff2'),
+    url('fonts/PlusJakartaSans/hkgrotesk-medium-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   margin-bottom: 1px;
 }
 
 @font-face {
-  font-family: 'hk-grotesk-semibold';
-  src: url('fonts/hk-grotesk/hkgrotesk-semibold-webfont.woff2') format('woff2'),
-    url('fonts/hk-grotesk/hkgrotesk-semibold-webfont.woff') format('woff');
+  font-family: 'PlusJakartaSans-bold';
+  src: url('fonts/PlusJakartaSans/hkgrotesk-bold-webfont.woff2') format('woff2'),
+    url('fonts/PlusJakartaSans/hkgrotesk-bold-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'hk-grotesk-bold';
-  src: url('fonts/hk-grotesk/hkgrotesk-bold-webfont.woff2') format('woff2'),
-    url('fonts/hk-grotesk/hkgrotesk-bold-webfont.woff') format('woff');
+  font-family: 'PlusJakartaSans-bold';
+  src: url('fonts/PlusJakartaSans/hkgrotesk-bold-webfont.woff2') format('woff2'),
+    url('fonts/PlusJakartaSans/hkgrotesk-bold-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -82,7 +95,7 @@ body {
 }
 
 .splash-image-caption {
-  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   color: #ffffff;
   font-size: 12px;
 }
@@ -116,14 +129,14 @@ body {
 }
 
 .splash-description {
-  font-family: 'hk-grotesk-regular', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-regular', Helvetica, sans-serif;
   font-size: 14px;
   color: #585858;
   width: 365px;
 }
 
 .splash-license {
-  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   font-size: 14px;
   color: #898989;
 }

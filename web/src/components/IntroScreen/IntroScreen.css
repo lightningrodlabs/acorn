@@ -10,7 +10,7 @@
   right: 0;
   cursor: pointer;
   font-size: 16px;
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
   padding: 16px;
   color: #717171;
   transition: color 0.2s;
@@ -86,7 +86,7 @@
 
 .intro-screen-description {
   font-size: 20px;
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
   color: #717171;
   line-height: 32px;
   height: 165px;

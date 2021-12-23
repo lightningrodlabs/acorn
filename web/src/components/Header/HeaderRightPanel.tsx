@@ -124,8 +124,6 @@ function HeaderRightPanel({
   const searchParams = new URLSearchParams(location.search)
   const isGuideOpen = !!searchParams.get(GUIDE_IS_OPEN)
 
-  const searchResults = []
-
   const noFilters = isTextFilter || isDescriptionFilter || isCommentFilter
 
   return (
