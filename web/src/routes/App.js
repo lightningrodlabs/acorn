@@ -32,6 +32,7 @@ import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 // all global modals in here
 import GlobalModals from './GlobalModals'
 import { animatePanAndZoom } from '../viewport/actions'
+import { closeInviteMembersModal } from '../invite-members-modal/actions'
 
 function App({
   activeEntryPoints,
@@ -44,6 +45,8 @@ function App({
   navigationPreference,
   setNavigationPreference,
   hideGuidebookHelpMessage,
+  inviteMembersModalShowing,
+  hideInviteMembersModal,
   goToGoal
 }) {
   const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
@@ -110,6 +113,8 @@ function App({
             setShowPreferences,
             showProjectSettingsModal,
             setShowProjectSettingsOpen,
+            inviteMembersModalShowing,
+            hideInviteMembersModal,
             onProfileSubmit,
           }}
         />
@@ -136,6 +141,9 @@ function mapDispatchToProps(dispatch) {
     },
     goToGoal: (goalHeaderHash) => {
       return dispatch(animatePanAndZoom(goalHeaderHash))
+    },
+    hideInviteMembersModal: () => {
+      return dispatch(closeInviteMembersModal())
     }
   }
 }
@@ -146,6 +154,7 @@ function mapStateToProps(state) {
       hasFetchedForWhoami,
       activeProject,
       activeEntryPoints,
+      inviteMembersModal,
       localPreferences: { navigation },
     },
     cells: { profiles: profilesCellIdString },
@@ -174,6 +183,7 @@ function mapStateToProps(state) {
     hasFetchedForWhoami,
     agentAddress: state.agentAddress,
     navigationPreference: navigation,
+    inviteMembersModalShowing: inviteMembersModal.passphrase
   }
 }
 

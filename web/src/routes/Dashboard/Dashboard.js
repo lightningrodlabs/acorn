@@ -11,7 +11,6 @@ import DashboardEmptyState from '../../components/DashboardEmptyState/DashboardE
 import CreateProjectModal from '../../components/CreateProjectModal/CreateProjectModal'
 import ImportProjectModal from '../../components/ImportProjectModal/ImportProjectModal'
 import JoinProjectModal from '../../components/JoinProjectModal/JoinProjectModal'
-import InviteMembersModal from '../../components/InviteMembersModal/InviteMembersModal'
 // import new modals here
 
 import { PROJECTS_ZOME_NAME, PROJECT_APP_PREFIX } from '../../holochainConfig'
@@ -33,6 +32,10 @@ import {
 import { joinProjectCellId, removeProjectCellId } from '../../cells/actions'
 import importAllProjectData from '../../import'
 import PendingProjects from '../../components/PendingProjects/PendingProjects'
+import {
+  closeInviteMembersModal,
+  openInviteMembersModal,
+} from '../../invite-members-modal/actions'
 
 function Dashboard({
   existingAgents,
@@ -49,6 +52,8 @@ function Dashboard({
   importProject,
   updateIsAvailable,
   setShowUpdatePromptModal,
+  setShowInviteMembersModal,
+  hideInviteMembersModal,
 }) {
   // created_at, name
   const [pendingProjects, setPendingProjects] = useState([])
@@ -57,8 +62,7 @@ function Dashboard({
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showJoinModal, setShowJoinModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
-  // call set for this one with the actual passphrase to render inside
-  const [showInviteMembersModal, setShowInviteMembersModal] = useState(null)
+
   // add new modal state managers here
 
   // cells is an array of cellId strings
@@ -213,6 +217,7 @@ function Dashboard({
                     key={'dlp-key' + project.cellId}
                     project={project}
                     setShowInviteMembersModal={setShowInviteMembersModal}
+                    hideInviteMembersModal={hideInviteMembersModal}
                   />
                 )
               })}
@@ -239,11 +244,6 @@ function Dashboard({
         onImportProject={onImportProject}
         showModal={showImportModal}
         onClose={() => setShowImportModal(false)}
-      />
-      <InviteMembersModal
-        passphrase={showInviteMembersModal}
-        showModal={showInviteMembersModal}
-        onClose={() => setShowInviteMembersModal(false)}
       />
       {/* add new modals here */}
     </>
@@ -326,13 +326,18 @@ async function joinProject(passphrase, dispatch) {
     // within 10-15 seconds
     // if not, we will push this into 'pending projects' status
     async function checkForPeer(iteration) {
-      const stateDump = await adminWs.dumpState({
-        cell_id: cellId,
-      }, 50000)
+      const stateDump = await adminWs.dumpState(
+        {
+          cell_id: cellId,
+        },
+        50000
+      )
       if (stateDump[0].peer_dump.peers.length === 0) {
         if (iteration < 3) {
           console.log(
-            'iteration: ' + iteration + ' found no peers but will wait 5 seconds and check again...'
+            'iteration: ' +
+              iteration +
+              ' found no peers but will wait 5 seconds and check again...'
           )
           // wait 5 seconds and check again
           await new Promise((resolve) => setTimeout(resolve, 5000))
@@ -351,14 +356,17 @@ async function joinProject(passphrase, dispatch) {
     // this will let other project members know you're here
     // without 'blocking' the thread or the UX
     appWs
-      .callZome({
-        cap: null,
-        cell_id: cellId,
-        zome_name: PROJECTS_ZOME_NAME,
-        fn_name: 'init_signal',
-        payload: null,
-        provenance: getAgentPubKey(), // FIXME: this will need correcting after holochain changes this
-      }, 50000)
+      .callZome(
+        {
+          cap: null,
+          cell_id: cellId,
+          zome_name: PROJECTS_ZOME_NAME,
+          fn_name: 'init_signal',
+          payload: null,
+          provenance: getAgentPubKey(), // FIXME: this will need correcting after holochain changes this
+        },
+        50000
+      )
       .then(() => console.log('succesfully triggered init_signal'))
       .catch((e) => console.error('failed while triggering init_signal: ', e))
     // this will trigger the fetching of project meta
@@ -412,9 +420,15 @@ async function importProject(
   const projectMeta = {
     ...projectData.projectMeta,
     // the question mark operator for backwards compatibility
-    top_priority_goals: originalTopPriorityGoals ? originalTopPriorityGoals.map(oldAddress => oldToNewAddressMap[oldAddress]).filter(address => address) : [],
+    top_priority_goals: originalTopPriorityGoals
+      ? originalTopPriorityGoals
+          .map((oldAddress) => oldToNewAddressMap[oldAddress])
+          .filter((address) => address)
+      : [],
     // the question mark operator for backwards compatibility
-    priority_mode: originalPriorityMode ? originalPriorityMode : PriorityModeOptions.Universal,
+    priority_mode: originalPriorityMode
+      ? originalPriorityMode
+      : PriorityModeOptions.Universal,
     created_at: Date.now(),
     creator_address: agentAddress,
     passphrase: passphrase,
@@ -442,18 +456,26 @@ async function importProject(
 async function deactivateApp(appId, cellId, dispatch) {
   const adminWs = await getAdminWs()
   await adminWs.deactivateApp({
-    installed_app_id: appId
+    installed_app_id: appId,
   })
   await dispatch(removeProjectCellId(cellId))
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    setShowInviteMembersModal: (projectId) => {
+      return dispatch(openInviteMembersModal(projectId))
+    },
+    hideInviteMembersModal: () => {
+      return dispatch(closeInviteMembersModal())
+    },
     deactivateApp: (appId, cellId) => {
       return deactivateApp(appId, cellId, dispatch)
     },
     fetchEntryPointDetails: (cellIdString) => {
-      return dispatch(fetchEntryPointDetails.create({ cellIdString, payload: null }))
+      return dispatch(
+        fetchEntryPointDetails.create({ cellIdString, payload: null })
+      )
     },
     fetchMembers: (cellIdString) => {
       return dispatch(fetchMembers.create({ cellIdString, payload: null }))
@@ -469,8 +491,8 @@ function mapDispatchToProps(dispatch) {
         creator_address: agentAddress,
         created_at: Date.now(),
         is_imported: false,
-        priority_mode: "Universal", // default
-        top_priority_goals: []
+        priority_mode: 'Universal', // default
+        top_priority_goals: [],
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },

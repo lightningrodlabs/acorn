@@ -14,6 +14,7 @@ import whoami, { hasFetchedForWhoami } from './who-am-i/reducer'
 import agentAddress from './agent-address/reducer'
 import projects from './projects/reducer'
 import goalForm from './goal-form/reducer'
+import inviteMembersModal from './invite-members-modal/reducer'
 import selection from './selection/reducer'
 import hover from './hover/reducer'
 import keyboard from './keyboard/reducer'
@@ -38,6 +39,7 @@ export default combineReducers({
   agentAddress,
   ui: combineReducers({
     layout,
+    inviteMembersModal,
     hasFetchedForWhoami,
     edgeConnector,
     localPreferences,

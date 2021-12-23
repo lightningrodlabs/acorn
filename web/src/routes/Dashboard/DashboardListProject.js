@@ -41,6 +41,7 @@ function DashboardListProjectLoading() {
 function DashboardListProject({
   project,
   setShowInviteMembersModal,
+  hideInviteMembersModal,
   updateIsAvailable,
   setShowUpdatePromptModal,
   goToGoal

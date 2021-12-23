@@ -18,6 +18,7 @@ import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingS
 import PreferenceSelect, { PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
+import { openInviteMembersModal } from '../../invite-members-modal/actions'
 
 // since this is a big wordset, dynamically import it
 // instead of including in the main bundle
@@ -35,6 +36,8 @@ function EditProjectForm({
   setProjectCoverUrl,
   priorityMode,
   setPriorityMode,
+  projectPassphrase,
+  openInviteMembersModal,
 }) {
   const [
     shouldInvalidateProjectName,
@@ -100,7 +103,6 @@ function EditProjectForm({
     title="Vote Based"
   />
 
-  const [showInviteMembersModal, setShowInviteMembersModal] = useState(null)
   return (
     <div className='edit-project-form'>
       <ProjectModalHeading title='Project Settings' />
@@ -109,7 +111,7 @@ function EditProjectForm({
         {/* Invite Members Button */}
         <div
           className="my-projects-button invite-members"
-          onClick={() => setShowInviteMembersModal(project.passphrase)}
+          onClick={() => openInviteMembersModal(projectPassphrase)}
         >
           <Icon
             name="user-plus.svg"
@@ -158,6 +160,7 @@ function ProjectSettingsModal({
   showModal,
   onClose,
   updateProjectMeta,
+  openInviteMembersModal,
   project,
   cellIdString,
 }) {
@@ -190,10 +193,12 @@ function ProjectSettingsModal({
     setProjectName(project.name)
     setProjectCoverUrl(project.image)
     setPriorityMode(project.priority_mode)
+    setProjectPassphrase(project.passphrase)
   }, [project])
   const [projectName, setProjectName] = useState(project.name)
   const [projectCoverUrl, setProjectCoverUrl] = useState(project.image)
   const [priorityMode, setPriorityMode] = useState(project.priority_mode)
+  const [projectPassphrase, setProjectPassphrase] = useState(project.passphrase)
 
   return (
     <Modal
@@ -205,6 +210,8 @@ function ProjectSettingsModal({
         onSubmit={onSubmit}
         updatingProject={updatingProject}
         projectName={projectName}
+        openInviteMembersModal={openInviteMembersModal}
+        projectPassphrase={projectPassphrase}
         setProjectName={setProjectName}
         projectCoverUrl={projectCoverUrl}
         setProjectCoverUrl={setProjectCoverUrl}
@@ -231,6 +238,9 @@ function mapDispatchToProps(dispatch) {
         })
       )
     },
+    openInviteMembersModal: (passphrase) => {
+      return dispatch(openInviteMembersModal(passphrase))
+    }
   }
 }
 

@@ -7,6 +7,7 @@ import Modal from '../components/Modal/Modal'
 import Preferences from '../components/Preferences/Preferences'
 import ProfileEditForm from '../components/ProfileEditForm/ProfileEditForm'
 import ProjectSettingsModal from '../components/ProjectSettingsModal/ProjectSettingsModal'
+import InviteMembersModal from '../components/InviteMembersModal/InviteMembersModal'
 // import UpdatePromptModal from '../components/UpdatePromptModal/UpdatePromptModal'
 
 export default function GlobalModals({
@@ -22,6 +23,8 @@ export default function GlobalModals({
   setShowPreferences,
   showProjectSettingsModal,
   setShowProjectSettingsOpen,
+  inviteMembersModalShowing,
+  hideInviteMembersModal,
   onProfileSubmit,
 }) {
   // check the url for GUIDE_IS_OPEN
@@ -78,6 +81,11 @@ export default function GlobalModals({
       >
         <GuideBook />
       </Modal>
+      <InviteMembersModal
+        passphrase={inviteMembersModalShowing}
+        showModal={inviteMembersModalShowing}
+        onClose={hideInviteMembersModal}
+      />
       {/* Update Prompt Modal */}
       {/* <UpdatePromptModal
           show={showUpdatePromptModal}
