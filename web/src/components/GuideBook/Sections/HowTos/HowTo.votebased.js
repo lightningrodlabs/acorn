@@ -35,7 +35,7 @@ export default {
               The{' '}
               <span className="guidebook-description-bold">effort-impact</span>{' '}
               integration is another way of prioritizing goals.{' '}
-              <a href="https://zapier.com/blog/how-to-prioritize/">
+              <a href="https://zapier.com/blog/how-to-prioritize/" target="_blank">
                 "In the effort-impact matrix, you evaluate tasks based on how
                 much effort they'll require to complete and the impact that
                 completing them will have."
