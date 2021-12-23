@@ -67,18 +67,18 @@ function ProjectJoinFollowUp({ onDone, peerFound, checkDone }) {
         title={
           peerFound
             ? 'Project joined successfully'
-            : 'No peers were found right now'
+            : 'Project has been queued for syncing'
         }
       />
       {!peerFound && (
-        <ProjectModalSubHeading title="Project has been queued for syncing" />
+        <ProjectModalSubHeading title="In order to join this project, you and a peer must simultaneously open the app." />
       )}
       </div>
         <ProjectModalContent>
           <div className="project-join-follow-up-content-wrapper">
             {peerFound
               ? 'Peers in this project were found so now you will get synced with them.'
-              : `Be aware that if you have entered an invalid secret phrase, Acorn cannot know, so if your project does not sync as expected you will need to double-check the accuracy of the phrase you used with the project host directly.`}
+              : `If a peer is found, you are likely to be able to immediately begin to access the project, although a short sync period in the queue may be required before you can access it.`}
           </div>
         </ProjectModalContent>
       <ProjectModalButton text="I understand" onClick={onDone} />
