@@ -21,7 +21,7 @@
   outline: 0;
   padding: 2px;
   margin-left: 14px;
-  font-family: 'hk-grotesk-medium', Helvetica, Sans-Serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
 }
 
 .people-picker-search input::placeholder {
@@ -49,7 +49,7 @@
 
 .people-picker-people li .person-name {
   flex: 1;
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   font-size: 14px;
   line-height: 14px;
 }
@@ -63,7 +63,7 @@
 .person-handle {
   font-size: 12px;
   color: #a3a3a3;
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
 }
 
 .radio-button {

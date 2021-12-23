@@ -101,19 +101,20 @@ function DashboardListProject({
               {project.members.map(
                 (member) =>
                   member && (
-                    <div key={member.headerHash} className="dashboard-list-project-member-wrapper">
+                    <div key={member.headerHash} className="dashboard-list-project-member-wrapper" title={`${member.first_name} ${member.last_name}`}>
                       <Avatar
                         first_name={member.first_name}
                         last_name={member.last_name}
                         avatar_url={member.avatar_url}
                         imported={member.is_imported}
                         medium
+                        
                       />
                     </div>
                   )
               )}
             </div>
-
+            {/* Invite Members */}
             <div
               className="dashboard-invite-members-button"
               onClick={() => setShowInviteMembersModal(project.passphrase)}
@@ -121,8 +122,6 @@ function DashboardListProject({
               <Icon
                 name="plus.svg"
                 size="small"
-                withTooltip
-                tooltipText="Invite Members"
                 className="grey"
               />
             </div>
@@ -134,6 +133,7 @@ function DashboardListProject({
           >
             <Icon name="three-dots.svg" size="medium" className="light-grey" />
           </div>
+          
         </div>
       </div>
 

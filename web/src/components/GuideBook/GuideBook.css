@@ -58,7 +58,7 @@
   overflow: hidden;
   -webkit-transition: max-height 0.5s ease-in-out;
   transition: max-height 0.5s ease-in-out;
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   margin-bottom: 18px;
   margin-left: 30px;
 }
@@ -85,7 +85,7 @@
   border: none;
   cursor: pointer;
   font-size: 14px;
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
   transition: color 0.2s ease-in-out;
   text-decoration: none;
   color: #222222;
@@ -124,7 +124,7 @@
 }
 
 .guidebook-description-bold {
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
 }
 
 .guidebook-separate-line {
@@ -135,7 +135,7 @@
 }
 
 .guidebook-separate-line.sub-heading {
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   font-size: 18px;
 }
 
@@ -166,7 +166,7 @@
 
 .guidebook-shortcut-category-title {
   font-size: 20px;
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   margin-bottom: 24px;
 }
 
@@ -179,7 +179,7 @@
 }
 
 .guidebook-shortcut-key {
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
 }
 
 .guidebook-shortcut-title {

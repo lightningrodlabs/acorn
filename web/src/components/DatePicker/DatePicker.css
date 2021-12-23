@@ -46,7 +46,7 @@
   border-radius: 10px;
   padding: 5px 4px 4px 10px;
   width: 95%;
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
   line-height: 29px;
 }
 
@@ -78,7 +78,7 @@
   display: flex;
   align-items: center;
   margin: 0;
-  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   font-size: 14px;
   padding: 0;
   color: #00beb0;
@@ -141,13 +141,13 @@
 
 .CalendarMonth_caption {
   font-size: 14px;
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
   font-weight: normal;
   padding-bottom: 42px;
 }
 
 .DayPicker_weekHeader {
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
   font-weight: normal;
 }
 

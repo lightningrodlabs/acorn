@@ -37,7 +37,7 @@ export const fontSizeExtraLarge = '40px'
 export const fontSizeExtraLargeInt = 40
 export const lineSpacingExtraLarge = 2
 
-export const fontFamily = 'hk-grotesk-semibold'
+export const fontFamily = 'PlusJakartaSans-bold'
 
 // line wrapping code from https://stackoverflow.com/questions/2936112/
 function getLines(ctx, text, maxWidth) {

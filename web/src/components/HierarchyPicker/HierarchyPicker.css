@@ -34,7 +34,7 @@
 .hierarchy_option_name {
   flex: 1;
   padding: 1px 0px;
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   font-size: 14px;
 }
 
@@ -86,7 +86,7 @@
 .hierarchy_description {
   font-size: 12px;
   color: #a3a3a3;
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
 }
 
 .radio_button {

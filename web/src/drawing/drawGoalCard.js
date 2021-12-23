@@ -222,7 +222,7 @@ export default function render({
     ctx.drawImage(img, xImgDraw, yImgDraw, calendarWidth, calendarHeight)
     ctx.save()
     ctx.fillStyle = timeframeTextColor
-    ctx.font = '13px hk-grotesk-semibold'
+    ctx.font = '13px PlusJakartaSans-bold'
     ctx.fillText(text, textBoxLeft, textBoxTop)
     ctx.restore()
   }
@@ -278,7 +278,7 @@ export default function render({
         ctx.globalAlpha = 0.5
       }
       ctx.fillStyle = '#FFF'
-      ctx.font = '11px hk-grotesk-bold'
+      ctx.font = '11px PlusJakartaSans-bold'
       ctx.fillText(initials, xAvatarDraw + 5, yAvatarDraw + 7)
       ctx.restore()
       return
@@ -362,7 +362,7 @@ export default function render({
   if (isBeingEdited) {
     let isBeingEditedText = 'Being edited by Eric'
     ctx.fillStyle = '#fff'
-    ctx.font = '14px hk-grotesk-bold'
+    ctx.font = '14px PlusJakartaSans-bold'
     ctx.fillText(isBeingEditedText, x + goalWidth / 2 - 60, y + goalHeight - 8)
   }
 }

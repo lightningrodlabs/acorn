@@ -16,6 +16,8 @@ import {
 import ProjectSecret from '../ProjectSecret/ProjectSecret'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
 import PreferenceSelect, { PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
+import Icon from '../Icon/Icon'
+import Button from '../Button/Button'
 
 // since this is a big wordset, dynamically import it
 // instead of including in the main bundle
@@ -98,11 +100,24 @@ function EditProjectForm({
     title="Vote Based"
   />
 
+  const [showInviteMembersModal, setShowInviteMembersModal] = useState(null)
   return (
     <div className='edit-project-form'>
       <ProjectModalHeading title='Project Settings' />
       <ProjectModalSubHeading title={subheading} />
       <ProjectModalContent>
+        {/* Invite Members Button */}
+        <div
+          className="my-projects-button invite-members"
+          onClick={() => setShowInviteMembersModal(project.passphrase)}
+        >
+          <Icon
+            name="plus.svg"
+            size="small"
+            className="grey"
+          />
+          Invite Members
+        </div>
         {/* project name */}
         <ValidatingFormInput
           value={projectName}

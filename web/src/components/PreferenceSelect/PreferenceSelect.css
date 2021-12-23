@@ -29,7 +29,7 @@
 
 .preference-select-subtitle {
     font-size: 14px;
-    line-height: 18px;
+    line-height: 20px;
     color: #898989;
     margin-bottom: 40px;
 }
@@ -46,7 +46,7 @@
 .preference-select-option {
     font-size: 16px;
     line-height: 22px;
-    font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+    font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
     color: #222222;
     text-align: center;
     border: 1px solid #e3e3e3;
@@ -81,7 +81,7 @@
 }
 
 .preference-select-option.active .preference-select-option-text {
-  font-family: 'hk-grotesk-bold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
 }
 
 /* PreferenceSelectExtra */

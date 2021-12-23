@@ -27,7 +27,7 @@
 }
 
 .error-screen-subtitle {
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
   font-size: 28px;
   line-height: 34px;
   color: #535353;
@@ -35,7 +35,7 @@
 }
 
 .error-screen-description {
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
   font-size: 16px;
   line-height: 26px;
   color: #535353;
@@ -58,7 +58,7 @@
 }
 
 .show-stack-trace-button {
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
   font-size: 14px;
   line-height: 18px;
   color: #8e8e8e;
@@ -70,13 +70,14 @@
 }
 
 .show-stack-trace-button-text {
-  width: 110px;
-  margin-bottom: 3px;
+  width: 120px;
+  margin-bottom: 2px;
+  font-family: 'PlusJakartaSans-bold', sans-serif;
 }
 
 .show-stack-trace-button .icon {
-  height: 12px;
-  width: 12px;
+  height: 18px;
+  width: 18px;
   margin-left: 4px;
 }
 

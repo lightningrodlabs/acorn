@@ -1,6 +1,6 @@
 .update-required-button {
   color: #6600FF;
-  font-family: 'hk-grotesk-semibold';
+  font-family: 'PlusJakartaSans-bold';
   border-radius: 18px;
   padding: 0px 10px 2px;
   text-align: center;
@@ -59,7 +59,7 @@
   height: 68px;
   background-size: cover;
   background-repeat: no-repeat;
-  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
 }
 
 .dashboard-list-project-content {
@@ -115,7 +115,7 @@
 }
 
 .dashboard-list-project-member-count {
-  font-family: 'hk-grotesk-semibold', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   font-size: 16px;
   color: #bcbcbc;
 }
@@ -133,7 +133,7 @@
 
 .dashboard-list-project-entry-points {
   margin-top: 10px;
-  font-family: 'hk-grotesk-medium', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
   margin-left: 82px;
   display: flex;
   flex-direction: column;
@@ -161,8 +161,8 @@
 }
 
 .dashboard-list-project-entry-point-button .icon {
-  padding: 2.5px;
   transition: transform 0.2s ease-in;
+  margin-right: 4px;
 }
 
 .dashboard-list-project-entry-point-button:hover {
@@ -234,8 +234,8 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   background-color: #fbf9f7;
   transition: background-color 0.2s ease-in-out;
 }
