@@ -65,6 +65,6 @@ export function createCrudActionCreators(zome_name, model) {
   const create = createZomeCallAsyncAction(zome_name, `create_${model}`)
   const update = createZomeCallAsyncAction(zome_name, `update_${model}`)
   const fetch = createZomeCallAsyncAction(zome_name, `fetch_${model}s`)
-  const archive = createZomeCallAsyncAction(zome_name, `archive_${model}`)
+  const archive = createZomeCallAsyncAction(zome_name, `delete_${model}`)
   return [create, fetch, update, archive]
 }

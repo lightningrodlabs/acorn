@@ -328,11 +328,11 @@ async function joinProject(passphrase, dispatch) {
     async function checkForPeer(iteration) {
       const stateDump = await adminWs.dumpState({
         cell_id: cellId,
-      })
+      }, 50000)
       if (stateDump[0].peer_dump.peers.length === 0) {
         if (iteration < 3) {
           console.log(
-            'found no peers but will wait 5 seconds and check again...'
+            'iteration: ' + iteration + ' found no peers but will wait 5 seconds and check again...'
           )
           // wait 5 seconds and check again
           await new Promise((resolve) => setTimeout(resolve, 5000))
@@ -346,7 +346,7 @@ async function joinProject(passphrase, dispatch) {
         }
       }
     }
-    await checkForPeer(0)
+    // await checkForPeer(0)
     // trigger a side effect...
     // this will let other project members know you're here
     // without 'blocking' the thread or the UX
@@ -358,7 +358,7 @@ async function joinProject(passphrase, dispatch) {
         fn_name: 'init_signal',
         payload: null,
         provenance: getAgentPubKey(), // FIXME: this will need correcting after holochain changes this
-      })
+      }, 50000)
       .then(() => console.log('succesfully triggered init_signal'))
       .catch((e) => console.error('failed while triggering init_signal: ', e))
     // this will trigger the fetching of project meta
@@ -366,7 +366,7 @@ async function joinProject(passphrase, dispatch) {
     await dispatch(joinProjectCellId(cellIdString))
     // since we have, in this case, found a peer
     // we will return true to indicate that
-    return true
+    return false
   } catch (e) {
     if (e.message === 'no peers') {
       // this will trigger the fetching of project meta

@@ -2,6 +2,7 @@ import { InstalledAppInfo } from '@holochain/conductor-api'
 import React, { useEffect, useState } from 'react'
 import { getAllApps } from '../../projectAppIds'
 import { uidToPassphrase } from '../../secrets'
+import GuidebookNavLink from '../GuidebookNavLink/GuidebookNavLink'
 import Icon from '../Icon/Icon'
 import './PendingProjects.css'
 
@@ -40,7 +41,7 @@ function PendingProjects({
             ([_appId, appInfo]) => appInfo.cellIdString === pendingCellId
           )
           const appInfoForCellId = {
-            uid: appInfo.cell_data[0].cell_nick,
+            uid: appInfo.cell_data[0].role_id,
             appId,
           }
           newPassphrases[pendingCellId] = appInfoForCellId
@@ -69,7 +70,7 @@ function PendingProjects({
       setPendingProjects((pendingProjects: string[]) => {
         return pendingProjects.filter((c) => !found.find((ci) => c === ci))
       })
-    }, 60000)
+    }, 60000) // check every 60 seconds for project meta
     return () => {
       clearInterval(checkAgainInterval)
     }
@@ -137,6 +138,10 @@ function PendingProjects({
                     </div>
                   )
                 })}
+                <GuidebookNavLink
+                  guidebookId='join_a_project'>
+                  Having issues? Learn more about joining a project.
+                </GuidebookNavLink>
             </div>
           )}
         </div>
