@@ -33,43 +33,51 @@ div.react {
 
 /* Fonts */
 
-/* HK Grotesk */
+/* Plus Jakarta Sans */
 
 @font-face {
   font-family: 'PlusJakartaSans-regular';
-  src: url('fonts/PlusJakartaSans/hkgrotesk-regular-webfont.woff2') format('woff2'), url('fonts/PlusJakartaSans/hkgrotesk-regular-webfont.woff') format('woff');
+  src: url('fonts/plus-jakarta-sans/PlusJakartaSans-Regular.woff2') format('woff2'),
+    url('fonts/plus-jakarta-sans/PlusJakartaSans-Regular.woff') format('woff');
   font-weight: normal;
   font-style: normal;
-  margin-bottom: 1px;
+  word-spacing: 0.05em;
 }
 
 @font-face {
   font-family: 'PlusJakartaSans-medium';
-  src: url('fonts/PlusJakartaSans/hkgrotesk-medium-webfont.woff2') format('woff2'), url('fonts/PlusJakartaSans/hkgrotesk-medium-webfont.woff') format('woff');
+  src: url('fonts/plus-jakarta-sans/PlusJakartaSans-Medium.woff2') format('woff2'),
+    url('fonts/plus-jakarta-sans/PlusJakartaSans-Medium.woff') format('woff');
   font-weight: normal;
   font-style: normal;
-  margin-bottom: 1px;
+  word-spacing: 0.05em;
+}
+
+@font-face {
+  font-family: 'PlusJakartaSans-semibold';
+  src: url('fonts/plus-jakarta-sans/PlusJakartaSans-SemiBold.woff2') format('woff2'),
+    url('fonts/plus-jakarta-sans/PlusJakartaSans-SemiBold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  word-spacing: 0.05em;
 }
 
 @font-face {
   font-family: 'PlusJakartaSans-bold';
-  src: url('fonts/PlusJakartaSans/hkgrotesk-bold-webfont.woff2') format('woff2'), url('fonts/PlusJakartaSans/hkgrotesk-bold-webfont.woff') format('woff');
+  src: url('fonts/plus-jakarta-sans/PlusJakartaSans-Bold.woff2') format('woff2'),
+    url('fonts/plus-jakarta-sans/PlusJakartaSans-Bold.woff') format('woff');
   font-weight: normal;
   font-style: normal;
-}
-
-@font-face {
-  font-family: 'PlusJakartaSans-bold';
-  src: url('fonts/PlusJakartaSans/hkgrotesk-bold-webfont.woff2') format('woff2'), url('fonts/PlusJakartaSans/hkgrotesk-bold-webfont.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
+  word-spacing: 0.05em;
 }
 
 @font-face {
   font-family: 'PlusJakartaSans-extrabold';
-  src: url('fonts/PlusJakartaSans/hkgrotesk-extrabold-webfont.woff2') format('woff2'), url('fonts/PlusJakartaSans/hkgrotesk-extrabold-webfont.woff') format('woff');
+  src: url('fonts/plus-jakarta-sans/PlusJakartaSans-ExtraBold.woff2') format('woff2'),
+    url('fonts/plus-jakarta-sans/PlusJakartaSans-ExtraBold.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+  word-spacing: 0.05em;
 }
 
 /* Gilroy Font */
