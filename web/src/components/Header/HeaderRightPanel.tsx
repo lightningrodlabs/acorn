@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink, Route, useHistory, useLocation } from 'react-router-dom'
 
 import { GUIDE_IS_OPEN } from '../../searchParams'
@@ -48,12 +48,10 @@ function SearchResultItem({
   return (
     <div className="search-result-item-wrapper">
       <div className="search-result-item-text-icon">
-        <Icon
-          name={name}
-          size="small"
-          className="light-grey not-hoverable"
-        />
-        <div className="search-result-item-text" title={text}>{text}</div>
+        <Icon name={name} size="small" className="light-grey not-hoverable" />
+        <div className="search-result-item-text" title={text}>
+          {text}
+        </div>
       </div>
       <div className="search-result-item-buttons">
         <div onClick={() => panAndZoom(goalAddress)}>
@@ -67,17 +65,13 @@ function SearchResultItem({
   )
 }
 
-function SearchResultsFilter({ name, setFilter }) {
-  const [isFilterApplied, setIsFilterApplied] = useState(false)
+function SearchResultsFilter({ name, filterActive, setFilter }) {
   return (
     <div
       className={`search-results-filter-wrapper ${name} ${
-        isFilterApplied ? 'filter-is-applied' : ''
+        filterActive ? 'filter-is-applied' : ''
       } `}
-      onClick={() => {
-        setIsFilterApplied(!isFilterApplied)
-        setFilter(!isFilterApplied)
-      }}
+      onClick={() => setFilter(!filterActive)}
     >
       {name}
     </div>
@@ -95,6 +89,7 @@ function HeaderRightPanel({
   commentList,
   openExpandedView,
   animatePanAndZoom,
+  projectId,
 }) {
   const ref = useRef()
   useOnClickOutside(ref, () => {
@@ -119,6 +114,17 @@ function HeaderRightPanel({
     setIsAvatarHover(false)
   }
 
+  // reset the search when the project
+  // changes, including navigating away
+  // to the dashboard
+  useEffect(() => {
+    setIsTextFilter(false)
+    setIsDescriptionFilter(false)
+    setIsCommentFilter(false)
+    setIsSearchOpen(false)
+    setFilterText('')
+  }, [projectId])
+
   // check the url for GUIDE_IS_OPEN
   // and affect the state
   const searchParams = new URLSearchParams(location.search)
@@ -128,119 +134,118 @@ function HeaderRightPanel({
 
   return (
     <>
-    <ProjectMapViewOnly>
-      <div
-        className={`search-button-wrapper ${
-          isSearchOpen ? 'search-is-open' : ''
-        } 
+      <ProjectMapViewOnly>
+        <div
+          className={`search-button-wrapper ${
+            isSearchOpen ? 'search-is-open' : ''
+          } 
         ${filterText !== '' ? 'results-dropdown-is-open' : ''}`}
-      >
-        <div className="search-icon-input">
-          <div className="search-open-icon">
-            <Icon
-              name="search.svg"
-              size="small"
-              onClick={() => {
-                setIsSearchOpen(!isSearchOpen)
-                setFilterText('')
-              }}
-            />
-          </div>
-          <div>
-            <CSSTransition
-              in={isSearchOpen}
-              timeout={100}
-              unmountOnExit
-              classNames="search-input-wrapper"
-            >
-              <input
-                type="text"
-                onChange={(e) => setFilterText(e.target.value.toLowerCase())}
-                value={filterText}
-                placeholder="Search for a goal, comment, and more"
-                autoFocus
+        >
+          <div className="search-icon-input">
+            <div className="search-open-icon">
+              <Icon
+                name="search.svg"
+                size="small"
+                onClick={() => {
+                  setIsSearchOpen(!isSearchOpen)
+                  setFilterText('')
+                }}
               />
-            </CSSTransition>
+            </div>
+            <div>
+              <CSSTransition
+                in={isSearchOpen}
+                timeout={100}
+                unmountOnExit
+                classNames="search-input-wrapper"
+              >
+                <input
+                  type="text"
+                  onChange={(e) => setFilterText(e.target.value.toLowerCase())}
+                  value={filterText}
+                  placeholder="Search for a goal, comment, and more"
+                  autoFocus
+                />
+              </CSSTransition>
+            </div>
+            {filterText !== '' && (
+              <Icon
+                name="x.svg"
+                size="small"
+                className="light-grey"
+                onClick={() => {
+                  setFilterText('')
+                }}
+              />
+            )}
           </div>
           {filterText !== '' && (
-            <Icon
-              name="x.svg"
-              size="small"
-              className="light-grey"
-              onClick={() => {
-                setFilterText('')
-              }}
-            />
+            <div className="search-results-dropdown">
+              <div className="search-results-filters">
+                <SearchResultsFilter
+                  name="Titles"
+                  filterActive={isTextFilter}
+                  setFilter={setIsTextFilter}
+                />
+                <SearchResultsFilter
+                  name="Descriptions"
+                  filterActive={isDescriptionFilter}
+                  setFilter={setIsDescriptionFilter}
+                />
+                <SearchResultsFilter
+                  name="Comments"
+                  filterActive={isCommentFilter}
+                  setFilter={setIsCommentFilter}
+                />
+              </div>
+              <div className="search-results-list">
+                {(!noFilters || isTextFilter) &&
+                  goalList
+                    .filter((goal) =>
+                      goal.content.toLowerCase().includes(filterText)
+                    )
+                    .map((goal) => (
+                      <SearchResultItem
+                        text={goal.content}
+                        name="title.svg"
+                        onExpandClick={openExpandedView}
+                        panAndZoom={animatePanAndZoom}
+                        goalAddress={goal.headerHash}
+                      />
+                    ))}
+                {(!noFilters || isDescriptionFilter) &&
+                  goalList
+                    .filter((goal) =>
+                      goal.description.toLowerCase().includes(filterText)
+                    )
+                    .map((goal) => (
+                      <SearchResultItem
+                        text={goal.description}
+                        name="text-align-left.svg"
+                        onExpandClick={openExpandedView}
+                        panAndZoom={animatePanAndZoom}
+                        goalAddress={goal.headerHash}
+                      />
+                    ))}
+                {(!noFilters || isCommentFilter) &&
+                  commentList
+                    .filter((comment) =>
+                      comment.content.toLowerCase().includes(filterText)
+                    )
+                    .map((comment) => (
+                      <SearchResultItem
+                        text={comment.content}
+                        name="comment.svg"
+                        onExpandClick={openExpandedView}
+                        panAndZoom={animatePanAndZoom}
+                        goalAddress={comment.goal_address}
+                      />
+                    ))}
+              </div>
+            </div>
           )}
         </div>
-        {/* <CSSTransition
-          in={filterText !== ''}
-          timeout={200}
-          unmountOnExit
-          className="search-results-dropdown-wrapper"
-        > */}
-        {filterText !== '' && (
-          <div className="search-results-dropdown">
-            <div className="search-results-filters">
-              <SearchResultsFilter name="Titles" setFilter={setIsTextFilter} />
-              <SearchResultsFilter
-                name="Descriptions"
-                setFilter={setIsDescriptionFilter}
-              />
-              <SearchResultsFilter
-                name="Comments"
-                setFilter={setIsCommentFilter}
-              />
-            </div>
-            <div className="search-results-list">
-              {(!noFilters || isTextFilter) &&
-                goalList
-                  .filter((goal) =>
-                    goal.content.toLowerCase().includes(filterText)
-                  )
-                  .map((goal) => (
-                    <SearchResultItem
-                      text={goal.content}
-                      name="title.svg"
-                      onExpandClick={openExpandedView}
-                      panAndZoom={animatePanAndZoom}
-                      goalAddress={goal.headerHash}
-                    />
-                  ))}
-              {(!noFilters || isDescriptionFilter) &&
-                goalList
-                  .filter((goal) =>
-                    goal.description.toLowerCase().includes(filterText)
-                  )
-                  .map((goal) => (
-                    <SearchResultItem
-                      text={goal.description}
-                      name="text-align-left.svg"
-                      onExpandClick={openExpandedView}
-                      panAndZoom={animatePanAndZoom}
-                      goalAddress={goal.headerHash}
-                    />
-                  ))}
-              {(!noFilters || isCommentFilter) &&
-                commentList
-                  .filter((comment) =>
-                    comment.content.toLowerCase().includes(filterText)
-                  )
-                  .map((comment) => (
-                    <SearchResultItem
-                      text={comment.content}
-                      name="comment.svg"
-                      onExpandClick={openExpandedView}
-                      panAndZoom={animatePanAndZoom}
-                      goalAddress={comment.goal_address}
-                    />
-                  ))}
-            </div>
-          </div>
-        )}
-        {/* </CSSTransition> */}
-      </div> 
-      {/* end search */}
+        {/* end search */}
       </ProjectMapViewOnly>
 
       <div className="header-right-panel">
@@ -342,6 +347,7 @@ function mapStateToProps(state) {
   const goalList = Object.values(goals)
   const commentList = Object.values(goalComments)
   return {
+    projectId,
     goalList,
     commentList,
   }
