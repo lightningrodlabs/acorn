@@ -53,7 +53,7 @@ function SearchResultItem({
           size="small"
           className="light-grey not-hoverable"
         />
-        <div className="search-result-item-text">{text}</div>
+        <div className="search-result-item-text" title={text}>{text}</div>
       </div>
       <div className="search-result-item-buttons">
         <div onClick={() => panAndZoom(goalAddress)}>
