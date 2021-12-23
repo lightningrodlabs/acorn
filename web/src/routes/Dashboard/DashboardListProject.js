@@ -120,7 +120,7 @@ function DashboardListProject({
               onClick={() => setShowInviteMembersModal(project.passphrase)}
             >
               <Icon
-                name="plus.svg"
+                name="user-plus.svg"
                 size="small"
                 className="grey"
               />
