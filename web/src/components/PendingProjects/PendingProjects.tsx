@@ -41,6 +41,7 @@ function PendingProjects({
             ([_appId, appInfo]) => appInfo.cellIdString === pendingCellId
           )
           const appInfoForCellId = {
+            // @ts-ignore
             uid: appInfo.cell_data[0].role_id,
             appId,
           }
@@ -138,10 +139,9 @@ function PendingProjects({
                     </div>
                   )
                 })}
-                <GuidebookNavLink
-                  guidebookId='join_a_project'>
-                  Having issues? Learn more about joining a project.
-                </GuidebookNavLink>
+              <GuidebookNavLink guidebookId="join_a_project">
+                Having issues? Learn more about joining a project.
+              </GuidebookNavLink>
             </div>
           )}
         </div>

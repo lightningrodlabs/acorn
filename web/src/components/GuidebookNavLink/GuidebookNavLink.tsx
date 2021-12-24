@@ -7,13 +7,13 @@ export default function GuidebookNavLink({
   guidebookId,
   children,
   className,
-  onClick,
+  onClick = () => {},
 }: {
   guidebookId: string
-  children: React.ReactNode
-  className: string
-  onClick: MouseEventHandler
-}): React.ReactNode {
+  children: React.ReactElement | string
+  className?: string
+  onClick?: MouseEventHandler
+}) {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
   const openEntry = searchParams.get(GUIDE_IS_OPEN)

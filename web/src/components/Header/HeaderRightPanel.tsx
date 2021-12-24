@@ -48,6 +48,7 @@ function SearchResultItem({
   return (
     <div className="search-result-item-wrapper">
       <div className="search-result-item-text-icon">
+        {/* @ts-ignore */}
         <Icon name={name} size="small" className="light-grey not-hoverable" />
         <div className="search-result-item-text" title={text}>
           {text}
@@ -55,9 +56,11 @@ function SearchResultItem({
       </div>
       <div className="search-result-item-buttons">
         <div onClick={() => panAndZoom(goalAddress)}>
+          {/* @ts-ignore */}
           <Icon name="enter.svg" size="small" className="light-grey" />
         </div>
         <div onClick={() => onExpandClick(goalAddress)}>
+          {/* @ts-ignore */}
           <Icon name="expand.svg" size="small" className="light-grey" />
         </div>
       </div>
@@ -143,6 +146,7 @@ function HeaderRightPanel({
         >
           <div className="search-icon-input">
             <div className="search-open-icon">
+              {/* @ts-ignore */}
               <Icon
                 name="search.svg"
                 size="small"
@@ -169,14 +173,17 @@ function HeaderRightPanel({
               </CSSTransition>
             </div>
             {filterText !== '' && (
-              <Icon
-                name="x.svg"
-                size="small"
-                className="light-grey"
-                onClick={() => {
-                  setFilterText('')
-                }}
-              />
+              <>
+                {/* @ts-ignore */}
+                <Icon
+                  name="x.svg"
+                  size="small"
+                  className="light-grey"
+                  onClick={() => {
+                    setFilterText('')
+                  }}
+                />
+              </>
             )}
           </div>
           {filterText !== '' && (
