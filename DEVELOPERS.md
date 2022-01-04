@@ -1,9 +1,7 @@
 
 ## Developers
 
-### To Run Locally and Develop on your Computer
-
-#### Commands to start get started easily:
+### Run Locally and Develop on your Computer
 
 _Prerequisites_
 
@@ -24,12 +22,12 @@ You can run `npm run user-data-reset` if you have user data in development, but 
 **dna**
 
 - Have rust language (stable) installed on your system, then...
-- `npm run dna-install`
-- `npm run dna-pack` (Run this anytime you change the code in `dna` folder)
+- `npm run dna-install`: installs wasm32 compilation target for rust as well as the Holochain CLI
+- `npm run dna-pack`: compiles zomes into wasm and packages each one into a dna using Holochain CLI (Run this anytime you change the code in `dna` folder)
 
 To test backend:
 
-- `npm run dna-test`
+- `npm run dna-test`: runs unit tests
 
 **web** (user interface)
 
@@ -42,7 +40,8 @@ To test backend:
 - `npm run electron-install`
 - `npm run electron`
 
-#### Second User
+#### Multi-User Testing
+run the following commands in separate terminal instances:
 
 - `npm run web2`
 - `npm run electron2`
