@@ -17,6 +17,6 @@ cargo build --release
 mkdir electron/binaries
 cp target/release/acorn-conductor electron/binaries/acorn-conductor
 # create a throwaway directory for hosting the source chain
-mkdir tmp
+mkdir user2-data
 # run the conductor
 npm run dna-dev

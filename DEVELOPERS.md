@@ -15,6 +15,8 @@ Then run
 
 In the future, just run `npm run dev` anytime to develop.
 
+When you run `npm run dev` a `user-data/` directory is created and this is where holochain specific and lair keystore data is stored.
+
 You can run `npm run user-data-reset` if you have user data in development, but you want to clear it, and start over with fresh identities.
 
 #### Commands that are more specific to your use case:
@@ -41,10 +43,12 @@ To test backend:
 - `npm run electron`
 
 #### Multi-User Testing
-run the following commands in separate terminal instances:
+run the following commands in separate terminal instances (must have a running instance of acorn for the first user, either by running `npm run dev` or the below commands without the `2`):
 
 - `npm run web2`
 - `npm run electron2`
+
+After running these commands, a `user2-data/` directory is created with user data. It too can be cleared by running `npm run user-data-reset`.
 
 ### Building / Packaging
 
