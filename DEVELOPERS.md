@@ -19,13 +19,16 @@ When you run `npm run dev` a `user-data/` directory is created and this is where
 
 You can run `npm run user-data-reset` if you have user data in development, but you want to clear it, and start over with fresh identities.
 
+> NOTE: if you see a blank screen once electron launches the app, refresh the page to see app contents.
+
 #### Commands that are more specific to your use case:
 
 **dna**
 
 - Have rust language (stable) installed on your system, then...
 - `npm run dna-install`: installs wasm32 compilation target for rust as well as the Holochain CLI
-- `npm run dna-pack`: compiles zomes into wasm and packages each one into a dna using Holochain CLI (Run this anytime you change the code in `dna` folder)
+- `npm run dna-pack`: compiles zomes into wasm and packages each one into a dna using Holochain CLI 
+- `npm run dna-reset`: runs `dna-pack` and clears user data (Run this anytime you change the code in `dna` folder during development)
 
 To test backend:
 
