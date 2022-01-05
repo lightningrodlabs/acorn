@@ -18,6 +18,7 @@ import { setMember } from './projects/members/actions'
 import { fetchAgents, setAgent } from './agents/actions'
 import { cellIdToString } from 'connoropolous-hc-redux-middleware'
 import { triggerUpdateLayout } from './layout/actions'
+import { startTitleEdit } from './goal-editing/actions'
 
 // We directly use the 'success' type, since these actions
 // have already succeeded on another machine, and we're just reflecting them locally
@@ -55,6 +56,7 @@ const SignalType = {
   // both the archived goal, and everything connected to it that
   // has archived at the same time
   ArchiveGoalFully: 'archive_goal_fully',
+  EditingGoal: 'editing_goal',
   GoalComment: 'goal_comment',
   GoalMember: 'goal_member',
   GoalVote: 'goal_vote',
@@ -172,6 +174,12 @@ export default (store) => (signal) => {
         createSignalAction(goalActions.archiveGoalFully, cellId, payload.data)
       )
       break
+      case SignalType.EditingGoal:
+        // update the state based on the payload of the signal (is_editing)
+        store.dispatch(
+          startTitleEdit(payload.goal_address, payload.editing_agent)
+        )
+        break
     default:
       console.log('unrecognised entryType received: ', payload.entryType)
   }

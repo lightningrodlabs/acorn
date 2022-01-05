@@ -50,7 +50,8 @@ let store = createStore(
 )
 
 // initialize the appWs with the signals handler
-getAppWs(signalsHandlers(store)).then(async (client) => {
+const signalCallback = signalsHandlers(store)
+getAppWs(signalCallback).then(async (client) => {
   try {
     const profilesInfo = await client.appInfo({
       installed_app_id: MAIN_APP_ID,
