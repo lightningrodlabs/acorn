@@ -48,7 +48,7 @@ SIGNALS
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 // untagged because the useful tagging is done internally on the *Signal objects
-#[serde(untagged)]
+#[serde(tag = "signalType", content = "data")]
 pub enum SignalType {
     Edge(ActionSignal<Edge>),
     EntryPoint(ActionSignal<EntryPoint>),

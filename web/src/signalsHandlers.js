@@ -56,14 +56,15 @@ const SignalType = {
   // both the archived goal, and everything connected to it that
   // has archived at the same time
   ArchiveGoalFully: 'archive_goal_fully',
-  EditingGoal: 'editing_goal',
   GoalComment: 'goal_comment',
   GoalMember: 'goal_member',
   GoalVote: 'goal_vote',
   Member: 'member',
   ProjectMeta: 'project_meta',
 }
-
+const nonEntrySignalTypes = {
+  EditingGoal: 'EditingGoal'
+}
 const crudActionSets = {
   Edge: edgeActions,
   Goal: goalActions,
@@ -115,10 +116,19 @@ export default (store) => (signal) => {
   payload = msgpack.decode(payload)
 
   // switch to CamelCasing if defined
-  const crudType = crudTypes[payload.entryType]
+  if (payload.signalType === nonEntrySignalTypes.EditingGoal) {
+    // store.dispatch(
+    //   startTitleEdit(payload.goal_address, payload.editing_agent)
+    //   )
+    // call triggerGoalEditSignal function
+    console.log('received goal edit signal:', payload.data)
+    return
+  }
+
+  const crudType = crudTypes[payload.data.entryType]
   if (crudType) {
-    const action = pickCrudAction(crudType, payload.action)
-    store.dispatch(createSignalAction(action, cellId, payload.data))
+    const action = pickCrudAction(crudType, payload.data.action)
+    store.dispatch(createSignalAction(action, cellId, payload.data.data))
     // in case of the special situation with archiving edges
     // where the layout reflow doesn't happen automatically
     // we have to manually trigger it to do so
@@ -127,60 +137,57 @@ export default (store) => (signal) => {
     if (action.success().type === edgeActions.archiveEdge.success().type) {
       store.dispatch(triggerUpdateLayout())
     }
-    // we captured the action for this signal, so early exit
-    return
   }
-
-  // otherwise use non-crud actions
-  switch (payload.entryType) {
-    /*
-      PROFILES Zome
-    */
-    case SignalType.Agent:
-      // this one is different than the rest on purpose
-      // there's no "local action" equivalent
-      store.dispatch(setAgent(payload.data))
-      break
-    /* 
-      PROJECTS Zomes
-    */
-    case SignalType.Member:
-      const stateCheck = store.getState()
-      // check if this member is in our list of agents whose
-      // profiles we already have, if not, then we should
-      // refetch the agents list
-      // TODO: re-enable this when there's a straightforward way to have the CellId
-      // for the Profiles Cell here, not the Projects CellId which it currently has access to. 
-      // This was the source of a breaking bug
-      // if (!stateCheck.agents[payload.data.headerHash]) {
-      //   store.dispatch(
-      //     fetchAgents.create({
-      //       cellIdString: cellIdToString(cellId),
-      //       payload: null,
-      //     })
-      //   )
-      // }
-      // this one is different than the rest on purpose
-      // there's no "local action" equivalent
-      store.dispatch(setMember(cellIdToString(cellId), payload.data))
-      break
-    case SignalType.GoalWithEdge:
-      store.dispatch(
-        createSignalAction(goalActions.createGoalWithEdge, cellId, payload.data)
-      )
-      break
-    case SignalType.ArchiveGoalFully:
-      store.dispatch(
-        createSignalAction(goalActions.archiveGoalFully, cellId, payload.data)
-      )
-      break
-      case SignalType.EditingGoal:
-        // update the state based on the payload of the signal (is_editing)
+  else {
+    // otherwise use non-crud actions
+    switch (payload.data.entryType) {
+      /*
+        PROFILES Zome
+      */
+      case SignalType.Agent:
+        // this one is different than the rest on purpose
+        // there's no "local action" equivalent
+        store.dispatch(setAgent(payload.data.data))
+        break
+      /* 
+        PROJECTS Zomes
+      */
+      case SignalType.Member:
+        const stateCheck = store.getState()
+        // check if this member is in our list of agents whose
+        // profiles we already have, if not, then we should
+        // refetch the agents list
+        // TODO: re-enable this when there's a straightforward way to have the CellId
+        // for the Profiles Cell here, not the Projects CellId which it currently has access to. 
+        // This was the source of a breaking bug
+        // if (!stateCheck.agents[payload.data.headerHash]) {
+        //   store.dispatch(
+        //     fetchAgents.create({
+        //       cellIdString: cellIdToString(cellId),
+        //       payload: null,
+        //     })
+        //   )
+        // }
+        // this one is different than the rest on purpose
+        // there's no "local action" equivalent
+        store.dispatch(setMember(cellIdToString(cellId), payload.data.data))
+        break
+      case SignalType.GoalWithEdge:
         store.dispatch(
-          startTitleEdit(payload.goal_address, payload.editing_agent)
+          createSignalAction(goalActions.createGoalWithEdge, cellId, payload.data.data)
         )
         break
-    default:
-      console.log('unrecognised entryType received: ', payload.entryType)
+      case SignalType.ArchiveGoalFully:
+        store.dispatch(
+          createSignalAction(goalActions.archiveGoalFully, cellId, payload.data.data)
+        )
+        break
+      default:
+        console.log('unrecognised entryType received: ', payload.data.entryType)
+    }
   }
+}
+
+function triggerGoalEditSignal(store, payload) {
+  // check for 4 cases and dispatch the appropriate action
 }

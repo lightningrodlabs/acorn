@@ -52,6 +52,7 @@ export default function ExpandedViewModeContent({
   squirrels,
   comments,
   archiveGoalMember,
+  sendEditSignal,
 }) {
   // 0 is details
   // 1 is comments
@@ -80,6 +81,7 @@ export default function ExpandedViewModeContent({
               updateGoal,
               squirrels,
               archiveGoalMember,
+              sendEditSignal,
             }}
           />
         )}
@@ -105,6 +107,7 @@ function Details({
   updateGoal,
   squirrels,
   archiveGoalMember,
+  sendEditSignal,
 }) {
   // you can use these as values for
   // testing/ development, instead of `squirrels`
@@ -138,7 +141,7 @@ function Details({
     setDescription(goalDescription)
   }, [goalDescription])
 
-  const updateContent = () => {
+  const onTitleBlur = () => {
     updateGoal(
       {
         ...goal,
@@ -149,8 +152,51 @@ function Details({
       },
       goalAddress
     )
+    sendEditSignal(
+      {
+        goal_field: {Title: null},
+        goal_address: goalAddress,
+        is_editing: false,
+      }
+    )
   }
-
+  const onDescriptionBlur = () => {
+    updateGoal(
+      {
+        ...goal,
+        user_edit_hash: agentAddress,
+        timestamp_updated: moment().unix(),
+        content,
+        description,
+      },
+      goalAddress
+    )
+    sendEditSignal(
+      {
+        goal_field: {Description: null},
+        goal_address: goalAddress,
+        is_editing: false,
+      }
+    )
+  }
+  const editTitleSignal = () => {
+    sendEditSignal(
+      {
+        goal_field: {Title: null},
+        goal_address: goalAddress,
+        is_editing: true,
+      }
+    )
+  }
+  const editDescriptionSignal = () => {
+    sendEditSignal(
+      {
+        goal_field: {Description: null},
+        goal_address: goalAddress,
+        is_editing: true,
+      }
+    )
+  }
   const handleOnChangeTitle = ({ target }) => {
     setContent(target.value)
   }
@@ -169,10 +215,11 @@ function Details({
         <div className="expanded-view-title">
           <TextareaAutosize
             value={content}
-            onBlur={updateContent}
+            onBlur={onTitleBlur}
             onChange={handleOnChangeTitle}
             onKeyPress={handleOnChangeTitle}
             placeholder="Add a title..."
+            onFocus={editTitleSignal}
           />
         </div>
 
@@ -242,8 +289,9 @@ function Details({
           <TextareaAutosize
             placeholder="Add description here"
             value={description}
-            onBlur={updateContent}
+            onBlur={onDescriptionBlur}
             onChange={handleOnChangeDescription}
+            onFocus={editDescriptionSignal}
           />
         </div>
       </div>
