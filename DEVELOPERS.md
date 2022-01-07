@@ -15,11 +15,11 @@ Then run
 
 In the future, just run `npm run dev` anytime to develop.
 
-When you run `npm run dev` a `user-data/` directory is created and this is where holochain specific and lair keystore data is stored.
+When you run `npm run dev` a `user-data/` directory is created and this is where user data including private keys, and also data generated through use of the app is stored.
 
 You can run `npm run user-data-reset` if you have user data in development, but you want to clear it, and start over with fresh identities.
 
-> NOTE: if you see a blank screen once electron launches the app, refresh the page to see app contents.
+> NOTE: if you see a blank screen once electron launches the app, refresh the page (using View -> Reload or Cmd/Ctrl-R) to see app contents.
 
 #### Commands that are more specific to your use case:
 
