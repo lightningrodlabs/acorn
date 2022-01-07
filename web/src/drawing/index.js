@@ -158,6 +158,7 @@ function render(store, canvas) {
       const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
       const isSelected = false
       const isEditing = false
+      const isBeingEdited = Boolean(state.ui.goalEditing.find(item => item.goal === goal.headerHash)) //convert result of find to bool
       const membersOfGoal = Object.keys(goalMembers)
         .map(headerHash => goalMembers[headerHash])
         .filter(goalMember => goalMember.goal_address === goal.headerHash)
@@ -173,7 +174,7 @@ function render(store, canvas) {
         isSelected: isSelected,
         isHovered: isHovered,
         ctx: ctx,
-        isBeingEdited: false, // TODO
+        isBeingEdited: isBeingEdited,
         isTopPriorityGoal: isTopPriorityGoal
       })
     })
@@ -224,6 +225,7 @@ function render(store, canvas) {
       const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
       const isSelected = true
       const isEditing = false
+      const isBeingEdited = Boolean(state.ui.goalEditing.find(item => item.goal === goal.headerHash)) //convert result of find to bool
       const membersOfGoal = Object.keys(goalMembers)
         .map(headerHash => goalMembers[headerHash])
         .filter(goalMember => goalMember.goal_address === goal.headerHash)
@@ -239,7 +241,7 @@ function render(store, canvas) {
         isSelected: isSelected,
         isHovered: isHovered,
         ctx: ctx,
-        isBeingEdited: false, // TODO
+        isBeingEdited: isBeingEdited,
         isTopPriorityGoal: isTopPriorityGoal
       })
     })
@@ -363,7 +365,7 @@ function render(store, canvas) {
         isSelected: false,
         isHovered: false,
         ctx: ctx,
-        isBeingEdited: false, // TODO
+        isBeingEdited: false, 
         isTopPriorityGoal: isTopPriorityGoal
       })
     }
@@ -388,7 +390,7 @@ function render(store, canvas) {
       isSelected: isSelected,
       isHovered: isHovered,
       ctx: ctx,
-      isBeingEdited: false, // TODO
+      isBeingEdited: false, 
       isTopPriorityGoal: isTopPriorityGoal
     })
   }
