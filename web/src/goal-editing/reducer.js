@@ -21,9 +21,11 @@ export default function(state = defaultState, action) {
           editor: payload.agentAddress,
         }]
     case END_TITLE_EDIT:
-        return [...state].filter( item => (item.goalAddress !== payload.goalAddress || !item.title))
+        return [...state].filter( item => item.goal !== payload.goalAddress || !item.title)
+        // return [...state].filter( item => (item.goalAddress !== payload.goalAddress))
+        // return [...state].filter( item => !((item.goalAddress === payload.goalAddress) && item.title))
     case END_DESCRIPTION_EDIT:
-        return [...state].filter( item => item.goalAddress !== payload.goalAddress || item.title)
+        return [...state].filter( item => item.goal !== payload.goalAddress || item.title)
     default:
       return state
   }

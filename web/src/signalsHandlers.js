@@ -18,7 +18,7 @@ import { setMember } from './projects/members/actions'
 import { fetchAgents, setAgent } from './agents/actions'
 import { cellIdToString } from 'connoropolous-hc-redux-middleware'
 import { triggerUpdateLayout } from './layout/actions'
-import { startTitleEdit } from './goal-editing/actions'
+import { startTitleEdit, endTitleEdit, startDescriptionEdit, endDescriptionEdit } from './goal-editing/actions'
 
 // We directly use the 'success' type, since these actions
 // have already succeeded on another machine, and we're just reflecting them locally
@@ -122,6 +122,7 @@ export default (store) => (signal) => {
     //   )
     // call triggerGoalEditSignal function
     console.log('received goal edit signal:', payload.data)
+    triggerGoalEditSignal(store, payload.data)
     return
   }
 
@@ -190,4 +191,26 @@ export default (store) => (signal) => {
 
 function triggerGoalEditSignal(store, payload) {
   // check for 4 cases and dispatch the appropriate action
+  if (payload.is_editing) {
+    if ("Title" in payload.goal_field) { // have to use this because using the default flat enum serialization of { Title: null }
+      store.dispatch(startTitleEdit(payload.goal_address, payload.editing_agent))
+    }
+    else if ("Description" in payload.goal_field) {
+      store.dispatch(startDescriptionEdit(payload.goal_address, payload.editing_agent))
+    }
+    else {
+      console.log('unrecognized goal field type:', payload.goal_field)
+    }
+  }
+  else {
+    if ("Title" in payload.goal_field) { // have to use this because using the default flat enum serialization of { Title: null }
+      store.dispatch(endTitleEdit(payload.goal_address))
+    }
+    else if ("Description" in payload.goal_field) {
+      store.dispatch(endDescriptionEdit(payload.goal_address))
+    }
+    else {
+      console.log('unrecognized goal field type:', payload.goal_field)
+    }
+  }
 }
