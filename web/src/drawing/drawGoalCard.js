@@ -38,7 +38,8 @@ export default function render({
   isHovered,
   ctx,
   isBeingEdited,
-  isTopPriorityGoal
+  isTopPriorityGoal,
+  isBeingEditedBy
 }) {
   let x, y
   if (coordinates) {
@@ -360,7 +361,7 @@ export default function render({
     })
   }
   if (isBeingEdited) {
-    let isBeingEditedText = 'Being edited by Eric'
+    let isBeingEditedText = `Being edited by ${isBeingEditedBy}` //TODO: replace Eric with new prop
     ctx.fillStyle = '#fff'
     ctx.font = '14px PlusJakartaSans-bold'
     ctx.fillText(isBeingEditedText, x + goalWidth / 2 - 60, y + goalHeight - 8)

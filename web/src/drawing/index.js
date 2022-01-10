@@ -158,7 +158,9 @@ function render(store, canvas) {
       const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
       const isSelected = false
       const isEditing = false
-      const isBeingEdited = Boolean(state.ui.goalEditing.find(item => item.goal === goal.headerHash)) //convert result of find to bool
+      const editInfoObject = state.ui.goalEditing.find(item => item.goal === goal.headerHash)
+      const isBeingEdited = Boolean(editInfoObject)
+      const isBeingEditedBy = isBeingEdited ? state.agents[editInfoObject.editor].handle : null
       const membersOfGoal = Object.keys(goalMembers)
         .map(headerHash => goalMembers[headerHash])
         .filter(goalMember => goalMember.goal_address === goal.headerHash)
@@ -175,7 +177,8 @@ function render(store, canvas) {
         isHovered: isHovered,
         ctx: ctx,
         isBeingEdited: isBeingEdited,
-        isTopPriorityGoal: isTopPriorityGoal
+        isTopPriorityGoal: isTopPriorityGoal,
+        isBeingEditedBy: isBeingEditedBy
       })
     })
 
@@ -225,7 +228,9 @@ function render(store, canvas) {
       const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
       const isSelected = true
       const isEditing = false
-      const isBeingEdited = Boolean(state.ui.goalEditing.find(item => item.goal === goal.headerHash)) //convert result of find to bool
+      const editInfoObject = state.ui.goalEditing.find(item => item.goal === goal.headerHash)
+      const isBeingEdited = Boolean(editInfoObject)
+      const isBeingEditedBy = isBeingEdited ? state.agents[editInfoObject.editor].handle : null
       const membersOfGoal = Object.keys(goalMembers)
         .map(headerHash => goalMembers[headerHash])
         .filter(goalMember => goalMember.goal_address === goal.headerHash)
@@ -242,7 +247,8 @@ function render(store, canvas) {
         isHovered: isHovered,
         ctx: ctx,
         isBeingEdited: isBeingEdited,
-        isTopPriorityGoal: isTopPriorityGoal
+        isTopPriorityGoal: isTopPriorityGoal,
+        isBeingEditedBy: isBeingEditedBy
       })
     })
 

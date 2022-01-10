@@ -121,7 +121,6 @@ export default (store) => (signal) => {
     //   startTitleEdit(payload.goal_address, payload.editing_agent)
     //   )
     // call triggerGoalEditSignal function
-    console.log('received goal edit signal:', payload.data)
     triggerGoalEditSignal(store, payload.data)
     return
   }
