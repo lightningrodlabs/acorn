@@ -361,7 +361,7 @@ export default function render({
     })
   }
   if (isBeingEdited) {
-    let isBeingEditedText = `Being edited by ${isBeingEditedBy}` //TODO: replace Eric with new prop
+    let isBeingEditedText = `Being edited by ${isBeingEditedBy}`
     ctx.fillStyle = '#fff'
     ctx.font = '14px PlusJakartaSans-bold'
     ctx.fillText(isBeingEditedText, x + goalWidth / 2 - 60, y + goalHeight - 8)

@@ -187,14 +187,40 @@ export default (store) => (signal) => {
     }
   }
 }
-
+let titleEditTimeoutId = {} //is this a shared value accessible each time a signal is received?
+let descriptionEditTimeoutId = {}
+const signalTimeout = 5000
+function endTitleEditDispatch(store, payload) {
+  // remove the key value pair from here (to avoid calling clearTimeout when not necessary)
+  delete titleEditTimeoutId[payload.goal_address]
+  store.dispatch(endTitleEdit(payload.goal_address))
+}
+function endDescriptionEditDispatch(store, payload) {
+  // remove the key value pair from here (to avoid calling clearTimeout when not necessary)
+  delete descriptionEditTimeoutId[payload.goal_address]
+  store.dispatch(endDescriptionEdit(payload.goal_address))
+}
 function triggerGoalEditSignal(store, payload) {
   // check for 4 cases and dispatch the appropriate action
   if (payload.is_editing) {
     if ("Title" in payload.goal_field) { // have to use this because using the default flat enum serialization of { Title: null }
+      if (payload.goal_address in titleEditTimeoutId) {
+        clearTimeout(titleEditTimeoutId[payload.goal_address])
+        titleEditTimeoutId[payload.goal_address] = setTimeout(endTitleEditDispatch, signalTimeout, store, payload)
+      }
+      else {
+        titleEditTimeoutId[payload.goal_address] = setTimeout(endTitleEditDispatch, signalTimeout, store, payload)
+      }
       store.dispatch(startTitleEdit(payload.goal_address, payload.editing_agent))
     }
     else if ("Description" in payload.goal_field) {
+      if (payload.goal_address in descriptionEditTimeoutId) {
+        clearTimeout(descriptionEditTimeoutId[payload.goal_address])
+        descriptionEditTimeoutId[payload.goal_address] = setTimeout(endDescriptionEditDispatch, signalTimeout, store, payload)
+      }
+      else {
+        descriptionEditTimeoutId[payload.goal_address] = setTimeout(endDescriptionEditDispatch, signalTimeout, store, payload)
+      }
       store.dispatch(startDescriptionEdit(payload.goal_address, payload.editing_agent))
     }
     else {
