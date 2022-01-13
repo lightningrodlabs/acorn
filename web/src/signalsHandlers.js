@@ -63,7 +63,8 @@ const SignalType = {
   ProjectMeta: 'project_meta',
 }
 const nonEntrySignalTypes = {
-  EditingGoal: 'EditingGoal'
+  EditingGoal: 'EditingGoal',
+  RealtimInfo: 'RealtimeInfo'
 }
 const crudActionSets = {
   Edge: edgeActions,
@@ -117,11 +118,12 @@ export default (store) => (signal) => {
 
   // switch to CamelCasing if defined
   if (payload.signalType === nonEntrySignalTypes.EditingGoal) {
-    // store.dispatch(
-    //   startTitleEdit(payload.goal_address, payload.editing_agent)
-    //   )
-    // call triggerGoalEditSignal function
     triggerGoalEditSignal(store, payload.data)
+    return
+  }
+
+  if (payload.signalType === nonEntrySignalTypes.RealtimInfo) {
+    triggerRealtimeInfoSignal(store, payload.data)
     return
   }
 
@@ -238,4 +240,7 @@ function triggerGoalEditSignal(store, payload) {
       console.log('unrecognized goal field type:', payload.goal_field)
     }
   }
+}
+function triggerRealtimeInfoSignal(store, payload) {
+  console.log('received realtime info', payload)
 }

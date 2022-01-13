@@ -4,7 +4,7 @@ import { START_TITLE_EDIT, END_TITLE_EDIT, START_DESCRIPTION_EDIT, END_DESCRIPTI
 //   goalAddress: null,
 // }
 const defaultState = []
-
+// TODO: change this for tracking local state only
 export default function(state = defaultState, action) {
   const { payload, type } = action
   switch (type) {

@@ -18,7 +18,8 @@ import RightMenu from './RightMenu/RightMenu'
 import ExpandedViewModeHeader from './ExpandedViewModeHeader/ExpandedViewModeHeader'
 import ExpandedViewModeContent from './ExpandedViewModeContent/ExpandedViewModeContent'
 import ExpandedViewModeFooter from './ExpandedViewModeFooter/ExpandedViewModeFooter'
-import { sendEditSignal } from '../../send-edit-signal/actions'
+import { sendEditSignal } from '../../send-edit-signal/actions' //TODO: replace with goalEdit action for local state update
+import { sendRealtimeInfoSignal } from '../../realtime-info-signal/actions'
 
 
 function ExpandedViewMode({
@@ -36,7 +37,8 @@ function ExpandedViewMode({
   archiveEntryPoint,
   isEntryPoint,
   entryPointAddress,
-  sendEditSignal
+  sendEditSignal,
+  sendRealtimeInfoSignal
 }) {
   const [goalState, setGoalState] = useState()
   const [squirrelsState, setSquirrelsState] = useState()
@@ -160,6 +162,7 @@ function ExpandedViewMode({
                 goalDescription={goalState.description}
                 archiveGoalMember={archiveGoalMember}
                 sendEditSignal={sendEditSignal}
+                sendRealtimeInfoSignal={sendRealtimeInfoSignal}
               />
               <RightMenu
                 projectId={projectId}
@@ -258,6 +261,9 @@ function mapDispatchToProps(dispatch, ownProps) {
     sendEditSignal: payload => {
       return dispatch(sendEditSignal.create({ cellIdString, payload }))
     },
+    sendRealtimeInfoSignal: payload => {
+      return dispatch(sendRealtimeInfoSignal.create({ cellIdString, payload }))
+    }
   }
 }
 

@@ -53,6 +53,7 @@ export default function ExpandedViewModeContent({
   comments,
   archiveGoalMember,
   sendEditSignal,
+  sendRealtimeInfoSignal,
 }) {
   // 0 is details
   // 1 is comments
@@ -82,6 +83,7 @@ export default function ExpandedViewModeContent({
               squirrels,
               archiveGoalMember,
               sendEditSignal,
+              sendRealtimeInfoSignal,
             }}
           />
         )}
@@ -108,6 +110,7 @@ function Details({
   squirrels,
   archiveGoalMember,
   sendEditSignal,
+  sendRealtimeInfoSignal,
 }) {
   // you can use these as values for
   // testing/ development, instead of `squirrels`
@@ -152,11 +155,20 @@ function Details({
       },
       goalAddress
     )
+    // end signal send loop here
     sendEditSignal(
       {
         goal_field: {Title: null},
         goal_address: goalAddress,
         is_editing: false,
+      }
+    )
+    // TODO: update state goalEditing of local user (replace sendEditSignal with that action)
+    sendRealtimeInfoSignal(
+      {
+        project_id: projectId,
+        goal_being_edited: null,
+        goal_expanded_view: goalAddress,
       }
     )
   }
@@ -171,6 +183,7 @@ function Details({
       },
       goalAddress
     )
+    // end signal send loop here
     sendEditSignal(
       {
         goal_field: {Description: null},
@@ -178,8 +191,17 @@ function Details({
         is_editing: false,
       }
     )
+    // TODO: update goal edit state
+    sendRealtimeInfoSignal(
+      {
+        project_id: projectId,
+        goal_being_edited: null,
+        goal_expanded_view: goalAddress,
+      }
+    )
   }
   const editTitleSignal = () => {
+    // send signal about editing title - enter loop here
     sendEditSignal(
       {
         goal_field: {Title: null},
@@ -187,13 +209,35 @@ function Details({
         is_editing: true,
       }
     )
+    // TODO: update goal edit state
+    sendRealtimeInfoSignal(
+      {
+        project_id: projectId,
+        goal_being_edited: {
+          goal_address: goalAddress,
+          is_title: true,
+        },
+        goal_expanded_view: goalAddress,
+      }
+    )
   }
   const editDescriptionSignal = () => {
+    // send signal about editing description - enter loop here
     sendEditSignal(
       {
         goal_field: {Description: null},
         goal_address: goalAddress,
         is_editing: true,
+      }
+    )
+    sendRealtimeInfoSignal(
+      {
+        project_id: projectId,
+        goal_being_edited: {
+          goal_address: goalAddress,
+          is_title: false,
+        },
+        goal_expanded_view: goalAddress,
       }
     )
   }

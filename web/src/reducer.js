@@ -29,6 +29,7 @@ import activeEntryPoints from './active-entry-points/reducer'
 import localPreferences from './local-preferences/reducer'
 import edgeConnector from './edge-connector/reducer'
 import goalEditing from './goal-editing/reducer'
+import realtimeInfo from './realtime-info/reducer'
 // import anotherone from './another/path'
 
 // combine reducers from each feature to create the top-level reducer
@@ -56,6 +57,7 @@ export default combineReducers({
     activeProject,
     activeEntryPoints,
     goalEditing,
+    realtimeInfo,
   }), // ,
   // anotherone: anotherone
 })
