@@ -18,6 +18,10 @@ import panZoomToFrame from '../animations/pan-and-zoom'
 import { ANIMATE_PAN_AND_ZOOM } from '../viewport/actions'
 import performLayoutAnimation from '../animations/layout'
 
+// capture open/close expanded view, start/end title/description edit, and enter/exit project actions
+// import action constants
+// isOneOfRealtimeInfoAffectingActions checks action type against
+
 
 const isOneOfLayoutAffectingActions = (action) => {
     const { type } = action
