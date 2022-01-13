@@ -48,6 +48,7 @@ import { setScreenDimensions } from '../screensize/actions'
 import { changeTranslate, changeScale } from '../viewport/actions'
 import { openExpandedView } from '../expanded-view/actions'
 import { MOUSE, TRACKPAD } from '../local-preferences/reducer'
+import { sendRealtimeInfoSignal } from '../realtime-info-signal/actions'
 
 import { setGoalClone } from '../goal-clone/actions'
 
@@ -108,6 +109,13 @@ export default function setupEventListeners(store, canvas) {
           !state.ui.expandedView.isOpen
         ) {
           store.dispatch(openExpandedView(state.ui.selection.selectedGoals[0]))
+          let cellIdString = state.ui.activeProject
+          let payload = {
+            project_id: state.ui.activeProject,
+            goal_being_edited: null,
+            goal_expanded_view: state.ui.selection.selectedGoals[0]
+          }
+          store.dispatch(sendRealtimeInfoSignal.create({ cellIdString, payload }))
         }
         break
       case 'Shift':

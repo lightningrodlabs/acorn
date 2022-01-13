@@ -11,6 +11,7 @@ import { connect } from 'react-redux'
 import { openExpandedView } from '../../expanded-view/actions'
 import { animatePanAndZoom } from '../../viewport/actions'
 import { ProjectMapViewOnly } from '../ViewFilters/ViewFilters'
+import { sendRealtimeInfoSignal } from '../../realtime-info-signal/actions'
 
 function AvatarMenuItem({
   title,
@@ -91,6 +92,7 @@ function HeaderRightPanel({
   goalList,
   commentList,
   openExpandedView,
+  sendRealtimeInfoSignal,
   animatePanAndZoom,
   projectId,
 }) {
@@ -115,6 +117,19 @@ function HeaderRightPanel({
   }
   const onHoverAvatarLeave = () => {
     setIsAvatarHover(false)
+  }
+
+  function onExpandedClick(goalAddress) {
+    // both open and send signal
+    openExpandedView(goalAddress)
+    console.log('opening expanded')
+    sendRealtimeInfoSignal(
+      {
+        project_id: projectId,
+        goal_being_edited: null,
+        goal_expanded_view: goalAddress,
+      }
+    )
   }
 
   // reset the search when the project
@@ -215,7 +230,7 @@ function HeaderRightPanel({
                       <SearchResultItem
                         text={goal.content}
                         name="title.svg"
-                        onExpandClick={openExpandedView}
+                        onExpandClick={openExpandedView} 
                         panAndZoom={animatePanAndZoom}
                         goalAddress={goal.headerHash}
                       />
@@ -359,12 +374,16 @@ function mapStateToProps(state) {
     commentList,
   }
 }
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, ownProps) {
+  const { projectId: cellIdString } = ownProps
   return {
     animatePanAndZoom: (address) => {
       return dispatch(animatePanAndZoom(address))
     },
     openExpandedView: (address) => dispatch(openExpandedView(address)),
+    sendRealtimeInfoSignal: payload => {
+      return dispatch(sendRealtimeInfoSignal.create({ cellIdString, payload }))
+    }
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(HeaderRightPanel)
