@@ -22,6 +22,7 @@ import acorn from './reducer'
 import signalsHandlers from './signalsHandlers'
 import { setProfilesCellId, setProjectsCellIds } from './cells/actions'
 import { layoutWatcher } from './layout/middleware'
+import { realtimeInfoWatcher } from './realtime-info-signal/middleware'
 import { fetchAgents } from './agents/actions'
 import { whoami } from './who-am-i/actions'
 import { fetchAgentAddress } from './agent-address/actions'
@@ -37,7 +38,7 @@ import { getProjectCellIdStrings } from './projectAppIds'
 // trigger caching of adminWs connection
 getAdminWs()
 
-const middleware = [holochainMiddleware(APP_WS_URL), layoutWatcher]
+const middleware = [holochainMiddleware(APP_WS_URL), layoutWatcher, realtimeInfoWatcher]
 
 // This enables the redux-devtools browser extension
 // which gives really awesome debugging for apps that use redux
