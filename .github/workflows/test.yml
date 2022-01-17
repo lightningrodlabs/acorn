@@ -11,6 +11,13 @@ jobs:
      - uses: actions/checkout@v2
      - uses: actions-rs/toolchain@v1
        with:
-         toolchain: 1.55
+         toolchain: 1.56
          target: wasm32-unknown-unknown
+
+     - run: rustup update stable
+     - run: rustc --version
+     - run: cargo --version
+     - run: rustup component list --installed
+     - run: rustup show
+
      - run: ./scripts/dna-test.sh
