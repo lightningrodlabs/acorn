@@ -19,6 +19,7 @@ import { fetchAgents, setAgent } from './agents/actions'
 import { cellIdToString } from 'connoropolous-hc-redux-middleware'
 import { triggerUpdateLayout } from './layout/actions'
 import { startTitleEdit, endTitleEdit, startDescriptionEdit, endDescriptionEdit } from './goal-editing/actions'
+import { removePeerState, updatePeerState } from './realtime-info/actions'
 
 // We directly use the 'success' type, since these actions
 // have already succeeded on another machine, and we're just reflecting them locally
@@ -123,7 +124,7 @@ export default (store) => (signal) => {
   }
 
   if (payload.signalType === nonEntrySignalTypes.RealtimInfo) {
-    triggerRealtimeInfoSignal(store, payload.data)
+    triggerRealtimeInfoAction(store, payload.data)
     return
   }
 
@@ -241,6 +242,9 @@ function triggerGoalEditSignal(store, payload) {
     }
   }
 }
-function triggerRealtimeInfoSignal(store, payload) {
+function triggerRealtimeInfoAction(store, payload) {
+  // may want to check if active project is empty (or whichever way we indicate the signal 
+  // associated with exiting a project), that way dispatch removePeerState
   console.log('received realtime info', payload)
+  store.dispatch(updatePeerState(payload))
 }
