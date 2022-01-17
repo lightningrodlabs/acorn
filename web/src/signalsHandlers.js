@@ -185,6 +185,5 @@ export default (store) => (signal) => {
 function triggerRealtimeInfoAction(store, payload) {
   // may want to check if active project is empty (or whichever way we indicate the signal 
   // associated with exiting a project), that way dispatch removePeerState
-  console.log('received realtime info', payload)
   store.dispatch(updatePeerState(payload))
 }

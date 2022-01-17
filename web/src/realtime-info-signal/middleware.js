@@ -36,7 +36,6 @@ const realtimeInfoWatcher = store => {
 
     const shouldSendRealtimeSignal = isOneOfRealtimeInfoAffectingActions(action)
     if (shouldSendRealtimeSignal) {
-      console.log('logging middleware:', action.payload) 
       let result = next(action)
       let state = store.getState()
       store.dispatch(sendRealtimeInfoSignal.create(getRealtimeInfo(state)))

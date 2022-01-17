@@ -158,9 +158,9 @@ function render(store, canvas) {
       const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
       const isSelected = false
       const isEditing = false
-      const editInfoObject = null //state.ui.goalEditing.find(item => item.goal === goal.headerHash)
+      let editInfoObject = Object.values(state.ui.realtimeInfo).filter(agentInfo => agentInfo.goalBeingEdited !== null).find(agentInfo => agentInfo.goalBeingEdited.goalAddress === goal.headerHash)
       const isBeingEdited = Boolean(editInfoObject)
-      const isBeingEditedBy = isBeingEdited ? state.agents[editInfoObject.editor].handle : null
+      const isBeingEditedBy = isBeingEdited ? state.agents[editInfoObject.agentPubKey].handle : null
       const membersOfGoal = Object.keys(goalMembers)
         .map(headerHash => goalMembers[headerHash])
         .filter(goalMember => goalMember.goal_address === goal.headerHash)
@@ -228,9 +228,9 @@ function render(store, canvas) {
       const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
       const isSelected = true
       const isEditing = false
-      const editInfoObject = null //state.ui.goalEditing.find(item => item.goal === goal.headerHash)
+      let editInfoObject = Object.values(state.ui.realtimeInfo).filter(agentInfo => agentInfo.goalBeingEdited !== null).find(agentInfo => agentInfo.goalBeingEdited.goalAddress === goal.headerHash)
       const isBeingEdited = Boolean(editInfoObject)
-      const isBeingEditedBy = isBeingEdited ? state.agents[editInfoObject.editor].handle : null
+      const isBeingEditedBy = isBeingEdited ? state.agents[editInfoObject.agentPubKey].handle : null
       const membersOfGoal = Object.keys(goalMembers)
         .map(headerHash => goalMembers[headerHash])
         .filter(goalMember => goalMember.goal_address === goal.headerHash)
