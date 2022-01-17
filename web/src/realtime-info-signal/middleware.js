@@ -47,7 +47,7 @@ const realtimeInfoWatcher = store => {
     return result
   }
 }
-
+// cherry-pick the relevant state for sending as a RealtimeInfo Signal
 // eventually, this function would also be used when sending real time info at set interval
 function getRealtimeInfo(state) {
   let cellIdString = state.ui.activeProject

@@ -56,7 +56,6 @@ export default function ExpandedViewModeContent({
   endTitleEdit,
   startDescriptionEdit,
   endDescriptionEdit,
-  sendRealtimeInfoSignal,
 }) {
   // 0 is details
   // 1 is comments
@@ -89,7 +88,6 @@ export default function ExpandedViewModeContent({
               endTitleEdit,
               startDescriptionEdit,
               endDescriptionEdit,
-              sendRealtimeInfoSignal,
             }}
           />
         )}
@@ -119,7 +117,6 @@ function Details({
   endTitleEdit,
   startDescriptionEdit,
   endDescriptionEdit,
-  sendRealtimeInfoSignal,
 }) {
   // you can use these as values for
   // testing/ development, instead of `squirrels`

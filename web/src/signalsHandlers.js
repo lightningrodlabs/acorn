@@ -63,8 +63,7 @@ const SignalType = {
   ProjectMeta: 'project_meta',
 }
 const nonEntrySignalTypes = {
-  EditingGoal: 'EditingGoal',
-  RealtimInfo: 'RealtimeInfo'
+  RealtimeInfo: 'RealtimeInfo'
 }
 const crudActionSets = {
   Edge: edgeActions,
@@ -116,14 +115,7 @@ export default (store) => (signal) => {
   // which should deserialize this automatically
   payload = msgpack.decode(payload)
 
-  // switch to CamelCasing if defined
-  if (payload.signalType === nonEntrySignalTypes.EditingGoal) {
-    // no longer needed, because this info comes from realtime Info signal
-    // triggerGoalEditSignal(store, payload.data)
-    return
-  }
-
-  if (payload.signalType === nonEntrySignalTypes.RealtimInfo) {
+  if (payload.signalType === nonEntrySignalTypes.RealtimeInfo) {
     triggerRealtimeInfoAction(store, payload.data)
     return
   }

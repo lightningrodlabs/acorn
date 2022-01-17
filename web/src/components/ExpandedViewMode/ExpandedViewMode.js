@@ -19,7 +19,6 @@ import ExpandedViewModeHeader from './ExpandedViewModeHeader/ExpandedViewModeHea
 import ExpandedViewModeContent from './ExpandedViewModeContent/ExpandedViewModeContent'
 import ExpandedViewModeFooter from './ExpandedViewModeFooter/ExpandedViewModeFooter'
 import { startTitleEdit, endTitleEdit, startDescriptionEdit, endDescriptionEdit } from '../../goal-editing/actions'
-import { sendRealtimeInfoSignal } from '../../realtime-info-signal/actions'
 
 
 function ExpandedViewMode({
@@ -275,9 +274,6 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
     endDescriptionEdit: goalAddress => {
       return dispatch(endDescriptionEdit(goalAddress))
-    },
-    sendRealtimeInfoSignal: payload => {
-      return dispatch(sendRealtimeInfoSignal.create({ cellIdString, payload }))
     }
   }
 }
