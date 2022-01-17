@@ -1,8 +1,8 @@
 binaries
 node_modules
 out/
-tmp
-tmp2
+user2-data
+user-data
 electron/web
 
 web/dist/*.js
