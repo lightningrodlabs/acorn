@@ -11,14 +11,14 @@ export default function(state = defaultState, action) {
     case START_TITLE_EDIT:
       return {
         ...state,
-        goal: payload.goalAddress,
-        title: true,
+        goalAddress: payload.goalAddress,
+        isTitle: true,
       }
     case START_DESCRIPTION_EDIT:
       return {
         ...state,
-        goal: payload.goalAddress,
-        title: false,
+        goalAddress: payload.goalAddress,
+        isTitle: false,
       }
     case END_TITLE_EDIT:
         return {}
