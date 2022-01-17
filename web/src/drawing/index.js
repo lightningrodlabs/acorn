@@ -158,7 +158,7 @@ function render(store, canvas) {
       const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
       const isSelected = false
       const isEditing = false
-      const editInfoObject = state.ui.goalEditing.find(item => item.goal === goal.headerHash)
+      const editInfoObject = null //state.ui.goalEditing.find(item => item.goal === goal.headerHash)
       const isBeingEdited = Boolean(editInfoObject)
       const isBeingEditedBy = isBeingEdited ? state.agents[editInfoObject.editor].handle : null
       const membersOfGoal = Object.keys(goalMembers)
@@ -228,7 +228,7 @@ function render(store, canvas) {
       const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
       const isSelected = true
       const isEditing = false
-      const editInfoObject = state.ui.goalEditing.find(item => item.goal === goal.headerHash)
+      const editInfoObject = null //state.ui.goalEditing.find(item => item.goal === goal.headerHash)
       const isBeingEdited = Boolean(editInfoObject)
       const isBeingEditedBy = isBeingEdited ? state.agents[editInfoObject.editor].handle : null
       const membersOfGoal = Object.keys(goalMembers)

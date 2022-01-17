@@ -52,7 +52,10 @@ export default function ExpandedViewModeContent({
   squirrels,
   comments,
   archiveGoalMember,
-  sendEditSignal,
+  startTitleEdit,
+  endTitleEdit,
+  startDescriptionEdit,
+  endDescriptionEdit,
   sendRealtimeInfoSignal,
 }) {
   // 0 is details
@@ -82,7 +85,10 @@ export default function ExpandedViewModeContent({
               updateGoal,
               squirrels,
               archiveGoalMember,
-              sendEditSignal,
+              startTitleEdit,
+              endTitleEdit,
+              startDescriptionEdit,
+              endDescriptionEdit,
               sendRealtimeInfoSignal,
             }}
           />
@@ -109,7 +115,10 @@ function Details({
   updateGoal,
   squirrels,
   archiveGoalMember,
-  sendEditSignal,
+  startTitleEdit,
+  endTitleEdit,
+  startDescriptionEdit,
+  endDescriptionEdit,
   sendRealtimeInfoSignal,
 }) {
   // you can use these as values for
@@ -155,22 +164,7 @@ function Details({
       },
       goalAddress
     )
-    // end signal send loop here
-    sendEditSignal(
-      {
-        goal_field: {Title: null},
-        goal_address: goalAddress,
-        is_editing: false,
-      }
-    )
-    // TODO: update state goalEditing of local user (replace sendEditSignal with that action)
-    sendRealtimeInfoSignal(
-      {
-        project_id: projectId,
-        goal_being_edited: null,
-        goal_expanded_view: goalAddress,
-      }
-    )
+    endTitleEdit(goalAddress)
   }
   const onDescriptionBlur = () => {
     updateGoal(
@@ -183,63 +177,13 @@ function Details({
       },
       goalAddress
     )
-    // end signal send loop here
-    sendEditSignal(
-      {
-        goal_field: {Description: null},
-        goal_address: goalAddress,
-        is_editing: false,
-      }
-    )
-    // TODO: update goal edit state
-    sendRealtimeInfoSignal(
-      {
-        project_id: projectId,
-        goal_being_edited: null,
-        goal_expanded_view: goalAddress,
-      }
-    )
+    endDescriptionEdit(goalAddress)
   }
-  const editTitleSignal = () => {
-    // send signal about editing title - enter loop here
-    sendEditSignal(
-      {
-        goal_field: {Title: null},
-        goal_address: goalAddress,
-        is_editing: true,
-      }
-    )
-    // TODO: update goal edit state
-    sendRealtimeInfoSignal(
-      {
-        project_id: projectId,
-        goal_being_edited: {
-          goal_address: goalAddress,
-          is_title: true,
-        },
-        goal_expanded_view: goalAddress,
-      }
-    )
+  const onTitleFocus = () => {
+    startTitleEdit(goalAddress)
   }
-  const editDescriptionSignal = () => {
-    // send signal about editing description - enter loop here
-    sendEditSignal(
-      {
-        goal_field: {Description: null},
-        goal_address: goalAddress,
-        is_editing: true,
-      }
-    )
-    sendRealtimeInfoSignal(
-      {
-        project_id: projectId,
-        goal_being_edited: {
-          goal_address: goalAddress,
-          is_title: false,
-        },
-        goal_expanded_view: goalAddress,
-      }
-    )
+  const onDescriptionFocus = () => {
+    startDescriptionEdit(goalAddress)
   }
   const handleOnChangeTitle = ({ target }) => {
     setContent(target.value)
@@ -263,7 +207,7 @@ function Details({
             onChange={handleOnChangeTitle}
             onKeyPress={handleOnChangeTitle}
             placeholder="Add a title..."
-            onFocus={editTitleSignal}
+            onFocus={onTitleFocus}
           />
         </div>
 
@@ -335,7 +279,7 @@ function Details({
             value={description}
             onBlur={onDescriptionBlur}
             onChange={handleOnChangeDescription}
-            onFocus={editDescriptionSignal}
+            onFocus={onDescriptionFocus}
           />
         </div>
       </div>

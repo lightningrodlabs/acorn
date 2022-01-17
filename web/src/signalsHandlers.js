@@ -18,7 +18,6 @@ import { setMember } from './projects/members/actions'
 import { fetchAgents, setAgent } from './agents/actions'
 import { cellIdToString } from 'connoropolous-hc-redux-middleware'
 import { triggerUpdateLayout } from './layout/actions'
-import { startTitleEdit, endTitleEdit, startDescriptionEdit, endDescriptionEdit } from './goal-editing/actions'
 import { removePeerState, updatePeerState } from './realtime-info/actions'
 
 // We directly use the 'success' type, since these actions
@@ -119,7 +118,8 @@ export default (store) => (signal) => {
 
   // switch to CamelCasing if defined
   if (payload.signalType === nonEntrySignalTypes.EditingGoal) {
-    triggerGoalEditSignal(store, payload.data)
+    // no longer needed, because this info comes from realtime Info signal
+    // triggerGoalEditSignal(store, payload.data)
     return
   }
 
@@ -187,58 +187,6 @@ export default (store) => (signal) => {
         break
       default:
         console.log('unrecognised entryType received: ', payload.data.entryType)
-    }
-  }
-}
-let titleEditTimeoutId = {} //is this a shared value accessible each time a signal is received?
-let descriptionEditTimeoutId = {}
-const signalTimeout = 5000
-function endTitleEditDispatch(store, payload) {
-  // remove the key value pair from here (to avoid calling clearTimeout when not necessary)
-  delete titleEditTimeoutId[payload.goal_address]
-  store.dispatch(endTitleEdit(payload.goal_address))
-}
-function endDescriptionEditDispatch(store, payload) {
-  // remove the key value pair from here (to avoid calling clearTimeout when not necessary)
-  delete descriptionEditTimeoutId[payload.goal_address]
-  store.dispatch(endDescriptionEdit(payload.goal_address))
-}
-function triggerGoalEditSignal(store, payload) {
-  // check for 4 cases and dispatch the appropriate action
-  if (payload.is_editing) {
-    if ("Title" in payload.goal_field) { // have to use this because using the default flat enum serialization of { Title: null }
-      if (payload.goal_address in titleEditTimeoutId) {
-        clearTimeout(titleEditTimeoutId[payload.goal_address])
-        titleEditTimeoutId[payload.goal_address] = setTimeout(endTitleEditDispatch, signalTimeout, store, payload)
-      }
-      else {
-        titleEditTimeoutId[payload.goal_address] = setTimeout(endTitleEditDispatch, signalTimeout, store, payload)
-      }
-      store.dispatch(startTitleEdit(payload.goal_address, payload.editing_agent))
-    }
-    else if ("Description" in payload.goal_field) {
-      if (payload.goal_address in descriptionEditTimeoutId) {
-        clearTimeout(descriptionEditTimeoutId[payload.goal_address])
-        descriptionEditTimeoutId[payload.goal_address] = setTimeout(endDescriptionEditDispatch, signalTimeout, store, payload)
-      }
-      else {
-        descriptionEditTimeoutId[payload.goal_address] = setTimeout(endDescriptionEditDispatch, signalTimeout, store, payload)
-      }
-      store.dispatch(startDescriptionEdit(payload.goal_address, payload.editing_agent))
-    }
-    else {
-      console.log('unrecognized goal field type:', payload.goal_field)
-    }
-  }
-  else {
-    if ("Title" in payload.goal_field) { // have to use this because using the default flat enum serialization of { Title: null }
-      store.dispatch(endTitleEdit(payload.goal_address))
-    }
-    else if ("Description" in payload.goal_field) {
-      store.dispatch(endDescriptionEdit(payload.goal_address))
-    }
-    else {
-      console.log('unrecognized goal field type:', payload.goal_field)
     }
   }
 }

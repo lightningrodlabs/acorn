@@ -3,12 +3,11 @@ const END_TITLE_EDIT = 'END_TITLE_EDIT'
 const START_DESCRIPTION_EDIT = 'START_DESCRIPTION_EDIT'
 const END_DESCRIPTION_EDIT = 'END_DESCRIPTION_EDIT'
 
-function startTitleEdit(goalAddress, agentAddress) {
+function startTitleEdit(goalAddress) {
   return {
     type: START_TITLE_EDIT,
     payload: {
       goalAddress,
-      agentAddress,
     },
   }
 }
@@ -20,12 +19,11 @@ function endTitleEdit(goalAddress) {
     },
   }
 }
-function startDescriptionEdit(goalAddress, agentAddress) {
+function startDescriptionEdit(goalAddress) {
   return {
     type: START_DESCRIPTION_EDIT,
     payload: {
       goalAddress,
-      agentAddress,
     },
   }
 }

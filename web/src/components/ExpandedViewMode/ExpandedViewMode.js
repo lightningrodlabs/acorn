@@ -18,7 +18,7 @@ import RightMenu from './RightMenu/RightMenu'
 import ExpandedViewModeHeader from './ExpandedViewModeHeader/ExpandedViewModeHeader'
 import ExpandedViewModeContent from './ExpandedViewModeContent/ExpandedViewModeContent'
 import ExpandedViewModeFooter from './ExpandedViewModeFooter/ExpandedViewModeFooter'
-import { sendEditSignal } from '../../send-edit-signal/actions' //TODO: replace with goalEdit action for local state update
+import { startTitleEdit, endTitleEdit, startDescriptionEdit, endDescriptionEdit } from '../../goal-editing/actions'
 import { sendRealtimeInfoSignal } from '../../realtime-info-signal/actions'
 
 
@@ -37,7 +37,10 @@ function ExpandedViewMode({
   archiveEntryPoint,
   isEntryPoint,
   entryPointAddress,
-  sendEditSignal,
+  startTitleEdit,
+  endTitleEdit,
+  startDescriptionEdit,
+  endDescriptionEdit,
   sendRealtimeInfoSignal
 }) {
   const [goalState, setGoalState] = useState()
@@ -161,7 +164,10 @@ function ExpandedViewMode({
                 goalContent={goalState.content}
                 goalDescription={goalState.description}
                 archiveGoalMember={archiveGoalMember}
-                sendEditSignal={sendEditSignal}
+                startTitleEdit={startTitleEdit}
+                endTitleEdit={endTitleEdit}
+                startDescriptionEdit={startDescriptionEdit}
+                endDescriptionEdit={endDescriptionEdit}
                 sendRealtimeInfoSignal={sendRealtimeInfoSignal}
               />
               <RightMenu
@@ -258,8 +264,17 @@ function mapDispatchToProps(dispatch, ownProps) {
     archiveGoalMember: payload => {
       return dispatch(archiveGoalMember.create({ cellIdString, payload }))
     },
-    sendEditSignal: payload => {
-      return dispatch(sendEditSignal.create({ cellIdString, payload }))
+    startTitleEdit: goalAddress => {
+      return dispatch(startTitleEdit(goalAddress))
+    },
+    endTitleEdit: goalAddress => {
+      return dispatch(endTitleEdit(goalAddress))
+    },
+    startDescriptionEdit: goalAddress => {
+      return dispatch(startDescriptionEdit(goalAddress))
+    },
+    endDescriptionEdit: goalAddress => {
+      return dispatch(endDescriptionEdit(goalAddress))
     },
     sendRealtimeInfoSignal: payload => {
       return dispatch(sendRealtimeInfoSignal.create({ cellIdString, payload }))

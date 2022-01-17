@@ -3,29 +3,27 @@ import { START_TITLE_EDIT, END_TITLE_EDIT, START_DESCRIPTION_EDIT, END_DESCRIPTI
 //   isOpen: false,
 //   goalAddress: null,
 // }
-const defaultState = []
+const defaultState = {}
 // TODO: change this for tracking local state only
 export default function(state = defaultState, action) {
   const { payload, type } = action
   switch (type) {
     case START_TITLE_EDIT:
-      return [...state, {
-          goal: payload.goalAddress,
-          title: true,
-          editor: payload.agentAddress,
-        }]
+      return {
+        ...state,
+        goal: payload.goalAddress,
+        title: true,
+      }
     case START_DESCRIPTION_EDIT:
-      return [...state, {
-          goal: payload.goalAddress,
-          title: false,
-          editor: payload.agentAddress,
-        }]
+      return {
+        ...state,
+        goal: payload.goalAddress,
+        title: false,
+      }
     case END_TITLE_EDIT:
-        return [...state].filter( item => item.goal !== payload.goalAddress || !item.title)
-        // return [...state].filter( item => (item.goalAddress !== payload.goalAddress))
-        // return [...state].filter( item => !((item.goalAddress === payload.goalAddress) && item.title))
+        return {}
     case END_DESCRIPTION_EDIT:
-        return [...state].filter( item => item.goal !== payload.goalAddress || item.title)
+        return {}
     default:
       return state
   }

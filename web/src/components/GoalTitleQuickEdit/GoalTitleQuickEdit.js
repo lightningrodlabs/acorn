@@ -10,7 +10,7 @@ import { closeGoalForm, updateContent } from '../../goal-form/actions'
 
 import './GoalTitleQuickEdit.css'
 import { firstZoomThreshold, fontSize, fontSizeExtraLarge, fontSizeLarge, lineHeightMultiplier, secondZoomThreshold } from '../../drawing/dimensions'
-import { sendEditSignal } from '../../send-edit-signal/actions'
+import { startTitleEdit, endTitleEdit } from '../../goal-editing/actions'
 
 // if editAddress is present (as a Goal address) it means we are currently EDITING that Goal
 function GoalTitleQuickEdit({
@@ -48,7 +48,8 @@ function GoalTitleQuickEdit({
   createGoalWithEdge,
   updateGoal,
   closeGoalForm,
-  sendEditSignal,
+  startTitleEdit,
+  endTitleEdit,
 }) {
 
   
@@ -71,13 +72,7 @@ function GoalTitleQuickEdit({
     event.target.select()
     // only send an edit signal if editing a goal, not creating one
     if (editAddress) {
-      sendEditSignal(
-        {
-          goal_field: {Title: null},
-          goal_address: editAddress,
-          is_editing: true,
-        }
-      )
+      startTitleEdit(editAddress)
     }
   }
   // when the input leaves focus (not focused on editing title)
@@ -175,13 +170,7 @@ function GoalTitleQuickEdit({
       },
       editAddress
     )
-    sendEditSignal(
-      {
-        goal_field: {Title: null},
-        goal_address: editAddress,
-        is_editing: false,
-      }
-    )
+    endTitleEdit(editAddress)
   }
 
   // the default
@@ -343,8 +332,11 @@ function mapDispatchToProps(dispatch, ownProps) {
     closeGoalForm: () => {
       dispatch(closeGoalForm())
     },
-    sendEditSignal: payload => {
-      return dispatch(sendEditSignal.create({ cellIdString, payload }))
+    startTitleEdit: goalAddress => {
+      return dispatch(startTitleEdit(goalAddress))
+    },
+    endTitleEdit: goalAddress => {
+      return dispatch(endTitleEdit(goalAddress))
     },
   }
 }
