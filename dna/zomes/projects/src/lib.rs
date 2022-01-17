@@ -129,7 +129,7 @@ pub struct EditingGoalInput {
 }
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
-// #[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
 pub struct RealtimeInfoSignal {
     pub agent_pub_key: AgentPubKeyB64,
     pub project_id: String,
@@ -138,14 +138,14 @@ pub struct RealtimeInfoSignal {
 }
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
-// #[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
 pub struct RealtimeInfoInput {
     pub project_id: String,
     pub goal_being_edited: Option<EditingGoalDetails>,
     pub goal_expanded_view: Option<HeaderHashB64>,
 }
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
-// #[serde(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
 pub struct EditingGoalDetails {
     pub goal_address: HeaderHashB64,
     pub is_title: bool,

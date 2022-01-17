@@ -51,20 +51,20 @@ const realtimeInfoWatcher = store => {
 // eventually, this function would also be used when sending real time info at set interval
 function getRealtimeInfo(state) {
   let cellIdString = state.ui.activeProject
-  let goalBeingEdited
-  if ("goalAddress" in state.ui.goalEditing && "isTitle" in state.ui.goalEditing) {
-    goalBeingEdited = {
-      goal_address: state.ui.goalEditing.goalAddress,
-      is_title: state.ui.goalEditing.isTitle,
-    }
-  }
-  else {
-    goalBeingEdited = null
-  }
+  // let goalBeingEdited
+  // if ("goalAddress" in state.ui.goalEditing && "isTitle" in state.ui.goalEditing) {
+  //   goalBeingEdited = {
+  //     goalAddress: state.ui.goalEditing.goalAddress,
+  //     isTitle: state.ui.goalEditing.isTitle,
+  //   }
+  // }
+  // else {
+  //   goalBeingEdited = null
+  // }
   let payload = {
-    project_id: state.ui.activeProject,
-    goal_being_edited: goalBeingEdited,
-    goal_expanded_view: state.ui.expandedView.goalAddress
+    projectId: state.ui.activeProject,
+    goalBeingEdited: state.ui.goalEditing,
+    goalExpandedView: state.ui.expandedView.goalAddress
   }
   return { cellIdString, payload }
 }

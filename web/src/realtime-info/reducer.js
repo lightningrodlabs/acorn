@@ -11,11 +11,11 @@ export default function(state = defaultState, action) {
     case UPDATE_PEER_STATE:
       return {
         ...state,
-        [payload.agent_pub_key]: payload
+        [payload.agentPubKey]: payload
       }
     case REMOVE_PEER_STATE:
       state = state
-      delete state[payload.agent_pub_key]
+      delete state[payload.agentPubKey]
       return state
     default:
       return state
