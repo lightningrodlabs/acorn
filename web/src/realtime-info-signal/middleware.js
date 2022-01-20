@@ -8,7 +8,7 @@ import {
   START_DESCRIPTION_EDIT,
   END_DESCRIPTION_EDIT,
 } from '../goal-editing/actions'
-import { sendRealtimeInfoSignal } from './actions'
+import { sendRealtimeInfoSignal, SEND_REALTIME_INFO } from './actions'
 
 
 
@@ -25,6 +25,7 @@ const isOneOfRealtimeInfoAffectingActions = (action) => {
       || type === END_TITLE_EDIT
       || type === START_DESCRIPTION_EDIT
       || type === END_DESCRIPTION_EDIT
+      || type === SEND_REALTIME_INFO
 }
 // watch for actions that will affect the realtime info state values
 

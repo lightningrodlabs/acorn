@@ -116,6 +116,7 @@ export default (store) => (signal) => {
   payload = msgpack.decode(payload)
 
   if (payload.signalType === nonEntrySignalTypes.RealtimeInfo) {
+    console.log('received realtime signal:', payload.data)
     triggerRealtimeInfoAction(store, payload.data)
     return
   }

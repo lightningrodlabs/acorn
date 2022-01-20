@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   Redirect,
   Route,
@@ -30,6 +30,7 @@ import { unselectAll } from '../../selection/actions'
 import { closeExpandedView } from '../../expanded-view/actions'
 import { animatePanAndZoom, resetTranslateAndScale } from '../../viewport/actions'
 import { ENTRY_POINTS } from '../../searchParams'
+import { triggerRealtimeInfoSignal } from '../../realtime-info-signal/actions'
 
 function ProjectViewInner({
   projectId,
@@ -47,6 +48,7 @@ function ProjectViewInner({
   fetchGoalVotes,
   fetchGoalComments,
   goToGoal,
+  triggerRealtimeInfoSignal,
 }) {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
@@ -67,6 +69,14 @@ function ProjectViewInner({
         }, 100)
       }
   }
+  const instance = useRef()
+
+  useEffect(() => {
+    instance.current = setInterval(() => triggerRealtimeInfoSignal(), 10000)
+    return () => {
+      clearInterval(instance.current)
+    }
+  }, [])
 
   useEffect(() => {
     ifMapGoToGoal(goToGoalHeaderHash)
@@ -75,6 +85,7 @@ function ProjectViewInner({
   useEffect(() => {
     // pushes this new projectId into the store/state
     setActiveProject(projectId)
+    triggerRealtimeInfoSignal()
     fetchProjectMeta()
     fetchMembers()
     fetchEntryPoints()
@@ -147,7 +158,8 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(fetchGoalVotes.create({ cellIdString, payload: { All: null } })),
     fetchGoalComments: () =>
       dispatch(fetchGoalComments.create({ cellIdString, payload: { All: null } })),
-    goToGoal: (goalHeaderHash) => dispatch(animatePanAndZoom(goalHeaderHash))
+    goToGoal: (goalHeaderHash) => dispatch(animatePanAndZoom(goalHeaderHash)),
+    triggerRealtimeInfoSignal: () => dispatch(triggerRealtimeInfoSignal())
   }
 }
 

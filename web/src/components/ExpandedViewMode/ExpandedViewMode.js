@@ -40,7 +40,6 @@ function ExpandedViewMode({
   endTitleEdit,
   startDescriptionEdit,
   endDescriptionEdit,
-  sendRealtimeInfoSignal
 }) {
   const [goalState, setGoalState] = useState()
   const [squirrelsState, setSquirrelsState] = useState()
@@ -167,7 +166,6 @@ function ExpandedViewMode({
                 endTitleEdit={endTitleEdit}
                 startDescriptionEdit={startDescriptionEdit}
                 endDescriptionEdit={endDescriptionEdit}
-                sendRealtimeInfoSignal={sendRealtimeInfoSignal}
               />
               <RightMenu
                 projectId={projectId}
