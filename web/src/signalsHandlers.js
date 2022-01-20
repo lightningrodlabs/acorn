@@ -125,8 +125,7 @@ export default (store) =>
       if (timerIds[payload.data.agentPubKey]) {
         clearTimeout(timerIds[payload.data.agentPubKey])
       }
-      // TODO: replace console.log and update peers state to no longer be in active project (and other fields cleared)
-      timerIds[payload.data.agentPubKey] = setTimeout(() => console.log('assume agent offline'), 12000)
+      timerIds[payload.data.agentPubKey] = setTimeout(() => store.dispatch(removePeerState(payload.data.agentPubKey)), 12000)
       triggerRealtimeInfoAction(store, payload.data)
       return
     }
@@ -139,7 +138,6 @@ export default (store) =>
       // where the layout reflow doesn't happen automatically
       // we have to manually trigger it to do so
       // the other cases are covered in src/layout/middleware.js ->
-      // isOneOfLayoutAffectingActions()
       if (action.success().type === edgeActions.archiveEdge.success().type) {
         store.dispatch(triggerUpdateLayout())
       }
