@@ -195,5 +195,10 @@ export default (store) =>
 function triggerRealtimeInfoAction(store, payload) {
   // may want to check if active project is empty (or whichever way we indicate the signal 
   // associated with exiting a project), that way dispatch removePeerState
-  store.dispatch(updatePeerState(payload))
+  if (payload.projectId.length === 0) {
+    store.dispatch(removePeerState(payload.agentPubKey))
+  }
+  else {
+    store.dispatch(updatePeerState(payload))
+  }
 }

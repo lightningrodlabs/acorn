@@ -8,7 +8,7 @@ import {
   START_DESCRIPTION_EDIT,
   END_DESCRIPTION_EDIT,
 } from '../goal-editing/actions'
-import { sendRealtimeInfoSignal, SEND_REALTIME_INFO } from './actions'
+import { sendRealtimeInfoSignal, SEND_REALTIME_INFO, SEND_EXIT_PROJECT_SIGNAL } from './actions'
 
 
 
@@ -27,6 +27,11 @@ const isOneOfRealtimeInfoAffectingActions = (action) => {
       || type === END_DESCRIPTION_EDIT
       || type === SEND_REALTIME_INFO
 }
+
+const isProjectExitAction = (action) => {
+  const { type } = action
+  return type === SEND_EXIT_PROJECT_SIGNAL
+}
 // watch for actions that will affect the realtime info state values
 
 const realtimeInfoWatcher = store => {
@@ -42,6 +47,18 @@ const realtimeInfoWatcher = store => {
       store.dispatch(sendRealtimeInfoSignal.create(getRealtimeInfo(state)))
       return result
     }
+    const shouldSendProjectExitSignal = isProjectExitAction(action)
+    if (shouldSendProjectExitSignal) {
+      let state = store.getState()
+      const cellIdString = state.ui.activeProject
+      const payload = {
+        projectId: '',
+        goalBeingEdited: null,
+        goalExpandedView: null,
+      }
+      store.dispatch(sendRealtimeInfoSignal.create({ cellIdString, payload }))
+    }
+
     // return result
     let result = next(action)
     return result

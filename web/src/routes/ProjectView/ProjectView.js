@@ -30,7 +30,7 @@ import { unselectAll } from '../../selection/actions'
 import { closeExpandedView } from '../../expanded-view/actions'
 import { animatePanAndZoom, resetTranslateAndScale } from '../../viewport/actions'
 import { ENTRY_POINTS } from '../../searchParams'
-import { triggerRealtimeInfoSignal } from '../../realtime-info-signal/actions'
+import { triggerRealtimeInfoSignal, sendExitProjectSignal } from '../../realtime-info-signal/actions'
 
 function ProjectViewInner({
   projectId,
@@ -49,6 +49,7 @@ function ProjectViewInner({
   fetchGoalComments,
   goToGoal,
   triggerRealtimeInfoSignal,
+  sendExitProjectSignal,
 }) {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
@@ -137,6 +138,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(setActiveEntryPoints(entryPointAddresses)),
     resetProjectView: () => {
       dispatch(closeExpandedView())
+      dispatch(sendExitProjectSignal()) // send this signal so peers know you left project
       dispatch(closeGoalForm())
       dispatch(unselectAll())
       dispatch(resetTranslateAndScale())
@@ -159,7 +161,8 @@ function mapDispatchToProps(dispatch, ownProps) {
     fetchGoalComments: () =>
       dispatch(fetchGoalComments.create({ cellIdString, payload: { All: null } })),
     goToGoal: (goalHeaderHash) => dispatch(animatePanAndZoom(goalHeaderHash)),
-    triggerRealtimeInfoSignal: () => dispatch(triggerRealtimeInfoSignal())
+    triggerRealtimeInfoSignal: () => dispatch(triggerRealtimeInfoSignal()),
+    sendExitProjectSignal: () => dispatch(sendExitProjectSignal())
   }
 }
 
