@@ -111,10 +111,13 @@ const pickCrudAction = (entryTypeName, actionType) => {
 export default (store) => 
 {
 
+  // keep track of timer set by setTimeout for each peer sending signals to you
+  // needs to be in this scope so that it is accessible each time a signal is received
   const timerIds = {}
   return (signal) => {
     const { cellId } = signal.data
     let { payload } = signal.data
+    let waitForNextSignal = 12000
     // TODO: update holochain-conductor-api to latest
     // which should deserialize this automatically
     payload = msgpack.decode(payload)
@@ -125,7 +128,7 @@ export default (store) =>
       if (timerIds[payload.data.agentPubKey]) {
         clearTimeout(timerIds[payload.data.agentPubKey])
       }
-      timerIds[payload.data.agentPubKey] = setTimeout(() => store.dispatch(removePeerState(payload.data.agentPubKey)), 12000)
+      timerIds[payload.data.agentPubKey] = setTimeout(() => store.dispatch(removePeerState(payload.data.agentPubKey)), waitForNextSignal)
       triggerRealtimeInfoAction(store, payload.data)
       return
     }
@@ -193,8 +196,6 @@ export default (store) =>
   }
 }
 function triggerRealtimeInfoAction(store, payload) {
-  // may want to check if active project is empty (or whichever way we indicate the signal 
-  // associated with exiting a project), that way dispatch removePeerState
   if (payload.projectId.length === 0) {
     store.dispatch(removePeerState(payload.agentPubKey))
   }

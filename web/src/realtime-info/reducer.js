@@ -14,9 +14,9 @@ export default function(state = defaultState, action) {
         [payload.agentPubKey]: payload
       }
     case REMOVE_PEER_STATE:
-      state = state
-      delete state[payload]
-      return state
+      let newState = { ...state }
+      delete newState[payload]
+      return newState
     default:
       return state
   }

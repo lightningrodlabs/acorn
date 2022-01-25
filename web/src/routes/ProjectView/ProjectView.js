@@ -54,6 +54,8 @@ function ProjectViewInner({
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
   const goToGoalHeaderHash = searchParams.get(GO_TO_GOAL)
+  const sendRealtimeInfoFrequency = 10000
+  const instance = useRef() 
   
   function ifMapGoToGoal(goalHeaderHash) {
       // TODO
@@ -70,10 +72,11 @@ function ProjectViewInner({
         }, 100)
       }
   }
-  const instance = useRef()
 
+  // this useEffect is called when the ProjectView component is first mounted, and returns when it is dismounted
+  // it sets an interval which calls triggerRealTimeInfoSignal at a fixed rate, until the component is dismounted
   useEffect(() => {
-    instance.current = setInterval(() => triggerRealtimeInfoSignal(), 10000)
+    instance.current = setInterval(() => triggerRealtimeInfoSignal(), sendRealtimeInfoFrequency)
     return () => {
       clearInterval(instance.current)
     }
