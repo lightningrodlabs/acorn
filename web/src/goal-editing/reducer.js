@@ -4,19 +4,16 @@ import { START_TITLE_EDIT, END_TITLE_EDIT, START_DESCRIPTION_EDIT, END_DESCRIPTI
 //   goalAddress: null,
 // }
 const defaultState = null
-// TODO: change this for tracking local state only
 export default function(state = defaultState, action) {
   const { payload, type } = action
   switch (type) {
     case START_TITLE_EDIT:
       return {
-        ...state,
         goalAddress: payload.goalAddress,
         isTitle: true,
       }
     case START_DESCRIPTION_EDIT:
       return {
-        ...state,
         goalAddress: payload.goalAddress,
         isTitle: false,
       }
