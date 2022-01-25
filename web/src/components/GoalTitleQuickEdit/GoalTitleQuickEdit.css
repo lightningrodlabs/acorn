@@ -16,11 +16,11 @@
     height: 70px;
     resize: none;
     color: #4d4d4d;
-    font-family: 'PlusJakartaSans-bold', Helvetica, Sans-Serif;
+    font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
     font-size: 20px;
     line-height: 28px;
 }
 
 .goal-title-quick-edit-form ::selection {
-    background: #e4e4ff;
+    background: #c4f2eea6;
 }
