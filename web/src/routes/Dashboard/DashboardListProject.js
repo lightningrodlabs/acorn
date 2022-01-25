@@ -102,29 +102,32 @@ function DashboardListProject({
               {project.members.map(
                 (member) =>
                   member && (
-                    <div key={member.headerHash} className="dashboard-list-project-member-wrapper" title={`${member.first_name} ${member.last_name}`}>
+                    <div key={member.headerHash}  title={`${member.first_name} ${member.last_name}`}>
                       <Avatar
                         first_name={member.first_name}
                         last_name={member.last_name}
                         avatar_url={member.avatar_url}
                         imported={member.is_imported}
                         medium
-                        
+                        withStatus
+                        withWhiteBorder
                       />
                     </div>
                   )
               )}
             </div>
             {/* Invite Members */}
-            <div
-              className="dashboard-invite-members-button"
-              onClick={() => setShowInviteMembersModal(project.passphrase)}
-            >
-              <Icon
-                name="user-plus.svg"
-                size="small"
-                className="grey"
-              />
+            <div className="dashboard-invite-members-button-wrapper">
+              <div
+                className="dashboard-invite-members-button"
+                onClick={() => setShowInviteMembersModal(project.passphrase)}
+              >
+                <Icon
+                  name="user-plus.svg"
+                  size="small"
+                  className="grey"
+                />
+              </div>
             </div>
           </div>
           {/* project item settings */}
@@ -134,7 +137,7 @@ function DashboardListProject({
           >
             <Icon name="dots-horizontal.svg" size="medium" className="light-grey" />
           </div>
-          
+
         </div>
       </div>
 

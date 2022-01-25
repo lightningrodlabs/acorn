@@ -279,7 +279,7 @@ export default function render({
       }
       ctx.fillStyle = '#FFF'
       ctx.font = '11px PlusJakartaSans-bold'
-      ctx.fillText(initials, xAvatarDraw + 5, yAvatarDraw + 7)
+      ctx.fillText(initials, xAvatarDraw + 5 , yAvatarDraw + 7)
       ctx.restore()
       return
     }
