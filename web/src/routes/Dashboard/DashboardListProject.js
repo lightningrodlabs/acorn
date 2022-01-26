@@ -111,6 +111,7 @@ function DashboardListProject({
                         medium
                         withStatus
                         withWhiteBorder
+                        selfAssignedStatus={member.status}
                       />
                     </div>
                   )

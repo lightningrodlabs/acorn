@@ -13,21 +13,7 @@
 
 .members-indicator-wrapper-avatars {
     border-radius: 50%;
-    margin-right: -6px;
+    margin-right: -4px;
     display: flex;
 }
 
-
-/* .avatar~.status-circle-wrapper .status-circle,
-.initials-avatar~.status-circle-wrapper .status-circle {
-    height: 8px;
-    width: 8px;
-} */
-
-/* .members-indicator-avatar-circle {
-    border: 3px solid #ffffff;
-    border-radius: 50%;
-    width: 27px;
-    height: 27px;
-    position: relative;
-} */

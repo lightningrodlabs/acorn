@@ -269,22 +269,13 @@
 
 .dashboard-list-project-member-list {
   display: flex;
-  margin-right: -4px;
+  margin-right: -6px;
 }
 
-/* .dashboard-list-project-member-wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-} */
-
-/* .dashboard-list-project-member-wrapper .members-indicator-avatar-circle {
+.dashboard-list-project-member-list .avatar-wrapper.with-white-border{
   border: 3px solid #fbf9f7;
+  margin-left: -6px;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
   position: relative;
-  margin-right: -7px;
-} */
-
-/* .dashboard-list-project-member-wrapper {} */
+  cursor: default;
+}
