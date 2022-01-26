@@ -53,11 +53,11 @@ function HeaderLeftPanel({
   )
   // in this context, we'd want to display members on the project,
   // except your own self
-  // since your own avatar and status is already showing 
+  // since your own avatar and status is already showing
   // on top right side of the screen all the time!
-  const membersMinusMe = members.filter(
-    (member) => member.address !== whoami.entry.address
-  )
+  const membersMinusMe = whoami
+    ? members.filter((member) => member.address !== whoami.entry.address)
+    : []
   return (
     <>
       <div className="header-left-panel">
@@ -136,7 +136,9 @@ function HeaderLeftPanel({
               </div>
             </div>
             {/* Team Members Indicator */}
-            {membersMinusMe.length > 0 && <MembersIndicator members={membersMinusMe} />}
+            {membersMinusMe.length > 0 && (
+              <MembersIndicator members={membersMinusMe} />
+            )}
           </Route>
         )}
       </div>
