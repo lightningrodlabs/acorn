@@ -293,15 +293,18 @@ function HeaderRightPanel({
               highlighted={isAvatarMenuOpen || isAvatarHover}
               clickable
               onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}
-              medium
+              smallMedium
+              withStatus
+              withWhiteBorder
+              selfAssignedStatus={status}
             />
           </div>
           {/* Current status circle color under avatar*/}
-          <div className="status-circle-wrapper">
+          {/* <div className="status-circle-wrapper">
             <div
               className={`status-circle ${StatusCssColorClass[status]}`}
             ></div>
-          </div>
+          </div> */}
         </div>
         {/* Profile Menu */}
         {isAvatarMenuOpen && (

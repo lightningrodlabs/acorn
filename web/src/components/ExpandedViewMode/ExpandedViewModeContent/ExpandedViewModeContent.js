@@ -187,12 +187,15 @@ function Details({
                 return (
                   <div className="expanded-view-squirrel-wrapper">
                     <Avatar
+                      withWhiteBorder
                       key={index}
                       first_name={squirrel.first_name}
                       last_name={squirrel.last_name}
                       avatar_url={squirrel.avatar_url}
                       imported={squirrel.is_imported}
                       medium
+                      withWhiteBorder
+                      withStatus
                       clickable
                       onClick={() =>
                         setSquirrelInfoPopup(squirrelInfoPopup ? null : squirrel)

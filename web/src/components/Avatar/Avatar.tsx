@@ -1,6 +1,7 @@
 import React from 'react'
 import './Avatar.css'
 import { pickColorForString } from '../../styles'
+import { StatusCssColorClass, Status } from '../Header/Status'
 
 interface AvatarProps {
   first_name: string
@@ -17,6 +18,7 @@ interface AvatarProps {
   imported: boolean
   withStatus?: boolean
   withWhiteBorder?: boolean
+  selfAssignedStatus?: string
 }
 
 function Avatar({
@@ -34,6 +36,7 @@ function Avatar({
   imported,
   withStatus,
   withWhiteBorder,
+  selfAssignedStatus
 }: AvatarProps) {
   let classes = []
   if (highlighted) classes.push('highlighted')
@@ -58,7 +61,8 @@ function Avatar({
       <div
         className={`avatar-wrapper ${
           withWhiteBorder ? 'with-white-border' : ''
-        }`}
+        } ${medium ? 'medium' : ''}
+        ${smallMedium ? 'small-medium' : ''}`}
       >
         <div className={classes.join(' ')} onClick={onClick} style={style}>
           {first_name[0].toUpperCase()}
@@ -67,7 +71,7 @@ function Avatar({
         {/* TODO: Current status circle color under avatar*/}
         {withStatus && (
           <div className="status-circle-wrapper">
-            <div className={`status-circle status-online`}></div>
+            <div className={`status-circle status-online ${StatusCssColorClass[selfAssignedStatus]}`}></div>
           </div>
         )}
       </div>
@@ -77,15 +81,20 @@ function Avatar({
   classes.push('avatar')
   return (
     <div
-      className={`avatar-wrapper ${withWhiteBorder ? 'with-white-border' : ''}`}
+      className={`avatar-wrapper ${
+        withWhiteBorder ? 'with-white-border' : ''
+      } ${medium ? 'medium' : ''}
+      ${smallMedium ? 'small-medium' : ''}`}
     >
       <img src={avatar_url} className={classes.join(' ')} onClick={onClick} />
       {/* TODO: Current status circle color under avatar*/}
       {withStatus && (
-          <div className="status-circle-wrapper">
-            <div className={`status-circle status-online`}></div>
-          </div>
-        )}
+        <div className="status-circle-wrapper">
+          <div
+            className={`status-circle status-online ${StatusCssColorClass[selfAssignedStatus]}`}
+          ></div>
+        </div>
+      )}
     </div>
   )
 }

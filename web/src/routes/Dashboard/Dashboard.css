@@ -1,7 +1,5 @@
 .dashboard-background {
   background-color: #fbf9f7;
-  /* background-color: #f7f6f1; */
-  /* background-color: #ffffff; */
   display: flex;
   flex-direction: row;
   height: calc(100vh - 70px);
@@ -76,7 +74,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 8px;
+  padding-bottom: 6px;
 }
 
 .my-projects-header-buttons {

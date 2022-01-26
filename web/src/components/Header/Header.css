@@ -260,7 +260,7 @@
 
 .header-right-panel-icon .icon {
   position: relative;
-  margin-right: 12px;
+  margin-right: 8px;
   display: flex;
 }
 
@@ -498,12 +498,12 @@
 }
 
 .avatar-and-status-wrapper {
-  position: relative;
+  /* position: relative; */
 }
 
 .avatar-container {
-  height: 30px;
-  width: 30px;
+  /* height: 30px;
+  width: 30px; */
 }
 
 .avatar-container img {
@@ -576,7 +576,7 @@
   background-color: grey;
 }
 
-.status-circle.status-online {
+/* .status-circle.status-online {
   background-color: #00d0c0;
 }
 
@@ -586,7 +586,7 @@
 
 .status-circle.status-offline {
   background-color: #d1d1d1;
-}
+} */
 
 /* .user-status-icon-wrapper.user-status-is-active .avatar-container+span {
   background-color: #5f65ff;

@@ -46,9 +46,17 @@ function HeaderLeftPanel({
   onClickExport,
   activeEntryPoints,
   goToGoal,
+  members,
 }) {
   const activeEntryPointAddresses = activeEntryPoints.map(
     (entryPoint) => entryPoint.headerHash
+  )
+  // in this context, we'd want to display members on the project,
+  // except your own self
+  // since your own avatar and status is already showing 
+  // on top right side of the screen all the time!
+  const membersMinusMe = members.filter(
+    (member) => member.address !== whoami.entry.address
   )
   return (
     <>
@@ -128,7 +136,7 @@ function HeaderLeftPanel({
               </div>
             </div>
             {/* Team Members Indicator */}
-            <MembersIndicator />
+            {membersMinusMe.length > 0 && <MembersIndicator members={membersMinusMe} />}
           </Route>
         )}
       </div>
