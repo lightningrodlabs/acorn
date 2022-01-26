@@ -1,9 +1,7 @@
 
 ## Developers
 
-### To Run Locally and Develop on your Computer
-
-#### Commands to start get started easily:
+### Run Locally and Develop on your Computer
 
 _Prerequisites_
 
@@ -17,19 +15,24 @@ Then run
 
 In the future, just run `npm run dev` anytime to develop.
 
+When you run `npm run dev` a `user-data/` directory is created and this is where user data including private keys, and also data generated through use of the app is stored.
+
 You can run `npm run user-data-reset` if you have user data in development, but you want to clear it, and start over with fresh identities.
+
+> NOTE: if you see a blank screen once electron launches the app, refresh the page (using View -> Reload or Cmd/Ctrl-R) to see app contents.
 
 #### Commands that are more specific to your use case:
 
 **dna**
 
 - Have rust language (stable) installed on your system, then...
-- `npm run dna-install`
-- `npm run dna-pack` (Run this anytime you change the code in `dna` folder)
+- `npm run dna-install`: installs wasm32 compilation target for rust as well as the Holochain CLI
+- `npm run dna-pack`: compiles zomes into wasm and packages each one into a dna using Holochain CLI 
+- `npm run dna-reset`: runs `dna-pack` and clears user data (Run this anytime you change the code in `dna` folder during development)
 
 To test backend:
 
-- `npm run dna-test`
+- `npm run dna-test`: runs unit tests
 
 **web** (user interface)
 
@@ -42,10 +45,13 @@ To test backend:
 - `npm run electron-install`
 - `npm run electron`
 
-#### Second User
+#### Multi-User Testing
+run the following commands in separate terminal instances (must have a running instance of acorn for the first user, either by running `npm run dev` or the below commands without the `2`):
 
 - `npm run web2`
 - `npm run electron2`
+
+After running these commands, a `user2-data/` directory is created with user data. It too can be cleared by running `npm run user-data-reset`.
 
 ### Building / Packaging
 

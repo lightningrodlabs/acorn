@@ -64,14 +64,14 @@ const COMMUNITY_PROXY_URL =
 const devOptions: HolochainRunnerOptions = {
   dnaPath: profilesDnaPath, // preload
   datastorePath: process.env.ACORN_TEST_USER_2
-    ? '../tmp/databases'
-    : path.join(__dirname, '../../tmp2/databases'),
+    ? '../user2-data/databases'
+    : path.join(__dirname, '../../user-data/databases'),
   appId: MAIN_APP_ID,
   appWsPort: process.env.ACORN_TEST_USER_2 ? 8899 : 8888,
   adminWsPort: process.env.ACORN_TEST_USER_2 ? 1236 : 1234,
   keystorePath: process.env.ACORN_TEST_USER_2
-    ? '../tmp/keystore'
-    : path.join(__dirname, '../../tmp2/keystore'),
+    ? '../user2-data/keystore'
+    : path.join(__dirname, '../../user-data/keystore'),
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 const prodOptions: HolochainRunnerOptions = {

@@ -1,5 +1,5 @@
 export const CONNECTOR_VERTICAL_SPACING = 20
-export const avatarSpace = 4
+export const avatarSpace = -4
 export const avatarWidth = 24
 export const avatarHeight = 24
 export const avatarRadius = 12
@@ -37,7 +37,7 @@ export const fontSizeExtraLarge = '40px'
 export const fontSizeExtraLargeInt = 40
 export const lineSpacingExtraLarge = 2
 
-export const fontFamily = 'PlusJakartaSans-bold'
+export const fontFamily = 'PlusJakartaSans-medium'
 
 // line wrapping code from https://stackoverflow.com/questions/2936112/
 function getLines(ctx, text, maxWidth) {

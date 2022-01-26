@@ -1,0 +1,19 @@
+.members-indicator-wrapper {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    display: -webkit-flex;
+    -webkit-align-items: center;
+    display: flex;
+    align-items: center;
+    max-height: 46px;
+    padding-right: 16px;
+    padding-left: 11px;
+    margin: 0 8px;
+}
+
+.members-indicator-wrapper-avatars {
+    border-radius: 50%;
+    margin-right: -4px;
+    display: flex;
+}
+

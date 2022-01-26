@@ -105,6 +105,7 @@
   from {
     left: -150px;
   }
+
   to {
     left: 100%;
   }
@@ -233,15 +234,20 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   box-sizing: border-box;
   background-color: #fbf9f7;
   transition: 0.2s all ease;
 }
 
+.dashboard-invite-members-button-wrapper {
+  border: 3px solid #fbf9f7;
+  border-radius: 50%;
+  z-index: 1;
+}
+
 .dashboard-invite-members-button:hover {
-  /* border: 1.8px solid #5f65ff; */
   background-color: #f5f2ef;
   border-color: #5f65ff;
 }
@@ -259,25 +265,17 @@
 .dashboard-list-project-members {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  margin-bottom: 10px;
 }
 
 .dashboard-list-project-member-list {
   display: flex;
+  margin-right: -6px;
 }
 
-.dashboard-list-project-member-wrapper {
-  border: 2px solid #fbf9f7;
+.dashboard-list-project-member-list .avatar-wrapper.with-white-border{
+  border: 3px solid #fbf9f7;
+  margin-left: -6px;
   border-radius: 50%;
-  margin-right: -7px;
-  display: flex;
-}
-
-/* dashboard project item settings */
-
-.dashboard-list-project-settings-button {
-  /* position: absolute; */
-  /* right: 20px;
-  text-align: right; */
+  position: relative;
+  cursor: default;
 }

@@ -17,6 +17,7 @@ function Header({
   projectId,
   hideGuidebookHelpMessage,
   goToGoal,
+  members,
 }) {
   const [isExportOpen, setIsExportOpen] = useState(false)
 
@@ -61,6 +62,7 @@ function Header({
       /> */}
       <div className="header">
         <HeaderLeftPanel
+          members={members}
           whoami={whoami}
           setShowProjectSettingsOpen={setShowProjectSettingsOpen}
           projectName={project.name}

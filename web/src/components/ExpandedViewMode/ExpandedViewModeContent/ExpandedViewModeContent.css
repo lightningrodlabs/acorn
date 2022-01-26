@@ -5,7 +5,7 @@
 }
 
 .expanded-view-details-wrapper {
-  padding: 16px 18px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   max-height: 100%;
@@ -105,32 +105,23 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-left: 4px;
 }
 
 .expanded-view-squirrel-wrapper {
-  border: 2px solid #ffffff;
-  border-radius: 50%;
-  margin-right: -7px;
   display: flex;
+}
+
+.expanded-view-squirrel-wrapper .avatar-wrapper.with-white-border.medium {
+  margin-left: -6px;
 }
 
 .expanded-view-squirrels-content .people-picker-people .avatar.medium.clickable, .expanded-view-squirrels-content .people-picker-people .initials-avatar.medium {
   margin-right: unset;
 }
 
-.icon.add-squirrel-plus-icon {
-  /* padding: 4px;
-  transition: box-shadow 0.1s ease;
-  border: 2px solid #f4f4f4; */
-}
-
 .expanded-view-squirrels-content .avatar.medium.clickable:hover, .icon.medium.add-squirrel-plus-icon:hover {
   box-shadow: 0 0 0 2px #5f65ff;
-}
-
-.add-squirrel-plus-icon {
-  /* background: #f4f4f4;
-  border-radius: 50%; */
 }
 
 /* squirrelInfoPopup */
@@ -140,7 +131,7 @@
   position: absolute;
   border-radius: 10px;
   background: #ffffff;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.16);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.08);
   padding: 15px 20px;
   top: 0;
   z-index: 1;
@@ -217,14 +208,16 @@
 }
 
 .expanded-view-squirrels-add-wrapper {
-  height: 32px;
-  width: 32px;
-  border: 2px solid #ffffff;
+  height: 30px;
+  width: 30px;
+  border: 3px solid #ffffff;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   background: #f4f4f4;
+  margin-left: -7px;
+  z-index: 1;
 }
 
 .expanded-view-squirrels-add-wrapper:hover {
