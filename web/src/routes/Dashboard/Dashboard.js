@@ -165,7 +165,7 @@ function Dashboard({
                   size="very-small"
                   className="black not-hoverable"
                 />
-                <div>Import Project</div>
+                <div>Import a Project</div>
               </div>
             </div>
             <div className="my-projects-sorting">

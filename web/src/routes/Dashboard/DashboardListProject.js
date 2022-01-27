@@ -102,7 +102,8 @@ function DashboardListProject({
               {project.members.map(
                 (member) =>
                   member && (
-                    <div key={member.headerHash}  title={`${member.first_name} ${member.last_name}`}>
+                    // title={`${member.first_name} ${member.last_name}`}
+                    <div key={member.headerHash}  >
                       <Avatar
                         first_name={member.first_name}
                         last_name={member.last_name}
@@ -112,6 +113,8 @@ function DashboardListProject({
                         withStatus
                         withWhiteBorder
                         selfAssignedStatus={member.status}
+                        withTooltip
+                        tooltipText={`${member.first_name} ${member.last_name}`}
                       />
                     </div>
                   )

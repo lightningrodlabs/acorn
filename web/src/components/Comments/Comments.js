@@ -24,6 +24,7 @@ function Comment({ comment, agent }) {
           avatar_url={agent.avatar_url}
           imported={agent.is_imported}
           medium
+          withStatus
         />
       </div>
       <div className="comment_history_content">

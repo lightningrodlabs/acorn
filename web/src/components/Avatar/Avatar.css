@@ -1,7 +1,8 @@
 .avatar, .initials-avatar {
   transition: 0.2s all ease;
-
+  cursor: pointer;
 }
+
 .avatar.imported, .initials-avatar.imported {
   opacity: 0.5;
 }
@@ -10,7 +11,7 @@
   cursor: pointer;
 }
 
-.avatar.clickable:hover {
+.avatar.clickable:hover, .initials-avatar.clickable:hover {
   opacity: 0.8;
 }
 
@@ -51,7 +52,7 @@
   box-shadow: 0 0 0 3px #5f65ff;
 }
 
-.avatar.highlighted~.avatar-wrapper.with-white-border, 
+.avatar.highlighted~.avatar-wrapper.with-white-border,
 .initials-avatar.highlighted~.avatar-wrapper.with-white-border {
   /* box-shadow: 0 0 0 2px #5f65ff; */
   border: 3px solid #5f65ff;
@@ -167,4 +168,18 @@
 
 .status-circle.status-offline {
   background-color: #d1d1d1;
+}
+
+/* Avatars with tooltip */
+
+.avatar-wrapper .tooltip-wrapper {
+  bottom: -32px;
+}
+
+.avatar-wrapper:hover .tooltip-wrapper,
+.initials-avatar:hover .tooltip-wrapper {
+  transition-delay: 0.9s;
+  visibility: visible;
+  transition-property: visibility;
+  z-index: 9999;
 }

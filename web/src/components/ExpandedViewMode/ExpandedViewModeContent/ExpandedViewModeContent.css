@@ -5,7 +5,7 @@
 }
 
 .expanded-view-details-wrapper {
-  padding: 20px;
+  padding: 30px 24px 24px 24px;
   display: flex;
   flex-direction: column;
   max-height: 100%;
@@ -19,6 +19,8 @@
   color: #4d4d4d;
   padding: 4px 0;
 }
+
+/* if title is being edited */
 
 .expanded-view-title input {
   width: 100%;

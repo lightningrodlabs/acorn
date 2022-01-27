@@ -213,6 +213,8 @@ function Details({
             <div className="expanded-view-squirrels-title">Squirrels</div>
             <div className="expanded-view-squirrels-content">
               {squirrels.map((squirrel, index) => {
+                // TODO: fix the highlight for avatars showing all at once
+                // instead of only highlighting the selected avatar
                 const highlighted = squirrelInfoPopup
                   ? squirrelInfoPopup.headerHash === squirrel.headerHash
                   : false

@@ -7,7 +7,7 @@
 }
 
 .comment-history-container {
-  padding: 16px 16px 0 16px;
+  padding: 30px 24px 0 24px;
   overflow-y: scroll;
   flex: 1;
 }
@@ -93,13 +93,10 @@
 
 .avatar_comment_container {
   display: inline-block;
-  margin-top: 4px;
+  margin-top: 2px;
 }
-
-.avatar_comment_container>.avatar {
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
+.avatar_comment_container .avatar-wrapper {
+  position: relative;
 }
 
 .comment_history_item {

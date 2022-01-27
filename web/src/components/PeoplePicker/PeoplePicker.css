@@ -34,7 +34,8 @@
   margin: 0;
 }
 
-.people-picker-people .avatar {
+.people-picker-people .avatar-wrapper,
+.people-picker-people .initials-avatar-wrapper {
   position: relative;
 }
 

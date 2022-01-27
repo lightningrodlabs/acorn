@@ -1,6 +1,6 @@
 import React from 'react'
 import Avatar from '../Avatar/Avatar'
-
+import Icon from '../Icon/Icon'
 
 import './MembersIndicator.css'
 
@@ -9,9 +9,13 @@ export type MembersIndicatorProps = {
   // TODO: update it when have added a Profile
   // type definition
   members: Array<any>
+  onClickInviteMember: () => void
 }
 
-const MembersIndicator: React.FC<MembersIndicatorProps> = ({members}) => {
+const MembersIndicator: React.FC<MembersIndicatorProps> = ({
+  members,
+  onClickInviteMember,
+}) => {
   //   Don't show an avatar if it is imported
 
   // const members = [
@@ -49,31 +53,45 @@ const MembersIndicator: React.FC<MembersIndicatorProps> = ({members}) => {
 
   return (
     <div className="members-indicator-wrapper">
-      
       {members.map(
         (member) =>
           member && (
             <div
               key={member.headerHash}
               className="members-indicator-wrapper-avatars"
-              title={`${member.first_name} ${member.last_name}`}
             >
-              {/* <div className="members-indicator-avatar-circle"> */}
-                <Avatar
-                  first_name={member.first_name}
-                  last_name={member.last_name}
-                  avatar_url={member.avatar_url}
-                  imported={member.is_imported}
-                  smallMedium
-                  withWhiteBorder
-                  withStatus
-                  clickable
-                />
-                
-              </div>
-            // </div>
+              {/* title={`${member.first_name} ${member.last_name}`} */}
+              <Avatar
+                first_name={member.first_name}
+                last_name={member.last_name}
+                avatar_url={member.avatar_url}
+                imported={member.is_imported}
+                smallMedium
+                withWhiteBorder
+                withStatus
+                clickable
+                withTooltip
+                tooltipText={`${member.first_name} ${member.last_name}`}
+              />
+            </div>
           )
       )}
+      {/* Invite Members */}
+      <div className="invite-members-button-wrapper">
+        <div
+          className="invite-members-button"
+          // onClick={() => setShowInviteMembersModal(project.passphrase)}
+          onClick={onClickInviteMember}
+        >
+          <Icon
+            name="user-plus.svg"
+            size="small"
+            className="dark-grey"
+            withTooltip
+            tooltipText="Invite Members"
+          />
+        </div>
+      </div>
     </div>
   )
 }
