@@ -194,18 +194,52 @@ function Details({
     : null
   const toDate = goal.time_frame ? moment.unix(goal.time_frame.to_date) : null
 
+  // const isBeingEdited = false
+
+
+  const member =
+  {
+    first_name: 'Pegah',
+    last_name: 'Vaezi',
+    avatar_url:
+      'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.fouladiprojects.com%2Fwp-content%2Fuploads%2F2015%2F10%2FBarbourshow1.jpg&f=1&nofb=1',
+    is_imported: false,
+    headerHash: 'riusry3764yiud',
+    connectionStatus: 'connected',
+    selfAssignedStatus: 'online',
+  }
+
+
   return (
     <>
       <div className="expanded-view-details-wrapper">
-        <div className="expanded-view-title">
-          <TextareaAutosize
-            value={content}
-            onBlur={onTitleBlur}
-            onChange={handleOnChangeTitle}
-            onKeyPress={handleOnChangeTitle}
-            placeholder="Add a title..."
-            onFocus={onTitleFocus}
-          />
+
+        <div className="expanded-view-title-wrapper">
+          <div className="member-editing-title-wrapper">
+            <Avatar
+              withStatusBorder
+              smallMedium
+              first_name={member.first_name}
+              last_name={member.last_name}
+              avatar_url={member.avatar_url}
+              is_imported={member.is_imported}
+              headerHash={member.headerHash}
+              connectionStatus={member.connectionStatus}
+              selfAssignedStatus={member.selfAssignedStatus}
+            />
+          </div>
+          <div className="expanded-view-title-editing-placeholder">
+            <div className="expanded-view-title">
+              <TextareaAutosize
+                value={content}
+                onBlur={onTitleBlur}
+                onChange={handleOnChangeTitle}
+                onKeyPress={handleOnChangeTitle}
+                placeholder="Add a title..."
+                onFocus={onTitleFocus}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="squirrels-timeframe-row">
@@ -275,14 +309,31 @@ function Details({
             </div>
           </div>
         </div>
-        <div className="expanded-view-description">
-          <TextareaAutosize
-            placeholder="Add description here"
-            value={description}
-            onBlur={onDescriptionBlur}
-            onChange={handleOnChangeDescription}
-            onFocus={onDescriptionFocus}
-          />
+        <div className="expanded-view-description-wrapper">
+          <div className="member-editing-description-wrapper">
+            <Avatar
+              withStatusBorder
+              smallMedium
+              first_name={member.first_name}
+              last_name={member.last_name}
+              avatar_url={member.avatar_url}
+              is_imported={member.is_imported}
+              headerHash={member.headerHash}
+              connectionStatus={member.connectionStatus}
+              selfAssignedStatus={member.selfAssignedStatus}
+            />
+          </div>
+          <div className="expanded-view-description-editing-placeholder">
+            <div className="expanded-view-description">
+              <TextareaAutosize
+                placeholder="Add description here"
+                value={description}
+                onBlur={onDescriptionBlur}
+                onChange={handleOnChangeDescription}
+                onFocus={onDescriptionFocus}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>

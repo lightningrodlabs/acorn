@@ -135,4 +135,5 @@
   box-sizing: border-box;
   max-width: 365px;
   white-space: pre-wrap;
+  line-height: 1.45;
 }

@@ -52,9 +52,8 @@
   box-shadow: 0 0 0 3px #5f65ff;
 }
 
-.avatar.highlighted~.avatar-wrapper.with-white-border,
-.initials-avatar.highlighted~.avatar-wrapper.with-white-border {
-  /* box-shadow: 0 0 0 2px #5f65ff; */
+.avatar.highlighted~.avatar-wrapper.with-border.white,
+.initials-avatar.highlighted~.avatar-wrapper.with-border.white {
   border: 3px solid #5f65ff;
 }
 
@@ -126,25 +125,46 @@
   position: relative;
 }
 
-.avatar-wrapper.with-white-border {
-  border: 3px solid #ffffff;
+.avatar-wrapper.with-border {
   border-radius: 50%;
   position: relative;
 }
 
-.avatar-wrapper.with-white-border.small-medium {
+.avatar-wrapper.with-border.white{
   border: 3px solid #ffffff;
-  /* border: 3px solid #00d0c0; */
+}
+
+.avatar-wrapper.with-border.status-color.undefined {
+  border: 3px solid #00d0c0;
+}
+
+.avatar-wrapper.with-border.status-color.status-online {
+  border: 3px solid #00d0c0;
+}
+
+.avatar-wrapper.with-border.status-color.status-online {
+  border: 3px solid #00d0c0;
+}
+
+.avatar-wrapper.with-border.status-color.status-away {
+  border: 3px solid #ffc400;
+}
+
+.avatar-wrapper.with-border.status-color.status-offline {
+  border: 3px solid #d1d1d1;
+}
+
+.avatar-wrapper.with-border.small-medium {
+  border: 3px solid #ffffff;
   border-radius: 50%;
   width: 28px;
   height: 28px;
   position: relative;
 }
 
-.avatar-wrapper.with-white-border.medium {
+.avatar-wrapper.with-border.medium {
   width: 30px;
   height: 30px;
-  /* margin-left: -6px; */
 }
 
 

@@ -19,6 +19,7 @@ interface AvatarProps {
   imported: boolean
   withStatus?: boolean
   withWhiteBorder?: boolean
+  withStatusBorder?: boolean
   selfAssignedStatus?: string
   withTooltip?: boolean
   tooltipText?: string
@@ -39,6 +40,7 @@ function Avatar({
   imported,
   withStatus,
   withWhiteBorder,
+  withStatusBorder,
   selfAssignedStatus,
   withTooltip,
   tooltipText,
@@ -67,9 +69,10 @@ function Avatar({
     classes.push('initials-avatar')
     return (
       <div
-        className={`avatar-wrapper ${
-          withWhiteBorder ? 'with-white-border' : ''
-        } ${medium ? 'medium' : ''}
+        className={`avatar-wrapper 
+        ${withWhiteBorder ? 'with-border white' : ''} 
+        ${withStatusBorder ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}` : ''} 
+        ${medium ? 'medium' : ''}
         ${smallMedium ? 'small-medium' : ''}`}
       >
         <div className={classes.join(' ')} onClick={onClick} style={style}>
@@ -80,7 +83,7 @@ function Avatar({
         {withStatus && (
           <div className="status-circle-wrapper">
             <div
-              className={`status-circle status-online ${StatusCssColorClass[selfAssignedStatus]}`}
+              className={`status-circle ${StatusCssColorClass[selfAssignedStatus]}`}
             ></div>
           </div>
         )}
@@ -92,9 +95,10 @@ function Avatar({
   classes.push('avatar')
   return (
     <div
-      className={`avatar-wrapper ${
-        withWhiteBorder ? 'with-white-border' : ''
-      } ${medium ? 'medium' : ''}
+      className={`avatar-wrapper 
+      ${withWhiteBorder ? 'with-border white' : ''} 
+      ${withStatusBorder ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}` : ''}
+      ${medium ? 'medium' : ''}
       ${smallMedium ? 'small-medium' : ''}`}
     >
       <img src={avatar_url} className={classes.join(' ')} onClick={onClick} />
@@ -102,7 +106,7 @@ function Avatar({
       {withStatus && (
         <div className="status-circle-wrapper">
           <div
-            className={`status-circle status-online ${StatusCssColorClass[selfAssignedStatus]}`}
+            className={`status-circle ${StatusCssColorClass[selfAssignedStatus]}`}
           ></div>
         </div>
       )}

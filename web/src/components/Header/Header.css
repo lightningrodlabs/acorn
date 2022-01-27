@@ -491,21 +491,6 @@
   bottom: 0px;
 }
 
-.status-circle-wrapper .status-circle {
-  height: 10px;
-  width: 10px;
-  box-shadow: 0px 0px 1px #00000030;
-}
-
-.avatar-and-status-wrapper {
-  /* position: relative; */
-}
-
-.avatar-container {
-  /* height: 30px;
-  width: 30px; */
-}
-
 .avatar-container img {
   width: 32px;
   height: 32px;

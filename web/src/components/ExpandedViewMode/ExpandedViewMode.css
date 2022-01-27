@@ -30,10 +30,10 @@
 }
 
 .expanded-view-wrapper {
-  box-shadow: 0px 0px 20px #0000001f;
+  box-shadow: 0px 0px 24px #0000001f;
   width: 500px;
   background: #ffffff;
-  border-radius: 12px;
+  border-radius: 16px;
   display: flex;
   flex-direction: column;
   position: absolute;
