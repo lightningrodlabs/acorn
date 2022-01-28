@@ -47,6 +47,7 @@ function HeaderLeftPanel({
   activeEntryPoints,
   goToGoal,
   members,
+  presentMembers,
 }) {
   const activeEntryPointAddresses = activeEntryPoints.map(
     (entryPoint) => entryPoint.headerHash
@@ -137,7 +138,10 @@ function HeaderLeftPanel({
             </div>
             {/* Team Members Indicator */}
             {membersMinusMe.length > 0 && (
-              <MembersIndicator members={membersMinusMe} />
+              <MembersIndicator 
+                members={membersMinusMe}
+                presentMembers={presentMembers}
+              />
             )}
           </Route>
         )}

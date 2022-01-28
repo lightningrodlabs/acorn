@@ -16,6 +16,13 @@
     margin-right: -4px;
     display: flex;
 }
+.offline-members-indicator-wrapper-avatars {
+    border-radius: 50%;
+    margin-right: -4px;
+    display: flex;
+    filter: blur(2px);
+    /* filter is just used to test */
+}
 
 /* Invite Members Icon Button */
 

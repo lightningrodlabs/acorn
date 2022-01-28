@@ -36,6 +36,7 @@ import { closeInviteMembersModal } from '../invite-members-modal/actions'
 
 function App({
   members,
+  presentMembers,
   activeEntryPoints,
   activeProjectMeta,
   projectId,
@@ -88,6 +89,7 @@ function App({
           <Header
             members={members}
             project={activeProjectMeta}
+            presentMembers={presentMembers}
             {...{
               hideGuidebookHelpMessage,
               activeEntryPoints,
@@ -169,6 +171,11 @@ function mapStateToProps(state) {
   const members = activeProject
     ? selectActiveProjectMembers(state, activeProject)
     : []
+  
+  const dnaId = activeProject ? activeProject.split("[:cell_id_divider:]")[0] : activeProject
+  const presentMembers = Object.values(state.ui.realtimeInfo)
+    .filter((agentInfo) => agentInfo.projectId.split("[:cell_id_divider:]")[0] === dnaId)
+    .map((agentInfo) => agentInfo.agentPubKey).filter((agentPubKey) => members.find((member) => member.address === agentPubKey))
 
   const allProjectEntryPoints = activeProject
     ? selectEntryPoints(state, activeProject)
@@ -193,6 +200,7 @@ function mapStateToProps(state) {
     navigationPreference: navigation,
     inviteMembersModalShowing: inviteMembersModal.passphrase,
     members: members,
+    presentMembers: presentMembers,
   }
 }
 

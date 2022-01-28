@@ -9,11 +9,13 @@ export type MembersIndicatorProps = {
   // TODO: update it when have added a Profile
   // type definition
   members: Array<any>
+  presentMembers: Array<any>
   onClickInviteMember: () => void
 }
 
 const MembersIndicator: React.FC<MembersIndicatorProps> = ({
   members,
+  presentMembers,
   onClickInviteMember,
 }) => {
   //   Don't show an avatar if it is imported
@@ -58,7 +60,7 @@ const MembersIndicator: React.FC<MembersIndicatorProps> = ({
           member && (
             <div
               key={member.headerHash}
-              className="members-indicator-wrapper-avatars"
+              className={presentMembers.find((presentMember) => presentMember === member.address) ? "members-indicator-wrapper-avatars" : "offline-members-indicator-wrapper-avatars"}
             >
               {/* title={`${member.first_name} ${member.last_name}`} */}
               <Avatar
