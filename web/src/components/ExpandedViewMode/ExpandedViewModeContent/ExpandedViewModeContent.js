@@ -214,8 +214,10 @@ function Details({
 
   // find out if any of the peers is editing title, then take the agent key from that and use to feed into avatar
 
-  const editingPeer = editingPeers.find((peerInfo) => peerInfo.goalBeingEdited.isTitle)
-  const editor = editingPeer ? editingPeer.profileInfo : {}
+  const editingTitlePeer = editingPeers.find((peerInfo) => peerInfo.goalBeingEdited.isTitle)
+  const editingDescriptionPeer = editingPeers.find((peerInfo) => !peerInfo.goalBeingEdited.isTitle)
+  const titleEditor = editingTitlePeer ? editingTitlePeer.profileInfo : {}
+  const descriptionEditor = editingDescriptionPeer ? editingDescriptionPeer.profileInfo : {}
   
 
   return (
@@ -223,18 +225,18 @@ function Details({
       <div className="expanded-view-details-wrapper">
 
         <div className="expanded-view-title-wrapper">
-          {editingPeer && (
+          {editingTitlePeer && (
             <div className="member-editing-title-wrapper">
               <Avatar
                 withStatusBorder
                 smallMedium
-                first_name={editor.first_name}
-                last_name={editor.last_name}
-                avatar_url={editor.avatar_url}
-                is_imported={editor.is_imported}
-                headerHash={editor.address}
+                first_name={titleEditor.first_name}
+                last_name={titleEditor.last_name}
+                avatar_url={titleEditor.avatar_url}
+                is_imported={titleEditor.is_imported}
+                headerHash={titleEditor.address}
                 connectionStatus={'connected'}
-                selfAssignedStatus={editor.status}
+                selfAssignedStatus={titleEditor.status}
               />
             </div>
           )}
@@ -320,19 +322,21 @@ function Details({
           </div>
         </div>
         <div className="expanded-view-description-wrapper">
-          <div className="member-editing-description-wrapper">
-            <Avatar
-              withStatusBorder
-              smallMedium
-              first_name={member.first_name}
-              last_name={member.last_name}
-              avatar_url={member.avatar_url}
-              is_imported={member.is_imported}
-              headerHash={member.headerHash}
-              connectionStatus={member.connectionStatus}
-              selfAssignedStatus={member.selfAssignedStatus}
-            />
-          </div>
+          {editingDescriptionPeer && (
+            <div className="member-editing-description-wrapper">
+              <Avatar
+                withStatusBorder
+                smallMedium
+                first_name={descriptionEditor.first_name}
+                last_name={descriptionEditor.last_name}
+                avatar_url={descriptionEditor.avatar_url}
+                is_imported={descriptionEditor.is_imported}
+                headerHash={descriptionEditor.address}
+                connectionStatus={'connected'}
+                selfAssignedStatus={descriptionEditor.status}
+              />
+            </div>
+          )}
           <div className="expanded-view-description-editing-placeholder">
             <div className="expanded-view-description">
               <TextareaAutosize
