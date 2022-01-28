@@ -225,22 +225,35 @@ function Details({
       <div className="expanded-view-details-wrapper">
 
         <div className="expanded-view-title-wrapper">
-          {editingTitlePeer && (
-            <div className="member-editing-title-wrapper">
-              <Avatar
-                withStatusBorder
-                smallMedium
-                first_name={titleEditor.first_name}
-                last_name={titleEditor.last_name}
-                avatar_url={titleEditor.avatar_url}
-                is_imported={titleEditor.is_imported}
-                headerHash={titleEditor.address}
-                connectionStatus={'connected'}
-                selfAssignedStatus={titleEditor.status}
-              />
+          {editingTitlePeer ? (
+            <div>
+              <div className="member-editing-title-wrapper">
+                <Avatar
+                  withStatusBorder
+                  smallMedium
+                  first_name={titleEditor.first_name}
+                  last_name={titleEditor.last_name}
+                  avatar_url={titleEditor.avatar_url}
+                  is_imported={titleEditor.is_imported}
+                  headerHash={titleEditor.address}
+                  connectionStatus={'connected'}
+                  selfAssignedStatus={titleEditor.status}
+                />
+              </div>
+              <div className="expanded-view-title-editing-placeholder">
+                <div className="expanded-view-title">
+                  <TextareaAutosize
+                    value={content}
+                    onBlur={onTitleBlur}
+                    onChange={handleOnChangeTitle}
+                    onKeyPress={handleOnChangeTitle}
+                    placeholder="Add a title..."
+                    onFocus={onTitleFocus}
+                  />
+                </div>
+              </div>
             </div>
-          )}
-          <div className="expanded-view-title-editing-placeholder">
+          ) : (
             <div className="expanded-view-title">
               <TextareaAutosize
                 value={content}
@@ -251,7 +264,7 @@ function Details({
                 onFocus={onTitleFocus}
               />
             </div>
-          </div>
+          )}
         </div>
 
         <div className="squirrels-timeframe-row">
@@ -322,22 +335,34 @@ function Details({
           </div>
         </div>
         <div className="expanded-view-description-wrapper">
-          {editingDescriptionPeer && (
-            <div className="member-editing-description-wrapper">
-              <Avatar
-                withStatusBorder
-                smallMedium
-                first_name={descriptionEditor.first_name}
-                last_name={descriptionEditor.last_name}
-                avatar_url={descriptionEditor.avatar_url}
-                is_imported={descriptionEditor.is_imported}
-                headerHash={descriptionEditor.address}
-                connectionStatus={'connected'}
-                selfAssignedStatus={descriptionEditor.status}
-              />
+          {editingDescriptionPeer ? (
+            <div>
+              <div className="member-editing-description-wrapper">
+                <Avatar
+                  withStatusBorder
+                  smallMedium
+                  first_name={descriptionEditor.first_name}
+                  last_name={descriptionEditor.last_name}
+                  avatar_url={descriptionEditor.avatar_url}
+                  is_imported={descriptionEditor.is_imported}
+                  headerHash={descriptionEditor.address}
+                  connectionStatus={'connected'}
+                  selfAssignedStatus={descriptionEditor.status}
+                />
+              </div>
+              <div className="expanded-view-description-editing-placeholder">
+                <div className="expanded-view-description">
+                  <TextareaAutosize
+                    placeholder="Add description here"
+                    value={description}
+                    onBlur={onDescriptionBlur}
+                    onChange={handleOnChangeDescription}
+                    onFocus={onDescriptionFocus}
+                  />
+                </div>
+              </div>
             </div>
-          )}
-          <div className="expanded-view-description-editing-placeholder">
+          ) : (
             <div className="expanded-view-description">
               <TextareaAutosize
                 placeholder="Add description here"
@@ -347,7 +372,7 @@ function Details({
                 onFocus={onDescriptionFocus}
               />
             </div>
-          </div>
+          )}
         </div>
       </div>
     </>
