@@ -56,6 +56,7 @@ export default function ExpandedViewModeContent({
   endTitleEdit,
   startDescriptionEdit,
   endDescriptionEdit,
+  editingPeers,
 }) {
   // 0 is details
   // 1 is comments
@@ -88,6 +89,7 @@ export default function ExpandedViewModeContent({
               endTitleEdit,
               startDescriptionEdit,
               endDescriptionEdit,
+              editingPeers,
             }}
           />
         )}
@@ -117,6 +119,7 @@ function Details({
   endTitleEdit,
   startDescriptionEdit,
   endDescriptionEdit,
+  editingPeers,
 }) {
   // you can use these as values for
   // testing/ development, instead of `squirrels`
@@ -206,28 +209,35 @@ function Details({
     is_imported: false,
     headerHash: 'riusry3764yiud',
     connectionStatus: 'connected',
-    selfAssignedStatus: 'online',
+    status: 'online',
   }
 
+  // find out if any of the peers is editing title, then take the agent key from that and use to feed into avatar
+
+  const editingPeer = editingPeers.find((peerInfo) => peerInfo.goalBeingEdited.isTitle)
+  const editor = editingPeer ? editingPeer.profileInfo : {}
+  
 
   return (
     <>
       <div className="expanded-view-details-wrapper">
 
         <div className="expanded-view-title-wrapper">
-          <div className="member-editing-title-wrapper">
-            <Avatar
-              withStatusBorder
-              smallMedium
-              first_name={member.first_name}
-              last_name={member.last_name}
-              avatar_url={member.avatar_url}
-              is_imported={member.is_imported}
-              headerHash={member.headerHash}
-              connectionStatus={member.connectionStatus}
-              selfAssignedStatus={member.selfAssignedStatus}
-            />
-          </div>
+          {editingPeer && (
+            <div className="member-editing-title-wrapper">
+              <Avatar
+                withStatusBorder
+                smallMedium
+                first_name={editor.first_name}
+                last_name={editor.last_name}
+                avatar_url={editor.avatar_url}
+                is_imported={editor.is_imported}
+                headerHash={editor.address}
+                connectionStatus={'connected'}
+                selfAssignedStatus={editor.status}
+              />
+            </div>
+          )}
           <div className="expanded-view-title-editing-placeholder">
             <div className="expanded-view-title">
               <TextareaAutosize

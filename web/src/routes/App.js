@@ -172,9 +172,11 @@ function mapStateToProps(state) {
     ? selectActiveProjectMembers(state, activeProject)
     : []
   
-  const dnaId = activeProject ? activeProject.split("[:cell_id_divider:]")[0] : activeProject
+  function getDnaHashFromProjectId(activeProject) {
+    return activeProject ? activeProject.split("[:cell_id_divider:]")[0] : activeProject
+  }
   const presentMembers = Object.values(state.ui.realtimeInfo)
-    .filter((agentInfo) => agentInfo.projectId.split("[:cell_id_divider:]")[0] === dnaId)
+    .filter((agentInfo) => getDnaHashFromProjectId(agentInfo.projectId) === getDnaHashFromProjectId(activeProject))
     .map((agentInfo) => agentInfo.agentPubKey).filter((agentPubKey) => members.find((member) => member.address === agentPubKey))
 
   const allProjectEntryPoints = activeProject
