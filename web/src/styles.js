@@ -44,4 +44,10 @@ const colors = {
 
 const selectedColor = '#5F65FF'
 
-export { colors, pickColorForString, selectedColor }
+const SELF_ASSIGNED_STATUS_COLORS = {
+  Online: '#00d0c0',
+  Away: '#ffc400',
+  Offline: '#d1d1d1'
+}
+
+export { colors, pickColorForString, selectedColor, SELF_ASSIGNED_STATUS_COLORS }

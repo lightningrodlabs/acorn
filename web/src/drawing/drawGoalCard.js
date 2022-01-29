@@ -20,7 +20,7 @@ import {
   lineSpacingLarge,
 } from './dimensions'
 
-import { selectedColor, colors, pickColorForString } from '../styles'
+import { selectedColor, colors, pickColorForString, SELF_ASSIGNED_STATUS_COLORS } from '../styles'
 import { getOrSetImageForUrl } from './imageCache'
 import moment from 'moment'
 
@@ -37,9 +37,10 @@ export default function render({
   isSelected,
   isHovered,
   ctx,
-  isBeingEdited,
+  isBeingEdited, // realtime info 
+  isBeingEditedBy,
+  allMembersActiveOnGoal, // realtime info
   isTopPriorityGoal,
-  isBeingEditedBy
 }) {
   let goalLeftX, goalTopY
   if (coordinates) {
@@ -65,9 +66,9 @@ export default function render({
   if (isHovered) {
     backgroundColor = '#f2f1ef'
   }
-  else if (isBeingEdited) {
-    backgroundColor = '#EAEAEA'
-  }
+  // else if (isBeingEdited) {
+  //   backgroundColor = '#EAEAEA'
+  // }
 
   const halfBorder = borderWidth / 2 // for use with 'stroke' of the border
   const twiceBorder = borderWidth * 2
@@ -120,9 +121,9 @@ export default function render({
   // selection outline (purple)
   if (isSelected) {
     let xStart =
-      goalLeftX - selectedOutlineMargin + 1 - halfBorder - selectedOutlineWidth / 2
+      goalLeftX - selectedOutlineMargin + 1 - halfBorder - Number(selectedOutlineWidth) / 2
     let yStart =
-      goalTopY - selectedOutlineMargin + 1 - halfBorder - selectedOutlineWidth / 2
+      goalTopY - selectedOutlineMargin + 1 - halfBorder - Number(selectedOutlineWidth) / 2
     let w =
       goalWidth +
       2 * (selectedOutlineMargin - 1) +
@@ -146,6 +147,7 @@ export default function render({
       stroke: true,
       strokeWidth: selectedOutlineWidth,
       boxShadow: false,
+      topPriorityGoalGlow: false
     })
   }
   /*
@@ -176,9 +178,9 @@ export default function render({
       fontSizeToUse = fontSizeLargeInt
     }
     let titleTextColor = '#4D4D4D'
-    if (isBeingEdited) {
-      titleTextColor = '#888888'
-    }
+    // if (isBeingEdited) {
+    //   titleTextColor = '#888888'
+    // }
     ctx.fillStyle = titleTextColor
     lines.slice(0, lineLimit).forEach((line, index) => {
       let linePosition = index * (fontSizeToUse + lineSpacingToUse)
@@ -211,9 +213,9 @@ export default function render({
     const textBoxLeft = xImgDraw + textBoxMarginLeft - 12
     const textBoxTop = yImgDraw + textBoxMarginTop / 4 - 6
     let timeframeTextColor = '#898989'
-    if (isBeingEdited) {
-      timeframeTextColor = '#888888'
-    }
+    // if (isBeingEdited) {
+    //   timeframeTextColor = '#888888'
+    // }
     let text = goal.time_frame.from_date
       ? String(moment.unix(goal.time_frame.from_date).format('MMM D, YYYY - '))
       : ''
@@ -233,8 +235,7 @@ export default function render({
   /*
   BEING EDITED INDICATOR 
   */
-  //  TODO: replace these with real focused on members list
-  drawFocusedOnAvatars(members, ctx, goalLeftX, goalTopY, goalMetaPadding, goalHeight)
+  drawFocusedOnAvatars(allMembersActiveOnGoal, ctx, goalLeftX, goalTopY, goalMetaPadding)
 
 
   if (isBeingEdited) {
@@ -257,7 +258,7 @@ export default function render({
   // }
 }
 
-function drawFocusedOnAvatars(members, ctx, goalLeftX, goalTopY, goalMetaPadding, goalHeight, strokeColor) {
+function drawFocusedOnAvatars(members, ctx, goalLeftX, goalTopY, goalMetaPadding) {
   /*
   MEMBERS
   */
@@ -277,12 +278,13 @@ function drawFocusedOnAvatars(members, ctx, goalLeftX, goalTopY, goalMetaPadding
       (index + 1) * avatarHeight - // unit
       index * (avatarSpace + 6) // spacer
 
-    // TODO: make the status circle (stroke) color dynamic  
-    drawAvatar(member, ctx, index, xAvatarDraw, yAvatarDraw, goalMetaPadding, goalHeight, "#25D0C0")
+    // make the status circle (stroke) color dynamic
+    const strokeColor =  SELF_ASSIGNED_STATUS_COLORS[member.status]
+    drawAvatar(member, ctx, xAvatarDraw, yAvatarDraw, strokeColor)
   })
 }
 
-function drawMembersAvatars(members, ctx, goalLeftX, goalTopY, goalMetaPadding, goalHeight, strokeColor) {
+function drawMembersAvatars(members, ctx, goalLeftX, goalTopY, goalMetaPadding, goalHeight) {
   /*
     MEMBERS
     */
@@ -301,14 +303,14 @@ function drawMembersAvatars(members, ctx, goalLeftX, goalTopY, goalMetaPadding, 
       index * avatarSpace
     const yAvatarDraw = goalTopY + goalHeight - goalMetaPadding - avatarHeight
 
-    drawAvatar(member, ctx, index, xAvatarDraw, yAvatarDraw, goalMetaPadding, goalHeight, "#fff")
+    drawAvatar(member, ctx, xAvatarDraw, yAvatarDraw)
   })
 }
 
 
 
 
-function drawAvatar(member, ctx, index, xAvatarDraw, yAvatarDraw, goalMetaPadding, goalHeight, strokeColor) {
+function drawAvatar(member, ctx, xAvatarDraw, yAvatarDraw, strokeColor) {
 
   // first of all, render the initials
   // if there's no image set
