@@ -39,6 +39,7 @@ function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses, goToGoal }) {
 }
 
 function HeaderLeftPanel({
+  openInviteMembersModal,
   setShowProjectSettingsOpen,
   whoami,
   projectName,
@@ -141,6 +142,7 @@ function HeaderLeftPanel({
               <MembersIndicator 
                 members={membersMinusMe}
                 presentMembers={presentMembers}
+                onClickInviteMember={openInviteMembersModal}
               />
             )}
           </Route>

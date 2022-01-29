@@ -16,13 +16,19 @@
     margin-right: -4px;
     display: flex;
 }
-.offline-members-indicator-wrapper-avatars {
+
+.members-indicator-wrapper-avatars.disconnected {
     border-radius: 50%;
     margin-right: -4px;
     display: flex;
-    filter: blur(2px);
-    /* filter is just used to test */
 }
+
+.members-indicator-wrapper-avatars.disconnected .avatar,
+.members-indicator-wrapper-avatars.disconnected .initials-avatar {
+    opacity: 0.5;
+}
+
+
 
 /* Invite Members Icon Button */
 
@@ -51,7 +57,7 @@
 
 .invite-members-button:hover {
     opacity: 0.8;
-    
+
 }
 
 .invite-members-button .icon {
@@ -61,5 +67,5 @@
 
 .invite-members-button:hover .inner-icon {
     background-color: #5f65ff;
-  
+
 }

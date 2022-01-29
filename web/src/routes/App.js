@@ -32,7 +32,7 @@ import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 // all global modals in here
 import GlobalModals from './GlobalModals'
 import { animatePanAndZoom } from '../viewport/actions'
-import { closeInviteMembersModal } from '../invite-members-modal/actions'
+import { closeInviteMembersModal, openInviteMembersModal } from '../invite-members-modal/actions'
 
 function App({
   members,
@@ -48,6 +48,7 @@ function App({
   setNavigationPreference,
   hideGuidebookHelpMessage,
   inviteMembersModalShowing,
+  openInviteMembersModal,
   hideInviteMembersModal,
   goToGoal
 }) {
@@ -96,6 +97,7 @@ function App({
               projectId,
               whoami,
               updateStatus,
+              openInviteMembersModal,
               setShowProjectSettingsOpen,
               setShowProfileEditForm,
               setShowPreferences,
@@ -118,6 +120,7 @@ function App({
             showProjectSettingsModal,
             setShowProjectSettingsOpen,
             inviteMembersModalShowing,
+            openInviteMembersModal,
             hideInviteMembersModal,
             onProfileSubmit,
           }}
@@ -145,6 +148,9 @@ function mapDispatchToProps(dispatch) {
     },
     goToGoal: (goalHeaderHash) => {
       return dispatch(animatePanAndZoom(goalHeaderHash))
+    },
+    openInviteMembersModal: (passphrase) => {
+      return dispatch(openInviteMembersModal(passphrase))
     },
     hideInviteMembersModal: () => {
       return dispatch(closeInviteMembersModal())

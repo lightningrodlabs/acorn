@@ -55,36 +55,47 @@ const MembersIndicator: React.FC<MembersIndicatorProps> = ({
 
   return (
     <div className="members-indicator-wrapper">
-      {members.map(
-        (member) =>
-          member && (
-            <div
-              key={member.headerHash}
-              className={presentMembers.find((presentMember) => presentMember === member.address) ? "members-indicator-wrapper-avatars" : "offline-members-indicator-wrapper-avatars"}
-            >
-              {/* title={`${member.first_name} ${member.last_name}`} */}
-              <Avatar
-                first_name={member.first_name}
-                last_name={member.last_name}
-                avatar_url={member.avatar_url}
-                imported={member.is_imported}
-                smallMedium
-                withWhiteBorder
-                withStatus
-                clickable
-                withTooltip
-                tooltipText={`${member.first_name} ${member.last_name}`}
-              />
-            </div>
-          )
-      )}
+      {members.map((member) => {
+        if (!member) {
+          return null
+        }
+
+        // check if the member is in the
+        // list of present members
+        // (presence being "has the project open presently")
+        const isMemberPresent = presentMembers.find(
+          (presentMember) => presentMember === member.address
+        )
+        return (
+          <div
+            key={member.headerHash}
+            className={
+              isMemberPresent
+                ? 'members-indicator-wrapper-avatars'
+                : 'members-indicator-wrapper-avatars disconnected'
+            }
+          >
+            {/* title={`${member.first_name} ${member.last_name}`} */}
+            <Avatar
+              first_name={member.first_name}
+              last_name={member.last_name}
+              avatar_url={member.avatar_url}
+              imported={member.is_imported}
+              selfAssignedStatus={member.status}
+              smallMedium
+              withWhiteBorder
+              withStatus={isMemberPresent}
+              clickable
+              withTooltip
+              tooltipText={`${member.first_name} ${member.last_name}`}
+            />
+          </div>
+        )
+      })}
       {/* Invite Members */}
       <div className="invite-members-button-wrapper">
-        <div
-          className="invite-members-button"
-          // onClick={() => setShowInviteMembersModal(project.passphrase)}
-          onClick={onClickInviteMember}
-        >
+        <div className="invite-members-button" onClick={onClickInviteMember}>
+          {/* @ts-ignore */}
           <Icon
             name="user-plus.svg"
             size="small"

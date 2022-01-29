@@ -41,10 +41,10 @@ export default function render({
   isTopPriorityGoal,
   isBeingEditedBy
 }) {
-  let x, y
+  let goalLeftX, goalTopY
   if (coordinates) {
-    x = coordinates.x
-    y = coordinates.y
+    goalLeftX = coordinates.x
+    goalTopY = coordinates.y
   } else {
     // do not render if we don't have coordinates
     // this can happen if we've just became aware of the goal
@@ -85,14 +85,14 @@ export default function render({
     )
     // url, x coordinate, y coordinate, width, height
     if (leafImg) {
-      ctx.drawImage(leafImg, x - 24, y - 24, 30, 30)
+      ctx.drawImage(leafImg, goalLeftX - 24, goalTopY - 24, 30, 30)
     }
   }
   // card background
   drawRoundCornerRectangle({
     context: ctx,
-    xPosition: x + borderWidth,
-    yPosition: y + borderWidth,
+    xPosition: goalLeftX + borderWidth,
+    yPosition: goalTopY + borderWidth,
     width: goalWidth - twiceBorder,
     height: goalHeight - twiceBorder,
     radius: cornerRadius - 1,
@@ -105,8 +105,8 @@ export default function render({
   // card border
   drawRoundCornerRectangle({
     context: ctx,
-    xPosition: x + halfBorder,
-    yPosition: y + halfBorder,
+    xPosition: goalLeftX + halfBorder,
+    yPosition: goalTopY + halfBorder,
     width: goalWidth - borderWidth,
     height: goalHeight - borderWidth,
     radius: cornerRadius,
@@ -120,9 +120,9 @@ export default function render({
   // selection outline (purple)
   if (isSelected) {
     let xStart =
-      x - selectedOutlineMargin + 1 - halfBorder - selectedOutlineWidth / 2
+      goalLeftX - selectedOutlineMargin + 1 - halfBorder - selectedOutlineWidth / 2
     let yStart =
-      y - selectedOutlineMargin + 1 - halfBorder - selectedOutlineWidth / 2
+      goalTopY - selectedOutlineMargin + 1 - halfBorder - selectedOutlineWidth / 2
     let w =
       goalWidth +
       2 * (selectedOutlineMargin - 1) +
@@ -155,8 +155,8 @@ export default function render({
   // in which case the text is being rendered in the textarea
   // html element being overlaid on top of this Goal
   if (!isEditing) {
-    const textBoxLeft = x + textBoxMarginLeft
-    const textBoxTop = y + textBoxMarginTop
+    const textBoxLeft = goalLeftX + textBoxMarginLeft
+    const textBoxTop = goalTopY + textBoxMarginTop
     const lines = getLinesForParagraphs(ctx, text, scale)
     // for space reasons
     // we limit the number of visible lines of the Goal Title to 2 or 3, 
@@ -206,8 +206,8 @@ export default function render({
     if (!img) return
     // image will draw, so calculate where to put it
     // and the text
-    const xImgDraw = x + goalMetaPadding + 4
-    const yImgDraw = y + goalHeight - calendarHeight - goalMetaPadding - 6
+    const xImgDraw = goalLeftX + goalMetaPadding + 4
+    const yImgDraw = goalTopY + goalHeight - calendarHeight - goalMetaPadding - 6
     const textBoxLeft = xImgDraw + textBoxMarginLeft - 12
     const textBoxTop = yImgDraw + textBoxMarginTop / 4 - 6
     let timeframeTextColor = '#898989'
@@ -227,6 +227,37 @@ export default function render({
     ctx.fillText(text, textBoxLeft, textBoxTop)
     ctx.restore()
   }
+
+  drawMembersAvatars(members, ctx, goalLeftX, goalTopY, goalMetaPadding, goalHeight)
+
+  /*
+  BEING EDITED INDICATOR 
+  */
+  //  TODO: replace these with real focused on members list
+  drawFocusedOnAvatars(members, ctx, goalLeftX, goalTopY, goalMetaPadding, goalHeight)
+
+
+  if (isBeingEdited) {
+    // drawRoundCornerRectangle({
+    //   context: ctx,
+    //   width: 140,
+    //   height: 25,
+    //   color: '#717171',
+    //   boxShadow: false,
+    //   xPosition: goalLeftX + goalWidth / 2 - 70,
+    //   yPosition: goalTopY + goalHeight - 12.5,
+    //   radius: 6,
+    // })
+  }
+  // if (isBeingEdited) {
+  //   let isBeingEditedText = `Being edited by ${isBeingEditedBy}`
+  //   ctx.fillStyle = '#fff'
+  //   ctx.font = '14px PlusJakartaSans-bold'
+  //   ctx.fillText(isBeingEditedText, goalLeftX + goalWidth / 2 - 60, goalTopY + goalHeight - 8)
+  // }
+}
+
+function drawFocusedOnAvatars(members, ctx, goalLeftX, goalTopY, goalMetaPadding, goalHeight, strokeColor) {
   /*
   MEMBERS
   */
@@ -234,68 +265,59 @@ export default function render({
   members.forEach((member, index) => {
     // defensive coding
     if (!member) return
+
     // adjust the x position according to the index of this member
     // since there can be many
     const xAvatarDraw =
-      x +
+      goalLeftX - goalMetaPadding
+      - 4
+
+    const yAvatarDraw =
+      goalTopY + 4 +
+      (index + 1) * avatarHeight - // unit
+      index * (avatarSpace + 6) // spacer
+
+    // TODO: make the status circle (stroke) color dynamic  
+    drawAvatar(member, ctx, index, xAvatarDraw, yAvatarDraw, goalMetaPadding, goalHeight, "#25D0C0")
+  })
+}
+
+function drawMembersAvatars(members, ctx, goalLeftX, goalTopY, goalMetaPadding, goalHeight, strokeColor) {
+  /*
+    MEMBERS
+    */
+  // draw members avatars
+  members.forEach((member, index) => {
+    // defensive coding
+    if (!member) return
+
+    // adjust the x position according to the index of this member
+    // since there can be many
+    const xAvatarDraw =
+      goalLeftX +
       goalWidth -
       goalMetaPadding -
       (index + 1) * avatarWidth -
       index * avatarSpace
-    const yAvatarDraw = y + goalHeight - goalMetaPadding - avatarHeight
+    const yAvatarDraw = goalTopY + goalHeight - goalMetaPadding - avatarHeight
 
-    // first of all, render the initials
-    // if there's no image set
-    if (!member.avatar_url) {
-      const backgroundInitialsAvatar = pickColorForString(member.first_name)
-      const initials = `${member.first_name[0].toUpperCase()}${member.last_name[0].toUpperCase()}`
-      // the background for the initial avatar:
-      ctx.save()
-      ctx.fillStyle = backgroundInitialsAvatar
-      ctx.beginPath()
-      ctx.arc(
-        xAvatarDraw + avatarWidth / 2, // x
-        yAvatarDraw + avatarHeight / 2, // y
-        avatarRadius, // radius
-        0,
-        Math.PI * 2,
-        true
-      )
-      // to be consistent with Avatar component
-      // if avatar belongs to an imported project and not connected an active memeber
-      if (member.is_imported) {
-        // set an opacity
-        ctx.globalAlpha = 0.5
-      }
-      ctx.closePath()
-      ctx.fill()
-      ctx.restore()
-      // the text for the initials avatar:
-      ctx.save()
-      // to be consistent with Avatar component
-      // if avatar belongs to an imported project and not connected an active memeber
-      if (member.is_imported) {
-        // set an opacity
-        ctx.globalAlpha = 0.5
-      }
-      ctx.fillStyle = '#FFF'
-      ctx.font = '11px PlusJakartaSans-bold'
-      ctx.fillText(initials, xAvatarDraw + 5 , yAvatarDraw + 7)
-      ctx.restore()
-      return
-    }
+    drawAvatar(member, ctx, index, xAvatarDraw, yAvatarDraw, goalMetaPadding, goalHeight, "#fff")
+  })
+}
 
-    const img = getOrSetImageForUrl(
-      member.avatar_url,
-      avatarWidth,
-      avatarHeight
-    )
-    // assume that it will be drawn the next time 'render' is called
-    // if it isn't already set
-    if (!img) return
 
-    // help from https://stackoverflow.com/questions/4276048/html5-canvas-fill-circle-with-image
+
+
+function drawAvatar(member, ctx, index, xAvatarDraw, yAvatarDraw, goalMetaPadding, goalHeight, strokeColor) {
+
+  // first of all, render the initials
+  // if there's no image set
+  if (!member.avatar_url) {
+    const backgroundInitialsAvatar = pickColorForString(member.first_name)
+    const initials = `${member.first_name[0].toUpperCase()}${member.last_name[0].toUpperCase()}`
+    // the background for the initial avatar:
     ctx.save()
+    ctx.fillStyle = backgroundInitialsAvatar
     ctx.beginPath()
     ctx.arc(
       xAvatarDraw + avatarWidth / 2, // x
@@ -305,29 +327,6 @@ export default function render({
       Math.PI * 2,
       true
     )
-    ctx.closePath()
-    ctx.clip()
-
-    // url, x coordinate, y coordinate, width, height
-    let imgHeightToDraw = avatarHeight,
-      imgWidthToDraw = avatarWidth
-    let imgXToDraw = xAvatarDraw,
-      imgYToDraw = yAvatarDraw
-    // make sure avatar image doesn't stretch on canvas
-    // if image width is more that image height (landscape)
-    if (img.width / img.height > 1) {
-      imgHeightToDraw = avatarHeight
-      imgWidthToDraw = (img.width / img.height) * avatarWidth
-      // move to the left by the amount that would center the image
-      imgXToDraw = xAvatarDraw - (imgWidthToDraw - avatarWidth) / 2
-    }
-    // if image height is more that image width (portrait)
-    else if (img.width / img.height < 1) {
-      imgWidthToDraw = avatarWidth
-      imgHeightToDraw = (img.height / img.width) * avatarHeight
-      // move upwards by the amount that would center the image
-      imgYToDraw = yAvatarDraw - (imgHeightToDraw - avatarHeight) / 2
-    }
 
     // to be consistent with Avatar component
     // if avatar belongs to an imported project and not connected an active memeber
@@ -335,35 +334,94 @@ export default function render({
       // set an opacity
       ctx.globalAlpha = 0.5
     }
-
-    ctx.drawImage(img, imgXToDraw, imgYToDraw, imgWidthToDraw, imgHeightToDraw)
-
-    ctx.beginPath()
-    ctx.arc(xAvatarDraw, yAvatarDraw, avatarRadius, 0, Math.PI * 2, true)
-    ctx.clip()
     ctx.closePath()
+    ctx.fill()
     ctx.restore()
-  })
+    // the text for the initials avatar:
+    ctx.save()
+    // to be consistent with Avatar component
+    // if avatar belongs to an imported project and not connected an active memeber
+    if (member.is_imported) {
+      // set an opacity
+      ctx.globalAlpha = 0.5
+    }
+    ctx.fillStyle = '#FFF'
+    ctx.font = '11px PlusJakartaSans-bold'
+    ctx.fillText(initials, xAvatarDraw + 5, yAvatarDraw + 7)
+    ctx.restore()
+    return
+  }
 
-  /*
-  BEING EDITED INDICATOR 
-  */
-  if (isBeingEdited) {
-    drawRoundCornerRectangle({
-      context: ctx,
-      width: 140,
-      height: 25,
-      color: '#717171',
-      boxShadow: false,
-      xPosition: x + goalWidth / 2 - 70,
-      yPosition: y + goalHeight - 12.5,
-      radius: 6,
-    })
+  const img = getOrSetImageForUrl(
+    member.avatar_url,
+    avatarWidth,
+    avatarHeight
+  )
+  // assume that it will be drawn the next time 'render' is called
+  // if it isn't already set
+  if (!img) return
+
+  // help from https://stackoverflow.com/questions/4276048/html5-canvas-fill-circle-with-image
+  ctx.save()
+  ctx.beginPath()
+  ctx.arc(
+    xAvatarDraw + avatarWidth / 2, // x
+    yAvatarDraw + avatarHeight / 2, // y
+    avatarRadius, // radius
+    0,
+    Math.PI * 2,
+    true
+  )
+  ctx.closePath()
+  ctx.clip()
+
+  // url, x coordinate, y coordinate, width, height
+  let imgHeightToDraw = avatarHeight,
+    imgWidthToDraw = avatarWidth
+  let imgXToDraw = xAvatarDraw,
+    imgYToDraw = yAvatarDraw
+  // make sure avatar image doesn't stretch on canvas
+  // if image width is more that image height (landscape)
+  if (img.width / img.height > 1) {
+    imgHeightToDraw = avatarHeight
+    imgWidthToDraw = (img.width / img.height) * avatarWidth
+    // move to the left by the amount that would center the image
+    imgXToDraw = xAvatarDraw - (imgWidthToDraw - avatarWidth) / 2
   }
-  if (isBeingEdited) {
-    let isBeingEditedText = `Being edited by ${isBeingEditedBy}`
-    ctx.fillStyle = '#fff'
-    ctx.font = '14px PlusJakartaSans-bold'
-    ctx.fillText(isBeingEditedText, x + goalWidth / 2 - 60, y + goalHeight - 8)
+  // if image height is more that image width (portrait)
+  else if (img.width / img.height < 1) {
+    imgWidthToDraw = avatarWidth
+    imgHeightToDraw = (img.height / img.width) * avatarHeight
+    // move upwards by the amount that would center the image
+    imgYToDraw = yAvatarDraw - (imgHeightToDraw - avatarHeight) / 2
   }
+
+  // to be consistent with Avatar component
+  // if avatar belongs to an imported project and not connected an active memeber
+  if (member.is_imported) {
+    // set an opacity
+    ctx.globalAlpha = 0.5
+  }
+
+  ctx.drawImage(img, imgXToDraw, imgYToDraw, imgWidthToDraw, imgHeightToDraw)
+
+  ctx.beginPath()
+  ctx.arc(xAvatarDraw, yAvatarDraw, avatarRadius, 0, Math.PI * 2, true)
+  ctx.clip()
+  ctx.closePath()
+  ctx.restore()
+
+  // circle around the avatar image
+  ctx.beginPath()
+  ctx.arc(imgXToDraw + avatarRadius, imgYToDraw + avatarRadius, avatarRadius, 0, Math.PI * 2, true)
+  ctx.fillStyle = 'transparent'
+  ctx.fill()
+  ctx.lineWidth = 3
+  ctx.strokeStyle = strokeColor ? strokeColor : '#fff'
+  ctx.stroke()
+  ctx.shadowColor = '#00000030'
+  ctx.shadowBlur = 30
+  ctx.shadowOffsetX = 0
+  ctx.shadowOffsetY = 0
+  
 }

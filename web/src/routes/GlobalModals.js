@@ -24,6 +24,7 @@ export default function GlobalModals({
   showProjectSettingsModal,
   setShowProjectSettingsOpen,
   inviteMembersModalShowing,
+  openInviteMembersModal,
   hideInviteMembersModal,
   onProfileSubmit,
 }) {
@@ -71,6 +72,7 @@ export default function GlobalModals({
         onClose={() => setShowProjectSettingsOpen(false)}
         project={activeProjectMeta}
         cellIdString={projectId}
+        openInviteMembersModal={openInviteMembersModal}
       />
       {/* Guidebook */}
       <Modal

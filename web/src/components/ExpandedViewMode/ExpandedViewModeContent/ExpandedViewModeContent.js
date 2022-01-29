@@ -218,7 +218,7 @@ function Details({
   const editingDescriptionPeer = editingPeers.find((peerInfo) => !peerInfo.goalBeingEdited.isTitle)
   const titleEditor = editingTitlePeer ? editingTitlePeer.profileInfo : {}
   const descriptionEditor = editingDescriptionPeer ? editingDescriptionPeer.profileInfo : {}
-  
+
 
   return (
     <>
@@ -243,6 +243,7 @@ function Details({
               <div className="expanded-view-title-editing-placeholder">
                 <div className="expanded-view-title">
                   <TextareaAutosize
+                    disabled={editingTitlePeer}
                     value={content}
                     onBlur={onTitleBlur}
                     onChange={handleOnChangeTitle}
@@ -289,6 +290,7 @@ function Details({
                       medium
                       withWhiteBorder
                       withStatus
+                      selfAssignedStatus={squirrel.status}
                       clickable
                       onClick={() =>
                         setSquirrelInfoPopup(squirrelInfoPopup ? null : squirrel)
@@ -353,6 +355,7 @@ function Details({
               <div className="expanded-view-description-editing-placeholder">
                 <div className="expanded-view-description">
                   <TextareaAutosize
+                    disabled={editingDescriptionPeer}
                     placeholder="Add description here"
                     value={description}
                     onBlur={onDescriptionBlur}
