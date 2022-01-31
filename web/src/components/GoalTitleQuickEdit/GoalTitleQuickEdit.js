@@ -10,6 +10,7 @@ import { closeGoalForm, updateContent } from '../../goal-form/actions'
 
 import './GoalTitleQuickEdit.css'
 import { firstZoomThreshold, fontSize, fontSizeExtraLarge, fontSizeLarge, lineHeightMultiplier, secondZoomThreshold } from '../../drawing/dimensions'
+import { startTitleEdit, endTitleEdit } from '../../goal-editing/actions'
 
 // if editAddress is present (as a Goal address) it means we are currently EDITING that Goal
 function GoalTitleQuickEdit({
@@ -47,6 +48,8 @@ function GoalTitleQuickEdit({
   createGoalWithEdge,
   updateGoal,
   closeGoalForm,
+  startTitleEdit,
+  endTitleEdit,
 }) {
 
   
@@ -67,6 +70,10 @@ function GoalTitleQuickEdit({
   const handleFocus = (event) => {
     // select the text
     event.target.select()
+    // only send an edit signal if editing a goal, not creating one
+    if (editAddress) {
+      startTitleEdit(editAddress)
+    }
   }
   // when the input leaves focus (not focused on editing title)
   const handleBlur = (event) => {
@@ -163,6 +170,7 @@ function GoalTitleQuickEdit({
       },
       editAddress
     )
+    endTitleEdit(editAddress)
   }
 
   // the default
@@ -323,6 +331,12 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
     closeGoalForm: () => {
       dispatch(closeGoalForm())
+    },
+    startTitleEdit: goalAddress => {
+      return dispatch(startTitleEdit(goalAddress))
+    },
+    endTitleEdit: goalAddress => {
+      return dispatch(endTitleEdit(goalAddress))
     },
   }
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import './Icon.css'
+import Tooltip from '../Tooltip/Tooltip'
 
 function Icon ({
   name,
@@ -28,10 +29,15 @@ function Icon ({
           maskImage: `url(img/${name})`,
           WebkitMaskImage: `url(img/${name})`,
         }}></div>
-      {withTooltip && <div className='icon-tooltip'>{`${tooltipText}`}</div>}
+        {withTooltip && <Tooltip text={tooltipText} />}
+      {/* {withTooltip && <div className='tooltip-wrapper'>{`${tooltipText}`}</div>} */}
       {withTooltipTop && (
-        <div className='icon-tooltip top'>{`${tooltipText}`}</div>
+        <Tooltip top text={tooltipText} />
       )}
+      
+      {/* {withTooltipTop && (
+        <div className='tooltip-wrapper top'>{`${tooltipText}`}</div>
+      )} */}
     </div>
   )
 }

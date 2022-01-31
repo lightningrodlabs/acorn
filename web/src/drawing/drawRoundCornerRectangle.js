@@ -25,7 +25,7 @@ export default function drawRoundCornerRectangle({
   // goal card box shadow
   if (boxShadow) {
     context.shadowColor = '#00000030'
-    context.shadowBlur = 15
+    context.shadowBlur = 30
     context.shadowOffsetX = 0
     context.shadowOffsetY = 0
     if (topPriorityGoalGlow) {

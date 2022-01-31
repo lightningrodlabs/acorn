@@ -8,6 +8,7 @@ import HeaderMiddlePanel from './HeaderMiddlePanel'
 
 function Header({
   whoami,
+  openInviteMembersModal,
   setShowProjectSettingsOpen,
   setShowProfileEditForm,
   setShowPreferences,
@@ -18,6 +19,7 @@ function Header({
   hideGuidebookHelpMessage,
   goToGoal,
   members,
+  presentMembers,
 }) {
   const [isExportOpen, setIsExportOpen] = useState(false)
 
@@ -53,6 +55,12 @@ function Header({
     setShowPreferences(true)
   }
 
+  const openInviteMembersModalForActive = () => {
+    if (project) {
+      openInviteMembersModal(project.passphrase)
+    }
+  }
+
   return (
     <div className="header-wrapper" ref={ref}>
       {/* <UpdateBar
@@ -63,7 +71,9 @@ function Header({
       <div className="header">
         <HeaderLeftPanel
           members={members}
+          presentMembers={presentMembers}
           whoami={whoami}
+          openInviteMembersModal={openInviteMembersModalForActive}
           setShowProjectSettingsOpen={setShowProjectSettingsOpen}
           projectName={project.name}
           isExportOpen={isExportOpen}

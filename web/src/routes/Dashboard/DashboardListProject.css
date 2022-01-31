@@ -272,7 +272,7 @@
   margin-right: -6px;
 }
 
-.dashboard-list-project-member-list .avatar-wrapper.with-white-border{
+.dashboard-list-project-member-list .avatar-wrapper.with-border.white{
   border: 3px solid #fbf9f7;
   margin-left: -6px;
   border-radius: 50%;

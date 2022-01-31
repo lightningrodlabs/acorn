@@ -2,6 +2,7 @@ import React from 'react'
 import './Avatar.css'
 import { pickColorForString } from '../../styles'
 import { StatusCssColorClass, Status } from '../Header/Status'
+import Tooltip from '../Tooltip/Tooltip'
 
 interface AvatarProps {
   first_name: string
@@ -18,7 +19,10 @@ interface AvatarProps {
   imported: boolean
   withStatus?: boolean
   withWhiteBorder?: boolean
+  withStatusBorder?: boolean
   selfAssignedStatus?: string
+  withTooltip?: boolean
+  tooltipText?: string
 }
 
 function Avatar({
@@ -36,18 +40,24 @@ function Avatar({
   imported,
   withStatus,
   withWhiteBorder,
-  selfAssignedStatus
+  withStatusBorder,
+  selfAssignedStatus,
+  withTooltip,
+  tooltipText,
 }: AvatarProps) {
   let classes = []
   if (highlighted) classes.push('highlighted')
+  // Avatar Size Options
   if (small) classes.push('small')
   else if (smallMedium) classes.push('small-medium')
   else if (medium) classes.push('medium')
   else if (mediumLarge) classes.push('medium-large')
   else if (large) classes.push('large')
+  // Avatar other optional properties
   if (clickable) classes.push('clickable')
   if (imported) classes.push('imported')
   if (withStatus) classes.push('with-status')
+  // if (withTooltip) classes.push('with-tooltip')
 
   if (!avatar_url) {
     const backgroundInitialsAvatar = pickColorForString(first_name)
@@ -59,9 +69,10 @@ function Avatar({
     classes.push('initials-avatar')
     return (
       <div
-        className={`avatar-wrapper ${
-          withWhiteBorder ? 'with-white-border' : ''
-        } ${medium ? 'medium' : ''}
+        className={`avatar-wrapper 
+        ${withWhiteBorder ? 'with-border white' : ''} 
+        ${withStatusBorder ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}` : ''} 
+        ${medium ? 'medium' : ''}
         ${smallMedium ? 'small-medium' : ''}`}
       >
         <div className={classes.join(' ')} onClick={onClick} style={style}>
@@ -71,9 +82,12 @@ function Avatar({
         {/* TODO: Current status circle color under avatar*/}
         {withStatus && (
           <div className="status-circle-wrapper">
-            <div className={`status-circle status-online ${StatusCssColorClass[selfAssignedStatus]}`}></div>
+            <div
+              className={`status-circle ${StatusCssColorClass[selfAssignedStatus]}`}
+            ></div>
           </div>
         )}
+        {withTooltip && <Tooltip text={`${first_name} ${last_name}`} />}
       </div>
     )
   }
@@ -81,9 +95,10 @@ function Avatar({
   classes.push('avatar')
   return (
     <div
-      className={`avatar-wrapper ${
-        withWhiteBorder ? 'with-white-border' : ''
-      } ${medium ? 'medium' : ''}
+      className={`avatar-wrapper 
+      ${withWhiteBorder ? 'with-border white' : ''} 
+      ${withStatusBorder ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}` : ''}
+      ${medium ? 'medium' : ''}
       ${smallMedium ? 'small-medium' : ''}`}
     >
       <img src={avatar_url} className={classes.join(' ')} onClick={onClick} />
@@ -91,10 +106,11 @@ function Avatar({
       {withStatus && (
         <div className="status-circle-wrapper">
           <div
-            className={`status-circle status-online ${StatusCssColorClass[selfAssignedStatus]}`}
+            className={`status-circle ${StatusCssColorClass[selfAssignedStatus]}`}
           ></div>
         </div>
       )}
+      {withTooltip && <Tooltip text={tooltipText} />}
     </div>
   )
 }

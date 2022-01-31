@@ -215,7 +215,7 @@ function HeaderRightPanel({
                       <SearchResultItem
                         text={goal.content}
                         name="title.svg"
-                        onExpandClick={openExpandedView}
+                        onExpandClick={openExpandedView} 
                         panAndZoom={animatePanAndZoom}
                         goalAddress={goal.headerHash}
                       />

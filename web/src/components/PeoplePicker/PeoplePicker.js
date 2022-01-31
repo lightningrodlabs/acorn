@@ -86,6 +86,7 @@ function PeoplePicker({
                   imported={person.is_imported}
                   medium
                   withStatus
+                  selfAssignedStatus={person.status}
                 />
                 <div className="person-nameANDhandle">
                   <span className="person-name">

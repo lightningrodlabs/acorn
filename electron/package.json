@@ -1,6 +1,6 @@
 {
   "name": "acorn",
-  "version": "0.5.9-alpha",
+  "version": "0.6.0-alpha",
   "description": "Create the future",
   "main": "dist/index.js",
   "scripts": {

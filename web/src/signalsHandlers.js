@@ -18,6 +18,7 @@ import { setMember } from './projects/members/actions'
 import { fetchAgents, setAgent } from './agents/actions'
 import { cellIdToString } from 'connoropolous-hc-redux-middleware'
 import { triggerUpdateLayout } from './layout/actions'
+import { removePeerState, updatePeerState } from './realtime-info/actions'
 
 // We directly use the 'success' type, since these actions
 // have already succeeded on another machine, and we're just reflecting them locally
@@ -61,7 +62,9 @@ const SignalType = {
   Member: 'member',
   ProjectMeta: 'project_meta',
 }
-
+const nonEntrySignalTypes = {
+  RealtimeInfo: 'RealtimeInfo'
+}
 const crudActionSets = {
   Edge: edgeActions,
   Goal: goalActions,
@@ -105,74 +108,98 @@ const pickCrudAction = (entryTypeName, actionType) => {
   return actionSet[actionName]
 }
 
-export default (store) => (signal) => {
-  const { cellId } = signal.data
-  let { payload } = signal.data
-  // TODO: update holochain-conductor-api to latest
-  // which should deserialize this automatically
-  payload = msgpack.decode(payload)
+export default (store) => 
+{
 
-  // switch to CamelCasing if defined
-  const crudType = crudTypes[payload.entryType]
-  if (crudType) {
-    const action = pickCrudAction(crudType, payload.action)
-    store.dispatch(createSignalAction(action, cellId, payload.data))
-    // in case of the special situation with archiving edges
-    // where the layout reflow doesn't happen automatically
-    // we have to manually trigger it to do so
-    // the other cases are covered in src/layout/middleware.js ->
-    // isOneOfLayoutAffectingActions()
-    if (action.success().type === edgeActions.archiveEdge.success().type) {
-      store.dispatch(triggerUpdateLayout())
+  // keep track of timer set by setTimeout for each peer sending signals to you
+  // needs to be in this scope so that it is accessible each time a signal is received
+  const timerIds = {}
+  return (signal) => {
+    const { cellId } = signal.data
+    let { payload } = signal.data
+    let waitForNextSignal = 12000
+    // TODO: update holochain-conductor-api to latest
+    // which should deserialize this automatically
+    payload = msgpack.decode(payload)
+  
+    if (payload.signalType === nonEntrySignalTypes.RealtimeInfo) {
+      console.log('received realtime signal:', payload.data)
+      // set timeout, and end any existing timeouts
+      if (timerIds[payload.data.agentPubKey]) {
+        clearTimeout(timerIds[payload.data.agentPubKey])
+      }
+      timerIds[payload.data.agentPubKey] = setTimeout(() => store.dispatch(removePeerState(payload.data.agentPubKey)), waitForNextSignal)
+      triggerRealtimeInfoAction(store, payload.data)
+      return
     }
-    // we captured the action for this signal, so early exit
-    return
+  
+    const crudType = crudTypes[payload.data.entryType]
+    if (crudType) {
+      const action = pickCrudAction(crudType, payload.data.action)
+      store.dispatch(createSignalAction(action, cellId, payload.data.data))
+      // in case of the special situation with archiving edges
+      // where the layout reflow doesn't happen automatically
+      // we have to manually trigger it to do so
+      // the other cases are covered in src/layout/middleware.js ->
+      if (action.success().type === edgeActions.archiveEdge.success().type) {
+        store.dispatch(triggerUpdateLayout())
+      }
+    }
+    else {
+      // otherwise use non-crud actions
+      switch (payload.data.entryType) {
+        /*
+          PROFILES Zome
+        */
+        case SignalType.Agent:
+          // this one is different than the rest on purpose
+          // there's no "local action" equivalent
+          store.dispatch(setAgent(payload.data.data))
+          break
+        /* 
+          PROJECTS Zomes
+        */
+        case SignalType.Member:
+          const stateCheck = store.getState()
+          // check if this member is in our list of agents whose
+          // profiles we already have, if not, then we should
+          // refetch the agents list
+          // TODO: re-enable this when there's a straightforward way to have the CellId
+          // for the Profiles Cell here, not the Projects CellId which it currently has access to. 
+          // This was the source of a breaking bug
+          // if (!stateCheck.agents[payload.data.headerHash]) {
+          //   store.dispatch(
+          //     fetchAgents.create({
+          //       cellIdString: cellIdToString(cellId),
+          //       payload: null,
+          //     })
+          //   )
+          // }
+          // this one is different than the rest on purpose
+          // there's no "local action" equivalent
+          store.dispatch(setMember(cellIdToString(cellId), payload.data.data))
+          break
+        case SignalType.GoalWithEdge:
+          store.dispatch(
+            createSignalAction(goalActions.createGoalWithEdge, cellId, payload.data.data)
+          )
+          break
+        case SignalType.ArchiveGoalFully:
+          store.dispatch(
+            createSignalAction(goalActions.archiveGoalFully, cellId, payload.data.data)
+          )
+          break
+        default:
+          console.log('unrecognised entryType received: ', payload.data.entryType)
+      }
+    }
   }
-
-  // otherwise use non-crud actions
-  switch (payload.entryType) {
-    /*
-      PROFILES Zome
-    */
-    case SignalType.Agent:
-      // this one is different than the rest on purpose
-      // there's no "local action" equivalent
-      store.dispatch(setAgent(payload.data))
-      break
-    /* 
-      PROJECTS Zomes
-    */
-    case SignalType.Member:
-      const stateCheck = store.getState()
-      // check if this member is in our list of agents whose
-      // profiles we already have, if not, then we should
-      // refetch the agents list
-      // TODO: re-enable this when there's a straightforward way to have the CellId
-      // for the Profiles Cell here, not the Projects CellId which it currently has access to. 
-      // This was the source of a breaking bug
-      // if (!stateCheck.agents[payload.data.headerHash]) {
-      //   store.dispatch(
-      //     fetchAgents.create({
-      //       cellIdString: cellIdToString(cellId),
-      //       payload: null,
-      //     })
-      //   )
-      // }
-      // this one is different than the rest on purpose
-      // there's no "local action" equivalent
-      store.dispatch(setMember(cellIdToString(cellId), payload.data))
-      break
-    case SignalType.GoalWithEdge:
-      store.dispatch(
-        createSignalAction(goalActions.createGoalWithEdge, cellId, payload.data)
-      )
-      break
-    case SignalType.ArchiveGoalFully:
-      store.dispatch(
-        createSignalAction(goalActions.archiveGoalFully, cellId, payload.data)
-      )
-      break
-    default:
-      console.log('unrecognised entryType received: ', payload.entryType)
+}
+function triggerRealtimeInfoAction(store, payload) {
+  if (payload.projectId.length === 0) {
+    store.dispatch(removePeerState(payload.agentPubKey))
+  }
+  else {
+    store.dispatch(updatePeerState(payload))
   }
 }

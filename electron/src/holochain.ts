@@ -2,6 +2,11 @@ import * as path from 'path'
 import { app } from 'electron'
 import { HolochainRunnerOptions, StateSignal, PathOptions } from 'electron-holochain'
 
+// see the DEVELOPERS.md about incrementing
+// these values
+const DATABASES_VERSION_NUMBER = '1'
+const KEYSTORE_VERSION_NUMBER = '1'
+
 // these messages get seen on the splash page
 export enum StateSignalText {
   IsFirstRun = 'Welcome to Acorn...',
@@ -76,11 +81,11 @@ const devOptions: HolochainRunnerOptions = {
 }
 const prodOptions: HolochainRunnerOptions = {
   dnaPath: profilesDnaPath, // preload
-  datastorePath: path.join(app.getPath('userData'), 'databases-0-5-9-alpha'),
+  datastorePath: path.join(app.getPath('userData'), `databases-${DATABASES_VERSION_NUMBER}`),
   appId: MAIN_APP_ID,
   appWsPort: 8889,
   adminWsPort: 1235,
-  keystorePath: path.join(app.getPath('userData'), 'keystore-0-5-9-alpha'),
+  keystorePath: path.join(app.getPath('userData'), `keystore-${KEYSTORE_VERSION_NUMBER}`),
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 

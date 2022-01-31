@@ -5,7 +5,7 @@
 }
 
 .expanded-view-details-wrapper {
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   max-height: 100%;
@@ -13,11 +13,15 @@
 
 /* title */
 
+.expanded-view-title-wrapper {
+  margin-bottom: 16px;
+  position: relative;
+}
+
 .expanded-view-title {
-  margin-bottom: 20px;
   font-size: 22px;
   color: #4d4d4d;
-  padding: 4px 0;
+  padding: 16px 4px;
 }
 
 .expanded-view-title input {
@@ -40,21 +44,19 @@
   padding: 0;
   font-family: 'PlusJakartaSans-bold', Helvetica, Sans-Serif;
   resize: none;
-}
-
-/* tags */
-
-.expanded-view-tags {
-  padding-bottom: 20px;
+  background: transparent;
 }
 
 /* description */
 
+.expanded-view-description-wrapper {
+  position: relative;
+  margin-top: 16px;
+}
+
 .expanded-view-description {
-  /* border: 1px solid #f9f9f9;
-  background-color: #f9f9f9; */
   border-radius: 12px;
-  padding: 12px 2px;
+  padding: 16px 4px;
   color: #a3a3a3;
   margin-bottom: 16px;
   flex: 1;
@@ -71,7 +73,57 @@
   resize: none;
   font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
   font-size: 14px;
-  /* background-color: #f9f9f9; */
+  background-color: transparent;
+}
+
+/* if title or description is being edited */
+
+.member-editing-title-wrapper,
+.member-editing-description-wrapper {
+  position: absolute;
+  left: -46px;
+  top: 12px;
+}
+
+.expanded-view-title-editing-placeholder,
+.expanded-view-description-editing-placeholder {
+  background-color: #F8F6F2;
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  z-index: 2;
+  opacity: 0.6;
+}
+
+.expanded-view-title-editing-placeholder::before,
+.expanded-view-description-editing-placeholder::before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: -200px;
+  top: 0;
+  height: 100%;
+  width: 300px;
+  background: linear-gradient(to right, transparent 0%, #BAA692 50%, transparent 100%);
+  animation: editing 2s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+  opacity: 0.2;
+}
+
+@keyframes editing {
+  from {
+    left: -300px;
+  }
+
+  to {
+    left: 100%;
+  }
+}
+
+/* tags */
+
+.expanded-view-tags {
+  padding-bottom: 20px;
 }
 
 /* squirrels & timeframe wrapper */
@@ -112,7 +164,7 @@
   display: flex;
 }
 
-.expanded-view-squirrel-wrapper .avatar-wrapper.with-white-border.medium {
+.expanded-view-squirrel-wrapper .avatar-wrapper.with-border.white.medium {
   margin-left: -6px;
 }
 

@@ -59,14 +59,52 @@ To build:
 
 - `npm run build`
 
-> Macos: You will need to have set
-> APPLE_ID_EMAIL
-> and
-> APPLE_ID_PASSWORD
-> as environment variables, in addition to having a certificate for the Apple Developer
-> account installed on the system you are building on.
+The packaged executables can be found in `frontend/electron/out`.
 
-You will find the packaged executables in `electron/out`.
+In order to get cross-platform builds, just tag your repository like `v0.0.1` and push the tag to Github. CI will automatically start running a build, under the "Release" action.
+
+> Macos: You will need to have set the following environment variables as repository secrets:
+> - APPLE_CERTIFICATE_BASE64
+> - APPLE_CERTIFICATE_PASS
+> - APPLE_DEV_IDENTITY
+> - APPLE_ID_EMAIL
+> - APPLE_ID_PASSWORD
+> 
+> The first two should be set as equivalents of `MACOS_CERTIFICATE` = `APPLE_CERTIFICATE_BASE64` and `MACOS_CERTIFICATE_PWD` = `APPLE_CERTIFICATE_PASS` as found in the following article, which also provides other instruction regarding this: https://localazy.com/blog/how-to-automatically-sign-macos-apps-using-github-actions
+
+
+### Versioning
+
+Each version of the app will either change, or not change, the paths to the user data folders in use by the application. 
+
+The user data will be located under `mova` in the platform specific appData folder, as specified by `appData` here: https://www.electronjs.org/docs/latest/api/app#appgetpathname
+
+It is then in a specific sub-folder that relates to one of two types of data: 
+- source chain and DHT -> `databases-${DATABASES_VERSION_NUMBER}`
+- private keys -> `keystore-${KEYSTORE_VERSION_NUMBER}`
+
+DATABASES_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER are defined in `frontend/electron/src/holochain.ts` and can be modified as needed in order to jump to new versions of holochain, or a new app DNA.
+
+You can tweak DATABASES_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER independently. 
+
+DATABASES_VERSION_NUMBER should be incremented when a new DNA is in use. It will cause users to have to re-create profiles and re-instate data they've previously added.
+
+KEYSTORE_VERSION_NUMBER should be incremented if the version of lair-keystore changes, and has a new key format. Or if you otherwise want users to have to switch and generate new keys.
+
+
+## Dependency Versions Information
+
+This project is currently using:
+
+https://github.com/holochain/holochain/releases/tag/holochain-0.0.115
+
+https://github.com/Sprillow/holochain-runner/releases/tag/v0.0.30
+
+Lair Keystore Revision [v0.0.9 Nov 4, 2021](https://github.com/holochain/lair/releases/tag/v0.0.9)
+
+https://docs.rs/hdk/0.0.115/hdk/index.html
+
+and electron version 12 [https://www.electronjs.org/](https://www.electronjs.org/)
 
 ## Technical Overview
 
@@ -75,7 +113,7 @@ Acorn functions at a high level according to these patterns:
 - an 'electron' wrapper is responsible for
   - creating a 'BrowserWindow' application window through which users interact with the HTML/JS/CSS GUI of Acorn
   - starting up and stopping background processes for Holochain related services, including the main holochain engine, and the holochain "keystore" which handles cryptographic signing functions. It is necessary for these background processes to be running while the application is open, and for them to stop when it is closed/quit, because the GUI must talk to these components in order for it to perform any of its primary functions such as reading and writing data.
-- The `holochain` binary shipped by the holochain organization is **not** directly bundled, and executed. An alternative approach is taken for the needs of Acorn. This alternative approach involves the compilation of a custom binary to run the core Holochain engine, the "conductor", which is achieved by importing shared code from the `holochain` binary source code. This is found in the [conductor](./conductor) folder. It relies on a general library that was developed with Acorn in mind, the [embedded-holochain-runner](https://github.com/Sprillow/embedded-holochain-runner/). This strategy was taken to optimize performance and cut down on cross-language (js <-> rust) complexity. Due to this architecture, the electron js code does not need to call any functions of the `admin websocket` typically exposed by `holochain` to manage the Conductor state. This also improves code development simplicity, as it minimizes the surface area/complexity of the electron side code, and keeps it "thin".
+- The `holochain` binary shipped by the holochain organization is **not** directly bundled, and executed. An alternative approach is taken for the needs of Acorn. This alternative approach involves the compilation of a custom binary to run the core Holochain engine, the "conductor", which is achieved by importing shared code from the `holochain` binary source code. This is found in the [conductor](./conductor) folder. It relies on a general library that was developed with Acorn in mind, the [holochain-runner](https://github.com/Sprillow/holochain-runner/). This strategy was taken to optimize performance and cut down on cross-language (js <-> rust) complexity. Due to this architecture, the electron js code does not need to call any functions of the `admin websocket` typically exposed by `holochain` to manage the Conductor state. This also improves code development simplicity, as it minimizes the surface area/complexity of the electron side code, and keeps it "thin".
   - This custom binary also helps the GUI / electron application know about the status of the Conductor. It does this by subscribing to events emitted from the `embedded-holochain-runner`, and forwarding those events to the GUI via electron's IPC messages.
 - Within the application, here is how Acorn utilizes Holochain:
   - A new user will need a new private/public key pair to represent their unique identity within Acorn. This will be generated automatically on the first launch of Acorn. Acorn will look in the following folder on the users computer to determine whether this is the first launch or a re-launch (`-X-Y-Z` would be replaced by version numbers such as for `v0.5.1` it would be `-0-5-1`):

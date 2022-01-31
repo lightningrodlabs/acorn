@@ -1,6 +1,6 @@
 import React from 'react'
 import Avatar from '../Avatar/Avatar'
-
+import Icon from '../Icon/Icon'
 
 import './MembersIndicator.css'
 
@@ -9,9 +9,15 @@ export type MembersIndicatorProps = {
   // TODO: update it when have added a Profile
   // type definition
   members: Array<any>
+  presentMembers: Array<any>
+  onClickInviteMember: () => void
 }
 
-const MembersIndicator: React.FC<MembersIndicatorProps> = ({members}) => {
+const MembersIndicator: React.FC<MembersIndicatorProps> = ({
+  members,
+  presentMembers,
+  onClickInviteMember,
+}) => {
   //   Don't show an avatar if it is imported
 
   // const members = [
@@ -49,31 +55,56 @@ const MembersIndicator: React.FC<MembersIndicatorProps> = ({members}) => {
 
   return (
     <div className="members-indicator-wrapper">
-      
-      {members.map(
-        (member) =>
-          member && (
-            <div
-              key={member.headerHash}
-              className="members-indicator-wrapper-avatars"
-              title={`${member.first_name} ${member.last_name}`}
-            >
-              {/* <div className="members-indicator-avatar-circle"> */}
-                <Avatar
-                  first_name={member.first_name}
-                  last_name={member.last_name}
-                  avatar_url={member.avatar_url}
-                  imported={member.is_imported}
-                  smallMedium
-                  withWhiteBorder
-                  withStatus
-                  clickable
-                />
-                
-              </div>
-            // </div>
-          )
-      )}
+      {members.map((member) => {
+        if (!member) {
+          return null
+        }
+
+        // check if the member is in the
+        // list of present members
+        // (presence being "has the project open presently")
+        const isMemberPresent = presentMembers.find(
+          (presentMember) => presentMember === member.address
+        )
+        return (
+          <div
+            key={member.headerHash}
+            className={
+              isMemberPresent
+                ? 'members-indicator-wrapper-avatars'
+                : 'members-indicator-wrapper-avatars disconnected'
+            }
+          >
+            {/* title={`${member.first_name} ${member.last_name}`} */}
+            <Avatar
+              first_name={member.first_name}
+              last_name={member.last_name}
+              avatar_url={member.avatar_url}
+              imported={member.is_imported}
+              selfAssignedStatus={member.status}
+              smallMedium
+              withWhiteBorder
+              withStatus={isMemberPresent}
+              clickable
+              withTooltip
+              tooltipText={`${member.first_name} ${member.last_name}`}
+            />
+          </div>
+        )
+      })}
+      {/* Invite Members */}
+      <div className="invite-members-button-wrapper">
+        <div className="invite-members-button" onClick={onClickInviteMember}>
+          {/* @ts-ignore */}
+          <Icon
+            name="user-plus.svg"
+            size="small"
+            className="dark-grey"
+            withTooltip
+            tooltipText="Invite Members"
+          />
+        </div>
+      </div>
     </div>
   )
 }
