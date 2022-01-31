@@ -1,11 +1,15 @@
 .expanded-view-nav-bar {
-  height: 39px;
+  height: 42px;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  padding: 5px 10px 0 16px;
-  margin-bottom: -2px;
+  /* justify-content: space-between; */
+  margin: 5px 10px 0 16px;
+  /* margin-bottom: -2px; */
+  border-radius: 12px;
   z-index: 1;
+  background-color: #f9f9f9;
+  box-shadow: 0px 0px 14px #00000020;
+
 }
 
 .expanded-view-nav-bar-item {
@@ -17,11 +21,13 @@
   font-weight: normal;
   cursor: pointer;
   align-items: center;
-  background-color: #f9f9f9;
-  padding: 4px 16px;
-  border-radius: 23px;
-  margin-right: 11px;
-  transition: all 0.3s ease;
+  /* background-color: #f9f9f9; */
+  padding: 6px 0;
+  /* border-radius: 23px; */
+  margin-right: 16px;
+  margin-left: 8px;
+  transition: color 0.3s ease;
+  /* max-width: 132px; */
 }
 
 .expanded-view-nav-bar-item.feature-in-development {
@@ -35,25 +41,29 @@
 /* NavBar Item Hover State */
 
 .expanded-view-nav-bar-item:hover {
-  background-color: #efefef;
-  box-shadow: 0px 0px 14px #0000000f;
-  
+  color: #222222;
+  /* background-color: #efefef;
+  box-shadow: 0px 0px 14px #0000000f; */
+
 }
 
 .expanded-view-nav-bar-item:hover .icon:not(.not-hoverable) .inner-icon {
   transition: all 0.3s;
+  background-color: #222222;
 }
 
 /* NavBar Item Active State */
 
 .expanded-view-nav-bar-item.active-tab {
-  color: #5f65ff;
-  background-color: #efefef;
-  box-shadow: 0px 0px 14px #0000000f;
+  color: #222222;
+  /* background-color: #efefef; */
+  /* box-shadow: 0px 0px 14px #0000000f; */
+  /* border-bottom: 3px solid #222222; */
 }
 
 .expanded-view-nav-bar-item.active-tab .icon:not(.not-hoverable) .inner-icon {
-  background-color: #5f65ff;
+  /* background-color: #5f65ff; */
+  background-color: #222222;
 }
 
 .expanded-view-nav-bar-item .icon.very-small.grey {

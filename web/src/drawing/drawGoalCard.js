@@ -113,7 +113,7 @@ export default function render({
     radius: cornerRadius,
     color: borderColor,
     stroke: true,
-    strokeWidth: '3',
+    strokeWidth: '4',
     boxShadow: false,
     topPriorityGoalGlow: false
   })
@@ -201,7 +201,7 @@ export default function render({
   */
   if (goal.time_frame) {
     const calendarWidth = 12,
-      calendarHeight = 12
+      calendarHeight = 14
     const img = getOrSetImageForUrl('', calendarWidth, calendarHeight)
     // wait for the image to load before
     // trying to draw
@@ -415,13 +415,13 @@ function drawAvatar(member, ctx, xAvatarDraw, yAvatarDraw, strokeColor) {
 
   // circle around the avatar image
   ctx.beginPath()
-  ctx.arc(imgXToDraw + avatarRadius, imgYToDraw + avatarRadius, avatarRadius, 0, Math.PI * 2, true)
+  ctx.arc(xAvatarDraw + avatarRadius, yAvatarDraw + avatarRadius, avatarRadius, 0, Math.PI * 2, true)
   ctx.fillStyle = 'transparent'
   ctx.fill()
   ctx.lineWidth = 3
   ctx.strokeStyle = strokeColor ? strokeColor : '#fff'
   ctx.stroke()
-  ctx.shadowColor = '#00000030'
+  ctx.shadowColor = '#00000020'
   ctx.shadowBlur = 30
   ctx.shadowOffsetX = 0
   ctx.shadowOffsetY = 0

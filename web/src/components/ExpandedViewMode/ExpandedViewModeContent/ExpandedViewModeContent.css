@@ -5,7 +5,7 @@
 }
 
 .expanded-view-details-wrapper {
-  padding: 24px;
+  padding: 12px 24px 24px 24px;
   display: flex;
   flex-direction: column;
   max-height: 100%;
@@ -40,7 +40,7 @@
   border: none;
   color: #4d4d4d;
   font-size: 18px;
-  line-height: 24px;
+  line-height: 1.45;
   padding: 0;
   font-family: 'PlusJakartaSans-bold', Helvetica, Sans-Serif;
   resize: none;
@@ -73,6 +73,7 @@
   resize: none;
   font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
   font-size: 14px;
+  line-height: 1.45;
   background-color: transparent;
 }
 

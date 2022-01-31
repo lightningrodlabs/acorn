@@ -313,6 +313,8 @@ function Details({
                   name="plus.svg"
                   size="small"
                   onClick={() => setEditSquirrels(!editSquirrels)}
+                  withTooltip
+                  tooltipText="Add Squirrels"
                 />
                 {editSquirrels && (
                   <PeoplePicker

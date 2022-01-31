@@ -72,7 +72,7 @@ function NestedTreeGoal({ goal, level, filterText, projectMeta, updateProjectMet
                 status={goal.status}
               />
             )}
-            <div className="indented-view-goal-text">{goal.content}</div>
+            <div className="indented-view-goal-text" title={goal.content}>{goal.content}</div>
             {showMakeTopPriorityGoal && <div className="indented-view-goal-make-top-priority" onClick={makeTopPriority}>
               <Icon
                 name='plus.svg'
