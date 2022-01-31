@@ -230,6 +230,40 @@ export default function render({
     ctx.restore()
   }
 
+  // TODO: made unread comment indicator dynamic
+  /*
+  UNREAD COMMENT INDICATOR
+  */
+
+  if (scale > secondZoomThreshold) {
+    ctx.beginPath()
+  ctx.arc(goalLeftX + 4, goalTopY + goalHeight - 4, 4, 0, Math.PI * 2, true)
+  ctx.fillStyle = 'transparent'
+  ctx.fill()
+  ctx.lineWidth = 8
+  ctx.strokeStyle = '#5f65ff'
+  ctx.stroke()
+  }
+  if (scale < secondZoomThreshold) {
+    ctx.beginPath()
+    ctx.arc(goalLeftX + 4, goalTopY + goalHeight - 4, 8, 0, Math.PI * 2, true)
+    ctx.fillStyle = 'transparent'
+    ctx.fill()
+    ctx.lineWidth = 16
+    ctx.strokeStyle = '#5f65ff'
+    ctx.stroke()
+  } else if (scale < firstZoomThreshold) {
+    ctx.beginPath()
+    ctx.arc(goalLeftX + 4, goalTopY + goalHeight - 4, 6, 0, Math.PI * 2, true)
+    ctx.fillStyle = 'transparent'
+    ctx.fill()
+    ctx.lineWidth = 12
+    ctx.strokeStyle = '#5f65ff'
+    ctx.stroke()
+  }
+
+
+
   drawMembersAvatars(members, ctx, goalLeftX, goalTopY, goalMetaPadding, goalHeight)
 
   /*
@@ -426,4 +460,8 @@ function drawAvatar(member, ctx, xAvatarDraw, yAvatarDraw, strokeColor) {
   ctx.shadowOffsetX = 0
   ctx.shadowOffsetY = 0
   
+
 }
+
+
+

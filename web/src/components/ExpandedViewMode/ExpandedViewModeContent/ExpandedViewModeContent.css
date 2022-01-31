@@ -174,13 +174,13 @@
 }
 
 .expanded-view-squirrels-content .avatar.medium.clickable:hover, .icon.medium.add-squirrel-plus-icon:hover {
-  box-shadow: 0 0 0 2px #5f65ff;
+  box-shadow: 0 0 0 3px #5f65ff;
 }
 
 /* squirrelInfoPopup */
 
 .squirrel-info-popup-wrapper {
-  margin-top: 60px;
+  margin-top: 64px;
   position: absolute;
   border-radius: 10px;
   background: #ffffff;
