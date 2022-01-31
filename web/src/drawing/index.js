@@ -158,6 +158,19 @@ function render(store, canvas) {
       const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
       const isSelected = false
       const isEditing = false
+      let editInfoObjects = Object.values(state.ui.realtimeInfo)
+        .filter(agentInfo => agentInfo.goalBeingEdited !== null && agentInfo.goalBeingEdited.goalAddress === goal.headerHash)
+      const isBeingEdited = editInfoObjects.length > 0
+      const isBeingEditedBy = editInfoObjects.length === 1
+        ? state.agents[editInfoObjects[0].agentPubKey].handle
+        : editInfoObjects.length > 1
+          ? `${editInfoObjects.length} people`
+          : null
+      // a combination of those editing + those with expanded view open
+      const allMembersActiveOnGoal = Object.values(state.ui.realtimeInfo)
+        .filter(agentInfo => agentInfo.goalExpandedView === goal.headerHash || (agentInfo.goalBeingEdited !== null && agentInfo.goalBeingEdited.goalAddress === goal.headerHash))
+        .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
+
       const membersOfGoal = Object.keys(goalMembers)
         .map(headerHash => goalMembers[headerHash])
         .filter(goalMember => goalMember.goal_address === goal.headerHash)
@@ -168,13 +181,15 @@ function render(store, canvas) {
         goal: goal,
         members: membersOfGoal,
         coordinates: coordinates[goal.headerHash],
-        isEditing: isEditing,
+        isEditing: isEditing, // self
         editText: '',
         isSelected: isSelected,
         isHovered: isHovered,
         ctx: ctx,
-        isBeingEdited: false, // TODO
-        isTopPriorityGoal: isTopPriorityGoal
+        isBeingEdited: isBeingEdited, // by other
+        isBeingEditedBy: isBeingEditedBy, // other
+        allMembersActiveOnGoal: allMembersActiveOnGoal,
+        isTopPriorityGoal: isTopPriorityGoal,
       })
     })
 
@@ -224,6 +239,17 @@ function render(store, canvas) {
       const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
       const isSelected = true
       const isEditing = false
+      let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(agentInfo => agentInfo.goalBeingEdited !== null && agentInfo.goalBeingEdited.goalAddress === goal.headerHash)
+      const isBeingEdited = editInfoObjects.length > 0
+      const isBeingEditedBy = editInfoObjects.length === 1
+        ? state.agents[editInfoObjects[0].agentPubKey].handle
+        : editInfoObjects.length > 1
+          ? `${editInfoObjects.length} people`
+          : null
+      // a combination of those editing + those with expanded view open
+      const allMembersActiveOnGoal = Object.values(state.ui.realtimeInfo)
+        .filter(agentInfo => agentInfo.goalExpandedView === goal.headerHash || (agentInfo.goalBeingEdited !== null && agentInfo.goalBeingEdited.goalAddress === goal.headerHash))
+        .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
       const membersOfGoal = Object.keys(goalMembers)
         .map(headerHash => goalMembers[headerHash])
         .filter(goalMember => goalMember.goal_address === goal.headerHash)
@@ -239,8 +265,10 @@ function render(store, canvas) {
         isSelected: isSelected,
         isHovered: isHovered,
         ctx: ctx,
-        isBeingEdited: false, // TODO
-        isTopPriorityGoal: isTopPriorityGoal
+        isBeingEdited: isBeingEdited,
+        isBeingEditedBy: isBeingEditedBy,
+        allMembersActiveOnGoal: allMembersActiveOnGoal,
+        isTopPriorityGoal: isTopPriorityGoal,
       })
     })
 
@@ -348,6 +376,18 @@ function render(store, canvas) {
       // above the first zoom threshold
       const isEditing = scale >= firstZoomThreshold
       const editText = state.ui.goalForm.content
+      let editInfoObjects = Object.values(state.ui.realtimeInfo)
+        .filter(agentInfo => agentInfo.goalBeingEdited !== null && agentInfo.goalBeingEdited.goalAddress === state.ui.goalForm.editAddress)
+      const isBeingEdited = editInfoObjects.length > 0
+      const isBeingEditedBy = editInfoObjects.length === 1
+        ? state.agents[editInfoObjects[0].agentPubKey].handle
+        : editInfoObjects.length > 1
+          ? `${editInfoObjects.length} people`
+          : null
+      // a combination of those editing + those with expanded view open
+      const allMembersActiveOnGoal = Object.values(state.ui.realtimeInfo)
+        .filter(agentInfo => agentInfo.goalExpandedView === state.ui.goalForm.editAddress || (agentInfo.goalBeingEdited !== null && agentInfo.goalBeingEdited.goalAddress === state.ui.goalForm.editAddress))
+        .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
       const membersOfGoal = Object.keys(goalMembers)
         .map(headerHash => goalMembers[headerHash])
         .filter(goalMember => goalMember.goal_address === editingGoal.headerHash)
@@ -363,8 +403,10 @@ function render(store, canvas) {
         isSelected: false,
         isHovered: false,
         ctx: ctx,
-        isBeingEdited: false, // TODO
-        isTopPriorityGoal: isTopPriorityGoal
+        isBeingEdited: isBeingEdited,
+        isBeingEditedBy: isBeingEditedBy,
+        allMembersActiveOnGoal: allMembersActiveOnGoal,
+        isTopPriorityGoal: isTopPriorityGoal,
       })
     }
   }
@@ -388,8 +430,10 @@ function render(store, canvas) {
       isSelected: isSelected,
       isHovered: isHovered,
       ctx: ctx,
-      isBeingEdited: false, // TODO
-      isTopPriorityGoal: isTopPriorityGoal
+      isBeingEdited: false,
+      isBeingEditedBy: '',
+      isTopPriorityGoal: isTopPriorityGoal,
+      allMembersActiveOnGoal: [],
     })
   }
 }

@@ -148,13 +148,13 @@ function Dashboard({
                 className="my-projects-button create-project-button"
                 onClick={() => setShowCreateModal(true)}
               >
-                Create a project
+                Create a Project
               </div>
               <div
                 className="my-projects-button"
                 onClick={() => setShowJoinModal(true)}
               >
-                Join a project
+                Join a Project
               </div>
               <div
                 className="my-projects-button"
@@ -165,7 +165,7 @@ function Dashboard({
                   size="very-small"
                   className="black not-hoverable"
                 />
-                <div>Import</div>
+                <div>Import a Project</div>
               </div>
             </div>
             <div className="my-projects-sorting">

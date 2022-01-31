@@ -9,16 +9,11 @@ import Modal from '../Modal/Modal'
 import {
   ProjectModalButton,
   ProjectModalContent,
-  ProjectModalContentSpacer,
   ProjectModalHeading,
   ProjectModalSubHeading,
 } from '../ProjectModal/ProjectModal'
-import ProjectSecret from '../ProjectSecret/ProjectSecret'
-import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
 import PreferenceSelect, { PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
 import Icon from '../Icon/Icon'
-import Button from '../Button/Button'
-import { openInviteMembersModal } from '../../invite-members-modal/actions'
 
 // since this is a big wordset, dynamically import it
 // instead of including in the main bundle
@@ -237,9 +232,6 @@ function mapDispatchToProps(dispatch) {
           cellIdString: cellIdString,
         })
       )
-    },
-    openInviteMembersModal: (passphrase) => {
-      return dispatch(openInviteMembersModal(passphrase))
     }
   }
 }

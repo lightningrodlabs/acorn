@@ -19,6 +19,13 @@
   max-height: 46px;
 }
 
+.header-left-panel.second-row {
+  top: 60px;
+  left: 4px;
+  position: absolute;
+  height: 46px;
+}
+
 .logo {
   padding-right: 12px;
   padding-left: 12px;
@@ -147,7 +154,7 @@
   position: relative;
   font-size: 13px;
   margin-left: 5px;
-  background: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
   display: -webkit-flex;
   /* Safari */
@@ -155,9 +162,16 @@
   /* Safari 7.0+ */
   display: flex;
   align-items: center;
-  padding: 0 30px 0 12px;
+  padding: 0 30px 0 16px;
   color: #4d4d4d;
+  transition: 0.5s all ease-in-out;
 }
+
+.active-entry-point:hover {
+  background-color: #ffffff;
+  box-shadow: 0px 0px 14px #0000000f;
+}
+
 
 .active-entry-point-content {
   overflow: hidden;
@@ -167,15 +181,21 @@
   cursor: pointer;
 }
 
+.active-entry-point-content:hover {
+  color: #5f65ff;
+}
+
+
 .active-entry-point img {
   height: 14px;
   width: 14px;
   margin-right: 6px;
+  opacity: 0.8;
 }
 
 .active-entry-point-close {
   position: absolute;
-  right: 0px;
+  right: 6px;
   visibility: hidden;
 }
 
@@ -238,7 +258,7 @@
   max-height: 46px;
 }
 
-.header-right-panel-icon {
+.header-right-panel-icon .icon {
   position: relative;
   margin-right: 8px;
   display: flex;
@@ -270,7 +290,7 @@
 }
 
 .search-button-wrapper.search-is-open .search-open-icon .inner-icon {
-background-color: #7e7e7e;
+  background-color: #7e7e7e;
 }
 
 .search-button-wrapper.search-is-open.results-dropdown-is-open {
@@ -471,21 +491,6 @@ background-color: #7e7e7e;
   bottom: 0px;
 }
 
-.status-circle-wrapper .status-circle {
-  height: 10px;
-  width: 10px;
-  box-shadow: 0px 0px 1px #00000030;
-}
-
-.avatar-and-status-wrapper {
-  position: relative;
-}
-
-.avatar-container {
-  height: 32px;
-  width: 32px;
-}
-
 .avatar-container img {
   width: 32px;
   height: 32px;
@@ -556,7 +561,7 @@ background-color: #7e7e7e;
   background-color: grey;
 }
 
-.status-circle.status-online {
+/* .status-circle.status-online {
   background-color: #00d0c0;
 }
 
@@ -566,7 +571,7 @@ background-color: #7e7e7e;
 
 .status-circle.status-offline {
   background-color: #d1d1d1;
-}
+} */
 
 /* .user-status-icon-wrapper.user-status-is-active .avatar-container+span {
   background-color: #5f65ff;

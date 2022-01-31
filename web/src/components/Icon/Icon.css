@@ -163,31 +163,50 @@
 
 /* Tooltips */
 
-.icon.withTooltip:hover .icon-tooltip {
-  display: block;
+.icon.withTooltip:hover .tooltip-wrapper {
   transition-delay: 0.9s;
   visibility: visible;
   transition-property: visibility;
   z-index: 9999;
 }
 
-.icon-tooltip {
-  transition: 0.3s all;
+.tooltip-wrapper {
+  transition: 0.3s all ease;
   position: absolute;
   visibility: hidden;
-  padding: 7px 8px;
-  border-radius: 3px;
-  color: white;
+  color: #ffffff;
   font-size: 11px;
   line-height: 12px;
   bottom: -30px;
   white-space: nowrap;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #5f65ff;
-  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 9999;
 }
 
-.icon-tooltip.top {
+.tooltip-wrapper .tooltip-triangle-on-top {
+  width: 12px;
+  height: 12px;
+  margin-bottom: -4px;
+}
+
+.tooltip-wrapper .tooltip-triangle-on-bottom {
+  width: 12px;
+  height: 12px;
+  margin-top: -4px;
+}
+
+
+.tooltip-text-wrapper {
+  background-color: #5f65ff;
+  padding: 7px 8px;
+  border-radius: 4px;
+}
+
+.tooltip-wrapper.top {
   bottom: 30px;
 }

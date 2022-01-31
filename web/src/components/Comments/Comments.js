@@ -24,6 +24,8 @@ function Comment({ comment, agent }) {
           avatar_url={agent.avatar_url}
           imported={agent.is_imported}
           medium
+          withStatus
+          selfAssignedStatus={agent.status}
         />
       </div>
       <div className="comment_history_content">
@@ -134,8 +136,8 @@ function Comments({
             />
             <div className="comment_save_button">
               <Icon
-                name="chevron-right.svg"
-                className="medium white not-hoverable"
+                name="send-plane.svg"
+                className="medium grey"
                 onClick={submitComment}
               />
             </div>

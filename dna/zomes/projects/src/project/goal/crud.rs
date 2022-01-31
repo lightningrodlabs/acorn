@@ -282,6 +282,7 @@ pub struct ArchiveGoalFullyResponse {
 
 // custom signal type
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
+#[serde(rename_all = "camelCase")]
 pub struct ArchiveGoalFullySignal {
     entry_type: String,
     action: ActionType,

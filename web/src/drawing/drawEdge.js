@@ -29,7 +29,7 @@ export default function render(
   if (isHovered) {
     ctx.save()
     ctx.beginPath()
-    ctx.lineWidth = 6
+    ctx.lineWidth = 4
     ctx.lineCap = 'round'
     ctx.strokeStyle = 'rgba(100, 100, 100, 0.2)'
     ctx.moveTo(edge1port.x, edge1port.y)
@@ -41,8 +41,8 @@ export default function render(
   ctx.save()
   ctx.beginPath()
   ctx.lineCap = 'round'
-  ctx.lineWidth = isSelected ? 2 : 1
-  ctx.strokeStyle = isSelected ? selectedColor : '#707070'
+  ctx.lineWidth = isSelected ? 3 : 2
+  ctx.strokeStyle = isSelected ? selectedColor : '#E3DDCC'
   ctx.moveTo(edge1port.x, edge1port.y)
   ctx.lineTo(edge2port.x, edge2port.y)
   ctx.stroke()

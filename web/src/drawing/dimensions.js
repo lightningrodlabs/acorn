@@ -1,12 +1,12 @@
 export const CONNECTOR_VERTICAL_SPACING = 20
-export const avatarSpace = 4
-export const avatarWidth = 24
-export const avatarHeight = 24
-export const avatarRadius = 12
+export const avatarSpace = -4
+export const avatarWidth = 26
+export const avatarHeight = 26
+export const avatarRadius = 13
 export const goalWidth = 360
 export const goalHeight = 160
 export const cornerRadius = 15
-export const borderWidth = 2
+export const borderWidth = 3
 export const textBoxMarginLeft = 29
 export const textBoxMarginTop = 32
 export const textBoxWidth = 310
@@ -37,7 +37,7 @@ export const fontSizeExtraLarge = '40px'
 export const fontSizeExtraLargeInt = 40
 export const lineSpacingExtraLarge = 2
 
-export const fontFamily = 'PlusJakartaSans-bold'
+export const fontFamily = 'PlusJakartaSans-medium'
 
 // line wrapping code from https://stackoverflow.com/questions/2936112/
 function getLines(ctx, text, maxWidth) {

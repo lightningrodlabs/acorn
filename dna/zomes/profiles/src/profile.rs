@@ -307,6 +307,7 @@ pub enum SignalData {
 
 // this will be used to send these data structures as signals to the UI
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, SerializedBytes)]
+#[serde(rename_all = "camelCase")]
 pub struct AgentSignal {
     pub entry_type: String,
     pub action: ActionType,

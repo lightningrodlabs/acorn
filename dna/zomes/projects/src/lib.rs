@@ -48,7 +48,7 @@ SIGNALS
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 // untagged because the useful tagging is done internally on the *Signal objects
-#[serde(untagged)]
+#[serde(tag = "signalType", content = "data")]
 pub enum SignalType {
     Edge(ActionSignal<Edge>),
     EntryPoint(ActionSignal<EntryPoint>),
@@ -68,6 +68,7 @@ pub enum SignalType {
     GoalVote(ActionSignal<GoalVote>),
     Member(MemberSignal),
     ProjectMeta(ActionSignal<ProjectMeta>),
+    RealtimeInfo(RealtimeInfoSignal),
 }
 
 impl From<ActionSignal<Edge>> for SignalType {
@@ -127,6 +128,43 @@ pub struct EditingGoalInput {
     pub is_editing: bool,
 }
 
+#[derive(Debug, Serialize, Deserialize, SerializedBytes)]
+#[serde(rename_all = "camelCase")]
+pub struct RealtimeInfoSignal {
+    pub agent_pub_key: AgentPubKeyB64,
+    pub project_id: String,
+    pub goal_being_edited: Option<EditingGoalDetails>,
+    pub goal_expanded_view: Option<HeaderHashB64>,
+}
+
+#[derive(Debug, Serialize, Deserialize, SerializedBytes)]
+#[serde(rename_all = "camelCase")]
+pub struct RealtimeInfoInput {
+    pub project_id: String,
+    pub goal_being_edited: Option<EditingGoalDetails>,
+    pub goal_expanded_view: Option<HeaderHashB64>,
+}
+#[derive(Debug, Serialize, Deserialize, SerializedBytes)]
+#[serde(rename_all = "camelCase")]
+pub struct EditingGoalDetails {
+    pub goal_address: HeaderHashB64,
+    pub is_title: bool,
+}
+#[hdk_extern]
+pub fn emit_realtime_info_signal(realtime_info: RealtimeInfoInput) -> ExternResult<()> {
+    let realtime_info_signal = RealtimeInfoSignal {
+        agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey),
+        project_id: realtime_info.project_id,
+        goal_being_edited: realtime_info.goal_being_edited,
+        goal_expanded_view: realtime_info.goal_expanded_view,
+    };
+
+    let signal = SignalType::RealtimeInfo(realtime_info_signal);
+    let payload = ExternIO::encode(signal)?;
+    let peers = get_peers_content()?;
+    remote_signal(payload, peers)?;
+    Ok(())
+}
 #[hdk_extern]
 pub fn emit_editing_goal_signal(editing_goal_info: EditingGoalInput) -> ExternResult<()> {
     let editing_goal_signal = EditingGoalSignal {

@@ -18,6 +18,7 @@ import RightMenu from './RightMenu/RightMenu'
 import ExpandedViewModeHeader from './ExpandedViewModeHeader/ExpandedViewModeHeader'
 import ExpandedViewModeContent from './ExpandedViewModeContent/ExpandedViewModeContent'
 import ExpandedViewModeFooter from './ExpandedViewModeFooter/ExpandedViewModeFooter'
+import { startTitleEdit, endTitleEdit, startDescriptionEdit, endDescriptionEdit } from '../../goal-editing/actions'
 
 
 function ExpandedViewMode({
@@ -35,6 +36,11 @@ function ExpandedViewMode({
   archiveEntryPoint,
   isEntryPoint,
   entryPointAddress,
+  startTitleEdit,
+  endTitleEdit,
+  startDescriptionEdit,
+  endDescriptionEdit,
+  editingPeers,
 }) {
   const [goalState, setGoalState] = useState()
   const [squirrelsState, setSquirrelsState] = useState()
@@ -157,6 +163,11 @@ function ExpandedViewMode({
                 goalContent={goalState.content}
                 goalDescription={goalState.description}
                 archiveGoalMember={archiveGoalMember}
+                startTitleEdit={startTitleEdit}
+                endTitleEdit={endTitleEdit}
+                startDescriptionEdit={startDescriptionEdit}
+                endDescriptionEdit={endDescriptionEdit}
+                editingPeers={editingPeers}
               />
               <RightMenu
                 projectId={projectId}
@@ -222,7 +233,20 @@ function mapStateToProps(state, ownProps) {
   )
   const isEntryPoint = entryPoint ? true : false
   const entryPointAddress = entryPoint ? entryPoint.headerHash : null
-
+  
+  function filterAndAddAgentInfo(agentInfo) {
+    delete agentInfo.projectId
+    delete agentInfo.goalExpandedView
+    agentInfo.profileInfo = state.agents[agentInfo.agentPubKey]
+    return agentInfo
+  }
+  const editingPeers = Object.values(state.ui.realtimeInfo)
+    .filter((agentInfo) => agentInfo.goalBeingEdited)
+    .filter((agentInfo) => agentInfo.goalBeingEdited.goalAddress === goalAddress)
+    .map((agentInfo) => 
+      filterAndAddAgentInfo(agentInfo)
+    )
+  // this should only ever by a maximum of two peers (one editing title, one editing description)
   return {
     agentAddress: state.agentAddress,
     isEntryPoint,
@@ -231,7 +255,8 @@ function mapStateToProps(state, ownProps) {
     creator,
     goal,
     squirrels,
-    comments
+    comments,
+    editingPeers
   }
 }
 
@@ -252,6 +277,18 @@ function mapDispatchToProps(dispatch, ownProps) {
     archiveGoalMember: payload => {
       return dispatch(archiveGoalMember.create({ cellIdString, payload }))
     },
+    startTitleEdit: goalAddress => {
+      return dispatch(startTitleEdit(goalAddress))
+    },
+    endTitleEdit: goalAddress => {
+      return dispatch(endTitleEdit(goalAddress))
+    },
+    startDescriptionEdit: goalAddress => {
+      return dispatch(startDescriptionEdit(goalAddress))
+    },
+    endDescriptionEdit: goalAddress => {
+      return dispatch(endDescriptionEdit(goalAddress))
+    }
   }
 }
 

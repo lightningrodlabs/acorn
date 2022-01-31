@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
+    "checkJs": true,
     "sourceMap": true,
     "noImplicitAny": false,
     "module": "es6",

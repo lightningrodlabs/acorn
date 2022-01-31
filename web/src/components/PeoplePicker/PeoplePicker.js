@@ -85,6 +85,8 @@ function PeoplePicker({
                   avatar_url={person.avatar_url}
                   imported={person.is_imported}
                   medium
+                  withStatus
+                  selfAssignedStatus={person.status}
                 />
                 <div className="person-nameANDhandle">
                   <span className="person-name">

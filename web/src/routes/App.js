@@ -27,14 +27,16 @@ import ProjectView from './ProjectView/ProjectView'
 import RunUpdate from './RunUpdate/RunUpdate'
 
 import IntroScreen from '../components/IntroScreen/IntroScreen'
-import selectEntryPoints from '../projects/entry-points/select'
+import selectEntryPoints, { selectActiveProjectMembers } from '../projects/entry-points/select'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 // all global modals in here
 import GlobalModals from './GlobalModals'
 import { animatePanAndZoom } from '../viewport/actions'
-import { closeInviteMembersModal } from '../invite-members-modal/actions'
+import { closeInviteMembersModal, openInviteMembersModal } from '../invite-members-modal/actions'
 
 function App({
+  members,
+  presentMembers,
   activeEntryPoints,
   activeProjectMeta,
   projectId,
@@ -46,6 +48,7 @@ function App({
   setNavigationPreference,
   hideGuidebookHelpMessage,
   inviteMembersModalShowing,
+  openInviteMembersModal,
   hideInviteMembersModal,
   goToGoal
 }) {
@@ -85,13 +88,16 @@ function App({
         </Switch>
         {agentAddress && (
           <Header
+            members={members}
             project={activeProjectMeta}
+            presentMembers={presentMembers}
             {...{
               hideGuidebookHelpMessage,
               activeEntryPoints,
               projectId,
               whoami,
               updateStatus,
+              openInviteMembersModal,
               setShowProjectSettingsOpen,
               setShowProfileEditForm,
               setShowPreferences,
@@ -114,6 +120,7 @@ function App({
             showProjectSettingsModal,
             setShowProjectSettingsOpen,
             inviteMembersModalShowing,
+            openInviteMembersModal,
             hideInviteMembersModal,
             onProfileSubmit,
           }}
@@ -142,6 +149,9 @@ function mapDispatchToProps(dispatch) {
     goToGoal: (goalHeaderHash) => {
       return dispatch(animatePanAndZoom(goalHeaderHash))
     },
+    openInviteMembersModal: (passphrase) => {
+      return dispatch(openInviteMembersModal(passphrase))
+    },
     hideInviteMembersModal: () => {
       return dispatch(closeInviteMembersModal())
     }
@@ -161,6 +171,19 @@ function mapStateToProps(state) {
   } = state
   // defensive coding for loading phase
   const activeProjectMeta = state.projects.projectMeta[activeProject] || {}
+
+  // select the list of folks ("Agents in holochain") who are members
+  // of the active project, if there is one
+  const members = activeProject
+    ? selectActiveProjectMembers(state, activeProject)
+    : []
+  
+  function getDnaHashFromProjectId(activeProject) {
+    return activeProject ? activeProject.split("[:cell_id_divider:]")[0] : activeProject
+  }
+  const presentMembers = Object.values(state.ui.realtimeInfo)
+    .filter((agentInfo) => getDnaHashFromProjectId(agentInfo.projectId) === getDnaHashFromProjectId(activeProject))
+    .map((agentInfo) => agentInfo.agentPubKey).filter((agentPubKey) => members.find((member) => member.address === agentPubKey))
 
   const allProjectEntryPoints = activeProject
     ? selectEntryPoints(state, activeProject)
@@ -183,7 +206,9 @@ function mapStateToProps(state) {
     hasFetchedForWhoami,
     agentAddress: state.agentAddress,
     navigationPreference: navigation,
-    inviteMembersModalShowing: inviteMembersModal.passphrase
+    inviteMembersModalShowing: inviteMembersModal.passphrase,
+    members: members,
+    presentMembers: presentMembers,
   }
 }
 

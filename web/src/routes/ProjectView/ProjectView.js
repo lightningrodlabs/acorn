@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   Redirect,
   Route,
@@ -30,6 +30,7 @@ import { unselectAll } from '../../selection/actions'
 import { closeExpandedView } from '../../expanded-view/actions'
 import { animatePanAndZoom, resetTranslateAndScale } from '../../viewport/actions'
 import { ENTRY_POINTS } from '../../searchParams'
+import { triggerRealtimeInfoSignal, sendExitProjectSignal } from '../../realtime-info-signal/actions'
 
 function ProjectViewInner({
   projectId,
@@ -47,10 +48,14 @@ function ProjectViewInner({
   fetchGoalVotes,
   fetchGoalComments,
   goToGoal,
+  triggerRealtimeInfoSignal,
+  sendExitProjectSignal,
 }) {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
   const goToGoalHeaderHash = searchParams.get(GO_TO_GOAL)
+  const sendRealtimeInfoFrequency = 10000
+  const instance = useRef() 
   
   function ifMapGoToGoal(goalHeaderHash) {
       // TODO
@@ -68,6 +73,15 @@ function ProjectViewInner({
       }
   }
 
+  // this useEffect is called when the ProjectView component is first mounted, and returns when it is dismounted
+  // it sets an interval which calls triggerRealTimeInfoSignal at a fixed rate, until the component is dismounted
+  useEffect(() => {
+    instance.current = setInterval(() => triggerRealtimeInfoSignal(), sendRealtimeInfoFrequency)
+    return () => {
+      clearInterval(instance.current)
+    }
+  }, [])
+
   useEffect(() => {
     ifMapGoToGoal(goToGoalHeaderHash)
   },[goToGoalHeaderHash])
@@ -75,6 +89,7 @@ function ProjectViewInner({
   useEffect(() => {
     // pushes this new projectId into the store/state
     setActiveProject(projectId)
+    triggerRealtimeInfoSignal()
     fetchProjectMeta()
     fetchMembers()
     fetchEntryPoints()
@@ -126,6 +141,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(setActiveEntryPoints(entryPointAddresses)),
     resetProjectView: () => {
       dispatch(closeExpandedView())
+      dispatch(sendExitProjectSignal()) // send this signal so peers know you left project
       dispatch(closeGoalForm())
       dispatch(unselectAll())
       dispatch(resetTranslateAndScale())
@@ -147,7 +163,9 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(fetchGoalVotes.create({ cellIdString, payload: { All: null } })),
     fetchGoalComments: () =>
       dispatch(fetchGoalComments.create({ cellIdString, payload: { All: null } })),
-    goToGoal: (goalHeaderHash) => dispatch(animatePanAndZoom(goalHeaderHash))
+    goToGoal: (goalHeaderHash) => dispatch(animatePanAndZoom(goalHeaderHash)),
+    triggerRealtimeInfoSignal: () => dispatch(triggerRealtimeInfoSignal()),
+    sendExitProjectSignal: () => dispatch(sendExitProjectSignal())
   }
 }
 
