@@ -12,6 +12,7 @@ import {
   fontSizeLargeInt,
   fontSizeExtraLargeInt,
   lineSpacing,
+  letterSpacing,
   getGoalHeight,
   getLinesForParagraphs,
   firstZoomThreshold,

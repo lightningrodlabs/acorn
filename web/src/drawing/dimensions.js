@@ -24,6 +24,7 @@ export const lineHeightMultiplier = 1.2
 export const fontSize = '20px'
 export const fontSizeInt = 20
 export const lineSpacing = 6
+export const letterSpacing = 0.1
 
 // this is the "zoomed out" font size
 // for creating still readable text

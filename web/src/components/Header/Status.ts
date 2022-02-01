@@ -4,11 +4,11 @@ enum Status {
   Offline = 'Offline',
 }
 
-const StatusIcons = {
-  [Status.Online]: 'checkmark-circle.svg',
-  [Status.Away]: 'user-status-away.svg',
-  [Status.Offline]: 'user-status-offline.svg',
-}
+// const StatusIcons = {
+//   [Status.Online]: 'checkmark-circle.svg',
+//   [Status.Away]: 'user-status-away.svg',
+//   [Status.Offline]: 'user-status-offline.svg',
+// }
 
 const StatusCssColorClass = {
   [Status.Online]: 'status-online',
@@ -18,6 +18,5 @@ const StatusCssColorClass = {
 
 export {
   Status,
-  StatusIcons,
   StatusCssColorClass
 }

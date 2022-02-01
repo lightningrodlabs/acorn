@@ -122,10 +122,10 @@ function valuetext(value) {
 }
 
 const priorityItems = [
-  { icon: 'urgency.svg', title: 'Urgency' },
-  { icon: 'importance.svg', title: 'Importance' },
-  { icon: 'impact.svg', title: 'Impact' },
-  { icon: 'effort.png', title: 'Effort' },
+  { icon: 'timer.svg', title: 'Urgency' },
+  { icon: 'circle-alert.svg', title: 'Importance' },
+  { icon: 'lightning.svg', title: 'Impact' },
+  { icon: 'barbell.svg', title: 'Effort' },
 ]
 
 function PrioritySlider({

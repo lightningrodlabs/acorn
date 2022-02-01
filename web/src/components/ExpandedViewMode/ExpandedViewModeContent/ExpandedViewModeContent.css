@@ -41,6 +41,7 @@
   color: #4d4d4d;
   font-size: 18px;
   line-height: 1.45;
+  letter-spacing: 0.1px;
   padding: 0;
   font-family: 'PlusJakartaSans-bold', Helvetica, Sans-Serif;
   resize: none;
@@ -74,6 +75,7 @@
   font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
   font-size: 14px;
   line-height: 1.45;
+  letter-spacing: 0.1px;
   background-color: transparent;
 }
 
