@@ -20,6 +20,10 @@
   height: 100%;
 }
 
+.icon:not(.not-hoverable) .inner-icon {
+  transition: 0.2s background-color ease;
+}
+
 .icon:not(.not-hoverable):hover .inner-icon {
   background-color: #5f65ff;
 }

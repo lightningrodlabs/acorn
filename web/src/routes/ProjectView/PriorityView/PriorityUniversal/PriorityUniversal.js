@@ -21,20 +21,22 @@ function UniversalGoal({ liveIndex, goal, openExpandedView, goToGoal }) {
   return (
     <div className="universal-priority-goals-list-row">
       <div className="universal-priority-goal-item-wrapper">
-        <div className="universal-priority-number-wrapper">
-          <div className="universal-priority-order-number">{liveIndex}.</div>{' '}
-        </div>
-        <div className="universal-priority-goal-title-status" >
-          <div className="universal-priority-goal-item-status">
-            <StatusIcon
-              status={goal.status}
-              notHoverable
-              hideTooltip
-              className="indented-view-goal-content-status-color"
-            />
+        <div className="universal-priority-goal-item-number-status-title">
+          <div className="universal-priority-number-wrapper">
+            <div className="universal-priority-order-number">{liveIndex}.</div>{' '}
           </div>
+          <div className="universal-priority-goal-title-status" >
+            <div className="universal-priority-goal-item-status">
+              <StatusIcon
+                status={goal.status}
+                notHoverable
+                hideTooltip
+                className="indented-view-goal-content-status-color"
+              />
+            </div>
 
-          <div className="universal-priority-goal-item-title">{goal.content}</div>
+            <div className="universal-priority-goal-item-title">{goal.content}</div>
+          </div>
         </div>
         <div className="universal-priority-goal-item-metadata">
           <div className="universal-priority-goal-item-members">
@@ -46,6 +48,11 @@ function UniversalGoal({ liveIndex, goal, openExpandedView, goToGoal }) {
                   avatar_url={member.avatar_url}
                   imported={member.is_imported}
                   medium
+                  withWhiteBorder
+                  withStatus
+                  selfAssignedStatus={member.status}
+                  withTooltip
+                  tooltipText={`${member.first_name} ${member.last_name}`}
                 />
               </div>
             })}
@@ -58,13 +65,13 @@ function UniversalGoal({ liveIndex, goal, openExpandedView, goToGoal }) {
           <div
             className="universal-priority-goal-item-button goal-item-button-expand"
             onClick={() => openExpandedView(goal.headerHash)}
-            >
+          >
             <Icon name="expand.svg" size="small" className="grey" />
           </div>
           <div
             className="universal-priority-goal-item-button goal-item-button-map"
             onClick={() => goToGoal(goal.headerHash)}
-            >
+          >
             <Icon name="map.svg" size="small" className="grey" />
           </div>
         </div>

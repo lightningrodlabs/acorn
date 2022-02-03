@@ -137,7 +137,7 @@ function Comments({
             <div className="comment_save_button">
               <Icon
                 name="send-plane.svg"
-                className="medium grey"
+                className="medium light-grey"
                 onClick={submitComment}
               />
             </div>

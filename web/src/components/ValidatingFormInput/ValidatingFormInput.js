@@ -48,10 +48,10 @@ function ValidatingFormInput ({
         {errorText && <div className='error_text'>{errorText}</div>}
         {withAtSymbol && <div className='at_symbol'>@ </div>}
         {invalidInput && (
-          <img src='img/invalid-mark.svg' className='validation-mark' />
+          <img src='img/circle-x.svg' className='validation-mark' />
         )}
         {validInput && (
-          <img src='img/valid-mark.svg' className='validation-mark' />
+          <img src='img/circle-check.svg' className='validation-mark' />
         )}
       </div>
     </div>

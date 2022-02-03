@@ -19,6 +19,7 @@
     font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
     font-size: 20px;
     line-height: 28px;
+    letter-spacing: 0.1px;
 }
 
 .goal-title-quick-edit-form ::selection {

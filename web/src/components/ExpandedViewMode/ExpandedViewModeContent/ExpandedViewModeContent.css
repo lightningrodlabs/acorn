@@ -5,7 +5,7 @@
 }
 
 .expanded-view-details-wrapper {
-  padding: 24px;
+  padding: 12px 24px 24px 24px;
   display: flex;
   flex-direction: column;
   max-height: 100%;
@@ -40,7 +40,8 @@
   border: none;
   color: #4d4d4d;
   font-size: 18px;
-  line-height: 24px;
+  line-height: 1.45;
+  letter-spacing: 0.1px;
   padding: 0;
   font-family: 'PlusJakartaSans-bold', Helvetica, Sans-Serif;
   resize: none;
@@ -73,6 +74,8 @@
   resize: none;
   font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
   font-size: 14px;
+  line-height: 1.45;
+  letter-spacing: 0.1px;
   background-color: transparent;
 }
 
@@ -173,13 +176,13 @@
 }
 
 .expanded-view-squirrels-content .avatar.medium.clickable:hover, .icon.medium.add-squirrel-plus-icon:hover {
-  box-shadow: 0 0 0 2px #5f65ff;
+  box-shadow: 0 0 0 3px #5f65ff;
 }
 
 /* squirrelInfoPopup */
 
 .squirrel-info-popup-wrapper {
-  margin-top: 60px;
+  margin-top: 64px;
   position: absolute;
   border-radius: 10px;
   background: #ffffff;

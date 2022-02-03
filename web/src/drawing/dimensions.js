@@ -6,7 +6,7 @@ export const avatarRadius = 13
 export const goalWidth = 360
 export const goalHeight = 160
 export const cornerRadius = 15
-export const borderWidth = 3
+export const borderWidth = 4
 export const textBoxMarginLeft = 29
 export const textBoxMarginTop = 32
 export const textBoxWidth = 310
@@ -24,6 +24,7 @@ export const lineHeightMultiplier = 1.2
 export const fontSize = '20px'
 export const fontSizeInt = 20
 export const lineSpacing = 6
+export const letterSpacing = 0.1
 
 // this is the "zoomed out" font size
 // for creating still readable text
