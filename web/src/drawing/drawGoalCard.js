@@ -48,6 +48,17 @@ export default function render({
   allMembersActiveOnGoal, // realtime info
   isTopPriorityGoal,
 }) {
+
+  ctx.save()
+
+  // these create shadow effects for
+  // the goal card, a dream-like effect
+  // for everything painted on it
+  ctx.shadowColor = '#00000020'
+  ctx.shadowBlur = 30
+  ctx.shadowOffsetX = 0
+  ctx.shadowOffsetY = 0
+
   let goalLeftX, goalTopY
   if (coordinates) {
     goalLeftX = coordinates.x
@@ -315,10 +326,7 @@ export default function render({
   //   ctx.fillText(isBeingEditedText, goalLeftX + goalWidth / 2 - 60, goalTopY + goalHeight - 8)
   // }
 
-  ctx.shadowColor = '#00000020'
-  ctx.shadowBlur = 30
-  ctx.shadowOffsetX = 0
-  ctx.shadowOffsetY = 0
+  ctx.restore()
 }
 
 function drawFocusedOnAvatars(
