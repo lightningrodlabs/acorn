@@ -28,8 +28,7 @@ pub struct Goal {
     pub user_edit_hash: Option<AgentPubKeyB64>,
     pub timestamp_created: f64,
     pub timestamp_updated: Option<f64>,
-    pub hierarchy: Hierarchy,
-    pub status: Status,
+    pub scope: Scope,
     pub tags: Option<Vec<String>>,
     pub description: String,
     pub time_frame: Option<TimeFrame>,
@@ -43,8 +42,7 @@ impl Goal {
         user_edit_hash: Option<AgentPubKeyB64>,
         timestamp_created: f64,
         timestamp_updated: Option<f64>,
-        hierarchy: Hierarchy,
-        status: Status,
+        scope: Scope,
         tags: Option<Vec<String>>,
         description: String,
         time_frame: Option<TimeFrame>,
@@ -56,8 +54,7 @@ impl Goal {
             user_edit_hash,
             timestamp_created,
             timestamp_updated,
-            hierarchy,
-            status,
+            scope,
             tags,
             description,
             time_frame,
@@ -70,65 +67,41 @@ impl Goal {
 pub struct UIEnum(pub String);
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-#[serde(from = "UIEnum")]
-#[serde(into = "UIEnum")]
-pub enum Status {
-    Uncertain,
-    Incomplete,
-    InProcess,
-    Complete,
-    InReview,
+pub enum Scope {
+    Small(AchievementLevel),
+    Uncertain(TimeEstimate),
 }
 
-impl From<UIEnum> for Status {
-    fn from(ui_enum: UIEnum) -> Self {
-        match ui_enum.0.as_str() {
-            "Incomplete" => Self::Incomplete,
-            "InProcess" => Self::InProcess,
-            "Complete" => Self::Complete,
-            "InReview" => Self::InReview,
-            _ => Self::Uncertain,
-        }
-    }
-}
-impl From<Status> for UIEnum {
-    fn from(status: Status) -> Self {
-        Self(status.to_string())
-    }
-}
-impl fmt::Display for Status {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
+#[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
+pub struct TimeEstimate(pub String);
+impl TimeEstimate {
+    pub fn new(estimate: String) -> Self {
+        Self(estimate)
     }
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 #[serde(from = "UIEnum")]
 #[serde(into = "UIEnum")]
-pub enum Hierarchy {
-    Root,
-    Trunk,
-    Branch,
-    Leaf,
-    NoHierarchy,
+pub enum AchievementLevel {
+    Incomplete,
+    Complete,
 }
-impl From<UIEnum> for Hierarchy {
+impl From<UIEnum> for AchievementLevel {
     fn from(ui_enum: UIEnum) -> Self {
         match ui_enum.0.as_str() {
-            "Root" => Self::Root,
-            "Trunk" => Self::Trunk,
-            "Branch" => Self::Branch,
-            "Leaf" => Self::Leaf,
-            _ => Self::NoHierarchy,
+            "Incomplete" => Self::Incomplete,
+            "Complete" => Self::Complete,
+            _ => Self::Incomplete,
         }
     }
 }
-impl From<Hierarchy> for UIEnum {
-    fn from(hierarchy: Hierarchy) -> Self {
-        Self(hierarchy.to_string())
+impl From<AchievementLevel> for UIEnum {
+    fn from(achievement_level: AchievementLevel) -> Self {
+        Self(achievement_level.to_string())
     }
 }
-impl fmt::Display for Hierarchy {
+impl fmt::Display for AchievementLevel {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}", self)
     }
