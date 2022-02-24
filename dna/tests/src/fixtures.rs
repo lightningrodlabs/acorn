@@ -12,7 +12,7 @@ pub(crate) mod fixtures {
     use hdk::prelude::*;
     use holo_hash::{AgentPubKeyB64, HeaderHashB64};
     use profiles::profile::{Profile, Status as ProfileStatus};
-    use projects::project::goal::crud::{Goal, Hierarchy, Status};
+    use projects::project::goal::crud::{Goal, Scope, AchievementStatus, SmallsEstimate};
     use projects::project::{
         edge::crud::Edge,
         entry_point::crud::EntryPoint,
@@ -77,13 +77,29 @@ pub(crate) mod fixtures {
     );
 
     fixturator!(
-      Status;
-      unit variants [ Uncertain Incomplete InProcess Complete InReview ] empty Uncertain;
+      Scope;
+      enum [ Small Uncertain ];
+      curve Empty Scope::Uncertain(fixt!(SmallsEstimate));
+      curve Unpredictable match ScopeVariant::random() {
+        ScopeVariant::Small => Scope::Small(fixt!(AchievementStatus)),
+        ScopeVariant::Uncertain => Scope::Uncertain(fixt!(SmallsEstimate)),
+      };
+      curve Predictable match ScopeVariant::nth(get_fixt_index!()) {
+        ScopeVariant::Small => Scope::Small(AchievementStatusFixturator::new_indexed(Predictable, get_fixt_index!()).next().unwrap()),
+        ScopeVariant::Uncertain => Scope::Uncertain(SmallsEstimateFixturator::new_indexed(Predictable, get_fixt_index!()).next().unwrap()),
+
+      };
+    );
+
+
+    fixturator!(
+      AchievementStatus;
+      unit variants [NotAchieved Achieved] empty Achieved;
     );
 
     fixturator!(
-      Hierarchy;
-      unit variants [Root Trunk Branch Leaf NoHierarchy ] empty NoHierarchy;
+      SmallsEstimate;
+      constructor fn new(u32);
     );
 
     fixturator!(
@@ -166,7 +182,7 @@ pub(crate) mod fixtures {
 
     fixturator!(
       Goal;
-        constructor fn new(String, AgentPubKeyB64, OptionAgentPubKeyB64, f64, Optionf64, Hierarchy, Status, OptionVecString, String, OptionTimeFrame, bool);
+        constructor fn new(String, AgentPubKeyB64, OptionAgentPubKeyB64, f64, Optionf64, Scope, OptionVecString, String, OptionTimeFrame, bool);
     );
     fixturator!(
       ProfileStatus;
