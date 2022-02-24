@@ -1,4 +1,4 @@
-pub mod edge;
+pub mod connection;
 pub mod entry_point;
 pub mod outcome;
 pub mod outcome_comment;

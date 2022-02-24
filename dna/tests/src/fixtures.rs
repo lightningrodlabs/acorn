@@ -14,7 +14,7 @@ pub(crate) mod fixtures {
     use profiles::profile::{Profile, Status as ProfileStatus};
     use projects::project::outcome::crud::{Outcome, Scope, AchievementStatus, SmallsEstimate};
     use projects::project::{
-        edge::crud::Edge,
+        connection::crud::Connection,
         entry_point::crud::EntryPoint,
         outcome::crud::TimeFrame,
         outcome_comment::crud::OutcomeComment,
@@ -25,7 +25,7 @@ pub(crate) mod fixtures {
     };
 
     fixturator!(
-      Edge;
+      Connection;
         constructor fn new(HeaderHashB64, HeaderHashB64, i64, bool);
     );
 

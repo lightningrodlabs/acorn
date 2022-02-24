@@ -1,5 +1,5 @@
 use crate::project::{
-    edge::crud::{Edge, get_edge_path},
+    connection::crud::{Connection, get_connection_path},
     entry_point::crud::{EntryPoint, get_entry_point_path},
     outcome_comment::crud::{OutcomeComment, get_outcome_comment_path},
     outcome_member::crud::{archive_outcome_members, OutcomeMember},
@@ -161,7 +161,7 @@ pub struct LinkedOutcomeDetails {
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-pub struct CreateOutcomeWithEdgeInput {
+pub struct CreateOutcomeWithConnectionInput {
     entry: Outcome,
     maybe_linked_outcome: Option<LinkedOutcomeDetails>,
 }
@@ -169,7 +169,7 @@ pub struct CreateOutcomeWithEdgeInput {
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 pub struct CreateOutcomeWithConnectionOutput {
     outcome: WireElement<Outcome>,
-    maybe_edge: Option<WireElement<Edge>>,
+    maybe_connection: Option<WireElement<Connection>>,
 }
 
 // custom signal type
@@ -182,8 +182,8 @@ pub struct OutcomeWithConnectionSignal {
 }
 
 #[hdk_extern]
-pub fn create_outcome_with_edge( // TODO: may want to consider having a handler so can pass in the create_action struct for testing
-    input: CreateOutcomeWithEdgeInput,
+pub fn create_outcome_with_connection( // TODO: may want to consider having a handler so can pass in the create_action struct for testing
+    input: CreateOutcomeWithConnectionInput,
 ) -> ExternResult<CreateOutcomeWithConnectionOutput> {
     // false to say don't send a signal
     let create_action = CreateAction {};
@@ -195,7 +195,7 @@ pub fn create_outcome_with_edge( // TODO: may want to consider having a handler 
         None,
     )?;
     let new_outcome_address = wire_element.header_hash.clone();
-    let maybe_edge: Option<WireElement<Edge>> = match input.maybe_linked_outcome {
+    let maybe_connection: Option<WireElement<Connection>> = match input.maybe_linked_outcome {
         Some(linked_outcome_details) => {
             let (parent_address, child_address) = match linked_outcome_details.relation {
                 // new outcome becomes parent
@@ -209,44 +209,44 @@ pub fn create_outcome_with_edge( // TODO: may want to consider having a handler 
             };
             let random = sys_time()?;
             let r0 = random.as_millis();
-            let edge = Edge {
+            let connection = Connection {
                 parent_address,
                 child_address,
                 randomizer: r0,
                 is_imported: false,
             };
-            let edge_wire_element = create_action.create_action::<Edge, WasmError, SignalType>(
-                edge,
-                Some(PathOrEntryHash::Path(get_edge_path())),
-                "edge".to_string(),
+            let connection_wire_element = create_action.create_action::<Connection, WasmError, SignalType>(
+                connection,
+                Some(PathOrEntryHash::Path(get_connection_path())),
+                "connection".to_string(),
                 None,
                 None,
             )?;
-            Some(edge_wire_element)
+            Some(connection_wire_element)
         }
         None => None,
     };
 
-    let outcome_with_edge = CreateOutcomeWithConnectionOutput {
+    let outcome_with_connection = CreateOutcomeWithConnectionOutput {
         outcome: wire_element.clone(),
-        maybe_edge,
+        maybe_connection,
     };
     let signal = SignalType::OutcomeWithConnection(OutcomeWithConnectionSignal {
-        entry_type: "outcome_with_edge".to_string(),
+        entry_type: "outcome_with_connection".to_string(),
         action: ActionType::Create,
-        data: outcome_with_edge.clone(),
+        data: outcome_with_connection.clone(),
     });
     let payload = ExternIO::encode(signal)?;
     let peers = get_peers_content()?;
     remote_signal(payload, peers)?;
 
-    Ok(outcome_with_edge)
+    Ok(outcome_with_connection)
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 pub struct ArchiveOutcomeFullyResponse {
     address: HeaderHashB64,
-    archived_edges: Vec<HeaderHashB64>,
+    archived_connections: Vec<HeaderHashB64>,
     archived_outcome_members: Vec<HeaderHashB64>,
     archived_outcome_votes: Vec<HeaderHashB64>,
     archived_outcome_comments: Vec<HeaderHashB64>,
@@ -274,29 +274,29 @@ pub fn archive_outcome_fully(address: HeaderHashB64) -> ExternResult<ArchiveOutc
     let fetch_entries = FetchEntries {};
     let fetch_links = FetchLinks {};
     let get_latest = GetLatestEntry {};
-    let archived_edges = fetch_action.fetch_action::<Edge,WasmError>(
+    let archived_connections = fetch_action.fetch_action::<Connection,WasmError>(
         &fetch_entries,
         &fetch_links,
         &get_latest,
         FetchOptions::All,
         GetOptions::content(),
-        get_edge_path(),
+        get_connection_path(),
     )?
         .into_iter()
         .filter(|wire_element| {
             // check whether the parent_address or child_address is equal to the given address.
-            // If so, the edge is connected to the outcome being archived.
+            // If so, the connection is connected to the outcome being archived.
             wire_element.entry.child_address == address.clone()
                 || wire_element.entry.parent_address == address.clone()
         })
         .map(|wire_element| {
-            let edge_address = wire_element.header_hash;
-            match delete_action.delete_action::<Edge, WasmError, SignalType>(
-                edge_address.clone(),
-                "edge".to_string(),
+            let connection_address = wire_element.header_hash;
+            match delete_action.delete_action::<Connection, WasmError, SignalType>(
+                connection_address.clone(),
+                "connection".to_string(),
                 None,
             ) {
-                Ok(_) => Ok(edge_address),
+                Ok(_) => Ok(connection_address),
                 Err(e) => Err(e),
             }
         })
@@ -385,7 +385,7 @@ pub fn archive_outcome_fully(address: HeaderHashB64) -> ExternResult<ArchiveOutc
 
     let archive_response = ArchiveOutcomeFullyResponse {
         address,
-        archived_edges,
+        archived_connections,
         archived_outcome_members,
         archived_outcome_votes,
         archived_outcome_comments,
@@ -418,7 +418,7 @@ pub struct GetHistoryResponse {
 //     "outcome_members".into(), // app entry value
 //   )
 //   .address();
-//   // return all the Outcome objects from the entries linked to the edge anchor (drop entries with wrong type)
+//   // return all the Outcome objects from the entries linked to the connection anchor (drop entries with wrong type)
 //   let members = get_links!(
 //     &anchor_address,
 //     LinkMatch::Exactly("anchor->outcome_member"), // the link type to match

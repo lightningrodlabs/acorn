@@ -64,12 +64,12 @@ pub fn archive_outcome_members(address: HeaderHashB64) -> ExternResult<Vec<Heade
             .into_iter()
             .filter(|wire_element| {
                 // check whether the parent_address or child_address is equal to the given address.
-                // If so, the edge is connected to the outcome being archived.
+                // If so, the connection is connected to the outcome being archived.
                 wire_element.entry.outcome_address == address.clone()
             })
             .map(|wire_element| {
                 let outcome_member_address = wire_element.header_hash;
-                // archive the edge with this address
+                // archive the connection with this address
                 // this will also trigger signals
                 match delete_action.delete_action::<OutcomeMember, WasmError, SignalType>(
                     outcome_member_address.clone(),

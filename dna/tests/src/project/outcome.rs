@@ -236,5 +236,5 @@ pub mod tests {
         );
     }
     #[test]
-    fn test_create_outcome_with_edge() {}
+    fn test_create_outcome_with_connection() {}
 }

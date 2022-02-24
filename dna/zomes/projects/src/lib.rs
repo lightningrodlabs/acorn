@@ -8,7 +8,7 @@ use hdk_crud::{
     signals::{create_receive_signal_cap_grant, ActionSignal},
 };
 use project::{
-    edge::crud::Edge,
+    connection::crud::Connection,
     entry_point::crud::EntryPoint,
     outcome::crud::{ArchiveOutcomeFullySignal, Outcome, OutcomeWithConnectionSignal},
     outcome_comment::crud::OutcomeComment,
@@ -32,7 +32,7 @@ pub fn init(_: ()) -> ExternResult<InitCallbackResult> {
 
 entry_defs!(
     Path::entry_def(),
-    Edge::entry_def(),
+    Connection::entry_def(),
     EntryPoint::entry_def(),
     Outcome::entry_def(),
     OutcomeComment::entry_def(),
@@ -50,12 +50,12 @@ SIGNALS
 // untagged because the useful tagging is done internally on the *Signal objects
 #[serde(tag = "signalType", content = "data")]
 pub enum SignalType {
-    Edge(ActionSignal<Edge>),
+    Connection(ActionSignal<Connection>),
     EntryPoint(ActionSignal<EntryPoint>),
     Outcome(ActionSignal<Outcome>),
-    // custom signal type for a outcome_with_edge
+    // custom signal type for a outcome_with_connection
     // this is because it's important to the UI to receive both
-    // the new outcome, and the edge, at the same moment
+    // the new outcome, and the connection, at the same moment
     OutcomeWithConnection(OutcomeWithConnectionSignal),
     // custom signal type for outcome_fully_archived
     // this is because it's important to the UI to receive
@@ -71,9 +71,9 @@ pub enum SignalType {
     RealtimeInfo(RealtimeInfoSignal),
 }
 
-impl From<ActionSignal<Edge>> for SignalType {
-    fn from(value: ActionSignal<Edge>) -> Self {
-        SignalType::Edge(value)
+impl From<ActionSignal<Connection>> for SignalType {
+    fn from(value: ActionSignal<Connection>) -> Self {
+        SignalType::Connection(value)
     }
 }
 impl From<ActionSignal<EntryPoint>> for SignalType {
