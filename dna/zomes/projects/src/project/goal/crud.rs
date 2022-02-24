@@ -68,14 +68,14 @@ pub struct UIEnum(pub String);
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 pub enum Scope {
-    Small(AchievementLevel),
-    Uncertain(TimeEstimate),
+    Small(AchievementStatus),
+    Uncertain(SmallsEstimate),
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-pub struct TimeEstimate(pub String);
-impl TimeEstimate {
-    pub fn new(estimate: String) -> Self {
+pub struct SmallsEstimate(pub u32);
+impl SmallsEstimate {
+    pub fn new(estimate: u32) -> Self {
         Self(estimate)
     }
 }
@@ -83,25 +83,25 @@ impl TimeEstimate {
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 #[serde(from = "UIEnum")]
 #[serde(into = "UIEnum")]
-pub enum AchievementLevel {
-    Incomplete,
-    Complete,
+pub enum AchievementStatus {
+    Achieved,
+    NotAchieved,
 }
-impl From<UIEnum> for AchievementLevel {
+impl From<UIEnum> for AchievementStatus {
     fn from(ui_enum: UIEnum) -> Self {
         match ui_enum.0.as_str() {
-            "Incomplete" => Self::Incomplete,
-            "Complete" => Self::Complete,
-            _ => Self::Incomplete,
+            "NotAchieved" => Self::NotAchieved,
+            "Achieved" => Self::Achieved,
+            _ => Self::NotAchieved,
         }
     }
 }
-impl From<AchievementLevel> for UIEnum {
-    fn from(achievement_level: AchievementLevel) -> Self {
+impl From<AchievementStatus> for UIEnum {
+    fn from(achievement_level: AchievementStatus) -> Self {
         Self(achievement_level.to_string())
     }
 }
-impl fmt::Display for AchievementLevel {
+impl fmt::Display for AchievementStatus {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}", self)
     }

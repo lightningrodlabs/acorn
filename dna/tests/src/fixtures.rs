@@ -12,7 +12,7 @@ pub(crate) mod fixtures {
     use hdk::prelude::*;
     use holo_hash::{AgentPubKeyB64, HeaderHashB64};
     use profiles::profile::{Profile, Status as ProfileStatus};
-    use projects::project::goal::crud::{Goal, Scope, AchievementLevel, TimeEstimate};
+    use projects::project::goal::crud::{Goal, Scope, AchievementStatus, SmallsEstimate};
     use projects::project::{
         edge::crud::Edge,
         entry_point::crud::EntryPoint,
@@ -79,27 +79,27 @@ pub(crate) mod fixtures {
     fixturator!(
       Scope;
       enum [ Small Uncertain ];
-      curve Empty Scope::Uncertain(fixt!(TimeEstimate));
+      curve Empty Scope::Uncertain(fixt!(SmallsEstimate));
       curve Unpredictable match ScopeVariant::random() {
-        ScopeVariant::Small => Scope::Small(fixt!(AchievementLevel)),
-        ScopeVariant::Uncertain => Scope::Uncertain(fixt!(TimeEstimate)),
+        ScopeVariant::Small => Scope::Small(fixt!(AchievementStatus)),
+        ScopeVariant::Uncertain => Scope::Uncertain(fixt!(SmallsEstimate)),
       };
       curve Predictable match ScopeVariant::nth(get_fixt_index!()) {
-        ScopeVariant::Small => Scope::Small(AchievementLevelFixturator::new_indexed(Predictable, get_fixt_index!()).next().unwrap()),
-        ScopeVariant::Uncertain => Scope::Uncertain(TimeEstimateFixturator::new_indexed(Predictable, get_fixt_index!()).next().unwrap()),
+        ScopeVariant::Small => Scope::Small(AchievementStatusFixturator::new_indexed(Predictable, get_fixt_index!()).next().unwrap()),
+        ScopeVariant::Uncertain => Scope::Uncertain(SmallsEstimateFixturator::new_indexed(Predictable, get_fixt_index!()).next().unwrap()),
 
       };
     );
 
 
     fixturator!(
-      AchievementLevel;
-      unit variants [Incomplete Complete] empty Complete;
+      AchievementStatus;
+      unit variants [NotAchieved Achieved] empty Achieved;
     );
 
     fixturator!(
-      TimeEstimate;
-      constructor fn new(String);
+      SmallsEstimate;
+      constructor fn new(u32);
     );
 
     fixturator!(
