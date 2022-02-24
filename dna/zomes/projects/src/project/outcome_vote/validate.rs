@@ -1,7 +1,7 @@
 use crate::project::validate::must_get_header_and_entry;
 use crate::project::{
     error::Error,
-    goal_comment::crud::GoalComment,
+    outcome_vote::crud::OutcomeVote,
     validate::{
         validate_value_matches_create_author, validate_value_matches_original_author_for_edit,
     },
@@ -9,18 +9,17 @@ use crate::project::{
 use hdk::prelude::*;
 
 #[hdk_extern]
-/// `GoalComment`s can only be created if the `Goal` exists and
-/// the `agent_address` must match the address of the agent adding
-/// the `GoalComment`, unless the entry is imported (`is_imported`)
-pub fn validate_create_entry_goal_comment(
+/// `OutcomeVote`s can only be created if the Outcome exists and if `agent_address` of the
+/// `OutcomeVote` matches the agent authoring the entry, unless the `OutcomeVote` is imported
+pub fn validate_create_entry_outcome_vote(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         // element must have an entry that must deserialize correctly
-        match GoalComment::try_from(&validate_data.element) {
+        match OutcomeVote::try_from(&validate_data.element) {
             Ok(proposed_entry) => {
-                // parent goal at goal_address must be determined to exist
-                must_get_header(proposed_entry.goal_address.into())?;
+                // parent outcome at outcome_address must be determined to exist
+                must_get_header(proposed_entry.outcome_address.into())?;
                 // an imported entry can have another listed as author, and an edit history
                 if proposed_entry.is_imported {
                     ValidateCallbackResult::Valid
@@ -38,14 +37,14 @@ pub fn validate_create_entry_goal_comment(
 }
 
 #[hdk_extern]
-/// `GoalComment`s can only be updated by the original commenter and the Goal must exist.
-/// `agent_address` should not change from the original value
-pub fn validate_update_entry_goal_comment(
+/// Updates allowed if the original `OutcomeVote` exists and only by the original author
+/// `agent_address` cannot change from the original address
+pub fn validate_update_entry_outcome_vote(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
     Ok(
         // element must have an entry that must deserialize correctly
-        match GoalComment::try_from(&validate_data.element) {
+        match OutcomeVote::try_from(&validate_data.element) {
             Ok(proposed_entry) => {
                 // agent_address must match header author
                 // and then it will also be validated that the header
@@ -59,17 +58,16 @@ pub fn validate_update_entry_goal_comment(
                         // -> check the original header and make sure that
                         // this header author matches that original author
                         if let Header::Update(header) = validate_data.element.header() {
-                            let original_goal_comment = must_get_header_and_entry::<GoalComment>(
+                            let original_outcome_vote = must_get_header_and_entry::<OutcomeVote>(
                                 header.original_header_address.clone(),
                             )?;
                             // the final return value
-                            // if this passes, all have passed
-
+                            // if this passes, all have passed.
                             // here we are checking to make sure that
                             // only original author can make this update
                             validate_value_matches_original_author_for_edit(
                                 &header.author,
-                                &original_goal_comment.agent_address.into(),
+                                &original_outcome_vote.agent_address.into(),
                             )
                         } else {
                             // Holochain passed the wrong header!
@@ -86,7 +84,7 @@ pub fn validate_update_entry_goal_comment(
 }
 
 #[hdk_extern]
-/// Deletes are allowed by anyone
-pub fn validate_delete_entry_goal_comment(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+/// Deletes are allowed only by original author
+pub fn validate_delete_entry_outcome_vote(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
 }

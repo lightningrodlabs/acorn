@@ -1,9 +1,9 @@
 use crate::project::{
     edge::crud::{Edge, get_edge_path},
     entry_point::crud::{EntryPoint, get_entry_point_path},
-    goal_comment::crud::{GoalComment, get_goal_comment_path},
-    goal_member::crud::{archive_goal_members, GoalMember},
-    goal_vote::crud::{get_goal_vote_path, GoalVote},
+    outcome_comment::crud::{OutcomeComment, get_outcome_comment_path},
+    outcome_member::crud::{archive_outcome_members, OutcomeMember},
+    outcome_vote::crud::{get_outcome_vote_path, OutcomeVote},
 };
 use hdk_crud::{chain_actions::{create_action::{CreateAction, PathOrEntryHash}, delete_action::DeleteAction, fetch_action::FetchAction}, retrieval::{fetch_entries::FetchEntries, fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry}}; //may want to do the mock thing
 use crate::{get_peers_content, SignalType};
@@ -17,12 +17,12 @@ use hdk_crud::{
 use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 use std::fmt;
 
-// A Goal Card. This is a card on the SoA Tree which can be small or non-small, complete or
+// A Outcome Card. This is a card on the SoA Tree which can be small or non-small, complete or
 // incomplete, certain or uncertain, and contains text content.
 // user hash and unix timestamp are included to prevent hash collisions.
-#[hdk_entry(id = "goal")]
+#[hdk_entry(id = "outcome")]
 #[derive(Clone, PartialEq)]
-pub struct Goal {
+pub struct Outcome {
     pub content: String,
     pub user_hash: AgentPubKeyB64,
     pub user_edit_hash: Option<AgentPubKeyB64>,
@@ -35,7 +35,7 @@ pub struct Goal {
     pub is_imported: bool,
 }
 
-impl Goal {
+impl Outcome {
     pub fn new(
         content: String,
         user_hash: AgentPubKeyB64,
@@ -120,9 +120,9 @@ impl TimeFrame {
 }
 
 crud!(
-    Goal,
-    goal,
-    "goal",
+    Outcome,
+    outcome,
+    "outcome",
     get_peers_content,
     SignalType
 );
@@ -131,15 +131,15 @@ crud!(
 #[serde(from = "UIEnum")]
 #[serde(into = "UIEnum")]
 pub enum RelationInput {
-    ExistingGoalAsChild,
-    ExistingGoalAsParent,
+    ExistingOutcomeAsChild,
+    ExistingOutcomeAsParent,
 }
 impl From<UIEnum> for RelationInput {
     fn from(ui_enum: UIEnum) -> Self {
         match ui_enum.0.as_str() {
-            "ExistingGoalAsChild" => Self::ExistingGoalAsChild,
-            "ExistingGoalAsParent" => Self::ExistingGoalAsParent,
-            _ => Self::ExistingGoalAsChild,
+            "ExistingOutcomeAsChild" => Self::ExistingOutcomeAsChild,
+            "ExistingOutcomeAsParent" => Self::ExistingOutcomeAsParent,
+            _ => Self::ExistingOutcomeAsChild,
         }
     }
 }
@@ -155,56 +155,56 @@ impl fmt::Display for RelationInput {
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-pub struct LinkedGoalDetails {
-    goal_address: HeaderHashB64,
+pub struct LinkedOutcomeDetails {
+    outcome_address: HeaderHashB64,
     relation: RelationInput,
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-pub struct CreateGoalWithEdgeInput {
-    entry: Goal,
-    maybe_linked_goal: Option<LinkedGoalDetails>,
+pub struct CreateOutcomeWithEdgeInput {
+    entry: Outcome,
+    maybe_linked_outcome: Option<LinkedOutcomeDetails>,
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-pub struct CreateGoalWithEdgeOutput {
-    goal: WireElement<Goal>,
+pub struct CreateOutcomeWithConnectionOutput {
+    outcome: WireElement<Outcome>,
     maybe_edge: Option<WireElement<Edge>>,
 }
 
 // custom signal type
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GoalWithEdgeSignal {
+pub struct OutcomeWithConnectionSignal {
     entry_type: String,
     action: ActionType,
-    data: CreateGoalWithEdgeOutput,
+    data: CreateOutcomeWithConnectionOutput,
 }
 
 #[hdk_extern]
-pub fn create_goal_with_edge( // TODO: may want to consider having a handler so can pass in the create_action struct for testing
-    input: CreateGoalWithEdgeInput,
-) -> ExternResult<CreateGoalWithEdgeOutput> {
+pub fn create_outcome_with_edge( // TODO: may want to consider having a handler so can pass in the create_action struct for testing
+    input: CreateOutcomeWithEdgeInput,
+) -> ExternResult<CreateOutcomeWithConnectionOutput> {
     // false to say don't send a signal
     let create_action = CreateAction {};
-    let wire_element = create_action.create_action::<Goal, WasmError, SignalType>(
+    let wire_element = create_action.create_action::<Outcome, WasmError, SignalType>(
         input.entry.clone(),
-        Some(PathOrEntryHash::Path(get_goal_path())),
-        "goal".to_string(),
+        Some(PathOrEntryHash::Path(get_outcome_path())),
+        "outcome".to_string(),
         None,
         None,
     )?;
-    let new_goal_address = wire_element.header_hash.clone();
-    let maybe_edge: Option<WireElement<Edge>> = match input.maybe_linked_goal {
-        Some(linked_goal_details) => {
-            let (parent_address, child_address) = match linked_goal_details.relation {
-                // new goal becomes parent
-                RelationInput::ExistingGoalAsChild => {
-                    (new_goal_address, linked_goal_details.goal_address)
+    let new_outcome_address = wire_element.header_hash.clone();
+    let maybe_edge: Option<WireElement<Edge>> = match input.maybe_linked_outcome {
+        Some(linked_outcome_details) => {
+            let (parent_address, child_address) = match linked_outcome_details.relation {
+                // new outcome becomes parent
+                RelationInput::ExistingOutcomeAsChild => {
+                    (new_outcome_address, linked_outcome_details.outcome_address)
                 }
-                // new goal becomes child
-                RelationInput::ExistingGoalAsParent => {
-                    (linked_goal_details.goal_address, new_goal_address)
+                // new outcome becomes child
+                RelationInput::ExistingOutcomeAsParent => {
+                    (linked_outcome_details.outcome_address, new_outcome_address)
                 }
             };
             let random = sys_time()?;
@@ -227,47 +227,47 @@ pub fn create_goal_with_edge( // TODO: may want to consider having a handler so 
         None => None,
     };
 
-    let goal_with_edge = CreateGoalWithEdgeOutput {
-        goal: wire_element.clone(),
+    let outcome_with_edge = CreateOutcomeWithConnectionOutput {
+        outcome: wire_element.clone(),
         maybe_edge,
     };
-    let signal = SignalType::GoalWithEdge(GoalWithEdgeSignal {
-        entry_type: "goal_with_edge".to_string(),
+    let signal = SignalType::OutcomeWithConnection(OutcomeWithConnectionSignal {
+        entry_type: "outcome_with_edge".to_string(),
         action: ActionType::Create,
-        data: goal_with_edge.clone(),
+        data: outcome_with_edge.clone(),
     });
     let payload = ExternIO::encode(signal)?;
     let peers = get_peers_content()?;
     remote_signal(payload, peers)?;
 
-    Ok(goal_with_edge)
+    Ok(outcome_with_edge)
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-pub struct ArchiveGoalFullyResponse {
+pub struct ArchiveOutcomeFullyResponse {
     address: HeaderHashB64,
     archived_edges: Vec<HeaderHashB64>,
-    archived_goal_members: Vec<HeaderHashB64>,
-    archived_goal_votes: Vec<HeaderHashB64>,
-    archived_goal_comments: Vec<HeaderHashB64>,
+    archived_outcome_members: Vec<HeaderHashB64>,
+    archived_outcome_votes: Vec<HeaderHashB64>,
+    archived_outcome_comments: Vec<HeaderHashB64>,
     archived_entry_points: Vec<HeaderHashB64>,
 }
 
 // custom signal type
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 #[serde(rename_all = "camelCase")]
-pub struct ArchiveGoalFullySignal {
+pub struct ArchiveOutcomeFullySignal {
     entry_type: String,
     action: ActionType,
-    data: ArchiveGoalFullyResponse,
+    data: ArchiveOutcomeFullyResponse,
 }
 
 #[hdk_extern]
-pub fn archive_goal_fully(address: HeaderHashB64) -> ExternResult<ArchiveGoalFullyResponse> {
+pub fn archive_outcome_fully(address: HeaderHashB64) -> ExternResult<ArchiveOutcomeFullyResponse> {
     let delete_action = DeleteAction {};
-    delete_action.delete_action::<Goal, WasmError,SignalType>(
+    delete_action.delete_action::<Outcome, WasmError,SignalType>(
         address.clone(),
-        "goal".to_string(),
+        "outcome".to_string(),
         None,
     )?;
     let fetch_action = FetchAction {};
@@ -285,7 +285,7 @@ pub fn archive_goal_fully(address: HeaderHashB64) -> ExternResult<ArchiveGoalFul
         .into_iter()
         .filter(|wire_element| {
             // check whether the parent_address or child_address is equal to the given address.
-            // If so, the edge is connected to the goal being archived.
+            // If so, the edge is connected to the outcome being archived.
             wire_element.entry.child_address == address.clone()
                 || wire_element.entry.parent_address == address.clone()
         })
@@ -304,26 +304,26 @@ pub fn archive_goal_fully(address: HeaderHashB64) -> ExternResult<ArchiveGoalFul
         .filter_map(Result::ok)
         .collect();
 
-    let archived_goal_members = archive_goal_members(address.clone())?;
+    let archived_outcome_members = archive_outcome_members(address.clone())?;
 
-    let archived_goal_votes = fetch_action.fetch_action::<GoalVote, WasmError>(
+    let archived_outcome_votes = fetch_action.fetch_action::<OutcomeVote, WasmError>(
         &fetch_entries,
         &fetch_links,
         &get_latest,
         FetchOptions::All,
         GetOptions::content(),
-        get_goal_vote_path(),
+        get_outcome_vote_path(),
     )?
         .into_iter()
-        .filter(|wire_element| wire_element.entry.goal_address == address.clone())
+        .filter(|wire_element| wire_element.entry.outcome_address == address.clone())
         .map(|wire_element| {
-            let goal_vote_address = wire_element.header_hash;
-            match delete_action.delete_action::<GoalVote, WasmError, SignalType>(
-                goal_vote_address.clone(),
-                "goal_vote".to_string(),
+            let outcome_vote_address = wire_element.header_hash;
+            match delete_action.delete_action::<OutcomeVote, WasmError, SignalType>(
+                outcome_vote_address.clone(),
+                "outcome_vote".to_string(),
                 None,
             ) {
-                Ok(_) => Ok(goal_vote_address),
+                Ok(_) => Ok(outcome_vote_address),
                 Err(e) => Err(e),
             }
         })
@@ -331,26 +331,26 @@ pub fn archive_goal_fully(address: HeaderHashB64) -> ExternResult<ArchiveGoalFul
         .filter_map(Result::ok)
         .collect();
 
-    let archived_goal_comments =
-        // inner_fetch_goal_comments(FetchOptions::All, GetOptions::content())?
-        fetch_action.fetch_action::<GoalComment, WasmError>(
+    let archived_outcome_comments =
+        // inner_fetch_outcome_comments(FetchOptions::All, GetOptions::content())?
+        fetch_action.fetch_action::<OutcomeComment, WasmError>(
             &fetch_entries,
             &fetch_links,
             &get_latest,
             FetchOptions::All,
             GetOptions::content(),
-            get_goal_comment_path(),
+            get_outcome_comment_path(),
         )?
             .into_iter()
-            .filter(|wire_element| wire_element.entry.goal_address == address)
+            .filter(|wire_element| wire_element.entry.outcome_address == address)
             .map(|wire_element| {
-                let goal_comment_address = wire_element.header_hash;
-                match delete_action.delete_action::<GoalComment, WasmError, SignalType>(
-                    goal_comment_address.clone(),
-                    "goal_comment".to_string(),
+                let outcome_comment_address = wire_element.header_hash;
+                match delete_action.delete_action::<OutcomeComment, WasmError, SignalType>(
+                    outcome_comment_address.clone(),
+                    "outcome_comment".to_string(),
                     None,
                 ) {
-                    Ok(_) => Ok(goal_comment_address),
+                    Ok(_) => Ok(outcome_comment_address),
                     Err(e) => Err(e),
                 }
             })
@@ -367,7 +367,7 @@ pub fn archive_goal_fully(address: HeaderHashB64) -> ExternResult<ArchiveGoalFul
         get_entry_point_path(),
     )?
         .into_iter()
-        .filter(|wire_element| wire_element.entry.goal_address == address)
+        .filter(|wire_element| wire_element.entry.outcome_address == address)
         .map(|wire_element| {
             let entry_point_address = wire_element.header_hash;
             match delete_action.delete_action::<EntryPoint, WasmError, SignalType>(
@@ -383,17 +383,17 @@ pub fn archive_goal_fully(address: HeaderHashB64) -> ExternResult<ArchiveGoalFul
         .filter_map(Result::ok)
         .collect();
 
-    let archive_response = ArchiveGoalFullyResponse {
+    let archive_response = ArchiveOutcomeFullyResponse {
         address,
         archived_edges,
-        archived_goal_members,
-        archived_goal_votes,
-        archived_goal_comments,
+        archived_outcome_members,
+        archived_outcome_votes,
+        archived_outcome_comments,
         archived_entry_points,
     };
 
-    let signal = SignalType::ArchiveGoalFully(ArchiveGoalFullySignal {
-        entry_type: "archive_goal_fully".to_string(),
+    let signal = SignalType::ArchiveOutcomeFully(ArchiveOutcomeFullySignal {
+        entry_type: "archive_outcome_fully".to_string(),
         action: ActionType::Delete,
         data: archive_response.clone(),
     });
@@ -404,24 +404,24 @@ pub fn archive_goal_fully(address: HeaderHashB64) -> ExternResult<ArchiveGoalFul
     Ok(archive_response)
 }
 
-// TODO: finish get goal history
+// TODO: finish get outcome history
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone)]
 pub struct GetHistoryResponse {
-    entries: Vec<Goal>,
-    members: Vec<Vec<GoalMember>>,
+    entries: Vec<Outcome>,
+    members: Vec<Vec<OutcomeMember>>,
     address: HeaderHashB64,
 }
 
-// pub fn history_of_goal(address: HeaderHashB64) -> ExternResult<GetHistoryResponse> {
+// pub fn history_of_outcome(address: HeaderHashB64) -> ExternResult<GetHistoryResponse> {
 //   let anchor_address = Entry::App(
 //     "anchor".into(),       // app entry type
-//     "goal_members".into(), // app entry value
+//     "outcome_members".into(), // app entry value
 //   )
 //   .address();
-//   // return all the Goal objects from the entries linked to the edge anchor (drop entries with wrong type)
+//   // return all the Outcome objects from the entries linked to the edge anchor (drop entries with wrong type)
 //   let members = get_links!(
 //     &anchor_address,
-//     LinkMatch::Exactly("anchor->goal_member"), // the link type to match
+//     LinkMatch::Exactly("anchor->outcome_member"), // the link type to match
 //     LinkMatch::Any,
 //   )?
 //   // scoop all these entries up into an array and return it
@@ -435,11 +435,11 @@ pub struct GetHistoryResponse {
 //           .into_iter()
 //           .map(|item| {
 //             if let Some(App(_, value_entry)) = item.entry {
-//               match serde_json::from_str::<GoalMember>(&Into::<String>::into(value_entry)).ok() {
-//                 Some(goal_member) => {
-//                   // filter down to only Goal Members that are associated with the requested Goal
-//                   if goal_member.goal_address == address {
-//                     Ok(goal_member)
+//               match serde_json::from_str::<OutcomeMember>(&Into::<String>::into(value_entry)).ok() {
+//                 Some(outcome_member) => {
+//                   // filter down to only Outcome Members that are associated with the requested Outcome
+//                   if outcome_member.outcome_address == address {
+//                     Ok(outcome_member)
 //                   } else {
 //                     Err(ZomeApiError::Internal("error".into()))
 //                   }
@@ -457,7 +457,7 @@ pub struct GetHistoryResponse {
 //       None
 //     }
 //   })
-//   .filter_map(|op: Option<Vec<GoalMember>>| match op {
+//   .filter_map(|op: Option<Vec<OutcomeMember>>| match op {
 //     Some(vec) => {
 //       if vec.len() > 0 {
 //         Some(vec)
@@ -475,8 +475,8 @@ pub struct GetHistoryResponse {
 //         .into_iter()
 //         .map(|item| {
 //           if let Some(App(_, value_entry)) = item.entry {
-//             match serde_json::from_str::<Goal>(&Into::<String>::into(value_entry)).ok() {
-//               Some(goal) => Ok(goal),
+//             match serde_json::from_str::<Outcome>(&Into::<String>::into(value_entry)).ok() {
+//               Some(outcome) => Ok(outcome),
 //               None => Err(ZomeApiError::Internal("error".into())),
 //             }
 //           } else {

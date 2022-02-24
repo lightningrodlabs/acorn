@@ -2,7 +2,7 @@
 // this is done to enable passing those to constructor functions for fixturators, like
 // ```
 // fixturator!(
-//      Goal;
+//      Outcome;
 //        constructor fn new(..., OptionVecString, ...);
 //  );
 // ```
@@ -12,14 +12,14 @@ pub(crate) mod fixtures {
     use hdk::prelude::*;
     use holo_hash::{AgentPubKeyB64, HeaderHashB64};
     use profiles::profile::{Profile, Status as ProfileStatus};
-    use projects::project::goal::crud::{Goal, Scope, AchievementStatus, SmallsEstimate};
+    use projects::project::outcome::crud::{Outcome, Scope, AchievementStatus, SmallsEstimate};
     use projects::project::{
         edge::crud::Edge,
         entry_point::crud::EntryPoint,
-        goal::crud::TimeFrame,
-        goal_comment::crud::GoalComment,
-        goal_member::crud::GoalMember,
-        goal_vote::crud::GoalVote,
+        outcome::crud::TimeFrame,
+        outcome_comment::crud::OutcomeComment,
+        outcome_member::crud::OutcomeMember,
+        outcome_vote::crud::OutcomeVote,
         member::entry::Member,
         project_meta::crud::{PriorityMode, ProjectMeta},
     };
@@ -35,17 +35,17 @@ pub(crate) mod fixtures {
     );
 
     fixturator!(
-      GoalMember;
+      OutcomeMember;
         constructor fn new(HeaderHashB64, AgentPubKeyB64, AgentPubKeyB64, f64, bool);
     );
 
     fixturator!(
-      GoalComment;
+      OutcomeComment;
         constructor fn new(HeaderHashB64, String, AgentPubKeyB64, f64, bool);
     );
 
     fixturator!(
-      GoalVote;
+      OutcomeVote;
         constructor fn new(HeaderHashB64, f64, f64, f64, f64, AgentPubKeyB64, f64, bool);
     );
 
@@ -181,7 +181,7 @@ pub(crate) mod fixtures {
     );
 
     fixturator!(
-      Goal;
+      Outcome;
         constructor fn new(String, AgentPubKeyB64, OptionAgentPubKeyB64, f64, Optionf64, Scope, OptionVecString, String, OptionTimeFrame, bool);
     );
     fixturator!(

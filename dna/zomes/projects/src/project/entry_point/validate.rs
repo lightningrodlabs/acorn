@@ -5,7 +5,7 @@ use crate::project::{error::Error};
 use hdk::prelude::*;
 
 #[hdk_extern]
-/// The `Goal` at the `goal_address` on the `EntryPoint` must exist and the `creator_address` of the
+/// The `Outcome` at the `outcome_address` on the `EntryPoint` must exist and the `creator_address` of the
 /// `EntryPoint` must match the agent authoring the `EntryPoint`, unless the entry is imported
 pub fn validate_create_entry_entry_point(
     validate_data: ValidateData,
@@ -14,8 +14,8 @@ pub fn validate_create_entry_entry_point(
         // element must have an entry that must deserialize correctly
         match EntryPoint::try_from(&validate_data.element) {
             Ok(proposed_entry) => {
-                // header for parent Goal at goal_address must be determined to exist
-                must_get_header(proposed_entry.goal_address.into())?;
+                // header for parent Outcome at outcome_address must be determined to exist
+                must_get_header(proposed_entry.outcome_address.into())?;
                 // an imported entry can have another listed as author
                 if proposed_entry.is_imported {
                     ValidateCallbackResult::Valid

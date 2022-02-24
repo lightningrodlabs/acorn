@@ -4,7 +4,7 @@ use hdk_crud::crud;
 use holo_hash::HeaderHashB64;
 
 // An edge. This is an arrow on the SoA Tree which directionally links
-// two goals.
+// two outcomes.
 #[hdk_entry(id = "edge")]
 #[derive(Clone, PartialEq)]
 pub struct Edge {

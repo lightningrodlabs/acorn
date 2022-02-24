@@ -1,6 +1,6 @@
 use crate::{
     get_peers_content,
-    project::{error::Error, goal::crud::UIEnum},
+    project::{error::Error, outcome::crud::UIEnum},
     SignalType,
 };
 use hdk::prelude::*;
@@ -20,7 +20,7 @@ pub struct ProjectMeta {
     pub passphrase: String,
     pub is_imported: bool,
     pub priority_mode: PriorityMode,
-    pub top_priority_goals: Vec<HeaderHashB64>,
+    pub top_priority_outcomes: Vec<HeaderHashB64>,
 }
 
 impl ProjectMeta {
@@ -32,7 +32,7 @@ impl ProjectMeta {
         passphrase: String,
         is_imported: bool,
         priority_mode: PriorityMode,
-        top_priority_goals: Vec<HeaderHashB64>,
+        top_priority_outcomes: Vec<HeaderHashB64>,
     ) -> Self {
         Self {
             creator_address,
@@ -42,7 +42,7 @@ impl ProjectMeta {
             passphrase,
             is_imported,
             priority_mode,
-            top_priority_goals,
+            top_priority_outcomes,
         }
     }
 }

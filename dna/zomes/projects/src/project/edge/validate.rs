@@ -3,7 +3,7 @@ use crate::project::error::Error;
 use hdk::prelude::*;
 
 #[hdk_extern]
-/// New edges cannot be self-referential and both the parent and child goal must exist
+/// New edges cannot be self-referential and both the parent and child outcome must exist
 pub fn validate_create_entry_edge(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
@@ -21,7 +21,7 @@ pub fn validate_create_entry_edge(
         return Ok(Error::IdenticalParentChild.into());
     }
 
-    // parent goal, and child goal, must be determined to exist to pass validation
+    // parent outcome, and child outcome, must be determined to exist to pass validation
     must_get_header(proposed_edge.parent_address.into())?;
     must_get_header(proposed_edge.child_address.into())?;
     Ok(ValidateCallbackResult::Valid)
