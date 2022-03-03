@@ -11,7 +11,7 @@ use holo_hash::AgentPubKeyB64;
 // are "members" of this project, as in, they have joined the project
 #[hdk_extern]
 pub fn fetch_members(_: ()) -> ExternResult<Vec<WireElement<Member>>> {
-    let path_hash = Path::from(MEMBER_PATH).hash()?;
+    let path_hash = Path::from(MEMBER_PATH).path_entry_hash()?;
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
     let entries = fetch_links.fetch_links::<Member>(&get_latest, path_hash, GetOptions::content())?;

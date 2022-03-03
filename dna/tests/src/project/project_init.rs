@@ -82,7 +82,7 @@ pub mod tests {
             .return_const(Ok(expected_get_output));
 
         mock_hdk
-            .expect_hash_entry() // called from `let member_path_address = Path::from(MEMBER_PATH).hash()?;`
+            .expect_hash_entry() // called from `let member_path_address = Path::from(MEMBER_PATH).path_entry_hash()?;`
             .with(mockall::predicate::eq(member_path_entry.clone()))
             .times(1)
             .return_const(Ok(member_path_entry_hash.clone()));

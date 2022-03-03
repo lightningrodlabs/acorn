@@ -46,7 +46,7 @@ pub fn join_project_during_init() -> ExternResult<()> {
 
     // while joining, list me in the list of members
     // so that all peers can become aware of the new presence
-    let member_path_address = Path::from(MEMBER_PATH).hash()?;
+    let member_path_address = Path::from(MEMBER_PATH).path_entry_hash()?;
     let member = Member {
         address: AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey),
     };

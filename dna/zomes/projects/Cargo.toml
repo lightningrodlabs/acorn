@@ -8,9 +8,9 @@ name = "projects"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-hdk_crud = "0.5.3"
-holo_hash = { version = "=0.0.12", features = ["encoding", "fixturators"] }
-hdk = "0.0.115"
+hdk_crud = "0.5.5"
+holo_hash = { version = "=0.0.19", features = ["encoding", "fixturators"] }
+hdk = "0.0.122"
 paste = "*"
 # use whatever serde hdk uses
 serde = "*"

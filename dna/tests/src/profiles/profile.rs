@@ -200,10 +200,14 @@ pub mod tests {
         let profile = fixt!(Profile);
         let profile_header_hash = fixt!(HeaderHash);
         let profile_entry_hash = fixt!(EntryHash);
+        let date_time: chrono::DateTime<chrono::Utc> = chrono::offset::Utc::now();
+        let time = Timestamp::from(date_time);
         let wire_element = WireElement {
             entry: profile,
             header_hash: HeaderHashB64::new(profile_header_hash),
             entry_hash: EntryHashB64::new(profile_entry_hash),
+            created_at: time,
+            updated_at: time,
         };
         wire_element
     }

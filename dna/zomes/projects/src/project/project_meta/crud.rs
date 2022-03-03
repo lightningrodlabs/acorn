@@ -105,12 +105,15 @@ pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireElemen
     let entry_hash = hash_entry(&entry)?;
     let path = Path::from(PROJECT_META_PATH);
     path.ensure()?;
-    let path_hash = path.hash()?;
+    let path_hash = path.path_entry_hash()?;
     create_link(path_hash, entry_hash.clone(), ())?;
+    let time = sys_time()?;
     let wire_entry: WireElement<ProjectMeta> = WireElement {
         entry,
         header_hash: HeaderHashB64::new(address),
         entry_hash: EntryHashB64::new(entry_hash),
+        created_at: time,
+        updated_at: time,
     };
     Ok(wire_entry)
 }
@@ -141,5 +144,5 @@ pub fn fetch_project_meta(_: ()) -> ExternResult<WireElement<ProjectMeta>> {
 #[hdk_extern]
 pub fn check_project_meta_exists(_: ()) -> ExternResult<bool> {
     let path = Path::from(PROJECT_META_PATH);
-    Ok(get(path.hash()?, GetOptions::latest())?.is_some())
+    Ok(get(path.path_entry_hash()?, GetOptions::latest())?.is_some())
 }

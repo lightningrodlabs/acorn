@@ -190,7 +190,7 @@ pub fn get_peers_content() -> ExternResult<Vec<AgentPubKey>> {
 
 // used to get addresses of agents to send signals to
 pub fn get_peers(get_options: GetOptions) -> ExternResult<Vec<AgentPubKey>> {
-    let path_hash = Path::from(MEMBER_PATH).hash()?;
+    let path_hash = Path::from(MEMBER_PATH).path_entry_hash()?;
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
     let entries = fetch_links.fetch_links::<Member>(&get_latest, path_hash, get_options)?;

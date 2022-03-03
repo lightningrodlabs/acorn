@@ -135,7 +135,7 @@ pub fn inner_create_whoami(
     let entry_hash = hash_entry(&entry)?;
 
     // list me so anyone can see my profile
-    let agents_path_address = Path::from(AGENTS_PATH).hash()?;
+    let agents_path_address = Path::from(AGENTS_PATH).path_entry_hash()?;
     create_link(agents_path_address, entry_hash.clone(), ())?;
 
     // list me so I can specifically and quickly look up my profile
@@ -143,10 +143,13 @@ pub fn inner_create_whoami(
     let agent_entry_hash = EntryHash::from(agent_pubkey);
     create_link(agent_entry_hash, entry_hash.clone(), ())?;
 
+    let time = sys_time()?;
     let wire_element: WireElement<Profile> = WireElement {
         entry,
         header_hash: HeaderHashB64::new(header_hash),
         entry_hash: EntryHashB64::new(entry_hash),
+        created_at: time,
+        updated_at: time,
     };
 
     // we don't want to cause real failure for inability to send to peers
@@ -175,12 +178,15 @@ pub fn create_imported_profile(entry: Profile) -> ExternResult<WireElement<Profi
     let header_hash = create_entry(&entry)?;
     let entry_hash = hash_entry(&entry)?;
     // list profile so anyone can see it
-    let agents_path_address = Path::from(AGENTS_PATH).hash()?;
+    let agents_path_address = Path::from(AGENTS_PATH).path_entry_hash()?;
     create_link(agents_path_address, entry_hash.clone(), ())?;
+    let time = sys_time()?;
     Ok(WireElement {
         entry,
         header_hash: HeaderHashB64::new(header_hash),
         entry_hash: EntryHashB64::new(entry_hash),
+        created_at: time,
+        updated_at: time,
     })
 }
 
@@ -206,10 +212,13 @@ pub fn inner_update_whoami(
 ) -> ExternResult<WireElement<Profile>> {
     update_entry(update.header_hash.clone().into(), &update.entry)?;
     let entry_hash = hash_entry(update.entry.clone())?;
+    let time = sys_time()?;
     let wire_element = WireElement {
         entry: update.entry,
         header_hash: update.header_hash,
         entry_hash: EntryHashB64::new(entry_hash),
+        created_at: time,
+        updated_at: time,
     };
     // // send update to peers
     // we don't want to cause real failure for inability to send to peers
@@ -251,7 +260,7 @@ pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
 
 #[hdk_extern]
 pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
-    let path_hash = Path::from(AGENTS_PATH).hash()?;
+    let path_hash = Path::from(AGENTS_PATH).path_entry_hash()?;
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
     let entries = fetch_links.fetch_links::<Profile>(&get_latest, path_hash, GetOptions::content())?
@@ -283,7 +292,7 @@ fn send_agent_signal(
 
 // used to get addresses of agents to send signals to
 fn get_peers() -> ExternResult<Vec<AgentPubKey>> {
-    let path_hash = Path::from(AGENTS_PATH).hash()?;
+    let path_hash = Path::from(AGENTS_PATH).path_entry_hash()?;
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
     let entries = fetch_links.fetch_links::<Profile>(&get_latest, path_hash, GetOptions::latest())?;
