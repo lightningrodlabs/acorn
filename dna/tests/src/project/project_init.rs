@@ -59,16 +59,22 @@ pub mod tests {
             .return_const(Ok(header_hash.clone()));
     }
     fn setup_join_project_during_init_mock(mock_hdk: &mut MockHdkT) {
-        // TODO: test when the MEMBER_PATH doesn't exist in DHT
+      
         let member_path = Path::from("member");
-        let member_path_entry = Entry::try_from(member_path).unwrap();
+        let member_path_hash = fixt!(EntryHash);
+        let member_path_entry = PathEntry::new(member_path_hash.clone());
         let member_path_entry_hash = fixt!(EntryHash);
         mock_hdk
             .expect_hash_entry() // called from `Path::from(MEMBER_PATH).ensure()?;`
-            .with(mockall::predicate::eq(member_path_entry.clone()))
+            .with(mockall::predicate::eq(Entry::try_from(member_path.clone()).unwrap()))
+            .times(1)
+            .return_const(Ok(member_path_hash.clone()));
+
+        mock_hdk
+            .expect_hash_entry() // called from `Path::from(MEMBER_PATH).ensure()?;`
+            .with(mockall::predicate::eq(Entry::try_from(member_path_entry.clone()).unwrap()))
             .times(1)
             .return_const(Ok(member_path_entry_hash.clone()));
-
         let member_path_get_input = vec![GetInput::new(
             AnyDhtHash::from(member_path_entry_hash.clone()),
             GetOptions::content(),
@@ -82,10 +88,17 @@ pub mod tests {
             .return_const(Ok(expected_get_output));
 
         mock_hdk
-            .expect_hash_entry() // called from `let member_path_address = Path::from(MEMBER_PATH).path_entry_hash()?;`
-            .with(mockall::predicate::eq(member_path_entry.clone()))
+            .expect_hash_entry() // called from `Path::from(MEMBER_PATH).ensure()?;`
+            .with(mockall::predicate::eq(Entry::try_from(member_path.clone()).unwrap()))
+            .times(1)
+            .return_const(Ok(member_path_hash.clone()));
+
+        mock_hdk
+            .expect_hash_entry() // called from `Path::from(MEMBER_PATH).ensure()?;`
+            .with(mockall::predicate::eq(Entry::try_from(member_path_entry.clone()).unwrap()))
             .times(1)
             .return_const(Ok(member_path_entry_hash.clone()));
+
 
         let agent_info = fixt!(AgentInfo);
         mock_hdk

@@ -36,14 +36,21 @@ pub mod tests {
 
         let agent_path = Path::from("agents");
         let agent_path_hash = fixt!(EntryHash);
+        let agent_path_entry = PathEntry::new(agent_path_hash.clone());
+        let agent_path_entry_hash = fixt!(EntryHash);
         mock_hash_entry(
             mock_hdk_ref,
             Entry::try_from(agent_path).unwrap(),
             Ok(agent_path_hash.clone()),
         );
 
+        mock_hash_entry(
+            mock_hdk_ref,
+            Entry::try_from(agent_path_entry.clone()).unwrap(),
+            Ok(agent_path_entry_hash.clone()),
+        );
         let create_link_input = CreateLinkInput::new(
-            agent_path_hash.clone(),
+            agent_path_entry_hash.clone(),
             profile_hash.clone(),
             LinkTag::from(()),
             ChainTopOrdering::default(),
@@ -54,6 +61,12 @@ pub mod tests {
             create_link_input,
             Ok(link_header_hash.clone()),
         );
+
+        let time = wire_element.created_at.clone();
+        mock_hdk_ref
+            .expect_sys_time()
+            .times(1)
+            .return_const(Ok(time));
 
         let agent_info = fixt!(AgentInfo);
         let agent_entry_hash = EntryHash::from(agent_info.clone().agent_initial_pubkey);
@@ -116,14 +129,21 @@ pub mod tests {
 
         let agent_path = Path::from("agents");
         let agent_path_hash = fixt!(EntryHash);
+        let agent_path_entry = PathEntry::new(agent_path_hash.clone());
+        let agent_path_entry_hash = fixt!(EntryHash);
         mock_hash_entry(
             mock_hdk_ref,
             Entry::try_from(agent_path).unwrap(),
             Ok(agent_path_hash.clone()),
         );
 
+        mock_hash_entry(
+            mock_hdk_ref,
+            Entry::try_from(agent_path_entry.clone()).unwrap(),
+            Ok(agent_path_entry_hash.clone()),
+        );
         let create_link_input = CreateLinkInput::new(
-            agent_path_hash.clone(),
+            agent_path_entry_hash.clone(),
             profile_entry_hash.into(),
             LinkTag::from(()),
             ChainTopOrdering::default(),
@@ -134,6 +154,11 @@ pub mod tests {
             create_link_input,
             Ok(link_header_hash.clone()),
         );
+        let time = wire_element.created_at.clone();
+        mock_hdk_ref
+            .expect_sys_time()
+            .times(1)
+            .return_const(Ok(time));
 
         set_hdk(mock_hdk);
         let result = create_imported_profile(profile);
@@ -160,6 +185,11 @@ pub mod tests {
             CreateInput::try_from(profile.clone()).unwrap().entry,
             Ok(update_entry_hash.clone()),
         );
+        let time = wire_element.created_at.clone();
+        mock_hdk_ref
+            .expect_sys_time()
+            .times(1)
+            .return_const(Ok(time));
 
         wire_element.entry_hash = EntryHashB64::new(update_entry_hash);
 
