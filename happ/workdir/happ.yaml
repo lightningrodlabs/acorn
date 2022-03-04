@@ -1,0 +1,11 @@
+manifest_version: "1"
+name: electron-holochain-application
+description: Describe your happ here
+roles:
+  - id: dna_role_name # this can be changed
+    provisioning:
+      strategy: create
+      deferred: false
+    dna:
+      bundled: "./profiles.dna"
+      clone_limit: 0

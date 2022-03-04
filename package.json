@@ -7,12 +7,12 @@
     "url": "git+https://github.com/h-be/acorn.git"
   },
   "scripts": {
-    "install-deps": "npm install && npm run dna-install && npm run web-install && npm run electron-install && npm run electron-tsc",
+    "install-deps": "npm install && npm run happ-install && npm run web-install && npm run electron-install && npm run electron-tsc",
     "dev": "pm2-dev pm2.config.js",
-    "dna-install": "bash scripts/install-hc-tools.sh",
-    "dna-test": "bash scripts/dna-test.sh",
-    "dna-pack": "bash scripts/dna-pack.sh",
-    "dna-reset": "npm run dna-pack && npm run user-data-reset",
+    "happ-install": "bash scripts/install-hc-tools.sh",
+    "happ-test": "bash scripts/happ-test.sh",
+    "happ-pack": "bash scripts/happ-pack.sh",
+    "happ-reset": "npm run happ-pack && npm run user-data-reset",
     "user-data-reset": "rm -rf user2-data && rm -rf user-data && mkdir user2-data user-data",
     "web-install": "cd web && npm install",
     "web": "cd web && ADMIN_WS_PORT=1234 APP_WS_PORT=8888 npx webpack-dev-server --config webpack.dev.js",
