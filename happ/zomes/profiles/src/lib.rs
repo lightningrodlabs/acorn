@@ -12,4 +12,4 @@ fn init(_: ()) -> ExternResult<InitCallbackResult> {
     Ok(InitCallbackResult::Pass)
 }
 
-entry_defs![Path::entry_def(), Profile::entry_def()];
+entry_defs![Path::entry_def(), Profile::entry_def(), PathEntry::entry_def()];

@@ -2,7 +2,7 @@ manifest_version: "1"
 name: electron-holochain-application
 description: Describe your happ here
 roles:
-  - id: dna_role_name # this can be changed
+  - id: dna-slot # this can be changed
     provisioning:
       strategy: create
       deferred: false

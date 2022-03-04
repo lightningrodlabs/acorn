@@ -10,7 +10,6 @@ use hdk_crud::{
 use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
 
 pub const AGENTS_PATH: &str = "agents";
-
 #[hdk_entry(id = "profile")]
 #[derive(Clone, PartialEq)]
 pub struct Profile {

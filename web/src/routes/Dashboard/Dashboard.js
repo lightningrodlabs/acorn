@@ -272,7 +272,7 @@ async function installProjectApp(passphrase) {
   // in order for the 'joining' of Projects to work
   const dnaPath = window.require
     ? await window.require('electron').ipcRenderer.invoke('getProjectsPath')
-    : './dna/workdir/projects.dna'
+    : './happ/workdir/projects.dna'
   const hash = await adminWs.registerDna({
     path: dnaPath,
     uid,

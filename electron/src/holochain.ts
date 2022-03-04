@@ -39,11 +39,11 @@ export function stateSignalToText(state: StateSignal): StateSignalText {
 
 const projectsDnaPath = app.isPackaged
   ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/projects.dna')
-  : path.join(app.getAppPath(), '../dna/workdir/projects.dna')
+  : path.join(app.getAppPath(), '../happ/workdir/projects.dna')
 
 const profilesHappPath = app.isPackaged
   ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/profiles.happ')
-  : path.join(app.getAppPath(), '../dna/workdir/profiles.happ')
+  : path.join(app.getAppPath(), '../happ/workdir/profiles.happ')
 
 // in production
 // must point to unpacked versions, not in an asar archive
