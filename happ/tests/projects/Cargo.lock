@@ -2992,7 +2992,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "profiles"
+name = "projects"
 version = "0.0.1"
 dependencies = [
  "chrono",
@@ -3005,15 +3005,23 @@ dependencies = [
 ]
 
 [[package]]
-name = "projects"
+name = "projects-tests"
 version = "0.0.1"
 dependencies = [
+ "assert_matches",
  "chrono",
+ "fixt",
  "hdk",
  "hdk_crud",
  "holo_hash",
+ "holochain_types",
+ "mockall 0.9.1",
  "paste",
+ "projects",
+ "rand 0.7.3",
  "serde",
+ "strum",
+ "strum_macros",
  "thiserror",
 ]
 
@@ -3991,28 +3999,6 @@ name = "termtree"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13a4ec180a2de59b57434704ccfad967f789b12737738798fa08798cd5824c16"
-
-[[package]]
-name = "tests"
-version = "0.0.1"
-dependencies = [
- "assert_matches",
- "chrono",
- "fixt",
- "hdk",
- "hdk_crud",
- "holo_hash",
- "holochain_types",
- "mockall 0.9.1",
- "paste",
- "profiles",
- "projects",
- "rand 0.7.3",
- "serde",
- "strum",
- "strum_macros",
- "thiserror",
-]
 
 [[package]]
 name = "textwrap"

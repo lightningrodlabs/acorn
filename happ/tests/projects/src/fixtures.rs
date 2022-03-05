@@ -11,7 +11,6 @@ pub(crate) mod fixtures {
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use holo_hash::{AgentPubKeyB64, HeaderHashB64};
-    use profiles::profile::{Profile, Status as ProfileStatus};
     use projects::project::goal::crud::{Goal, Scope, AchievementStatus, SmallsEstimate};
     use projects::project::{
         edge::crud::Edge,
@@ -183,13 +182,5 @@ pub(crate) mod fixtures {
     fixturator!(
       Goal;
         constructor fn new(String, AgentPubKeyB64, OptionAgentPubKeyB64, f64, Optionf64, Scope, OptionVecString, String, OptionTimeFrame, bool);
-    );
-    fixturator!(
-      ProfileStatus;
-      unit variants [ Online Away Offline ] empty Offline;
-    );
-    fixturator!(
-      Profile;
-        constructor fn new(String, String, String, ProfileStatus, String, AgentPubKeyB64, bool);
     );
 }
