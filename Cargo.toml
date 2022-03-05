@@ -1,0 +1,13 @@
+[workspace]
+members = [
+  "happ/tests/projects",
+  "happ/tests/profiles",
+  "happ/zomes/profiles",
+  "happ/zomes/projects",
+]
+
+[profile.dev]
+opt-level = "z"
+
+[profile.release]
+opt-level = "z"

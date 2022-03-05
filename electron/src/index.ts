@@ -19,6 +19,9 @@ import {
 // eslint-disable-line global-require
 // app.quit()
 // }
+process.on('uncaughtException', (e) => {
+  console.error('an unhandled error occurred:', e)
+})
 
 const BACKGROUND_COLOR = '#fbf9f7'
 
@@ -113,7 +116,7 @@ const createSplashWindow = (): BrowserWindow => {
 app.on('ready', async () => {
   const splashWindow = createSplashWindow()
   const opts = app.isPackaged ? prodOptions : devOptions
-  const statusEmitter = await initAgent(app, opts, BINARY_PATHS)
+  const { statusEmitter, shutdown } = await initAgent(app, opts, BINARY_PATHS)
   statusEmitter.on(STATUS_EVENT, (state: StateSignal) => {
     switch (state) {
       case StateSignal.IsReady:

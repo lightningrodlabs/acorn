@@ -39,11 +39,11 @@ export function stateSignalToText(state: StateSignal): StateSignalText {
 
 const projectsDnaPath = app.isPackaged
   ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/projects.dna')
-  : path.join(app.getAppPath(), '../dna/workdir/projects.dna')
+  : path.join(app.getAppPath(), '../happ/workdir/projects.dna')
 
-const profilesDnaPath = app.isPackaged
-  ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/profiles.dna')
-  : path.join(app.getAppPath(), '../dna/workdir/profiles.dna')
+const profilesHappPath = app.isPackaged
+  ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/profiles.happ')
+  : path.join(app.getAppPath(), '../happ/workdir/profiles.happ')
 
 // in production
 // must point to unpacked versions, not in an asar archive
@@ -67,7 +67,7 @@ const COMMUNITY_PROXY_URL =
   'kitsune-proxy://SYVd4CF3BdJ4DS7KwLLgeU3_DbHoZ34Y-qroZ79DOs8/kitsune-quic/h/165.22.32.11/p/5779/--'
 
 const devOptions: HolochainRunnerOptions = {
-  dnaPath: profilesDnaPath, // preload
+  happPath: profilesHappPath, // preload
   datastorePath: process.env.ACORN_TEST_USER_2
     ? '../user2-data/databases'
     : path.join(__dirname, '../../user-data/databases'),
@@ -80,7 +80,7 @@ const devOptions: HolochainRunnerOptions = {
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 const prodOptions: HolochainRunnerOptions = {
-  dnaPath: profilesDnaPath, // preload
+  happPath: profilesHappPath, // preload
   datastorePath: path.join(app.getPath('userData'), `databases-${DATABASES_VERSION_NUMBER}`),
   appId: MAIN_APP_ID,
   appWsPort: 8889,
