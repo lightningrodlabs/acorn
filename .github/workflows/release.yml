@@ -24,7 +24,7 @@ jobs:
       - name: Install hc tool and wasm target
         shell: bash # important because this runs shell scripts
         run: |
-          npm run dna-install
+          npm run happ-install
       # build hApp
       - name: Build hApp
         run: |

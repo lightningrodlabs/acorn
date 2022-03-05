@@ -31,7 +31,6 @@ pub fn init(_: ()) -> ExternResult<InitCallbackResult> {
 }
 
 entry_defs!(
-    Path::entry_def(),
     PathEntry::entry_def(),
     Edge::entry_def(),
     EntryPoint::entry_def(),

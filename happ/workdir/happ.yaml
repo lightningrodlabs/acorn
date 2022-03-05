@@ -1,6 +1,6 @@
 manifest_version: "1"
-name: electron-holochain-application
-description: Describe your happ here
+name: acorn
+description: productivity tool for distributed software teams
 roles:
   - id: dna-slot # this can be changed
     provisioning:
