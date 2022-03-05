@@ -26,13 +26,13 @@ You can run `npm run user-data-reset` if you have user data in development, but 
 **dna**
 
 - Have rust language (stable) installed on your system, then...
-- `npm run dna-install`: installs wasm32 compilation target for rust as well as the Holochain CLI
-- `npm run dna-pack`: compiles zomes into wasm and packages each one into a dna using Holochain CLI 
-- `npm run dna-reset`: runs `dna-pack` and clears user data (Run this anytime you change the code in `dna` folder during development)
+- `npm run happ-install`: installs wasm32 compilation target for rust as well as the Holochain CLI
+- `npm run happ-pack`: compiles zomes into wasm, packages each one into a dna using Holochain CLI, and packages profiles.dna into a happ 
+- `npm run happ-reset`: runs `happ-pack` and clears user data (Run this anytime you change the code in `happ` folder during development)
 
 To test backend:
 
-- `npm run dna-test`: runs unit tests
+- `npm run happ-test`: runs unit tests
 
 **web** (user interface)
 
@@ -96,13 +96,13 @@ KEYSTORE_VERSION_NUMBER should be incremented if the version of lair-keystore ch
 
 This project is currently using:
 
-https://github.com/holochain/holochain/releases/tag/holochain-0.0.115
+https://github.com/holochain/holochain/releases/tag/holochain-0.0.126
 
-https://github.com/Sprillow/holochain-runner/releases/tag/v0.0.30
+https://github.com/Sprillow/holochain-runner/releases/tag/v0.0.35
 
 Lair Keystore Revision [v0.0.9 Nov 4, 2021](https://github.com/holochain/lair/releases/tag/v0.0.9)
 
-https://docs.rs/hdk/0.0.115/hdk/index.html
+https://docs.rs/hdk/0.0.122/hdk/index.html
 
 and electron version 12 [https://www.electronjs.org/](https://www.electronjs.org/)
 
