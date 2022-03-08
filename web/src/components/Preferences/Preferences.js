@@ -4,7 +4,7 @@ import './Preferences.css'
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
 import Modal from '../Modal/Modal'
-import { MOUSE, TRACKPAD } from '../../local-preferences/reducer'
+import { MOUSE, TRACKPAD } from '../../redux/ephemeral/local-preferences/reducer'
 import PreferenceSelect, {
   PreferenceSelectExtra,
   PreferenceSelectOption,

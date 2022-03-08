@@ -14,8 +14,8 @@ import HierarchyPicker from '../HierarchyPicker/HierarchyPicker'
 import PriorityPicker from '../PriorityPicker/PriorityPicker'
 import StatusIcon from '../StatusIcon/StatusIcon'
 
-import { archiveGoalFully, updateGoal } from '../../projects/goals/actions'
-import { closeGoalForm } from '../../goal-form/actions'
+import { archiveGoalFully, updateGoal } from '../../redux/persistent/projects/goals/actions'
+import { closeGoalForm } from '../../redux/ephemeral/goal-form/actions'
 import Modal, { ModalContent } from '../Modal/Modal'
 
 import './VerticalActionsList.css'

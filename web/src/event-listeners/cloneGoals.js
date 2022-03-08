@@ -1,6 +1,6 @@
-import { selectGoal } from '../selection/actions'
-import { createGoal } from '../projects/goals/actions'
-import { createGoalMember } from '../projects/goal-members/actions'
+import { selectGoal } from '../redux/ephemeral/selection/actions'
+import { createGoal } from '../redux/persistent/projects/goals/actions'
+import { createGoalMember } from '../redux/persistent/projects/goal-members/actions'
 import moment from 'moment'
 
 export default function cloneGoals(store) {

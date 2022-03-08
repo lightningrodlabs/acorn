@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import './ActivityHistory.css'
-import { fetchGoalHistory } from '../../../../projects/goal-history/actions'
+import { fetchGoalHistory } from '../../../../redux/persistent/projects/goal-history/actions'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import Avatar from '../../../Avatar/Avatar'
 import Icon from '../../../Icon/Icon'
 import StatusIcon from '../../../StatusIcon/StatusIcon'
 import HierarchyIcon from '../../../HierarchyIcon/HierarchyIcon'
-import { whoami } from '../../../../who-am-i/actions'
+import { whoami } from '../../../../redux/persistent/profiles/who-am-i/actions'
 
 function checkTimeframeSame(oldTimeframe, newTimeframe) {
   if (newTimeframe && !oldTimeframe) {

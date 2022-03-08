@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 
 import './ProjectSettingsModal.css'
-import { updateProjectMeta } from '../../projects/project-meta/actions'
+import { updateProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
 import { PriorityModeOptions } from '../../constants'
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import Modal from '../Modal/Modal'

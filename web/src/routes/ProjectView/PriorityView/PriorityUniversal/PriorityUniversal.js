@@ -6,15 +6,15 @@ import { NavLink, useHistory, useLocation } from 'react-router-dom'
 
 import './PriorityUniversal.css'
 
-import { openExpandedView } from '../../../../expanded-view/actions'
+import { openExpandedView } from '../../../../redux/ephemeral/expanded-view/actions'
 
 import Avatar from '../../../../components/Avatar/Avatar'
 import Icon from '../../../../components/Icon/Icon'
 import StatusIcon from '../../../../components/StatusIcon/StatusIcon'
-import { updateProjectMeta } from '../../../../projects/project-meta/actions'
+import { updateProjectMeta } from '../../../../redux/persistent/projects/project-meta/actions'
 import TimeframeFormat from '../../../../components/TimeframeFormat'
 import GuidebookNavLink from '../../../../components/GuidebookNavLink/GuidebookNavLink'
-import { animatePanAndZoom } from '../../../../viewport/actions'
+import { animatePanAndZoom } from '../../../../redux/ephemeral/viewport/actions'
 
 // an individual list item
 function UniversalGoal({ liveIndex, goal, openExpandedView, goToGoal }) {

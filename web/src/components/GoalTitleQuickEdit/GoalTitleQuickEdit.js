@@ -4,13 +4,13 @@ import useOnClickOutside from 'use-onclickoutside'
 import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
 
-import { createGoalWithEdge, updateGoal } from '../../projects/goals/actions'
-import { layoutAffectingArchiveEdge } from '../../projects/edges/actions'
-import { closeGoalForm, updateContent } from '../../goal-form/actions'
+import { createGoalWithEdge, updateGoal } from '../../redux/persistent/projects/goals/actions'
+import { layoutAffectingArchiveEdge } from '../../redux/persistent/projects/edges/actions'
+import { closeGoalForm, updateContent } from '../../redux/ephemeral/goal-form/actions'
 
 import './GoalTitleQuickEdit.css'
 import { firstZoomThreshold, fontSize, fontSizeExtraLarge, fontSizeLarge, lineHeightMultiplier, secondZoomThreshold } from '../../drawing/dimensions'
-import { startTitleEdit, endTitleEdit } from '../../goal-editing/actions'
+import { startTitleEdit, endTitleEdit } from '../../redux/ephemeral/goal-editing/actions'
 
 // if editAddress is present (as a Goal address) it means we are currently EDITING that Goal
 function GoalTitleQuickEdit({

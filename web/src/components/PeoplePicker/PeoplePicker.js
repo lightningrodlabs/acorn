@@ -9,7 +9,7 @@ import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import {
   createGoalMember,
   archiveGoalMember,
-} from '../../projects/goal-members/actions'
+} from '../../redux/persistent/projects/goal-members/actions'
 import Avatar from '../Avatar/Avatar'
 import moment from 'moment'
 

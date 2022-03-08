@@ -8,8 +8,8 @@ import Avatar from '../Avatar/Avatar'
 import useOnClickOutside from 'use-onclickoutside'
 import { CSSTransition } from 'react-transition-group'
 import { connect } from 'react-redux'
-import { openExpandedView } from '../../expanded-view/actions'
-import { animatePanAndZoom } from '../../viewport/actions'
+import { openExpandedView } from '../../redux/ephemeral/expanded-view/actions'
+import { animatePanAndZoom } from '../../redux/ephemeral/viewport/actions'
 import { ProjectMapViewOnly } from '../ViewFilters/ViewFilters'
 
 function AvatarMenuItem({

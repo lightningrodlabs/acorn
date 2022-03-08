@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { createWhoami } from '../../who-am-i/actions'
+import { createWhoami } from '../../redux/persistent/profiles/who-am-i/actions'
 import ProfileEditForm from '../../components/ProfileEditForm/ProfileEditForm'
 import './CreateProfilePage.css'
 

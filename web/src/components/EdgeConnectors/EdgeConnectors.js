@@ -13,8 +13,8 @@ import {
   setEdgeConnectorTo,
   RELATION_AS_CHILD,
   RELATION_AS_PARENT,
-} from '../../edge-connector/actions'
-import handleEdgeConnectMouseUp from '../../edge-connector/handler'
+} from '../../redux/ephemeral/edge-connector/actions'
+import handleEdgeConnectMouseUp from '../../redux/ephemeral/edge-connector/handler'
 
 // checks if 'checkAddress' is an ancestor of 'descendantAddress', by looking through 'edges'
 // is relatively easy because each Goal only has ONE parent

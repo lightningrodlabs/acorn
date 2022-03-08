@@ -1,10 +1,10 @@
-import { createImportedProfile } from '../agents/actions'
-import { createGoal } from '../projects/goals/actions'
-import { createEdge } from '../projects/edges/actions'
-import { createGoalComment } from '../projects/goal-comments/actions'
-import { createGoalVote } from '../projects/goal-votes/actions'
-import { createGoalMember } from '../projects/goal-members/actions'
-import { createEntryPoint } from '../projects/entry-points/actions'
+import { createImportedProfile } from '../redux/persistent/profiles/agents/actions'
+import { createGoal } from '../redux/persistent/projects/goals/actions'
+import { createEdge } from '../redux/persistent/projects/edges/actions'
+import { createGoalComment } from '../redux/persistent/projects/goal-comments/actions'
+import { createGoalVote } from '../redux/persistent/projects/goal-votes/actions'
+import { createGoalMember } from '../redux/persistent/projects/goal-members/actions'
+import { createEntryPoint } from '../redux/persistent/projects/entry-points/actions'
 
 export default async function importAllProjectData(
   existingAgents,

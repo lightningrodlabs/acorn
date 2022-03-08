@@ -18,14 +18,14 @@ import { cellIdToString } from 'connoropolous-hc-redux-middleware/build/main/lib
 
 // Local Imports
 import { MAIN_APP_ID, PROFILES_SLOT_NAME } from './holochainConfig'
-import acorn from './reducer'
+import acorn from './redux/reducer'
 import signalsHandlers from './signalsHandlers'
-import { setProfilesCellId, setProjectsCellIds } from './cells/actions'
-import { layoutWatcher } from './layout/middleware'
+import { setProfilesCellId, setProjectsCellIds } from './redux/persistent/cells/actions'
+import { layoutWatcher } from './redux/ephemeral/layout/middleware'
 import { realtimeInfoWatcher } from './realtime-info-signal/middleware'
-import { fetchAgents } from './agents/actions'
-import { whoami } from './who-am-i/actions'
-import { fetchAgentAddress } from './agent-address/actions'
+import { fetchAgents } from './redux/persistent/profiles/agents/actions'
+import { whoami } from './redux/persistent/profiles/who-am-i/actions'
+import { fetchAgentAddress } from './redux/ephemeral/agent-address/actions'
 import App from './routes/App'
 import {
   getAppWs,

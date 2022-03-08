@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 
 import './PriorityView.css'
 
-import { updateProjectMeta } from '../../../projects/project-meta/actions'
+import { updateProjectMeta } from '../../../redux/persistent/projects/project-meta/actions'
 
 import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeView'
-import goalsAsTrees from '../../../projects/goals/goalsAsTrees'
+import goalsAsTrees from '../../../redux/persistent/projects/goals/goalsAsTrees'
 import PriorityUniversal from './PriorityUniversal/PriorityUniversal'
 import PriorityVote from './PriorityVote/PriorityVote'
 import { PriorityModeOptions } from '../../../constants'

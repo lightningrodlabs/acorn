@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './PriorityPickerUniversal.css'
 import { connect } from 'react-redux'
 
-import { updateProjectMeta } from '../../../projects/project-meta/actions'
+import { updateProjectMeta } from '../../../redux/persistent/projects/project-meta/actions'
 import ToggleSwitch from '../../ToggleSwitch/ToggleSwitch'
 
 function PriorityPickerUniversal({

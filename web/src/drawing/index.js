@@ -13,7 +13,7 @@ import drawEntryPoints from './drawEntryPoints'
 import {
   RELATION_AS_PARENT,
   RELATION_AS_CHILD,
-} from '../edge-connector/actions'
+} from '../redux/ephemeral/edge-connector/actions'
 import { CONNECTOR_VERTICAL_SPACING, firstZoomThreshold } from './dimensions'
 
 function setupCanvas(canvas) {

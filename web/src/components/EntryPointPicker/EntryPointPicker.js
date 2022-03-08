@@ -8,10 +8,10 @@ import './EntryPointPicker.css'
 import GuidebookNavLink from '../GuidebookNavLink/GuidebookNavLink'
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import Icon from '../Icon/Icon'
-import selectEntryPoints from '../../projects/entry-points/select'
+import selectEntryPoints from '../../redux/persistent/projects/entry-points/select'
 import { NavLink } from 'react-router-dom'
 import { ENTRY_POINTS, GUIDE_IS_OPEN } from '../../searchParams'
-import { animatePanAndZoom } from '../../viewport/actions'
+import { animatePanAndZoom } from '../../redux/ephemeral/viewport/actions'
 
 function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints, goToGoal }) {
   const dotStyle = {

@@ -11,13 +11,13 @@ import {
   selectGoal,
   unselectGoal,
   unselectAll,
-} from '../selection/actions'
+} from '../redux/ephemeral/selection/actions'
 import {
   hoverGoal,
   unhoverGoal,
   hoverEdge,
   unhoverEdge,
-} from '../hover/actions'
+} from '../redux/ephemeral/hover/actions'
 import {
   setGKeyDown,
   unsetGKeyDown,
@@ -25,7 +25,7 @@ import {
   unsetShiftKeyDown,
   setCtrlKeyDown,
   unsetCtrlKeyDown,
-} from '../keyboard/actions'
+} from '../redux/ephemeral/keyboard/actions'
 import {
   setMousedown,
   unsetMousedown,
@@ -36,27 +36,27 @@ import {
   setGoals,
   setSize,
   unsetSize,
-} from '../mouse/actions'
+} from '../redux/ephemeral/mouse/actions'
 import {
   openGoalForm,
   closeGoalForm,
   updateContent,
-} from '../goal-form/actions'
-import { archiveGoalFully } from '../projects/goals/actions'
-import { archiveEdge, layoutAffectingArchiveEdge } from '../projects/edges/actions'
-import { setScreenDimensions } from '../screensize/actions'
-import { changeTranslate, changeScale } from '../viewport/actions'
-import { openExpandedView } from '../expanded-view/actions'
-import { MOUSE, TRACKPAD } from '../local-preferences/reducer'
+} from '../redux/ephemeral/goal-form/actions'
+import { archiveGoalFully } from '../redux/persistent/projects/goals/actions'
+import { archiveEdge, layoutAffectingArchiveEdge } from '../redux/persistent/projects/edges/actions'
+import { setScreenDimensions } from '../redux/ephemeral/screensize/actions'
+import { changeTranslate, changeScale } from '../redux/ephemeral/viewport/actions'
+import { openExpandedView } from '../redux/ephemeral/expanded-view/actions'
+import { MOUSE, TRACKPAD } from '../redux/ephemeral/local-preferences/reducer'
 
-import { setGoalClone } from '../goal-clone/actions'
+import { setGoalClone } from '../redux/ephemeral/goal-clone/actions'
 
 import cloneGoals from './cloneGoals'
 import {
   resetEdgeConnector,
   setEdgeConnectorTo,
-} from '../edge-connector/actions'
-import handleEdgeConnectMouseUp from '../edge-connector/handler'
+} from '../redux/ephemeral/edge-connector/actions'
+import handleEdgeConnectMouseUp from '../redux/ephemeral/edge-connector/handler'
 
 // ASSUMPTION: one parent (existingParentEdgeAddress)
 function handleMouseUpForGoalForm(state, event, store, fromAddress, relation, existingParentEdgeAddress) {

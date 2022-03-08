@@ -7,18 +7,18 @@ and the reducers handle them the same way
 */
 
 import * as msgpack from '@msgpack/msgpack/dist'
-import * as edgeActions from './projects/edges/actions'
-import * as goalActions from './projects/goals/actions'
-import * as goalVoteActions from './projects/goal-votes/actions'
-import * as goalMemberActions from './projects/goal-members/actions'
-import * as goalCommentActions from './projects/goal-comments/actions'
-import * as entryPointActions from './projects/entry-points/actions'
-import * as projectMetaActions from './projects/project-meta/actions'
-import { setMember } from './projects/members/actions'
-import { fetchAgents, setAgent } from './agents/actions'
+import * as edgeActions from './redux/persistent/projects/edges/actions'
+import * as goalActions from './redux/persistent/projects/goals/actions'
+import * as goalVoteActions from './redux/persistent/projects/goal-votes/actions'
+import * as goalMemberActions from './redux/persistent/projects/goal-members/actions'
+import * as goalCommentActions from './redux/persistent/projects/goal-comments/actions'
+import * as entryPointActions from './redux/persistent/projects/entry-points/actions'
+import * as projectMetaActions from './redux/persistent/projects/project-meta/actions'
+import { setMember } from './redux/persistent/projects/members/actions'
+import { fetchAgents, setAgent } from './redux/persistent/profiles/agents/actions'
 import { cellIdToString } from 'connoropolous-hc-redux-middleware'
-import { triggerUpdateLayout } from './layout/actions'
-import { removePeerState, updatePeerState } from './realtime-info/actions'
+import { triggerUpdateLayout } from './redux/ephemeral/layout/actions'
+import { removePeerState, updatePeerState } from './redux/ephemeral/realtime-info/actions'
 
 // We directly use the 'success' type, since these actions
 // have already succeeded on another machine, and we're just reflecting them locally

@@ -16,7 +16,7 @@ import Avatar from '../../../../components/Avatar/Avatar'
 import priorityMenuItems from '../../../../components/Header/priorityMenuItems'
 import PriorityQuadrant from '../../../../components/PriorityQuadrant/PriorityQuadrant'
 import PriorityPicker from '../../../../components/PriorityPicker/PriorityPicker'
-import goalsAsTrees from '../../../../projects/goals/goalsAsTrees'
+import goalsAsTrees from '../../../../redux/persistent/projects/goals/goalsAsTrees'
 import { CSSTransition } from 'react-transition-group'
 
 function Quadrants({

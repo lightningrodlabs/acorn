@@ -10,7 +10,7 @@ import {
   previewEdges,
   clearEdgesPreview,
   createEdge,
-} from '../../projects/edges/actions'
+} from '../../redux/persistent/projects/edges/actions'
 
 import Button from '../Button/Button'
 import { connect } from 'react-redux'

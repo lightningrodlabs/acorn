@@ -16,26 +16,26 @@ import JoinProjectModal from '../../components/JoinProjectModal/JoinProjectModal
 import { PROJECTS_ZOME_NAME, PROJECT_APP_PREFIX } from '../../holochainConfig'
 import { passphraseToUid } from '../../secrets'
 import { getAdminWs, getAppWs, getAgentPubKey } from '../../hcWebsockets'
-import { fetchEntryPointDetails } from '../../projects/entry-points/actions'
-import { fetchMembers, setMember } from '../../projects/members/actions'
+import { fetchEntryPointDetails } from '../../redux/persistent/projects/entry-points/actions'
+import { fetchMembers, setMember } from '../../redux/persistent/projects/members/actions'
 import {
   simpleCreateProjectMeta,
   fetchProjectMeta,
-} from '../../projects/project-meta/actions'
-import selectEntryPoints from '../../projects/entry-points/select'
+} from '../../redux/persistent/projects/project-meta/actions'
+import selectEntryPoints from '../../redux/persistent/projects/entry-points/select'
 import { PriorityModeOptions } from '../../constants'
 
 import {
   DashboardListProject,
   DashboardListProjectLoading,
 } from './DashboardListProject'
-import { joinProjectCellId, removeProjectCellId } from '../../cells/actions'
+import { joinProjectCellId, removeProjectCellId } from '../../redux/persistent/cells/actions'
 import importAllProjectData from '../../import'
 import PendingProjects from '../../components/PendingProjects/PendingProjects'
 import {
   closeInviteMembersModal,
   openInviteMembersModal,
-} from '../../invite-members-modal/actions'
+} from '../../redux/ephemeral/invite-members-modal/actions'
 
 function Dashboard({
   existingAgents,

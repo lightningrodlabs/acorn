@@ -4,7 +4,7 @@ import {
   createGoalComment,
   archiveGoalComment,
   updateGoalComment,
-} from '../../projects/goal-comments/actions'
+} from '../../redux/persistent/projects/goal-comments/actions'
 
 import TextareaAutosize from 'react-textarea-autosize'
 

@@ -7,9 +7,9 @@ import './ExpandedViewMode.css'
 import {
   createEntryPoint,
   archiveEntryPoint,
-} from '../../projects/entry-points/actions'
-import { updateGoal } from '../../projects/goals/actions'
-import { archiveGoalMember } from '../../projects/goal-members/actions'
+} from '../../redux/persistent/projects/entry-points/actions'
+import { updateGoal } from '../../redux/persistent/projects/goals/actions'
+import { archiveGoalMember } from '../../redux/persistent/projects/goal-members/actions'
 
 import { pickColorForString } from '../../styles'
 import Icon from '../Icon/Icon'
@@ -18,7 +18,7 @@ import RightMenu from './RightMenu/RightMenu'
 import ExpandedViewModeHeader from './ExpandedViewModeHeader/ExpandedViewModeHeader'
 import ExpandedViewModeContent from './ExpandedViewModeContent/ExpandedViewModeContent'
 import ExpandedViewModeFooter from './ExpandedViewModeFooter/ExpandedViewModeFooter'
-import { startTitleEdit, endTitleEdit, startDescriptionEdit, endDescriptionEdit } from '../../goal-editing/actions'
+import { startTitleEdit, endTitleEdit, startDescriptionEdit, endDescriptionEdit } from '../../redux/ephemeral/goal-editing/actions'
 
 
 function ExpandedViewMode({

@@ -6,8 +6,8 @@ import './MapView.css'
 import render from '../../../drawing'
 
 import setupEventListeners from '../../../event-listeners'
-import { setScreenDimensions } from '../../../screensize/actions'
-import { openExpandedView } from '../../../expanded-view/actions'
+import { setScreenDimensions } from '../../../redux/ephemeral/screensize/actions'
+import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions'
 
 import EmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
 import GoalTitleQuickEdit from '../../../components/GoalTitleQuickEdit/GoalTitleQuickEdit'

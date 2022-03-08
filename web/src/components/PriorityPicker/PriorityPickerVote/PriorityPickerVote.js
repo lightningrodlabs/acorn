@@ -10,7 +10,7 @@ import {
   createGoalVote,
   archiveGoalVote,
   updateGoalVote,
-} from '../../../projects/goal-votes/actions'
+} from '../../../redux/persistent/projects/goal-votes/actions'
 import Icon from '../../Icon/Icon'
 
 const useStyles = makeStyles({

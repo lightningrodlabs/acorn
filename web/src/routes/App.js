@@ -9,11 +9,11 @@ import { connect } from 'react-redux'
 
 import './App.css'
 
-import { updateWhoami } from '../who-am-i/actions'
+import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
 import {
   setHasAccessedGuidebook,
   setNavigationPreference,
-} from '../local-preferences/actions'
+} from '../redux/ephemeral/local-preferences/actions'
 
 // import components here
 import Header from '../components/Header/Header'
@@ -27,12 +27,12 @@ import ProjectView from './ProjectView/ProjectView'
 import RunUpdate from './RunUpdate/RunUpdate'
 
 import IntroScreen from '../components/IntroScreen/IntroScreen'
-import selectEntryPoints, { selectActiveProjectMembers } from '../projects/entry-points/select'
+import selectEntryPoints, { selectActiveProjectMembers } from '../redux/persistent/projects/entry-points/select'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 // all global modals in here
 import GlobalModals from './GlobalModals'
-import { animatePanAndZoom } from '../viewport/actions'
-import { closeInviteMembersModal, openInviteMembersModal } from '../invite-members-modal/actions'
+import { animatePanAndZoom } from '../redux/ephemeral/viewport/actions'
+import { closeInviteMembersModal, openInviteMembersModal } from '../redux/ephemeral/invite-members-modal/actions'
 
 function App({
   members,

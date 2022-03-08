@@ -2,7 +2,7 @@ import React from 'react'
 import './Zoom.css'
 import Icon from '../Icon/Icon'
 import { connect } from 'react-redux'
-import { changeScale } from '../../viewport/actions'
+import { changeScale } from '../../redux/ephemeral/viewport/actions'
 
 class Zoom extends React.Component {
   constructor (props) {

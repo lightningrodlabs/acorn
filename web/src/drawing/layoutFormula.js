@@ -1,6 +1,6 @@
 import dagre from 'dagre'
 import { goalWidth, getGoalHeight } from './dimensions'
-import goalsAsTrees from '../projects/goals/goalsAsTrees'
+import goalsAsTrees from '../redux/persistent/projects/goals/goalsAsTrees'
 
 const VERTICAL_SPACING = 50
 
