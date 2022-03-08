@@ -1,48 +1,10 @@
-import React from 'react'
 import { connect } from 'react-redux'
-
 import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
-import layoutFormula from '../../drawing/layoutFormula'
 import { goalWidth } from '../../drawing/dimensions'
 import { unselectAll } from '../../redux/ephemeral/selection/actions'
 import { openGoalForm, updateContent } from '../../redux/ephemeral/goal-form/actions'
-
-import Icon from '../Icon/Icon'
 import './GoalHoverOverlayButtons.css'
-
-function GoalHoverOverlayButtons({
-  hoveredAddress,
-  goalCoordinate,
-  goalContent,
-  onEditClick,
-  onExpandClick,
-  leftEdgeXPosition,
-  topEdgeYPosition,
-}) {
-  return (
-    <ul
-      className="hover-overlay-buttons-wrapper"
-      style={{ top: `${topEdgeYPosition}px`, left: `${leftEdgeXPosition}px` }}
-    >
-      <li onClick={() => onExpandClick(hoveredAddress)}>
-        <Icon
-          name="expand.svg"
-          className="not-hoverable"
-          withBackground
-        />
-      </li>
-      <li
-        onClick={() => onEditClick(hoveredAddress, goalCoordinate, goalContent)}
-      >
-        <Icon
-          name="pencil.svg"
-          className="not-hoverable"
-          withBackground
-        />
-      </li>
-    </ul>
-  )
-}
+import GoalHoverOverlayButtons from './GoalHoverOverlayButtons.component'
 
 function mapStateToProps(state) {
   const hoveredAddress = state.ui.hover.hoveredGoal // null or an address

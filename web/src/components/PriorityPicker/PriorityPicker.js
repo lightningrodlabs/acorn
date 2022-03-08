@@ -1,29 +1,6 @@
-import React from 'react'
 import './PriorityPicker.css'
-import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import { connect } from 'react-redux'
-import { PriorityModeOptions } from '../../constants'
-import PriorityPickerUniversal from './PriorityPickerUniversal/PriorityPickerUniversal'
-import PriorityPickerVote from './PriorityPickerVote/PriorityPickerVote'
-
-function PriorityPicker({
-  projectId,
-  goalAddress,
-  priorityMode,
-  onClose,
-}) {
-  const isUniversal = priorityMode === PriorityModeOptions.Universal
-  return (
-    <PickerTemplate
-      className={`priority-picker-wrapper ${isUniversal ? "universal-priority" : "vote-priority"}`}
-      heading='Priority'
-      onClose={onClose}>
-      {isUniversal
-        ? <PriorityPickerUniversal projectId={projectId} goalAddress={goalAddress} />
-        : <PriorityPickerVote projectId={projectId} goalAddress={goalAddress} />}
-    </PickerTemplate>
-  )
-}
+import PriorityPicker from './PriorityPicker.component'
 
 function mapStateToProps(state, ownProps) {
   const { projectId, goalAddress } = ownProps
