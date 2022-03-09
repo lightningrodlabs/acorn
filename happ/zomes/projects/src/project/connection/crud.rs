@@ -6,6 +6,7 @@ use holo_hash::HeaderHashB64;
 // An connection. This is an arrow on the SoA Tree which directionally links
 // two outcomes.
 #[hdk_entry(id = "connection")]
+#[serde(rename_all="camelCase")]
 #[derive(Clone, PartialEq)]
 pub struct Connection {
     pub parent_address: HeaderHashB64,

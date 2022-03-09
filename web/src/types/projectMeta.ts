@@ -11,3 +11,4 @@ interface ProjectMeta {
     topPriorityOutcomes: Array<HeaderHashB64>,
 }
 
+type PriorityMode = "Universal" | "Vote"
