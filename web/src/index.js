@@ -25,7 +25,7 @@ import { layoutWatcher } from './redux/ephemeral/layout/middleware'
 import { realtimeInfoWatcher } from './realtime-info-signal/middleware'
 import { fetchAgents } from './redux/persistent/profiles/agents/actions'
 import { whoami } from './redux/persistent/profiles/who-am-i/actions'
-import { fetchAgentAddress } from './redux/ephemeral/agent-address/actions'
+import { fetchAgentAddress } from './redux/persistent/profiles/agent-address/actions'
 import App from './routes/App'
 import {
   getAppWs,

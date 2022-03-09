@@ -7,7 +7,7 @@
 
 import { createZomeCallAsyncAction } from 'connoropolous-hc-redux-middleware'
 
-import { PROFILES_ZOME_NAME } from '../../../holochainConfig'
+import { PROFILES_ZOME_NAME } from '../../../../holochainConfig'
 
 /* action creator functions */
 
