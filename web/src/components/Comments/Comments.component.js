@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
-import './Comments.css'
+import './Comments.scss'
 import Icon from '../Icon/Icon'
 import Avatar from '../Avatar/Avatar'
 

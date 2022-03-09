@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './ProjectSecret.css'
+import './ProjectSecret.scss'
 import Icon from '../Icon/Icon'
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 

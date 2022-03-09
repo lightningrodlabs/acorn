@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './ActivityHistory.css'
+import './ActivityHistory.scss'
 import moment from 'moment'
 import Avatar from '../../../Avatar/Avatar'
 import Icon from '../../../Icon/Icon'

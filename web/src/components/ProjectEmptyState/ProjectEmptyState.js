@@ -1,5 +1,5 @@
 import React from 'react'
-import './ProjectEmptyState.css'
+import './ProjectEmptyState.scss'
 
 function ProjectEmptyState() {
   return (

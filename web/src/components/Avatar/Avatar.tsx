@@ -1,5 +1,5 @@
 import React from 'react'
-import './Avatar.css'
+import './Avatar.scss'
 import { pickColorForString } from '../../styles'
 import { StatusCssColorClass, Status } from '../Header/Status'
 import Tooltip from '../Tooltip/Tooltip'

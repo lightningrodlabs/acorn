@@ -4,7 +4,7 @@ import { CSSTransition } from 'react-transition-group'
 import { NavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import './Dashboard.css'
+import './Dashboard.scss'
 import Icon from '../../components/Icon/Icon'
 import DashboardEmptyState from '../../components/DashboardEmptyState/DashboardEmptyState'
 

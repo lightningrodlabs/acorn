@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
 import { NavLink, Route, useRouteMatch } from 'react-router-dom'
 import Zoom from '../Zoom/Zoom'
-import './Footer.css'
+import './Footer.scss'
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
 

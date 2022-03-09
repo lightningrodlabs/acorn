@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import './ProjectSettingsModal.css'
+import './ProjectSettingsModal.scss'
 import { updateProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
 import ProjectSettingsModal from './ProjectSettingsModal.component'
 

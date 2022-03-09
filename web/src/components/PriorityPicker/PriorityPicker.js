@@ -1,4 +1,4 @@
-import './PriorityPicker.css'
+import './PriorityPicker.scss'
 import { connect } from 'react-redux'
 import PriorityPicker from './PriorityPicker.component'
 

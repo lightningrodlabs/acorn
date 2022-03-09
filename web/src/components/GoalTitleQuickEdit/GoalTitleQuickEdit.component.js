@@ -2,7 +2,7 @@ import React, { useRef } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
 import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
-import './GoalTitleQuickEdit.css'
+import './GoalTitleQuickEdit.scss'
 import { firstZoomThreshold, fontSize, fontSizeExtraLarge, fontSizeLarge, lineHeightMultiplier, secondZoomThreshold } from '../../drawing/dimensions'
 
 // if editAddress is present (as a Goal address) it means we are currently EDITING that Goal

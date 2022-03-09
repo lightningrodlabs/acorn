@@ -1,5 +1,5 @@
 import React from 'react'
-import './ButtonWithPendingState.css'
+import './ButtonWithPendingState.scss'
 
 import Icon from '../Icon/Icon'
 

@@ -35,6 +35,9 @@ import {
 } from './hcWebsockets'
 import { getProjectCellIdStrings } from './projectAppIds'
 
+// Import styles
+import './styles.scss'
+
 // trigger caching of adminWs connection
 getAdminWs()
 

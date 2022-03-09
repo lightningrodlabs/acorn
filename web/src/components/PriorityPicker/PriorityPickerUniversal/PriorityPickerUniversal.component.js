@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './PriorityPickerUniversal.css'
+import './PriorityPickerUniversal.scss'
 import ToggleSwitch from '../../ToggleSwitch/ToggleSwitch'
 
 export default function PriorityPickerUniversal({

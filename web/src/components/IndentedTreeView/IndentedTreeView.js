@@ -5,7 +5,7 @@ import StatusIcon from '../StatusIcon/StatusIcon'
 
 import HierarchyIcon from '../HierarchyIcon/HierarchyIcon'
 
-import './IndentedTreeView.css'
+import './IndentedTreeView.scss'
 import { PriorityModeOptions } from '../../constants'
 
 // Recursive because we don't know

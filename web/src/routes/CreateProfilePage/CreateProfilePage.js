@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { createWhoami } from '../../redux/persistent/profiles/who-am-i/actions'
 import ProfileEditForm from '../../components/ProfileEditForm/ProfileEditForm'
-import './CreateProfilePage.css'
+import './CreateProfilePage.scss'
 
 function CreateProfilePage({ agentAddress, createWhoami }) {
   const titleText = "First, let's set up your profile on Acorn."

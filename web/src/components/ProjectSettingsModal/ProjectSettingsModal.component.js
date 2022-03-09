@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import './ProjectSettingsModal.css'
+import './ProjectSettingsModal.scss'
 import { PriorityModeOptions } from '../../constants'
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import Modal from '../Modal/Modal'

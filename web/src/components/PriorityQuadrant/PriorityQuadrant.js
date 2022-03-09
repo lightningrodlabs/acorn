@@ -1,5 +1,5 @@
 import React from 'react'
-import './PriorityQuadrant.css'
+import './PriorityQuadrant.scss'
 import PriorityGoal from '../PriorityGoal/PriorityGoal'
 
 function PriorityQuadrant({

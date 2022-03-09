@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment'
-import './ExpandedViewModeFooter.css'
+import './ExpandedViewModeFooter.scss'
 
 import Icon from '../../Icon/Icon'
 

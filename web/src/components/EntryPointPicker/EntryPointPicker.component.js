@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
 import { connect } from 'react-redux'
 
-import './EntryPointPicker.css'
+import './EntryPointPicker.scss'
 
 import GuidebookNavLink from '../GuidebookNavLink/GuidebookNavLink'
 import PickerTemplate from '../PickerTemplate/PickerTemplate'

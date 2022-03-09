@@ -1,5 +1,5 @@
 import React from 'react'
-import './PriorityPicker.css'
+import './PriorityPicker.scss'
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import { PriorityModeOptions } from '../../constants'
 import PriorityPickerUniversal from './PriorityPickerUniversal/PriorityPickerUniversal'

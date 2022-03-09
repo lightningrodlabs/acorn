@@ -4,7 +4,7 @@ import { getAllApps } from '../../projectAppIds'
 import { uidToPassphrase } from '../../secrets'
 import GuidebookNavLink from '../GuidebookNavLink/GuidebookNavLink'
 import Icon from '../Icon/Icon'
-import './PendingProjects.css'
+import './PendingProjects.scss'
 
 type AppInfoDetails = {
   uid: string

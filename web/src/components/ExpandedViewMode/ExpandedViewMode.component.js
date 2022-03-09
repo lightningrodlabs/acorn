@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import { CSSTransition } from 'react-transition-group'
-import './ExpandedViewMode.css'
+import './ExpandedViewMode.scss'
 import { pickColorForString } from '../../styles'
 import Icon from '../Icon/Icon'
 import DatePicker from '../DatePicker/DatePicker'

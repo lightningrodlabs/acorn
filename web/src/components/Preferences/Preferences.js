@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './Preferences.css'
+import './Preferences.scss'
 
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'

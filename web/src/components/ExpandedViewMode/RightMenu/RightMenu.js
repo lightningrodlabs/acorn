@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
-import './RightMenu.css'
+import './RightMenu.scss'
 
 import Icon from '../../Icon/Icon'
 

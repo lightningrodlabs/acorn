@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
-import './Header.css'
+import './Header.scss'
 import { Status } from './Status'
 import HeaderLeftPanel from './HeaderLeftPanel'
 import HeaderRightPanel from './HeaderRightPanel'

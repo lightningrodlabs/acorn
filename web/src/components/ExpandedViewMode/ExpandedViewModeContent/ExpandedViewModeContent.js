@@ -3,7 +3,7 @@ import moment from 'moment'
 import useOnClickOutside from 'use-onclickoutside'
 import TextareaAutosize from 'react-textarea-autosize'
 
-import './ExpandedViewModeContent.css'
+import './ExpandedViewModeContent.scss'
 import Avatar from '../../Avatar/Avatar'
 import Icon from '../../Icon/Icon'
 import PeoplePicker from '../../PeoplePicker/PeoplePicker'

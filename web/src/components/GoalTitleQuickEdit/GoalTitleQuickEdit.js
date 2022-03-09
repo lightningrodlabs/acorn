@@ -8,7 +8,7 @@ import { createGoalWithEdge, updateGoal } from '../../redux/persistent/projects/
 import { layoutAffectingArchiveEdge } from '../../redux/persistent/projects/edges/actions'
 import { closeGoalForm, updateContent } from '../../redux/ephemeral/goal-form/actions'
 
-import './GoalTitleQuickEdit.css'
+import './GoalTitleQuickEdit.scss'
 import { firstZoomThreshold, fontSize, fontSizeExtraLarge, fontSizeLarge, lineHeightMultiplier, secondZoomThreshold } from '../../drawing/dimensions'
 import { startTitleEdit, endTitleEdit } from '../../redux/ephemeral/goal-editing/actions'
 import GoalTitleQuickEdit from './GoalTitleQuickEdit.component'

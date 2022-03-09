@@ -3,10 +3,11 @@ use hdk::prelude::*;
 use hdk_crud::crud;
 use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 
-#[hdk_entry(id = "goal_vote")]
+#[hdk_entry(id = "outcome_vote")]
+#[serde(rename_all="camelCase")]
 #[derive(Clone, PartialEq)]
-pub struct GoalVote {
-    pub goal_address: HeaderHashB64,
+pub struct OutcomeVote {
+    pub outcome_address: HeaderHashB64,
     pub urgency: f64,
     pub importance: f64,
     pub impact: f64,
@@ -16,9 +17,9 @@ pub struct GoalVote {
     pub is_imported: bool,
 }
 
-impl GoalVote {
+impl OutcomeVote {
     pub fn new(
-        goal_address: HeaderHashB64,
+        outcome_address: HeaderHashB64,
         urgency: f64,
         importance: f64,
         impact: f64,
@@ -28,7 +29,7 @@ impl GoalVote {
         is_imported: bool,
     ) -> Self {
         Self {
-            goal_address,
+            outcome_address,
             urgency,
             importance,
             impact,
@@ -41,9 +42,9 @@ impl GoalVote {
 }
 
 crud!(
-    GoalVote,
-    goal_vote,
-    "goal_vote",
+    OutcomeVote,
+    outcome_vote,
+    "outcome_vote",
     get_peers_content,
     SignalType
 );

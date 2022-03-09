@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { archiveGoalFully, updateGoal } from '../../redux/persistent/projects/goals/actions'
 import moment from 'moment'
 
-import './MultiEditBar.css'
+import './MultiEditBar.scss'
 
 import Icon from '../Icon/Icon'
 import Avatar from '../Avatar/Avatar'

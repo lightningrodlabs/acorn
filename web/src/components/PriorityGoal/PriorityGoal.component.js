@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import moment from 'moment'
-import './PriorityGoal.css'
+import './PriorityGoal.scss'
 import Avatar from '../Avatar/Avatar'
 import Icon from '../Icon/Icon'
 import HierarchyIcon from '../HierarchyIcon/HierarchyIcon'

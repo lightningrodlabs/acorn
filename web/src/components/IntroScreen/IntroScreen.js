@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
-import './IntroScreen.css'
+import './IntroScreen.scss'
 
 import Button from '../Button/Button'
 import Icon from '../Icon/Icon'

@@ -8,12 +8,12 @@ use hdk_crud::{
     signals::{create_receive_signal_cap_grant, ActionSignal},
 };
 use project::{
-    edge::crud::Edge,
+    connection::crud::Connection,
     entry_point::crud::EntryPoint,
-    goal::crud::{ArchiveGoalFullySignal, Goal, GoalWithEdgeSignal},
-    goal_comment::crud::GoalComment,
-    goal_member::crud::GoalMember,
-    goal_vote::crud::GoalVote,
+    outcome::crud::{ArchiveOutcomeFullySignal, Outcome, OutcomeWithConnectionSignal},
+    outcome_comment::crud::OutcomeComment,
+    outcome_member::crud::OutcomeMember,
+    outcome_vote::crud::OutcomeVote,
     member::entry::{join_project_during_init, Member, MemberSignal, MEMBER_PATH},
     project_meta::crud::ProjectMeta,
 };
@@ -32,12 +32,12 @@ pub fn init(_: ()) -> ExternResult<InitCallbackResult> {
 
 entry_defs!(
     PathEntry::entry_def(),
-    Edge::entry_def(),
+    Connection::entry_def(),
     EntryPoint::entry_def(),
-    Goal::entry_def(),
-    GoalComment::entry_def(),
-    GoalMember::entry_def(),
-    GoalVote::entry_def(),
+    Outcome::entry_def(),
+    OutcomeComment::entry_def(),
+    OutcomeMember::entry_def(),
+    OutcomeVote::entry_def(),
     Member::entry_def(),
     ProjectMeta::entry_def()
 );
@@ -50,30 +50,30 @@ SIGNALS
 // untagged because the useful tagging is done internally on the *Signal objects
 #[serde(tag = "signalType", content = "data")]
 pub enum SignalType {
-    Edge(ActionSignal<Edge>),
+    Connection(ActionSignal<Connection>),
     EntryPoint(ActionSignal<EntryPoint>),
-    Goal(ActionSignal<Goal>),
-    // custom signal type for a goal_with_edge
+    Outcome(ActionSignal<Outcome>),
+    // custom signal type for a outcome_with_connection
     // this is because it's important to the UI to receive both
-    // the new goal, and the edge, at the same moment
-    GoalWithEdge(GoalWithEdgeSignal),
-    // custom signal type for goal_fully_archived
+    // the new outcome, and the connection, at the same moment
+    OutcomeWithConnection(OutcomeWithConnectionSignal),
+    // custom signal type for outcome_fully_archived
     // this is because it's important to the UI to receive
-    // both the archived goal, and everything connected to it that
+    // both the archived outcome, and everything connected to it that
     // was archived at the same time
-    ArchiveGoalFully(ArchiveGoalFullySignal),
-    EditingGoal(EditingGoalSignal),
-    GoalComment(ActionSignal<GoalComment>),
-    GoalMember(ActionSignal<GoalMember>),
-    GoalVote(ActionSignal<GoalVote>),
+    ArchiveOutcomeFully(ArchiveOutcomeFullySignal),
+    EditingOutcome(EditingOutcomeSignal),
+    OutcomeComment(ActionSignal<OutcomeComment>),
+    OutcomeMember(ActionSignal<OutcomeMember>),
+    OutcomeVote(ActionSignal<OutcomeVote>),
     Member(MemberSignal),
     ProjectMeta(ActionSignal<ProjectMeta>),
     RealtimeInfo(RealtimeInfoSignal),
 }
 
-impl From<ActionSignal<Edge>> for SignalType {
-    fn from(value: ActionSignal<Edge>) -> Self {
-        SignalType::Edge(value)
+impl From<ActionSignal<Connection>> for SignalType {
+    fn from(value: ActionSignal<Connection>) -> Self {
+        SignalType::Connection(value)
     }
 }
 impl From<ActionSignal<EntryPoint>> for SignalType {
@@ -81,24 +81,24 @@ impl From<ActionSignal<EntryPoint>> for SignalType {
         SignalType::EntryPoint(value)
     }
 }
-impl From<ActionSignal<Goal>> for SignalType {
-    fn from(value: ActionSignal<Goal>) -> Self {
-        SignalType::Goal(value)
+impl From<ActionSignal<Outcome>> for SignalType {
+    fn from(value: ActionSignal<Outcome>) -> Self {
+        SignalType::Outcome(value)
     }
 }
-impl From<ActionSignal<GoalComment>> for SignalType {
-    fn from(value: ActionSignal<GoalComment>) -> Self {
-        SignalType::GoalComment(value)
+impl From<ActionSignal<OutcomeComment>> for SignalType {
+    fn from(value: ActionSignal<OutcomeComment>) -> Self {
+        SignalType::OutcomeComment(value)
     }
 }
-impl From<ActionSignal<GoalMember>> for SignalType {
-    fn from(value: ActionSignal<GoalMember>) -> Self {
-        SignalType::GoalMember(value)
+impl From<ActionSignal<OutcomeMember>> for SignalType {
+    fn from(value: ActionSignal<OutcomeMember>) -> Self {
+        SignalType::OutcomeMember(value)
     }
 }
-impl From<ActionSignal<GoalVote>> for SignalType {
-    fn from(value: ActionSignal<GoalVote>) -> Self {
-        SignalType::GoalVote(value)
+impl From<ActionSignal<OutcomeVote>> for SignalType {
+    fn from(value: ActionSignal<OutcomeVote>) -> Self {
+        SignalType::OutcomeVote(value)
     }
 }
 impl From<ActionSignal<ProjectMeta>> for SignalType {
@@ -108,23 +108,23 @@ impl From<ActionSignal<ProjectMeta>> for SignalType {
 }
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
-pub enum GoalField {
+pub enum OutcomeField {
     Title,
     Description,
 }
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
-pub struct EditingGoalSignal {
-    pub goal_field: GoalField,
-    pub goal_address: HeaderHashB64,
+pub struct EditingOutcomeSignal {
+    pub outcome_field: OutcomeField,
+    pub outcome_address: HeaderHashB64,
     pub editing_agent: AgentPubKeyB64,
     pub is_editing: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
-pub struct EditingGoalInput {
-    pub goal_field: GoalField,
-    pub goal_address: HeaderHashB64,
+pub struct EditingOutcomeInput {
+    pub outcome_field: OutcomeField,
+    pub outcome_address: HeaderHashB64,
     pub is_editing: bool,
 }
 
@@ -133,21 +133,21 @@ pub struct EditingGoalInput {
 pub struct RealtimeInfoSignal {
     pub agent_pub_key: AgentPubKeyB64,
     pub project_id: String,
-    pub goal_being_edited: Option<EditingGoalDetails>,
-    pub goal_expanded_view: Option<HeaderHashB64>,
+    pub outcome_being_edited: Option<EditingOutcomeDetails>,
+    pub outcome_expanded_view: Option<HeaderHashB64>,
 }
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 #[serde(rename_all = "camelCase")]
 pub struct RealtimeInfoInput {
     pub project_id: String,
-    pub goal_being_edited: Option<EditingGoalDetails>,
-    pub goal_expanded_view: Option<HeaderHashB64>,
+    pub outcome_being_edited: Option<EditingOutcomeDetails>,
+    pub outcome_expanded_view: Option<HeaderHashB64>,
 }
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 #[serde(rename_all = "camelCase")]
-pub struct EditingGoalDetails {
-    pub goal_address: HeaderHashB64,
+pub struct EditingOutcomeDetails {
+    pub outcome_address: HeaderHashB64,
     pub is_title: bool,
 }
 #[hdk_extern]
@@ -155,8 +155,8 @@ pub fn emit_realtime_info_signal(realtime_info: RealtimeInfoInput) -> ExternResu
     let realtime_info_signal = RealtimeInfoSignal {
         agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey),
         project_id: realtime_info.project_id,
-        goal_being_edited: realtime_info.goal_being_edited,
-        goal_expanded_view: realtime_info.goal_expanded_view,
+        outcome_being_edited: realtime_info.outcome_being_edited,
+        outcome_expanded_view: realtime_info.outcome_expanded_view,
     };
 
     let signal = SignalType::RealtimeInfo(realtime_info_signal);
@@ -166,15 +166,15 @@ pub fn emit_realtime_info_signal(realtime_info: RealtimeInfoInput) -> ExternResu
     Ok(())
 }
 #[hdk_extern]
-pub fn emit_editing_goal_signal(editing_goal_info: EditingGoalInput) -> ExternResult<()> {
-    let editing_goal_signal = EditingGoalSignal {
-        goal_field: editing_goal_info.goal_field,
-        goal_address: editing_goal_info.goal_address,
+pub fn emit_editing_outcome_signal(editing_outcome_info: EditingOutcomeInput) -> ExternResult<()> {
+    let editing_outcome_signal = EditingOutcomeSignal {
+        outcome_field: editing_outcome_info.outcome_field,
+        outcome_address: editing_outcome_info.outcome_address,
         editing_agent: AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey),
-        is_editing: editing_goal_info.is_editing,
+        is_editing: editing_outcome_info.is_editing,
     };
 
-    let signal = SignalType::EditingGoal(editing_goal_signal);
+    let signal = SignalType::EditingOutcome(editing_outcome_signal);
     let payload = ExternIO::encode(signal)?;
     let peers = get_peers_content()?;
     remote_signal(payload, peers)?;

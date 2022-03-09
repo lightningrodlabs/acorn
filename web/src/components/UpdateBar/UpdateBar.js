@@ -1,6 +1,6 @@
 import React from 'react'
 import { CSSTransition } from 'react-transition-group'
-import './UpdateBar.css'
+import './UpdateBar.scss'
 
 import Icon from '../Icon/Icon'
 

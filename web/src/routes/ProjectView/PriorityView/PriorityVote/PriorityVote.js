@@ -10,7 +10,7 @@ import {
 import { connect } from 'react-redux'
 import _ from 'lodash'
 
-import './PriorityVote.css'
+import './PriorityVote.scss'
 
 import Avatar from '../../../../components/Avatar/Avatar'
 import priorityMenuItems from '../../../../components/Header/priorityMenuItems'

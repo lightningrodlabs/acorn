@@ -1,5 +1,5 @@
 import React from 'react'
-import './ProjectModal.css'
+import './ProjectModal.scss'
 
 import Button from '../Button/Button'
 

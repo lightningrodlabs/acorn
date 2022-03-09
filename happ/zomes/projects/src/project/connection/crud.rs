@@ -3,18 +3,18 @@ use hdk::prelude::*;
 use hdk_crud::crud;
 use holo_hash::HeaderHashB64;
 
-// An edge. This is an arrow on the SoA Tree which directionally links
-// two goals.
-#[hdk_entry(id = "edge")]
+// An connection. This is an arrow on the SoA Tree which directionally links
+// two outcomes.
+#[hdk_entry(id = "connection")]
 #[derive(Clone, PartialEq)]
-pub struct Edge {
+pub struct Connection {
     pub parent_address: HeaderHashB64,
     pub child_address: HeaderHashB64,
     pub randomizer: i64,
     pub is_imported: bool,
 }
 
-impl Edge {
+impl Connection {
     pub fn new(
         parent_address: HeaderHashB64,
         child_address: HeaderHashB64,
@@ -31,9 +31,9 @@ impl Edge {
 }
 
 crud!(
-    Edge,
-    edge,
-    "edge",
+    Connection,
+    connection,
+    "connection",
     get_peers_content,
     SignalType
 );

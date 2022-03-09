@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { CSSTransition } from 'react-transition-group'
-import './EdgeConnectorPicker.css'
+import './EdgeConnectorPicker.scss'
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import { Select, Option, useSelect } from '../Select/Select'
 import { calculateValidChildren } from '../EdgeConnectors/EdgeConnectors'

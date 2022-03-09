@@ -1,7 +1,10 @@
 import * as msgpack from "@msgpack/msgpack/dist"
 import { AppWebsocket } from '@holochain/conductor-api/lib/websocket/app'
 import { AdminWebsocket } from '@holochain/conductor-api/lib/websocket/admin'
+import * as types from './types'
 
+
+let e: 
 // export for use by holochainMiddleware (redux)
 // @ts-ignore
 export const APP_WS_URL = `ws://localhost:${__APP_PORT__}`

@@ -8,7 +8,7 @@ import { START_DATE } from 'react-dates/constants'
 import 'react-dates/lib/css/_datepicker.css'
 import 'react-dates/initialize'
 
-import './DatePicker.css'
+import './DatePicker.scss'
 
 function DatePicker({ fromDate, toDate, onClose, onSet }) {
   const [dates, setDates] = useState({

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import './ErrorScreen.css'
+import './ErrorScreen.scss'
 
 import Button from '../Button/Button'
 import Icon from '../Icon/Icon'

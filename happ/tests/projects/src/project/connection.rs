@@ -1,52 +1,52 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::{EdgeFixturator};
+    use crate::fixtures::fixtures::{ConnectionFixturator};
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use holo_hash::HeaderHashB64;
     use holochain_types::prelude::ValidateDataFixturator;
-    use projects::project::edge::validate::*;
+    use projects::project::connection::validate::*;
     use projects::project::error::Error;
 
     #[test]
-    fn test_validate_update_entry_edge() {
+    fn test_validate_update_entry_connection() {
         assert_eq!(
-            validate_update_entry_edge(fixt!(ValidateData)),
+            validate_update_entry_connection(fixt!(ValidateData)),
             Error::UpdateAttempted.into(),
         );
     }
 
     #[test]
-    fn test_validate_delete_entry_edge() {
+    fn test_validate_delete_entry_connection() {
         assert_eq!(
-            validate_delete_entry_edge(fixt!(ValidateData)),
+            validate_delete_entry_connection(fixt!(ValidateData)),
             Ok(ValidateCallbackResult::Valid),
         );
     }
 
     #[test]
-    fn test_validate_create_entry_edge() {
+    fn test_validate_create_entry_connection() {
         let mut validate_data = fixt!(ValidateData);
         let create_header = fixt!(Create);
-        let mut edge = fixt!(Edge);
+        let mut connection = fixt!(Connection);
 
         *validate_data.element.as_header_mut() = Header::Create(create_header);
 
         // without an Element containing an Entry, validation will fail
         assert_eq!(
-            validate_create_entry_edge(validate_data.clone()),
+            validate_create_entry_connection(validate_data.clone()),
             Error::DeserializationFailed.into(),
         );
 
         // with an entry with identical hash for parent_address and
         // child_address validation will fail
-        let goal_wrapped_header_hash = fixt!(HeaderHashB64);
-        edge.parent_address = goal_wrapped_header_hash.clone();
-        edge.child_address = goal_wrapped_header_hash.clone();
+        let outcome_wrapped_header_hash = fixt!(HeaderHashB64);
+        connection.parent_address = outcome_wrapped_header_hash.clone();
+        connection.child_address = outcome_wrapped_header_hash.clone();
         *validate_data.element.as_entry_mut() =
-            ElementEntry::Present(edge.clone().try_into().unwrap());
+            ElementEntry::Present(connection.clone().try_into().unwrap());
         assert_eq!(
-            validate_create_entry_edge(validate_data.clone()),
+            validate_create_entry_connection(validate_data.clone()),
             Error::IdenticalParentChild.into(),
         );
 
@@ -56,37 +56,37 @@ pub mod tests {
         // SUCCESS case
         // the element exists
         // parent_address and child_address are not identical
-        // the parent goal is found/exists
-        // the child goal is found/exists
+        // the parent outcome is found/exists
+        // the child outcome is found/exists
         // -> good to go
 
         let parent_signed_header_hashed = fixt!(SignedHeaderHashed);
-        let goal_parent_wrapped_header_hash =
+        let outcome_parent_wrapped_header_hash =
             HeaderHashB64::new(parent_signed_header_hashed.as_hash().clone());
         let child_signed_header_hashed = fixt!(SignedHeaderHashed);
-        let goal_child_wrapped_header_hash =
+        let outcome_child_wrapped_header_hash =
             HeaderHashB64::new(child_signed_header_hashed.as_hash().clone());
         // we assign different parent and child to pass that level of validation
-        edge.parent_address = goal_parent_wrapped_header_hash.clone();
-        edge.child_address = goal_child_wrapped_header_hash.clone();
+        connection.parent_address = outcome_parent_wrapped_header_hash.clone();
+        connection.child_address = outcome_child_wrapped_header_hash.clone();
         *validate_data.element.as_entry_mut() =
-            ElementEntry::Present(edge.clone().try_into().unwrap());
+            ElementEntry::Present(connection.clone().try_into().unwrap());
 
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the parent goal
+        // the must_get_header call for the parent outcome
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                goal_parent_wrapped_header_hash.clone().into(),
+                outcome_parent_wrapped_header_hash.clone().into(),
             )))
             .times(1)
             .return_const(Ok(parent_signed_header_hashed));
 
-        // the must_get_header call for the child goal
+        // the must_get_header call for the child outcome
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                goal_child_wrapped_header_hash.clone().into(),
+                outcome_child_wrapped_header_hash.clone().into(),
             )))
             .times(1)
             .return_const(Ok(child_signed_header_hashed));
@@ -96,7 +96,7 @@ pub mod tests {
         // we should see that the ValidateCallbackResult
         // is finally valid
         assert_eq!(
-            validate_create_entry_edge(validate_data.clone()),
+            validate_create_entry_connection(validate_data.clone()),
             Ok(ValidateCallbackResult::Valid),
         );
     }

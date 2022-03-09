@@ -4,7 +4,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import _ from 'lodash'
 import { NavLink, useHistory, useLocation } from 'react-router-dom'
 
-import './PriorityUniversal.css'
+import './PriorityUniversal.scss'
 
 import { openExpandedView } from '../../../../redux/ephemeral/expanded-view/actions'
 

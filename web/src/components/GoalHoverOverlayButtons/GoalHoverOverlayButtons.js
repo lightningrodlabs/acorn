@@ -3,7 +3,7 @@ import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import { goalWidth } from '../../drawing/dimensions'
 import { unselectAll } from '../../redux/ephemeral/selection/actions'
 import { openGoalForm, updateContent } from '../../redux/ephemeral/goal-form/actions'
-import './GoalHoverOverlayButtons.css'
+import './GoalHoverOverlayButtons.scss'
 import GoalHoverOverlayButtons from './GoalHoverOverlayButtons.component'
 
 function mapStateToProps(state) {

@@ -1,5 +1,5 @@
 import React from 'react'
-import './PickerTemplate.css'
+import './PickerTemplate.scss'
 
 import Icon from '../Icon/Icon'
 

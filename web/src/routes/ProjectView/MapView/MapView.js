@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { connect, useStore } from 'react-redux'
 
-import './MapView.css'
+import './MapView.scss'
 
 import render from '../../../drawing'
 

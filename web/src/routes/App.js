@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import './App.css'
+import './App.scss'
 
 import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
 import {

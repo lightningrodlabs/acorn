@@ -1,5 +1,5 @@
 import React from 'react'
-import './DashboardEmptyState.css'
+import './DashboardEmptyState.scss'
 
 function DashboardEmptyState({ onJoinClick, onCreateClick }) {
   return (

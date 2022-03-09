@@ -1,5 +1,5 @@
 import React from 'react'
-import './InviteMembersModal.css'
+import './InviteMembersModal.scss'
 
 import Modal from '../Modal/Modal'
 import {

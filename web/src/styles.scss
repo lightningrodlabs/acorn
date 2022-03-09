@@ -1,3 +1,19 @@
+:root {
+// colors 
+// color names from https://www.color-name.com
+--text-color-primary: #222222; //Raisin Black 
+--text-color-secondary: #4D4D4D; //Dark Liver
+--text-color-tetiary: #8D8C8C; //Philippine Gray
+--bg-color-primary: #f7f5f3; //Cultured
+--bg-color-secondary: #ffffff; 
+
+
+
+}
+
+
+
+
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -20,7 +36,6 @@ html, body, canvas {
 body {
   background-color: #f7f5f3;
   font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
-  color: #404040;
   word-spacing: 0.05em;
 }
 

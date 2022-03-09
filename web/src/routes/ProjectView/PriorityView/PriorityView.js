@@ -2,7 +2,7 @@ import React from 'react'
 import { Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import './PriorityView.css'
+import './PriorityView.scss'
 
 import { updateProjectMeta } from '../../../redux/persistent/projects/project-meta/actions'
 

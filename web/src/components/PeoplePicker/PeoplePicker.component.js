@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './PeoplePicker.css'
+import './PeoplePicker.scss'
 import Icon from '../Icon/Icon'
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import Avatar from '../Avatar/Avatar'

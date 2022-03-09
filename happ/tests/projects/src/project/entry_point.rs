@@ -42,10 +42,10 @@ pub mod tests {
         );
 
         // now make it pass DeserializationFailed by adding an ElementEntry::Present
-        let goal_signed_header_hashed = fixt!(SignedHeaderHashed);
-        let goal_wrapped_header_hash =
-            HeaderHashB64::new(goal_signed_header_hashed.as_hash().clone());
-        entry_point.goal_address = goal_wrapped_header_hash.clone();
+        let outcome_signed_header_hashed = fixt!(SignedHeaderHashed);
+        let outcome_wrapped_header_hash =
+            HeaderHashB64::new(outcome_signed_header_hashed.as_hash().clone());
+        entry_point.outcome_address = outcome_wrapped_header_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(entry_point.clone().try_into().unwrap());
 
@@ -53,16 +53,16 @@ pub mod tests {
         // to have to mock `get` calls to the HDK
 
         // now make it valid by making it
-        // as if there is a Goal at the goal_address
+        // as if there is a Outcome at the outcome_address
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the goal_address
+        // the must_get_header call for the outcome_address
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                goal_wrapped_header_hash.clone().into(),
+                outcome_wrapped_header_hash.clone().into(),
             )))
             .times(1)
-            .return_const(Ok(goal_signed_header_hashed.clone()));
+            .return_const(Ok(outcome_signed_header_hashed.clone()));
 
         set_hdk(mock_hdk);
 
@@ -80,20 +80,20 @@ pub mod tests {
 
         // SUCCESS case
         // the element exists
-        // the parent goal is found/exists
+        // the parent outcome is found/exists
         // is_imported is false and creator_address refers to the agent committing (or is_imported = true)
         // -> good to go
 
-        // make it as if there is a Goal at the goal_address
+        // make it as if there is a Outcome at the outcome_address
 
         let mut mock_hdk = MockHdkT::new();
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                goal_wrapped_header_hash.clone().into(),
+                outcome_wrapped_header_hash.clone().into(),
             )))
             .times(1)
-            .return_const(Ok(goal_signed_header_hashed));
+            .return_const(Ok(outcome_signed_header_hashed));
 
         set_hdk(mock_hdk);
 

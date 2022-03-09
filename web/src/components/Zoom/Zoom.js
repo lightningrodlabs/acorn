@@ -1,5 +1,5 @@
 import React from 'react'
-import './Zoom.css'
+import './Zoom.scss'
 import Icon from '../Icon/Icon'
 import { connect } from 'react-redux'
 import { changeScale } from '../../redux/ephemeral/viewport/actions'

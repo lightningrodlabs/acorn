@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './GuideBook.css'
+import './GuideBook.scss'
 import Tabs from './Tabs/Tabs'
 // import GettingStarted from './Sections/GettingStarted'
 import HowTos from './Sections/HowTos/index'

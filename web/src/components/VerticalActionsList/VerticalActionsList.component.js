@@ -10,7 +10,7 @@ import HierarchyPicker from '../HierarchyPicker/HierarchyPicker'
 import PriorityPicker from '../PriorityPicker/PriorityPicker'
 import StatusIcon from '../StatusIcon/StatusIcon'
 import Modal, { ModalContent } from '../Modal/Modal'
-import './VerticalActionsList.css'
+import './VerticalActionsList.scss'
 
 function VerticalActionListItem({ onClick, label, icon }) {
   return (

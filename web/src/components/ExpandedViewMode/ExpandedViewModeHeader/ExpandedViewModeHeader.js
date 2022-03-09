@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
-import './ExpandedViewModeHeader.css'
+import './ExpandedViewModeHeader.scss'
 
 import Icon from '../../Icon/Icon'
 import HierarchyIcon from '../../HierarchyIcon/HierarchyIcon'

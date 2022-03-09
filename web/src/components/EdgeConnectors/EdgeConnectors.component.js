@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './EdgeConnectors.css'
+import './EdgeConnectors.scss'
 import { Transition, TransitionGroup } from 'react-transition-group'
 import {
   goalWidth,

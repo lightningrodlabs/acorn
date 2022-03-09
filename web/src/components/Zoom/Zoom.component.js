@@ -1,5 +1,5 @@
 import React from 'react'
-import './Zoom.css'
+import './Zoom.scss'
 import Icon from '../Icon/Icon'
 
 class Zoom extends React.Component {

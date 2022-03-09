@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import './ImportProjectModal.css'
+import './ImportProjectModal.scss'
 
 import Modal from '../Modal/Modal'
 import {

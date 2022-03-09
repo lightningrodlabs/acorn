@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import './PriorityPickerVote.css'
+import './PriorityPickerVote.scss'
 import {
   createGoalVote,
   archiveGoalVote,

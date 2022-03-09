@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 import Avatar from '../../components/Avatar/Avatar'
 import Icon from '../../components/Icon/Icon'
 
-import './DashboardListProject.css'
+import './DashboardListProject.scss'
 
 import { pickColorForString } from '../../styles'
 

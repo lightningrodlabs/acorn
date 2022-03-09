@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import './ValidatingFormInput.css'
+import './ValidatingFormInput.scss'
 
 function ValidatingFormInput ({
   withAtSymbol,

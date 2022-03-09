@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import './RunUpdate.css'
+import './RunUpdate.scss'
 
 function RunUpdate({ preRestart, version }) {
   // if not preRestart, then this is postRestart

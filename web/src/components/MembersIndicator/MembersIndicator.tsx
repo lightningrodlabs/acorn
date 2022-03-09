@@ -2,7 +2,7 @@ import React from 'react'
 import Avatar from '../Avatar/Avatar'
 import Icon from '../Icon/Icon'
 
-import './MembersIndicator.css'
+import './MembersIndicator.scss'
 
 export type MembersIndicatorProps = {
   // any here is a "Profile"

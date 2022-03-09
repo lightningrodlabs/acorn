@@ -1,6 +1,6 @@
 import React from 'react'
 import Icon from '../Icon/Icon'
-import './GoalHoverOverlayButtons.css'
+import './GoalHoverOverlayButtons.scss'
 
 export default function GoalHoverOverlayButtons({
   hoveredAddress,
