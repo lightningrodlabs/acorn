@@ -1,66 +1,70 @@
-.avatar, .initials-avatar {
+.avatar,
+.initials-avatar {
   transition: 0.2s all ease;
   cursor: pointer;
+
+  &.imported {
+    opacity: 0.5;
+  }
+
+  &.clickable {
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &.highlighted {
+    box-shadow: 0 0 0 3px #5f65ff;
+  }
+
+  // avatar sizees
+  &.small {
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  &.small-medium {
+    height: 28px;
+    width: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    font-size: 11px;
+  }
+
+  &.small-medium {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    object-fit: cover;
+    font-size: 12px;
+  }
+
+  &.medium-large {
+    height: 36px;
+    width: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  &.large {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 }
 
-.avatar.imported, .initials-avatar.imported {
-  opacity: 0.5;
-}
-
-.avatar.clickable, .initals-avatar.clickable {
-  cursor: pointer;
-}
-
-.avatar.clickable:hover, .initials-avatar.clickable:hover {
-  opacity: 0.8;
-}
-
-.avatar.small {
-  height: 24px;
-  width: 24px;
-  border-radius: 12px;
-  object-fit: cover;
-}
-
-.avatar.small-medium {
-  height: 28px;
-  width: 28px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.avatar.medium {
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.avatar.medium-large {
-  height: 36px;
-  width: 36px;
-  object-fit: cover;
-}
-
-.avatar.large {
-  height: 40px;
-  width: 40px;
-  object-fit: cover;
-}
-
-.avatar.highlighted {
-  box-shadow: 0 0 0 3px #5f65ff;
-}
-
-.avatar.highlighted~.avatar-wrapper.with-border.white,
-.initials-avatar.highlighted~.avatar-wrapper.with-border.white {
+.avatar.highlighted ~ .avatar-wrapper.with-border.white,
+.initials-avatar.highlighted ~ .avatar-wrapper.with-border.white {
   border: 3px solid #5f65ff;
 }
 
-/* initals-avatar stylings */
+/* initals-avatar specific stylings */
 
 .initials-avatar {
-  cursor: pointer;
   color: white;
   text-align: center;
   height: inherit;
@@ -72,134 +76,94 @@
   font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
 }
 
-.initials-avatar.clickable {
-  cursor: pointer;
-}
-
-.initials-avatar.small {
-  height: 24px;
-  width: 24px;
-  border-radius: 12px;
-  object-fit: cover;
-  font-size: 11px;
-}
-
-.initials-avatar.small-medium {
-  height: 28px;
-  width: 28px;
-  border-radius: 50%;
-  object-fit: cover;
-  font-size: 12px;
-}
-
-.initials-avatar.medium {
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.initials-avatar.medium-large {
-  height: 36px;
-  width: 36px;
-  object-fit: cover;
-}
-
-.initials-avatar.large {
-  height: 40px;
-  width: 40px;
-  object-fit: cover;
-}
-
-.initials-avatar.highlighted {
-  box-shadow: 0 0 0 2px #5f65ff;
-}
-
-.avatar~.status-circle-wrapper .status-circle,
-.initials-avatar~.status-circle-wrapper .status-circle {
+.avatar ~ .status-circle-wrapper .status-circle,
+.initials-avatar ~ .status-circle-wrapper .status-circle {
   height: 8px;
   width: 8px;
 }
 
-.avatar-wrapper.with-status {
-  position: relative;
+.avatar-wrapper {
+  // avatar wrapper sizes
+  &.small-medium {
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    position: relative;
+  }
+  &.medium {
+    width: 30px;
+    height: 30px;
+  }
+  // avatar with tooltip
+  &.tooltip-wrapper {
+    bottom: -32px;
+  }
+  &.with-status {
+    position: relative;
+  }
+  // positionality of the status circle
+  // in realtion to avatar wrapper
+  > .status-circle-wrapper {
+    right: -2px;
+    bottom: -2px;
+    .status-circle {
+      border: 2px solid white;
+      box-shadow: none;
+    }
+  }
+  // if avatar has border
+  &.with-border {
+    border-radius: 50%;
+    position: relative;
+    &.white {
+      border: 3px solid #ffffff;
+    }
+    // avatar wrapper can have status circle if bordered
+    &.status-color {
+      &.undefined {
+        // TODO: don't show status circle if undefined
+        border: 3px solid #00d0c0;
+      }
+      &.status-online {
+        border: 3px solid #00d0c0;
+      }
+      &.status-away {
+        border: 3px solid #ffc400;
+      }
+      &.status-offline {
+        border: 3px solid #d1d1d1;
+      }
+    }
+  }
+  // if hovered over avatar wrapper
+  &:hover {
+    .tooltip-wrapper {
+      transition-delay: 0.9s;
+      visibility: visible;
+      transition-property: visibility;
+      z-index: 9999;
+    }
+  }
 }
 
-.avatar-wrapper.with-border {
-  border-radius: 50%;
-  position: relative;
+// avatar's prefered set status circle
+.status-circle {
+  &.status-online {
+    background-color: #00d0c0;
+  }
+  &.status-away {
+    background-color: #ffc400;
+  }
+  &.status-offline {
+    background-color: #d1d1d1;
+  }
 }
 
-.avatar-wrapper.with-border.white{
-  border: 3px solid #ffffff;
-}
-
-.avatar-wrapper.with-border.status-color.undefined {
-  border: 3px solid #00d0c0;
-}
-
-.avatar-wrapper.with-border.status-color.status-online {
-  border: 3px solid #00d0c0;
-}
-
-.avatar-wrapper.with-border.status-color.status-online {
-  border: 3px solid #00d0c0;
-}
-
-.avatar-wrapper.with-border.status-color.status-away {
-  border: 3px solid #ffc400;
-}
-
-.avatar-wrapper.with-border.status-color.status-offline {
-  border: 3px solid #d1d1d1;
-}
-
-.avatar-wrapper.with-border.small-medium {
-  border: 3px solid #ffffff;
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  position: relative;
-}
-
-.avatar-wrapper.with-border.medium {
-  width: 30px;
-  height: 30px;
-}
-
-
-.avatar-wrapper>.status-circle-wrapper .status-circle {
-  border: 2px solid white;
-  box-shadow: none;
-}
-
-.avatar-wrapper>.status-circle-wrapper {
-  right: -2px;
-  bottom: -2px;
-}
-
-.status-circle.status-online {
-  background-color: #00d0c0;
-}
-
-.status-circle.status-away {
-  background-color: #ffc400;
-}
-
-.status-circle.status-offline {
-  background-color: #d1d1d1;
-}
-
-/* Avatars with tooltip */
-
-.avatar-wrapper .tooltip-wrapper {
-  bottom: -32px;
-}
-
-.avatar-wrapper:hover .tooltip-wrapper,
-.initials-avatar:hover .tooltip-wrapper {
-  transition-delay: 0.9s;
-  visibility: visible;
-  transition-property: visibility;
-  z-index: 9999;
-}
+// .avatar-wrapper:hover .tooltip-wrapper,
+// .initials-avatar:hover .tooltip-wrapper {
+//   transition-delay: 0.9s;
+//   visibility: visible;
+//   transition-property: visibility;
+//   z-index: 9999;
+// }

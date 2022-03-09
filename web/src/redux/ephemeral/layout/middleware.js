@@ -3,14 +3,14 @@ import {
     createGoalWithEdge,
     fetchGoals,
     archiveGoalFully
-} from '../projects/goals/actions'
+} from '../../persistent/projects/goals/actions'
 import {
     createEdge,
     fetchEdges,
     AFFECT_LAYOUT_ARCHIVE_EDGE,
     PREVIEW_EDGES,
     CLEAR_EDGES_PREVIEW,
-} from '../projects/edges/actions'
+} from '../../persistent/projects/edges/actions'
 import {
   TRIGGER_UPDATE_LAYOUT,
 } from './actions'

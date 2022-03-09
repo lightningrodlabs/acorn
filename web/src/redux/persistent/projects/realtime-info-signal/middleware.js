@@ -1,13 +1,13 @@
 import {
   OPEN_EXPANDED_VIEW,
   CLOSE_EXPANDED_VIEW,
-} from '../expanded-view/actions'
+} from '../../../ephemeral/expanded-view/actions'
 import {
   START_TITLE_EDIT,
   END_TITLE_EDIT,
   START_DESCRIPTION_EDIT,
   END_DESCRIPTION_EDIT,
-} from '../goal-editing/actions'
+} from '../../../ephemeral/goal-editing/actions'
 import {
   sendRealtimeInfoSignal,
   SEND_REALTIME_INFO,

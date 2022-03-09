@@ -2,7 +2,7 @@
 
 import { OPEN_GOAL_FORM, CLOSE_GOAL_FORM, UPDATE_CONTENT } from './actions'
 
-import { archiveGoalFully } from '../projects/goals/actions'
+import { archiveGoalFully } from '../../persistent/projects/goals/actions'
 
 const defaultState = {
   editAddress: null,

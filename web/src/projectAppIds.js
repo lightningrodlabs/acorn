@@ -1,4 +1,3 @@
-import { cellIdToString } from 'connoropolous-hc-redux-middleware/build/main/lib/actionCreator'
 import { getAppWs, getAdminWs } from './hcWebsockets'
 import { PROJECT_APP_PREFIX } from './holochainConfig'
 

@@ -1,5 +1,5 @@
 import { RELATION_AS_PARENT, resetEdgeConnector } from './actions'
-import { createEdge, layoutAffectingArchiveEdge } from '../projects/edges/actions'
+import { createEdge, layoutAffectingArchiveEdge } from '../../persistent/projects/edges/actions'
 
 export default async function handleEdgeConnectMouseUp(
   fromAddress,

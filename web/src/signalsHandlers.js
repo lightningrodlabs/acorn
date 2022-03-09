@@ -16,7 +16,6 @@ import * as entryPointActions from './redux/persistent/projects/entry-points/act
 import * as projectMetaActions from './redux/persistent/projects/project-meta/actions'
 import { setMember } from './redux/persistent/projects/members/actions'
 import { fetchAgents, setAgent } from './redux/persistent/profiles/agents/actions'
-import { cellIdToString } from 'connoropolous-hc-redux-middleware'
 import { triggerUpdateLayout } from './redux/ephemeral/layout/actions'
 import { removePeerState, updatePeerState } from './redux/ephemeral/realtime-info/actions'
 

@@ -1,4 +1,4 @@
-import { InstalledAppInfo } from '@holochain/conductor-api'
+import { InstalledAppInfo } from '@holochain/client'
 import React, { useEffect, useState } from 'react'
 import { getAllApps } from '../../projectAppIds'
 import { uidToPassphrase } from '../../secrets'

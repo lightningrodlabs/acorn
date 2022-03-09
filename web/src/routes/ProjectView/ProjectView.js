@@ -30,7 +30,7 @@ import { unselectAll } from '../../redux/ephemeral/selection/actions'
 import { closeExpandedView } from '../../redux/ephemeral/expanded-view/actions'
 import { animatePanAndZoom, resetTranslateAndScale } from '../../redux/ephemeral/viewport/actions'
 import { ENTRY_POINTS } from '../../searchParams'
-import { triggerRealtimeInfoSignal, sendExitProjectSignal } from '../../realtime-info-signal/actions'
+import { triggerRealtimeInfoSignal, sendExitProjectSignal } from '../../redux/persistent/projects/realtime-info-signal/actions'
 
 function ProjectViewInner({
   projectId,

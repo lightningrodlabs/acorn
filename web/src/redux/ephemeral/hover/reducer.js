@@ -1,8 +1,8 @@
 
 
 import { HOVER_EDGE, UNHOVER_EDGE, HOVER_GOAL, UNHOVER_GOAL } from './actions'
-import { archiveGoalFully } from '../projects/goals/actions'
-import { archiveEdge } from '../projects/edges/actions'
+import { archiveGoalFully } from '../../persistent/projects/goals/actions'
+import { archiveEdge } from '../../persistent/projects/edges/actions'
 
 const defaultState = {
   hoveredGoal: null,

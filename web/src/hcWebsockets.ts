@@ -1,6 +1,5 @@
 import * as msgpack from "@msgpack/msgpack/dist"
-import { AppWebsocket } from '@holochain/conductor-api/lib/websocket/app'
-import { AdminWebsocket } from '@holochain/conductor-api/lib/websocket/admin'
+import { AppWebsocket, AdminWebsocket  } from '@holochain/client'
 import * as types from './types'
 
 

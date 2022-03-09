@@ -7,8 +7,8 @@ import {
   UNSELECT_GOAL,
   UNSELECT_ALL,
 } from './actions'
-import { archiveGoalFully } from '../projects/goals/actions'
-import { archiveEdge } from '../projects/edges/actions'
+import { archiveGoalFully } from '../../persistent/projects/goals/actions'
+import { archiveEdge } from '../../persistent/projects/edges/actions'
 
 const defaultState = {
   selectedGoals: [],

@@ -11,13 +11,55 @@
   cursor: pointer;
   font-family: 'gilroyextrabold', Helvetica, sans-serif;
   transition: 0.2s all;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  // buttons colors
+  &.purple {
+    background: #6600ff;
+    color: #ffffff;
+  }
+  &.green {
+    background: #00afa4;
+    color: #ffffff;
+  }
+
+  // buttons sizes
+  &.small {
+    font-size: 13px;
+    line-height: 16px;
+    padding: 10px 20px;
+  }
+  &.medium {
+    font-size: 14px;
+    line-height: 18px;
+    padding: 11px 28px;
+  }
+  &.large {
+    font-size: 16px;
+    line-height: 20px;
+    padding: 15px 30px;
+    min-width: 135px;
+  }
+
+  // stroked button (transparent background)
+  &.stroke {
+    background: transparent;
+    border: 1px solid #4d4d4d;
+    color: #4d4d4d;
+    transition: color 0.2s ease-in-out, border 0.2s ease-in-out;
+
+    &:hover {
+      background: transparent;
+      border: 1px solid #7c24ff;
+      color: #7c24ff;
+    }
+  }
 }
 
-.button:hover {
-  background: #7c24ff;
-  border: 1px solid #7c24ff;
-}
-
+// clear button
 .clear-button {
   outline: none;
   background: none;
@@ -29,67 +71,8 @@
   font-size: 11px;
   padding: 0;
   color: #00beb0;
-}
 
-.clear-button:hover {
-  color: #5f65ff;
-}
-
-.button.purple {
-  background: #6600ff;
-  color: #ffffff;
-}
-
-.button.purple:hover {
-  background: #7c24ff;
-}
-
-.button.green {
-  background: #00afa4;
-  color: #ffffff;
-}
-
-.button.green:hover {
-  background: #00beb0;
-}
-
-.button.small {
-  border-radius: 25px;
-  outline: none;
-  border: none;
-  font-size: 13px;
-  line-height: 16px;
-  padding: 10px 20px;
-}
-
-.button.medium {
-  border-radius: 25px;
-  outline: none;
-  border: none;
-  font-size: 14px;
-  line-height: 18px;
-  padding: 11px 28px;
-}
-
-.button.large {
-  border-radius: 25px;
-  outline: none;
-  border: none;
-  font-size: 16px;
-  line-height: 20px;
-  padding: 15px 30px;
-  min-width: 135px;
-}
-
-.button.stroke {
-  background: transparent;
-  border: 1px solid #4d4d4d;
-  color: #4d4d4d;
-  transition: color 0.2s ease-in-out, border 0.2s ease-in-out;
-}
-
-.button.stroke:hover {
-  background: transparent;
-  border: 1px solid #7c24ff;
-  color: #7c24ff;
+  &:hover {
+    color: #5f65ff;
+  }
 }

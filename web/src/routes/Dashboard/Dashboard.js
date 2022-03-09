@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { cellIdToString } from 'connoropolous-hc-redux-middleware/build/main/lib/actionCreator'
 import { CSSTransition } from 'react-transition-group'
 import { NavLink } from 'react-router-dom'
 import { connect } from 'react-redux'

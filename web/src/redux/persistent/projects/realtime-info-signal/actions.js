@@ -1,6 +1,5 @@
-import { createZomeCallAsyncAction } from 'connoropolous-hc-redux-middleware'
 
-import { PROJECTS_ZOME_NAME } from '../holochainConfig'
+import { PROJECTS_ZOME_NAME } from '../../../../holochainConfig'
 
 const SEND_REALTIME_INFO = 'SEND_REALTIME_INFO'
 const SEND_EXIT_PROJECT_SIGNAL = 'SEND_EXIT_PROJECT_SIGNAL'

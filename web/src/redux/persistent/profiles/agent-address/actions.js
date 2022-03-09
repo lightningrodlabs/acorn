@@ -5,7 +5,6 @@
   that can be taken within that feature.
 */
 
-import { createZomeCallAsyncAction } from 'connoropolous-hc-redux-middleware'
 
 import { PROFILES_ZOME_NAME } from '../../../../holochainConfig'
 

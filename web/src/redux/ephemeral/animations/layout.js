@@ -1,7 +1,7 @@
 import TWEEN from '@tweenjs/tween.js'
 import {
     createGoalWithEdge,
-} from '../projects/goals/actions'
+} from '../../persistent/projects/goals/actions'
 import {
   updateLayout
 } from '../layout/actions'

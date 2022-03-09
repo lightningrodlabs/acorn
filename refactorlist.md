@@ -47,5 +47,4 @@ css notes:
 
 
 
-
-
+- decide which component stylings we are keeping

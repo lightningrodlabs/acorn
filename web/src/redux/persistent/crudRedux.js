@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import { createZomeCallAsyncAction } from 'connoropolous-hc-redux-middleware'
 
 export function isCrud(action, create, fetch, update, archive) {
   return [create, fetch, update, archive]
