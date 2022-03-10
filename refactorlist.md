@@ -9,7 +9,7 @@ fix the redux dependency (?) short term fix? (10 minute)
 
 client side Acorn zome library/module (2 hrs)
 
-
+find all `.create()` instances and handle zome call directly in client rather than through middleware
 
 question: how many components under `components` folder use redux? 19 (*.component) (mapStateToProps, mapDispatchToProps)
 
@@ -18,6 +18,7 @@ question: how many components under `components` folder use redux? 19 (*.compone
 Wesley
 1. backend name changes, 
 2. typescript types for backend data types (Rust) (Outcome, Connection, OutcomeComment, OutcomeEntryPoint, etc.)
+3. convert between cellId buffer and string throughout the code
 
 
 

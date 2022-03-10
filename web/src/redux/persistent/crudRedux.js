@@ -1,12 +1,11 @@
 import _ from 'lodash'
 
-export function isCrud(action, create, fetch, update, archive) {
-  return [create, fetch, update, archive]
-    .map(a => a.success().type)
+export function isCrud(action, createAction, fetchAction, updateAction, deleteAction) {
+  return [createAction, fetchAction, updateAction, deleteAction]
     .includes(action.type)
 }
 
-export function crudReducer(state, action, create, fetch, update, archive) {
+export function crudReducer(state, action, createAction, fetchAction, updateAction, deleteAction) {
   const {
     payload,
     type,
@@ -15,8 +14,8 @@ export function crudReducer(state, action, create, fetch, update, archive) {
 
   switch (type) {
     // CREATE AND UPDATE SHARE A RESPONSE TYPE
-    case create.success().type:
-    case update.success().type:
+    case createAction:
+    case updateAction:
       return {
         ...state,
         [cellIdString]: {
@@ -29,7 +28,7 @@ export function crudReducer(state, action, create, fetch, update, archive) {
       }
 
     // FETCH
-    case fetch.success().type:
+    case fetchAction:
       // payload is [ { entry: { key: val }, headerHash: 'QmAsdFg' }, ... ]
       const mapped = payload.map(r => {
         return {
@@ -50,7 +49,7 @@ export function crudReducer(state, action, create, fetch, update, archive) {
       }
 
     // ARCHIVE
-    case archive.success().type:
+    case deleteAction:
       return {
         ...state,
         [cellIdString]: _.pickBy(state[cellIdString], (value, key) => key !== payload),
@@ -60,10 +59,48 @@ export function crudReducer(state, action, create, fetch, update, archive) {
   }
 }
 
-export function createCrudActionCreators(zome_name, model) {
-  const create = createZomeCallAsyncAction(zome_name, `create_${model}`)
-  const update = createZomeCallAsyncAction(zome_name, `update_${model}`)
-  const fetch = createZomeCallAsyncAction(zome_name, `fetch_${model}s`)
-  const archive = createZomeCallAsyncAction(zome_name, `delete_${model}`)
-  return [create, fetch, update, archive]
+export function createCrudActionCreators(model) {
+  const CREATE_ACTION = `CREATE_${model}`
+  const FETCH_ACTION = `FETCH_${model}S`
+  const UPDATE_ACTION = `UPDATE_${model}`
+  const DELETE_ACTION = `DELETE_${model}`
+
+  const createAction = (cellIdString, payload) => {
+    return {
+      type: CREATE_ACTION,
+      payload: payload,
+      meta: { cellIdString },
+    }
+  }
+  const fetchAction = (cellIdString, payload) => {
+    return {
+      type: FETCH_ACTION,
+      payload: payload,
+      meta: { cellIdString },
+    }
+  }
+  const updateAction = (cellIdString, payload) => {
+    return {
+      type: UPDATE_ACTION,
+      payload: payload,
+      meta: { cellIdString },
+    }
+  }
+  const deleteAction = (cellIdString, payload) => {
+    return {
+      type: DELETE_ACTION,
+      payload: payload,
+      meta: { cellIdString },
+    }
+  }
+  return [
+    [CREATE_ACTION,
+    FETCH_ACTION,
+    UPDATE_ACTION,
+    DELETE_ACTION],
+    [createAction,
+    fetchAction,
+    updateAction,
+    deleteAction]
+  ]
 }

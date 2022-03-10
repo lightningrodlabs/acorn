@@ -5,6 +5,8 @@ import {
   updateGoalComment,
 } from '../../redux/persistent/projects/goal-comments/actions'
 import Comments from './Comments.component'
+import ProjectsZomeApi from '../../api/projectsApi'
+import { getAppWs } from '../../hcWebsockets'
 
 function mapStateToProps(state) {
   const goalAddress = state.ui.expandedView.goalAddress
@@ -18,15 +20,24 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   return {
-    createGoalComment: (payload) => {
-      return dispatch(createGoalComment.create({ cellIdString, payload }))
+    createGoalComment: async (payload) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomeComment = await projectsZomeApi.outcomeComment.create(cellId, payload)
+      return dispatch(createGoalComment(cellIdString, outcomeComment))
     },
     archiveGoalComment: (payload) => {
-      return dispatch(archiveGoalComment.create({ cellIdString, payload }))
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomeComment = await projectsZomeApi.outcomeComment.delete(cellId, payload)
+      return dispatch(deleteGoalComment(cellIdString, outcomeComment))
     },
     updateGoalComment: (entry, headerHash) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomeComment = await projectsZomeApi.outcomeComment.update(cellId, payload)
       return dispatch(
-        updateGoalComment.create({ cellIdString, payload: { entry, headerHash } })
+        updateGoalComment(cellIdString, { outcomeComment, headerHash })
       )
     },
   }

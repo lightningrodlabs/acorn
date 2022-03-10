@@ -1,6 +1,10 @@
 import _ from 'lodash'
 
 import {
+  CREATE_OUTCOME_COMMENT,
+  FETCH_OUTCOME_COMMENTS,
+  UPDATE_OUTCOME_COMMENT,
+  DELETE_OUTCOME_COMMENT,
   createGoalComment,
   fetchGoalComments,
   updateGoalComment,
@@ -17,19 +21,19 @@ export default function (state = defaultState, action) {
   if (
     isCrud(
       action,
-      createGoalComment,
-      fetchGoalComments,
-      updateGoalComment,
-      archiveGoalComment
+      CREATE_OUTCOME_COMMENT,
+      FETCH_OUTCOME_COMMENTS,
+      UPDATE_OUTCOME_COMMENT,
+      DELETE_OUTCOME_COMMENT,
     )
   ) {
     return crudReducer(
       state,
       action,
-      createGoalComment,
-      fetchGoalComments,
-      updateGoalComment,
-      archiveGoalComment
+      CREATE_OUTCOME_COMMENT,
+      FETCH_OUTCOME_COMMENTS,
+      UPDATE_OUTCOME_COMMENT,
+      DELETE_OUTCOME_COMMENT,
     )
   }
 
