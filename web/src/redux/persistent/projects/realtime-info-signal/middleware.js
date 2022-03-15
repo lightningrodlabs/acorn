@@ -9,10 +9,11 @@ import {
   END_DESCRIPTION_EDIT,
 } from '../../../ephemeral/goal-editing/actions'
 import {
-  sendRealtimeInfoSignal,
   SEND_REALTIME_INFO,
   SEND_EXIT_PROJECT_SIGNAL,
 } from './actions'
+import ProjectsZomeApi from '../../../../api/projectsApi'
+import { getAppWs } from '../../../../hcWebsockets'
 
 const isOneOfRealtimeInfoAffectingActions = (action) => {
   const { type } = action
@@ -37,10 +38,15 @@ const realtimeInfoWatcher = (store) => {
   // return the action handler middleware
   return (next) => async (action) => {
     const shouldSendRealtimeSignal = isOneOfRealtimeInfoAffectingActions(action)
+    const appWebsocket = await getAppWs()
+    const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
     if (shouldSendRealtimeSignal) {
       let result = next(action)
       let state = store.getState()
-      store.dispatch(sendRealtimeInfoSignal.create(getRealtimeInfo(state)))
+      const { cellIdString, payload } = getRealtimeInfo(state)
+      // TODO: does the cellIdString need to be converted to buffer?
+      await projectsZomeApi.realtimeInfoSignal.send(cellIdString, payload)
+      // store.dispatch(sendRealtimeInfoSignal.create(getRealtimeInfo(state)))
       return result
     }
     const shouldSendProjectExitSignal = isProjectExitAction(action)
@@ -52,7 +58,8 @@ const realtimeInfoWatcher = (store) => {
         goalBeingEdited: null,
         goalExpandedView: null,
       }
-      store.dispatch(sendRealtimeInfoSignal.create({ cellIdString, payload }))
+      await projectsZomeApi.realtimeInfoSignal.send(cellIdString, payload)
+      // store.dispatch(sendRealtimeInfoSignal.create({ cellIdString, payload }))
     }
 
     // return result

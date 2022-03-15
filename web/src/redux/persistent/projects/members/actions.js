@@ -6,11 +6,9 @@
 */
 
 
-import { PROJECTS_ZOME_NAME } from '../../../../holochainConfig'
-
 // SET because it could be brand new, or an update, but treat it the same way
-const SET_MEMBER = 'set_member'
-const FETCH_MEMBERS = 'fetch_members'
+const SET_MEMBER = 'SET_MEMBER'
+const FETCH_MEMBERS = 'FETCH_MEMBERS'
 
 /* action creator functions */
 
@@ -24,9 +22,11 @@ const setMember = (cellIdString, member) => {
   }
 }
 
-const fetchMembers = createZomeCallAsyncAction(
-    PROJECTS_ZOME_NAME,
-    FETCH_MEMBERS
-  )
-
+const fetchMembers = (cellIdString, payload) => {
+  return {
+    type: FETCH_MEMBERS,
+    payload,
+    meta: { cellIdString }
+  }
+}
 export { SET_MEMBER, FETCH_MEMBERS, setMember, fetchMembers }

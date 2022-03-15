@@ -2,12 +2,12 @@
 import _ from 'lodash'
 
 import {
-  createGoalVote,
-  fetchGoalVotes,
-  updateGoalVote,
-  archiveGoalVote,
+  CREATE_OUTCOME_VOTE,
+  FETCH_OUTCOME_VOTES,
+  UPDATE_OUTCOME_VOTE,
+  DELETE_OUTCOME_VOTE,
 } from './actions'
-import { archiveGoalFully } from '../goals/actions'
+import { DELETE_OUTCOME_FULLY } from '../goals/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 
 const defaultState = {}
@@ -18,19 +18,19 @@ export default function (state = defaultState, action) {
   if (
     isCrud(
       action,
-      createGoalVote,
-      fetchGoalVotes,
-      updateGoalVote,
-      archiveGoalVote
+      CREATE_OUTCOME_VOTE,
+      FETCH_OUTCOME_VOTES,
+      UPDATE_OUTCOME_VOTE,
+      DELETE_OUTCOME_VOTE
     )
   ) {
     return crudReducer(
       state,
       action,
-      createGoalVote,
-      fetchGoalVotes,
-      updateGoalVote,
-      archiveGoalVote
+      CREATE_OUTCOME_VOTE,
+      FETCH_OUTCOME_VOTES,
+      UPDATE_OUTCOME_VOTE,
+      DELETE_OUTCOME_VOTE
     )
   }
 
@@ -41,7 +41,7 @@ export default function (state = defaultState, action) {
 
   switch (type) {
     // ARCHIVE_GOAL
-    case archiveGoalFully.success().type:
+    case DELETE_OUTCOME_FULLY:
       // filter out the GoalVotes whose headerHashes are listed as having been
       // archived on account of having archived the Goal it relates to
       return {

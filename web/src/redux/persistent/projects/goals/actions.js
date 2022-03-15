@@ -1,35 +1,47 @@
-
-import { PROJECTS_ZOME_NAME } from '../../../../holochainConfig'
 import { createCrudActionCreators } from '../../crudRedux'
 
-
-const CREATE_GOAL_WITH_EDGE = 'create_goal_with_edge'
-const ARCHIVE_GOAL_FULLY = 'archive_goal_fully'
-
-const createGoalWithEdge = createZomeCallAsyncAction(
-  PROJECTS_ZOME_NAME,
-  CREATE_GOAL_WITH_EDGE
-)
-
-const archiveGoalFully = createZomeCallAsyncAction(
-  PROJECTS_ZOME_NAME,
-  ARCHIVE_GOAL_FULLY
-)
-
-const [
-  createGoal,
-  fetchGoals,
-  updateGoal,
-  archiveGoal,
-] = createCrudActionCreators(PROJECTS_ZOME_NAME, 'goal')
+const [[
+  CREATE_OUTCOME,
+  FETCH_OUTCOMES,
+  UPDATE_OUTCOME,
+  DELETE_OUTCOME
+],[
+  createOutcome,
+  fetchOutcomes,
+  updateOutcome,
+  deleteOutcome
+]] = createCrudActionCreators('OUTCOME')
 
 export {
-  // standard crud
-  createGoal,
-  fetchGoals,
-  updateGoal,
-  archiveGoal,
-  // non-standard
-  createGoalWithEdge,
-  archiveGoalFully,
+  CREATE_OUTCOME,
+  FETCH_OUTCOMES,
+  UPDATE_OUTCOME,
+  DELETE_OUTCOME,
+  CREATE_OUTCOME_WITH_CONNECTION,
+  DELETE_OUTCOME_FULLY,
+  createOutcome,
+  fetchOutcomes,
+  updateOutcome,
+  deleteOutcome,
+  createOutcomeWithConnection,
+  deleteOutcomeFully
+}
+
+// fn name create_outcome_with_connection,delete_outcome_fully 
+const CREATE_OUTCOME_WITH_CONNECTION = 'CREATE_OUTCOME_WITH_CONNECTION'
+const DELETE_OUTCOME_FULLY = 'DELETE_OUTCOME_FULLY'
+
+const createOutcomeWithConnection = (cellIdString, payload) => {
+  return {
+    type: CREATE_OUTCOME_WITH_CONNECTION,
+    payload: payload,
+    meta: { cellIdString },
+  }
+}
+const deleteOutcomeFully = (cellIdString, payload) => {
+  return {
+    type: DELETE_OUTCOME_FULLY,
+    payload: payload,
+    meta: { cellIdString },
+  }
 }

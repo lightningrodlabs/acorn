@@ -1,19 +1,18 @@
 import _ from 'lodash'
 import {
-  simpleCreateProjectMeta,
-  fetchProjectMeta,
-  updateProjectMeta,
+  SIMPLE_CREATE_PROJECT_META,
+  FETCH_PROJECT_META,
+  UPDATE_PROJECT_META 
 } from './actions'
-// import { isCrud, crudReducer } from '../../crudRedux'
 
 const defaultState = {}
 
 export default function (state = defaultState, action) {
   const { payload, type } = action
   switch (type) {
-    case simpleCreateProjectMeta.success().type:
-    case fetchProjectMeta.success().type:
-    case updateProjectMeta.success().type:
+    case SIMPLE_CREATE_PROJECT_META:
+    case FETCH_PROJECT_META:
+    case UPDATE_PROJECT_META:
       return {
         ...state,
         [action.meta.cellIdString]: {

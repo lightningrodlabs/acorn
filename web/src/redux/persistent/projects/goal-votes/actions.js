@@ -1,16 +1,24 @@
-import { PROJECTS_ZOME_NAME } from '../../../../holochainConfig'
 import { createCrudActionCreators } from '../../crudRedux'
 
-const [
+const [[
+  CREATE_OUTCOME_VOTE,
+  FETCH_OUTCOME_VOTES,
+  UPDATE_OUTCOME_VOTE,
+  DELETE_OUTCOME_VOTE
+],[
   createGoalVote,
   fetchGoalVotes,
   updateGoalVote,
-  archiveGoalVote,
-] = createCrudActionCreators(PROJECTS_ZOME_NAME, 'goal_vote')
+  deleteGoalVote,
+]] = createCrudActionCreators('GOAL_VOTE')
 
 export {
+  CREATE_OUTCOME_VOTE,
+  FETCH_OUTCOME_VOTES,
+  UPDATE_OUTCOME_VOTE,
+  DELETE_OUTCOME_VOTE,
   createGoalVote,
   fetchGoalVotes,
   updateGoalVote,
-  archiveGoalVote,
+  deleteGoalVote,
 }

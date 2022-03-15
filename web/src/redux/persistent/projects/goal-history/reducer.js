@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-import { fetchGoalHistory } from './actions'
+import { FETCH_GOAL_HISTORY } from './actions'
 
 const defaultState = {}
 
@@ -14,7 +14,7 @@ export default function (state = defaultState, action) {
 
   switch (type) {
     // HISTORY_OF_GOAL
-    case fetchGoalHistory.success().type:
+    case FETCH_GOAL_HISTORY:
       return {
         ...state,
         [cellId]: {

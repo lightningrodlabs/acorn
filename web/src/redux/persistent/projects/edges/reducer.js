@@ -1,14 +1,14 @@
 import _ from 'lodash'
 
 import {
-  PREVIEW_EDGES,
-  CLEAR_EDGES_PREVIEW,
-  createEdge,
-  fetchEdges,
-  updateEdge,
-  archiveEdge,
+  PREVIEW_CONNECTIONS,
+  CLEAR_CONNECTIONS_PREVIEW,
+  CREATE_CONNECTION,
+  FETCH_CONNECTIONS,
+  UPDATE_CONNECTION,
+  DELETE_CONNECTION,
 } from './actions'
-import { createGoalWithEdge, archiveGoalFully } from '../goals/actions'
+import { CREATE_OUTCOME_WITH_CONNECTION, DELETE_OUTCOME_FULLY } from '../goals/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 
 const defaultState = {}
@@ -17,14 +17,14 @@ const PREVIEW_KEY_STRING = 'preview'
 
 export default function (state = defaultState, action) {
   // start out by checking whether this a standard CRUD operation
-  if (isCrud(action, createEdge, fetchEdges, updateEdge, archiveEdge)) {
+  if (isCrud(action, CREATE_CONNECTION, FETCH_CONNECTIONS, UPDATE_CONNECTION, DELETE_CONNECTION)) {
     return crudReducer(
       state,
       action,
-      createEdge,
-      fetchEdges,
-      updateEdge,
-      archiveEdge
+      CREATE_CONNECTION,
+      FETCH_CONNECTIONS,
+      UPDATE_CONNECTION,
+      DELETE_CONNECTION
     )
   }
 
@@ -33,12 +33,12 @@ export default function (state = defaultState, action) {
 
   // handle additional cases
   switch (type) {
-    case PREVIEW_EDGES:
+    case PREVIEW_CONNECTIONS:
       cellId = payload.cellId
       const previews = {}
-      payload.edges.forEach(edge => {
+      payload.connections.forEach(connection => {
         const rand = Math.random()
-        previews[`${PREVIEW_KEY_STRING}${rand}`] = edge
+        previews[`${PREVIEW_KEY_STRING}${rand}`] = connection
       })
       return {
         ...state,
@@ -47,7 +47,7 @@ export default function (state = defaultState, action) {
           ...previews,
         },
       }
-    case CLEAR_EDGES_PREVIEW:
+    case CLEAR_CONNECTIONS_PREVIEW:
       cellId = payload.cellId
       return {
         ...state,
@@ -57,7 +57,7 @@ export default function (state = defaultState, action) {
         ),
       }
     // CREATE GOAL WITH EDGE
-    case createGoalWithEdge.success().type:
+    case CREATE_OUTCOME_WITH_CONNECTION:
       cellId = action.meta.cellIdString
       if (payload.maybe_edge) {
         return {
@@ -74,7 +74,7 @@ export default function (state = defaultState, action) {
         return state
       }
     // ARCHIVE GOAL
-    case archiveGoalFully.success().type:
+    case DELETE_OUTCOME_FULLY:
       cellId = action.meta.cellIdString
       // filter out the Edges whose headerHashes are listed as having been
       // archived on account of having archived one of the Goals it links

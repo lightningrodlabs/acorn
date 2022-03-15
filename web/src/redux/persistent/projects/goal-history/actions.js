@@ -1,12 +1,13 @@
 
-import { PROJECTS_ZOME_NAME } from '../../../../holochainConfig'
-
 /* action creator functions */
-const FETCH_GOAL_HISTORY = 'fetch_goal_history'
+const FETCH_GOAL_HISTORY = 'FETCH_GOAL_HISTORY'
 
-const fetchGoalHistory = createZomeCallAsyncAction(
-    PROJECTS_ZOME_NAME,
-    FETCH_GOAL_HISTORY
-  )
+const fetchGoalHistory = (cellIdString, payload) => {
+  return {
+    type: FETCH_GOAL_HISTORY,
+    payload,
+    meta: { cellIdString }
+  }
+}
 
 export { FETCH_GOAL_HISTORY, fetchGoalHistory }

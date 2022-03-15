@@ -5,28 +5,40 @@
   that can be taken within that feature.
 */
 
-import { PROJECTS_ZOME_NAME } from '../../../../holochainConfig'
 import { createCrudActionCreators } from '../../crudRedux'
 
-const FETCH_ENTRY_POINT_DETAILS = 'fetch_entry_point_details'
+const FETCH_ENTRY_POINT_DETAILS = 'FETCH_ENTRY_POINT_DETAILS'
 
-const fetchEntryPointDetails = createZomeCallAsyncAction(
-  PROJECTS_ZOME_NAME,
-  FETCH_ENTRY_POINT_DETAILS
-)
+const fetchEntryPointDetails = (cellIdString, payload) => {
+  return {
+    type: FETCH_ENTRY_POINT_DETAILS,
+    payload,
+    meta: { cellIdString }
+  }
+}
 
-const [
+const [[
+  CREATE_ENTRY_POINT,
+  FETCH_ENTRY_POINTS,
+  UPDATE_ENTRY_POINT,
+  DELETE_ENTRY_POINT
+],[
   createEntryPoint,
   fetchEntryPoints,
   updateEntryPoint,
-  archiveEntryPoint,
-] = createCrudActionCreators(PROJECTS_ZOME_NAME, 'entry_point')
+  deleteEntryPoint,
+]] = createCrudActionCreators('ENTRY_POINT')
 
 export {
+  CREATE_ENTRY_POINT,
+  FETCH_ENTRY_POINTS,
+  UPDATE_ENTRY_POINT,
+  DELETE_ENTRY_POINT,
+  FETCH_ENTRY_POINT_DETAILS,
   createEntryPoint,
   fetchEntryPoints,
   updateEntryPoint,
-  archiveEntryPoint,
+  deleteEntryPoint,
   // non-standard
   fetchEntryPointDetails,
 }

@@ -1,7 +1,7 @@
 
 import _ from 'lodash'
 
-import { SET_MEMBER, fetchMembers } from './actions'
+import { SET_MEMBER, FETCH_MEMBERS } from './actions'
 
 const defaultState = {}
 
@@ -11,7 +11,7 @@ export default function (state = defaultState, action) {
   let cellIdString
   switch (type) {
     // FETCH_MEMBERS
-    case fetchMembers.success().type:
+    case FETCH_MEMBERS:
       cellIdString = action.meta.cellIdString
       const mapped = payload.map((wireElement) => wireElement.entry)
       return {

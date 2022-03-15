@@ -1,27 +1,27 @@
 import _ from 'lodash'
 
 import {
-  createGoal,
-  createGoalWithEdge,
-  fetchGoals,
-  updateGoal,
-  archiveGoal,
-  archiveGoalFully,
+  CREATE_OUTCOME,
+  FETCH_OUTCOMES,
+  UPDATE_OUTCOME,
+  DELETE_OUTCOME,
+  CREATE_OUTCOME_WITH_CONNECTION,
+  DELETE_OUTCOME_FULLY,
 } from './actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { fetchEntryPointDetails } from '../entry-points/actions'
+import { FETCH_ENTRY_POINT_DETAILS } from '../entry-points/actions'
 
 const defaultState = {}
 
 export default function (state = defaultState, action) {
-  if (isCrud(action, createGoal, fetchGoals, updateGoal, archiveGoal)) {
+  if (isCrud(action, CREATE_OUTCOME, FETCH_OUTCOMES, UPDATE_OUTCOME, DELETE_OUTCOME)) {
     return crudReducer(
       state,
       action,
-      createGoal,
-      fetchGoals,
-      updateGoal,
-      archiveGoal
+      CREATE_OUTCOME,
+      FETCH_OUTCOMES,
+      UPDATE_OUTCOME,
+      DELETE_OUTCOME
     )
   }
 
@@ -29,7 +29,7 @@ export default function (state = defaultState, action) {
   let cellIdString
 
   switch (type) {
-    case createGoalWithEdge.success().type:
+    case CREATE_OUTCOME_WITH_CONNECTION:
       cellIdString = action.meta.cellIdString
       return {
         ...state,
@@ -41,7 +41,7 @@ export default function (state = defaultState, action) {
           },
         },
       }
-    case fetchEntryPointDetails.success().type:
+    case FETCH_ENTRY_POINT_DETAILS:
       cellIdString = action.meta.cellIdString
       const mapped = payload.goals.map((r) => {
         return {
@@ -60,7 +60,7 @@ export default function (state = defaultState, action) {
           ...newVals,
         },
       }
-    case archiveGoalFully.success().type:
+    case DELETE_OUTCOME_FULLY:
       cellIdString = action.meta.cellIdString
       return {
         ...state,

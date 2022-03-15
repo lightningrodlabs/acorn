@@ -1,16 +1,24 @@
-import { PROJECTS_ZOME_NAME } from '../../../../holochainConfig'
 import { createCrudActionCreators } from '../../crudRedux'
 
-const [
-  createGoalMember,
-  fetchGoalMembers,
-  updateGoalMember,
-  archiveGoalMember,
-] = createCrudActionCreators(PROJECTS_ZOME_NAME, 'goal_member')
+const [[
+  CREATE_OUTCOME_MEMBER,
+  FETCH_OUTCOME_MEMBERS,
+  UPDATE_OUTCOME_MEMBER,
+  DELETE_OUTCOME_MEMBER
+],[
+  createOutcomeMember,
+  fetchOutcomeMembers,
+  updateOutcomeMember,
+  deleteOutcomeMember
+]] = createCrudActionCreators('GOAL_MEMBER')
 
 export {
-  createGoalMember,
-  fetchGoalMembers,
-  updateGoalMember,
-  archiveGoalMember,
+  CREATE_OUTCOME_MEMBER,
+  FETCH_OUTCOME_MEMBERS,
+  UPDATE_OUTCOME_MEMBER,
+  DELETE_OUTCOME_MEMBER,
+  createOutcomeMember,
+  fetchOutcomeMembers,
+  updateOutcomeMember,
+  deleteOutcomeMember
 }

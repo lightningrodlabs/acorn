@@ -1,36 +1,52 @@
-
 import { createCrudActionCreators } from '../../crudRedux'
-import { PROJECTS_ZOME_NAME } from '../../../../holochainConfig'
 
-const [
+const [[
+  CREATE_PROJECT_META,
+  FETCH_PROJECT_METAS,
+  UPDATE_PROJECT_META,
+  DELETE_PROJECT_META
+],[
   createProjectMeta,
   fetchProjectMetas,
   updateProjectMeta,
-  archiveProjectMeta,
-] = createCrudActionCreators(PROJECTS_ZOME_NAME, 'project_meta')
+  deleteProjectMeta,
+]] = createCrudActionCreators('PROJECT_META')
 
 // This model has a special "singular fetch"
 // since a Project is only supposed to contain ONE
 // ProjectMeta record
-const FETCH_PROJECT_META = 'fetch_project_meta'
-const fetchProjectMeta = createZomeCallAsyncAction(
-  PROJECTS_ZOME_NAME,
-  FETCH_PROJECT_META
-)
+const FETCH_PROJECT_META = 'FETCH_PROJECT_META'
+const fetchProjectMeta = (cellIdString, payload) => {
+  return {
+    type: FETCH_PROJECT_META,
+    payload,
+    meta: { cellIdString }
+  }
+}
 
 // this model has a special "singular create"
 // in order to perform proper validation
 // that only one project meta exists
-const SIMPLE_CREATE_PROJECT_META = 'simple_create_project_meta'
-const simpleCreateProjectMeta = createZomeCallAsyncAction(
-  PROJECTS_ZOME_NAME,
-  SIMPLE_CREATE_PROJECT_META
-)
+const SIMPLE_CREATE_PROJECT_META = 'SIMPLE_CREATE_PROJECT_META'
+const simpleCreateProjectMeta = (cellIdString, payload) => {
+  return {
+    type: SIMPLE_CREATE_PROJECT_META,
+    payload,
+    meta: { cellIdString }
+  }
+}
 
 export {
-  simpleCreateProjectMeta,
+  CREATE_PROJECT_META,
+  FETCH_PROJECT_METAS,
+  UPDATE_PROJECT_META,
+  DELETE_PROJECT_META,
+  SIMPLE_CREATE_PROJECT_META,
+  FETCH_PROJECT_META,
+  createProjectMeta,
   fetchProjectMetas,
   updateProjectMeta,
+  deleteProjectMeta,
+  simpleCreateProjectMeta,
   fetchProjectMeta,
-  archiveProjectMeta,
 }

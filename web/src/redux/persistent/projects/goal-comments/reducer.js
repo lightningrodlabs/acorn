@@ -5,12 +5,8 @@ import {
   FETCH_OUTCOME_COMMENTS,
   UPDATE_OUTCOME_COMMENT,
   DELETE_OUTCOME_COMMENT,
-  createGoalComment,
-  fetchGoalComments,
-  updateGoalComment,
-  archiveGoalComment,
 } from './actions'
-import { archiveGoalFully } from '../goals/actions'
+import { DELETE_OUTCOME_FULLY } from '../goals/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 
 const defaultState = {}
@@ -44,7 +40,7 @@ export default function (state = defaultState, action) {
 
   switch (type) {
     // ARCHIVE_GOAL
-    case archiveGoalFully.success().type:
+    case DELETE_OUTCOME_FULLY:
       // filter out the GoalComments whose headerHashes are listed as having been
       // archived on account of having archived the Goal it relates to
       return {

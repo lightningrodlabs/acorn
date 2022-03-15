@@ -2,13 +2,13 @@
 import _ from 'lodash'
 
 import {
-  createGoalMember,
-  fetchGoalMembers,
-  updateGoalMember,
-  archiveGoalMember,
+  CREATE_OUTCOME_MEMBER,
+  FETCH_OUTCOME_MEMBERS,
+  UPDATE_OUTCOME_MEMBER,
 } from './actions'
-import { archiveGoalFully } from '../goals/actions'
+import { DELETE_OUTCOME_FULLY } from '../goals/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
+import { DELETE_OUTCOME_COMMENT } from '../goal-comments/actions'
 
 const defaultState = {}
 
@@ -18,19 +18,19 @@ export default function (state = defaultState, action) {
   if (
     isCrud(
       action,
-      createGoalMember,
-      fetchGoalMembers,
-      updateGoalMember,
-      archiveGoalMember
+      CREATE_OUTCOME_MEMBER,
+      FETCH_OUTCOME_MEMBERS,
+      UPDATE_OUTCOME_MEMBER,
+      DELETE_OUTCOME_COMMENT
     )
   ) {
     return crudReducer(
       state,
       action,
-      createGoalMember,
-      fetchGoalMembers,
-      updateGoalMember,
-      archiveGoalMember
+      CREATE_OUTCOME_MEMBER,
+      FETCH_OUTCOME_MEMBERS,
+      UPDATE_OUTCOME_MEMBER,
+      DELETE_OUTCOME_COMMENT
     )
   }
 
@@ -41,7 +41,7 @@ export default function (state = defaultState, action) {
 
   switch (type) {
     // ARCHIVE_GOAL
-    case archiveGoalFully.success().type:
+    case DELETE_OUTCOME_FULLY:
       // filter out the GoalMembers whose headerHashes are listed as having been
       // archived on account of having archived the Goal it relates to
       return {

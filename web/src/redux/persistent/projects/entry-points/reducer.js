@@ -2,13 +2,13 @@
 import _ from 'lodash'
 
 import {
-  createEntryPoint,
-  fetchEntryPoints,
-  updateEntryPoint,
-  archiveEntryPoint,
-  fetchEntryPointDetails
+  FETCH_ENTRY_POINT_DETAILS,
+  CREATE_ENTRY_POINT,
+  FETCH_ENTRY_POINTS,
+  UPDATE_ENTRY_POINT,
+  DELETE_ENTRY_POINT,
 } from './actions'
-import { archiveGoalFully } from '../goals/actions'
+import { DELETE_OUTCOME_FULLY } from '../goals/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 
 // state is at the highest level an object with cellIds
@@ -24,26 +24,26 @@ export default function (state = defaultState, action) {
   if (
     isCrud(
       action,
-      createEntryPoint,
-      fetchEntryPoints,
-      updateEntryPoint,
-      archiveEntryPoint
+      CREATE_ENTRY_POINT,
+      FETCH_ENTRY_POINTS,
+      UPDATE_ENTRY_POINT,
+      DELETE_ENTRY_POINT
     )
   ) {
     return crudReducer(
       state,
       action,
-      createEntryPoint,
-      fetchEntryPoints,
-      updateEntryPoint,
-      archiveEntryPoint
+      CREATE_ENTRY_POINT,
+      FETCH_ENTRY_POINTS,
+      UPDATE_ENTRY_POINT,
+      DELETE_ENTRY_POINT
     )
   }
 
   const { payload, type } = action
   let cellIdString
   switch (type) {
-    case fetchEntryPointDetails.success().type:
+    case FETCH_ENTRY_POINT_DETAILS:
       cellIdString = action.meta.cellIdString
       const mapped = payload.entry_points.map(r => {
         return {
@@ -62,7 +62,7 @@ export default function (state = defaultState, action) {
           ...newVals,
         },
       }
-    case archiveGoalFully.success().type:
+    case DELETE_OUTCOME_FULLY:
       cellIdString = action.meta.cellIdString
       // filter out the entry points whose headerHashes are listed as having been
       // archived on account of having archived its associated Goal
