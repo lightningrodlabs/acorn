@@ -23,7 +23,7 @@ import { removePeerState, updatePeerState } from './redux/ephemeral/realtime-inf
 // have already succeeded on another machine, and we're just reflecting them locally
 function createSignalAction(holochainAction, cellId, payload) {
   return {
-    type: holochainAction.success().type,
+    type: holochainAction,
     payload,
     meta: {
       cellIdString: cellIdToString(cellId),
@@ -96,7 +96,7 @@ const pickCrudAction = (entryTypeName, actionType) => {
       actionPrefix = 'update'
       break
     case ActionType.Delete:
-      actionPrefix = 'archive'
+      actionPrefix = 'delete'
       break
     default:
       throw new Error('unknown actionType')
@@ -104,7 +104,7 @@ const pickCrudAction = (entryTypeName, actionType) => {
   const actionSet = crudActionSets[entryTypeName]
   // such as `createGoalComment`
   const actionName = `${actionPrefix}${entryTypeName}`
-  return actionSet[actionName]
+  return actionSet[actionName].type
 }
 
 export default (store) => 
@@ -140,7 +140,7 @@ export default (store) =>
       // where the layout reflow doesn't happen automatically
       // we have to manually trigger it to do so
       // the other cases are covered in src/layout/middleware.js ->
-      if (action.success().type === edgeActions.archiveEdge.success().type) {
+      if (action === edgeActions.DELETE_CONNECTION) {
         store.dispatch(triggerUpdateLayout())
       }
     }

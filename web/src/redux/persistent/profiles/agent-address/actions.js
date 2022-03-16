@@ -6,13 +6,15 @@
 */
 
 
-import { PROFILES_ZOME_NAME } from '../../../../holochainConfig'
-
+const FETCH_AGENT_ADDRESS = 'FETCH_AGENT_ADDRESS'
 /* action creator functions */
 
-const fetchAgentAddress = createZomeCallAsyncAction(
-  PROFILES_ZOME_NAME,
-  'fetch_agent_address'
-)
+const fetchAgentAddress = (cellIdString, payload) => {
+  return {
+    type: FETCH_AGENT_ADDRESS,
+    payload,
+    meta: { cellIdString }
+  }
+}
 
-export { fetchAgentAddress }
+export { fetchAgentAddress, FETCH_AGENT_ADDRESS }

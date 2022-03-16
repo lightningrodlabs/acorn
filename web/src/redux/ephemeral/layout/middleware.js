@@ -1,8 +1,8 @@
 import TWEEN from '@tweenjs/tween.js'
 import {
-    createGoalWithEdge,
-    fetchGoals,
-    archiveGoalFully
+    CREATE_OUTCOME_WITH_CONNECTION,
+    FETCH_OUTCOMES,
+    DELETE_OUTCOME_FULLY
 } from '../../persistent/projects/goals/actions'
 import {
     createEdge,
@@ -10,6 +10,8 @@ import {
     AFFECT_LAYOUT_ARCHIVE_EDGE,
     PREVIEW_EDGES,
     CLEAR_EDGES_PREVIEW,
+    CREATE_CONNECTION,
+    FETCH_CONNECTIONS,
 } from '../../persistent/projects/edges/actions'
 import {
   TRIGGER_UPDATE_LAYOUT,
@@ -24,11 +26,11 @@ const isOneOfLayoutAffectingActions = (action) => {
     return type === TRIGGER_UPDATE_LAYOUT
         || type === PREVIEW_EDGES
         || type === CLEAR_EDGES_PREVIEW
-        || type === createGoalWithEdge.success().type
-        || type === fetchGoals.success().type
-        || type === archiveGoalFully.success().type
-        || type === createEdge.success().type
-        || type === fetchEdges.success().type
+        || type === CREATE_OUTCOME_WITH_CONNECTION
+        || type === FETCH_OUTCOMES
+        || type === DELETE_OUTCOME_FULLY
+        || type === CREATE_CONNECTION
+        || type === FETCH_CONNECTIONS
         || (action.type === AFFECT_LAYOUT_ARCHIVE_EDGE && action.affectLayout)
 }
 

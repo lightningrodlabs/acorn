@@ -9,7 +9,9 @@
 import { PROFILES_ZOME_NAME } from '../../../../holochainConfig'
 
 // SET because it could be brand new, or an update, but treat it the same way
-const SET_AGENT = 'set_agent'
+const SET_AGENT = 'SET_AGENT'
+const CREATE_IMPORTED_PROFILE = 'CREATE_IMPORTED_PROFILE'
+const FETCH_AGENTS = 'FETCH_AGENTS'
 
 /* action creator functions */
 
@@ -20,14 +22,19 @@ const setAgent = agent => {
   }
 }
 
-const createImportedProfile = createZomeCallAsyncAction(
-  PROFILES_ZOME_NAME,
-  'create_imported_profile'
-)
+const createImportedProfile = (cellIdString, payload) => {
+  return {
+    type: CREATE_IMPORTED_PROFILE,
+    payload,
+    meta: { cellIdString }
+  }
+}
+const fetchAgents = (cellIdString, payload) => {
+  return {
+    type: FETCH_AGENTS,
+    payload,
+    meta: { cellIdString }
+  }
+}
 
-const fetchAgents = createZomeCallAsyncAction(
-  PROFILES_ZOME_NAME,
-  'fetch_agents'
-)
-
-export { SET_AGENT, setAgent, createImportedProfile, fetchAgents }
+export { SET_AGENT, setAgent, createImportedProfile, CREATE_IMPORTED_PROFILE, fetchAgents, FETCH_AGENTS }

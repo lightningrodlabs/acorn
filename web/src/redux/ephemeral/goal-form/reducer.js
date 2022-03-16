@@ -2,7 +2,7 @@
 
 import { OPEN_GOAL_FORM, CLOSE_GOAL_FORM, UPDATE_CONTENT } from './actions'
 
-import { archiveGoalFully } from '../../persistent/projects/goals/actions'
+import { DELETE_OUTCOME_FULLY } from '../../persistent/projects/goals/actions'
 
 const defaultState = {
   editAddress: null,
@@ -38,7 +38,7 @@ export default function (state = defaultState, action) {
   }
 
   switch (type) {
-    case archiveGoalFully.success().type:
+    case DELETE_OUTCOME_FULLY:
       return resetVersion
     case UPDATE_CONTENT:
       return {

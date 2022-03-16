@@ -7,8 +7,8 @@ import {
   UNSELECT_GOAL,
   UNSELECT_ALL,
 } from './actions'
-import { archiveGoalFully } from '../../persistent/projects/goals/actions'
-import { archiveEdge } from '../../persistent/projects/edges/actions'
+import { archiveGoalFully, DELETE_OUTCOME_FULLY } from '../../persistent/projects/goals/actions'
+import { archiveEdge, DELETE_CONNECTION } from '../../persistent/projects/edges/actions'
 
 const defaultState = {
   selectedGoals: [],
@@ -29,7 +29,7 @@ export default function (state = defaultState, action) {
   const { payload, type } = action
 
   switch (type) {
-    case archiveGoalFully.success().type:
+    case DELETE_OUTCOME_FULLY:
       // unselect if the archived Goal was selected
       return state.selectedGoals.includes(payload.address)
         ? {
@@ -40,7 +40,7 @@ export default function (state = defaultState, action) {
             ),
           }
         : { ...state }
-    case archiveEdge.success().type:
+    case DELETE_CONNECTION:
       // unselect if the archived Goal was selected
       return state.selectedEdges.includes(payload.headerHash)
         ? {

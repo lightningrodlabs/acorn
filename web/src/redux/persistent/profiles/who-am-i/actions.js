@@ -9,17 +9,31 @@
 import { PROFILES_ZOME_NAME } from '../../../../holochainConfig'
 
 /* action creator functions */
+const WHOAMI = 'WHOAMI'
+const CREATE_WHOAMI = 'CREATE_WHOAMI'
+const UPDATE_WHOAMI = 'UPDATE_WHOAMI'
+const whoami = (cellIdString, payload) => {
+  return {
+    type: WHOAMI,
+    payload,
+    meta: { cellIdString }
+  }
+}
 
-const whoami = createZomeCallAsyncAction(PROFILES_ZOME_NAME, 'whoami')
+const createWhoami = (cellIdString, payload) => {
+  return {
+    type: CREATE_WHOAMI,
+    payload,
+    meta: { cellIdString }
+  }
+}
 
-const createWhoami = createZomeCallAsyncAction(
-  PROFILES_ZOME_NAME,
-  'create_whoami'
-)
+const updateWhoami = (cellIdString, payload) => {
+  return {
+    type: UPDATE_WHOAMI,
+    payload,
+    meta: { cellIdString }
+  }
+}
 
-const updateWhoami = createZomeCallAsyncAction(
-  PROFILES_ZOME_NAME,
-  'update_whoami'
-)
-
-export { whoami, createWhoami, updateWhoami }
+export { whoami, WHOAMI, createWhoami, CREATE_WHOAMI, updateWhoami, UPDATE_WHOAMI }

@@ -1,8 +1,8 @@
 
 
 import { HOVER_EDGE, UNHOVER_EDGE, HOVER_GOAL, UNHOVER_GOAL } from './actions'
-import { archiveGoalFully } from '../../persistent/projects/goals/actions'
-import { archiveEdge } from '../../persistent/projects/edges/actions'
+import { DELETE_OUTCOME_FULLY } from '../../persistent/projects/goals/actions'
+import { DELETE_CONNECTION } from '../../persistent/projects/edges/actions'
 
 const defaultState = {
   hoveredGoal: null,
@@ -13,7 +13,7 @@ export default function (state = defaultState, action) {
   const { payload, type } = action
 
   switch (type) {
-    case archiveGoalFully.success().type:
+    case DELETE_OUTCOME_FULLY:
       // unhover if the archived Goal was hovered over
       return state.hoveredGoal === payload.address
         ? {
@@ -21,7 +21,7 @@ export default function (state = defaultState, action) {
             hoveredGoal: null,
           }
         : { ...state }
-    case archiveEdge.success().type:
+    case DELETE_CONNECTION:
       // unhover if the archived edge was hovered over
       return state.hoveredEdge === payload.headerHash
         ? {

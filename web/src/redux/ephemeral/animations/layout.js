@@ -1,6 +1,6 @@
 import TWEEN from '@tweenjs/tween.js'
 import {
-    createGoalWithEdge,
+    CREATE_OUTCOME_WITH_CONNECTION
 } from '../../persistent/projects/goals/actions'
 import {
   updateLayout
@@ -23,7 +23,7 @@ export default function performLayoutAnimation(store, action, currentState) {
   // if creating a Goal, we also want to animate
   // from the position wherever the user was creating it
   // to its new resting place in the new layout
-  if (action.type === createGoalWithEdge.success().type) {
+  if (action.type === CREATE_OUTCOME_WITH_CONNECTION) {
     // at this point we have the headerHash of the new Goal
     // and we also have the coordinates where the "Goal Form"
     // was open and being used
