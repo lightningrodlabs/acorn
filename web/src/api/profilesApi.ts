@@ -1,6 +1,5 @@
 import { AppWebsocket, CellId } from '@holochain/client'
-import { PROJECTS_ZOME_NAME } from '../holochainConfig'
-
+import { PROFILES_ZOME_NAME } from '../holochainConfig'
 async function callZome(
   appWebsocket: AppWebsocket,
   cellId: CellId,
@@ -10,7 +9,7 @@ async function callZome(
   const provenance = cellId[1]
   return appWebsocket.callZome({
     cell_id: cellId,
-    zome_name: PROJECTS_ZOME_NAME,
+    zome_name: PROFILES_ZOME_NAME,
     fn_name: fnName,
     payload: payload,
     cap_secret: null,
@@ -28,7 +27,7 @@ const ZOME_FN_NAMES = {
 }
 export default class ProfilesZomeApi {
   appWebsocket: AppWebsocket
-  profile
+  profile //could be defined as an interface, typescript definition
 
   // one per entry type that uses hdk_crud
   // projectMeta and members don't use it
