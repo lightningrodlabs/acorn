@@ -11,6 +11,8 @@ import goalsAsTrees from '../../../redux/persistent/projects/goals/goalsAsTrees'
 import PriorityUniversal from './PriorityUniversal/PriorityUniversal'
 import PriorityVote from './PriorityVote/PriorityVote'
 import { PriorityModeOptions } from '../../../constants'
+import ProjectsZomeApi from '../../../api/projectsApi'
+import { getAppWs } from '../../../hcWebsockets'
 
 function PriorityMode({ projectId, goalTrees, projectMeta, updateProjectMeta }) {
   let main
@@ -59,10 +61,14 @@ function mapStateToProps(state) {
   }
 }
 function mapDispatchToProps(dispatch) {
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     updateProjectMeta: (entry, headerHash, cellIdString) => {
+      // TODO: convert to buffer
+      const projectMeta = projectsZomeApi.projectMeta.update(cellId, { entry, headerHash })
       return dispatch(
-        updateProjectMeta.create({ cellIdString, payload: { entry, headerHash } })
+        updateProjectMeta(cellIdString, projectMeta)
       )
     },
   }

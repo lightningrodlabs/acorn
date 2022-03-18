@@ -57,6 +57,8 @@ import {
   setEdgeConnectorTo,
 } from '../redux/ephemeral/edge-connector/actions'
 import handleEdgeConnectMouseUp from '../redux/ephemeral/edge-connector/handler'
+import ProjectsZomeApi from '../api/projectsApi'
+import { getAppWs } from '../hcWebsockets'
 
 // ASSUMPTION: one parent (existingParentEdgeAddress)
 function handleMouseUpForGoalForm(state, event, store, fromAddress, relation, existingParentEdgeAddress) {
@@ -86,6 +88,8 @@ export default function setupEventListeners(store, canvas) {
   }
 
   function bodyKeydown(event) {
+    const appWebsocket = await getAppWs()
+    const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
     let state = store.getState()
     const {
       ui: { activeProject },
@@ -144,11 +148,9 @@ export default function setupEventListeners(store, canvas) {
           !state.ui.expandedView.isOpen
         ) {
           let firstOfSelection = selection.selectedGoals[0]
+          const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(cellId, firstOfSelection)
           store.dispatch(
-            archiveGoalFully.create({
-              cellIdString: activeProject,
-              payload: firstOfSelection,
-            })
+            archiveGoalFully(activeProject, fullyDeletedOutcome)
           )
           // if on firefox, and matched this case
           // prevent the browser from navigating back to the last page

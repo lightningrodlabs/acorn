@@ -6,6 +6,8 @@ import {
   updateGoalVote,
 } from '../../../redux/persistent/projects/goal-votes/actions'
 import PriorityPickerVote from './PriorityPickerVote.component'
+import ProjectsZomeApi from '../../../api/projectsApi'
+import { getAppWs } from '../../../hcWebsockets'
 
 function mapStateToProps(state, ownProps) {
   const { projectId, goalAddress } = ownProps
@@ -25,17 +27,22 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     createGoalVote: payload => {
-      return dispatch(createGoalVote.create({ cellIdString, payload }))
+      const outcomeVote = await projectsZomeApi.outcomeVote.create(cellId, payload)
+      return dispatch(createGoalVote(cellIdString, outcomeVote))
     },
     updateGoalVote: (entry, headerHash) => {
+      const updatedOutcomeVote = await projectsZomeApi.outcomeVote.update(cellId, { entry, headerHash })
       return dispatch(
-        updateGoalVote.create({ cellIdString, payload: { entry, headerHash } })
+        updateGoalVote(cellIdString, updatedOutcomeVote)
       )
     },
     archiveGoalVote: payload => {
-      return dispatch(archiveGoalVote.create({ cellIdString, payload }))
+      const deletedOutcomeVoteHash = await projectsZomeApi.outcomeVote.delete(cellId, payload)
+      return dispatch(archiveGoalVote(cellIdString, deletedOutcomeVoteHash))
     },
   }
 }

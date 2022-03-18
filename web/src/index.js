@@ -32,6 +32,7 @@ import {
   APP_WS_URL,
 } from './hcWebsockets'
 import { getProjectCellIdStrings } from './projectAppIds'
+import ProfilesZomeApi from './api/profilesApi'
 
 // Import styles
 import './styles.scss'
@@ -68,11 +69,17 @@ getAppWs(signalCallback).then(async (client) => {
     const cellIdString = cellIdToString(cellId)
     store.dispatch(setProfilesCellId(cellIdString))
     // all functions of the Profiles DNA
-    store.dispatch(fetchAgents.create({ cellIdString, payload: null })).then(c => {
-      console.log(c)
-    })
-    store.dispatch(whoami.create({ cellIdString, payload: null }))
-    store.dispatch(fetchAgentAddress.create({ cellIdString, payload: null }))
+    const appWebsocket = await getAppWs()
+
+    const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+
+    // TODO: should these cellIds be buffers and not strings?
+    const profiles = await profilesZomeApi.profile.fetchAgents(cellIdString)
+    store.dispatch(fetchAgents(cellIdString, profiles))
+    const profile = await profilesZomeApi.profile.whoami(cellIdString)
+    store.dispatch(whoami(cellIdString, profile))
+    const agentAddress = await profilesZomeApi.profile.fetchAgentAddress(cellIdString)
+    store.dispatch(fetchAgentAddress(cellIdString, agentAddress))
     // which projects do we have installed?
     const projectCellIds = await getProjectCellIdStrings()
     store.dispatch(setProjectsCellIds(projectCellIds))

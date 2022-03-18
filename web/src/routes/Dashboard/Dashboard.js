@@ -35,6 +35,7 @@ import {
   closeInviteMembersModal,
   openInviteMembersModal,
 } from '../../redux/ephemeral/invite-members-modal/actions'
+import ProjectsZomeApi from '../../api/projectsApi'
 
 function Dashboard({
   existingAgents,
@@ -298,12 +299,16 @@ async function installProjectApp(passphrase) {
 
 async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
   const [cellIdString] = await installProjectApp(passphrase)
+  //TODO: convert to buffer
   // because we are acting optimistically,
   // we will directly set ourselves as a member of this cell
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   await dispatch(setMember(cellIdString, { address: agentAddress }))
   const b1 = Date.now()
+  const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(cellId, projectMeta)
   await dispatch(
-    simpleCreateProjectMeta.create({ cellIdString, payload: projectMeta })
+    simpleCreateProjectMeta(cellIdString, simpleCreatedProjectMeta)
   )
   const b2 = Date.now()
   console.log('duration in MS over createProjectMeta ', b2 - b1)
@@ -402,6 +407,7 @@ async function importProject(
 ) {
   // first step is to install the dna
   const [projectsCellIdString] = await installProjectApp(passphrase)
+  //TODO: convert to buffer
   // next step is to import the rest of the data into that project
   const oldToNewAddressMap = await importAllProjectData(
     existingAgents,
@@ -437,15 +443,15 @@ async function importProject(
   delete projectMeta.headerHash
   // pre v0.5.3-alpha and prior
   delete projectMeta.address
-
+  
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   await dispatch(setMember(projectsCellIdString, { address: agentAddress }))
   try {
     console.log(projectMeta)
+    const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(cellId, projectMeta)
     await dispatch(
-      simpleCreateProjectMeta.create({
-        cellIdString: projectsCellIdString,
-        payload: projectMeta,
-      })
+      simpleCreateProjectMeta(projectsCellIdString, simpleCreatedProjectMeta)
     )
   } catch (e) {
     throw e
@@ -461,6 +467,8 @@ async function deactivateApp(appId, cellId, dispatch) {
 }
 
 function mapDispatchToProps(dispatch) {
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     setShowInviteMembersModal: (projectId) => {
       return dispatch(openInviteMembersModal(projectId))
@@ -472,15 +480,21 @@ function mapDispatchToProps(dispatch) {
       return deactivateApp(appId, cellId, dispatch)
     },
     fetchEntryPointDetails: (cellIdString) => {
+      //TODO: convert string to buffer
+      const entryPointDetails = await projectsZomeApi.entryPoint.fetchEntryPointDetails(cellId, null)
       return dispatch(
-        fetchEntryPointDetails.create({ cellIdString, payload: null })
+        fetchEntryPointDetails(cellIdString, entryPointDetails)
       )
     },
     fetchMembers: (cellIdString) => {
-      return dispatch(fetchMembers.create({ cellIdString, payload: null }))
+      // TODO: convert to buffer
+      const members = projectsZomeApi.members.fetch(cellId)
+      return dispatch(fetchMembers(cellIdString, members))
     },
     fetchProjectMeta: (cellIdString) => {
-      return dispatch(fetchProjectMeta.create({ cellIdString, payload: null }))
+      // TODO: convert to buffer
+      const projectMeta = await projectsZomeApi.projectMeta.fetchProjectMeta(cellId)
+      return dispatch(fetchProjectMeta(cellIdString, projectMeta))
     },
     createProject: async (agentAddress, project, passphrase) => {
       // matches the createProjectMeta fn and type signature

@@ -5,6 +5,9 @@ import { createGoalComment } from '../redux/persistent/projects/goal-comments/ac
 import { createGoalVote } from '../redux/persistent/projects/goal-votes/actions'
 import { createGoalMember } from '../redux/persistent/projects/goal-members/actions'
 import { createEntryPoint } from '../redux/persistent/projects/entry-points/actions'
+import ProjectsZomeApi from '../api/projectsApi'
+import ProfilesZomeApi from '../api/profilesApi'
+import { getAppWs } from '../hcWebsockets'
 
 export default async function importAllProjectData(
   existingAgents,
@@ -22,6 +25,11 @@ export default async function importAllProjectData(
   // AGENTS
   // first import the old agents
   // they must be imported through the profiles dna
+  // TODO: convert profilesCellIdString into buffer
+  // TODO: convert projectsCellIdString into buffer
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+  const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
   for (let address of Object.keys(projectData.agents)) {
     const old = projectData.agents[address]
     // only import agents that AREN'T already in your data store
@@ -32,11 +40,9 @@ export default async function importAllProjectData(
       ...old,
       is_imported: true,
     }
+    const importedProfile = await profilesZomeApi.profile.createImportedProfile(cellId, clone)
     await dispatch(
-      createImportedProfile.create({
-        cellIdString: profilesCellIdString,
-        payload: clone,
-      })
+      createImportedProfile(profilesCellIdString, importedProfile)
     )
   }
 
@@ -57,11 +63,9 @@ export default async function importAllProjectData(
 
     let newGoal
     try {
+      const createdOutcome = await projectsZomeApi.outcome.create(cellId, clone)
       newGoal = await dispatch(
-        createGoal.create({
-          cellIdString: projectsCellIdString,
-          payload: clone,
-        })
+        createGoal(projectsCellIdString, createdOutcome)
       )
     } catch (e) {
       console.log('createGoal error', e)
@@ -106,11 +110,9 @@ export default async function importAllProjectData(
       continue
     }
     try {
+      const createdConnection = projectsZomeApi.connection.create(cellId, clone)
       await dispatch(
-        createEdge.create({
-          cellIdString: projectsCellIdString,
-          payload: clone,
-        })
+        createEdge(projectsCellIdString, createdConnection)
       )
     } catch (e) {
       console.log('createEdge error', e)
@@ -137,11 +139,9 @@ export default async function importAllProjectData(
       continue
     }
     try {
+      const createdOutcomeMember = await projectsZomeApi.outcomeMember.create(cellId, clone)
       await dispatch(
-        createGoalMember.create({
-          cellIdString: projectsCellIdString,
-          payload: clone,
-        })
+        createGoalMember(projectsCellIdString, createdOutcomeMember)
       )
     } catch (e) {
       console.log('createGoalMember error', e)
@@ -168,11 +168,9 @@ export default async function importAllProjectData(
       continue
     }
     try {
+      const createdOutcomeComment = await projectsZomeApi.outcomeComment.create(cellId, clone)
       await dispatch(
-        createGoalComment.create({
-          cellIdString: projectsCellIdString,
-          payload: clone,
-        })
+        createGoalComment(projectsCellIdString, createdOutcomeComment)
       )
     } catch (e) {
       console.log('createGoalComment error', e)
@@ -199,11 +197,9 @@ export default async function importAllProjectData(
       continue
     }
     try {
+      const createdOutcomeVote = await projectsZomeApi.outcomeVote.create(cellId, clone)
       await dispatch(
-        createGoalVote.create({
-          cellIdString: projectsCellIdString,
-          payload: clone,
-        })
+        createGoalVote(projectsCellIdString, createdOutcomeVote)
       )
     } catch (e) {
       console.log('createGoalVote error', e)
@@ -230,11 +226,9 @@ export default async function importAllProjectData(
       continue
     }
     try {
+      const createdEntryPoint = await projectsZomeApi.entryPoint.create(cellId, clone)
       await dispatch(
-        createEntryPoint.create({
-          cellIdString: projectsCellIdString,
-          payload: clone,
-        })
+        createEntryPoint(projectsCellIdString, createdEntryPoint)
       )
     } catch (e) {
       console.log('createEntryPoint error', e)

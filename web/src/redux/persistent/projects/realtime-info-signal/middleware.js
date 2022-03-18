@@ -11,6 +11,7 @@ import {
 import {
   SEND_REALTIME_INFO,
   SEND_EXIT_PROJECT_SIGNAL,
+  sendRealtimeInfoSignal
 } from './actions'
 import ProjectsZomeApi from '../../../../api/projectsApi'
 import { getAppWs } from '../../../../hcWebsockets'
@@ -44,9 +45,9 @@ const realtimeInfoWatcher = (store) => {
       let result = next(action)
       let state = store.getState()
       const { cellIdString, payload } = getRealtimeInfo(state)
-      // TODO: does the cellIdString need to be converted to buffer?
+      // TODO: cellIdString needs to be converted to buffer
       await projectsZomeApi.realtimeInfoSignal.send(cellIdString, payload)
-      // store.dispatch(sendRealtimeInfoSignal.create(getRealtimeInfo(state)))
+      store.dispatch(sendRealtimeInfoSignal(getRealtimeInfo(state)))
       return result
     }
     const shouldSendProjectExitSignal = isProjectExitAction(action)
@@ -59,7 +60,8 @@ const realtimeInfoWatcher = (store) => {
         goalExpandedView: null,
       }
       await projectsZomeApi.realtimeInfoSignal.send(cellIdString, payload)
-      // store.dispatch(sendRealtimeInfoSignal.create({ cellIdString, payload }))
+      store.dispatch(sendRealtimeInfoSignal(cellIdString, payload))
+      // does this action even need to be sent? there is no reducer/state change from it
     }
 
     // return result

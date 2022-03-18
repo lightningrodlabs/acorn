@@ -12,6 +12,8 @@ import './GoalTitleQuickEdit.scss'
 import { firstZoomThreshold, fontSize, fontSizeExtraLarge, fontSizeLarge, lineHeightMultiplier, secondZoomThreshold } from '../../drawing/dimensions'
 import { startTitleEdit, endTitleEdit } from '../../redux/ephemeral/goal-editing/actions'
 import GoalTitleQuickEdit from './GoalTitleQuickEdit.component'
+import ProjectsZomeApi from '../../api/projectsApi'
+import { getAppWs } from '../../hcWebsockets'
 
 // https://react-redux.js.org/using-react-redux/connect-mapstate
 // Designed to grab selective data off of a redux state tree in order
@@ -97,6 +99,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     updateContent: (content) => {
       dispatch(updateContent(content))
@@ -116,16 +120,22 @@ function mapDispatchToProps(dispatch, ownProps) {
       )
     },
     createGoalWithEdge: (entry, maybe_linked_goal) => {
+      // this api function is not being picked up by intellisense
+      const outcomeWithConnection = await projectsZomeApi.outcome.createOutcomeWithConnection(cellId, {
+        entry,
+        maybe_linked_goal //TODO: should we make this serde camelCase?
+      })
       return dispatch(
-        createGoalWithEdge.create({
+        createGoalWithEdge(
           cellIdString,
-          payload: { entry, maybe_linked_goal },
-        })
+          outcomeWithConnection
+        )
       )
     },
     updateGoal: (entry, headerHash) => {
+      const updatedOutcome = await projectsZomeApi.outcome.update(cellId, {entry, headerHash })
       return dispatch(
-        updateGoal.create({ cellIdString, payload: { entry, headerHash } })
+        updateGoal(cellIdString, updatedOutcome)
       )
     },
     closeGoalForm: () => {

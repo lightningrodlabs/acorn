@@ -1,6 +1,8 @@
 import { connect } from 'react-redux'
 import { updateProjectMeta } from '../../../redux/persistent/projects/project-meta/actions'
 import PriorityPickerUniversal from './PriorityPickerUniversal.component'
+import ProjectsZomeApi from '../../../api/projectsApi'
+import { getAppWs } from '../../../hcWebsockets'
 
 function mapStateToProps(state, ownProps) {
   const { projectId, goalAddress } = ownProps
@@ -18,10 +20,13 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     updateProjectMeta: (entry, headerHash) => {
+      const updatedProjectMeta = await projectsZomeApi.projectMeta.update(cellId, { entry, headerHash })
       return dispatch(
-        updateProjectMeta.create({ cellIdString, payload: { entry, headerHash } })
+        updateProjectMeta(cellIdString, updatedProjectMeta)
       )
     },
   }

@@ -5,6 +5,8 @@ import {
 } from '../../redux/persistent/projects/goal-members/actions'
 import moment from 'moment'
 import PeoplePicker from './PeoplePicker.component'
+import ProjectsZomeApi from '../../api/projectsApi'
+import { getAppWs } from '../../hcWebsockets'
 
 function mapStateToProps(state, ownProps) {
   const goalAddress = state.ui.goalForm.isOpen
@@ -38,23 +40,24 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     createGoalMember: (goal_address, agent_address, user_edit_hash) => {
+      const outcomeMember = await projectsZomeApi.outcomeMember.create(cellId, {
+        goal_address,
+        agent_address,
+        user_edit_hash,
+        unix_timestamp: moment().unix(),
+        is_imported: false
+      })
       return dispatch(
-        createGoalMember.create({
-          cellIdString,
-          payload: {
-            goal_address,
-            agent_address,
-            user_edit_hash,
-            unix_timestamp: moment().unix(),
-            is_imported: false
-          },
-        })
+        createGoalMember(cellIdString, outcomeMember)
       )
     },
     archiveGoalMember: (payload) => {
-      return dispatch(archiveGoalMember.create({ cellIdString, payload }))
+      const deleteOutcomeMemberHash = await projectsZomeApi.outcomeMember.delete(cellId, payload)
+      return dispatch(archiveGoalMember(cellIdString, deleteOutcomeMemberHash))
     },
   }
 }

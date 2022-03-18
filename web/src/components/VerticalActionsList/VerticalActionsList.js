@@ -1,8 +1,10 @@
 import { connect } from 'react-redux'
 import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import { goalWidth } from '../../drawing/dimensions'
-import { archiveGoalFully, updateGoal } from '../../redux/persistent/projects/goals/actions'
+import { deleteOutcomeFully, updateOutcome } from '../../redux/persistent/projects/goals/actions'
 import VerticalActionsList from './VerticalActionsList.component'
+import ProjectsZomeApi from '../../api/projectsApi'
+import { getAppWs } from '../../hcWebsockets'
 
 function mapStateToProps(state, ownProps) {
   // goal headerHash
@@ -41,13 +43,17 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     onArchiveClick: (payload) => {
-      return dispatch(archiveGoalFully.create({ cellIdString, payload }))
+      const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(cellId, payload)
+      return dispatch(deleteOutcomeFully(cellIdString, fullyDeletedOutcome))
     },
     updateGoal: (entry, headerHash) => {
+      const updatedOutcome = await projectsZomeApi.outcome.update(cellId, { headerHash, entry })
       return dispatch(
-        updateGoal.create({ cellIdString, payload: { headerHash, entry } })
+        updateOutcome(cellIdString, updatedOutcome)
       )
     },
   }

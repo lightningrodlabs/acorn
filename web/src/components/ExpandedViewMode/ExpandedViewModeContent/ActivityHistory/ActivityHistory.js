@@ -15,6 +15,7 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  // TODO: what to do here about the fetchGoalHistory? looks like this is incomplete on the zome side
   return {
     fetchGoalHistory: (payload) => {
       return dispatch(fetchGoalHistory.create({ cellIdString, payload }))

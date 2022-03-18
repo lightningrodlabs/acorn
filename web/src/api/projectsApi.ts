@@ -125,7 +125,7 @@ const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
 
 export default class ProjectsZomeApi {
   appWebsocket: AppWebsocket
-  outcome: EntryTypeApi<Outcome, Outcome>
+  outcome: EntryTypeApi<Outcome, Outcome> //this type doesn't include the non-crud functions, which is likely why intellisense is not recognizing the non-crud functions
   entryPoint: EntryTypeApi<EntryPoint, EntryPoint>
   connection: EntryTypeApi<Connection, Connection>
   outcomeComment: EntryTypeApi<OutcomeComment, OutcomeComment>

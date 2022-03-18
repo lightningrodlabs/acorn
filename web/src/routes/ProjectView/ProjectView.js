@@ -31,6 +31,8 @@ import { closeExpandedView } from '../../redux/ephemeral/expanded-view/actions'
 import { animatePanAndZoom, resetTranslateAndScale } from '../../redux/ephemeral/viewport/actions'
 import { ENTRY_POINTS } from '../../searchParams'
 import { triggerRealtimeInfoSignal, sendExitProjectSignal } from '../../redux/persistent/projects/realtime-info-signal/actions'
+import ProjectsZomeApi from '../../api/projectsApi'
+import { getAppWs } from '../../hcWebsockets'
 
 function ProjectViewInner({
   projectId,
@@ -135,6 +137,9 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  // TODO: convert to buffer
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     setActiveProject: projectId => dispatch(setActiveProject(projectId)),
     setActiveEntryPoints: entryPointAddresses =>
@@ -147,22 +152,38 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(resetTranslateAndScale())
     },
     closeExpandedView: () => dispatch(closeExpandedView()),
-    fetchProjectMeta: () =>
-      dispatch(fetchProjectMeta.create({ cellIdString, payload: null })),
-    fetchEntryPoints: () =>
-      dispatch(fetchEntryPoints.create({ cellIdString, payload: { All: null } })),
-    fetchMembers: () =>
-      dispatch(fetchMembers.create({ cellIdString, payload: null })),
-    fetchGoals: () =>
-      dispatch(fetchGoals.create({ cellIdString, payload: { All: null } })),
-    fetchEdges: () =>
-      dispatch(fetchEdges.create({ cellIdString, payload: { All: null } })),
-    fetchGoalMembers: () =>
-      dispatch(fetchGoalMembers.create({ cellIdString, payload: { All: null } })),
-    fetchGoalVotes: () =>
-      dispatch(fetchGoalVotes.create({ cellIdString, payload: { All: null } })),
-    fetchGoalComments: () =>
-      dispatch(fetchGoalComments.create({ cellIdString, payload: { All: null } })),
+    fetchProjectMeta: () => {
+      const projectMeta = await projectsZomeApi.projectMeta.fetchProjectMeta(cellId)
+      dispatch(fetchProjectMeta(cellIdString, projectMeta))
+    },
+    fetchEntryPoints: () => {
+      const entryPoints = await projectsZomeApi.entryPoint.fetch(cellId, { All: null })
+      dispatch(fetchEntryPoints(cellIdString, entryPoints))
+    },
+    fetchMembers: () => {
+      const members = await projectsZomeApi.members.fetch(cellId)
+      dispatch(fetchMembers(cellIdString, members))
+    },
+    fetchGoals: () => {
+      const outcomes = await projectsZomeApi.outcome.fetch(cellId, { All: null })
+      dispatch(fetchGoals(cellIdString, outcomes))
+    },
+    fetchEdges: () => {
+      const connections = await projectsZomeApi.connection.fetch(cellId, { All: null })
+      dispatch(fetchEdges(cellIdString, connections))
+    },
+    fetchGoalMembers: () => {
+      const outcomeMembers = await projectsZomeApi.outcomeMember.fetch(cellId, { All: null })
+      dispatch(fetchGoalMembers(cellIdString, outcomeMembers))
+    },
+    fetchGoalVotes: () => {
+      const outcomeVotes = await projectsZomeApi.outcomeVotes.fetch(cellId, { All: null })
+      dispatch(fetchGoalVotes(cellIdString, outcomeVotes))
+    },
+    fetchGoalComments: () => {
+      const outcomeComments = await projectsZomeApi.outcomeComments.fetch(cellId, { All: null })
+      dispatch(fetchGoalComments(cellIdString, outcomeComments))
+    },
     goToGoal: (goalHeaderHash) => dispatch(animatePanAndZoom(goalHeaderHash)),
     triggerRealtimeInfoSignal: () => dispatch(triggerRealtimeInfoSignal()),
     sendExitProjectSignal: () => dispatch(sendExitProjectSignal())

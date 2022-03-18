@@ -33,6 +33,8 @@ import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 import GlobalModals from './GlobalModals'
 import { animatePanAndZoom } from '../redux/ephemeral/viewport/actions'
 import { closeInviteMembersModal, openInviteMembersModal } from '../redux/ephemeral/invite-members-modal/actions'
+import ProfilesZomeApi from '../api/profilesApi'
+import { getAppWs } from '../hcWebsockets'
 
 function App({
   members,
@@ -214,16 +216,17 @@ function mapStateToProps(state) {
 
 function mergeProps(stateProps, dispatchProps, _ownProps) {
   const { profilesCellIdString } = stateProps
+  //TODO: convert to buffer
   const { dispatch } = dispatchProps
+  const appWebsocket = await getAppWs()
+  const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
   return {
     ...stateProps,
     ...dispatchProps,
     updateWhoami: (entry, headerHash) => {
+      const updatedWhoami = profilesZomeApi.profile.updateWhoami(cell, { entry, headerHash })
       return dispatch(
-        updateWhoami.create({
-          payload: { entry, headerHash },
-          cellIdString: profilesCellIdString,
-        })
+        updateWhoami(profilesCellIdString, updatedWhoami)
       )
     },
   }

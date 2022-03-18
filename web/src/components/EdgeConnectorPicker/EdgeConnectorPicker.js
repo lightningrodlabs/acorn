@@ -1,10 +1,13 @@
 import {
   previewEdges,
   clearEdgesPreview,
-  createEdge,
+  createConnection,
 } from '../../redux/persistent/projects/edges/actions'
 import { connect } from 'react-redux'
 import EdgeConnectorPicker from './EdgeConnectorPicker.component'
+import ProjectsZomeApi from '../../api/projectsApi'
+import { getAppWs } from '../../hcWebsockets'
+
 
 function mapStateToProps(state) {
   const selectedGoals = state.ui.selection.selectedGoals.map(headerHash => {
@@ -35,20 +38,21 @@ function mapDispatchToProps(dispatch) {
     saveConnections: (parentAddress, childrenAddresses, cellIdString) => {
       // loop over childrenAddresses
       // use createEdge each time
+    const appWebsocket = await getAppWs()
+    const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       return Promise.all(
-        childrenAddresses.map(childAddress =>
+        childrenAddresses.map(childAddress => {
+          // does the camel case conversion work both ways?
+          const connection = await projectsZomeApi.connection.create(cellIdString, {
+            parentAddress,
+            childAddress,
+            randomizer: Date.now(),
+            isImported: false
+          })
           dispatch(
-            createEdge.create({
-              cellIdString,
-              payload: {
-                child_address: childAddress,
-                parent_address: parentAddress,
-                randomizer: Date.now(),
-                is_imported: false
-              },
-            })
+            createConnection(cellIdString, connection)
           )
-        )
+        })
       )
     },
   }

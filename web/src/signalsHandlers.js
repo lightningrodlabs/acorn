@@ -104,7 +104,7 @@ const pickCrudAction = (entryTypeName, actionType) => {
   const actionSet = crudActionSets[entryTypeName]
   // such as `createGoalComment`
   const actionName = `${actionPrefix}${entryTypeName}`
-  return actionSet[actionName].type
+  return actionSet[actionName](null, null).type
 }
 
 export default (store) => 

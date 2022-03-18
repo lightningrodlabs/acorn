@@ -15,6 +15,8 @@ import { updateProjectMeta } from '../../../../redux/persistent/projects/project
 import TimeframeFormat from '../../../../components/TimeframeFormat'
 import GuidebookNavLink from '../../../../components/GuidebookNavLink/GuidebookNavLink'
 import { animatePanAndZoom } from '../../../../redux/ephemeral/viewport/actions'
+import ProjectsZomeApi from '../../../../api/projectsApi'
+import { getAppWs } from '../../../../hcWebsockets'
 
 // an individual list item
 function UniversalGoal({ liveIndex, goal, openExpandedView, goToGoal }) {
@@ -324,20 +326,21 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     openExpandedView: (headerHash) => dispatch(openExpandedView(headerHash)),
     goToGoal: (headerHash) => {
       return dispatch(animatePanAndZoom(headerHash))
     },
     updateProjectMeta: (projectMeta, headerHash, cellIdString) => {
-      return dispatch(
-        updateProjectMeta.create({
-          cellIdString,
-          payload: {
+      // TODO: convert to buffer
+      const updatedprojectMeta = projectsZomeApi.projectMeta.update(cellId, {
             entry: projectMeta,
             headerHash,
-          },
-        })
+          })
+      return dispatch(
+        updateProjectMeta(cellIdString, updatedProjectMeta)
       )
     },
   }

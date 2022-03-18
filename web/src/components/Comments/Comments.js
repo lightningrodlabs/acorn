@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import {
-  createGoalComment,
-  archiveGoalComment,
+  createGoalComment, // TODO: update to Outcome not Goal
+  deleteGoalComment,
   updateGoalComment,
 } from '../../redux/persistent/projects/goal-comments/actions'
 import Comments from './Comments.component'
@@ -19,23 +19,19 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     createGoalComment: async (payload) => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeComment = await projectsZomeApi.outcomeComment.create(cellId, payload)
       return dispatch(createGoalComment(cellIdString, outcomeComment))
     },
-    archiveGoalComment: (payload) => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+    deleteGoalComment: (payload) => {
       const outcomeComment = await projectsZomeApi.outcomeComment.delete(cellId, payload)
       return dispatch(deleteGoalComment(cellIdString, outcomeComment))
     },
     updateGoalComment: (entry, headerHash) => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const outcomeComment = await projectsZomeApi.outcomeComment.update(cellId, payload)
+      const outcomeComment = await projectsZomeApi.outcomeComment.update(cellId, { headerHash, entry })
       return dispatch(
         updateGoalComment(cellIdString, { outcomeComment, headerHash })
       )

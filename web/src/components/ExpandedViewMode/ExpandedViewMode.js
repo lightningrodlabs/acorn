@@ -2,11 +2,14 @@ import { connect } from 'react-redux'
 import {
   createEntryPoint,
   archiveEntryPoint,
+  deleteEntryPoint,
 } from '../../redux/persistent/projects/entry-points/actions'
 import { updateGoal } from '../../redux/persistent/projects/goals/actions'
 import { archiveGoalMember } from '../../redux/persistent/projects/goal-members/actions'
 import { startTitleEdit, endTitleEdit, startDescriptionEdit, endDescriptionEdit } from '../../redux/ephemeral/goal-editing/actions'
 import ExpandedViewMode from './ExpandedViewMode.component'
+import ProjectsZomeApi from '../../api/projectsApi'
+import { getAppWs } from '../../hcWebsockets'
 
 function mapStateToProps(state, ownProps) {
   let goal,
@@ -76,20 +79,27 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     createEntryPoint: payload => {
-      return dispatch(createEntryPoint.create({ cellIdString, payload }))
+      const entryPoint = await projectsZomeApi.entryPoint.create(cellId, payload)
+      return dispatch(createEntryPoint(cellIdString, entryPoint))
     },
     archiveEntryPoint: payload => {
-      return dispatch(archiveEntryPoint.create({ cellIdString, payload }))
+      const entryPointDeleteHash = await projectsZomeApi.entryPoint.delete(cellId, payload)
+      // which header hash should I be passing in to the action?
+      return dispatch(deleteEntryPoint(cellIdString, entryPointDeleteHash))
     },
     updateGoal: (entry, headerHash) => {
+      const updatedOutcome = await projectsZomeApi.outcome.update(cellId, { headerHash, entry })
       return dispatch(
-        updateGoal.create({ cellIdString, payload: { headerHash, entry } })
+        updateGoal(cellIdString, updatedOutcome)
       )
     },
     archiveGoalMember: payload => {
-      return dispatch(archiveGoalMember.create({ cellIdString, payload }))
+      const outcomeMemberDeleteHash = await projectsZomeApi.outcomeMember.delete(cellId, payload)
+      return dispatch(archiveGoalMember(cellIdString, outcomeMemberDeleteHash))
     },
     startTitleEdit: goalAddress => {
       return dispatch(startTitleEdit(goalAddress))
