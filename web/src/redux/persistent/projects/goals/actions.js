@@ -1,4 +1,5 @@
-import { createCrudActionCreators } from '../../crudRedux'
+import { createCrudActionCreators } from "../../crudRedux"
+
 
 const [[
   CREATE_OUTCOME,

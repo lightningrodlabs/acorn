@@ -1,6 +1,6 @@
 import {
-  previewEdges,
-  clearEdgesPreview,
+  previewConnections,
+  clearConnectionsPreview,
   createConnection,
 } from '../../redux/persistent/projects/edges/actions'
 import { connect } from 'react-redux'
@@ -8,9 +8,8 @@ import EdgeConnectorPicker from './EdgeConnectorPicker.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 
-
 function mapStateToProps(state) {
-  const selectedGoals = state.ui.selection.selectedGoals.map(headerHash => {
+  const selectedGoals = state.ui.selection.selectedGoals.map((headerHash) => {
     return state.projects.goals[state.ui.activeProject][headerHash]
   })
 
@@ -26,32 +25,33 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     previewConnections: (parentAddress, childrenAddresses, activeProject) => {
-      const edges = childrenAddresses.map(childAddress => ({
+      const edges = childrenAddresses.map((childAddress) => ({
         child_address: childAddress,
         parent_address: parentAddress,
       }))
-      return dispatch(previewEdges(activeProject, edges))
+      return dispatch(previewConnections(activeProject, edges))
     },
-    clearPreview: activeProject => {
-      return dispatch(clearEdgesPreview(activeProject))
+    clearPreview: (activeProject) => {
+      return dispatch(clearConnectionsPreview(activeProject))
     },
-    saveConnections: (parentAddress, childrenAddresses, cellIdString) => {
+    saveConnections: async (parentAddress, childrenAddresses, cellIdString) => {
       // loop over childrenAddresses
-      // use createEdge each time
-    const appWebsocket = await getAppWs()
-    const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      // use createConnection each time
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       return Promise.all(
-        childrenAddresses.map(childAddress => {
+        childrenAddresses.map(async (childAddress) => {
           // does the camel case conversion work both ways?
-          const connection = await projectsZomeApi.connection.create(cellIdString, {
-            parentAddress,
-            childAddress,
-            randomizer: Date.now(),
-            isImported: false
-          })
-          dispatch(
-            createConnection(cellIdString, connection)
+          const connection = await projectsZomeApi.connection.create(
+            cellIdString,
+            {
+              parentAddress,
+              childAddress,
+              randomizer: Date.now(),
+              isImported: false,
+            }
           )
+          dispatch(createConnection(cellIdString, connection))
         })
       )
     },

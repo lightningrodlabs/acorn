@@ -4,18 +4,19 @@
   of constants defining all the types of actions
   that can be taken within that feature.
 */
-import { createCrudActionCreators } from '../../crudRedux'
 import ProjectZomeApi from '../../../../api/projectsApi'
 import { getAppWs } from '../../../../hcWebsockets'
+import { createCrudActionCreators } from '../../crudRedux'
 
 /* action creator functions */
 
 const PREVIEW_CONNECTIONS = 'PREVIEW_CONNECTIONS'
 const CLEAR_CONNECTIONS_PREVIEW = 'CLEAR_CONNECTIONS_PREVIEW'
+const AFFECT_LAYOUT_DELETE_CONNECTION = 'AFFECT_LAYOUT_DELETE_CONNECTION'
 
 const previewConnections = (cellId, connections) => {
   return {
-    type: PREVIEW_CONNECTION,
+    type: PREVIEW_CONNECTIONS,
     payload: {
       cellId,
       connections,
@@ -45,7 +46,6 @@ const [[
 ]] = createCrudActionCreators('CONNECTION')
 
 
-const AFFECT_LAYOUT_DELETE_CONNECTION = 'AFFECT_LAYOUT_DELETE_CONNECTION'
 // this action gets caught and
 // handled in the web/src/layout/middleware.js
 // it allows the dispatcher of a usual 'archiveEdge' action

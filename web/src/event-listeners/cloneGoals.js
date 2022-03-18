@@ -1,11 +1,11 @@
 import { selectGoal } from '../redux/ephemeral/selection/actions'
-import { createGoal } from '../redux/persistent/projects/goals/actions'
-import { createGoalMember } from '../redux/persistent/projects/goal-members/actions'
+import { createOutcome } from '../redux/persistent/projects/goals/actions'
+import { createOutcomeMember } from '../redux/persistent/projects/goal-members/actions'
 import moment from 'moment'
 import ProjectsZomeApi from '../api/projectsApi'
 import { getAppWs } from '../hcWebsockets'
 
-export default function cloneGoals(store) {
+export default async function cloneGoals(store) {
   const state = store.getState()
   const {
     ui: { activeProject },
@@ -29,12 +29,12 @@ export default function cloneGoals(store) {
     })
     store
       .dispatch(
-        createGoal(activeProject, createdOutcome)
+        createOutcome(activeProject, createdOutcome)
       )
       .then(value => {
         let newGoalAddress = value.goal.headerHash
         store.dispatch(selectGoal(value.goal.headerHash))
-        members.map(member => {
+        members.map(async member => {
           const createdOutcomeMember = await projectsZomeApi.outcomeMember.create(cellId, {
                 goal_address: newGoalAddress,
                 agent_address: member.agent_address,
@@ -43,7 +43,7 @@ export default function cloneGoals(store) {
                 is_imported: false
               })
           store.dispatch(
-            createGoalMember(activeProject, createdOutcomeMember)
+            createOutcomeMember(activeProject, createdOutcomeMember)
           )
         })
       })

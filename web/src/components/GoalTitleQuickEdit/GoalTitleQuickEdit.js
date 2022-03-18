@@ -4,13 +4,29 @@ import useOnClickOutside from 'use-onclickoutside'
 import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
 
-import { createGoalWithEdge, updateGoal } from '../../redux/persistent/projects/goals/actions'
-import { layoutAffectingArchiveEdge } from '../../redux/persistent/projects/edges/actions'
-import { closeGoalForm, updateContent } from '../../redux/ephemeral/goal-form/actions'
+import {
+  createOutcomeWithConnection,
+  updateOutcome,
+} from '../../redux/persistent/projects/goals/actions'
+import { affectLayoutDeleteConnection } from '../../redux/persistent/projects/edges/actions'
+import {
+  closeGoalForm,
+  updateContent,
+} from '../../redux/ephemeral/goal-form/actions'
 
 import './GoalTitleQuickEdit.scss'
-import { firstZoomThreshold, fontSize, fontSizeExtraLarge, fontSizeLarge, lineHeightMultiplier, secondZoomThreshold } from '../../drawing/dimensions'
-import { startTitleEdit, endTitleEdit } from '../../redux/ephemeral/goal-editing/actions'
+import {
+  firstZoomThreshold,
+  fontSize,
+  fontSizeExtraLarge,
+  fontSizeLarge,
+  lineHeightMultiplier,
+  secondZoomThreshold,
+} from '../../drawing/dimensions'
+import {
+  startTitleEdit,
+  endTitleEdit,
+} from '../../redux/ephemeral/goal-editing/actions'
 import GoalTitleQuickEdit from './GoalTitleQuickEdit.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
@@ -37,7 +53,7 @@ function mapStateToProps(state) {
         relation,
         // ASSUMPTION: one parent
         existingParentEdgeAddress, // this is optional though
-      }
+      },
     },
   } = state
   // use the values of the goal being edited,
@@ -49,7 +65,9 @@ function mapStateToProps(state) {
   // this value of state.whoami.entry.address
   // should not be changed to headerHash unless the entry type of Profile
   // is changed
-  const user_hash = editAddress ? editingGoal.user_hash : state.whoami.entry.address
+  const user_hash = editAddress
+    ? editingGoal.user_hash
+    : state.whoami.entry.address
   const user_edit_hash = editAddress ? state.whoami.entry.address : null
   const status = editAddress ? editingGoal.status : 'Uncertain'
   const description = editAddress ? editingGoal.description : ''
@@ -89,7 +107,7 @@ function mapStateToProps(state) {
     hierarchy,
     time_frame,
     timestamp_created,
-    is_imported
+    is_imported,
   }
 }
 
@@ -99,52 +117,56 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
-  const appWebsocket = await getAppWs()
-  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     updateContent: (content) => {
       dispatch(updateContent(content))
     },
-    archiveEdge: (address) => {
+    archiveEdge: async (address) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       // false because we will only be archiving
       // an edge here in the context of immediately replacing
       // it with another during a createGoalWithEdge
       // thus we don't want a glitchy animation
       const affectLayout = false
-      return dispatch(
-        layoutAffectingArchiveEdge(
-          cellIdString,
-          address,
-          affectLayout
-        )
+      const layoutAction = await affectLayoutDeleteConnection(
+        cellIdString,
+        address,
+        affectLayout
       )
+      return dispatch(layoutAction)
     },
-    createGoalWithEdge: (entry, maybe_linked_goal) => {
+    createGoalWithEdge: async (entry, maybe_linked_goal) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       // this api function is not being picked up by intellisense
-      const outcomeWithConnection = await projectsZomeApi.outcome.createOutcomeWithConnection(cellId, {
-        entry,
-        maybe_linked_goal //TODO: should we make this serde camelCase?
-      })
+      const outcomeWithConnection = await projectsZomeApi.outcome.createOutcomeWithConnection(
+        cellId,
+        {
+          entry,
+          maybe_linked_goal, //TODO: should we make this serde camelCase?
+        }
+      )
       return dispatch(
-        createGoalWithEdge(
-          cellIdString,
-          outcomeWithConnection
-        )
+        createOutcomeWithConnection(cellIdString, outcomeWithConnection)
       )
     },
-    updateGoal: (entry, headerHash) => {
-      const updatedOutcome = await projectsZomeApi.outcome.update(cellId, {entry, headerHash })
-      return dispatch(
-        updateGoal(cellIdString, updatedOutcome)
-      )
+    updateGoal: async (entry, headerHash) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const updatedOutcome = await projectsZomeApi.outcome.update(cellId, {
+        entry,
+        headerHash,
+      })
+      return dispatch(updateOutcome(cellIdString, updatedOutcome))
     },
     closeGoalForm: () => {
       dispatch(closeGoalForm())
     },
-    startTitleEdit: goalAddress => {
+    startTitleEdit: (goalAddress) => {
       return dispatch(startTitleEdit(goalAddress))
     },
-    endTitleEdit: goalAddress => {
+    endTitleEdit: (goalAddress) => {
       return dispatch(endTitleEdit(goalAddress))
     },
   }

@@ -17,10 +17,10 @@ import ExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode
 import { fetchProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
 import { fetchEntryPoints } from '../../redux/persistent/projects/entry-points/actions'
 import { fetchMembers } from '../../redux/persistent/projects/members/actions'
-import { fetchGoals } from '../../redux/persistent/projects/goals/actions'
-import { fetchEdges } from '../../redux/persistent/projects/edges/actions'
-import { fetchGoalMembers } from '../../redux/persistent/projects/goal-members/actions'
-import { fetchGoalComments } from '../../redux/persistent/projects/goal-comments/actions'
+import { fetchOutcomes } from '../../redux/persistent/projects/goals/actions'
+import { fetchConnections } from '../../redux/persistent/projects/edges/actions'
+import { fetchOutcomeMembers } from '../../redux/persistent/projects/goal-members/actions'
+import { fetchOutcomeComments } from '../../redux/persistent/projects/goal-comments/actions'
 import { fetchGoalVotes } from '../../redux/persistent/projects/goal-votes/actions'
 // ui
 import { setActiveEntryPoints } from '../../redux/ephemeral/active-entry-points/actions'
@@ -138,8 +138,6 @@ function mapStateToProps(state, ownProps) {
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   // TODO: convert to buffer
-  const appWebsocket = await getAppWs()
-  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     setActiveProject: projectId => dispatch(setActiveProject(projectId)),
     setActiveEntryPoints: entryPointAddresses =>
@@ -152,37 +150,53 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(resetTranslateAndScale())
     },
     closeExpandedView: () => dispatch(closeExpandedView()),
-    fetchProjectMeta: () => {
+    fetchProjectMeta: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const projectMeta = await projectsZomeApi.projectMeta.fetchProjectMeta(cellId)
       dispatch(fetchProjectMeta(cellIdString, projectMeta))
     },
-    fetchEntryPoints: () => {
+    fetchEntryPoints: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const entryPoints = await projectsZomeApi.entryPoint.fetch(cellId, { All: null })
       dispatch(fetchEntryPoints(cellIdString, entryPoints))
     },
-    fetchMembers: () => {
-      const members = await projectsZomeApi.members.fetch(cellId)
+    fetchMembers: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const members = await projectsZomeApi.member.fetch(cellId)
       dispatch(fetchMembers(cellIdString, members))
     },
-    fetchGoals: () => {
+    fetchGoals: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomes = await projectsZomeApi.outcome.fetch(cellId, { All: null })
-      dispatch(fetchGoals(cellIdString, outcomes))
+      dispatch(fetchOutcomes(cellIdString, outcomes))
     },
-    fetchEdges: () => {
+    fetchEdges: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const connections = await projectsZomeApi.connection.fetch(cellId, { All: null })
-      dispatch(fetchEdges(cellIdString, connections))
+      dispatch(fetchConnections(cellIdString, connections))
     },
-    fetchGoalMembers: () => {
+    fetchGoalMembers: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeMembers = await projectsZomeApi.outcomeMember.fetch(cellId, { All: null })
-      dispatch(fetchGoalMembers(cellIdString, outcomeMembers))
+      dispatch(fetchOutcomeMembers(cellIdString, outcomeMembers))
     },
-    fetchGoalVotes: () => {
-      const outcomeVotes = await projectsZomeApi.outcomeVotes.fetch(cellId, { All: null })
+    fetchGoalVotes: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomeVotes = await projectsZomeApi.outcomeVote.fetch(cellId, { All: null })
       dispatch(fetchGoalVotes(cellIdString, outcomeVotes))
     },
-    fetchGoalComments: () => {
-      const outcomeComments = await projectsZomeApi.outcomeComments.fetch(cellId, { All: null })
-      dispatch(fetchGoalComments(cellIdString, outcomeComments))
+    fetchGoalComments: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomeComments = await projectsZomeApi.outcomeComment.fetch(cellId, { All: null })
+      dispatch(fetchOutcomeComments(cellIdString, outcomeComments))
     },
     goToGoal: (goalHeaderHash) => dispatch(animatePanAndZoom(goalHeaderHash)),
     triggerRealtimeInfoSignal: () => dispatch(triggerRealtimeInfoSignal()),
@@ -198,13 +212,12 @@ const ProjectView = connect(
 function ProjectViewWrapper() {
   const { projectId } = useParams()
   const location = useLocation()
-  let entryPointAddresses = new URLSearchParams(location.search).get(
+  let entryPointAddressesRaw = new URLSearchParams(location.search).get(
     ENTRY_POINTS
   )
-  if (entryPointAddresses) {
-    entryPointAddresses = entryPointAddresses.split(',')
-  } else {
-    entryPointAddresses = []
+  let entryPointAddresses = []
+  if (entryPointAddressesRaw) {
+    entryPointAddresses = entryPointAddressesRaw.split(',')
   }
   return (
     <ProjectView

@@ -68,13 +68,13 @@ function mapStateToProps(state) {
 
 function mergeProps(stateProps, dispatchProps, _ownProps) {
   const { agentAddress, profileCellIdString } = stateProps
-  // TODO: convert to buffer
   const { dispatch } = dispatchProps
-  const appWebsocket = await getAppWs()
-  const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
   return {
     agentAddress,
-    createWhoami: profile => {
+    createWhoami: async profile => {
+      const appWebsocket = await getAppWs()
+      const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+      // TODO: convert to buffer
       const createdWhoami = profilesZomeApi.profile.createWhoami(cellId, profile)
       return dispatch(
         createWhoami(profileCellIdString, createdWhoami)

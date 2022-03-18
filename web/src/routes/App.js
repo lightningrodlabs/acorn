@@ -218,12 +218,12 @@ function mergeProps(stateProps, dispatchProps, _ownProps) {
   const { profilesCellIdString } = stateProps
   //TODO: convert to buffer
   const { dispatch } = dispatchProps
-  const appWebsocket = await getAppWs()
-  const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
   return {
     ...stateProps,
     ...dispatchProps,
-    updateWhoami: (entry, headerHash) => {
+    updateWhoami: async (entry, headerHash) => {
+      const appWebsocket = await getAppWs()
+      const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
       const updatedWhoami = profilesZomeApi.profile.updateWhoami(cell, { entry, headerHash })
       return dispatch(
         updateWhoami(profilesCellIdString, updatedWhoami)

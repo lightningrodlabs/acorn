@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import _ from 'lodash'
-import { NavLink, useHistory, useLocation } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 
 import './PriorityUniversal.scss'
 
@@ -326,16 +326,16 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  const appWebsocket = await getAppWs()
-  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     openExpandedView: (headerHash) => dispatch(openExpandedView(headerHash)),
     goToGoal: (headerHash) => {
       return dispatch(animatePanAndZoom(headerHash))
     },
-    updateProjectMeta: (projectMeta, headerHash, cellIdString) => {
+    updateProjectMeta: async (projectMeta, headerHash, cellIdString) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       // TODO: convert to buffer
-      const updatedprojectMeta = projectsZomeApi.projectMeta.update(cellId, {
+      const updatedProjectMeta = await projectsZomeApi.projectMeta.update(cellId, {
             entry: projectMeta,
             headerHash,
           })

@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import {
-  createGoalComment, // TODO: update to Outcome not Goal
-  deleteGoalComment,
-  updateGoalComment,
+  createOutcomeComment,
+  updateOutcomeComment,
+  deleteOutcomeComment,
 } from '../../redux/persistent/projects/goal-comments/actions'
 import Comments from './Comments.component'
 import ProjectsZomeApi from '../../api/projectsApi'
@@ -19,22 +19,33 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
-  const appWebsocket = await getAppWs()
-  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     createGoalComment: async (payload) => {
-      const outcomeComment = await projectsZomeApi.outcomeComment.create(cellId, payload)
-      return dispatch(createGoalComment(cellIdString, outcomeComment))
-    },
-    deleteGoalComment: (payload) => {
-      const outcomeComment = await projectsZomeApi.outcomeComment.delete(cellId, payload)
-      return dispatch(deleteGoalComment(cellIdString, outcomeComment))
-    },
-    updateGoalComment: (entry, headerHash) => {
-      const outcomeComment = await projectsZomeApi.outcomeComment.update(cellId, { headerHash, entry })
-      return dispatch(
-        updateGoalComment(cellIdString, outcomeComment)
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomeComment = await projectsZomeApi.outcomeComment.create(
+        cellId,
+        payload
       )
+      return dispatch(createOutcomeComment(cellIdString, outcomeComment))
+    },
+    updateGoalComment: async (entry, headerHash) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomeComment = await projectsZomeApi.outcomeComment.update(
+        cellId,
+        { headerHash, entry }
+      )
+      return dispatch(updateOutcomeComment(cellIdString, outcomeComment))
+    },
+    deleteGoalComment: async (payload) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomeComment = await projectsZomeApi.outcomeComment.delete(
+        cellId,
+        payload
+      )
+      return dispatch(deleteOutcomeComment(cellIdString, outcomeComment))
     },
   }
 }

@@ -12,7 +12,7 @@ export interface WireElement<EntryType> {
   entryHash: EntryHashB64
   entry: EntryType
   createdAt: number // nanoseconds
-  updatedAt: number // nanoseconds
+  updatedAt: number 
 }
 
 export interface FetchInputAll {

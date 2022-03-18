@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import {
-  createGoalMember,
-  archiveGoalMember,
+  createOutcomeMember,
+  deleteOutcomeMember,
 } from '../../redux/persistent/projects/goal-members/actions'
 import moment from 'moment'
 import PeoplePicker from './PeoplePicker.component'
@@ -40,10 +40,10 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
-  const appWebsocket = await getAppWs()
-  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
-    createGoalMember: (goal_address, agent_address, user_edit_hash) => {
+    createGoalMember: async (goal_address, agent_address, user_edit_hash) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeMember = await projectsZomeApi.outcomeMember.create(cellId, {
         goal_address,
         agent_address,
@@ -52,12 +52,14 @@ function mapDispatchToProps(dispatch, ownProps) {
         is_imported: false
       })
       return dispatch(
-        createGoalMember(cellIdString, outcomeMember)
-      )
-    },
-    archiveGoalMember: (payload) => {
+        createOutcomeMember(cellIdString, outcomeMember)
+        )
+      },
+    archiveGoalMember: async (payload) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const deleteOutcomeMemberHash = await projectsZomeApi.outcomeMember.delete(cellId, payload)
-      return dispatch(archiveGoalMember(cellIdString, deleteOutcomeMemberHash))
+      return dispatch(deleteOutcomeMember(cellIdString, deleteOutcomeMemberHash))
     },
   }
 }

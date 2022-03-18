@@ -7,7 +7,7 @@ import {
   OutcomeVote,
   ProjectMeta,
 } from '../types'
-import { EntryTypeApi } from './hdkCrud'
+import { EntryTypeApi, WireElement } from './hdkCrud'
 import { AppWebsocket, CellId } from '@holochain/client'
 import { PROJECTS_ZOME_NAME } from '../holochainConfig'
 
@@ -19,7 +19,7 @@ const ZOME_FN_NAMES = {
   FETCH_PROJECT_META: 'fetch_project_meta',
   CHECK_PROJECT_META_EXISTS: 'check_project_meta_exists',
   SEND_REALTIME_INFO_SIGNAL: 'emit_realtime_info_signal',
-  FETCH_MEMBERS: 'fetch_members'
+  FETCH_MEMBERS: 'fetch_members',
 }
 
 // define a custom interface for projectMeta and members
@@ -57,7 +57,7 @@ async function callZome(
 function createCrudFunctions<EntryType>(
   appWebsocket: AppWebsocket,
   entryType: string
-): EntryTypeApi<EntryType, EntryType> {
+): EntryTypeApi<EntryType, WireElement<EntryType>> {
   return {
     create: async (cellId, payload) => {
       return callZome(appWebsocket, cellId, createEntryName(entryType), payload)
@@ -79,11 +79,21 @@ const OutcomeApi = (appWebsocket: AppWebsocket) => {
   return {
     ...outcomeCrud,
     createOutcomeWithConnection: async (cellId, payload) => {
-      return callZome(appWebsocket, cellId, ZOME_FN_NAMES.CREATE_OUTCOME_WITH_CONNECTION, payload) 
+      return callZome(
+        appWebsocket,
+        cellId,
+        ZOME_FN_NAMES.CREATE_OUTCOME_WITH_CONNECTION,
+        payload
+      )
     },
     deleteOutcomeFully: async (cellId, payload) => {
-      return callZome(appWebsocket, cellId, ZOME_FN_NAMES.DELETE_OUTCOME_FULLY, payload)
-    }
+      return callZome(
+        appWebsocket,
+        cellId,
+        ZOME_FN_NAMES.DELETE_OUTCOME_FULLY,
+        payload
+      )
+    },
   }
 }
 const ConnectionApi = (appWebsocket: AppWebsocket) => {
@@ -96,44 +106,91 @@ const OutcomeMemberApi = (appWebsocket: AppWebsocket) => {
   return createCrudFunctions<OutcomeMember>(appWebsocket, 'outcome_member')
 }
 const EntryPointApi = (appWebsocket: AppWebsocket) => {
-    const entryPointCrud = createCrudFunctions<EntryPoint>(appWebsocket, 'entry_point')
-    return {
-      ...entryPointCrud,
-      fetchEntryPointDetails: async (cellId, payload) => {
-        return callZome(appWebsocket, cellId, ZOME_FN_NAMES.FETCH_ENTRY_POINT_DETAILS, payload)
-      }
-    }
+  const entryPointCrud = createCrudFunctions<EntryPoint>(
+    appWebsocket,
+    'entry_point'
+  )
+  return {
+    ...entryPointCrud,
+    fetchEntryPointDetails: async (cellId, payload) => {
+      return callZome(
+        appWebsocket,
+        cellId,
+        ZOME_FN_NAMES.FETCH_ENTRY_POINT_DETAILS,
+        payload
+      )
+    },
+  }
 }
 const OutcomeVoteApi = (appWebsocket: AppWebsocket) => {
-    return createCrudFunctions<OutcomeVote>(AppWebsocket, 'outcome_vote')
+  return createCrudFunctions<OutcomeVote>(appWebsocket, 'outcome_vote')
 }
 const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
-    const projectMetaCrud = createCrudFunctions<ProjectMeta>(AppWebsocket, 'project_meta')
-    return {
-      ...projectMetaCrud,
-      simpleCreateProjectMeta: async (cellId, payload) => {
-        return callZome(appWebsocket, cellId, ZOME_FN_NAMES.SIMPLE_CREATE_PROJECT_META, payload)
-      },
-      fetchProjectMeta: async (cellId) => {
-        return callZome(appWebsocket, cellId, ZOME_FN_NAMES.SIMPLE_CREATE_PROJECT_META, null)
-      },
-      checkProjectMetaExists: async (cellId) => {
-        return callZome(appWebsocket, cellId, ZOME_FN_NAMES.CHECK_PROJECT_META_EXISTS, null)
-      },
-    }
+  const projectMetaCrud = createCrudFunctions<ProjectMeta>(
+    appWebsocket,
+    'project_meta'
+  )
+  return {
+    ...projectMetaCrud,
+    simpleCreateProjectMeta: async (cellId, payload) => {
+      return callZome(
+        appWebsocket,
+        cellId,
+        ZOME_FN_NAMES.SIMPLE_CREATE_PROJECT_META,
+        payload
+      )
+    },
+    fetchProjectMeta: async (cellId) => {
+      return callZome(
+        appWebsocket,
+        cellId,
+        ZOME_FN_NAMES.SIMPLE_CREATE_PROJECT_META,
+        null
+      )
+    },
+    checkProjectMetaExists: async (cellId) => {
+      return callZome(
+        appWebsocket,
+        cellId,
+        ZOME_FN_NAMES.CHECK_PROJECT_META_EXISTS,
+        null
+      )
+    },
+  }
+}
+
+const RealtimeInfoSignalApi = (appWebsocket: AppWebsocket) => {
+  return {
+    send: async (cellId, payload) => {
+      return callZome(
+        appWebsocket,
+        cellId,
+        ZOME_FN_NAMES.SEND_REALTIME_INFO_SIGNAL,
+        payload
+      )
+    },
+  }
+}
+
+const MembersApi = (appWebsocket: AppWebsocket) => {
+  return {
+    fetch: async (cellId) => {
+      return callZome(appWebsocket, cellId, ZOME_FN_NAMES.FETCH_MEMBERS, null)
+    },
+  }
 }
 
 export default class ProjectsZomeApi {
   appWebsocket: AppWebsocket
-  outcome: EntryTypeApi<Outcome, Outcome> //this type doesn't include the non-crud functions, which is likely why intellisense is not recognizing the non-crud functions
-  entryPoint: EntryTypeApi<EntryPoint, EntryPoint>
-  connection: EntryTypeApi<Connection, Connection>
-  outcomeComment: EntryTypeApi<OutcomeComment, OutcomeComment>
-  outcomeMember: EntryTypeApi<OutcomeMember, OutcomeMember>
-  outcomeVote: EntryTypeApi<OutcomeVote, OutcomeVote>
-  projectMeta: EntryTypeApi<ProjectMeta, ProjectMeta>
-  realtimeInfoSignal
-  members
+  outcome: ReturnType<typeof OutcomeApi>
+  entryPoint: ReturnType<typeof EntryPointApi>
+  connection: ReturnType<typeof ConnectionApi>
+  outcomeComment: ReturnType<typeof OutcomeCommentApi>
+  outcomeMember: ReturnType<typeof OutcomeMemberApi>
+  outcomeVote: ReturnType<typeof OutcomeVoteApi>
+  projectMeta: ReturnType<typeof ProjectMetaApi>
+  realtimeInfoSignal: ReturnType<typeof RealtimeInfoSignalApi>
+  member: ReturnType<typeof MembersApi>
 
   // one per entry type that uses hdk_crud
   // projectMeta and members don't use it
@@ -146,16 +203,8 @@ export default class ProjectsZomeApi {
     this.outcomeMember = OutcomeMemberApi(appWebsocket)
     this.outcomeVote = OutcomeVoteApi(appWebsocket)
     this.projectMeta = ProjectMetaApi(appWebsocket)
-    this.realtimeInfoSignal = {
-      send: async (cellId, payload) => {
-        return callZome(appWebsocket, cellId, ZOME_FN_NAMES.SEND_REALTIME_INFO_SIGNAL, payload)
-      }
-    }
-    this.members = {
-      fetch: async (cellId) => {
-        return callZome(appWebsocket, cellId, ZOME_FN_NAMES.FETCH_MEMBERS, null)
-      }
-    }
+    this.realtimeInfoSignal = RealtimeInfoSignalApi(appWebsocket)
+    this.member = MembersApi(appWebsocket)
   }
 }
 

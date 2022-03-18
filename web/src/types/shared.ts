@@ -5,12 +5,4 @@ export type Timestamp = number
 
 export type Option<Inner> = Inner | null
 
-export interface WireElement<EntryType> {
-    headerHash: HeaderHashB64,
-    entryHash: EntryHashB64,
-    entry: EntryType,
-    createdAt: Timestamp,
-    updatedAt: Timestamp,
-}
-
 

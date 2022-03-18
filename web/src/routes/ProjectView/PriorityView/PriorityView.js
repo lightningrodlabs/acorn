@@ -61,10 +61,10 @@ function mapStateToProps(state) {
   }
 }
 function mapDispatchToProps(dispatch) {
-  const appWebsocket = await getAppWs()
-  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
-    updateProjectMeta: (entry, headerHash, cellIdString) => {
+    updateProjectMeta: async (entry, headerHash, cellIdString) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       // TODO: convert to buffer
       const projectMeta = projectsZomeApi.projectMeta.update(cellId, { entry, headerHash })
       return dispatch(

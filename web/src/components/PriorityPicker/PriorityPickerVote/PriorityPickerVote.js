@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import './PriorityPickerVote.scss'
 import {
-  createGoalVote,
-  archiveGoalVote,
-  updateGoalVote,
+  createOutcomeVote,
+  deleteOutcomeVote,
+  updateOutcomeVote,
 } from '../../../redux/persistent/projects/goal-votes/actions'
 import PriorityPickerVote from './PriorityPickerVote.component'
 import ProjectsZomeApi from '../../../api/projectsApi'
@@ -27,22 +27,26 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
-  const appWebsocket = await getAppWs()
-  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
-    createGoalVote: payload => {
+    createGoalVote: async payload => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeVote = await projectsZomeApi.outcomeVote.create(cellId, payload)
-      return dispatch(createGoalVote(cellIdString, outcomeVote))
+      return dispatch(createOutcomeVote(cellIdString, outcomeVote))
     },
-    updateGoalVote: (entry, headerHash) => {
+    updateGoalVote: async (entry, headerHash) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedOutcomeVote = await projectsZomeApi.outcomeVote.update(cellId, { entry, headerHash })
       return dispatch(
-        updateGoalVote(cellIdString, updatedOutcomeVote)
-      )
-    },
-    archiveGoalVote: payload => {
+        updateOutcomeVote(cellIdString, updatedOutcomeVote)
+        )
+      },
+    archiveGoalVote: async payload => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const deletedOutcomeVoteHash = await projectsZomeApi.outcomeVote.delete(cellId, payload)
-      return dispatch(archiveGoalVote(cellIdString, deletedOutcomeVoteHash))
+      return dispatch(deleteOutcomeVote(cellIdString, deletedOutcomeVoteHash))
     },
   }
 }

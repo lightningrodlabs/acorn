@@ -42,8 +42,8 @@ import {
   closeGoalForm,
   updateContent,
 } from '../redux/ephemeral/goal-form/actions'
-import { archiveGoalFully } from '../redux/persistent/projects/goals/actions'
-import { archiveEdge, layoutAffectingArchiveEdge } from '../redux/persistent/projects/edges/actions'
+import { deleteOutcomeFully } from '../redux/persistent/projects/goals/actions'
+import { affectLayoutDeleteConnection } from '../redux/persistent/projects/edges/actions'
 import { setScreenDimensions } from '../redux/ephemeral/screensize/actions'
 import { changeTranslate, changeScale } from '../redux/ephemeral/viewport/actions'
 import { openExpandedView } from '../redux/ephemeral/expanded-view/actions'
@@ -87,7 +87,7 @@ export default function setupEventListeners(store, canvas) {
     store.dispatch(setScreenDimensions(rect.width * dpr, rect.height * dpr))
   }
 
-  function bodyKeydown(event) {
+  async function bodyKeydown(event) {
     const appWebsocket = await getAppWs()
     const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
     let state = store.getState()
@@ -136,9 +136,9 @@ export default function setupEventListeners(store, canvas) {
           // affectLayout means this action will trigger a recalc
           // and layout animation update, which is natural in this context
           const affectLayout = true
-          store.dispatch(
-            layoutAffectingArchiveEdge(activeProject, firstOfSelection, affectLayout)
-          )
+          // TODO: refactor this weirdness
+          const affectLayoutAction = await affectLayoutDeleteConnection(activeProject, firstOfSelection, affectLayout)
+          store.dispatch(affectLayoutAction)
           // if on firefox, and matched this case
           // prevent the browser from navigating back to the last page
           event.preventDefault()
@@ -148,9 +148,9 @@ export default function setupEventListeners(store, canvas) {
           !state.ui.expandedView.isOpen
         ) {
           let firstOfSelection = selection.selectedGoals[0]
-          const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(cellId, firstOfSelection)
+          const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(activeProject, firstOfSelection)
           store.dispatch(
-            archiveGoalFully(activeProject, fullyDeletedOutcome)
+            deleteOutcomeFully(activeProject, fullyDeletedOutcome)
           )
           // if on firefox, and matched this case
           // prevent the browser from navigating back to the last page

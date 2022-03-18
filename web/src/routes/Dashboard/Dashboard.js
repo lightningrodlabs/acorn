@@ -362,7 +362,7 @@ async function joinProject(passphrase, dispatch) {
     appWs
       .callZome(
         {
-          cap: null,
+          cap_secret: null,
           cell_id: cellId,
           zome_name: PROJECTS_ZOME_NAME,
           fn_name: 'init_signal',
@@ -467,8 +467,6 @@ async function deactivateApp(appId, cellId, dispatch) {
 }
 
 function mapDispatchToProps(dispatch) {
-  const appWebsocket = await getAppWs()
-  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
     setShowInviteMembersModal: (projectId) => {
       return dispatch(openInviteMembersModal(projectId))
@@ -479,19 +477,25 @@ function mapDispatchToProps(dispatch) {
     deactivateApp: (appId, cellId) => {
       return deactivateApp(appId, cellId, dispatch)
     },
-    fetchEntryPointDetails: (cellIdString) => {
+    fetchEntryPointDetails: async (cellIdString) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       //TODO: convert string to buffer
       const entryPointDetails = await projectsZomeApi.entryPoint.fetchEntryPointDetails(cellId, null)
       return dispatch(
         fetchEntryPointDetails(cellIdString, entryPointDetails)
-      )
-    },
-    fetchMembers: (cellIdString) => {
+        )
+      },
+    fetchMembers: async (cellIdString) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       // TODO: convert to buffer
-      const members = projectsZomeApi.members.fetch(cellId)
+      const members = projectsZomeApi.member.fetch(cellId)
       return dispatch(fetchMembers(cellIdString, members))
     },
-    fetchProjectMeta: (cellIdString) => {
+    fetchProjectMeta: async (cellIdString) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       // TODO: convert to buffer
       const projectMeta = await projectsZomeApi.projectMeta.fetchProjectMeta(cellId)
       return dispatch(fetchProjectMeta(cellIdString, projectMeta))

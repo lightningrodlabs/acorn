@@ -43,14 +43,16 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
-  const appWebsocket = await getAppWs()
-  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return {
-    onArchiveClick: (payload) => {
+    onArchiveClick: async (payload) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(cellId, payload)
       return dispatch(deleteOutcomeFully(cellIdString, fullyDeletedOutcome))
     },
-    updateGoal: (entry, headerHash) => {
+    updateGoal: async (entry, headerHash) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedOutcome = await projectsZomeApi.outcome.update(cellId, { headerHash, entry })
       return dispatch(
         updateOutcome(cellIdString, updatedOutcome)

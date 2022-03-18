@@ -1,11 +1,25 @@
 import _ from 'lodash'
 
-export function isCrud(action, createAction, fetchAction, updateAction, deleteAction) {
-  return [createAction, fetchAction, updateAction, deleteAction]
-    .includes(action.type)
+export function isCrud(
+  action,
+  createAction,
+  fetchAction,
+  updateAction,
+  deleteAction
+) {
+  return [createAction, fetchAction, updateAction, deleteAction].includes(
+    action.type
+  )
 }
 
-export function crudReducer(state, action, createAction, fetchAction, updateAction, deleteAction) {
+export function crudReducer(
+  state,
+  action,
+  createAction,
+  fetchAction,
+  updateAction,
+  deleteAction
+) {
   const {
     payload,
     type,
@@ -30,7 +44,7 @@ export function crudReducer(state, action, createAction, fetchAction, updateActi
     // FETCH
     case fetchAction:
       // payload is [ { entry: { key: val }, headerHash: 'QmAsdFg' }, ... ]
-      const mapped = payload.map(r => {
+      const mapped = payload.map((r) => {
         return {
           ...r.entry,
           headerHash: r.headerHash,
@@ -52,14 +66,28 @@ export function crudReducer(state, action, createAction, fetchAction, updateActi
     case deleteAction:
       return {
         ...state,
-        [cellIdString]: _.pickBy(state[cellIdString], (value, key) => key !== payload),
+        [cellIdString]: _.pickBy(
+          state[cellIdString],
+          (value, key) => key !== payload
+        ),
       }
     default:
       return state
   }
 }
 
-export function createCrudActionCreators(model) {
+type ActionCreator = (cellIdString: string, payload: any) => Action
+type Action = {
+  type: string
+  payload: any
+  meta: {
+    cellIdString: string
+  }
+}
+
+export function createCrudActionCreators(
+  model: string
+): [string[], ActionCreator[]] {
   const CREATE_ACTION = `CREATE_${model}`
   const FETCH_ACTION = `FETCH_${model}S`
   const UPDATE_ACTION = `UPDATE_${model}`
@@ -94,13 +122,7 @@ export function createCrudActionCreators(model) {
     }
   }
   return [
-    [CREATE_ACTION,
-    FETCH_ACTION,
-    UPDATE_ACTION,
-    DELETE_ACTION],
-    [createAction,
-    fetchAction,
-    updateAction,
-    deleteAction]
+    [CREATE_ACTION, FETCH_ACTION, UPDATE_ACTION, DELETE_ACTION],
+    [createAction, fetchAction, updateAction, deleteAction],
   ]
 }
