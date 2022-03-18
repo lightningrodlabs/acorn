@@ -26,13 +26,13 @@ function mapDispatchToProps(dispatch, ownProps) {
       const outcomeComment = await projectsZomeApi.outcomeComment.create(cellId, payload)
       return dispatch(createGoalComment(cellIdString, outcomeComment))
     },
-    archiveGoalComment: (payload) => {
+    archiveGoalComment: async (payload) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeComment = await projectsZomeApi.outcomeComment.delete(cellId, payload)
       return dispatch(deleteGoalComment(cellIdString, outcomeComment))
     },
-    updateGoalComment: (entry, headerHash) => {
+    updateGoalComment: async (entry, headerHash) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeComment = await projectsZomeApi.outcomeComment.update(cellId, payload)

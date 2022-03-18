@@ -3,7 +3,10 @@ const ReactRefreshTypeScript = require('react-refresh-typescript')
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
-const mainAppId = fs.readFileSync(path.join(__dirname, '../config-main-app-id'), 'utf-8')
+const mainAppId = fs.readFileSync(
+  path.join(__dirname, '../config-main-app-id'),
+  'utf-8'
+)
 
 // const isDevelopment = true
 module.exports = {
@@ -35,7 +38,7 @@ module.exports = {
     host: 'localhost',
     disableHostCheck: true,
     contentBase: './dist',
-    hot: true // hot module reloading
+    hot: true, // hot module reloading
   },
   module: {
     rules: [
@@ -70,39 +73,47 @@ module.exports = {
           },
         ],
       },
+      // fonts
+      {
+        // svg could be added here, but would need to be distinguished
+        // from non-font svgs
+        test: /\.(ttf|eot|woff|woff2)$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'fonts/',
+          },
+        },
+      },
+      // .png images
+      {
+        test: /\.png$/,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'images/',
+          },
+        },
+      },
       // scss
       {
-        test: /\.s[ac]ss$/i,
+        test: /\.scss$/i,
         use: [
           // Creates `style` nodes from JS strings
-          "style-loader",
+          'style-loader',
           // Translates CSS into CommonJS
-          "css-loader",
+          'css-loader',
+          'resolve-url-loader', // useful for font loading
           // Compiles Sass to CSS
-          "sass-loader",
+          'sass-loader',
         ],
       },
       // css
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              url: (url, resourcePath) => {
-                // resourcePath - path to css file
-
-                // Don't handle `splash-image.png` urls
-                if (url.includes('splash-image.png')) {
-                  return false
-                }
-
-                return true
-              },
-            },
-          },
-        ],
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
