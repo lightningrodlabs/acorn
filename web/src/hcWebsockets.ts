@@ -1,9 +1,5 @@
-import * as msgpack from "@msgpack/msgpack/dist"
 import { AppWebsocket, AdminWebsocket  } from '@holochain/client'
-import * as types from './types'
 
-
-let e: 
 // export for use by holochainMiddleware (redux)
 // @ts-ignore
 export const APP_WS_URL = `ws://localhost:${__APP_PORT__}`

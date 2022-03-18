@@ -33,7 +33,7 @@ function mapDispatchToProps(dispatch, ownProps) {
     updateGoalComment: (entry, headerHash) => {
       const outcomeComment = await projectsZomeApi.outcomeComment.update(cellId, { headerHash, entry })
       return dispatch(
-        updateGoalComment(cellIdString, { outcomeComment, headerHash })
+        updateGoalComment(cellIdString, outcomeComment)
       )
     },
   }
