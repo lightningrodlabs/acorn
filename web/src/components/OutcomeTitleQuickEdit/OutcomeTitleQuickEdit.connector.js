@@ -1,9 +1,4 @@
-import React, { useRef } from 'react'
 import { connect } from 'react-redux'
-import useOnClickOutside from 'use-onclickoutside'
-import TextareaAutosize from 'react-textarea-autosize'
-import moment from 'moment'
-
 import {
   createOutcomeWithConnection,
   updateOutcome,
@@ -13,16 +8,6 @@ import {
   closeOutcomeForm,
   updateContent,
 } from '../../redux/ephemeral/outcome-form/actions'
-
-import './OutcomeTitleQuickEdit.scss'
-import {
-  firstZoomThreshold,
-  fontSize,
-  fontSizeExtraLarge,
-  fontSizeLarge,
-  lineHeightMultiplier,
-  secondZoomThreshold,
-} from '../../drawing/dimensions'
 import {
   startTitleEdit,
   endTitleEdit,
@@ -31,6 +16,8 @@ import OutcomeTitleQuickEdit from './OutcomeTitleQuickEdit.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
+
+import './OutcomeTitleQuickEdit.scss'
 
 // https://react-redux.js.org/using-react-redux/connect-mapstate
 // Designed to grab selective data off of a redux state tree in order
@@ -74,7 +61,9 @@ function mapStateToProps(state) {
   const description = editAddress ? editingOutcome.description : ''
   const hierarchy = editAddress ? editingOutcome.hierarchy : 'NoHierarchy'
   const time_frame = editAddress ? editingOutcome.time_frame : null
-  const timestamp_created = editAddress ? editingOutcome.timestamp_created : null
+  const timestamp_created = editAddress
+    ? editingOutcome.timestamp_created
+    : null
   const is_imported = editAddress ? editingOutcome.is_imported : false
 
   let outcomeCoord
@@ -97,8 +86,12 @@ function mapStateToProps(state) {
     // ASSUMPTION: one parent
     existingParentConnectionAddress,
     content,
-    leftConnectionXPosition: editAddress ? outcomeCoord.x : leftConnectionXPosition,
-    topConnectionYPosition: editAddress ? outcomeCoord.y : topConnectionYPosition,
+    leftConnectionXPosition: editAddress
+      ? outcomeCoord.x
+      : leftConnectionXPosition,
+    topConnectionYPosition: editAddress
+      ? outcomeCoord.y
+      : topConnectionYPosition,
     // default states for the outcome when creating it
     // plus existing fields for "edit"
     user_hash,
@@ -174,4 +167,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(OutcomeTitleQuickEdit)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(OutcomeTitleQuickEdit)

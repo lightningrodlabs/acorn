@@ -10,11 +10,11 @@ import { setScreenDimensions } from '../../../redux/ephemeral/screensize/actions
 import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions'
 
 import EmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
-import OutcomeTitleQuickEdit from '../../../components/OutcomeTitleQuickEdit/OutcomeTitleQuickEdit'
-import VerticalActionsList from '../../../components/VerticalActionsList/VerticalActionsList'
-import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar'
-import OutcomeHoverOverlayButtons from '../../../components/OutcomeHoverOverlayButtons/OutcomeHoverOverlayButtons'
-import ConnectionConnectors from '../../../components/ConnectionConnectors/ConnectionConnectors'
+import OutcomeTitleQuickEdit from '../../../components/OutcomeTitleQuickEdit/OutcomeTitleQuickEdit.connector'
+import VerticalActionsList from '../../../components/VerticalActionsList/VerticalActionsList.connector'
+import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar.connector'
+import OutcomeHoverOverlayButtons from '../../../components/OutcomeHoverOverlayButtons/OutcomeHoverOverlayButtons.connector'
+import ConnectionConnectors from '../../../components/ConnectionConnectors/ConnectionConnectors.connector'
 import { firstZoomThreshold } from '../../../drawing/dimensions'
 
 

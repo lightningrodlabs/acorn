@@ -11,10 +11,10 @@ import Avatar from '../Avatar/Avatar'
 import StatusIcon from '../StatusIcon/StatusIcon'
 
 import StatusPicker from '../StatusPicker'
-import PeoplePicker from '../PeoplePicker/PeoplePicker'
+import PeoplePicker from '../PeoplePicker/PeoplePicker.connector'
 import DatePicker from '../DatePicker/DatePicker'
 import HierarchyPicker from '../HierarchyPicker/HierarchyPicker'
-import ConnectionConnectorPicker from '../ConnectionConnectorPicker/ConnectionConnectorPicker'
+import ConnectionConnectorPicker from '../ConnectionConnectorPicker/ConnectionConnectorPicker.connector'
 import Modal, { ModalContent } from '../Modal/Modal'
 
 export default function MultiEditBar({

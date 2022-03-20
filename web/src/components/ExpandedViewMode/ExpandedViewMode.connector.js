@@ -103,7 +103,7 @@ function mapDispatchToProps(dispatch, ownProps) {
         cellId,
         payload
       )
-      // which header hash should I be passing in to the action?
+      // TODO: which header hash should I be passing in to the action?
       return dispatch(deleteEntryPoint(cellIdString, entryPointDeleteHash))
     },
     updateOutcome: async (entry, headerHash) => {

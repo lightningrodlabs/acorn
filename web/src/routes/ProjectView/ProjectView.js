@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 import { GO_TO_OUTCOME } from '../../searchParams'
 import MapView from './MapView/MapView'
 import PriorityView from './PriorityView/PriorityView'
-import ExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode'
+import ExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode.connector'
 
 // data
 import { fetchProjectMeta } from '../../redux/persistent/projects/project-meta/actions'

@@ -6,9 +6,9 @@ import TextareaAutosize from 'react-textarea-autosize'
 import './ExpandedViewModeContent.scss'
 import Avatar from '../../Avatar/Avatar'
 import Icon from '../../Icon/Icon'
-import PeoplePicker from '../../PeoplePicker/PeoplePicker'
-import Comments from '../../Comments/Comments'
-import ActivityHistory from './ActivityHistory/ActivityHistory'
+import PeoplePicker from '../../PeoplePicker/PeoplePicker.connector'
+import Comments from '../../Comments/Comments.connector'
+import ActivityHistory from './ActivityHistory/ActivityHistory.connector'
 import ExpandedViewNavBar from './ExpandedViewNavBar/ExpandedViewNavBar'
 
 function SquirrelInfoPopup({ squirrel, onClose, deleteOutcomeMember }) {

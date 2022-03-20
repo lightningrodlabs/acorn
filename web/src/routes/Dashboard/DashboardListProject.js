@@ -8,7 +8,7 @@ import './DashboardListProject.scss'
 
 import { pickColorForString } from '../../styles'
 
-import ProjectSettingsModal from '../../components/ProjectSettingsModal/ProjectSettingsModal'
+import ProjectSettingsModal from '../../components/ProjectSettingsModal/ProjectSettingsModal.connector'
 import { ENTRY_POINTS, GO_TO_OUTCOME } from '../../searchParams'
 
 function DashboardListProjectLoading() {

@@ -1,6 +1,6 @@
 import React from 'react'
 import './PriorityQuadrant.scss'
-import PriorityOutcome from '../PriorityOutcome/PriorityOutcome'
+import PriorityOutcome from '../PriorityOutcome/PriorityOutcome.connector'
 
 function PriorityQuadrant({
   projectId,

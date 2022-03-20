@@ -4,9 +4,9 @@ import './RightMenu.scss'
 
 import Icon from '../../Icon/Icon'
 
-import PeoplePicker from '../../PeoplePicker/PeoplePicker'
+import PeoplePicker from '../../PeoplePicker/PeoplePicker.connector'
 import DatePicker from '../../DatePicker/DatePicker'
-import PriorityPicker from '../../PriorityPicker/PriorityPicker'
+import PriorityPicker from '../../PriorityPicker/PriorityPicker.connector'
 import HierarchyPicker from '../../HierarchyPicker/HierarchyPicker'
 
 export default function RightMenu({

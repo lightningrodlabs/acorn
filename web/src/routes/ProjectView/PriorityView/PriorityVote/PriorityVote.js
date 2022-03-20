@@ -15,7 +15,7 @@ import './PriorityVote.scss'
 import Avatar from '../../../../components/Avatar/Avatar'
 import priorityMenuItems from '../../../../components/Header/priorityMenuItems'
 import PriorityQuadrant from '../../../../components/PriorityQuadrant/PriorityQuadrant'
-import PriorityPicker from '../../../../components/PriorityPicker/PriorityPicker'
+import PriorityPicker from '../../../../components/PriorityPicker/PriorityPicker.connector'
 import outcomesAsTrees from '../../../../redux/persistent/projects/outcomes/outcomesAsTrees'
 import { CSSTransition } from 'react-transition-group'
 

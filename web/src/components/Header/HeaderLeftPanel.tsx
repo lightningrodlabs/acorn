@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink, Route, useLocation } from 'react-router-dom'
 
-import ExportMenuItem from '../ExportMenuItem/ExportMenuItem'
+import ExportMenuItem from '../ExportMenuItem/ExportMenuItem.connector'
 import Icon from '../Icon/Icon'
 import {
   ProjectPriorityViewOnly,
