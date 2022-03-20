@@ -2,6 +2,7 @@ import { RELATION_AS_PARENT, resetEdgeConnector } from './actions'
 import { createEdge, layoutAffectingArchiveEdge } from '../../persistent/projects/edges/actions'
 import ProjectsZomeApi from '../../../api/projectsApi'
 import { getAppWs } from '../../../hcWebsockets'
+import { cellIdFromString } from '../../../utils'
 
 export default async function handleEdgeConnectMouseUp(
   fromAddress,
@@ -13,6 +14,7 @@ export default async function handleEdgeConnectMouseUp(
   dispatch
 ) {
   //TODO: convert activeProject into buffer
+  const cellId = cellIdFromString(activeProject)
   const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   if (fromAddress && toAddress) {

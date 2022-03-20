@@ -7,6 +7,7 @@ import {
 import Comments from './Comments.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
+import { cellIdFromString } from '../../utils'
 
 function mapStateToProps(state) {
   const goalAddress = state.ui.expandedView.goalAddress
@@ -19,6 +20,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  const cellId = cellIdFromString(cellIdString)
   return {
     createGoalComment: async (payload) => {
       const appWebsocket = await getAppWs()

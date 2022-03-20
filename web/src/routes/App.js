@@ -35,6 +35,7 @@ import { animatePanAndZoom } from '../redux/ephemeral/viewport/actions'
 import { closeInviteMembersModal, openInviteMembersModal } from '../redux/ephemeral/invite-members-modal/actions'
 import ProfilesZomeApi from '../api/profilesApi'
 import { getAppWs } from '../hcWebsockets'
+import { cellIdFromString } from '../utils'
 
 function App({
   members,
@@ -216,7 +217,7 @@ function mapStateToProps(state) {
 
 function mergeProps(stateProps, dispatchProps, _ownProps) {
   const { profilesCellIdString } = stateProps
-  //TODO: convert to buffer
+  const cellId = cellIdFromString(profilesCellIdString)
   const { dispatch } = dispatchProps
   return {
     ...stateProps,
@@ -224,7 +225,7 @@ function mergeProps(stateProps, dispatchProps, _ownProps) {
     updateWhoami: async (entry, headerHash) => {
       const appWebsocket = await getAppWs()
       const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
-      const updatedWhoami = profilesZomeApi.profile.updateWhoami(cell, { entry, headerHash })
+      const updatedWhoami = profilesZomeApi.profile.updateWhoami(cellId, { entry, headerHash })
       return dispatch(
         updateWhoami(profilesCellIdString, updatedWhoami)
       )

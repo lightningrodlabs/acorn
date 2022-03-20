@@ -15,6 +15,7 @@ import {
 import ExpandedViewMode from './ExpandedViewMode.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
+import { cellIdFromString } from '../../utils'
 
 function mapStateToProps(state, ownProps) {
   let goal,
@@ -85,6 +86,7 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  const cellId = cellIdFromString(cellIdString)
   return {
     createEntryPoint: async (payload) => {
       const appWebsocket = await getAppWs()

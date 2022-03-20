@@ -6,6 +6,7 @@ import {
 import MultiEditBar from './MultiEditBar.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
+import { cellIdFromString } from '../../utils'
 
 function mapStateToProps(state) {
   const {
@@ -22,6 +23,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  const cellId = cellIdFromString(cellIdString)
   return {
     updateGoal: async (entry, headerHash) => {
       const appWebsocket = await getAppWs()

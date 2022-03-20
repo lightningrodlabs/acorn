@@ -5,6 +5,7 @@ import { deleteOutcomeFully, updateOutcome } from '../../redux/persistent/projec
 import VerticalActionsList from './VerticalActionsList.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
+import { cellIdFromString } from '../../utils'
 
 function mapStateToProps(state, ownProps) {
   // goal headerHash
@@ -43,6 +44,7 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  const cellId = cellIdFromString(cellIdString)
   return {
     onArchiveClick: async (payload) => {
       const appWebsocket = await getAppWs()

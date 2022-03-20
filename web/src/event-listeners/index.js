@@ -59,6 +59,7 @@ import {
 import handleEdgeConnectMouseUp from '../redux/ephemeral/edge-connector/handler'
 import ProjectsZomeApi from '../api/projectsApi'
 import { getAppWs } from '../hcWebsockets'
+import { cellIdFromString } from '../utils'
 
 // ASSUMPTION: one parent (existingParentEdgeAddress)
 function handleMouseUpForGoalForm(state, event, store, fromAddress, relation, existingParentEdgeAddress) {
@@ -94,6 +95,7 @@ export default function setupEventListeners(store, canvas) {
     const {
       ui: { activeProject },
     } = state
+    const cellId = cellIdFromString(activeProject)
     // there are event.code and event.key ...
     // event.key is keyboard layout independent, so works for Dvorak users
     switch (event.key) {
@@ -148,7 +150,7 @@ export default function setupEventListeners(store, canvas) {
           !state.ui.expandedView.isOpen
         ) {
           let firstOfSelection = selection.selectedGoals[0]
-          const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(activeProject, firstOfSelection)
+          const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(cellId, firstOfSelection)
           store.dispatch(
             deleteOutcomeFully(activeProject, fullyDeletedOutcome)
           )

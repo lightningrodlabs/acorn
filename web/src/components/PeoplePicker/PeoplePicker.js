@@ -7,6 +7,7 @@ import moment from 'moment'
 import PeoplePicker from './PeoplePicker.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
+import { cellIdFromString } from '../../utils'
 
 function mapStateToProps(state, ownProps) {
   const goalAddress = state.ui.goalForm.isOpen
@@ -40,6 +41,7 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  const cellId = cellIdFromString(cellIdString)
   return {
     createGoalMember: async (goal_address, agent_address, user_edit_hash) => {
       const appWebsocket = await getAppWs()

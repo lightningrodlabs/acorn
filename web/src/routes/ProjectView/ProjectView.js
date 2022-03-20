@@ -33,6 +33,7 @@ import { ENTRY_POINTS } from '../../searchParams'
 import { triggerRealtimeInfoSignal, sendExitProjectSignal } from '../../redux/persistent/projects/realtime-info-signal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
+import { cellIdFromString } from '../../utils'
 
 function ProjectViewInner({
   projectId,
@@ -137,7 +138,7 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
-  // TODO: convert to buffer
+  const cellId = cellIdFromString(cellIdString)
   return {
     setActiveProject: projectId => dispatch(setActiveProject(projectId)),
     setActiveEntryPoints: entryPointAddresses =>

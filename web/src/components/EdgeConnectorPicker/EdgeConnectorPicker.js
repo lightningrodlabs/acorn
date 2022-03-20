@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import EdgeConnectorPicker from './EdgeConnectorPicker.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
+import { cellIdFromString } from '../../utils'
 
 function mapStateToProps(state) {
   const selectedGoals = state.ui.selection.selectedGoals.map((headerHash) => {
@@ -37,13 +38,14 @@ function mapDispatchToProps(dispatch) {
     saveConnections: async (parentAddress, childrenAddresses, cellIdString) => {
       // loop over childrenAddresses
       // use createConnection each time
+      const cellId = cellIdFromString(cellIdString)
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       return Promise.all(
         childrenAddresses.map(async (childAddress) => {
           // does the camel case conversion work both ways?
           const connection = await projectsZomeApi.connection.create(
-            cellIdString,
+            cellId,
             {
               parentAddress,
               childAddress,

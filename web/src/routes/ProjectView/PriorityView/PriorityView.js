@@ -13,6 +13,7 @@ import PriorityVote from './PriorityVote/PriorityVote'
 import { PriorityModeOptions } from '../../../constants'
 import ProjectsZomeApi from '../../../api/projectsApi'
 import { getAppWs } from '../../../hcWebsockets'
+import { cellIdFromString } from '../../../utils'
 
 function PriorityMode({ projectId, goalTrees, projectMeta, updateProjectMeta }) {
   let main
@@ -65,7 +66,7 @@ function mapDispatchToProps(dispatch) {
     updateProjectMeta: async (entry, headerHash, cellIdString) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      // TODO: convert to buffer
+      const cellId = cellIdFromString(cellIdString)
       const projectMeta = projectsZomeApi.projectMeta.update(cellId, { entry, headerHash })
       return dispatch(
         updateProjectMeta(cellIdString, projectMeta)

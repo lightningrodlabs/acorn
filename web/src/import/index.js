@@ -8,6 +8,7 @@ import { createEntryPoint } from '../redux/persistent/projects/entry-points/acti
 import ProjectsZomeApi from '../api/projectsApi'
 import ProfilesZomeApi from '../api/profilesApi'
 import { getAppWs } from '../hcWebsockets'
+import { cellIdFromString } from '../utils'
 
 export default async function importAllProjectData(
   existingAgents,
@@ -25,11 +26,11 @@ export default async function importAllProjectData(
   // AGENTS
   // first import the old agents
   // they must be imported through the profiles dna
-  // TODO: convert profilesCellIdString into buffer
-  // TODO: convert projectsCellIdString into buffer
   const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+  const profilesCellId = cellIdFromString(profilesCellIdString)
+  const projectsCellId = cellIdFromString(projectsCellIdString)
   for (let address of Object.keys(projectData.agents)) {
     const old = projectData.agents[address]
     // only import agents that AREN'T already in your data store
@@ -40,7 +41,7 @@ export default async function importAllProjectData(
       ...old,
       is_imported: true,
     }
-    const importedProfile = await profilesZomeApi.profile.createImportedProfile(cellId, clone)
+    const importedProfile = await profilesZomeApi.profile.createImportedProfile(profilesCellId, clone)
     await dispatch(
       createImportedProfile(profilesCellIdString, importedProfile)
     )
@@ -63,7 +64,8 @@ export default async function importAllProjectData(
 
     let newGoal
     try {
-      const createdOutcome = await projectsZomeApi.outcome.create(cellId, clone)
+      // @ts-ignore
+      const createdOutcome = await projectsZomeApi.outcome.create(projectsCellId, clone)
       newGoal = await dispatch(
         createGoal(projectsCellIdString, createdOutcome)
       )
@@ -110,7 +112,8 @@ export default async function importAllProjectData(
       continue
     }
     try {
-      const createdConnection = projectsZomeApi.connection.create(cellId, clone)
+      // @ts-ignore
+      const createdConnection = projectsZomeApi.connection.create(projectsCellId, clone)
       await dispatch(
         createEdge(projectsCellIdString, createdConnection)
       )
@@ -139,7 +142,8 @@ export default async function importAllProjectData(
       continue
     }
     try {
-      const createdOutcomeMember = await projectsZomeApi.outcomeMember.create(cellId, clone)
+      // @ts-ignore
+      const createdOutcomeMember = await projectsZomeApi.outcomeMember.create(projectsCellId, clone)
       await dispatch(
         createGoalMember(projectsCellIdString, createdOutcomeMember)
       )
@@ -168,7 +172,8 @@ export default async function importAllProjectData(
       continue
     }
     try {
-      const createdOutcomeComment = await projectsZomeApi.outcomeComment.create(cellId, clone)
+      // @ts-ignore
+      const createdOutcomeComment = await projectsZomeApi.outcomeComment.create(projectsCellId, clone)
       await dispatch(
         createGoalComment(projectsCellIdString, createdOutcomeComment)
       )
@@ -197,7 +202,8 @@ export default async function importAllProjectData(
       continue
     }
     try {
-      const createdOutcomeVote = await projectsZomeApi.outcomeVote.create(cellId, clone)
+      // @ts-ignore
+      const createdOutcomeVote = await projectsZomeApi.outcomeVote.create(projectsCellId, clone)
       await dispatch(
         createGoalVote(projectsCellIdString, createdOutcomeVote)
       )
@@ -226,7 +232,8 @@ export default async function importAllProjectData(
       continue
     }
     try {
-      const createdEntryPoint = await projectsZomeApi.entryPoint.create(cellId, clone)
+      // @ts-ignore
+      const createdEntryPoint = await projectsZomeApi.entryPoint.create(projectsCellId, clone)
       await dispatch(
         createEntryPoint(projectsCellIdString, createdEntryPoint)
       )

@@ -7,6 +7,7 @@ import ProfileEditForm from '../../components/ProfileEditForm/ProfileEditForm'
 import './CreateProfilePage.scss'
 import ProfilesZomeApi from '../../api/profilesApi'
 import { getAppWs } from '../../hcWebsockets'
+import { cellIdFromString } from '../../utils'
 
 function CreateProfilePage({ agentAddress, createWhoami }) {
   const titleText = "First, let's set up your profile on Acorn."
@@ -74,7 +75,7 @@ function mergeProps(stateProps, dispatchProps, _ownProps) {
     createWhoami: async profile => {
       const appWebsocket = await getAppWs()
       const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
-      // TODO: convert to buffer
+      const cellId = cellIdFromString(profileCellIdString)
       const createdWhoami = profilesZomeApi.profile.createWhoami(cellId, profile)
       return dispatch(
         createWhoami(profileCellIdString, createdWhoami)

@@ -4,6 +4,7 @@ import { updateProjectMeta } from '../../redux/persistent/projects/project-meta/
 import ProjectSettingsModal from './ProjectSettingsModal.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
+import { cellIdFromString } from '../../utils'
 
 function mapStateToProps(_state) {
   // props for the componen
@@ -16,7 +17,8 @@ function mapDispatchToProps(dispatch) {
     updateProjectMeta: async (entry, headerHash, cellIdString) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      // TODO: convert to buffer
+      const cellId = cellIdFromString(cellIdString)
+      // @ts-ignore
       const updatedProjectMeta = await projectsZomeApi.projectMeta.update(cellId, { entry, headerHash })
       return dispatch(
         updateProjectMeta(cellIdString, updatedProjectMeta)

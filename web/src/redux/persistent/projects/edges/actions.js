@@ -6,6 +6,7 @@
 */
 import ProjectZomeApi from '../../../../api/projectsApi'
 import { getAppWs } from '../../../../hcWebsockets'
+import { cellIdFromString } from '../../../../utils'
 import { createCrudActionCreators } from '../../crudRedux'
 
 /* action creator functions */
@@ -52,9 +53,10 @@ const [[
 // to specify whether that action should or shouldn't trigger
 // a layout update on its successful completion of the call
 const affectLayoutDeleteConnection = async (cellIdString, payload, affectLayout) => {
+  const cellId = cellIdFromString(cellIdString)
   const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectZomeApi(appWebsocket)
-  await projectsZomeApi.connection.delete(cellIdString, payload) 
+  await projectsZomeApi.connection.delete(cellId, payload) 
   return {
     type: AFFECT_LAYOUT_DELETE_CONNECTION,
     affectLayout,

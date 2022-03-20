@@ -17,6 +17,7 @@ import GuidebookNavLink from '../../../../components/GuidebookNavLink/GuidebookN
 import { animatePanAndZoom } from '../../../../redux/ephemeral/viewport/actions'
 import ProjectsZomeApi from '../../../../api/projectsApi'
 import { getAppWs } from '../../../../hcWebsockets'
+import { cellIdFromString } from '../../../../utils'
 
 // an individual list item
 function UniversalGoal({ liveIndex, goal, openExpandedView, goToGoal }) {
@@ -334,7 +335,7 @@ function mapDispatchToProps(dispatch) {
     updateProjectMeta: async (projectMeta, headerHash, cellIdString) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      // TODO: convert to buffer
+      const cellId = cellIdFromString(cellIdString)
       const updatedProjectMeta = await projectsZomeApi.projectMeta.update(cellId, {
             entry: projectMeta,
             headerHash,

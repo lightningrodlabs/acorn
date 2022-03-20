@@ -4,6 +4,7 @@ import { createOutcomeMember } from '../redux/persistent/projects/goal-members/a
 import moment from 'moment'
 import ProjectsZomeApi from '../api/projectsApi'
 import { getAppWs } from '../hcWebsockets'
+import { cellIdFromString } from '../utils'
 
 export default async function cloneGoals(store) {
   const state = store.getState()
@@ -15,7 +16,7 @@ export default async function cloneGoals(store) {
   const goalMembers = state.projects.goalMembers[activeProject]
   const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-  // TODO: convert active project to cellId buffer
+  const cellId = cellIdFromString(activeProject)
 
   goalsToClone.forEach(value => {
     let members = []
@@ -23,6 +24,7 @@ export default async function cloneGoals(store) {
       _value.goal_address === value ? members.push(_value) : null
     })
 
+    // @ts-ignore
     const createdOutcome = projectsZomeApi.outcome.create(cellId, {
       ...goals[value],
       timestamp_created: moment().unix(),
@@ -35,6 +37,7 @@ export default async function cloneGoals(store) {
         let newGoalAddress = value.goal.headerHash
         store.dispatch(selectGoal(value.goal.headerHash))
         members.map(async member => {
+          // @ts-ignore
           const createdOutcomeMember = await projectsZomeApi.outcomeMember.create(cellId, {
                 goal_address: newGoalAddress,
                 agent_address: member.agent_address,

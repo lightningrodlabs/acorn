@@ -33,6 +33,7 @@ import {
 } from './hcWebsockets'
 import { getProjectCellIdStrings } from './projectAppIds'
 import ProfilesZomeApi from './api/profilesApi'
+import { cellIdToString } from './utils'
 
 // Import styles
 import './styles.scss'
@@ -40,6 +41,7 @@ import './styles.scss'
 // trigger caching of adminWs connection
 getAdminWs()
 
+// TODO: remove the holochain middleware
 const middleware = [holochainMiddleware(APP_WS_URL), layoutWatcher, realtimeInfoWatcher]
 
 // This enables the redux-devtools browser extension
@@ -73,12 +75,11 @@ getAppWs(signalCallback).then(async (client) => {
 
     const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
 
-    // TODO: should these cellIds be buffers and not strings?
-    const profiles = await profilesZomeApi.profile.fetchAgents(cellIdString)
+    const profiles = await profilesZomeApi.profile.fetchAgents(cellId)
     store.dispatch(fetchAgents(cellIdString, profiles))
-    const profile = await profilesZomeApi.profile.whoami(cellIdString)
+    const profile = await profilesZomeApi.profile.whoami(cellId)
     store.dispatch(whoami(cellIdString, profile))
-    const agentAddress = await profilesZomeApi.profile.fetchAgentAddress(cellIdString)
+    const agentAddress = await profilesZomeApi.profile.fetchAgentAddress(cellId)
     store.dispatch(fetchAgentAddress(cellIdString, agentAddress))
     // which projects do we have installed?
     const projectCellIds = await getProjectCellIdStrings()

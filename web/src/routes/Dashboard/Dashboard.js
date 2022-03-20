@@ -36,6 +36,7 @@ import {
   openInviteMembersModal,
 } from '../../redux/ephemeral/invite-members-modal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
+import { cellIdFromString } from '../../utils'
 
 function Dashboard({
   existingAgents,
@@ -299,7 +300,7 @@ async function installProjectApp(passphrase) {
 
 async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
   const [cellIdString] = await installProjectApp(passphrase)
-  //TODO: convert to buffer
+  const cellId = cellIdFromString(cellIdString)
   // because we are acting optimistically,
   // we will directly set ourselves as a member of this cell
   const appWebsocket = await getAppWs()
@@ -407,7 +408,7 @@ async function importProject(
 ) {
   // first step is to install the dna
   const [projectsCellIdString] = await installProjectApp(passphrase)
-  //TODO: convert to buffer
+  const cellId = cellIdFromString(projectsCellIdString)
   // next step is to import the rest of the data into that project
   const oldToNewAddressMap = await importAllProjectData(
     existingAgents,
@@ -480,7 +481,7 @@ function mapDispatchToProps(dispatch) {
     fetchEntryPointDetails: async (cellIdString) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      //TODO: convert string to buffer
+      const cellId = cellIdFromString(cellIdString)
       const entryPointDetails = await projectsZomeApi.entryPoint.fetchEntryPointDetails(cellId, null)
       return dispatch(
         fetchEntryPointDetails(cellIdString, entryPointDetails)
@@ -489,14 +490,14 @@ function mapDispatchToProps(dispatch) {
     fetchMembers: async (cellIdString) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      // TODO: convert to buffer
+      const cellId = cellIdFromString(cellIdString)
       const members = projectsZomeApi.member.fetch(cellId)
       return dispatch(fetchMembers(cellIdString, members))
     },
     fetchProjectMeta: async (cellIdString) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      // TODO: convert to buffer
+      const cellId = cellIdFromString(cellIdString)
       const projectMeta = await projectsZomeApi.projectMeta.fetchProjectMeta(cellId)
       return dispatch(fetchProjectMeta(cellIdString, projectMeta))
     },
