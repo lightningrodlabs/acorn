@@ -46,7 +46,7 @@ const profilesHappPath = app.isPackaged
   : path.join(app.getAppPath(), '../happ/workdir/profiles.happ')
 
 // in production
-// must point to unpacked versions, not in an asar delete
+// must point to unpacked versions, not in an asar archive
 // in development
 // fall back on defaults in the electron-holochain package
 const BINARY_PATHS: PathOptions | undefined = app.isPackaged
