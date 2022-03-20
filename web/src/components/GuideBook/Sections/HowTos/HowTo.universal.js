@@ -11,7 +11,7 @@ export default {
           <li>
             Priority View is an alternative view mode to the Map View,
             specifically designed for helping you and your team with decision
-            making on priority of the goals that you set on the map.
+            making on priority of the outcomes that you set on the map.
           </li>
           <li>
             In Universal Priority Mode an entire team agrees to follow a set of
@@ -32,8 +32,8 @@ export default {
         <ol>
           <div className="guidebook-description-section">
             This column on the left side of Priority view page helps you with
-            finding and adding a specific goal card to the list of top
-            priorities. To do so, search the title of the goal you're looking
+            finding and adding a specific outcome card to the list of top
+            priorities. To do so, search the title of the outcome you're looking
             for. Next, hover over it, and click on the plus (+) button that
             appears to the right. It will be added to the bottom of the top
             priority list.
@@ -54,7 +54,7 @@ export default {
               Click on Priority button.
             </div>
             <div className="guidebook-separate-line">
-              Toggle the 'This goal is top priority' switch to on, with a
+              Toggle the 'This outcome is top priority' switch to on, with a
               checkmark.
             </div>
           </div>

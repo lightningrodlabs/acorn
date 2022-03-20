@@ -43,10 +43,10 @@ export default function Comment({ comment, agent }) {
 }
 
 function Comments({
-  goalAddress,
+  outcomeAddress,
   agents,
   comments,
-  createGoalComment,
+  createOutcomeComment,
   avatarAddress,
 }) {
   const commentHistoryRef = useRef()
@@ -83,8 +83,8 @@ function Comments({
     }
     try {
       // when new comment created
-      await createGoalComment({
-        goal_address: goalAddress,
+      await createOutcomeComment({
+        outcome_address: outcomeAddress,
         content: value,
         agent_address: avatarAddress,
         unix_timestamp: moment().unix(),

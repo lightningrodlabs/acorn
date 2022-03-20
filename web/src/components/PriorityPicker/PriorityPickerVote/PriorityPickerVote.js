@@ -4,24 +4,24 @@ import {
   createOutcomeVote,
   deleteOutcomeVote,
   updateOutcomeVote,
-} from '../../../redux/persistent/projects/goal-votes/actions'
+} from '../../../redux/persistent/projects/outcome-votes/actions'
 import PriorityPickerVote from './PriorityPickerVote.component'
 import ProjectsZomeApi from '../../../api/projectsApi'
 import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
 
 function mapStateToProps(state, ownProps) {
-  const { projectId, goalAddress } = ownProps
-  // filters all the GoalVotes down to a list
-  // of only the Votes on the selected Goal
-  const goalVotes = state.projects.goalVotes[projectId] || {}
-  const allVotesArray = Object.values(goalVotes)
-  const votes = allVotesArray.filter(function (goalVote) {
-    return goalVote.goal_address === goalAddress
+  const { projectId, outcomeAddress } = ownProps
+  // filters all the OutcomeVotes down to a list
+  // of only the Votes on the selected Outcome
+  const outcomeVotes = state.projects.outcomeVotes[projectId] || {}
+  const allVotesArray = Object.values(outcomeVotes)
+  const votes = allVotesArray.filter(function (outcomeVote) {
+    return outcomeVote.outcome_address === outcomeAddress
   })
   return {
     whoami: state.whoami,
-    goalAddress,
+    outcomeAddress,
     votes,
   }
 }
@@ -30,13 +30,13 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
-    createGoalVote: async payload => {
+    createOutcomeVote: async payload => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeVote = await projectsZomeApi.outcomeVote.create(cellId, payload)
       return dispatch(createOutcomeVote(cellIdString, outcomeVote))
     },
-    updateGoalVote: async (entry, headerHash) => {
+    updateOutcomeVote: async (entry, headerHash) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedOutcomeVote = await projectsZomeApi.outcomeVote.update(cellId, { entry, headerHash })
@@ -44,7 +44,7 @@ function mapDispatchToProps(dispatch, ownProps) {
         updateOutcomeVote(cellIdString, updatedOutcomeVote)
         )
       },
-    archiveGoalVote: async payload => {
+    deleteOutcomeVote: async payload => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const deletedOutcomeVoteHash = await projectsZomeApi.outcomeVote.delete(cellId, payload)

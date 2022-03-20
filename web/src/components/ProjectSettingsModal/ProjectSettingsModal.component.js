@@ -171,7 +171,7 @@ export default function ProjectSettingsModal({
         created_at: project.created_at,
         passphrase: project.passphrase,
         is_imported: project.is_imported,
-        top_priority_goals: project.top_priority_goals,
+        top_priority_outcomes: project.top_priority_outcomes,
       },
       project.headerHash,
       cellIdString,

@@ -2,7 +2,7 @@ use crate::project::{
     connection::crud::{Connection, get_connection_path},
     entry_point::crud::{EntryPoint, get_entry_point_path},
     outcome_comment::crud::{OutcomeComment, get_outcome_comment_path},
-    outcome_member::crud::{archive_outcome_members, OutcomeMember},
+    outcome_member::crud::{delete_outcome_members, OutcomeMember},
     outcome_vote::crud::{get_outcome_vote_path, OutcomeVote},
 };
 use hdk_crud::{chain_actions::{create_action::{CreateAction, PathOrEntryHash}, delete_action::DeleteAction, fetch_action::FetchAction}, retrieval::{fetch_entries::FetchEntries, fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry}}; //may want to do the mock thing
@@ -246,26 +246,26 @@ pub fn create_outcome_with_connection( // TODO: may want to consider having a ha
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-pub struct ArchiveOutcomeFullyResponse {
+pub struct DeleteOutcomeFullyResponse {
     address: HeaderHashB64,
-    archived_connections: Vec<HeaderHashB64>,
-    archived_outcome_members: Vec<HeaderHashB64>,
-    archived_outcome_votes: Vec<HeaderHashB64>,
-    archived_outcome_comments: Vec<HeaderHashB64>,
-    archived_entry_points: Vec<HeaderHashB64>,
+    deleted_connections: Vec<HeaderHashB64>,
+    deleted_outcome_members: Vec<HeaderHashB64>,
+    deleted_outcome_votes: Vec<HeaderHashB64>,
+    deleted_outcome_comments: Vec<HeaderHashB64>,
+    deleted_entry_points: Vec<HeaderHashB64>,
 }
 
 // custom signal type
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 #[serde(rename_all = "camelCase")]
-pub struct ArchiveOutcomeFullySignal {
+pub struct DeleteOutcomeFullySignal {
     entry_type: String,
     action: ActionType,
-    data: ArchiveOutcomeFullyResponse,
+    data: DeleteOutcomeFullyResponse,
 }
 
 #[hdk_extern]
-pub fn archive_outcome_fully(address: HeaderHashB64) -> ExternResult<ArchiveOutcomeFullyResponse> {
+pub fn delete_outcome_fully(address: HeaderHashB64) -> ExternResult<DeleteOutcomeFullyResponse> {
     let delete_action = DeleteAction {};
     delete_action.delete_action::<Outcome, WasmError,SignalType>(
         address.clone(),
@@ -276,7 +276,7 @@ pub fn archive_outcome_fully(address: HeaderHashB64) -> ExternResult<ArchiveOutc
     let fetch_entries = FetchEntries {};
     let fetch_links = FetchLinks {};
     let get_latest = GetLatestEntry {};
-    let archived_connections = fetch_action.fetch_action::<Connection,WasmError>(
+    let deleted_connections = fetch_action.fetch_action::<Connection,WasmError>(
         &fetch_entries,
         &fetch_links,
         &get_latest,
@@ -287,7 +287,7 @@ pub fn archive_outcome_fully(address: HeaderHashB64) -> ExternResult<ArchiveOutc
         .into_iter()
         .filter(|wire_element| {
             // check whether the parent_address or child_address is equal to the given address.
-            // If so, the connection is connected to the outcome being archived.
+            // If so, the connection is connected to the outcome being deleted.
             wire_element.entry.child_address == address.clone()
                 || wire_element.entry.parent_address == address.clone()
         })
@@ -306,9 +306,9 @@ pub fn archive_outcome_fully(address: HeaderHashB64) -> ExternResult<ArchiveOutc
         .filter_map(Result::ok)
         .collect();
 
-    let archived_outcome_members = archive_outcome_members(address.clone())?;
+    let deleted_outcome_members = delete_outcome_members(address.clone())?;
 
-    let archived_outcome_votes = fetch_action.fetch_action::<OutcomeVote, WasmError>(
+    let deleted_outcome_votes = fetch_action.fetch_action::<OutcomeVote, WasmError>(
         &fetch_entries,
         &fetch_links,
         &get_latest,
@@ -333,7 +333,7 @@ pub fn archive_outcome_fully(address: HeaderHashB64) -> ExternResult<ArchiveOutc
         .filter_map(Result::ok)
         .collect();
 
-    let archived_outcome_comments =
+    let deleted_outcome_comments =
         // inner_fetch_outcome_comments(FetchOptions::All, GetOptions::content())?
         fetch_action.fetch_action::<OutcomeComment, WasmError>(
             &fetch_entries,
@@ -360,7 +360,7 @@ pub fn archive_outcome_fully(address: HeaderHashB64) -> ExternResult<ArchiveOutc
             .filter_map(Result::ok)
             .collect();
 
-    let archived_entry_points = fetch_action.fetch_action::<EntryPoint, WasmError>(
+    let deleted_entry_points = fetch_action.fetch_action::<EntryPoint, WasmError>(
         &fetch_entries,
         &fetch_links,
         &get_latest,
@@ -385,25 +385,25 @@ pub fn archive_outcome_fully(address: HeaderHashB64) -> ExternResult<ArchiveOutc
         .filter_map(Result::ok)
         .collect();
 
-    let archive_response = ArchiveOutcomeFullyResponse {
+    let delete_response = DeleteOutcomeFullyResponse {
         address,
-        archived_connections,
-        archived_outcome_members,
-        archived_outcome_votes,
-        archived_outcome_comments,
-        archived_entry_points,
+        deleted_connections,
+        deleted_outcome_members,
+        deleted_outcome_votes,
+        deleted_outcome_comments,
+        deleted_entry_points,
     };
 
-    let signal = SignalType::ArchiveOutcomeFully(ArchiveOutcomeFullySignal {
-        entry_type: "archive_outcome_fully".to_string(),
+    let signal = SignalType::DeleteOutcomeFully(DeleteOutcomeFullySignal {
+        entry_type: "delete_outcome_fully".to_string(),
         action: ActionType::Delete,
-        data: archive_response.clone(),
+        data: delete_response.clone(),
     });
     let payload = ExternIO::encode(signal)?;
     let peers = get_peers_content()?;
     remote_signal(payload, peers)?;
 
-    Ok(archive_response)
+    Ok(delete_response)
 }
 
 // TODO: finish get outcome history

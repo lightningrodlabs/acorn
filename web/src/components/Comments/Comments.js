@@ -3,16 +3,16 @@ import {
   createOutcomeComment,
   updateOutcomeComment,
   deleteOutcomeComment,
-} from '../../redux/persistent/projects/goal-comments/actions'
+} from '../../redux/persistent/projects/outcome-comments/actions'
 import Comments from './Comments.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 
 function mapStateToProps(state) {
-  const goalAddress = state.ui.expandedView.goalAddress
+  const outcomeAddress = state.ui.expandedView.outcomeAddress
   return {
-    goalAddress,
+    outcomeAddress,
     avatarAddress: state.whoami.entry.address,
     agents: state.agents,
   }
@@ -22,7 +22,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
-    createGoalComment: async (payload) => {
+    createOutcomeComment: async (payload) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeComment = await projectsZomeApi.outcomeComment.create(
@@ -31,7 +31,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       )
       return dispatch(createOutcomeComment(cellIdString, outcomeComment))
     },
-    updateGoalComment: async (entry, headerHash) => {
+    updateOutcomeComment: async (entry, headerHash) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeComment = await projectsZomeApi.outcomeComment.update(
@@ -40,7 +40,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       )
       return dispatch(updateOutcomeComment(cellIdString, outcomeComment))
     },
-    deleteGoalComment: async (payload) => {
+    deleteOutcomeComment: async (payload) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeComment = await projectsZomeApi.outcomeComment.delete(

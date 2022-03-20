@@ -6,46 +6,46 @@
 */
 
 /* constants */
-const HOVER_EDGE = 'HOVER_EDGE'
-const UNHOVER_EDGE = 'UNHOVER_EDGE'
-const HOVER_GOAL = 'HOVER_GOAL'
-const UNHOVER_GOAL = 'UNHOVER_GOAL'
+const HOVER_CONNECTION = 'HOVER_CONNECTION'
+const UNHOVER_CONNECTION = 'UNHOVER_CONNECTION'
+const HOVER_OUTCOME = 'HOVER_OUTCOME'
+const UNHOVER_OUTCOME = 'UNHOVER_OUTCOME'
 
 /* action creator functions */
 
-function hoverEdge(address) {
+function hoverConnection(address) {
   return {
-    type: HOVER_EDGE,
+    type: HOVER_CONNECTION,
     payload: address,
   }
 }
 
-function unhoverEdge() {
+function unhoverConnection() {
   return {
-    type: UNHOVER_EDGE,
+    type: UNHOVER_CONNECTION,
   }
 }
 
-function hoverGoal(address) {
+function hoverOutcome(address) {
   return {
-    type: HOVER_GOAL,
+    type: HOVER_OUTCOME,
     payload: address,
   }
 }
 
-function unhoverGoal() {
+function unhoverOutcome() {
   return {
-    type: UNHOVER_GOAL,
+    type: UNHOVER_OUTCOME,
   }
 }
 
 export {
-  HOVER_EDGE,
-  UNHOVER_EDGE,
-  HOVER_GOAL,
-  UNHOVER_GOAL,
-  hoverEdge,
-  unhoverEdge,
-  hoverGoal,
-  unhoverGoal,
+  HOVER_CONNECTION,
+  UNHOVER_CONNECTION,
+  HOVER_OUTCOME,
+  UNHOVER_OUTCOME,
+  hoverConnection,
+  unhoverConnection,
+  hoverOutcome,
+  unhoverOutcome,
 }

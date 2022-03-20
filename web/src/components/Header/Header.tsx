@@ -17,7 +17,7 @@ function Header({
   project,
   projectId,
   hideGuidebookHelpMessage,
-  goToGoal,
+  goToOutcome,
   members,
   presentMembers,
 }) {
@@ -79,7 +79,7 @@ function Header({
           isExportOpen={isExportOpen}
           onClickExport={onClickExport}
           activeEntryPoints={activeEntryPoints}
-          goToGoal={goToGoal}
+          goToOutcome={goToOutcome}
         />
         <HeaderMiddlePanel
           projectId={projectId}

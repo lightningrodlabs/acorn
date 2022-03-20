@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { archiveGoalFully, updateGoal } from '../../redux/persistent/projects/goals/actions'
+import { deleteOutcomeFully, updateOutcome } from '../../redux/persistent/projects/outcomes/actions'
 import moment from 'moment'
 
 import './MultiEditBar.scss'
@@ -14,36 +14,36 @@ import StatusPicker from '../StatusPicker'
 import PeoplePicker from '../PeoplePicker/PeoplePicker'
 import DatePicker from '../DatePicker/DatePicker'
 import HierarchyPicker from '../HierarchyPicker/HierarchyPicker'
-import EdgeConnectorPicker from '../EdgeConnectorPicker/EdgeConnectorPicker'
+import ConnectionConnectorPicker from '../ConnectionConnectorPicker/ConnectionConnectorPicker'
 import Modal, { ModalContent } from '../Modal/Modal'
 
 export default function MultiEditBar({
   agentAddress,
-  selectedGoals = [],
-  updateGoal,
+  selectedOutcomes = [],
+  updateOutcome,
   hasSelection,
-  archiveGoalFully,
+  deleteOutcomeFully,
 }) {
   const defaultViews = {
     status: false,
     squirrels: false,
     timeframe: false,
     hierarchy: false,
-    edgeConnector: false,
-    archive: false,
+    connectionConnector: false,
+    delete: false,
   }
   const [popup, setPopup] = useState(false)
   const [viewsOpen, setViews] = useState(defaultViews)
 
   const [statusColor, setStatusColor] = useState(
-    selectedGoals.length ? selectedGoals[0].status : 'Uncertain'
+    selectedOutcomes.length ? selectedOutcomes[0].status : 'Uncertain'
   )
 
   useEffect(() => {
-    if (selectedGoals.length) {
-      setStatusColor(selectedGoals[0].status)
+    if (selectedOutcomes.length) {
+      setStatusColor(selectedOutcomes[0].status)
     }
-  }, [selectedGoals])
+  }, [selectedOutcomes])
 
   // close any popups if you deselect
   useEffect(() => {
@@ -52,35 +52,35 @@ export default function MultiEditBar({
     }
   }, [hasSelection])
 
-  const updateGoals = key => val => {
-    selectedGoals.forEach(goal => {
-      updateGoal(
+  const updateOutcomes = key => val => {
+    selectedOutcomes.forEach(outcome => {
+      updateOutcome(
         {
-          ...goal,
+          ...outcome,
           user_edit_hash: agentAddress,
           timestamp_updated: moment().unix(),
           [key]: val,
         },
-        goal.headerHash
+        outcome.headerHash
       )
     })
   }
 
-  const archiveGoals = async () => {
+  const deleteOutcomes = async () => {
     // has to be in async series
     // because Holochain doesn't accept ChainTopOrdering::Relaxed
     // for `delete` calls yet. TODO update this
-    // when we can, to occur in parallel, like `updateGoals` above
-    for (let goal of selectedGoals) {
-      await archiveGoalFully(goal.headerHash)
+    // when we can, to occur in parallel, like `updateOutcomes` above
+    for (let outcome of selectedOutcomes) {
+      await deleteOutcomeFully(outcome.headerHash)
     }
   }
 
   const multiEditBarSquirrelsClass = viewsOpen.squirrels ? 'active' : ''
   const multiEditBarHierarchyClass = viewsOpen.hierarchy ? 'active' : ''
   const multiEditBarTimeframeClass = viewsOpen.timeframe ? 'active' : ''
-  const multiEditBarEdgeConnectorClass = viewsOpen.edgeConnector ? 'active' : ''
-  const multiEditBarArchiveClass = viewsOpen.archive ? 'active' : ''
+  const multiEditBarConnectionConnectorClass = viewsOpen.connectionConnector ? 'active' : ''
+  const multiEditBarDeleteClass = viewsOpen.delete ? 'active' : ''
 
   const toggleView = key => {
     if (!viewsOpen[key]) {
@@ -121,15 +121,15 @@ export default function MultiEditBar({
     </div>
   )
 
-  const archiveContent = (
+  const deleteContent = (
     <div>
-      You're about to archive the following {selectedGoals.length} card(s):
-      <div className='modal-goals-list'>
-        {selectedGoals.map(goal => (
-          <div key={goal.headerHash}>- {goal.content}</div>
+      You're about to delete the following {selectedOutcomes.length} card(s):
+      <div className='modal-outcomes-list'>
+        {selectedOutcomes.map(outcome => (
+          <div key={outcome.headerHash}>- {outcome.content}</div>
         ))}
       </div>
-      You will be able to see these cards in the archive view mode in the
+      You will be able to see these cards in the delete view mode in the
       future. Proceed?
     </div>
   )
@@ -146,7 +146,7 @@ export default function MultiEditBar({
       }
     }
 
-    updateGoals('time_frame')(timeframe)
+    updateOutcomes('time_frame')(timeframe)
   }
 
   let showModal = false,
@@ -194,7 +194,7 @@ export default function MultiEditBar({
         />
         {viewsOpen.status && (
           <StatusPicker
-            statusClicked={updateGoals('status')}
+            statusClicked={updateOutcomes('status')}
             onClose={() => setViews({ ...defaultViews })}
           />
         )}
@@ -232,33 +232,33 @@ export default function MultiEditBar({
           key='hierarchy'
           onClick={() => toggleView('hierarchy')}
         />
-        {viewsOpen.hierarchy && selectedGoals.length > 0 && (
+        {viewsOpen.hierarchy && selectedOutcomes.length > 0 && (
           <HierarchyPicker
-            selectedHierarchy={selectedGoals[0].hierarchy}
-            hierarchyClicked={updateGoals('hierarchy')}
+            selectedHierarchy={selectedOutcomes[0].hierarchy}
+            hierarchyClicked={updateOutcomes('hierarchy')}
             onClose={() => setViews({ ...defaultViews })}
           />
         )}
-        {/* edge connector */}
+        {/* connection connector */}
         <Icon
-          name='edge-connector.svg'
+          name='connection-connector.svg'
           size='medium-MultiEditBar'
-          className={multiEditBarEdgeConnectorClass}
-          key='edgeConnector'
-          onClick={() => toggleView('edgeConnector')}
+          className={multiEditBarConnectionConnectorClass}
+          key='connectionConnector'
+          onClick={() => toggleView('connectionConnector')}
         />
-        {viewsOpen.edgeConnector && (
-          <EdgeConnectorPicker onClose={() => setViews({ ...defaultViews })} />
+        {viewsOpen.connectionConnector && (
+          <ConnectionConnectorPicker onClose={() => setViews({ ...defaultViews })} />
         )}
-        {/* archive */}
+        {/* delete */}
         <Icon
-          name='archive.svg'
-          key='archive'
-          className={multiEditBarArchiveClass}
-          onClick={() => toggleView('archive')}
+          name='delete.svg'
+          key='delete'
+          className={multiEditBarDeleteClass}
+          onClick={() => toggleView('delete')}
         />
       </div>
-      {selectedGoals.length > 1 && (
+      {selectedOutcomes.length > 1 && (
         <Modal onClose={reset} className={modalClassname} active={showModal}>
           <ModalContent
             heading={modalHeading}
@@ -273,15 +273,15 @@ export default function MultiEditBar({
       )}
       <Modal
         onClose={reset}
-        className='archive-popup'
-        active={viewsOpen.archive}>
+        className='delete-popup'
+        active={viewsOpen.delete}>
         <ModalContent
           heading='Archiving'
-          content={archiveContent}
-          icon='archive.svg'
-          primaryButton='Yes, Archive'
+          content={deleteContent}
+          icon='delete.svg'
+          primaryButton='Yes, Delete'
           altButton='Nevermind'
-          primaryButtonAction={archiveGoals}
+          primaryButtonAction={deleteOutcomes}
           altButtonAction={reset}
         />
       </Modal>

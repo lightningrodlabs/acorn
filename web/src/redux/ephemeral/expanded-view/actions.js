@@ -1,11 +1,11 @@
 const OPEN_EXPANDED_VIEW = 'OPEN_EXPANDED_VIEW'
 const CLOSE_EXPANDED_VIEW = 'CLOSE_EXPANDED_VIEW'
 
-function openExpandedView(goalAddress) {
+function openExpandedView(outcomeAddress) {
   return {
     type: OPEN_EXPANDED_VIEW,
     payload: {
-      goalAddress,
+      outcomeAddress,
     },
   }
 }

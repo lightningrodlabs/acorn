@@ -7,9 +7,9 @@ import Avatar from '../Avatar/Avatar'
 export default function PeoplePicker({
   agentAddress,
   people,
-  goalAddress,
-  createGoalMember,
-  archiveGoalMember,
+  outcomeAddress,
+  createOutcomeMember,
+  deleteOutcomeMember,
   onClose,
 }) {
   const [filterText, setFilterText] = useState('')
@@ -52,7 +52,7 @@ export default function PeoplePicker({
               name.toLowerCase().indexOf(filterText.toLowerCase()) > -1
             )
           })
-          // sort members (people attached to Goal) to the top of the list
+          // sort members (people attached to Outcome) to the top of the list
           .sort((p1, p2) => {
             if (p1.is_member && !p2.is_member) return -1
             else if (p1.is_member && p2.is_member) return 0
@@ -61,8 +61,8 @@ export default function PeoplePicker({
           .map((person, index) => {
             const onClick = () => {
               if (person.is_member)
-                archiveGoalMember(person.goal_member_address)
-              else createGoalMember(goalAddress, person.address, agentAddress)
+                deleteOutcomeMember(person.outcome_member_address)
+              else createOutcomeMember(outcomeAddress, person.address, agentAddress)
             }
             return (
               <li

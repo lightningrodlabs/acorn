@@ -1,18 +1,18 @@
 
 
 import {
-  SELECT_EDGE,
-  UNSELECT_EDGE,
-  SELECT_GOAL,
-  UNSELECT_GOAL,
+  SELECT_CONNECTION,
+  UNSELECT_CONNECTION,
+  SELECT_OUTCOME,
+  UNSELECT_OUTCOME,
   UNSELECT_ALL,
 } from './actions'
-import { archiveGoalFully, DELETE_OUTCOME_FULLY } from '../../persistent/projects/goals/actions'
-import { archiveEdge, DELETE_CONNECTION } from '../../persistent/projects/edges/actions'
+import { deleteOutcomeFully, DELETE_OUTCOME_FULLY } from '../../persistent/projects/outcomes/actions'
+import { deleteConnection, DELETE_CONNECTION } from '../../persistent/projects/connections/actions'
 
 const defaultState = {
-  selectedGoals: [],
-  selectedEdges: [],
+  selectedOutcomes: [],
+  selectedConnections: [],
 }
 
 // removes an item from an array without mutating original array
@@ -30,62 +30,62 @@ export default function (state = defaultState, action) {
 
   switch (type) {
     case DELETE_OUTCOME_FULLY:
-      // unselect if the archived Goal was selected
-      return state.selectedGoals.includes(payload.address)
+      // unselect if the deleted Outcome was selected
+      return state.selectedOutcomes.includes(payload.address)
         ? {
             ...state,
-            selectedGoals: arrayWithoutElement(
-              state.selectedGoals,
+            selectedOutcomes: arrayWithoutElement(
+              state.selectedOutcomes,
               payload.address
             ),
           }
         : { ...state }
     case DELETE_CONNECTION:
-      // unselect if the archived Goal was selected
-      return state.selectedEdges.includes(payload.headerHash)
+      // unselect if the deleted Outcome was selected
+      return state.selectedConnections.includes(payload.headerHash)
         ? {
             ...state,
-            selectedEdges: arrayWithoutElement(
-              state.selectedEdges,
+            selectedConnections: arrayWithoutElement(
+              state.selectedConnections,
               payload.headerHash
             ),
           }
         : { ...state }
-    case SELECT_EDGE:
+    case SELECT_CONNECTION:
       return {
         ...state,
-        selectedEdges:
-          state.selectedEdges.indexOf(payload) > -1
-            ? state.selectedEdges.slice() // you should create a new copy of the array, regardless, because redux
-            : state.selectedEdges.concat([payload]), // combine the existing list of selected with the new one to add
+        selectedConnections:
+          state.selectedConnections.indexOf(payload) > -1
+            ? state.selectedConnections.slice() // you should create a new copy of the array, regardless, because redux
+            : state.selectedConnections.concat([payload]), // combine the existing list of selected with the new one to add
       }
-    case UNSELECT_EDGE:
+    case UNSELECT_CONNECTION:
       return {
         ...state,
-        selectedEdges: state.selectedEdges.filter(
+        selectedConnections: state.selectedConnections.filter(
           headerHash => headerHash !== payload
         ),
       }
-    case SELECT_GOAL:
+    case SELECT_OUTCOME:
       return {
         ...state,
-        selectedGoals:
-          state.selectedGoals.indexOf(payload) > -1
-            ? state.selectedGoals.slice() // you should create a new copy of the array, regardless, because redux
-            : state.selectedGoals.concat([payload]), // combine the existing list of selected with the new one to add
+        selectedOutcomes:
+          state.selectedOutcomes.indexOf(payload) > -1
+            ? state.selectedOutcomes.slice() // you should create a new copy of the array, regardless, because redux
+            : state.selectedOutcomes.concat([payload]), // combine the existing list of selected with the new one to add
       }
-    case UNSELECT_GOAL:
+    case UNSELECT_OUTCOME:
       return {
         ...state,
-        selectedGoals: state.selectedGoals.filter(
+        selectedOutcomes: state.selectedOutcomes.filter(
           headerHash => headerHash !== payload
         ),
       }
     case UNSELECT_ALL:
       return {
         ...state,
-        selectedGoals: [],
-        selectedEdges: [],
+        selectedOutcomes: [],
+        selectedConnections: [],
       }
     default:
       return state

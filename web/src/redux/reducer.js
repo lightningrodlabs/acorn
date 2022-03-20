@@ -13,7 +13,7 @@ import agents from './persistent/profiles/agents/reducer'
 import whoami, { hasFetchedForWhoami } from './persistent/profiles/who-am-i/reducer'
 import agentAddress from './persistent/profiles/agent-address/reducer'
 import projects from './persistent/projects/reducer'
-import goalForm from './ephemeral/goal-form/reducer'
+import outcomeForm from './ephemeral/outcome-form/reducer'
 import inviteMembersModal from './ephemeral/invite-members-modal/reducer'
 import selection from './ephemeral/selection/reducer'
 import hover from './ephemeral/hover/reducer'
@@ -23,12 +23,12 @@ import mouse from './ephemeral/mouse/reducer'
 import screensize from './ephemeral/screensize/reducer'
 import viewport from './ephemeral/viewport/reducer'
 import expandedView from './ephemeral/expanded-view/reducer'
-import goalClone from './ephemeral/goal-clone/reducer'
+import outcomeClone from './ephemeral/outcome-clone/reducer'
 import activeProject from './ephemeral/active-project/reducer'
 import activeEntryPoints from './ephemeral/active-entry-points/reducer'
 import localPreferences from './ephemeral/local-preferences/reducer'
-import edgeConnector from './ephemeral/edge-connector/reducer'
-import goalEditing from './ephemeral/goal-editing/reducer'
+import connectionConnector from './ephemeral/connection-connector/reducer'
+import outcomeEditing from './ephemeral/outcome-editing/reducer'
 import realtimeInfo from './ephemeral/realtime-info/reducer'
 // import anotherone from './another/path'
 
@@ -43,9 +43,9 @@ export default combineReducers({
     layout,
     inviteMembersModal,
     hasFetchedForWhoami,
-    edgeConnector,
+    connectionConnector,
     localPreferences,
-    goalForm,
+    outcomeForm,
     selection,
     hover,
     keyboard,
@@ -53,10 +53,10 @@ export default combineReducers({
     viewport,
     mouse,
     expandedView,
-    goalClone,
+    outcomeClone,
     activeProject,
     activeEntryPoints,
-    goalEditing,
+    outcomeEditing,
     realtimeInfo,
   }), // ,
   // anotherone: anotherone

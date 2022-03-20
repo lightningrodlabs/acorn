@@ -10,7 +10,7 @@ import { PriorityModeOptions } from '../../constants'
 
 // Recursive because we don't know
 // how deep the nesting goes
-function NestedTreeGoal({ goal, level, filterText, projectMeta, updateProjectMeta }) {
+function NestedTreeOutcome({ outcome, level, filterText, projectMeta, updateProjectMeta }) {
   level = level || 1
   // set expanded open by default only if
   // at the first or second level
@@ -20,29 +20,29 @@ function NestedTreeGoal({ goal, level, filterText, projectMeta, updateProjectMet
 
   const match =
     !filterText.length ||
-    (goal.content && goal.content.toLowerCase().includes(filterText))
+    (outcome.content && outcome.content.toLowerCase().includes(filterText))
 
   const searchParams = new URLSearchParams(location.search)
-  const isUsingGoalAsContext = searchParams.get('contextGoal') === goal.headerHash
-  const showMakeTopPriorityGoal =
+  const isUsingOutcomeAsContext = searchParams.get('contextOutcome') === outcome.headerHash
+  const showMakeTopPriorityOutcome =
     projectMeta &&
     projectMeta.priority_mode === PriorityModeOptions.Universal &&
-    !projectMeta.top_priority_goals.find((headerHash) => headerHash === goal.headerHash)
+    !projectMeta.top_priority_outcomes.find((headerHash) => headerHash === outcome.headerHash)
   const makeTopPriority = () => {
     const toPass = {
       ...projectMeta,
-      top_priority_goals: projectMeta.top_priority_goals.concat([goal.headerHash])
+      top_priority_outcomes: projectMeta.top_priority_outcomes.concat([outcome.headerHash])
     }
     delete toPass.headerHash
     updateProjectMeta(toPass, projectMeta.headerHash)
   }
 
   return (
-    <div className="indented-view-goal">
+    <div className="indented-view-outcome">
       {match && (
-        <div className="indented-view-goal-item">
-          <div className="indented-view-goal-item-arrow">
-            {goal.children.length > 0 && (
+        <div className="indented-view-outcome-item">
+          <div className="indented-view-outcome-item-arrow">
+            {outcome.children.length > 0 && (
               <Icon
                 name={expanded ? 'chevron-down.svg' : 'chevron-right.svg'}
                 size="small"
@@ -50,30 +50,30 @@ function NestedTreeGoal({ goal, level, filterText, projectMeta, updateProjectMet
                 onClick={() => setExpanded(!expanded)}
               />
             )}
-            {goal.children.length == 0 && <div></div>}
+            {outcome.children.length == 0 && <div></div>}
           </div>
 
           <NavLink
-            to={`${location.pathname}?contextGoal=${goal.headerHash}`}
-            className="indented-view-goal-content"
-            isActive={(match) => match && isUsingGoalAsContext}
+            to={`${location.pathname}?contextOutcome=${outcome.headerHash}`}
+            className="indented-view-outcome-content"
+            isActive={(match) => match && isUsingOutcomeAsContext}
           >
-            {goal.hierarchy === 'NoHierarchy' ? (
+            {outcome.hierarchy === 'NoHierarchy' ? (
               <StatusIcon
-                status={goal.status}
+                status={outcome.status}
                 notHoverable
                 hideTooltip
-                className="indented-view-goal-content-status-color"
+                className="indented-view-outcome-content-status-color"
               />
             ) : (
               <HierarchyIcon
                 size="very-small"
-                hierarchy={goal.hierarchy}
-                status={goal.status}
+                hierarchy={outcome.hierarchy}
+                status={outcome.status}
               />
             )}
-            <div className="indented-view-goal-text" title={goal.content}>{goal.content}</div>
-            {showMakeTopPriorityGoal && <div className="indented-view-goal-make-top-priority" onClick={makeTopPriority}>
+            <div className="indented-view-outcome-text" title={outcome.content}>{outcome.content}</div>
+            {showMakeTopPriorityOutcome && <div className="indented-view-outcome-make-top-priority" onClick={makeTopPriority}>
               <Icon
                 name='plus.svg'
                 size='small'
@@ -86,12 +86,12 @@ function NestedTreeGoal({ goal, level, filterText, projectMeta, updateProjectMet
       )}
       {/* if there's a filter, expand everything */}
       {/* since only what matches the filter will show anyways */}
-      {(filterText.length || expanded) && goal.children
-        ? goal.children.map((childGoal, index) => (
-          <div className="indented-view-nested-goal" key={index}>
-            <NestedTreeGoal
+      {(filterText.length || expanded) && outcome.children
+        ? outcome.children.map((childOutcome, index) => (
+          <div className="indented-view-nested-outcome" key={index}>
+            <NestedTreeOutcome
               filterText={filterText}
-              goal={childGoal}
+              outcome={childOutcome}
               level={level + 1}
               projectMeta={projectMeta}
               updateProjectMeta={updateProjectMeta}
@@ -103,7 +103,7 @@ function NestedTreeGoal({ goal, level, filterText, projectMeta, updateProjectMet
   )
 }
 
-const testGoalTrees = [
+const testOutcomeTrees = [
   {
     content: 'gg',
     children: [
@@ -125,10 +125,10 @@ const testGoalTrees = [
 const DEFAULT_WIDTH = 260
 const MIN_WIDTH = 230
 const MAX_WIDTH = 600
-// associated with .indented-view-goals class
-const INDENTED_VIEW_GOALS_MARGIN = 15
+// associated with .indented-view-outcomes class
+const INDENTED_VIEW_OUTCOMES_MARGIN = 15
 
-export default function IndentedTreeView({ goalTrees, projectMeta, updateProjectMeta }) {
+export default function IndentedTreeView({ outcomeTrees, projectMeta, updateProjectMeta }) {
   const [filterText, setFilterText] = useState('')
   const [isResizing, setIsResizing] = useState(false)
   const [width, setWidth] = useState(DEFAULT_WIDTH)
@@ -181,7 +181,7 @@ export default function IndentedTreeView({ goalTrees, projectMeta, updateProject
           type="text"
           onChange={(e) => setFilterText(e.target.value.toLowerCase())}
           value={filterText}
-          placeholder="Search for a goal"
+          placeholder="Search for a outcome"
           autoFocus
         />
         {filterText !== '' && (
@@ -201,23 +201,23 @@ export default function IndentedTreeView({ goalTrees, projectMeta, updateProject
         className="highest-level-view"
         isActive={(match) => {
           const searchParams = new URLSearchParams(location.search)
-          return match && !searchParams.get('contextGoal')
+          return match && !searchParams.get('contextOutcome')
         }}
       >
         Highest Level View
       </NavLink>
-      {/* goal items list */}
+      {/* outcome items list */}
       <div
-        className="indented-view-goals"
-        style={{ width: `${width - INDENTED_VIEW_GOALS_MARGIN}px` }}
+        className="indented-view-outcomes"
+        style={{ width: `${width - INDENTED_VIEW_OUTCOMES_MARGIN}px` }}
       >
-        {/* {testGoalTrees.map(goal => (
-          <NestedTreeGoal goal={goal} />
+        {/* {testOutcomeTrees.map(outcome => (
+          <NestedTreeOutcome outcome={outcome} />
         ))} */}
-        {goalTrees.map((goal, index) => (
-          <NestedTreeGoal
+        {outcomeTrees.map((outcome, index) => (
+          <NestedTreeOutcome
             filterText={filterText}
-            goal={goal}
+            outcome={outcome}
             key={index}
             projectMeta={projectMeta}
             updateProjectMeta={updateProjectMeta}

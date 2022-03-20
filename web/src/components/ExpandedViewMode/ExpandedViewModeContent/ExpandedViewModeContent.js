@@ -11,12 +11,12 @@ import Comments from '../../Comments/Comments'
 import ActivityHistory from './ActivityHistory/ActivityHistory'
 import ExpandedViewNavBar from './ExpandedViewNavBar/ExpandedViewNavBar'
 
-function SquirrelInfoPopup({ squirrel, onClose, archiveGoalMember }) {
+function SquirrelInfoPopup({ squirrel, onClose, deleteOutcomeMember }) {
   const ref = useRef()
   useOnClickOutside(ref, onClose)
 
   // TODO : connect "squirrel-info-popup-name" div to the member's profile page
-  // TODO : connect "remove from goal" button to holochain
+  // TODO : connect "remove from outcome" button to holochain
   return (
     <div className="squirrel-info-popup-wrapper" ref={ref}>
       <div className="squirrel-info-popup-nameANDhandle">
@@ -30,10 +30,10 @@ function SquirrelInfoPopup({ squirrel, onClose, archiveGoalMember }) {
         className="remove-squirrel-btn"
         onClick={(e) => {
           onClose()
-          archiveGoalMember(squirrel.goalMemberAddress)
+          deleteOutcomeMember(squirrel.outcomeMemberAddress)
         }}
       >
-        Remove from goal
+        Remove from outcome
       </div>
     </div>
   )
@@ -42,16 +42,16 @@ function SquirrelInfoPopup({ squirrel, onClose, archiveGoalMember }) {
 export default function ExpandedViewModeContent({
   projectId,
   agentAddress,
-  goalAddress,
-  goal,
-  goalContent,
-  goalDescription,
+  outcomeAddress,
+  outcome,
+  outcomeContent,
+  outcomeDescription,
   editTimeframe,
   setEditTimeframe,
-  updateGoal,
+  updateOutcome,
   squirrels,
   comments,
-  archiveGoalMember,
+  deleteOutcomeMember,
   startTitleEdit,
   endTitleEdit,
   startDescriptionEdit,
@@ -78,13 +78,13 @@ export default function ExpandedViewModeContent({
               setActiveTab,
               editTimeframe,
               setEditTimeframe,
-              goalAddress,
-              goal,
-              goalContent,
-              goalDescription,
-              updateGoal,
+              outcomeAddress,
+              outcome,
+              outcomeContent,
+              outcomeDescription,
+              updateOutcome,
               squirrels,
-              archiveGoalMember,
+              deleteOutcomeMember,
               startTitleEdit,
               endTitleEdit,
               startDescriptionEdit,
@@ -108,13 +108,13 @@ function Details({
   setActiveTab,
   editTimeframe,
   setEditTimeframe,
-  goalAddress,
-  goal,
-  goalContent,
-  goalDescription,
-  updateGoal,
+  outcomeAddress,
+  outcome,
+  outcomeContent,
+  outcomeDescription,
+  updateOutcome,
   squirrels,
-  archiveGoalMember,
+  deleteOutcomeMember,
   startTitleEdit,
   endTitleEdit,
   startDescriptionEdit,
@@ -132,58 +132,58 @@ function Details({
   const [editSquirrels, setEditSquirrels] = useState(false)
   const [squirrelInfoPopup, setSquirrelInfoPopup] = useState(null)
 
-  const [content, setContent] = useState(goalContent)
-  const [description, setDescription] = useState(goalDescription)
+  const [content, setContent] = useState(outcomeContent)
+  const [description, setDescription] = useState(outcomeDescription)
 
   // reset
   useEffect(() => {
-    if (!goalAddress) {
+    if (!outcomeAddress) {
       setActiveTab(0)
       setEditSquirrels(false)
       setSquirrelInfoPopup(null)
       setEditTimeframe(false)
     }
-  }, [goalAddress])
+  }, [outcomeAddress])
 
-  // handle change of goal
+  // handle change of outcome
   useEffect(() => {
-    setContent(goalContent)
-  }, [goalContent])
+    setContent(outcomeContent)
+  }, [outcomeContent])
   useEffect(() => {
-    setDescription(goalDescription)
-  }, [goalDescription])
+    setDescription(outcomeDescription)
+  }, [outcomeDescription])
 
   const onTitleBlur = () => {
-    updateGoal(
+    updateOutcome(
       {
-        ...goal,
+        ...outcome,
         user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         content,
         description,
       },
-      goalAddress
+      outcomeAddress
     )
-    endTitleEdit(goalAddress)
+    endTitleEdit(outcomeAddress)
   }
   const onDescriptionBlur = () => {
-    updateGoal(
+    updateOutcome(
       {
-        ...goal,
+        ...outcome,
         user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         content,
         description,
       },
-      goalAddress
+      outcomeAddress
     )
-    endDescriptionEdit(goalAddress)
+    endDescriptionEdit(outcomeAddress)
   }
   const onTitleFocus = () => {
-    startTitleEdit(goalAddress)
+    startTitleEdit(outcomeAddress)
   }
   const onDescriptionFocus = () => {
-    startDescriptionEdit(goalAddress)
+    startDescriptionEdit(outcomeAddress)
   }
   const handleOnChangeTitle = ({ target }) => {
     setContent(target.value)
@@ -192,10 +192,10 @@ function Details({
     setDescription(target.value)
   }
 
-  const fromDate = goal.time_frame
-    ? moment.unix(goal.time_frame.from_date)
+  const fromDate = outcome.time_frame
+    ? moment.unix(outcome.time_frame.from_date)
     : null
-  const toDate = goal.time_frame ? moment.unix(goal.time_frame.to_date) : null
+  const toDate = outcome.time_frame ? moment.unix(outcome.time_frame.to_date) : null
 
   // const isBeingEdited = false
 
@@ -214,8 +214,8 @@ function Details({
 
   // find out if any of the peers is editing title, then take the agent key from that and use to feed into avatar
 
-  const editingTitlePeer = editingPeers.find((peerInfo) => peerInfo.goalBeingEdited.isTitle)
-  const editingDescriptionPeer = editingPeers.find((peerInfo) => !peerInfo.goalBeingEdited.isTitle)
+  const editingTitlePeer = editingPeers.find((peerInfo) => peerInfo.outcomeBeingEdited.isTitle)
+  const editingDescriptionPeer = editingPeers.find((peerInfo) => !peerInfo.outcomeBeingEdited.isTitle)
   const titleEditor = editingTitlePeer ? editingTitlePeer.profileInfo : {}
   const descriptionEditor = editingDescriptionPeer ? editingDescriptionPeer.profileInfo : {}
 
@@ -304,7 +304,7 @@ function Details({
                 <SquirrelInfoPopup
                   onClose={() => setSquirrelInfoPopup(null)}
                   squirrel={squirrelInfoPopup}
-                  archiveGoalMember={archiveGoalMember}
+                  deleteOutcomeMember={deleteOutcomeMember}
                 />
               )}
               <div className="expanded-view-squirrels-add-wrapper">

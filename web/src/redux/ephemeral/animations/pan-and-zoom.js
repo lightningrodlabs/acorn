@@ -1,5 +1,5 @@
 import TWEEN from '@tweenjs/tween.js'
-import { goalHeight, goalWidth } from '../../../drawing/dimensions'
+import { outcomeHeight, outcomeWidth } from '../../../drawing/dimensions'
 import { changeAllDirect } from '../viewport/actions'
 
 export default function panZoomToFrame(store, action, currentState) {
@@ -7,11 +7,11 @@ export default function panZoomToFrame(store, action, currentState) {
     ...currentState.ui.viewport
   }
 
-  const goalHeaderHash = action.payload
-  const goalCoordinates = currentState.ui.layout[goalHeaderHash]
+  const outcomeHeaderHash = action.payload
+  const outcomeCoordinates = currentState.ui.layout[outcomeHeaderHash]
   
-  if (!goalCoordinates) {
-    console.log('could not find coordinates for goal to animate to')
+  if (!outcomeCoordinates) {
+    console.log('could not find coordinates for outcome to animate to')
     return
   }
   const {width, height } = currentState.ui.screensize
@@ -19,8 +19,8 @@ export default function panZoomToFrame(store, action, currentState) {
   const newLayout = {
     scale: 1,
     translate: {
-      x: -1 * goalCoordinates.x + width / (2 * dpr) - goalWidth / 2,
-      y: -1 * goalCoordinates.y + height / (2 * dpr) - goalHeight / 2
+      x: -1 * outcomeCoordinates.x + width / (2 * dpr) - outcomeWidth / 2,
+      y: -1 * outcomeCoordinates.y + height / (2 * dpr) - outcomeHeight / 2
     }
   }
 

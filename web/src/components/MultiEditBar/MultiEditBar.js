@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import {
   deleteOutcomeFully,
   updateOutcome,
-} from '../../redux/persistent/projects/goals/actions'
+} from '../../redux/persistent/projects/outcomes/actions'
 import MultiEditBar from './MultiEditBar.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
@@ -12,11 +12,11 @@ function mapStateToProps(state) {
   const {
     ui: { activeProject },
   } = state
-  const goals = state.projects.goals[activeProject] || {}
+  const outcomes = state.projects.outcomes[activeProject] || {}
   return {
     agentAddress: state.agentAddress,
-    selectedGoals: state.ui.selection.selectedGoals.map(
-      (headerHash) => goals[headerHash]
+    selectedOutcomes: state.ui.selection.selectedOutcomes.map(
+      (headerHash) => outcomes[headerHash]
     ),
   }
 }
@@ -25,7 +25,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
-    updateGoal: async (entry, headerHash) => {
+    updateOutcome: async (entry, headerHash) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedOutcome = await projectsZomeApi.outcome.update(cellId, {
@@ -34,7 +34,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       })
       return dispatch(updateOutcome(cellIdString, updatedOutcome))
     },
-    archiveGoalFully: async (payload) => {
+    deleteOutcomeFully: async (payload) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const deleteOutcomeFullyResponse = await projectsZomeApi.outcome.deleteOutcomeFully(

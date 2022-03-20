@@ -6,8 +6,8 @@ import {
   SET_LIVE_COORDINATE,
   SET_COORDINATE,
   UNSET_COORDINATE,
-  SET_GOALS,
-  UNSET_GOALS,
+  SET_OUTCOMES,
+  UNSET_OUTCOMES,
   SET_SIZE,
   UNSET_SIZE,
 } from './actions'
@@ -20,7 +20,7 @@ const defaultState = {
     y: 0,
   },
   // this is the START coordinate for
-  // a goal selection action
+  // a outcome selection action
   coordinate: {
     x: 0,
     y: 0,
@@ -29,11 +29,11 @@ const defaultState = {
     w: 0,
     h: 0,
   },
-  goalsAddresses: null,
+  outcomesAddresses: null,
 }
 
 export default function (state = defaultState, action) {
-  const { coordinate, type, goalsAddresses, size } = action
+  const { coordinate, type, outcomesAddresses, size } = action
   switch (type) {
     case SET_MOUSEDOWN:
       return {
@@ -60,15 +60,15 @@ export default function (state = defaultState, action) {
         ...state,
         coordinate: { x: 0, y: 0 },
       }
-    case SET_GOALS:
+    case SET_OUTCOMES:
       return {
         ...state,
-        goalsAddresses,
+        outcomesAddresses,
       }
-    case UNSET_GOALS:
+    case UNSET_OUTCOMES:
       return {
         ...state,
-        goalsAddresses: null,
+        outcomesAddresses: null,
       }
     case SET_SIZE:
       return {

@@ -4,8 +4,8 @@ import ToggleSwitch from '../../ToggleSwitch/ToggleSwitch'
 
 export default function PriorityPickerUniversal({
   projectMeta,
-  goalAddress,
-  isTopPriorityGoal,
+  outcomeAddress,
+  isTopPriorityOutcome,
   updateProjectMeta,
 }) {
   const [pending, setPending] = useState(false)
@@ -23,11 +23,11 @@ export default function PriorityPickerUniversal({
     delete toPass.headerHash
     if (e.target.checked) {
       setPendingState(true)
-      toPass.top_priority_goals = toPass.top_priority_goals.concat([goalAddress])
+      toPass.top_priority_outcomes = toPass.top_priority_outcomes.concat([outcomeAddress])
       await updateProjectMeta(toPass, projectMetaAddress)
     } else {
       setPendingState(false)
-      toPass.top_priority_goals = toPass.top_priority_goals.filter(headerHash => headerHash !== goalAddress)
+      toPass.top_priority_outcomes = toPass.top_priority_outcomes.filter(headerHash => headerHash !== outcomeAddress)
       await updateProjectMeta(toPass, projectMetaAddress)
     }
     setPending(false)
@@ -36,8 +36,8 @@ export default function PriorityPickerUniversal({
 
   return (
     <div className="priority-picker-universal">
-      <div className="priority-picker-universal-label">This goal is top priority</div>
-      <ToggleSwitch checked={pending ? pendingState : isTopPriorityGoal} onChange={onChange} />
+      <div className="priority-picker-universal-label">This outcome is top priority</div>
+      <ToggleSwitch checked={pending ? pendingState : isTopPriorityOutcome} onChange={onChange} />
     </div>
   )
 }

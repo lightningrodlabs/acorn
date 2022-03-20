@@ -5,30 +5,30 @@ import { getBoundingRec } from './layoutFormula'
 export default function drawEntryPoints(
   ctx,
   activeEntryPoints,
-  goals,
-  edgesAsArray,
+  outcomes,
+  connectionsAsArray,
   coordinates
 ) {
   // recursively calls itself
-  // so that it constructs the full sub-tree for each root Goal
-  function getGoal(goalAddress) {
+  // so that it constructs the full sub-tree for each root Outcome
+  function getOutcome(outcomeAddress) {
     return {
-      ...goals[goalAddress],
-      children: edgesAsArray
-        // find the edges indicating the children of this goal
-        .filter(edge => edge.parent_address === goalAddress)
-        // actually nest the children Goals, recurse
-        .map(edge => getGoal(edge.child_address))
+      ...outcomes[outcomeAddress],
+      children: connectionsAsArray
+        // find the connections indicating the children of this outcome
+        .filter(connection => connection.parent_address === outcomeAddress)
+        // actually nest the children Outcomes, recurse
+        .map(connection => getOutcome(connection.child_address))
     }
   }
 
-  // start with the entry point Goals, and recurse down to their children
+  // start with the entry point Outcomes, and recurse down to their children
   activeEntryPoints.forEach(entryPoint => {
-    const goal = getGoal(entryPoint.goal_address)
-    // for each goalTree
+    const outcome = getOutcome(entryPoint.outcome_address)
+    // for each outcomeTree
     // calculate its bounding rectangle
     // by checking the coordinates recursively for it and all its children
-    const boundingRec = getBoundingRec(goal, coordinates)
+    const boundingRec = getBoundingRec(outcome, coordinates)
     if (!boundingRec) {
       return
     }
@@ -53,7 +53,7 @@ export default function drawEntryPoints(
     ctx.fillStyle = entryPoint.color
     ctx.font = '25px ' + 'PlusJakartaSans-bold'
     // distance of entry point title from dotted rectangle
-    let content = goal.content.length < 40 ? goal.content : goal.content.slice(0, 40) + '...'
+    let content = outcome.content.length < 40 ? outcome.content : outcome.content.slice(0, 40) + '...'
     ctx.fillText(content, left, top - 20)
     ctx.restore()
   })

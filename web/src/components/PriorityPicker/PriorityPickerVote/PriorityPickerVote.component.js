@@ -226,13 +226,13 @@ function WeighIn({ values, onUpdate }) {
 }
 
 export default function PriorityPickerVote({
-  goalAddress,
-  createGoalVote,
+  outcomeAddress,
+  createOutcomeVote,
   openToMyVote,
   whoami,
-  updateGoalVote,
+  updateOutcomeVote,
   votes,
-  archiveGoalVote,
+  deleteOutcomeVote,
 }) {
   const [openMyVote, setOpenMyVote] = useState(openToMyVote)
 
@@ -248,20 +248,20 @@ export default function PriorityPickerVote({
   }
   const [values, setValues] = useState(myVote || defaultValues)
   const onUpdateVote = () => {
-    const goal_vote = {
+    const outcome_vote = {
       ...values,
-      goal_address: goalAddress,
+      outcome_address: outcomeAddress,
       agent_address: whoami.entry.headerHash,
       unix_timestamp: moment().unix(),
       is_imported: false
     }
-    updateGoalVote(goal_vote, myVote.headerHash)
+    updateOutcomeVote(outcome_vote, myVote.headerHash)
   }
 
   const createVote = async () => {
-    await createGoalVote({
+    await createOutcomeVote({
       ...values,
-      goal_address: goalAddress,
+      outcome_address: outcomeAddress,
       agent_address: whoami.entry.headerHash,
       unix_timestamp: moment().unix(),
       is_imported: false
@@ -282,13 +282,13 @@ export default function PriorityPickerVote({
   } else {
     aggClassName += ' active'
   }
-  const handleArchive = () => {
+  const handleDelete = () => {
     const vote = votes.find(value => {
       return value.agent_address === whoami.entry.headerHash
     })
     if (!vote) return
     setOpenMyVote(false)
-    archiveGoalVote(vote.headerHash)
+    deleteOutcomeVote(vote.headerHash)
     setValues(defaultValues)
   }
 
@@ -335,7 +335,7 @@ export default function PriorityPickerVote({
                 </div>
                 {/* remove my vote */}
                 {myVote && (
-                  <div className='remove-my-vote' onClick={handleArchive}>
+                  <div className='remove-my-vote' onClick={handleDelete}>
                     Remove my vote
                   </div>
                 )}

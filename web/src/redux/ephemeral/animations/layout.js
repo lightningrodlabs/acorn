@@ -1,7 +1,7 @@
 import TWEEN from '@tweenjs/tween.js'
 import {
     CREATE_OUTCOME_WITH_CONNECTION
-} from '../../persistent/projects/goals/actions'
+} from '../../persistent/projects/outcomes/actions'
 import {
   updateLayout
 } from '../layout/actions'
@@ -13,27 +13,27 @@ export default function performLayoutAnimation(store, action, currentState) {
   const nextState = store.getState()
   const projectId = nextState.ui.activeProject
   const graphData = {
-      goals: nextState.projects.goals[projectId] || {},
-      edges: nextState.projects.edges[projectId] || {},
+      outcomes: nextState.projects.outcomes[projectId] || {},
+      connections: nextState.projects.connections[projectId] || {},
   }
   // this is our final destination layout
   // that we'll be animating to
   const newLayout = layoutFormula(graphData)
-  let goalCreatedCoord = {}
-  // if creating a Goal, we also want to animate
+  let outcomeCreatedCoord = {}
+  // if creating a Outcome, we also want to animate
   // from the position wherever the user was creating it
   // to its new resting place in the new layout
   if (action.type === CREATE_OUTCOME_WITH_CONNECTION) {
-    // at this point we have the headerHash of the new Goal
-    // and we also have the coordinates where the "Goal Form"
+    // at this point we have the headerHash of the new Outcome
+    // and we also have the coordinates where the "Outcome Form"
     // was open and being used
-    goalCreatedCoord[action.payload.goal.headerHash] = {
-      x: currentState.ui.goalForm.leftEdgeXPosition,
-      y: currentState.ui.goalForm.topEdgeYPosition,
+    outcomeCreatedCoord[action.payload.outcome.headerHash] = {
+      x: currentState.ui.outcomeForm.leftConnectionXPosition,
+      y: currentState.ui.outcomeForm.topConnectionYPosition,
     }
   }
   
-  // this is expanding coordinates for Goals
+  // this is expanding coordinates for Outcomes
   // where the key is their headerHash
   // and the value is an object with `x` and `y` values
   // (tween is going to directly modify this object)
@@ -42,10 +42,10 @@ export default function performLayoutAnimation(store, action, currentState) {
     // that will just start out in their final position
     ...newLayout,
     // do this to override the coordinates of the newly 
-    // created Goal when handling a create action
+    // created Outcome when handling a create action
     // and make its original position equal to the position
-    // of the Goal Form when it was open
-    ...goalCreatedCoord,
+    // of the Outcome Form when it was open
+    ...outcomeCreatedCoord,
     // do this to override any new ones with existing ones
     // to begin with
     ...currentState.ui.layout,

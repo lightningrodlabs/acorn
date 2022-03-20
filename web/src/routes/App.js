@@ -53,7 +53,7 @@ function App({
   inviteMembersModalShowing,
   openInviteMembersModal,
   hideInviteMembersModal,
-  goToGoal
+  goToOutcome
 }) {
   const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
@@ -104,7 +104,7 @@ function App({
               setShowProjectSettingsOpen,
               setShowProfileEditForm,
               setShowPreferences,
-              goToGoal
+              goToOutcome
             }}
           />
         )}
@@ -149,8 +149,8 @@ function mapDispatchToProps(dispatch) {
       const hideAction = setHasAccessedGuidebook(true)
       return dispatch(hideAction)
     },
-    goToGoal: (goalHeaderHash) => {
-      return dispatch(animatePanAndZoom(goalHeaderHash))
+    goToOutcome: (outcomeHeaderHash) => {
+      return dispatch(animatePanAndZoom(outcomeHeaderHash))
     },
     openInviteMembersModal: (passphrase) => {
       return dispatch(openInviteMembersModal(passphrase))

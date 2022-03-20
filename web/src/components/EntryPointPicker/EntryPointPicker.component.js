@@ -13,7 +13,7 @@ import { NavLink } from 'react-router-dom'
 import { ENTRY_POINTS, GUIDE_IS_OPEN } from '../../searchParams'
 import { animatePanAndZoom } from '../../redux/ephemeral/viewport/actions'
 
-function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints, goToGoal }) {
+function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints, goToOutcome }) {
   const dotStyle = {
     backgroundColor: entryPoint.color,
   }
@@ -31,7 +31,7 @@ function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints, goToGoa
     // prevent the navigation (NavLink)
     // event that would be triggered
     event.preventDefault()
-    goToGoal(entryPoint.goal_address)
+    goToOutcome(entryPoint.outcome_address)
   }
   return (
     <li>
@@ -57,7 +57,7 @@ function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints, goToGoa
   )
 }
 
-export default function EntryPointPicker({ entryPoints, isOpen, onClose, activeEntryPoints, goToGoal }) {
+export default function EntryPointPicker({ entryPoints, isOpen, onClose, activeEntryPoints, goToOutcome }) {
   const [filterText, setFilterText] = useState('')
 
   // filter people out if there's filter text defined, and don't bother case matching
@@ -68,9 +68,9 @@ export default function EntryPointPicker({ entryPoints, isOpen, onClose, activeE
     )
   })
 
-  const goToGoalWrapped = (goalHeaderHash) => {
+  const goToOutcomeWrapped = (outcomeHeaderHash) => {
     onClose()
-    goToGoal(goalHeaderHash)
+    goToOutcome(outcomeHeaderHash)
   }
 
   return (
@@ -117,7 +117,7 @@ export default function EntryPointPicker({ entryPoints, isOpen, onClose, activeE
                 headerHash => headerHash === entryPoint.headerHash
               )}
               activeEntryPoints={activeEntryPoints}
-              goToGoal={goToGoalWrapped}
+              goToOutcome={goToOutcomeWrapped}
             />
           ))}
           {/* Entry Points Empty State */}

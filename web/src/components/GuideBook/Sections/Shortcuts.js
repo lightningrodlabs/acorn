@@ -22,7 +22,7 @@ const shortcutsItems = [
       },
       {
         shortcutKey: 'delete',
-        shortcutTitle: 'Archive card or connection',
+        shortcutTitle: 'Delete card or connection',
       },
     ],
   },

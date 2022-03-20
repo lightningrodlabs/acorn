@@ -5,13 +5,13 @@ import HeaderRightPanel from './HeaderRightPanel.component'
 
 function mapStateToProps(state) {
   const projectId = state.ui.activeProject
-  const goals = state.projects.goals[projectId] || {}
-  const goalComments = state.projects.goalComments[projectId] || {}
-  const goalList = Object.values(goals)
-  const commentList = Object.values(goalComments)
+  const outcomes = state.projects.outcomes[projectId] || {}
+  const outcomeComments = state.projects.outcomeComments[projectId] || {}
+  const outcomeList = Object.values(outcomes)
+  const commentList = Object.values(outcomeComments)
   return {
     projectId,
-    goalList,
+    outcomeList,
     commentList,
   }
 }

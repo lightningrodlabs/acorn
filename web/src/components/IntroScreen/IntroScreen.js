@@ -15,25 +15,25 @@ export default function IntroScreen() {
       image: 'img/intro-screen-image-1.svg',
       title: 'Welcome to Acorn',
       description:
-        'Collaborate with your team to accomplish your complex project by visualizing and managing your dreams, goals, and tasks',
+        'Collaborate with your team to accomplish your complex project by visualizing and managing your dreams, outcomes, and tasks',
     },
     {
       image: 'img/intro-screen-image-2.svg',
       title: 'Help your team feel accomplished & aligned',
       description:
-        "You and your team are able to see the complex project you're working on from multiple view modes and visually connect the small units of work that need to be done to the broader context of the greater goals. Everyone can see the progress being made, feel accomplished, and know clearly where they are headed.",
+        "You and your team are able to see the complex project you're working on from multiple view modes and visually connect the small units of work that need to be done to the broader context of the greater outcomes. Everyone can see the progress being made, feel accomplished, and know clearly where they are headed.",
     },
     {
       image: 'img/intro-screen-image-3.svg',
       title: 'Make collaboration happen, peer-to-peer',
       description:
-        'Help your distributed team to stay on track of changes and updates, communicate easily, avoid double-work, and help each other accomplish your goals. Acorn is even built on peer-to-peer technology called Holochain.',
+        'Help your distributed team to stay on track of changes and updates, communicate easily, avoid double-work, and help each other accomplish your outcomes. Acorn is even built on peer-to-peer technology called Holochain.',
     },
     {
       image: 'img/intro-screen-image-4.svg',
       title: 'None of us is as intelligent as all of us',
       description:
-        'Completed a goal, now wondering what makes sense to focus on next? You and your team members can weigh in and vote on different metrics that inform the priority of goals to ease the challenge of decision making.',
+        'Completed a outcome, now wondering what makes sense to focus on next? You and your team members can weigh in and vote on different metrics that inform the priority of outcomes to ease the challenge of decision making.',
     },
   ]
 

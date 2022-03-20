@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import {
   createOutcomeMember,
   deleteOutcomeMember,
-} from '../../redux/persistent/projects/goal-members/actions'
+} from '../../redux/persistent/projects/outcome-members/actions'
 import moment from 'moment'
 import PeoplePicker from './PeoplePicker.component'
 import ProjectsZomeApi from '../../api/projectsApi'
@@ -10,32 +10,32 @@ import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 
 function mapStateToProps(state, ownProps) {
-  const goalAddress = state.ui.goalForm.isOpen
-    ? state.ui.goalForm.editAddress
-    : state.ui.expandedView.goalAddress
+  const outcomeAddress = state.ui.outcomeForm.isOpen
+    ? state.ui.outcomeForm.editAddress
+    : state.ui.expandedView.outcomeAddress
   const { projectId } = ownProps
-  const goalMembers = state.projects.goalMembers[projectId] || {}
+  const outcomeMembers = state.projects.outcomeMembers[projectId] || {}
   const members = state.projects.members[projectId] || {}
-  const membersOfGoal = Object.keys(goalMembers)
-    .map((address) => goalMembers[address])
-    .filter((goalMember) => goalMember.goal_address === goalAddress)
+  const membersOfOutcome = Object.keys(outcomeMembers)
+    .map((address) => outcomeMembers[address])
+    .filter((outcomeMember) => outcomeMember.outcome_address === outcomeAddress)
   // just in case we've received a 'member' before the agents profile
   // filter out any missing profiles for now
   const agents = Object.keys(members).map((address) => state.agents[address]).filter((agent) => agent)
   return {
     agentAddress: state.agentAddress,
     people: agents.map((agent) => {
-      const member = membersOfGoal.find(
-        (goalMember) => goalMember.agent_address === agent.address
+      const member = membersOfOutcome.find(
+        (outcomeMember) => outcomeMember.agent_address === agent.address
       )
         console.log(member)
       return {
         ...agent, // address, name, avatar_url
         is_member: member ? true : false,
-        goal_member_address: member ? member.headerHash : null,
+        outcome_member_address: member ? member.headerHash : null,
       }
     }),
-    goalAddress,
+    outcomeAddress,
   }
 }
 
@@ -43,11 +43,11 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
-    createGoalMember: async (goal_address, agent_address, user_edit_hash) => {
+    createOutcomeMember: async (outcome_address, agent_address, user_edit_hash) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeMember = await projectsZomeApi.outcomeMember.create(cellId, {
-        goal_address,
+        outcome_address,
         agent_address,
         user_edit_hash,
         unix_timestamp: moment().unix(),
@@ -57,7 +57,7 @@ function mapDispatchToProps(dispatch, ownProps) {
         createOutcomeMember(cellIdString, outcomeMember)
         )
       },
-    archiveGoalMember: async (payload) => {
+    deleteOutcomeMember: async (payload) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const deleteOutcomeMemberHash = await projectsZomeApi.outcomeMember.delete(cellId, payload)

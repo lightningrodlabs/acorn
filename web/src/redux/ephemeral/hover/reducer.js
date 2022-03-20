@@ -1,12 +1,12 @@
 
 
-import { HOVER_EDGE, UNHOVER_EDGE, HOVER_GOAL, UNHOVER_GOAL } from './actions'
-import { DELETE_OUTCOME_FULLY } from '../../persistent/projects/goals/actions'
-import { DELETE_CONNECTION } from '../../persistent/projects/edges/actions'
+import { HOVER_CONNECTION, UNHOVER_CONNECTION, HOVER_OUTCOME, UNHOVER_OUTCOME } from './actions'
+import { DELETE_OUTCOME_FULLY } from '../../persistent/projects/outcomes/actions'
+import { DELETE_CONNECTION } from '../../persistent/projects/connections/actions'
 
 const defaultState = {
-  hoveredGoal: null,
-  hoveredEdge: null,
+  hoveredOutcome: null,
+  hoveredConnection: null,
 }
 
 export default function (state = defaultState, action) {
@@ -14,40 +14,40 @@ export default function (state = defaultState, action) {
 
   switch (type) {
     case DELETE_OUTCOME_FULLY:
-      // unhover if the archived Goal was hovered over
-      return state.hoveredGoal === payload.address
+      // unhover if the deleted Outcome was hovered over
+      return state.hoveredOutcome === payload.address
         ? {
             ...state,
-            hoveredGoal: null,
+            hoveredOutcome: null,
           }
         : { ...state }
     case DELETE_CONNECTION:
-      // unhover if the archived edge was hovered over
-      return state.hoveredEdge === payload.headerHash
+      // unhover if the deleted connection was hovered over
+      return state.hoveredConnection === payload.headerHash
         ? {
             ...state,
-            hoveredEdge: null,
+            hoveredConnection: null,
           }
         : { ...state }
-    case HOVER_EDGE:
+    case HOVER_CONNECTION:
       return {
         ...state,
-        hoveredEdge: payload,
+        hoveredConnection: payload,
       }
-    case UNHOVER_EDGE:
+    case UNHOVER_CONNECTION:
       return {
         ...state,
-        hoveredEdge: null,
+        hoveredConnection: null,
       }
-    case HOVER_GOAL:
+    case HOVER_OUTCOME:
       return {
         ...state,
-        hoveredGoal: payload,
+        hoveredOutcome: payload,
       }
-    case UNHOVER_GOAL:
+    case UNHOVER_OUTCOME:
       return {
         ...state,
-        hoveredGoal: null,
+        hoveredOutcome: null,
       }
     default:
       return state

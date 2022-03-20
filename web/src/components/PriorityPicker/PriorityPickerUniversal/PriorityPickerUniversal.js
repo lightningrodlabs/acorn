@@ -6,15 +6,15 @@ import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
 
 function mapStateToProps(state, ownProps) {
-  const { projectId, goalAddress } = ownProps
+  const { projectId, outcomeAddress } = ownProps
   const projectMeta = state.projects.projectMeta[projectId] || {}
-  const topPriorityGoals = projectMeta.top_priority_goals || []
-  // see if the goal of interest is listed in the set
-  // of top priority goals for the project
-  const isTopPriorityGoal = !!topPriorityGoals.find(headerHash => headerHash === goalAddress)
+  const topPriorityOutcomes = projectMeta.top_priority_outcomes || []
+  // see if the outcome of interest is listed in the set
+  // of top priority outcomes for the project
+  const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === outcomeAddress)
   return {
     whoami: state.whoami,
-    isTopPriorityGoal,
+    isTopPriorityOutcome,
     projectMeta,
   }
 }

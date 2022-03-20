@@ -9,9 +9,9 @@ import StatusIcon from '../../StatusIcon/StatusIcon'
 
 export default function ExpandedViewModeHeader({
   agentAddress,
-  goalAddress,
-  goal,
-  updateGoal,
+  outcomeAddress,
+  outcome,
+  updateOutcome,
   isEntryPoint,
   entryPointClickAction,
 }) {
@@ -21,20 +21,20 @@ export default function ExpandedViewModeHeader({
   const [viewsOpen, setViews] = useState(defaultViews)
 
   useEffect(() => {
-    if (!goalAddress) {
+    if (!outcomeAddress) {
       setViews({ ...defaultViews })
     }
-  }, [goalAddress])
+  }, [outcomeAddress])
 
-  const updateGoalStatus = status => {
-    updateGoal(
+  const updateOutcomeStatus = status => {
+    updateOutcome(
       {
-        ...goal,
+        ...outcome,
         user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         status,
       },
-      goalAddress
+      outcomeAddress
     )
   }
 
@@ -45,9 +45,9 @@ export default function ExpandedViewModeHeader({
   return (
     <div className='expanded_view_header'>
       <div className='expanded_view_status_icon'>
-        {goal.hierarchy === 'NoHierarchy' ? (
+        {outcome.hierarchy === 'NoHierarchy' ? (
           <StatusIcon
-            status={goal.status}
+            status={outcome.status}
             notHoverable
             onClick={() =>
               setViews({ ...defaultViews, status: !viewsOpen.status })
@@ -55,8 +55,8 @@ export default function ExpandedViewModeHeader({
           />
         ) : (
           <HierarchyIcon
-            hierarchy={goal.hierarchy}
-            status={goal.status}
+            hierarchy={outcome.hierarchy}
+            status={outcome.status}
             size='medium'
             onClick={() =>
               setViews({ ...defaultViews, status: !viewsOpen.status })
@@ -66,8 +66,8 @@ export default function ExpandedViewModeHeader({
       </div>
       {viewsOpen.status && (
         <StatusPicker
-          selectedStatus={goal.status}
-          statusClicked={updateGoalStatus}
+          selectedStatus={outcome.status}
+          statusClicked={updateOutcomeStatus}
           onClose={() => setViews({ ...defaultViews })}
         />
       )}
@@ -75,8 +75,8 @@ export default function ExpandedViewModeHeader({
         withTooltip
         tooltipText={
           isEntryPoint
-            ? 'This goal is an entry point'
-            : 'This goal is not an entry point'
+            ? 'This outcome is an entry point'
+            : 'This outcome is not an entry point'
         }
         onClick={entryPointClickAction}
         name={entryPointToggleIcon}

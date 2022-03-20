@@ -9,11 +9,11 @@ function mapStateToProps(state) {
     ui: { activeProject },
   } = state
   // defensive coding for loading phase
-  const goals = state.projects.goals[activeProject] || {}
-  const edges = state.projects.edges[activeProject] || {}
-  const goalMembers = state.projects.goalMembers[activeProject] || {}
-  const goalComments = state.projects.goalComments[activeProject] || {}
-  const goalVotes = state.projects.goalVotes[activeProject] || {}
+  const outcomes = state.projects.outcomes[activeProject] || {}
+  const connections = state.projects.connections[activeProject] || {}
+  const outcomeMembers = state.projects.outcomeMembers[activeProject] || {}
+  const outcomeComments = state.projects.outcomeComments[activeProject] || {}
+  const outcomeVotes = state.projects.outcomeVotes[activeProject] || {}
   const entryPoints = state.projects.entryPoints[activeProject] || {}
   const activeProjectMeta = state.projects.projectMeta[activeProject] || {}
   const projectName = activeProjectMeta.name || ''
@@ -23,11 +23,11 @@ function mapStateToProps(state) {
     data: {
       projectMeta: activeProjectMeta,
       agents: state.agents,
-      goals,
-      edges,
-      goalMembers,
-      goalComments,
-      goalVotes,
+      outcomes,
+      connections,
+      outcomeMembers,
+      outcomeComments,
+      outcomeVotes,
       entryPoints,
     },
   }

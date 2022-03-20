@@ -8,7 +8,7 @@ import {
   UPDATE_ENTRY_POINT,
   DELETE_ENTRY_POINT,
 } from './actions'
-import { DELETE_OUTCOME_FULLY } from '../goals/actions'
+import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 
 // state is at the highest level an object with cellIds
@@ -65,12 +65,12 @@ export default function (state = defaultState, action) {
     case DELETE_OUTCOME_FULLY:
       cellIdString = action.meta.cellIdString
       // filter out the entry points whose headerHashes are listed as having been
-      // archived on account of having archived its associated Goal
+      // deleted on account of having deleted its associated Outcome
       return {
         ...state,
         [cellIdString]: _.pickBy(
           state[cellIdString],
-          (_value, key) => payload.archived_entry_points.indexOf(key) === -1
+          (_value, key) => payload.deleted_entry_points.indexOf(key) === -1
         ),
       }
     default:

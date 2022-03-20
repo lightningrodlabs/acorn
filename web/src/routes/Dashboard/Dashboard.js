@@ -421,13 +421,13 @@ async function importProject(
   // only add the project meta after the rest has been imported
   // so it doesn't list itself early in the process
   // first step is to create new project
-  const originalTopPriorityGoals = projectData.projectMeta.top_priority_goals
+  const originalTopPriorityOutcomes = projectData.projectMeta.top_priority_outcomes
   const originalPriorityMode = projectData.projectMeta.priority_mode
   const projectMeta = {
     ...projectData.projectMeta,
     // the question mark operator for backwards compatibility
-    top_priority_goals: originalTopPriorityGoals
-      ? originalTopPriorityGoals
+    top_priority_outcomes: originalTopPriorityOutcomes
+      ? originalTopPriorityOutcomes
           .map((oldAddress) => oldToNewAddressMap[oldAddress])
           .filter((address) => address)
       : [],
@@ -510,7 +510,7 @@ function mapDispatchToProps(dispatch) {
         created_at: Date.now(),
         is_imported: false,
         priority_mode: 'Universal', // default
-        top_priority_goals: [],
+        top_priority_outcomes: [],
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },

@@ -40,7 +40,7 @@ function SearchResultItem({
   name,
   onExpandClick,
   panAndZoom,
-  goalAddress,
+  outcomeAddress,
 }) {
   return (
     <div className="search-result-item-wrapper">
@@ -52,11 +52,11 @@ function SearchResultItem({
         </div>
       </div>
       <div className="search-result-item-buttons">
-        <div onClick={() => panAndZoom(goalAddress)}>
+        <div onClick={() => panAndZoom(outcomeAddress)}>
           {/* @ts-ignore */}
           <Icon name="enter.svg" size="small" className="light-grey" />
         </div>
-        <div onClick={() => onExpandClick(goalAddress)}>
+        <div onClick={() => onExpandClick(outcomeAddress)}>
           {/* @ts-ignore */}
           <Icon name="expand.svg" size="small" className="light-grey" />
         </div>
@@ -85,7 +85,7 @@ export default function HeaderRightPanel({
   onClickPreferences,
   saveStatus,
   status,
-  goalList,
+  outcomeList,
   commentList,
   openExpandedView,
   animatePanAndZoom,
@@ -164,7 +164,7 @@ export default function HeaderRightPanel({
                   type="text"
                   onChange={(e) => setFilterText(e.target.value.toLowerCase())}
                   value={filterText}
-                  placeholder="Search for a goal, comment, and more"
+                  placeholder="Search for a outcome, comment, and more"
                   autoFocus
                 />
               </CSSTransition>
@@ -204,31 +204,31 @@ export default function HeaderRightPanel({
               </div>
               <div className="search-results-list">
                 {(!noFilters || isTextFilter) &&
-                  goalList
-                    .filter((goal) =>
-                      goal.content.toLowerCase().includes(filterText)
+                  outcomeList
+                    .filter((outcome) =>
+                      outcome.content.toLowerCase().includes(filterText)
                     )
-                    .map((goal) => (
+                    .map((outcome) => (
                       <SearchResultItem
-                        text={goal.content}
+                        text={outcome.content}
                         name="title.svg"
                         onExpandClick={openExpandedView} 
                         panAndZoom={animatePanAndZoom}
-                        goalAddress={goal.headerHash}
+                        outcomeAddress={outcome.headerHash}
                       />
                     ))}
                 {(!noFilters || isDescriptionFilter) &&
-                  goalList
-                    .filter((goal) =>
-                      goal.description.toLowerCase().includes(filterText)
+                  outcomeList
+                    .filter((outcome) =>
+                      outcome.description.toLowerCase().includes(filterText)
                     )
-                    .map((goal) => (
+                    .map((outcome) => (
                       <SearchResultItem
-                        text={goal.description}
+                        text={outcome.description}
                         name="text-align-left.svg"
                         onExpandClick={openExpandedView}
                         panAndZoom={animatePanAndZoom}
-                        goalAddress={goal.headerHash}
+                        outcomeAddress={outcome.headerHash}
                       />
                     ))}
                 {(!noFilters || isCommentFilter) &&
@@ -242,7 +242,7 @@ export default function HeaderRightPanel({
                         name="comment.svg"
                         onExpandClick={openExpandedView}
                         panAndZoom={animatePanAndZoom}
-                        goalAddress={comment.goal_address}
+                        outcomeAddress={comment.outcome_address}
                       />
                     ))}
               </div>

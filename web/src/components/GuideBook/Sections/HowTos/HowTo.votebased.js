@@ -11,11 +11,11 @@ export default {
           <li>
             Priority View is an alternative view mode to the Map View,
             specifically designed for helping you and your team with decision
-            making on priority of the goals that you set on the map.
+            making on priority of the outcomes that you set on the map.
           </li>
           <div className="guidebook-description-section">
             <div className="guidebook-separate-line">
-              In Vote Based Priority Mode, for determining the priority of goals
+              In Vote Based Priority Mode, for determining the priority of outcomes
               there are 4 factors that get weighed:
               <div className="guidebook-description-bold">Urgency</div>
               <div className="guidebook-description-bold">Importance</div>
@@ -34,7 +34,7 @@ export default {
             <div className="guidebook-separate-line">
               The{' '}
               <span className="guidebook-description-bold">effort-impact</span>{' '}
-              integration is another way of prioritizing goals.{' '}
+              integration is another way of prioritizing outcomes.{' '}
               <a href="https://zapier.com/blog/how-to-prioritize/" target="_blank">
                 "In the effort-impact matrix, you evaluate tasks based on how
                 much effort they'll require to complete and the impact that
@@ -45,15 +45,15 @@ export default {
               you are prepared for low or high effort.
             </div>
             <div className="guidebook-separate-line">
-              In complex projects as the number of goals (and sometimes number
+              In complex projects as the number of outcomes (and sometimes number
               of team members) expands, it gets more difficult to determine
               'what to focus on next'.
             </div>
             <div className="guidebook-separate-line">
               All the team members (who have editing permssion) would be able to
-              "weigh in" their vote for these 4 factors for each goal (either in
+              "weigh in" their vote for these 4 factors for each outcome (either in
               map view or priority view) The "aggregated priority" that results
-              from this collective poll will determine where each goal will
+              from this collective poll will determine where each outcome will
               stand on the priority view mode.
             </div>
             <div className="guidebook-separate-line guidebook-description-bold">
@@ -101,9 +101,9 @@ export default {
         <ol>
           <div className="guidebook-description-section">
             This column on the left hand side of the Priority View helps you
-            with finding and filtering by a specific goal. By selecting that
-            goal you are able to filter the visiblity of the goals down to only
-            the children of that selected goal on the priority quadrants.
+            with finding and filtering by a specific outcome. By selecting that
+            outcome you are able to filter the visiblity of the outcomes down to only
+            the children of that selected outcome on the priority quadrants.
           </div>
         </ol>
       ),
@@ -116,9 +116,9 @@ export default {
           <div className="guidebook-description-section">
             These tabs help you switch between priority matrixes (urgency x
             important and impact x effort), single priority factors (feature in
-            development), or uncategorized (not voted on) goals. This gives you
+            development), or uncategorized (not voted on) outcomes. This gives you
             the flexibility to take action based on a specific factor
-            determining a goal's priority.
+            determining a outcome's priority.
           </div>
         </ol>
       ),
@@ -129,12 +129,12 @@ export default {
       description: (
         <ol>
           <div className="guidebook-description-section">
-            If you haven't voted for the priority of the goal, when hovering
-            over goals in the Priority View, a "Weigh In" button appears.
+            If you haven't voted for the priority of the outcome, when hovering
+            over outcomes in the Priority View, a "Weigh In" button appears.
           </div>
           <div className="guidebook-description-section">
-            If you have already voted for the priority of a goal, a purple dot
-            shows up under the goal title and when hovering on the goal, "See My
+            If you have already voted for the priority of a outcome, a purple dot
+            shows up under the outcome title and when hovering on the outcome, "See My
             Vote" button appears.
           </div>
         </ol>

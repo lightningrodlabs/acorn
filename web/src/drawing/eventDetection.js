@@ -1,25 +1,25 @@
-import { goalWidth, getGoalHeight, goalHeight } from './dimensions'
+import { outcomeWidth, getOutcomeHeight, outcomeHeight } from './dimensions'
 import layoutFormula from './layoutFormula'
 import { coordsPageToCanvas } from './coordinateSystems'
 import linePoint from 'intersects/line-point'
-import { calculateEdgeCoordsByGoalCoords } from './drawEdge'
+import { calculateConnectionCoordsByOutcomeCoords } from './drawConnection'
 
-export function checkForEdgeAtCoordinates(
+export function checkForConnectionAtCoordinates(
   ctx,
   translate,
   scale,
-  goalCoordinates,
+  outcomeCoordinates,
   state,
   mouseX,
   mouseY
 ) {
-  // get coordinates of all goals
+  // get coordinates of all outcomes
 
   const {
     ui: { activeProject },
   } = state
-  const edges = state.projects.edges[activeProject] || {}
-  const goals = state.projects.goals[activeProject] || {}
+  const connections = state.projects.connections[activeProject] || {}
+  const outcomes = state.projects.outcomes[activeProject] || {}
   // convert the coordinates of the click to canvas space
   const convertedMouse = coordsPageToCanvas(
     {
@@ -30,56 +30,56 @@ export function checkForEdgeAtCoordinates(
     scale
   )
 
-  // keep track of whether an edge intersects the mouse
-  let overEdgeAddress
-  Object.keys(edges)
-    .map(headerHash => edges[headerHash])
-    .forEach(edge => {
-      const parentGoalCoords = goalCoordinates[edge.parent_address]
-      const childGoalCoords = goalCoordinates[edge.child_address]
-      const parentGoalText = goals[edge.parent_address]
-        ? goals[edge.parent_address].content
+  // keep track of whether an connection intersects the mouse
+  let overConnectionAddress
+  Object.keys(connections)
+    .map(headerHash => connections[headerHash])
+    .forEach(connection => {
+      const parentOutcomeCoords = outcomeCoordinates[connection.parent_address]
+      const childOutcomeCoords = outcomeCoordinates[connection.child_address]
+      const parentOutcomeText = outcomes[connection.parent_address]
+        ? outcomes[connection.parent_address].content
         : ''
 
       // do not proceed if we don't have coordinates
-      // for the goals of this edge (yet)
-      if (!parentGoalCoords || !childGoalCoords) {
+      // for the outcomes of this connection (yet)
+      if (!parentOutcomeCoords || !childOutcomeCoords) {
         return
       }
 
-      // get the coordinates for the edge end points
+      // get the coordinates for the connection end points
       const [
-        childEdgeCoords,
-        parentEdgeCoords,
-      ] = calculateEdgeCoordsByGoalCoords(
-        childGoalCoords,
-        parentGoalCoords,
-        parentGoalText,
+        childConnectionCoords,
+        parentConnectionCoords,
+      ] = calculateConnectionCoordsByOutcomeCoords(
+        childOutcomeCoords,
+        parentOutcomeCoords,
+        parentOutcomeText,
         ctx
       )
       // if mouse intersects with the line
       if (
         linePoint(
-          childEdgeCoords.x,
-          childEdgeCoords.y,
-          parentEdgeCoords.x,
-          parentEdgeCoords.y,
+          childConnectionCoords.x,
+          childConnectionCoords.y,
+          parentConnectionCoords.x,
+          parentConnectionCoords.y,
           convertedMouse.x,
           convertedMouse.y
         )
       ) {
-        // set the overEdgeAddress to this edge headerHash
-        overEdgeAddress = edge.headerHash
+        // set the overConnectionAddress to this connection headerHash
+        overConnectionAddress = connection.headerHash
       }
     })
-  return overEdgeAddress
+  return overConnectionAddress
 }
 
-export function checkForGoalAtCoordinates(
+export function checkForOutcomeAtCoordinates(
   ctx,
   translate,
   scale,
-  goalCoordinates,
+  outcomeCoordinates,
   state,
   clickX,
   clickY
@@ -87,7 +87,7 @@ export function checkForGoalAtCoordinates(
   const {
     ui: { activeProject },
   } = state
-  const goals = state.projects.goals[activeProject] || {}
+  const outcomes = state.projects.outcomes[activeProject] || {}
   // convert the coordinates of the click to canvas space
   const convertedClick = coordsPageToCanvas(
     {
@@ -98,37 +98,37 @@ export function checkForGoalAtCoordinates(
     scale
   )
 
-  // keep track of whether a goal was selected
+  // keep track of whether a outcome was selected
   let clickedAddress
-  Object.keys(goals)
-    .map(headerHash => goals[headerHash])
-    .forEach(goal => {
-      // convert the topLeft and bottomRight points of the goal to canvas
-      const coords = goalCoordinates[goal.headerHash]
+  Object.keys(outcomes)
+    .map(headerHash => outcomes[headerHash])
+    .forEach(outcome => {
+      // convert the topLeft and bottomRight points of the outcome to canvas
+      const coords = outcomeCoordinates[outcome.headerHash]
 
       // do not proceed if we don't have coordinates
-      // for the goal (yet)
+      // for the outcome (yet)
       if (!coords) return
 
       const bottomRight = {
-        x: coords.x + goalWidth,
-        y: coords.y + getGoalHeight(ctx, goal.content),
+        x: coords.x + outcomeWidth,
+        y: coords.y + getOutcomeHeight(ctx, outcome.content),
       }
 
-      // if click occurred within the box of a Goal
+      // if click occurred within the box of a Outcome
       if (
         convertedClick.x >= coords.x &&
         (convertedClick.x <= bottomRight.x) && (convertedClick.y >= coords.y) &&
         convertedClick.y <= bottomRight.y
       ) {
-        clickedAddress = goal.headerHash
+        clickedAddress = outcome.headerHash
       }
     })
   return clickedAddress
 }
 
-export function checkForGoalAtCoordinatesInBox(
-  goalCoordinates,
+export function checkForOutcomeAtCoordinatesInBox(
+  outcomeCoordinates,
   state,
   convertedClick,
   convertedIni
@@ -136,21 +136,21 @@ export function checkForGoalAtCoordinatesInBox(
   const {
     ui: { activeProject },
   } = state
-  const goals = state.projects.goals[activeProject] || {}
+  const outcomes = state.projects.outcomes[activeProject] || {}
   // convert the coordinates of the click to canvas space
-  // keep track of whether a goal was selected
+  // keep track of whether a outcome was selected
   let clickedAddresses = {}
-  Object.keys(goals)
-    .map(headerHash => goals[headerHash])
-    .forEach(goal => {
-      // convert the topLeft and bottomRight points of the goal to canvas
-      const coords = goalCoordinates[goal.headerHash]
+  Object.keys(outcomes)
+    .map(headerHash => outcomes[headerHash])
+    .forEach(outcome => {
+      // convert the topLeft and bottomRight points of the outcome to canvas
+      const coords = outcomeCoordinates[outcome.headerHash]
       const bottomRight = {
-        x: coords.x + goalWidth,
-        y: coords.y + goalHeight,
+        x: coords.x + outcomeWidth,
+        y: coords.y + outcomeHeight,
       }
 
-      // if click occurred within the box of a Goal
+      // if click occurred within the box of a Outcome
       if (
         (convertedIni.x < coords.x &&
           bottomRight.x < convertedClick.x &&
@@ -169,7 +169,7 @@ export function checkForGoalAtCoordinatesInBox(
           convertedIni.y > bottomRight.y &&
           coords.y > convertedClick.y)
       ) {
-        clickedAddresses[goal.headerHash] = 1
+        clickedAddresses[outcome.headerHash] = 1
       }
     })
   return Object.keys(clickedAddresses)

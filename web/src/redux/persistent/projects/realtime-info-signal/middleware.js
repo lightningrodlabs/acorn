@@ -7,7 +7,7 @@ import {
   END_TITLE_EDIT,
   START_DESCRIPTION_EDIT,
   END_DESCRIPTION_EDIT,
-} from '../../../ephemeral/goal-editing/actions'
+} from '../../../ephemeral/outcome-editing/actions'
 import {
   SEND_REALTIME_INFO,
   SEND_EXIT_PROJECT_SIGNAL,
@@ -57,8 +57,8 @@ const realtimeInfoWatcher = (store) => {
       const cellIdString = state.ui.activeProject
       const payload = {
         projectId: '',
-        goalBeingEdited: null,
-        goalExpandedView: null,
+        outcomeBeingEdited: null,
+        outcomeExpandedView: null,
       }
       const cellId = cellIdFromString(cellIdString)
       await projectsZomeApi.realtimeInfoSignal.send(cellId, payload)
@@ -76,8 +76,8 @@ function getRealtimeInfo(state) {
   let cellIdString = state.ui.activeProject
   let payload = {
     projectId: state.ui.activeProject,
-    goalBeingEdited: state.ui.goalEditing,
-    goalExpandedView: state.ui.expandedView.goalAddress,
+    outcomeBeingEdited: state.ui.outcomeEditing,
+    outcomeExpandedView: state.ui.expandedView.outcomeAddress,
   }
   return { cellIdString, payload }
 }

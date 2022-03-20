@@ -33,7 +33,7 @@ goal_comment
 - update: depends on goal at `goal_address` existing,
           `agent_address` should not change from its original value,
           AND only the original author can update
-- delete: allowed by anyone (because anyone can archive the goal itself)
+- delete: allowed by anyone (because anyone can delete the goal itself)
 
 goal_vote (same as goal comment)
 - create: depends on goal at `goal_address` existing,
@@ -41,7 +41,7 @@ goal_vote (same as goal comment)
 - update: depends on goal at `goal_address` existing,
           `agent_address` should not change from its original value,
           AND only the original author can update
-- delete: allowed by anyone (because anyone can archive the goal itself)
+- delete: allowed by anyone (because anyone can delete the goal itself)
 
 member
 - create: `address` field must match the agent committing

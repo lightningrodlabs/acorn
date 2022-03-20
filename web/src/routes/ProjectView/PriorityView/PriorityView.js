@@ -7,7 +7,7 @@ import './PriorityView.scss'
 import { updateProjectMeta } from '../../../redux/persistent/projects/project-meta/actions'
 
 import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeView'
-import goalsAsTrees from '../../../redux/persistent/projects/goals/goalsAsTrees'
+import outcomesAsTrees from '../../../redux/persistent/projects/outcomes/outcomesAsTrees'
 import PriorityUniversal from './PriorityUniversal/PriorityUniversal'
 import PriorityVote from './PriorityVote/PriorityVote'
 import { PriorityModeOptions } from '../../../constants'
@@ -15,7 +15,7 @@ import ProjectsZomeApi from '../../../api/projectsApi'
 import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
 
-function PriorityMode({ projectId, goalTrees, projectMeta, updateProjectMeta }) {
+function PriorityMode({ projectId, outcomeTrees, projectMeta, updateProjectMeta }) {
   let main
   switch (projectMeta.priority_mode) {
     case PriorityModeOptions.Universal:
@@ -33,7 +33,7 @@ function PriorityMode({ projectId, goalTrees, projectMeta, updateProjectMeta }) 
   return (
     <>
       <IndentedTreeView
-        goalTrees={goalTrees}
+        outcomeTrees={outcomeTrees}
         projectMeta={projectMeta}
         projectId={projectId}
         updateProjectMeta={wrappedUpdateProjectMeta}
@@ -48,17 +48,17 @@ function mapStateToProps(state) {
   const projectMeta = state.projects.projectMeta[projectId] || {}
   const treeData = {
     agents: state.agents,
-    goals: state.projects.goals[projectId] || {},
-    edges: state.projects.edges[projectId] || {},
-    goalMembers: state.projects.goalMembers[projectId] || {},
-    goalVotes: state.projects.goalVotes[projectId] || {},
-    goalComments: state.projects.goalComments[projectId] || {},
+    outcomes: state.projects.outcomes[projectId] || {},
+    connections: state.projects.connections[projectId] || {},
+    outcomeMembers: state.projects.outcomeMembers[projectId] || {},
+    outcomeVotes: state.projects.outcomeVotes[projectId] || {},
+    outcomeComments: state.projects.outcomeComments[projectId] || {},
   }
-  const goalTrees = goalsAsTrees(treeData, { withMembers: true })
+  const outcomeTrees = outcomesAsTrees(treeData, { withMembers: true })
   return {
     projectId,
     projectMeta,
-    goalTrees,
+    outcomeTrees,
   }
 }
 function mapDispatchToProps(dispatch) {

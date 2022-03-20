@@ -39,7 +39,7 @@
   color: #bdbdbd;
 }
 
-.indented-view-goals {
+.indented-view-outcomes {
   margin-left: 8px;
   height: 100%;
   overflow-y: scroll;
@@ -47,7 +47,7 @@
   border-top: 1px solid #dedede;
 }
 
-.indented-view-goal {
+.indented-view-outcome {
   margin-top: 4px;
   font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
   font-size: 13px;
@@ -67,17 +67,17 @@
   text-decoration: none;
 }
 
-.indented-view-goal-item {
+.indented-view-outcome-item {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.indented-view-goal-item-arrow .icon {
+.indented-view-outcome-item-arrow .icon {
   padding: 3px;
 }
 
-.indented-view-goal-content {
+.indented-view-outcome-content {
   margin: 0 2px;
   cursor: pointer;
   padding: 6px 8px;
@@ -93,14 +93,14 @@
   min-width: 0;
 }
 
-.indented-view-goal-content-status-color {
+.indented-view-outcome-content-status-color {
   width: 8px;
   height: 8px;
   margin: 1px 0 0 0;
   padding: 1px;
 }
 
-.indented-view-goal-text {
+.indented-view-outcome-text {
   margin-left: 6px;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -109,32 +109,32 @@
   line-height: 1.9;
 }
 
-.indented-view-goal-content:hover, .highest-level-view:hover {
+.indented-view-outcome-content:hover, .highest-level-view:hover {
   /* color: #00a599; */
   color: #5f65ff;
   background: #f9f9f9;
 }
 
-.indented-view-goal-content.active>.indented-view-goal-content-text, .indented-view-goal-content:focus>.indented-view-goal-content-text {
+.indented-view-outcome-content.active>.indented-view-outcome-content-text, .indented-view-outcome-content:focus>.indented-view-outcome-content-text {
   color: #5f65ff;
 }
 
-.indented-view-goal-content.active, .indented-view-goal-content:focus, .highest-level-view.active, .highest-level-view:focus {
+.indented-view-outcome-content.active, .indented-view-outcome-content:focus, .highest-level-view.active, .highest-level-view:focus {
   color: #5f65ff;
   background: #f9f9f9;
   font-family: 'gilroyextrabold';
   text-decoration: none;
 }
 
-.indented-view-nested-goal {
+.indented-view-nested-outcome {
   margin-left: 20px;
 }
 
-.indented-view-goal-content .indented-view-goal-make-top-priority {
+.indented-view-outcome-content .indented-view-outcome-make-top-priority {
   display: none;
 }
 
-.indented-view-goal-content:hover .indented-view-goal-make-top-priority {
+.indented-view-outcome-content:hover .indented-view-outcome-make-top-priority {
   background: #ececec;
   border-radius: 4px;
   display: block;

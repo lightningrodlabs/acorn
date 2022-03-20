@@ -12,9 +12,9 @@ import HierarchyPicker from '../../HierarchyPicker/HierarchyPicker'
 export default function RightMenu({
   projectId,
   agentAddress,
-  goalAddress,
-  goal,
-  updateGoal,
+  outcomeAddress,
+  outcome,
+  updateOutcome,
 }) {
   const defaultViews = {
     help: false,
@@ -24,25 +24,25 @@ export default function RightMenu({
     hierarchy: false,
   }
 
-  const innerUpdateGoal = key => val => {
-    updateGoal(
+  const innerUpdateOutcome = key => val => {
+    updateOutcome(
       {
-        ...goal,
+        ...outcome,
         user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         [key]: val,
       },
-      goalAddress
+      outcomeAddress
     )
   }
 
   const [viewsOpen, setViews] = useState(defaultViews)
 
   useEffect(() => {
-    if (!goalAddress) {
+    if (!outcomeAddress) {
       setViews({ ...defaultViews })
     }
-  }, [goalAddress])
+  }, [outcomeAddress])
 
   const rightMenuPriorityClass = viewsOpen.priority ? 'active' : ''
   const rightMenuHelpClass = viewsOpen.help ? 'active' : ''
@@ -67,21 +67,21 @@ export default function RightMenu({
       }
     }
 
-    updateGoal(
+    updateOutcome(
       {
-        ...goal,
+        ...outcome,
         user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         time_frame: timeframe,
       },
-      goalAddress
+      outcomeAddress
     )
   }
 
-  const fromDate = goal.time_frame
-    ? moment.unix(goal.time_frame.from_date)
+  const fromDate = outcome.time_frame
+    ? moment.unix(outcome.time_frame.from_date)
     : null
-  const toDate = goal.time_frame ? moment.unix(goal.time_frame.to_date) : null
+  const toDate = outcome.time_frame ? moment.unix(outcome.time_frame.to_date) : null
 
   return (
     <div className='expanded_view_right_menu'>
@@ -124,8 +124,8 @@ export default function RightMenu({
           className='right_menu_link feature-in-development'
         />
         <Icon
-          name='archive.svg'
-          className='right_menu_archive feature-in-development'
+          name='delete.svg'
+          className='right_menu_delete feature-in-development'
         />
         <Icon
           name='share.svg'
@@ -140,7 +140,7 @@ export default function RightMenu({
         {viewsOpen.priority && (
           <PriorityPicker
             projectId={projectId}
-            goalAddress={goalAddress}
+            outcomeAddress={outcomeAddress}
             onClose={() => setViews({ ...defaultViews })}
           />
         )}
@@ -161,8 +161,8 @@ export default function RightMenu({
         {viewsOpen.hierarchy && (
           <HierarchyPicker
             onClose={() => setViews({ ...defaultViews })}
-            selectedHierarchy={goal.hierarchy}
-            hierarchyClicked={innerUpdateGoal('hierarchy')}
+            selectedHierarchy={outcome.hierarchy}
+            hierarchyClicked={innerUpdateOutcome('hierarchy')}
           />
         )}
       </div>

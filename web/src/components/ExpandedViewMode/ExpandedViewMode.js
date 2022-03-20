@@ -1,73 +1,72 @@
 import { connect } from 'react-redux'
 import {
   createEntryPoint,
-  archiveEntryPoint,
   deleteEntryPoint,
 } from '../../redux/persistent/projects/entry-points/actions'
-import { updateGoal } from '../../redux/persistent/projects/goals/actions'
-import { archiveGoalMember } from '../../redux/persistent/projects/goal-members/actions'
+import { updateOutcome } from '../../redux/persistent/projects/outcomes/actions'
+import { deleteOutcomeMember } from '../../redux/persistent/projects/outcome-members/actions'
 import {
   startTitleEdit,
   endTitleEdit,
   startDescriptionEdit,
   endDescriptionEdit,
-} from '../../redux/ephemeral/goal-editing/actions'
+} from '../../redux/ephemeral/outcome-editing/actions'
 import ExpandedViewMode from './ExpandedViewMode.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 
 function mapStateToProps(state, ownProps) {
-  let goal,
+  let outcome,
     creator = null,
     squirrels = [],
     comments = []
 
   const { projectId } = ownProps
-  const goals = state.projects.goals[projectId] || {}
-  const goalMembers = state.projects.goalMembers[projectId] || {}
+  const outcomes = state.projects.outcomes[projectId] || {}
+  const outcomeMembers = state.projects.outcomeMembers[projectId] || {}
   const entryPoints = state.projects.entryPoints[projectId] || {}
-  const goalComments = state.projects.goalComments[projectId] || {}
+  const outcomeComments = state.projects.outcomeComments[projectId] || {}
 
-  if (state.ui.expandedView.goalAddress) {
-    goal = goals[state.ui.expandedView.goalAddress]
-    comments = Object.values(goalComments).filter(
-      (goalComment) =>
-        goalComment.goal_address === state.ui.expandedView.goalAddress
+  if (state.ui.expandedView.outcomeAddress) {
+    outcome = outcomes[state.ui.expandedView.outcomeAddress]
+    comments = Object.values(outcomeComments).filter(
+      (outcomeComment) =>
+        outcomeComment.outcome_address === state.ui.expandedView.outcomeAddress
     )
-    squirrels = Object.keys(goalMembers)
-      .map((headerHash) => goalMembers[headerHash])
-      .filter((goalMember) => goalMember.goal_address === goal.headerHash)
-      .map((goalMember) => {
+    squirrels = Object.keys(outcomeMembers)
+      .map((headerHash) => outcomeMembers[headerHash])
+      .filter((outcomeMember) => outcomeMember.outcome_address === outcome.headerHash)
+      .map((outcomeMember) => {
         const squirrel = {
-          ...state.agents[goalMember.agent_address],
-          goalMemberAddress: goalMember.headerHash,
+          ...state.agents[outcomeMember.agent_address],
+          outcomeMemberAddress: outcomeMember.headerHash,
         }
         return squirrel
       })
     Object.keys(state.agents).forEach((value) => {
-      if (state.agents[value].address === goal.user_hash)
+      if (state.agents[value].address === outcome.user_hash)
         creator = state.agents[value]
     })
   }
 
-  const goalAddress = state.ui.expandedView.goalAddress
+  const outcomeAddress = state.ui.expandedView.outcomeAddress
   const entryPoint = Object.values(entryPoints).find(
-    (entryPoint) => entryPoint.goal_address === goalAddress
+    (entryPoint) => entryPoint.outcome_address === outcomeAddress
   )
   const isEntryPoint = entryPoint ? true : false
   const entryPointAddress = entryPoint ? entryPoint.headerHash : null
 
   function filterAndAddAgentInfo(agentInfo) {
     delete agentInfo.projectId
-    delete agentInfo.goalExpandedView
+    delete agentInfo.outcomeExpandedView
     agentInfo.profileInfo = state.agents[agentInfo.agentPubKey]
     return agentInfo
   }
   const editingPeers = Object.values(state.ui.realtimeInfo)
-    .filter((agentInfo) => agentInfo.goalBeingEdited)
+    .filter((agentInfo) => agentInfo.outcomeBeingEdited)
     .filter(
-      (agentInfo) => agentInfo.goalBeingEdited.goalAddress === goalAddress
+      (agentInfo) => agentInfo.outcomeBeingEdited.outcomeAddress === outcomeAddress
     )
     .map((agentInfo) => filterAndAddAgentInfo(agentInfo))
   // this should only ever by a maximum of two peers (one editing title, one editing description)
@@ -75,9 +74,9 @@ function mapStateToProps(state, ownProps) {
     agentAddress: state.agentAddress,
     isEntryPoint,
     entryPointAddress,
-    goalAddress,
+    outcomeAddress,
     creator,
-    goal,
+    outcome,
     squirrels,
     comments,
     editingPeers,
@@ -97,7 +96,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       )
       return dispatch(createEntryPoint(cellIdString, entryPoint))
     },
-    archiveEntryPoint: async (payload) => {
+    deleteEntryPoint: async (payload) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const entryPointDeleteHash = await projectsZomeApi.entryPoint.delete(
@@ -107,35 +106,35 @@ function mapDispatchToProps(dispatch, ownProps) {
       // which header hash should I be passing in to the action?
       return dispatch(deleteEntryPoint(cellIdString, entryPointDeleteHash))
     },
-    updateGoal: async (entry, headerHash) => {
+    updateOutcome: async (entry, headerHash) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedOutcome = await projectsZomeApi.outcome.update(cellId, {
         headerHash,
         entry,
       })
-      return dispatch(updateGoal(cellIdString, updatedOutcome))
+      return dispatch(updateOutcome(cellIdString, updatedOutcome))
     },
-    archiveGoalMember: async (payload) => {
+    deleteOutcomeMember: async (payload) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeMemberDeleteHash = await projectsZomeApi.outcomeMember.delete(
         cellId,
         payload
       )
-      return dispatch(archiveGoalMember(cellIdString, outcomeMemberDeleteHash))
+      return dispatch(deleteOutcomeMember(cellIdString, outcomeMemberDeleteHash))
     },
-    startTitleEdit: (goalAddress) => {
-      return dispatch(startTitleEdit(goalAddress))
+    startTitleEdit: (outcomeAddress) => {
+      return dispatch(startTitleEdit(outcomeAddress))
     },
-    endTitleEdit: (goalAddress) => {
-      return dispatch(endTitleEdit(goalAddress))
+    endTitleEdit: (outcomeAddress) => {
+      return dispatch(endTitleEdit(outcomeAddress))
     },
-    startDescriptionEdit: (goalAddress) => {
-      return dispatch(startDescriptionEdit(goalAddress))
+    startDescriptionEdit: (outcomeAddress) => {
+      return dispatch(startDescriptionEdit(outcomeAddress))
     },
-    endDescriptionEdit: (goalAddress) => {
-      return dispatch(endDescriptionEdit(goalAddress))
+    endDescriptionEdit: (outcomeAddress) => {
+      return dispatch(endDescriptionEdit(outcomeAddress))
     },
   }
 }

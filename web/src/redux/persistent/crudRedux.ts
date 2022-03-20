@@ -62,7 +62,7 @@ export function crudReducer(
         },
       }
 
-    // ARCHIVE
+    // DELETE
     case deleteAction:
       return {
         ...state,

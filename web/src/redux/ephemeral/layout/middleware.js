@@ -3,16 +3,16 @@ import {
     CREATE_OUTCOME_WITH_CONNECTION,
     FETCH_OUTCOMES,
     DELETE_OUTCOME_FULLY
-} from '../../persistent/projects/goals/actions'
+} from '../../persistent/projects/outcomes/actions'
 import {
-    createEdge,
-    fetchEdges,
-    AFFECT_LAYOUT_ARCHIVE_EDGE,
-    PREVIEW_EDGES,
-    CLEAR_EDGES_PREVIEW,
+    createConnection,
+    fetchConnections,
+    AFFECT_LAYOUT_DELETE_CONNECTION,
+    PREVIEW_CONNECTIONS,
+    CLEAR_CONNECTIONS_PREVIEW,
     CREATE_CONNECTION,
     FETCH_CONNECTIONS,
-} from '../../persistent/projects/edges/actions'
+} from '../../persistent/projects/connections/actions'
 import {
   TRIGGER_UPDATE_LAYOUT,
 } from './actions'
@@ -24,14 +24,14 @@ import performLayoutAnimation from '../animations/layout'
 const isOneOfLayoutAffectingActions = (action) => {
     const { type } = action
     return type === TRIGGER_UPDATE_LAYOUT
-        || type === PREVIEW_EDGES
-        || type === CLEAR_EDGES_PREVIEW
+        || type === PREVIEW_CONNECTIONS
+        || type === CLEAR_CONNECTIONS_PREVIEW
         || type === CREATE_OUTCOME_WITH_CONNECTION
         || type === FETCH_OUTCOMES
         || type === DELETE_OUTCOME_FULLY
         || type === CREATE_CONNECTION
         || type === FETCH_CONNECTIONS
-        || (action.type === AFFECT_LAYOUT_ARCHIVE_EDGE && action.affectLayout)
+        || (action.type === AFFECT_LAYOUT_DELETE_CONNECTION && action.affectLayout)
 }
 
 const isOneOfViewportAffectingActions = (action) => {
@@ -59,24 +59,24 @@ const layoutWatcher = store => {
 
       // in many cases, we just skip right over this middleware, 
       // and it has no effect. it is only during 'layout affecting actions'
-      // (anything that deletes or adds Goals or Edges which form the graph we
+      // (anything that deletes or adds Outcomes or Connections which form the graph we
       // pass to dagre to generate a layout) that this kicks in, and handles the creation of an animation
       // from the current layout to the new layout, by using the TWEENJS library
 
       // catch and handle this uniquely special action
       // which has a special case of being a delete firing very close in time to
-      // a create action (since we delete an Edge then immediately create one)
+      // a create action (since we delete an Connection then immediately create one)
       // and allow preventing that action in special cases from causing a layout animation
       // to occur
-      const specialLayoutAffectingArchiveEdge = action.type === AFFECT_LAYOUT_ARCHIVE_EDGE
-      if (specialLayoutAffectingArchiveEdge) {
+      const specialLayoutAffectingDeleteConnection = action.type === AFFECT_LAYOUT_DELETE_CONNECTION
+      if (specialLayoutAffectingDeleteConnection) {
         if (!action.affectLayout) {
           // just dispatch the "real" action and return that
           return store.dispatch(action.asyncAction)
         } else {
           // wait for the async action to complete before running re-layout
           await store.dispatch(action.asyncAction)
-          // now the store will have the edge removed from state
+          // now the store will have the connection removed from state
           // meaning the end calculated layout will be proper
         }
       }
@@ -96,7 +96,7 @@ const layoutWatcher = store => {
 
       // in the case of a special "layout affecting"
       // action, we should also recalculate the layout
-      // based on the new graph of Goals and Edges
+      // based on the new graph of Outcomes and Connections
       // and animate to it
       if (shouldReLayout) {
         performLayoutAnimation(store, action, currentState)

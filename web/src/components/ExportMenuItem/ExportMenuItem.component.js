@@ -40,11 +40,11 @@ function url(type, data) {
   if (type === 'csv') {
     const csvRows = []
     const agents = Object.keys(data.agents)
-    const goals = Object.keys(data.goals)
-    const edges = Object.keys(data.edges)
-    const goalMembers = Object.keys(data.goalMembers)
-    const goalComments = Object.keys(data.goalComments)
-    const goalVotes = Object.keys(data.goalVotes)
+    const outcomes = Object.keys(data.outcomes)
+    const connections = Object.keys(data.connections)
+    const outcomeMembers = Object.keys(data.outcomeMembers)
+    const outcomeComments = Object.keys(data.outcomeComments)
+    const outcomeVotes = Object.keys(data.outcomeVotes)
     const entryPoints = Object.keys(data.entryPoints)
 
     const loop = (dataset, headers, data) => {
@@ -59,14 +59,14 @@ function url(type, data) {
     }
 
     if (agents.length > 0) csvRows.push(loop('agents', agents, data.agents))
-    if (goals.length > 0) csvRows.push('\n' + loop('goals', goals, data.goals))
-    if (edges.length > 0) csvRows.push('\n' + loop('edges', edges, data.edges))
-    if (goalMembers.length > 0)
-      csvRows.push('\n' + loop('goalMembers', goalMembers, data.goalMembers))
-    if (goalComments.length > 0)
-      csvRows.push('\n' + loop('goalComments', goalComments, data.goalComments))
-    if (goalVotes.length > 0)
-      csvRows.push('\n' + loop('goalVotes', goalVotes, data.goalVotes))
+    if (outcomes.length > 0) csvRows.push('\n' + loop('outcomes', outcomes, data.outcomes))
+    if (connections.length > 0) csvRows.push('\n' + loop('connections', connections, data.connections))
+    if (outcomeMembers.length > 0)
+      csvRows.push('\n' + loop('outcomeMembers', outcomeMembers, data.outcomeMembers))
+    if (outcomeComments.length > 0)
+      csvRows.push('\n' + loop('outcomeComments', outcomeComments, data.outcomeComments))
+    if (outcomeVotes.length > 0)
+      csvRows.push('\n' + loop('outcomeVotes', outcomeVotes, data.outcomeVotes))
     if (entryPoints.length > 0)
       csvRows.push('\n' + loop('entryPoints', entryPoints, data.entryPoints))
 

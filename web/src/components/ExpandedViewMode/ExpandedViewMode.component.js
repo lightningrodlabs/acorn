@@ -13,16 +13,16 @@ import ExpandedViewModeFooter from './ExpandedViewModeFooter/ExpandedViewModeFoo
 export default function ExpandedViewMode({
   projectId,
   agentAddress,
-  goalAddress,
-  goal,
-  updateGoal,
+  outcomeAddress,
+  outcome,
+  updateOutcome,
   onClose,
   creator,
   squirrels,
   comments,
-  archiveGoalMember,
+  deleteOutcomeMember,
   createEntryPoint,
-  archiveEntryPoint,
+  deleteEntryPoint,
   isEntryPoint,
   entryPointAddress,
   startTitleEdit,
@@ -31,25 +31,25 @@ export default function ExpandedViewMode({
   endDescriptionEdit,
   editingPeers,
 }) {
-  const [goalState, setGoalState] = useState()
+  const [outcomeState, setOutcomeState] = useState()
   const [squirrelsState, setSquirrelsState] = useState()
   const [creatorState, setCreatorState] = useState()
   const [showing, setShowing] = useState(false)
   const [editTimeframe, setEditTimeframe] = useState(false)
 
   useEffect(() => {
-    if (showing && !goalAddress) {
+    if (showing && !outcomeAddress) {
       setShowing(false)
-    } else if (!showing && goalAddress) {
+    } else if (!showing && outcomeAddress) {
       setShowing(true)
     }
-  }, [goalAddress])
+  }, [outcomeAddress])
 
   useEffect(() => {
-    if (goal) {
-      setGoalState({ ...goal })
+    if (outcome) {
+      setOutcomeState({ ...outcome })
     }
-  }, [goal])
+  }, [outcome])
 
   useEffect(() => {
     if (squirrels) {
@@ -65,15 +65,15 @@ export default function ExpandedViewMode({
 
   const turnIntoEntryPoint = () => {
     createEntryPoint({
-      color: pickColorForString(goalAddress),
+      color: pickColorForString(outcomeAddress),
       creator_address: agentAddress,
       created_at: Date.now(),
-      goal_address: goalAddress,
+      outcome_address: outcomeAddress,
       is_imported: false
     })
   }
   const unmakeAsEntryPoint = () => {
-    archiveEntryPoint(entryPointAddress)
+    deleteEntryPoint(entryPointAddress)
   }
   const entryPointClickAction = isEntryPoint
     ? unmakeAsEntryPoint
@@ -89,23 +89,23 @@ export default function ExpandedViewMode({
       }
     }
 
-    updateGoal(
+    updateOutcome(
       {
-        ...goal,
+        ...outcome,
         user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         time_frame: timeframe,
       },
-      goalAddress
+      outcomeAddress
     )
   }
 
   let fromDate, toDate
-  if (goal) {
-    fromDate = goal.time_frame
-      ? moment.unix(goal.time_frame.from_date)
+  if (outcome) {
+    fromDate = outcome.time_frame
+      ? moment.unix(outcome.time_frame.from_date)
       : null
-    toDate = goal.time_frame ? moment.unix(goal.time_frame.to_date) : null
+    toDate = outcome.time_frame ? moment.unix(outcome.time_frame.to_date) : null
   }
 
   return (
@@ -117,13 +117,13 @@ export default function ExpandedViewMode({
         classNames='expanded-view-overlay'>
         <div className='expanded-view-overlay' />
       </CSSTransition>
-      {goalState && (
+      {outcomeState && (
         <CSSTransition
           in={showing}
           timeout={100}
           unmountOnExit
           classNames='expanded-view-wrapper'>
-          <div className={`expanded-view-wrapper border_${goalState.status}`}>
+          <div className={`expanded-view-wrapper border_${outcomeState.status}`}>
             <Icon
               onClick={onClose}
               name='x.svg'
@@ -132,9 +132,9 @@ export default function ExpandedViewMode({
             />
             <ExpandedViewModeHeader
               agentAddress={agentAddress}
-              goalAddress={goalAddress}
-              goal={goalState}
-              updateGoal={updateGoal}
+              outcomeAddress={outcomeAddress}
+              outcome={outcomeState}
+              updateOutcome={updateOutcome}
               entryPointClickAction={entryPointClickAction}
               isEntryPoint={isEntryPoint}
             />
@@ -146,12 +146,12 @@ export default function ExpandedViewMode({
                 setEditTimeframe={setEditTimeframe}
                 squirrels={squirrelsState}
                 comments={comments}
-                goalAddress={goalAddress}
-                updateGoal={updateGoal}
-                goal={goalState}
-                goalContent={goalState.content}
-                goalDescription={goalState.description}
-                archiveGoalMember={archiveGoalMember}
+                outcomeAddress={outcomeAddress}
+                updateOutcome={updateOutcome}
+                outcome={outcomeState}
+                outcomeContent={outcomeState.content}
+                outcomeDescription={outcomeState.description}
+                deleteOutcomeMember={deleteOutcomeMember}
                 startTitleEdit={startTitleEdit}
                 endTitleEdit={endTitleEdit}
                 startDescriptionEdit={startDescriptionEdit}
@@ -161,12 +161,12 @@ export default function ExpandedViewMode({
               <RightMenu
                 projectId={projectId}
                 agentAddress={agentAddress}
-                goalAddress={goalAddress}
-                goal={goalState}
-                updateGoal={updateGoal}
+                outcomeAddress={outcomeAddress}
+                outcome={outcomeState}
+                updateOutcome={updateOutcome}
               />
             </div>
-            <ExpandedViewModeFooter goal={goalState} creator={creatorState} />
+            <ExpandedViewModeFooter outcome={outcomeState} creator={creatorState} />
             {editTimeframe && (
               <DatePicker
                 onClose={() => setEditTimeframe(false)}

@@ -1,11 +1,11 @@
 import dagre from 'dagre'
-import { goalWidth, getGoalHeight } from './dimensions'
-import goalsAsTrees from '../redux/persistent/projects/goals/goalsAsTrees'
+import { outcomeWidth, getOutcomeHeight } from './dimensions'
+import outcomesAsTrees from '../redux/persistent/projects/outcomes/outcomesAsTrees'
 
 const VERTICAL_SPACING = 50
 
-function getBoundingRec(goal, allGoalCoordinates) {
-  const origCoord = allGoalCoordinates[goal.headerHash]
+function getBoundingRec(outcome, allOutcomeCoordinates) {
+  const origCoord = allOutcomeCoordinates[outcome.headerHash]
   if (!origCoord) {
     return
   }
@@ -14,13 +14,13 @@ function getBoundingRec(goal, allGoalCoordinates) {
   let boundBottom = origCoord.y
   let boundLeft = origCoord.x
 
-  function updateLimits(goalToCheck) {
-    const topLeftCoord = allGoalCoordinates[goalToCheck.headerHash]
+  function updateLimits(outcomeToCheck) {
+    const topLeftCoord = allOutcomeCoordinates[outcomeToCheck.headerHash]
     if (!topLeftCoord) {
       return
     }
-    const width = goalWidth
-    const height = getGoalHeight(null, goalToCheck.content)
+    const width = outcomeWidth
+    const height = getOutcomeHeight(null, outcomeToCheck.content)
     const top = topLeftCoord.y
     const left = topLeftCoord.x
     const right = left + width
@@ -29,9 +29,9 @@ function getBoundingRec(goal, allGoalCoordinates) {
     boundRight = Math.max(right, boundRight)
     boundBottom = Math.max(bottom, boundBottom)
     boundLeft = Math.min(left, boundLeft)
-    goalToCheck.children.forEach(updateLimits)
+    outcomeToCheck.children.forEach(updateLimits)
   }
-  updateLimits(goal)
+  updateLimits(outcome)
 
   const padding = 15
   boundTop -= padding
@@ -48,24 +48,24 @@ function layoutForTree(tree) {
   // create a graph
   const graph = new dagre.graphlib.Graph()
     .setGraph({})
-    .setDefaultEdgeLabel(function () {
+    .setDefaultConnectionLabel(function () {
       return {}
     })
 
-  // use recursion to add each goal as a node in the graph
-  function addGoal(goal) {
-    graph.setNode(goal.headerHash, {
-      width: goalWidth,
-      height: getGoalHeight(null, goal.content) + VERTICAL_SPACING,
+  // use recursion to add each outcome as a node in the graph
+  function addOutcome(outcome) {
+    graph.setNode(outcome.headerHash, {
+      width: outcomeWidth,
+      height: getOutcomeHeight(null, outcome.content) + VERTICAL_SPACING,
     })
-    goal.children.forEach(childGoal => {
-      addGoal(childGoal)
-      // add each edge as an edge in the graph
-      graph.setEdge(goal.headerHash, childGoal.headerHash)
+    outcome.children.forEach(childOutcome => {
+      addOutcome(childOutcome)
+      // add each connection as an connection in the graph
+      graph.setConnection(outcome.headerHash, childOutcome.headerHash)
     })
   }
   // kick off the recursion
-  addGoal(tree)
+  addOutcome(tree)
 
   // run the layout algorithm, which will set an x and y property onto
   // each node
@@ -83,11 +83,11 @@ function layoutForTree(tree) {
 }
 
 export default function layoutFormula(data) {
-  const trees = goalsAsTrees(data)
+  const trees = outcomesAsTrees(data)
 
   let coordinates = {}
   const layouts = trees.map(tree => ({
-    goal: tree,
+    outcome: tree,
     layout: layoutForTree(tree),
   }))
   const HORIZONTAL_TREE_SPACING = 15
@@ -98,7 +98,7 @@ export default function layoutFormula(data) {
       coordinates = tree.layout
     } else {
       // in the case of all the rest, push it right, according to wherever the last one was positioned + spacing
-      const lastTree = layouts[index - 1].goal
+      const lastTree = layouts[index - 1].outcome
       const [top, right, bottom, left] = getBoundingRec(lastTree, coordinates)
       const adjusted = {}
       Object.keys(tree.layout).forEach(coordKey => {

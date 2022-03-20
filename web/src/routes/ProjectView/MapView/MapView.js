@@ -10,11 +10,11 @@ import { setScreenDimensions } from '../../../redux/ephemeral/screensize/actions
 import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions'
 
 import EmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
-import GoalTitleQuickEdit from '../../../components/GoalTitleQuickEdit/GoalTitleQuickEdit'
+import OutcomeTitleQuickEdit from '../../../components/OutcomeTitleQuickEdit/OutcomeTitleQuickEdit'
 import VerticalActionsList from '../../../components/VerticalActionsList/VerticalActionsList'
 import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar'
-import GoalHoverOverlayButtons from '../../../components/GoalHoverOverlayButtons/GoalHoverOverlayButtons'
-import EdgeConnectors from '../../../components/EdgeConnectors/EdgeConnectors'
+import OutcomeHoverOverlayButtons from '../../../components/OutcomeHoverOverlayButtons/OutcomeHoverOverlayButtons'
+import ConnectionConnectors from '../../../components/ConnectionConnectors/ConnectionConnectors'
 import { firstZoomThreshold } from '../../../drawing/dimensions'
 
 
@@ -22,8 +22,8 @@ function MapView({
   projectId,
   hasSelection,
   hasHover,
-  goalFormIsOpen,
-  goalIsBeingEdited,
+  outcomeFormIsOpen,
+  outcomeIsBeingEdited,
   translate,
   scale,
   openExpandedView,
@@ -74,28 +74,28 @@ function MapView({
       {/* to the same scaling and tranlating as the canvas */}
       {/* is being scaled and translated, using css matrix transforms */}
       <div className="transform-container" style={transform}>
-        {/* Only present this GoalTitleQuickEdit */}
-        {/* if the scale is greater than or equal to 60% (or we are creating a Goal) */}
+        {/* Only present this OutcomeTitleQuickEdit */}
+        {/* if the scale is greater than or equal to 60% (or we are creating a Outcome) */}
         {/* because otherwise the font size gets to small and the text is cut off */}
-        {goalFormIsOpen && (
-          <GoalTitleQuickEdit
+        {outcomeFormIsOpen && (
+          <OutcomeTitleQuickEdit
             projectId={projectId}
-            presentToUser={scale >= firstZoomThreshold || !goalIsBeingEdited}
+            presentToUser={scale >= firstZoomThreshold || !outcomeIsBeingEdited}
           />
         )}
       </div>
-      {/* below items inside 'goal-form-position-container' maintain their normal scale */}
+      {/* below items inside 'outcome-form-position-container' maintain their normal scale */}
       {/* while positioning themselves absolutely (position: absolute) on the screen */}
-      {/* in coordinates that match with the goals being drawn on the canvas */}
-      <div className="goal-form-position-container">
-        {goalFormIsOpen && goalIsBeingEdited && (
+      {/* in coordinates that match with the outcomes being drawn on the canvas */}
+      <div className="outcome-form-position-container">
+        {outcomeFormIsOpen && outcomeIsBeingEdited && (
           <VerticalActionsList projectId={projectId} />
         )}
         {hasHover && (
-          <GoalHoverOverlayButtons onExpandClick={openExpandedView} />
+          <OutcomeHoverOverlayButtons onExpandClick={openExpandedView} />
         )}
         {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
-        {refCanvas.current && <EdgeConnectors canvas={refCanvas.current} />}
+        {refCanvas.current && <ConnectionConnectors canvas={refCanvas.current} />}
       </div>
 
       <MultiEditBar projectId={projectId} hasSelection={hasSelection} />
@@ -115,22 +115,22 @@ function mapStateToProps(state) {
     // if have not opened the guidebook ever, then show guidebook tip message
     showGuidebookHelpMessage: !state.ui.localPreferences.hasAccessedGuidebook,
     projectId,
-    // map from an array type (the selectedGoals) to a simple boolean type
-    hasSelection: state.ui.selection.selectedGoals.length > 0,
+    // map from an array type (the selectedOutcomes) to a simple boolean type
+    hasSelection: state.ui.selection.selectedOutcomes.length > 0,
     hasHover:
-      state.ui.hover.hoveredGoal &&
-      state.ui.hover.hoveredGoal !== state.ui.goalForm.editAddress,
-    goalFormIsOpen: state.ui.goalForm.isOpen,
-    goalIsBeingEdited: state.ui.goalForm.editAddress, // is a Goal being edited, not created
+      state.ui.hover.hoveredOutcome &&
+      state.ui.hover.hoveredOutcome !== state.ui.outcomeForm.editAddress,
+    outcomeFormIsOpen: state.ui.outcomeForm.isOpen,
+    outcomeIsBeingEdited: state.ui.outcomeForm.editAddress, // is a Outcome being edited, not created
     translate: state.ui.viewport.translate,
     scale: state.ui.viewport.scale,
     // TODO: make this also based on whether the user has just registered (created their profile)
     showEmptyState:
       !!state.agentAddress &&
-      ((state.projects.goals[projectId] &&
-        Object.values(state.projects.goals[projectId]).length === 0) ||
+      ((state.projects.outcomes[projectId] &&
+        Object.values(state.projects.outcomes[projectId]).length === 0) ||
         // project is loading
-        !state.projects.goals[projectId]),
+        !state.projects.outcomes[projectId]),
   }
 }
 

@@ -23,16 +23,16 @@ export {
 
 export default function selectEntryPoints(state, projectId) {
   const entryPoints = state.projects.entryPoints[projectId] || {}
-  const goals = state.projects.goals[projectId] || {}
+  const outcomes = state.projects.outcomes[projectId] || {}
 
   const combinedEntryPoints = Object.keys(entryPoints)
     .map(key => {
       const entryPoint = entryPoints[key]
-      const goal = goals[entryPoint.goal_address]
-      if (goal) {
+      const outcome = outcomes[entryPoint.outcome_address]
+      if (outcome) {
         return {
           ...entryPoint,
-          content: goal.content,
+          content: outcome.content,
         }
       }
       return null

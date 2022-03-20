@@ -7,19 +7,19 @@ import { PriorityModeOptions } from '../../constants'
 
 function PriorityMenuItem({ exact, title, slug, projectId }) {
   const location = useLocation()
-  const contextGoalAddress = new URLSearchParams(location.search).get(
-    'contextGoal'
+  const contextOutcomeAddress = new URLSearchParams(location.search).get(
+    'contextOutcome'
   )
-  // don't keep a contextGoal if there isn't currently one
+  // don't keep a contextOutcome if there isn't currently one
   // but do keep if there is
-  const keepContextGoalString = contextGoalAddress
-    ? `?contextGoal=${contextGoalAddress}`
+  const keepContextOutcomeString = contextOutcomeAddress
+    ? `?contextOutcome=${contextOutcomeAddress}`
     : ``
   return (
     // @ts-ignore
     <NavLink
       exact={exact}
-      to={`${slug.replace(':projectId', projectId)}${keepContextGoalString}`}
+      to={`${slug.replace(':projectId', projectId)}${keepContextOutcomeString}`}
       className="priority-menu-item"
       activeClassName="active"
     >

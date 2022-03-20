@@ -46,8 +46,8 @@ class ActivityHistory extends Component {
   }
 
   fetchChangingData() {
-    this.props.fetchGoalHistory({
-      address: this.props.goalAddress,
+    this.props.fetchOutcomeHistory({
+      address: this.props.outcomeAddress,
     })
   }
   componentDidMount() {
@@ -71,51 +71,51 @@ class ActivityHistory extends Component {
           vector.push({
             user: entry.user_hash,
             time: entry.timestamp_created,
-            comment: 'created this goal',
+            comment: 'created this outcome',
           })
         } else {
-          const previousGoalVersion = history.entries[index - 1]
-          if (!previousGoalVersion) {
+          const previousOutcomeVersion = history.entries[index - 1]
+          if (!previousOutcomeVersion) {
             return
           }
           // title/content
-          if (previousGoalVersion.content !== entry.content) {
+          if (previousOutcomeVersion.content !== entry.content) {
             vector.push({
               user: entry.user_edit_hash,
               time: entry.timestamp_updated,
-              comment: `changed goal title from "${previousGoalVersion.content}" to "${entry.content}" `,
+              comment: `changed outcome title from "${previousOutcomeVersion.content}" to "${entry.content}" `,
               icon: 'font.svg',
             })
           }
           // hierarchy
-          if (previousGoalVersion.hierarchy !== entry.hierarchy) {
+          if (previousOutcomeVersion.hierarchy !== entry.hierarchy) {
             vector.push({
               user: entry.user_edit_hash,
               time: entry.timestamp_updated,
-              comment: `changed hierachy from "${previousGoalVersion.hierarchy}" to "${entry.hierarchy}" `,
+              comment: `changed hierachy from "${previousOutcomeVersion.hierarchy}" to "${entry.hierarchy}" `,
               hierarchyIcon: entry.hierarchy,
             })
           }
           // description
-          if (previousGoalVersion.description !== entry.description) {
+          if (previousOutcomeVersion.description !== entry.description) {
             vector.push({
               user: entry.user_edit_hash,
               time: entry.timestamp_updated,
-              comment: `changed description from "${previousGoalVersion.description}" to "${entry.description}"`,
+              comment: `changed description from "${previousOutcomeVersion.description}" to "${entry.description}"`,
               icon: 'font.svg',
             })
           }
           // status
-          if (previousGoalVersion.status !== entry.status) {
+          if (previousOutcomeVersion.status !== entry.status) {
             vector.push({
               user: entry.user_edit_hash,
               time: entry.timestamp_updated,
-              comment: `changed status from "${previousGoalVersion.status}" to "${entry.status}"`,
+              comment: `changed status from "${previousOutcomeVersion.status}" to "${entry.status}"`,
               statusIcon: entry.status,
             })
           }
           // tags
-          if (previousGoalVersion.tags !== entry.tags) {
+          if (previousOutcomeVersion.tags !== entry.tags) {
             vector.push({
               user: entry.user_edit_hash,
               time: entry.timestamp_updated,
@@ -123,7 +123,7 @@ class ActivityHistory extends Component {
             })
           }
           // timeframe added
-          if (!previousGoalVersion.time_frame && entry.time_frame) {
+          if (!previousOutcomeVersion.time_frame && entry.time_frame) {
             vector.push({
               user: entry.user_edit_hash,
               time: entry.timestamp_updated,
@@ -131,14 +131,14 @@ class ActivityHistory extends Component {
                 <>
                   added the timeframe{' '}
                   {<FormatTimeframeDisplay timeframe={entry.time_frame} />} to
-                  this goal
+                  this outcome
                 </>
               ),
               icon: 'calendar.svg',
             })
           } else if (
             !checkTimeframeSame(
-              previousGoalVersion.time_frame,
+              previousOutcomeVersion.time_frame,
               entry.time_frame
             )
           ) {
@@ -150,7 +150,7 @@ class ActivityHistory extends Component {
                   changed timeframe from{' '}
                   {
                     <FormatTimeframeDisplay
-                      timeframe={previousGoalVersion.time_frame}
+                      timeframe={previousOutcomeVersion.time_frame}
                     />
                   }{' '}
                   to {<FormatTimeframeDisplay timeframe={entry.time_frame} />}
@@ -195,7 +195,7 @@ class ActivityHistory extends Component {
   render() {
     return (
       <div className="history">
-        {this.differents(this.props.goalHistory)
+        {this.differents(this.props.outcomeHistory)
           .sort((a, b) => {
             if (a.time < b.time) {
               return 1

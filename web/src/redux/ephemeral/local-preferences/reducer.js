@@ -34,7 +34,7 @@ export default function (state = defaultState, action) {
         navigation: payload
       }
     case SET_HAS_ACCESSED_GUIDEBOOK:
-      // persist this knowledge to localStorage
+      // persist this knowlconnection to localStorage
       // so that we remember beyond page refreshes
       setLocalItem(HAS_ACCESSED_GUIDEBOOK_KEY, payload)
       return {

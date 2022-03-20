@@ -10,7 +10,7 @@ use hdk_crud::{
 use project::{
     connection::crud::Connection,
     entry_point::crud::EntryPoint,
-    outcome::crud::{ArchiveOutcomeFullySignal, Outcome, OutcomeWithConnectionSignal},
+    outcome::crud::{DeleteOutcomeFullySignal, Outcome, OutcomeWithConnectionSignal},
     outcome_comment::crud::OutcomeComment,
     outcome_member::crud::OutcomeMember,
     outcome_vote::crud::OutcomeVote,
@@ -57,11 +57,11 @@ pub enum SignalType {
     // this is because it's important to the UI to receive both
     // the new outcome, and the connection, at the same moment
     OutcomeWithConnection(OutcomeWithConnectionSignal),
-    // custom signal type for outcome_fully_archived
+    // custom signal type for outcome_fully_deleted
     // this is because it's important to the UI to receive
-    // both the archived outcome, and everything connected to it that
-    // was archived at the same time
-    ArchiveOutcomeFully(ArchiveOutcomeFullySignal),
+    // both the deleted outcome, and everything connected to it that
+    // was deleted at the same time
+    DeleteOutcomeFully(DeleteOutcomeFullySignal),
     EditingOutcome(EditingOutcomeSignal),
     OutcomeComment(ActionSignal<OutcomeComment>),
     OutcomeMember(ActionSignal<OutcomeMember>),

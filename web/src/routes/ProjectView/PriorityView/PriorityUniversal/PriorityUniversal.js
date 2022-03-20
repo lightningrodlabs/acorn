@@ -20,31 +20,31 @@ import { getAppWs } from '../../../../hcWebsockets'
 import { cellIdFromString } from '../../../../utils'
 
 // an individual list item
-function UniversalGoal({ liveIndex, goal, openExpandedView, goToGoal }) {
+function UniversalOutcome({ liveIndex, outcome, openExpandedView, goToOutcome }) {
   return (
-    <div className="universal-priority-goals-list-row">
-      <div className="universal-priority-goal-item-wrapper">
-        <div className="universal-priority-goal-item-number-status-title">
+    <div className="universal-priority-outcomes-list-row">
+      <div className="universal-priority-outcome-item-wrapper">
+        <div className="universal-priority-outcome-item-number-status-title">
           <div className="universal-priority-number-wrapper">
             <div className="universal-priority-order-number">{liveIndex}.</div>{' '}
           </div>
-          <div className="universal-priority-goal-title-status" >
-            <div className="universal-priority-goal-item-status">
+          <div className="universal-priority-outcome-title-status" >
+            <div className="universal-priority-outcome-item-status">
               <StatusIcon
-                status={goal.status}
+                status={outcome.status}
                 notHoverable
                 hideTooltip
-                className="indented-view-goal-content-status-color"
+                className="indented-view-outcome-content-status-color"
               />
             </div>
 
-            <div className="universal-priority-goal-item-title">{goal.content}</div>
+            <div className="universal-priority-outcome-item-title">{outcome.content}</div>
           </div>
         </div>
-        <div className="universal-priority-goal-item-metadata">
-          <div className="universal-priority-goal-item-members">
-            {goal.members.map(member => {
-              return <div className="universal-priority-goal-item-member-avatar" key={member.headerHash}>
+        <div className="universal-priority-outcome-item-metadata">
+          <div className="universal-priority-outcome-item-members">
+            {outcome.members.map(member => {
+              return <div className="universal-priority-outcome-item-member-avatar" key={member.headerHash}>
                 <Avatar
                   first_name={member.first_name}
                   last_name={member.last_name}
@@ -60,32 +60,32 @@ function UniversalGoal({ liveIndex, goal, openExpandedView, goToGoal }) {
               </div>
             })}
           </div>
-          <div className="universal-priority-goal-item-date">
-            <TimeframeFormat timeFrame={goal.time_frame} />
+          <div className="universal-priority-outcome-item-date">
+            <TimeframeFormat timeFrame={outcome.time_frame} />
           </div>
         </div>
-        <div className="universal-priority-goal-item-buttons">
+        <div className="universal-priority-outcome-item-buttons">
           <div
-            className="universal-priority-goal-item-button goal-item-button-expand"
-            onClick={() => openExpandedView(goal.headerHash)}
+            className="universal-priority-outcome-item-button outcome-item-button-expand"
+            onClick={() => openExpandedView(outcome.headerHash)}
           >
             <Icon name="expand.svg" size="small" className="grey" />
           </div>
           <div
-            className="universal-priority-goal-item-button goal-item-button-map"
-            onClick={() => goToGoal(goal.headerHash)}
+            className="universal-priority-outcome-item-button outcome-item-button-map"
+            onClick={() => goToOutcome(outcome.headerHash)}
           >
             <Icon name="map.svg" size="small" className="grey" />
           </div>
         </div>
       </div>
 
-      <div className="universal-priority-goal-item-border"></div>
+      <div className="universal-priority-outcome-item-border"></div>
     </div>
   )
 }
 
-// for PriorityUniversalDraggableGoal
+// for PriorityUniversalDraggableOutcome
 const getItemStyle = (isDragging, draggableStyle) => ({
   // change background colour if dragging
   background: isDragging ? '#F8F7F5' : 'white',
@@ -94,7 +94,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
 })
 // wraps an individual list item in a draggable wrapper
-function PriorityUniversalDraggableGoal({ goal, index, whileDraggingIndexes, openExpandedView, goToGoal }) {
+function PriorityUniversalDraggableOutcome({ outcome, index, whileDraggingIndexes, openExpandedView, goToOutcome }) {
   let liveIndex
   if (!whileDraggingIndexes) {
     // no dragging happening
@@ -114,7 +114,7 @@ function PriorityUniversalDraggableGoal({ goal, index, whileDraggingIndexes, ope
     liveIndex = index + 1
   }
   return (
-    <Draggable key={goal.headerHash} draggableId={goal.headerHash} index={index}>
+    <Draggable key={outcome.headerHash} draggableId={outcome.headerHash} index={index}>
       {(provided, snapshot) => {
         return (
           <div
@@ -126,11 +126,11 @@ function PriorityUniversalDraggableGoal({ goal, index, whileDraggingIndexes, ope
               provided.draggableProps.style
             )}
           >
-            <UniversalGoal
-              goal={goal}
+            <UniversalOutcome
+              outcome={outcome}
               liveIndex={liveIndex}
               openExpandedView={openExpandedView}
-              goToGoal={goToGoal}
+              goToOutcome={goToOutcome}
             />
           </div>
         )
@@ -139,8 +139,8 @@ function PriorityUniversalDraggableGoal({ goal, index, whileDraggingIndexes, ope
   )
 }
 
-// the area within which goals are droppable
-function PriorityUniversalDroppable({ goals, whileDraggingIndexes, openExpandedView, goToGoal }) {
+// the area within which outcomes are droppable
+function PriorityUniversalDroppable({ outcomes, whileDraggingIndexes, openExpandedView, goToOutcome }) {
   return (
     <Droppable droppableId="droppable">
       {(provided, _snapshot) => (
@@ -150,14 +150,14 @@ function PriorityUniversalDroppable({ goals, whileDraggingIndexes, openExpandedV
           className="universal-priority-droppable-wrapper"
           style={{ overflow: 'scroll' }}
         >
-          {goals.map((goal, index) => (
-            <PriorityUniversalDraggableGoal
-              key={goal.headerHash}
-              goal={goal}
+          {outcomes.map((outcome, index) => (
+            <PriorityUniversalDraggableOutcome
+              key={outcome.headerHash}
+              outcome={outcome}
               index={index}
               whileDraggingIndexes={whileDraggingIndexes}
               openExpandedView={openExpandedView}
-              goToGoal={goToGoal}
+              goToOutcome={goToOutcome}
             />
           ))}
           {provided.placeholder}
@@ -169,18 +169,18 @@ function PriorityUniversalDroppable({ goals, whileDraggingIndexes, openExpandedV
 
 // the default export, and main high level component here
 function PriorityUniversal({
-  goals,
+  outcomes,
   projectMeta,
   projectId,
   updateProjectMeta,
   openExpandedView,
-  goToGoal
+  goToOutcome
 }) {
   const history = useHistory()
   const location = useLocation()
-  const navAndGoToGoal = (headerHash) => {
+  const navAndGoToOutcome = (headerHash) => {
     history.push(location.pathname.replace('priority', 'map'))
-    goToGoal(headerHash)
+    goToOutcome(headerHash)
   }
   /// will be { source: int, destination: int }
   // both are indexes, if set at all
@@ -213,7 +213,7 @@ function PriorityUniversal({
     }
     setPending(true)
     const reordered = reorder(
-      projectMeta.top_priority_goals,
+      projectMeta.top_priority_outcomes,
       result.source.index,
       result.destination.index
     )
@@ -225,7 +225,7 @@ function PriorityUniversal({
     const toPass = {
       ...projectMeta,
       // assign new ordering
-      top_priority_goals: reordered,
+      top_priority_outcomes: reordered,
     }
     const projectMetaAddress = toPass.headerHash
     delete toPass.headerHash
@@ -239,57 +239,57 @@ function PriorityUniversal({
     setPendingList([])
   }
 
-  let topPriorityGoalAddresses = []
+  let topPriorityOutcomeAddresses = []
   if (pending) {
     // make sure we only try to pick
-    // and render goals that exist or are
+    // and render outcomes that exist or are
     // known about
-    topPriorityGoalAddresses = pendingList.filter(
-      (goalAddress) => goals[goalAddress]
+    topPriorityOutcomeAddresses = pendingList.filter(
+      (outcomeAddress) => outcomes[outcomeAddress]
     )
   } else if (projectMeta) {
     // make sure we only try to pick
-    // and render goals that exist or are
+    // and render outcomes that exist or are
     // known about
-    topPriorityGoalAddresses = projectMeta.top_priority_goals.filter(
-      (goalAddress) => goals[goalAddress]
+    topPriorityOutcomeAddresses = projectMeta.top_priority_outcomes.filter(
+      (outcomeAddress) => outcomes[outcomeAddress]
     )
   }
-  const topPriorityGoals = topPriorityGoalAddresses.map(
-    (goalAddress) => goals[goalAddress]
+  const topPriorityOutcomes = topPriorityOutcomeAddresses.map(
+    (outcomeAddress) => outcomes[outcomeAddress]
   )
 
   return (
     <div className="universal-priority-wrapper">
       <div className="universal-priority-header">
         <div className="universal-priority-heading">
-          <h1>Top Priority Goals ({topPriorityGoals.length})</h1>
+          <h1>Top Priority Outcomes ({topPriorityOutcomes.length})</h1>
         </div>
         <div className="universal-priority-subheading">
           <h4>
-            Drag and drop the goals to sort their order of importance for you
+            Drag and drop the outcomes to sort their order of importance for you
             and your teammates.
           </h4>
         </div>
       </div>
       <div className="universal-priority-divider-line"></div>
 
-      <div className="universal-priority-goals-list-wrapper">
-        {topPriorityGoals.length === 0 && <div className="top-priority-empty-state-wrapper">
+      <div className="universal-priority-outcomes-list-wrapper">
+        {topPriorityOutcomes.length === 0 && <div className="top-priority-empty-state-wrapper">
           <img src="img/intro-screen-image-4.svg" className="top-priority-empty-state-image" />
-          <h4>You haven't marked any goals as top priority.
+          <h4>You haven't marked any outcomes as top priority.
             <br />
             <GuidebookNavLink guidebookId='intro_universal_priority_mode'>Learn how to start prioritizing here.</GuidebookNavLink> </h4></div>}
-        {topPriorityGoals.length !== 0 &&
+        {topPriorityOutcomes.length !== 0 &&
           <DragDropContext
             onDragEnd={onDragEnd}
             onDragUpdate={onDragUpdate}
           >
             <PriorityUniversalDroppable
-              goals={topPriorityGoals}
+              outcomes={topPriorityOutcomes}
               whileDraggingIndexes={whileDraggingIndexes}
               openExpandedView={openExpandedView}
-              goToGoal={navAndGoToGoal}
+              goToOutcome={navAndGoToOutcome}
             />
           </DragDropContext>
         }
@@ -301,35 +301,35 @@ function PriorityUniversal({
 function mapStateToProps(state) {
   const projectId = state.ui.activeProject
   const agents = state.agents
-  const goals = state.projects.goals[projectId] || {}
-  const goalMembers = state.projects.goalMembers[projectId] || {}
+  const outcomes = state.projects.outcomes[projectId] || {}
+  const outcomeMembers = state.projects.outcomeMembers[projectId] || {}
   const projectMeta = state.projects.projectMeta[projectId]
 
-  // add members on to goal state objects
-  const allGoalsArray = Object.values(goals).map(goal => {
+  // add members on to outcome state objects
+  const allOutcomesArray = Object.values(outcomes).map(outcome => {
     const extensions = {}
-    extensions.members = Object.values(goalMembers)
-      .filter(goalMember => goalMember.goal_address === goal.headerHash)
-      .map(goalMember => agents[goalMember.agent_address])
-      .filter(goalMember => goalMember) // filter out undefined results
+    extensions.members = Object.values(outcomeMembers)
+      .filter(outcomeMember => outcomeMember.outcome_address === outcome.headerHash)
+      .map(outcomeMember => agents[outcomeMember.agent_address])
+      .filter(outcomeMember => outcomeMember) // filter out undefined results
     return {
-      ...goal,
+      ...outcome,
       ...extensions,
     }
   })
-  const allGoals = _.keyBy(allGoalsArray, 'headerHash')
+  const allOutcomes = _.keyBy(allOutcomesArray, 'headerHash')
 
   return {
     projectId,
     projectMeta,
-    goals: allGoals,
+    outcomes: allOutcomes,
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     openExpandedView: (headerHash) => dispatch(openExpandedView(headerHash)),
-    goToGoal: (headerHash) => {
+    goToOutcome: (headerHash) => {
       return dispatch(animatePanAndZoom(headerHash))
     },
     updateProjectMeta: async (projectMeta, headerHash, cellIdString) => {

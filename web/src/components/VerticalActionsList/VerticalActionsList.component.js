@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import moment from 'moment'
 import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
-import { goalWidth } from '../../drawing/dimensions'
+import { outcomeWidth } from '../../drawing/dimensions'
 import Icon from '../Icon/Icon'
 import StatusPicker from '../StatusPicker'
 import PeoplePicker from '../PeoplePicker/PeoplePicker'
@@ -24,12 +24,12 @@ function VerticalActionListItem({ onClick, label, icon }) {
 export default function VerticalActionsList({
   agentAddress,
   projectId,
-  goalAddress,
-  goal,
-  onArchiveClick,
-  updateGoal,
-  leftEdgeXPosition,
-  topEdgeYPosition,
+  outcomeAddress,
+  outcome,
+  onDeleteClick,
+  updateOutcome,
+  leftConnectionXPosition,
+  topConnectionYPosition,
 }) {
   const defaultViews = {
     status: false,
@@ -40,15 +40,15 @@ export default function VerticalActionsList({
   }
   const [viewsOpen, setViews] = useState(defaultViews)
 
-  const innerUpdateGoal = (key) => (val) => {
-    updateGoal(
+  const innerUpdateOutcome = (key) => (val) => {
+    updateOutcome(
       {
-        ...goal,
+        ...outcome,
         user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         [key]: val,
       },
-      goalAddress
+      outcomeAddress
     )
   }
 
@@ -56,10 +56,10 @@ export default function VerticalActionsList({
     setViews({ ...defaultViews, [key]: !viewsOpen[key] })
   }
 
-  const archiveContent = (
+  const deleteContent = (
     <div>
-      You're about to archive the card "<b>{goal.content}</b>
-      ". You will be able to see this card in the archive view mode in the
+      You're about to delete the card "<b>{outcome.content}</b>
+      ". You will be able to see this card in the delete view mode in the
       future. Proceed?
     </div>
   )
@@ -76,35 +76,35 @@ export default function VerticalActionsList({
       }
     }
 
-    updateGoal(
+    updateOutcome(
       {
-        ...goal,
+        ...outcome,
         user_edit_hash: agentAddress,
         timestamp_updated: moment().unix(),
         time_frame: timeframe,
       },
-      goalAddress
+      outcomeAddress
     )
   }
 
-  const fromDate = goal.time_frame
-    ? moment.unix(goal.time_frame.from_date)
+  const fromDate = outcome.time_frame
+    ? moment.unix(outcome.time_frame.from_date)
     : null
-  const toDate = goal.time_frame ? moment.unix(goal.time_frame.to_date) : null
+  const toDate = outcome.time_frame ? moment.unix(outcome.time_frame.to_date) : null
 
   return (
     <>
       <div
         className="vertical-actions-list"
         style={{
-          left: `${leftEdgeXPosition}px`,
-          top: `${topEdgeYPosition}px`,
+          left: `${leftConnectionXPosition}px`,
+          top: `${topConnectionYPosition}px`,
         }}
       >
         <VerticalActionListItem
           label="Status"
           icon={
-            <StatusIcon size="very-small" status={goal.status} hideTooltip />
+            <StatusIcon size="very-small" status={outcome.status} hideTooltip />
           }
           onClick={() => toggleView('status')}
         />
@@ -154,18 +154,18 @@ export default function VerticalActionsList({
         />
         {/* TODO : make the Alert Popup screen and certain elements */}
         {/* like Quick Edit Icon and Expand Icon not shrink after zooming out on canvas */}
-        {/* fix the archive based popup, by moving it UP the render tree OUTSIDE the MapView, which
+        {/* fix the delete based popup, by moving it UP the render tree OUTSIDE the MapView, which
              gets zoomed in out as the map does */}
         {/* <VerticalActionListItem
-          label='archive'
-          icon={<Icon name='archive.svg' className='white not-hoverable' />}
-          onClick={() => toggleView('archive')}
+          label='delete'
+          icon={<Icon name='delete.svg' className='white not-hoverable' />}
+          onClick={() => toggleView('delete')}
         /> */}
         {viewsOpen.status && (
           <StatusPicker
             projectId={projectId}
-            selectedStatus={goal.status}
-            statusClicked={innerUpdateGoal('status')}
+            selectedStatus={outcome.status}
+            statusClicked={innerUpdateOutcome('status')}
             onClose={() => setViews({ ...defaultViews })}
           />
         )}
@@ -188,30 +188,30 @@ export default function VerticalActionsList({
           <HierarchyPicker
             projectId={projectId}
             onClose={() => setViews({ ...defaultViews })}
-            selectedHierarchy={goal.hierarchy}
-            hierarchyClicked={innerUpdateGoal('hierarchy')}
+            selectedHierarchy={outcome.hierarchy}
+            hierarchyClicked={innerUpdateOutcome('hierarchy')}
           />
         )}
         {viewsOpen.priority && (
           <PriorityPicker
             projectId={projectId}
-            goalAddress={goalAddress}
+            outcomeAddress={outcomeAddress}
             onClose={() => setViews({ ...defaultViews })}
           />
         )}
       </div>
       <Modal
-        active={viewsOpen.archive}
+        active={viewsOpen.delete}
         onClose={() => setViews({ ...defaultViews })}
-        className="archive-popup"
+        className="delete-popup"
       >
         <ModalContent
           heading="Archiving"
-          content={archiveContent}
-          icon="archive.svg"
-          primaryButton="Yes, Archive"
+          content={deleteContent}
+          icon="delete.svg"
+          primaryButton="Yes, Delete"
           altButton="Nevermind"
-          primaryButtonAction={() => onArchiveClick(goalAddress)}
+          primaryButtonAction={() => onDeleteClick(outcomeAddress)}
           altButtonAction={() => setViews({ ...defaultViews })}
         />
       </Modal>
@@ -220,36 +220,36 @@ export default function VerticalActionsList({
 }
 
 function mapStateToProps(state, ownProps) {
-  // goal headerHash
-  const goalAddress = state.ui.goalForm.editAddress
+  // outcome headerHash
+  const outcomeAddress = state.ui.outcomeForm.editAddress
   // project ID
   const { projectId } = ownProps
-  const goals = state.projects.goals[projectId] || {}
+  const outcomes = state.projects.outcomes[projectId] || {}
 
-  // Figure out where is that goal on the canvas:
-  // figure out where on the canvas the goal being edited is
+  // Figure out where is that outcome on the canvas:
+  // figure out where on the canvas the outcome being edited is
   // located, according to the canvas coordinate system
   // x, y
   const width = state.ui.screensize.width
-  const goalCoordinate = state.ui.layout[goalAddress]
+  const outcomeCoordinate = state.ui.layout[outcomeAddress]
 
-  // Figure out where is that goal is relation to the window:
+  // Figure out where is that outcome is relation to the window:
   // coordinates translation to css from canvas
   const translate = state.ui.viewport.translate
   const scale = state.ui.viewport.scale
-  // position it at the right of the goal, by moving to the right
-  // by the width of a Goal
+  // position it at the right of the outcome, by moving to the right
+  // by the width of a Outcome
   const cssCoordinates = coordsCanvasToPage(
-    { x: (goalCoordinate.x + goalWidth), y: goalCoordinate.y },
+    { x: (outcomeCoordinate.x + outcomeWidth), y: outcomeCoordinate.y },
     translate,
     scale
   )
 
   return {
     agentAddress: state.agentAddress,
-    goalAddress,
-    goal: goals[goalAddress],
-    leftEdgeXPosition: cssCoordinates.x,
-    topEdgeYPosition: cssCoordinates.y,
+    outcomeAddress,
+    outcome: outcomes[outcomeAddress],
+    leftConnectionXPosition: cssCoordinates.x,
+    topConnectionYPosition: cssCoordinates.y,
   }
 }

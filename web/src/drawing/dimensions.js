@@ -3,8 +3,8 @@ export const avatarSpace = -4
 export const avatarWidth = 26
 export const avatarHeight = 26
 export const avatarRadius = 13
-export const goalWidth = 360
-export const goalHeight = 160
+export const outcomeWidth = 360
+export const outcomeHeight = 160
 export const cornerRadius = 15
 export const borderWidth = 4
 export const textBoxMarginLeft = 29
@@ -18,7 +18,7 @@ export const secondZoomThreshold = 0.4
 export const lineHeightMultiplier = 1.2
 // this is the regular font size, for
 // a regular level of zoom
-// and this is for the Goal Titles
+// and this is for the Outcome Titles
 // on the canvas
 // these two values fontSize and fontSizeInt should match
 export const fontSize = '20px'
@@ -79,17 +79,17 @@ export function getLinesForParagraphs(ctx, textWithParagraphs, scale) {
     .reduce((a, b) => a.concat(b))
 }
 
-export function getGoalHeight(ctx, goalText, scale, isEditing) {
+export function getOutcomeHeight(ctx, outcomeText, scale, isEditing) {
 
-  // if this goal is not being edited
+  // if this outcome is not being edited
   // then its height is a known/constant
   // because the title text is being limited 
   // to a fixed number of lines of text
   if (!isEditing) {
-    return goalHeight
+    return outcomeHeight
   }
 
-  // if this goal is being edited then
+  // if this outcome is being edited then
   // its height is a variable that we need to
   // measure because we are rendering an unknown number of 
   // lines of text
@@ -100,7 +100,7 @@ export function getGoalHeight(ctx, goalText, scale, isEditing) {
 
   // get lines after font and font size are set up, since ctx.measureText()
   // takes font and font size into account
-  const lines = getLinesForParagraphs(ctx, goalText, scale)
+  const lines = getLinesForParagraphs(ctx, outcomeText, scale)
 
   // adjust font size based on scale (zoom factor)
   let fontSizeToUse = fontSizeInt // default
@@ -111,12 +111,12 @@ export function getGoalHeight(ctx, goalText, scale, isEditing) {
   }
   const totalTextHeight = lines.length * (fontSizeToUse * lineHeightMultiplier)
 
-  // calculate the goalHeight
+  // calculate the outcomeHeight
   // from the top and bottom margins + the height
   // of the lines of text
-  const detectedGoalHeight =
+  const detectedOutcomeHeight =
     textBoxMarginTop * 2 + totalTextHeight + avatarHeight + avatarSpace * 2
 
-  // create a minimum height equal to the goalHeight
-  return Math.max(detectedGoalHeight, goalHeight)
+  // create a minimum height equal to the outcomeHeight
+  return Math.max(detectedOutcomeHeight, outcomeHeight)
 }

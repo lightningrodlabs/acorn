@@ -2,23 +2,23 @@
 import { combineReducers } from 'redux'
 
 import members from './members/reducer'
-import goals from './goals/reducer'
-import edges from './edges/reducer'
+import outcomes from './outcomes/reducer'
+import connections from './connections/reducer'
 import entryPoints from './entry-points/reducer'
-import goalComments from './goal-comments/reducer'
-import goalMembers from './goal-members/reducer'
-import goalVotes from './goal-votes/reducer'
-import goalHistory from './goal-history/reducer'
+import outcomeComments from './outcome-comments/reducer'
+import outcomeMembers from './outcome-members/reducer'
+import outcomeVotes from './outcome-votes/reducer'
+import outcomeHistory from './outcome-history/reducer'
 import projectMeta from './project-meta/reducer'
 
 export default combineReducers({
   projectMeta,
   members,
-  goals,
-  edges,
+  outcomes,
+  connections,
   entryPoints,
-  goalMembers,
-  goalVotes,
-  goalComments,
-  goalHistory,
+  outcomeMembers,
+  outcomeVotes,
+  outcomeComments,
+  outcomeHistory,
 })

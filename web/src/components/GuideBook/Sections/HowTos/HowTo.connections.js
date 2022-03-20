@@ -50,7 +50,7 @@ export default {
             {/* ASSUMPTION: one parent */}
             There only can be one parent for any child at a time. If there is an
             existing parent, adding a new parent to the card would replace that
-            goal as parent.
+            outcome as parent.
           </li>
         </ol>
       ),
@@ -123,13 +123,13 @@ export default {
       ),
     },
     {
-      title: 'Archive Connection',
-      guide_id: 'archive-connection',
+      title: 'Delete Connection',
+      guide_id: 'delete-connection',
       description: (
         <>
           <div className="guidebook-description-section">
             <div className="guidebook-separate-line">
-              If you would like to archive a connection:
+              If you would like to delete a connection:
             </div>
           </div>
           <div className="guidebook-description-section">

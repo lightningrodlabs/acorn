@@ -13,8 +13,8 @@ const SET_COORDINATE = 'SET_COORDINATE'
 const UNSET_COORDINATE = 'UNSET_COORDINATE'
 const SET_SIZE = 'SET_SIZE'
 const UNSET_SIZE = 'UNSET_SIZE'
-const SET_GOALS = 'SET_GOALS'
-const UNSET_GOALS = 'UNSET_GOALS'
+const SET_OUTCOMES = 'SET_OUTCOMES'
+const UNSET_OUTCOMES = 'UNSET_OUTCOMES'
 
 /* action creator functions */
 
@@ -61,16 +61,16 @@ function unsetSize() {
     type: UNSET_SIZE,
   }
 }
-function setGoals(goalsAddresses) {
+function setOutcomes(outcomesAddresses) {
   return {
-    type: SET_GOALS,
-    goalsAddresses,
+    type: SET_OUTCOMES,
+    outcomesAddresses,
   }
 }
 
-function unsetGoals() {
+function unsetOutcomes() {
   return {
-    type: UNSET_GOALS,
+    type: UNSET_OUTCOMES,
   }
 }
 
@@ -82,8 +82,8 @@ export {
   UNSET_COORDINATE,
   SET_SIZE,
   UNSET_SIZE,
-  SET_GOALS,
-  UNSET_GOALS,
+  SET_OUTCOMES,
+  UNSET_OUTCOMES,
   setMousedown,
   unsetMousedown,
   setLiveCoordinate,
@@ -91,6 +91,6 @@ export {
   unsetCoordinate,
   setSize,
   unsetSize,
-  setGoals,
-  unsetGoals,
+  setOutcomes,
+  unsetOutcomes,
 }
