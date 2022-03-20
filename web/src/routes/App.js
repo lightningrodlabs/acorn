@@ -217,6 +217,9 @@ function mapStateToProps(state) {
 
 function mergeProps(stateProps, dispatchProps, _ownProps) {
   const { profilesCellIdString } = stateProps
+  console.log('state props', stateProps)
+  console.log('profile cellid', profilesCellIdString)
+  // profilesCellIdString is null - I don't think the profiles dna is being loaded properly
   const cellId = cellIdFromString(profilesCellIdString)
   const { dispatch } = dispatchProps
   return {

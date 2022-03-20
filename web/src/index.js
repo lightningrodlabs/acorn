@@ -42,7 +42,7 @@ import './styles.scss'
 getAdminWs()
 
 // TODO: remove the holochain middleware
-const middleware = [holochainMiddleware(APP_WS_URL), layoutWatcher, realtimeInfoWatcher]
+const middleware = [layoutWatcher, realtimeInfoWatcher]
 
 // This enables the redux-devtools browser extension
 // which gives really awesome debugging for apps that use redux
