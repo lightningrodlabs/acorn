@@ -16,9 +16,3 @@ paste = "*"
 serde = "*"
 thiserror = "1"
 chrono = "0.4.19"
-
-[profile.dev]
-opt-level = "z"
-
-[profile.release]
-opt-level = "z"

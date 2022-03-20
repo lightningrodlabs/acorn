@@ -15,7 +15,7 @@ import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
 
 // Local Imports
-import { MAIN_APP_ID, PROFILES_SLOT_NAME } from './holochainConfig'
+import { MAIN_APP_ID, PROFILES_ROLE_ID } from './holochainConfig'
 import acorn from './redux/reducer'
 import signalsHandlers from './signalsHandlers'
 import { setProfilesCellId, setProjectsCellIds } from './redux/persistent/cells/actions'
@@ -29,7 +29,6 @@ import {
   getAppWs,
   getAdminWs,
   setAgentPubKey,
-  APP_WS_URL,
 } from './hcWebsockets'
 import { getProjectCellIdStrings } from './projectAppIds'
 import ProfilesZomeApi from './api/profilesApi'
@@ -46,6 +45,7 @@ const middleware = [layoutWatcher, realtimeInfoWatcher]
 
 // This enables the redux-devtools browser extension
 // which gives really awesome debugging for apps that use redux
+// @ts-ignore
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 // acorn is the top-level reducer. the second argument is custom Holochain middleware
@@ -61,9 +61,8 @@ getAppWs(signalCallback).then(async (client) => {
     const profilesInfo = await client.appInfo({
       installed_app_id: MAIN_APP_ID,
     })
-    console.log(profilesInfo)
     const { cell_id: cellId } = profilesInfo.cell_data.find(
-      ({ role_id }) => role_id === PROFILES_SLOT_NAME
+      ({ role_id }) => role_id === PROFILES_ROLE_ID
     )
     const [_dnaHash, agentPubKey] = cellId
     // cache buffer version of agentPubKey
@@ -71,9 +70,7 @@ getAppWs(signalCallback).then(async (client) => {
     const cellIdString = cellIdToString(cellId)
     store.dispatch(setProfilesCellId(cellIdString))
     // all functions of the Profiles DNA
-    const appWebsocket = await getAppWs()
-
-    const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+    const profilesZomeApi = new ProfilesZomeApi(client)
 
     const profiles = await profilesZomeApi.profile.fetchAgents(cellId)
     store.dispatch(fetchAgents(cellIdString, profiles))

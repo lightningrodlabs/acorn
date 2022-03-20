@@ -1,5 +1,6 @@
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const ReactRefreshTypeScript = require('react-refresh-typescript')
+const HTMLWebpackPlugin = require('html-webpack-plugin')
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
@@ -19,6 +20,10 @@ module.exports = {
       __MAIN_APP_ID__: JSON.stringify(mainAppId),
       __ADMIN_PORT__: process.env.ADMIN_WS_PORT,
       __APP_PORT__: process.env.APP_WS_PORT,
+    }),
+    new HTMLWebpackPlugin({
+      template: './src/index.html', //source
+      filename: 'index.html', //destination
     }),
   ],
   entry: {
