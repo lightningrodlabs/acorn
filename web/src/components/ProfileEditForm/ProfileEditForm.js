@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import PropTypes from 'prop-types'
 import './ProfileEditForm.scss'
 import Button from '../Button/Button'
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
@@ -198,23 +197,6 @@ function ProfileEditForm({
       <Button onClick={() => !pending && innerOnSubmit()} text={actionButton} />
     </div>
   )
-}
-
-ProfileEditForm.propTypes = {
-  agentAddress: PropTypes.string,
-  onSubmit: PropTypes.func,
-  onClose: PropTypes.func,
-  whoami: PropTypes.shape({
-    address: PropTypes.string,
-    first_name: PropTypes.string,
-    last_name: PropTypes.string,
-    handle: PropTypes.string,
-    avatar_url: PropTypes.string,
-  }),
-  titleText: PropTypes.string,
-  subText: PropTypes.string,
-  submitText: PropTypes.string,
-  canClose: PropTypes.bool,
 }
 
 export default ProfileEditForm
