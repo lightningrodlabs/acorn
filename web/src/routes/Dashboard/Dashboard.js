@@ -482,7 +482,7 @@ function mapDispatchToProps(dispatch) {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
-      const entryPointDetails = await projectsZomeApi.entryPoint.fetchEntryPointDetails(cellId, null)
+      const entryPointDetails = await projectsZomeApi.entryPoint.fetchEntryPointDetails(cellId)
       return dispatch(
         fetchEntryPointDetails(cellIdString, entryPointDetails)
         )

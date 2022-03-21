@@ -1,16 +1,22 @@
 import {
   Connection,
+  CreateOutcomeWithConnectionInput,
+  CreateOutcomeWithConnectionOutput,
+  DeleteOutcomeFullyResponse,
   EntryPoint,
+  EntryPointDetails,
   Outcome,
   OutcomeComment,
   OutcomeMember,
   OutcomeVote,
   ProjectMeta,
+  RealtimeInfoInput,
 } from '../types'
-import { createCrudFunctions } from './hdkCrud'
-import { AppWebsocket } from '@holochain/client'
+import { createCrudFunctions, WireElement } from './hdkCrud'
+import { AppWebsocket, CellId } from '@holochain/client'
 import { PROJECTS_ZOME_NAME } from '../holochainConfig'
 import callZome from './callZome'
+import { HeaderHashB64 } from '../types/shared'
 
 // TODO: add typescript types to `any` ones here
 
@@ -43,7 +49,7 @@ const OutcomeApi = (appWebsocket: AppWebsocket) => {
   )
   return {
     ...outcomeCrud,
-    createOutcomeWithConnection: async (cellId, payload) => {
+    createOutcomeWithConnection: async (cellId: CellId, payload: CreateOutcomeWithConnectionInput): Promise<CreateOutcomeWithConnectionOutput> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -52,7 +58,7 @@ const OutcomeApi = (appWebsocket: AppWebsocket) => {
         payload
       )
     },
-    deleteOutcomeFully: async (cellId, payload) => {
+    deleteOutcomeFully: async (cellId: CellId, payload: HeaderHashB64): Promise<DeleteOutcomeFullyResponse> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -92,13 +98,13 @@ const EntryPointApi = (appWebsocket: AppWebsocket) => {
   )
   return {
     ...entryPointCrud,
-    fetchEntryPointDetails: async (cellId, payload) => {
+    fetchEntryPointDetails: async (cellId: CellId): Promise<EntryPointDetails> => {
       return callZome(
         appWebsocket,
         cellId,
         PROJECTS_ZOME_NAME,
         ZOME_FN_NAMES.FETCH_ENTRY_POINT_DETAILS,
-        payload
+        null
       )
     },
   }
@@ -118,7 +124,7 @@ const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
   )
   return {
     ...projectMetaCrud,
-    simpleCreateProjectMeta: async (cellId, payload) => {
+    simpleCreateProjectMeta: async (cellId: CellId, payload: ProjectMeta): Promise<WireElement<ProjectMeta>> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -127,7 +133,7 @@ const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
         payload
       )
     },
-    fetchProjectMeta: async (cellId) => {
+    fetchProjectMeta: async (cellId: CellId): Promise<WireElement<ProjectMeta>> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -136,7 +142,7 @@ const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
         null
       )
     },
-    checkProjectMetaExists: async (cellId) => {
+    checkProjectMetaExists: async (cellId: CellId): Promise<boolean> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -150,7 +156,7 @@ const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
 
 const RealtimeInfoSignalApi = (appWebsocket: AppWebsocket) => {
   return {
-    send: async (cellId, payload) => {
+    send: async (cellId: CellId, payload: RealtimeInfoInput) => {
       return callZome(
         appWebsocket,
         cellId,
@@ -164,7 +170,7 @@ const RealtimeInfoSignalApi = (appWebsocket: AppWebsocket) => {
 
 const MembersApi = (appWebsocket: AppWebsocket) => {
   return {
-    fetch: async (cellId) => {
+    fetch: async (cellId: CellId) => {
       return callZome(
         appWebsocket,
         cellId,

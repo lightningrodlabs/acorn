@@ -1,6 +1,8 @@
-import { AppWebsocket } from '@holochain/client'
+import { AppWebsocket, CellId } from '@holochain/client'
 import { PROFILES_ZOME_NAME } from '../holochainConfig'
+import { Profile } from '../types'
 import callZome from './callZome'
+import { UpdateInput, WireElement } from './hdkCrud'
 
 const ZOME_FN_NAMES = {
   CREATE_WHOAMI: 'create_whoami',
@@ -11,11 +13,9 @@ const ZOME_FN_NAMES = {
   FETCH_AGENT_ADDRESS: 'fetch_agent_address',
 }
 
-// TODO: add typescript types
-
 const ProfilesApi = (appWebsocket: AppWebsocket) => {
   return {
-    createWhoami: async (cellId, payload) => {
+    createWhoami: async (cellId: CellId, payload: Profile): Promise<WireElement<Profile>> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -24,7 +24,7 @@ const ProfilesApi = (appWebsocket: AppWebsocket) => {
         payload
       )
     },
-    createImportedProfile: async (cellId, payload) => {
+    createImportedProfile: async (cellId: CellId, payload: Profile): Promise<WireElement<Profile>> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -33,7 +33,7 @@ const ProfilesApi = (appWebsocket: AppWebsocket) => {
         payload
       )
     },
-    updateWhoami: async (cellId, payload) => {
+    updateWhoami: async (cellId: CellId, payload: UpdateInput<Profile>): Promise<WireElement<Profile>> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -42,7 +42,7 @@ const ProfilesApi = (appWebsocket: AppWebsocket) => {
         payload
       )
     },
-    whoami: async (cellId) => {
+    whoami: async (cellId: CellId) => {
       return callZome(
         appWebsocket,
         cellId,
@@ -51,7 +51,7 @@ const ProfilesApi = (appWebsocket: AppWebsocket) => {
         null
       )
     },
-    fetchAgents: async (cellId) => {
+    fetchAgents: async (cellId: CellId) => {
       return callZome(
         appWebsocket,
         cellId,
@@ -60,7 +60,7 @@ const ProfilesApi = (appWebsocket: AppWebsocket) => {
         null
       )
     },
-    fetchAgentAddress: async (cellId) => {
+    fetchAgentAddress: async (cellId: CellId) => {
       return callZome(
         appWebsocket,
         cellId,

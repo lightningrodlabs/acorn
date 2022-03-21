@@ -1,6 +1,6 @@
 const SEND_REALTIME_INFO = 'SEND_REALTIME_INFO'
 const SEND_EXIT_PROJECT_SIGNAL = 'SEND_EXIT_PROJECT_SIGNAL'
-const SEND_REALTIME_INFO_SIGNAL = 'send_realtime_info_signal'
+const SEND_REALTIME_INFO_SIGNAL = 'SEND_REALTIME_INFO_SIGNAL'
 
 const sendRealtimeInfoSignal = (cellIdString, payload) => {
   return {
