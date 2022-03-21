@@ -8,7 +8,7 @@ import { cellIdFromString } from '../../../utils'
 function mapStateToProps(state, ownProps) {
   const { projectId, outcomeAddress } = ownProps
   const projectMeta = state.projects.projectMeta[projectId] || {}
-  const topPriorityOutcomes = projectMeta.top_priority_outcomes || []
+  const topPriorityOutcomes = projectMeta.topPriorityOutcomes || []
   // see if the outcome of interest is listed in the set
   // of top priority outcomes for the project
   const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === outcomeAddress)

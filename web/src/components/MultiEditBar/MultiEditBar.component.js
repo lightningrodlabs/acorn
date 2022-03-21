@@ -57,8 +57,8 @@ export default function MultiEditBar({
       updateOutcome(
         {
           ...outcome,
-          user_edit_hash: agentAddress,
-          timestamp_updated: moment().unix(),
+          userEditHash: agentAddress,
+          timestampUpdated: moment().unix(),
           [key]: val,
         },
         outcome.headerHash
@@ -141,12 +141,12 @@ export default function MultiEditBar({
 
     if (start && end) {
       timeframe = {
-        from_date: start,
-        to_date: end,
+        fromDate: start,
+        toDate: end,
       }
     }
 
-    updateOutcomes('time_frame')(timeframe)
+    updateOutcomes('timeFrame')(timeframe)
   }
 
   let showModal = false,

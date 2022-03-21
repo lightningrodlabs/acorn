@@ -17,13 +17,13 @@ import handleConnectionConnectMouseUp from '../../redux/ephemeral/connection-con
 // e.g. we can walk straight up the tree to the top
 function isAncestor(descendantAddress, checkAddress, connections) {
   const connectionWithParent = connections.find(
-    (connection) => connection.child_address === descendantAddress
+    (connection) => connection.childAddress === descendantAddress
   )
   if (connectionWithParent) {
-    if (connectionWithParent.parent_address === checkAddress) {
+    if (connectionWithParent.parentAddress === checkAddress) {
       return true
     } else {
-      return isAncestor(connectionWithParent.parent_address, checkAddress, connections)
+      return isAncestor(connectionWithParent.parentAddress, checkAddress, connections)
     }
   } else {
     // if node has no ancestors, then checkAddress must not be an ancestor
@@ -34,8 +34,8 @@ function isAncestor(descendantAddress, checkAddress, connections) {
 // as long as there are no cycles in the tree this will work wonderfully
 function allDescendants(ancestorAddress, connections, accumulator = []) {
   const children = connections
-    .filter((connection) => connection.parent_address === ancestorAddress)
-    .map((connection) => connection.child_address)
+    .filter((connection) => connection.parentAddress === ancestorAddress)
+    .map((connection) => connection.childAddress)
   return accumulator
     .concat(children.map((address) => allDescendants(address, connections, children)))
     .flat()
@@ -73,7 +73,7 @@ export function calculateValidChildren(fromAddress, connections, outcomeAddresse
       outcomeAddress !== fromAddress &&
       // find the Outcome objects without parent Outcomes
       // since they will sit at the top level
-      !connections.find((connection) => connection.child_address === outcomeAddress) &&
+      !connections.find((connection) => connection.childAddress === outcomeAddress) &&
       !isAncestor(fromAddress, outcomeAddress, connections)
     )
   })
@@ -260,7 +260,7 @@ const ConnectionConnectors = ({
         // of this Outcome, so that it can be deleted
         // if it is to be changed and a new one added
         const hasParent = connections.find(
-          (connection) => connection.child_address === connectorAddress
+          (connection) => connection.childAddress === connectorAddress
         )
         return (
           <Transition key={connectorAddress} timeout={300}>

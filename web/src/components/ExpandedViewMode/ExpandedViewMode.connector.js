@@ -32,27 +32,27 @@ function mapStateToProps(state, ownProps) {
     outcome = outcomes[state.ui.expandedView.outcomeAddress]
     comments = Object.values(outcomeComments).filter(
       (outcomeComment) =>
-        outcomeComment.outcome_address === state.ui.expandedView.outcomeAddress
+        outcomeComment.outcomeAddress === state.ui.expandedView.outcomeAddress
     )
     squirrels = Object.keys(outcomeMembers)
       .map((headerHash) => outcomeMembers[headerHash])
-      .filter((outcomeMember) => outcomeMember.outcome_address === outcome.headerHash)
+      .filter((outcomeMember) => outcomeMember.outcomeAddress === outcome.headerHash)
       .map((outcomeMember) => {
         const squirrel = {
-          ...state.agents[outcomeMember.agent_address],
+          ...state.agents[outcomeMember.agentAddress],
           outcomeMemberAddress: outcomeMember.headerHash,
         }
         return squirrel
       })
     Object.keys(state.agents).forEach((value) => {
-      if (state.agents[value].address === outcome.user_hash)
+      if (state.agents[value].address === outcome.userHash)
         creator = state.agents[value]
     })
   }
 
   const outcomeAddress = state.ui.expandedView.outcomeAddress
   const entryPoint = Object.values(entryPoints).find(
-    (entryPoint) => entryPoint.outcome_address === outcomeAddress
+    (entryPoint) => entryPoint.outcomeAddress === outcomeAddress
   )
   const isEntryPoint = entryPoint ? true : false
   const entryPointAddress = entryPoint ? entryPoint.headerHash : null

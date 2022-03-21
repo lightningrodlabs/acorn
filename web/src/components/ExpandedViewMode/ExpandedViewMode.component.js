@@ -66,10 +66,10 @@ export default function ExpandedViewMode({
   const turnIntoEntryPoint = () => {
     createEntryPoint({
       color: pickColorForString(outcomeAddress),
-      creator_address: agentAddress,
-      created_at: Date.now(),
-      outcome_address: outcomeAddress,
-      is_imported: false
+      creatorAddress: agentAddress,
+      createdAt: Date.now(),
+      outcomeAddress: outcomeAddress,
+      isImported: false
     })
   }
   const unmakeAsEntryPoint = () => {
@@ -84,17 +84,17 @@ export default function ExpandedViewMode({
 
     if (start && end) {
       timeframe = {
-        from_date: start,
-        to_date: end,
+        fromDate: start,
+        toDate: end,
       }
     }
 
     updateOutcome(
       {
         ...outcome,
-        user_edit_hash: agentAddress,
-        timestamp_updated: moment().unix(),
-        time_frame: timeframe,
+        userEditHash: agentAddress,
+        timestampUpdated: moment().unix(),
+        timeFrame: timeframe,
       },
       outcomeAddress
     )
@@ -102,10 +102,10 @@ export default function ExpandedViewMode({
 
   let fromDate, toDate
   if (outcome) {
-    fromDate = outcome.time_frame
-      ? moment.unix(outcome.time_frame.from_date)
+    fromDate = outcome.timeFrame
+      ? moment.unix(outcome.timeFrame.fromDate)
       : null
-    toDate = outcome.time_frame ? moment.unix(outcome.time_frame.to_date) : null
+    toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
   }
 
   return (

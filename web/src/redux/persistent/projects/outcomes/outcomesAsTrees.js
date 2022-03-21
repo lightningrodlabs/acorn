@@ -11,17 +11,17 @@ export default function outcomesAsTrees(
       let extensions = {}
       if (withMembers) {
         extensions.members = Object.values(outcomeMembers)
-          .filter(gm => gm.outcome_address === outcome.headerHash)
-          .map(gm => agents[gm.agent_address])
+          .filter(gm => gm.outcomeAddress === outcome.headerHash)
+          .map(gm => agents[gm.agentAddress])
       }
       if (withComments) {
         extensions.comments = Object.values(outcomeComments).filter(
-          gc => gc.outcome_address === outcome.headerHash
+          gc => gc.outcomeAddress === outcome.headerHash
         )
       }
       if (withVotes) {
         extensions.votes = Object.values(outcomeVotes).filter(
-          gv => gv.outcome_address === outcome.headerHash
+          gv => gv.outcomeAddress === outcome.headerHash
         )
       }
       return {
@@ -38,7 +38,7 @@ export default function outcomesAsTrees(
   // find the Outcome objects without parent Outcomes
   // since they will sit at the top level
   const noParentsAddresses = allOutcomeAddresses.filter(outcomeAddress => {
-    return !connectionsAsArray.find(connection => connection.child_address === outcomeAddress)
+    return !connectionsAsArray.find(connection => connection.childAddress === outcomeAddress)
   })
   // recursively calls itself
   // so that it constructs the full sub-tree for each root Outcome
@@ -47,9 +47,9 @@ export default function outcomesAsTrees(
       ...allOutcomes[outcomeAddress],
       children: connectionsAsArray
         // find the connections indicating the children of this outcome
-        .filter(connection => connection.parent_address === outcomeAddress)
+        .filter(connection => connection.parentAddress === outcomeAddress)
         // actually nest the children Outcomes, recurse
-        .map(connection => getOutcome(connection.child_address)),
+        .map(connection => getOutcome(connection.childAddress)),
     }
   }
   // start with the root Outcomes, and recurse down to their children

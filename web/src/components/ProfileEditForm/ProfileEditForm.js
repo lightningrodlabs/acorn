@@ -33,23 +33,23 @@ function ProfileEditForm({
   const innerOnSubmit = () => {
     if (isValidUserName && isValidFirstName && isValidLastName) {
       onSubmit({
-        first_name: firstName,
-        last_name: lastName,
+        firstName: firstName,
+        lastName: lastName,
         status: 'Online',
-        avatar_url: avatarUrl,
+        avatarUrl: avatarUrl,
         address: agentAddress,
         handle,
-        is_imported: false
+        isImported: false
       })
     }
   }
 
   useEffect(() => {
     if (whoami) {
-      setFirstName(whoami.first_name)
-      setLastName(whoami.last_name)
+      setFirstName(whoami.firstName)
+      setLastName(whoami.lastName)
       setHandle(whoami.handle)
-      setAvatarUrl(whoami.avatar_url)
+      setAvatarUrl(whoami.avatarUrl)
     }
   }, [whoami])
   const userNames = useSelector(state =>
@@ -183,7 +183,7 @@ function ProfileEditForm({
             }
           />
           <div className='profile_edit_form_avatar'>
-            <Avatar avatar_url={avatarShow} large />
+            <Avatar avatarUrl={avatarShow} large />
           </div>
         </div>
         <div className='row'>

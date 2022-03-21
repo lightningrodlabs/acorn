@@ -22,31 +22,31 @@ const MembersIndicator: React.FC<MembersIndicatorProps> = ({
 
   // const members = [
   //   {
-  //     first_name: 'Pegah',
-  //     last_name: 'Vaezi',
-  //     avatar_url:
+  //     firstName: 'Pegah',
+  //     lastName: 'Vaezi',
+  //     avatarUrl:
   //       'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.fouladiprojects.com%2Fwp-content%2Fuploads%2F2015%2F10%2FBarbourshow1.jpg&f=1&nofb=1',
-  //     is_imported: false,
+  //     isImported: false,
   //     headerHash: 'riusry3764yiud',
   //     connectionStatus: 'connected',
   //     selfAssignedStatus: 'online',
   //   },
   //   {
-  //     first_name: 'James',
-  //     last_name: 'Turland',
-  //     avatar_url:
+  //     firstName: 'James',
+  //     lastName: 'Turland',
+  //     avatarUrl:
   //       'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.0ywwhCouW5nzFObdsruKhgHaEo%26pid%3DApi&f=1',
-  //     is_imported: false,
+  //     isImported: false,
   //     headerHash: 'riusry3764yiudsdasfaf',
   //     connectionStatus: 'connected',
   //     selfAssignedStatus: 'online',
   //   },
   //   {
-  //     first_name: 'Connor',
-  //     last_name: 'Turland',
-  //     avatar_url:
+  //     firstName: 'Connor',
+  //     lastName: 'Turland',
+  //     avatarUrl:
   //       'https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F1409121%3Fv%3D4&f=1&nofb=1',
-  //     is_imported: false,
+  //     isImported: false,
   //     headerHash: 'riusry3764yiudsdasfafsdasds',
   //     connectionStatus: 'connected',
   //     selfAssignedStatus: 'online',
@@ -75,19 +75,19 @@ const MembersIndicator: React.FC<MembersIndicatorProps> = ({
                 : 'members-indicator-wrapper-avatars disconnected'
             }
           >
-            {/* title={`${member.first_name} ${member.last_name}`} */}
+            {/* title={`${member.firstName} ${member.lastName}`} */}
             <Avatar
-              first_name={member.first_name}
-              last_name={member.last_name}
-              avatar_url={member.avatar_url}
-              imported={member.is_imported}
+              firstName={member.firstName}
+              lastName={member.lastName}
+              avatarUrl={member.avatarUrl}
+              imported={member.isImported}
               selfAssignedStatus={member.status}
               smallMedium
               withWhiteBorder
               withStatus={isMemberPresent}
               clickable
               withTooltip
-              tooltipText={`${member.first_name} ${member.last_name}`}
+              tooltipText={`${member.firstName} ${member.lastName}`}
             />
           </div>
         )

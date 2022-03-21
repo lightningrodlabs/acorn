@@ -83,7 +83,7 @@ function Header({
         />
         <HeaderMiddlePanel
           projectId={projectId}
-          projectPriorityMode={project.priority_mode}
+          projectPriorityMode={project.priorityMode}
         />
         {whoami && (
           // add all these values as props

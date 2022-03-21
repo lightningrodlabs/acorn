@@ -237,7 +237,7 @@ export default function PriorityPickerVote({
   const [openMyVote, setOpenMyVote] = useState(openToMyVote)
 
   const myVote = votes.find(value => {
-    return value.agent_address === whoami.entry.headerHash
+    return value.agentAddress === whoami.entry.headerHash
   })
 
   const defaultValues = {
@@ -250,10 +250,10 @@ export default function PriorityPickerVote({
   const onUpdateVote = () => {
     const outcome_vote = {
       ...values,
-      outcome_address: outcomeAddress,
-      agent_address: whoami.entry.headerHash,
-      unix_timestamp: moment().unix(),
-      is_imported: false
+      outcomeAddress: outcomeAddress,
+      agentAddress: whoami.entry.headerHash,
+      unixTimestamp: moment().unix(),
+      isImported: false
     }
     updateOutcomeVote(outcome_vote, myVote.headerHash)
   }
@@ -261,10 +261,10 @@ export default function PriorityPickerVote({
   const createVote = async () => {
     await createOutcomeVote({
       ...values,
-      outcome_address: outcomeAddress,
-      agent_address: whoami.entry.headerHash,
-      unix_timestamp: moment().unix(),
-      is_imported: false
+      outcomeAddress: outcomeAddress,
+      agentAddress: whoami.entry.headerHash,
+      unixTimestamp: moment().unix(),
+      isImported: false
     })
     setOpenMyVote(true)
   }
@@ -284,7 +284,7 @@ export default function PriorityPickerVote({
   }
   const handleDelete = () => {
     const vote = votes.find(value => {
-      return value.agent_address === whoami.entry.headerHash
+      return value.agentAddress === whoami.entry.headerHash
     })
     if (!vote) return
     setOpenMyVote(false)
@@ -312,7 +312,7 @@ export default function PriorityPickerVote({
             {myVote && (
               <div className='my-vote-info'>
                 Last Modified{' '}
-                {moment.unix((myVote || {}).unix_timestamp).calendar(null, {
+                {moment.unix((myVote || {}).unixTimestamp).calendar(null, {
                   lastDay: '[Yesterday at] LT',
                   sameDay: '[Today at] LT',
                   nextDay: '[Tomorrow at] LT',

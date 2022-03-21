@@ -204,7 +204,7 @@ function Uncategorized({
   const outcomes = getSubsetOfOutcomesBasedOnContext(outcomeTrees, contextOutcomeAddress)
   const outcomeList = outcomes.filter(outcome => {
     // if there are no Votes, this Outcome is "uncategorized"
-    return !outcomeVotes.find(gv => gv.outcome_address === outcome.headerHash)
+    return !outcomeVotes.find(gv => gv.outcomeAddress === outcome.headerHash)
   })
   return (
     <div className='priority-wrapper-full-height'>
@@ -304,7 +304,7 @@ function getSortedAveragesOutcomeLists(
   // first calculate averages
   const outcomesWithPriorityAverages = allOutcomes
     .map(outcome => {
-      const votes = outcomeVotes.filter(gv => gv.outcome_address === outcome.headerHash)
+      const votes = outcomeVotes.filter(gv => gv.outcomeAddress === outcome.headerHash)
       let averageValues = NO_VOTES
       let averageAverage
       if (votes.length > 0) {

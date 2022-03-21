@@ -30,8 +30,8 @@ export default function ExpandedViewModeHeader({
     updateOutcome(
       {
         ...outcome,
-        user_edit_hash: agentAddress,
-        timestamp_updated: moment().unix(),
+        userEditHash: agentAddress,
+        timestampUpdated: moment().unix(),
         status,
       },
       outcomeAddress

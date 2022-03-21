@@ -47,7 +47,7 @@ export default function (state = defaultState, action) {
         ...state,
         [cellId]: _.pickBy(
           state[cellId],
-          (_value, key) => payload.deleted_outcome_comments.indexOf(key) === -1
+          (_value, key) => payload.deletedOutcomeComments.indexOf(key) === -1
         ),
       }
     // DEFAULT

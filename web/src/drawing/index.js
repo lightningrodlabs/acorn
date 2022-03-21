@@ -74,7 +74,7 @@ function render(store, canvas) {
 
   // draw things relating to the project, if the project has fully loaded
   if (outcomes && connections && outcomeMembers && entryPoints && projectMeta) {
-    const topPriorityOutcomes = projectMeta.top_priority_outcomes
+    const topPriorityOutcomes = projectMeta.topPriorityOutcomes
     // converts the outcomes object to an array
     const outcomesAsArray = Object.keys(outcomes).map(headerHash => outcomes[headerHash])
     // convert the connections object to an array
@@ -105,14 +105,14 @@ function render(store, canvas) {
       // if in the pending re-parenting mode for the child card of an existing connection,
       // temporarily omit/hide the existing connection from view
       // ASSUMPTION: one parent
-      const pendingReParent = (state.ui.connectionConnector.fromAddress === connection.child_address && state.ui.connectionConnector.relation === RELATION_AS_CHILD)
-        || (state.ui.outcomeForm.isOpen && state.ui.outcomeForm.fromAddress === connection.child_address && state.ui.outcomeForm.relation === RELATION_AS_CHILD)
+      const pendingReParent = (state.ui.connectionConnector.fromAddress === connection.childAddress && state.ui.connectionConnector.relation === RELATION_AS_CHILD)
+        || (state.ui.outcomeForm.isOpen && state.ui.outcomeForm.fromAddress === connection.childAddress && state.ui.outcomeForm.relation === RELATION_AS_CHILD)
       if (pendingReParent) return
 
-      const childCoords = coordinates[connection.child_address]
-      const parentCoords = coordinates[connection.parent_address]
-      const parentOutcomeText = outcomes[connection.parent_address]
-        ? outcomes[connection.parent_address].content
+      const childCoords = coordinates[connection.childAddress]
+      const parentCoords = coordinates[connection.parentAddress]
+      const parentOutcomeText = outcomes[connection.parentAddress]
+        ? outcomes[connection.parentAddress].content
         : ''
       // we can only render this connection
       // if we know the coordinates of the Outcomes it connects
@@ -173,8 +173,8 @@ function render(store, canvas) {
 
       const membersOfOutcome = Object.keys(outcomeMembers)
         .map(headerHash => outcomeMembers[headerHash])
-        .filter(outcomeMember => outcomeMember.outcome_address === outcome.headerHash)
-        .map(outcomeMember => state.agents[outcomeMember.agent_address])
+        .filter(outcomeMember => outcomeMember.outcomeAddress === outcome.headerHash)
+        .map(outcomeMember => state.agents[outcomeMember.agentAddress])
       const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === outcome.headerHash)
       drawOutcomeCard({
         scale: scale,
@@ -252,8 +252,8 @@ function render(store, canvas) {
         .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
       const membersOfOutcome = Object.keys(outcomeMembers)
         .map(headerHash => outcomeMembers[headerHash])
-        .filter(outcomeMember => outcomeMember.outcome_address === outcome.headerHash)
-        .map(outcomeMember => state.agents[outcomeMember.agent_address])
+        .filter(outcomeMember => outcomeMember.outcomeAddress === outcome.headerHash)
+        .map(outcomeMember => state.agents[outcomeMember.agentAddress])
       const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === outcome.headerHash)
       drawOutcomeCard({
         scale: scale,
@@ -390,8 +390,8 @@ function render(store, canvas) {
         .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
       const membersOfOutcome = Object.keys(outcomeMembers)
         .map(headerHash => outcomeMembers[headerHash])
-        .filter(outcomeMember => outcomeMember.outcome_address === editingOutcome.headerHash)
-        .map(outcomeMember => state.agents[outcomeMember.agent_address])
+        .filter(outcomeMember => outcomeMember.outcomeAddress === editingOutcome.headerHash)
+        .map(outcomeMember => state.agents[outcomeMember.agentAddress])
       const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === state.ui.outcomeForm.editAddress)
       drawOutcomeCard({
         scale: scale,

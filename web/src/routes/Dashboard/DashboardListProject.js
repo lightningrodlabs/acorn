@@ -102,19 +102,19 @@ function DashboardListProject({
               {project.members.map(
                 (member) =>
                   member && (
-                    // title={`${member.first_name} ${member.last_name}`}
+                    // title={`${member.firstName} ${member.lastName}`}
                     <div key={member.headerHash}  >
                       <Avatar
-                        first_name={member.first_name}
-                        last_name={member.last_name}
-                        avatar_url={member.avatar_url}
-                        imported={member.is_imported}
+                        firstName={member.firstName}
+                        lastName={member.lastName}
+                        avatarUrl={member.avatarUrl}
+                        imported={member.isImported}
                         medium
                         withStatus
                         withWhiteBorder
                         selfAssignedStatus={member.status}
                         withTooltip
-                        tooltipText={`${member.first_name} ${member.last_name}`}
+                        tooltipText={`${member.firstName} ${member.lastName}`}
                       />
                     </div>
                   )
@@ -183,7 +183,7 @@ function DashboardListProject({
               return (
                 <NavLink
                   key={`entry-point-${entryPoint.headerHash}`}
-                  to={`/project/${project.cellId}/map?${ENTRY_POINTS}=${entryPoint.headerHash}&${GO_TO_OUTCOME}=${entryPoint.outcome_address}`}
+                  to={`/project/${project.cellId}/map?${ENTRY_POINTS}=${entryPoint.headerHash}&${GO_TO_OUTCOME}=${entryPoint.outcomeAddress}`}
                   className="entry-point-item"
                 >
                   <div className="entry-point-color-dot" style={dotStyle} />

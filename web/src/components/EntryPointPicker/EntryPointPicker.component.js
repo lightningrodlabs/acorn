@@ -31,7 +31,7 @@ function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints, goToOut
     // prevent the navigation (NavLink)
     // event that would be triggered
     event.preventDefault()
-    goToOutcome(entryPoint.outcome_address)
+    goToOutcome(entryPoint.outcomeAddress)
   }
   return (
     <li>

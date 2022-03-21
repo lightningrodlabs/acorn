@@ -7,7 +7,7 @@ function mapStateToProps(state, ownProps) {
   // filters all the OutcomeVotes down to a list
   // of only the Votes on the selected Outcome
   const projectMeta = state.projects.projectMeta[projectId] || {}
-  const priorityMode = projectMeta.priority_mode
+  const priorityMode = projectMeta.priorityMode
   return {
     whoami: state.whoami,
     outcomeAddress,

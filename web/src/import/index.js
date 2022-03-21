@@ -39,7 +39,7 @@ export default async function importAllProjectData(
     }
     const clone = {
       ...old,
-      is_imported: true,
+      isImported: true,
     }
     const importedProfile = await profilesZomeApi.profile.createImportedProfile(profilesCellId, clone)
     await dispatch(
@@ -55,7 +55,7 @@ export default async function importAllProjectData(
     const oldOutcome = projectData.outcomes[outcomeAddress]
     const clone = {
       ...oldOutcome,
-      is_imported: true,
+      isImported: true,
     }
     // v0.5.4-alpha
     delete clone.headerHash
@@ -95,11 +95,11 @@ export default async function importAllProjectData(
     const old = projectData.connections[address]
     const clone = {
       ...old,
-      parent_address: outcomeAddressMap[old.parent_address],
-      child_address: outcomeAddressMap[old.child_address],
+      parentAddress: outcomeAddressMap[old.parentAddress],
+      childAddress: outcomeAddressMap[old.childAddress],
       // randomizer used to be a float, but is now an int
       randomizer: Number(old.randomizer.toFixed()),
-      is_imported: true,
+      isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
@@ -107,7 +107,7 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.child_address || !clone.parent_address) {
+    if (!clone.childAddress || !clone.parentAddress) {
       console.log('weird, invalid connection:', clone)
       continue
     }
@@ -128,8 +128,8 @@ export default async function importAllProjectData(
     const old = projectData.outcomeMembers[address]
     const clone = {
       ...old,
-      outcome_address: outcomeAddressMap[old.outcome_address],
-      is_imported: true,
+      outcomeAddress: outcomeAddressMap[old.outcomeAddress],
+      isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
@@ -137,7 +137,7 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.outcome_address) {
+    if (!clone.outcomeAddress) {
       console.log('weird, invalid outcomeMember:', clone)
       continue
     }
@@ -158,8 +158,8 @@ export default async function importAllProjectData(
     const old = projectData.outcomeComments[address]
     const clone = {
       ...old,
-      outcome_address: outcomeAddressMap[old.outcome_address],
-      is_imported: true,
+      outcomeAddress: outcomeAddressMap[old.outcomeAddress],
+      isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
@@ -167,7 +167,7 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.outcome_address) {
+    if (!clone.outcomeAddress) {
       console.log('weird, invalid outcomeComment:', clone)
       continue
     }
@@ -188,8 +188,8 @@ export default async function importAllProjectData(
     const old = projectData.outcomeVotes[address]
     const clone = {
       ...old,
-      outcome_address: outcomeAddressMap[old.outcome_address],
-      is_imported: true,
+      outcomeAddress: outcomeAddressMap[old.outcomeAddress],
+      isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
@@ -197,7 +197,7 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.outcome_address) {
+    if (!clone.outcomeAddress) {
       console.log('weird, invalid outcomeVote:', clone)
       continue
     }
@@ -218,8 +218,8 @@ export default async function importAllProjectData(
     const old = projectData.entryPoints[address]
     const clone = {
       ...old,
-      outcome_address: outcomeAddressMap[old.outcome_address],
-      is_imported: true,
+      outcomeAddress: outcomeAddressMap[old.outcomeAddress],
+      isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
@@ -227,7 +227,7 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.outcome_address) {
+    if (!clone.outcomeAddress) {
       console.log('weird, invalid entryPoint:', clone)
       continue
     }

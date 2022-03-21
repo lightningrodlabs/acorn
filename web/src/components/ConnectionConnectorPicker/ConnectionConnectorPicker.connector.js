@@ -27,8 +27,8 @@ function mapDispatchToProps(dispatch) {
   return {
     previewConnections: (parentAddress, childrenAddresses, activeProject) => {
       const connections = childrenAddresses.map((childAddress) => ({
-        child_address: childAddress,
-        parent_address: parentAddress,
+        childAddress,
+        parentAddress,
       }))
       return dispatch(previewConnections(activeProject, connections))
     },

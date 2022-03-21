@@ -242,7 +242,7 @@ export default function HeaderRightPanel({
                         name="comment.svg"
                         onExpandClick={openExpandedView}
                         panAndZoom={animatePanAndZoom}
-                        outcomeAddress={comment.outcome_address}
+                        outcomeAddress={comment.outcomeAddress}
                       />
                     ))}
               </div>
@@ -283,10 +283,10 @@ export default function HeaderRightPanel({
           >
             {/* @ts-ignore */}
             <Avatar
-              first_name={whoami.entry.first_name}
-              last_name={whoami.entry.last_name}
-              avatar_url={whoami.entry.avatar_url}
-              imported={whoami.entry.is_imported}
+              firstName={whoami.entry.firstName}
+              lastName={whoami.entry.lastName}
+              avatarUrl={whoami.entry.avatarUrl}
+              imported={whoami.entry.isImported}
               highlighted={isAvatarMenuOpen || isAvatarHover}
               clickable
               onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}

@@ -17,7 +17,7 @@ function mapStateToProps(state, ownProps) {
   const outcomeVotes = state.projects.outcomeVotes[projectId] || {}
   const allVotesArray = Object.values(outcomeVotes)
   const votes = allVotesArray.filter(function (outcomeVote) {
-    return outcomeVote.outcome_address === outcomeAddress
+    return outcomeVote.outcomeAddress === outcomeAddress
   })
   return {
     whoami: state.whoami,

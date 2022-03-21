@@ -7,23 +7,23 @@ import HierarchyIcon from '../HierarchyIcon/HierarchyIcon'
 import Button from '../Button/Button'
 
 export default function PriorityOutcome({ whoami, outcome, votes, setPriorityPickerAddress }) {
-  const fromDate = outcome.time_frame
-    ? moment.unix(outcome.time_frame.from_date)
+  const fromDate = outcome.timeFrame
+    ? moment.unix(outcome.timeFrame.fromDate)
     : null
-  const toDate = outcome.time_frame ? moment.unix(outcome.time_frame.to_date) : null
+  const toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
 
   // you can use these as values for
   // testing/ development, instead of `squirrels`
   // const testSquirrels = [
-  //  { avatar_url: 'img/profile.png' },
-  //  { avatar_url: 'img/profile.png' },
-  //  { avatar_url: 'img/profile.png' },
+  //  { avatarUrl: 'img/profile.png' },
+  //  { avatarUrl: 'img/profile.png' },
+  //  { avatarUrl: 'img/profile.png' },
   //]
 
   const myVote =
     whoami &&
     votes.find((value) => {
-      return value.agent_address === whoami.entry.headerHash
+      return value.agentAddress === whoami.entry.headerHash
     })
 
   return (
@@ -42,7 +42,7 @@ export default function PriorityOutcome({ whoami, outcome, votes, setPriorityPic
         <div className="priority-quadrant-outcome-titleANDinfo">
           <div className="priority-quadrant-outcome-title">{outcome.content}</div>
           <div className="priority-quadrant-outcome-info">
-            {outcome.time_frame && (
+            {outcome.timeFrame && (
               <div className="priority-quadrant-outcome-timeframe">
                 <Icon
                   name="calendar.svg"
@@ -59,10 +59,10 @@ export default function PriorityOutcome({ whoami, outcome, votes, setPriorityPic
                 ? outcome.members.map((outcomeMember, index) => (
                     <Avatar
                       key={index}
-                      first_name={outcomeMember.first_name}
-                      last_name={outcomeMember.last_name}
-                      avatar_url={outcomeMember.avatar_url}
-                      imported={outcomeMember.is_imported}
+                      firstName={outcomeMember.firstName}
+                      lastName={outcomeMember.lastName}
+                      avatarUrl={outcomeMember.avatarUrl}
+                      imported={outcomeMember.isImported}
                       small
                     />
                   ))

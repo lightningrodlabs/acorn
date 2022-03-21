@@ -53,18 +53,18 @@ function mapStateToProps(state) {
   // this value of state.whoami.entry.address
   // should not be changed to headerHash unless the entry type of Profile
   // is changed
-  const user_hash = editAddress
-    ? editingOutcome.user_hash
+  const userHash = editAddress
+    ? editingOutcome.userHash
     : state.whoami.entry.address
-  const user_edit_hash = editAddress ? state.whoami.entry.address : null
+  const userEditHash = editAddress ? state.whoami.entry.address : null
   const status = editAddress ? editingOutcome.status : 'Uncertain'
   const description = editAddress ? editingOutcome.description : ''
   const hierarchy = editAddress ? editingOutcome.hierarchy : 'NoHierarchy'
-  const time_frame = editAddress ? editingOutcome.time_frame : null
-  const timestamp_created = editAddress
-    ? editingOutcome.timestamp_created
+  const timeFrame = editAddress ? editingOutcome.timeFrame : null
+  const timestampCreated = editAddress
+    ? editingOutcome.timestampCreated
     : null
-  const is_imported = editAddress ? editingOutcome.is_imported : false
+  const isImported = editAddress ? editingOutcome.isImported : false
 
   let outcomeCoord
   if (editAddress) {
@@ -94,14 +94,14 @@ function mapStateToProps(state) {
       : topConnectionYPosition,
     // default states for the outcome when creating it
     // plus existing fields for "edit"
-    user_hash,
-    user_edit_hash,
+    userHash,
+    userEditHash,
     status,
     description,
     hierarchy,
-    time_frame,
-    timestamp_created,
-    is_imported,
+    timeFrame,
+    timestampCreated,
+    isImported,
   }
 }
 
@@ -131,7 +131,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       )
       return dispatch(layoutAction)
     },
-    createOutcomeWithConnection: async (entry, maybe_linked_outcome) => {
+    createOutcomeWithConnection: async (entry, maybeLinkedOutcome) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       // this api function is not being picked up by intellisense
@@ -139,7 +139,7 @@ function mapDispatchToProps(dispatch, ownProps) {
         cellId,
         {
           entry,
-          maybe_linked_outcome, //TODO: should we make this serde camelCase?
+          maybeLinkedOutcome, 
         }
       )
       return dispatch(

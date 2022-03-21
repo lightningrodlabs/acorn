@@ -46,22 +46,22 @@ function UniversalOutcome({ liveIndex, outcome, openExpandedView, goToOutcome })
             {outcome.members.map(member => {
               return <div className="universal-priority-outcome-item-member-avatar" key={member.headerHash}>
                 <Avatar
-                  first_name={member.first_name}
-                  last_name={member.last_name}
-                  avatar_url={member.avatar_url}
-                  imported={member.is_imported}
+                  firstName={member.firstName}
+                  lastName={member.lastName}
+                  avatarUrl={member.avatarUrl}
+                  imported={member.isImported}
                   medium
                   withWhiteBorder
                   withStatus
                   selfAssignedStatus={member.status}
                   withTooltip
-                  tooltipText={`${member.first_name} ${member.last_name}`}
+                  tooltipText={`${member.firstName} ${member.lastName}`}
                 />
               </div>
             })}
           </div>
           <div className="universal-priority-outcome-item-date">
-            <TimeframeFormat timeFrame={outcome.time_frame} />
+            <TimeframeFormat timeFrame={outcome.timeFrame} />
           </div>
         </div>
         <div className="universal-priority-outcome-item-buttons">
@@ -213,7 +213,7 @@ function PriorityUniversal({
     }
     setPending(true)
     const reordered = reorder(
-      projectMeta.top_priority_outcomes,
+      projectMeta.topPriorityOutcomes,
       result.source.index,
       result.destination.index
     )
@@ -225,7 +225,7 @@ function PriorityUniversal({
     const toPass = {
       ...projectMeta,
       // assign new ordering
-      top_priority_outcomes: reordered,
+      topPriorityOutcomes: reordered,
     }
     const projectMetaAddress = toPass.headerHash
     delete toPass.headerHash
@@ -251,7 +251,7 @@ function PriorityUniversal({
     // make sure we only try to pick
     // and render outcomes that exist or are
     // known about
-    topPriorityOutcomeAddresses = projectMeta.top_priority_outcomes.filter(
+    topPriorityOutcomeAddresses = projectMeta.topPriorityOutcomes.filter(
       (outcomeAddress) => outcomes[outcomeAddress]
     )
   }
@@ -279,7 +279,7 @@ function PriorityUniversal({
           <img src="img/intro-screen-image-4.svg" className="top-priority-empty-state-image" />
           <h4>You haven't marked any outcomes as top priority.
             <br />
-            <GuidebookNavLink guidebookId='intro_universal_priority_mode'>Learn how to start prioritizing here.</GuidebookNavLink> </h4></div>}
+            <GuidebookNavLink guidebookId='intro_universal_priorityMode'>Learn how to start prioritizing here.</GuidebookNavLink> </h4></div>}
         {topPriorityOutcomes.length !== 0 &&
           <DragDropContext
             onDragEnd={onDragEnd}
@@ -309,8 +309,8 @@ function mapStateToProps(state) {
   const allOutcomesArray = Object.values(outcomes).map(outcome => {
     const extensions = {}
     extensions.members = Object.values(outcomeMembers)
-      .filter(outcomeMember => outcomeMember.outcome_address === outcome.headerHash)
-      .map(outcomeMember => agents[outcomeMember.agent_address])
+      .filter(outcomeMember => outcomeMember.outcomeAddress === outcome.headerHash)
+      .map(outcomeMember => agents[outcomeMember.agentAddress])
       .filter(outcomeMember => outcomeMember) // filter out undefined results
     return {
       ...outcome,

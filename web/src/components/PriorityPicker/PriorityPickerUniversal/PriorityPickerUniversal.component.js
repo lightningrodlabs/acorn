@@ -23,11 +23,11 @@ export default function PriorityPickerUniversal({
     delete toPass.headerHash
     if (e.target.checked) {
       setPendingState(true)
-      toPass.top_priority_outcomes = toPass.top_priority_outcomes.concat([outcomeAddress])
+      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.concat([outcomeAddress])
       await updateProjectMeta(toPass, projectMetaAddress)
     } else {
       setPendingState(false)
-      toPass.top_priority_outcomes = toPass.top_priority_outcomes.filter(headerHash => headerHash !== outcomeAddress)
+      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.filter(headerHash => headerHash !== outcomeAddress)
       await updateProjectMeta(toPass, projectMetaAddress)
     }
     setPending(false)

@@ -26,12 +26,12 @@ function NestedTreeOutcome({ outcome, level, filterText, projectMeta, updateProj
   const isUsingOutcomeAsContext = searchParams.get('contextOutcome') === outcome.headerHash
   const showMakeTopPriorityOutcome =
     projectMeta &&
-    projectMeta.priority_mode === PriorityModeOptions.Universal &&
-    !projectMeta.top_priority_outcomes.find((headerHash) => headerHash === outcome.headerHash)
+    projectMeta.priorityMode === PriorityModeOptions.Universal &&
+    !projectMeta.topPriorityOutcomes.find((headerHash) => headerHash === outcome.headerHash)
   const makeTopPriority = () => {
     const toPass = {
       ...projectMeta,
-      top_priority_outcomes: projectMeta.top_priority_outcomes.concat([outcome.headerHash])
+      topPriorityOutcomes: projectMeta.topPriorityOutcomes.concat([outcome.headerHash])
     }
     delete toPass.headerHash
     updateProjectMeta(toPass, projectMeta.headerHash)

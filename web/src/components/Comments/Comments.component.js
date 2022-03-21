@@ -5,15 +5,15 @@ import './Comments.scss'
 import Icon from '../Icon/Icon'
 import Avatar from '../Avatar/Avatar'
 
-export default function Comment({ comment, agent }) {
+function Comment({ comment, agent }) {
   return (
     <div className="comment_history_item">
       <div className="avatar_comment_container">
         <Avatar
-          first_name={agent.first_name}
-          last_name={agent.last_name}
-          avatar_url={agent.avatar_url}
-          imported={agent.is_imported}
+          firstName={agent.firstName}
+          lastName={agent.lastName}
+          avatarUrl={agent.avatarUrl}
+          imported={agent.isImported}
           medium
           withStatus
           selfAssignedStatus={agent.status}
@@ -22,11 +22,11 @@ export default function Comment({ comment, agent }) {
       <div className="comment_history_content">
         <div className="comment_history_info">
           <div className="comment_history_name">
-            {agent.first_name + ' ' + agent.last_name}
-            {agent.is_imported ? ' (Imported)' : ''}
+            {agent.firstName + ' ' + agent.lastName}
+            {agent.isImported ? ' (Imported)' : ''}
           </div>
           <div className="comment_history_date">
-            {moment.unix(comment.unix_timestamp).calendar(null, {
+            {moment.unix(comment.unixTimestamp).calendar(null, {
               lastDay: '[Yesterday at] LT',
               sameDay: '[Today at] LT',
               nextDay: '[Tomorrow at] LT',
@@ -42,7 +42,7 @@ export default function Comment({ comment, agent }) {
   )
 }
 
-function Comments({
+export default function Comments({
   outcomeAddress,
   agents,
   comments,
@@ -84,11 +84,11 @@ function Comments({
     try {
       // when new comment created
       await createOutcomeComment({
-        outcome_address: outcomeAddress,
+        outcomeAddress: outcomeAddress,
         content: value,
-        agent_address: avatarAddress,
-        unix_timestamp: moment().unix(),
-        is_imported: false
+        agentAddress: avatarAddress,
+        unixTimestamp: moment().unix(),
+        isImported: false
       })
       // then scroll to bottom
       commentHistoryRef.current.scrollTop =
@@ -107,12 +107,12 @@ function Comments({
           {Object.keys(comments)
             .map((key) => comments[key])
             // order the comments by most recent, to least recent
-            .sort((a, b) => (a.unix_timestamp < b.unix_timestamp ? -1 : 1))
+            .sort((a, b) => (a.unixTimestamp < b.unixTimestamp ? -1 : 1))
             .map((comment) => (
               <Comment
                 key={comment.headerHash}
                 comment={comment}
-                agent={agents[comment.agent_address]}
+                agent={agents[comment.agentAddress]}
               />
             ))}
         </div>

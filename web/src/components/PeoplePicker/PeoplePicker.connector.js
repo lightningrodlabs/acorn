@@ -18,7 +18,7 @@ function mapStateToProps(state, ownProps) {
   const members = state.projects.members[projectId] || {}
   const membersOfOutcome = Object.keys(outcomeMembers)
     .map((address) => outcomeMembers[address])
-    .filter((outcomeMember) => outcomeMember.outcome_address === outcomeAddress)
+    .filter((outcomeMember) => outcomeMember.outcomeAddress === outcomeAddress)
   // just in case we've received a 'member' before the agents profile
   // filter out any missing profiles for now
   const agents = Object.keys(members).map((address) => state.agents[address]).filter((agent) => agent)
@@ -26,11 +26,11 @@ function mapStateToProps(state, ownProps) {
     agentAddress: state.agentAddress,
     people: agents.map((agent) => {
       const member = membersOfOutcome.find(
-        (outcomeMember) => outcomeMember.agent_address === agent.address
+        (outcomeMember) => outcomeMember.agentAddress === agent.address
       )
         console.log(member)
       return {
-        ...agent, // address, name, avatar_url
+        ...agent, // address, name, avatarUrl
         is_member: member ? true : false,
         outcome_member_address: member ? member.headerHash : null,
       }
@@ -43,15 +43,15 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
-    createOutcomeMember: async (outcome_address, agent_address, user_edit_hash) => {
+    createOutcomeMember: async (outcomeAddress, agentAddress, userEditHash) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeMember = await projectsZomeApi.outcomeMember.create(cellId, {
-        outcome_address,
-        agent_address,
-        user_edit_hash,
-        unix_timestamp: moment().unix(),
-        is_imported: false
+        outcomeAddress,
+        agentAddress,
+        userEditHash,
+        unixTimestamp: moment().unix(),
+        isImported: false
       })
       return dispatch(
         createOutcomeMember(cellIdString, outcomeMember)

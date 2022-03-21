@@ -165,13 +165,13 @@ export default function ProjectSettingsModal({
         // editable
         name: projectName,
         image: projectCoverUrl,
-        priority_mode: priorityMode,
+        priorityMode: priorityMode,
         // not editable
-        creator_address: project.creator_address,
-        created_at: project.created_at,
+        creatorAddress: project.creatorAddress,
+        createdAt: project.createdAt,
         passphrase: project.passphrase,
-        is_imported: project.is_imported,
-        top_priority_outcomes: project.top_priority_outcomes,
+        isImported: project.isImported,
+        topPriorityOutcomes: project.topPriorityOutcomes,
       },
       project.headerHash,
       cellIdString,
@@ -184,12 +184,12 @@ export default function ProjectSettingsModal({
   useEffect(() => {
     setProjectName(project.name)
     setProjectCoverUrl(project.image)
-    setPriorityMode(project.priority_mode)
+    setPriorityMode(project.priorityMode)
     setProjectPassphrase(project.passphrase)
   }, [project])
   const [projectName, setProjectName] = useState(project.name)
   const [projectCoverUrl, setProjectCoverUrl] = useState(project.image)
-  const [priorityMode, setPriorityMode] = useState(project.priority_mode)
+  const [priorityMode, setPriorityMode] = useState(project.priorityMode)
   const [projectPassphrase, setProjectPassphrase] = useState(project.passphrase)
 
   return (

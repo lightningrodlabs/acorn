@@ -5,7 +5,7 @@ export default {
   submenu: [
     {
       title: 'Introduction',
-      guide_id: 'introduction_vote_based_priority_mode',
+      guide_id: 'introduction_vote_based_priorityMode',
       description: (
         <ol>
           <li>

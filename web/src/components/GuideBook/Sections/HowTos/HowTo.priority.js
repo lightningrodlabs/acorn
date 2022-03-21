@@ -66,7 +66,7 @@ export default {
     },
     {
       title: 'Vote Based Priority Mode',
-      guide_id: 'vote_based_priority_mode',
+      guide_id: 'vote_based_priorityMode',
       description: (
         <ol>
           <div className="guidebook-description-section">

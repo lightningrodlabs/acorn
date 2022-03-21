@@ -224,7 +224,7 @@ export default function render({
   /*
   TIMEFRAME
   */
-  if (outcome.time_frame) {
+  if (outcome.timeFrame) {
     const calendarWidth = 12,
       calendarHeight = 14
     const img = getOrSetImageForUrl('', calendarWidth, calendarHeight)
@@ -242,11 +242,11 @@ export default function render({
     // if (isBeingEdited) {
     //   timeframeTextColor = '#888888'
     // }
-    let text = outcome.time_frame.from_date
-      ? String(moment.unix(outcome.time_frame.from_date).format('MMM D, YYYY - '))
+    let text = outcome.timeFrame.fromDate
+      ? String(moment.unix(outcome.timeFrame.fromDate).format('MMM D, YYYY - '))
       : ''
-    text += outcome.time_frame.to_date
-      ? String(moment.unix(outcome.time_frame.to_date).format('MMM D, YYYY'))
+    text += outcome.timeFrame.toDate
+      ? String(moment.unix(outcome.timeFrame.toDate).format('MMM D, YYYY'))
       : ''
     ctx.drawImage(img, xImgDraw, yImgDraw, calendarWidth, calendarHeight)
     ctx.save()
@@ -391,13 +391,13 @@ function drawMembersAvatars(
 }
 
 function drawAvatar(member, ctx, xAvatarDraw, yAvatarDraw, strokeColor) {
-  if (!member.avatar_url) {
+  if (!member.avatarUrl) {
     /*
       Initials Avatar
     */
 
-    const backgroundInitialsAvatar = pickColorForString(member.first_name)
-    const initials = `${member.first_name[0].toUpperCase()}${member.last_name[0].toUpperCase()}`
+    const backgroundInitialsAvatar = pickColorForString(member.firstName)
+    const initials = `${member.firstName[0].toUpperCase()}${member.lastName[0].toUpperCase()}`
     // the background for the initial avatar:
     ctx.save()
     ctx.fillStyle = backgroundInitialsAvatar
@@ -412,7 +412,7 @@ function drawAvatar(member, ctx, xAvatarDraw, yAvatarDraw, strokeColor) {
     )
     // to be consistent with Avatar component
     // if avatar belongs to an imported project and not connected an active memeber
-    if (member.is_imported) {
+    if (member.isImported) {
       // set an opacity
       ctx.globalAlpha = 0.5
     }
@@ -423,7 +423,7 @@ function drawAvatar(member, ctx, xAvatarDraw, yAvatarDraw, strokeColor) {
     ctx.save()
     // to be consistent with Avatar component
     // if avatar belongs to an imported project and not connected an active memeber
-    if (member.is_imported) {
+    if (member.isImported) {
       // set an opacity
       ctx.globalAlpha = 0.5
     }
@@ -436,7 +436,7 @@ function drawAvatar(member, ctx, xAvatarDraw, yAvatarDraw, strokeColor) {
       when there is a image avatar
     */
     const img = getOrSetImageForUrl(
-      member.avatar_url,
+      member.avatarUrl,
       avatarWidth,
       avatarHeight
     )
@@ -481,7 +481,7 @@ function drawAvatar(member, ctx, xAvatarDraw, yAvatarDraw, strokeColor) {
 
     // to be consistent with Avatar component
     // if avatar belongs to an imported project and not connected an active memeber
-    if (member.is_imported) {
+    if (member.isImported) {
       // set an opacity
       ctx.globalAlpha = 0.5
     }

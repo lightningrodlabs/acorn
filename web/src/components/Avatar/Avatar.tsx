@@ -5,9 +5,9 @@ import { StatusCssColorClass, Status } from '../Header/Status'
 import Tooltip from '../Tooltip/Tooltip'
 
 interface AvatarProps {
-  first_name: string
-  last_name: string
-  avatar_url: string
+  firstName: string
+  lastName: string
+  avatarUrl: string
   highlighted?: boolean
   small?: boolean
   smallMedium?: boolean
@@ -26,9 +26,9 @@ interface AvatarProps {
 }
 
 function Avatar({
-  first_name,
-  last_name,
-  avatar_url,
+  firstName,
+  lastName,
+  avatarUrl,
   highlighted,
   small,
   smallMedium,
@@ -59,8 +59,8 @@ function Avatar({
   if (withStatus) classes.push('with-status')
   // if (withTooltip) classes.push('with-tooltip')
 
-  if (!avatar_url) {
-    const backgroundInitialsAvatar = pickColorForString(first_name)
+  if (!avatarUrl) {
+    const backgroundInitialsAvatar = pickColorForString(firstName)
 
     //const backgroundInitialsAvatar = initialsAvatarcolors[0]
     const style = {
@@ -76,8 +76,8 @@ function Avatar({
         ${smallMedium ? 'small-medium' : ''}`}
       >
         <div className={classes.join(' ')} onClick={onClick} style={style}>
-          {first_name[0].toUpperCase()}
-          {last_name[0].toUpperCase()}
+          {firstName[0].toUpperCase()}
+          {lastName[0].toUpperCase()}
         </div>
         {/* TODO: Current status circle color under avatar*/}
         {withStatus && (
@@ -87,7 +87,7 @@ function Avatar({
             ></div>
           </div>
         )}
-        {withTooltip && <Tooltip text={`${first_name} ${last_name}`} />}
+        {withTooltip && <Tooltip text={`${firstName} ${lastName}`} />}
       </div>
     )
   }
@@ -101,7 +101,7 @@ function Avatar({
       ${medium ? 'medium' : ''}
       ${smallMedium ? 'small-medium' : ''}`}
     >
-      <img src={avatar_url} className={classes.join(' ')} onClick={onClick} />
+      <img src={avatarUrl} className={classes.join(' ')} onClick={onClick} />
       {/* TODO: Current status circle color under avatar*/}
       {withStatus && (
         <div className="status-circle-wrapper">

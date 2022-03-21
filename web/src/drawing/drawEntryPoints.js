@@ -16,15 +16,15 @@ export default function drawEntryPoints(
       ...outcomes[outcomeAddress],
       children: connectionsAsArray
         // find the connections indicating the children of this outcome
-        .filter(connection => connection.parent_address === outcomeAddress)
+        .filter(connection => connection.parentAddress === outcomeAddress)
         // actually nest the children Outcomes, recurse
-        .map(connection => getOutcome(connection.child_address))
+        .map(connection => getOutcome(connection.childAddress))
     }
   }
 
   // start with the entry point Outcomes, and recurse down to their children
   activeEntryPoints.forEach(entryPoint => {
-    const outcome = getOutcome(entryPoint.outcome_address)
+    const outcome = getOutcome(entryPoint.outcomeAddress)
     // for each outcomeTree
     // calculate its bounding rectangle
     // by checking the coordinates recursively for it and all its children

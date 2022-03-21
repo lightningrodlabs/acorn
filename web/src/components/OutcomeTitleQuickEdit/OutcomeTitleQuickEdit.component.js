@@ -30,11 +30,11 @@ export default function OutcomeTitleQuickEdit({
   status,
   description,
   hierarchy,
-  time_frame,
-  timestamp_created,
-  is_imported,
-  user_hash, // creator
-  user_edit_hash, // editor
+  timeFrame,
+  timestampCreated,
+  isImported,
+  userHash, // creator
+  userEditHash, // editor
   // callbacks
   updateContent,
   deleteConnection,
@@ -132,16 +132,16 @@ export default function OutcomeTitleQuickEdit({
     await createOutcomeWithConnection(
       {
         content: content,
-        timestamp_created: moment().unix(),
+        timestampCreated: moment().unix(),
         // defaults
-        user_edit_hash,
-        user_hash,
+        userEditHash,
+        userHash,
         hierarchy,
         status,
         description,
-        is_imported,
+        isImported,
       },
-      fromAddress ? { outcome_address: fromAddress, relation } : null
+      fromAddress ? { outcomeAddress: fromAddress, relation } : null
     )
   }
 
@@ -149,17 +149,17 @@ export default function OutcomeTitleQuickEdit({
     await updateOutcome(
       {
         // new
-        user_edit_hash: whoami.entry.address,
+        userEditHash: whoami.entry.address,
         description: description,
-        timestamp_updated: moment().unix(),
+        timestampUpdated: moment().unix(),
         // carryover
         content,
-        user_hash,
-        timestamp_created,
+        userHash,
+        timestampCreated,
         hierarchy,
         status,
-        time_frame,
-        is_imported,
+        timeFrame,
+        isImported,
       },
       editAddress
     )

@@ -44,8 +44,8 @@ export default function VerticalActionsList({
     updateOutcome(
       {
         ...outcome,
-        user_edit_hash: agentAddress,
-        timestamp_updated: moment().unix(),
+        userEditHash: agentAddress,
+        timestampUpdated: moment().unix(),
         [key]: val,
       },
       outcomeAddress
@@ -71,26 +71,26 @@ export default function VerticalActionsList({
 
     if (start && end) {
       timeframe = {
-        from_date: start,
-        to_date: end,
+        fromDate: start,
+        toDate: end,
       }
     }
 
     updateOutcome(
       {
         ...outcome,
-        user_edit_hash: agentAddress,
-        timestamp_updated: moment().unix(),
-        time_frame: timeframe,
+        userEditHash: agentAddress,
+        timestampUpdated: moment().unix(),
+        timeFrame: timeframe,
       },
       outcomeAddress
     )
   }
 
-  const fromDate = outcome.time_frame
-    ? moment.unix(outcome.time_frame.from_date)
+  const fromDate = outcome.timeFrame
+    ? moment.unix(outcome.timeFrame.fromDate)
     : null
-  const toDate = outcome.time_frame ? moment.unix(outcome.time_frame.to_date) : null
+  const toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
 
   return (
     <>

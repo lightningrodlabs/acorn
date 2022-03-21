@@ -47,6 +47,7 @@ crud!(
 );
 
 #[derive(Serialize, Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
 pub struct EntryPointDetails {
     pub entry_points: Vec<WireElement<EntryPoint>>,
     pub outcomes: Vec<WireElement<Outcome>>,

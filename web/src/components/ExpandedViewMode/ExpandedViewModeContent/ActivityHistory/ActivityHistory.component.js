@@ -14,16 +14,16 @@ function checkTimeframeSame(oldTimeframe, newTimeframe) {
   } else if (!oldTimeframe && !newTimeframe) {
     return true
   } else if (
-    oldTimeframe.from_date === newTimeframe.from_date &&
-    oldTimeframe.to_date === newTimeframe.to_date
+    oldTimeframe.fromDate === newTimeframe.fromDate &&
+    oldTimeframe.toDate === newTimeframe.toDate
   ) {
     return true
   }
 }
 
 function FormatTimeframeDisplay({ timeframe }) {
-  const fromDate = timeframe ? moment.unix(timeframe.from_date) : null
-  const toDate = timeframe ? moment.unix(timeframe.to_date) : null
+  const fromDate = timeframe ? moment.unix(timeframe.fromDate) : null
+  const toDate = timeframe ? moment.unix(timeframe.toDate) : null
 
   return (
     <>
@@ -67,10 +67,10 @@ class ActivityHistory extends Component {
 
     if (history && Object.keys(history).length > 0) {
       history.entries.map((entry, index) => {
-        if (entry.timestamp_updated === null) {
+        if (entry.timestampUpdated === null) {
           vector.push({
-            user: entry.user_hash,
-            time: entry.timestamp_created,
+            user: entry.userHash,
+            time: entry.timestampCreated,
             comment: 'created this outcome',
           })
         } else {
@@ -81,8 +81,8 @@ class ActivityHistory extends Component {
           // title/content
           if (previousOutcomeVersion.content !== entry.content) {
             vector.push({
-              user: entry.user_edit_hash,
-              time: entry.timestamp_updated,
+              user: entry.userEditHash,
+              time: entry.timestampUpdated,
               comment: `changed outcome title from "${previousOutcomeVersion.content}" to "${entry.content}" `,
               icon: 'font.svg',
             })
@@ -90,8 +90,8 @@ class ActivityHistory extends Component {
           // hierarchy
           if (previousOutcomeVersion.hierarchy !== entry.hierarchy) {
             vector.push({
-              user: entry.user_edit_hash,
-              time: entry.timestamp_updated,
+              user: entry.userEditHash,
+              time: entry.timestampUpdated,
               comment: `changed hierachy from "${previousOutcomeVersion.hierarchy}" to "${entry.hierarchy}" `,
               hierarchyIcon: entry.hierarchy,
             })
@@ -99,8 +99,8 @@ class ActivityHistory extends Component {
           // description
           if (previousOutcomeVersion.description !== entry.description) {
             vector.push({
-              user: entry.user_edit_hash,
-              time: entry.timestamp_updated,
+              user: entry.userEditHash,
+              time: entry.timestampUpdated,
               comment: `changed description from "${previousOutcomeVersion.description}" to "${entry.description}"`,
               icon: 'font.svg',
             })
@@ -108,8 +108,8 @@ class ActivityHistory extends Component {
           // status
           if (previousOutcomeVersion.status !== entry.status) {
             vector.push({
-              user: entry.user_edit_hash,
-              time: entry.timestamp_updated,
+              user: entry.userEditHash,
+              time: entry.timestampUpdated,
               comment: `changed status from "${previousOutcomeVersion.status}" to "${entry.status}"`,
               statusIcon: entry.status,
             })
@@ -117,20 +117,20 @@ class ActivityHistory extends Component {
           // tags
           if (previousOutcomeVersion.tags !== entry.tags) {
             vector.push({
-              user: entry.user_edit_hash,
-              time: entry.timestamp_updated,
+              user: entry.userEditHash,
+              time: entry.timestampUpdated,
               comment: 'changed the tags for ' + entry.tags,
             })
           }
           // timeframe added
-          if (!previousOutcomeVersion.time_frame && entry.time_frame) {
+          if (!previousOutcomeVersion.timeFrame && entry.timeFrame) {
             vector.push({
-              user: entry.user_edit_hash,
-              time: entry.timestamp_updated,
+              user: entry.userEditHash,
+              time: entry.timestampUpdated,
               comment: (
                 <>
                   added the timeframe{' '}
-                  {<FormatTimeframeDisplay timeframe={entry.time_frame} />} to
+                  {<FormatTimeframeDisplay timeframe={entry.timeFrame} />} to
                   this outcome
                 </>
               ),
@@ -138,22 +138,22 @@ class ActivityHistory extends Component {
             })
           } else if (
             !checkTimeframeSame(
-              previousOutcomeVersion.time_frame,
-              entry.time_frame
+              previousOutcomeVersion.timeFrame,
+              entry.timeFrame
             )
           ) {
             vector.push({
-              user: entry.user_edit_hash,
-              time: entry.timestamp_updated,
+              user: entry.userEditHash,
+              time: entry.timestampUpdated,
               comment: (
                 <>
                   changed timeframe from{' '}
                   {
                     <FormatTimeframeDisplay
-                      timeframe={previousOutcomeVersion.time_frame}
+                      timeframe={previousOutcomeVersion.timeFrame}
                     />
                   }{' '}
-                  to {<FormatTimeframeDisplay timeframe={entry.time_frame} />}
+                  to {<FormatTimeframeDisplay timeframe={entry.timeFrame} />}
                 </>
               ),
               icon: 'calendar.svg',
@@ -165,24 +165,24 @@ class ActivityHistory extends Component {
         members.map((member, index) => {
           if (index === 0) {
             vector.push({
-              user: member.user_edit_hash,
-              time: member.unix_timestamp,
+              user: member.userEditHash,
+              time: member.unixTimestamp,
               comment: `added "${
-                this.props.agents[member.agent_address].first_name
+                this.props.agents[member.agentAddress].firstName
               } ${
-                this.props.agents[member.agent_address].last_name
+                this.props.agents[member.agentAddress].lastName
               }" as a squirrel`,
               icon: 'squirrel.svg',
             })
           }
           if (index === 1) {
             vector.push({
-              user: member.user_edit_hash,
-              time: member.unix_timestamp,
+              user: member.userEditHash,
+              time: member.unixTimestamp,
               comment: `removed "${
-                this.props.agents[member.agent_address].first_name
+                this.props.agents[member.agentAddress].firstName
               } ${
-                this.props.agents[member.agent_address].last_name
+                this.props.agents[member.agentAddress].lastName
               }" as a squirrel`,
             })
           }
@@ -229,10 +229,10 @@ class ActivityHistory extends Component {
                 )}
                 <div className="history-Body-Avatar">
                   <Avatar
-                    first_name={this.props.agents[value.user].first_name}
-                    last_name={this.props.agents[value.user].last_name}
-                    avatar_url={this.props.agents[value.user].avatar_url}
-                    imported={this.props.agents[value.user].is_imported}
+                    firstName={this.props.agents[value.user].firstName}
+                    lastName={this.props.agents[value.user].lastName}
+                    avatarUrl={this.props.agents[value.user].avatarUrl}
+                    imported={this.props.agents[value.user].isImported}
                     small={true}
                   />
                 </div>
@@ -253,9 +253,9 @@ class ActivityHistory extends Component {
                   <div className="history-content">
                     <p className="history-info">
                       <span className="history-Author">
-                        {this.props.agents[value.user].first_name +
+                        {this.props.agents[value.user].firstName +
                           ' ' +
-                          this.props.agents[value.user].last_name}
+                          this.props.agents[value.user].lastName}
                       </span>{' '}
                       {value.comment}
                     </p>

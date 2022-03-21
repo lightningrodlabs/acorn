@@ -3,11 +3,11 @@ import moment from 'moment'
 
 export default function TimeframeFormat({ timeFrame }) {
     if (!timeFrame) timeFrame = {}
-    let text = timeFrame.from_date
-        ? String(moment.unix(timeFrame.from_date).format('MMM D, YYYY - '))
+    let text = timeFrame.fromDate
+        ? String(moment.unix(timeFrame.fromDate).format('MMM D, YYYY - '))
         : ''
-    text += timeFrame.to_date
-        ? String(moment.unix(timeFrame.to_date).format('MMM D, YYYY'))
+    text += timeFrame.toDate
+        ? String(moment.unix(timeFrame.toDate).format('MMM D, YYYY'))
         : ''
     return text
 }

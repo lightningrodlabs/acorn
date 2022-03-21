@@ -56,9 +56,9 @@ function Dashboard({
   setShowInviteMembersModal,
   hideInviteMembersModal,
 }) {
-  // created_at, name
+  // createdAt, name
   const [pendingProjects, setPendingProjects] = useState([])
-  const [selectedSort, setSelectedSort] = useState('created_at')
+  const [selectedSort, setSelectedSort] = useState('createdAt')
   const [showSortPicker, setShowSortPicker] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showJoinModal, setShowJoinModal] = useState(false)
@@ -107,9 +107,9 @@ function Dashboard({
   }
 
   let sortedProjects
-  if (selectedSort === 'created_at') {
+  if (selectedSort === 'createdAt') {
     // sort most recent first, oldest last
-    sortedProjects = projects.sort((a, b) => b.created_at - a.created_at)
+    sortedProjects = projects.sort((a, b) => b.createdAt - a.createdAt)
   } else if (selectedSort === 'name') {
     // sort alphabetically ascending
     sortedProjects = projects.sort((a, b) => {
@@ -175,7 +175,7 @@ function Dashboard({
                 className="my-projects-sorting-selected"
                 onClick={() => setShowSortPicker(!showSortPicker)}
               >
-                {selectedSort === 'created_at' && 'Last Created'}
+                {selectedSort === 'createdAt' && 'Last Created'}
                 {selectedSort === 'name' && 'Name'}
                 <Icon
                   name="chevron-down.svg"
@@ -190,7 +190,7 @@ function Dashboard({
                 classNames="my-projects-sorting-select"
               >
                 <ul className="my-projects-sorting-select">
-                  <li onClick={setSortBy('created_at')}>Last Created</li>
+                  <li onClick={setSortBy('createdAt')}>Last Created</li>
                   <li onClick={setSortBy('name')}>Name</li>
                 </ul>
               </CSSTransition>
@@ -421,22 +421,22 @@ async function importProject(
   // only add the project meta after the rest has been imported
   // so it doesn't list itself early in the process
   // first step is to create new project
-  const originalTopPriorityOutcomes = projectData.projectMeta.top_priority_outcomes
-  const originalPriorityMode = projectData.projectMeta.priority_mode
+  const originalTopPriorityOutcomes = projectData.projectMeta.topPriorityOutcomes
+  const originalPriorityMode = projectData.projectMeta.priorityMode
   const projectMeta = {
     ...projectData.projectMeta,
     // the question mark operator for backwards compatibility
-    top_priority_outcomes: originalTopPriorityOutcomes
+    topPriorityOutcomes: originalTopPriorityOutcomes
       ? originalTopPriorityOutcomes
           .map((oldAddress) => oldToNewAddressMap[oldAddress])
           .filter((address) => address)
       : [],
     // the question mark operator for backwards compatibility
-    priority_mode: originalPriorityMode
+    priorityMode: originalPriorityMode
       ? originalPriorityMode
       : PriorityModeOptions.Universal,
-    created_at: Date.now(),
-    creator_address: agentAddress,
+    createdAt: Date.now(),
+    creatorAddress: agentAddress,
     passphrase: passphrase,
   }
   // these are not actuals field
@@ -506,11 +506,11 @@ function mapDispatchToProps(dispatch) {
       const projectMeta = {
         ...project, // name and image
         passphrase,
-        creator_address: agentAddress,
-        created_at: Date.now(),
-        is_imported: false,
-        priority_mode: 'Universal', // default
-        top_priority_outcomes: [],
+        creatorAddress: agentAddress,
+        createdAt: Date.now(),
+        isImported: false,
+        priorityMode: 'Universal', // default
+        topPriorityOutcomes: [],
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },

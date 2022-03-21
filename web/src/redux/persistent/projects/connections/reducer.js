@@ -59,14 +59,14 @@ export default function (state = defaultState, action) {
     // CREATE OUTCOME WITH CONNECTION
     case CREATE_OUTCOME_WITH_CONNECTION:
       cellId = action.meta.cellIdString
-      if (payload.maybe_connection) {
+      if (payload.maybeConnection) {
         return {
           ...state,
           [cellId]: {
             ...state[cellId],
-            [payload.maybe_connection.headerHash]: {
-              ...payload.maybe_connection.entry,
-              headerHash: payload.maybe_connection.headerHash,
+            [payload.maybeConnection.headerHash]: {
+              ...payload.maybeConnection.entry,
+              headerHash: payload.maybeConnection.headerHash,
             },
           },
         }
@@ -82,7 +82,7 @@ export default function (state = defaultState, action) {
         ...state,
         [cellId]: _.pickBy(
           state[cellId],
-          (_value, key) => payload.deleted_connections.indexOf(key) === -1
+          (_value, key) => payload.deletedConnections.indexOf(key) === -1
         ),
       }
     default:

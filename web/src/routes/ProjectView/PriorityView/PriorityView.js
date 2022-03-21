@@ -17,7 +17,7 @@ import { cellIdFromString } from '../../../utils'
 
 function PriorityMode({ projectId, outcomeTrees, projectMeta, updateProjectMeta }) {
   let main
-  switch (projectMeta.priority_mode) {
+  switch (projectMeta.priorityMode) {
     case PriorityModeOptions.Universal:
       main = <PriorityUniversal />
       break

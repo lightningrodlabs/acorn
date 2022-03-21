@@ -46,7 +46,7 @@ export default function PeoplePicker({
           // filter people out if there's filter text defined, and don't bother case matching
           // also match anywhere in the string, not just the start
           .filter((person) => {
-            const name = `${person.first_name} ${person.last_name}`
+            const name = `${person.firstName} ${person.lastName}`
             return (
               !filterText ||
               name.toLowerCase().indexOf(filterText.toLowerCase()) > -1
@@ -71,17 +71,17 @@ export default function PeoplePicker({
                 onClick={onClick}
               >
                 <Avatar
-                  first_name={person.first_name}
-                  last_name={person.last_name}
-                  avatar_url={person.avatar_url}
-                  imported={person.is_imported}
+                  firstName={person.firstName}
+                  lastName={person.lastName}
+                  avatarUrl={person.avatarUrl}
+                  imported={person.isImported}
                   medium
                   withStatus
                   selfAssignedStatus={person.status}
                 />
                 <div className="person-nameANDhandle">
                   <span className="person-name">
-                    {person.first_name} {person.last_name}
+                    {person.firstName} {person.lastName}
                   </span>
                   <div className="person-handle">{person.handle}</div>
                 </div>

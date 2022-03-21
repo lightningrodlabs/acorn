@@ -45,7 +45,7 @@ export default function (state = defaultState, action) {
   switch (type) {
     case FETCH_ENTRY_POINT_DETAILS:
       cellIdString = action.meta.cellIdString
-      const mapped = payload.entry_points.map(r => {
+      const mapped = payload.entryPoints.map(r => {
         return {
           ...r.entry,
           headerHash: r.headerHash,
@@ -70,7 +70,7 @@ export default function (state = defaultState, action) {
         ...state,
         [cellIdString]: _.pickBy(
           state[cellIdString],
-          (_value, key) => payload.deleted_entry_points.indexOf(key) === -1
+          (_value, key) => payload.deletedEntryPoints.indexOf(key) === -1
         ),
       }
     default:

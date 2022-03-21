@@ -21,8 +21,8 @@ function SquirrelInfoPopup({ squirrel, onClose, deleteOutcomeMember }) {
     <div className="squirrel-info-popup-wrapper" ref={ref}>
       <div className="squirrel-info-popup-nameANDhandle">
         <div className="squirrel-info-popup-name">
-          {squirrel.first_name} {squirrel.last_name}{' '}
-          {squirrel.is_imported ? <div>(Imported)</div> : ''}
+          {squirrel.firstName} {squirrel.lastName}{' '}
+          {squirrel.isImported ? <div>(Imported)</div> : ''}
         </div>
         <div className="squirrel-info-popup-handle">{squirrel.handle}</div>
       </div>
@@ -124,9 +124,9 @@ function Details({
   // you can use these as values for
   // testing/ development, instead of `squirrels`
   const testSquirrels = [
-    { avatar_url: 'img/profile.png' },
-    { avatar_url: 'img/profile.png' },
-    { avatar_url: 'img/profile.png' },
+    { avatarUrl: 'img/profile.png' },
+    { avatarUrl: 'img/profile.png' },
+    { avatarUrl: 'img/profile.png' },
   ]
 
   const [editSquirrels, setEditSquirrels] = useState(false)
@@ -157,8 +157,8 @@ function Details({
     updateOutcome(
       {
         ...outcome,
-        user_edit_hash: agentAddress,
-        timestamp_updated: moment().unix(),
+        userEditHash: agentAddress,
+        timestampUpdated: moment().unix(),
         content,
         description,
       },
@@ -170,8 +170,8 @@ function Details({
     updateOutcome(
       {
         ...outcome,
-        user_edit_hash: agentAddress,
-        timestamp_updated: moment().unix(),
+        userEditHash: agentAddress,
+        timestampUpdated: moment().unix(),
         content,
         description,
       },
@@ -192,21 +192,21 @@ function Details({
     setDescription(target.value)
   }
 
-  const fromDate = outcome.time_frame
-    ? moment.unix(outcome.time_frame.from_date)
+  const fromDate = outcome.timeFrame
+    ? moment.unix(outcome.timeFrame.fromDate)
     : null
-  const toDate = outcome.time_frame ? moment.unix(outcome.time_frame.to_date) : null
+  const toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
 
   // const isBeingEdited = false
 
 
   const member =
   {
-    first_name: 'Pegah',
-    last_name: 'Vaezi',
-    avatar_url:
+    firstName: 'Pegah',
+    lastName: 'Vaezi',
+    avatarUrl:
       'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.fouladiprojects.com%2Fwp-content%2Fuploads%2F2015%2F10%2FBarbourshow1.jpg&f=1&nofb=1',
-    is_imported: false,
+    isImported: false,
     headerHash: 'riusry3764yiud',
     connectionStatus: 'connected',
     status: 'online',
@@ -231,10 +231,10 @@ function Details({
                 <Avatar
                   withStatusBorder
                   smallMedium
-                  first_name={titleEditor.first_name}
-                  last_name={titleEditor.last_name}
-                  avatar_url={titleEditor.avatar_url}
-                  is_imported={titleEditor.is_imported}
+                  firstName={titleEditor.firstName}
+                  lastName={titleEditor.lastName}
+                  avatarUrl={titleEditor.avatarUrl}
+                  isImported={titleEditor.isImported}
                   headerHash={titleEditor.address}
                   connectionStatus={'connected'}
                   selfAssignedStatus={titleEditor.status}
@@ -283,10 +283,10 @@ function Details({
                     <Avatar
                       withWhiteBorder
                       key={index}
-                      first_name={squirrel.first_name}
-                      last_name={squirrel.last_name}
-                      avatar_url={squirrel.avatar_url}
-                      imported={squirrel.is_imported}
+                      firstName={squirrel.firstName}
+                      lastName={squirrel.lastName}
+                      avatarUrl={squirrel.avatarUrl}
+                      imported={squirrel.isImported}
                       medium
                       withWhiteBorder
                       withStatus
@@ -345,10 +345,10 @@ function Details({
                 <Avatar
                   withStatusBorder
                   smallMedium
-                  first_name={descriptionEditor.first_name}
-                  last_name={descriptionEditor.last_name}
-                  avatar_url={descriptionEditor.avatar_url}
-                  is_imported={descriptionEditor.is_imported}
+                  firstName={descriptionEditor.firstName}
+                  lastName={descriptionEditor.lastName}
+                  avatarUrl={descriptionEditor.avatarUrl}
+                  isImported={descriptionEditor.isImported}
                   headerHash={descriptionEditor.address}
                   connectionStatus={'connected'}
                   selfAssignedStatus={descriptionEditor.status}

@@ -28,9 +28,9 @@ export default function ExpandedViewModeFooter({ outcome, creator }) {
         </div>
       </div>
       <div className="footer_card_info">
-        {`Created by ${creator.first_name} ${creator.last_name} ${
-          creator.is_imported ? '(Imported)' : ''
-        }  ${moment.unix(outcome.timestamp_created).format(' | ll | LT')}`}
+        {`Created by ${creator.firstName} ${creator.lastName} ${
+          creator.isImported ? '(Imported)' : ''
+        }  ${moment.unix(outcome.timestampCreated).format(' | ll | LT')}`}
       </div>
     </div>
   )
