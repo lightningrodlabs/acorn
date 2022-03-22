@@ -74,9 +74,9 @@ pub enum Scope {
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-pub struct SmallsEstimate(pub u32);
+pub struct SmallsEstimate(pub Option<u32>);
 impl SmallsEstimate {
-    pub fn new(estimate: u32) -> Self {
+    pub fn new(estimate: Option<u32>) -> Self {
         Self(estimate)
     }
 }

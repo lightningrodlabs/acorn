@@ -25,15 +25,21 @@ module.exports = {
       template: './src/index.html', //source
       filename: 'index.html', //destination
     }),
+    new HTMLWebpackPlugin({
+      template: './src/splashscreen.html', //source
+      filename: 'splashscreen.html', //destination
+      chunks: ['splash']
+    }),
   ],
   entry: {
     app: './src/index.js',
+    splash: './src/splashscreen.scss'
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    filename: 'main.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
   },
   node: {
@@ -93,7 +99,7 @@ module.exports = {
       },
       // .png images
       {
-        test: /\.png$/,
+        test: /\.(png|jpg)$/,
         use: {
           loader: 'file-loader',
           options: {

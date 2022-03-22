@@ -62,6 +62,7 @@ pub(crate) mod fixtures {
     type OptionAgentPubKeyB64 = Option<AgentPubKeyB64>;
     type OptionString = Option<String>;
     type Optionf64 = Option<f64>;
+    type Optionu32 = Option<u32>;
     type OptionVecString = Option<Vec<String>>;
     type OptionTimeFrame = Option<TimeFrame>;
 
@@ -98,7 +99,7 @@ pub(crate) mod fixtures {
 
     fixturator!(
       SmallsEstimate;
-      constructor fn new(u32);
+      constructor fn new(Optionu32);
     );
 
     fixturator!(
@@ -137,6 +138,19 @@ pub(crate) mod fixtures {
       };
       curve Predictable {
         Some(fixt!(String, Predictable))
+      };
+    );
+
+    fixturator!(
+      Optionu32;
+      curve Empty {
+          None
+      };
+      curve Unpredictable {
+        Some(fixt!(u32))
+      };
+      curve Predictable {
+        Some(fixt!(u32, Predictable))
       };
     );
 

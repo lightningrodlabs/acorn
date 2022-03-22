@@ -40,7 +40,6 @@ import './styles.scss'
 // trigger caching of adminWs connection
 getAdminWs()
 
-// TODO: remove the holochain middleware
 const middleware = [layoutWatcher, realtimeInfoWatcher]
 
 // This enables the redux-devtools browser extension
@@ -82,7 +81,7 @@ getAppWs(signalCallback).then(async (client) => {
     const projectCellIds = await getProjectCellIdStrings()
     store.dispatch(setProjectsCellIds(projectCellIds))
   } catch (e) {
-    console.log(e)
+    console.error(e)
     return
   }
 })
