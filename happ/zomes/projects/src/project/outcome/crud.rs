@@ -70,7 +70,7 @@ pub struct UIEnum(pub String);
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 pub enum Scope {
     Small(AchievementStatus),
-    Uncertain(SmallsEstimate),
+    Uncertain(Option<SmallsEstimate>),
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]

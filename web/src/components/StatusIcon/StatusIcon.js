@@ -12,6 +12,9 @@ function StatusIcon({
   className = '',
   notHoverable,
 }) {
+  // TODO: fix for new data structures
+  status = 'Complete'
+
   const classList = `status-color tooltip-container status-color-${size} bg_${status} ${
     selected ? 'has-status' : ''
   } ${onClick ? 'can-click' : ''} ${className} 
