@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
-import './Header.css'
+import './Header.scss'
 import { Status } from './Status'
 import HeaderLeftPanel from './HeaderLeftPanel'
-import HeaderRightPanel from './HeaderRightPanel'
+import HeaderRightPanel from './HeaderRightPanel.connector'
 import HeaderMiddlePanel from './HeaderMiddlePanel'
 
 function Header({
@@ -17,7 +17,7 @@ function Header({
   project,
   projectId,
   hideGuidebookHelpMessage,
-  goToGoal,
+  goToOutcome,
   members,
   presentMembers,
 }) {
@@ -79,11 +79,11 @@ function Header({
           isExportOpen={isExportOpen}
           onClickExport={onClickExport}
           activeEntryPoints={activeEntryPoints}
-          goToGoal={goToGoal}
+          goToOutcome={goToOutcome}
         />
         <HeaderMiddlePanel
           projectId={projectId}
-          projectPriorityMode={project.priority_mode}
+          projectPriorityMode={project.priorityMode}
         />
         {whoami && (
           // add all these values as props

@@ -7,24 +7,24 @@ and the reducers handle them the same way
 */
 
 import * as msgpack from '@msgpack/msgpack/dist'
-import * as edgeActions from './projects/edges/actions'
-import * as goalActions from './projects/goals/actions'
-import * as goalVoteActions from './projects/goal-votes/actions'
-import * as goalMemberActions from './projects/goal-members/actions'
-import * as goalCommentActions from './projects/goal-comments/actions'
-import * as entryPointActions from './projects/entry-points/actions'
-import * as projectMetaActions from './projects/project-meta/actions'
-import { setMember } from './projects/members/actions'
-import { fetchAgents, setAgent } from './agents/actions'
-import { cellIdToString } from 'connoropolous-hc-redux-middleware'
-import { triggerUpdateLayout } from './layout/actions'
-import { removePeerState, updatePeerState } from './realtime-info/actions'
+import * as connectionActions from './redux/persistent/projects/connections/actions'
+import * as outcomeActions from './redux/persistent/projects/outcomes/actions'
+import * as outcomeVoteActions from './redux/persistent/projects/outcome-votes/actions'
+import * as outcomeMemberActions from './redux/persistent/projects/outcome-members/actions'
+import * as outcomeCommentActions from './redux/persistent/projects/outcome-comments/actions'
+import * as entryPointActions from './redux/persistent/projects/entry-points/actions'
+import * as projectMetaActions from './redux/persistent/projects/project-meta/actions'
+import { setMember } from './redux/persistent/projects/members/actions'
+import { fetchAgents, setAgent } from './redux/persistent/profiles/agents/actions'
+import { triggerUpdateLayout } from './redux/ephemeral/layout/actions'
+import { removePeerState, updatePeerState } from './redux/ephemeral/realtime-info/actions'
+import { cellIdToString } from './utils'
 
 // We directly use the 'success' type, since these actions
 // have already succeeded on another machine, and we're just reflecting them locally
 function createSignalAction(holochainAction, cellId, payload) {
   return {
-    type: holochainAction.success().type,
+    type: holochainAction,
     payload,
     meta: {
       cellIdString: cellIdToString(cellId),
@@ -44,21 +44,21 @@ const SignalType = {
   // Profiles Zome
   Agent: 'agent',
   // Projects Zome
-  Edge: 'edge',
+  Connection: 'connection',
   EntryPoint: 'entry_point',
-  Goal: 'goal',
-  // custom signal type for a goal_with_edge
+  Outcome: 'outcome',
+  // custom signal type for a outcome_with_connection
   // this is because it's important to the UI to receive both
-  // the new goal, and the edge, at the same moment
-  GoalWithEdge: 'goal_with_edge',
-  // custom signal type for goal_fully_archived
+  // the new outcome, and the connection, at the same moment
+  OutcomeWithConnection: 'outcome_with_connection',
+  // custom signal type for outcome_fully_deleted
   // this is because it's important to the UI to receive
-  // both the archived goal, and everything connected to it that
-  // has archived at the same time
-  ArchiveGoalFully: 'archive_goal_fully',
-  GoalComment: 'goal_comment',
-  GoalMember: 'goal_member',
-  GoalVote: 'goal_vote',
+  // both the deleted outcome, and everything connected to it that
+  // has deleted at the same time
+  DeleteOutcomeFully: 'delete_outcome_fully',
+  OutcomeComment: 'outcome_comment',
+  OutcomeMember: 'outcome_member',
+  OutcomeVote: 'outcome_vote',
   Member: 'member',
   ProjectMeta: 'project_meta',
 }
@@ -66,20 +66,20 @@ const nonEntrySignalTypes = {
   RealtimeInfo: 'RealtimeInfo'
 }
 const crudActionSets = {
-  Edge: edgeActions,
-  Goal: goalActions,
-  GoalVote: goalVoteActions,
-  GoalMember: goalMemberActions,
-  GoalComment: goalCommentActions,
+  Connection: connectionActions,
+  Outcome: outcomeActions,
+  OutcomeVote: outcomeVoteActions,
+  OutcomeMember: outcomeMemberActions,
+  OutcomeComment: outcomeCommentActions,
   EntryPoint: entryPointActions,
   ProjectMeta: projectMetaActions,
 }
 const crudTypes = {
-  edge: 'Edge',
-  goal: 'Goal',
-  goal_vote: 'GoalVote',
-  goal_member: 'GoalMember',
-  goal_comment: 'GoalComment',
+  connection: 'Connection',
+  outcome: 'Outcome',
+  outcome_vote: 'OutcomeVote',
+  outcome_member: 'OutcomeMember',
+  outcome_comment: 'OutcomeComment',
   entry_point: 'EntryPoint',
   project_meta: 'ProjectMeta', // only 'update' is default crud
 }
@@ -97,15 +97,15 @@ const pickCrudAction = (entryTypeName, actionType) => {
       actionPrefix = 'update'
       break
     case ActionType.Delete:
-      actionPrefix = 'archive'
+      actionPrefix = 'delete'
       break
     default:
       throw new Error('unknown actionType')
   }
   const actionSet = crudActionSets[entryTypeName]
-  // such as `createGoalComment`
+  // such as `createOutcomeComment`
   const actionName = `${actionPrefix}${entryTypeName}`
-  return actionSet[actionName]
+  return actionSet[actionName](null, null).type
 }
 
 export default (store) => 
@@ -137,11 +137,11 @@ export default (store) =>
     if (crudType) {
       const action = pickCrudAction(crudType, payload.data.action)
       store.dispatch(createSignalAction(action, cellId, payload.data.data))
-      // in case of the special situation with archiving edges
+      // in case of the special situation with archiving connections
       // where the layout reflow doesn't happen automatically
       // we have to manually trigger it to do so
       // the other cases are covered in src/layout/middleware.js ->
-      if (action.success().type === edgeActions.archiveEdge.success().type) {
+      if (action === connectionActions.DELETE_CONNECTION) {
         store.dispatch(triggerUpdateLayout())
       }
     }
@@ -179,14 +179,14 @@ export default (store) =>
           // there's no "local action" equivalent
           store.dispatch(setMember(cellIdToString(cellId), payload.data.data))
           break
-        case SignalType.GoalWithEdge:
+        case SignalType.OutcomeWithConnection:
           store.dispatch(
-            createSignalAction(goalActions.createGoalWithEdge, cellId, payload.data.data)
+            createSignalAction(outcomeActions.createOutcomeWithConnection, cellId, payload.data.data)
           )
           break
-        case SignalType.ArchiveGoalFully:
+        case SignalType.DeleteOutcomeFully:
           store.dispatch(
-            createSignalAction(goalActions.archiveGoalFully, cellId, payload.data.data)
+            createSignalAction(outcomeActions.deleteOutcomeFully, cellId, payload.data.data)
           )
           break
         default:

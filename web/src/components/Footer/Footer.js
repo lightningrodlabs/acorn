@@ -1,12 +1,12 @@
 import React, { useState, useRef } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
 import { NavLink, Route, useRouteMatch } from 'react-router-dom'
-import Zoom from '../Zoom/Zoom'
-import './Footer.css'
+import Zoom from '../Zoom/Zoom.connector'
+import './Footer.scss'
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
 
-import EntryPointPicker from '../EntryPointPicker/EntryPointPicker'
+import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 
 function Footer() {
   const projectPage = useRouteMatch('/project/:projectId')

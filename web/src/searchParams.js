@@ -2,7 +2,7 @@
 // it so that we can use NavLink components to open the Guidebook
 export const GUIDE_IS_OPEN = 'guide_is_open'
 
-export const GO_TO_GOAL = 'go_to_goal'
+export const GO_TO_OUTCOME = 'go_to_outcome'
 
 export const ENTRY_POINTS = 'entry_points'
 

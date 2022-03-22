@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import './JoinProjectModal.css'
+import './JoinProjectModal.scss'
 
 import Icon from '../Icon/Icon'
 

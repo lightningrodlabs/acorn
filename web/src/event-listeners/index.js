@@ -2,22 +2,22 @@ import _ from 'lodash'
 
 import { coordsPageToCanvas } from '../drawing/coordinateSystems'
 import {
-  checkForEdgeAtCoordinates,
-  checkForGoalAtCoordinates,
-  checkForGoalAtCoordinatesInBox,
+  checkForConnectionAtCoordinates,
+  checkForOutcomeAtCoordinates,
+  checkForOutcomeAtCoordinatesInBox,
 } from '../drawing/eventDetection'
 import {
-  selectEdge,
-  selectGoal,
-  unselectGoal,
+  selectConnection,
+  selectOutcome,
+  unselectOutcome,
   unselectAll,
-} from '../selection/actions'
+} from '../redux/ephemeral/selection/actions'
 import {
-  hoverGoal,
-  unhoverGoal,
-  hoverEdge,
-  unhoverEdge,
-} from '../hover/actions'
+  hoverOutcome,
+  unhoverOutcome,
+  hoverConnection,
+  unhoverConnection,
+} from '../redux/ephemeral/hover/actions'
 import {
   setGKeyDown,
   unsetGKeyDown,
@@ -25,41 +25,44 @@ import {
   unsetShiftKeyDown,
   setCtrlKeyDown,
   unsetCtrlKeyDown,
-} from '../keyboard/actions'
+} from '../redux/ephemeral/keyboard/actions'
 import {
   setMousedown,
   unsetMousedown,
   setLiveCoordinate,
   setCoordinate,
   unsetCoordinate,
-  unsetGoals,
-  setGoals,
+  unsetOutcomes,
+  setOutcomes,
   setSize,
   unsetSize,
-} from '../mouse/actions'
+} from '../redux/ephemeral/mouse/actions'
 import {
-  openGoalForm,
-  closeGoalForm,
+  openOutcomeForm,
+  closeOutcomeForm,
   updateContent,
-} from '../goal-form/actions'
-import { archiveGoalFully } from '../projects/goals/actions'
-import { archiveEdge, layoutAffectingArchiveEdge } from '../projects/edges/actions'
-import { setScreenDimensions } from '../screensize/actions'
-import { changeTranslate, changeScale } from '../viewport/actions'
-import { openExpandedView } from '../expanded-view/actions'
-import { MOUSE, TRACKPAD } from '../local-preferences/reducer'
+} from '../redux/ephemeral/outcome-form/actions'
+import { deleteOutcomeFully } from '../redux/persistent/projects/outcomes/actions'
+import { affectLayoutDeleteConnection } from '../redux/persistent/projects/connections/actions'
+import { setScreenDimensions } from '../redux/ephemeral/screensize/actions'
+import { changeTranslate, changeScale } from '../redux/ephemeral/viewport/actions'
+import { openExpandedView } from '../redux/ephemeral/expanded-view/actions'
+import { MOUSE, TRACKPAD } from '../redux/ephemeral/local-preferences/reducer'
 
-import { setGoalClone } from '../goal-clone/actions'
+import { setOutcomeClone } from '../redux/ephemeral/outcome-clone/actions'
 
-import cloneGoals from './cloneGoals'
+import cloneOutcomes from './cloneOutcomes'
 import {
-  resetEdgeConnector,
-  setEdgeConnectorTo,
-} from '../edge-connector/actions'
-import handleEdgeConnectMouseUp from '../edge-connector/handler'
+  resetConnectionConnector,
+  setConnectionConnectorTo,
+} from '../redux/ephemeral/connection-connector/actions'
+import handleConnectionConnectMouseUp from '../redux/ephemeral/connection-connector/handler'
+import ProjectsZomeApi from '../api/projectsApi'
+import { getAppWs } from '../hcWebsockets'
+import { cellIdFromString } from '../utils'
 
-// ASSUMPTION: one parent (existingParentEdgeAddress)
-function handleMouseUpForGoalForm(state, event, store, fromAddress, relation, existingParentEdgeAddress) {
+// ASSUMPTION: one parent (existingParentConnectionAddress)
+function handleMouseUpForOutcomeForm(state, event, store, fromAddress, relation, existingParentConnectionAddress) {
   const calcedPoint = coordsPageToCanvas(
     {
       x: event.clientX,
@@ -69,8 +72,8 @@ function handleMouseUpForGoalForm(state, event, store, fromAddress, relation, ex
     state.ui.viewport.scale
   )
   store.dispatch(
-    // ASSUMPTION: one parent (existingParentEdgeAddress)
-    openGoalForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation, existingParentEdgeAddress)
+    // ASSUMPTION: one parent (existingParentConnectionAddress)
+    openOutcomeForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation, existingParentConnectionAddress)
   )
 }
 
@@ -85,11 +88,14 @@ export default function setupEventListeners(store, canvas) {
     store.dispatch(setScreenDimensions(rect.width * dpr, rect.height * dpr))
   }
 
-  function bodyKeydown(event) {
+  async function bodyKeydown(event) {
+    const appWebsocket = await getAppWs()
+    const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
     let state = store.getState()
     const {
       ui: { activeProject },
     } = state
+    const cellId = cellIdFromString(activeProject)
     // there are event.code and event.key ...
     // event.key is keyboard layout independent, so works for Dvorak users
     switch (event.key) {
@@ -103,52 +109,50 @@ export default function setupEventListeners(store, canvas) {
         break
       case 'e':
         if (
-          state.ui.selection.selectedGoals.length === 1 &&
-          !state.ui.goalForm.isOpen &&
+          state.ui.selection.selectedOutcomes.length === 1 &&
+          !state.ui.outcomeForm.isOpen &&
           !state.ui.expandedView.isOpen
         ) {
-          store.dispatch(openExpandedView(state.ui.selection.selectedGoals[0]))
+          store.dispatch(openExpandedView(state.ui.selection.selectedOutcomes[0]))
         }
         break
       case 'Shift':
         store.dispatch(setShiftKeyDown())
         break
       case 'Escape':
-        store.dispatch(closeGoalForm())
+        store.dispatch(closeOutcomeForm())
         store.dispatch(unselectAll())
-        store.dispatch(resetEdgeConnector())
+        store.dispatch(resetConnectionConnector())
         break
       case 'Backspace':
-        // archives one goal for now FIXME: should be able to archive many goals
+        // deletes one outcome for now FIXME: should be able to delete many outcomes
         let selection = state.ui.selection
-        // only dispatch if something's selected and the createGoal window is
+        // only dispatch if something's selected and the createOutcome window is
         // not open
         if (
-          selection.selectedEdges.length > 0 &&
-          !state.ui.goalForm.isOpen &&
+          selection.selectedConnections.length > 0 &&
+          !state.ui.outcomeForm.isOpen &&
           !state.ui.expandedView.isOpen
         ) {
-          let firstOfSelection = selection.selectedEdges[0]
+          let firstOfSelection = selection.selectedConnections[0]
           // affectLayout means this action will trigger a recalc
           // and layout animation update, which is natural in this context
           const affectLayout = true
-          store.dispatch(
-            layoutAffectingArchiveEdge(activeProject, firstOfSelection, affectLayout)
-          )
+          // TODO: refactor this weirdness
+          const affectLayoutAction = await affectLayoutDeleteConnection(activeProject, firstOfSelection, affectLayout)
+          store.dispatch(affectLayoutAction)
           // if on firefox, and matched this case
           // prevent the browser from navigating back to the last page
           event.preventDefault()
         } else if (
-          selection.selectedGoals.length > 0 &&
-          !state.ui.goalForm.isOpen &&
+          selection.selectedOutcomes.length > 0 &&
+          !state.ui.outcomeForm.isOpen &&
           !state.ui.expandedView.isOpen
         ) {
-          let firstOfSelection = selection.selectedGoals[0]
+          let firstOfSelection = selection.selectedOutcomes[0]
+          const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(cellId, firstOfSelection)
           store.dispatch(
-            archiveGoalFully.create({
-              cellIdString: activeProject,
-              payload: firstOfSelection,
-            })
+            deleteOutcomeFully(activeProject, fullyDeletedOutcome)
           )
           // if on firefox, and matched this case
           // prevent the browser from navigating back to the last page
@@ -160,16 +164,16 @@ export default function setupEventListeners(store, canvas) {
         break
       case 'c':
         if (state.ui.keyboard.ctrlKeyDown) {
-          if (state.ui.selection.selectedGoals.length) {
+          if (state.ui.selection.selectedOutcomes.length) {
             // use first
-            store.dispatch(setGoalClone(state.ui.selection.selectedGoals))
+            store.dispatch(setOutcomeClone(state.ui.selection.selectedOutcomes))
           }
         }
         break
       case 'v':
         if (state.ui.keyboard.ctrlKeyDown) {
-          if (state.ui.goalClone.goals.length) {
-            cloneGoals(store)
+          if (state.ui.outcomeClone.outcomes.length) {
+            cloneOutcomes(store)
           }
         }
         break
@@ -201,18 +205,18 @@ export default function setupEventListeners(store, canvas) {
 
   function canvasMousemove(event) {
     const state = store.getState()
-    let goalAddressesToSelect
+    let outcomeAddressesToSelect
     const {
       ui: {
         viewport: { translate, scale },
         mouse: {
           coordinate: { x, y },
-          goalsAddresses,
+          outcomesAddresses,
         },
         screensize: { width },
       },
     } = state
-    const goalCoordinates = state.ui.layout
+    const outcomeCoordinates = state.ui.layout
     const convertedMouse = coordsPageToCanvas(
       {
         x: event.clientX,
@@ -224,66 +228,66 @@ export default function setupEventListeners(store, canvas) {
     store.dispatch(setLiveCoordinate(convertedMouse))
 
     // this only is true if the CANVAS was clicked
-    // meaning it is not true if e.g. an EdgeConnector html element
+    // meaning it is not true if e.g. an ConnectionConnector html element
     // was clicked
     if (state.ui.mouse.mousedown) {
       if (event.shiftKey) {
-        if (!goalsAddresses) {
+        if (!outcomesAddresses) {
           store.dispatch(setCoordinate(convertedMouse))
         }
         store.dispatch(
           setSize({ w: convertedMouse.x - x, h: convertedMouse.y - y })
         )
-        goalAddressesToSelect = checkForGoalAtCoordinatesInBox(
-          goalCoordinates,
+        outcomeAddressesToSelect = checkForOutcomeAtCoordinatesInBox(
+          outcomeCoordinates,
           state,
           convertedMouse,
           { x, y }
         )
-        store.dispatch(setGoals(goalAddressesToSelect))
+        store.dispatch(setOutcomes(outcomeAddressesToSelect))
       } else {
         store.dispatch(changeTranslate(event.movementX, event.movementY))
       }
       return
     }
-    const goalAddress = checkForGoalAtCoordinates(
+    const outcomeAddress = checkForOutcomeAtCoordinates(
       canvas.getContext('2d'),
       translate,
       scale,
-      goalCoordinates,
+      outcomeCoordinates,
       state,
       event.clientX,
       event.clientY
     )
-    const edgeAddress = checkForEdgeAtCoordinates(
+    const connectionAddress = checkForConnectionAtCoordinates(
       canvas.getContext('2d'),
       translate,
       scale,
-      goalCoordinates,
+      outcomeCoordinates,
       state,
       event.clientX,
       event.clientY
     )
-    if (edgeAddress && state.ui.hover.hoveredGoal !== edgeAddress) {
-      store.dispatch(hoverEdge(edgeAddress))
-    } else if (!goalAddress && state.ui.hover.hoveredEdge) {
-      store.dispatch(unhoverEdge())
+    if (connectionAddress && state.ui.hover.hoveredOutcome !== connectionAddress) {
+      store.dispatch(hoverConnection(connectionAddress))
+    } else if (!outcomeAddress && state.ui.hover.hoveredConnection) {
+      store.dispatch(unhoverConnection())
     }
 
-    if (goalAddress && state.ui.hover.hoveredGoal !== goalAddress) {
-      store.dispatch(hoverGoal(goalAddress))
-      // hook up if the edge connector to a new Goal
-      // if we are using the edge connector
-      // and IMPORTANTLY if Goal is in the list of `validToAddresses`
+    if (outcomeAddress && state.ui.hover.hoveredOutcome !== outcomeAddress) {
+      store.dispatch(hoverOutcome(outcomeAddress))
+      // hook up if the connection connector to a new Outcome
+      // if we are using the connection connector
+      // and IMPORTANTLY if Outcome is in the list of `validToAddresses`
       if (
-        state.ui.edgeConnector.fromAddress &&
-        state.ui.edgeConnector.validToAddresses.includes(goalAddress)
+        state.ui.connectionConnector.fromAddress &&
+        state.ui.connectionConnector.validToAddresses.includes(outcomeAddress)
       ) {
-        store.dispatch(setEdgeConnectorTo(goalAddress))
+        store.dispatch(setConnectionConnectorTo(outcomeAddress))
       }
-    } else if (!goalAddress && state.ui.hover.hoveredGoal) {
-      store.dispatch(unhoverGoal())
-      store.dispatch(setEdgeConnectorTo(null))
+    } else if (!outcomeAddress && state.ui.hover.hoveredOutcome) {
+      store.dispatch(unhoverOutcome())
+      store.dispatch(setConnectionConnectorTo(null))
     }
   }
 
@@ -296,7 +300,7 @@ export default function setupEventListeners(store, canvas) {
           localPreferences: { navigation },
         },
       } = state
-      if (!state.ui.goalForm.isOpen) {
+      if (!state.ui.outcomeForm.isOpen) {
         // from https://medium.com/@auchenberg/detecting-multi-touch-trackpad-gestures-in-javascript-a2505babb10e
         // and https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-translate
         if (
@@ -329,21 +333,21 @@ export default function setupEventListeners(store, canvas) {
 
   function canvasClick(event) {
     const state = store.getState()
-    // goalsAddresses are Goals to be selected
+    // outcomesAddresses are Outcomes to be selected
     const {
       ui: {
-        mouse: { goalsAddresses },
+        mouse: { outcomesAddresses },
       },
     } = state
 
     if (state.ui.keyboard.gKeyDown) {
-      // opening the GoalForm is dependent on
+      // opening the OutcomeForm is dependent on
       // holding down the `g` keyboard key modifier
-      handleMouseUpForGoalForm(state, event, store)
+      handleMouseUpForOutcomeForm(state, event, store)
     }
-    else if (goalsAddresses) {
+    else if (outcomesAddresses) {
       // finishing a drag box selection action
-      goalsAddresses.forEach((value) => store.dispatch(selectGoal(value)))
+      outcomesAddresses.forEach((value) => store.dispatch(selectOutcome(value)))
     } else {
       // check for node in clicked area
       // select it if so
@@ -352,43 +356,43 @@ export default function setupEventListeners(store, canvas) {
           viewport: { translate, scale },
         },
       } = state
-      const goalCoordinates = state.ui.layout
+      const outcomeCoordinates = state.ui.layout
 
-      const clickedEdgeAddress = checkForEdgeAtCoordinates(
+      const clickedConnectionAddress = checkForConnectionAtCoordinates(
         canvas.getContext('2d'),
         translate,
         scale,
-        goalCoordinates,
+        outcomeCoordinates,
         state,
         event.clientX,
         event.clientY
       )
-      const clickedGoalAddress = checkForGoalAtCoordinates(
+      const clickedOutcomeAddress = checkForOutcomeAtCoordinates(
         canvas.getContext('2d'),
         translate,
         scale,
-        goalCoordinates,
+        outcomeCoordinates,
         state,
         event.clientX,
         event.clientY
       )
-      if (clickedEdgeAddress) {
+      if (clickedConnectionAddress) {
         store.dispatch(unselectAll())
-        store.dispatch(selectEdge(clickedEdgeAddress))
-      } else if (clickedGoalAddress) {
+        store.dispatch(selectConnection(clickedConnectionAddress))
+      } else if (clickedOutcomeAddress) {
         // if the shift key is being use, do an 'additive' select
-        // where you add the Goal to the list of selected
+        // where you add the Outcome to the list of selected
         if (!event.shiftKey) {
           store.dispatch(unselectAll())
         }
-        // if using shift, and Goal is already selected, unselect it
+        // if using shift, and Outcome is already selected, unselect it
         if (
           event.shiftKey &&
-          state.ui.selection.selectedGoals.indexOf(clickedGoalAddress) > -1
+          state.ui.selection.selectedOutcomes.indexOf(clickedOutcomeAddress) > -1
         ) {
-          store.dispatch(unselectGoal(clickedGoalAddress))
+          store.dispatch(unselectOutcome(clickedOutcomeAddress))
         } else {
-          store.dispatch(selectGoal(clickedGoalAddress))
+          store.dispatch(selectOutcome(clickedOutcomeAddress))
         }
       } else {
         // If nothing was selected, that means empty
@@ -399,7 +403,7 @@ export default function setupEventListeners(store, canvas) {
 
     // clear box selection vars
     store.dispatch(unsetCoordinate())
-    store.dispatch(unsetGoals())
+    store.dispatch(unsetOutcomes())
     store.dispatch(unsetSize())
   }
 
@@ -409,27 +413,27 @@ export default function setupEventListeners(store, canvas) {
 
   function canvasMouseup(event) {
     const state = store.getState()
-    // ASSUMPTION: one parent (existingParentEdgeAddress)
-    const { fromAddress, relation, toAddress, existingParentEdgeAddress } = state.ui.edgeConnector
+    // ASSUMPTION: one parent (existingParentConnectionAddress)
+    const { fromAddress, relation, toAddress, existingParentConnectionAddress } = state.ui.connectionConnector
     const { activeProject } = state.ui
     if (fromAddress) {
-      // covers the case where we are hovered over a Goal
-      // and thus making a connection to an existing Goal
+      // covers the case where we are hovered over a Outcome
+      // and thus making a connection to an existing Outcome
       // AS WELL AS the case where we are not
-      // (to reset the edge connector)
-      handleEdgeConnectMouseUp(
+      // (to reset the connection connector)
+      handleConnectionConnectMouseUp(
         fromAddress,
         relation,
         toAddress,
         // ASSUMPTION: one parent
-        existingParentEdgeAddress,
+        existingParentConnectionAddress,
         activeProject,
         store.dispatch
       )
-      // covers the case where we are not hovered over a Goal
-      // and thus making a new Goal and connection/Edge
+      // covers the case where we are not hovered over a Outcome
+      // and thus making a new Outcome and connection/Connection
       if (!toAddress) {
-        handleMouseUpForGoalForm(state, event, store, fromAddress, relation, existingParentEdgeAddress)
+        handleMouseUpForOutcomeForm(state, event, store, fromAddress, relation, existingParentConnectionAddress)
       }
     }
 
@@ -446,22 +450,22 @@ export default function setupEventListeners(store, canvas) {
         screensize: { width },
       },
     } = state
-    const goals = state.projects.goals[activeProject] || {}
-    const goalCoordinates = state.ui.layout
-    const goalAddress = checkForGoalAtCoordinates(
+    const outcomes = state.projects.outcomes[activeProject] || {}
+    const outcomeCoordinates = state.ui.layout
+    const outcomeAddress = checkForOutcomeAtCoordinates(
       canvas.getContext('2d'),
       translate,
       scale,
-      goalCoordinates,
+      outcomeCoordinates,
       state,
       event.clientX,
       event.clientY
     )
-    if (goalAddress) {
-      let goalCoord = goalCoordinates[goalAddress]
+    if (outcomeAddress) {
+      let outcomeCoord = outcomeCoordinates[outcomeAddress]
       store.dispatch(unselectAll())
-      store.dispatch(openGoalForm(goalCoord.x, goalCoord.y, goalAddress))
-      store.dispatch(updateContent(goals[goalAddress].content))
+      store.dispatch(openOutcomeForm(outcomeCoord.x, outcomeCoord.y, outcomeAddress))
+      store.dispatch(updateContent(outcomes[outcomeAddress].content))
     }
   }
 
@@ -476,7 +480,7 @@ export default function setupEventListeners(store, canvas) {
   canvas.addEventListener('mouseup', canvasMouseup)
   canvas.addEventListener('dblclick', canvasDblclick)
   // This listener is bound to the canvas only so clicks on other parts of
-  // the UI like the GoalForm won't trigger it.
+  // the UI like the OutcomeForm won't trigger it.
   canvas.addEventListener('click', canvasClick)
 
   return function cleanup() {
@@ -491,7 +495,7 @@ export default function setupEventListeners(store, canvas) {
     canvas.removeEventListener('mouseup', canvasMouseup)
     canvas.removeEventListener('dblclick', canvasDblclick)
     // This listener is bound to the canvas only so clicks on other parts of
-    // the UI like the GoalForm won't trigger it.
+    // the UI like the OutcomeForm won't trigger it.
     canvas.removeEventListener('click', canvasClick)
   }
 }

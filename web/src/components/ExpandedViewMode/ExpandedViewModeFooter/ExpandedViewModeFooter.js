@@ -1,10 +1,10 @@
 import React from 'react'
 import moment from 'moment'
-import './ExpandedViewModeFooter.css'
+import './ExpandedViewModeFooter.scss'
 
 import Icon from '../../Icon/Icon'
 
-export default function ExpandedViewModeFooter({ goal, creator }) {
+export default function ExpandedViewModeFooter({ outcome, creator }) {
   return (
     <div className="expanded_view_footer">
       <div className="footer_children_info">
@@ -28,9 +28,9 @@ export default function ExpandedViewModeFooter({ goal, creator }) {
         </div>
       </div>
       <div className="footer_card_info">
-        {`Created by ${creator.first_name} ${creator.last_name} ${
-          creator.is_imported ? '(Imported)' : ''
-        }  ${moment.unix(goal.timestamp_created).format(' | ll | LT')}`}
+        {`Created by ${creator.firstName} ${creator.lastName} ${
+          creator.isImported ? '(Imported)' : ''
+        }  ${moment.unix(outcome.timestampCreated).format(' | ll | LT')}`}
       </div>
     </div>
   )

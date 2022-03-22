@@ -4,7 +4,7 @@ import { CSSTransition } from 'react-transition-group'
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
 
-import './Modal.css'
+import './Modal.scss'
 
 function ModalContent({
   content,

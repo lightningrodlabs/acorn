@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
-import './RightMenu.css'
+import './RightMenu.scss'
 
 import Icon from '../../Icon/Icon'
 
-import PeoplePicker from '../../PeoplePicker/PeoplePicker'
+import PeoplePicker from '../../PeoplePicker/PeoplePicker.connector'
 import DatePicker from '../../DatePicker/DatePicker'
-import PriorityPicker from '../../PriorityPicker/PriorityPicker'
+import PriorityPicker from '../../PriorityPicker/PriorityPicker.connector'
 import HierarchyPicker from '../../HierarchyPicker/HierarchyPicker'
 
 export default function RightMenu({
   projectId,
   agentAddress,
-  goalAddress,
-  goal,
-  updateGoal,
+  outcomeAddress,
+  outcome,
+  updateOutcome,
 }) {
   const defaultViews = {
     help: false,
@@ -24,25 +24,25 @@ export default function RightMenu({
     hierarchy: false,
   }
 
-  const innerUpdateGoal = key => val => {
-    updateGoal(
+  const innerUpdateOutcome = key => val => {
+    updateOutcome(
       {
-        ...goal,
-        user_edit_hash: agentAddress,
-        timestamp_updated: moment().unix(),
+        ...outcome,
+        userEditHash: agentAddress,
+        timestampUpdated: moment().unix(),
         [key]: val,
       },
-      goalAddress
+      outcomeAddress
     )
   }
 
   const [viewsOpen, setViews] = useState(defaultViews)
 
   useEffect(() => {
-    if (!goalAddress) {
+    if (!outcomeAddress) {
       setViews({ ...defaultViews })
     }
-  }, [goalAddress])
+  }, [outcomeAddress])
 
   const rightMenuPriorityClass = viewsOpen.priority ? 'active' : ''
   const rightMenuHelpClass = viewsOpen.help ? 'active' : ''
@@ -62,26 +62,26 @@ export default function RightMenu({
 
     if (start && end) {
       timeframe = {
-        from_date: start,
-        to_date: end,
+        fromDate: start,
+        toDate: end,
       }
     }
 
-    updateGoal(
+    updateOutcome(
       {
-        ...goal,
-        user_edit_hash: agentAddress,
-        timestamp_updated: moment().unix(),
-        time_frame: timeframe,
+        ...outcome,
+        userEditHash: agentAddress,
+        timestampUpdated: moment().unix(),
+        timeFrame: timeframe,
       },
-      goalAddress
+      outcomeAddress
     )
   }
 
-  const fromDate = goal.time_frame
-    ? moment.unix(goal.time_frame.from_date)
+  const fromDate = outcome.timeFrame
+    ? moment.unix(outcome.timeFrame.fromDate)
     : null
-  const toDate = goal.time_frame ? moment.unix(goal.time_frame.to_date) : null
+  const toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
 
   return (
     <div className='expanded_view_right_menu'>
@@ -124,8 +124,8 @@ export default function RightMenu({
           className='right_menu_link feature-in-development'
         />
         <Icon
-          name='archive.svg'
-          className='right_menu_archive feature-in-development'
+          name='delete.svg'
+          className='right_menu_delete feature-in-development'
         />
         <Icon
           name='share.svg'
@@ -140,7 +140,7 @@ export default function RightMenu({
         {viewsOpen.priority && (
           <PriorityPicker
             projectId={projectId}
-            goalAddress={goalAddress}
+            outcomeAddress={outcomeAddress}
             onClose={() => setViews({ ...defaultViews })}
           />
         )}
@@ -161,8 +161,8 @@ export default function RightMenu({
         {viewsOpen.hierarchy && (
           <HierarchyPicker
             onClose={() => setViews({ ...defaultViews })}
-            selectedHierarchy={goal.hierarchy}
-            hierarchyClicked={innerUpdateGoal('hierarchy')}
+            selectedHierarchy={outcome.hierarchy}
+            hierarchyClicked={innerUpdateOutcome('hierarchy')}
           />
         )}
       </div>

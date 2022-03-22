@@ -1,5 +1,5 @@
 import React from 'react'
-import './UpdatePromptModal.css'
+import './UpdatePromptModal.scss'
 
 import Modal, { ModalContent } from '../Modal/Modal'
 import { useHistory } from 'react-router-dom'

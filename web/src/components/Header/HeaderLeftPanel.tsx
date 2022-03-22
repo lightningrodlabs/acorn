@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink, Route, useLocation } from 'react-router-dom'
 
-import ExportMenuItem from '../ExportMenuItem/ExportMenuItem'
+import ExportMenuItem from '../ExportMenuItem/ExportMenuItem.connector'
 import Icon from '../Icon/Icon'
 import {
   ProjectPriorityViewOnly,
@@ -10,7 +10,7 @@ import {
 import { ENTRY_POINTS } from '../../searchParams'
 import MembersIndicator from '../MembersIndicator/MembersIndicator'
 
-function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses, goToGoal }) {
+function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses, goToOutcome }) {
   const location = useLocation()
   const entryPointsAbsentThisOne = activeEntryPointAddresses
     .filter((headerHash) => headerHash !== entryPoint.headerHash)
@@ -22,7 +22,7 @@ function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses, goToGoal }) {
       <div
         className="active-entry-point-content"
         title={entryPoint.content}
-        onClick={() => goToGoal(entryPoint.goal_address)}
+        onClick={() => goToOutcome(entryPoint.outcomeAddress)}
       >
         {entryPoint.content}
       </div>
@@ -46,7 +46,7 @@ function HeaderLeftPanel({
   isExportOpen,
   onClickExport,
   activeEntryPoints,
-  goToGoal,
+  goToOutcome,
   members,
   presentMembers,
 }) {
@@ -159,7 +159,7 @@ function HeaderLeftPanel({
                 key={entryPoint.headerHash}
                 entryPoint={entryPoint}
                 activeEntryPointAddresses={activeEntryPointAddresses}
-                goToGoal={goToGoal}
+                goToOutcome={goToOutcome}
               />
             ))}
           </div>

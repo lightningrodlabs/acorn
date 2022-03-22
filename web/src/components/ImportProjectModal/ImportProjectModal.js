@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import './ImportProjectModal.css'
+import './ImportProjectModal.scss'
 
 import Modal from '../Modal/Modal'
 import {
@@ -105,7 +105,7 @@ function ImportingProjectModal ({ showModal }) {
   )
 }
 
-function ProjectImportedModal ({ showModal, onDone, projectName, goalCount }) {
+function ProjectImportedModal ({ showModal, onDone, projectName, outcomeCount }) {
   return (
     <Modal
       white
@@ -119,7 +119,7 @@ function ProjectImportedModal ({ showModal, onDone, projectName, goalCount }) {
         <ProjectModalContent>
           <div className='import-project-content-wrapper'>
             <strong>{projectName}</strong> with{' '}
-            <strong>{goalCount} goals</strong> was successfully imported.
+            <strong>{outcomeCount} outcomes</strong> was successfully imported.
           </div>
         </ProjectModalContent>
       </ProjectModalContentSpacer>
@@ -139,13 +139,13 @@ export default function ImportProjectModal ({
   const [projectImported, setProjectImported] = useState(false)
   const [projectSecret, setProjectSecret] = useState('')
   const [projectName, setProjectName] = useState('')
-  const [goalCount, setGoalCount] = useState('')
+  const [outcomeCount, setOutcomeCount] = useState('')
   let hasUnmounted = false
 
   const onFilePicked = async projectData => {
     setImportingProject(true)
     setProjectName(projectData.projectMeta.name)
-    setGoalCount(Object.keys(projectData.goals).length)
+    setOutcomeCount(Object.keys(projectData.outcomes).length)
     await onImportProject(projectData, projectSecret)
     setImportingProject(false)
     setProjectImported(true)
@@ -191,7 +191,7 @@ export default function ImportProjectModal ({
         projectSecret={projectSecret}
         onDone={onDone}
         projectName={projectName}
-        goalCount={goalCount}
+        outcomeCount={outcomeCount}
       />
       {/* <FileInvalidModal
         showModal={showModal && projectImported}

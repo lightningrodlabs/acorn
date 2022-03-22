@@ -9,10 +9,10 @@ export default function drawRoundCornerRectangle({
   stroke,
   strokeWidth,
   boxShadow,
-  topPriorityGoalGlow
+  topPriorityOutcomeGlow
 }) {
-  const rightEdge = xPosition + width
-  const bottomEdge = yPosition + height
+  const rightConnection = xPosition + width
+  const bottomConnection = yPosition + height
 
   context.save()
 
@@ -22,14 +22,14 @@ export default function drawRoundCornerRectangle({
   else context.fillStyle = color
 
 
-  // goal card box shadow
+  // outcome card box shadow
   if (boxShadow) {
     context.shadowColor = '#00000030'
     context.shadowBlur = 30
     context.shadowOffsetX = 0
     context.shadowOffsetY = 0
-    if (topPriorityGoalGlow) {
-      context.shadowColor = topPriorityGoalGlow
+    if (topPriorityOutcomeGlow) {
+      context.shadowColor = topPriorityOutcomeGlow
       context.shadowBlur = 60
       context.shadowOffsetX = 0
       context.shadowOffsetY = 0
@@ -37,21 +37,21 @@ export default function drawRoundCornerRectangle({
   }
   context.lineWidth = stroke ? strokeWidth : '1'
   context.moveTo(xPosition + radius, yPosition)
-  context.lineTo(rightEdge - radius, yPosition)
-  context.quadraticCurveTo(rightEdge, yPosition, rightEdge, yPosition + radius)
-  context.lineTo(rightEdge, yPosition + height - radius)
+  context.lineTo(rightConnection - radius, yPosition)
+  context.quadraticCurveTo(rightConnection, yPosition, rightConnection, yPosition + radius)
+  context.lineTo(rightConnection, yPosition + height - radius)
   context.quadraticCurveTo(
-    rightEdge,
-    bottomEdge,
-    rightEdge - radius,
-    bottomEdge
+    rightConnection,
+    bottomConnection,
+    rightConnection - radius,
+    bottomConnection
   )
-  context.lineTo(xPosition + radius, bottomEdge)
+  context.lineTo(xPosition + radius, bottomConnection)
   context.quadraticCurveTo(
     xPosition,
-    bottomEdge,
+    bottomConnection,
     xPosition,
-    bottomEdge - radius
+    bottomConnection - radius
   )
   context.lineTo(xPosition, yPosition + radius)
   context.quadraticCurveTo(xPosition, yPosition, xPosition + radius, yPosition)

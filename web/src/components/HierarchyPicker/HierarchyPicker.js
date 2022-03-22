@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import './HierarchyPicker.css'
+import './HierarchyPicker.scss'
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import Icon from '../Icon/Icon'
 
@@ -14,25 +14,25 @@ export default function HierarchyPicker({
       name: 'Root',
       displayName: 'Root',
       icon: 'root.svg',
-      description: 'primary goal',
+      description: 'primary outcome',
     },
     {
       name: 'Trunk',
       displayName: 'Trunk',
       icon: 'trunk.svg',
-      description: 'high-level goal',
+      description: 'high-level outcome',
     },
     {
       name: 'Branch',
       displayName: 'Branch',
       icon: 'branch.svg',
-      description: 'sub-goal',
+      description: 'sub-outcome',
     },
     {
       name: 'Leaf',
       displayName: 'Leaf',
       icon: 'leaf.svg',
-      description: 'small goal',
+      description: 'small outcome',
     },
     {
       name: 'NoHierarchy',

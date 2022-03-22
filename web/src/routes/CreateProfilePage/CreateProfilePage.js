@@ -2,9 +2,12 @@ import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { createWhoami } from '../../who-am-i/actions'
+import { createWhoami } from '../../redux/persistent/profiles/who-am-i/actions'
 import ProfileEditForm from '../../components/ProfileEditForm/ProfileEditForm'
-import './CreateProfilePage.css'
+import './CreateProfilePage.scss'
+import ProfilesZomeApi from '../../api/profilesApi'
+import { getAppWs } from '../../hcWebsockets'
+import { cellIdFromString } from '../../utils'
 
 function CreateProfilePage({ agentAddress, createWhoami }) {
   const titleText = "First, let's set up your profile on Acorn."
@@ -69,12 +72,13 @@ function mergeProps(stateProps, dispatchProps, _ownProps) {
   const { dispatch } = dispatchProps
   return {
     agentAddress,
-    createWhoami: profile => {
+    createWhoami: async profile => {
+      const appWebsocket = await getAppWs()
+      const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+      const cellId = cellIdFromString(profileCellIdString)
+      const createdWhoami = await profilesZomeApi.profile.createWhoami(cellId, profile)
       return dispatch(
-        createWhoami.create({
-          payload: profile,
-          cellIdString: profileCellIdString,
-        })
+        createWhoami(profileCellIdString, createdWhoami)
       )
     },
   }

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import './StatusIcon.css'
+import './StatusIcon.scss'
 
 function StatusIcon({
   status,

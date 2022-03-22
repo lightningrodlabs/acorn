@@ -6,6 +6,7 @@ pub const MEMBER_PATH: &str = "member";
 
 // This is a reference to the agent address for any users who have joined this DHT
 #[hdk_entry(id = "member")]
+#[serde(rename_all="camelCase")]
 #[derive(Clone, PartialEq)]
 pub struct Member {
     pub address: AgentPubKeyB64,

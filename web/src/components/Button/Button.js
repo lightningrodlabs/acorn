@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes, { bool } from 'prop-types'
-import './Button.css'
+import './Button.scss'
 
 function Button({ className, text, size, color, stroke, onClick }) {
   let classNames = 'button'

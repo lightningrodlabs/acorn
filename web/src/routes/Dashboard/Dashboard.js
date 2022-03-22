@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { cellIdToString } from 'connoropolous-hc-redux-middleware/build/main/lib/actionCreator'
 import { CSSTransition } from 'react-transition-group'
 import { NavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import './Dashboard.css'
+import './Dashboard.scss'
 import Icon from '../../components/Icon/Icon'
 import DashboardEmptyState from '../../components/DashboardEmptyState/DashboardEmptyState'
 
@@ -16,26 +15,28 @@ import JoinProjectModal from '../../components/JoinProjectModal/JoinProjectModal
 import { PROJECTS_ZOME_NAME, PROJECT_APP_PREFIX } from '../../holochainConfig'
 import { passphraseToUid } from '../../secrets'
 import { getAdminWs, getAppWs, getAgentPubKey } from '../../hcWebsockets'
-import { fetchEntryPointDetails } from '../../projects/entry-points/actions'
-import { fetchMembers, setMember } from '../../projects/members/actions'
+import { fetchEntryPointDetails } from '../../redux/persistent/projects/entry-points/actions'
+import { fetchMembers, setMember } from '../../redux/persistent/projects/members/actions'
 import {
   simpleCreateProjectMeta,
   fetchProjectMeta,
-} from '../../projects/project-meta/actions'
-import selectEntryPoints from '../../projects/entry-points/select'
+} from '../../redux/persistent/projects/project-meta/actions'
+import selectEntryPoints from '../../redux/persistent/projects/entry-points/select'
 import { PriorityModeOptions } from '../../constants'
 
 import {
   DashboardListProject,
   DashboardListProjectLoading,
 } from './DashboardListProject'
-import { joinProjectCellId, removeProjectCellId } from '../../cells/actions'
+import { joinProjectCellId, removeProjectCellId } from '../../redux/persistent/cells/actions'
 import importAllProjectData from '../../import'
 import PendingProjects from '../../components/PendingProjects/PendingProjects'
 import {
   closeInviteMembersModal,
   openInviteMembersModal,
-} from '../../invite-members-modal/actions'
+} from '../../redux/ephemeral/invite-members-modal/actions'
+import ProjectsZomeApi from '../../api/projectsApi'
+import { cellIdFromString, cellIdToString } from '../../utils'
 
 function Dashboard({
   existingAgents,
@@ -55,9 +56,9 @@ function Dashboard({
   setShowInviteMembersModal,
   hideInviteMembersModal,
 }) {
-  // created_at, name
+  // createdAt, name
   const [pendingProjects, setPendingProjects] = useState([])
-  const [selectedSort, setSelectedSort] = useState('created_at')
+  const [selectedSort, setSelectedSort] = useState('createdAt')
   const [showSortPicker, setShowSortPicker] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showJoinModal, setShowJoinModal] = useState(false)
@@ -106,9 +107,9 @@ function Dashboard({
   }
 
   let sortedProjects
-  if (selectedSort === 'created_at') {
+  if (selectedSort === 'createdAt') {
     // sort most recent first, oldest last
-    sortedProjects = projects.sort((a, b) => b.created_at - a.created_at)
+    sortedProjects = projects.sort((a, b) => b.createdAt - a.createdAt)
   } else if (selectedSort === 'name') {
     // sort alphabetically ascending
     sortedProjects = projects.sort((a, b) => {
@@ -174,7 +175,7 @@ function Dashboard({
                 className="my-projects-sorting-selected"
                 onClick={() => setShowSortPicker(!showSortPicker)}
               >
-                {selectedSort === 'created_at' && 'Last Created'}
+                {selectedSort === 'createdAt' && 'Last Created'}
                 {selectedSort === 'name' && 'Name'}
                 <Icon
                   name="chevron-down.svg"
@@ -189,7 +190,7 @@ function Dashboard({
                 classNames="my-projects-sorting-select"
               >
                 <ul className="my-projects-sorting-select">
-                  <li onClick={setSortBy('created_at')}>Last Created</li>
+                  <li onClick={setSortBy('createdAt')}>Last Created</li>
                   <li onClick={setSortBy('name')}>Name</li>
                 </ul>
               </CSSTransition>
@@ -299,12 +300,16 @@ async function installProjectApp(passphrase) {
 
 async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
   const [cellIdString] = await installProjectApp(passphrase)
+  const cellId = cellIdFromString(cellIdString)
   // because we are acting optimistically,
   // we will directly set ourselves as a member of this cell
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   await dispatch(setMember(cellIdString, { address: agentAddress }))
   const b1 = Date.now()
+  const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(cellId, projectMeta)
   await dispatch(
-    simpleCreateProjectMeta.create({ cellIdString, payload: projectMeta })
+    simpleCreateProjectMeta(cellIdString, simpleCreatedProjectMeta)
   )
   const b2 = Date.now()
   console.log('duration in MS over createProjectMeta ', b2 - b1)
@@ -358,7 +363,7 @@ async function joinProject(passphrase, dispatch) {
     appWs
       .callZome(
         {
-          cap: null,
+          cap_secret: null,
           cell_id: cellId,
           zome_name: PROJECTS_ZOME_NAME,
           fn_name: 'init_signal',
@@ -403,6 +408,7 @@ async function importProject(
 ) {
   // first step is to install the dna
   const [projectsCellIdString] = await installProjectApp(passphrase)
+  const cellId = cellIdFromString(projectsCellIdString)
   // next step is to import the rest of the data into that project
   const oldToNewAddressMap = await importAllProjectData(
     existingAgents,
@@ -415,22 +421,22 @@ async function importProject(
   // only add the project meta after the rest has been imported
   // so it doesn't list itself early in the process
   // first step is to create new project
-  const originalTopPriorityGoals = projectData.projectMeta.top_priority_goals
-  const originalPriorityMode = projectData.projectMeta.priority_mode
+  const originalTopPriorityOutcomes = projectData.projectMeta.topPriorityOutcomes
+  const originalPriorityMode = projectData.projectMeta.priorityMode
   const projectMeta = {
     ...projectData.projectMeta,
     // the question mark operator for backwards compatibility
-    top_priority_goals: originalTopPriorityGoals
-      ? originalTopPriorityGoals
+    topPriorityOutcomes: originalTopPriorityOutcomes
+      ? originalTopPriorityOutcomes
           .map((oldAddress) => oldToNewAddressMap[oldAddress])
           .filter((address) => address)
       : [],
     // the question mark operator for backwards compatibility
-    priority_mode: originalPriorityMode
+    priorityMode: originalPriorityMode
       ? originalPriorityMode
       : PriorityModeOptions.Universal,
-    created_at: Date.now(),
-    creator_address: agentAddress,
+    createdAt: Date.now(),
+    creatorAddress: agentAddress,
     passphrase: passphrase,
   }
   // these are not actuals field
@@ -438,15 +444,15 @@ async function importProject(
   delete projectMeta.headerHash
   // pre v0.5.3-alpha and prior
   delete projectMeta.address
-
+  
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   await dispatch(setMember(projectsCellIdString, { address: agentAddress }))
   try {
     console.log(projectMeta)
+    const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(cellId, projectMeta)
     await dispatch(
-      simpleCreateProjectMeta.create({
-        cellIdString: projectsCellIdString,
-        payload: projectMeta,
-      })
+      simpleCreateProjectMeta(projectsCellIdString, simpleCreatedProjectMeta)
     )
   } catch (e) {
     throw e
@@ -472,27 +478,39 @@ function mapDispatchToProps(dispatch) {
     deactivateApp: (appId, cellId) => {
       return deactivateApp(appId, cellId, dispatch)
     },
-    fetchEntryPointDetails: (cellIdString) => {
+    fetchEntryPointDetails: async (cellIdString) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const cellId = cellIdFromString(cellIdString)
+      const entryPointDetails = await projectsZomeApi.entryPoint.fetchEntryPointDetails(cellId)
       return dispatch(
-        fetchEntryPointDetails.create({ cellIdString, payload: null })
-      )
+        fetchEntryPointDetails(cellIdString, entryPointDetails)
+        )
+      },
+    fetchMembers: async (cellIdString) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const cellId = cellIdFromString(cellIdString)
+      const members = await projectsZomeApi.member.fetch(cellId)
+      return dispatch(fetchMembers(cellIdString, members))
     },
-    fetchMembers: (cellIdString) => {
-      return dispatch(fetchMembers.create({ cellIdString, payload: null }))
-    },
-    fetchProjectMeta: (cellIdString) => {
-      return dispatch(fetchProjectMeta.create({ cellIdString, payload: null }))
+    fetchProjectMeta: async (cellIdString) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const cellId = cellIdFromString(cellIdString)
+      const projectMeta = await projectsZomeApi.projectMeta.fetchProjectMeta(cellId)
+      return dispatch(fetchProjectMeta(cellIdString, projectMeta))
     },
     createProject: async (agentAddress, project, passphrase) => {
       // matches the createProjectMeta fn and type signature
       const projectMeta = {
         ...project, // name and image
         passphrase,
-        creator_address: agentAddress,
-        created_at: Date.now(),
-        is_imported: false,
-        priority_mode: 'Universal', // default
-        top_priority_goals: [],
+        creatorAddress: agentAddress,
+        createdAt: Date.now(),
+        isImported: false,
+        priorityMode: 'Universal', // default
+        topPriorityOutcomes: [],
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },

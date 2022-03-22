@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import './CreateProjectModal.css'
+import './CreateProjectModal.scss'
 
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import Modal from '../Modal/Modal'

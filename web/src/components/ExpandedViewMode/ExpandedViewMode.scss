@@ -1,0 +1,114 @@
+.expanded-view-overlay {
+  /* background: rgba(31, 31, 31, 0.4); */
+  background: rgb(239 236 231 / 90%);
+  height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: hidden;
+  position: fixed;
+  top: 0;
+  z-index: 1;
+}
+
+.expanded-view-overlay-enter {
+  opacity: 0;
+}
+
+.expanded-view-overlay-enter-active {
+  opacity: 1;
+  transition: opacity 0.25s 0s, transform 0.25s;
+}
+
+.expanded-view-overlay-exit {
+  opacity: 1;
+  transition: opacity 0.25s 0s, transform 0.25s;
+}
+
+.expanded-view-overlay-exit-active {
+  opacity: 0;
+}
+
+.expanded-view-wrapper {
+  box-shadow: 0px 0px 24px #0000001f;
+  width: 500px;
+  background: #ffffff;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.expanded-view-wrapper-enter {
+  -ms-transform: translate(-50%, -50%) scale(0.9);
+  transform: translate(-50%, -50%) scale(0.9);
+  opacity: 0;
+}
+
+.expanded-view-wrapper-enter-active {
+  -ms-transform: translate(-50%, -50%) scale(1);
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  transition: opacity 0.25s 0s, transform 0.25s;
+}
+
+.expanded-view-wrapper-exit {
+  -ms-transform: translate(-50%, -50%) scale(1);
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+.expanded-view-wrapper-exit-active {
+  -ms-transform: translate(-50%, -50%) scale(0.9);
+  transform: translate(-50%, -50%) scale(0.9);
+  opacity: 0;
+  transition: opacity 0.25s 0s, transform 0.25s;
+}
+
+.expanded-view-wrapper .small-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+  padding: 6px;
+}
+
+/* expanded view date picker */
+
+.expanded-view-wrapper>.date_picker_wrapper {
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+}
+
+.expanded-view-main {
+  display: flex;
+  flex-direction: row;
+}
+
+.expanded-view-right-menu {
+  display: inline-block;
+}
+
+.expanded-view-header, .expanded-view-content, .expanded-view-footer {
+  display: inline-block;
+}
+
+.outcome-form textarea {
+  background-color: transparent;
+  border: 0;
+  outline: none;
+  margin: 24px 22px 25px 27px;
+  width: 309px;
+  height: 70px;
+  resize: none;
+  color: #4d4d4d;
+  font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
+  font-size: 20px;
+  line-height: 24px;
+}

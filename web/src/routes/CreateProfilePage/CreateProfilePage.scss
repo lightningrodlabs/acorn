@@ -1,0 +1,35 @@
+.create_profile_page {
+  width: 100%;
+  height: 100vh;
+  background: #fbf9f7;
+  display: flex;
+  flex-direction: row;
+}
+
+.create_profile_page .profile_create_wrapper {
+  height: 100%;
+  width: 50%;
+  min-width: 556px;
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+.create_profile_splash_image {
+  background-image: url('../../images/splash-image.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 50%;
+}
+
+@media only screen and (max-height: 800px) {
+  .validating_form_input {
+    margin-bottom: 35px;
+  }
+  .profile_edit_form_title {
+    margin-bottom: 46px;
+  }
+  .profile_edit_form h4 {
+    margin-top: 12px;
+  }
+}

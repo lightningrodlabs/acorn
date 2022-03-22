@@ -214,21 +214,21 @@ export default {
         <ol>
           <div className="guidebook-description-section">
             <div className="guidebook-separate-line sub-heading">
-              Introduction to goal hierarchy levels
+              Introduction to outcome hierarchy levels
             </div>
             <div className="guidebook-separate-line">
-              Hierarchy adds another level of metadata to your goals. In Acorn
+              Hierarchy adds another level of metadata to your outcomes. In Acorn
               there are 4 hierarchy level options available inspired by tree
-              mataphore: Root (primary goal), Trunk (high-level goal), Branch
-              (Sub-goal), and Leaf (small goal). There is also the default option of
+              mataphore: Root (primary outcome), Trunk (high-level outcome), Branch
+              (Sub-outcome), and Leaf (small outcome). There is also the default option of
               No Hierarchy.
             </div>
             <div className="guidebook-separate-line">
-              Setting hierarchy for goals in a complex project
-              would help you and your team to be able to see how bigger goals
-              can break down into smaller units. While having the bigger goals in
+              Setting hierarchy for outcomes in a complex project
+              would help you and your team to be able to see how bigger outcomes
+              can break down into smaller units. While having the bigger outcomes in
               vision, your team would be able to easily identify leaf
-              small goals (leaf) to complete. By completing small goals more
+              small outcomes (leaf) to complete. By completing small outcomes more
               effectively, your team can see the progress being made, feel
               accomplished, and know clearly where they are headed.
             </div>
@@ -330,17 +330,17 @@ export default {
 
     // TODO: enable this section when the multi view location gets built-in
     // {
-    //   title: 'Locate a goal in different view modes',
-    //   guide_id: 'locate_a_goal_in_different_view_modes',
+    //   title: 'Locate a outcome in different view modes',
+    //   guide_id: 'locate_a_outcome_in_different_view_modes',
     //
     //   description: (
     //     <ol>
     //       <div className='guidebook-description-section'>
     //         The view mode buttons will make it easier for you to locate
-    //         certain goals in different view modes. In priority view, these
-    //         button appear when hovering on a certain goal (map and timeline).
+    //         certain outcomes in different view modes. In priority view, these
+    //         button appear when hovering on a certain outcome (map and timeline).
     //         Vice versa, if you are on the map view mode, to locate a specific
-    //         goal in priority view, open the priority pop-up for that goal, and
+    //         outcome in priority view, open the priority pop-up for that outcome, and
     //         click on the icon at the bottom of the pop-up.
     //       </div>
     //     </ol>

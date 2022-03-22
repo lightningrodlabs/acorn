@@ -1,5 +1,5 @@
 import React from 'react'
-import './ProjectEmptyState.css'
+import './ProjectEmptyState.scss'
 
 function ProjectEmptyState() {
   return (
@@ -7,7 +7,7 @@ function ProjectEmptyState() {
       <div className='project-empty-state'>
         <div className='project-empty-state-text'>
           <h4>
-            Hold G and left click anywhere on canvas to create your first goal
+            Hold G and left click anywhere on canvas to create your first outcome
             card.
           </h4>
         </div>

@@ -1,0 +1,32 @@
+/* guidebook text and arrow help to open */
+
+.guidebook_open_help {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  top: 68px;
+  right: 80px;
+  position: fixed;
+  font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
+  font-weight: normal;
+  color: #717171;
+  font-size: 14px;
+  z-index: -1;
+  white-space: nowrap;
+}
+
+.guidebook_open_help img {
+  max-width: 50px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+}
+
+canvas {
+  position: absolute;
+}
+
+/* transform */
+
+.transform-container, .outcome-form-position-container {
+  position: fixed;
+}

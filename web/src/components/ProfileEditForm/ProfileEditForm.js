@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import PropTypes from 'prop-types'
-import './ProfileEditForm.css'
+import './ProfileEditForm.scss'
 import Button from '../Button/Button'
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import Avatar from '../Avatar/Avatar'
@@ -34,23 +33,23 @@ function ProfileEditForm({
   const innerOnSubmit = () => {
     if (isValidUserName && isValidFirstName && isValidLastName) {
       onSubmit({
-        first_name: firstName,
-        last_name: lastName,
+        firstName: firstName,
+        lastName: lastName,
         status: 'Online',
-        avatar_url: avatarUrl,
+        avatarUrl: avatarUrl,
         address: agentAddress,
         handle,
-        is_imported: false
+        isImported: false
       })
     }
   }
 
   useEffect(() => {
     if (whoami) {
-      setFirstName(whoami.first_name)
-      setLastName(whoami.last_name)
+      setFirstName(whoami.firstName)
+      setLastName(whoami.lastName)
       setHandle(whoami.handle)
-      setAvatarUrl(whoami.avatar_url)
+      setAvatarUrl(whoami.avatarUrl)
     }
   }, [whoami])
   const userNames = useSelector(state =>
@@ -184,7 +183,7 @@ function ProfileEditForm({
             }
           />
           <div className='profile_edit_form_avatar'>
-            <Avatar avatar_url={avatarShow} large />
+            <Avatar avatarUrl={avatarShow} large />
           </div>
         </div>
         <div className='row'>
@@ -198,23 +197,6 @@ function ProfileEditForm({
       <Button onClick={() => !pending && innerOnSubmit()} text={actionButton} />
     </div>
   )
-}
-
-ProfileEditForm.propTypes = {
-  agentAddress: PropTypes.string,
-  onSubmit: PropTypes.func,
-  onClose: PropTypes.func,
-  whoami: PropTypes.shape({
-    address: PropTypes.string,
-    first_name: PropTypes.string,
-    last_name: PropTypes.string,
-    handle: PropTypes.string,
-    avatar_url: PropTypes.string,
-  }),
-  titleText: PropTypes.string,
-  subText: PropTypes.string,
-  submitText: PropTypes.string,
-  canClose: PropTypes.bool,
 }
 
 export default ProfileEditForm

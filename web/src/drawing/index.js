@@ -5,15 +5,15 @@
   and use well defined functions for rendering those specific parts
   to the canvas.
 */
-import drawGoalCard from './drawGoalCard'
-import drawEdge, { calculateEdgeCoordsByGoalCoords } from './drawEdge'
+import drawOutcomeCard from './drawOutcomeCard'
+import drawConnection, { calculateConnectionCoordsByOutcomeCoords } from './drawConnection'
 import drawOverlay from './drawOverlay'
 import drawSelectBox from '../drawing/drawSelectBox'
 import drawEntryPoints from './drawEntryPoints'
 import {
   RELATION_AS_PARENT,
   RELATION_AS_CHILD,
-} from '../edge-connector/actions'
+} from '../redux/ephemeral/connection-connector/actions'
 import { CONNECTOR_VERTICAL_SPACING, firstZoomThreshold } from './dimensions'
 
 function setupCanvas(canvas) {
@@ -29,8 +29,8 @@ function setupCanvas(canvas) {
   return ctx
 }
 
-// Render is responsible for painting all the existing goals & edges,
-// as well as the yet to be created (pending) ones (For new Goal / new Edge / edit Edge)
+// Render is responsible for painting all the existing outcomes & connections,
+// as well as the yet to be created (pending) ones (For new Outcome / new Connection / edit Connection)
 // render the state contained in store onto the canvas
 // `store` is a redux store
 // `canvas` is a reference to an HTML5 canvas DOM element
@@ -66,19 +66,19 @@ function render(store, canvas) {
   const projectId = state.ui.activeProject
   const activeEntryPoints = state.ui.activeEntryPoints
   if (!projectId) return
-  const goals = state.projects.goals[projectId]
-  const edges = state.projects.edges[projectId]
-  const goalMembers = state.projects.goalMembers[projectId]
+  const outcomes = state.projects.outcomes[projectId]
+  const connections = state.projects.connections[projectId]
+  const outcomeMembers = state.projects.outcomeMembers[projectId]
   const entryPoints = state.projects.entryPoints[projectId]
   const projectMeta = state.projects.projectMeta[projectId]
 
   // draw things relating to the project, if the project has fully loaded
-  if (goals && edges && goalMembers && entryPoints && projectMeta) {
-    const topPriorityGoals = projectMeta.top_priority_goals
-    // converts the goals object to an array
-    const goalsAsArray = Object.keys(goals).map(headerHash => goals[headerHash])
-    // convert the edges object to an array
-    const edgesAsArray = Object.keys(edges).map(headerHash => edges[headerHash])
+  if (outcomes && connections && outcomeMembers && entryPoints && projectMeta) {
+    const topPriorityOutcomes = projectMeta.topPriorityOutcomes
+    // converts the outcomes object to an array
+    const outcomesAsArray = Object.keys(outcomes).map(headerHash => outcomes[headerHash])
+    // convert the connections object to an array
+    const connectionsAsArray = Object.keys(connections).map(headerHash => connections[headerHash])
 
     const coordinates = state.ui.layout
 
@@ -91,75 +91,75 @@ function render(store, canvas) {
     drawEntryPoints(
       ctx,
       activeEntryPointsObjects,
-      goals,
-      edgesAsArray,
+      outcomes,
+      connectionsAsArray,
       coordinates
     )
 
     /*
-      DRAW EDGES (EXISTING)
+      DRAW CONNECTIONS (EXISTING)
     */
-    // render each edge to the canvas, basing it off the rendering coordinates of the parent and child nodes
-    edgesAsArray.forEach(function (edge) {
+    // render each connection to the canvas, basing it off the rendering coordinates of the parent and child nodes
+    connectionsAsArray.forEach(function (connection) {
 
-      // if in the pending re-parenting mode for the child card of an existing edge,
-      // temporarily omit/hide the existing edge from view
+      // if in the pending re-parenting mode for the child card of an existing connection,
+      // temporarily omit/hide the existing connection from view
       // ASSUMPTION: one parent
-      const pendingReParent = (state.ui.edgeConnector.fromAddress === edge.child_address && state.ui.edgeConnector.relation === RELATION_AS_CHILD)
-        || (state.ui.goalForm.isOpen && state.ui.goalForm.fromAddress === edge.child_address && state.ui.goalForm.relation === RELATION_AS_CHILD)
+      const pendingReParent = (state.ui.connectionConnector.fromAddress === connection.childAddress && state.ui.connectionConnector.relation === RELATION_AS_CHILD)
+        || (state.ui.outcomeForm.isOpen && state.ui.outcomeForm.fromAddress === connection.childAddress && state.ui.outcomeForm.relation === RELATION_AS_CHILD)
       if (pendingReParent) return
 
-      const childCoords = coordinates[edge.child_address]
-      const parentCoords = coordinates[edge.parent_address]
-      const parentGoalText = goals[edge.parent_address]
-        ? goals[edge.parent_address].content
+      const childCoords = coordinates[connection.childAddress]
+      const parentCoords = coordinates[connection.parentAddress]
+      const parentOutcomeText = outcomes[connection.parentAddress]
+        ? outcomes[connection.parentAddress].content
         : ''
-      // we can only render this edge
-      // if we know the coordinates of the Goals it connects
+      // we can only render this connection
+      // if we know the coordinates of the Outcomes it connects
       if (childCoords && parentCoords) {
-        const [edge1port, edge2port] = calculateEdgeCoordsByGoalCoords(
+        const [connection1port, connection2port] = calculateConnectionCoordsByOutcomeCoords(
           childCoords,
           parentCoords,
-          parentGoalText,
+          parentOutcomeText,
           ctx
         )
-        const isHovered = state.ui.hover.hoveredEdge === edge.headerHash
-        const isSelected = state.ui.selection.selectedEdges.includes(
-          edge.headerHash
+        const isHovered = state.ui.hover.hoveredConnection === connection.headerHash
+        const isSelected = state.ui.selection.selectedConnections.includes(
+          connection.headerHash
         )
-        drawEdge(edge1port, edge2port, ctx, isHovered, isSelected)
+        drawConnection(connection1port, connection2port, ctx, isHovered, isSelected)
       }
     })
 
     /*
-      SEPARATE SELECTED & UNSELECTED GOALS
+      SEPARATE SELECTED & UNSELECTED OUTCOMES
     */
     // in order to create layers behind and in front of the editing highlight overlay
-    const unselectedGoals = goalsAsArray.filter(goal => {
+    const unselectedOutcomes = outcomesAsArray.filter(outcome => {
       return (
-        state.ui.selection.selectedGoals.indexOf(goal.headerHash) === -1 &&
-        state.ui.goalForm.editAddress !== goal.headerHash
+        state.ui.selection.selectedOutcomes.indexOf(outcome.headerHash) === -1 &&
+        state.ui.outcomeForm.editAddress !== outcome.headerHash
       )
     })
-    const selectedGoals = goalsAsArray.filter(goal => {
+    const selectedOutcomes = outcomesAsArray.filter(outcome => {
       return (
-        state.ui.selection.selectedGoals.indexOf(goal.headerHash) > -1 &&
-        state.ui.goalForm.editAddress !== goal.headerHash
+        state.ui.selection.selectedOutcomes.indexOf(outcome.headerHash) > -1 &&
+        state.ui.outcomeForm.editAddress !== outcome.headerHash
       )
     })
 
     /*
-      DRAW UNSELECTED GOALS
+      DRAW UNSELECTED OUTCOMES
     */
-    // render each unselected goal to the canvas
-    unselectedGoals.forEach(goal => {
+    // render each unselected outcome to the canvas
+    unselectedOutcomes.forEach(outcome => {
       // use the set of coordinates at the same index
       // in the coordinates array
-      const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
+      const isHovered = state.ui.hover.hoveredOutcome === outcome.headerHash
       const isSelected = false
       const isEditing = false
       let editInfoObjects = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.goalBeingEdited !== null && agentInfo.goalBeingEdited.goalAddress === goal.headerHash)
+        .filter(agentInfo => agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeAddress === outcome.headerHash)
       const isBeingEdited = editInfoObjects.length > 0
       const isBeingEditedBy = editInfoObjects.length === 1
         ? state.agents[editInfoObjects[0].agentPubKey].handle
@@ -167,20 +167,20 @@ function render(store, canvas) {
           ? `${editInfoObjects.length} people`
           : null
       // a combination of those editing + those with expanded view open
-      const allMembersActiveOnGoal = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.goalExpandedView === goal.headerHash || (agentInfo.goalBeingEdited !== null && agentInfo.goalBeingEdited.goalAddress === goal.headerHash))
+      const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
+        .filter(agentInfo => agentInfo.outcomeExpandedView === outcome.headerHash || (agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeAddress === outcome.headerHash))
         .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
 
-      const membersOfGoal = Object.keys(goalMembers)
-        .map(headerHash => goalMembers[headerHash])
-        .filter(goalMember => goalMember.goal_address === goal.headerHash)
-        .map(goalMember => state.agents[goalMember.agent_address])
-      const isTopPriorityGoal = !!topPriorityGoals.find(headerHash => headerHash === goal.headerHash)
-      drawGoalCard({
+      const membersOfOutcome = Object.keys(outcomeMembers)
+        .map(headerHash => outcomeMembers[headerHash])
+        .filter(outcomeMember => outcomeMember.outcomeAddress === outcome.headerHash)
+        .map(outcomeMember => state.agents[outcomeMember.agentAddress])
+      const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === outcome.headerHash)
+      drawOutcomeCard({
         scale: scale,
-        goal: goal,
-        members: membersOfGoal,
-        coordinates: coordinates[goal.headerHash],
+        outcome: outcome,
+        members: membersOfOutcome,
+        coordinates: coordinates[outcome.headerHash],
         isEditing: isEditing, // self
         editText: '',
         isSelected: isSelected,
@@ -188,8 +188,8 @@ function render(store, canvas) {
         ctx: ctx,
         isBeingEdited: isBeingEdited, // by other
         isBeingEditedBy: isBeingEditedBy, // other
-        allMembersActiveOnGoal: allMembersActiveOnGoal,
-        isTopPriorityGoal: isTopPriorityGoal,
+        allMembersActiveOnOutcome: allMembersActiveOnOutcome,
+        isTopPriorityOutcome: isTopPriorityOutcome,
       })
     })
 
@@ -211,10 +211,10 @@ function render(store, canvas) {
     /*
       DRAW EDITING HIGHLIGHT SEMI-TRANSPARENT OVERLAY
     */
-    /* if shift key not held down and there are more than 1 Goals selected */
+    /* if shift key not held down and there are more than 1 Outcomes selected */
     if (
-      state.ui.goalForm.editAddress ||
-      (state.ui.selection.selectedGoals.length > 1 &&
+      state.ui.outcomeForm.editAddress ||
+      (state.ui.selection.selectedOutcomes.length > 1 &&
         !state.ui.keyboard.shiftKeyDown)
     ) {
       // counteract the translation
@@ -231,15 +231,15 @@ function render(store, canvas) {
     }
 
     /*
-      DRAW SELECTED GOALS
+      DRAW SELECTED OUTCOMES
     */
-    selectedGoals.forEach(goal => {
+    selectedOutcomes.forEach(outcome => {
       // use the set of coordinates at the same index
       // in the coordinates array
-      const isHovered = state.ui.hover.hoveredGoal === goal.headerHash
+      const isHovered = state.ui.hover.hoveredOutcome === outcome.headerHash
       const isSelected = true
       const isEditing = false
-      let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(agentInfo => agentInfo.goalBeingEdited !== null && agentInfo.goalBeingEdited.goalAddress === goal.headerHash)
+      let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(agentInfo => agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeAddress === outcome.headerHash)
       const isBeingEdited = editInfoObjects.length > 0
       const isBeingEditedBy = editInfoObjects.length === 1
         ? state.agents[editInfoObjects[0].agentPubKey].handle
@@ -247,19 +247,19 @@ function render(store, canvas) {
           ? `${editInfoObjects.length} people`
           : null
       // a combination of those editing + those with expanded view open
-      const allMembersActiveOnGoal = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.goalExpandedView === goal.headerHash || (agentInfo.goalBeingEdited !== null && agentInfo.goalBeingEdited.goalAddress === goal.headerHash))
+      const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
+        .filter(agentInfo => agentInfo.outcomeExpandedView === outcome.headerHash || (agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeAddress === outcome.headerHash))
         .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
-      const membersOfGoal = Object.keys(goalMembers)
-        .map(headerHash => goalMembers[headerHash])
-        .filter(goalMember => goalMember.goal_address === goal.headerHash)
-        .map(goalMember => state.agents[goalMember.agent_address])
-      const isTopPriorityGoal = !!topPriorityGoals.find(headerHash => headerHash === goal.headerHash)
-      drawGoalCard({
+      const membersOfOutcome = Object.keys(outcomeMembers)
+        .map(headerHash => outcomeMembers[headerHash])
+        .filter(outcomeMember => outcomeMember.outcomeAddress === outcome.headerHash)
+        .map(outcomeMember => state.agents[outcomeMember.agentAddress])
+      const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === outcome.headerHash)
+      drawOutcomeCard({
         scale: scale,
-        goal: goal,
-        members: membersOfGoal,
-        coordinates: coordinates[goal.headerHash],
+        outcome: outcome,
+        members: membersOfOutcome,
+        coordinates: coordinates[outcome.headerHash],
         isEditing: isEditing,
         editText: '',
         isSelected: isSelected,
@@ -267,117 +267,117 @@ function render(store, canvas) {
         ctx: ctx,
         isBeingEdited: isBeingEdited,
         isBeingEditedBy: isBeingEditedBy,
-        allMembersActiveOnGoal: allMembersActiveOnGoal,
-        isTopPriorityGoal: isTopPriorityGoal,
+        allMembersActiveOnOutcome: allMembersActiveOnOutcome,
+        isTopPriorityOutcome: isTopPriorityOutcome,
       })
     })
 
     /*
-      DRAW PENDING EDGE FOR GOAL FORM
+      DRAW PENDING CONNECTION FOR OUTCOME FORM
     */
-    // render the edge that is pending to be created to the open goal form
-    if (state.ui.goalForm.isOpen && state.ui.goalForm.fromAddress) {
-      const fromGoalCoords = coordinates[state.ui.goalForm.fromAddress]
-      const newGoalCoords = {
-        x: state.ui.goalForm.leftEdgeXPosition,
-        y: state.ui.goalForm.topEdgeYPosition,
+    // render the connection that is pending to be created to the open outcome form
+    if (state.ui.outcomeForm.isOpen && state.ui.outcomeForm.fromAddress) {
+      const fromOutcomeCoords = coordinates[state.ui.outcomeForm.fromAddress]
+      const newOutcomeCoords = {
+        x: state.ui.outcomeForm.leftConnectionXPosition,
+        y: state.ui.outcomeForm.topConnectionYPosition,
       }
-      const fromGoalText = state.projects.goals[
-        state.ui.goalForm.fromAddress
+      const fromOutcomeText = state.projects.outcomes[
+        state.ui.outcomeForm.fromAddress
       ]
-        ? goals[state.ui.goalForm.fromAddress].content
+        ? outcomes[state.ui.outcomeForm.fromAddress].content
         : ''
       let childCoords, parentCoords
-      const { relation } = state.ui.goalForm
+      const { relation } = state.ui.outcomeForm
       if (relation === RELATION_AS_CHILD) {
-        childCoords = fromGoalCoords
-        parentCoords = newGoalCoords
+        childCoords = fromOutcomeCoords
+        parentCoords = newOutcomeCoords
       } else if (relation === RELATION_AS_PARENT) {
-        childCoords = newGoalCoords
-        parentCoords = fromGoalCoords
+        childCoords = newOutcomeCoords
+        parentCoords = fromOutcomeCoords
       }
-      const [edge1port, edge2port] = calculateEdgeCoordsByGoalCoords(
+      const [connection1port, connection2port] = calculateConnectionCoordsByOutcomeCoords(
         childCoords,
         parentCoords,
-        fromGoalText,
+        fromOutcomeText,
         ctx
       )
-      drawEdge(edge1port, edge2port, ctx)
+      drawConnection(connection1port, connection2port, ctx)
     }
 
     /*
-      DRAW PENDING EDGE FOR "EDGE CONNECTOR"
+      DRAW PENDING CONNECTION FOR "CONNECTION CONNECTOR"
     */
-    // render the edge that is pending to be created between existing Goals
-    if (state.ui.edgeConnector.fromAddress) {
-      const { fromAddress, relation, toAddress } = state.ui.edgeConnector
+    // render the connection that is pending to be created between existing Outcomes
+    if (state.ui.connectionConnector.fromAddress) {
+      const { fromAddress, relation, toAddress } = state.ui.connectionConnector
       const { liveCoordinate } = state.ui.mouse
       const fromCoords = coordinates[fromAddress]
-      const fromContent = goals[fromAddress].content
+      const fromContent = outcomes[fromAddress].content
       const [
         fromAsChildCoord,
         fromAsParentCoord,
-      ] = calculateEdgeCoordsByGoalCoords(
+      ] = calculateConnectionCoordsByOutcomeCoords(
         fromCoords,
         fromCoords,
         fromContent,
         ctx
       )
-      // if there's a goal this is pending
-      // as being "to", then we will be drawing the edge to its correct
+      // if there's a outcome this is pending
+      // as being "to", then we will be drawing the connection to its correct
       // upper or lower port
       // the opposite of whichever the "from" port is connected to
       let toCoords, toContent, toAsChildCoord, toAsParentCoord
       if (toAddress) {
         toCoords = coordinates[toAddress]
-        toContent = goals[toAddress].content
-          ;[toAsChildCoord, toAsParentCoord] = calculateEdgeCoordsByGoalCoords(
+        toContent = outcomes[toAddress].content
+          ;[toAsChildCoord, toAsParentCoord] = calculateConnectionCoordsByOutcomeCoords(
             toCoords,
             toCoords,
             toContent,
             ctx
           )
       }
-      // in drawEdge, it draws at exactly the two coordinates given,
+      // in drawConnection, it draws at exactly the two coordinates given,
       // so we could pass them in either order/position
-      const fromEdgeCoord =
+      const fromConnectionCoord =
         relation === RELATION_AS_PARENT ? fromAsParentCoord : fromAsChildCoord
       // use the current mouse coordinate position, liveCoordinate, by default
-      let toEdgeCoord = liveCoordinate
-      // use the coordinates relating to a Goal which it is pending that
-      // this edge will connect the "from" Goal "to"
+      let toConnectionCoord = liveCoordinate
+      // use the coordinates relating to a Outcome which it is pending that
+      // this connection will connect the "from" Outcome "to"
       if (toAddress) {
-        toEdgeCoord =
+        toConnectionCoord =
           relation === RELATION_AS_PARENT ? toAsChildCoord : toAsParentCoord
       }
       if (relation === RELATION_AS_CHILD) {
-        fromEdgeCoord.y = fromEdgeCoord.y - CONNECTOR_VERTICAL_SPACING
-        // only modify if we're dealing with an actual goal being connected to
+        fromConnectionCoord.y = fromConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
+        // only modify if we're dealing with an actual outcome being connected to
         if (toAddress)
-          toEdgeCoord.y = toEdgeCoord.y + CONNECTOR_VERTICAL_SPACING
+          toConnectionCoord.y = toConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
       } else if (relation === RELATION_AS_PARENT) {
-        fromEdgeCoord.y = fromEdgeCoord.y + CONNECTOR_VERTICAL_SPACING
-        // only modify if we're dealing with an actual goal being connected to
+        fromConnectionCoord.y = fromConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
+        // only modify if we're dealing with an actual outcome being connected to
         if (toAddress)
-          toEdgeCoord.y = toEdgeCoord.y - CONNECTOR_VERTICAL_SPACING
+          toConnectionCoord.y = toConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
       }
-      drawEdge(fromEdgeCoord, toEdgeCoord, ctx)
+      drawConnection(fromConnectionCoord, toConnectionCoord, ctx)
     }
 
     /*
-      DRAW GOAL BEING EDITED in QUICK EDIT MODE
+      DRAW OUTCOME BEING EDITED in QUICK EDIT MODE
     */
     // so in front of the overlay as well
-    if (state.ui.goalForm.editAddress) {
-      // editing an existing Goal
-      const editingGoal = goals[state.ui.goalForm.editAddress]
-      // we only allow this goal
+    if (state.ui.outcomeForm.editAddress) {
+      // editing an existing Outcome
+      const editingOutcome = outcomes[state.ui.outcomeForm.editAddress]
+      // we only allow this outcome
       // to be edited using 'quickedit'
       // above the first zoom threshold
       const isEditing = scale >= firstZoomThreshold
-      const editText = state.ui.goalForm.content
+      const editText = state.ui.outcomeForm.content
       let editInfoObjects = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.goalBeingEdited !== null && agentInfo.goalBeingEdited.goalAddress === state.ui.goalForm.editAddress)
+        .filter(agentInfo => agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeAddress === state.ui.outcomeForm.editAddress)
       const isBeingEdited = editInfoObjects.length > 0
       const isBeingEditedBy = editInfoObjects.length === 1
         ? state.agents[editInfoObjects[0].agentPubKey].handle
@@ -385,19 +385,19 @@ function render(store, canvas) {
           ? `${editInfoObjects.length} people`
           : null
       // a combination of those editing + those with expanded view open
-      const allMembersActiveOnGoal = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.goalExpandedView === state.ui.goalForm.editAddress || (agentInfo.goalBeingEdited !== null && agentInfo.goalBeingEdited.goalAddress === state.ui.goalForm.editAddress))
+      const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
+        .filter(agentInfo => agentInfo.outcomeExpandedView === state.ui.outcomeForm.editAddress || (agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeAddress === state.ui.outcomeForm.editAddress))
         .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
-      const membersOfGoal = Object.keys(goalMembers)
-        .map(headerHash => goalMembers[headerHash])
-        .filter(goalMember => goalMember.goal_address === editingGoal.headerHash)
-        .map(goalMember => state.agents[goalMember.agent_address])
-      const isTopPriorityGoal = !!topPriorityGoals.find(headerHash => headerHash === state.ui.goalForm.editAddress)
-      drawGoalCard({
+      const membersOfOutcome = Object.keys(outcomeMembers)
+        .map(headerHash => outcomeMembers[headerHash])
+        .filter(outcomeMember => outcomeMember.outcomeAddress === editingOutcome.headerHash)
+        .map(outcomeMember => state.agents[outcomeMember.agentAddress])
+      const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === state.ui.outcomeForm.editAddress)
+      drawOutcomeCard({
         scale: scale,
-        goal: editingGoal,
-        members: membersOfGoal,
-        coordinates: coordinates[editingGoal.headerHash],
+        outcome: editingOutcome,
+        members: membersOfOutcome,
+        coordinates: coordinates[editingOutcome.headerHash],
         isEditing: isEditing,
         editText: editText,
         isSelected: false,
@@ -405,35 +405,36 @@ function render(store, canvas) {
         ctx: ctx,
         isBeingEdited: isBeingEdited,
         isBeingEditedBy: isBeingEditedBy,
-        allMembersActiveOnGoal: allMembersActiveOnGoal,
-        isTopPriorityGoal: isTopPriorityGoal,
+        allMembersActiveOnOutcome: allMembersActiveOnOutcome,
+        isTopPriorityOutcome: isTopPriorityOutcome,
       })
     }
   }
 
   /*
-    DRAW NEW GOAL PLACEHOLDER
+    DRAW NEW OUTCOME PLACEHOLDER
   */
-  // creating a new Goal
-  if (!state.ui.goalForm.editAddress && state.ui.goalForm.isOpen) {
+  // creating a new Outcome
+  if (!state.ui.outcomeForm.editAddress && state.ui.outcomeForm.isOpen) {
     const isHovered = false
     const isSelected = false
     const isEditing = true
-    const isTopPriorityGoal = false
-    drawGoalCard({
+    const isTopPriorityOutcome = false
+    // TODO: fix for new data structure
+    drawOutcomeCard({
       scale: scale,
-      goal: { status: 'Uncertain' },
+      outcome: { status: 'Uncertain' },
       members: [],
-      coordinates: { x: state.ui.goalForm.leftEdgeXPosition, y: state.ui.goalForm.topEdgeYPosition },
+      coordinates: { x: state.ui.outcomeForm.leftConnectionXPosition, y: state.ui.outcomeForm.topConnectionYPosition },
       isEditing: isEditing,
-      editText: state.ui.goalForm.content,
+      editText: state.ui.outcomeForm.content,
       isSelected: isSelected,
       isHovered: isHovered,
       ctx: ctx,
       isBeingEdited: false,
       isBeingEditedBy: '',
-      isTopPriorityGoal: isTopPriorityGoal,
-      allMembersActiveOnGoal: [],
+      isTopPriorityOutcome: isTopPriorityOutcome,
+      allMembersActiveOnOutcome: [],
     })
   }
 }

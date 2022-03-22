@@ -93,7 +93,7 @@ export default {
               Locating a specific card in a different view mode
             </div>
             <div className='guidebook-separate-line'>
-              You can also locate a selected goal card from the map view on
+              You can also locate a selected outcome card from the map view on
               priority view by selecting on the priority view icon in priority
               pop-up, and vice versa: you can locate a selected card on
               priority view to the Map view.

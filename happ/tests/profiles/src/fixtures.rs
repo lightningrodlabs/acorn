@@ -2,7 +2,7 @@
 // this is done to enable passing those to constructor functions for fixturators, like
 // ```
 // fixturator!(
-//      Goal;
+//      Outcome;
 //        constructor fn new(..., OptionVecString, ...);
 //  );
 // ```

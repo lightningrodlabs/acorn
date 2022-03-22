@@ -91,7 +91,7 @@ pub mod tests {
 
         // it is as if there is a ProjectMeta at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the goal_address
+        // the must_get_header call for the outcome_address
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(
@@ -141,7 +141,7 @@ pub mod tests {
 
         // it is as if there is a ProjectMeta at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the goal_address
+        // the must_get_header call for the outcome_address
         mock_hdk
             .expect_must_get_header()
             .with(mockall::predicate::eq(MustGetHeaderInput::new(

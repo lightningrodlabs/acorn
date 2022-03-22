@@ -1,10 +1,14 @@
-import { createImportedProfile } from '../agents/actions'
-import { createGoal } from '../projects/goals/actions'
-import { createEdge } from '../projects/edges/actions'
-import { createGoalComment } from '../projects/goal-comments/actions'
-import { createGoalVote } from '../projects/goal-votes/actions'
-import { createGoalMember } from '../projects/goal-members/actions'
-import { createEntryPoint } from '../projects/entry-points/actions'
+import { createImportedProfile } from '../redux/persistent/profiles/agents/actions'
+import { createOutcome } from '../redux/persistent/projects/outcomes/actions'
+import { createConnection } from '../redux/persistent/projects/connections/actions'
+import { createOutcomeComment } from '../redux/persistent/projects/outcome-comments/actions'
+import { createOutcomeVote } from '../redux/persistent/projects/outcome-votes/actions'
+import { createOutcomeMember } from '../redux/persistent/projects/outcome-members/actions'
+import { createEntryPoint } from '../redux/persistent/projects/entry-points/actions'
+import ProjectsZomeApi from '../api/projectsApi'
+import ProfilesZomeApi from '../api/profilesApi'
+import { getAppWs } from '../hcWebsockets'
+import { cellIdFromString } from '../utils'
 
 export default async function importAllProjectData(
   existingAgents,
@@ -14,14 +18,19 @@ export default async function importAllProjectData(
   dispatch
 ) {
   /*
-  agents, goals, edges,
-  goalMembers, goalComments, goalVotes,
+  agents, outcomes, connections,
+  outcomeMembers, outcomeComments, outcomeVotes,
   entryPoints,
   */
 
   // AGENTS
   // first import the old agents
   // they must be imported through the profiles dna
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+  const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+  const profilesCellId = cellIdFromString(profilesCellIdString)
+  const projectsCellId = cellIdFromString(projectsCellIdString)
   for (let address of Object.keys(projectData.agents)) {
     const old = projectData.agents[address]
     // only import agents that AREN'T already in your data store
@@ -30,70 +39,67 @@ export default async function importAllProjectData(
     }
     const clone = {
       ...old,
-      is_imported: true,
+      isImported: true,
     }
+    const importedProfile = await profilesZomeApi.profile.createImportedProfile(profilesCellId, clone)
     await dispatch(
-      createImportedProfile.create({
-        cellIdString: profilesCellIdString,
-        payload: clone,
-      })
+      createImportedProfile(profilesCellIdString, importedProfile)
     )
   }
 
-  // GOALS
-  const goalAddressMap = {}
-  // do the goals second, since pretty much everything else
-  // is sub-data to the goals
-  for (let goalAddress of Object.keys(projectData.goals)) {
-    const oldGoal = projectData.goals[goalAddress]
+  // OUTCOMES
+  const outcomeAddressMap = {}
+  // do the outcomes second, since pretty much everything else
+  // is sub-data to the outcomes
+  for (let outcomeAddress of Object.keys(projectData.outcomes)) {
+    const oldOutcome = projectData.outcomes[outcomeAddress]
     const clone = {
-      ...oldGoal,
-      is_imported: true,
+      ...oldOutcome,
+      isImported: true,
     }
     // v0.5.4-alpha
     delete clone.headerHash
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    let newGoal
+    let newOutcome
     try {
-      newGoal = await dispatch(
-        createGoal.create({
-          cellIdString: projectsCellIdString,
-          payload: clone,
-        })
+      // @ts-ignore
+      const createdOutcome = await projectsZomeApi.outcome.create(projectsCellId, clone)
+      newOutcome = await dispatch(
+        createOutcome(projectsCellIdString, createdOutcome)
       )
     } catch (e) {
-      console.log('createGoal error', e)
+      console.log('createOutcome error', e)
       throw e
     }
-    // add this new goal address to the goalAddressMap
+    // add this new outcome address to the outcomeAddressMap
     // to keep of which new addresses map to which old addresses
-    let oldGoalHeaderHash
+    let oldOutcomeHeaderHash
     // v0.5.4-alpha
-    if (oldGoal.headerHash) oldGoalHeaderHash = oldGoal.headerHash
+    if (oldOutcome.headerHash) oldOutcomeHeaderHash = oldOutcome.headerHash
     // pre v0.5.3-alpha and prior
-    else if (oldGoal.address) oldGoalHeaderHash = oldGoal.address
+    else if (oldOutcome.address) oldOutcomeHeaderHash = oldOutcome.address
 
-    let newGoalHeaderHash
+    let newOutcomeHeaderHash
     // v0.5.4-alpha
-    if (newGoal.headerHash) newGoalHeaderHash = newGoal.headerHash
+    if (newOutcome.headerHash) newOutcomeHeaderHash = newOutcome.headerHash
     // pre v0.5.3-alpha and prior
-    else if (newGoal.address) newGoalHeaderHash = newGoal.address
+    else if (newOutcome.address) newOutcomeHeaderHash = newOutcome.address
 
-    goalAddressMap[oldGoalHeaderHash] = newGoalHeaderHash
+    outcomeAddressMap[oldOutcomeHeaderHash] = newOutcomeHeaderHash
   }
 
-  // EDGES
-  for (let address of Object.keys(projectData.edges)) {
-    const old = projectData.edges[address]
+  // CONNECTIONS
+  for (let address of Object.keys(projectData.connections)) {
+    const old = projectData.connections[address]
     const clone = {
       ...old,
-      parent_address: goalAddressMap[old.parent_address],
-      child_address: goalAddressMap[old.child_address],
+      parentAddress: outcomeAddressMap[old.parentAddress],
+      childAddress: outcomeAddressMap[old.childAddress],
       // randomizer used to be a float, but is now an int
       randomizer: Number(old.randomizer.toFixed()),
-      is_imported: true,
+      isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
@@ -101,30 +107,29 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.child_address || !clone.parent_address) {
-      console.log('weird, invalid edge:', clone)
+    if (!clone.childAddress || !clone.parentAddress) {
+      console.log('weird, invalid connection:', clone)
       continue
     }
     try {
+      // @ts-ignore
+      const createdConnection = await projectsZomeApi.connection.create(projectsCellId, clone)
       await dispatch(
-        createEdge.create({
-          cellIdString: projectsCellIdString,
-          payload: clone,
-        })
+        createConnection(projectsCellIdString, createdConnection)
       )
     } catch (e) {
-      console.log('createEdge error', e)
+      console.log('createConnection error', e)
       throw e
     }
   }
 
-  // GOAL MEMBERS
-  for (let address of Object.keys(projectData.goalMembers)) {
-    const old = projectData.goalMembers[address]
+  // OUTCOME MEMBERS
+  for (let address of Object.keys(projectData.outcomeMembers)) {
+    const old = projectData.outcomeMembers[address]
     const clone = {
       ...old,
-      goal_address: goalAddressMap[old.goal_address],
-      is_imported: true,
+      outcomeAddress: outcomeAddressMap[old.outcomeAddress],
+      isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
@@ -132,30 +137,29 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.goal_address) {
-      console.log('weird, invalid goalMember:', clone)
+    if (!clone.outcomeAddress) {
+      console.log('weird, invalid outcomeMember:', clone)
       continue
     }
     try {
+      // @ts-ignore
+      const createdOutcomeMember = await projectsZomeApi.outcomeMember.create(projectsCellId, clone)
       await dispatch(
-        createGoalMember.create({
-          cellIdString: projectsCellIdString,
-          payload: clone,
-        })
+        createOutcomeMember(projectsCellIdString, createdOutcomeMember)
       )
     } catch (e) {
-      console.log('createGoalMember error', e)
+      console.log('createOutcomeMember error', e)
       throw e
     }
   }
 
-  // GOAL COMMENTS
-  for (let address of Object.keys(projectData.goalComments)) {
-    const old = projectData.goalComments[address]
+  // OUTCOME COMMENTS
+  for (let address of Object.keys(projectData.outcomeComments)) {
+    const old = projectData.outcomeComments[address]
     const clone = {
       ...old,
-      goal_address: goalAddressMap[old.goal_address],
-      is_imported: true,
+      outcomeAddress: outcomeAddressMap[old.outcomeAddress],
+      isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
@@ -163,30 +167,29 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.goal_address) {
-      console.log('weird, invalid goalComment:', clone)
+    if (!clone.outcomeAddress) {
+      console.log('weird, invalid outcomeComment:', clone)
       continue
     }
     try {
+      // @ts-ignore
+      const createdOutcomeComment = await projectsZomeApi.outcomeComment.create(projectsCellId, clone)
       await dispatch(
-        createGoalComment.create({
-          cellIdString: projectsCellIdString,
-          payload: clone,
-        })
+        createOutcomeComment(projectsCellIdString, createdOutcomeComment)
       )
     } catch (e) {
-      console.log('createGoalComment error', e)
+      console.log('createOutcomeComment error', e)
       throw e
     }
   }
 
-  // GOAL VOTES
-  for (let address of Object.keys(projectData.goalVotes)) {
-    const old = projectData.goalVotes[address]
+  // OUTCOME VOTES
+  for (let address of Object.keys(projectData.outcomeVotes)) {
+    const old = projectData.outcomeVotes[address]
     const clone = {
       ...old,
-      goal_address: goalAddressMap[old.goal_address],
-      is_imported: true,
+      outcomeAddress: outcomeAddressMap[old.outcomeAddress],
+      isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
@@ -194,19 +197,18 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.goal_address) {
-      console.log('weird, invalid goalVote:', clone)
+    if (!clone.outcomeAddress) {
+      console.log('weird, invalid outcomeVote:', clone)
       continue
     }
     try {
+      // @ts-ignore
+      const createdOutcomeVote = await projectsZomeApi.outcomeVote.create(projectsCellId, clone)
       await dispatch(
-        createGoalVote.create({
-          cellIdString: projectsCellIdString,
-          payload: clone,
-        })
+        createOutcomeVote(projectsCellIdString, createdOutcomeVote)
       )
     } catch (e) {
-      console.log('createGoalVote error', e)
+      console.log('createOutcomeVote error', e)
       throw e
     }
   }
@@ -216,8 +218,8 @@ export default async function importAllProjectData(
     const old = projectData.entryPoints[address]
     const clone = {
       ...old,
-      goal_address: goalAddressMap[old.goal_address],
-      is_imported: true,
+      outcomeAddress: outcomeAddressMap[old.outcomeAddress],
+      isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
@@ -225,16 +227,15 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.goal_address) {
+    if (!clone.outcomeAddress) {
       console.log('weird, invalid entryPoint:', clone)
       continue
     }
     try {
+      // @ts-ignore
+      const createdEntryPoint = await projectsZomeApi.entryPoint.create(projectsCellId, clone)
       await dispatch(
-        createEntryPoint.create({
-          cellIdString: projectsCellIdString,
-          payload: clone,
-        })
+        createEntryPoint(projectsCellIdString, createdEntryPoint)
       )
     } catch (e) {
       console.log('createEntryPoint error', e)
@@ -243,5 +244,5 @@ export default async function importAllProjectData(
   }
 
   // return the list of old addresses mapped to new addresses
-  return goalAddressMap
+  return outcomeAddressMap
 }

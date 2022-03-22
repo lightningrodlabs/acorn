@@ -7,13 +7,13 @@ import {
 } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import './App.css'
+import './App.scss'
 
-import { updateWhoami } from '../who-am-i/actions'
+import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
 import {
   setHasAccessedGuidebook,
   setNavigationPreference,
-} from '../local-preferences/actions'
+} from '../redux/ephemeral/local-preferences/actions'
 
 // import components here
 import Header from '../components/Header/Header'
@@ -27,12 +27,15 @@ import ProjectView from './ProjectView/ProjectView'
 import RunUpdate from './RunUpdate/RunUpdate'
 
 import IntroScreen from '../components/IntroScreen/IntroScreen'
-import selectEntryPoints, { selectActiveProjectMembers } from '../projects/entry-points/select'
+import selectEntryPoints, { selectActiveProjectMembers } from '../redux/persistent/projects/entry-points/select'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 // all global modals in here
 import GlobalModals from './GlobalModals'
-import { animatePanAndZoom } from '../viewport/actions'
-import { closeInviteMembersModal, openInviteMembersModal } from '../invite-members-modal/actions'
+import { animatePanAndZoom } from '../redux/ephemeral/viewport/actions'
+import { closeInviteMembersModal, openInviteMembersModal } from '../redux/ephemeral/invite-members-modal/actions'
+import ProfilesZomeApi from '../api/profilesApi'
+import { getAppWs } from '../hcWebsockets'
+import { cellIdFromString } from '../utils'
 
 function App({
   members,
@@ -50,7 +53,7 @@ function App({
   inviteMembersModalShowing,
   openInviteMembersModal,
   hideInviteMembersModal,
-  goToGoal
+  goToOutcome
 }) {
   const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
@@ -101,7 +104,7 @@ function App({
               setShowProjectSettingsOpen,
               setShowProfileEditForm,
               setShowPreferences,
-              goToGoal
+              goToOutcome
             }}
           />
         )}
@@ -146,8 +149,8 @@ function mapDispatchToProps(dispatch) {
       const hideAction = setHasAccessedGuidebook(true)
       return dispatch(hideAction)
     },
-    goToGoal: (goalHeaderHash) => {
-      return dispatch(animatePanAndZoom(goalHeaderHash))
+    goToOutcome: (outcomeHeaderHash) => {
+      return dispatch(animatePanAndZoom(outcomeHeaderHash))
     },
     openInviteMembersModal: (passphrase) => {
       return dispatch(openInviteMembersModal(passphrase))
@@ -214,16 +217,20 @@ function mapStateToProps(state) {
 
 function mergeProps(stateProps, dispatchProps, _ownProps) {
   const { profilesCellIdString } = stateProps
+  let cellId
+  if (profilesCellIdString) {
+    cellId = cellIdFromString(profilesCellIdString)
+  }
   const { dispatch } = dispatchProps
   return {
     ...stateProps,
     ...dispatchProps,
-    updateWhoami: (entry, headerHash) => {
+    updateWhoami: async (entry, headerHash) => {
+      const appWebsocket = await getAppWs()
+      const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+      const updatedWhoami = await profilesZomeApi.profile.updateWhoami(cellId, { entry, headerHash })
       return dispatch(
-        updateWhoami.create({
-          payload: { entry, headerHash },
-          cellIdString: profilesCellIdString,
-        })
+        updateWhoami(profilesCellIdString, updatedWhoami)
       )
     },
   }

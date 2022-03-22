@@ -8,29 +8,32 @@ import {
 } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import { GO_TO_GOAL } from '../../searchParams'
+import { GO_TO_OUTCOME } from '../../searchParams'
 import MapView from './MapView/MapView'
 import PriorityView from './PriorityView/PriorityView'
-import ExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode'
+import ExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode.connector'
 
 // data
-import { fetchProjectMeta } from '../../projects/project-meta/actions'
-import { fetchEntryPoints } from '../../projects/entry-points/actions'
-import { fetchMembers } from '../../projects/members/actions'
-import { fetchGoals } from '../../projects/goals/actions'
-import { fetchEdges } from '../../projects/edges/actions'
-import { fetchGoalMembers } from '../../projects/goal-members/actions'
-import { fetchGoalComments } from '../../projects/goal-comments/actions'
-import { fetchGoalVotes } from '../../projects/goal-votes/actions'
+import { fetchProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
+import { fetchEntryPoints } from '../../redux/persistent/projects/entry-points/actions'
+import { fetchMembers } from '../../redux/persistent/projects/members/actions'
+import { fetchOutcomes } from '../../redux/persistent/projects/outcomes/actions'
+import { fetchConnections } from '../../redux/persistent/projects/connections/actions'
+import { fetchOutcomeMembers } from '../../redux/persistent/projects/outcome-members/actions'
+import { fetchOutcomeComments } from '../../redux/persistent/projects/outcome-comments/actions'
+import { fetchOutcomeVotes } from '../../redux/persistent/projects/outcome-votes/actions'
 // ui
-import { setActiveEntryPoints } from '../../active-entry-points/actions'
-import { setActiveProject } from '../../active-project/actions'
-import { closeGoalForm } from '../../goal-form/actions'
-import { unselectAll } from '../../selection/actions'
-import { closeExpandedView } from '../../expanded-view/actions'
-import { animatePanAndZoom, resetTranslateAndScale } from '../../viewport/actions'
+import { setActiveEntryPoints } from '../../redux/ephemeral/active-entry-points/actions'
+import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
+import { closeOutcomeForm } from '../../redux/ephemeral/outcome-form/actions'
+import { unselectAll } from '../../redux/ephemeral/selection/actions'
+import { closeExpandedView } from '../../redux/ephemeral/expanded-view/actions'
+import { animatePanAndZoom, resetTranslateAndScale } from '../../redux/ephemeral/viewport/actions'
 import { ENTRY_POINTS } from '../../searchParams'
-import { triggerRealtimeInfoSignal, sendExitProjectSignal } from '../../realtime-info-signal/actions'
+import { triggerRealtimeInfoSignal, sendExitProjectSignal } from '../../redux/persistent/projects/realtime-info-signal/actions'
+import ProjectsZomeApi from '../../api/projectsApi'
+import { getAppWs } from '../../hcWebsockets'
+import { cellIdFromString } from '../../utils'
 
 function ProjectViewInner({
   projectId,
@@ -42,32 +45,32 @@ function ProjectViewInner({
   fetchProjectMeta,
   fetchMembers,
   fetchEntryPoints,
-  fetchGoals,
-  fetchEdges,
-  fetchGoalMembers,
-  fetchGoalVotes,
-  fetchGoalComments,
-  goToGoal,
+  fetchOutcomes,
+  fetchConnections,
+  fetchOutcomeMembers,
+  fetchOutcomeVotes,
+  fetchOutcomeComments,
+  goToOutcome,
   triggerRealtimeInfoSignal,
   sendExitProjectSignal,
 }) {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
-  const goToGoalHeaderHash = searchParams.get(GO_TO_GOAL)
+  const goToOutcomeHeaderHash = searchParams.get(GO_TO_OUTCOME)
   const sendRealtimeInfoFrequency = 10000
   const instance = useRef() 
   
-  function ifMapGoToGoal(goalHeaderHash) {
+  function ifMapGoToOutcome(outcomeHeaderHash) {
       // TODO
       // HACK
       // we wait 100 ms because we wait for
-      // any integration and processing of the final location of Goals
+      // any integration and processing of the final location of Outcomes
       // this relates to the animation defined in src/animations/layout.js
       // `performLayoutAnimation`
       if (location.pathname.includes('map')) {
         setTimeout(() => {
-          if (goalHeaderHash) {
-            goToGoal(goalHeaderHash)
+          if (outcomeHeaderHash) {
+            goToOutcome(outcomeHeaderHash)
           }
         }, 100)
       }
@@ -83,8 +86,8 @@ function ProjectViewInner({
   }, [])
 
   useEffect(() => {
-    ifMapGoToGoal(goToGoalHeaderHash)
-  },[goToGoalHeaderHash])
+    ifMapGoToOutcome(goToOutcomeHeaderHash)
+  },[goToOutcomeHeaderHash])
 
   useEffect(() => {
     // pushes this new projectId into the store/state
@@ -93,18 +96,18 @@ function ProjectViewInner({
     fetchProjectMeta()
     fetchMembers()
     fetchEntryPoints()
-    // once Goals and Edges, which affect layout are both
+    // once Outcomes and Connections, which affect layout are both
     // 1. fetched, and
     // 2. animated to their final position
-    // we then animate to a specific goal if it was set in the path
+    // we then animate to a specific outcome if it was set in the path
     // as a search query param
-    Promise.all([fetchGoals(),fetchEdges()]).then(() => {
-      ifMapGoToGoal(goToGoalHeaderHash)
+    Promise.all([fetchOutcomes(),fetchConnections()]).then(() => {
+      ifMapGoToOutcome(goToOutcomeHeaderHash)
     })
     //
-    fetchGoalMembers()
-    fetchGoalVotes()
-    fetchGoalComments()
+    fetchOutcomeMembers()
+    fetchOutcomeVotes()
+    fetchOutcomeComments()
     // this will get called to unmount the component
     return resetProjectView
   }, [projectId])
@@ -135,6 +138,7 @@ function mapStateToProps(state, ownProps) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
+  const cellId = cellIdFromString(cellIdString)
   return {
     setActiveProject: projectId => dispatch(setActiveProject(projectId)),
     setActiveEntryPoints: entryPointAddresses =>
@@ -142,28 +146,60 @@ function mapDispatchToProps(dispatch, ownProps) {
     resetProjectView: () => {
       dispatch(closeExpandedView())
       dispatch(sendExitProjectSignal()) // send this signal so peers know you left project
-      dispatch(closeGoalForm())
+      dispatch(closeOutcomeForm())
       dispatch(unselectAll())
       dispatch(resetTranslateAndScale())
     },
     closeExpandedView: () => dispatch(closeExpandedView()),
-    fetchProjectMeta: () =>
-      dispatch(fetchProjectMeta.create({ cellIdString, payload: null })),
-    fetchEntryPoints: () =>
-      dispatch(fetchEntryPoints.create({ cellIdString, payload: { All: null } })),
-    fetchMembers: () =>
-      dispatch(fetchMembers.create({ cellIdString, payload: null })),
-    fetchGoals: () =>
-      dispatch(fetchGoals.create({ cellIdString, payload: { All: null } })),
-    fetchEdges: () =>
-      dispatch(fetchEdges.create({ cellIdString, payload: { All: null } })),
-    fetchGoalMembers: () =>
-      dispatch(fetchGoalMembers.create({ cellIdString, payload: { All: null } })),
-    fetchGoalVotes: () =>
-      dispatch(fetchGoalVotes.create({ cellIdString, payload: { All: null } })),
-    fetchGoalComments: () =>
-      dispatch(fetchGoalComments.create({ cellIdString, payload: { All: null } })),
-    goToGoal: (goalHeaderHash) => dispatch(animatePanAndZoom(goalHeaderHash)),
+    fetchProjectMeta: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const projectMeta = await projectsZomeApi.projectMeta.fetchProjectMeta(cellId)
+      dispatch(fetchProjectMeta(cellIdString, projectMeta))
+    },
+    fetchEntryPoints: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const entryPoints = await projectsZomeApi.entryPoint.fetch(cellId, { All: null })
+      dispatch(fetchEntryPoints(cellIdString, entryPoints))
+    },
+    fetchMembers: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const members = await projectsZomeApi.member.fetch(cellId)
+      dispatch(fetchMembers(cellIdString, members))
+    },
+    fetchOutcomes: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomes = await projectsZomeApi.outcome.fetch(cellId, { All: null })
+      dispatch(fetchOutcomes(cellIdString, outcomes))
+    },
+    fetchConnections: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const connections = await projectsZomeApi.connection.fetch(cellId, { All: null })
+      dispatch(fetchConnections(cellIdString, connections))
+    },
+    fetchOutcomeMembers: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomeMembers = await projectsZomeApi.outcomeMember.fetch(cellId, { All: null })
+      dispatch(fetchOutcomeMembers(cellIdString, outcomeMembers))
+    },
+    fetchOutcomeVotes: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomeVotes = await projectsZomeApi.outcomeVote.fetch(cellId, { All: null })
+      dispatch(fetchOutcomeVotes(cellIdString, outcomeVotes))
+    },
+    fetchOutcomeComments: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomeComments = await projectsZomeApi.outcomeComment.fetch(cellId, { All: null })
+      dispatch(fetchOutcomeComments(cellIdString, outcomeComments))
+    },
+    goToOutcome: (outcomeHeaderHash) => dispatch(animatePanAndZoom(outcomeHeaderHash)),
     triggerRealtimeInfoSignal: () => dispatch(triggerRealtimeInfoSignal()),
     sendExitProjectSignal: () => dispatch(sendExitProjectSignal())
   }
@@ -177,13 +213,12 @@ const ProjectView = connect(
 function ProjectViewWrapper() {
   const { projectId } = useParams()
   const location = useLocation()
-  let entryPointAddresses = new URLSearchParams(location.search).get(
+  let entryPointAddressesRaw = new URLSearchParams(location.search).get(
     ENTRY_POINTS
   )
-  if (entryPointAddresses) {
-    entryPointAddresses = entryPointAddresses.split(',')
-  } else {
-    entryPointAddresses = []
+  let entryPointAddresses = []
+  if (entryPointAddressesRaw) {
+    entryPointAddresses = entryPointAddressesRaw.split(',')
   }
   return (
     <ProjectView

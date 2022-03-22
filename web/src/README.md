@@ -3,12 +3,12 @@ Folders:
 - Redux
   - Holochain Actions/Reducers
     - agents
-    - goals
-    - edges
-    - goal-members
+    - outcomes
+    - connections
+    - outcome-members
     - who-am-i
   - UI only Actions/Reducers
-    - goal-form
+    - outcome-form
     - hover
     - keyboard
     - mouse
@@ -49,13 +49,13 @@ The folder where this all happens is `drawing`.
 
 Canvas is fairly easy to work with. Great resources for it can be found at MDN: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API.
 
-It uses other functions from the folder such as `drawGoal` `drawEdge`, etc. Files with `draw` in their name are for painting elements to the Canvas.
+It uses other functions from the folder such as `drawOutcome` `drawConnection`, etc. Files with `draw` in their name are for painting elements to the Canvas.
 
 Because of "zooming and panning" features, there are two coordinate systems that we need to deal with. The regular coordinate system of the browser window, which appear in browser events like clicks and mousemove, etc. Then there's the zoomed and panned coordinate system of the Canvas. `coordinateSystems.js` has functions for converting from either one to the other. Internally it uses Matrix math to handle the conversion.
 
-`layoutFormula.js` contains the 'auto-layout' algorithm that determines that layout the of the Goals on the screen.
+`layoutFormula.js` contains the 'auto-layout' algorithm that determines that layout the of the Outcomes on the screen.
 
-`eventDetection.js` is used to check whether mousemove events, and mouseclick events occur "over" a Goal so that we can change and update the UI, with hover states, or selection.
+`eventDetection.js` is used to check whether mousemove events, and mouseclick events occur "over" a Outcome so that we can change and update the UI, with hover states, or selection.
 
 ---
 
@@ -64,7 +64,7 @@ This is a sample snapshot of the redux state
 ```
 {
 
-This entire part (agents, goals, edges, goalMembers, whoami) of the redux state is data from Holochain
+This entire part (agents, outcomes, connections, outcomeMembers, whoami) of the redux state is data from Holochain
 
 Agents are essentially the “users”. More data needs to be fetched from Holochain and stored here
 
@@ -72,9 +72,9 @@ Agents are essentially the “users”. More data needs to be fetched from Holoc
     'HcSciGpYDHTaa5dmw583AO7Jy9kHz9K3gu6MtTsB8Nwbfe3y3hD8rOb9aj5B8za'
   ],
 
-“Goals” are the primary content type of the app. They’re fetched from Holochain and stored and updated here in the state
+“Outcomes” are the primary content type of the app. They’re fetched from Holochain and stored and updated here in the state
 
-  goals: {
+  outcomes: {
     QmacZTkPm6qNf7sHFuHa8HEg8EPVJ6kcBi4ZyHLr1JrVCN: {
       content: 'Rapid Sensemaking Framework is online and being used everyday',
       user_hash: 'HcSciGpYDHTaa5dmw583AO7Jy9kHz9K3gu6MtTsB8Nwbfe3y3hD8rOb9aj5B8za',
@@ -93,9 +93,9 @@ Agents are essentially the “users”. More data needs to be fetched from Holoc
     }
   },
 
-Edges are the links between goals, that define a hierarchy in the data
+Connections are the links between outcomes, that define a hierarchy in the data
 
-  edges: {
+  connections: {
     QmPQCB3Ke58RGnGXRmQagLAtvh9AToa84zgDMM3QybY5mq: {
       parent_address: 'QmacZTkPm6qNf7sHFuHa8HEg8EPVJ6kcBi4ZyHLr1JrVCN',
       child_address: 'QmcHbFkCauYVDBodKu2N1qWr7RNYAet9k7Vd9MC8YwYb4f',
@@ -108,9 +108,9 @@ Edges are the links between goals, that define a hierarchy in the data
     }
   },
 
-Goal Members are associations between “agents” and “goals”, that relate to who has claimed/assigned to which Goals
+Outcome Members are associations between “agents” and “outcomes”, that relate to who has claimed/assigned to which Outcomes
 
-  goalMembers: {},
+  outcomeMembers: {},
 
 Whoami is information about the local authenticated user
 
@@ -128,27 +128,27 @@ This entire part of the state is client side only, it has no persistence or rela
 
   ui: {
 
-The UI element that allows users to create a new Goal
+The UI element that allows users to create a new Outcome
 
-    goalForm: {
+    outcomeForm: {
       editAddress: null,
       parentAddress: null,
       content: '',
       isOpen: false,
-      leftEdgeXPosition: 0,
-      topEdgeYPosition: 0
+      leftConnectionXPosition: 0,
+      topConnectionYPosition: 0
     },
 
-Which goals are currently selected
+Which outcomes are currently selected
 
     selection: {
-      selectedGoals: []
+      selectedOutcomes: []
     },
 
-Which goal is currently hovered over
+Which outcome is currently hovered over
 
     hover: {
-      hoveredGoal: null
+      hoveredOutcome: null
     },
 
 Which relevant keyboard keys are pressed

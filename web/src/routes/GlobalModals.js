@@ -6,7 +6,7 @@ import { GUIDE_IS_OPEN } from '../searchParams'
 import Modal from '../components/Modal/Modal'
 import Preferences from '../components/Preferences/Preferences'
 import ProfileEditForm from '../components/ProfileEditForm/ProfileEditForm'
-import ProjectSettingsModal from '../components/ProjectSettingsModal/ProjectSettingsModal'
+import ProjectSettingsModal from '../components/ProjectSettingsModal/ProjectSettingsModal.connector'
 import InviteMembersModal from '../components/InviteMembersModal/InviteMembersModal'
 // import UpdatePromptModal from '../components/UpdatePromptModal/UpdatePromptModal'
 

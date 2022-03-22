@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import './Icon.css'
+import './Icon.scss'
 import Tooltip from '../Tooltip/Tooltip'
 
 function Icon ({

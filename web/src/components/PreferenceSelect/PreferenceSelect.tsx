@@ -1,5 +1,5 @@
 import React from 'react'
-import './PreferenceSelect.css'
+import './PreferenceSelect.scss'
 import Icon from '../Icon/Icon'
 
 function PreferenceSelectExtra({

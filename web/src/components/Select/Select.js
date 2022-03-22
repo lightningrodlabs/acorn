@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import useOnClickOutside from 'use-onclickoutside'
 import { CSSTransition } from 'react-transition-group'
 
-import './Select.css'
+import './Select.scss'
 
 import Icon from '../Icon/Icon'
 
