@@ -23,7 +23,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
-  const cellId = cellIdFromString(cellIdString)
+  let cellId
+  if (cellIdString) {
+    cellId = cellIdFromString(cellIdString)
+  }
   return {
     updateOutcome: async (entry, headerHash) => {
       const appWebsocket = await getAppWs()
