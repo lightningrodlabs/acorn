@@ -70,13 +70,13 @@ pub struct UIEnum(pub String);
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 pub enum Scope {
     Small(AchievementStatus),
-    Uncertain(Option<SmallsEstimate>),
+    Uncertain(SmallsEstimate),
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-pub struct SmallsEstimate(pub u32);
+pub struct SmallsEstimate(pub Option<u32>);
 impl SmallsEstimate {
-    pub fn new(estimate: u32) -> Self {
+    pub fn new(estimate: Option<u32>) -> Self {
         Self(estimate)
     }
 }
