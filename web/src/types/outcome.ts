@@ -20,7 +20,7 @@ export interface Small {
 
 export type SmallsEstimate = number
 export interface Uncertain {
-    Uncertain: SmallsEstimate
+    Uncertain: Option<SmallsEstimate>
 }
 
 export type Scope = Small | Uncertain

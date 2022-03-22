@@ -57,9 +57,8 @@ function mapStateToProps(state) {
     ? editingOutcome.userHash
     : state.whoami.entry.address
   const userEditHash = editAddress ? state.whoami.entry.address : null
-  const status = editAddress ? editingOutcome.status : 'Uncertain'
   const description = editAddress ? editingOutcome.description : ''
-  const hierarchy = editAddress ? editingOutcome.hierarchy : 'NoHierarchy'
+  const scope = editAddress ? editingOutcome.scope : { Uncertain: 5 }
   const timeFrame = editAddress ? editingOutcome.timeFrame : null
   const timestampCreated = editAddress
     ? editingOutcome.timestampCreated
@@ -96,9 +95,8 @@ function mapStateToProps(state) {
     // plus existing fields for "edit"
     userHash,
     userEditHash,
-    status,
+    scope,
     description,
-    hierarchy,
     timeFrame,
     timestampCreated,
     isImported,

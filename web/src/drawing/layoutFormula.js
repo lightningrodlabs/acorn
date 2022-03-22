@@ -46,11 +46,9 @@ export { getBoundingRec }
 
 function layoutForTree(tree) {
   // create a graph
-  const graph = new dagre.graphlib.Graph()
-    .setGraph({})
-    .setDefaultConnectionLabel(function () {
-      return {}
-    })
+  const graph = new dagre.graphlib.Graph().setGraph({}).setDefaultEdgeLabel(function () {
+    return {}
+  })
 
   // use recursion to add each outcome as a node in the graph
   function addOutcome(outcome) {
@@ -58,7 +56,7 @@ function layoutForTree(tree) {
       width: outcomeWidth,
       height: getOutcomeHeight(null, outcome.content) + VERTICAL_SPACING,
     })
-    outcome.children.forEach(childOutcome => {
+    outcome.children.forEach((childOutcome) => {
       addOutcome(childOutcome)
       // add each connection as an connection in the graph
       graph.setConnection(outcome.headerHash, childOutcome.headerHash)
@@ -73,7 +71,7 @@ function layoutForTree(tree) {
   // create a coordinates object
   const coordinates = {}
   // update the coordinates object
-  graph.nodes().forEach(headerHash => {
+  graph.nodes().forEach((headerHash) => {
     coordinates[headerHash] = {
       x: graph.node(headerHash).x,
       y: graph.node(headerHash).y,
@@ -86,7 +84,7 @@ export default function layoutFormula(data) {
   const trees = outcomesAsTrees(data)
 
   let coordinates = {}
-  const layouts = trees.map(tree => ({
+  const layouts = trees.map((tree) => ({
     outcome: tree,
     layout: layoutForTree(tree),
   }))
@@ -101,7 +99,7 @@ export default function layoutFormula(data) {
       const lastTree = layouts[index - 1].outcome
       const [top, right, bottom, left] = getBoundingRec(lastTree, coordinates)
       const adjusted = {}
-      Object.keys(tree.layout).forEach(coordKey => {
+      Object.keys(tree.layout).forEach((coordKey) => {
         adjusted[coordKey] = {
           x: tree.layout[coordKey].x + right + HORIZONTAL_TREE_SPACING,
           y: tree.layout[coordKey].y,

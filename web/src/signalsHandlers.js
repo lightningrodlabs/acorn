@@ -18,6 +18,7 @@ import { setMember } from './redux/persistent/projects/members/actions'
 import { fetchAgents, setAgent } from './redux/persistent/profiles/agents/actions'
 import { triggerUpdateLayout } from './redux/ephemeral/layout/actions'
 import { removePeerState, updatePeerState } from './redux/ephemeral/realtime-info/actions'
+import { cellIdToString } from './utils'
 
 // We directly use the 'success' type, since these actions
 // have already succeeded on another machine, and we're just reflecting them locally

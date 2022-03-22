@@ -77,7 +77,8 @@ export default function render({
   const outcomeHeight = getOutcomeHeight(ctx, text, scale, isEditing)
 
   // set up border color
-  let borderColor = colors[outcome.status]
+  // TODO: fix for new data structure
+  let borderColor = 'pink' // colors[outcome.status]
 
   let backgroundColor = '#FFFFFF'
   if (isHovered) {
@@ -95,6 +96,7 @@ export default function render({
 
   // display leaf icon for small outcome
   // const leafHierarchyIcon = iconForHierarchy(outcome.hierarchy)
+  // TODO: fix for new data structure
   if (outcome.hierarchy === 'Leaf') {
     const leafImg = getOrSetImageForUrl(
       `img/leaf_${outcome.status.toLowerCase()}.svg`,

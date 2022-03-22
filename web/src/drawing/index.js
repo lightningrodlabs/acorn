@@ -420,6 +420,7 @@ function render(store, canvas) {
     const isSelected = false
     const isEditing = true
     const isTopPriorityOutcome = false
+    // TODO: fix for new data structure
     drawOutcomeCard({
       scale: scale,
       outcome: { status: 'Uncertain' },

@@ -1,11 +1,11 @@
 import _ from 'lodash'
 
 export function isCrud(
-  action,
-  createAction,
-  fetchAction,
-  updateAction,
-  deleteAction
+  action: Action,
+  createAction: string,
+  fetchAction: string,
+  updateAction: string,
+  deleteAction: string
 ) {
   return [createAction, fetchAction, updateAction, deleteAction].includes(
     action.type
@@ -14,11 +14,11 @@ export function isCrud(
 
 export function crudReducer(
   state,
-  action,
-  createAction,
-  fetchAction,
-  updateAction,
-  deleteAction
+  action: Action,
+  createAction: string,
+  fetchAction: string,
+  updateAction: string,
+  deleteAction: string
 ) {
   const {
     payload,
@@ -43,7 +43,7 @@ export function crudReducer(
 
     // FETCH
     case fetchAction:
-      // payload is [ { entry: { key: val }, headerHash: 'QmAsdFg' }, ... ]
+      // payload is [ { entry: { key: val }, headerHash: 'QmAsdFg', entryHash: '8afd' }, ... ]
       const mapped = payload.map((r) => {
         return {
           ...r.entry,
@@ -77,6 +77,7 @@ export function crudReducer(
 }
 
 type ActionCreator = (cellIdString: string, payload: any) => Action
+
 type Action = {
   type: string
   payload: any
@@ -93,28 +94,28 @@ export function createCrudActionCreators(
   const UPDATE_ACTION = `UPDATE_${model}`
   const DELETE_ACTION = `DELETE_${model}`
 
-  const createAction = (cellIdString, payload) => {
+  const createAction: ActionCreator = (cellIdString, payload) => {
     return {
       type: CREATE_ACTION,
       payload: payload,
       meta: { cellIdString },
     }
   }
-  const fetchAction = (cellIdString, payload) => {
+  const fetchAction: ActionCreator = (cellIdString, payload) => {
     return {
       type: FETCH_ACTION,
       payload: payload,
       meta: { cellIdString },
     }
   }
-  const updateAction = (cellIdString, payload) => {
+  const updateAction: ActionCreator = (cellIdString, payload) => {
     return {
       type: UPDATE_ACTION,
       payload: payload,
       meta: { cellIdString },
     }
   }
-  const deleteAction = (cellIdString, payload) => {
+  const deleteAction: ActionCreator = (cellIdString, payload) => {
     return {
       type: DELETE_ACTION,
       payload: payload,
