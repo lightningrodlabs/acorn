@@ -5,6 +5,7 @@ import {
   DeleteOutcomeFullyResponse,
   EntryPoint,
   EntryPointDetails,
+  Member,
   Outcome,
   OutcomeComment,
   OutcomeMember,
@@ -138,7 +139,7 @@ const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
         appWebsocket,
         cellId,
         PROJECTS_ZOME_NAME,
-        ZOME_FN_NAMES.SIMPLE_CREATE_PROJECT_META,
+        ZOME_FN_NAMES.FETCH_PROJECT_META,
         null
       )
     },
@@ -170,7 +171,7 @@ const RealtimeInfoSignalApi = (appWebsocket: AppWebsocket) => {
 
 const MembersApi = (appWebsocket: AppWebsocket) => {
   return {
-    fetch: async (cellId: CellId) => {
+    fetch: async (cellId: CellId): Promise<Array<WireElement<Member>>> => {
       return callZome(
         appWebsocket,
         cellId,

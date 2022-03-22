@@ -76,7 +76,7 @@ function mergeProps(stateProps, dispatchProps, _ownProps) {
       const appWebsocket = await getAppWs()
       const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
       const cellId = cellIdFromString(profileCellIdString)
-      const createdWhoami = profilesZomeApi.profile.createWhoami(cellId, profile)
+      const createdWhoami = await profilesZomeApi.profile.createWhoami(cellId, profile)
       return dispatch(
         createWhoami(profileCellIdString, createdWhoami)
       )

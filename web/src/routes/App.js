@@ -228,7 +228,7 @@ function mergeProps(stateProps, dispatchProps, _ownProps) {
     updateWhoami: async (entry, headerHash) => {
       const appWebsocket = await getAppWs()
       const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
-      const updatedWhoami = profilesZomeApi.profile.updateWhoami(cellId, { entry, headerHash })
+      const updatedWhoami = await profilesZomeApi.profile.updateWhoami(cellId, { entry, headerHash })
       return dispatch(
         updateWhoami(profilesCellIdString, updatedWhoami)
       )

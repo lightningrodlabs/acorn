@@ -36,7 +36,7 @@ import {
   openInviteMembersModal,
 } from '../../redux/ephemeral/invite-members-modal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
-import { cellIdFromString } from '../../utils'
+import { cellIdFromString, cellIdToString } from '../../utils'
 
 function Dashboard({
   existingAgents,
@@ -491,7 +491,7 @@ function mapDispatchToProps(dispatch) {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
-      const members = projectsZomeApi.member.fetch(cellId)
+      const members = await projectsZomeApi.member.fetch(cellId)
       return dispatch(fetchMembers(cellIdString, members))
     },
     fetchProjectMeta: async (cellIdString) => {

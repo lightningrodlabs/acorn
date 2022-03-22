@@ -67,7 +67,7 @@ function mapDispatchToProps(dispatch) {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
-      const projectMeta = projectsZomeApi.projectMeta.update(cellId, { entry, headerHash })
+      const projectMeta = await projectsZomeApi.projectMeta.update(cellId, { entry, headerHash })
       return dispatch(
         updateProjectMeta(cellIdString, projectMeta)
       )

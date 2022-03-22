@@ -113,7 +113,7 @@ export default async function importAllProjectData(
     }
     try {
       // @ts-ignore
-      const createdConnection = projectsZomeApi.connection.create(projectsCellId, clone)
+      const createdConnection = await projectsZomeApi.connection.create(projectsCellId, clone)
       await dispatch(
         createConnection(projectsCellIdString, createdConnection)
       )

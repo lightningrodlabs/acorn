@@ -18,14 +18,13 @@ export default async function cloneOutcomes(store) {
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   const cellId = cellIdFromString(activeProject)
 
-  outcomesToClone.forEach(value => {
+  outcomesToClone.forEach(async (value) => {
     let members = []
     Object.values(outcomeMembers).map(_value => {
       _value.outcomeAddress === value ? members.push(_value) : null
     })
 
-    // @ts-ignore
-    const createdOutcome = projectsZomeApi.outcome.create(cellId, {
+    const createdOutcome = await projectsZomeApi.outcome.create(cellId, {
       ...outcomes[value],
       timestampCreated: moment().unix(),
     })
