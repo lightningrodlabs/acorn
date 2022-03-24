@@ -6,6 +6,7 @@
 */
 import ProjectZomeApi from '../../../../api/projectsApi'
 import { getAppWs } from '../../../../hcWebsockets'
+import { Connection } from '../../../../types'
 import { cellIdFromString } from '../../../../utils'
 import { createCrudActionCreators } from '../../crudRedux'
 
@@ -44,8 +45,7 @@ const [[
   fetchConnections,
   updateConnection,
   deleteConnection
-]] = createCrudActionCreators('CONNECTION')
-
+]] = createCrudActionCreators<Connection>('CONNECTION')
 
 // this action gets caught and
 // handled in the web/src/layout/middleware.js

@@ -89,11 +89,16 @@ export function createCrudActionCreators<EntryType>(
   model: string
 ): [
   string[],
-  (
-    | HcActionCreator<WireElement<EntryType>>
-    | HcActionCreator<WireElement<EntryType>[]>
-    | HcActionCreator<HeaderHashB64>
-  )[]
+  [
+    // create
+    HcActionCreator<WireElement<EntryType>>,
+    // fetch
+    HcActionCreator<WireElement<EntryType>[]>,
+    // udpate
+    HcActionCreator<WireElement<EntryType>>,
+    // delete
+    HcActionCreator<HeaderHashB64>
+  ]
 ] {
   const CREATE_ACTION = `CREATE_${model}`
   const FETCH_ACTION = `FETCH_${model}S`

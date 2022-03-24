@@ -27,7 +27,7 @@ const [[
   fetchEntryPoints,
   updateEntryPoint,
   deleteEntryPoint,
-]] = createCrudActionCreators('ENTRY_POINT')
+]] = createCrudActionCreators('ENTRY_POINT') // TODO: annotate this with a type for the EntryType generic
 
 export {
   CREATE_ENTRY_POINT,
