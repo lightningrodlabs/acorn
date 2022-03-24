@@ -1,11 +1,6 @@
-import { EntryHashB64, HeaderHashB64 } from '../types/shared'
+import { EntryHashB64, FetchInput, HeaderHashB64, UpdateInput } from '../types/shared'
 import { AppWebsocket, CellId } from '@holochain/client'
 import callZome from './callZome'
-
-export interface UpdateInput<CommittedType> {
-  headerHash: HeaderHashB64
-  entry: CommittedType
-}
 
 export interface WireElement<EntryType> {
   headerHash: HeaderHashB64
@@ -14,14 +9,6 @@ export interface WireElement<EntryType> {
   createdAt: number // nanoseconds
   updatedAt: number // nanoseconds
 }
-
-export interface FetchInputAll {
-  All: null
-}
-export interface FetchInputSome {
-  Specific: Array<EntryHashB64>
-}
-export type FetchInput = FetchInputAll | FetchInputSome
 
 export interface EntryTypeApi<ToCommitType, CommittedType> {
   create: (cellId: CellId, entry: ToCommitType) => Promise<CommittedType>

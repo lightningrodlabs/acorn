@@ -1,7 +1,14 @@
 import _ from 'lodash'
+import { WireElement } from '../../api/hdkCrud'
+import {
+  Action,
+  HcActionCreator,
+  HdkCrudAction,
+  HeaderHashB64,
+} from '../../types/shared'
 
 export function isCrud(
-  action: Action,
+  action: Action<any>,
   createAction: string,
   fetchAction: string,
   updateAction: string,
@@ -12,9 +19,9 @@ export function isCrud(
   )
 }
 
-export function crudReducer(
+export function crudReducer<EntryType>(
   state,
-  action: Action,
+  action: HdkCrudAction<EntryType>,
   createAction: string,
   fetchAction: string,
   updateAction: string,
@@ -30,21 +37,22 @@ export function crudReducer(
     // CREATE AND UPDATE SHARE A RESPONSE TYPE
     case createAction:
     case updateAction:
+      let createOrUpdatePayload = payload as WireElement<EntryType>
       return {
         ...state,
         [cellIdString]: {
           ...state[cellIdString],
-          [payload.headerHash]: {
-            ...payload.entry,
-            headerHash: payload.headerHash,
+          [createOrUpdatePayload.headerHash]: {
+            ...createOrUpdatePayload.entry,
+            headerHash: createOrUpdatePayload.headerHash,
           },
         },
       }
 
     // FETCH
     case fetchAction:
-      // payload is [ { entry: { key: val }, headerHash: 'QmAsdFg', entryHash: '8afd' }, ... ]
-      const mapped = payload.map((r) => {
+      let fetchPayload = payload as Array<WireElement<EntryType>>
+      const mapped = fetchPayload.map((r) => {
         return {
           ...r.entry,
           headerHash: r.headerHash,
@@ -64,11 +72,12 @@ export function crudReducer(
 
     // DELETE
     case deleteAction:
+      let deletePayload = payload as HeaderHashB64
       return {
         ...state,
         [cellIdString]: _.pickBy(
           state[cellIdString],
-          (value, key) => key !== payload
+          (value, key) => key !== deletePayload
         ),
       }
     default:
@@ -76,49 +85,58 @@ export function crudReducer(
   }
 }
 
-type ActionCreator = (cellIdString: string, payload: any) => Action
-
-type Action = {
-  type: string
-  payload: any
-  meta: {
-    cellIdString: string
-  }
-}
-
-export function createCrudActionCreators(
+export function createCrudActionCreators<EntryType>(
   model: string
-): [string[], ActionCreator[]] {
+): [
+  string[],
+  (
+    | HcActionCreator<WireElement<EntryType>>
+    | HcActionCreator<WireElement<EntryType>[]>
+    | HcActionCreator<HeaderHashB64>
+  )[]
+] {
   const CREATE_ACTION = `CREATE_${model}`
   const FETCH_ACTION = `FETCH_${model}S`
   const UPDATE_ACTION = `UPDATE_${model}`
   const DELETE_ACTION = `DELETE_${model}`
 
-  const createAction: ActionCreator = (cellIdString, payload) => {
+  const createAction: HcActionCreator<WireElement<EntryType>> = (
+    cellIdString,
+    payload
+  ) => {
     return {
       type: CREATE_ACTION,
-      payload: payload,
+      payload,
       meta: { cellIdString },
     }
   }
-  const fetchAction: ActionCreator = (cellIdString, payload) => {
+  const fetchAction: HcActionCreator<Array<WireElement<EntryType>>> = (
+    cellIdString,
+    payload
+  ) => {
     return {
       type: FETCH_ACTION,
-      payload: payload,
+      payload,
       meta: { cellIdString },
     }
   }
-  const updateAction: ActionCreator = (cellIdString, payload) => {
+  const updateAction: HcActionCreator<WireElement<EntryType>> = (
+    cellIdString,
+    payload
+  ) => {
     return {
       type: UPDATE_ACTION,
-      payload: payload,
+      payload,
       meta: { cellIdString },
     }
   }
-  const deleteAction: ActionCreator = (cellIdString, payload) => {
+  const deleteAction: HcActionCreator<HeaderHashB64> = (
+    cellIdString,
+    payload
+  ) => {
     return {
       type: DELETE_ACTION,
-      payload: payload,
+      payload,
       meta: { cellIdString },
     }
   }
