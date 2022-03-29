@@ -1,3 +1,4 @@
+import { OutcomeMember } from '../../../../types'
 import { createCrudActionCreators } from '../../crudRedux'
 
 const [[
@@ -10,7 +11,7 @@ const [[
   fetchOutcomeMembers,
   updateOutcomeMember,
   deleteOutcomeMember
-]] = createCrudActionCreators('OUTCOME_MEMBER')
+]] = createCrudActionCreators<OutcomeMember>('OUTCOME_MEMBER')
 
 export {
   CREATE_OUTCOME_MEMBER,

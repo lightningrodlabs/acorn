@@ -48,7 +48,7 @@ const realtimeInfoWatcher = (store) => {
       const { cellIdString, payload } = getRealtimeInfo(state)
       const cellId = cellIdFromString(cellIdString)
       await projectsZomeApi.realtimeInfoSignal.send(cellId, payload)
-      store.dispatch(sendRealtimeInfoSignal(getRealtimeInfo(state)))
+      store.dispatch(sendRealtimeInfoSignal(cellIdString, payload))
       return result
     }
     const shouldSendProjectExitSignal = isProjectExitAction(action)

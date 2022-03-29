@@ -5,11 +5,13 @@
   that can be taken within that feature.
 */
 
+import { EntryPoint, EntryPointDetails } from '../../../../types'
+import { Action, CellIdString } from '../../../../types/shared'
 import { createCrudActionCreators } from '../../crudRedux'
 
 const FETCH_ENTRY_POINT_DETAILS = 'FETCH_ENTRY_POINT_DETAILS'
 
-const fetchEntryPointDetails = (cellIdString, payload) => {
+const fetchEntryPointDetails = (cellIdString: CellIdString, payload: EntryPointDetails): Action<EntryPointDetails> => {
   return {
     type: FETCH_ENTRY_POINT_DETAILS,
     payload,
@@ -27,7 +29,7 @@ const [[
   fetchEntryPoints,
   updateEntryPoint,
   deleteEntryPoint,
-]] = createCrudActionCreators('ENTRY_POINT') // TODO: annotate this with a type for the EntryType generic
+]] = createCrudActionCreators<EntryPoint>('ENTRY_POINT') // TODO: annotate this with a type for the EntryType generic
 
 export {
   CREATE_ENTRY_POINT,

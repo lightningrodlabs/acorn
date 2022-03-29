@@ -1,3 +1,6 @@
+import { WireElement } from '../../../../api/hdkCrud'
+import { ProjectMeta } from '../../../../types'
+import { Action, CellIdString } from '../../../../types/shared'
 import { createCrudActionCreators } from '../../crudRedux'
 
 const [[
@@ -10,13 +13,13 @@ const [[
   fetchProjectMetas,
   updateProjectMeta,
   deleteProjectMeta,
-]] = createCrudActionCreators('PROJECT_META')
+]] = createCrudActionCreators<ProjectMeta>('PROJECT_META')
 
 // This model has a special "singular fetch"
 // since a Project is only supposed to contain ONE
 // ProjectMeta record
 const FETCH_PROJECT_META = 'FETCH_PROJECT_META'
-const fetchProjectMeta = (cellIdString, payload) => {
+const fetchProjectMeta = (cellIdString: CellIdString, payload: WireElement<ProjectMeta>): Action<WireElement<ProjectMeta>> => {
   return {
     type: FETCH_PROJECT_META,
     payload,
@@ -28,7 +31,7 @@ const fetchProjectMeta = (cellIdString, payload) => {
 // in order to perform proper validation
 // that only one project meta exists
 const SIMPLE_CREATE_PROJECT_META = 'SIMPLE_CREATE_PROJECT_META'
-const simpleCreateProjectMeta = (cellIdString, payload) => {
+const simpleCreateProjectMeta = (cellIdString: CellIdString, payload: WireElement<ProjectMeta>): Action<WireElement<ProjectMeta>> => {
   return {
     type: SIMPLE_CREATE_PROJECT_META,
     payload,

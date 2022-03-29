@@ -6,13 +6,16 @@
 */
 
 
+import { WireElement } from '../../../../api/hdkCrud'
 import { PROFILES_ZOME_NAME } from '../../../../holochainConfig'
+import { Profile, WhoAmIOutput } from '../../../../types'
+import { Action, CellIdString } from '../../../../types/shared'
 
 /* action creator functions */
 const WHOAMI = 'WHOAMI'
 const CREATE_WHOAMI = 'CREATE_WHOAMI'
 const UPDATE_WHOAMI = 'UPDATE_WHOAMI'
-const whoami = (cellIdString, payload) => {
+const whoami = (cellIdString: CellIdString, payload: WhoAmIOutput): Action<WhoAmIOutput> => {
   return {
     type: WHOAMI,
     payload,
@@ -20,7 +23,7 @@ const whoami = (cellIdString, payload) => {
   }
 }
 
-const createWhoami = (cellIdString, payload) => {
+const createWhoami = (cellIdString: CellIdString, payload: WireElement<Profile>): Action<WireElement<Profile>> => {
   return {
     type: CREATE_WHOAMI,
     payload,
@@ -28,7 +31,7 @@ const createWhoami = (cellIdString, payload) => {
   }
 }
 
-const updateWhoami = (cellIdString, payload) => {
+const updateWhoami = (cellIdString: CellIdString, payload: WireElement<Profile>): Action<WireElement<Profile>> => {
   return {
     type: UPDATE_WHOAMI,
     payload,

@@ -12,6 +12,7 @@ import { CREATE_OUTCOME_WITH_CONNECTION, DELETE_OUTCOME_FULLY } from '../outcome
 import { isCrud, crudReducer } from '../../crudRedux'
 
 const defaultState = {}
+// how to define an interface where the keys are variable?
 
 const PREVIEW_KEY_STRING = 'preview'
 

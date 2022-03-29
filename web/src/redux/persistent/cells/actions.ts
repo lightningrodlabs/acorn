@@ -5,6 +5,8 @@
   that can be taken within that feature.
 */
 
+import { Action, CellIdString } from "../../../types/shared"
+
 const SET_PROFILES_CELL_ID = 'SET_PROFILES_CELL_ID'
 const SET_PROJECTS_CELL_IDS = 'SET_PROJECTS_CELL_IDS'
 const JOIN_PROJECT_CELL_ID = 'JOIN_PROJECT_CELL_ID'
@@ -12,28 +14,28 @@ const REMOVE_PROJECT_CELL_ID = 'REMOVE_PROJECT_CELL_ID'
 
 /* action creator functions */
 
-const setProfilesCellId = cellId => {
+const setProfilesCellId = (cellId: CellIdString): Action<CellIdString> => {
   return {
     type: SET_PROFILES_CELL_ID,
     payload: cellId,
   }
 }
 
-const setProjectsCellIds = cellIds => {
+const setProjectsCellIds = (cellIds: Array<CellIdString>): Action<Array<CellIdString>> => {
   return {
     type: SET_PROJECTS_CELL_IDS,
     payload: cellIds,
   }
 }
 
-const joinProjectCellId = cellId => {
+const joinProjectCellId = (cellId: CellIdString): Action<CellIdString> => {
   return {
     type: JOIN_PROJECT_CELL_ID,
     payload: cellId,
   }
 }
 
-const removeProjectCellId = cellId => {
+const removeProjectCellId = (cellId: CellIdString): Action<CellIdString> => {
   return {
     type: REMOVE_PROJECT_CELL_ID,
     payload: cellId,

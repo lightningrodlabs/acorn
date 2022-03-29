@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { CellIdString } from '../../../types/shared'
+import { Action, CellIdString } from '../../../types/shared'
 import {
   SIMPLE_CREATE_PROJECT_META,
 } from '../projects/project-meta/actions'
@@ -15,7 +15,7 @@ const defaultState: State = {
   projects: [],
 }
 
-export default function (state: State = defaultState, action) {
+export default function (state: State = defaultState, action: Action<CellIdString|Array<CellIdString>>) {
   const { payload, type, meta } = action
   switch (type) {
     case SET_PROFILES_CELL_ID:

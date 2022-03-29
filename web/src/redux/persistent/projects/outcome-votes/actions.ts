@@ -1,3 +1,4 @@
+import { OutcomeVote } from '../../../../types'
 import { createCrudActionCreators } from '../../crudRedux'
 
 const [[
@@ -10,7 +11,7 @@ const [[
   fetchOutcomeVotes,
   updateOutcomeVote,
   deleteOutcomeVote,
-]] = createCrudActionCreators('OUTCOME_VOTE')
+]] = createCrudActionCreators<OutcomeVote>('OUTCOME_VOTE')
 
 export {
   CREATE_OUTCOME_VOTE,
