@@ -7,9 +7,13 @@ import {
   FETCH_ENTRY_POINTS,
   UPDATE_ENTRY_POINT,
   DELETE_ENTRY_POINT,
+  EntryPointsAction,
 } from './actions'
 import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
+import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64 } from '../../../../types/shared'
+import { DeleteOutcomeFullyResponse, EntryPoint, EntryPointDetails } from '../../../../types'
+import { WireElement } from '../../../../api/hdkCrud'
 
 // state is at the highest level an object with cellIds
 // which are like Projects... EntryPoints exist within Projects
@@ -18,9 +22,22 @@ import { isCrud, crudReducer } from '../../crudRedux'
 // state is an object where the keys are the entry headerHashes of "EntryPoints"
 // and the values are modified versions of the EntryPoint data structures that
 // also contain their headerHash on those objects
-const defaultState = {}
+type State = {
+  [cellId: CellIdString]: {
+    [headerHash: HeaderHashB64]: {
+      color: String,
+      creatorAddress: AgentPubKeyB64,
+      createdAt: number, //f64,
+      outcomeAddress: HeaderHashB64,
+      isImported: boolean,
+      // field additional to EntryPoint
+      headerHash: HeaderHashB64
+    }
+  }
+}
+const defaultState: State = {}
 
-export default function (state = defaultState, action) {
+export default function (state: State = defaultState, action: EntryPointsAction | Action<DeleteOutcomeFullyResponse>): State {
   if (
     isCrud(
       action,
@@ -30,9 +47,10 @@ export default function (state = defaultState, action) {
       DELETE_ENTRY_POINT
     )
   ) {
+    const crudAction = action as Action<WireElement<EntryPoint>>
     return crudReducer(
       state,
-      action,
+      crudAction,
       CREATE_ENTRY_POINT,
       FETCH_ENTRY_POINTS,
       UPDATE_ENTRY_POINT,
@@ -45,7 +63,8 @@ export default function (state = defaultState, action) {
   switch (type) {
     case FETCH_ENTRY_POINT_DETAILS:
       cellIdString = action.meta.cellIdString
-      const mapped = payload.entryPoints.map(r => {
+      const entryPointDetails = payload as EntryPointDetails
+      const mapped = entryPointDetails.entryPoints.map(r => {
         return {
           ...r.entry,
           headerHash: r.headerHash,
@@ -64,13 +83,14 @@ export default function (state = defaultState, action) {
       }
     case DELETE_OUTCOME_FULLY:
       cellIdString = action.meta.cellIdString
+      const deleteOutcomeResponse = payload as DeleteOutcomeFullyResponse
       // filter out the entry points whose headerHashes are listed as having been
       // deleted on account of having deleted its associated Outcome
       return {
         ...state,
         [cellIdString]: _.pickBy(
           state[cellIdString],
-          (_value, key) => payload.deletedEntryPoints.indexOf(key) === -1
+          (_value, key) => deleteOutcomeResponse.deletedEntryPoints.indexOf(key) === -1
         ),
       }
     default:

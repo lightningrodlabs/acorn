@@ -5,6 +5,7 @@
   that can be taken within that feature.
 */
 
+import { WireElement } from '../../../../api/hdkCrud'
 import { EntryPoint, EntryPointDetails } from '../../../../types'
 import { Action, CellIdString } from '../../../../types/shared'
 import { createCrudActionCreators } from '../../crudRedux'
@@ -44,3 +45,5 @@ export {
   // non-standard
   fetchEntryPointDetails,
 }
+
+export type EntryPointsAction = Action<WireElement<EntryPoint>> | Action<EntryPointDetails>

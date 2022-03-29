@@ -1,9 +1,9 @@
 import { AppWebsocket, CellId } from '@holochain/client'
 import { PROFILES_ZOME_NAME } from '../holochainConfig'
 import { Profile, WhoAmIOutput } from '../types'
-import { AgentPubKeyB64 } from '../types/shared'
+import { AgentPubKeyB64, UpdateInput } from '../types/shared'
 import callZome from './callZome'
-import { UpdateInput, WireElement } from './hdkCrud'
+import { WireElement } from './hdkCrud'
 
 const ZOME_FN_NAMES = {
   CREATE_WHOAMI: 'create_whoami',

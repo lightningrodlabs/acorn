@@ -40,3 +40,4 @@ const updateWhoami = (cellIdString: CellIdString, payload: WireElement<Profile>)
 }
 
 export { whoami, WHOAMI, createWhoami, CREATE_WHOAMI, updateWhoami, UPDATE_WHOAMI }
+export type WhoamiAction = Action<WhoAmIOutput> | Action<WireElement<Profile>>

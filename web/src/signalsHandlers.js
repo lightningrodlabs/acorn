@@ -177,7 +177,7 @@ export default (store) =>
           // }
           // this one is different than the rest on purpose
           // there's no "local action" equivalent
-          store.dispatch(setMember(cellIdToString(cellId), payload.data.data))
+          store.dispatch(setMember(cellIdToString(cellId), payload.data.data)) //payload.data.data is type Member, not WireElement<Member>
           break
         case SignalType.OutcomeWithConnection:
           store.dispatch(

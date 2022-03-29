@@ -19,7 +19,7 @@ const FETCH_AGENTS = 'FETCH_AGENTS'
 /* action creator functions */
 
 // what type is agent here?
-const setAgent = agent => {
+const setAgent = (agent: WireElement<Profile>): Action<WireElement<Profile>> => {
   return {
     type: SET_AGENT,
     payload: agent,
@@ -42,3 +42,4 @@ const fetchAgents = (cellIdString: CellIdString, payload: Array<Profile>): Actio
 }
 
 export { SET_AGENT, setAgent, createImportedProfile, CREATE_IMPORTED_PROFILE, fetchAgents, FETCH_AGENTS }
+export type AgentsAction = Action<WireElement<Profile>> | Action<Array<Profile>>
