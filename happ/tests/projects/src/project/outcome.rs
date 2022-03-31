@@ -1,6 +1,6 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::{OutcomeFixturator};
+    use crate::fixtures::fixtures::OutcomeFixturator;
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_unit_testing::mock_hdk::*;
@@ -120,9 +120,7 @@ pub mod tests {
         // with a valid user_edit_hash, we move on to the issue
         // of the `user_hash`. Is it equal to the original author?
         // to know this, we need to resolve that dependency
-        outcome.user_edit_hash = Some(AgentPubKeyB64::new(
-            update_header.author.as_hash().clone(),
-        ));
+        outcome.user_edit_hash = Some(AgentPubKeyB64::new(update_header.author.as_hash().clone()));
         // update the outcome value in the validate_data
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome.clone().try_into().unwrap());
@@ -152,21 +150,14 @@ pub mod tests {
         // the must_get_header call for the Outcome
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-                update_header.original_header_address.clone(),
-            ),
-            Ok(bad_original_outcome_element.signed_header().clone())
+            mock_hdk_ref,
+            MustGetHeaderInput::new(update_header.original_header_address.clone()),
+            Ok(bad_original_outcome_element.signed_header().clone()),
         );
         mock_must_get_entry(
             mock_hdk_ref,
-            MustGetEntryInput::new(
-                bad_original_entry_hash.clone(),
-            ),
-            Ok(option_entry_hashed(
-                bad_original_outcome_element.entry().clone(),
-            )
-            .unwrap())
+            MustGetEntryInput::new(bad_original_entry_hash.clone()),
+            Ok(option_entry_hashed(bad_original_outcome_element.entry().clone()).unwrap()),
         );
         set_hdk(mock_hdk);
 
@@ -207,21 +198,14 @@ pub mod tests {
         // the must_get_header call for the outcome_address
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-                update_header.original_header_address,
-            ),
-            Ok(good_original_outcome_element.signed_header().clone())
+            mock_hdk_ref,
+            MustGetHeaderInput::new(update_header.original_header_address),
+            Ok(good_original_outcome_element.signed_header().clone()),
         );
         mock_must_get_entry(
             mock_hdk_ref,
-            MustGetEntryInput::new(
-                good_original_entry_hash.clone(),
-            ),
-            Ok(option_entry_hashed(
-                good_original_outcome_element.entry().clone(),
-            )
-            .unwrap())
+            MustGetEntryInput::new(good_original_entry_hash.clone()),
+            Ok(option_entry_hashed(good_original_outcome_element.entry().clone()).unwrap()),
         );
         set_hdk(mock_hdk);
 

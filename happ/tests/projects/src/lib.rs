@@ -1,2 +1,2 @@
-mod project;
 mod fixtures;
+mod project;

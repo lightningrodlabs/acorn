@@ -1,8 +1,7 @@
 use hdk::prelude::*;
 use hdk_crud::{
     retrieval::{
-        get_latest_for_entry::GetLatestEntry,
-        utils::EntryAndHash, fetch_links::FetchLinks,
+        fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry, utils::EntryAndHash,
     },
     signals::ActionType,
     wire_element::WireElement,
@@ -12,7 +11,7 @@ use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
 pub const AGENTS_PATH: &str = "agents";
 
 #[hdk_entry(id = "profile")]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 #[derive(Clone, PartialEq)]
 pub struct Profile {
     pub first_name: String,
@@ -264,7 +263,8 @@ pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
     let path_hash = Path::from(AGENTS_PATH).path_entry_hash()?;
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
-    let entries = fetch_links.fetch_links::<Profile>(&get_latest, path_hash, GetOptions::content())?
+    let entries = fetch_links
+        .fetch_links::<Profile>(&get_latest, path_hash, GetOptions::content())?
         .into_iter()
         .map(|wire_element| wire_element.entry)
         .collect();
@@ -296,7 +296,8 @@ fn get_peers() -> ExternResult<Vec<AgentPubKey>> {
     let path_hash = Path::from(AGENTS_PATH).path_entry_hash()?;
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
-    let entries = fetch_links.fetch_links::<Profile>(&get_latest, path_hash, GetOptions::latest())?;
+    let entries =
+        fetch_links.fetch_links::<Profile>(&get_latest, path_hash, GetOptions::latest())?;
     let self_agent_pub_key = AgentPubKeyB64::from(agent_info()?.agent_latest_pubkey);
     Ok(entries
         .into_iter()

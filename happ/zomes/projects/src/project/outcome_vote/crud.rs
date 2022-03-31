@@ -4,7 +4,7 @@ use hdk_crud::crud;
 use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 
 #[hdk_entry(id = "outcome_vote")]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 #[derive(Clone, PartialEq)]
 pub struct OutcomeVote {
     pub outcome_address: HeaderHashB64,

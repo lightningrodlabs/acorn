@@ -1,3 +1,3 @@
 pub mod entry;
-pub mod zome_fns;
 pub mod validate;
+pub mod zome_fns;

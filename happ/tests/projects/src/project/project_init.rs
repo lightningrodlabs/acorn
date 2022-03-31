@@ -34,10 +34,7 @@ pub mod tests {
     fn setup_create_receive_signal_cap_grant_mock(mock_hdk: &mut MockHdkT) {
         let zome_info = fixt!(ZomeInfo);
         // init calls create_receive_signal_cap_grant, which calls zome_info and create_cap_grant
-        mock_zome_info(
-            mock_hdk,
-            Ok(zome_info.clone())
-        );
+        mock_zome_info(mock_hdk, Ok(zome_info.clone()));
 
         // create_cap_grant calls just `create` under the hood
         let mut functions: GrantedFunctions = BTreeSet::new();
@@ -50,17 +47,12 @@ pub mod tests {
                 access: ().into(),
                 functions,
             }),
-            ChainTopOrdering::default()
+            ChainTopOrdering::default(),
         );
         let header_hash = fixt!(HeaderHash);
-        mock_create(
-            mock_hdk,
-            expected,
-            Ok(header_hash.clone())
-        );
+        mock_create(mock_hdk, expected, Ok(header_hash.clone()));
     }
     fn setup_join_project_during_init_mock(mock_hdk: &mut MockHdkT) {
-      
         let member_path = Path::from("member");
         let member_path_hash = fixt!(EntryHash);
         let member_path_entry = PathEntry::new(member_path_hash.clone());
@@ -68,13 +60,13 @@ pub mod tests {
         mock_hash_entry(
             mock_hdk,
             Entry::try_from(member_path.clone()).unwrap(),
-            Ok(member_path_hash.clone())
+            Ok(member_path_hash.clone()),
         );
 
         mock_hash_entry(
             mock_hdk,
             Entry::try_from(member_path_entry.clone()).unwrap(),
-            Ok(member_path_entry_hash.clone())
+            Ok(member_path_entry_hash.clone()),
         );
         let member_path_get_input = vec![GetInput::new(
             AnyDhtHash::from(member_path_entry_hash.clone()),
@@ -82,54 +74,39 @@ pub mod tests {
         )];
         // assuming the path exists on DHT
         let expected_get_output = vec![Some(fixt!(Element))];
-        mock_get(
-            mock_hdk,
-            member_path_get_input,
-            Ok(expected_get_output)
-        );
+        mock_get(mock_hdk, member_path_get_input, Ok(expected_get_output));
 
         mock_hash_entry(
             mock_hdk,
             Entry::try_from(member_path.clone()).unwrap(),
-            Ok(member_path_hash.clone())
+            Ok(member_path_hash.clone()),
         );
 
         mock_hash_entry(
             mock_hdk,
             Entry::try_from(member_path_entry.clone()).unwrap(),
-            Ok(member_path_entry_hash.clone())
+            Ok(member_path_entry_hash.clone()),
         );
 
         let agent_info = fixt!(AgentInfo);
-        mock_agent_info(
-            mock_hdk,
-            Ok(agent_info.clone())
-        );
+        mock_agent_info(mock_hdk, Ok(agent_info.clone()));
 
         let member = Member {
             address: AgentPubKeyB64::new(agent_info.agent_initial_pubkey),
         };
         let header_hash = fixt!(HeaderHash);
         let create_member_input = CreateInput::try_from(member.clone()).unwrap();
-        mock_create(
-            mock_hdk,
-            create_member_input,
-            Ok(header_hash.clone())
-        );
+        mock_create(mock_hdk, create_member_input, Ok(header_hash.clone()));
 
         let member_hash = fixt!(EntryHash);
         let member_entry = Entry::try_from(member.clone()).unwrap();
-        mock_hash_entry(
-            mock_hdk,
-            member_entry,
-            Ok(member_hash.clone())
+        mock_hash_entry(mock_hdk, member_entry, Ok(member_hash.clone()));
+        let create_link_input = CreateLinkInput::new(
+            member_path_entry_hash,
+            member_hash,
+            LinkTag::from(()),
+            ChainTopOrdering::default(),
         );
-        let create_link_input =
-            CreateLinkInput::new(member_path_entry_hash, member_hash, LinkTag::from(()), ChainTopOrdering::default());
-        mock_create_link(
-            mock_hdk,
-            create_link_input,
-            Ok(header_hash)
-        );
+        mock_create_link(mock_hdk, create_link_input, Ok(header_hash));
     }
 }

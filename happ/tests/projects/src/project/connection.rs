@@ -1,6 +1,6 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::{ConnectionFixturator};
+    use crate::fixtures::fixtures::ConnectionFixturator;
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_unit_testing::mock_hdk::*;
@@ -76,20 +76,16 @@ pub mod tests {
         let mut mock_hdk = MockHdkT::new();
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-                outcome_parent_wrapped_header_hash.clone().into(),
-            ),
-            Ok(parent_signed_header_hashed)
+            mock_hdk_ref,
+            MustGetHeaderInput::new(outcome_parent_wrapped_header_hash.clone().into()),
+            Ok(parent_signed_header_hashed),
         );
 
         // the must_get_header call for the child outcome
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-                outcome_child_wrapped_header_hash.clone().into(),
-            ),
-            Ok(child_signed_header_hashed)
+            mock_hdk_ref,
+            MustGetHeaderInput::new(outcome_child_wrapped_header_hash.clone().into()),
+            Ok(child_signed_header_hashed),
         );
 
         set_hdk(mock_hdk);

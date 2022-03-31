@@ -1,8 +1,6 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::{
-        OutcomeMemberFixturator
-    };
+    use crate::fixtures::fixtures::OutcomeMemberFixturator;
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_unit_testing::mock_hdk::*;
@@ -42,19 +40,16 @@ pub mod tests {
         // by making it as if there is a Outcome at the outcome_address
         let mut outcome_element_for_invalid = fixt!(Element);
         let create_header_for_invalid = fixt!(Create);
-        *outcome_element_for_invalid.as_header_mut() = Header::Create(create_header_for_invalid.clone());
+        *outcome_element_for_invalid.as_header_mut() =
+            Header::Create(create_header_for_invalid.clone());
 
         let mut mock_hdk = MockHdkT::new();
         // mock the must_get_header call for the outcome_address
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-              outcome_wrapped_header_hash.clone().into(),
-            ),
-            Ok(outcome_element_for_invalid
-                .signed_header()
-                .clone())
+            mock_hdk_ref,
+            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            Ok(outcome_element_for_invalid.signed_header().clone()),
         );
         set_hdk(mock_hdk);
 
@@ -80,19 +75,16 @@ pub mod tests {
         // by making it as if there is a Outcome at the outcome_address
         let mut outcome_element_for_valid = fixt!(Element);
         let create_header_for_valid = fixt!(Create);
-        *outcome_element_for_valid.as_header_mut() = Header::Create(create_header_for_valid.clone());
+        *outcome_element_for_valid.as_header_mut() =
+            Header::Create(create_header_for_valid.clone());
 
         let mut mock_hdk = MockHdkT::new();
         // mock the must_get_header call for the outcome_address
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-              outcome_wrapped_header_hash.clone().into(),
-            ),
-            Ok(outcome_element_for_valid
-                .signed_header()
-                .clone())
+            mock_hdk_ref,
+            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            Ok(outcome_element_for_valid.signed_header().clone()),
         );
         set_hdk(mock_hdk);
 
@@ -100,8 +92,7 @@ pub mod tests {
         // AgentPubKey of the agent committing,
         // but it will still be missing the outcome dependency so it will
         // return UnresolvedDependencies
-        outcome_member.user_edit_hash =
-            AgentPubKeyB64::new(create_header.author.as_hash().clone());
+        outcome_member.user_edit_hash = AgentPubKeyB64::new(create_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome_member.clone().try_into().unwrap());
 

@@ -10,7 +10,7 @@ use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
 // The "Entry" in EntryPoint is not a reference to Holochain "Entries"
 // it is rather the concept of an Entrance, as in a doorway, to the tree
 #[hdk_entry(id = "entry_point")]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 #[derive(Clone, PartialEq)]
 pub struct EntryPoint {
     pub color: String,

@@ -35,10 +35,10 @@ pub enum Error {
 
     #[error("Only the original entry author can update this entry")]
     UpdateOnNonAuthoredOriginal,
-    
+
     #[error("Updates not allowed for this entry type")]
     UpdateAttempted,
-    
+
     #[error("Deletes not allowed for this entry type")]
     DeleteAttempted,
 

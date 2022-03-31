@@ -4,17 +4,17 @@ use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 pub mod project;
 
 use hdk_crud::{
-    retrieval::{get_latest_for_entry::GetLatestEntry, fetch_links::FetchLinks},
+    retrieval::{fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry},
     signals::{create_receive_signal_cap_grant, ActionSignal},
 };
 use project::{
     connection::crud::Connection,
     entry_point::crud::EntryPoint,
+    member::entry::{join_project_during_init, Member, MemberSignal, MEMBER_PATH},
     outcome::crud::{DeleteOutcomeFullySignal, Outcome, OutcomeWithConnectionSignal},
     outcome_comment::crud::OutcomeComment,
     outcome_member::crud::OutcomeMember,
     outcome_vote::crud::OutcomeVote,
-    member::entry::{join_project_during_init, Member, MemberSignal, MEMBER_PATH},
     project_meta::crud::ProjectMeta,
 };
 

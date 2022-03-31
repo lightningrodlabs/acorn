@@ -59,9 +59,10 @@ pub fn validate_update_entry_outcome_comment(
                         // -> check the original header and make sure that
                         // this header author matches that original author
                         if let Header::Update(header) = validate_data.element.header() {
-                            let original_outcome_comment = must_get_header_and_entry::<OutcomeComment>(
-                                header.original_header_address.clone(),
-                            )?;
+                            let original_outcome_comment =
+                                must_get_header_and_entry::<OutcomeComment>(
+                                    header.original_header_address.clone(),
+                                )?;
                             // the final return value
                             // if this passes, all have passed
 
@@ -87,6 +88,8 @@ pub fn validate_update_entry_outcome_comment(
 
 #[hdk_extern]
 /// Deletes are allowed by anyone
-pub fn validate_delete_entry_outcome_comment(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_delete_entry_outcome_comment(
+    _: ValidateData,
+) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
 }

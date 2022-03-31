@@ -1,2 +1,2 @@
-mod profiles;
 mod fixtures;
+mod profiles;

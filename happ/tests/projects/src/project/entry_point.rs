@@ -1,6 +1,6 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::{EntryPointFixturator};
+    use crate::fixtures::fixtures::EntryPointFixturator;
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_unit_testing::mock_hdk::*;
@@ -59,11 +59,9 @@ pub mod tests {
         // the must_get_header call for the outcome_address
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-                outcome_wrapped_header_hash.clone().into(),
-            ),
-            Ok(outcome_signed_header_hashed.clone())
+            mock_hdk_ref,
+            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            Ok(outcome_signed_header_hashed.clone()),
         );
 
         set_hdk(mock_hdk);
@@ -91,19 +89,16 @@ pub mod tests {
         let mut mock_hdk = MockHdkT::new();
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-                outcome_wrapped_header_hash.clone().into(),
-            ),
-            Ok(outcome_signed_header_hashed.clone())
+            mock_hdk_ref,
+            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            Ok(outcome_signed_header_hashed.clone()),
         );
 
         set_hdk(mock_hdk);
 
         // make the creator_address valid by making it equal the
         // AgentPubKey of the agent committing,
-        entry_point.creator_address =
-            AgentPubKeyB64::new(create_header.author.as_hash().clone());
+        entry_point.creator_address = AgentPubKeyB64::new(create_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(entry_point.clone().try_into().unwrap());
 

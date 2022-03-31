@@ -35,12 +35,16 @@ pub fn validate_create_entry_outcome_member(
 
 #[hdk_extern]
 /// Updates are not allowed
-pub fn validate_update_entry_outcome_member(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_update_entry_outcome_member(
+    _: ValidateData,
+) -> ExternResult<ValidateCallbackResult> {
     Error::UpdateAttempted.into()
 }
 
 #[hdk_extern]
 /// Deletes are allowed by anyone
-pub fn validate_delete_entry_outcome_member(_: ValidateData) -> ExternResult<ValidateCallbackResult> {
+pub fn validate_delete_entry_outcome_member(
+    _: ValidateData,
+) -> ExternResult<ValidateCallbackResult> {
     Ok(ValidateCallbackResult::Valid)
 }

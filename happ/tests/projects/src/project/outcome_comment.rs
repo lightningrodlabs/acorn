@@ -1,8 +1,6 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::{
-        OutcomeCommentFixturator,
-    };
+    use crate::fixtures::fixtures::OutcomeCommentFixturator;
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_unit_testing::mock_hdk::*;
@@ -48,11 +46,9 @@ pub mod tests {
         // the must_get_header call for the outcome_address
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-                outcome_wrapped_header_hash.clone().into(),
-            ),
-            Ok(outcome_signed_header_hashed.clone())
+            mock_hdk_ref,
+            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            Ok(outcome_signed_header_hashed.clone()),
         );
         set_hdk(mock_hdk);
 
@@ -75,8 +71,7 @@ pub mod tests {
 
         // make the agent_address valid by making it equal the
         // AgentPubKey of the agent committing
-        outcome_comment.agent_address =
-            AgentPubKeyB64::new(create_header.author.as_hash().clone());
+        outcome_comment.agent_address = AgentPubKeyB64::new(create_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome_comment.clone().try_into().unwrap());
 
@@ -85,11 +80,9 @@ pub mod tests {
         // the must_get_header call for the outcome_address
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-                outcome_wrapped_header_hash.clone().into(),
-            ),
-            Ok(outcome_signed_header_hashed.clone())
+            mock_hdk_ref,
+            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            Ok(outcome_signed_header_hashed.clone()),
         );
 
         set_hdk(mock_hdk);
@@ -133,8 +126,7 @@ pub mod tests {
         // but it will still be missing the original OutcomeComment
         // dependency so it will
         // return UnresolvedDependencies
-        outcome_comment.agent_address =
-            AgentPubKeyB64::new(update_header.author.as_hash().clone());
+        outcome_comment.agent_address = AgentPubKeyB64::new(update_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome_comment.clone().try_into().unwrap());
 
@@ -150,7 +142,8 @@ pub mod tests {
         // than our Update header
         let mut bad_original_outcome_comment_element = fixt!(Element);
         let bad_create_header = fixt!(Create);
-        *bad_original_outcome_comment_element.as_header_mut() = Header::Create(bad_create_header.clone());
+        *bad_original_outcome_comment_element.as_header_mut() =
+            Header::Create(bad_create_header.clone());
         *bad_original_outcome_comment_element.as_entry_mut() =
             ElementEntry::Present(bad_original_outcome_comment.clone().try_into().unwrap());
         let bad_original_entry_hash = bad_original_outcome_comment_element
@@ -164,23 +157,14 @@ pub mod tests {
         // the must_get_header call for the outcome_address
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-                update_header.original_header_address.clone(),
-            ),
-            Ok(bad_original_outcome_comment_element
-                .signed_header()
-                .clone())
+            mock_hdk_ref,
+            MustGetHeaderInput::new(update_header.original_header_address.clone()),
+            Ok(bad_original_outcome_comment_element.signed_header().clone()),
         );
         mock_must_get_entry(
             mock_hdk_ref,
-            MustGetEntryInput::new(
-                bad_original_entry_hash.clone(),
-            ),
-            Ok(option_entry_hashed(
-                bad_original_outcome_comment_element.entry().clone(),
-            )
-            .unwrap())
+            MustGetEntryInput::new(bad_original_entry_hash.clone()),
+            Ok(option_entry_hashed(bad_original_outcome_comment_element.entry().clone()).unwrap()),
         );
         set_hdk(mock_hdk);
 
@@ -218,23 +202,16 @@ pub mod tests {
         // the must_get_header call for the outcome_address
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-                update_header.original_header_address.clone(),
-            ),
+            mock_hdk_ref,
+            MustGetHeaderInput::new(update_header.original_header_address.clone()),
             Ok(good_original_outcome_comment_element
                 .signed_header()
-                .clone())
+                .clone()),
         );
         mock_must_get_entry(
             mock_hdk_ref,
-            MustGetEntryInput::new(
-                good_original_entry_hash.clone(),
-            ),
-            Ok(option_entry_hashed(
-                good_original_outcome_comment_element.entry().clone(),
-            )
-            .unwrap())
+            MustGetEntryInput::new(good_original_entry_hash.clone()),
+            Ok(option_entry_hashed(good_original_outcome_comment_element.entry().clone()).unwrap()),
         );
         set_hdk(mock_hdk);
 

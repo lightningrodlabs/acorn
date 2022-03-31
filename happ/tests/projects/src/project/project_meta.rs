@@ -95,23 +95,16 @@ pub mod tests {
         // the must_get_header call for the outcome_address
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-                update_header.original_header_address.clone(),
-            ),
+            mock_hdk_ref,
+            MustGetHeaderInput::new(update_header.original_header_address.clone()),
             Ok(invalid_original_project_meta_element
                 .signed_header()
-                .clone())
+                .clone()),
         );
         mock_must_get_entry(
             mock_hdk_ref,
-            MustGetEntryInput::new(
-                invalid_original_entry_hash.clone(),
-            ),
-            Ok(option_entry_hashed(
-                invalid_original_project_meta_element.entry().clone(),
-            )
-            .unwrap())
+            MustGetEntryInput::new(invalid_original_entry_hash.clone()),
+            Ok(option_entry_hashed(invalid_original_project_meta_element.entry().clone()).unwrap()),
         );
         set_hdk(mock_hdk);
 
@@ -146,23 +139,14 @@ pub mod tests {
         // the must_get_header call for the outcome_address
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
-            mock_hdk_ref, 
-            MustGetHeaderInput::new(
-                update_header.original_header_address.clone(),
-            ),
-            Ok(valid_original_project_meta_element
-                .signed_header()
-                .clone())
+            mock_hdk_ref,
+            MustGetHeaderInput::new(update_header.original_header_address.clone()),
+            Ok(valid_original_project_meta_element.signed_header().clone()),
         );
         mock_must_get_entry(
             mock_hdk_ref,
-            MustGetEntryInput::new(
-                valid_original_entry_hash.clone(),
-            ),
-            Ok(option_entry_hashed(
-                valid_original_project_meta_element.entry().clone(),
-            )
-            .unwrap())
+            MustGetEntryInput::new(valid_original_entry_hash.clone()),
+            Ok(option_entry_hashed(valid_original_project_meta_element.entry().clone()).unwrap()),
         );
         set_hdk(mock_hdk);
 
