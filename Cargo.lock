@@ -1385,6 +1385,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "hdk_unit_testing"
+version = "0.1.2"
+dependencies = [
+ "hdk",
+]
+
+[[package]]
 name = "heck"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3091,6 +3098,7 @@ dependencies = [
  "fixt",
  "hdk",
  "hdk_crud",
+ "hdk_unit_testing",
  "holo_hash",
  "holochain_types",
  "mockall 0.9.1",
@@ -4093,6 +4101,7 @@ dependencies = [
  "fixt",
  "hdk",
  "hdk_crud",
+ "hdk_unit_testing",
  "holo_hash",
  "holochain_types",
  "mockall 0.9.1",

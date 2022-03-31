@@ -3,6 +3,7 @@ pub mod tests {
     use crate::fixtures::fixtures::{ConnectionFixturator};
     use ::fixt::prelude::*;
     use hdk::prelude::*;
+    use hdk_unit_testing::mock_hdk::*;
     use holo_hash::HeaderHashB64;
     use holochain_types::prelude::ValidateDataFixturator;
     use projects::project::connection::validate::*;
@@ -73,23 +74,23 @@ pub mod tests {
             ElementEntry::Present(connection.clone().try_into().unwrap());
 
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the parent outcome
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref, 
+            MustGetHeaderInput::new(
                 outcome_parent_wrapped_header_hash.clone().into(),
-            )))
-            .times(1)
-            .return_const(Ok(parent_signed_header_hashed));
+            ),
+            Ok(parent_signed_header_hashed)
+        );
 
         // the must_get_header call for the child outcome
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+        mock_must_get_header(
+            mock_hdk_ref, 
+            MustGetHeaderInput::new(
                 outcome_child_wrapped_header_hash.clone().into(),
-            )))
-            .times(1)
-            .return_const(Ok(child_signed_header_hashed));
+            ),
+            Ok(child_signed_header_hashed)
+        );
 
         set_hdk(mock_hdk);
 

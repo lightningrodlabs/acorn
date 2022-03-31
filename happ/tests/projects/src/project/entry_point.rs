@@ -3,6 +3,7 @@ pub mod tests {
     use crate::fixtures::fixtures::{EntryPointFixturator};
     use ::fixt::prelude::*;
     use hdk::prelude::*;
+    use hdk_unit_testing::mock_hdk::*;
     use holo_hash::{AgentPubKeyB64, HeaderHashB64};
     use holochain_types::prelude::ValidateDataFixturator;
     use projects::project::entry_point::validate::*;
@@ -56,13 +57,14 @@ pub mod tests {
         // as if there is a Outcome at the outcome_address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref, 
+            MustGetHeaderInput::new(
                 outcome_wrapped_header_hash.clone().into(),
-            )))
-            .times(1)
-            .return_const(Ok(outcome_signed_header_hashed.clone()));
+            ),
+            Ok(outcome_signed_header_hashed.clone())
+        );
 
         set_hdk(mock_hdk);
 
@@ -87,13 +89,14 @@ pub mod tests {
         // make it as if there is a Outcome at the outcome_address
 
         let mut mock_hdk = MockHdkT::new();
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref, 
+            MustGetHeaderInput::new(
                 outcome_wrapped_header_hash.clone().into(),
-            )))
-            .times(1)
-            .return_const(Ok(outcome_signed_header_hashed));
+            ),
+            Ok(outcome_signed_header_hashed.clone())
+        );
 
         set_hdk(mock_hdk);
 

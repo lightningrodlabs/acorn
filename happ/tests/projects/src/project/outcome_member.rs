@@ -5,6 +5,7 @@ pub mod tests {
     };
     use ::fixt::prelude::*;
     use hdk::prelude::*;
+    use hdk_unit_testing::mock_hdk::*;
     use holo_hash::AgentPubKeyB64;
     use holochain_types::prelude::ElementFixturator;
     use holochain_types::prelude::ValidateDataFixturator;
@@ -45,15 +46,16 @@ pub mod tests {
 
         let mut mock_hdk = MockHdkT::new();
         // mock the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref, 
+            MustGetHeaderInput::new(
               outcome_wrapped_header_hash.clone().into(),
-            )))
-            .times(1)
-            .return_const(Ok(outcome_element_for_invalid
+            ),
+            Ok(outcome_element_for_invalid
                 .signed_header()
-                .clone()));
+                .clone())
+        );
         set_hdk(mock_hdk);
 
         // with an entry with a random
@@ -82,15 +84,16 @@ pub mod tests {
 
         let mut mock_hdk = MockHdkT::new();
         // mock the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref, 
+            MustGetHeaderInput::new(
               outcome_wrapped_header_hash.clone().into(),
-            )))
-            .times(1)
-            .return_const(Ok(outcome_element_for_valid
+            ),
+            Ok(outcome_element_for_valid
                 .signed_header()
-                .clone()));
+                .clone())
+        );
         set_hdk(mock_hdk);
 
         // make the user_edit_hash valid by making it equal the

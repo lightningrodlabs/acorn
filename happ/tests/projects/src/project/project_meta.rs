@@ -3,6 +3,7 @@ pub mod tests {
     use crate::fixtures::fixtures::ProjectMetaFixturator;
     use ::fixt::prelude::*;
     use hdk::prelude::*;
+    use hdk_unit_testing::mock_hdk::*;
     use holo_hash::AgentPubKeyB64;
     use holochain_types::prelude::option_entry_hashed;
     use holochain_types::prelude::ElementFixturator;
@@ -92,25 +93,26 @@ pub mod tests {
         // it is as if there is a ProjectMeta at the original address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref, 
+            MustGetHeaderInput::new(
                 update_header.original_header_address.clone(),
-            )))
-            .times(1)
-            .return_const(Ok(invalid_original_project_meta_element
+            ),
+            Ok(invalid_original_project_meta_element
                 .signed_header()
-                .clone()));
-        mock_hdk
-            .expect_must_get_entry()
-            .with(mockall::predicate::eq(MustGetEntryInput::new(
+                .clone())
+        );
+        mock_must_get_entry(
+            mock_hdk_ref,
+            MustGetEntryInput::new(
                 invalid_original_entry_hash.clone(),
-            )))
-            .times(1)
-            .return_const(Ok(option_entry_hashed(
+            ),
+            Ok(option_entry_hashed(
                 invalid_original_project_meta_element.entry().clone(),
             )
-            .unwrap()));
+            .unwrap())
+        );
         set_hdk(mock_hdk);
 
         // without an Element containing an Entry, validation will fail
@@ -142,25 +144,26 @@ pub mod tests {
         // it is as if there is a ProjectMeta at the original address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref, 
+            MustGetHeaderInput::new(
                 update_header.original_header_address.clone(),
-            )))
-            .times(1)
-            .return_const(Ok(valid_original_project_meta_element
+            ),
+            Ok(valid_original_project_meta_element
                 .signed_header()
-                .clone()));
-        mock_hdk
-            .expect_must_get_entry()
-            .with(mockall::predicate::eq(MustGetEntryInput::new(
+                .clone())
+        );
+        mock_must_get_entry(
+            mock_hdk_ref,
+            MustGetEntryInput::new(
                 valid_original_entry_hash.clone(),
-            )))
-            .times(1)
-            .return_const(Ok(option_entry_hashed(
+            ),
+            Ok(option_entry_hashed(
                 valid_original_project_meta_element.entry().clone(),
             )
-            .unwrap()));
+            .unwrap())
+        );
         set_hdk(mock_hdk);
 
         // valid!

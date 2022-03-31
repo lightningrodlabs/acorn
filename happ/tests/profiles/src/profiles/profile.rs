@@ -1,9 +1,11 @@
 #[cfg(test)]
 pub mod tests {
     use crate::fixtures::fixtures::ProfileFixturator;
-    use crate::test_lib::*;
+    // use crate::test_lib::*;
+    use hdk_unit_testing::mock_hdk::*;
     use ::fixt::prelude::*;
     use hdk::prelude::*;
+    use hdk_unit_testing::mock_hdk::*;
     use hdk_crud::signals::ActionType;
     use hdk_crud::wire_element::WireElement;
     use holo_hash::{EntryHashB64, HeaderHashB64};
@@ -63,10 +65,7 @@ pub mod tests {
         );
 
         let time = wire_element.created_at.clone();
-        mock_hdk_ref
-            .expect_sys_time()
-            .times(1)
-            .return_const(Ok(time));
+        mock_sys_time(mock_hdk_ref, Ok(time));
 
         let agent_info = fixt!(AgentInfo);
         let agent_entry_hash = EntryHash::from(agent_info.clone().agent_initial_pubkey);
@@ -155,11 +154,7 @@ pub mod tests {
             Ok(link_header_hash.clone()),
         );
         let time = wire_element.created_at.clone();
-        mock_hdk_ref
-            .expect_sys_time()
-            .times(1)
-            .return_const(Ok(time));
-
+        mock_sys_time(mock_hdk_ref, Ok(time));
         set_hdk(mock_hdk);
         let result = create_imported_profile(profile);
         assert_eq!(result, Ok(wire_element));
@@ -186,10 +181,7 @@ pub mod tests {
             Ok(update_entry_hash.clone()),
         );
         let time = wire_element.created_at.clone();
-        mock_hdk_ref
-            .expect_sys_time()
-            .times(1)
-            .return_const(Ok(time));
+        mock_sys_time(mock_hdk_ref, Ok(time));
 
         wire_element.entry_hash = EntryHashB64::new(update_entry_hash);
 

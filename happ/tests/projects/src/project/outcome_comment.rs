@@ -5,6 +5,7 @@ pub mod tests {
     };
     use ::fixt::prelude::*;
     use hdk::prelude::*;
+    use hdk_unit_testing::mock_hdk::*;
     use holo_hash::AgentPubKeyB64;
     use holo_hash::HeaderHashB64;
     use holochain_types::prelude::option_entry_hashed;
@@ -45,13 +46,14 @@ pub mod tests {
 
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref, 
+            MustGetHeaderInput::new(
                 outcome_wrapped_header_hash.clone().into(),
-            )))
-            .times(1)
-            .return_const(Ok(outcome_signed_header_hashed.clone()));
+            ),
+            Ok(outcome_signed_header_hashed.clone())
+        );
         set_hdk(mock_hdk);
 
         // with an entry with a random
@@ -81,13 +83,14 @@ pub mod tests {
         // it is as if there is a header for a Outcome at the outcome_address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref, 
+            MustGetHeaderInput::new(
                 outcome_wrapped_header_hash.clone().into(),
-            )))
-            .times(1)
-            .return_const(Ok(outcome_signed_header_hashed));
+            ),
+            Ok(outcome_signed_header_hashed.clone())
+        );
 
         set_hdk(mock_hdk);
 
@@ -159,25 +162,26 @@ pub mod tests {
         // it is as if there is a OutcomeComment at the original address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref, 
+            MustGetHeaderInput::new(
                 update_header.original_header_address.clone(),
-            )))
-            .times(1)
-            .return_const(Ok(bad_original_outcome_comment_element
+            ),
+            Ok(bad_original_outcome_comment_element
                 .signed_header()
-                .clone()));
-        mock_hdk
-            .expect_must_get_entry()
-            .with(mockall::predicate::eq(MustGetEntryInput::new(
+                .clone())
+        );
+        mock_must_get_entry(
+            mock_hdk_ref,
+            MustGetEntryInput::new(
                 bad_original_entry_hash.clone(),
-            )))
-            .times(1)
-            .return_const(Ok(option_entry_hashed(
+            ),
+            Ok(option_entry_hashed(
                 bad_original_outcome_comment_element.entry().clone(),
             )
-            .unwrap()));
+            .unwrap())
+        );
         set_hdk(mock_hdk);
 
         assert_eq!(
@@ -212,25 +216,26 @@ pub mod tests {
         // it is as if there is a OutcomeComment at the original address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                update_header.original_header_address,
-            )))
-            .times(1)
-            .return_const(Ok(good_original_outcome_comment_element
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref, 
+            MustGetHeaderInput::new(
+                update_header.original_header_address.clone(),
+            ),
+            Ok(good_original_outcome_comment_element
                 .signed_header()
-                .clone()));
-        mock_hdk
-            .expect_must_get_entry()
-            .with(mockall::predicate::eq(MustGetEntryInput::new(
+                .clone())
+        );
+        mock_must_get_entry(
+            mock_hdk_ref,
+            MustGetEntryInput::new(
                 good_original_entry_hash.clone(),
-            )))
-            .times(1)
-            .return_const(Ok(option_entry_hashed(
+            ),
+            Ok(option_entry_hashed(
                 good_original_outcome_comment_element.entry().clone(),
             )
-            .unwrap()));
+            .unwrap())
+        );
         set_hdk(mock_hdk);
 
         // we should see that the ValidateCallbackResult
