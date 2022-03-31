@@ -7,25 +7,25 @@ use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 #[serde(rename_all = "camelCase")]
 #[derive(Clone, PartialEq)]
 pub struct OutcomeComment {
-    pub outcome_address: HeaderHashB64,
+    pub outcome_header_hash: HeaderHashB64,
     pub content: String,
-    pub agent_address: AgentPubKeyB64,
+    pub creator_agent_pub_key: AgentPubKeyB64,
     pub unix_timestamp: f64,
     pub is_imported: bool,
 }
 
 impl OutcomeComment {
     pub fn new(
-        outcome_address: HeaderHashB64,
+        outcome_header_hash: HeaderHashB64,
         content: String,
-        agent_address: AgentPubKeyB64,
+        creator_agent_pub_key: AgentPubKeyB64,
         unix_timestamp: f64,
         is_imported: bool,
     ) -> Self {
         Self {
-            outcome_address,
+            outcome_header_hash,
             content,
-            agent_address,
+            creator_agent_pub_key,
             unix_timestamp,
             is_imported,
         }

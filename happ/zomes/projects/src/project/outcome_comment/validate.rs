@@ -10,7 +10,7 @@ use hdk::prelude::*;
 
 #[hdk_extern]
 /// `OutcomeComment`s can only be created if the `Outcome` exists and
-/// the `agent_address` must match the address of the agent adding
+/// the `creator_agent_pub_key` must match the address of the agent adding
 /// the `OutcomeComment`, unless the entry is imported (`is_imported`)
 pub fn validate_create_entry_outcome_comment(
     validate_data: ValidateData,
@@ -19,15 +19,15 @@ pub fn validate_create_entry_outcome_comment(
         // element must have an entry that must deserialize correctly
         match OutcomeComment::try_from(&validate_data.element) {
             Ok(proposed_entry) => {
-                // parent outcome at outcome_address must be determined to exist
-                must_get_header(proposed_entry.outcome_address.into())?;
+                // parent outcome at outcome_header_hash must be determined to exist
+                must_get_header(proposed_entry.outcome_header_hash.into())?;
                 // an imported entry can have another listed as author, and an edit history
                 if proposed_entry.is_imported {
                     ValidateCallbackResult::Valid
                 } else {
-                    // agent_address must match header author
+                    // creator_agent_pub_key must match header author
                     validate_value_matches_create_author(
-                        &proposed_entry.agent_address.into(),
+                        &proposed_entry.creator_agent_pub_key.into(),
                         &validate_data,
                     )
                 }
@@ -39,7 +39,7 @@ pub fn validate_create_entry_outcome_comment(
 
 #[hdk_extern]
 /// `OutcomeComment`s can only be updated by the original commenter and the Outcome must exist.
-/// `agent_address` should not change from the original value
+/// `creator_agent_pub_key` should not change from the original value
 pub fn validate_update_entry_outcome_comment(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
@@ -47,11 +47,11 @@ pub fn validate_update_entry_outcome_comment(
         // element must have an entry that must deserialize correctly
         match OutcomeComment::try_from(&validate_data.element) {
             Ok(proposed_entry) => {
-                // agent_address must match header author
+                // creator_agent_pub_key must match header author
                 // and then it will also be validated that the header
                 // author is the same as the original author
                 match validate_value_matches_create_author(
-                    &proposed_entry.agent_address.into(),
+                    &proposed_entry.creator_agent_pub_key.into(),
                     &validate_data,
                 ) {
                     ValidateCallbackResult::Valid => {
@@ -70,7 +70,7 @@ pub fn validate_update_entry_outcome_comment(
                             // only original author can make this update
                             validate_value_matches_original_author_for_edit(
                                 &header.author,
-                                &original_outcome_comment.agent_address.into(),
+                                &original_outcome_comment.creator_agent_pub_key.into(),
                             )
                         } else {
                             // Holochain passed the wrong header!

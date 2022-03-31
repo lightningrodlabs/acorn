@@ -116,15 +116,15 @@ pub enum OutcomeField {
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 pub struct EditingOutcomeSignal {
     pub outcome_field: OutcomeField,
-    pub outcome_address: HeaderHashB64,
-    pub editing_agent: AgentPubKeyB64,
+    pub outcome_header_hash: HeaderHashB64,
+    pub editing_agent_pub_key: AgentPubKeyB64,
     pub is_editing: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 pub struct EditingOutcomeInput {
     pub outcome_field: OutcomeField,
-    pub outcome_address: HeaderHashB64,
+    pub outcome_header_hash: HeaderHashB64,
     pub is_editing: bool,
 }
 
@@ -147,7 +147,7 @@ pub struct RealtimeInfoInput {
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 #[serde(rename_all = "camelCase")]
 pub struct EditingOutcomeDetails {
-    pub outcome_address: HeaderHashB64,
+    pub outcome_header_hash: HeaderHashB64,
     pub is_title: bool,
 }
 #[hdk_extern]
@@ -169,8 +169,8 @@ pub fn emit_realtime_info_signal(realtime_info: RealtimeInfoInput) -> ExternResu
 pub fn emit_editing_outcome_signal(editing_outcome_info: EditingOutcomeInput) -> ExternResult<()> {
     let editing_outcome_signal = EditingOutcomeSignal {
         outcome_field: editing_outcome_info.outcome_field,
-        outcome_address: editing_outcome_info.outcome_address,
-        editing_agent: AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey),
+        outcome_header_hash: editing_outcome_info.outcome_header_hash,
+        editing_agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey),
         is_editing: editing_outcome_info.is_editing,
     };
 
@@ -198,8 +198,8 @@ pub fn get_peers(get_options: GetOptions) -> ExternResult<Vec<AgentPubKey>> {
     Ok(entries
         .into_iter()
         // eliminate yourself as a peer
-        .filter(|x| x.entry.address != self_agent_pub_key)
-        .map(|x| AgentPubKey::from(x.entry.address))
+        .filter(|x| x.entry.agent_pub_key != self_agent_pub_key)
+        .map(|x| AgentPubKey::from(x.entry.agent_pub_key))
         .collect::<Vec<AgentPubKey>>())
 }
 

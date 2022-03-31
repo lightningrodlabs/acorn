@@ -92,7 +92,7 @@ pub mod tests {
         mock_agent_info(mock_hdk, Ok(agent_info.clone()));
 
         let member = Member {
-            address: AgentPubKeyB64::new(agent_info.agent_initial_pubkey),
+            agent_pub_key: AgentPubKeyB64::new(agent_info.agent_initial_pubkey),
         };
         let header_hash = fixt!(HeaderHash);
         let create_member_input = CreateInput::try_from(member.clone()).unwrap();

@@ -24,7 +24,7 @@ pub fn fetch_members(_: ()) -> ExternResult<Vec<WireElement<Member>>> {
 #[hdk_extern]
 pub fn init_signal(_: ()) -> ExternResult<()> {
     let member = Member {
-        address: AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey),
+        agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey),
     };
     let signal = MemberSignal::new(member.clone());
     let payload = ExternIO::encode(signal)?;

@@ -31,8 +31,8 @@ use std::fmt;
 #[derive(Clone, PartialEq)]
 pub struct Outcome {
     pub content: String,
-    pub user_hash: AgentPubKeyB64,
-    pub user_edit_hash: Option<AgentPubKeyB64>,
+    pub creator_agent_pub_key: AgentPubKeyB64,
+    pub editor_agent_pub_key: Option<AgentPubKeyB64>,
     pub timestamp_created: f64,
     pub timestamp_updated: Option<f64>,
     pub scope: Scope,
@@ -45,8 +45,8 @@ pub struct Outcome {
 impl Outcome {
     pub fn new(
         content: String,
-        user_hash: AgentPubKeyB64,
-        user_edit_hash: Option<AgentPubKeyB64>,
+        creator_agent_pub_key: AgentPubKeyB64,
+        editor_agent_pub_key: Option<AgentPubKeyB64>,
         timestamp_created: f64,
         timestamp_updated: Option<f64>,
         scope: Scope,
@@ -57,8 +57,8 @@ impl Outcome {
     ) -> Self {
         Self {
             content,
-            user_hash,
-            user_edit_hash,
+            creator_agent_pub_key,
+            editor_agent_pub_key,
             timestamp_created,
             timestamp_updated,
             scope,
@@ -158,7 +158,7 @@ impl fmt::Display for RelationInput {
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 pub struct LinkedOutcomeDetails {
-    outcome_address: HeaderHashB64,
+    outcome_header_hash: HeaderHashB64,
     relation: RelationInput,
 }
 
@@ -197,24 +197,24 @@ pub fn create_outcome_with_connection(
         None,
         None,
     )?;
-    let new_outcome_address = wire_element.header_hash.clone();
+    let new_outcome_header_hash = wire_element.header_hash.clone();
     let maybe_connection: Option<WireElement<Connection>> = match input.maybe_linked_outcome {
         Some(linked_outcome_details) => {
-            let (parent_address, child_address) = match linked_outcome_details.relation {
+            let (parent_header_hash, child_header_hash) = match linked_outcome_details.relation {
                 // new outcome becomes parent
                 RelationInput::ExistingOutcomeAsChild => {
-                    (new_outcome_address, linked_outcome_details.outcome_address)
+                    (new_outcome_header_hash, linked_outcome_details.outcome_header_hash)
                 }
                 // new outcome becomes child
                 RelationInput::ExistingOutcomeAsParent => {
-                    (linked_outcome_details.outcome_address, new_outcome_address)
+                    (linked_outcome_details.outcome_header_hash, new_outcome_header_hash)
                 }
             };
             let random = sys_time()?;
             let r0 = random.as_millis();
             let connection = Connection {
-                parent_address,
-                child_address,
+                parent_header_hash,
+                child_header_hash,
                 randomizer: r0,
                 is_imported: false,
             };
@@ -249,7 +249,7 @@ pub fn create_outcome_with_connection(
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 pub struct DeleteOutcomeFullyResponse {
-    address: HeaderHashB64,
+    outcome_header_hash: HeaderHashB64,
     deleted_connections: Vec<HeaderHashB64>,
     deleted_outcome_members: Vec<HeaderHashB64>,
     deleted_outcome_votes: Vec<HeaderHashB64>,
@@ -289,10 +289,10 @@ pub fn delete_outcome_fully(address: HeaderHashB64) -> ExternResult<DeleteOutcom
         )?
         .into_iter()
         .filter(|wire_element| {
-            // check whether the parent_address or child_address is equal to the given address.
+            // check whether the parent_header_hash or child_header_hash is equal to the given address.
             // If so, the connection is connected to the outcome being deleted.
-            wire_element.entry.child_address == address.clone()
-                || wire_element.entry.parent_address == address.clone()
+            wire_element.entry.child_header_hash == address.clone()
+                || wire_element.entry.parent_header_hash == address.clone()
         })
         .map(|wire_element| {
             let connection_address = wire_element.header_hash;
@@ -321,7 +321,7 @@ pub fn delete_outcome_fully(address: HeaderHashB64) -> ExternResult<DeleteOutcom
             get_outcome_vote_path(),
         )?
         .into_iter()
-        .filter(|wire_element| wire_element.entry.outcome_address == address.clone())
+        .filter(|wire_element| wire_element.entry.outcome_header_hash == address.clone())
         .map(|wire_element| {
             let outcome_vote_address = wire_element.header_hash;
             match delete_action.delete_action::<OutcomeVote, WasmError, SignalType>(
@@ -348,7 +348,7 @@ pub fn delete_outcome_fully(address: HeaderHashB64) -> ExternResult<DeleteOutcom
             get_outcome_comment_path(),
         )?
             .into_iter()
-            .filter(|wire_element| wire_element.entry.outcome_address == address)
+            .filter(|wire_element| wire_element.entry.outcome_header_hash == address)
             .map(|wire_element| {
                 let outcome_comment_address = wire_element.header_hash;
                 match delete_action.delete_action::<OutcomeComment, WasmError, SignalType>(
@@ -374,7 +374,7 @@ pub fn delete_outcome_fully(address: HeaderHashB64) -> ExternResult<DeleteOutcom
             get_entry_point_path(),
         )?
         .into_iter()
-        .filter(|wire_element| wire_element.entry.outcome_address == address)
+        .filter(|wire_element| wire_element.entry.outcome_header_hash == address)
         .map(|wire_element| {
             let entry_point_address = wire_element.header_hash;
             match delete_action.delete_action::<EntryPoint, WasmError, SignalType>(
@@ -391,7 +391,7 @@ pub fn delete_outcome_fully(address: HeaderHashB64) -> ExternResult<DeleteOutcom
         .collect();
 
     let delete_response = DeleteOutcomeFullyResponse {
-        address,
+        outcome_header_hash,
         deleted_connections,
         deleted_outcome_members,
         deleted_outcome_votes,
@@ -445,7 +445,7 @@ pub struct GetHistoryResponse {
 //               match serde_json::from_str::<OutcomeMember>(&Into::<String>::into(value_entry)).ok() {
 //                 Some(outcome_member) => {
 //                   // filter down to only Outcome Members that are associated with the requested Outcome
-//                   if outcome_member.outcome_address == address {
+//                   if outcome_member.outcome_header_hash == address {
 //                     Ok(outcome_member)
 //                   } else {
 //                     Err(ZomeApiError::Internal("error".into()))

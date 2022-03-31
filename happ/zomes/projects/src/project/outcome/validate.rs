@@ -11,8 +11,8 @@ use hdk::prelude::*;
 use holo_hash::AgentPubKeyB64;
 
 #[hdk_extern]
-/// Creates only allowed if `user_hash` of the Outcome entry matches the agent
-/// creating the entry and if `user_edit_hash` is not set, unless the Outcome is imported
+/// Creates only allowed if `creator_agent_pub_key` of the Outcome entry matches the agent
+/// creating the entry and if `editor_agent_pub_key` is not set, unless the Outcome is imported
 pub fn validate_create_entry_outcome(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
@@ -24,14 +24,14 @@ pub fn validate_create_entry_outcome(
                 if proposed_entry.is_imported {
                     ValidateCallbackResult::Valid
                 } else {
-                    // creator_address must match header author
+                    // creator_agent_pub_key must match header author
                     match validate_value_matches_create_author(
-                        &proposed_entry.user_hash.into(),
+                        &proposed_entry.creator_agent_pub_key.into(),
                         &validate_data,
                     ) {
                         ValidateCallbackResult::Valid => {
-                            // user_edit_hash must not be Some during create
-                            validate_value_is_none::<AgentPubKeyB64>(&proposed_entry.user_edit_hash)
+                            // editor_agent_pub_key must not be Some during create
+                            validate_value_is_none::<AgentPubKeyB64>(&proposed_entry.editor_agent_pub_key)
                         }
                         validate_callback_result => validate_callback_result,
                     }
@@ -43,8 +43,8 @@ pub fn validate_create_entry_outcome(
 }
 
 #[hdk_extern]
-/// Updates only allowed if `user_edit_hash` of the updated Outcome entry matches the
-/// agent publishing the update, `user_hash` cannot change from the original value
+/// Updates only allowed if `editor_agent_pub_key` of the updated Outcome entry matches the
+/// agent publishing the update, `creator_agent_pub_key` cannot change from the original value
 pub fn validate_update_entry_outcome(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
@@ -52,20 +52,20 @@ pub fn validate_update_entry_outcome(
         // element must have an entry that must deserialize correctly
         match Outcome::try_from(&validate_data.element) {
             Ok(proposed_entry) => {
-                // user_edit_hash must be Some during edit
-                match validate_value_is_some::<AgentPubKeyB64>(&proposed_entry.user_edit_hash) {
+                // editor_agent_pub_key must be Some during edit
+                match validate_value_is_some::<AgentPubKeyB64>(&proposed_entry.editor_agent_pub_key) {
                     ValidateCallbackResult::Valid => {
-                        // user_edit_hash must match header author
+                        // editor_agent_pub_key must match header author
                         match validate_value_matches_edit_author(
                             // can safely unwrap because we just checked
                             // the value is Some
-                            &proposed_entry.user_edit_hash.unwrap().into(),
+                            &proposed_entry.editor_agent_pub_key.unwrap().into(),
                             &validate_data,
                         ) {
                             ValidateCallbackResult::Valid => {
                                 // go a little more complicated here
                                 // -> check the original header and make sure that
-                                // `user_hash` still matches that original author
+                                // `creator_agent_pub_key` still matches that original author
                                 if let Header::Update(header) = validate_data.element.header() {
                                     let original_header_hash =
                                         header.original_header_address.clone();
@@ -78,8 +78,8 @@ pub fn validate_update_entry_outcome(
                                     // this user is not suggesting that someone other than
                                     // the original author of the original outcome WAS the original
                                     validate_value_matches_original_author(
-                                        &proposed_entry.user_hash.into(),
-                                        &original_outcome.user_hash.into(),
+                                        &proposed_entry.creator_agent_pub_key.into(),
+                                        &original_outcome.creator_agent_pub_key.into(),
                                     )
                                 } else {
                                     // Holochain passed the wrong header!

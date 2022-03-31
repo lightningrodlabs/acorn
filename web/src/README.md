@@ -77,7 +77,7 @@ Agents are essentially the “users”. More data needs to be fetched from Holoc
   outcomes: {
     QmacZTkPm6qNf7sHFuHa8HEg8EPVJ6kcBi4ZyHLr1JrVCN: {
       content: 'Rapid Sensemaking Framework is online and being used everyday',
-      user_hash: 'HcSciGpYDHTaa5dmw583AO7Jy9kHz9K3gu6MtTsB8Nwbfe3y3hD8rOb9aj5B8za',
+      creator_agent_pub_key: 'HcSciGpYDHTaa5dmw583AO7Jy9kHz9K3gu6MtTsB8Nwbfe3y3hD8rOb9aj5B8za',
       unix_timestamp: 1571690582945,
       hierarchy: 'Branch',
       status: 'Uncertain',
@@ -85,7 +85,7 @@ Agents are essentially the “users”. More data needs to be fetched from Holoc
     },
     QmcHbFkCauYVDBodKu2N1qWr7RNYAet9k7Vd9MC8YwYb4f: {
       content: 'Expression of interest for a grant is made',
-      user_hash: 'HcSciGpYDHTaa5dmw583AO7Jy9kHz9K3gu6MtTsB8Nwbfe3y3hD8rOb9aj5B8za',
+      creator_agent_pub_key: 'HcSciGpYDHTaa5dmw583AO7Jy9kHz9K3gu6MtTsB8Nwbfe3y3hD8rOb9aj5B8za',
       unix_timestamp: 1571690614733,
       hierarchy: 'Branch',
       status: 'Uncertain',
@@ -97,13 +97,13 @@ Connections are the links between outcomes, that define a hierarchy in the data
 
   connections: {
     QmPQCB3Ke58RGnGXRmQagLAtvh9AToa84zgDMM3QybY5mq: {
-      parent_address: 'QmacZTkPm6qNf7sHFuHa8HEg8EPVJ6kcBi4ZyHLr1JrVCN',
-      child_address: 'QmcHbFkCauYVDBodKu2N1qWr7RNYAet9k7Vd9MC8YwYb4f',
+      parent_header_hash: 'QmacZTkPm6qNf7sHFuHa8HEg8EPVJ6kcBi4ZyHLr1JrVCN',
+      child_header_hash: 'QmcHbFkCauYVDBodKu2N1qWr7RNYAet9k7Vd9MC8YwYb4f',
       address: 'QmPQCB3Ke58RGnGXRmQagLAtvh9AToa84zgDMM3QybY5mq'
     },
     QmdH3ZHPYMUsqzMQQzZfTD4NHjdnJfCbwjMoacRJzAB76q: {
-      parent_address: 'QmcHbFkCauYVDBodKu2N1qWr7RNYAet9k7Vd9MC8YwYb4f',
-      child_address: 'QmbqbF2dBdZBdzQkHaX8zneCfkMz9GU3i1hYgiDCnDmjbC',
+      parent_header_hash: 'QmcHbFkCauYVDBodKu2N1qWr7RNYAet9k7Vd9MC8YwYb4f',
+      child_header_hash: 'QmbqbF2dBdZBdzQkHaX8zneCfkMz9GU3i1hYgiDCnDmjbC',
       address: 'QmdH3ZHPYMUsqzMQQzZfTD4NHjdnJfCbwjMoacRJzAB76q'
     }
   },

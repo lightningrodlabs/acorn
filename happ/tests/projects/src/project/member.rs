@@ -22,7 +22,7 @@ pub mod tests {
         );
 
         // with an entry with a random
-        // `address` it will fail (not the agent committing)
+        // `agent_pub_key` it will fail (not the agent committing)
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(member.clone().try_into().unwrap());
         assert_eq!(
@@ -30,9 +30,9 @@ pub mod tests {
             Error::CorruptCreateAgentPubKeyReference.into(),
         );
 
-        // make the `address` field valid by making it equal the
+        // make the `agent_pub_key` field valid by making it equal the
         // AgentPubKey of the agent committing
-        member.address = AgentPubKeyB64::new(create_header.author.as_hash().clone());
+        member.agent_pub_key = AgentPubKeyB64::new(create_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(member.clone().try_into().unwrap());
 
