@@ -11,26 +11,13 @@ import {
 } from './actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 import { FETCH_ENTRY_POINT_DETAILS } from '../entry-points/actions'
-import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64, Option } from '../../../../types/shared'
+import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64, Option, WithHeaderHash } from '../../../../types/shared'
 import { CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyResponse, EntryPointDetails, Outcome, Scope, TimeFrame } from '../../../../types'
 import { WireElement } from '../../../../api/hdkCrud'
 
 type State = {
   [cellId: CellIdString]: {
-    [headerHash: HeaderHashB64]: {
-      content: string,
-      userHash: AgentPubKeyB64,
-      userEditHash: Option<AgentPubKeyB64>,
-      timestampCreated: number, //f64,
-      timestampUpdated: Option<number>, //f64
-      scope: Scope,
-      tags: Option<Array<string>>,
-      description: string,
-      timeFrame: Option<TimeFrame>,
-      isImported: boolean,
-      // additional field
-      headerHash: HeaderHashB64
-    }
+    [headerHash: HeaderHashB64]: WithHeaderHash<Outcome>
   }
 }
 const defaultState: State = {}

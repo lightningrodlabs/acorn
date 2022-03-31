@@ -16,12 +16,8 @@ import { Connection, CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyRespon
 
 type State = { 
   [cellId: CellIdString]: {
-    [headerHashOrPreviewId: string]: {
-      parentAddress: HeaderHashB64,
-      childAddress: HeaderHashB64,
-      randomizer: number, //i64,
-      isImported: boolean,
-      headerHash?: HeaderHashB64 // unable to do spread operation in type definition
+    [headerHashOrPreviewId: string]: Connection & {
+      headerHash?: HeaderHashB64 
     }
   }
 }

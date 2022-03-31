@@ -11,7 +11,7 @@ import {
 } from './actions'
 import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64 } from '../../../../types/shared'
+import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64, WithHeaderHash } from '../../../../types/shared'
 import { DeleteOutcomeFullyResponse, EntryPoint, EntryPointDetails } from '../../../../types'
 import { WireElement } from '../../../../api/hdkCrud'
 
@@ -24,15 +24,7 @@ import { WireElement } from '../../../../api/hdkCrud'
 // also contain their headerHash on those objects
 type State = {
   [cellId: CellIdString]: {
-    [headerHash: HeaderHashB64]: {
-      color: String,
-      creatorAddress: AgentPubKeyB64,
-      createdAt: number, //f64,
-      outcomeAddress: HeaderHashB64,
-      isImported: boolean,
-      // field additional to EntryPoint
-      headerHash: HeaderHashB64
-    }
+    [headerHash: HeaderHashB64]: WithHeaderHash<EntryPoint>
   }
 }
 const defaultState: State = {}

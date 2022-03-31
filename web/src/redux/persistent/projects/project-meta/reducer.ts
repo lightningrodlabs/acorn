@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { WireElement } from '../../../../api/hdkCrud'
 import { PriorityMode, ProjectMeta } from '../../../../types'
-import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64, Option } from '../../../../types/shared'
+import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64, Option, WithHeaderHash } from '../../../../types/shared'
 import {
   SIMPLE_CREATE_PROJECT_META,
   FETCH_PROJECT_META,
@@ -9,18 +9,7 @@ import {
 } from './actions'
 
 type State = {
-  [cellId: CellIdString]: {
-    creatorAddress: AgentPubKeyB64,
-    createdAt: number, // f64
-    name: string,
-    image: Option<string>,
-    passphrase: string,
-    isImported: boolean,
-    priorityMode: PriorityMode,
-    topPriorityOutcomes: Array<HeaderHashB64>,
-    // additional field
-    headerHash: HeaderHashB64
-  }
+  [cellId: CellIdString]: WithHeaderHash<ProjectMeta>
 }
 const defaultState: State = {}
 

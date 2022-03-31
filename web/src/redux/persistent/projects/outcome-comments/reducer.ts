@@ -8,21 +8,13 @@ import {
 } from './actions'
 import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64 } from '../../../../types/shared'
+import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64, WithHeaderHash } from '../../../../types/shared'
 import { WireElement } from '../../../../api/hdkCrud'
 import { DeleteOutcomeFullyResponse, OutcomeComment } from '../../../../types'
 
 type State = {
   [cellId: CellIdString]: {
-    [headerHash: HeaderHashB64]: {
-      outcomeAddress: HeaderHashB64,
-      content: string,
-      agentAddress: AgentPubKeyB64,
-      unixTimestamp: number, //f64,
-      isImported: boolean,
-      // additional field
-      headerHash: HeaderHashB64
-    }
+    [headerHash: HeaderHashB64]: WithHeaderHash<OutcomeComment>
   }
 }
 const defaultState: State = {}

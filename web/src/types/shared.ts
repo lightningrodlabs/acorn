@@ -41,3 +41,5 @@ export type Action<Payload> = {
     cellIdString?: string
   }
 }
+
+export type WithHeaderHash<EntryType> = EntryType & { headerHash: HeaderHashB64 }
