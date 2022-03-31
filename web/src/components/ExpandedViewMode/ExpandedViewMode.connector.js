@@ -28,31 +28,31 @@ function mapStateToProps(state, ownProps) {
   const entryPoints = state.projects.entryPoints[projectId] || {}
   const outcomeComments = state.projects.outcomeComments[projectId] || {}
 
-  if (state.ui.expandedView.outcomeAddress) {
-    outcome = outcomes[state.ui.expandedView.outcomeAddress]
+  if (state.ui.expandedView.outcomeHeaderHash) {
+    outcome = outcomes[state.ui.expandedView.outcomeHeaderHash]
     comments = Object.values(outcomeComments).filter(
       (outcomeComment) =>
-        outcomeComment.outcomeAddress === state.ui.expandedView.outcomeAddress
+        outcomeComment.outcomeHeaderHash === state.ui.expandedView.outcomeHeaderHash
     )
     squirrels = Object.keys(outcomeMembers)
       .map((headerHash) => outcomeMembers[headerHash])
-      .filter((outcomeMember) => outcomeMember.outcomeAddress === outcome.headerHash)
+      .filter((outcomeMember) => outcomeMember.outcomeHeaderHash === outcome.headerHash)
       .map((outcomeMember) => {
         const squirrel = {
-          ...state.agents[outcomeMember.agentAddress],
+          ...state.agents[outcomeMember.memberAgentPubKey],
           outcomeMemberAddress: outcomeMember.headerHash,
         }
         return squirrel
       })
     Object.keys(state.agents).forEach((value) => {
-      if (state.agents[value].address === outcome.userHash)
+      if (state.agents[value].address === outcome.creatorAgentPubKey)
         creator = state.agents[value]
     })
   }
 
-  const outcomeAddress = state.ui.expandedView.outcomeAddress
+  const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
   const entryPoint = Object.values(entryPoints).find(
-    (entryPoint) => entryPoint.outcomeAddress === outcomeAddress
+    (entryPoint) => entryPoint.outcomeHeaderHash === outcomeHeaderHash
   )
   const isEntryPoint = entryPoint ? true : false
   const entryPointAddress = entryPoint ? entryPoint.headerHash : null
@@ -66,7 +66,7 @@ function mapStateToProps(state, ownProps) {
   const editingPeers = Object.values(state.ui.realtimeInfo)
     .filter((agentInfo) => agentInfo.outcomeBeingEdited)
     .filter(
-      (agentInfo) => agentInfo.outcomeBeingEdited.outcomeAddress === outcomeAddress
+      (agentInfo) => agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcomeHeaderHash
     )
     .map((agentInfo) => filterAndAddAgentInfo(agentInfo))
   // this should only ever by a maximum of two peers (one editing title, one editing description)
@@ -74,7 +74,7 @@ function mapStateToProps(state, ownProps) {
     agentAddress: state.agentAddress,
     isEntryPoint,
     entryPointAddress,
-    outcomeAddress,
+    outcomeHeaderHash,
     creator,
     outcome,
     squirrels,
@@ -124,17 +124,17 @@ function mapDispatchToProps(dispatch, ownProps) {
       )
       return dispatch(deleteOutcomeMember(cellIdString, outcomeMemberDeleteHash))
     },
-    startTitleEdit: (outcomeAddress) => {
-      return dispatch(startTitleEdit(outcomeAddress))
+    startTitleEdit: (outcomeHeaderHash) => {
+      return dispatch(startTitleEdit(outcomeHeaderHash))
     },
-    endTitleEdit: (outcomeAddress) => {
-      return dispatch(endTitleEdit(outcomeAddress))
+    endTitleEdit: (outcomeHeaderHash) => {
+      return dispatch(endTitleEdit(outcomeHeaderHash))
     },
-    startDescriptionEdit: (outcomeAddress) => {
-      return dispatch(startDescriptionEdit(outcomeAddress))
+    startDescriptionEdit: (outcomeHeaderHash) => {
+      return dispatch(startDescriptionEdit(outcomeHeaderHash))
     },
-    endDescriptionEdit: (outcomeAddress) => {
-      return dispatch(endDescriptionEdit(outcomeAddress))
+    endDescriptionEdit: (outcomeHeaderHash) => {
+      return dispatch(endDescriptionEdit(outcomeHeaderHash))
     },
   }
 }

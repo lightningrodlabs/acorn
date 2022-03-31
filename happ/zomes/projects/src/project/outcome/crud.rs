@@ -391,7 +391,7 @@ pub fn delete_outcome_fully(address: HeaderHashB64) -> ExternResult<DeleteOutcom
         .collect();
 
     let delete_response = DeleteOutcomeFullyResponse {
-        outcome_header_hash,
+        outcome_header_hash: address,
         deleted_connections,
         deleted_outcome_members,
         deleted_outcome_votes,

@@ -28,7 +28,7 @@ export default function selectEntryPoints(state, projectId) {
   const combinedEntryPoints = Object.keys(entryPoints)
     .map(key => {
       const entryPoint = entryPoints[key]
-      const outcome = outcomes[entryPoint.outcomeAddress]
+      const outcome = outcomes[entryPoint.outcomeHeaderHash]
       if (outcome) {
         return {
           ...entryPoint,

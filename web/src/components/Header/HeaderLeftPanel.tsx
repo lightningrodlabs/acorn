@@ -22,7 +22,7 @@ function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses, goToOutcome }
       <div
         className="active-entry-point-content"
         title={entryPoint.content}
-        onClick={() => goToOutcome(entryPoint.outcomeAddress)}
+        onClick={() => goToOutcome(entryPoint.outcomeHeaderHash)}
       >
         {entryPoint.content}
       </div>

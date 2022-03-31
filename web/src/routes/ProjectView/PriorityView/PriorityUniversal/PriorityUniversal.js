@@ -245,18 +245,18 @@ function PriorityUniversal({
     // and render outcomes that exist or are
     // known about
     topPriorityOutcomeAddresses = pendingList.filter(
-      (outcomeAddress) => outcomes[outcomeAddress]
+      (outcomeHeaderHash) => outcomes[outcomeHeaderHash]
     )
   } else if (projectMeta) {
     // make sure we only try to pick
     // and render outcomes that exist or are
     // known about
     topPriorityOutcomeAddresses = projectMeta.topPriorityOutcomes.filter(
-      (outcomeAddress) => outcomes[outcomeAddress]
+      (outcomeHeaderHash) => outcomes[outcomeHeaderHash]
     )
   }
   const topPriorityOutcomes = topPriorityOutcomeAddresses.map(
-    (outcomeAddress) => outcomes[outcomeAddress]
+    (outcomeHeaderHash) => outcomes[outcomeHeaderHash]
   )
 
   return (
@@ -309,8 +309,8 @@ function mapStateToProps(state) {
   const allOutcomesArray = Object.values(outcomes).map(outcome => {
     const extensions = {}
     extensions.members = Object.values(outcomeMembers)
-      .filter(outcomeMember => outcomeMember.outcomeAddress === outcome.headerHash)
-      .map(outcomeMember => agents[outcomeMember.agentAddress])
+      .filter(outcomeMember => outcomeMember.outcomeHeaderHash === outcome.headerHash)
+      .map(outcomeMember => agents[outcomeMember.memberAgentPubKey])
       .filter(outcomeMember => outcomeMember) // filter out undefined results
     return {
       ...outcome,

@@ -226,7 +226,7 @@ function WeighIn({ values, onUpdate }) {
 }
 
 export default function PriorityPickerVote({
-  outcomeAddress,
+  outcomeHeaderHash,
   createOutcomeVote,
   openToMyVote,
   whoami,
@@ -250,8 +250,8 @@ export default function PriorityPickerVote({
   const onUpdateVote = () => {
     const outcome_vote = {
       ...values,
-      outcomeAddress: outcomeAddress,
-      agentAddress: whoami.entry.headerHash,
+      outcomeHeaderHash: outcomeHeaderHash,
+      creatorAgentPubKey: whoami.entry.headerHash,
       unixTimestamp: moment().unix(),
       isImported: false
     }
@@ -261,8 +261,8 @@ export default function PriorityPickerVote({
   const createVote = async () => {
     await createOutcomeVote({
       ...values,
-      outcomeAddress: outcomeAddress,
-      agentAddress: whoami.entry.headerHash,
+      outcomeHeaderHash: outcomeHeaderHash,
+      creatorAgentPubKey: whoami.entry.headerHash,
       unixTimestamp: moment().unix(),
       isImported: false
     })

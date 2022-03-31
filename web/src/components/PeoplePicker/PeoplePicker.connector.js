@@ -10,15 +10,15 @@ import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 
 function mapStateToProps(state, ownProps) {
-  const outcomeAddress = state.ui.outcomeForm.isOpen
+  const outcomeHeaderHash = state.ui.outcomeForm.isOpen
     ? state.ui.outcomeForm.editAddress
-    : state.ui.expandedView.outcomeAddress
+    : state.ui.expandedView.outcomeHeaderHash
   const { projectId } = ownProps
   const outcomeMembers = state.projects.outcomeMembers[projectId] || {}
   const members = state.projects.members[projectId] || {}
   const membersOfOutcome = Object.keys(outcomeMembers)
     .map((address) => outcomeMembers[address])
-    .filter((outcomeMember) => outcomeMember.outcomeAddress === outcomeAddress)
+    .filter((outcomeMember) => outcomeMember.outcomeHeaderHash === outcomeHeaderHash)
   // just in case we've received a 'member' before the agents profile
   // filter out any missing profiles for now
   const agents = Object.keys(members).map((address) => state.agents[address]).filter((agent) => agent)
@@ -35,7 +35,7 @@ function mapStateToProps(state, ownProps) {
         outcome_member_address: member ? member.headerHash : null,
       }
     }),
-    outcomeAddress,
+    outcomeHeaderHash,
   }
 }
 
@@ -43,13 +43,13 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
-    createOutcomeMember: async (outcomeAddress, agentAddress, userEditHash) => {
+    createOutcomeMember: async (outcomeHeaderHash, agentAddress, creatorAgentPubKey) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeMember = await projectsZomeApi.outcomeMember.create(cellId, {
-        outcomeAddress,
-        agentAddress,
-        userEditHash,
+        outcomeHeaderHash,
+        memberAgentPubKey: agentAddress,
+        creatorAgentPubKey,
         unixTimestamp: moment().unix(),
         isImported: false
       })

@@ -105,14 +105,14 @@ function render(store, canvas) {
       // if in the pending re-parenting mode for the child card of an existing connection,
       // temporarily omit/hide the existing connection from view
       // ASSUMPTION: one parent
-      const pendingReParent = (state.ui.connectionConnector.fromAddress === connection.childAddress && state.ui.connectionConnector.relation === RELATION_AS_CHILD)
-        || (state.ui.outcomeForm.isOpen && state.ui.outcomeForm.fromAddress === connection.childAddress && state.ui.outcomeForm.relation === RELATION_AS_CHILD)
+      const pendingReParent = (state.ui.connectionConnector.fromAddress === connection.childHeaderHash && state.ui.connectionConnector.relation === RELATION_AS_CHILD)
+        || (state.ui.outcomeForm.isOpen && state.ui.outcomeForm.fromAddress === connection.childHeaderHash && state.ui.outcomeForm.relation === RELATION_AS_CHILD)
       if (pendingReParent) return
 
-      const childCoords = coordinates[connection.childAddress]
-      const parentCoords = coordinates[connection.parentAddress]
-      const parentOutcomeText = outcomes[connection.parentAddress]
-        ? outcomes[connection.parentAddress].content
+      const childCoords = coordinates[connection.childHeaderHash]
+      const parentCoords = coordinates[connection.parentHeaderHash]
+      const parentOutcomeText = outcomes[connection.parentHeaderHash]
+        ? outcomes[connection.parentHeaderHash].content
         : ''
       // we can only render this connection
       // if we know the coordinates of the Outcomes it connects
@@ -159,7 +159,7 @@ function render(store, canvas) {
       const isSelected = false
       const isEditing = false
       let editInfoObjects = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeAddress === outcome.headerHash)
+        .filter(agentInfo => agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash)
       const isBeingEdited = editInfoObjects.length > 0
       const isBeingEditedBy = editInfoObjects.length === 1
         ? state.agents[editInfoObjects[0].agentPubKey].handle
@@ -168,13 +168,13 @@ function render(store, canvas) {
           : null
       // a combination of those editing + those with expanded view open
       const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.outcomeExpandedView === outcome.headerHash || (agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeAddress === outcome.headerHash))
+        .filter(agentInfo => agentInfo.outcomeExpandedView === outcome.headerHash || (agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash))
         .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
 
       const membersOfOutcome = Object.keys(outcomeMembers)
         .map(headerHash => outcomeMembers[headerHash])
-        .filter(outcomeMember => outcomeMember.outcomeAddress === outcome.headerHash)
-        .map(outcomeMember => state.agents[outcomeMember.agentAddress])
+        .filter(outcomeMember => outcomeMember.outcomeHeaderHash === outcome.headerHash)
+        .map(outcomeMember => state.agents[outcomeMember.memberAgentPubKey])
       const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === outcome.headerHash)
       drawOutcomeCard({
         scale: scale,
@@ -239,7 +239,7 @@ function render(store, canvas) {
       const isHovered = state.ui.hover.hoveredOutcome === outcome.headerHash
       const isSelected = true
       const isEditing = false
-      let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(agentInfo => agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeAddress === outcome.headerHash)
+      let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(agentInfo => agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash)
       const isBeingEdited = editInfoObjects.length > 0
       const isBeingEditedBy = editInfoObjects.length === 1
         ? state.agents[editInfoObjects[0].agentPubKey].handle
@@ -248,12 +248,12 @@ function render(store, canvas) {
           : null
       // a combination of those editing + those with expanded view open
       const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.outcomeExpandedView === outcome.headerHash || (agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeAddress === outcome.headerHash))
+        .filter(agentInfo => agentInfo.outcomeExpandedView === outcome.headerHash || (agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash))
         .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
       const membersOfOutcome = Object.keys(outcomeMembers)
         .map(headerHash => outcomeMembers[headerHash])
-        .filter(outcomeMember => outcomeMember.outcomeAddress === outcome.headerHash)
-        .map(outcomeMember => state.agents[outcomeMember.agentAddress])
+        .filter(outcomeMember => outcomeMember.outcomeHeaderHash === outcome.headerHash)
+        .map(outcomeMember => state.agents[outcomeMember.memberAgentPubKey])
       const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === outcome.headerHash)
       drawOutcomeCard({
         scale: scale,
@@ -377,7 +377,7 @@ function render(store, canvas) {
       const isEditing = scale >= firstZoomThreshold
       const editText = state.ui.outcomeForm.content
       let editInfoObjects = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeAddress === state.ui.outcomeForm.editAddress)
+        .filter(agentInfo => agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeHeaderHash === state.ui.outcomeForm.editAddress)
       const isBeingEdited = editInfoObjects.length > 0
       const isBeingEditedBy = editInfoObjects.length === 1
         ? state.agents[editInfoObjects[0].agentPubKey].handle
@@ -386,12 +386,12 @@ function render(store, canvas) {
           : null
       // a combination of those editing + those with expanded view open
       const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.outcomeExpandedView === state.ui.outcomeForm.editAddress || (agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeAddress === state.ui.outcomeForm.editAddress))
+        .filter(agentInfo => agentInfo.outcomeExpandedView === state.ui.outcomeForm.editAddress || (agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeHeaderHash === state.ui.outcomeForm.editAddress))
         .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
       const membersOfOutcome = Object.keys(outcomeMembers)
         .map(headerHash => outcomeMembers[headerHash])
-        .filter(outcomeMember => outcomeMember.outcomeAddress === editingOutcome.headerHash)
-        .map(outcomeMember => state.agents[outcomeMember.agentAddress])
+        .filter(outcomeMember => outcomeMember.outcomeHeaderHash === editingOutcome.headerHash)
+        .map(outcomeMember => state.agents[outcomeMember.memberAgentPubKey])
       const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === state.ui.outcomeForm.editAddress)
       drawOutcomeCard({
         scale: scale,

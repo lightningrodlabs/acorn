@@ -9,7 +9,7 @@ import StatusIcon from '../../StatusIcon/StatusIcon'
 
 export default function ExpandedViewModeHeader({
   agentAddress,
-  outcomeAddress,
+  outcomeHeaderHash,
   outcome,
   updateOutcome,
   isEntryPoint,
@@ -21,20 +21,20 @@ export default function ExpandedViewModeHeader({
   const [viewsOpen, setViews] = useState(defaultViews)
 
   useEffect(() => {
-    if (!outcomeAddress) {
+    if (!outcomeHeaderHash) {
       setViews({ ...defaultViews })
     }
-  }, [outcomeAddress])
+  }, [outcomeHeaderHash])
 
   const updateOutcomeStatus = status => {
     updateOutcome(
       {
         ...outcome,
-        userEditHash: agentAddress,
+        editorAgentPubKey: agentAddress,
         timestampUpdated: moment().unix(),
         status,
       },
-      outcomeAddress
+      outcomeHeaderHash
     )
   }
 

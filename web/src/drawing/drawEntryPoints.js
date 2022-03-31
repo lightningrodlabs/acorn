@@ -11,20 +11,20 @@ export default function drawEntryPoints(
 ) {
   // recursively calls itself
   // so that it constructs the full sub-tree for each root Outcome
-  function getOutcome(outcomeAddress) {
+  function getOutcome(outcomeHeaderHash) {
     return {
-      ...outcomes[outcomeAddress],
+      ...outcomes[outcomeHeaderHash],
       children: connectionsAsArray
         // find the connections indicating the children of this outcome
-        .filter(connection => connection.parentAddress === outcomeAddress)
+        .filter(connection => connection.parentHeaderHash === outcomeHeaderHash)
         // actually nest the children Outcomes, recurse
-        .map(connection => getOutcome(connection.childAddress))
+        .map(connection => getOutcome(connection.childHeaderHash))
     }
   }
 
   // start with the entry point Outcomes, and recurse down to their children
   activeEntryPoints.forEach(entryPoint => {
-    const outcome = getOutcome(entryPoint.outcomeAddress)
+    const outcome = getOutcome(entryPoint.outcomeHeaderHash)
     // for each outcomeTree
     // calculate its bounding rectangle
     // by checking the coordinates recursively for it and all its children

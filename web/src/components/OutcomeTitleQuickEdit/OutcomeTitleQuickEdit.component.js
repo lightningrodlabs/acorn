@@ -32,8 +32,8 @@ export default function OutcomeTitleQuickEdit({
   timeFrame,
   timestampCreated,
   isImported,
-  userHash, // creator
-  userEditHash, // editor
+  creatorAgentPubKey, // creator
+  editorAgentPubKey, // editor
   // callbacks
   updateContent,
   deleteConnection,
@@ -133,13 +133,13 @@ export default function OutcomeTitleQuickEdit({
         content: content,
         timestampCreated: moment().unix(),
         // defaults
-        userEditHash,
-        userHash,
+        editorAgentPubKey,
+        creatorAgentPubKey,
         scope,
         description,
         isImported,
       },
-      fromAddress ? { outcomeAddress: fromAddress, relation } : null
+      fromAddress ? { outcomeHeaderHash: fromAddress, relation } : null
     )
   }
 
@@ -147,12 +147,12 @@ export default function OutcomeTitleQuickEdit({
     await updateOutcome(
       {
         // new
-        userEditHash: whoami.entry.address,
+        editorAgentPubKey: whoami.entry.address,
         description: description,
         timestampUpdated: moment().unix(),
         // carryover
         content,
-        userHash,
+        creatorAgentPubKey,
         timestampCreated,
         scope,
         timeFrame,

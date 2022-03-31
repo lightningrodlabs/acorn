@@ -24,7 +24,7 @@ function VerticalActionListItem({ onClick, label, icon }) {
 export default function VerticalActionsList({
   agentAddress,
   projectId,
-  outcomeAddress,
+  outcomeHeaderHash,
   outcome,
   onDeleteClick,
   updateOutcome,
@@ -44,11 +44,11 @@ export default function VerticalActionsList({
     updateOutcome(
       {
         ...outcome,
-        userEditHash: agentAddress,
+        editorAgentPubKey: agentAddress,
         timestampUpdated: moment().unix(),
         [key]: val,
       },
-      outcomeAddress
+      outcomeHeaderHash
     )
   }
 
@@ -79,11 +79,11 @@ export default function VerticalActionsList({
     updateOutcome(
       {
         ...outcome,
-        userEditHash: agentAddress,
+        editorAgentPubKey: agentAddress,
         timestampUpdated: moment().unix(),
         timeFrame: timeframe,
       },
-      outcomeAddress
+      outcomeHeaderHash
     )
   }
 
@@ -195,7 +195,7 @@ export default function VerticalActionsList({
         {viewsOpen.priority && (
           <PriorityPicker
             projectId={projectId}
-            outcomeAddress={outcomeAddress}
+            outcomeHeaderHash={outcomeHeaderHash}
             onClose={() => setViews({ ...defaultViews })}
           />
         )}
@@ -211,7 +211,7 @@ export default function VerticalActionsList({
           icon="delete.svg"
           primaryButton="Yes, Delete"
           altButton="Nevermind"
-          primaryButtonAction={() => onDeleteClick(outcomeAddress)}
+          primaryButtonAction={() => onDeleteClick(outcomeHeaderHash)}
           altButtonAction={() => setViews({ ...defaultViews })}
         />
       </Modal>
@@ -221,7 +221,7 @@ export default function VerticalActionsList({
 
 function mapStateToProps(state, ownProps) {
   // outcome headerHash
-  const outcomeAddress = state.ui.outcomeForm.editAddress
+  const outcomeHeaderHash = state.ui.outcomeForm.editAddress
   // project ID
   const { projectId } = ownProps
   const outcomes = state.projects.outcomes[projectId] || {}
@@ -231,7 +231,7 @@ function mapStateToProps(state, ownProps) {
   // located, according to the canvas coordinate system
   // x, y
   const width = state.ui.screensize.width
-  const outcomeCoordinate = state.ui.layout[outcomeAddress]
+  const outcomeCoordinate = state.ui.layout[outcomeHeaderHash]
 
   // Figure out where is that outcome is relation to the window:
   // coordinates translation to css from canvas
@@ -247,8 +247,8 @@ function mapStateToProps(state, ownProps) {
 
   return {
     agentAddress: state.agentAddress,
-    outcomeAddress,
-    outcome: outcomes[outcomeAddress],
+    outcomeHeaderHash,
+    outcome: outcomes[outcomeHeaderHash],
     leftConnectionXPosition: cssCoordinates.x,
     topConnectionYPosition: cssCoordinates.y,
   }

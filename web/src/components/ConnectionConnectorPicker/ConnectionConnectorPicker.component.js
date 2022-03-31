@@ -18,7 +18,7 @@ export default function ConnectionConnectorPicker({
   const isOpen = true
 
   // single select
-  const [parentAddress, toggleParent, resetParent] = useSelect()
+  const [parentHeaderHash, toggleParent, resetParent] = useSelect()
   // multi select
   const [childrenAddresses, toggleChild, resetChildren] = useSelect(true)
 
@@ -32,29 +32,29 @@ export default function ConnectionConnectorPicker({
   useEffect(() => {
     resetChildren()
     clearPreview(activeProject)
-  }, [parentAddress])
+  }, [parentHeaderHash])
 
   useEffect(() => {
     clearPreview(activeProject)
   }, [JSON.stringify(childrenAddresses)])
 
-  const validChildrenAddresses = parentAddress
+  const validChildrenAddresses = parentHeaderHash
     ? calculateValidChildren(
-      parentAddress,
+      parentHeaderHash,
       connections,
       selectedOutcomes.map(g => g.headerHash)
     )
     : []
 
   const preview = () => {
-    if (!parentAddress || !childrenAddresses.length) return
-    previewConnections(parentAddress, childrenAddresses, activeProject)
+    if (!parentHeaderHash || !childrenAddresses.length) return
+    previewConnections(parentHeaderHash, childrenAddresses, activeProject)
   }
 
   const save = async () => {
-    if (!parentAddress || !childrenAddresses.length) return
+    if (!parentHeaderHash || !childrenAddresses.length) return
     try {
-      await saveConnections(parentAddress, childrenAddresses, activeProject)
+      await saveConnections(parentHeaderHash, childrenAddresses, activeProject)
       onClose()
     } catch (e) {
       console.log(e)
@@ -80,9 +80,9 @@ export default function ConnectionConnectorPicker({
             <Select
               toggleSelectOption={toggleParent}
               toggleLabel={
-                parentAddress &&
-                  selectedOutcomes.find(s => s.headerHash === parentAddress)
-                  ? selectedOutcomes.find(s => s.headerHash === parentAddress).content
+                parentHeaderHash &&
+                  selectedOutcomes.find(s => s.headerHash === parentHeaderHash)
+                  ? selectedOutcomes.find(s => s.headerHash === parentHeaderHash).content
                   : 'Pick one'
               }>
               {selectedOutcomes.map(selectedOutcome => (
@@ -90,7 +90,7 @@ export default function ConnectionConnectorPicker({
                   key={selectedOutcome.headerHash}
                   value={selectedOutcome.headerHash}
                   label={selectedOutcome.content}
-                  selected={parentAddress === selectedOutcome.headerHash}
+                  selected={parentHeaderHash === selectedOutcome.headerHash}
                 />
               ))}
             </Select>

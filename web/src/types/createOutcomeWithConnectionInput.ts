@@ -7,7 +7,7 @@ export interface CreateOutcomeWithConnectionInput {
 }
 
 export interface LinkedOutcomeDetails {
-    outcomeAddress: HeaderHashB64,
+    outcomeHeaderHash: HeaderHashB64,
     relation: RelationInput,
 }
 
