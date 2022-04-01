@@ -11,7 +11,7 @@ import { Profile } from '../../../../types'
 import { WireElement } from '../../../../api/hdkCrud'
 
 type State = { 
-  [address: AgentPubKeyB64]: Profile
+  [agentPubKey: AgentPubKeyB64]: Profile
 }
 const defaultState: State = {}
 

@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 import {
   createOutcomeWithConnection,
   updateOutcome,
@@ -24,7 +25,7 @@ import './OutcomeTitleQuickEdit.scss'
 // to pass it to a component for rendering, as specific properties that
 // that component expects
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   const {
     ui: {
       activeProject,
@@ -60,9 +61,7 @@ function mapStateToProps(state) {
   const description = editAddress ? editingOutcome.description : ''
   const scope = editAddress ? editingOutcome.scope : { Uncertain: 5 }
   const timeFrame = editAddress ? editingOutcome.timeFrame : null
-  const timestampCreated = editAddress
-    ? editingOutcome.timestampCreated
-    : null
+  const timestampCreated = editAddress ? editingOutcome.timestampCreated : null
   const isImported = editAddress ? editingOutcome.isImported : false
 
   let outcomeCoord
@@ -137,7 +136,7 @@ function mapDispatchToProps(dispatch, ownProps) {
         cellId,
         {
           entry,
-          maybeLinkedOutcome, 
+          maybeLinkedOutcome,
         }
       )
       return dispatch(

@@ -4,12 +4,15 @@ import {
   updateOutcomeComment,
   deleteOutcomeComment,
 } from '../../redux/persistent/projects/outcome-comments/actions'
-import Comments from './Comments.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
+import { RootState } from '../../redux/reducer'
+import { HeaderHashB64 } from '../../types/shared'
+import { OutcomeComment } from '../../types'
+import Comments from './Comments.component'
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
   return {
     outcomeHeaderHash,
@@ -22,7 +25,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
-    createOutcomeComment: async (payload) => {
+    createOutcomeComment: async (payload: OutcomeComment) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeComment = await projectsZomeApi.outcomeComment.create(
@@ -31,7 +34,10 @@ function mapDispatchToProps(dispatch, ownProps) {
       )
       return dispatch(createOutcomeComment(cellIdString, outcomeComment))
     },
-    updateOutcomeComment: async (entry, headerHash) => {
+    updateOutcomeComment: async (
+      entry: OutcomeComment,
+      headerHash: HeaderHashB64
+    ) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeComment = await projectsZomeApi.outcomeComment.update(
@@ -40,14 +46,11 @@ function mapDispatchToProps(dispatch, ownProps) {
       )
       return dispatch(updateOutcomeComment(cellIdString, outcomeComment))
     },
-    deleteOutcomeComment: async (payload) => {
+    deleteOutcomeComment: async (headerHash: HeaderHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const outcomeComment = await projectsZomeApi.outcomeComment.delete(
-        cellId,
-        payload
-      )
-      return dispatch(deleteOutcomeComment(cellIdString, outcomeComment))
+      await projectsZomeApi.outcomeComment.delete(cellId, headerHash)
+      return dispatch(deleteOutcomeComment(cellIdString, headerHash))
     },
   }
 }
