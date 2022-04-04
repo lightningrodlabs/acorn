@@ -17,13 +17,13 @@ import handleConnectionConnectMouseUp from '../../redux/ephemeral/connection-con
 // e.g. we can walk straight up the tree to the top
 function isAncestor(descendantAddress, checkAddress, connections) {
   const connectionWithParent = connections.find(
-    (connection) => connection.childAddress === descendantAddress
+    (connection) => connection.childHeaderHash === descendantAddress
   )
   if (connectionWithParent) {
-    if (connectionWithParent.parentAddress === checkAddress) {
+    if (connectionWithParent.parentHeaderHash === checkAddress) {
       return true
     } else {
-      return isAncestor(connectionWithParent.parentAddress, checkAddress, connections)
+      return isAncestor(connectionWithParent.parentHeaderHash, checkAddress, connections)
     }
   } else {
     // if node has no ancestors, then checkAddress must not be an ancestor
@@ -34,8 +34,8 @@ function isAncestor(descendantAddress, checkAddress, connections) {
 // as long as there are no cycles in the tree this will work wonderfully
 function allDescendants(ancestorAddress, connections, accumulator = []) {
   const children = connections
-    .filter((connection) => connection.parentAddress === ancestorAddress)
-    .map((connection) => connection.childAddress)
+    .filter((connection) => connection.parentHeaderHash === ancestorAddress)
+    .map((connection) => connection.childHeaderHash)
   return accumulator
     .concat(children.map((address) => allDescendants(address, connections, children)))
     .flat()
@@ -47,14 +47,14 @@ relation as child, other node MUST
 - not be itself
 - not be a descendant of 'from' node, to prevent cycles in the tree
 */
-function calculateValidParents(fromAddress, connections, outcomeAddresses) {
+function calculateValidParents(fromAddress, connections, outcomeHeaderHashes) {
   const descendants = allDescendants(fromAddress, connections)
-  return outcomeAddresses.filter((outcomeAddress) => {
+  return outcomeHeaderHashes.filter((outcomeHeaderHash) => {
     return (
       // filter out self-address in the process
-      outcomeAddress !== fromAddress &&
+      outcomeHeaderHash !== fromAddress &&
       // filter out any descendants
-      !descendants.includes(outcomeAddress)
+      !descendants.includes(outcomeHeaderHash)
     )
   })
 }
@@ -66,15 +66,15 @@ relation as parent, other node MUST
 - have no parent
 - not be the root ancestor of 'from' node, to prevent cycles in the tree
 */
-export function calculateValidChildren(fromAddress, connections, outcomeAddresses) {
-  return outcomeAddresses.filter((outcomeAddress) => {
+export function calculateValidChildren(fromAddress, connections, outcomeHeaderHashes) {
+  return outcomeHeaderHashes.filter((outcomeHeaderHash) => {
     return (
       // filter out self-address in the process
-      outcomeAddress !== fromAddress &&
+      outcomeHeaderHash !== fromAddress &&
       // find the Outcome objects without parent Outcomes
       // since they will sit at the top level
-      !connections.find((connection) => connection.childAddress === outcomeAddress) &&
-      !isAncestor(fromAddress, outcomeAddress, connections)
+      !connections.find((connection) => connection.childHeaderHash === outcomeHeaderHash) &&
+      !isAncestor(fromAddress, outcomeHeaderHash, connections)
     )
   })
 }
@@ -118,7 +118,7 @@ const ConnectionConnector = ({
   setConnectionConnectorTo,
   setHoveredConnectionConnector,
   connections,
-  outcomeAddresses,
+  outcomeHeaderHashes,
   dispatch,
 }) => {
   const ctx = canvas.getContext('2d')
@@ -159,7 +159,7 @@ const ConnectionConnector = ({
       setConnectionConnectorFrom(
         address,
         direction,
-        validity(address, connections, outcomeAddresses),
+        validity(address, connections, outcomeHeaderHashes),
         // we don't think about overriding the existing
         // parent when it comes to children, since it can have many
         // ASSUMPTION: one parent
@@ -232,7 +232,7 @@ const ConnectionConnectors = ({
   activeProject,
   outcomes,
   connections,
-  outcomeAddresses,
+  outcomeHeaderHashes,
   coordinates,
   coordsCanvasToPage,
   fromAddress,
@@ -260,7 +260,7 @@ const ConnectionConnectors = ({
         // of this Outcome, so that it can be deleted
         // if it is to be changed and a new one added
         const hasParent = connections.find(
-          (connection) => connection.childAddress === connectorAddress
+          (connection) => connection.childHeaderHash === connectorAddress
         )
         return (
           <Transition key={connectorAddress} timeout={300}>
@@ -270,7 +270,7 @@ const ConnectionConnectors = ({
                 activeProject={activeProject}
                 outcome={outcome}
                 connections={connections}
-                outcomeAddresses={outcomeAddresses}
+                outcomeHeaderHashes={outcomeHeaderHashes}
                 fromAddress={fromAddress}
                 relation={relation}
                 toAddress={toAddress}

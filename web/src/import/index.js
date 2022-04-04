@@ -48,11 +48,11 @@ export default async function importAllProjectData(
   }
 
   // OUTCOMES
-  const outcomeAddressMap = {}
+  const outcomeHeaderHashMap = {}
   // do the outcomes second, since pretty much everything else
   // is sub-data to the outcomes
-  for (let outcomeAddress of Object.keys(projectData.outcomes)) {
-    const oldOutcome = projectData.outcomes[outcomeAddress]
+  for (let outcomeHeaderHash of Object.keys(projectData.outcomes)) {
+    const oldOutcome = projectData.outcomes[outcomeHeaderHash]
     const clone = {
       ...oldOutcome,
       isImported: true,
@@ -73,7 +73,7 @@ export default async function importAllProjectData(
       console.log('createOutcome error', e)
       throw e
     }
-    // add this new outcome address to the outcomeAddressMap
+    // add this new outcome address to the outcomeHeaderHashMap
     // to keep of which new addresses map to which old addresses
     let oldOutcomeHeaderHash
     // v0.5.4-alpha
@@ -87,7 +87,7 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     else if (newOutcome.address) newOutcomeHeaderHash = newOutcome.address
 
-    outcomeAddressMap[oldOutcomeHeaderHash] = newOutcomeHeaderHash
+    outcomeHeaderHashMap[oldOutcomeHeaderHash] = newOutcomeHeaderHash
   }
 
   // CONNECTIONS
@@ -95,8 +95,8 @@ export default async function importAllProjectData(
     const old = projectData.connections[address]
     const clone = {
       ...old,
-      parentAddress: outcomeAddressMap[old.parentAddress],
-      childAddress: outcomeAddressMap[old.childAddress],
+      parentHeaderHash: outcomeHeaderHashMap[old.parentHeaderHash],
+      childHeaderHash: outcomeHeaderHashMap[old.childHeaderHash],
       // randomizer used to be a float, but is now an int
       randomizer: Number(old.randomizer.toFixed()),
       isImported: true,
@@ -107,7 +107,7 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.childAddress || !clone.parentAddress) {
+    if (!clone.childHeaderHash || !clone.parentHeaderHash) {
       console.log('weird, invalid connection:', clone)
       continue
     }
@@ -128,7 +128,7 @@ export default async function importAllProjectData(
     const old = projectData.outcomeMembers[address]
     const clone = {
       ...old,
-      outcomeAddress: outcomeAddressMap[old.outcomeAddress],
+      outcomeHeaderHash: outcomeHeaderHashMap[old.outcomeHeaderHash],
       isImported: true,
     }
     // an assigned field
@@ -137,7 +137,7 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.outcomeAddress) {
+    if (!clone.outcomeHeaderHash) {
       console.log('weird, invalid outcomeMember:', clone)
       continue
     }
@@ -158,7 +158,7 @@ export default async function importAllProjectData(
     const old = projectData.outcomeComments[address]
     const clone = {
       ...old,
-      outcomeAddress: outcomeAddressMap[old.outcomeAddress],
+      outcomeHeaderHash: outcomeHeaderHashMap[old.outcomeHeaderHash],
       isImported: true,
     }
     // an assigned field
@@ -167,7 +167,7 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.outcomeAddress) {
+    if (!clone.outcomeHeaderHash) {
       console.log('weird, invalid outcomeComment:', clone)
       continue
     }
@@ -188,7 +188,7 @@ export default async function importAllProjectData(
     const old = projectData.outcomeVotes[address]
     const clone = {
       ...old,
-      outcomeAddress: outcomeAddressMap[old.outcomeAddress],
+      outcomeHeaderHash: outcomeHeaderHashMap[old.outcomeHeaderHash],
       isImported: true,
     }
     // an assigned field
@@ -197,7 +197,7 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.outcomeAddress) {
+    if (!clone.outcomeHeaderHash) {
       console.log('weird, invalid outcomeVote:', clone)
       continue
     }
@@ -218,7 +218,7 @@ export default async function importAllProjectData(
     const old = projectData.entryPoints[address]
     const clone = {
       ...old,
-      outcomeAddress: outcomeAddressMap[old.outcomeAddress],
+      outcomeHeaderHash: outcomeHeaderHashMap[old.outcomeHeaderHash],
       isImported: true,
     }
     // an assigned field
@@ -227,7 +227,7 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.outcomeAddress) {
+    if (!clone.outcomeHeaderHash) {
       console.log('weird, invalid entryPoint:', clone)
       continue
     }
@@ -244,5 +244,5 @@ export default async function importAllProjectData(
   }
 
   // return the list of old addresses mapped to new addresses
-  return outcomeAddressMap
+  return outcomeHeaderHashMap
 }

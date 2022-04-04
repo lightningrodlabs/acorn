@@ -7,7 +7,7 @@ import Avatar from '../Avatar/Avatar'
 export default function PeoplePicker({
   agentAddress,
   people,
-  outcomeAddress,
+  outcomeHeaderHash,
   createOutcomeMember,
   deleteOutcomeMember,
   onClose,
@@ -62,7 +62,7 @@ export default function PeoplePicker({
             const onClick = () => {
               if (person.is_member)
                 deleteOutcomeMember(person.outcome_member_address)
-              else createOutcomeMember(outcomeAddress, person.address, agentAddress)
+              else createOutcomeMember(outcomeHeaderHash, person.address, agentAddress)
             }
             return (
               <li

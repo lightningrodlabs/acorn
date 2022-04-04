@@ -25,30 +25,30 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    previewConnections: (parentAddress, childrenAddresses, activeProject) => {
-      const connections = childrenAddresses.map((childAddress) => ({
-        childAddress,
-        parentAddress,
+    previewConnections: (parentHeaderHash, childrenAddresses, activeProject) => {
+      const connections = childrenAddresses.map((childHeaderHash) => ({
+        childHeaderHash,
+        parentHeaderHash,
       }))
       return dispatch(previewConnections(activeProject, connections))
     },
     clearPreview: (activeProject) => {
       return dispatch(clearConnectionsPreview(activeProject))
     },
-    saveConnections: async (parentAddress, childrenAddresses, cellIdString) => {
+    saveConnections: async (parentHeaderHash, childrenAddresses, cellIdString) => {
       // loop over childrenAddresses
       // use createConnection each time
       const cellId = cellIdFromString(cellIdString)
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       return Promise.all(
-        childrenAddresses.map(async (childAddress) => {
+        childrenAddresses.map(async (childHeaderHash) => {
           // does the camel case conversion work both ways?
           const connection = await projectsZomeApi.connection.create(
             cellId,
             {
-              parentAddress,
-              childAddress,
+              parentHeaderHash,
+              childHeaderHash,
               randomizer: Date.now(),
               isImported: false,
             }

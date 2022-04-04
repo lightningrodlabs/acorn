@@ -38,7 +38,7 @@ pub mod tests {
         // make the `address` field valid by making it equal the
         // AgentPubKey of the agent committing
 
-        project_meta.creator_address = AgentPubKeyB64::new(create_header.author.as_hash().clone());
+        project_meta.creator_agent_pub_key = AgentPubKeyB64::new(create_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(project_meta.clone().try_into().unwrap());
 
@@ -92,7 +92,7 @@ pub mod tests {
 
         // it is as if there is a ProjectMeta at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the outcome_address
+        // the must_get_header call for the outcome_header_hash
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
             mock_hdk_ref,
@@ -136,7 +136,7 @@ pub mod tests {
 
         // it is as if there is a ProjectMeta at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the outcome_address
+        // the must_get_header call for the outcome_header_hash
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
             mock_hdk_ref,

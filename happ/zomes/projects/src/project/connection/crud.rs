@@ -9,22 +9,22 @@ use holo_hash::HeaderHashB64;
 #[serde(rename_all = "camelCase")]
 #[derive(Clone, PartialEq)]
 pub struct Connection {
-    pub parent_address: HeaderHashB64,
-    pub child_address: HeaderHashB64,
+    pub parent_header_hash: HeaderHashB64,
+    pub child_header_hash: HeaderHashB64,
     pub randomizer: i64,
     pub is_imported: bool,
 }
 
 impl Connection {
     pub fn new(
-        parent_address: HeaderHashB64,
-        child_address: HeaderHashB64,
+        parent_header_hash: HeaderHashB64,
+        child_header_hash: HeaderHashB64,
         randomizer: i64,
         is_imported: bool,
     ) -> Self {
         Self {
-            parent_address,
-            child_address,
+            parent_header_hash,
+            child_header_hash,
             randomizer,
             is_imported,
         }

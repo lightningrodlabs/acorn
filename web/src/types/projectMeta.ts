@@ -1,7 +1,7 @@
 import { AgentPubKeyB64, HeaderHashB64, Option } from './shared'
 
 export interface ProjectMeta {
-    creatorAddress: AgentPubKeyB64,
+    creatorAgentPubKey: AgentPubKeyB64,
     createdAt: number, // f64
     name: string,
     image: Option<string>,

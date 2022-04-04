@@ -31,8 +31,8 @@ export default async function handleConnectionConnectMouseUp(
 
     const fromAsParent = relation === RELATION_AS_PARENT
     const createdConnection = await projectsZomeApi.connection.create(cellId, {
-        parentAddress: fromAsParent ? fromAddress : toAddress,
-        childAddress: fromAsParent ? toAddress : fromAddress,
+        parentHeaderHash: fromAsParent ? fromAddress : toAddress,
+        childHeaderHash: fromAsParent ? toAddress : fromAddress,
         randomizer: Date.now(),
         isImported: false
       })

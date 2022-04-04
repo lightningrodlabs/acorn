@@ -8,7 +8,7 @@ function mapStateToProps(state, ownProps) {
   const outcomeVotes = state.projects.outcomeVotes[projectId] || {}
   const allVotesArray = Object.values(outcomeVotes)
   const votes = allVotesArray.filter(function (outcomeVote) {
-    return outcomeVote.outcomeAddress === outcome.headerHash
+    return outcomeVote.outcomeHeaderHash === outcome.headerHash
   })
   return {
     // name of the key 'whoami' MUST match the prop name

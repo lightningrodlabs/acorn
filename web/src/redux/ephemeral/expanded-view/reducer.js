@@ -2,7 +2,7 @@ import { OPEN_EXPANDED_VIEW, CLOSE_EXPANDED_VIEW } from './actions'
 
 const defaultState = {
   isOpen: false,
-  outcomeAddress: null,
+  outcomeHeaderHash: null,
 }
 
 export default function(state = defaultState, action) {
@@ -12,13 +12,13 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         isOpen: true,
-        outcomeAddress: payload.outcomeAddress,
+        outcomeHeaderHash: payload.outcomeHeaderHash,
       }
     case CLOSE_EXPANDED_VIEW:
       return {
         ...state,
         isOpen: false,
-        outcomeAddress: null,
+        outcomeHeaderHash: null,
       }
     default:
       return state

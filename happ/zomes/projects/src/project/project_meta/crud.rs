@@ -20,7 +20,7 @@ use std::*;
 #[serde(rename_all = "camelCase")]
 #[derive(Clone, PartialEq)]
 pub struct ProjectMeta {
-    pub creator_address: AgentPubKeyB64,
+    pub creator_agent_pub_key: AgentPubKeyB64,
     pub created_at: f64,
     pub name: String,
     pub image: Option<String>,
@@ -32,7 +32,7 @@ pub struct ProjectMeta {
 
 impl ProjectMeta {
     pub fn new(
-        creator_address: AgentPubKeyB64,
+        creator_agent_pub_key: AgentPubKeyB64,
         created_at: f64,
         name: String,
         image: Option<String>,
@@ -42,7 +42,7 @@ impl ProjectMeta {
         top_priority_outcomes: Vec<HeaderHashB64>,
     ) -> Self {
         Self {
-            creator_address,
+            creator_agent_pub_key,
             created_at,
             name,
             image,

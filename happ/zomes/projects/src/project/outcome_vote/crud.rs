@@ -7,34 +7,34 @@ use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 #[serde(rename_all = "camelCase")]
 #[derive(Clone, PartialEq)]
 pub struct OutcomeVote {
-    pub outcome_address: HeaderHashB64,
+    pub outcome_header_hash: HeaderHashB64,
     pub urgency: f64,
     pub importance: f64,
     pub impact: f64,
     pub effort: f64,
-    pub agent_address: AgentPubKeyB64,
+    pub creator_agent_pub_key: AgentPubKeyB64,
     pub unix_timestamp: f64,
     pub is_imported: bool,
 }
 
 impl OutcomeVote {
     pub fn new(
-        outcome_address: HeaderHashB64,
+        outcome_header_hash: HeaderHashB64,
         urgency: f64,
         importance: f64,
         impact: f64,
         effort: f64,
-        agent_address: AgentPubKeyB64,
+        creator_agent_pub_key: AgentPubKeyB64,
         unix_timestamp: f64,
         is_imported: bool,
     ) -> Self {
         Self {
-            outcome_address,
+            outcome_header_hash,
             urgency,
             importance,
             impact,
             effort,
-            agent_address,
+            creator_agent_pub_key,
             unix_timestamp,
             is_imported,
         }

@@ -35,10 +35,10 @@ export function checkForConnectionAtCoordinates(
   Object.keys(connections)
     .map(headerHash => connections[headerHash])
     .forEach(connection => {
-      const parentOutcomeCoords = outcomeCoordinates[connection.parentAddress]
-      const childOutcomeCoords = outcomeCoordinates[connection.childAddress]
-      const parentOutcomeText = outcomes[connection.parentAddress]
-        ? outcomes[connection.parentAddress].content
+      const parentOutcomeCoords = outcomeCoordinates[connection.parentHeaderHash]
+      const childOutcomeCoords = outcomeCoordinates[connection.childHeaderHash]
+      const parentOutcomeText = outcomes[connection.parentHeaderHash]
+        ? outcomes[connection.parentHeaderHash].content
         : ''
 
       // do not proceed if we don't have coordinates

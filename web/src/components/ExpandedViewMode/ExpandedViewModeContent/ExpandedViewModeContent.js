@@ -42,7 +42,7 @@ function SquirrelInfoPopup({ squirrel, onClose, deleteOutcomeMember }) {
 export default function ExpandedViewModeContent({
   projectId,
   agentAddress,
-  outcomeAddress,
+  outcomeHeaderHash,
   outcome,
   outcomeContent,
   outcomeDescription,
@@ -78,7 +78,7 @@ export default function ExpandedViewModeContent({
               setActiveTab,
               editTimeframe,
               setEditTimeframe,
-              outcomeAddress,
+              outcomeHeaderHash,
               outcome,
               outcomeContent,
               outcomeDescription,
@@ -108,7 +108,7 @@ function Details({
   setActiveTab,
   editTimeframe,
   setEditTimeframe,
-  outcomeAddress,
+  outcomeHeaderHash,
   outcome,
   outcomeContent,
   outcomeDescription,
@@ -137,13 +137,13 @@ function Details({
 
   // reset
   useEffect(() => {
-    if (!outcomeAddress) {
+    if (!outcomeHeaderHash) {
       setActiveTab(0)
       setEditSquirrels(false)
       setSquirrelInfoPopup(null)
       setEditTimeframe(false)
     }
-  }, [outcomeAddress])
+  }, [outcomeHeaderHash])
 
   // handle change of outcome
   useEffect(() => {
@@ -157,33 +157,33 @@ function Details({
     updateOutcome(
       {
         ...outcome,
-        userEditHash: agentAddress,
+        editorAgentPubKey: agentAddress,
         timestampUpdated: moment().unix(),
         content,
         description,
       },
-      outcomeAddress
+      outcomeHeaderHash
     )
-    endTitleEdit(outcomeAddress)
+    endTitleEdit(outcomeHeaderHash)
   }
   const onDescriptionBlur = () => {
     updateOutcome(
       {
         ...outcome,
-        userEditHash: agentAddress,
+        editorAgentPubKey: agentAddress,
         timestampUpdated: moment().unix(),
         content,
         description,
       },
-      outcomeAddress
+      outcomeHeaderHash
     )
-    endDescriptionEdit(outcomeAddress)
+    endDescriptionEdit(outcomeHeaderHash)
   }
   const onTitleFocus = () => {
-    startTitleEdit(outcomeAddress)
+    startTitleEdit(outcomeHeaderHash)
   }
   const onDescriptionFocus = () => {
-    startDescriptionEdit(outcomeAddress)
+    startDescriptionEdit(outcomeHeaderHash)
   }
   const handleOnChangeTitle = ({ target }) => {
     setContent(target.value)

@@ -19,7 +19,7 @@ pub struct Profile {
     pub handle: String,
     pub status: Status,
     pub avatar_url: String,
-    pub address: AgentPubKeyB64,
+    pub agent_pub_key: AgentPubKeyB64,
     pub is_imported: bool,
 }
 
@@ -30,7 +30,7 @@ impl Profile {
         handle: String,
         status: Status,
         avatar_url: String,
-        address: AgentPubKeyB64,
+        agent_pub_key: AgentPubKeyB64,
         is_imported: bool,
     ) -> Self {
         Self {
@@ -39,14 +39,14 @@ impl Profile {
             handle,
             status,
             avatar_url,
-            address,
+            agent_pub_key,
             is_imported,
         }
     }
 }
 impl From<Profile> for AgentPubKey {
     fn from(profile: Profile) -> Self {
-        profile.address.into()
+        profile.agent_pub_key.into()
     }
 }
 
@@ -302,7 +302,7 @@ fn get_peers() -> ExternResult<Vec<AgentPubKey>> {
     Ok(entries
         .into_iter()
         // eliminate yourself as a peer, along with imports
-        .filter(|x| x.entry.address != self_agent_pub_key && !x.entry.is_imported)
+        .filter(|x| x.entry.agent_pub_key != self_agent_pub_key && !x.entry.is_imported)
         .map(|x| AgentPubKey::from(x.entry))
         .collect::<Vec<AgentPubKey>>())
 }

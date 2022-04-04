@@ -39,11 +39,11 @@ pub mod tests {
             Error::DeserializationFailed.into(),
         );
 
-        // with an entry with identical hash for parent_address and
-        // child_address validation will fail
+        // with an entry with identical hash for parent_header_hash and
+        // child_header_hash validation will fail
         let outcome_wrapped_header_hash = fixt!(HeaderHashB64);
-        connection.parent_address = outcome_wrapped_header_hash.clone();
-        connection.child_address = outcome_wrapped_header_hash.clone();
+        connection.parent_header_hash = outcome_wrapped_header_hash.clone();
+        connection.child_header_hash = outcome_wrapped_header_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(connection.clone().try_into().unwrap());
         assert_eq!(
@@ -56,7 +56,7 @@ pub mod tests {
 
         // SUCCESS case
         // the element exists
-        // parent_address and child_address are not identical
+        // parent_header_hash and child_header_hash are not identical
         // the parent outcome is found/exists
         // the child outcome is found/exists
         // -> good to go
@@ -68,8 +68,8 @@ pub mod tests {
         let outcome_child_wrapped_header_hash =
             HeaderHashB64::new(child_signed_header_hashed.as_hash().clone());
         // we assign different parent and child to pass that level of validation
-        connection.parent_address = outcome_parent_wrapped_header_hash.clone();
-        connection.child_address = outcome_child_wrapped_header_hash.clone();
+        connection.parent_header_hash = outcome_parent_wrapped_header_hash.clone();
+        connection.child_header_hash = outcome_child_wrapped_header_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(connection.clone().try_into().unwrap());
 

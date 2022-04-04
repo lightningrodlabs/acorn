@@ -12,8 +12,8 @@ pub fn validate_create_entry_member(
         // element must have an entry that must deserialize correctly
         match Member::try_from(&validate_data.element) {
             Ok(proposed_entry) => {
-                // `address` must match header author
-                validate_value_matches_create_author(&proposed_entry.address.into(), &validate_data)
+                //  agent_pub_key` must match header author
+                validate_value_matches_create_author(&proposed_entry.agent_pub_key.into(), &validate_data)
             }
             Err(_e) => Error::DeserializationFailed.into(),
         },

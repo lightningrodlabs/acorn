@@ -47,7 +47,7 @@ class ActivityHistory extends Component {
 
   fetchChangingData() {
     this.props.fetchOutcomeHistory({
-      address: this.props.outcomeAddress,
+      address: this.props.outcomeHeaderHash,
     })
   }
   componentDidMount() {
@@ -69,7 +69,7 @@ class ActivityHistory extends Component {
       history.entries.map((entry, index) => {
         if (entry.timestampUpdated === null) {
           vector.push({
-            user: entry.userHash,
+            user: entry.creatorAgentPubKey,
             time: entry.timestampCreated,
             comment: 'created this outcome',
           })

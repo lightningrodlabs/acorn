@@ -40,7 +40,7 @@ function SearchResultItem({
   name,
   onExpandClick,
   panAndZoom,
-  outcomeAddress,
+  outcomeHeaderHash,
 }) {
   return (
     <div className="search-result-item-wrapper">
@@ -52,11 +52,11 @@ function SearchResultItem({
         </div>
       </div>
       <div className="search-result-item-buttons">
-        <div onClick={() => panAndZoom(outcomeAddress)}>
+        <div onClick={() => panAndZoom(outcomeHeaderHash)}>
           {/* @ts-ignore */}
           <Icon name="enter.svg" size="small" className="light-grey" />
         </div>
-        <div onClick={() => onExpandClick(outcomeAddress)}>
+        <div onClick={() => onExpandClick(outcomeHeaderHash)}>
           {/* @ts-ignore */}
           <Icon name="expand.svg" size="small" className="light-grey" />
         </div>
@@ -214,7 +214,7 @@ export default function HeaderRightPanel({
                         name="title.svg"
                         onExpandClick={openExpandedView} 
                         panAndZoom={animatePanAndZoom}
-                        outcomeAddress={outcome.headerHash}
+                        outcomeHeaderHash={outcome.headerHash}
                       />
                     ))}
                 {(!noFilters || isDescriptionFilter) &&
@@ -228,7 +228,7 @@ export default function HeaderRightPanel({
                         name="text-align-left.svg"
                         onExpandClick={openExpandedView}
                         panAndZoom={animatePanAndZoom}
-                        outcomeAddress={outcome.headerHash}
+                        outcomeHeaderHash={outcome.headerHash}
                       />
                     ))}
                 {(!noFilters || isCommentFilter) &&
@@ -242,7 +242,7 @@ export default function HeaderRightPanel({
                         name="comment.svg"
                         onExpandClick={openExpandedView}
                         panAndZoom={animatePanAndZoom}
-                        outcomeAddress={comment.outcomeAddress}
+                        outcomeHeaderHash={comment.outcomeHeaderHash}
                       />
                     ))}
               </div>

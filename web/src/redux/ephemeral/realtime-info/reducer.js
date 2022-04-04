@@ -1,7 +1,7 @@
 import { REMOVE_PEER_STATE, UPDATE_PEER_STATE } from './actions'
 // const defaultState = {
 //   isOpen: false,
-//   outcomeAddress: null,
+//   outcomeHeaderHash: null,
 // }
 const defaultState = {}
 

@@ -15,7 +15,7 @@ pub enum Error {
     #[error("Parent and Child entries are not different")]
     IdenticalParentChild,
 
-    #[error("Should not modify creator_address, created_at, or passphrase ProjectMeta fields")]
+    #[error("Should not modify creator_agent_pub_key, created_at, or passphrase ProjectMeta fields")]
     ProjectMetaEditableFields,
 
     #[error("Should not try to modify the original author of this entry")]

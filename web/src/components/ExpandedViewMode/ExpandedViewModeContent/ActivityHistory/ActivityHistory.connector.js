@@ -4,12 +4,12 @@ import ActivityHistory from './ActivityHistory.component'
 
 function mapStateToProps(state, ownProps) {
   const { projectId } = ownProps
-  const outcomeAddress = state.ui.expandedView.outcomeAddress
+  const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
   const outcomeHistory = state.projects.outcomeHistory[projectId] || {}
   return {
-    outcomeAddress,
+    outcomeHeaderHash,
     agents: state.agents,
-    outcomeHistory: outcomeHistory[outcomeAddress],
+    outcomeHistory: outcomeHistory[outcomeHeaderHash],
   }
 }
 
