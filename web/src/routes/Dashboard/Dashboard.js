@@ -436,7 +436,7 @@ async function importProject(
       ? originalPriorityMode
       : PriorityModeOptions.Universal,
     createdAt: Date.now(),
-    creatorAddress: agentAddress,
+    creatorAgentPubKey: agentAddress,
     passphrase: passphrase,
   }
   // these are not actuals field
@@ -506,7 +506,7 @@ function mapDispatchToProps(dispatch) {
       const projectMeta = {
         ...project, // name and image
         passphrase,
-        creatorAddress: agentAddress,
+        creatorAgentPubKey: agentAddress,
         createdAt: Date.now(),
         isImported: false,
         priorityMode: 'Universal', // default

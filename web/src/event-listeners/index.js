@@ -205,7 +205,7 @@ export default function setupEventListeners(store, canvas) {
 
   function canvasMousemove(event) {
     const state = store.getState()
-    let outcomeAddressesToSelect
+    let outcomeHeaderHashesToSelect
     const {
       ui: {
         viewport: { translate, scale },
@@ -238,19 +238,19 @@ export default function setupEventListeners(store, canvas) {
         store.dispatch(
           setSize({ w: convertedMouse.x - x, h: convertedMouse.y - y })
         )
-        outcomeAddressesToSelect = checkForOutcomeAtCoordinatesInBox(
+        outcomeHeaderHashesToSelect = checkForOutcomeAtCoordinatesInBox(
           outcomeCoordinates,
           state,
           convertedMouse,
           { x, y }
         )
-        store.dispatch(setOutcomes(outcomeAddressesToSelect))
+        store.dispatch(setOutcomes(outcomeHeaderHashesToSelect))
       } else {
         store.dispatch(changeTranslate(event.movementX, event.movementY))
       }
       return
     }
-    const outcomeAddress = checkForOutcomeAtCoordinates(
+    const outcomeHeaderHash = checkForOutcomeAtCoordinates(
       canvas.getContext('2d'),
       translate,
       scale,
@@ -270,22 +270,22 @@ export default function setupEventListeners(store, canvas) {
     )
     if (connectionAddress && state.ui.hover.hoveredOutcome !== connectionAddress) {
       store.dispatch(hoverConnection(connectionAddress))
-    } else if (!outcomeAddress && state.ui.hover.hoveredConnection) {
+    } else if (!outcomeHeaderHash && state.ui.hover.hoveredConnection) {
       store.dispatch(unhoverConnection())
     }
 
-    if (outcomeAddress && state.ui.hover.hoveredOutcome !== outcomeAddress) {
-      store.dispatch(hoverOutcome(outcomeAddress))
+    if (outcomeHeaderHash && state.ui.hover.hoveredOutcome !== outcomeHeaderHash) {
+      store.dispatch(hoverOutcome(outcomeHeaderHash))
       // hook up if the connection connector to a new Outcome
       // if we are using the connection connector
       // and IMPORTANTLY if Outcome is in the list of `validToAddresses`
       if (
         state.ui.connectionConnector.fromAddress &&
-        state.ui.connectionConnector.validToAddresses.includes(outcomeAddress)
+        state.ui.connectionConnector.validToAddresses.includes(outcomeHeaderHash)
       ) {
-        store.dispatch(setConnectionConnectorTo(outcomeAddress))
+        store.dispatch(setConnectionConnectorTo(outcomeHeaderHash))
       }
-    } else if (!outcomeAddress && state.ui.hover.hoveredOutcome) {
+    } else if (!outcomeHeaderHash && state.ui.hover.hoveredOutcome) {
       store.dispatch(unhoverOutcome())
       store.dispatch(setConnectionConnectorTo(null))
     }
@@ -452,7 +452,7 @@ export default function setupEventListeners(store, canvas) {
     } = state
     const outcomes = state.projects.outcomes[activeProject] || {}
     const outcomeCoordinates = state.ui.layout
-    const outcomeAddress = checkForOutcomeAtCoordinates(
+    const outcomeHeaderHash = checkForOutcomeAtCoordinates(
       canvas.getContext('2d'),
       translate,
       scale,
@@ -461,11 +461,11 @@ export default function setupEventListeners(store, canvas) {
       event.clientX,
       event.clientY
     )
-    if (outcomeAddress) {
-      let outcomeCoord = outcomeCoordinates[outcomeAddress]
+    if (outcomeHeaderHash) {
+      let outcomeCoord = outcomeCoordinates[outcomeHeaderHash]
       store.dispatch(unselectAll())
-      store.dispatch(openOutcomeForm(outcomeCoord.x, outcomeCoord.y, outcomeAddress))
-      store.dispatch(updateContent(outcomes[outcomeAddress].content))
+      store.dispatch(openOutcomeForm(outcomeCoord.x, outcomeCoord.y, outcomeHeaderHash))
+      store.dispatch(updateContent(outcomes[outcomeHeaderHash].content))
     }
   }
 

@@ -57,7 +57,7 @@ export default function MultiEditBar({
       updateOutcome(
         {
           ...outcome,
-          userEditHash: agentAddress,
+          editorAgentPubKey: agentAddress,
           timestampUpdated: moment().unix(),
           [key]: val,
         },

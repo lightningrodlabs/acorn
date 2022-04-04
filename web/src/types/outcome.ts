@@ -2,8 +2,8 @@ import { AgentPubKeyB64, Option } from "./shared"
 
 export interface Outcome {
     content: string,
-    userHash: AgentPubKeyB64,
-    userEditHash: Option<AgentPubKeyB64>,
+    creatorAgentPubKey: AgentPubKeyB64,
+    editorAgentPubKey: Option<AgentPubKeyB64>,
     timestampCreated: number, //f64,
     timestampUpdated: Option<number>, //f64
     scope: Scope,

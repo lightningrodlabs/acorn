@@ -13,7 +13,7 @@ import ExpandedViewModeFooter from './ExpandedViewModeFooter/ExpandedViewModeFoo
 export default function ExpandedViewMode({
   projectId,
   agentAddress,
-  outcomeAddress,
+  outcomeHeaderHash,
   outcome,
   updateOutcome,
   onClose,
@@ -38,12 +38,12 @@ export default function ExpandedViewMode({
   const [editTimeframe, setEditTimeframe] = useState(false)
 
   useEffect(() => {
-    if (showing && !outcomeAddress) {
+    if (showing && !outcomeHeaderHash) {
       setShowing(false)
-    } else if (!showing && outcomeAddress) {
+    } else if (!showing && outcomeHeaderHash) {
       setShowing(true)
     }
-  }, [outcomeAddress])
+  }, [outcomeHeaderHash])
 
   useEffect(() => {
     if (outcome) {
@@ -65,10 +65,10 @@ export default function ExpandedViewMode({
 
   const turnIntoEntryPoint = () => {
     createEntryPoint({
-      color: pickColorForString(outcomeAddress),
-      creatorAddress: agentAddress,
+      color: pickColorForString(outcomeHeaderHash),
+      creatorAgentPubKey: agentAddress,
       createdAt: Date.now(),
-      outcomeAddress: outcomeAddress,
+      outcomeHeaderHash: outcomeHeaderHash,
       isImported: false
     })
   }
@@ -92,11 +92,11 @@ export default function ExpandedViewMode({
     updateOutcome(
       {
         ...outcome,
-        userEditHash: agentAddress,
+        editorAgentPubKey: agentAddress,
         timestampUpdated: moment().unix(),
         timeFrame: timeframe,
       },
-      outcomeAddress
+      outcomeHeaderHash
     )
   }
 
@@ -132,7 +132,7 @@ export default function ExpandedViewMode({
             />
             <ExpandedViewModeHeader
               agentAddress={agentAddress}
-              outcomeAddress={outcomeAddress}
+              outcomeHeaderHash={outcomeHeaderHash}
               outcome={outcomeState}
               updateOutcome={updateOutcome}
               entryPointClickAction={entryPointClickAction}
@@ -146,7 +146,7 @@ export default function ExpandedViewMode({
                 setEditTimeframe={setEditTimeframe}
                 squirrels={squirrelsState}
                 comments={comments}
-                outcomeAddress={outcomeAddress}
+                outcomeHeaderHash={outcomeHeaderHash}
                 updateOutcome={updateOutcome}
                 outcome={outcomeState}
                 outcomeContent={outcomeState.content}
@@ -161,7 +161,7 @@ export default function ExpandedViewMode({
               <RightMenu
                 projectId={projectId}
                 agentAddress={agentAddress}
-                outcomeAddress={outcomeAddress}
+                outcomeHeaderHash={outcomeHeaderHash}
                 outcome={outcomeState}
                 updateOutcome={updateOutcome}
               />

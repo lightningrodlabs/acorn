@@ -1,21 +1,21 @@
 
 
 goal
-- create: `user_hash` must be the agent committing,
+- create: `creator_agent_pub_key` must be the agent committing,
           `user_edit_hash` should be None
-- update: `user_hash` should be the same as author of create (meaning must resolve the original_header_address),
+- update: `creator_agent_pub_key` should be the same as author of create (meaning must resolve the original_header_address),
           `user_edit_hash` should be Some, and match the agent committing
 - delete: allowed by anyone
 
 edge
-- create: `parent_address` can't equal `child_address`, no self-referential edges
-          `parent_address` and `child_address` depends on the `Goal`s at those addresses
+- create: `parent_header_hash` can't equal `child_header_hash`, no self-referential edges
+          `parent_header_hash` and `child_header_hash` depends on the `Goal`s at those addresses
 - update: not allowed
 - delete: allowed by anyone
 
 entry_point (structurally same as goal_member)
 - create: depends on goal at `goal_address` existing,
-          `creator_address` must match the agent committing
+          `creator_agent_pub_key` must match the agent committing
 - update: not allowed
 - delete: allowed by anyone
 
@@ -49,7 +49,7 @@ member
 - delete: not allowed
 
 project_meta
-- create: `creator_address` should match the agent committing,
+- create: `creator_agent_pub_key` should match the agent committing,
           only ONE can/should be created
           (can't be 100% certain but don't let one more be
           created if another known exists already. Perform during zome call not validate hook)

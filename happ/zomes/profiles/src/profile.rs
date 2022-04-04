@@ -1,8 +1,7 @@
 use hdk::prelude::*;
 use hdk_crud::{
     retrieval::{
-        get_latest_for_entry::GetLatestEntry,
-        utils::EntryAndHash, fetch_links::FetchLinks,
+        fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry, utils::EntryAndHash,
     },
     signals::ActionType,
     wire_element::WireElement,
@@ -12,7 +11,7 @@ use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
 pub const AGENTS_PATH: &str = "agents";
 
 #[hdk_entry(id = "profile")]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 #[derive(Clone, PartialEq)]
 pub struct Profile {
     pub first_name: String,
@@ -20,7 +19,7 @@ pub struct Profile {
     pub handle: String,
     pub status: Status,
     pub avatar_url: String,
-    pub address: AgentPubKeyB64,
+    pub agent_pub_key: AgentPubKeyB64,
     pub is_imported: bool,
 }
 
@@ -31,7 +30,7 @@ impl Profile {
         handle: String,
         status: Status,
         avatar_url: String,
-        address: AgentPubKeyB64,
+        agent_pub_key: AgentPubKeyB64,
         is_imported: bool,
     ) -> Self {
         Self {
@@ -40,14 +39,14 @@ impl Profile {
             handle,
             status,
             avatar_url,
-            address,
+            agent_pub_key,
             is_imported,
         }
     }
 }
 impl From<Profile> for AgentPubKey {
     fn from(profile: Profile) -> Self {
-        profile.address.into()
+        profile.agent_pub_key.into()
     }
 }
 
@@ -264,7 +263,8 @@ pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
     let path_hash = Path::from(AGENTS_PATH).path_entry_hash()?;
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
-    let entries = fetch_links.fetch_links::<Profile>(&get_latest, path_hash, GetOptions::content())?
+    let entries = fetch_links
+        .fetch_links::<Profile>(&get_latest, path_hash, GetOptions::content())?
         .into_iter()
         .map(|wire_element| wire_element.entry)
         .collect();
@@ -296,12 +296,13 @@ fn get_peers() -> ExternResult<Vec<AgentPubKey>> {
     let path_hash = Path::from(AGENTS_PATH).path_entry_hash()?;
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
-    let entries = fetch_links.fetch_links::<Profile>(&get_latest, path_hash, GetOptions::latest())?;
+    let entries =
+        fetch_links.fetch_links::<Profile>(&get_latest, path_hash, GetOptions::latest())?;
     let self_agent_pub_key = AgentPubKeyB64::from(agent_info()?.agent_latest_pubkey);
     Ok(entries
         .into_iter()
         // eliminate yourself as a peer, along with imports
-        .filter(|x| x.entry.address != self_agent_pub_key && !x.entry.is_imported)
+        .filter(|x| x.entry.agent_pub_key != self_agent_pub_key && !x.entry.is_imported)
         .map(|x| AgentPubKey::from(x.entry))
         .collect::<Vec<AgentPubKey>>())
 }

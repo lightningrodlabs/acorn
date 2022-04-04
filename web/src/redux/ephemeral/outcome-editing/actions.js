@@ -3,35 +3,35 @@ const END_TITLE_EDIT = 'END_TITLE_EDIT'
 const START_DESCRIPTION_EDIT = 'START_DESCRIPTION_EDIT'
 const END_DESCRIPTION_EDIT = 'END_DESCRIPTION_EDIT'
 
-function startTitleEdit(outcomeAddress) {
+function startTitleEdit(outcomeHeaderHash) {
   return {
     type: START_TITLE_EDIT,
     payload: {
-      outcomeAddress,
+      outcomeHeaderHash,
     },
   }
 }
-function endTitleEdit(outcomeAddress) {
+function endTitleEdit(outcomeHeaderHash) {
   return {
     type: END_TITLE_EDIT,
     payload: {
-      outcomeAddress,
+      outcomeHeaderHash,
     },
   }
 }
-function startDescriptionEdit(outcomeAddress) {
+function startDescriptionEdit(outcomeHeaderHash) {
   return {
     type: START_DESCRIPTION_EDIT,
     payload: {
-      outcomeAddress,
+      outcomeHeaderHash,
     },
   }
 }
-function endDescriptionEdit(outcomeAddress) {
+function endDescriptionEdit(outcomeHeaderHash) {
   return {
     type: END_DESCRIPTION_EDIT,
     payload: {
-      outcomeAddress,
+      outcomeHeaderHash,
     },
   }
 }

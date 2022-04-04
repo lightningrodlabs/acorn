@@ -10,9 +10,9 @@ import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 
 function mapStateToProps(state) {
-  const outcomeAddress = state.ui.expandedView.outcomeAddress
+  const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
   return {
-    outcomeAddress,
+    outcomeHeaderHash,
     avatarAddress: state.whoami.entry.address,
     agents: state.agents,
   }

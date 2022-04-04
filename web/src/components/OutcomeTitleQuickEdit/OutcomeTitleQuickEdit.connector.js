@@ -53,10 +53,10 @@ function mapStateToProps(state) {
   // this value of state.whoami.entry.address
   // should not be changed to headerHash unless the entry type of Profile
   // is changed
-  const userHash = editAddress
-    ? editingOutcome.userHash
+  const creatorAgentPubKey = editAddress
+    ? editingOutcome.creatorAgentPubKey
     : state.whoami.entry.address
-  const userEditHash = editAddress ? state.whoami.entry.address : null
+  const editorAgentPubKey = editAddress ? state.whoami.entry.address : null
   const description = editAddress ? editingOutcome.description : ''
   const scope = editAddress ? editingOutcome.scope : { Uncertain: 5 }
   const timeFrame = editAddress ? editingOutcome.timeFrame : null
@@ -93,8 +93,8 @@ function mapStateToProps(state) {
       : topConnectionYPosition,
     // default states for the outcome when creating it
     // plus existing fields for "edit"
-    userHash,
-    userEditHash,
+    creatorAgentPubKey,
+    editorAgentPubKey,
     scope,
     description,
     timeFrame,
@@ -156,11 +156,11 @@ function mapDispatchToProps(dispatch, ownProps) {
     closeOutcomeForm: () => {
       dispatch(closeOutcomeForm())
     },
-    startTitleEdit: (outcomeAddress) => {
-      return dispatch(startTitleEdit(outcomeAddress))
+    startTitleEdit: (outcomeHeaderHash) => {
+      return dispatch(startTitleEdit(outcomeHeaderHash))
     },
-    endTitleEdit: (outcomeAddress) => {
-      return dispatch(endTitleEdit(outcomeAddress))
+    endTitleEdit: (outcomeHeaderHash) => {
+      return dispatch(endTitleEdit(outcomeHeaderHash))
     },
   }
 }

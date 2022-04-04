@@ -1,8 +1,9 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::{EntryPointFixturator};
+    use crate::fixtures::fixtures::EntryPointFixturator;
     use ::fixt::prelude::*;
     use hdk::prelude::*;
+    use hdk_unit_testing::mock_hdk::*;
     use holo_hash::{AgentPubKeyB64, HeaderHashB64};
     use holochain_types::prelude::ValidateDataFixturator;
     use projects::project::entry_point::validate::*;
@@ -45,7 +46,7 @@ pub mod tests {
         let outcome_signed_header_hashed = fixt!(SignedHeaderHashed);
         let outcome_wrapped_header_hash =
             HeaderHashB64::new(outcome_signed_header_hashed.as_hash().clone());
-        entry_point.outcome_address = outcome_wrapped_header_hash.clone();
+        entry_point.outcome_header_hash = outcome_wrapped_header_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(entry_point.clone().try_into().unwrap());
 
@@ -53,23 +54,22 @@ pub mod tests {
         // to have to mock `get` calls to the HDK
 
         // now make it valid by making it
-        // as if there is a Outcome at the outcome_address
+        // as if there is a Outcome at the outcome_header_hash
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                outcome_wrapped_header_hash.clone().into(),
-            )))
-            .times(1)
-            .return_const(Ok(outcome_signed_header_hashed.clone()));
+        // the must_get_header call for the outcome_header_hash
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref,
+            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            Ok(outcome_signed_header_hashed.clone()),
+        );
 
         set_hdk(mock_hdk);
 
         // with an entry with a random (not the agent committing)
-        // creator_address it will fail
+        // creator_agent_pub_key it will fail
         let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
-        entry_point.creator_address = random_wrapped_agent_pub_key.clone();
+        entry_point.creator_agent_pub_key = random_wrapped_agent_pub_key.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(entry_point.clone().try_into().unwrap());
 
@@ -81,26 +81,24 @@ pub mod tests {
         // SUCCESS case
         // the element exists
         // the parent outcome is found/exists
-        // is_imported is false and creator_address refers to the agent committing (or is_imported = true)
+        // is_imported is false and creator_agent_pub_key refers to the agent committing (or is_imported = true)
         // -> good to go
 
-        // make it as if there is a Outcome at the outcome_address
+        // make it as if there is a Outcome at the outcome_header_hash
 
         let mut mock_hdk = MockHdkT::new();
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                outcome_wrapped_header_hash.clone().into(),
-            )))
-            .times(1)
-            .return_const(Ok(outcome_signed_header_hashed));
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref,
+            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            Ok(outcome_signed_header_hashed.clone()),
+        );
 
         set_hdk(mock_hdk);
 
-        // make the creator_address valid by making it equal the
+        // make the creator_agent_pub_key valid by making it equal the
         // AgentPubKey of the agent committing,
-        entry_point.creator_address =
-            AgentPubKeyB64::new(create_header.author.as_hash().clone());
+        entry_point.creator_agent_pub_key = AgentPubKeyB64::new(create_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(entry_point.clone().try_into().unwrap());
 

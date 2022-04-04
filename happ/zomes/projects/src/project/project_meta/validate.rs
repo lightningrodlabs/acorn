@@ -6,7 +6,7 @@ use crate::project::{
 use hdk::prelude::*;
 
 #[hdk_extern]
-/// Creates allowed if `creator_address` matches the agent committing
+/// Creates allowed if `creator_agent_pub_key` matches the agent committing
 pub fn validate_create_entry_project_meta(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
@@ -16,7 +16,7 @@ pub fn validate_create_entry_project_meta(
             Ok(proposed_entry) => {
                 // `address` must match header author
                 validate_value_matches_create_author(
-                    &proposed_entry.creator_address.into(),
+                    &proposed_entry.creator_agent_pub_key.into(),
                     &validate_data,
                 )
             }
@@ -26,7 +26,7 @@ pub fn validate_create_entry_project_meta(
 }
 
 #[hdk_extern]
-/// Updates allowed by anyone, but `creator_address`, `created_at`, and `passphrase` cannot be changed
+/// Updates allowed by anyone, but `creator_agent_pub_key`, `created_at`, and `passphrase` cannot be changed
 pub fn validate_update_entry_project_meta(
     validate_data: ValidateData,
 ) -> ExternResult<ValidateCallbackResult> {
@@ -38,7 +38,7 @@ pub fn validate_update_entry_project_meta(
                     let original_project_meta = must_get_header_and_entry::<ProjectMeta>(
                         header.original_header_address.clone(),
                     )?;
-                    if project_meta.creator_address == original_project_meta.creator_address
+                    if project_meta.creator_agent_pub_key == original_project_meta.creator_agent_pub_key
                         && project_meta.created_at == original_project_meta.created_at
                         && project_meta.passphrase == original_project_meta.passphrase
                     {

@@ -167,7 +167,7 @@ export default function ProjectSettingsModal({
         image: projectCoverUrl,
         priorityMode: priorityMode,
         // not editable
-        creatorAddress: project.creatorAddress,
+        creatorAgentPubKey: project.creatorAgentPubKey,
         createdAt: project.createdAt,
         passphrase: project.passphrase,
         isImported: project.isImported,

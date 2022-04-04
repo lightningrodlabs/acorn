@@ -4,7 +4,7 @@ import ToggleSwitch from '../../ToggleSwitch/ToggleSwitch'
 
 export default function PriorityPickerUniversal({
   projectMeta,
-  outcomeAddress,
+  outcomeHeaderHash,
   isTopPriorityOutcome,
   updateProjectMeta,
 }) {
@@ -23,11 +23,11 @@ export default function PriorityPickerUniversal({
     delete toPass.headerHash
     if (e.target.checked) {
       setPendingState(true)
-      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.concat([outcomeAddress])
+      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.concat([outcomeHeaderHash])
       await updateProjectMeta(toPass, projectMetaAddress)
     } else {
       setPendingState(false)
-      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.filter(headerHash => headerHash !== outcomeAddress)
+      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.filter(headerHash => headerHash !== outcomeHeaderHash)
       await updateProjectMeta(toPass, projectMetaAddress)
     }
     setPending(false)

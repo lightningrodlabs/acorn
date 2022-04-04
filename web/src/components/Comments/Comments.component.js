@@ -43,7 +43,7 @@ function Comment({ comment, agent }) {
 }
 
 export default function Comments({
-  outcomeAddress,
+  outcomeHeaderHash,
   agents,
   comments,
   createOutcomeComment,
@@ -84,9 +84,9 @@ export default function Comments({
     try {
       // when new comment created
       await createOutcomeComment({
-        outcomeAddress: outcomeAddress,
+        outcomeHeaderHash: outcomeHeaderHash,
         content: value,
-        agentAddress: avatarAddress,
+        creatorAgentPubKey: avatarAddress,
         unixTimestamp: moment().unix(),
         isImported: false
       })
@@ -112,7 +112,7 @@ export default function Comments({
               <Comment
                 key={comment.headerHash}
                 comment={comment}
-                agent={agents[comment.agentAddress]}
+                agent={agents[comment.creatorAgentPubKey]}
               />
             ))}
         </div>

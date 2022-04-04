@@ -1,14 +1,13 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::{
-        OutcomeVoteFixturator
-    };
+    use crate::fixtures::fixtures::OutcomeVoteFixturator;
     use ::fixt::prelude::*;
     use hdk::prelude::*;
+    use hdk_unit_testing::mock_hdk::*;
     use holo_hash::AgentPubKeyB64;
+    use holochain_types::prelude::option_entry_hashed;
     use holochain_types::prelude::ElementFixturator;
     use holochain_types::prelude::ValidateDataFixturator;
-    use holochain_types::prelude::option_entry_hashed;
     use projects::project::error::Error;
     use projects::project::outcome_vote::validate::*;
 
@@ -33,32 +32,31 @@ pub mod tests {
         // to have to mock `get` calls to the HDK
 
         let outcome_wrapped_header_hash = fixt!(HeaderHashB64);
-        outcome_vote.outcome_address = outcome_wrapped_header_hash.clone();
+        outcome_vote.outcome_header_hash = outcome_wrapped_header_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome_vote.clone().try_into().unwrap());
 
         // make it pass UnresolvedDependencies
-        // by making it as if there is a Outcome at the outcome_address
+        // by making it as if there is a Outcome at the outcome_header_hash
         let mut outcome_element_for_invalid = fixt!(Element);
         let create_header_for_invalid = fixt!(Create);
         *outcome_element_for_invalid.as_header_mut() =
             Header::Create(create_header_for_invalid.clone());
 
         let mut mock_hdk = MockHdkT::new();
-        // mock the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                outcome_wrapped_header_hash.clone().into(),
-            )))
-            .times(1)
-            .return_const(Ok(outcome_element_for_invalid.signed_header().clone()));
+        // mock the must_get_header call for the outcome_header_hash
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref,
+            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            Ok(outcome_element_for_invalid.signed_header().clone()),
+        );
         set_hdk(mock_hdk);
 
         // with an entry with a random
-        // agent_address it will fail (not the agent committing)
+        // creator_agent_pub_key it will fail (not the agent committing)
         let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
-        outcome_vote.agent_address = random_wrapped_agent_pub_key.clone();
+        outcome_vote.creator_agent_pub_key = random_wrapped_agent_pub_key.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome_vote.clone().try_into().unwrap());
 
@@ -70,29 +68,29 @@ pub mod tests {
         // SUCCESS case
         // the element exists
         // the parent outcome is found/exists
-        // is_imported is false and agent_address refers to the agent committing (or is_imported is true)
+        // is_imported is false and creator_agent_pub_key refers to the agent committing (or is_imported is true)
         // -> good to go
 
         // make it pass UnresolvedDependencies
-        // by making it as if there is a Outcome at the outcome_address
+        // by making it as if there is a Outcome at the outcome_header_hash
         let mut outcome_element_for_valid = fixt!(Element);
         let create_header_for_valid = fixt!(Create);
-        *outcome_element_for_valid.as_header_mut() = Header::Create(create_header_for_valid.clone());
+        *outcome_element_for_valid.as_header_mut() =
+            Header::Create(create_header_for_valid.clone());
 
         let mut mock_hdk = MockHdkT::new();
-        // mock the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                outcome_wrapped_header_hash.clone().into(),
-            )))
-            .times(1)
-            .return_const(Ok(outcome_element_for_valid.signed_header().clone()));
+        // mock the must_get_header call for the outcome_header_hash
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref,
+            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            Ok(outcome_element_for_valid.signed_header().clone()),
+        );
         set_hdk(mock_hdk);
 
-        // make the agent_address valid by making it equal the
+        // make the creator_agent_pub_key valid by making it equal the
         // AgentPubKey of the agent committing,
-        outcome_vote.agent_address = AgentPubKeyB64::new(create_header.author.as_hash().clone());
+        outcome_vote.creator_agent_pub_key = AgentPubKeyB64::new(create_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome_vote.clone().try_into().unwrap());
 
@@ -118,11 +116,11 @@ pub mod tests {
         );
 
         // with an entry with a random
-        // agent_address it will fail (not the agent committing)
+        // creator_agent_pub_key it will fail (not the agent committing)
         let outcome_wrapped_header_hash = fixt!(HeaderHashB64);
         let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
-        outcome_vote.outcome_address = outcome_wrapped_header_hash.clone();
-        outcome_vote.agent_address = random_wrapped_agent_pub_key.clone();
+        outcome_vote.outcome_header_hash = outcome_wrapped_header_hash.clone();
+        outcome_vote.creator_agent_pub_key = random_wrapped_agent_pub_key.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome_vote.clone().try_into().unwrap());
         assert_eq!(
@@ -130,12 +128,12 @@ pub mod tests {
             Error::CorruptCreateAgentPubKeyReference.into(),
         );
 
-        // make the agent_address valid by making it equal the
+        // make the creator_agent_pub_key valid by making it equal the
         // AgentPubKey of the agent committing,
         // but it will still be missing the original OutcomeVote
         // dependency so it will
         // return UnresolvedDependencies
-        outcome_vote.agent_address = AgentPubKeyB64::new(update_header.author.as_hash().clone());
+        outcome_vote.creator_agent_pub_key = AgentPubKeyB64::new(update_header.author.as_hash().clone());
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome_vote.clone().try_into().unwrap());
 
@@ -151,7 +149,8 @@ pub mod tests {
         let bad_original_outcome_vote = fixt!(OutcomeVote);
         let mut bad_original_outcome_vote_element = fixt!(Element);
         let bad_create_header = fixt!(Create);
-        *bad_original_outcome_vote_element.as_header_mut() = Header::Create(bad_create_header.clone());
+        *bad_original_outcome_vote_element.as_header_mut() =
+            Header::Create(bad_create_header.clone());
         *bad_original_outcome_vote_element.as_entry_mut() =
             ElementEntry::Present(bad_original_outcome_vote.clone().try_into().unwrap());
         let bad_original_entry_hash = bad_original_outcome_vote_element
@@ -162,26 +161,18 @@ pub mod tests {
 
         // it is as if there is a OutcomeComment at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                update_header.original_header_address.clone(),
-            )))
-            .times(1)
-            .return_const(Ok(bad_original_outcome_vote_element
-                .signed_header()
-                .clone()));
-        mock_hdk
-            .expect_must_get_entry()
-            .with(mockall::predicate::eq(MustGetEntryInput::new(
-                bad_original_entry_hash.clone(),
-            )))
-            .times(1)
-            .return_const(Ok(option_entry_hashed(
-                bad_original_outcome_vote_element.entry().clone(),
-            )
-            .unwrap()));
+        // the must_get_header call for the outcome_header_hash
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref,
+            MustGetHeaderInput::new(update_header.original_header_address.clone()),
+            Ok(bad_original_outcome_vote_element.signed_header().clone()),
+        );
+        mock_must_get_entry(
+            mock_hdk_ref,
+            MustGetEntryInput::new(bad_original_entry_hash.clone()),
+            Ok(option_entry_hashed(bad_original_outcome_vote_element.entry().clone()).unwrap()),
+        );
         set_hdk(mock_hdk);
 
         assert_eq!(
@@ -191,7 +182,7 @@ pub mod tests {
 
         // SUCCESS case
         // the element exists
-        // agent_address refers to the agent committing
+        // creator_agent_pub_key refers to the agent committing
         // the original OutcomeVote header and entry exist
         // and the author of the update matches the original author
         // -> good to go
@@ -200,9 +191,9 @@ pub mod tests {
         let good_create_header = fixt!(Create);
         *good_original_outcome_vote_element.as_header_mut() =
             Header::Create(good_create_header.clone());
-        // make the author equal to the current `user_hash` value
+        // make the author equal to the current `creator_agent_pub_key` value
         // on the Outcome in validate_data
-        good_original_outcome_vote.agent_address =
+        good_original_outcome_vote.creator_agent_pub_key =
             AgentPubKeyB64::new(update_header.author.as_hash().clone());
         *good_original_outcome_vote_element.as_entry_mut() =
             ElementEntry::Present(good_original_outcome_vote.clone().try_into().unwrap());
@@ -215,26 +206,18 @@ pub mod tests {
 
         // it is as if there is a OutcomeComment at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                update_header.original_header_address,
-            )))
-            .times(1)
-            .return_const(Ok(good_original_outcome_vote_element
-                .signed_header()
-                .clone()));
-        mock_hdk
-            .expect_must_get_entry()
-            .with(mockall::predicate::eq(MustGetEntryInput::new(
-                good_original_entry_hash.clone(),
-            )))
-            .times(1)
-            .return_const(Ok(option_entry_hashed(
-                good_original_outcome_vote_element.entry().clone(),
-            )
-            .unwrap()));
+        // the must_get_header call for the outcome_header_hash
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref,
+            MustGetHeaderInput::new(update_header.original_header_address),
+            Ok(good_original_outcome_vote_element.signed_header().clone()),
+        );
+        mock_must_get_entry(
+            mock_hdk_ref,
+            MustGetEntryInput::new(good_original_entry_hash.clone()),
+            Ok(option_entry_hashed(good_original_outcome_vote_element.entry().clone()).unwrap()),
+        );
         set_hdk(mock_hdk);
 
         // we should see that the ValidateCallbackResult

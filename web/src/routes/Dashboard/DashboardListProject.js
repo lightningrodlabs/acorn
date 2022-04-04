@@ -183,7 +183,7 @@ function DashboardListProject({
               return (
                 <NavLink
                   key={`entry-point-${entryPoint.headerHash}`}
-                  to={`/project/${project.cellId}/map?${ENTRY_POINTS}=${entryPoint.headerHash}&${GO_TO_OUTCOME}=${entryPoint.outcomeAddress}`}
+                  to={`/project/${project.cellId}/map?${ENTRY_POINTS}=${entryPoint.headerHash}&${GO_TO_OUTCOME}=${entryPoint.outcomeHeaderHash}`}
                   className="entry-point-item"
                 >
                   <div className="entry-point-color-dot" style={dotStyle} />

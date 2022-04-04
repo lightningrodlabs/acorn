@@ -11,17 +11,17 @@ import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
 
 function mapStateToProps(state, ownProps) {
-  const { projectId, outcomeAddress } = ownProps
+  const { projectId, outcomeHeaderHash } = ownProps
   // filters all the OutcomeVotes down to a list
   // of only the Votes on the selected Outcome
   const outcomeVotes = state.projects.outcomeVotes[projectId] || {}
   const allVotesArray = Object.values(outcomeVotes)
   const votes = allVotesArray.filter(function (outcomeVote) {
-    return outcomeVote.outcomeAddress === outcomeAddress
+    return outcomeVote.outcomeHeaderHash === outcomeHeaderHash
   })
   return {
     whoami: state.whoami,
-    outcomeAddress,
+    outcomeHeaderHash,
     votes,
   }
 }
