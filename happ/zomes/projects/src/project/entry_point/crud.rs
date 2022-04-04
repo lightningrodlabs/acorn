@@ -10,29 +10,29 @@ use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
 // The "Entry" in EntryPoint is not a reference to Holochain "Entries"
 // it is rather the concept of an Entrance, as in a doorway, to the tree
 #[hdk_entry(id = "entry_point")]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 #[derive(Clone, PartialEq)]
 pub struct EntryPoint {
     pub color: String,
-    pub creator_address: AgentPubKeyB64,
+    pub creator_agent_pub_key: AgentPubKeyB64,
     pub created_at: f64,
-    pub outcome_address: HeaderHashB64,
+    pub outcome_header_hash: HeaderHashB64,
     pub is_imported: bool,
 }
 
 impl EntryPoint {
     pub fn new(
         color: String,
-        creator_address: AgentPubKeyB64,
+        creator_agent_pub_key: AgentPubKeyB64,
         created_at: f64,
-        outcome_address: HeaderHashB64,
+        outcome_header_hash: HeaderHashB64,
         is_imported: bool,
     ) -> Self {
         Self {
             color,
-            creator_address,
+            creator_agent_pub_key,
             created_at,
-            outcome_address,
+            outcome_header_hash,
             is_imported,
         }
     }
@@ -64,7 +64,7 @@ pub fn fetch_entry_point_details(_: ()) -> ExternResult<EntryPointDetails> {
         .iter()
         .map(|e| {
             let element = get(
-                HeaderHash::from(e.entry.outcome_address.clone()),
+                HeaderHash::from(e.entry.outcome_header_hash.clone()),
                 GetOptions::content(),
             )?;
             match element {

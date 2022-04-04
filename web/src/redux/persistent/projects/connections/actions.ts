@@ -6,6 +6,8 @@
 */
 import ProjectZomeApi from '../../../../api/projectsApi'
 import { getAppWs } from '../../../../hcWebsockets'
+import { Connection } from '../../../../types'
+import { Action, CellIdString } from '../../../../types/shared'
 import { cellIdFromString } from '../../../../utils'
 import { createCrudActionCreators } from '../../crudRedux'
 
@@ -15,7 +17,7 @@ const PREVIEW_CONNECTIONS = 'PREVIEW_CONNECTIONS'
 const CLEAR_CONNECTIONS_PREVIEW = 'CLEAR_CONNECTIONS_PREVIEW'
 const AFFECT_LAYOUT_DELETE_CONNECTION = 'AFFECT_LAYOUT_DELETE_CONNECTION'
 
-const previewConnections = (cellId, connections) => {
+const previewConnections = (cellId: CellIdString, connections: Array<Connection>): Action<{cellId: CellIdString, connections: Array<Connection>}> => {
   return {
     type: PREVIEW_CONNECTIONS,
     payload: {
@@ -25,7 +27,7 @@ const previewConnections = (cellId, connections) => {
   }
 }
 
-const clearConnectionsPreview = cellId => {
+const clearConnectionsPreview = (cellId: CellIdString): Action<{cellId: CellIdString}> => {
   return {
     type: CLEAR_CONNECTIONS_PREVIEW,
     payload: {
@@ -44,8 +46,7 @@ const [[
   fetchConnections,
   updateConnection,
   deleteConnection
-]] = createCrudActionCreators('CONNECTION')
-
+]] = createCrudActionCreators<Connection>('CONNECTION')
 
 // this action gets caught and
 // handled in the web/src/layout/middleware.js

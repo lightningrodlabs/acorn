@@ -12,7 +12,7 @@ import HierarchyPicker from '../../HierarchyPicker/HierarchyPicker'
 export default function RightMenu({
   projectId,
   agentAddress,
-  outcomeAddress,
+  outcomeHeaderHash,
   outcome,
   updateOutcome,
 }) {
@@ -28,21 +28,21 @@ export default function RightMenu({
     updateOutcome(
       {
         ...outcome,
-        userEditHash: agentAddress,
+        editorAgentPubKey: agentAddress,
         timestampUpdated: moment().unix(),
         [key]: val,
       },
-      outcomeAddress
+      outcomeHeaderHash
     )
   }
 
   const [viewsOpen, setViews] = useState(defaultViews)
 
   useEffect(() => {
-    if (!outcomeAddress) {
+    if (!outcomeHeaderHash) {
       setViews({ ...defaultViews })
     }
-  }, [outcomeAddress])
+  }, [outcomeHeaderHash])
 
   const rightMenuPriorityClass = viewsOpen.priority ? 'active' : ''
   const rightMenuHelpClass = viewsOpen.help ? 'active' : ''
@@ -70,11 +70,11 @@ export default function RightMenu({
     updateOutcome(
       {
         ...outcome,
-        userEditHash: agentAddress,
+        editorAgentPubKey: agentAddress,
         timestampUpdated: moment().unix(),
         timeFrame: timeframe,
       },
-      outcomeAddress
+      outcomeHeaderHash
     )
   }
 
@@ -140,7 +140,7 @@ export default function RightMenu({
         {viewsOpen.priority && (
           <PriorityPicker
             projectId={projectId}
-            outcomeAddress={outcomeAddress}
+            outcomeHeaderHash={outcomeHeaderHash}
             onClose={() => setViews({ ...defaultViews })}
           />
         )}

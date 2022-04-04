@@ -1,3 +1,6 @@
+import { WireElement } from "../../../../api/hdkCrud"
+import { CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyResponse, Outcome } from "../../../../types"
+import { Action, CellIdString } from "../../../../types/shared"
 import { createCrudActionCreators } from "../../crudRedux"
 
 
@@ -11,7 +14,7 @@ const [[
   fetchOutcomes,
   updateOutcome,
   deleteOutcome
-]] = createCrudActionCreators('OUTCOME')
+]] = createCrudActionCreators<Outcome>('OUTCOME')
 
 export {
   CREATE_OUTCOME,
@@ -32,17 +35,18 @@ export {
 const CREATE_OUTCOME_WITH_CONNECTION = 'CREATE_OUTCOME_WITH_CONNECTION'
 const DELETE_OUTCOME_FULLY = 'DELETE_OUTCOME_FULLY'
 
-const createOutcomeWithConnection = (cellIdString, payload) => {
+const createOutcomeWithConnection = (cellIdString: CellIdString, payload: CreateOutcomeWithConnectionOutput): Action<CreateOutcomeWithConnectionOutput> => {
   return {
     type: CREATE_OUTCOME_WITH_CONNECTION,
     payload: payload,
     meta: { cellIdString },
   }
 }
-const deleteOutcomeFully = (cellIdString, payload) => {
+const deleteOutcomeFully = (cellIdString: CellIdString, payload: DeleteOutcomeFullyResponse): Action<DeleteOutcomeFullyResponse> => {
   return {
     type: DELETE_OUTCOME_FULLY,
     payload: payload,
     meta: { cellIdString },
   }
 }
+export type OutcomesAction = Action<WireElement<Outcome>> | Action<CreateOutcomeWithConnectionOutput>

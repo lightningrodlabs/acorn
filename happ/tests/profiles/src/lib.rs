@@ -1,3 +1,2 @@
-mod profiles;
-mod test_lib;
 mod fixtures;
+mod profiles;

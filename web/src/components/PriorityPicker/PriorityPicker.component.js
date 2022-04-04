@@ -7,7 +7,7 @@ import PriorityPickerVote from './PriorityPickerVote/PriorityPickerVote.connecto
 
 export default function PriorityPicker({
   projectId,
-  outcomeAddress,
+  outcomeHeaderHash,
   priorityMode,
   onClose,
 }) {
@@ -18,8 +18,8 @@ export default function PriorityPicker({
       heading='Priority'
       onClose={onClose}>
       {isUniversal
-        ? <PriorityPickerUniversal projectId={projectId} outcomeAddress={outcomeAddress} />
-        : <PriorityPickerVote projectId={projectId} outcomeAddress={outcomeAddress} />}
+        ? <PriorityPickerUniversal projectId={projectId} outcomeHeaderHash={outcomeHeaderHash} />
+        : <PriorityPickerVote projectId={projectId} outcomeHeaderHash={outcomeHeaderHash} />}
     </PickerTemplate>
   )
 }

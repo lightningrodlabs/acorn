@@ -1,8 +1,9 @@
 import { AppWebsocket, CellId } from '@holochain/client'
 import { PROFILES_ZOME_NAME } from '../holochainConfig'
-import { Profile } from '../types'
+import { Profile, WhoAmIOutput } from '../types'
+import { AgentPubKeyB64, UpdateInput } from '../types/shared'
 import callZome from './callZome'
-import { UpdateInput, WireElement } from './hdkCrud'
+import { WireElement } from './hdkCrud'
 
 const ZOME_FN_NAMES = {
   CREATE_WHOAMI: 'create_whoami',
@@ -42,7 +43,7 @@ const ProfilesApi = (appWebsocket: AppWebsocket) => {
         payload
       )
     },
-    whoami: async (cellId: CellId) => {
+    whoami: async (cellId: CellId): Promise<WhoAmIOutput> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -51,7 +52,7 @@ const ProfilesApi = (appWebsocket: AppWebsocket) => {
         null
       )
     },
-    fetchAgents: async (cellId: CellId) => {
+    fetchAgents: async (cellId: CellId): Promise<Array<Profile>> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -60,7 +61,7 @@ const ProfilesApi = (appWebsocket: AppWebsocket) => {
         null
       )
     },
-    fetchAgentAddress: async (cellId: CellId) => {
+    fetchAgentAddress: async (cellId: CellId): Promise<AgentPubKeyB64> => {
       return callZome(
         appWebsocket,
         cellId,

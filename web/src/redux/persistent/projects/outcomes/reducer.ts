@@ -7,17 +7,27 @@ import {
   DELETE_OUTCOME,
   CREATE_OUTCOME_WITH_CONNECTION,
   DELETE_OUTCOME_FULLY,
+  OutcomesAction,
 } from './actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 import { FETCH_ENTRY_POINT_DETAILS } from '../entry-points/actions'
+import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64, Option, WithHeaderHash } from '../../../../types/shared'
+import { CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyResponse, EntryPointDetails, Outcome, Scope, TimeFrame } from '../../../../types'
+import { WireElement } from '../../../../api/hdkCrud'
 
-const defaultState = {}
+type State = {
+  [cellId: CellIdString]: {
+    [headerHash: HeaderHashB64]: WithHeaderHash<Outcome>
+  }
+}
+const defaultState: State = {}
 
-export default function (state = defaultState, action) {
+export default function (state: State = defaultState, action: OutcomesAction | Action<EntryPointDetails> | Action<DeleteOutcomeFullyResponse>): State {
   if (isCrud(action, CREATE_OUTCOME, FETCH_OUTCOMES, UPDATE_OUTCOME, DELETE_OUTCOME)) {
+    const crudAction = action as Action<WireElement<Outcome>>
     return crudReducer(
       state,
-      action,
+      crudAction,
       CREATE_OUTCOME,
       FETCH_OUTCOMES,
       UPDATE_OUTCOME,
@@ -30,20 +40,22 @@ export default function (state = defaultState, action) {
 
   switch (type) {
     case CREATE_OUTCOME_WITH_CONNECTION:
+      const outcomeWithConnection = payload as CreateOutcomeWithConnectionOutput
       cellIdString = action.meta.cellIdString
       return {
         ...state,
         [cellIdString]: {
           ...state[cellIdString],
-          [payload.outcome.headerHash]: {
-            ...payload.outcome.entry,
-            headerHash: payload.outcome.headerHash,
+          [outcomeWithConnection.outcome.headerHash]: {
+            ...outcomeWithConnection.outcome.entry,
+            headerHash: outcomeWithConnection.outcome.headerHash,
           },
         },
       }
     case FETCH_ENTRY_POINT_DETAILS:
       cellIdString = action.meta.cellIdString
-      const mapped = payload.outcomes.map((r) => {
+      const entryPointDetails = payload as EntryPointDetails
+      const mapped = entryPointDetails.outcomes.map((r) => {
         return {
           ...r.entry,
           headerHash: r.headerHash,
@@ -62,11 +74,12 @@ export default function (state = defaultState, action) {
       }
     case DELETE_OUTCOME_FULLY:
       cellIdString = action.meta.cellIdString
+      const deleteFullyResponse = payload as DeleteOutcomeFullyResponse
       return {
         ...state,
         [cellIdString]: _.pickBy(
           state[cellIdString],
-          (_value, key) => key !== payload.address
+          (_value, key) => key !== deleteFullyResponse.address
         ),
       }
     default:

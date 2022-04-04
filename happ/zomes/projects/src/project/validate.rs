@@ -2,57 +2,57 @@ use crate::project::error::Error;
 use hdk::prelude::*;
 
 pub fn validate_value_matches_create_author(
-  value: &AgentPubKey,
-  validate_data: &ValidateData,
+    value: &AgentPubKey,
+    validate_data: &ValidateData,
 ) -> ValidateCallbackResult {
-  match value == validate_data.element.header().author() {
-    true => ValidateCallbackResult::Valid,
-    false => Error::CorruptCreateAgentPubKeyReference.into(),
-  }
+    match value == validate_data.element.header().author() {
+        true => ValidateCallbackResult::Valid,
+        false => Error::CorruptCreateAgentPubKeyReference.into(),
+    }
 }
 
 pub fn validate_value_matches_edit_author(
-  value: &AgentPubKey,
-  validate_data: &ValidateData,
+    value: &AgentPubKey,
+    validate_data: &ValidateData,
 ) -> ValidateCallbackResult {
-  match value == validate_data.element.header().author() {
-    true => ValidateCallbackResult::Valid,
-    false => Error::CorruptEditAgentPubKeyReference.into(),
-  }
+    match value == validate_data.element.header().author() {
+        true => ValidateCallbackResult::Valid,
+        false => Error::CorruptEditAgentPubKeyReference.into(),
+    }
 }
 
 pub fn validate_value_matches_original_author(
-  new_value: &AgentPubKey,
-  original_value: &AgentPubKey,
+    new_value: &AgentPubKey,
+    original_value: &AgentPubKey,
 ) -> ValidateCallbackResult {
-  match new_value == original_value {
-    true => ValidateCallbackResult::Valid,
-    false => Error::TamperCreateAgentPubKeyReference.into(),
-  }
+    match new_value == original_value {
+        true => ValidateCallbackResult::Valid,
+        false => Error::TamperCreateAgentPubKeyReference.into(),
+    }
 }
 
 pub fn validate_value_matches_original_author_for_edit(
-  new_value: &AgentPubKey,
-  original_value: &AgentPubKey,
+    new_value: &AgentPubKey,
+    original_value: &AgentPubKey,
 ) -> ValidateCallbackResult {
-  match new_value == original_value {
-    true => ValidateCallbackResult::Valid,
-    false => Error::UpdateOnNonAuthoredOriginal.into(),
-  }
+    match new_value == original_value {
+        true => ValidateCallbackResult::Valid,
+        false => Error::UpdateOnNonAuthoredOriginal.into(),
+    }
 }
 
 pub fn validate_value_is_some<O>(value: &Option<O>) -> ValidateCallbackResult {
-  match value {
-    Some(_) => ValidateCallbackResult::Valid,
-    None => Error::NoneNotSomeDuringEdit.into(),
-  }
+    match value {
+        Some(_) => ValidateCallbackResult::Valid,
+        None => Error::NoneNotSomeDuringEdit.into(),
+    }
 }
 
 pub fn validate_value_is_none<O>(value: &Option<O>) -> ValidateCallbackResult {
-  match value {
-    Some(_) => Error::SomeNotNoneDuringCreate.into(),
-    None => ValidateCallbackResult::Valid,
-  }
+    match value {
+        Some(_) => Error::SomeNotNoneDuringCreate.into(),
+        None => ValidateCallbackResult::Valid,
+    }
 }
 
 // should always be called with the HeaderHash of a Create or Update header

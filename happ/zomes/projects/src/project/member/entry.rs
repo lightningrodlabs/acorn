@@ -6,15 +6,15 @@ pub const MEMBER_PATH: &str = "member";
 
 // This is a reference to the agent address for any users who have joined this DHT
 #[hdk_entry(id = "member")]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 #[derive(Clone, PartialEq)]
 pub struct Member {
-    pub address: AgentPubKeyB64,
+    pub agent_pub_key: AgentPubKeyB64,
 }
 
 impl Member {
-    pub fn new(address: AgentPubKeyB64) -> Self {
-        Self { address }
+    pub fn new(agent_pub_key: AgentPubKeyB64) -> Self {
+        Self { agent_pub_key }
     }
 }
 
@@ -49,7 +49,7 @@ pub fn join_project_during_init() -> ExternResult<()> {
     // so that all peers can become aware of the new presence
     let member_path_address = Path::from(MEMBER_PATH).path_entry_hash()?;
     let member = Member {
-        address: AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey),
+        agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey),
     };
     create_entry(&member)?;
     let member_entry_hash = hash_entry(&member)?;

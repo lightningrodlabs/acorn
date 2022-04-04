@@ -1,3 +1,2 @@
-mod project;
-mod test_lib;
 mod fixtures;
+mod project;

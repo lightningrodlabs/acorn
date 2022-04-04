@@ -1,11 +1,19 @@
 
 import _ from 'lodash'
+import { WireElement } from '../../../../api/hdkCrud'
+import { Member } from '../../../../types'
+import { AgentPubKeyB64, CellIdString } from '../../../../types/shared'
 
 import { SET_MEMBER, FETCH_MEMBERS } from './actions'
 
-const defaultState = {}
+type State = {
+  [cellId: CellIdString]: {
+    [address: AgentPubKeyB64]: Member
+  }
+}
+const defaultState: State = {}
 
-export default function (state = defaultState, action) {
+export default function (state: State = defaultState, action) {
   const { payload, type } = action
 
   let cellIdString
@@ -13,7 +21,8 @@ export default function (state = defaultState, action) {
     // FETCH_MEMBERS
     case FETCH_MEMBERS:
       cellIdString = action.meta.cellIdString
-      const mapped = payload.map((wireElement) => wireElement.entry)
+      const members = payload as Array<WireElement<Member>>
+      const mapped = members.map((wireElement) => wireElement.entry)
       return {
         ...state,
         [cellIdString]: _.keyBy(mapped, 'address'),
@@ -21,11 +30,12 @@ export default function (state = defaultState, action) {
     // SET_MEMBER
     case SET_MEMBER:
       cellIdString = payload.cellIdString
+      const member = payload.member as Member
       return {
         ...state,
         [cellIdString]: {
           ...state[cellIdString],
-          [payload.member.headerHash]: payload.member,
+          [member.address]: member,
         },
       }
     // DEFAULT

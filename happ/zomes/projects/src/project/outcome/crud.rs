@@ -1,18 +1,24 @@
 use crate::project::{
-    connection::crud::{Connection, get_connection_path},
-    entry_point::crud::{EntryPoint, get_entry_point_path},
-    outcome_comment::crud::{OutcomeComment, get_outcome_comment_path},
+    connection::crud::{get_connection_path, Connection},
+    entry_point::crud::{get_entry_point_path, EntryPoint},
+    outcome_comment::crud::{get_outcome_comment_path, OutcomeComment},
     outcome_member::crud::{delete_outcome_members, OutcomeMember},
     outcome_vote::crud::{get_outcome_vote_path, OutcomeVote},
 };
-use hdk_crud::{chain_actions::{create_action::{CreateAction, PathOrEntryHash}, delete_action::DeleteAction, fetch_action::FetchAction}, retrieval::{fetch_entries::FetchEntries, fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry}}; //may want to do the mock thing
 use crate::{get_peers_content, SignalType};
 use hdk::prelude::*;
 use hdk_crud::{
-    crud,
-    retrieval::inputs::FetchOptions,
-    signals::ActionType,
-    wire_element::WireElement,
+    chain_actions::{
+        create_action::{CreateAction, PathOrEntryHash},
+        delete_action::DeleteAction,
+        fetch_action::FetchAction,
+    },
+    retrieval::{
+        fetch_entries::FetchEntries, fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry,
+    },
+}; //may want to do the mock thing
+use hdk_crud::{
+    crud, retrieval::inputs::FetchOptions, signals::ActionType, wire_element::WireElement,
 };
 use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 use std::fmt;
@@ -21,12 +27,12 @@ use std::fmt;
 // incomplete, certain or uncertain, and contains text content.
 // user hash and unix timestamp are included to prevent hash collisions.
 #[hdk_entry(id = "outcome")]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 #[derive(Clone, PartialEq)]
 pub struct Outcome {
     pub content: String,
-    pub user_hash: AgentPubKeyB64,
-    pub user_edit_hash: Option<AgentPubKeyB64>,
+    pub creator_agent_pub_key: AgentPubKeyB64,
+    pub editor_agent_pub_key: Option<AgentPubKeyB64>,
     pub timestamp_created: f64,
     pub timestamp_updated: Option<f64>,
     pub scope: Scope,
@@ -39,8 +45,8 @@ pub struct Outcome {
 impl Outcome {
     pub fn new(
         content: String,
-        user_hash: AgentPubKeyB64,
-        user_edit_hash: Option<AgentPubKeyB64>,
+        creator_agent_pub_key: AgentPubKeyB64,
+        editor_agent_pub_key: Option<AgentPubKeyB64>,
         timestamp_created: f64,
         timestamp_updated: Option<f64>,
         scope: Scope,
@@ -51,8 +57,8 @@ impl Outcome {
     ) -> Self {
         Self {
             content,
-            user_hash,
-            user_edit_hash,
+            creator_agent_pub_key,
+            editor_agent_pub_key,
             timestamp_created,
             timestamp_updated,
             scope,
@@ -109,7 +115,7 @@ impl fmt::Display for AchievementStatus {
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-#[serde(rename_all="camelCase")]
+#[serde(rename_all = "camelCase")]
 pub struct TimeFrame {
     from_date: f64,
     to_date: f64,
@@ -121,13 +127,7 @@ impl TimeFrame {
     }
 }
 
-crud!(
-    Outcome,
-    outcome,
-    "outcome",
-    get_peers_content,
-    SignalType
-);
+crud!(Outcome, outcome, "outcome", get_peers_content, SignalType);
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 #[serde(from = "UIEnum")]
@@ -158,7 +158,7 @@ impl fmt::Display for RelationInput {
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 pub struct LinkedOutcomeDetails {
-    outcome_address: HeaderHashB64,
+    outcome_header_hash: HeaderHashB64,
     relation: RelationInput,
 }
 
@@ -184,7 +184,8 @@ pub struct OutcomeWithConnectionSignal {
 }
 
 #[hdk_extern]
-pub fn create_outcome_with_connection( // TODO: may want to consider having a handler so can pass in the create_action struct for testing
+pub fn create_outcome_with_connection(
+    // TODO: may want to consider having a handler so can pass in the create_action struct for testing
     input: CreateOutcomeWithConnectionInput,
 ) -> ExternResult<CreateOutcomeWithConnectionOutput> {
     // false to say don't send a signal
@@ -196,34 +197,35 @@ pub fn create_outcome_with_connection( // TODO: may want to consider having a ha
         None,
         None,
     )?;
-    let new_outcome_address = wire_element.header_hash.clone();
+    let new_outcome_header_hash = wire_element.header_hash.clone();
     let maybe_connection: Option<WireElement<Connection>> = match input.maybe_linked_outcome {
         Some(linked_outcome_details) => {
-            let (parent_address, child_address) = match linked_outcome_details.relation {
+            let (parent_header_hash, child_header_hash) = match linked_outcome_details.relation {
                 // new outcome becomes parent
                 RelationInput::ExistingOutcomeAsChild => {
-                    (new_outcome_address, linked_outcome_details.outcome_address)
+                    (new_outcome_header_hash, linked_outcome_details.outcome_header_hash)
                 }
                 // new outcome becomes child
                 RelationInput::ExistingOutcomeAsParent => {
-                    (linked_outcome_details.outcome_address, new_outcome_address)
+                    (linked_outcome_details.outcome_header_hash, new_outcome_header_hash)
                 }
             };
             let random = sys_time()?;
             let r0 = random.as_millis();
             let connection = Connection {
-                parent_address,
-                child_address,
+                parent_header_hash,
+                child_header_hash,
                 randomizer: r0,
                 is_imported: false,
             };
-            let connection_wire_element = create_action.create_action::<Connection, WasmError, SignalType>(
-                connection,
-                Some(PathOrEntryHash::Path(get_connection_path())),
-                "connection".to_string(),
-                None,
-                None,
-            )?;
+            let connection_wire_element = create_action
+                .create_action::<Connection, WasmError, SignalType>(
+                    connection,
+                    Some(PathOrEntryHash::Path(get_connection_path())),
+                    "connection".to_string(),
+                    None,
+                    None,
+                )?;
             Some(connection_wire_element)
         }
         None => None,
@@ -247,7 +249,7 @@ pub fn create_outcome_with_connection( // TODO: may want to consider having a ha
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 pub struct DeleteOutcomeFullyResponse {
-    address: HeaderHashB64,
+    outcome_header_hash: HeaderHashB64,
     deleted_connections: Vec<HeaderHashB64>,
     deleted_outcome_members: Vec<HeaderHashB64>,
     deleted_outcome_votes: Vec<HeaderHashB64>,
@@ -267,7 +269,7 @@ pub struct DeleteOutcomeFullySignal {
 #[hdk_extern]
 pub fn delete_outcome_fully(address: HeaderHashB64) -> ExternResult<DeleteOutcomeFullyResponse> {
     let delete_action = DeleteAction {};
-    delete_action.delete_action::<Outcome, WasmError,SignalType>(
+    delete_action.delete_action::<Outcome, WasmError, SignalType>(
         address.clone(),
         "outcome".to_string(),
         None,
@@ -276,20 +278,21 @@ pub fn delete_outcome_fully(address: HeaderHashB64) -> ExternResult<DeleteOutcom
     let fetch_entries = FetchEntries {};
     let fetch_links = FetchLinks {};
     let get_latest = GetLatestEntry {};
-    let deleted_connections = fetch_action.fetch_action::<Connection,WasmError>(
-        &fetch_entries,
-        &fetch_links,
-        &get_latest,
-        FetchOptions::All,
-        GetOptions::content(),
-        get_connection_path(),
-    )?
+    let deleted_connections = fetch_action
+        .fetch_action::<Connection, WasmError>(
+            &fetch_entries,
+            &fetch_links,
+            &get_latest,
+            FetchOptions::All,
+            GetOptions::content(),
+            get_connection_path(),
+        )?
         .into_iter()
         .filter(|wire_element| {
-            // check whether the parent_address or child_address is equal to the given address.
+            // check whether the parent_header_hash or child_header_hash is equal to the given address.
             // If so, the connection is connected to the outcome being deleted.
-            wire_element.entry.child_address == address.clone()
-                || wire_element.entry.parent_address == address.clone()
+            wire_element.entry.child_header_hash == address.clone()
+                || wire_element.entry.parent_header_hash == address.clone()
         })
         .map(|wire_element| {
             let connection_address = wire_element.header_hash;
@@ -308,16 +311,17 @@ pub fn delete_outcome_fully(address: HeaderHashB64) -> ExternResult<DeleteOutcom
 
     let deleted_outcome_members = delete_outcome_members(address.clone())?;
 
-    let deleted_outcome_votes = fetch_action.fetch_action::<OutcomeVote, WasmError>(
-        &fetch_entries,
-        &fetch_links,
-        &get_latest,
-        FetchOptions::All,
-        GetOptions::content(),
-        get_outcome_vote_path(),
-    )?
+    let deleted_outcome_votes = fetch_action
+        .fetch_action::<OutcomeVote, WasmError>(
+            &fetch_entries,
+            &fetch_links,
+            &get_latest,
+            FetchOptions::All,
+            GetOptions::content(),
+            get_outcome_vote_path(),
+        )?
         .into_iter()
-        .filter(|wire_element| wire_element.entry.outcome_address == address.clone())
+        .filter(|wire_element| wire_element.entry.outcome_header_hash == address.clone())
         .map(|wire_element| {
             let outcome_vote_address = wire_element.header_hash;
             match delete_action.delete_action::<OutcomeVote, WasmError, SignalType>(
@@ -344,7 +348,7 @@ pub fn delete_outcome_fully(address: HeaderHashB64) -> ExternResult<DeleteOutcom
             get_outcome_comment_path(),
         )?
             .into_iter()
-            .filter(|wire_element| wire_element.entry.outcome_address == address)
+            .filter(|wire_element| wire_element.entry.outcome_header_hash == address)
             .map(|wire_element| {
                 let outcome_comment_address = wire_element.header_hash;
                 match delete_action.delete_action::<OutcomeComment, WasmError, SignalType>(
@@ -360,16 +364,17 @@ pub fn delete_outcome_fully(address: HeaderHashB64) -> ExternResult<DeleteOutcom
             .filter_map(Result::ok)
             .collect();
 
-    let deleted_entry_points = fetch_action.fetch_action::<EntryPoint, WasmError>(
-        &fetch_entries,
-        &fetch_links,
-        &get_latest,
-        FetchOptions::All,
-        GetOptions::content(),
-        get_entry_point_path(),
-    )?
+    let deleted_entry_points = fetch_action
+        .fetch_action::<EntryPoint, WasmError>(
+            &fetch_entries,
+            &fetch_links,
+            &get_latest,
+            FetchOptions::All,
+            GetOptions::content(),
+            get_entry_point_path(),
+        )?
         .into_iter()
-        .filter(|wire_element| wire_element.entry.outcome_address == address)
+        .filter(|wire_element| wire_element.entry.outcome_header_hash == address)
         .map(|wire_element| {
             let entry_point_address = wire_element.header_hash;
             match delete_action.delete_action::<EntryPoint, WasmError, SignalType>(
@@ -386,7 +391,7 @@ pub fn delete_outcome_fully(address: HeaderHashB64) -> ExternResult<DeleteOutcom
         .collect();
 
     let delete_response = DeleteOutcomeFullyResponse {
-        address,
+        outcome_header_hash: address,
         deleted_connections,
         deleted_outcome_members,
         deleted_outcome_votes,
@@ -440,7 +445,7 @@ pub struct GetHistoryResponse {
 //               match serde_json::from_str::<OutcomeMember>(&Into::<String>::into(value_entry)).ok() {
 //                 Some(outcome_member) => {
 //                   // filter down to only Outcome Members that are associated with the requested Outcome
-//                   if outcome_member.outcome_address == address {
+//                   if outcome_member.outcome_header_hash == address {
 //                     Ok(outcome_member)
 //                   } else {
 //                     Err(ZomeApiError::Internal("error".into()))

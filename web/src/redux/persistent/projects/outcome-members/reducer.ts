@@ -9,10 +9,18 @@ import {
 import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 import { DELETE_OUTCOME_COMMENT } from '../outcome-comments/actions'
+import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64, WithHeaderHash } from '../../../../types/shared'
+import { WireElement } from '../../../../api/hdkCrud'
+import { DeleteOutcomeFullyResponse, OutcomeMember } from '../../../../types'
 
-const defaultState = {}
+type State = {
+  [cellId: CellIdString]: {
+    [headerHash: HeaderHashB64]: WithHeaderHash<OutcomeMember>
+  }
+}
+const defaultState: State = {}
 
-export default function (state = defaultState, action) {
+export default function (state: State = defaultState, action: Action<WireElement<OutcomeMember>> | Action<DeleteOutcomeFullyResponse>): State {
   const { payload, type } = action
 
   if (
@@ -24,9 +32,10 @@ export default function (state = defaultState, action) {
       DELETE_OUTCOME_COMMENT
     )
   ) {
+    const crudAction = action as Action<WireElement<OutcomeMember>>
     return crudReducer(
       state,
-      action,
+      crudAction,
       CREATE_OUTCOME_MEMBER,
       FETCH_OUTCOME_MEMBERS,
       UPDATE_OUTCOME_MEMBER,
@@ -42,13 +51,14 @@ export default function (state = defaultState, action) {
   switch (type) {
     // DELETE_OUTCOME
     case DELETE_OUTCOME_FULLY:
+      const deleteFullyResponse = payload as DeleteOutcomeFullyResponse
       // filter out the OutcomeMembers whose headerHashes are listed as having been
       // deleted on account of having deleted the Outcome it relates to
       return {
         ...state,
         [cellId]: _.pickBy(
           state[cellId],
-          (_value, key) => payload.deletedOutcomeMembers.indexOf(key) === -1
+          (_value, key) => deleteFullyResponse.deletedOutcomeMembers.indexOf(key) === -1
         ),
       }
     // DEFAULT

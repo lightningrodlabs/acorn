@@ -1,8 +1,9 @@
 #[cfg(test)]
 pub mod tests {
-    use crate::fixtures::fixtures::{OutcomeFixturator};
+    use crate::fixtures::fixtures::OutcomeFixturator;
     use ::fixt::prelude::*;
     use hdk::prelude::*;
+    use hdk_unit_testing::mock_hdk::*;
     use holo_hash::AgentPubKeyB64;
     use holochain_types::prelude::option_entry_hashed;
     use holochain_types::prelude::ElementFixturator;
@@ -28,10 +29,10 @@ pub mod tests {
         );
 
         // with an entry with a random (not the agent committing)
-        // user_hash it will fail
+        // creator_agent_pub_key it will fail
         let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
-        outcome.user_hash = random_wrapped_agent_pub_key.clone();
-        outcome.user_edit_hash = None;
+        outcome.creator_agent_pub_key = random_wrapped_agent_pub_key.clone();
+        outcome.editor_agent_pub_key = None;
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome.clone().try_into().unwrap());
         assert_eq!(
@@ -39,17 +40,17 @@ pub mod tests {
             Error::CorruptCreateAgentPubKeyReference.into(),
         );
 
-        // with the right user_hash for the author
-        // but with a Some value for user_edit_hash it should
+        // with the right creator_agent_pub_key for the author
+        // but with a Some value for editor_agent_pub_key it should
         // fail since we are doing a create
 
-        // make the user_hash valid by making it equal the
+        // make the creator_agent_pub_key valid by making it equal the
         // AgentPubKey of the agent committing
-        outcome.user_hash = AgentPubKeyB64::new(create_header.author.as_hash().clone());
+        outcome.creator_agent_pub_key = AgentPubKeyB64::new(create_header.author.as_hash().clone());
         let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
-        // make the user_edit_hash value bad by filling it with anything
+        // make the editor_agent_pub_key value bad by filling it with anything
         // even the author's key during create action
-        outcome.user_edit_hash = Some(random_wrapped_agent_pub_key.clone());
+        outcome.editor_agent_pub_key = Some(random_wrapped_agent_pub_key.clone());
         // update the outcome value in the validate_data
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome.clone().try_into().unwrap());
@@ -60,11 +61,11 @@ pub mod tests {
 
         // SUCCESS case
         // the element exists and deserializes
-        // user_hash refers to the agent committing
-        // user_edit_hash is None
+        // creator_agent_pub_key refers to the agent committing
+        // editor_agent_pub_key is None
         // -> good to go
 
-        outcome.user_edit_hash = None;
+        outcome.editor_agent_pub_key = None;
         // update the outcome value in the validate_data
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome.clone().try_into().unwrap());
@@ -92,10 +93,10 @@ pub mod tests {
         );
 
         // with an entry with a
-        // user_edit_hash None it will fail
+        // editor_agent_pub_key None it will fail
         let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
-        outcome.user_hash = random_wrapped_agent_pub_key.clone();
-        outcome.user_edit_hash = None;
+        outcome.creator_agent_pub_key = random_wrapped_agent_pub_key.clone();
+        outcome.editor_agent_pub_key = None;
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome.clone().try_into().unwrap());
         assert_eq!(
@@ -103,11 +104,11 @@ pub mod tests {
             Error::NoneNotSomeDuringEdit.into(),
         );
 
-        // with a random user_edit_hash (not the author agent)
+        // with a random editor_agent_pub_key (not the author agent)
         // it will fail
         let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
-        // make the user_edit_hash value bad by filling it with a random author
-        outcome.user_edit_hash = Some(random_wrapped_agent_pub_key.clone());
+        // make the editor_agent_pub_key value bad by filling it with a random author
+        outcome.editor_agent_pub_key = Some(random_wrapped_agent_pub_key.clone());
         // update the outcome value in the validate_data
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome.clone().try_into().unwrap());
@@ -116,12 +117,10 @@ pub mod tests {
             Error::CorruptEditAgentPubKeyReference.into(),
         );
 
-        // with a valid user_edit_hash, we move on to the issue
-        // of the `user_hash`. Is it equal to the original author?
+        // with a valid editor_agent_pub_key, we move on to the issue
+        // of the `creator_agent_pub_key`. Is it equal to the original author?
         // to know this, we need to resolve that dependency
-        outcome.user_edit_hash = Some(AgentPubKeyB64::new(
-            update_header.author.as_hash().clone(),
-        ));
+        outcome.editor_agent_pub_key = Some(AgentPubKeyB64::new(update_header.author.as_hash().clone()));
         // update the outcome value in the validate_data
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome.clone().try_into().unwrap());
@@ -149,23 +148,17 @@ pub mod tests {
         // it is as if there is a Outcome at the original address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the Outcome
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                update_header.original_header_address.clone(),
-            )))
-            .times(1)
-            .return_const(Ok(bad_original_outcome_element.signed_header().clone()));
-        mock_hdk
-            .expect_must_get_entry()
-            .with(mockall::predicate::eq(MustGetEntryInput::new(
-                bad_original_entry_hash.clone(),
-            )))
-            .times(1)
-            .return_const(Ok(option_entry_hashed(
-                bad_original_outcome_element.entry().clone(),
-            )
-            .unwrap()));
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref,
+            MustGetHeaderInput::new(update_header.original_header_address.clone()),
+            Ok(bad_original_outcome_element.signed_header().clone()),
+        );
+        mock_must_get_entry(
+            mock_hdk_ref,
+            MustGetEntryInput::new(bad_original_entry_hash.clone()),
+            Ok(option_entry_hashed(bad_original_outcome_element.entry().clone()).unwrap()),
+        );
         set_hdk(mock_hdk);
 
         assert_eq!(
@@ -175,10 +168,10 @@ pub mod tests {
 
         // SUCCESS case
         // the element exists and deserializes
-        // user_edit_hash is Some(the author)
+        // editor_agent_pub_key is Some(the author)
         // original_header_address exists, and the value
-        // `user_hash` of the original Outcome
-        // is equal to the new `user_hash` value
+        // `creator_agent_pub_key` of the original Outcome
+        // is equal to the new `creator_agent_pub_key` value
         // -> good to go
         // we should see that the ValidateCallbackResult
         // is finally valid
@@ -194,32 +187,26 @@ pub mod tests {
             .header()
             .entry_hash()
             .unwrap();
-        // set the user_hash on the outcome equal to the original outcomes user_hash property
+        // set the creator_agent_pub_key on the outcome equal to the original outcomes creator_agent_pub_key property
         // thus making them valid
-        outcome.user_hash = good_original_outcome.user_hash.clone();
+        outcome.creator_agent_pub_key = good_original_outcome.creator_agent_pub_key.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome.clone().try_into().unwrap());
 
         // it is as if there is a Outcome at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the outcome_address
-        mock_hdk
-            .expect_must_get_header()
-            .with(mockall::predicate::eq(MustGetHeaderInput::new(
-                update_header.original_header_address,
-            )))
-            .times(1)
-            .return_const(Ok(good_original_outcome_element.signed_header().clone()));
-        mock_hdk
-            .expect_must_get_entry()
-            .with(mockall::predicate::eq(MustGetEntryInput::new(
-                good_original_entry_hash.clone(),
-            )))
-            .times(1)
-            .return_const(Ok(option_entry_hashed(
-                good_original_outcome_element.entry().clone(),
-            )
-            .unwrap()));
+        // the must_get_header call for the outcome_header_hash
+        let mock_hdk_ref = &mut mock_hdk;
+        mock_must_get_header(
+            mock_hdk_ref,
+            MustGetHeaderInput::new(update_header.original_header_address),
+            Ok(good_original_outcome_element.signed_header().clone()),
+        );
+        mock_must_get_entry(
+            mock_hdk_ref,
+            MustGetEntryInput::new(good_original_entry_hash.clone()),
+            Ok(option_entry_hashed(good_original_outcome_element.entry().clone()).unwrap()),
+        );
         set_hdk(mock_hdk);
 
         assert_eq!(

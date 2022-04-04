@@ -10,15 +10,24 @@ import {
 } from './actions'
 import { CREATE_OUTCOME_WITH_CONNECTION, DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
+import { CellIdString, HeaderHashB64 } from '../../../../types/shared'
+import { Connection, CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyResponse } from '../../../../types'
 
-const defaultState = {}
 
+type State = { 
+  [cellId: CellIdString]: {
+    [headerHashOrPreviewId: string]: Connection & {
+      headerHash?: HeaderHashB64 
+    }
+  }
+}
+const defaultState: State = {}
 const PREVIEW_KEY_STRING = 'preview'
 
-export default function (state = defaultState, action) {
+export default function (state: State = defaultState, action): State {
   // start out by checking whether this a standard CRUD operation
   if (isCrud(action, CREATE_CONNECTION, FETCH_CONNECTIONS, UPDATE_CONNECTION, DELETE_CONNECTION)) {
-    return crudReducer(
+    return crudReducer<Connection>(
       state,
       action,
       CREATE_CONNECTION,
@@ -36,7 +45,8 @@ export default function (state = defaultState, action) {
     case PREVIEW_CONNECTIONS:
       cellId = payload.cellId
       const previews = {}
-      payload.connections.forEach(connection => {
+      const connections = payload.connections as Array<Connection>
+      connections.forEach(connection => {
         const rand = Math.random()
         previews[`${PREVIEW_KEY_STRING}${rand}`] = connection
       })
@@ -48,7 +58,7 @@ export default function (state = defaultState, action) {
         },
       }
     case CLEAR_CONNECTIONS_PREVIEW:
-      cellId = payload.cellId
+      cellId = payload.cellId as CellIdString
       return {
         ...state,
         [cellId]: _.pickBy(
@@ -58,15 +68,16 @@ export default function (state = defaultState, action) {
       }
     // CREATE OUTCOME WITH CONNECTION
     case CREATE_OUTCOME_WITH_CONNECTION:
+      const createOutcomeWithConnection = payload as CreateOutcomeWithConnectionOutput
       cellId = action.meta.cellIdString
-      if (payload.maybeConnection) {
+      if (createOutcomeWithConnection.maybeConnection) {
         return {
           ...state,
           [cellId]: {
             ...state[cellId],
-            [payload.maybeConnection.headerHash]: {
-              ...payload.maybeConnection.entry,
-              headerHash: payload.maybeConnection.headerHash,
+            [createOutcomeWithConnection.maybeConnection.headerHash]: {
+              ...createOutcomeWithConnection.maybeConnection.entry,
+              headerHash: createOutcomeWithConnection.maybeConnection.headerHash,
             },
           },
         }
@@ -78,11 +89,12 @@ export default function (state = defaultState, action) {
       cellId = action.meta.cellIdString
       // filter out the Connections whose headerHashes are listed as having been
       // deleted on account of having deleted one of the Outcomes it links
+      const deleteOutcomeFullyResponse = payload as DeleteOutcomeFullyResponse
       return {
         ...state,
         [cellId]: _.pickBy(
           state[cellId],
-          (_value, key) => payload.deletedConnections.indexOf(key) === -1
+          (_value, key) => deleteOutcomeFullyResponse.deletedConnections.indexOf(key) === -1
         ),
       }
     default:

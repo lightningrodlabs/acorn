@@ -11,15 +11,15 @@ pub(crate) mod fixtures {
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use holo_hash::{AgentPubKeyB64, HeaderHashB64};
-    use projects::project::outcome::crud::{Outcome, Scope, AchievementStatus, SmallsEstimate};
+    use projects::project::outcome::crud::{AchievementStatus, Outcome, Scope, SmallsEstimate};
     use projects::project::{
         connection::crud::Connection,
         entry_point::crud::EntryPoint,
+        member::entry::Member,
         outcome::crud::TimeFrame,
         outcome_comment::crud::OutcomeComment,
         outcome_member::crud::OutcomeMember,
         outcome_vote::crud::OutcomeVote,
-        member::entry::Member,
         project_meta::crud::{PriorityMode, ProjectMeta},
     };
 
@@ -90,7 +90,6 @@ pub(crate) mod fixtures {
 
       };
     );
-
 
     fixturator!(
       AchievementStatus;

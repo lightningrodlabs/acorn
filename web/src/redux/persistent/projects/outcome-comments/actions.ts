@@ -1,3 +1,4 @@
+import { OutcomeComment } from '../../../../types'
 import { createCrudActionCreators } from '../../crudRedux'
 
 const [[
@@ -10,7 +11,7 @@ const [[
   fetchOutcomeComments,
   updateOutcomeComment,
   deleteOutcomeComment
-]] = createCrudActionCreators('OUTCOME_COMMENT')
+]] = createCrudActionCreators<OutcomeComment>('OUTCOME_COMMENT')
 
 export {
   CREATE_OUTCOME_COMMENT,

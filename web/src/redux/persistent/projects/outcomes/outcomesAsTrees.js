@@ -11,17 +11,17 @@ export default function outcomesAsTrees(
       let extensions = {}
       if (withMembers) {
         extensions.members = Object.values(outcomeMembers)
-          .filter(gm => gm.outcomeAddress === outcome.headerHash)
+          .filter(gm => gm.outcomeHeaderHash === outcome.headerHash)
           .map(gm => agents[gm.agentAddress])
       }
       if (withComments) {
         extensions.comments = Object.values(outcomeComments).filter(
-          gc => gc.outcomeAddress === outcome.headerHash
+          gc => gc.outcomeHeaderHash === outcome.headerHash
         )
       }
       if (withVotes) {
         extensions.votes = Object.values(outcomeVotes).filter(
-          gv => gv.outcomeAddress === outcome.headerHash
+          gv => gv.outcomeHeaderHash === outcome.headerHash
         )
       }
       return {
@@ -37,19 +37,19 @@ export default function outcomesAsTrees(
   const allOutcomeAddresses = Object.values(outcomes).map(outcome => outcome.headerHash)
   // find the Outcome objects without parent Outcomes
   // since they will sit at the top level
-  const noParentsAddresses = allOutcomeAddresses.filter(outcomeAddress => {
-    return !connectionsAsArray.find(connection => connection.childAddress === outcomeAddress)
+  const noParentsAddresses = allOutcomeAddresses.filter(outcomeHeaderHash => {
+    return !connectionsAsArray.find(connection => connection.childHeaderHash === outcomeHeaderHash)
   })
   // recursively calls itself
   // so that it constructs the full sub-tree for each root Outcome
-  function getOutcome(outcomeAddress) {
+  function getOutcome(outcomeHeaderHash) {
     return {
-      ...allOutcomes[outcomeAddress],
+      ...allOutcomes[outcomeHeaderHash],
       children: connectionsAsArray
         // find the connections indicating the children of this outcome
-        .filter(connection => connection.parentAddress === outcomeAddress)
+        .filter(connection => connection.parentHeaderHash === outcomeHeaderHash)
         // actually nest the children Outcomes, recurse
-        .map(connection => getOutcome(connection.childAddress)),
+        .map(connection => getOutcome(connection.childHeaderHash)),
     }
   }
   // start with the root Outcomes, and recurse down to their children

@@ -1,8 +1,11 @@
+import { RealtimeInfoInput } from "../../../../types"
+import { Action, CellIdString } from "../../../../types/shared"
+
 const SEND_REALTIME_INFO = 'SEND_REALTIME_INFO'
 const SEND_EXIT_PROJECT_SIGNAL = 'SEND_EXIT_PROJECT_SIGNAL'
 const SEND_REALTIME_INFO_SIGNAL = 'SEND_REALTIME_INFO_SIGNAL'
 
-const sendRealtimeInfoSignal = (cellIdString, payload) => {
+const sendRealtimeInfoSignal = (cellIdString: CellIdString, payload: RealtimeInfoInput): Action<RealtimeInfoInput> => {
   return {
     type: SEND_REALTIME_INFO_SIGNAL,
     payload,
