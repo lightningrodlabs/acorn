@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import './ProjectSettingsModal.scss'
 import { PriorityModeOptions } from '../../constants'
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import Modal from '../Modal/Modal'
@@ -11,6 +10,7 @@ import {
 } from '../ProjectModal/ProjectModal'
 import PreferenceSelect, { PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
 import Icon from '../Icon/Icon'
+import './ProjectSettingsModal.scss'
 
 // since this is a big wordset, dynamically import it
 // instead of including in the main bundle

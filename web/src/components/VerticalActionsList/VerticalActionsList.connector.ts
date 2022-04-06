@@ -1,13 +1,14 @@
 import { connect } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import { outcomeWidth } from '../../drawing/dimensions'
 import { deleteOutcomeFully, updateOutcome } from '../../redux/persistent/projects/outcomes/actions'
-import VerticalActionsList from './VerticalActionsList.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
+import VerticalActionsList from './VerticalActionsList.component'
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state: RootState, ownProps) {
   // outcome headerHash
   const outcomeHeaderHash = state.ui.outcomeForm.editAddress
   // project ID

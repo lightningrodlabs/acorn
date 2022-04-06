@@ -1,18 +1,18 @@
-import './PriorityPicker.scss'
 import { connect } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 import PriorityPicker from './PriorityPicker.component'
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state: RootState, ownProps) {
   const { projectId, outcomeHeaderHash } = ownProps
   // filters all the OutcomeVotes down to a list
   // of only the Votes on the selected Outcome
-  const projectMeta = state.projects.projectMeta[projectId] || {}
-  const priorityMode = projectMeta.priorityMode
+  const projectMeta = state.projects.projectMeta[projectId]
+  const priorityMode = projectMeta ? projectMeta.priorityMode : undefined
   return {
     whoami: state.whoami,
     outcomeHeaderHash,
     projectId,
-    priorityMode
+    priorityMode,
   }
 }
 

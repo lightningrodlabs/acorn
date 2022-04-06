@@ -19,8 +19,6 @@ import { PROJECTS_ZOME_NAME } from '../holochainConfig'
 import callZome from './callZome'
 import { HeaderHashB64 } from '../types/shared'
 
-// TODO: add typescript types to `any` ones here
-
 const ENTRY_TYPE_NAMES = {
   OUTCOME: 'outcome',
   CONNECTION: 'connection',
@@ -196,7 +194,7 @@ export default class ProjectsZomeApi {
   member: ReturnType<typeof MembersApi>
 
   // one per entry type that uses hdk_crud
-  // projectMeta and member don't use it
+  // projectMeta, realtimeInfoSignal and member don't use hdk_crud
   constructor(appWebsocket: AppWebsocket) {
     this.appWebsocket = appWebsocket
     this.outcome = OutcomeApi(appWebsocket)

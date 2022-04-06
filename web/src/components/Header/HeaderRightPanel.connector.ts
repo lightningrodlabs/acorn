@@ -1,9 +1,10 @@
 import { connect } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 import { openExpandedView } from '../../redux/ephemeral/expanded-view/actions'
 import { animatePanAndZoom } from '../../redux/ephemeral/viewport/actions'
 import HeaderRightPanel from './HeaderRightPanel.component'
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject
   const outcomes = state.projects.outcomes[projectId] || {}
   const outcomeComments = state.projects.outcomeComments[projectId] || {}
@@ -15,6 +16,7 @@ function mapStateToProps(state) {
     commentList,
   }
 }
+
 function mapDispatchToProps(dispatch) {
   return {
     animatePanAndZoom: (address) => {

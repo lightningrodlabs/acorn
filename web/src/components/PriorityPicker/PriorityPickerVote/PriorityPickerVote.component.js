@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import { makeStyles } from '@material-ui/core/styles'
 import Slider from '@material-ui/core/Slider'
 import moment from 'moment'
-import './PriorityPickerVote.scss'
 import Icon from '../../Icon/Icon'
+import './PriorityPickerVote.scss'
 
 const useStyles = makeStyles({
   root: {

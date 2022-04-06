@@ -1,14 +1,15 @@
 import { connect } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 import {
   deleteOutcomeFully,
   updateOutcome,
 } from '../../redux/persistent/projects/outcomes/actions'
-import MultiEditBar from './MultiEditBar.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
+import MultiEditBar from './MultiEditBar.component'
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   const {
     ui: { activeProject },
   } = state

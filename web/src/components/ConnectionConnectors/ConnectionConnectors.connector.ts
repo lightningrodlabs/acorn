@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import {
   setConnectionConnectorFrom,
@@ -6,7 +7,7 @@ import {
 } from '../../redux/ephemeral/connection-connector/actions'
 import ConnectionConnectors from './ConnectionConnectors.component'
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   const {
     ui: {
       activeProject,

@@ -1,9 +1,9 @@
 import React from 'react'
-import './PriorityPicker.scss'
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import { PriorityModeOptions } from '../../constants'
 import PriorityPickerUniversal from './PriorityPickerUniversal/PriorityPickerUniversal.connector'
 import PriorityPickerVote from './PriorityPickerVote/PriorityPickerVote.connector'
+import './PriorityPicker.scss'
 
 export default function PriorityPicker({
   projectId,

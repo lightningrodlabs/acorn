@@ -1,15 +1,16 @@
+import { connect } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 import {
   previewConnections,
   clearConnectionsPreview,
   createConnection,
 } from '../../redux/persistent/projects/connections/actions'
-import { connect } from 'react-redux'
-import ConnectionConnectorPicker from './ConnectionConnectorPicker.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
+import ConnectionConnectorPicker from './ConnectionConnectorPicker.component'
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   const selectedOutcomes = state.ui.selection.selectedOutcomes.map((headerHash) => {
     return state.projects.outcomes[state.ui.activeProject][headerHash]
   })
