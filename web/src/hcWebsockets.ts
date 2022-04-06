@@ -27,7 +27,7 @@ export async function getAdminWs(): Promise<AdminWebsocket> {
   }
 }
 
-export async function getAppWs(signalsHandler): Promise<AppWebsocket> {
+export async function getAppWs(signalsHandler?: any): Promise<AppWebsocket> {
   if (appWs) {
     return appWs
   } else {

@@ -1,7 +1,8 @@
 import { connect } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 import PriorityOutcome from './PriorityOutcome.component'
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state: RootState, ownProps) {
   const { projectId, outcome } = ownProps
   // filters all the OutcomeVotes down to a list
   // of only the Votes on the selected Outcome

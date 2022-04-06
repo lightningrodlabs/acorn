@@ -1,12 +1,15 @@
 import { connect } from 'react-redux'
+import { RootState } from '../../redux/reducer'
+import { unselectAll } from '../../redux/ephemeral/selection/actions'
+import {
+  openOutcomeForm,
+  updateContent,
+} from '../../redux/ephemeral/outcome-form/actions'
 import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import { outcomeWidth } from '../../drawing/dimensions'
-import { unselectAll } from '../../redux/ephemeral/selection/actions'
-import { openOutcomeForm, updateContent } from '../../redux/ephemeral/outcome-form/actions'
-import './OutcomeHoverOverlayButtons.scss'
 import OutcomeHoverOverlayButtons from './OutcomeHoverOverlayButtons.component'
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   const hoveredAddress = state.ui.hover.hoveredOutcome // null or an address
   const { activeProject } = state.ui
   const outcomes = state.projects.outcomes[activeProject] || {}
@@ -15,7 +18,7 @@ function mapStateToProps(state) {
 
   let outcomeCoordinate,
     outcomeContent,
-    cssCoordinates = {}
+    cssCoordinates = { x: undefined, y: undefined }
   if (hoveredAddress) {
     outcomeCoordinate = state.ui.layout[hoveredAddress]
     // Figure out where is that outcome is relation to the window:
@@ -42,7 +45,9 @@ function mapDispatchToProps(dispatch) {
   return {
     onEditClick: (address, outcomeCoordinate, content) => {
       dispatch(unselectAll())
-      dispatch(openOutcomeForm(outcomeCoordinate.x, outcomeCoordinate.y, address))
+      dispatch(
+        openOutcomeForm(outcomeCoordinate.x, outcomeCoordinate.y, address)
+      )
       dispatch(updateContent(content))
     },
   }

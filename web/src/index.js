@@ -24,7 +24,7 @@ import { realtimeInfoWatcher } from './redux/persistent/projects/realtime-info-s
 import { fetchAgents } from './redux/persistent/profiles/agents/actions'
 import { whoami } from './redux/persistent/profiles/who-am-i/actions'
 import { fetchAgentAddress } from './redux/persistent/profiles/agent-address/actions'
-import App from './routes/App'
+import App from './routes/App.connector'
 import {
   getAppWs,
   getAdminWs,

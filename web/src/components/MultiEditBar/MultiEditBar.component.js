@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { deleteOutcomeFully, updateOutcome } from '../../redux/persistent/projects/outcomes/actions'
 import moment from 'moment'
-
-import './MultiEditBar.scss'
-
 import Icon from '../Icon/Icon'
-import Avatar from '../Avatar/Avatar'
 import StatusIcon from '../StatusIcon/StatusIcon'
-
 import StatusPicker from '../StatusPicker'
-import PeoplePicker from '../PeoplePicker/PeoplePicker.connector'
 import DatePicker from '../DatePicker/DatePicker'
 import HierarchyPicker from '../HierarchyPicker/HierarchyPicker'
 import ConnectionConnectorPicker from '../ConnectionConnectorPicker/ConnectionConnectorPicker.connector'
 import Modal, { ModalContent } from '../Modal/Modal'
+
+import './MultiEditBar.scss'
 
 export default function MultiEditBar({
   agentAddress,

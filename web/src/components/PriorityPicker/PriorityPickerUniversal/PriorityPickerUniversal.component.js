@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import './PriorityPickerUniversal.scss'
 import ToggleSwitch from '../../ToggleSwitch/ToggleSwitch'
+import './PriorityPickerUniversal.scss'
 
 export default function PriorityPickerUniversal({
   projectMeta,

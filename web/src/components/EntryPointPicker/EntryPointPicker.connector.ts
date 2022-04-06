@@ -1,9 +1,10 @@
 import { connect } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 import selectEntryPoints from '../../redux/persistent/projects/entry-points/select'
 import { animatePanAndZoom } from '../../redux/ephemeral/viewport/actions'
 import EntryPointPicker from './EntryPointPicker.component'
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   const {
     ui: { activeProject, activeEntryPoints },
   } = state

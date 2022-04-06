@@ -33,7 +33,7 @@ import realtimeInfo from './ephemeral/realtime-info/reducer'
 // import anotherone from './another/path'
 
 // combine reducers from each feature to create the top-level reducer
-export default combineReducers({
+const rootReducer = combineReducers({
   cells,
   agents,
   projects,
@@ -61,3 +61,7 @@ export default combineReducers({
   }), // ,
   // anotherone: anotherone
 })
+
+export type RootState = ReturnType<typeof rootReducer>
+
+export default rootReducer

@@ -20,7 +20,7 @@ export interface EntryTypeApi<ToCommitType, CommittedType> {
     cellId: CellId,
     updateInput: UpdateInput<ToCommitType>
   ) => Promise<CommittedType>
-  delete: (cellId: CellId, address: HeaderHashB64) => Promise<void>
+  delete: (cellId: CellId, headerHash: HeaderHashB64) => Promise<void>
 }
 
 export function createEntryName(entryType: string) {

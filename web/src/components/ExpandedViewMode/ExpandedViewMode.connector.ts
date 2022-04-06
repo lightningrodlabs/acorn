@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 import {
   createEntryPoint,
   deleteEntryPoint,
@@ -11,12 +12,14 @@ import {
   startDescriptionEdit,
   endDescriptionEdit,
 } from '../../redux/ephemeral/outcome-editing/actions'
-import ExpandedViewMode from './ExpandedViewMode.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
+import ExpandedViewMode from './ExpandedViewMode.component'
+import { HeaderHashB64 } from '../../types/shared'
+import { EntryPoint, Outcome } from '../../types'
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state: RootState, ownProps) {
   let outcome,
     creator = null,
     squirrels = [],
@@ -87,42 +90,41 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
-    createEntryPoint: async (payload) => {
+    createEntryPoint: async (entryPoint: EntryPoint) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const entryPoint = await projectsZomeApi.entryPoint.create(
+      const wireElement = await projectsZomeApi.entryPoint.create(
         cellId,
-        payload
+        entryPoint
       )
-      return dispatch(createEntryPoint(cellIdString, entryPoint))
+      return dispatch(createEntryPoint(cellIdString, wireElement))
     },
-    deleteEntryPoint: async (payload) => {
+    deleteEntryPoint: async (headerHash: HeaderHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const entryPointDeleteHash = await projectsZomeApi.entryPoint.delete(
+      await projectsZomeApi.entryPoint.delete(
         cellId,
-        payload
+        headerHash
       )
-      // TODO: which header hash should I be passing in to the action?
-      return dispatch(deleteEntryPoint(cellIdString, entryPointDeleteHash))
+      return dispatch(deleteEntryPoint(cellIdString, headerHash))
     },
-    updateOutcome: async (entry, headerHash) => {
+    updateOutcome: async (outcome: Outcome, headerHash: HeaderHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedOutcome = await projectsZomeApi.outcome.update(cellId, {
         headerHash,
-        entry,
+        entry: outcome,
       })
       return dispatch(updateOutcome(cellIdString, updatedOutcome))
     },
-    deleteOutcomeMember: async (payload) => {
+    deleteOutcomeMember: async (headerHash: HeaderHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const outcomeMemberDeleteHash = await projectsZomeApi.outcomeMember.delete(
+      await projectsZomeApi.outcomeMember.delete(
         cellId,
-        payload
+        headerHash
       )
-      return dispatch(deleteOutcomeMember(cellIdString, outcomeMemberDeleteHash))
+      return dispatch(deleteOutcomeMember(cellIdString, headerHash))
     },
     startTitleEdit: (outcomeHeaderHash) => {
       return dispatch(startTitleEdit(outcomeHeaderHash))

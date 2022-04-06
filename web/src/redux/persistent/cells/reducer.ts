@@ -21,12 +21,12 @@ export default function (state: State = defaultState, action: Action<CellIdStrin
     case SET_PROFILES_CELL_ID:
       return {
         ...state,
-        profiles: payload,
+        profiles: payload as CellIdString,
       }
     case SET_PROJECTS_CELL_IDS:
       return {
         ...state,
-        projects: payload,
+        projects: payload as Array<CellIdString>,
       }
     case SIMPLE_CREATE_PROJECT_META:
       return {
@@ -36,7 +36,7 @@ export default function (state: State = defaultState, action: Action<CellIdStrin
     case JOIN_PROJECT_CELL_ID:
       return {
         ...state,
-        projects: [...state.projects, payload],
+        projects: [...state.projects, payload  as CellIdString],
       }
     case REMOVE_PROJECT_CELL_ID:
       return {
