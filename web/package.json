@@ -6,6 +6,12 @@
     "@babel/preset-env": "7.5.5",
     "@babel/preset-react": "^7.12.13",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
+    "@storybook/addon-actions": "^6.4.20",
+    "@storybook/addon-essentials": "^6.4.20",
+    "@storybook/addon-interactions": "^6.4.20",
+    "@storybook/addon-links": "^6.4.20",
+    "@storybook/react": "^6.4.20",
+    "@storybook/testing-library": "^0.0.9",
     "@types/lodash": "^4.14.180",
     "@types/react-dom": "^17.0.4",
     "@types/react-router-dom": "^5.1.7",
@@ -55,5 +61,9 @@
     "resolve-url-loader": "^5.0.0",
     "type-fest": "^0.17.0",
     "use-onclickoutside": "^0.3.1"
+  },
+  "scripts": {
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   }
 }
