@@ -59,7 +59,7 @@ function layoutForTree(tree) {
     outcome.children.forEach((childOutcome) => {
       addOutcome(childOutcome)
       // add each connection as an connection in the graph
-      graph.setConnection(outcome.headerHash, childOutcome.headerHash)
+      graph.setEdge(outcome.headerHash, childOutcome.headerHash)
     })
   }
   // kick off the recursion
