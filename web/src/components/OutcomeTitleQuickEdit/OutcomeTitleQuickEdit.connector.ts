@@ -51,13 +51,13 @@ function mapStateToProps(state: RootState) {
   const editingOutcome = editAddress
     ? state.projects.outcomes[activeProject][editAddress]
     : null
-  // this value of state.whoami.entry.address
+  // this value of state.whoami.entry.agentPubKey
   // should not be changed to headerHash unless the entry type of Profile
   // is changed
   const creatorAgentPubKey = editAddress
     ? editingOutcome.creatorAgentPubKey
-    : state.whoami.entry.address
-  const editorAgentPubKey = editAddress ? state.whoami.entry.address : null
+    : state.whoami.entry.agentPubKey
+  const editorAgentPubKey = editAddress ? state.whoami.entry.agentPubKey : null
   const description = editAddress ? editingOutcome.description : ''
   const scope = editAddress ? editingOutcome.scope : { Uncertain: 5 }
   const timeFrame = editAddress ? editingOutcome.timeFrame : null

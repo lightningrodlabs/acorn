@@ -147,7 +147,7 @@ export default function OutcomeTitleQuickEdit({
     await updateOutcome(
       {
         // new
-        editorAgentPubKey: whoami.entry.address,
+        editorAgentPubKey: whoami.entry.agentPubKey,
         description: description,
         timestampUpdated: moment().unix(),
         // carryover

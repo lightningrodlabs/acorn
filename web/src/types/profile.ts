@@ -8,7 +8,7 @@ export interface Profile {
     handle: String,
     status: Status,
     avatarUrl: String,
-    address: AgentPubKeyB64,
+    agentPubKey: AgentPubKeyB64,
     isImported: boolean,
 }
 
