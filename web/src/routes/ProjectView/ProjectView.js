@@ -11,6 +11,7 @@ import { connect } from 'react-redux'
 import { GO_TO_OUTCOME } from '../../searchParams'
 import MapView from './MapView/MapView'
 import PriorityView from './PriorityView/PriorityView'
+import TableView from './TableView/TableView'
 import ExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode.connector'
 
 // data
@@ -121,6 +122,7 @@ function ProjectViewInner({
       <Switch>
         <Route path='/project/:projectId/map' component={MapView} />
         <Route path='/project/:projectId/priority' component={PriorityView} />
+        <Route path='/project/:projectId/table' component={TableView} />
         <Route exact path='/project/:projectId' component={ProjectRedirect} />
       </Switch>
       <ExpandedViewMode projectId={projectId} onClose={closeExpandedView} />

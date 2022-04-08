@@ -76,6 +76,18 @@ function Footer() {
                 tooltipText='Priority View'
               />
             </NavLink>
+            <NavLink
+              to={`/project/${projectId}/table`}
+              activeClassName='view-mode-active'
+              className='view-mode-link'>
+              <Icon
+                name='door-open.svg'
+                size='view-mode'
+                className='grey'
+                withTooltipTop
+                tooltipText='Table View'
+              />
+            </NavLink>
             {/* <Icon name='timeline.svg' className='grey' size='view-mode' /> */}
           </div>
         </div>
