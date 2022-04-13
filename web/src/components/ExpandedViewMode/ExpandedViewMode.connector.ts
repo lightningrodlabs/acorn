@@ -48,7 +48,7 @@ function mapStateToProps(state: RootState, ownProps) {
         return squirrel
       })
     Object.keys(state.agents).forEach((value) => {
-      if (state.agents[value].address === outcome.creatorAgentPubKey)
+      if (state.agents[value].agentPubKey === outcome.creatorAgentPubKey)
         creator = state.agents[value]
     })
   }
