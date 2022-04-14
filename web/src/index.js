@@ -35,7 +35,8 @@ import ProfilesZomeApi from './api/profilesApi'
 import { cellIdToString } from './utils'
 
 // Import styles
-import './styles.scss'
+import './variables.scss'
+import './global.scss'
 
 // trigger caching of adminWs connection
 getAdminWs()

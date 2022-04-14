@@ -1,0 +1,42 @@
+.button-checkbox-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  font: 0.875rem var(--font-family-primary-bold);
+  background-color: var(--bg-color-secondary);
+  box-shadow: 0rem 0rem 1.25rem var(--shadow-color);
+  width: 11.25rem;
+  padding: 1rem;
+  box-sizing: border-box;
+  border-radius: 0.625rem;
+  cursor: pointer;
+  transition: 0.2s box-shadow ease;
+  -webkit-font-smoothing: antialiased;
+
+  &:hover,
+  &.focused {
+    box-shadow: 0rem 0rem 1.25rem var(--shadow-color-hover);
+  }
+
+  &.selected {
+    border: 0.125rem solid var(--border-color-primary);
+    // the padding calc below fixes the resizing of the button
+    // after adding the border in checked mode
+    padding: calc(1rem - 0.125rem);
+  }
+
+  .button-checkbox-icon-text {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .button-checkbox-icon {
+      margin-right: 0.625rem;
+    }
+
+    .button-checkbox-text {
+      user-select: none; /* Standard */
+    }
+  }
+}
