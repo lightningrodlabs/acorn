@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { connect, useStore } from 'react-redux'
+import { connect, useSelector, useStore } from 'react-redux'
 import setupEventListeners from '../../../event-listeners'
 import { setScreenDimensions } from '../../../redux/ephemeral/screensize/actions'
 import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions'
@@ -197,6 +197,20 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({
   filter,
   projectMemberProfiles,
 }) =>  {
+
+  // const equalityFn = (left: RootState, right: RootState) => {
+    // TODO: perform the equality check, to decide whether to recompute
+    // return false
+  // }
+  const outcomeTagList = useSelector((state: RootState) => {
+    const projectId = state.ui.activeProject
+    const outcomes = state.projects.outcomes[projectId]
+    const outcomesArray = Object.values(outcomes)
+    // return outcomesArray.filter((tag, pos) => outcomesArray.indexOf(tag) === pos)
+    return ['tag', 'sprint', 'v0.0.1']
+  }/*, equalityFn */)
+
+
   const achievementStatusOptions = [
     { innerListItem: <>Achieved</>, id: ComputedSimpleAchievementStatus.Achieved},
     { innerListItem: <>Not Achieved</>, id: ComputedSimpleAchievementStatus.NotAchieved},
@@ -214,9 +228,12 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({
       id: profile.agentPubKey
     }
   }
-  const tagOptions = [
-    // get list of tags, maybe using something like useSelector, which performs a computation over the state by checking the tags of outcomes
-  ]
+  const tagOptions = outcomeTagList.map((tag) => {
+    return { innerListItem: <>{tag}</>, id: tag}
+  })
+  // [
+  //   // get list of tags, maybe using something like useSelector, which performs a computation over the state by checking the tags of outcomes
+  // ]
   const [filterText, setFilterText] = useState('')
   return (
     <div className="filter-selector-panel">
