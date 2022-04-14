@@ -26,10 +26,11 @@ function OutcomeTable({
   outcomeTrees,
   projectMeta,
   updateProjectmeta,
+  filter,
 }) {
-  const [filter, setFilter] = useState<Filter>({
-    keywordOrId: 'n'
-  })
+  // const [filter, setFilter] = useState<Filter>({
+  //   keywordOrId: 'n'
+  // })
   // const filter = null
   return (
     <table>
@@ -177,6 +178,15 @@ function OutcomeTableRow({
   )
 }
 
+function FilterSelector({
+
+}) {
+  return (
+    <div className="filter-selector-panel">
+      
+    </div>
+  )
+}
 function TableView({
   projectId,
   outcomeTrees,
@@ -187,13 +197,20 @@ function TableView({
     return updateProjectMeta(entry, headerHash, projectId)
   }
   console.log('outcome tree:', outcomeTrees)
+  const [filter, setFilter] = useState<Filter>({
+    keywordOrId: 'n'
+  })
   return (
     <div className="table-view-wrapper">
+      <FilterSelector
+        onApplyFilter={() => setFilter(event.filter)}
+      />
       <OutcomeTable
         outcomeTrees={outcomeTrees}
         projectMeta={projectMeta}
         projectId={projectId}
         updateProjectMeta={wrappedUpdateProjectMeta}
+        filter={filter}
       />
     </div>
   )
