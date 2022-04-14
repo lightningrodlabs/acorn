@@ -22,7 +22,8 @@
     "electron": "cd electron && npm run start",
     "electron2": "cd electron && ACORN_TEST_USER_2=1 npm run start",
     "electron-tsc": "cd electron && npm run tsc",
-    "build": "bash scripts/build.sh"
+    "build": "bash scripts/build.sh",
+    "storybook": "cd web && npm run storybook"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",

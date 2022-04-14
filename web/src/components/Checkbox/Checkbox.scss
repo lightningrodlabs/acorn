@@ -1,0 +1,48 @@
+.checkbox-wrapper {
+  border: 0.1875rem solid #dbd7d0;
+  border-radius: 0.3rem;
+  width: 1rem;
+  height: 1rem;
+  position: relative;
+  cursor: pointer;
+  aspect-ratio: 1/1;
+
+  &.checked {
+    background-color: var(--text-color-secondary);
+    border: 0.1875rem solid var(--text-color-secondary);
+  }
+
+  .icon {
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    left: 0;
+    top: 0;
+    padding: 0;
+    z-index: 1;
+  }
+
+  &.small {
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 0.25rem;
+
+    .icon {
+      width: 0.725rem;
+      height: 0.725rem;
+      left: -0.5px;
+      top: -0.5px;
+    }
+  }
+
+  &.large {
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 0.4rem;
+
+    .icon {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+}

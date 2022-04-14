@@ -1,0 +1,39 @@
+.checklist-item-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  -webkit-font-smoothing: antialiased;
+
+  &.with-strikethrough {
+    .checklist-item-wrapper-text {
+      &.checked {
+        color: var(--text-color-tetiary);
+        text-decoration: line-through var(--text-color-strikethrough);
+      }
+    }
+  }
+
+  .checkbox-wrapper {
+    margin-right: 0.625rem;
+  }
+
+  .checklist-item-wrapper-text {
+    font: 1rem var(--font-family-primary-medium);
+    color: var(--text-color-primary);
+    line-height: 1.45;
+
+    // &.checked {
+    //   color: var(--text-color-tetiary);
+    //   text-decoration: line-through var(--text-color-strikethrough);
+    // }
+
+    &.small {
+      font: 0.825rem var(--font-family-primary-medium);
+    }
+
+    &.large {
+      font: 1.25rem var(--font-family-primary-medium);
+      line-height: 1.5;
+    }
+  }
+}

@@ -9,7 +9,7 @@
 
 .inner-icon {
   /* default: dark grey */
-  background-color: #222222;
+  background-color: var(--text-color-primary);
   mask-repeat: no-repeat;
   mask-position: center;
   mask-size: contain;
@@ -37,7 +37,7 @@
 }
 
 .icon.light-grey .inner-icon {
-  background-color: #d1d1d1;
+  background-color: var(--color-silver)
 }
 
 .icon.purple .inner-icon {

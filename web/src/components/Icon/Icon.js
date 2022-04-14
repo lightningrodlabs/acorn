@@ -1,7 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { useEffect, useState } from 'react'
 import './Icon.scss'
 import Tooltip from '../Tooltip/Tooltip'
+
 
 function Icon ({
   name,
@@ -13,6 +13,15 @@ function Icon ({
   className,
   onClick = () => {},
 }) {
+  let [icon, setIcon] = useState('');
+
+  useEffect(() => {
+    (async () => {
+      let importedIcon = await import(`../../images/${name}`);
+      setIcon(importedIcon.default);
+    })()
+  }, [name]);
+
   return (
     <div
       className={`
@@ -26,8 +35,8 @@ function Icon ({
       <div
         className='inner-icon'
         style={{
-          maskImage: `url(img/${name})`,
-          WebkitMaskImage: `url(img/${name})`,
+          maskImage: `url(${icon})`,
+          WebkitMaskImage: `url(${icon})`,
         }}></div>
         {withTooltip && <Tooltip text={tooltipText} />}
       {/* {withTooltip && <div className='tooltip-wrapper'>{`${tooltipText}`}</div>} */}
