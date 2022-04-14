@@ -12,6 +12,9 @@ import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeV
 import './TableView.scss'
 import { ComputedScope, ComputedSimpleAchievementStatus } from '../../../types'
 import { AgentPubKeyB64 } from '../../../types/shared'
+import FilterDropdown from '../../../components/FilterDropdown/FilterDropdown'
+import FilterButton from '../../../components/FilterButton/FilterButton'
+import Icon from '../../../components/Icon/Icon'
 
 type Filter = {
 	keywordOrId?: string,
@@ -178,15 +181,110 @@ function OutcomeTableRow({
   )
 }
 
-function FilterSelector({
+/*
+  FilterSelector
+*/
 
-}) {
+export type FilterSelectorProps = {
+  onApplyFilter: (filters: Filter) => void
+  filter: Filter
+}
+
+const FilterSelector: React.FC<FilterSelectorProps> = ({
+  onApplyFilter,
+  filter,
+}) =>  {
+  const achievementStatusOptions = [
+    { innerListItem: <>Achieved</>, id: ComputedSimpleAchievementStatus.Achieved},
+    { innerListItem: <>Not Achieved</>, id: ComputedSimpleAchievementStatus.NotAchieved},
+    { innerListItem: <>Partially Achieved</>, id: ComputedSimpleAchievementStatus.PartiallyAchieved}
+  ]
+  const scopeOptions = [
+    { innerListItem: <>Small</>, id: ComputedScope.Small},
+    { innerListItem: <>Uncertain</>, id: ComputedScope.Uncertain},
+    { innerListItem: <>Big</>, id: ComputedScope.Big}
+  ]
+  const assigneeOptions = [
+    // get the project member state and map to this array
+  ]
+
+  const tagOptions = [
+    // get list of tags, maybe using something like useSelector, which performs a computation over the state by checking the tags of outcomes
+  ]
+  const [filterText, setFilterText] = useState('')
   return (
     <div className="filter-selector-panel">
-      
+      <input
+        type="text"
+        onChange={(e) => {
+          onApplyFilter({keywordOrId: e.target.value.toLowerCase()})
+        }}
+        placeholder="Search for a outcome"
+        autoFocus
+      />
+      <FilterButton size='medium' text='Only to me' icon={<Icon name='x.svg' />} isSelected={true} onChange={() => {}} />
+      <FilterDropdown 
+        selectedOptions={filter.achievementStatus ? filter.achievementStatus : []}
+        options={achievementStatusOptions}
+        text='Achievement Status'
+        // TODO
+        icon={<Icon name='x.svg' />}
+        size='medium'
+        onChange={(newSelectionOptions) => {
+          onApplyFilter({
+            ...filter,
+            achievementStatus: newSelectionOptions
+          })
+        }}
+      />
+      <FilterDropdown 
+        selectedOptions={filter.scope ? filter.scope : []}
+        options={scopeOptions}
+        text='scope'
+        // TODO
+        icon={<Icon name='x.svg' />}
+        size='medium'
+        onChange={(newSelectionOptions) => {
+          onApplyFilter({
+            ...filter,
+            scope: newSelectionOptions
+          })
+        }}
+      />
+      <FilterDropdown 
+        selectedOptions={filter.assignees ? filter.assignees : []}
+        options={assigneeOptions}
+        text='assignees'
+        // TODO
+        icon={<Icon name='x.svg' />}
+        size='medium'
+        onChange={(newSelectionOptions) => {
+          onApplyFilter({
+            ...filter,
+            assignees: newSelectionOptions
+          })
+        }}
+      />
+      <FilterDropdown 
+        selectedOptions={filter.tags ? filter.tags : []}
+        options={tagOptions}
+        text='tags'
+        // TODO
+        icon={<Icon name='x.svg' />}
+        size='medium'
+        onChange={(newSelectionOptions) => {
+          onApplyFilter({
+            ...filter,
+            tags: newSelectionOptions
+          })
+        }}
+      />
+      <div onClick={() => onApplyFilter({})}>clear selection</div>
+      <div>save filter selection</div>
     </div>
   )
 }
+
 function TableView({
   projectId,
   outcomeTrees,
@@ -203,7 +301,8 @@ function TableView({
   return (
     <div className="table-view-wrapper">
       <FilterSelector
-        onApplyFilter={() => setFilter(event.filter)}
+        onApplyFilter={setFilter}
+        filter={filter}
       />
       <OutcomeTable
         outcomeTrees={outcomeTrees}
