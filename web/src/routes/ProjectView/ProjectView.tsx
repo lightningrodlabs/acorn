@@ -6,7 +6,7 @@ import {
   useParams,
   useLocation,
 } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 
 import { GO_TO_OUTCOME } from '../../searchParams'
 import MapView from './MapView/MapView'
@@ -35,6 +35,7 @@ import { triggerRealtimeInfoSignal, sendExitProjectSignal } from '../../redux/pe
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
+import { RootState } from '../../redux/reducer'
 
 function ProjectViewInner({
   projectId,
@@ -60,6 +61,23 @@ function ProjectViewInner({
   const goToOutcomeHeaderHash = searchParams.get(GO_TO_OUTCOME)
   const sendRealtimeInfoFrequency = 10000
   const instance = useRef() 
+
+  // const equalityFn = (left: RootState, right: RootState) => {
+    // TODO: perform the equality check, to decide whether to recompute
+    // return false
+  // }
+  const computedOutcomes = useSelector((state: RootState) => {
+    const outcomes = state.projects.outcomes[projectId]
+    const connections = state.projects.connections[projectId]
+    // TODO: map over the outcomes, converting each one from an WithHeaderHash<Outcome>
+    // to a ComputedOutcome
+    // const computedOutcomes =  outcomes.map((outcome) => {
+      // convert outcome
+      // return outcome
+    // })
+    // return the computedOutcomes
+    return []
+  }/*, equalityFn */)
   
   function ifMapGoToOutcome(outcomeHeaderHash) {
       // TODO

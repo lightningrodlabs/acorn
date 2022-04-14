@@ -10,6 +10,16 @@ import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
 import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeView'
 import './TableView.scss'
+import { ComputedScope, ComputedSimpleAchievementStatus } from '../../../types'
+import { AgentPubKeyB64 } from '../../../types/shared'
+
+type Filter = {
+	keywordOrId?: string,
+	achievementStatus?: ComputedSimpleAchievementStatus[],
+	scope?: ComputedScope[],
+	assignees?: AgentPubKeyB64[],
+	tags?: string[]
+}
 
 function OutcomeTable({
   projectId,
@@ -17,9 +27,9 @@ function OutcomeTable({
   projectMeta,
   updateProjectmeta,
 }) {
-  const filter = {
+  const [filter, setFilter] = useState<Filter>({
     keywordOrId: 'n'
-  }
+  })
   // const filter = null
   return (
     <table>
@@ -46,6 +56,76 @@ function OutcomeTable({
   )
 }
 
+// would it make more sense for these helper function to be in a different file?
+function filterMatch(outcome, filter) {
+  let keywordOrIdMatch = true
+  let achievementStatusMatch = true
+  let scopeMatch = true
+  let assigneesMatch = true
+  let tagsMatch = true
+
+  if ('keywordOrId' in filter) {
+    keywordOrIdMatch =
+      !filter.keywordOrId.length ||
+      (outcome.content &&
+        outcome.content
+          .toLowerCase()
+          .includes(filter.keywordOrId.toLowerCase()))
+  }
+
+  if ('achievementStatus' in filter) {
+    achievementStatusMatch = false
+    // TODO: get actual ComputedSimpleAchievementStatus for the Outcome
+    const outcomeSimpleAchievementStatus = ComputedSimpleAchievementStatus.Achieved
+    
+    for (const status of filter.achievementStatus) {
+      if (outcomeSimpleAchievementStatus === status) {
+        achievementStatusMatch = true
+        break
+      }
+    }
+  }
+
+  if ('scope' in filter) {
+    scopeMatch = false
+    // TODO: get actual ComputedScope instead of hardcoding here
+    const outcomeComputedScope = ComputedScope.Big
+    for (const scope of filter.scope) {
+      if (scope === outcomeComputedScope) {
+        scopeMatch = true
+        break
+      }
+    }
+  }
+
+  if ('assignees' in filter) {
+    assigneesMatch = false
+    for (const assignee of filter.assignees) {
+       if (outcome.members.includes(assignee)) {
+         assigneesMatch = true // assuming assignee filter selection is an OR rather than AND
+         break
+       }
+    }
+  }
+
+  if ('tags' in filter) {
+    tagsMatch = false
+    for (const tag of filter.tags) {
+       if (outcome.tags.includes(tag)) {
+         tagsMatch = true 
+         break
+       }
+    }
+  }
+  return (
+    keywordOrIdMatch &&
+    achievementStatusMatch &&
+    scopeMatch &&
+    assigneesMatch &&
+    tagsMatch
+  )
+}
+
 function OutcomeTableRow({
   projectId,
   outcome,
@@ -58,13 +138,8 @@ function OutcomeTableRow({
   let match = false
   let [expanded, setExpanded] = useState(true) //for now assume everything is expanded by default, will need to look into how to expand collapse all in one action
   if (filter) {
-    match =
-      !filter.keywordOrId.length ||
-      (outcome.content &&
-        outcome.content
-          .toLowerCase()
-          .includes(filter.keywordOrId.toLowerCase()))
-  } 
+    match = filterMatch(outcome, filter)
+  }
   return (
     <>
       {parentExpanded && (match || !filter) && (
