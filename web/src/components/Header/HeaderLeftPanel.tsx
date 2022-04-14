@@ -58,7 +58,7 @@ function HeaderLeftPanel({
   // since your own avatar and status is already showing
   // on top right side of the screen all the time!
   const membersMinusMe = whoami
-    ? members.filter((member) => member.address !== whoami.entry.address)
+    ? members.filter((member) => member.address !== whoami.entry.agentPubKey)
     : []
   return (
     <>

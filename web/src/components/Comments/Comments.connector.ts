@@ -16,7 +16,7 @@ function mapStateToProps(state: RootState) {
   const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
   return {
     outcomeHeaderHash,
-    avatarAddress: state.whoami.entry.address,
+    avatarAddress: state.whoami.entry.agentPubKey,
     agents: state.agents,
   }
 }

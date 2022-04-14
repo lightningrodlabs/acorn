@@ -37,7 +37,7 @@ function ProfileEditForm({
         lastName: lastName,
         status: 'Online',
         avatarUrl: avatarUrl,
-        address: agentAddress,
+        agentPubKey: agentAddress,
         handle,
         isImported: false
       })
