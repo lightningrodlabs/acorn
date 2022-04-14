@@ -10,11 +10,12 @@ import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
 import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeView'
 import './TableView.scss'
-import { ComputedScope, ComputedSimpleAchievementStatus } from '../../../types'
+import { ComputedOutcome, ComputedScope, ComputedSimpleAchievementStatus, Member, Profile } from '../../../types'
 import { AgentPubKeyB64 } from '../../../types/shared'
 import FilterDropdown from '../../../components/FilterDropdown/FilterDropdown'
 import FilterButton from '../../../components/FilterButton/FilterButton'
 import Icon from '../../../components/Icon/Icon'
+import { RootState } from '../../../redux/reducer'
 
 type Filter = {
 	keywordOrId?: string,
@@ -61,7 +62,7 @@ function OutcomeTable({
 }
 
 // would it make more sense for these helper function to be in a different file?
-function filterMatch(outcome, filter) {
+function filterMatch(outcome: ComputedOutcome, filter: Filter) {
   let keywordOrIdMatch = true
   let achievementStatusMatch = true
   let scopeMatch = true
@@ -188,11 +189,13 @@ function OutcomeTableRow({
 export type FilterSelectorProps = {
   onApplyFilter: (filters: Filter) => void
   filter: Filter
+  projectMemberProfiles: Profile[]
 }
 
 const FilterSelector: React.FC<FilterSelectorProps> = ({
   onApplyFilter,
   filter,
+  projectMemberProfiles,
 }) =>  {
   const achievementStatusOptions = [
     { innerListItem: <>Achieved</>, id: ComputedSimpleAchievementStatus.Achieved},
@@ -204,10 +207,13 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({
     { innerListItem: <>Uncertain</>, id: ComputedScope.Uncertain},
     { innerListItem: <>Big</>, id: ComputedScope.Big}
   ]
-  const assigneeOptions = [
-    // get the project member state and map to this array
-  ]
-
+  const assigneeOptions = projectMemberProfiles.map((profile) => profileOption(profile)) //also include avatar icon
+  function profileOption(profile: Profile) {
+    return {
+      innerListItem: profile.firstName,
+      id: profile.agentPubKey
+    }
+  }
   const tagOptions = [
     // get list of tags, maybe using something like useSelector, which performs a computation over the state by checking the tags of outcomes
   ]
@@ -290,6 +296,7 @@ function TableView({
   outcomeTrees,
   projectMeta,
   updateProjectmeta,
+  projectMemberProfiles
 }) {
   const wrappedUpdateProjectMeta = (entry, headerHash) => {
     return updateProjectMeta(entry, headerHash, projectId)
@@ -303,6 +310,7 @@ function TableView({
       <FilterSelector
         onApplyFilter={setFilter}
         filter={filter}
+        projectMemberProfiles={projectMemberProfiles}
       />
       <OutcomeTable
         outcomeTrees={outcomeTrees}
@@ -315,9 +323,13 @@ function TableView({
   )
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject
   const projectMeta = state.projects.projectMeta[projectId] || {}
+  const projectMembers = state.projects.members[projectId]
+  const projectMemberProfiles = Object.keys(projectMembers)
+    .map((address) => state.agents[address])
+    .filter((agent) => agent)
   const treeData = {
     agents: state.agents,
     outcomes: state.projects.outcomes[projectId] || {},
@@ -331,6 +343,7 @@ function mapStateToProps(state) {
     projectId,
     projectMeta,
     outcomeTrees,
+    projectMemberProfiles
   }
 }
 function mapDispatchToProps(dispatch) {
