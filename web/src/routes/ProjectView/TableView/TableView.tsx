@@ -142,14 +142,11 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   parentExpanded,
   indentationLevel,
 }) => {
-  let match = false
   let [expanded, setExpanded] = useState(true) //for now assume everything is expanded by default, will need to look into how to expand collapse all in one action
-  if (filter) {
-    match = filterMatch(outcome, filter)
-  }
+  let match = filterMatch(outcome, filter)
   return (
     <>
-      {parentExpanded && (match || !filter) && (
+      {parentExpanded && match && (
         <tr>
           <td>{'123456'}</td>
           <td>
