@@ -1,14 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { connect, useSelector, useStore } from 'react-redux'
-import setupEventListeners from '../../../event-listeners'
-import { setScreenDimensions } from '../../../redux/ephemeral/screensize/actions'
-import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions'
+import React, { useState } from 'react'
+import { connect, useSelector } from 'react-redux'
 import { updateProjectMeta } from '../../../redux/persistent/projects/project-meta/actions'
 import outcomesAsTrees from '../../../redux/persistent/projects/outcomes/outcomesAsTrees'
 import ProjectsZomeApi from '../../../api/projectsApi'
 import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
-import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeView'
 import './TableView.scss'
 import { ComputedOutcome, ComputedScope, ComputedSimpleAchievementStatus, Member, Profile, ProjectMeta } from '../../../types'
 import { AgentPubKeyB64 } from '../../../types/shared'
@@ -320,15 +316,9 @@ export type TableViewProps = {
 }
 
 const TableView: React.FC<TableViewProps> = ({
-  projectId,
   outcomeTrees,
-  projectMeta,
   projectMemberProfiles,
-  updateProjectMeta
 }) => {
-  const wrappedUpdateProjectMeta = (entry, headerHash) => {
-    return updateProjectMeta(entry, headerHash, projectId)
-  }
   console.log('outcome tree:', outcomeTrees)
   const [filter, setFilter] = useState<Filter>({
     keywordOrId: 'n'
@@ -342,9 +332,6 @@ const TableView: React.FC<TableViewProps> = ({
       />
       <OutcomeTable
         outcomeTrees={outcomeTrees}
-        projectMeta={projectMeta}
-        projectId={projectId}
-        updateProjectMeta={wrappedUpdateProjectMeta}
         filter={filter}
       />
     </div>
