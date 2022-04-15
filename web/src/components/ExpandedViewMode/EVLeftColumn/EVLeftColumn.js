@@ -1,13 +1,17 @@
 import React from 'react'
-import './ExpandedViewNavBar.scss'
+import './EVLeftColumn.scss'
 
-import Icon from '../../../Icon/Icon'
+import Icon from '../../Icon/Icon'
 
-function ExpandedViewNavBar({ onChange, activeTab, commentCount }) {
+function EVLeftColumn({ onChange, activeTab, commentCount }) {
   const navItems = [
     {
       text: 'Details',
       icon: 'pencil.svg',
+    },
+    {
+      text: 'tree view',
+      icon: 'comment.svg',
     },
     {
       text: `Comments (${commentCount})`,
@@ -39,4 +43,4 @@ function ExpandedViewNavBar({ onChange, activeTab, commentCount }) {
   )
 }
 
-export default ExpandedViewNavBar
+export default EVLeftColumn

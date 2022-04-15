@@ -3,13 +3,12 @@ import moment from 'moment'
 import useOnClickOutside from 'use-onclickoutside'
 import TextareaAutosize from 'react-textarea-autosize'
 
-import './ExpandedViewModeContent.scss'
+import './EVMiddleColumn.scss'
 import Avatar from '../../Avatar/Avatar'
 import Icon from '../../Icon/Icon'
 import PeoplePicker from '../../PeoplePicker/PeoplePicker.connector'
 import Comments from '../../Comments/Comments.connector'
-import ActivityHistory from './ActivityHistory/ActivityHistory.connector'
-import ExpandedViewNavBar from './ExpandedViewNavBar/ExpandedViewNavBar'
+import { ExpandedViewTab } from '../NavEnum'
 
 function SquirrelInfoPopup({ squirrel, onClose, deleteOutcomeMember }) {
   const ref = useRef()
@@ -57,20 +56,13 @@ export default function ExpandedViewModeContent({
   startDescriptionEdit,
   endDescriptionEdit,
   editingPeers,
+  activeTab,
+  setActiveTab,
 }) {
-  // 0 is details
-  // 1 is comments
-  // 2 is history
-  const [activeTab, setActiveTab] = useState(0)
   return (
     <div className="expanded-view-content">
-      <ExpandedViewNavBar
-        activeTab={activeTab}
-        onChange={(newTab) => setActiveTab(newTab)}
-        commentCount={comments.length}
-      />
       <div className="expanded-view-inner-content">
-        {activeTab === 0 && (
+        {activeTab === ExpandedViewTab.Details && (
           <Details
             {...{
               projectId,
@@ -93,10 +85,10 @@ export default function ExpandedViewModeContent({
             }}
           />
         )}
-        {activeTab === 1 && (
+        {activeTab === ExpandedViewTab.Comments && (
           <Comments projectId={projectId} comments={comments} />
         )}
-        {activeTab === 2 && <ActivityHistory projectId={projectId} />}
+        {/* {activeTab === ExpandedViewTab.ActivityHistory && <ActivityHistory projectId={projectId} />} */}
       </div>
     </div>
   )

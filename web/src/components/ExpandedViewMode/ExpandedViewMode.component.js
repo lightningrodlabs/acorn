@@ -5,10 +5,13 @@ import './ExpandedViewMode.scss'
 import { pickColorForString } from '../../styles'
 import Icon from '../Icon/Icon'
 import DatePicker from '../DatePicker/DatePicker'
-import RightMenu from './RightMenu/RightMenu'
+import RightMenu from './EVRightColumn/EVRightColumn'
 import ExpandedViewModeHeader from './ExpandedViewModeHeader/ExpandedViewModeHeader'
-import ExpandedViewModeContent from './ExpandedViewModeContent/ExpandedViewModeContent'
+import EVMiddleColumn from './EVMiddleColumn/EVMiddleColumn'
 import ExpandedViewModeFooter from './ExpandedViewModeFooter/ExpandedViewModeFooter'
+import EVLeftColumn from './EVLeftColumn/EVLeftColumn'
+import EVRightColumn from './EVRightColumn/EVRightColumn'
+import { ExpandedViewTab } from './NavEnum'
 
 export default function ExpandedViewMode({
   projectId,
@@ -69,7 +72,7 @@ export default function ExpandedViewMode({
       creatorAgentPubKey: agentAddress,
       createdAt: Date.now(),
       outcomeHeaderHash: outcomeHeaderHash,
-      isImported: false
+      isImported: false,
     })
   }
   const unmakeAsEntryPoint = () => {
@@ -107,23 +110,26 @@ export default function ExpandedViewMode({
       : null
     toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
   }
-
+  const [activeTab, setActiveTab] = useState(ExpandedViewTab.Details)
+  
   return (
     <>
       <CSSTransition
         in={showing}
         timeout={100}
         unmountOnExit
-        classNames='expanded-view-overlay'>
-        <div className='expanded-view-overlay' />
+        classNames="expanded-view-overlay"
+      >
+        <div className="expanded-view-overlay" />
       </CSSTransition>
       {outcomeState && (
         <CSSTransition
           in={showing}
           timeout={100}
           unmountOnExit
-          classNames='expanded-view-wrapper'>
-          <div className={`expanded-view-wrapper border_${outcomeState.status}`}>
+          classNames="expanded-view-wrapper"
+        >
+          {/* <div className={`expanded-view-wrapper border_${outcomeState.status}`}>
             <Icon
               onClick={onClose}
               name='x.svg'
@@ -175,10 +181,44 @@ export default function ExpandedViewMode({
                 toDate={toDate}
               />
             )}
+          </div> */}
+          <div className="expanded-view-wrapper">
+            <EVLeftColumn
+              activeTab={activeTab}
+              onChange={(newTab) => setActiveTab(newTab)}
+              commentCount={comments.length}
+            />
+            <EVMiddleColumn
+              agentAddress={agentAddress}
+              projectId={projectId}
+              editTimeframe={editTimeframe}
+              setEditTimeframe={setEditTimeframe}
+              squirrels={squirrelsState}
+              comments={comments}
+              outcomeHeaderHash={outcomeHeaderHash}
+              updateOutcome={updateOutcome}
+              outcome={outcomeState}
+              outcomeContent={outcomeState.content}
+              outcomeDescription={outcomeState.description}
+              deleteOutcomeMember={deleteOutcomeMember}
+              startTitleEdit={startTitleEdit}
+              endTitleEdit={endTitleEdit}
+              startDescriptionEdit={startDescriptionEdit}
+              endDescriptionEdit={endDescriptionEdit}
+              editingPeers={editingPeers}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+            <EVRightColumn
+              projectId={projectId}
+              agentAddress={agentAddress}
+              outcomeHeaderHash={outcomeHeaderHash}
+              outcome={outcomeState}
+              updateOutcome={updateOutcome}
+            />
           </div>
-        </CSSTransition >
-      )
-      }
+        </CSSTransition>
+      )}
     </>
   )
 }
