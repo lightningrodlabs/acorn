@@ -10,12 +10,13 @@ import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
 import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeView'
 import './TableView.scss'
-import { ComputedOutcome, ComputedScope, ComputedSimpleAchievementStatus, Member, Profile } from '../../../types'
+import { ComputedOutcome, ComputedScope, ComputedSimpleAchievementStatus, Member, Profile, ProjectMeta } from '../../../types'
 import { AgentPubKeyB64 } from '../../../types/shared'
 import FilterDropdown from '../../../components/FilterDropdown/FilterDropdown'
 import FilterButton from '../../../components/FilterButton/FilterButton'
 import Icon from '../../../components/Icon/Icon'
 import { RootState } from '../../../redux/reducer'
+import { CellId } from '@holochain/client'
 
 type Filter = {
 	keywordOrId?: string,
@@ -25,17 +26,15 @@ type Filter = {
 	tags?: string[]
 }
 
-function OutcomeTable({
-  projectId,
+export type OutcomeTableProps = {
+  outcomeTrees: any,
+  filter: Filter
+}
+
+const OutcomeTable: React.FC<OutcomeTableProps> = ({
   outcomeTrees,
-  projectMeta,
-  updateProjectmeta,
   filter,
-}) {
-  // const [filter, setFilter] = useState<Filter>({
-  //   keywordOrId: 'n'
-  // })
-  // const filter = null
+}) => {
   return (
     <table>
       <thead>
@@ -131,15 +130,19 @@ function filterMatch(outcome: ComputedOutcome, filter: Filter) {
   )
 }
 
-function OutcomeTableRow({
-  projectId,
+export type OutcomeTableRowProps = {
+  outcome: any, //define this type
+  filter: Filter,
+  parentExpanded: boolean,
+  indentationLevel: number
+}
+
+const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   outcome,
-  projectMeta,
-  updateProjectmeta,
   filter,
   parentExpanded,
   indentationLevel,
-}) {
+}) => {
   let match = false
   let [expanded, setExpanded] = useState(true) //for now assume everything is expanded by default, will need to look into how to expand collapse all in one action
   if (filter) {
@@ -308,13 +311,21 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({
   )
 }
 
-function TableView({
+export type TableViewProps = {
+  projectId: CellId,
+  outcomeTrees: any,
+  projectMeta: ProjectMeta,
+  projectMemberProfiles: Profile[],
+  updateProjectMeta,
+}
+
+const TableView: React.FC<TableViewProps> = ({
   projectId,
   outcomeTrees,
   projectMeta,
-  updateProjectmeta,
-  projectMemberProfiles
-}) {
+  projectMemberProfiles,
+  updateProjectMeta
+}) => {
   const wrappedUpdateProjectMeta = (entry, headerHash) => {
     return updateProjectMeta(entry, headerHash, projectId)
   }
