@@ -207,7 +207,7 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({
   // }
   const outcomeTagList = useSelector((state: RootState) => {
     const projectId = state.ui.activeProject
-    const outcomes = state.projects.outcomes[projectId]
+    const outcomes = state.projects.outcomes[projectId] || {}
     const outcomesArray = Object.values(outcomes)
     // return outcomesArray.filter((tag, pos) => outcomesArray.indexOf(tag) === pos)
     return ['tag', 'sprint', 'v0.0.1']
@@ -354,7 +354,7 @@ const TableView: React.FC<TableViewProps> = ({
 function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject
   const projectMeta = state.projects.projectMeta[projectId] || {}
-  const projectMembers = state.projects.members[projectId]
+  const projectMembers = state.projects.members[projectId] || {}
   const projectMemberProfiles = Object.keys(projectMembers)
     .map((address) => state.agents[address])
     .filter((agent) => agent)
