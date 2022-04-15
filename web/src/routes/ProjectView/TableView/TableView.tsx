@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { connect, useSelector } from 'react-redux'
 import { updateProjectMeta } from '../../../redux/persistent/projects/project-meta/actions'
 import outcomesAsTrees from '../../../redux/persistent/projects/outcomes/outcomesAsTrees'
@@ -20,6 +20,7 @@ import FilterButton from '../../../components/FilterButton/FilterButton'
 import Icon from '../../../components/Icon/Icon'
 import { RootState } from '../../../redux/reducer'
 import { CellId } from '@holochain/client'
+import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
 
 type Filter = {
   keywordOrId?: string
@@ -82,12 +83,8 @@ function filterMatch(outcome: ComputedOutcome, filter: Filter) {
 
   if ('achievementStatus' in filter) {
     achievementStatusMatch = false
-    // TODO: get actual ComputedSimpleAchievementStatus for the Outcome
-    const outcomeSimpleAchievementStatus =
-      ComputedSimpleAchievementStatus.Achieved
-
     for (const status of filter.achievementStatus) {
-      if (outcomeSimpleAchievementStatus === status) {
+      if (outcome.computedAchievementStatus.simple === status) {
         achievementStatusMatch = true
         break
       }
@@ -96,10 +93,8 @@ function filterMatch(outcome: ComputedOutcome, filter: Filter) {
 
   if ('scope' in filter) {
     scopeMatch = false
-    // TODO: get actual ComputedScope instead of hardcoding here
-    const outcomeComputedScope = ComputedScope.Big
     for (const scope of filter.scope) {
-      if (scope === outcomeComputedScope) {
+      if (outcome.computedScope === scope) {
         scopeMatch = true
         break
       }
@@ -257,9 +252,11 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({
   const [filterText, setFilterText] = useState('')
   function isOnlyMeAssigned(filter: Filter, whoAmI: Profile) {
     if ('assignees' in filter) {
-      return filter.assignees.length === 1 && filter.assignees[0] === whoAmI.agentPubKey
-    }
-    else {
+      return (
+        filter.assignees.length === 1 &&
+        filter.assignees[0] === whoAmI.agentPubKey
+      )
+    } else {
       return false
     }
   }
@@ -278,13 +275,17 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({
         text="Only to me"
         icon={<Icon name="x.svg" />}
         isSelected={isOnlyMeAssigned(filter, whoAmI)}
-        onChange={() => isOnlyMeAssigned(filter, whoAmI) ? onApplyFilter({
-          ...filter,
-          assignees: []
-        }) : onApplyFilter({
-          ...filter,
-          assignees: [whoAmI.agentPubKey]
-        })}
+        onChange={() =>
+          isOnlyMeAssigned(filter, whoAmI)
+            ? onApplyFilter({
+                ...filter,
+                assignees: [],
+              })
+            : onApplyFilter({
+                ...filter,
+                assignees: [whoAmI.agentPubKey],
+              })
+        }
       />
       <FilterDropdown
         selectedOptions={
@@ -358,10 +359,10 @@ export type TableViewProps = {
 
 const TableView: React.FC<TableViewProps> = ({
   whoAmI,
-  outcomeTrees,
   projectMemberProfiles,
 }) => {
-  console.log('outcome tree:', outcomeTrees)
+  const { computedOutcomes } = useContext(ComputedOutcomeContext)
+  console.log('outcome tree:', computedOutcomes)
   const [filter, setFilter] = useState<Filter>({
     keywordOrId: 'n',
   })
@@ -373,7 +374,7 @@ const TableView: React.FC<TableViewProps> = ({
         filter={filter}
         projectMemberProfiles={projectMemberProfiles}
       />
-      <OutcomeTable outcomeTrees={outcomeTrees} filter={filter} />
+      <OutcomeTable outcomeTrees={computedOutcomes} filter={filter} />
     </div>
   )
 }
@@ -387,18 +388,8 @@ function mapStateToProps(state: RootState) {
   const projectMemberProfiles = Object.keys(projectMembers)
     .map((address) => state.agents[address])
     .filter((agent) => agent)
-  const treeData = {
-    agents: state.agents,
-    outcomes: state.projects.outcomes[projectId] || {},
-    connections: state.projects.connections[projectId] || {},
-    outcomeMembers: state.projects.outcomeMembers[projectId] || {},
-    outcomeVotes: state.projects.outcomeVotes[projectId] || {},
-    outcomeComments: state.projects.outcomeComments[projectId] || {},
-  }
-  const outcomeTrees = outcomesAsTrees(treeData, { withMembers: true })
   return {
     whoAmI,
-    outcomeTrees,
     projectMemberProfiles,
   }
 }
