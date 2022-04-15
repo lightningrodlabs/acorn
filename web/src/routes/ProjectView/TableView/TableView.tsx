@@ -14,13 +14,14 @@ import {
   Profile,
   ProjectMeta,
 } from '../../../types'
-import { AgentPubKeyB64 } from '../../../types/shared'
+import { AgentPubKeyB64, HeaderHashB64 } from '../../../types/shared'
 import FilterDropdown from '../../../components/FilterDropdown/FilterDropdown'
 import FilterButton from '../../../components/FilterButton/FilterButton'
 import Icon from '../../../components/Icon/Icon'
 import { RootState } from '../../../redux/reducer'
 import { CellId } from '@holochain/client'
 import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
+import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions'
 
 type Filter = {
   keywordOrId?: string
@@ -33,11 +34,13 @@ type Filter = {
 export type OutcomeTableProps = {
   outcomeTrees: any
   filter: Filter
+  openExpandedView
 }
 
 const OutcomeTable: React.FC<OutcomeTableProps> = ({
   outcomeTrees,
   filter,
+  openExpandedView,
 }) => {
   return (
     <table>
@@ -57,6 +60,7 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
             filter={filter}
             parentExpanded={true}
             indentationLevel={0}
+            openExpandedView={openExpandedView}
           />
         ))}
       </tbody>
@@ -134,6 +138,7 @@ export type OutcomeTableRowProps = {
   filter: Filter
   parentExpanded: boolean
   indentationLevel: number
+  openExpandedView
 }
 
 const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
@@ -141,30 +146,35 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   filter,
   parentExpanded,
   indentationLevel,
+  openExpandedView,
 }) => {
-  let match = false
   let [expanded, setExpanded] = useState(true) //for now assume everything is expanded by default, will need to look into how to expand collapse all in one action
-  if (filter) {
-    match = filterMatch(outcome, filter)
-  }
+  let match = filterMatch(outcome, filter)
+
   return (
     <>
-      {parentExpanded && (match || !filter) && (
+      {parentExpanded && match && (
         <tr>
           <td>{'123456'}</td>
           <td>
-            {'-'.repeat(indentationLevel)}
-            {outcome.children.length > 0 && (
-              <button
-                type="button"
-                onClick={() => {
-                  setExpanded(!expanded)
-                }}
-              >
-                {expanded ? 'v' : '>'}
-              </button>
-            )}
-            {outcome.content}
+            <div className='outcome-statement-table-view'>
+              {'-'.repeat(indentationLevel)}
+              {outcome.children.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setExpanded(!expanded)
+                  }}
+                >
+                  {expanded ? 'v' : '>'}
+                </button>
+              )}
+              {outcome.content}
+              <div onClick={() => openExpandedView(outcome.headerHash)}>
+                {/* @ts-ignore */}
+                <Icon name="expand.svg" size="small" className="light-grey" />
+              </div>
+            </div>
           </td>
           <td>{outcome.members}</td>
           <td>{outcome.tags}</td>
@@ -178,6 +188,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
             filter={filter}
             parentExpanded={expanded && parentExpanded}
             indentationLevel={indentationLevel + 1}
+            openExpandedView={openExpandedView}
           />
         ))}
     </>
@@ -355,14 +366,15 @@ export type TableViewProps = {
   whoAmI: Profile
   outcomeTrees: any
   projectMemberProfiles: Profile[]
+  openExpandedView
 }
 
 const TableView: React.FC<TableViewProps> = ({
   whoAmI,
   projectMemberProfiles,
+  openExpandedView,
 }) => {
   const { computedOutcomes } = useContext(ComputedOutcomeContext)
-  console.log('outcome tree:', computedOutcomes)
   const [filter, setFilter] = useState<Filter>({
     keywordOrId: 'n',
   })
@@ -374,7 +386,7 @@ const TableView: React.FC<TableViewProps> = ({
         filter={filter}
         projectMemberProfiles={projectMemberProfiles}
       />
-      <OutcomeTable outcomeTrees={computedOutcomes} filter={filter} />
+      <OutcomeTable outcomeTrees={computedOutcomes} filter={filter} openExpandedView={openExpandedView} />
     </div>
   )
 }
@@ -395,16 +407,7 @@ function mapStateToProps(state: RootState) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    updateProjectMeta: async (entry, headerHash, cellIdString) => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const cellId = cellIdFromString(cellIdString)
-      const projectMeta = await projectsZomeApi.projectMeta.update(cellId, {
-        entry,
-        headerHash,
-      })
-      return dispatch(updateProjectMeta(cellIdString, projectMeta))
-    },
+    openExpandedView: (address) => dispatch(openExpandedView(address)),
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TableView)
