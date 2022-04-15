@@ -31,7 +31,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
       <div
         onClick={() => setIsOpenDropdownMenu(!isOpenDropdownMenu)}
         className={`filter-dropdown-wrapper ${
-          isOpenDropdownMenu ? 'focused' : ''
+          isOpenDropdownMenu || selectedOptions.length > 0 ? 'focused' : ''
         } 
       ${size === 'large' ? 'large' : size === 'small' ? 'small' : ''}`}
       >

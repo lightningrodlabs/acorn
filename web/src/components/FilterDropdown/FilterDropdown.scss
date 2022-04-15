@@ -1,6 +1,7 @@
 .filter-dropdown-wrapper-with-dropdown {
   width: fit-content;
   position: relative;
+  -webkit-font-smoothing: antialiased;
 }
 
 .filter-dropdown-wrapper {
@@ -16,7 +17,7 @@
   width: fit-content;
   cursor: pointer;
   transition: 0.2s box-shadow ease;
-  -webkit-font-smoothing: antialiased;
+
   // set relative letter-spacing to fix
   // change of size issue after
   // bolding the text on focus/selected mode
@@ -101,7 +102,6 @@
   border-radius: 0.5rem;
   width: 100%;
   box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
 
   .filter-dropdown-menu-option {
     display: flex;
