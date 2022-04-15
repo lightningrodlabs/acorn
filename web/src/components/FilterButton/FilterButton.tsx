@@ -8,7 +8,7 @@ export type FilterButtonProps = {
   size: 'small' | 'medium' | 'large'
   isSelected: boolean
   onChange: (newState: boolean) => void
-  icon: React.Component
+  icon: React.ReactElement
   text: string
 }
 

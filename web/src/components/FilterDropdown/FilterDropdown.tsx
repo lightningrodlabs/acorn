@@ -8,9 +8,9 @@ export type FilterDropdownProps = {
   size: 'small' | 'medium' | 'large'
   selectedOptions: any[]
   onChange: (newSelectedOptions: any[]) => void
-  icon: React.Component
+  icon: React.ReactElement
   text: string
-  options: { innerListItem: React.Component; id: string }[]
+  options: { innerListItem: React.ReactElement; id: any }[]
 }
 
 const FilterDropdown: React.FC<FilterDropdownProps> = ({

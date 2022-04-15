@@ -99,7 +99,7 @@ module.exports = {
       },
       // .png images
       {
-        test: /\.(png|jpg)$/,
+        test: /\.(png|jpg|svg)$/,
         use: {
           loader: 'file-loader',
           options: {

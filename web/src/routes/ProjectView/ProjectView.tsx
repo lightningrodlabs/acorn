@@ -6,11 +6,12 @@ import {
   useParams,
   useLocation,
 } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 
 import { GO_TO_OUTCOME } from '../../searchParams'
 import MapView from './MapView/MapView'
 import PriorityView from './PriorityView/PriorityView'
+import TableView from './TableView/TableView'
 import ExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode.connector'
 
 // data
@@ -28,12 +29,21 @@ import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
 import { closeOutcomeForm } from '../../redux/ephemeral/outcome-form/actions'
 import { unselectAll } from '../../redux/ephemeral/selection/actions'
 import { closeExpandedView } from '../../redux/ephemeral/expanded-view/actions'
-import { animatePanAndZoom, resetTranslateAndScale } from '../../redux/ephemeral/viewport/actions'
+import {
+  animatePanAndZoom,
+  resetTranslateAndScale,
+} from '../../redux/ephemeral/viewport/actions'
 import { ENTRY_POINTS } from '../../searchParams'
-import { triggerRealtimeInfoSignal, sendExitProjectSignal } from '../../redux/persistent/projects/realtime-info-signal/actions'
+import {
+  triggerRealtimeInfoSignal,
+  sendExitProjectSignal,
+} from '../../redux/persistent/projects/realtime-info-signal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
+import { RootState } from '../../redux/reducer'
+import outcomesAsTrees from '../../redux/persistent/projects/outcomes/outcomesAsTrees'
+import ComputedOutcomeContext from '../../context/ComputedOutcomeContext'
 
 function ProjectViewInner({
   projectId,
@@ -52,34 +62,64 @@ function ProjectViewInner({
   fetchOutcomeComments,
   goToOutcome,
   triggerRealtimeInfoSignal,
-  sendExitProjectSignal,
 }) {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
   const goToOutcomeHeaderHash = searchParams.get(GO_TO_OUTCOME)
   const sendRealtimeInfoFrequency = 10000
-  const instance = useRef() 
-  
-  function ifMapGoToOutcome(outcomeHeaderHash) {
-      // TODO
-      // HACK
-      // we wait 100 ms because we wait for
-      // any integration and processing of the final location of Outcomes
-      // this relates to the animation defined in src/animations/layout.js
-      // `performLayoutAnimation`
-      if (location.pathname.includes('map')) {
-        setTimeout(() => {
-          if (outcomeHeaderHash) {
-            goToOutcome(outcomeHeaderHash)
-          }
-        }, 100)
+  const instance = useRef()
+
+  // const equalityFn = (left: RootState, right: RootState) => {
+  // TODO: perform the equality check, to decide whether to recompute
+  // return false
+  // }
+  const computedOutcomes = useSelector(
+    (state: RootState) => {
+      const treeData = {
+        agents: state.agents,
+        outcomes: state.projects.outcomes[projectId] || ({} as any),
+        connections: state.projects.connections[projectId] || ({} as any),
+        outcomeMembers: state.projects.outcomeMembers[projectId] || ({} as any),
+        outcomeVotes: state.projects.outcomeVotes[projectId] || ({} as any),
+        outcomeComments:
+          state.projects.outcomeComments[projectId] || ({} as any),
       }
+      const outcomeTrees = outcomesAsTrees(treeData, { withMembers: true })
+
+      // TODO: map over the outcomes, converting each one from an WithHeaderHash<Outcome>
+      // to a ComputedOutcome
+      // const computedOutcomes =  outcomes.map((outcome) => {
+      // convert outcome
+      // return outcome
+      // })
+      // return the computedOutcomes
+      return outcomeTrees
+    } /*, equalityFn */
+  )
+
+  function ifMapGoToOutcome(outcomeHeaderHash) {
+    // TODO
+    // HACK
+    // we wait 100 ms because we wait for
+    // any integration and processing of the final location of Outcomes
+    // this relates to the animation defined in src/animations/layout.js
+    // `performLayoutAnimation`
+    if (location.pathname.includes('map')) {
+      setTimeout(() => {
+        if (outcomeHeaderHash) {
+          goToOutcome(outcomeHeaderHash)
+        }
+      }, 100)
+    }
   }
 
   // this useEffect is called when the ProjectView component is first mounted, and returns when it is dismounted
   // it sets an interval which calls triggerRealTimeInfoSignal at a fixed rate, until the component is dismounted
   useEffect(() => {
-    instance.current = setInterval(() => triggerRealtimeInfoSignal(), sendRealtimeInfoFrequency)
+    instance.current = setInterval(
+      () => triggerRealtimeInfoSignal(),
+      sendRealtimeInfoFrequency
+    )
     return () => {
       clearInterval(instance.current)
     }
@@ -87,7 +127,7 @@ function ProjectViewInner({
 
   useEffect(() => {
     ifMapGoToOutcome(goToOutcomeHeaderHash)
-  },[goToOutcomeHeaderHash])
+  }, [goToOutcomeHeaderHash])
 
   useEffect(() => {
     // pushes this new projectId into the store/state
@@ -101,7 +141,7 @@ function ProjectViewInner({
     // 2. animated to their final position
     // we then animate to a specific outcome if it was set in the path
     // as a search query param
-    Promise.all([fetchOutcomes(),fetchConnections()]).then(() => {
+    Promise.all([fetchOutcomes(), fetchConnections()]).then(() => {
       ifMapGoToOutcome(goToOutcomeHeaderHash)
     })
     //
@@ -118,13 +158,17 @@ function ProjectViewInner({
 
   return (
     <>
-      <Switch>
-        <Route path='/project/:projectId/map' component={MapView} />
-        <Route path='/project/:projectId/priority' component={PriorityView} />
-        <Route exact path='/project/:projectId' component={ProjectRedirect} />
-      </Switch>
-      <ExpandedViewMode projectId={projectId} onClose={closeExpandedView} />
-    </>)
+      <ComputedOutcomeContext.Provider value={{ computedOutcomes }}>
+        <Switch>
+          <Route path="/project/:projectId/map" component={MapView} />
+          <Route path="/project/:projectId/priority" component={PriorityView} />
+          <Route path="/project/:projectId/table" component={TableView} />
+          <Route exact path="/project/:projectId" component={ProjectRedirect} />
+        </Switch>
+        <ExpandedViewMode projectId={projectId} onClose={closeExpandedView} />
+      </ComputedOutcomeContext.Provider>
+    </>
+  )
 }
 
 function ProjectRedirect() {
@@ -140,8 +184,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
-    setActiveProject: projectId => dispatch(setActiveProject(projectId)),
-    setActiveEntryPoints: entryPointAddresses =>
+    setActiveProject: (projectId) => dispatch(setActiveProject(projectId)),
+    setActiveEntryPoints: (entryPointAddresses) =>
       dispatch(setActiveEntryPoints(entryPointAddresses)),
     resetProjectView: () => {
       dispatch(closeExpandedView())
@@ -154,13 +198,17 @@ function mapDispatchToProps(dispatch, ownProps) {
     fetchProjectMeta: async () => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const projectMeta = await projectsZomeApi.projectMeta.fetchProjectMeta(cellId)
+      const projectMeta = await projectsZomeApi.projectMeta.fetchProjectMeta(
+        cellId
+      )
       dispatch(fetchProjectMeta(cellIdString, projectMeta))
     },
     fetchEntryPoints: async () => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const entryPoints = await projectsZomeApi.entryPoint.fetch(cellId, { All: null })
+      const entryPoints = await projectsZomeApi.entryPoint.fetch(cellId, {
+        All: null,
+      })
       dispatch(fetchEntryPoints(cellIdString, entryPoints))
     },
     fetchMembers: async () => {
@@ -172,36 +220,47 @@ function mapDispatchToProps(dispatch, ownProps) {
     fetchOutcomes: async () => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const outcomes = await projectsZomeApi.outcome.fetch(cellId, { All: null })
+      const outcomes = await projectsZomeApi.outcome.fetch(cellId, {
+        All: null,
+      })
       dispatch(fetchOutcomes(cellIdString, outcomes))
     },
     fetchConnections: async () => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const connections = await projectsZomeApi.connection.fetch(cellId, { All: null })
+      const connections = await projectsZomeApi.connection.fetch(cellId, {
+        All: null,
+      })
       dispatch(fetchConnections(cellIdString, connections))
     },
     fetchOutcomeMembers: async () => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const outcomeMembers = await projectsZomeApi.outcomeMember.fetch(cellId, { All: null })
+      const outcomeMembers = await projectsZomeApi.outcomeMember.fetch(cellId, {
+        All: null,
+      })
       dispatch(fetchOutcomeMembers(cellIdString, outcomeMembers))
     },
     fetchOutcomeVotes: async () => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const outcomeVotes = await projectsZomeApi.outcomeVote.fetch(cellId, { All: null })
+      const outcomeVotes = await projectsZomeApi.outcomeVote.fetch(cellId, {
+        All: null,
+      })
       dispatch(fetchOutcomeVotes(cellIdString, outcomeVotes))
     },
     fetchOutcomeComments: async () => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const outcomeComments = await projectsZomeApi.outcomeComment.fetch(cellId, { All: null })
+      const outcomeComments = await projectsZomeApi.outcomeComment.fetch(
+        cellId,
+        { All: null }
+      )
       dispatch(fetchOutcomeComments(cellIdString, outcomeComments))
     },
-    goToOutcome: (outcomeHeaderHash) => dispatch(animatePanAndZoom(outcomeHeaderHash)),
+    goToOutcome: (outcomeHeaderHash) =>
+      dispatch(animatePanAndZoom(outcomeHeaderHash)),
     triggerRealtimeInfoSignal: () => dispatch(triggerRealtimeInfoSignal()),
-    sendExitProjectSignal: () => dispatch(sendExitProjectSignal())
   }
 }
 
