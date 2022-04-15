@@ -6,7 +6,14 @@ import ProjectsZomeApi from '../../../api/projectsApi'
 import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
 import './TableView.scss'
-import { ComputedOutcome, ComputedScope, ComputedSimpleAchievementStatus, Member, Profile, ProjectMeta } from '../../../types'
+import {
+  ComputedOutcome,
+  ComputedScope,
+  ComputedSimpleAchievementStatus,
+  Member,
+  Profile,
+  ProjectMeta,
+} from '../../../types'
 import { AgentPubKeyB64 } from '../../../types/shared'
 import FilterDropdown from '../../../components/FilterDropdown/FilterDropdown'
 import FilterButton from '../../../components/FilterButton/FilterButton'
@@ -15,15 +22,15 @@ import { RootState } from '../../../redux/reducer'
 import { CellId } from '@holochain/client'
 
 type Filter = {
-	keywordOrId?: string,
-	achievementStatus?: ComputedSimpleAchievementStatus[],
-	scope?: ComputedScope[],
-	assignees?: AgentPubKeyB64[],
-	tags?: string[]
+  keywordOrId?: string
+  achievementStatus?: ComputedSimpleAchievementStatus[]
+  scope?: ComputedScope[]
+  assignees?: AgentPubKeyB64[]
+  tags?: string[]
 }
 
 export type OutcomeTableProps = {
-  outcomeTrees: any,
+  outcomeTrees: any
   filter: Filter
 }
 
@@ -76,8 +83,9 @@ function filterMatch(outcome: ComputedOutcome, filter: Filter) {
   if ('achievementStatus' in filter) {
     achievementStatusMatch = false
     // TODO: get actual ComputedSimpleAchievementStatus for the Outcome
-    const outcomeSimpleAchievementStatus = ComputedSimpleAchievementStatus.Achieved
-    
+    const outcomeSimpleAchievementStatus =
+      ComputedSimpleAchievementStatus.Achieved
+
     for (const status of filter.achievementStatus) {
       if (outcomeSimpleAchievementStatus === status) {
         achievementStatusMatch = true
@@ -101,20 +109,20 @@ function filterMatch(outcome: ComputedOutcome, filter: Filter) {
   if ('assignees' in filter) {
     assigneesMatch = false
     for (const assignee of filter.assignees) {
-       if (outcome.members.includes(assignee)) {
-         assigneesMatch = true // assuming assignee filter selection is an OR rather than AND
-         break
-       }
+      if (outcome.members.includes(assignee)) {
+        assigneesMatch = true // assuming assignee filter selection is an OR rather than AND
+        break
+      }
     }
   }
 
   if ('tags' in filter) {
     tagsMatch = false
     for (const tag of filter.tags) {
-       if (outcome.tags.includes(tag)) {
-         tagsMatch = true 
-         break
-       }
+      if (outcome.tags.includes(tag)) {
+        tagsMatch = true
+        break
+      }
     }
   }
   return (
@@ -127,9 +135,9 @@ function filterMatch(outcome: ComputedOutcome, filter: Filter) {
 }
 
 export type OutcomeTableRowProps = {
-  outcome: any, //define this type
-  filter: Filter,
-  parentExpanded: boolean,
+  outcome: any //define this type
+  filter: Filter
+  parentExpanded: boolean
   indentationLevel: number
 }
 
@@ -186,118 +194,153 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
 */
 
 export type FilterSelectorProps = {
+  whoAmI: Profile
   onApplyFilter: (filters: Filter) => void
   filter: Filter
   projectMemberProfiles: Profile[]
 }
 
 const FilterSelector: React.FC<FilterSelectorProps> = ({
+  whoAmI,
   onApplyFilter,
   filter,
   projectMemberProfiles,
-}) =>  {
-
+}) => {
   // const equalityFn = (left: RootState, right: RootState) => {
-    // TODO: perform the equality check, to decide whether to recompute
-    // return false
+  // TODO: perform the equality check, to decide whether to recompute
+  // return false
   // }
-  const outcomeTagList = useSelector((state: RootState) => {
-    const projectId = state.ui.activeProject
-    const outcomes = state.projects.outcomes[projectId] || {}
-    const outcomesArray = Object.values(outcomes)
-    // return outcomesArray.filter((tag, pos) => outcomesArray.indexOf(tag) === pos)
-    return ['tag', 'sprint', 'v0.0.1']
-  }/*, equalityFn */)
-
+  const outcomeTagList = useSelector(
+    (state: RootState) => {
+      const projectId = state.ui.activeProject
+      const outcomes = state.projects.outcomes[projectId] || {}
+      const outcomesArray = Object.values(outcomes)
+      // return outcomesArray.filter((tag, pos) => outcomesArray.indexOf(tag) === pos)
+      return ['tag', 'sprint', 'v0.0.1']
+    } /*, equalityFn */
+  )
 
   const achievementStatusOptions = [
-    { innerListItem: <>Achieved</>, id: ComputedSimpleAchievementStatus.Achieved},
-    { innerListItem: <>Not Achieved</>, id: ComputedSimpleAchievementStatus.NotAchieved},
-    { innerListItem: <>Partially Achieved</>, id: ComputedSimpleAchievementStatus.PartiallyAchieved}
+    {
+      innerListItem: <>Achieved</>,
+      id: ComputedSimpleAchievementStatus.Achieved,
+    },
+    {
+      innerListItem: <>Not Achieved</>,
+      id: ComputedSimpleAchievementStatus.NotAchieved,
+    },
+    {
+      innerListItem: <>Partially Achieved</>,
+      id: ComputedSimpleAchievementStatus.PartiallyAchieved,
+    },
   ]
   const scopeOptions = [
-    { innerListItem: <>Small</>, id: ComputedScope.Small},
-    { innerListItem: <>Uncertain</>, id: ComputedScope.Uncertain},
-    { innerListItem: <>Big</>, id: ComputedScope.Big}
+    { innerListItem: <>Small</>, id: ComputedScope.Small },
+    { innerListItem: <>Uncertain</>, id: ComputedScope.Uncertain },
+    { innerListItem: <>Big</>, id: ComputedScope.Big },
   ]
-  const assigneeOptions = projectMemberProfiles.map((profile) => profileOption(profile)) //also include avatar icon
+  const assigneeOptions = projectMemberProfiles.map((profile) =>
+    profileOption(profile)
+  ) //also include avatar icon
   function profileOption(profile: Profile) {
     return {
       innerListItem: profile.firstName,
-      id: profile.agentPubKey
+      id: profile.agentPubKey,
     }
   }
   const tagOptions = outcomeTagList.map((tag) => {
-    return { innerListItem: <>{tag}</>, id: tag}
+    return { innerListItem: <>{tag}</>, id: tag }
   })
   // [
   //   // get list of tags, maybe using something like useSelector, which performs a computation over the state by checking the tags of outcomes
   // ]
   const [filterText, setFilterText] = useState('')
+  function isOnlyMeAssigned(filter: Filter, whoAmI: Profile) {
+    if ('assignees' in filter) {
+      return filter.assignees.length === 1 && filter.assignees[0] === whoAmI.agentPubKey
+    }
+    else {
+      return false
+    }
+  }
   return (
     <div className="filter-selector-panel">
       <input
         type="text"
         onChange={(e) => {
-          onApplyFilter({keywordOrId: e.target.value.toLowerCase()})
+          onApplyFilter({ keywordOrId: e.target.value.toLowerCase() })
         }}
         placeholder="Search for a outcome"
         autoFocus
       />
-      <FilterButton size='medium' text='Only to me' icon={<Icon name='x.svg' />} isSelected={true} onChange={() => {}} />
-      <FilterDropdown 
-        selectedOptions={filter.achievementStatus ? filter.achievementStatus : []}
+      <FilterButton
+        size="medium"
+        text="Only to me"
+        icon={<Icon name="x.svg" />}
+        isSelected={isOnlyMeAssigned(filter, whoAmI)}
+        onChange={() => isOnlyMeAssigned(filter, whoAmI) ? onApplyFilter({
+          ...filter,
+          assignees: []
+        }) : onApplyFilter({
+          ...filter,
+          assignees: [whoAmI.agentPubKey]
+        })}
+      />
+      <FilterDropdown
+        selectedOptions={
+          filter.achievementStatus ? filter.achievementStatus : []
+        }
         options={achievementStatusOptions}
-        text='Achievement Status'
+        text="Achievement Status"
         // TODO
-        icon={<Icon name='x.svg' />}
-        size='medium'
+        icon={<Icon name="x.svg" />}
+        size="medium"
         onChange={(newSelectionOptions) => {
           onApplyFilter({
             ...filter,
-            achievementStatus: newSelectionOptions
+            achievementStatus: newSelectionOptions,
           })
         }}
       />
-      <FilterDropdown 
+      <FilterDropdown
         selectedOptions={filter.scope ? filter.scope : []}
         options={scopeOptions}
-        text='scope'
+        text="scope"
         // TODO
-        icon={<Icon name='x.svg' />}
-        size='medium'
+        icon={<Icon name="x.svg" />}
+        size="medium"
         onChange={(newSelectionOptions) => {
           onApplyFilter({
             ...filter,
-            scope: newSelectionOptions
+            scope: newSelectionOptions,
           })
         }}
       />
-      <FilterDropdown 
+      <FilterDropdown
         selectedOptions={filter.assignees ? filter.assignees : []}
         options={assigneeOptions}
-        text='assignees'
+        text="assignees"
         // TODO
-        icon={<Icon name='x.svg' />}
-        size='medium'
+        icon={<Icon name="x.svg" />}
+        size="medium"
         onChange={(newSelectionOptions) => {
           onApplyFilter({
             ...filter,
-            assignees: newSelectionOptions
+            assignees: newSelectionOptions,
           })
         }}
       />
-      <FilterDropdown 
+      <FilterDropdown
         selectedOptions={filter.tags ? filter.tags : []}
         options={tagOptions}
-        text='tags'
+        text="tags"
         // TODO
-        icon={<Icon name='x.svg' />}
-        size='medium'
+        icon={<Icon name="x.svg" />}
+        size="medium"
         onChange={(newSelectionOptions) => {
           onApplyFilter({
             ...filter,
-            tags: newSelectionOptions
+            tags: newSelectionOptions,
           })
         }}
       />
@@ -308,38 +351,37 @@ const FilterSelector: React.FC<FilterSelectorProps> = ({
 }
 
 export type TableViewProps = {
-  projectId: CellId,
-  outcomeTrees: any,
-  projectMeta: ProjectMeta,
-  projectMemberProfiles: Profile[],
-  updateProjectMeta,
+  whoAmI: Profile
+  outcomeTrees: any
+  projectMemberProfiles: Profile[]
 }
 
 const TableView: React.FC<TableViewProps> = ({
+  whoAmI,
   outcomeTrees,
   projectMemberProfiles,
 }) => {
   console.log('outcome tree:', outcomeTrees)
   const [filter, setFilter] = useState<Filter>({
-    keywordOrId: 'n'
+    keywordOrId: 'n',
   })
   return (
     <div className="table-view-wrapper">
       <FilterSelector
+        whoAmI={whoAmI}
         onApplyFilter={setFilter}
         filter={filter}
         projectMemberProfiles={projectMemberProfiles}
       />
-      <OutcomeTable
-        outcomeTrees={outcomeTrees}
-        filter={filter}
-      />
+      <OutcomeTable outcomeTrees={outcomeTrees} filter={filter} />
     </div>
   )
 }
 
 function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject
+  const whoAmIWireElement = state.whoami || {}
+  const whoAmI = whoAmIWireElement.entry
   const projectMeta = state.projects.projectMeta[projectId] || {}
   const projectMembers = state.projects.members[projectId] || {}
   const projectMemberProfiles = Object.keys(projectMembers)
@@ -355,10 +397,9 @@ function mapStateToProps(state: RootState) {
   }
   const outcomeTrees = outcomesAsTrees(treeData, { withMembers: true })
   return {
-    projectId,
-    projectMeta,
+    whoAmI,
     outcomeTrees,
-    projectMemberProfiles
+    projectMemberProfiles,
   }
 }
 function mapDispatchToProps(dispatch) {
