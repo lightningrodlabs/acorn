@@ -60,15 +60,15 @@ Known Achieved
 */
 
 export enum ComputedSimpleAchievementStatus {
-  NotAchieved,
-  Achieved,
-  PartiallyAchieved,
+  NotAchieved = 'NotAchieved',
+  Achieved = 'Achieved',
+  PartiallyAchieved = 'PartiallyAchieved',
 }
 
 export enum ComputedScope {
-  Small,
-  Uncertain,
-  Big, // has children and is not uncertain
+  Small = 'Small',
+  Uncertain = 'Uncertain',
+  Big = 'Big', // has children and is not uncertain
 }
 
 export type OptionalOutcomeData = {

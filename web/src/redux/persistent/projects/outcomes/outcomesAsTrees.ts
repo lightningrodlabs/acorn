@@ -12,6 +12,7 @@ import {
 } from '../../../../types'
 import { HeaderHashB64, WithHeaderHash } from '../../../../types/shared'
 import { RootState } from '../../../reducer'
+import { computeAchievementStatus, computeScope } from './computedState'
 
 export type TreeData = {
   agents: RootState['agents']
@@ -88,22 +89,18 @@ export default function outcomesAsTrees(
   // recursively calls itself
   // so that it constructs the full sub-tree for each root Outcome
   function getOutcome(outcomeHeaderHash: HeaderHashB64): ComputedOutcome {
+    const self = allOutcomes[outcomeHeaderHash]
+    const children = connectionsAsArray
+      // find the connections indicating the children of this outcome
+      .filter((connection) => connection.parentHeaderHash === outcomeHeaderHash)
+      // actually nest the children Outcomes, recurse
+      .map((connection) => getOutcome(connection.childHeaderHash))
+
     return {
-      ...allOutcomes[outcomeHeaderHash],
-      computedAchievementStatus: {
-        uncertains: 10,
-        smallsAchieved: 10,
-        smallsTotal: 10,
-        simple: ComputedSimpleAchievementStatus.Achieved,
-      },
-      computedScope: ComputedScope.Big,
-      children: connectionsAsArray
-        // find the connections indicating the children of this outcome
-        .filter(
-          (connection) => connection.parentHeaderHash === outcomeHeaderHash
-        )
-        // actually nest the children Outcomes, recurse
-        .map((connection) => getOutcome(connection.childHeaderHash)),
+      ...self,
+      computedAchievementStatus: computeAchievementStatus(self, children),
+      computedScope: computeScope(self, children),
+      children,
     }
   }
   // start with the root Outcomes, and recurse down to their children
