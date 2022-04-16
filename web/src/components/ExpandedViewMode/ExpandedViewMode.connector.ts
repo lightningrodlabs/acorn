@@ -20,26 +20,25 @@ import { HeaderHashB64 } from '../../types/shared'
 import { EntryPoint, Outcome } from '../../types'
 
 function mapStateToProps(state: RootState, ownProps) {
-  let outcome,
-    creator = null,
+  let creator = null,
     squirrels = [],
     comments = []
 
   const { projectId } = ownProps
-  const outcomes = state.projects.outcomes[projectId] || {}
   const outcomeMembers = state.projects.outcomeMembers[projectId] || {}
   const entryPoints = state.projects.entryPoints[projectId] || {}
   const outcomeComments = state.projects.outcomeComments[projectId] || {}
+  
+  const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
 
-  if (state.ui.expandedView.outcomeHeaderHash) {
-    outcome = outcomes[state.ui.expandedView.outcomeHeaderHash]
+  if (outcomeHeaderHash) {
     comments = Object.values(outcomeComments).filter(
       (outcomeComment) =>
         outcomeComment.outcomeHeaderHash === state.ui.expandedView.outcomeHeaderHash
     )
     squirrels = Object.keys(outcomeMembers)
       .map((headerHash) => outcomeMembers[headerHash])
-      .filter((outcomeMember) => outcomeMember.outcomeHeaderHash === outcome.headerHash)
+      .filter((outcomeMember) => outcomeMember.outcomeHeaderHash === outcomeHeaderHash)
       .map((outcomeMember) => {
         const squirrel = {
           ...state.agents[outcomeMember.memberAgentPubKey],
@@ -47,13 +46,8 @@ function mapStateToProps(state: RootState, ownProps) {
         }
         return squirrel
       })
-    Object.keys(state.agents).forEach((value) => {
-      if (state.agents[value].agentPubKey === outcome.creatorAgentPubKey)
-        creator = state.agents[value]
-    })
   }
 
-  const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
   const entryPoint = Object.values(entryPoints).find(
     (entryPoint) => entryPoint.outcomeHeaderHash === outcomeHeaderHash
   )
@@ -78,8 +72,8 @@ function mapStateToProps(state: RootState, ownProps) {
     isEntryPoint,
     entryPointAddress,
     outcomeHeaderHash,
-    creator,
-    outcome,
+    // creator, REMOVE
+    profiles: state.agents,
     squirrels,
     comments,
     editingPeers,

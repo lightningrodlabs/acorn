@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import moment from 'moment'
 import { CSSTransition } from 'react-transition-group'
 import './ExpandedViewMode.scss'
@@ -12,16 +12,16 @@ import ExpandedViewModeFooter from './ExpandedViewModeFooter/ExpandedViewModeFoo
 import EVLeftColumn from './EVLeftColumn/EVLeftColumn'
 import EVRightColumn from './EVRightColumn/EVRightColumn'
 import { ExpandedViewTab } from './NavEnum'
+import ComputedOutcomeContext from '../../context/ComputedOutcomeContext'
 
 export default function ExpandedViewMode({
   projectId,
   agentAddress,
   outcomeHeaderHash,
-  outcome,
   updateOutcome,
   onClose,
-  creator,
   squirrels,
+  profiles,
   comments,
   deleteOutcomeMember,
   createEntryPoint,
@@ -34,6 +34,19 @@ export default function ExpandedViewMode({
   endDescriptionEdit,
   editingPeers,
 }) {
+
+  const { computedOutcomesKeyed } = useContext(ComputedOutcomeContext)
+  const outcome = computedOutcomesKeyed[outcomeHeaderHash]
+  // console.log(outcome && outcome.computedAchievementStatus.uncertains)
+
+  let creator
+  if (outcome) {
+    Object.keys(profiles).forEach((value) => {
+      if (profiles[value].agentPubKey === outcome.creatorAgentPubKey)
+        creator = profiles[value]
+    })
+  }
+
   const [outcomeState, setOutcomeState] = useState()
   const [squirrelsState, setSquirrelsState] = useState()
   const [creatorState, setCreatorState] = useState()
@@ -104,14 +117,21 @@ export default function ExpandedViewMode({
   }
 
   let fromDate, toDate
+  let uncertains, smallsAchieved, smallsTotal
   if (outcome) {
     fromDate = outcome.timeFrame
       ? moment.unix(outcome.timeFrame.fromDate)
       : null
     toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
+
+    uncertains = outcome.computedAchievementStatus.uncertains
+    smallsAchieved = outcome.computedAchievementStatus.smallsAchieved
+    smallsTotal = outcome.computedAchievementStatus.smallsTotal
   }
   const [activeTab, setActiveTab] = useState(ExpandedViewTab.Details)
   
+
+
   return (
     <>
       <CSSTransition
@@ -129,60 +149,13 @@ export default function ExpandedViewMode({
           unmountOnExit
           classNames="expanded-view-wrapper"
         >
-          {/* <div className={`expanded-view-wrapper border_${outcomeState.status}`}>
-            <Icon
+          <div className="expanded-view-wrapper">
+          <Icon
               onClick={onClose}
               name='x.svg'
               size='small-close'
               className='light-grey'
             />
-            <ExpandedViewModeHeader
-              agentAddress={agentAddress}
-              outcomeHeaderHash={outcomeHeaderHash}
-              outcome={outcomeState}
-              updateOutcome={updateOutcome}
-              entryPointClickAction={entryPointClickAction}
-              isEntryPoint={isEntryPoint}
-            />
-            <div className='expanded-view-main'>
-              <ExpandedViewModeContent
-                agentAddress={agentAddress}
-                projectId={projectId}
-                editTimeframe={editTimeframe}
-                setEditTimeframe={setEditTimeframe}
-                squirrels={squirrelsState}
-                comments={comments}
-                outcomeHeaderHash={outcomeHeaderHash}
-                updateOutcome={updateOutcome}
-                outcome={outcomeState}
-                outcomeContent={outcomeState.content}
-                outcomeDescription={outcomeState.description}
-                deleteOutcomeMember={deleteOutcomeMember}
-                startTitleEdit={startTitleEdit}
-                endTitleEdit={endTitleEdit}
-                startDescriptionEdit={startDescriptionEdit}
-                endDescriptionEdit={endDescriptionEdit}
-                editingPeers={editingPeers}
-              />
-              <RightMenu
-                projectId={projectId}
-                agentAddress={agentAddress}
-                outcomeHeaderHash={outcomeHeaderHash}
-                outcome={outcomeState}
-                updateOutcome={updateOutcome}
-              />
-            </div>
-            <ExpandedViewModeFooter outcome={outcomeState} creator={creatorState} />
-            {editTimeframe && (
-              <DatePicker
-                onClose={() => setEditTimeframe(false)}
-                onSet={updateTimeframe}
-                fromDate={fromDate}
-                toDate={toDate}
-              />
-            )}
-          </div> */}
-          <div className="expanded-view-wrapper">
             <EVLeftColumn
               activeTab={activeTab}
               onChange={(newTab) => setActiveTab(newTab)}
@@ -208,6 +181,9 @@ export default function ExpandedViewMode({
               editingPeers={editingPeers}
               activeTab={activeTab}
               setActiveTab={setActiveTab}
+              uncertains={uncertains}
+              smallsAchieved={smallsAchieved}
+              smallsTotal={smallsTotal}
             />
             <EVRightColumn
               projectId={projectId}

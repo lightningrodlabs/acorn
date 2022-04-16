@@ -58,9 +58,17 @@ export default function ExpandedViewModeContent({
   editingPeers,
   activeTab,
   setActiveTab,
+  uncertains,
+  smallsAchieved,
+  smallsTotal
 }) {
   return (
     <div className="expanded-view-content">
+      <div>
+        A: {smallsAchieved}
+        T: {smallsTotal}
+        U: {uncertains}
+        </div>
       <div className="expanded-view-inner-content">
         {activeTab === ExpandedViewTab.Details && (
           <Details

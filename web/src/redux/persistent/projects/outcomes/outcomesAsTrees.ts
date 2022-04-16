@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import { ProjectComputedOutcomes } from '../../../../context/ComputedOutcomeContext'
 import {
   ComputedOutcome,
   ComputedScope,
@@ -36,7 +37,7 @@ export type TreeData = {
 export default function outcomesAsTrees(
   treeData: TreeData,
   { withMembers = false, withComments = false, withVotes = false } = {}
-): ComputedOutcome[] {
+): ProjectComputedOutcomes {
   const {
     outcomes,
     connections,
@@ -86,6 +87,8 @@ export default function outcomesAsTrees(
       (connection) => connection.childHeaderHash === outcomeHeaderHash
     )
   })
+
+  const computedOutcomesKeyed: ProjectComputedOutcomes['computedOutcomesKeyed'] = {}
   // recursively calls itself
   // so that it constructs the full sub-tree for each root Outcome
   function getOutcome(outcomeHeaderHash: HeaderHashB64): ComputedOutcome {
@@ -96,13 +99,23 @@ export default function outcomesAsTrees(
       // actually nest the children Outcomes, recurse
       .map((connection) => getOutcome(connection.childHeaderHash))
 
-    return {
+    const computedOutcome = {
       ...self,
       computedAchievementStatus: computeAchievementStatus(self, children),
       computedScope: computeScope(self, children),
       children,
     }
+    // add it to our 'tracking' object as well
+    // which will be used for quicker access to specific
+    // outcomes
+    computedOutcomesKeyed[self.headerHash] = computedOutcome
+    return computedOutcome
   }
   // start with the root Outcomes, and recurse down to their children
-  return noParentsAddresses.map(getOutcome)
+  const computedOutcomesAsTree = noParentsAddresses.map(getOutcome)
+
+  return {
+    computedOutcomesAsTree,
+    computedOutcomesKeyed
+  }
 }

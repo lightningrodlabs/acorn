@@ -158,7 +158,7 @@ function ProjectViewInner({
 
   return (
     <>
-      <ComputedOutcomeContext.Provider value={{ computedOutcomes }}>
+      <ComputedOutcomeContext.Provider value={computedOutcomes}>
         <Switch>
           <Route path="/project/:projectId/map" component={MapView} />
           <Route path="/project/:projectId/priority" component={PriorityView} />
