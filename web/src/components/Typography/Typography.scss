@@ -1,7 +1,71 @@
-
-
 .typography {
+  -webkit-font-smoothing: antialiased;
+  // Headings
+  &.h1 {
+    font: 2rem var(--font-family-primary-extrabold);
+    line-height: 1.45;
+  }
+  &.h2 {
+    font: 1.75rem var(--font-family-primary-bold);
+    line-height: 1.45;
+  }
   &.h3 {
-    // styles here
+    font: 1.5rem var(--font-family-primary-extrabold);
+    line-height: 1.45;
+  }
+  &.h4 {
+    font: 1.375rem var(--font-family-primary-extrabold);
+    line-height: 1.45;
+  }
+  &.h5 {
+    font: 1.25rem var(--font-family-primary-bold);
+    line-height: 1.45;
+  }
+  &.h6 {
+    font: 1.125rem var(--font-family-primary-bold);
+    line-height: 1.45;
+  }
+  &.h7 {
+    font: 1rem var(--font-family-primary-bold);
+    line-height: 1.45;
+    color: var(--text-color-secondary);
+  }
+  &.h8 {
+    font: 0.875rem var(--font-family-primary-bold);
+    line-height: 1.45;
+    color: var(--text-color-secondary);
+  }
+  // Body
+  &.body1 {
+    font: 1rem var(--font-family-primary-medium);
+    color: var(--text-color-secondary);
+    line-height: 1.45;
+  }
+  &.body2 {
+    font: 0.875rem var(--font-family-primary-medium);
+    color: var(--text-color-primary);
+    line-height: 1.45;
+  }
+  // Subtitles
+  &.subtitle1 {
+    font: 1.25rem var(--font-family-primary-medium);
+    line-height: 1.45;
+    color: var(--text-color-tetiary);
+  }
+  &.subtitle2 {
+    font: 1.125rem var(--font-family-primary-bold);
+    color: var(--text-color-secondary);
+    line-height: 1.45;
+  }
+  // Captions
+  &.caption1 {
+    font: 1rem var(--font-family-primary-bold);
+    color: var(--text-color-caption);
+    line-height: 1.45;
+  }
+  &.caption2 {
+    font: 1rem var(--font-family-primary-medium);
+    color: var(--text-color-tetiary);
+    line-height: 1.45;
   }
 }

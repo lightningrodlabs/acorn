@@ -17,7 +17,12 @@ const ButtonAction: React.FC<ButtonActionProps> = ({
   text,
 }) => {
   return (
-    <div className="button-action-wrapper" onClick={onClick}>
+    <div
+      className={`button-action-wrapper ${
+        size === 'small' ? 'small' : size === 'large' ? 'large' : ''
+      }`}
+      onClick={onClick}
+    >
       <div className="button-action-icon">{icon}</div>
       <div className="button-action-text">{text}</div>
     </div>
