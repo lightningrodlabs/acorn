@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 
@@ -14,8 +14,10 @@ import { PriorityModeOptions } from '../../../constants'
 import ProjectsZomeApi from '../../../api/projectsApi'
 import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
+import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
 
-function PriorityMode({ projectId, outcomeTrees, projectMeta, updateProjectMeta }) {
+function PriorityMode({ projectId, projectMeta, updateProjectMeta }) {
+  const { computedOutcomes } = useContext(ComputedOutcomeContext)
   let main
   switch (projectMeta.priorityMode) {
     case PriorityModeOptions.Universal:
@@ -33,7 +35,7 @@ function PriorityMode({ projectId, outcomeTrees, projectMeta, updateProjectMeta 
   return (
     <>
       <IndentedTreeView
-        outcomeTrees={outcomeTrees}
+        outcomeTrees={computedOutcomes}
         projectMeta={projectMeta}
         projectId={projectId}
         updateProjectMeta={wrappedUpdateProjectMeta}
@@ -46,19 +48,9 @@ function PriorityMode({ projectId, outcomeTrees, projectMeta, updateProjectMeta 
 function mapStateToProps(state) {
   const projectId = state.ui.activeProject
   const projectMeta = state.projects.projectMeta[projectId] || {}
-  const treeData = {
-    agents: state.agents,
-    outcomes: state.projects.outcomes[projectId] || {},
-    connections: state.projects.connections[projectId] || {},
-    outcomeMembers: state.projects.outcomeMembers[projectId] || {},
-    outcomeVotes: state.projects.outcomeVotes[projectId] || {},
-    outcomeComments: state.projects.outcomeComments[projectId] || {},
-  }
-  const outcomeTrees = outcomesAsTrees(treeData, { withMembers: true })
   return {
     projectId,
     projectMeta,
-    outcomeTrees,
   }
 }
 function mapDispatchToProps(dispatch) {

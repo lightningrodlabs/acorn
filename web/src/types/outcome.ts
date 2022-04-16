@@ -1,39 +1,42 @@
-import { AgentPubKeyB64, Option, WithHeaderHash } from "./shared"
+import { OutcomeComment } from './outcomeComment'
+import { OutcomeVote } from './outcomeVote'
+import { Profile } from './profile'
+import { AgentPubKeyB64, Option, WithHeaderHash } from './shared'
 
 export interface Outcome {
-    content: string,
-    creatorAgentPubKey: AgentPubKeyB64,
-    editorAgentPubKey: Option<AgentPubKeyB64>,
-    timestampCreated: number, //f64,
-    timestampUpdated: Option<number>, //f64
-    scope: Scope,
-    tags: Option<Array<string>>,
-    description: string,
-    timeFrame: Option<TimeFrame>,
-    isImported: boolean,
+  content: string
+  creatorAgentPubKey: AgentPubKeyB64
+  editorAgentPubKey: Option<AgentPubKeyB64>
+  timestampCreated: number //f64,
+  timestampUpdated: Option<number> //f64
+  scope: Scope
+  tags: Option<Array<string>>
+  description: string
+  timeFrame: Option<TimeFrame>
+  isImported: boolean
 }
 
-export type AchievementStatus = "Achieved" | "NotAchieved"
+export type AchievementStatus = 'Achieved' | 'NotAchieved'
 export interface Small {
-    Small: AchievementStatus
+  Small: AchievementStatus
 }
 
 export type SmallsEstimate = number
 export interface Uncertain {
-    Uncertain: Option<SmallsEstimate>
+  Uncertain: Option<SmallsEstimate>
 }
 
 export type Scope = Small | Uncertain
 export interface TimeFrame {
-    fromDate: number, //f64,
-    toDate: number, //f64,
+  fromDate: number //f64,
+  toDate: number //f64,
 }
 
-
 export type ComputedAchievementStatus = {
-    uncertains: number // any descendants -> if number 
-    smallsAchieved: number
-    smallsTotal: number
+  uncertains: number
+  smallsAchieved: number
+  smallsTotal: number
+  simple: ComputedSimpleAchievementStatus
 }
 /*
 Uncertain
@@ -56,24 +59,29 @@ Known Achieved
 }
 */
 
-// TODO: 
-// fn computeSimpleAchievementStatus(as: ComputedAchievementStatus): ComputedSimpleAchievementStatus
-
 export enum ComputedSimpleAchievementStatus {
-    NotAchieved,
-    Achieved,
-    PartiallyAchieved,
+  NotAchieved = 'NotAchieved',
+  Achieved = 'Achieved',
+  PartiallyAchieved = 'PartiallyAchieved',
 }
 
 export enum ComputedScope {
-    Small,
-    Uncertain,
-    Big // has children and is not uncertain
+  Small = 'Small',
+  Uncertain = 'Uncertain',
+  Big = 'Big', // has children and is not uncertain
+}
+
+export type OptionalOutcomeData = {
+  members?: Profile[]
+  comments?: OutcomeComment[]
+  votes?: OutcomeVote[]
+  // for representing this data in a nested tree structure
+  children?: ComputedOutcome[]
 }
 
 // These are the things which are computed and stored within ProjectView
 // for accessing across the multiple views, with pre-computed data
 export type ComputedOutcome = WithHeaderHash<Outcome> & {
-    computedScope: ComputedScope
-    computedAchievementStatus: ComputedAchievementStatus
-}
+  computedScope: ComputedScope
+  computedAchievementStatus: ComputedAchievementStatus
+} & OptionalOutcomeData
