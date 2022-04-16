@@ -10,11 +10,11 @@ function EVLeftColumn({ onChange, activeTab, commentCount }) {
       icon: 'pencil.svg',
     },
     {
-      text: 'tree view',
+      text: `Comments (${commentCount})`,
       icon: 'comment.svg',
     },
     {
-      text: `Comments (${commentCount})`,
+      text: 'tree view',
       icon: 'comment.svg',
     },
     {
@@ -29,7 +29,7 @@ function EVLeftColumn({ onChange, activeTab, commentCount }) {
         const activeClass = activeTab === index ? 'active-tab' : ''
         return (
           <div
-            className={`expanded-view-nav-bar-item ${activeClass} ${index === 2 ? 'feature-in-development' : ''
+            className={`expanded-view-nav-bar-item ${activeClass} ${index === 2 || index === 3 ? 'feature-in-development' : ''
               }`}
             key={index}
             onClick={() => index !== 2 && onChange(index)}
