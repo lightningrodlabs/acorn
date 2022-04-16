@@ -21,23 +21,23 @@ const Template: ComponentStory<typeof Typography> = (args) => {
   const subtitleText = `New API in typescript definitions are written and implemented`
   return (
     <>
-      <Typography style="h1" text={headingText} />
-      <Typography style="h2" text={headingText} />
-      <Typography style="h3" text={headingText} />
-      <Typography style="h4" text={headingText} />
-      <Typography style="h5" text={headingText} />
-      <Typography style="h6" text={headingText} />
-      <Typography style="h7" text={headingText} />
-      <Typography style="h8" text={headingText} />
-      <Typography style="subtitle1" text={subtitleText} />
-      <Typography style="subtitle2" text={subtitleText} />
-      <Typography style="caption1" text="8 members" />
-      <Typography style="caption2" text="This outcome has no children." />
+      <Typography style="h1" text={`h1: ${headingText}`} />
+      <Typography style="h2" text={`h2: ${headingText}`} />
+      <Typography style="h3" text={`h3: ${headingText}`} />
+      <Typography style="h4" text={`h4: ${headingText}`} />
+      <Typography style="h5" text={`h5: ${headingText}`} />
+      <Typography style="h6" text={`h6: ${headingText}`} />
+      <Typography style="h7" text={`h7: ${headingText}`} />
+      <Typography style="h8" text={`h8: ${headingText}`} />
+      <Typography style="subtitle1" text={`subtitle1: ${subtitleText}`} />
+      <Typography style="subtitle2" text={`subtitle2: ${subtitleText}`} />
+      <Typography style="caption1" text="caption1: 8 members" />
+      <Typography style="caption2" text="caption 2: This outcome has no children." />
       <Typography
         style="body1"
-        text="Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. "
+        text="body1: Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. "
       />
-      <Typography style="body2" text="Export as JASON (Importable) " />
+      <Typography style="body2" text="body2: Export as JSON (Importable) " />
     </>
   )
 }
