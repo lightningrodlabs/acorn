@@ -14,6 +14,7 @@ export default function EVRightColumn({
   updateOutcome,
   isEntryPoint,
   entryPointClickAction,
+  deleteAndClose,
 }) {
 
   // const setInBreakdown = (inBreakdown: boolean) => {
@@ -79,7 +80,7 @@ export default function EVRightColumn({
       />
       <ButtonAction
         size="medium"
-        onClick={() => {}}
+        onClick={() => deleteAndClose()}
         icon={<Icon name="x.svg" />}
         text='Archive'
       />

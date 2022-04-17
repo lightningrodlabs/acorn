@@ -4,7 +4,7 @@ import {
   createEntryPoint,
   deleteEntryPoint,
 } from '../../redux/persistent/projects/entry-points/actions'
-import { updateOutcome } from '../../redux/persistent/projects/outcomes/actions'
+import { deleteOutcomeFully, updateOutcome } from '../../redux/persistent/projects/outcomes/actions'
 import { deleteOutcomeMember } from '../../redux/persistent/projects/outcome-members/actions'
 import {
   startTitleEdit,
@@ -131,6 +131,13 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
     endDescriptionEdit: (outcomeHeaderHash) => {
       return dispatch(endDescriptionEdit(outcomeHeaderHash))
+    },
+    onDeleteClick: async (outcomeHeaderHash) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(cellId, outcomeHeaderHash)
+      console.log('fully', fullyDeletedOutcome)
+      return dispatch(deleteOutcomeFully(cellIdString, fullyDeletedOutcome))
     },
   }
 }

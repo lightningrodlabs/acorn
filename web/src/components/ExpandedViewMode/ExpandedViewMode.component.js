@@ -28,6 +28,7 @@ export default function ExpandedViewMode({
   deleteEntryPoint,
   isEntryPoint,
   entryPointAddress,
+  onDeleteClick,
   startTitleEdit,
   endTitleEdit,
   startDescriptionEdit,
@@ -95,6 +96,10 @@ export default function ExpandedViewMode({
     ? unmakeAsEntryPoint
     : turnIntoEntryPoint
 
+  const deleteAndClose = async () => {
+    await onDeleteClick(outcomeHeaderHash)
+    onClose() 
+  }
   const updateTimeframe = (start, end) => {
     let timeframe = null
 
@@ -193,6 +198,7 @@ export default function ExpandedViewMode({
               updateOutcome={updateOutcome}
               isEntryPoint={isEntryPoint}
               entryPointClickAction={entryPointClickAction}
+              deleteAndClose={deleteAndClose}
             />
           </div>
         </CSSTransition>
