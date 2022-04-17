@@ -12,6 +12,8 @@ export default function EVRightColumn({
   outcomeHeaderHash,
   outcome,
   updateOutcome,
+  isEntryPoint,
+  entryPointClickAction,
 }) {
 
   // const setInBreakdown = (inBreakdown: boolean) => {
@@ -63,8 +65,8 @@ export default function EVRightColumn({
       />
       <ButtonCheckbox
         size="medium"
-        isChecked={false}
-        onChange={() => {}}
+        isChecked={isEntryPoint}
+        onChange={() => {entryPointClickAction()}}
         icon={<Icon name="x.svg"/>}
         text='Entry Point'
       />

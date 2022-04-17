@@ -191,6 +191,8 @@ export default function ExpandedViewMode({
               outcomeHeaderHash={outcomeHeaderHash}
               outcome={outcomeState}
               updateOutcome={updateOutcome}
+              isEntryPoint={isEntryPoint}
+              entryPointClickAction={entryPointClickAction}
             />
           </div>
         </CSSTransition>
