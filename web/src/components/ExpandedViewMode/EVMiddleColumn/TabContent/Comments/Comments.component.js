@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import moment from 'moment'
-import Comment from '../../../../Comment/Comment'
+import Comment from '../../../../CommentPosted/CommentPosted'
 
 import './Comments.scss'
 import CommentInput from '../../../../CommentInput/CommentInput'

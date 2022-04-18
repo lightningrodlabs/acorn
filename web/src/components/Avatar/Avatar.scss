@@ -1,100 +1,25 @@
-.avatar,
-.initials-avatar {
+.avatar-wrapper {
   transition: 0.2s all ease;
   cursor: pointer;
 
-  &.imported {
-    opacity: 0.5;
-  }
-
-  &.clickable {
-    cursor: pointer;
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-
-  &.highlighted {
-    box-shadow: 0 0 0 3px #5f65ff;
-  }
-
-  // avatar sizees
-  &.small {
-    height: 24px;
-    width: 24px;
-    border-radius: 50%;
+  .avatar {
     object-fit: cover;
-  }
-
-  &.small-medium {
-    height: 28px;
-    width: 28px;
     border-radius: 50%;
-    object-fit: cover;
-    font-size: 11px;
   }
 
-  &.small-medium {
-    height: 30px;
-    width: 30px;
+  .initials-avatar {
     border-radius: 50%;
-    object-fit: cover;
-    font-size: 12px;
+    /* initals-avatar specific stylings */
+    color: white;
+    text-align: center;
+    height: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.75rem;
+    font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   }
 
-  &.medium-large {
-    height: 36px;
-    width: 36px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-
-  &.large {
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-}
-
-.avatar.highlighted ~ .avatar-wrapper.with-border.white,
-.initials-avatar.highlighted ~ .avatar-wrapper.with-border.white {
-  border: 3px solid #5f65ff;
-}
-
-/* initals-avatar specific stylings */
-
-.initials-avatar {
-  color: white;
-  text-align: center;
-  height: inherit;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 12px;
-  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
-}
-
-.avatar ~ .status-circle-wrapper .status-circle,
-.initials-avatar ~ .status-circle-wrapper .status-circle {
-  height: 8px;
-  width: 8px;
-}
-
-.avatar-wrapper {
-  // avatar wrapper sizes
-  &.small-medium {
-    border: 3px solid #ffffff;
-    border-radius: 50%;
-    width: 28px;
-    height: 28px;
-    position: relative;
-  }
-  &.medium {
-    width: 30px;
-    height: 30px;
-  }
   // avatar with tooltip
   &.tooltip-wrapper {
     bottom: -32px;
@@ -105,11 +30,13 @@
   // positionality of the status circle
   // in realtion to avatar wrapper
   > .status-circle-wrapper {
-    right: -2px;
-    bottom: -2px;
+    right: 0;
+    bottom:  0.1875rem;
+    position: absolute;
     .status-circle {
-      border: 2px solid white;
+      border: 0.1825rem solid white;
       box-shadow: none;
+      border-radius: 50%;
     }
   }
   // if avatar has border
@@ -117,7 +44,7 @@
     border-radius: 50%;
     position: relative;
     &.white {
-      border: 3px solid #ffffff;
+      border: 0.1875rem solid #ffffff;
     }
     // avatar wrapper can have status circle if bordered
     &.status-color {
@@ -145,6 +72,75 @@
       z-index: 9999;
     }
   }
+
+  &.imported {
+    opacity: 0.5;
+  }
+
+  &.clickable {
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &.highlighted {
+    box-shadow: 0 0 0 3px #5f65ff;
+  }
+
+  // avatar sizees
+  &.small {
+    .avatar,
+    .initials-avatar {
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+  }
+
+  &.small-medium {
+    .avatar,
+    .initials-avatar {
+      height: 1.75rem;
+      width: 1.75rem;
+      font-size: 0.6875rem;
+    }
+  }
+
+  &.medium {
+    .avatar,
+    .initials-avatar {
+      height: 1.875rem;
+      width: 1.875rem;
+      font-size: 0.75rem;
+    }
+  }
+
+  &.medium-large {
+    .avatar,
+    .initials-avatar {
+      height: 2.25rem;
+      width: 2.25rem;
+    }
+  }
+
+  &.large {
+    .avatar,
+    .initials-avatar {
+      height: 2.5rem;
+      width: 2.5rem;
+    }
+  }
+}
+
+.avatar.highlighted ~ .avatar-wrapper.with-border.white,
+.initials-avatar.highlighted ~ .avatar-wrapper.with-border.white {
+  border: 0.1875rem solid #5f65ff;
+}
+
+.avatar ~ .status-circle-wrapper .status-circle,
+.initials-avatar ~ .status-circle-wrapper .status-circle {
+  height: 0.5rem;
+  width: 0.5rem;
 }
 
 // avatar's prefered set status circle

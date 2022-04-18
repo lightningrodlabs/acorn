@@ -19,12 +19,19 @@ export type TypographyProps = {
     | 'body2'
     | 'caption1'
     | 'caption2'
+    | 'caption3'
+    | 'caption4'
     | 'button-text'
-  text: string
+  text?: string
 }
 
-const Typography: React.FC<TypographyProps> = ({ style, text }) => {
-  return <div className={`typography ${style}`}>{text}</div>
+const Typography: React.FC<TypographyProps> = ({ style, text, children }) => {
+  return (
+    <div className={`typography ${style}`}>
+      {text}
+      {children}
+    </div>
+  )
 }
 
 export default Typography

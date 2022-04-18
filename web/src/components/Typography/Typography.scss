@@ -33,7 +33,7 @@
   &.h8 {
     font: 0.875rem var(--font-family-primary-bold);
     line-height: 1.45;
-    color: var(--text-color-secondary);
+    color: var(--text-color-primary);
   }
   // Body
   &.body1 {
@@ -66,6 +66,16 @@
   &.caption2 {
     font: 1rem var(--font-family-primary-medium);
     color: var(--text-color-tetiary);
+    line-height: 1.45;
+  }
+  &.caption3 {
+    font: 0.875rem var(--font-family-primary-medium);
+    color: var(--text-color-caption);
+    line-height: 1.45;
+  }
+  &.caption4 {
+    font: 0.815rem var(--font-family-primary-medium);
+    color: var(--text-color-caption);
     line-height: 1.45;
   }
 }

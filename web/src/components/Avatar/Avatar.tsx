@@ -71,9 +71,16 @@ function Avatar({
       <div
         className={`avatar-wrapper 
         ${withWhiteBorder ? 'with-border white' : ''} 
-        ${withStatusBorder ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}` : ''} 
+        ${
+          withStatusBorder
+            ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}`
+            : ''
+        } 
+        ${large ? 'large' : ''}
+        ${mediumLarge ? 'medium-large' : ''}
         ${medium ? 'medium' : ''}
-        ${smallMedium ? 'small-medium' : ''}`}
+        ${smallMedium ? 'small-medium' : ''}
+        ${small ? 'small' : ''}`}
       >
         <div className={classes.join(' ')} onClick={onClick} style={style}>
           {firstName[0].toUpperCase()}
@@ -97,9 +104,16 @@ function Avatar({
     <div
       className={`avatar-wrapper 
       ${withWhiteBorder ? 'with-border white' : ''} 
-      ${withStatusBorder ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}` : ''}
-      ${medium ? 'medium' : ''}
-      ${smallMedium ? 'small-medium' : ''}`}
+      ${
+        withStatusBorder
+          ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}`
+          : ''
+      }
+      ${large ? 'large' : ''}
+        ${mediumLarge ? 'medium-large' : ''}
+        ${medium ? 'medium' : ''}
+        ${smallMedium ? 'small-medium' : ''}
+        ${small ? 'small' : ''}`}
     >
       <img src={avatarUrl} className={classes.join(' ')} onClick={onClick} />
       {/* TODO: Current status circle color under avatar*/}
