@@ -20,7 +20,7 @@ import { HeaderHashB64 } from '../../types/shared'
 import { EntryPoint, Outcome } from '../../types'
 
 function mapStateToProps(state: RootState, ownProps) {
-  let squirrels = [],
+  let assignees = [],
     comments = []
 
   const { projectId } = ownProps
@@ -35,15 +35,15 @@ function mapStateToProps(state: RootState, ownProps) {
       (outcomeComment) =>
         outcomeComment.outcomeHeaderHash === state.ui.expandedView.outcomeHeaderHash
     )
-    squirrels = Object.keys(outcomeMembers)
+    assignees = Object.keys(outcomeMembers)
       .map((headerHash) => outcomeMembers[headerHash])
       .filter((outcomeMember) => outcomeMember.outcomeHeaderHash === outcomeHeaderHash)
       .map((outcomeMember) => {
-        const squirrel = {
+        const assignee = {
           ...state.agents[outcomeMember.memberAgentPubKey],
           outcomeMemberAddress: outcomeMember.headerHash,
         }
-        return squirrel
+        return assignee
       })
   }
 
@@ -72,7 +72,7 @@ function mapStateToProps(state: RootState, ownProps) {
     entryPointAddress,
     outcomeHeaderHash,
     profiles: state.agents,
-    squirrels,
+    assignees,
     comments,
     editingPeers,
   }

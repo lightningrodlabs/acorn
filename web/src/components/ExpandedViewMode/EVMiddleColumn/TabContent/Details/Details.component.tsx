@@ -4,11 +4,60 @@ import TextareaAutosize from 'react-textarea-autosize'
 import Avatar from '../../../../Avatar/Avatar'
 import PeopleInfoPopup from '../../../../PeopleInfoPopup/PeopleInfoPopup'
 import PeoplePicker from '../../../../PeoplePicker/PeoplePicker.component'
-
-import './Details.scss'
 import Icon from '../../../../Icon/Icon'
 
-export default function Details({
+import './Details.scss'
+import { ExpandedViewTab } from '../../../NavEnum'
+import { AssigneeWithHeaderHash } from '../../../../../types'
+
+
+/*
+testing data
+*/
+
+// you can use these as values for
+// testing/ development, instead of `assignees`
+const testAssignees = [
+  { avatarUrl: 'img/profile.png' },
+  { avatarUrl: 'img/profile.png' },
+  { avatarUrl: 'img/profile.png' },
+]
+
+const member = {
+  firstName: 'Pegah',
+  lastName: 'Vaezi',
+  avatarUrl:
+  'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.fouladiprojects.com%2Fwp-content%2Fuploads%2F2015%2F10%2FBarbourshow1.jpg&f=1&nofb=1',
+  isImported: false,
+  headerHash: 'riusry3764yiud',
+  connectionStatus: 'connected',
+  status: 'online',
+}
+
+// TODO: fix these types
+export type DetailsProps = {
+  projectId: any
+  agentAddress: any
+  setActiveTab: any
+  editTimeframe: any
+  setEditTimeframe: any
+  outcomeHeaderHash: any
+  outcome: any
+  outcomeContent: any
+  outcomeDescription: any
+  updateOutcome: any
+  assignees: AssigneeWithHeaderHash[]
+  deleteOutcomeMember: any
+  startTitleEdit: any
+  endTitleEdit: any
+  startDescriptionEdit: any
+  endDescriptionEdit: any
+  editingPeers: any
+}
+
+/* end testing data */
+
+const Details: React.FC<DetailsProps> = ({
   projectId,
   agentAddress,
   setActiveTab,
@@ -19,24 +68,16 @@ export default function Details({
   outcomeContent,
   outcomeDescription,
   updateOutcome,
-  squirrels,
+  assignees,
   deleteOutcomeMember,
   startTitleEdit,
   endTitleEdit,
   startDescriptionEdit,
   endDescriptionEdit,
   editingPeers,
-}) {
-  // you can use these as values for
-  // testing/ development, instead of `squirrels`
-  const testSquirrels = [
-    { avatarUrl: 'img/profile.png' },
-    { avatarUrl: 'img/profile.png' },
-    { avatarUrl: 'img/profile.png' },
-  ]
-
-  const [editSquirrels, setEditSquirrels] = useState(false)
-  const [squirrelInfoPopup, setSquirrelInfoPopup] = useState(null)
+}) => {
+  const [editAssignees, setEditAssignees] = useState(false)
+  const [peopleInfoPopup, setPeopleInfoPopup] = useState<AssigneeWithHeaderHash>(null)
 
   const [content, setContent] = useState(outcomeContent)
   const [description, setDescription] = useState(outcomeDescription)
@@ -44,9 +85,9 @@ export default function Details({
   // reset
   useEffect(() => {
     if (!outcomeHeaderHash) {
-      setActiveTab(0)
-      setEditSquirrels(false)
-      setSquirrelInfoPopup(null)
+      setActiveTab(ExpandedViewTab.Details)
+      setEditAssignees(false)
+      setPeopleInfoPopup(null)
       setEditTimeframe(false)
     }
   }, [outcomeHeaderHash])
@@ -106,17 +147,6 @@ export default function Details({
     : null
 
   // const isBeingEdited = false
-
-  const member = {
-    firstName: 'Pegah',
-    lastName: 'Vaezi',
-    avatarUrl:
-      'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.fouladiprojects.com%2Fwp-content%2Fuploads%2F2015%2F10%2FBarbourshow1.jpg&f=1&nofb=1',
-    isImported: false,
-    headerHash: 'riusry3764yiud',
-    connectionStatus: 'connected',
-    status: 'online',
-  }
 
   // find out if any of the peers is editing title, then take the agent key from that and use to feed into avatar
 
@@ -188,40 +218,38 @@ export default function Details({
           <div className="expanded-view-squirrels-wrapper">
             <div className="expanded-view-squirrels-title">Assignees</div>
             <div className="expanded-view-squirrels-content">
-              {squirrels.map((squirrel, index) => {
+              {assignees.map((assignee, index) => {
                 // TODO: fix the highlight for avatars showing all at once
                 // instead of only highlighting the selected avatar
-                const highlighted = squirrelInfoPopup
-                  ? squirrelInfoPopup.headerHash === squirrel.headerHash
+                const highlighted = peopleInfoPopup
+                  ? peopleInfoPopup.outcomeMemberHeaderHash === assignee.outcomeMemberHeaderHash
                   : false
                 return (
                   <div className="expanded-view-squirrel-wrapper">
                     <Avatar
                       withWhiteBorder
                       key={index}
-                      firstName={squirrel.firstName}
-                      lastName={squirrel.lastName}
-                      avatarUrl={squirrel.avatarUrl}
-                      imported={squirrel.isImported}
+                      firstName={assignee.profile.firstName}
+                      lastName={assignee.profile.lastName}
+                      avatarUrl={assignee.profile.avatarUrl}
+                      imported={assignee.profile.isImported}
                       medium
                       withWhiteBorder
                       withStatus
-                      selfAssignedStatus={squirrel.status}
+                      selfAssignedStatus={assignee.profile.status}
                       clickable
                       onClick={() =>
-                        setSquirrelInfoPopup(
-                          squirrelInfoPopup ? null : squirrel
-                        )
+                        setPeopleInfoPopup(peopleInfoPopup ? null : assignee)
                       }
                       highlighted={highlighted}
                     />
                   </div>
                 )
               })}
-              {squirrelInfoPopup && (
+              {peopleInfoPopup && (
                 <PeopleInfoPopup
-                  onClose={() => setSquirrelInfoPopup(null)}
-                  squirrel={squirrelInfoPopup}
+                  onClose={() => setPeopleInfoPopup(null)}
+                  squirrel={peopleInfoPopup}
                   deleteOutcomeMember={deleteOutcomeMember}
                 />
               )}
@@ -230,14 +258,14 @@ export default function Details({
                   className="add-squirrel-plus-icon"
                   name="plus.svg"
                   size="small"
-                  onClick={() => setEditSquirrels(!editSquirrels)}
+                  onClick={() => setEditAssignees(!editAssignees)}
                   withTooltip
                   tooltipText="Add Squirrels"
                 />
-                {editSquirrels && (
+                {editAssignees && (
                   <PeoplePicker
                     projectId={projectId}
-                    onClose={() => setEditSquirrels(false)}
+                    onClose={() => setEditAssignees(false)}
                   />
                 )}
               </div>
@@ -301,3 +329,5 @@ export default function Details({
     </>
   )
 }
+
+export default Details

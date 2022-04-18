@@ -4,8 +4,34 @@ import Comments from './TabContent/Comments/Comments.connector'
 import Details from './TabContent/Details/Details.component'
 
 import './EVMiddleColumn.scss'
+import DescendantsAchievementStatus from '../../DescendantsAchievementStatus/DescendantsAchievementStatus'
+import { AssigneeWithHeaderHash, ComputedAchievementStatus } from '../../../types'
 
-export default function ExpandedViewModeContent({
+// TODO: fix these types
+export type EVMiddleColumnProps = {
+  projectId: any
+  agentAddress: any
+  outcomeHeaderHash: any
+  outcome: any
+  outcomeContent: any
+  outcomeDescription: any
+  editTimeframe: any
+  setEditTimeframe: any
+  updateOutcome: any
+  assignees: AssigneeWithHeaderHash[]
+  comments: any
+  deleteOutcomeMember: any
+  startTitleEdit: any
+  endTitleEdit: any
+  startDescriptionEdit: any
+  endDescriptionEdit: any
+  editingPeers: any
+  activeTab: ExpandedViewTab
+  setActiveTab: React.Dispatch<React.SetStateAction<ExpandedViewTab>>
+  computedAchievedmentStatus: ComputedAchievementStatus
+}
+
+const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
   projectId,
   agentAddress,
   outcomeHeaderHash,
@@ -15,7 +41,7 @@ export default function ExpandedViewModeContent({
   editTimeframe,
   setEditTimeframe,
   updateOutcome,
-  squirrels,
+  assignees,
   comments,
   deleteOutcomeMember,
   startTitleEdit,
@@ -25,17 +51,13 @@ export default function ExpandedViewModeContent({
   editingPeers,
   activeTab,
   setActiveTab,
-  uncertains,
-  smallsAchieved,
-  smallsTotal,
-}) {
+  computedAchievedmentStatus,
+}) => {
   return (
     <div className="expanded-view-content">
-      <div>
-        A: {smallsAchieved}
-        T: {smallsTotal}
-        U: {uncertains}
-      </div>
+      <DescendantsAchievementStatus
+        computedAchievedmentStatus={computedAchievedmentStatus}
+      />
       <div className="expanded-view-inner-content">
         {activeTab === ExpandedViewTab.Details && (
           <Details
@@ -50,7 +72,7 @@ export default function ExpandedViewModeContent({
               outcomeContent,
               outcomeDescription,
               updateOutcome,
-              squirrels,
+              assignees,
               deleteOutcomeMember,
               startTitleEdit,
               endTitleEdit,
@@ -67,3 +89,5 @@ export default function ExpandedViewModeContent({
     </div>
   )
 }
+
+export default EVMiddleColumn
