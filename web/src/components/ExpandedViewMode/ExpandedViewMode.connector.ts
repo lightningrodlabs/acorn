@@ -4,7 +4,7 @@ import {
   createEntryPoint,
   deleteEntryPoint,
 } from '../../redux/persistent/projects/entry-points/actions'
-import { updateOutcome } from '../../redux/persistent/projects/outcomes/actions'
+import { deleteOutcomeFully, updateOutcome } from '../../redux/persistent/projects/outcomes/actions'
 import { deleteOutcomeMember } from '../../redux/persistent/projects/outcome-members/actions'
 import {
   startTitleEdit,
@@ -20,26 +20,24 @@ import { HeaderHashB64 } from '../../types/shared'
 import { EntryPoint, Outcome } from '../../types'
 
 function mapStateToProps(state: RootState, ownProps) {
-  let outcome,
-    creator = null,
-    squirrels = [],
+  let squirrels = [],
     comments = []
 
   const { projectId } = ownProps
-  const outcomes = state.projects.outcomes[projectId] || {}
   const outcomeMembers = state.projects.outcomeMembers[projectId] || {}
   const entryPoints = state.projects.entryPoints[projectId] || {}
   const outcomeComments = state.projects.outcomeComments[projectId] || {}
+  
+  const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
 
-  if (state.ui.expandedView.outcomeHeaderHash) {
-    outcome = outcomes[state.ui.expandedView.outcomeHeaderHash]
+  if (outcomeHeaderHash) {
     comments = Object.values(outcomeComments).filter(
       (outcomeComment) =>
         outcomeComment.outcomeHeaderHash === state.ui.expandedView.outcomeHeaderHash
     )
     squirrels = Object.keys(outcomeMembers)
       .map((headerHash) => outcomeMembers[headerHash])
-      .filter((outcomeMember) => outcomeMember.outcomeHeaderHash === outcome.headerHash)
+      .filter((outcomeMember) => outcomeMember.outcomeHeaderHash === outcomeHeaderHash)
       .map((outcomeMember) => {
         const squirrel = {
           ...state.agents[outcomeMember.memberAgentPubKey],
@@ -47,13 +45,8 @@ function mapStateToProps(state: RootState, ownProps) {
         }
         return squirrel
       })
-    Object.keys(state.agents).forEach((value) => {
-      if (state.agents[value].agentPubKey === outcome.creatorAgentPubKey)
-        creator = state.agents[value]
-    })
   }
 
-  const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
   const entryPoint = Object.values(entryPoints).find(
     (entryPoint) => entryPoint.outcomeHeaderHash === outcomeHeaderHash
   )
@@ -78,8 +71,7 @@ function mapStateToProps(state: RootState, ownProps) {
     isEntryPoint,
     entryPointAddress,
     outcomeHeaderHash,
-    creator,
-    outcome,
+    profiles: state.agents,
     squirrels,
     comments,
     editingPeers,
@@ -137,6 +129,12 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
     endDescriptionEdit: (outcomeHeaderHash) => {
       return dispatch(endDescriptionEdit(outcomeHeaderHash))
+    },
+    onDeleteClick: async (outcomeHeaderHash) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(cellId, outcomeHeaderHash)
+      return dispatch(deleteOutcomeFully(cellIdString, fullyDeletedOutcome))
     },
   }
 }

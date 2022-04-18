@@ -1,36 +1,53 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import moment from 'moment'
 import { CSSTransition } from 'react-transition-group'
 import './ExpandedViewMode.scss'
 import { pickColorForString } from '../../styles'
 import Icon from '../Icon/Icon'
 import DatePicker from '../DatePicker/DatePicker'
-import RightMenu from './RightMenu/RightMenu'
+import RightMenu from './EVRightColumn/EVRightColumn'
 import ExpandedViewModeHeader from './ExpandedViewModeHeader/ExpandedViewModeHeader'
-import ExpandedViewModeContent from './ExpandedViewModeContent/ExpandedViewModeContent'
+import EVMiddleColumn from './EVMiddleColumn/EVMiddleColumn'
 import ExpandedViewModeFooter from './ExpandedViewModeFooter/ExpandedViewModeFooter'
+import EVLeftColumn from './EVLeftColumn/EVLeftColumn'
+import EVRightColumn from './EVRightColumn/EVRightColumn'
+import { ExpandedViewTab } from './NavEnum'
+import ComputedOutcomeContext from '../../context/ComputedOutcomeContext'
 
 export default function ExpandedViewMode({
   projectId,
   agentAddress,
   outcomeHeaderHash,
-  outcome,
   updateOutcome,
   onClose,
-  creator,
   squirrels,
+  profiles,
   comments,
   deleteOutcomeMember,
   createEntryPoint,
   deleteEntryPoint,
   isEntryPoint,
   entryPointAddress,
+  onDeleteClick,
   startTitleEdit,
   endTitleEdit,
   startDescriptionEdit,
   endDescriptionEdit,
   editingPeers,
 }) {
+
+  const { computedOutcomesKeyed } = useContext(ComputedOutcomeContext)
+  const outcome = computedOutcomesKeyed[outcomeHeaderHash]
+  // console.log(outcome && outcome.computedAchievementStatus.uncertains)
+
+  let creator
+  if (outcome) {
+    Object.keys(profiles).forEach((value) => {
+      if (profiles[value].agentPubKey === outcome.creatorAgentPubKey)
+        creator = profiles[value]
+    })
+  }
+
   const [outcomeState, setOutcomeState] = useState()
   const [squirrelsState, setSquirrelsState] = useState()
   const [creatorState, setCreatorState] = useState()
@@ -69,7 +86,7 @@ export default function ExpandedViewMode({
       creatorAgentPubKey: agentAddress,
       createdAt: Date.now(),
       outcomeHeaderHash: outcomeHeaderHash,
-      isImported: false
+      isImported: false,
     })
   }
   const unmakeAsEntryPoint = () => {
@@ -79,6 +96,10 @@ export default function ExpandedViewMode({
     ? unmakeAsEntryPoint
     : turnIntoEntryPoint
 
+  const deleteAndClose = async () => {
+    await onDeleteClick(outcomeHeaderHash)
+    onClose() 
+  }
   const updateTimeframe = (start, end) => {
     let timeframe = null
 
@@ -101,12 +122,20 @@ export default function ExpandedViewMode({
   }
 
   let fromDate, toDate
+  let uncertains, smallsAchieved, smallsTotal
   if (outcome) {
     fromDate = outcome.timeFrame
       ? moment.unix(outcome.timeFrame.fromDate)
       : null
     toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
+
+    uncertains = outcome.computedAchievementStatus.uncertains
+    smallsAchieved = outcome.computedAchievementStatus.smallsAchieved
+    smallsTotal = outcome.computedAchievementStatus.smallsTotal
   }
+  const [activeTab, setActiveTab] = useState(ExpandedViewTab.Details)
+  
+
 
   return (
     <>
@@ -114,71 +143,66 @@ export default function ExpandedViewMode({
         in={showing}
         timeout={100}
         unmountOnExit
-        classNames='expanded-view-overlay'>
-        <div className='expanded-view-overlay' />
+        classNames="expanded-view-overlay"
+      >
+        <div className="expanded-view-overlay" />
       </CSSTransition>
       {outcomeState && (
         <CSSTransition
           in={showing}
           timeout={100}
           unmountOnExit
-          classNames='expanded-view-wrapper'>
-          <div className={`expanded-view-wrapper border_${outcomeState.status}`}>
-            <Icon
+          classNames="expanded-view-wrapper"
+        >
+          <div className="expanded-view-wrapper">
+          <Icon
               onClick={onClose}
               name='x.svg'
               size='small-close'
               className='light-grey'
             />
-            <ExpandedViewModeHeader
+            <EVLeftColumn
+              activeTab={activeTab}
+              onChange={(newTab) => setActiveTab(newTab)}
+              commentCount={comments.length}
+            />
+            <EVMiddleColumn
+              agentAddress={agentAddress}
+              projectId={projectId}
+              editTimeframe={editTimeframe}
+              setEditTimeframe={setEditTimeframe}
+              squirrels={squirrelsState}
+              comments={comments}
+              outcomeHeaderHash={outcomeHeaderHash}
+              updateOutcome={updateOutcome}
+              outcome={outcomeState}
+              outcomeContent={outcomeState.content}
+              outcomeDescription={outcomeState.description}
+              deleteOutcomeMember={deleteOutcomeMember}
+              startTitleEdit={startTitleEdit}
+              endTitleEdit={endTitleEdit}
+              startDescriptionEdit={startDescriptionEdit}
+              endDescriptionEdit={endDescriptionEdit}
+              editingPeers={editingPeers}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              uncertains={uncertains}
+              smallsAchieved={smallsAchieved}
+              smallsTotal={smallsTotal}
+            />
+            <EVRightColumn
+              projectId={projectId}
               agentAddress={agentAddress}
               outcomeHeaderHash={outcomeHeaderHash}
               outcome={outcomeState}
               updateOutcome={updateOutcome}
-              entryPointClickAction={entryPointClickAction}
               isEntryPoint={isEntryPoint}
+              entryPointClickAction={entryPointClickAction}
+              deleteAndClose={deleteAndClose}
             />
-            <div className='expanded-view-main'>
-              <ExpandedViewModeContent
-                agentAddress={agentAddress}
-                projectId={projectId}
-                editTimeframe={editTimeframe}
-                setEditTimeframe={setEditTimeframe}
-                squirrels={squirrelsState}
-                comments={comments}
-                outcomeHeaderHash={outcomeHeaderHash}
-                updateOutcome={updateOutcome}
-                outcome={outcomeState}
-                outcomeContent={outcomeState.content}
-                outcomeDescription={outcomeState.description}
-                deleteOutcomeMember={deleteOutcomeMember}
-                startTitleEdit={startTitleEdit}
-                endTitleEdit={endTitleEdit}
-                startDescriptionEdit={startDescriptionEdit}
-                endDescriptionEdit={endDescriptionEdit}
-                editingPeers={editingPeers}
-              />
-              <RightMenu
-                projectId={projectId}
-                agentAddress={agentAddress}
-                outcomeHeaderHash={outcomeHeaderHash}
-                outcome={outcomeState}
-                updateOutcome={updateOutcome}
-              />
-            </div>
-            <ExpandedViewModeFooter outcome={outcomeState} creator={creatorState} />
-            {editTimeframe && (
-              <DatePicker
-                onClose={() => setEditTimeframe(false)}
-                onSet={updateTimeframe}
-                fromDate={fromDate}
-                toDate={toDate}
-              />
-            )}
           </div>
-        </CSSTransition >
-      )
-      }
+        </CSSTransition>
+      )}
     </>
   )
 }

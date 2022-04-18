@@ -1,9 +1,3 @@
-.expanded-view-content {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
 .expanded-view-details-wrapper {
   padding: 12px 24px 24px 24px;
   display: flex;
@@ -90,7 +84,7 @@
 
 .expanded-view-title-editing-placeholder,
 .expanded-view-description-editing-placeholder {
-  background-color: #F8F6F2;
+  background-color: #f8f6f2;
   border-radius: 8px;
   position: relative;
   overflow: hidden;
@@ -108,8 +102,13 @@
   top: 0;
   height: 100%;
   width: 300px;
-  background: linear-gradient(to right, transparent 0%, #BAA692 50%, transparent 100%);
-  animation: editing 2s cubic-bezier(0.4, 0.0, 0.2, 1) infinite;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    #baa692 50%,
+    transparent 100%
+  );
+  animation: editing 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   opacity: 0.2;
 }
 
@@ -131,7 +130,8 @@
 
 /* squirrels & timeframe wrapper */
 
-.expanded-view-squirrels-title, .expanded-view-timeframe-title {
+.expanded-view-squirrels-title,
+.expanded-view-timeframe-title {
   margin-bottom: 8px;
   font-family: 'PlusJakartaSans-bold';
 }
@@ -171,60 +171,14 @@
   margin-left: -6px;
 }
 
-.expanded-view-squirrels-content .people-picker-people .avatar.medium.clickable, .expanded-view-squirrels-content .people-picker-people .initials-avatar.medium {
+.expanded-view-squirrels-content .people-picker-people .avatar.medium.clickable,
+.expanded-view-squirrels-content .people-picker-people .initials-avatar.medium {
   margin-right: unset;
 }
 
-.expanded-view-squirrels-content .avatar.medium.clickable:hover, .icon.medium.add-squirrel-plus-icon:hover {
+.expanded-view-squirrels-content .avatar.medium.clickable:hover,
+.icon.medium.add-squirrel-plus-icon:hover {
   box-shadow: 0 0 0 3px #5f65ff;
-}
-
-/* squirrelInfoPopup */
-
-.squirrel-info-popup-wrapper {
-  margin-top: 64px;
-  position: absolute;
-  border-radius: 10px;
-  background: #ffffff;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.08);
-  padding: 15px 20px;
-  top: 0;
-  z-index: 1;
-}
-
-.squirrel-info-popup-name {
-  flex: 1;
-  padding: 1px 0px;
-  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
-  font-size: 14px;
-  color: #5f65ff;
-  cursor: pointer;
-}
-
-.squirrel-info-popup-nameANDhandle {
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 12px;
-  margin-bottom: 6px;
-  border-bottom: 1px solid #f2f2f2;
-}
-
-.squirrel-info-popup-handle {
-  font-size: 12px;
-  color: #a3a3a3;
-  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
-}
-
-.remove-squirrel-btn {
-  color: #00beb0;
-  font-size: 12px;
-  padding-top: 6px;
-  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
-  cursor: pointer;
-}
-
-.remove-squirrel-btn:hover {
-  color: #5f65ff;
 }
 
 /* timeframe */
@@ -239,7 +193,9 @@
   transition: all 0.3s;
 }
 
-.expanded-view-timeframe-display:hover, .expanded-view-timeframe-display:active, .expanded-view-timeframe-display:focus {
+.expanded-view-timeframe-display:hover,
+.expanded-view-timeframe-display:active,
+.expanded-view-timeframe-display:focus {
   background-color: #efefef;
 }
 
@@ -256,12 +212,6 @@
 
 /* main content section */
 
-.expanded-view-inner-content {
-  height: calc(100vh - 256px);
-  max-height: 600px;
-  min-height: 400px;
-}
-
 .expanded-view-squirrels-add-wrapper {
   height: 30px;
   width: 30px;
@@ -276,5 +226,5 @@
 }
 
 .expanded-view-squirrels-add-wrapper:hover {
-  color: #f3f3f3
+  color: #f3f3f3;
 }

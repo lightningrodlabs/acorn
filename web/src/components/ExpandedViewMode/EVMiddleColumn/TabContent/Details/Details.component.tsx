@@ -1,108 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import moment from 'moment'
-import useOnClickOutside from 'use-onclickoutside'
 import TextareaAutosize from 'react-textarea-autosize'
+import Avatar from '../../../../Avatar/Avatar'
+import PeopleInfoPopup from '../../../../PeopleInfoPopup/PeopleInfoPopup'
+import PeoplePicker from '../../../../PeoplePicker/PeoplePicker.component'
 
-import './ExpandedViewModeContent.scss'
-import Avatar from '../../Avatar/Avatar'
-import Icon from '../../Icon/Icon'
-import PeoplePicker from '../../PeoplePicker/PeoplePicker.connector'
-import Comments from '../../Comments/Comments.connector'
-import ActivityHistory from './ActivityHistory/ActivityHistory.connector'
-import ExpandedViewNavBar from './ExpandedViewNavBar/ExpandedViewNavBar'
+import './Details.scss'
+import Icon from '../../../../Icon/Icon'
 
-function SquirrelInfoPopup({ squirrel, onClose, deleteOutcomeMember }) {
-  const ref = useRef()
-  useOnClickOutside(ref, onClose)
-
-  // TODO : connect "squirrel-info-popup-name" div to the member's profile page
-  // TODO : connect "remove from outcome" button to holochain
-  return (
-    <div className="squirrel-info-popup-wrapper" ref={ref}>
-      <div className="squirrel-info-popup-nameANDhandle">
-        <div className="squirrel-info-popup-name">
-          {squirrel.firstName} {squirrel.lastName}{' '}
-          {squirrel.isImported ? <div>(Imported)</div> : ''}
-        </div>
-        <div className="squirrel-info-popup-handle">{squirrel.handle}</div>
-      </div>
-      <div
-        className="remove-squirrel-btn"
-        onClick={(e) => {
-          onClose()
-          deleteOutcomeMember(squirrel.outcomeMemberAddress)
-        }}
-      >
-        Remove from outcome
-      </div>
-    </div>
-  )
-}
-
-export default function ExpandedViewModeContent({
-  projectId,
-  agentAddress,
-  outcomeHeaderHash,
-  outcome,
-  outcomeContent,
-  outcomeDescription,
-  editTimeframe,
-  setEditTimeframe,
-  updateOutcome,
-  squirrels,
-  comments,
-  deleteOutcomeMember,
-  startTitleEdit,
-  endTitleEdit,
-  startDescriptionEdit,
-  endDescriptionEdit,
-  editingPeers,
-}) {
-  // 0 is details
-  // 1 is comments
-  // 2 is history
-  const [activeTab, setActiveTab] = useState(0)
-  return (
-    <div className="expanded-view-content">
-      <ExpandedViewNavBar
-        activeTab={activeTab}
-        onChange={(newTab) => setActiveTab(newTab)}
-        commentCount={comments.length}
-      />
-      <div className="expanded-view-inner-content">
-        {activeTab === 0 && (
-          <Details
-            {...{
-              projectId,
-              agentAddress,
-              setActiveTab,
-              editTimeframe,
-              setEditTimeframe,
-              outcomeHeaderHash,
-              outcome,
-              outcomeContent,
-              outcomeDescription,
-              updateOutcome,
-              squirrels,
-              deleteOutcomeMember,
-              startTitleEdit,
-              endTitleEdit,
-              startDescriptionEdit,
-              endDescriptionEdit,
-              editingPeers,
-            }}
-          />
-        )}
-        {activeTab === 1 && (
-          <Comments projectId={projectId} comments={comments} />
-        )}
-        {activeTab === 2 && <ActivityHistory projectId={projectId} />}
-      </div>
-    </div>
-  )
-}
-
-function Details({
+export default function Details({
   projectId,
   agentAddress,
   setActiveTab,
@@ -195,13 +101,13 @@ function Details({
   const fromDate = outcome.timeFrame
     ? moment.unix(outcome.timeFrame.fromDate)
     : null
-  const toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
+  const toDate = outcome.timeFrame
+    ? moment.unix(outcome.timeFrame.toDate)
+    : null
 
   // const isBeingEdited = false
 
-
-  const member =
-  {
+  const member = {
     firstName: 'Pegah',
     lastName: 'Vaezi',
     avatarUrl:
@@ -214,16 +120,20 @@ function Details({
 
   // find out if any of the peers is editing title, then take the agent key from that and use to feed into avatar
 
-  const editingTitlePeer = editingPeers.find((peerInfo) => peerInfo.outcomeBeingEdited.isTitle)
-  const editingDescriptionPeer = editingPeers.find((peerInfo) => !peerInfo.outcomeBeingEdited.isTitle)
+  const editingTitlePeer = editingPeers.find(
+    (peerInfo) => peerInfo.outcomeBeingEdited.isTitle
+  )
+  const editingDescriptionPeer = editingPeers.find(
+    (peerInfo) => !peerInfo.outcomeBeingEdited.isTitle
+  )
   const titleEditor = editingTitlePeer ? editingTitlePeer.profileInfo : {}
-  const descriptionEditor = editingDescriptionPeer ? editingDescriptionPeer.profileInfo : {}
-
+  const descriptionEditor = editingDescriptionPeer
+    ? editingDescriptionPeer.profileInfo
+    : {}
 
   return (
     <>
       <div className="expanded-view-details-wrapper">
-
         <div className="expanded-view-title-wrapper">
           {editingTitlePeer ? (
             <div>
@@ -268,9 +178,15 @@ function Details({
           )}
         </div>
 
+        {/* Github Link */}
+        <div>Github Link</div>
+
+        {/* Tags */}
+        <div>Tags</div>
+
         <div className="squirrels-timeframe-row">
           <div className="expanded-view-squirrels-wrapper">
-            <div className="expanded-view-squirrels-title">Squirrels</div>
+            <div className="expanded-view-squirrels-title">Assignees</div>
             <div className="expanded-view-squirrels-content">
               {squirrels.map((squirrel, index) => {
                 // TODO: fix the highlight for avatars showing all at once
@@ -293,7 +209,9 @@ function Details({
                       selfAssignedStatus={squirrel.status}
                       clickable
                       onClick={() =>
-                        setSquirrelInfoPopup(squirrelInfoPopup ? null : squirrel)
+                        setSquirrelInfoPopup(
+                          squirrelInfoPopup ? null : squirrel
+                        )
                       }
                       highlighted={highlighted}
                     />
@@ -301,7 +219,7 @@ function Details({
                 )
               })}
               {squirrelInfoPopup && (
-                <SquirrelInfoPopup
+                <PeopleInfoPopup
                   onClose={() => setSquirrelInfoPopup(null)}
                   squirrel={squirrelInfoPopup}
                   deleteOutcomeMember={deleteOutcomeMember}

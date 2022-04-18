@@ -3,13 +3,13 @@ import {
   createOutcomeComment,
   updateOutcomeComment,
   deleteOutcomeComment,
-} from '../../redux/persistent/projects/outcome-comments/actions'
-import ProjectsZomeApi from '../../api/projectsApi'
-import { getAppWs } from '../../hcWebsockets'
-import { cellIdFromString } from '../../utils'
-import { RootState } from '../../redux/reducer'
-import { HeaderHashB64 } from '../../types/shared'
-import { OutcomeComment } from '../../types'
+} from '../../../../../redux/persistent/projects/outcome-comments/actions'
+import ProjectsZomeApi from '../../../../../api/projectsApi'
+import { getAppWs } from '../../../../../hcWebsockets'
+import { cellIdFromString } from '../../../../../utils'
+import { RootState } from '../../../../../redux/reducer'
+import { HeaderHashB64 } from '../../../../../types/shared'
+import { OutcomeComment } from '../../../../../types'
 import Comments from './Comments.component'
 
 function mapStateToProps(state: RootState) {

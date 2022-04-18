@@ -17,7 +17,7 @@ export default function PeoplePicker({
   return (
     <PickerTemplate
       className="people-picker"
-      heading="Squirrels"
+      heading="Assignees"
       onClose={onClose}
     >
       <div className="people-picker-search">

@@ -1,46 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react'
-import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
-import './Comments.scss'
-import Icon from '../Icon/Icon'
-import Avatar from '../Avatar/Avatar'
+import Comment from '../../../../Comment/Comment'
 
-function Comment({ comment, agent }) {
-  return (
-    <div className="comment_history_item">
-      <div className="avatar_comment_container">
-        <Avatar
-          firstName={agent.firstName}
-          lastName={agent.lastName}
-          avatarUrl={agent.avatarUrl}
-          imported={agent.isImported}
-          medium
-          withStatus
-          selfAssignedStatus={agent.status}
-        />
-      </div>
-      <div className="comment_history_content">
-        <div className="comment_history_info">
-          <div className="comment_history_name">
-            {agent.firstName + ' ' + agent.lastName}
-            {agent.isImported ? ' (Imported)' : ''}
-          </div>
-          <div className="comment_history_date">
-            {moment.unix(comment.unixTimestamp).calendar(null, {
-              lastDay: '[Yesterday at] LT',
-              sameDay: '[Today at] LT',
-              nextDay: '[Tomorrow at] LT',
-              lastWeek: '[last] dddd [at] LT',
-              nextWeek: 'dddd [at] LT',
-              sameElse: 'MMM Do YYYY [at] LT',
-            })}
-          </div>
-        </div>
-        <div className="comment_history_text">{comment.content}</div>
-      </div>
-    </div>
-  )
-}
+import './Comments.scss'
+import CommentInput from '../../../../CommentInput/CommentInput'
 
 export default function Comments({
   outcomeHeaderHash,
@@ -50,6 +13,9 @@ export default function Comments({
   avatarAddress,
 }) {
   const commentHistoryRef = useRef()
+
+  // the state for capturing the
+  // user input of the new comment
   const [value, setValue] = useState('')
 
   useEffect(() => {
@@ -88,7 +54,7 @@ export default function Comments({
         content: value,
         creatorAgentPubKey: avatarAddress,
         unixTimestamp: moment().unix(),
-        isImported: false
+        isImported: false,
       })
       // then scroll to bottom
       commentHistoryRef.current.scrollTop =
@@ -99,6 +65,9 @@ export default function Comments({
       console.log(e)
     }
   }
+
+  console.log(agents)
+  console.log(comments)
 
   return (
     <>
@@ -116,24 +85,12 @@ export default function Comments({
               />
             ))}
         </div>
-        <div className="input_comment_row">
-          <div className="input_comment_wrapper">
-            <TextareaAutosize
-              type="text"
-              value={value}
-              placeholder="Write your comment here"
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={onKeyDown}
-            />
-            <div className="comment_save_button">
-              <Icon
-                name="send-plane.svg"
-                className="medium light-grey"
-                onClick={submitComment}
-              />
-            </div>
-          </div>
-        </div>
+        <CommentInput
+          value={value}
+          setValue={setValue}
+          onKeyDown={onKeyDown}
+          submitComment={submitComment}
+        />
       </div>
     </>
   )
