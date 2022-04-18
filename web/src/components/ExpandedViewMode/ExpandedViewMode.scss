@@ -31,7 +31,9 @@
 
 .expanded-view-wrapper {
   box-shadow: 0px 0px 24px #0000001f;
-  width: 500px;
+  // TODO: check what this width should be
+  // and define it in REM?
+  width: 964px;
   background: #ffffff;
   border-radius: 16px;
   display: flex;

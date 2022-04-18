@@ -20,8 +20,7 @@ import { HeaderHashB64 } from '../../types/shared'
 import { EntryPoint, Outcome } from '../../types'
 
 function mapStateToProps(state: RootState, ownProps) {
-  let creator = null,
-    squirrels = [],
+  let squirrels = [],
     comments = []
 
   const { projectId } = ownProps
@@ -72,7 +71,6 @@ function mapStateToProps(state: RootState, ownProps) {
     isEntryPoint,
     entryPointAddress,
     outcomeHeaderHash,
-    // creator, REMOVE
     profiles: state.agents,
     squirrels,
     comments,
@@ -136,7 +134,6 @@ function mapDispatchToProps(dispatch, ownProps) {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(cellId, outcomeHeaderHash)
-      console.log('fully', fullyDeletedOutcome)
       return dispatch(deleteOutcomeFully(cellIdString, fullyDeletedOutcome))
     },
   }

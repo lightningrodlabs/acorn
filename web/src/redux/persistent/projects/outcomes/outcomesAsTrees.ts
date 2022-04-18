@@ -2,8 +2,6 @@ import _ from 'lodash'
 import { ProjectComputedOutcomes } from '../../../../context/ComputedOutcomeContext'
 import {
   ComputedOutcome,
-  ComputedScope,
-  ComputedSimpleAchievementStatus,
   Connection,
   OptionalOutcomeData,
   Outcome,

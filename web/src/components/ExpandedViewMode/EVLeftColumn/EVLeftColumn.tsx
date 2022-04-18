@@ -2,6 +2,7 @@ import React from 'react'
 import './EVLeftColumn.scss'
 
 import Icon from '../../Icon/Icon'
+import { ExpandedViewTab } from '../NavEnum'
 
 function EVLeftColumn({ onChange, activeTab, commentCount }) {
   const navItems = [
@@ -23,19 +24,28 @@ function EVLeftColumn({ onChange, activeTab, commentCount }) {
     },
   ]
 
+  const outcomeId = 124354
+
   return (
-    <div className="expanded-view-nav-bar">
+    <div className="expanded-view-nav-column">
+      <div className='expanded-view-outcome-id'>{outcomeId}</div>
       {navItems.map(({ text, icon }, index) => {
         const activeClass = activeTab === index ? 'active-tab' : ''
         return (
           <div
-            className={`expanded-view-nav-bar-item ${activeClass} ${index === 2 || index === 3 ? 'feature-in-development' : ''
-              }`}
+            className={`expanded-view-nav-column-item ${activeClass} ${
+              index === ExpandedViewTab.ActivityHistory
+                ? 'feature-in-development'
+                : ''
+            }`}
             key={index}
-            onClick={() => index !== 2 && onChange(index)}
+            onClick={() =>
+              index !== ExpandedViewTab.ActivityHistory && onChange(index)
+            }
           >
-            <Icon name={icon} size="very-small" className="grey" />
-            {text}
+            <Icon name={icon} size="small" className="grey" />
+            {/* TODO: add tooltip text */}
+            {/* {text} */}
           </div>
         )
       })}
