@@ -1,5 +1,3 @@
-
-
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -11,7 +9,9 @@
   display: none;
 }
 
-html, body, canvas {
+html,
+body,
+canvas {
   height: 100%;
   width: 100%;
   margin: 0;
@@ -38,7 +38,8 @@ div.react {
 
 @font-face {
   font-family: 'PlusJakartaSans-regular';
-  src: url('fonts/plus-jakarta-sans/PlusJakartaSans-Regular.woff2') format('woff2'),
+  src: url('fonts/plus-jakarta-sans/PlusJakartaSans-Regular.woff2')
+      format('woff2'),
     url('fonts/plus-jakarta-sans/PlusJakartaSans-Regular.woff') format('woff');
   font-weight: normal;
   font-style: normal;
@@ -47,7 +48,8 @@ div.react {
 
 @font-face {
   font-family: 'PlusJakartaSans-medium';
-  src: url('fonts/plus-jakarta-sans/PlusJakartaSans-Medium.woff2') format('woff2'),
+  src: url('fonts/plus-jakarta-sans/PlusJakartaSans-Medium.woff2')
+      format('woff2'),
     url('fonts/plus-jakarta-sans/PlusJakartaSans-Medium.woff') format('woff');
   font-weight: normal;
   font-style: normal;
@@ -56,7 +58,8 @@ div.react {
 
 @font-face {
   font-family: 'PlusJakartaSans-semibold';
-  src: url('fonts/plus-jakarta-sans/PlusJakartaSans-SemiBold.woff2') format('woff2'),
+  src: url('fonts/plus-jakarta-sans/PlusJakartaSans-SemiBold.woff2')
+      format('woff2'),
     url('fonts/plus-jakarta-sans/PlusJakartaSans-SemiBold.woff') format('woff');
   font-weight: normal;
   font-style: normal;
@@ -74,7 +77,8 @@ div.react {
 
 @font-face {
   font-family: 'PlusJakartaSans-extrabold';
-  src: url('fonts/plus-jakarta-sans/PlusJakartaSans-ExtraBold.woff2') format('woff2'),
+  src: url('fonts/plus-jakarta-sans/PlusJakartaSans-ExtraBold.woff2')
+      format('woff2'),
     url('fonts/plus-jakarta-sans/PlusJakartaSans-ExtraBold.woff') format('woff');
   font-weight: normal;
   font-style: normal;
@@ -85,14 +89,16 @@ div.react {
 
 @font-face {
   font-family: 'gilroyextrabold';
-  src: url('fonts/gilroy/gilroy-extrabold-webfont.woff2') format('woff2'), url('fonts/gilroy/gilroy-extrabold-webfont.woff') format('woff');
+  src: url('fonts/gilroy/gilroy-extrabold-webfont.woff2') format('woff2'),
+    url('fonts/gilroy/gilroy-extrabold-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'gilroylight';
-  src: url('fonts/gilroy/gilroy-light-webfont.woff2') format('woff2'), url('fonts/gilroy/gilroy-light-webfont.woff') format('woff');
+  src: url('fonts/gilroy/gilroy-light-webfont.woff2') format('woff2'),
+    url('fonts/gilroy/gilroy-light-webfont.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -136,7 +142,7 @@ h4 {
   line-height: 24px;
   font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   font-weight: normal;
-  color: #8D8C8C;
+  color: #8d8c8c;
   margin-block-start: 0.1em;
   margin-block-end: 0.5em;
 }
@@ -210,9 +216,9 @@ h4 a:hover {
 /* textarea placeholder */
 
 textarea::placeholder {
-  color: #bdbdbd;
+  color: var(--text-color-placeholder);
 }
 
 ::placeholder {
-  color: #bdbdbd;
+  color: var(--text-color-placeholder);
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
 import Icon from '../Icon/Icon'
+import Typography from '../Typography/Typography'
 import './CommentInput.scss'
 
 export type CommentInputProps = {
@@ -17,20 +18,22 @@ const CommentInput: React.FC<CommentInputProps> = ({
   submitComment,
 }) => {
   return (
-    <div className="input-comment-row">
-      <div className="input-comment-wrapper">
+    <div className="comment-input-row">
+      <div className="comment-input-wrapper">
         <TextareaAutosize
           type="text"
           value={value}
-          placeholder="Write your comment here"
+          placeholder="Add a comment"
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={onKeyDown}
         />
-        <div className="comment-save-button">
+        <div className="comment-input-enter-button">
           <Icon
             name="send-plane.svg"
-            className="medium light-grey"
+            className="small grey"
             onClick={submitComment}
+            withTooltip
+            tooltipText="⌘ + ↩"
           />
         </div>
       </div>
