@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 import './ValidatingFormInput.scss'
 
-import ValidationCheck from '../../imagescircle-check.svg'
+import ValidationCheck from '../../images/circle-check.svg'
 import ValidationX from '../../images/circle-x.svg'
 
 function ValidatingFormInput({
