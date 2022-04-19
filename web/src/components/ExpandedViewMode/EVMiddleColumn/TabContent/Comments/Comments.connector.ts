@@ -10,14 +10,33 @@ import { cellIdFromString } from '../../../../../utils'
 import { RootState } from '../../../../../redux/reducer'
 import { HeaderHashB64 } from '../../../../../types/shared'
 import { OutcomeComment } from '../../../../../types'
-import Comments from './Comments.component'
+import Comments, {
+  CommentsConnectorStateProps,
+  CommentsOwnProps,
+} from './Comments.component'
 
-function mapStateToProps(state: RootState) {
+function mapStateToProps(
+  state: RootState,
+  ownProps: CommentsOwnProps
+): CommentsConnectorStateProps {
+  const { projectId } = ownProps
   const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
+  const outcomeComments = state.projects.outcomeComments[projectId] || {}
+
+  let comments = []
+  if (outcomeHeaderHash) {
+    comments = Object.values(outcomeComments).filter(
+      (outcomeComment) =>
+        outcomeComment.outcomeHeaderHash ===
+        state.ui.expandedView.outcomeHeaderHash
+    )
+  }
+
   return {
     outcomeHeaderHash,
-    avatarAddress: state.whoami.entry.agentPubKey,
-    agents: state.agents,
+    activeAgentPubKey: state.agentAddress,
+    profiles: state.agents,
+    comments,
   }
 }
 

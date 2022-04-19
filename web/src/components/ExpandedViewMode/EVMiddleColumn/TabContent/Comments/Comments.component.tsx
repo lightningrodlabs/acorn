@@ -4,15 +4,41 @@ import Comment from '../../../../CommentPosted/CommentPosted'
 
 import './Comments.scss'
 import CommentInput from '../../../../CommentInput/CommentInput'
+import {
+  AgentPubKeyB64,
+  CellIdString,
+  HeaderHashB64,
+  WithHeaderHash,
+} from '../../../../../types/shared'
+import { OutcomeComment, Profile } from '../../../../../types'
 
-export default function Comments({
+export type CommentsOwnProps = {
+  projectId: CellIdString
+}
+
+export type CommentsConnectorStateProps = {
+  outcomeHeaderHash: HeaderHashB64
+  profiles: { [agentPubKey: AgentPubKeyB64]: Profile }
+  comments: WithHeaderHash<OutcomeComment>[]
+  activeAgentPubKey: AgentPubKeyB64
+}
+
+export type CommentsConnectorDispatchProps = {
+  createOutcomeComment: any
+}
+
+export type CommentsProps = CommentsOwnProps &
+  CommentsConnectorStateProps &
+  CommentsConnectorDispatchProps
+
+const Comments: React.FC<CommentsProps> = ({
   outcomeHeaderHash,
-  agents,
+  profiles,
   comments,
   createOutcomeComment,
-  avatarAddress,
-}) {
-  const commentHistoryRef = useRef()
+  activeAgentPubKey,
+}) => {
+  const commentHistoryRef = useRef<any>()
 
   // the state for capturing the
   // user input of the new comment
@@ -29,6 +55,29 @@ export default function Comments({
     }, 10)
   }, [])
 
+  const submitComment = async () => {
+    if (value === '') {
+      return
+    }
+    try {
+      // when new comment created
+      await createOutcomeComment({
+        outcomeHeaderHash: outcomeHeaderHash,
+        content: value,
+        creatorAgentPubKey: activeAgentPubKey,
+        unixTimestamp: moment().unix(),
+        isImported: false,
+      })
+      // then scroll to bottom
+      commentHistoryRef.current.scrollTop =
+        commentHistoryRef.current.scrollHeight
+      // then reset the typing input
+      setValue('')
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
   const onKeyDown = (e) => {
     // 13 is key code for Enter/Return
     const ENTER_KEY_CODE = 13
@@ -43,47 +92,23 @@ export default function Comments({
     }
   }
 
-  const submitComment = async (e) => {
-    if (value === '') {
-      return
-    }
-    try {
-      // when new comment created
-      await createOutcomeComment({
-        outcomeHeaderHash: outcomeHeaderHash,
-        content: value,
-        creatorAgentPubKey: avatarAddress,
-        unixTimestamp: moment().unix(),
-        isImported: false,
-      })
-      // then scroll to bottom
-      commentHistoryRef.current.scrollTop =
-        commentHistoryRef.current.scrollHeight
-      // then reset the typing input
-      setValue('')
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  console.log(agents)
-  console.log(comments)
-
   return (
     <>
       <div className="comments">
         <div className="comment-history-container" ref={commentHistoryRef}>
-          {Object.keys(comments)
-            .map((key) => comments[key])
+          {comments
             // order the comments by most recent, to least recent
             .sort((a, b) => (a.unixTimestamp < b.unixTimestamp ? -1 : 1))
-            .map((comment) => (
-              <Comment
-                key={comment.headerHash}
-                comment={comment}
-                agent={agents[comment.creatorAgentPubKey]}
-              />
-            ))}
+            .map((comment) => {
+              return (
+                <Comment
+                  key={comment.headerHash}
+                  comment={comment}
+                  // TODO: update this during the merge
+                  agent={profiles[comment.creatorAgentPubKey]}
+                />
+              )
+            })}
         </div>
         <CommentInput
           value={value}
@@ -95,3 +120,5 @@ export default function Comments({
     </>
   )
 }
+
+export default Comments

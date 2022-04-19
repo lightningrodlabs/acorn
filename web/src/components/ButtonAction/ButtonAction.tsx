@@ -5,7 +5,7 @@ import './ButtonAction.scss'
 export type ButtonActionProps = {
   size: 'small' | 'medium' | 'large'
   onClick: () => void
-  icon: React.Component
+  icon: React.ReactElement
   text: string
 }
 

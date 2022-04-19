@@ -1,6 +1,6 @@
-/* squirrelInfoPopup */
+/* personInfoPopup */
 
-.squirrel-info-popup-wrapper {
+.person-info-popup-wrapper {
   margin-top: 64px;
   position: absolute;
   border-radius: 10px;
@@ -11,7 +11,7 @@
   z-index: 1;
 }
 
-.squirrel-info-popup-name {
+.person-info-popup-name {
   flex: 1;
   padding: 1px 0px;
   font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
@@ -20,7 +20,7 @@
   cursor: pointer;
 }
 
-.squirrel-info-popup-nameANDhandle {
+.person-info-popup-nameANDhandle {
   display: flex;
   flex-direction: column;
   padding-bottom: 12px;
@@ -28,13 +28,13 @@
   border-bottom: 1px solid #f2f2f2;
 }
 
-.squirrel-info-popup-handle {
+.person-info-popup-handle {
   font-size: 12px;
   color: #a3a3a3;
   font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
 }
 
-.remove-squirrel-btn {
+.remove-person-btn {
   color: #00beb0;
   font-size: 12px;
   padding-top: 6px;
@@ -42,6 +42,6 @@
   cursor: pointer;
 }
 
-.remove-squirrel-btn:hover {
+.remove-person-btn:hover {
   color: #5f65ff;
 }

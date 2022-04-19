@@ -9,13 +9,20 @@ import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 import { RootState } from '../../redux/reducer'
-import PeoplePicker from './PeoplePicker.component'
+import PeoplePicker, {
+  PeoplePickerConnectorDispatchProps,
+  PeoplePickerConnectorStateProps,
+  PeoplePickerOwnProps,
+} from './PeoplePicker.component'
 
-function mapStateToProps(state: RootState, ownProps) {
+function mapStateToProps(
+  state: RootState,
+  ownProps: PeoplePickerOwnProps
+): PeoplePickerConnectorStateProps {
+  const { projectId } = ownProps
   const outcomeHeaderHash = state.ui.outcomeForm.isOpen
     ? state.ui.outcomeForm.editAddress
     : state.ui.expandedView.outcomeHeaderHash
-  const { projectId } = ownProps
   const outcomeMembers = state.projects.outcomeMembers[projectId] || {}
   const members = state.projects.members[projectId] || {}
   const membersOfOutcome = Object.keys(outcomeMembers)
@@ -23,28 +30,37 @@ function mapStateToProps(state: RootState, ownProps) {
     .filter(
       (outcomeMember) => outcomeMember.outcomeHeaderHash === outcomeHeaderHash
     )
-  // just in case we've received a 'member' before the agents profile
-  // filter out any missing profiles for now
-  const agents = Object.keys(members)
+
+  // all project members, plus a bit of data about
+  // whether the person is an assignee on a specific outcome
+  // or not
+  const people = Object.keys(members)
     .map((address) => state.agents[address])
+    // just in case we've received a 'member' before the agents profile
+    // filter out any missing profiles for now
     .filter((agent) => agent)
-  return {
-    agentAddress: state.agentAddress,
-    people: agents.map((agent) => {
+    .map((agent) => {
       const member = membersOfOutcome.find(
-        (outcomeMember) => outcomeMember.agentAddress === agent.address
+        (outcomeMember) => outcomeMember.memberAgentPubKey === agent.agentPubKey
       )
       return {
         ...agent, // address, name, avatarUrl
-        is_member: member ? true : false,
-        outcome_member_address: member ? member.headerHash : null,
+        isMember: member ? true : false,
+        outcomeMemberHeaderHash: member ? member.headerHash : null,
       }
-    }),
+    })
+
+  return {
+    activeAgentPubKey: state.agentAddress,
+    people,
     outcomeHeaderHash,
   }
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(
+  dispatch,
+  ownProps: PeoplePickerOwnProps
+): PeoplePickerConnectorDispatchProps {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {

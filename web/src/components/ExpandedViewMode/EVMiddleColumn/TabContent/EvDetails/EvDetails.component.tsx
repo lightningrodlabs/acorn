@@ -1,57 +1,154 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import TextareaAutosize from 'react-textarea-autosize'
+
 import Avatar from '../../../../Avatar/Avatar'
-import PeopleInfoPopup from '../../../../PeopleInfoPopup/PeopleInfoPopup'
-import PeoplePicker from '../../../../PeoplePicker/PeoplePicker.component'
-
-import './Details.scss'
+import PeopleInfoPopup from '../../../../PersonInfoPopup/PersonInfoPopup'
+import PeoplePicker from '../../../../PeoplePicker/PeoplePicker.connector'
 import Icon from '../../../../Icon/Icon'
+import { ExpandedViewTab } from '../../../NavEnum'
+import {
+  AssigneeWithHeaderHash,
+  ComputedOutcome,
+  Outcome,
+  Profile,
+} from '../../../../../types'
+import {
+  AgentPubKeyB64,
+  CellIdString,
+  HeaderHashB64,
+} from '../../../../../types/shared'
 
-export default function Details({
+import './EvDetails.scss'
+
+/*
+testing data
+*/
+
+// you can use these as values for
+// testing/ development, instead of `assignees`
+const _testAssignees = [
+  { avatarUrl: 'img/profile.png' },
+  { avatarUrl: 'img/profile.png' },
+  { avatarUrl: 'img/profile.png' },
+]
+
+const _member = {
+  firstName: 'Pegah',
+  lastName: 'Vaezi',
+  avatarUrl:
+    'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.fouladiprojects.com%2Fwp-content%2Fuploads%2F2015%2F10%2FBarbourshow1.jpg&f=1&nofb=1',
+  isImported: false,
+  headerHash: 'riusry3764yiud',
+  connectionStatus: 'connected',
+  status: 'online',
+}
+
+/* end testing data */
+
+export type EvDetailsOwnProps = {
+  projectId: CellIdString
+  outcome: ComputedOutcome
+  setActiveTab: React.Dispatch<React.SetStateAction<ExpandedViewTab>>
+}
+
+export type EvDetailsConnectorStateProps = {
+  activeAgentPubKey: AgentPubKeyB64
+  outcomeHeaderHash: HeaderHashB64
+  assignees: AssigneeWithHeaderHash[]
+  // TODO: what type?
+  editingPeers: any
+  profiles: { [agentPubKey: AgentPubKeyB64]: Profile }
+}
+
+export type EvDetailsConnectorDispatchProps = {
+  updateOutcome: (outcome: Outcome, headerHash: HeaderHashB64) => Promise<void>
+  deleteOutcomeMember: (headerHash: HeaderHashB64) => Promise<void>
+  startTitleEdit: (outcomeHeaderHash: HeaderHashB64) => void
+  endTitleEdit: (outcomeHeaderHash: HeaderHashB64) => void
+  startDescriptionEdit: (outcomeHeaderHash: HeaderHashB64) => void
+  endDescriptionEdit: (outcomeHeaderHash: HeaderHashB64) => void
+}
+
+export type EvDetailsProps = EvDetailsOwnProps &
+  EvDetailsConnectorStateProps &
+  EvDetailsConnectorDispatchProps
+
+const EvDetails: React.FC<EvDetailsProps> = ({
+  // own props
   projectId,
-  agentAddress,
-  setActiveTab,
-  editTimeframe,
-  setEditTimeframe,
-  outcomeHeaderHash,
   outcome,
-  outcomeContent,
-  outcomeDescription,
+  setActiveTab,
+  // state props
+  activeAgentPubKey,
+  outcomeHeaderHash,
+  assignees,
+  profiles,
+  // dispatch props
   updateOutcome,
-  squirrels,
   deleteOutcomeMember,
   startTitleEdit,
   endTitleEdit,
   startDescriptionEdit,
   endDescriptionEdit,
   editingPeers,
-}) {
-  // you can use these as values for
-  // testing/ development, instead of `squirrels`
-  const testSquirrels = [
-    { avatarUrl: 'img/profile.png' },
-    { avatarUrl: 'img/profile.png' },
-    { avatarUrl: 'img/profile.png' },
-  ]
+}) => {
+  let creator: Profile
+  if (outcome) {
+    Object.keys(profiles).forEach((value) => {
+      if (profiles[value].agentPubKey === outcome.creatorAgentPubKey)
+        creator = profiles[value]
+    })
+  }
 
-  const [editSquirrels, setEditSquirrels] = useState(false)
-  const [squirrelInfoPopup, setSquirrelInfoPopup] = useState(null)
+  const [outcomeState, setOutcomeState] = useState<ComputedOutcome>()
+  const [assigneesState, setAssigneesState] = useState<
+    AssigneeWithHeaderHash[]
+  >()
+  const [creatorState, setCreatorState] = useState<Profile>()
 
-  const [content, setContent] = useState(outcomeContent)
-  const [description, setDescription] = useState(outcomeDescription)
+  useEffect(() => {
+    if (outcome) {
+      setOutcomeState({ ...outcome })
+    }
+  }, [outcome])
+
+  useEffect(() => {
+    if (assignees) {
+      setAssigneesState([...assignees])
+    }
+  }, [assignees])
+
+  useEffect(() => {
+    if (creator) {
+      setCreatorState({ ...creator })
+    }
+  }, [creator])
+
+  const [editAssignees, setEditAssignees] = useState(false)
+  const [
+    personInfoPopup,
+    setPersonInfoPopup,
+  ] = useState<AssigneeWithHeaderHash>(null)
+
+  // the live editor state
+  const [content, setContent] = useState('')
+  // the live editor state
+  const [description, setDescription] = useState('')
 
   // reset
   useEffect(() => {
     if (!outcomeHeaderHash) {
-      setActiveTab(0)
-      setEditSquirrels(false)
-      setSquirrelInfoPopup(null)
-      setEditTimeframe(false)
+      setActiveTab(ExpandedViewTab.Details)
+      setEditAssignees(false)
+      setPersonInfoPopup(null)
+      // setEditTimeframe(false)
     }
   }, [outcomeHeaderHash])
 
   // handle change of outcome
+  const outcomeContent = outcome ? outcome.content : ''
+  const outcomeDescription = outcome ? outcome.description : ''
   useEffect(() => {
     setContent(outcomeContent)
   }, [outcomeContent])
@@ -63,7 +160,7 @@ export default function Details({
     updateOutcome(
       {
         ...outcome,
-        editorAgentPubKey: agentAddress,
+        editorAgentPubKey: activeAgentPubKey,
         timestampUpdated: moment().unix(),
         content,
         description,
@@ -76,7 +173,7 @@ export default function Details({
     updateOutcome(
       {
         ...outcome,
-        editorAgentPubKey: agentAddress,
+        editorAgentPubKey: activeAgentPubKey,
         timestampUpdated: moment().unix(),
         content,
         description,
@@ -98,25 +195,15 @@ export default function Details({
     setDescription(target.value)
   }
 
-  const fromDate = outcome.timeFrame
-    ? moment.unix(outcome.timeFrame.fromDate)
-    : null
-  const toDate = outcome.timeFrame
-    ? moment.unix(outcome.timeFrame.toDate)
-    : null
+  let fromDate: moment.Moment, toDate: moment.Moment
+  if (outcome) {
+    fromDate = outcome.timeFrame
+      ? moment.unix(outcome.timeFrame.fromDate)
+      : null
+    toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
+  }
 
   // const isBeingEdited = false
-
-  const member = {
-    firstName: 'Pegah',
-    lastName: 'Vaezi',
-    avatarUrl:
-      'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.fouladiprojects.com%2Fwp-content%2Fuploads%2F2015%2F10%2FBarbourshow1.jpg&f=1&nofb=1',
-    isImported: false,
-    headerHash: 'riusry3764yiud',
-    connectionStatus: 'connected',
-    status: 'online',
-  }
 
   // find out if any of the peers is editing title, then take the agent key from that and use to feed into avatar
 
@@ -144,6 +231,7 @@ export default function Details({
                   firstName={titleEditor.firstName}
                   lastName={titleEditor.lastName}
                   avatarUrl={titleEditor.avatarUrl}
+                  // @ts-ignore
                   isImported={titleEditor.isImported}
                   headerHash={titleEditor.address}
                   connectionStatus={'connected'}
@@ -188,56 +276,57 @@ export default function Details({
           <div className="expanded-view-squirrels-wrapper">
             <div className="expanded-view-squirrels-title">Assignees</div>
             <div className="expanded-view-squirrels-content">
-              {squirrels.map((squirrel, index) => {
+              {assignees.map((assignee, index) => {
                 // TODO: fix the highlight for avatars showing all at once
                 // instead of only highlighting the selected avatar
-                const highlighted = squirrelInfoPopup
-                  ? squirrelInfoPopup.headerHash === squirrel.headerHash
+                const highlighted = personInfoPopup
+                  ? personInfoPopup.outcomeMemberHeaderHash ===
+                    assignee.outcomeMemberHeaderHash
                   : false
                 return (
                   <div className="expanded-view-squirrel-wrapper">
                     <Avatar
                       withWhiteBorder
                       key={index}
-                      firstName={squirrel.firstName}
-                      lastName={squirrel.lastName}
-                      avatarUrl={squirrel.avatarUrl}
-                      imported={squirrel.isImported}
                       size='medium'
+                      firstName={assignee.profile.firstName}
+                      lastName={assignee.profile.lastName}
+                      avatarUrl={assignee.profile.avatarUrl}
+                      imported={assignee.profile.isImported}
+                      // @ts-ignore
                       withWhiteBorder
                       withStatus
-                      selfAssignedStatus={squirrel.status}
+                      selfAssignedStatus={assignee.profile.status}
                       clickable
                       onClick={() =>
-                        setSquirrelInfoPopup(
-                          squirrelInfoPopup ? null : squirrel
-                        )
+                        setPersonInfoPopup(personInfoPopup ? null : assignee)
                       }
                       highlighted={highlighted}
                     />
                   </div>
                 )
               })}
-              {squirrelInfoPopup && (
+              {personInfoPopup && (
                 <PeopleInfoPopup
-                  onClose={() => setSquirrelInfoPopup(null)}
-                  squirrel={squirrelInfoPopup}
+                  onClose={() => setPersonInfoPopup(null)}
+                  person={personInfoPopup}
                   deleteOutcomeMember={deleteOutcomeMember}
                 />
               )}
               <div className="expanded-view-squirrels-add-wrapper">
+                {/* @ts-ignore */}
                 <Icon
                   className="add-squirrel-plus-icon"
                   name="plus.svg"
                   size="small"
-                  onClick={() => setEditSquirrels(!editSquirrels)}
+                  onClick={() => setEditAssignees(!editAssignees)}
                   withTooltip
                   tooltipText="Add Squirrels"
                 />
-                {editSquirrels && (
+                {editAssignees && (
                   <PeoplePicker
                     projectId={projectId}
-                    onClose={() => setEditSquirrels(false)}
+                    onClose={() => setEditAssignees(false)}
                   />
                 )}
               </div>
@@ -247,7 +336,8 @@ export default function Details({
             <div className="expanded-view-timeframe-title">Timeframe</div>
             <div
               className="expanded-view-timeframe-display"
-              onClick={() => setEditTimeframe(!editTimeframe)}
+              // TODO: bring this back
+              // onClick={() => setEditTimeframe(!editTimeframe)}
             >
               {fromDate && fromDate.format('MMM D, YYYY')}
               {toDate && ' - '}
@@ -266,6 +356,7 @@ export default function Details({
                   firstName={descriptionEditor.firstName}
                   lastName={descriptionEditor.lastName}
                   avatarUrl={descriptionEditor.avatarUrl}
+                  // @ts-ignore
                   isImported={descriptionEditor.isImported}
                   headerHash={descriptionEditor.address}
                   connectionStatus={'connected'}
@@ -301,3 +392,5 @@ export default function Details({
     </>
   )
 }
+
+export default EvDetails
