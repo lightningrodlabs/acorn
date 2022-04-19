@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import Icon from '../Icon/Icon'
-import EVMiddleColumn from './EVMiddleColumn/EVMiddleColumn.component'
+import EVMiddleColumn from './EVMiddleColumn/EVMiddleColumn'
 import EVLeftColumn from './EVLeftColumn/EVLeftColumn'
-import EVRightColumn from './EVRightColumn/EVRightColumn.connector'
 import { ExpandedViewTab } from './NavEnum'
 import { CellIdString, HeaderHashB64 } from '../../types/shared'
-import './ExpandedViewMode.scss'
 import { ComputedOutcome } from '../../types'
+import './ExpandedViewMode.scss'
 
 // props passed to the component by the parent
 export type ExpandedViewModeOwnProps = {
-  onClose: () => void
   projectId: CellIdString
+  onClose: () => void
   outcome: ComputedOutcome
+  details: React.ReactElement
+  comments: React.ReactElement
+  rightColumn: React.ReactElement
 }
 
 // redux props
@@ -26,10 +28,12 @@ export type ExpandedViewModeProps = ExpandedViewModeOwnProps &
   ExpandedViewModeConnectorProps
 
 const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
-  projectId,
   outcome,
   outcomeHeaderHash,
   commentCount,
+  details,
+  comments,
+  rightColumn,
   onClose,
 }) => {
   // Details is default tab
@@ -37,6 +41,11 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
   const [showing, setShowing] = useState(false)
 
   useEffect(() => {
+    // reset
+    if (!outcomeHeaderHash) {
+      setActiveTab(ExpandedViewTab.Details)
+    }
+
     if (showing && !outcomeHeaderHash) {
       setShowing(false)
     } else if (!showing && outcomeHeaderHash) {
@@ -74,16 +83,12 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
             commentCount={commentCount}
           />
           <EVMiddleColumn
-            projectId={projectId}
             activeTab={activeTab}
-            setActiveTab={setActiveTab}
             outcome={outcome}
+            details={details}
+            comments={comments}
           />
-          <EVRightColumn
-            projectId={projectId}
-            onClose={onClose}
-            outcome={outcome}
-          />
+          {rightColumn}
         </div>
       </CSSTransition>
     </>

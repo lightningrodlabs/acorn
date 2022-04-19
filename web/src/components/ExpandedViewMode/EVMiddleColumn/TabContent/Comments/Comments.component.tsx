@@ -1,9 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import moment from 'moment'
-import Comment from '../../../../CommentPosted/CommentPosted'
 
-import './Comments.scss'
-import CommentInput from '../../../../CommentInput/CommentInput'
 import {
   AgentPubKeyB64,
   CellIdString,
@@ -11,6 +8,9 @@ import {
   WithHeaderHash,
 } from '../../../../../types/shared'
 import { OutcomeComment, Profile } from '../../../../../types'
+import CommentInput from '../../../../CommentInput/CommentInput'
+import CommentPosted from '../../../../CommentPosted/CommentPosted'
+import './Comments.scss'
 
 export type CommentsOwnProps = {
   projectId: CellIdString
@@ -101,11 +101,10 @@ const Comments: React.FC<CommentsProps> = ({
             .sort((a, b) => (a.unixTimestamp < b.unixTimestamp ? -1 : 1))
             .map((comment) => {
               return (
-                <Comment
+                <CommentPosted
                   key={comment.headerHash}
                   comment={comment}
-                  // TODO: update this during the merge
-                  agent={profiles[comment.creatorAgentPubKey]}
+                  creator={profiles[comment.creatorAgentPubKey]}
                 />
               )
             })}

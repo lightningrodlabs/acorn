@@ -49,7 +49,6 @@ const _member = {
 export type EvDetailsOwnProps = {
   projectId: CellIdString
   outcome: ComputedOutcome
-  setActiveTab: React.Dispatch<React.SetStateAction<ExpandedViewTab>>
 }
 
 export type EvDetailsConnectorStateProps = {
@@ -78,7 +77,6 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   // own props
   projectId,
   outcome,
-  setActiveTab,
   // state props
   activeAgentPubKey,
   outcomeHeaderHash,
@@ -139,7 +137,6 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   // reset
   useEffect(() => {
     if (!outcomeHeaderHash) {
-      setActiveTab(ExpandedViewTab.Details)
       setEditAssignees(false)
       setPersonInfoPopup(null)
       // setEditTimeframe(false)
