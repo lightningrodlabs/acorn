@@ -6,7 +6,7 @@ import './SelectDropdown.scss'
 export type SelectDropdownProps = {
   size: 'small' | 'medium' | 'large'
   selectedOptionId: string
-  options: { icon: React.Component; text: string; id: string }[]
+  options: { icon: React.ReactElement; text: string; id: string }[]
   onSelect: (id: string) => void
 }
 

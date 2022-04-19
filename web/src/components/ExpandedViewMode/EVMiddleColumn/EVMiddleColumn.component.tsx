@@ -34,9 +34,11 @@ const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
         smallsTotal: 0,
         simple: ComputedSimpleAchievementStatus.NotAchieved,
       }
+  const childrenCount = outcome ? outcome.children.length : 0
   return (
     <div className="expanded-view-content">
       <DescendantsAchievementStatus
+        childrenCount={childrenCount}
         computedAchievedmentStatus={computedAchievementStatus}
       />
       <div className="expanded-view-inner-content">

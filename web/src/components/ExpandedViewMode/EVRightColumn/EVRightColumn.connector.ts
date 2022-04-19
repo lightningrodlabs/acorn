@@ -5,9 +5,13 @@ import {
   createEntryPoint,
   deleteEntryPoint,
 } from '../../../redux/persistent/projects/entry-points/actions'
-import { deleteOutcomeFully } from '../../../redux/persistent/projects/outcomes/actions'
+import {
+  deleteOutcomeFully,
+  updateOutcome,
+} from '../../../redux/persistent/projects/outcomes/actions'
+import { updateProjectMeta } from '../../../redux/persistent/projects/project-meta/actions'
 import { RootState } from '../../../redux/reducer'
-import { ComputedSimpleAchievementStatus, EntryPoint } from '../../../types'
+import { EntryPoint, Outcome, ProjectMeta } from '../../../types'
 import { HeaderHashB64 } from '../../../types/shared'
 import { cellIdFromString } from '../../../utils'
 import EvRightColumn, {
@@ -23,8 +27,9 @@ function mapStateToProps(
   const { projectId } = ownProps
 
   const activeAgentPubKey = state.agentAddress
-  const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
   const entryPoints = state.projects.entryPoints[projectId] || {}
+  const projectMeta = state.projects.projectMeta[projectId]
+  const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
 
   const entryPoint = Object.values(entryPoints).find(
     (entryPoint) => entryPoint.outcomeHeaderHash === outcomeHeaderHash
@@ -37,6 +42,7 @@ function mapStateToProps(
     entryPointHeaderHash,
     activeAgentPubKey,
     outcomeHeaderHash,
+    projectMeta,
   }
 }
 
@@ -47,6 +53,27 @@ function mapDispatchToProps(
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
+    updateOutcome: async (outcome: Outcome, headerHash: HeaderHashB64) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const updatedOutcome = await projectsZomeApi.outcome.update(cellId, {
+        headerHash,
+        entry: outcome,
+      })
+      return dispatch(updateOutcome(cellIdString, updatedOutcome))
+    },
+    updateProjectMeta: async (
+      projectMeta: ProjectMeta,
+      headerHash: HeaderHashB64
+    ) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const updatedProjectMeta = await projectsZomeApi.projectMeta.update(
+        cellId,
+        { entry: projectMeta, headerHash }
+      )
+      return dispatch(updateProjectMeta(cellIdString, updatedProjectMeta))
+    },
     createEntryPoint: async (entryPoint: EntryPoint) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
