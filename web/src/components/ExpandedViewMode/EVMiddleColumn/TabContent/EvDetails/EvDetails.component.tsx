@@ -1,15 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import TextareaAutosize from 'react-textarea-autosize'
+
 import Avatar from '../../../../Avatar/Avatar'
-import PeopleInfoPopup from '../../../../PeopleInfoPopup/PeopleInfoPopup'
-import PeoplePicker from '../../../../PeoplePicker/PeoplePicker.component'
+import PeopleInfoPopup from '../../../../PersonInfoPopup/PersonInfoPopup'
+import PeoplePicker from '../../../../PeoplePicker/PeoplePicker.connector'
 import Icon from '../../../../Icon/Icon'
-
-import './Details.scss'
 import { ExpandedViewTab } from '../../../NavEnum'
-import { AssigneeWithHeaderHash } from '../../../../../types'
+import {
+  AssigneeWithHeaderHash,
+  ComputedOutcome,
+  Outcome,
+  Profile,
+} from '../../../../../types'
+import {
+  AgentPubKeyB64,
+  CellIdString,
+  HeaderHashB64,
+} from '../../../../../types/shared'
 
+import './EvDetails.scss'
 
 /*
 testing data
@@ -17,58 +27,65 @@ testing data
 
 // you can use these as values for
 // testing/ development, instead of `assignees`
-const testAssignees = [
+const _testAssignees = [
   { avatarUrl: 'img/profile.png' },
   { avatarUrl: 'img/profile.png' },
   { avatarUrl: 'img/profile.png' },
 ]
 
-const member = {
+const _member = {
   firstName: 'Pegah',
   lastName: 'Vaezi',
   avatarUrl:
-  'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.fouladiprojects.com%2Fwp-content%2Fuploads%2F2015%2F10%2FBarbourshow1.jpg&f=1&nofb=1',
+    'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.fouladiprojects.com%2Fwp-content%2Fuploads%2F2015%2F10%2FBarbourshow1.jpg&f=1&nofb=1',
   isImported: false,
   headerHash: 'riusry3764yiud',
   connectionStatus: 'connected',
   status: 'online',
 }
 
-// TODO: fix these types
-export type DetailsProps = {
-  projectId: any
-  agentAddress: any
-  setActiveTab: any
-  editTimeframe: any
-  setEditTimeframe: any
-  outcomeHeaderHash: any
-  outcome: any
-  outcomeContent: any
-  outcomeDescription: any
-  updateOutcome: any
-  assignees: AssigneeWithHeaderHash[]
-  deleteOutcomeMember: any
-  startTitleEdit: any
-  endTitleEdit: any
-  startDescriptionEdit: any
-  endDescriptionEdit: any
-  editingPeers: any
-}
-
 /* end testing data */
 
-const Details: React.FC<DetailsProps> = ({
+export type EvDetailsOwnProps = {
+  projectId: CellIdString
+  outcome: ComputedOutcome
+  setActiveTab: React.Dispatch<React.SetStateAction<ExpandedViewTab>>
+}
+
+export type EvDetailsConnectorStateProps = {
+  activeAgentPubKey: AgentPubKeyB64
+  outcomeHeaderHash: HeaderHashB64
+  assignees: AssigneeWithHeaderHash[]
+  // TODO: what type?
+  editingPeers: any
+  profiles: { [agentPubKey: AgentPubKeyB64]: Profile }
+}
+
+export type EvDetailsConnectorDispatchProps = {
+  updateOutcome: (outcome: Outcome, headerHash: HeaderHashB64) => Promise<void>
+  deleteOutcomeMember: (headerHash: HeaderHashB64) => Promise<void>
+  startTitleEdit: (outcomeHeaderHash: HeaderHashB64) => void
+  endTitleEdit: (outcomeHeaderHash: HeaderHashB64) => void
+  startDescriptionEdit: (outcomeHeaderHash: HeaderHashB64) => void
+  endDescriptionEdit: (outcomeHeaderHash: HeaderHashB64) => void
+}
+
+export type EvDetailsProps = EvDetailsOwnProps &
+  EvDetailsConnectorStateProps &
+  EvDetailsConnectorDispatchProps
+
+const EvDetails: React.FC<EvDetailsProps> = ({
+  // own props
   projectId,
-  agentAddress,
-  setActiveTab,
-  editTimeframe,
-  setEditTimeframe,
-  outcomeHeaderHash,
   outcome,
-  outcomeContent,
-  outcomeDescription,
-  updateOutcome,
+  setActiveTab,
+  // state props
+  activeAgentPubKey,
+  outcomeHeaderHash,
   assignees,
+  profiles,
+  // dispatch props
+  updateOutcome,
   deleteOutcomeMember,
   startTitleEdit,
   endTitleEdit,
@@ -76,23 +93,62 @@ const Details: React.FC<DetailsProps> = ({
   endDescriptionEdit,
   editingPeers,
 }) => {
-  const [editAssignees, setEditAssignees] = useState(false)
-  const [peopleInfoPopup, setPeopleInfoPopup] = useState<AssigneeWithHeaderHash>(null)
+  let creator: Profile
+  if (outcome) {
+    Object.keys(profiles).forEach((value) => {
+      if (profiles[value].agentPubKey === outcome.creatorAgentPubKey)
+        creator = profiles[value]
+    })
+  }
 
-  const [content, setContent] = useState(outcomeContent)
-  const [description, setDescription] = useState(outcomeDescription)
+  const [outcomeState, setOutcomeState] = useState<ComputedOutcome>()
+  const [assigneesState, setAssigneesState] = useState<
+    AssigneeWithHeaderHash[]
+  >()
+  const [creatorState, setCreatorState] = useState<Profile>()
+
+  useEffect(() => {
+    if (outcome) {
+      setOutcomeState({ ...outcome })
+    }
+  }, [outcome])
+
+  useEffect(() => {
+    if (assignees) {
+      setAssigneesState([...assignees])
+    }
+  }, [assignees])
+
+  useEffect(() => {
+    if (creator) {
+      setCreatorState({ ...creator })
+    }
+  }, [creator])
+
+  const [editAssignees, setEditAssignees] = useState(false)
+  const [
+    personInfoPopup,
+    setPersonInfoPopup,
+  ] = useState<AssigneeWithHeaderHash>(null)
+
+  // the live editor state
+  const [content, setContent] = useState('')
+  // the live editor state
+  const [description, setDescription] = useState('')
 
   // reset
   useEffect(() => {
     if (!outcomeHeaderHash) {
       setActiveTab(ExpandedViewTab.Details)
       setEditAssignees(false)
-      setPeopleInfoPopup(null)
-      setEditTimeframe(false)
+      setPersonInfoPopup(null)
+      // setEditTimeframe(false)
     }
   }, [outcomeHeaderHash])
 
   // handle change of outcome
+  const outcomeContent = outcome ? outcome.content : ''
+  const outcomeDescription = outcome ? outcome.description : ''
   useEffect(() => {
     setContent(outcomeContent)
   }, [outcomeContent])
@@ -104,7 +160,7 @@ const Details: React.FC<DetailsProps> = ({
     updateOutcome(
       {
         ...outcome,
-        editorAgentPubKey: agentAddress,
+        editorAgentPubKey: activeAgentPubKey,
         timestampUpdated: moment().unix(),
         content,
         description,
@@ -117,7 +173,7 @@ const Details: React.FC<DetailsProps> = ({
     updateOutcome(
       {
         ...outcome,
-        editorAgentPubKey: agentAddress,
+        editorAgentPubKey: activeAgentPubKey,
         timestampUpdated: moment().unix(),
         content,
         description,
@@ -139,12 +195,13 @@ const Details: React.FC<DetailsProps> = ({
     setDescription(target.value)
   }
 
-  const fromDate = outcome.timeFrame
-    ? moment.unix(outcome.timeFrame.fromDate)
-    : null
-  const toDate = outcome.timeFrame
-    ? moment.unix(outcome.timeFrame.toDate)
-    : null
+  let fromDate: moment.Moment, toDate: moment.Moment
+  if (outcome) {
+    fromDate = outcome.timeFrame
+      ? moment.unix(outcome.timeFrame.fromDate)
+      : null
+    toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
+  }
 
   // const isBeingEdited = false
 
@@ -174,6 +231,7 @@ const Details: React.FC<DetailsProps> = ({
                   firstName={titleEditor.firstName}
                   lastName={titleEditor.lastName}
                   avatarUrl={titleEditor.avatarUrl}
+                  // @ts-ignore
                   isImported={titleEditor.isImported}
                   headerHash={titleEditor.address}
                   connectionStatus={'connected'}
@@ -221,8 +279,9 @@ const Details: React.FC<DetailsProps> = ({
               {assignees.map((assignee, index) => {
                 // TODO: fix the highlight for avatars showing all at once
                 // instead of only highlighting the selected avatar
-                const highlighted = peopleInfoPopup
-                  ? peopleInfoPopup.outcomeMemberHeaderHash === assignee.outcomeMemberHeaderHash
+                const highlighted = personInfoPopup
+                  ? personInfoPopup.outcomeMemberHeaderHash ===
+                    assignee.outcomeMemberHeaderHash
                   : false
                 return (
                   <div className="expanded-view-squirrel-wrapper">
@@ -234,26 +293,28 @@ const Details: React.FC<DetailsProps> = ({
                       avatarUrl={assignee.profile.avatarUrl}
                       imported={assignee.profile.isImported}
                       medium
+                      // @ts-ignore
                       withWhiteBorder
                       withStatus
                       selfAssignedStatus={assignee.profile.status}
                       clickable
                       onClick={() =>
-                        setPeopleInfoPopup(peopleInfoPopup ? null : assignee)
+                        setPersonInfoPopup(personInfoPopup ? null : assignee)
                       }
                       highlighted={highlighted}
                     />
                   </div>
                 )
               })}
-              {peopleInfoPopup && (
+              {personInfoPopup && (
                 <PeopleInfoPopup
-                  onClose={() => setPeopleInfoPopup(null)}
-                  squirrel={peopleInfoPopup}
+                  onClose={() => setPersonInfoPopup(null)}
+                  person={personInfoPopup}
                   deleteOutcomeMember={deleteOutcomeMember}
                 />
               )}
               <div className="expanded-view-squirrels-add-wrapper">
+                {/* @ts-ignore */}
                 <Icon
                   className="add-squirrel-plus-icon"
                   name="plus.svg"
@@ -275,7 +336,8 @@ const Details: React.FC<DetailsProps> = ({
             <div className="expanded-view-timeframe-title">Timeframe</div>
             <div
               className="expanded-view-timeframe-display"
-              onClick={() => setEditTimeframe(!editTimeframe)}
+              // TODO: bring this back
+              // onClick={() => setEditTimeframe(!editTimeframe)}
             >
               {fromDate && fromDate.format('MMM D, YYYY')}
               {toDate && ' - '}
@@ -294,6 +356,7 @@ const Details: React.FC<DetailsProps> = ({
                   firstName={descriptionEditor.firstName}
                   lastName={descriptionEditor.lastName}
                   avatarUrl={descriptionEditor.avatarUrl}
+                  // @ts-ignore
                   isImported={descriptionEditor.isImported}
                   headerHash={descriptionEditor.address}
                   connectionStatus={'connected'}
@@ -330,4 +393,4 @@ const Details: React.FC<DetailsProps> = ({
   )
 }
 
-export default Details
+export default EvDetails
