@@ -1,0 +1,11 @@
+.expanded-view-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.expanded-view-inner-content {
+  height: calc(100vh - 256px);
+  max-height: 600px;
+  min-height: 400px;
+}

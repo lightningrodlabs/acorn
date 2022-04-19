@@ -1,0 +1,47 @@
+/* personInfoPopup */
+
+.person-info-popup-wrapper {
+  margin-top: 64px;
+  position: absolute;
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.08);
+  padding: 15px 20px;
+  top: 0;
+  z-index: 1;
+}
+
+.person-info-popup-name {
+  flex: 1;
+  padding: 1px 0px;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
+  font-size: 14px;
+  color: #5f65ff;
+  cursor: pointer;
+}
+
+.person-info-popup-nameANDhandle {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 12px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.person-info-popup-handle {
+  font-size: 12px;
+  color: #a3a3a3;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
+}
+
+.remove-person-btn {
+  color: #00beb0;
+  font-size: 12px;
+  padding-top: 6px;
+  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
+  cursor: pointer;
+}
+
+.remove-person-btn:hover {
+  color: #5f65ff;
+}

@@ -1,0 +1,9 @@
+.descendants-achievement-status {
+  display: flex;
+  flex-direction: row;
+
+  .descendants-achievement-status-uncertains {
+    // TODO: fix this number
+    padding-left: 10px;
+  }
+}

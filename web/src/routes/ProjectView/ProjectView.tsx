@@ -44,11 +44,45 @@ import { cellIdFromString } from '../../utils'
 import { RootState } from '../../redux/reducer'
 import outcomesAsTrees from '../../redux/persistent/projects/outcomes/outcomesAsTrees'
 import ComputedOutcomeContext from '../../context/ComputedOutcomeContext'
+import { CellIdString, HeaderHashB64 } from '../../types/shared'
+import { ComputedOutcome } from '../../types'
 
-function ProjectViewInner({
+export type ProjectViewInnerOwnProps = {
+  projectId: CellIdString
+  entryPointHeaderHashes: HeaderHashB64[]
+}
+
+export type ProjectViewInnerConnectorStateProps = {
+  expandedViewOutcomeHeaderHash: HeaderHashB64
+}
+
+// TODO: fill in these types
+export type ProjectViewInnerConnectorDispatchProps = {
+  closeExpandedView
+  resetProjectView
+  setActiveProject
+  setActiveEntryPoints
+  fetchProjectMeta
+  fetchMembers
+  fetchEntryPoints
+  fetchOutcomes
+  fetchConnections
+  fetchOutcomeMembers
+  fetchOutcomeVotes
+  fetchOutcomeComments
+  goToOutcome
+  triggerRealtimeInfoSignal
+}
+
+export type ProjectViewInnerProps = ProjectViewInnerOwnProps &
+  ProjectViewInnerConnectorStateProps &
+  ProjectViewInnerConnectorDispatchProps
+
+const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   projectId,
+  expandedViewOutcomeHeaderHash,
   closeExpandedView,
-  entryPointAddresses,
+  entryPointHeaderHashes,
   resetProjectView,
   setActiveProject,
   setActiveEntryPoints,
@@ -62,12 +96,12 @@ function ProjectViewInner({
   fetchOutcomeComments,
   goToOutcome,
   triggerRealtimeInfoSignal,
-}) {
+}) => {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
   const goToOutcomeHeaderHash = searchParams.get(GO_TO_OUTCOME)
   const sendRealtimeInfoFrequency = 10000
-  const instance = useRef()
+  const instance = useRef<NodeJS.Timeout>()
 
   // const equalityFn = (left: RootState, right: RootState) => {
   // TODO: perform the equality check, to decide whether to recompute
@@ -96,8 +130,13 @@ function ProjectViewInner({
       return outcomeTrees
     } /*, equalityFn */
   )
+  let expandedViewOutcome: ComputedOutcome
+  if (expandedViewOutcomeHeaderHash) {
+    expandedViewOutcome =
+      computedOutcomes.computedOutcomesKeyed[expandedViewOutcomeHeaderHash]
+  }
 
-  function ifMapGoToOutcome(outcomeHeaderHash) {
+  function ifMapGoToOutcome(outcomeHeaderHash: HeaderHashB64) {
     // TODO
     // HACK
     // we wait 100 ms because we wait for
@@ -144,7 +183,6 @@ function ProjectViewInner({
     Promise.all([fetchOutcomes(), fetchConnections()]).then(() => {
       ifMapGoToOutcome(goToOutcomeHeaderHash)
     })
-    //
     fetchOutcomeMembers()
     fetchOutcomeVotes()
     fetchOutcomeComments()
@@ -153,43 +191,58 @@ function ProjectViewInner({
   }, [projectId])
 
   useEffect(() => {
-    setActiveEntryPoints(entryPointAddresses)
-  }, [JSON.stringify(entryPointAddresses)])
+    setActiveEntryPoints(entryPointHeaderHashes)
+  }, [JSON.stringify(entryPointHeaderHashes)])
 
   return (
     <>
-      <ComputedOutcomeContext.Provider value={{ computedOutcomes }}>
+      <ComputedOutcomeContext.Provider value={computedOutcomes}>
         <Switch>
           <Route path="/project/:projectId/map" component={MapView} />
           <Route path="/project/:projectId/priority" component={PriorityView} />
           <Route path="/project/:projectId/table" component={TableView} />
           <Route exact path="/project/:projectId" component={ProjectRedirect} />
         </Switch>
-        <ExpandedViewMode projectId={projectId} onClose={closeExpandedView} />
+        <ExpandedViewMode
+          projectId={projectId}
+          onClose={closeExpandedView}
+          outcome={expandedViewOutcome}
+        />
       </ComputedOutcomeContext.Provider>
     </>
   )
 }
 
 function ProjectRedirect() {
-  const { projectId } = useParams()
+  const { projectId } = useParams<{ projectId: CellIdString }>()
   return <Redirect to={`/project/${projectId}/map`} />
 }
 
-function mapStateToProps(state, ownProps) {
-  return {}
+function mapStateToProps(
+  state: RootState
+): ProjectViewInnerConnectorStateProps {
+  // could be null
+  const expandedViewOutcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
+  return {
+    expandedViewOutcomeHeaderHash,
+  }
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(
+  dispatch,
+  ownProps: ProjectViewInnerOwnProps
+): ProjectViewInnerConnectorDispatchProps {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
-    setActiveProject: (projectId) => dispatch(setActiveProject(projectId)),
-    setActiveEntryPoints: (entryPointAddresses) =>
-      dispatch(setActiveEntryPoints(entryPointAddresses)),
+    setActiveProject: (projectId: CellIdString) =>
+      dispatch(setActiveProject(projectId)),
+    setActiveEntryPoints: (entryPointHeaderHashes: HeaderHashB64[]) =>
+      dispatch(setActiveEntryPoints(entryPointHeaderHashes)),
     resetProjectView: () => {
       dispatch(closeExpandedView())
-      dispatch(sendExitProjectSignal()) // send this signal so peers know you left project
+      // send this signal so peers know you left project
+      dispatch(sendExitProjectSignal())
       dispatch(closeOutcomeForm())
       dispatch(unselectAll())
       dispatch(resetTranslateAndScale())
@@ -258,7 +311,7 @@ function mapDispatchToProps(dispatch, ownProps) {
       )
       dispatch(fetchOutcomeComments(cellIdString, outcomeComments))
     },
-    goToOutcome: (outcomeHeaderHash) =>
+    goToOutcome: (outcomeHeaderHash: HeaderHashB64) =>
       dispatch(animatePanAndZoom(outcomeHeaderHash)),
     triggerRealtimeInfoSignal: () => dispatch(triggerRealtimeInfoSignal()),
   }
@@ -270,19 +323,19 @@ const ProjectView = connect(
 )(ProjectViewInner)
 
 function ProjectViewWrapper() {
-  const { projectId } = useParams()
+  const { projectId } = useParams<{ projectId: CellIdString }>()
   const location = useLocation()
-  let entryPointAddressesRaw = new URLSearchParams(location.search).get(
+  let entryPointHeaderHashesRaw = new URLSearchParams(location.search).get(
     ENTRY_POINTS
   )
-  let entryPointAddresses = []
-  if (entryPointAddressesRaw) {
-    entryPointAddresses = entryPointAddressesRaw.split(',')
+  let entryPointHeaderHashes = []
+  if (entryPointHeaderHashesRaw) {
+    entryPointHeaderHashes = entryPointHeaderHashesRaw.split(',')
   }
   return (
     <ProjectView
       projectId={projectId}
-      entryPointAddresses={entryPointAddresses}
+      entryPointHeaderHashes={entryPointHeaderHashes}
     />
   )
 }

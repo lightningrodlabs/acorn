@@ -374,7 +374,7 @@ const TableView: React.FC<TableViewProps> = ({
   projectMemberProfiles,
   openExpandedView,
 }) => {
-  const { computedOutcomes } = useContext(ComputedOutcomeContext)
+  const { computedOutcomesAsTree } = useContext(ComputedOutcomeContext)
   const [filter, setFilter] = useState<Filter>({
     keywordOrId: 'n',
   })
@@ -386,7 +386,7 @@ const TableView: React.FC<TableViewProps> = ({
         filter={filter}
         projectMemberProfiles={projectMemberProfiles}
       />
-      <OutcomeTable outcomeTrees={computedOutcomes} filter={filter} openExpandedView={openExpandedView} />
+      <OutcomeTable outcomeTrees={computedOutcomesAsTree} filter={filter} openExpandedView={openExpandedView} />
     </div>
   )
 }

@@ -8,7 +8,7 @@ export type ButtonCheckboxProps = {
   size: 'small' | 'medium' | 'large'
   isChecked: boolean
   onChange: (newState: boolean) => void
-  icon: React.Component
+  icon: React.ReactElement
   text: string
 }
 

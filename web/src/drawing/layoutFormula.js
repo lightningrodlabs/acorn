@@ -84,7 +84,7 @@ export default function layoutFormula(data) {
   const trees = outcomesAsTrees(data)
 
   let coordinates = {}
-  const layouts = trees.map((tree) => ({
+  const layouts = trees.computedOutcomesAsTree.map((tree) => ({
     outcome: tree,
     layout: layoutForTree(tree),
   }))

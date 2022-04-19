@@ -248,6 +248,7 @@ pub fn create_outcome_with_connection(
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
+#[serde(rename_all = "camelCase")]
 pub struct DeleteOutcomeFullyResponse {
     outcome_header_hash: HeaderHashB64,
     deleted_connections: Vec<HeaderHashB64>,

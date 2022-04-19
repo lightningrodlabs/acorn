@@ -3,21 +3,50 @@ import './PeoplePicker.scss'
 import Icon from '../Icon/Icon'
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import Avatar from '../Avatar/Avatar'
+import { AgentPubKeyB64, CellIdString, HeaderHashB64 } from '../../types/shared'
+import { Profile } from '../../types'
 
-export default function PeoplePicker({
-  agentAddress,
+export type PeoplePickerOwnProps = {
+  projectId: CellIdString
+  onClose: () => void
+}
+
+export type PeoplePickerConnectorStateProps = {
+  activeAgentPubKey: AgentPubKeyB64
+  people: (Profile & {
+    isMember: boolean
+    outcomeMemberHeaderHash: HeaderHashB64
+  })[]
+  outcomeHeaderHash: HeaderHashB64
+}
+
+export type PeoplePickerConnectorDispatchProps = {
+  createOutcomeMember: (
+    outcomeHeaderHash: HeaderHashB64,
+    memberAgentPubKey: AgentPubKeyB64,
+    creatorAgentPubKey: AgentPubKeyB64
+  ) => Promise<void>
+  deleteOutcomeMember: (headerHash: HeaderHashB64) => Promise<void>
+}
+
+export type PeoplePickerProps = PeoplePickerOwnProps &
+  PeoplePickerConnectorStateProps &
+  PeoplePickerConnectorDispatchProps
+
+const PeoplePicker: React.FC<PeoplePickerProps> = ({
+  activeAgentPubKey,
   people,
   outcomeHeaderHash,
   createOutcomeMember,
   deleteOutcomeMember,
   onClose,
-}) {
+}) => {
   const [filterText, setFilterText] = useState('')
 
   return (
     <PickerTemplate
       className="people-picker"
-      heading="Squirrels"
+      heading="Assignees"
       onClose={onClose}
     >
       <div className="people-picker-search">
@@ -54,20 +83,25 @@ export default function PeoplePicker({
           })
           // sort members (people attached to Outcome) to the top of the list
           .sort((p1, p2) => {
-            if (p1.is_member && !p2.is_member) return -1
-            else if (p1.is_member && p2.is_member) return 0
-            else if (!p1.is_member && p2.is_member) return 1
+            if (p1.isMember && !p2.isMember) return -1
+            else if (p1.isMember && p2.isMember) return 0
+            else if (!p1.isMember && p2.isMember) return 1
           })
           .map((person, index) => {
             const onClick = () => {
-              if (person.is_member)
-                deleteOutcomeMember(person.outcome_member_address)
-              else createOutcomeMember(outcomeHeaderHash, person.address, agentAddress)
+              if (person.isMember)
+                deleteOutcomeMember(person.outcomeMemberHeaderHash)
+              else
+                createOutcomeMember(
+                  outcomeHeaderHash,
+                  person.agentPubKey,
+                  activeAgentPubKey
+                )
             }
             return (
               <li
                 key={index}
-                className={person.is_member ? 'member' : ''}
+                className={person.isMember ? 'member' : ''}
                 onClick={onClick}
               >
                 <Avatar
@@ -85,14 +119,14 @@ export default function PeoplePicker({
                   </span>
                   <div className="person-handle">{person.handle}</div>
                 </div>
-                {!person.is_member && (
+                {!person.isMember && (
                   <Icon
                     name="radio-button.svg"
                     size="small"
                     className="light-grey radio-button"
                   />
                 )}
-                {person.is_member && (
+                {person.isMember && (
                   <Icon
                     name="radio-button-checked.svg"
                     size="small"
@@ -106,3 +140,5 @@ export default function PeoplePicker({
     </PickerTemplate>
   )
 }
+
+export default PeoplePicker

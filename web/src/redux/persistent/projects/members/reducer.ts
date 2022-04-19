@@ -25,7 +25,7 @@ export default function (state: State = defaultState, action) {
       const mapped = members.map((wireElement) => wireElement.entry)
       return {
         ...state,
-        [cellIdString]: _.keyBy(mapped, 'address'),
+        [cellIdString]: _.keyBy(mapped, 'agentPubKey'),
       }
     // SET_MEMBER
     case SET_MEMBER:
@@ -35,7 +35,7 @@ export default function (state: State = defaultState, action) {
         ...state,
         [cellIdString]: {
           ...state[cellIdString],
-          [member.address]: member,
+          [member.agentPubKey]: member,
         },
       }
     // DEFAULT
