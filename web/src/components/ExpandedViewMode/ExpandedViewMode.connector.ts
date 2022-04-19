@@ -1,18 +1,5 @@
 import { connect } from 'react-redux'
 import { RootState } from '../../redux/reducer'
-import { updateOutcome } from '../../redux/persistent/projects/outcomes/actions'
-import { deleteOutcomeMember } from '../../redux/persistent/projects/outcome-members/actions'
-import {
-  startTitleEdit,
-  endTitleEdit,
-  startDescriptionEdit,
-  endDescriptionEdit,
-} from '../../redux/ephemeral/outcome-editing/actions'
-import ProjectsZomeApi from '../../api/projectsApi'
-import { getAppWs } from '../../hcWebsockets'
-import { cellIdFromString } from '../../utils'
-import { HeaderHashB64 } from '../../types/shared'
-import { Outcome } from '../../types'
 import ExpandedViewMode, {
   ExpandedViewModeConnectorProps,
   ExpandedViewModeOwnProps,
@@ -41,12 +28,4 @@ function mapStateToProps(
   }
 }
 
-function mapDispatchToProps(dispatch, ownProps: ExpandedViewModeOwnProps) {
-  const { projectId: cellIdString } = ownProps
-  const cellId = cellIdFromString(cellIdString)
-  return {
-    
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ExpandedViewMode)
+export default connect(mapStateToProps)(ExpandedViewMode)

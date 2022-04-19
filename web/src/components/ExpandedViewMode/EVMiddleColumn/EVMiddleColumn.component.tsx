@@ -1,15 +1,16 @@
 import React from 'react'
-import { ExpandedViewTab } from '../NavEnum'
-import Comments from './TabContent/Comments/Comments.connector'
-import EvDetails from './TabContent/EvDetails/EvDetails.connector'
 
-import './EVMiddleColumn.scss'
-import DescendantsAchievementStatus from '../../DescendantsAchievementStatus/DescendantsAchievementStatus'
 import { CellIdString } from '../../../types/shared'
 import {
   ComputedOutcome,
   ComputedSimpleAchievementStatus,
 } from '../../../types'
+import { ExpandedViewTab } from '../NavEnum'
+import DescendantsAchievementStatus from '../../DescendantsAchievementStatus/DescendantsAchievementStatus'
+import Comments from './TabContent/Comments/Comments.connector'
+import EvDetails from './TabContent/EvDetails/EvDetails.connector'
+
+import './EVMiddleColumn.scss'
 
 export type EVMiddleColumnProps = {
   projectId: CellIdString

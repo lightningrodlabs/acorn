@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import Icon from '../Icon/Icon'
-import EVMiddleColumn from './EVMiddleColumn/EvMiddleColumn.connector'
+import EVMiddleColumn from './EVMiddleColumn/EVMiddleColumn.component'
 import EVLeftColumn from './EVLeftColumn/EVLeftColumn'
 import EVRightColumn from './EVRightColumn/EVRightColumn.connector'
 import { ExpandedViewTab } from './NavEnum'
