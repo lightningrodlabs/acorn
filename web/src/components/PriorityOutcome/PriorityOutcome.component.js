@@ -63,7 +63,7 @@ export default function PriorityOutcome({ whoami, outcome, votes, setPriorityPic
                       lastName={outcomeMember.lastName}
                       avatarUrl={outcomeMember.avatarUrl}
                       imported={outcomeMember.isImported}
-                      small
+                      size='small'
                     />
                   ))
                 : null}

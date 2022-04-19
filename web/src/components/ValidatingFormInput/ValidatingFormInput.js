@@ -1,8 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+
+
 import './ValidatingFormInput.scss'
 
-function ValidatingFormInput ({
+import ValidationCheck from '../../imagescircle-check.svg'
+import ValidationX from '../../images/circle-x.svg'
+
+function ValidatingFormInput({
   withAtSymbol,
   readOnly,
   placeholder,
@@ -48,10 +53,10 @@ function ValidatingFormInput ({
         {errorText && <div className='error_text'>{errorText}</div>}
         {withAtSymbol && <div className='at_symbol'>@ </div>}
         {invalidInput && (
-          <img src='img/circle-x.svg' className='validation-mark' />
+          <img src={ValidationX} className='validation-mark' />
         )}
         {validInput && (
-          <img src='img/circle-check.svg' className='validation-mark' />
+          <img src={ValidationCheck} className='validation-mark' />
         )}
       </div>
     </div>

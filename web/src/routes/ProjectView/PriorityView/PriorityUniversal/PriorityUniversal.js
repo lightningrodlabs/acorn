@@ -50,7 +50,7 @@ function UniversalOutcome({ liveIndex, outcome, openExpandedView, goToOutcome })
                   lastName={member.lastName}
                   avatarUrl={member.avatarUrl}
                   imported={member.isImported}
-                  medium
+                  size='medium'
                   withWhiteBorder
                   withStatus
                   selfAssignedStatus={member.status}
@@ -276,6 +276,7 @@ function PriorityUniversal({
 
       <div className="universal-priority-outcomes-list-wrapper">
         {topPriorityOutcomes.length === 0 && <div className="top-priority-empty-state-wrapper">
+         {/* TODO: fix image url */}
           <img src="img/intro-screen-image-4.svg" className="top-priority-empty-state-image" />
           <h4>You haven't marked any outcomes as top priority.
             <br />

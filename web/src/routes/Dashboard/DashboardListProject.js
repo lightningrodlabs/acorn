@@ -109,7 +109,7 @@ function DashboardListProject({
                         lastName={member.lastName}
                         avatarUrl={member.avatarUrl}
                         imported={member.isImported}
-                        medium
+                        size='medium'
                         withStatus
                         withWhiteBorder
                         selfAssignedStatus={member.status}

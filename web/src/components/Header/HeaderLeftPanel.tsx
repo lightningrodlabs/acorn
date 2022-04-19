@@ -10,6 +10,8 @@ import {
 import { ENTRY_POINTS } from '../../searchParams'
 import MembersIndicator from '../MembersIndicator/MembersIndicator'
 
+import DoorOpen from '../../images/door-open.svg'
+
 function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses, goToOutcome }) {
   const location = useLocation()
   const entryPointsAbsentThisOne = activeEntryPointAddresses
@@ -17,7 +19,7 @@ function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses, goToOutcome }
     .join(',')
   return (
     <div className="active-entry-point">
-      <img src="img/door-open.svg" />
+      <img src={DoorOpen} />
       {/* add title because text-overflow: ellipsis */}
       <div
         className="active-entry-point-content"

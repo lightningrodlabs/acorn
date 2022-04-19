@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
+
 import './RunUpdate.scss'
+
+import AcornLogo from '../../images/acorn-logo.svg'
 
 function RunUpdate({ preRestart, version }) {
   // if not preRestart, then this is postRestart
@@ -46,7 +49,7 @@ function RunUpdate({ preRestart, version }) {
               <div className='fill' style={progressCss}></div>
             </div>
             <div className='inside-circle'>
-              <img src='img/acorn-logo.svg' />
+              <img src={AcornLogo} />
             </div>
           </div>
         </div>

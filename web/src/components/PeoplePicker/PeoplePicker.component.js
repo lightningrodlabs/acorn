@@ -75,7 +75,7 @@ export default function PeoplePicker({
                   lastName={person.lastName}
                   avatarUrl={person.avatarUrl}
                   imported={person.isImported}
-                  medium
+                  size='medium'
                   withStatus
                   selfAssignedStatus={person.status}
                 />

@@ -183,7 +183,7 @@ function ProfileEditForm({
             }
           />
           <div className='profile_edit_form_avatar'>
-            <Avatar avatarUrl={avatarShow} large />
+            <Avatar avatarUrl={avatarShow}  size='large' />
           </div>
         </div>
         <div className='row'>

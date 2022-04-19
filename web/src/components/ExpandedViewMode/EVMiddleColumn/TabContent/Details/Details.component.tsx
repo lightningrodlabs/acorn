@@ -140,7 +140,7 @@ export default function Details({
               <div className="member-editing-title-wrapper">
                 <Avatar
                   withStatusBorder
-                  smallMedium
+                  size='small-medium'
                   firstName={titleEditor.firstName}
                   lastName={titleEditor.lastName}
                   avatarUrl={titleEditor.avatarUrl}
@@ -203,7 +203,7 @@ export default function Details({
                       lastName={squirrel.lastName}
                       avatarUrl={squirrel.avatarUrl}
                       imported={squirrel.isImported}
-                      medium
+                      size='medium'
                       withWhiteBorder
                       withStatus
                       selfAssignedStatus={squirrel.status}
@@ -262,7 +262,7 @@ export default function Details({
               <div className="member-editing-description-wrapper">
                 <Avatar
                   withStatusBorder
-                  smallMedium
+                  size='small-medium'
                   firstName={descriptionEditor.firstName}
                   lastName={descriptionEditor.lastName}
                   avatarUrl={descriptionEditor.avatarUrl}

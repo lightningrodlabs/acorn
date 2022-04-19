@@ -19,7 +19,7 @@ const CommentPosted: React.FC<CommentPostedProps> = ({ comment, creator }) => {
           lastName={creator.lastName}
           avatarUrl={creator.avatarUrl}
           imported={creator.isImported}
-          large
+          size="medium-large"
           withStatus
           selfAssignedStatus={creator.status}
         />

@@ -62,12 +62,13 @@ function MapView({
   }
   return (
     <>
-      {showGuidebookHelpMessage && (
+    {/* TODO: Guidebook to be replaced with External help button */}
+      {/* {showGuidebookHelpMessage && (
         <div className="guidebook_open_help">
           <h4>Click on the Guidebook to learn more</h4>
           <img src="img/arrow-curved.svg" />
         </div>
-      )}
+      )} */}
       <canvas ref={refCanvas} />
       {showEmptyState && <EmptyState />}
       {/* transform everything in this container according  */}

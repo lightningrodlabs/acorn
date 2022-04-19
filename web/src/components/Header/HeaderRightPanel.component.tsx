@@ -290,7 +290,7 @@ export default function HeaderRightPanel({
               highlighted={isAvatarMenuOpen || isAvatarHover}
               clickable
               onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}
-              smallMedium
+              size='small-medium'
               withStatus
               withWhiteBorder
               selfAssignedStatus={status}

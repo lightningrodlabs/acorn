@@ -1,6 +1,8 @@
 .avatar-wrapper {
   transition: 0.2s all ease;
   cursor: pointer;
+  position: relative;
+  width: fit-content;
 
   .avatar {
     object-fit: cover;
@@ -29,12 +31,13 @@
   }
   // positionality of the status circle
   // in realtion to avatar wrapper
-  > .status-circle-wrapper {
+  .status-circle-wrapper {
     right: 0;
-    bottom:  0.1875rem;
+    bottom: 0rem;
     position: absolute;
+
     .status-circle {
-      border: 0.1825rem solid white;
+      border: 0.1825rem solid var(--bg-color-secondary);
       box-shadow: none;
       border-radius: 50%;
     }
@@ -43,23 +46,24 @@
   &.with-border {
     border-radius: 50%;
     position: relative;
+    border-style: solid;
     &.white {
-      border: 0.1875rem solid #ffffff;
+      border-color: var(--bg-color-secondary);
     }
     // avatar wrapper can have status circle if bordered
     &.status-color {
       &.undefined {
         // TODO: don't show status circle if undefined
-        border: 3px solid #00d0c0;
+        border-color: #00d0c0;
       }
       &.status-online {
-        border: 3px solid #00d0c0;
+        border-color: #00d0c0;
       }
       &.status-away {
-        border: 3px solid #ffc400;
+        border-color: #ffc400;
       }
       &.status-offline {
-        border: 3px solid #d1d1d1;
+        border-color: #d1d1d1;
       }
     }
   }
@@ -81,53 +85,104 @@
     cursor: pointer;
     &:hover {
       opacity: 0.8;
+      box-shadow: 0rem 0rem 1.25rem var(--shadow-color);
     }
   }
 
   &.highlighted {
-    box-shadow: 0 0 0 3px #5f65ff;
+    box-shadow: 0 0 0 0.25rem #5f65ff;
   }
 
   // avatar sizees
   &.small {
-    .avatar,
-    .initials-avatar {
-      height: 1.5rem;
-      width: 1.5rem;
-    }
-  }
-
-  &.small-medium {
+    height: 1.75rem;
+    width: 1.75rem;
     .avatar,
     .initials-avatar {
       height: 1.75rem;
       width: 1.75rem;
+    }
+    &.with-border {
+      border-width: 0.2rem;
+    }
+    .status-circle {
+      border-width: 0.2rem;
+      height: 0.5rem;
+      width: 0.5rem;
+    }
+  }
+
+  &.small-medium {
+    height: 2rem;
+    width: 2rem;
+    .avatar,
+    .initials-avatar {
+      height: 2rem;
+      width: 2rem;
       font-size: 0.6875rem;
+    }
+    &.with-border {
+      border-width: 0.2rem;
+    }
+    .status-circle {
+      border-width: 0.2rem;
+      height: 0.5rem;
+      width: 0.5rem;
     }
   }
 
   &.medium {
-    .avatar,
-    .initials-avatar {
-      height: 1.875rem;
-      width: 1.875rem;
-      font-size: 0.75rem;
-    }
-  }
-
-  &.medium-large {
-    .avatar,
-    .initials-avatar {
-      height: 2.25rem;
-      width: 2.25rem;
-    }
-  }
-
-  &.large {
+    height: 2.5rem;
+    width: 2.5rem;
     .avatar,
     .initials-avatar {
       height: 2.5rem;
       width: 2.5rem;
+      font-size: 0.75rem;
+    }
+    &.with-border {
+      border-width: 0.25rem;
+    }
+    .status-circle {
+      border-width: 0.225rem;
+      height: 0.525rem;
+      width: 0.525rem;
+    }
+  }
+
+  &.medium-large {
+    height: 2.75rem;
+    width: 2.75rem;
+    .avatar,
+    .initials-avatar {
+      height: 2.75rem;
+      width: 2.75rem;
+    }
+    &.with-border {
+      border-width: 0.25rem;
+    }
+    .status-circle {
+      border-width: 0.25rem;
+      height: 0.6rem;
+      width: 0.6rem;
+    }
+  }
+
+  &.large {
+    height: 3.25rem;
+    width: 3.25rem;
+    .avatar,
+    .initials-avatar {
+      height: 3.25rem;
+      width: 3.25rem;
+    }
+    &.with-border {
+      border-width: 0.25rem;
+    }
+    .status-circle {
+      border-width: 0.25rem;
+      height: 0.65rem;
+      width: 0.65rem;
     }
   }
 }
@@ -137,11 +192,11 @@
   border: 0.1875rem solid #5f65ff;
 }
 
-.avatar ~ .status-circle-wrapper .status-circle,
-.initials-avatar ~ .status-circle-wrapper .status-circle {
-  height: 0.5rem;
-  width: 0.5rem;
-}
+// .avatar ~ .status-circle-wrapper .status-circle,
+// .initials-avatar ~ .status-circle-wrapper .status-circle {
+//   height: 0.5rem;
+//   width: 0.5rem;
+// }
 
 // avatar's prefered set status circle
 .status-circle {

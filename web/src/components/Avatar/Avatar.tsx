@@ -9,11 +9,7 @@ interface AvatarProps {
   lastName: string
   avatarUrl: string
   highlighted?: boolean
-  small?: boolean
-  smallMedium?: boolean
-  medium?: boolean
-  mediumLarge?: boolean
-  large?: boolean
+  size: 'small' | 'small-medium' | 'medium' | 'medium-large' | 'large'
   clickable?: boolean
   onClick?: () => void
   imported: boolean
@@ -22,7 +18,7 @@ interface AvatarProps {
   withStatusBorder?: boolean
   selfAssignedStatus?: string
   withTooltip?: boolean
-  tooltipText?: string
+  // tooltipText?: string
 }
 
 function Avatar({
@@ -30,11 +26,7 @@ function Avatar({
   lastName,
   avatarUrl,
   highlighted,
-  small,
-  smallMedium,
-  medium,
-  mediumLarge,
-  large,
+  size = 'medium',
   clickable,
   onClick,
   imported,
@@ -43,21 +35,15 @@ function Avatar({
   withStatusBorder,
   selfAssignedStatus,
   withTooltip,
-  tooltipText,
+  // tooltipText,
 }: AvatarProps) {
   let classes = []
+  // Avatar optional properties
   if (highlighted) classes.push('highlighted')
-  // Avatar Size Options
-  if (small) classes.push('small')
-  else if (smallMedium) classes.push('small-medium')
-  else if (medium) classes.push('medium')
-  else if (mediumLarge) classes.push('medium-large')
-  else if (large) classes.push('large')
-  // Avatar other optional properties
   if (clickable) classes.push('clickable')
   if (imported) classes.push('imported')
   if (withStatus) classes.push('with-status')
-  // if (withTooltip) classes.push('with-tooltip')
+  if (withTooltip) classes.push('with-tooltip')
 
   if (!avatarUrl) {
     const backgroundInitialsAvatar = pickColorForString(firstName)
@@ -76,11 +62,19 @@ function Avatar({
             ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}`
             : ''
         } 
-        ${large ? 'large' : ''}
-        ${mediumLarge ? 'medium-large' : ''}
-        ${medium ? 'medium' : ''}
-        ${smallMedium ? 'small-medium' : ''}
-        ${small ? 'small' : ''}`}
+        ${
+          size === 'small'
+            ? 'small'
+            : size === 'small-medium'
+            ? 'small-medium'
+            : size === 'medium'
+            ? 'medium'
+            : size === 'medium-large'
+            ? 'medium-large'
+            : size === 'large'
+            ? 'large'
+            : ''
+        }`}
       >
         <div className={classes.join(' ')} onClick={onClick} style={style}>
           {firstName[0].toUpperCase()}
@@ -109,11 +103,19 @@ function Avatar({
           ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}`
           : ''
       }
-      ${large ? 'large' : ''}
-        ${mediumLarge ? 'medium-large' : ''}
-        ${medium ? 'medium' : ''}
-        ${smallMedium ? 'small-medium' : ''}
-        ${small ? 'small' : ''}`}
+      ${
+        size === 'small'
+          ? 'small'
+          : size === 'small-medium'
+          ? 'small-medium'
+          : size === 'medium'
+          ? 'medium'
+          : size === 'medium-large'
+          ? 'medium-large'
+          : size === 'large'
+          ? 'large'
+          : ''
+      }`}
     >
       <img src={avatarUrl} className={classes.join(' ')} onClick={onClick} />
       {/* TODO: Current status circle color under avatar*/}
@@ -124,7 +126,7 @@ function Avatar({
           ></div>
         </div>
       )}
-      {withTooltip && <Tooltip text={tooltipText} />}
+      {withTooltip && <Tooltip text={`${firstName} ${lastName}`} />}
     </div>
   )
 }

@@ -82,7 +82,7 @@ const MembersIndicator: React.FC<MembersIndicatorProps> = ({
               avatarUrl={member.avatarUrl}
               imported={member.isImported}
               selfAssignedStatus={member.status}
-              smallMedium
+              size='small-medium'
               withWhiteBorder
               withStatus={isMemberPresent}
               clickable
