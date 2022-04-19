@@ -12,7 +12,10 @@ import { GO_TO_OUTCOME } from '../../searchParams'
 import MapView from './MapView/MapView'
 import PriorityView from './PriorityView/PriorityView'
 import TableView from './TableView/TableView'
-import ExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode.connector'
+import ConnectedEVRightColumn from '../../components/ExpandedViewMode/EVRightColumn/EVRightColumn.connector'
+import ConnectedComments from '../../components/ExpandedViewMode/EvMiddleColumn/TabContent/Comments/Comments.connector'
+import ConnectedEvDetails from '../../components/ExpandedViewMode/EvMiddleColumn/TabContent/EvDetails/EvDetails.connector'
+import ConnectedExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode.connector'
 
 // data
 import { fetchProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
@@ -194,6 +197,19 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
     setActiveEntryPoints(entryPointHeaderHashes)
   }, [JSON.stringify(entryPointHeaderHashes)])
 
+  // redux connected expanded view components
+  const details = (
+    <ConnectedEvDetails projectId={projectId} outcome={expandedViewOutcome} />
+  )
+  const comments = <ConnectedComments projectId={projectId} />
+  const rightColumn = (
+    <ConnectedEVRightColumn
+      projectId={projectId}
+      onClose={closeExpandedView}
+      outcome={expandedViewOutcome}
+    />
+  )
+
   return (
     <>
       <ComputedOutcomeContext.Provider value={computedOutcomes}>
@@ -203,8 +219,11 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
           <Route path="/project/:projectId/table" component={TableView} />
           <Route exact path="/project/:projectId" component={ProjectRedirect} />
         </Switch>
-        <ExpandedViewMode
+        <ConnectedExpandedViewMode
           projectId={projectId}
+          details={details}
+          comments={comments}
+          rightColumn={rightColumn}
           onClose={closeExpandedView}
           outcome={expandedViewOutcome}
         />

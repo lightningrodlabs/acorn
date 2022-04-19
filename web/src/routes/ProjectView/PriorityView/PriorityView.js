@@ -17,7 +17,7 @@ import { cellIdFromString } from '../../../utils'
 import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
 
 function PriorityMode({ projectId, projectMeta, updateProjectMeta }) {
-  const { computedOutcomes } = useContext(ComputedOutcomeContext)
+  const computedOutcomes = useContext(ComputedOutcomeContext)
   let main
   switch (projectMeta.priorityMode) {
     case PriorityModeOptions.Universal:
@@ -35,7 +35,7 @@ function PriorityMode({ projectId, projectMeta, updateProjectMeta }) {
   return (
     <>
       <IndentedTreeView
-        outcomeTrees={computedOutcomes}
+        outcomeTrees={computedOutcomes.computedOutcomesAsTree}
         projectMeta={projectMeta}
         projectId={projectId}
         updateProjectMeta={wrappedUpdateProjectMeta}
