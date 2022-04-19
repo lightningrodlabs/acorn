@@ -1,11 +1,5 @@
 import React, { useState } from 'react'
-import './EVRightColumn.scss'
 
-import ButtonToggleSwitch from '../../ButtonToggleSwitch/ButtonToggleSwitch'
-import Icon from '../../Icon/Icon'
-import ButtonAction from '../../ButtonAction/ButtonAction'
-import ButtonCheckbox from '../../ButtonCheckbox/ButtonCheckbox'
-import { pickColorForString } from '../../../styles'
 import {
   AgentPubKeyB64,
   CellIdString,
@@ -13,9 +7,17 @@ import {
 } from '../../../types/shared'
 import {
   ComputedOutcome,
+  ComputedScope,
   ComputedSimpleAchievementStatus,
   EntryPoint,
 } from '../../../types'
+import ButtonToggleSwitch from '../../ButtonToggleSwitch/ButtonToggleSwitch'
+import Icon from '../../Icon/Icon'
+import ButtonAction from '../../ButtonAction/ButtonAction'
+import ButtonCheckbox from '../../ButtonCheckbox/ButtonCheckbox'
+import { pickColorForString } from '../../../styles'
+
+import './EVRightColumn.scss'
 
 export type EvRightColumnOwnProps = {
   projectId: CellIdString
@@ -87,6 +89,10 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
       }
   ).simple
 
+  let computedScopeBoolean = outcome
+    ? outcome.computedScope === ComputedScope.Uncertain
+    : false
+
   // const setInBreakdown = (inBreakdown: boolean) => {
   //   updateOutcome(
   //     {
@@ -100,25 +106,34 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
   // }
 
   // Small or Uncertain toggle
-  const state1 = { icon: <Icon name="x.svg" />, text: 'Small' }
-  const state2 = { icon: <Icon name="x.svg" />, text: 'Uncertain' }
+  const state1 = {
+    // @ts-ignore
+    icon: <Icon name="x.svg" />,
+    text: 'Small',
+  }
+  const state2 = {
+    // @ts-ignore
+    icon: <Icon name="x.svg" />,
+    text: 'Uncertain',
+  }
 
-  let [scope, setScope] = useState(true)
   return (
     <div className="expanded-view-right-column">
       This outcome is
       <ButtonAction
         size="medium"
         onClick={() => {}}
+        // @ts-ignore
         icon={<Icon name="x.svg" />}
         text={computedSimpleAchievedmentStatus}
       />
       Scope
       <ButtonToggleSwitch
         size="medium"
-        switchState={scope}
+        switchState={computedScopeBoolean}
         onSwitchState={() => {
-          setScope(!scope)
+          // TODO: trigger a switch in 'scope'
+          // for this outcome
         }}
         state1={state1}
         state2={state2}
@@ -128,6 +143,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
         size="medium"
         isChecked={false}
         onChange={() => {}}
+        // @ts-ignore
         icon={<Icon name="x.svg" />}
         text="In Breakdown"
       />
@@ -135,6 +151,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
         size="medium"
         isChecked={false}
         onChange={() => {}}
+        // @ts-ignore
         icon={<Icon name="x.svg" />}
         text="High Priority"
       />
@@ -144,6 +161,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
         onChange={() => {
           entryPointClickAction()
         }}
+        // @ts-ignore
         icon={<Icon name="x.svg" />}
         text="Entry Point"
       />
@@ -151,12 +169,14 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
       <ButtonAction
         size="medium"
         onClick={() => {}}
+        // @ts-ignore
         icon={<Icon name="x.svg" />}
         text="Share"
       />
       <ButtonAction
         size="medium"
         onClick={() => deleteAndClose()}
+        // @ts-ignore
         icon={<Icon name="x.svg" />}
         text="Archive"
       />
