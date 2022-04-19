@@ -6,7 +6,6 @@ import Avatar from '../../../../Avatar/Avatar'
 import PeopleInfoPopup from '../../../../PersonInfoPopup/PersonInfoPopup'
 import PeoplePicker from '../../../../PeoplePicker/PeoplePicker.connector'
 import Icon from '../../../../Icon/Icon'
-import { ExpandedViewTab } from '../../../NavEnum'
 import {
   AssigneeWithHeaderHash,
   ComputedOutcome,
@@ -55,8 +54,8 @@ export type EvDetailsConnectorStateProps = {
   activeAgentPubKey: AgentPubKeyB64
   outcomeHeaderHash: HeaderHashB64
   assignees: AssigneeWithHeaderHash[]
-  // TODO: what type?
-  editingPeers: any
+  // TODO: fix this type
+  editingPeers: {}[]
   profiles: { [agentPubKey: AgentPubKeyB64]: Profile }
 }
 
@@ -238,7 +237,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
               <div className="expanded-view-title-editing-placeholder">
                 <div className="expanded-view-title">
                   <TextareaAutosize
-                    disabled={editingTitlePeer}
+                    disabled={!!editingTitlePeer}
                     value={content}
                     onBlur={onTitleBlur}
                     onChange={handleOnChangeTitle}
@@ -363,7 +362,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
               <div className="expanded-view-description-editing-placeholder">
                 <div className="expanded-view-description">
                   <TextareaAutosize
-                    disabled={editingDescriptionPeer}
+                    disabled={!!editingDescriptionPeer}
                     placeholder="Add description here"
                     value={description}
                     onBlur={onDescriptionBlur}

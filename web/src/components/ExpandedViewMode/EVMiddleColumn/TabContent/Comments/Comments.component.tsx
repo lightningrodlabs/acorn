@@ -24,7 +24,7 @@ export type CommentsConnectorStateProps = {
 }
 
 export type CommentsConnectorDispatchProps = {
-  createOutcomeComment: any
+  createOutcomeComment: (outcomeComment: OutcomeComment) => Promise<void>
 }
 
 export type CommentsProps = CommentsOwnProps &
