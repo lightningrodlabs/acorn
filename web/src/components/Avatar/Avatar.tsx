@@ -5,11 +5,11 @@ import { StatusCssColorClass, Status } from '../Header/Status'
 import Tooltip from '../Tooltip/Tooltip'
 
 interface AvatarProps {
+  size: 'small' | 'small-medium' | 'medium' | 'medium-large' | 'large'
   firstName: string
   lastName: string
   avatarUrl: string
   highlighted?: boolean
-  size: 'small' | 'small-medium' | 'medium' | 'medium-large' | 'large'
   clickable?: boolean
   onClick?: () => void
   imported: boolean

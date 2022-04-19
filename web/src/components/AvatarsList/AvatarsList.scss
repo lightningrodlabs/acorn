@@ -1,0 +1,98 @@
+.avatars-list-wrapper {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  display: -webkit-flex;
+  flex-direction: row;
+  -webkit-align-items: center;
+  display: flex;
+  align-items: center;
+  max-height: 46px;
+  padding-right: 12px;
+  padding-left: 12px;
+  margin: 0 6px;
+
+  .avatars-list-wrapper-avatars {
+    border-radius: 50%;
+    margin-right: -4px;
+    display: flex;
+    flex-direction: row;
+
+    &.disconnected {
+      border-radius: 50%;
+      margin-right: -4px;
+      display: flex;
+
+      .avatar,
+      .initials-avatar {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  /* Invite Members or Add Assignees Button */
+
+  .avatars-list-button-wrapper {
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+    z-index: 1;
+
+    .avatars-list-button {
+      border: 3px solid #ffffff;
+      border-radius: 50%;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background-color: #f5f2ef;
+      transition: 0.2s all ease;
+      margin-left: -4px;
+
+      .icon {
+        padding: 3px;
+      }
+
+      &:hover {
+        opacity: 0.8;
+
+        .inner-icon {
+          background-color: #5f65ff;
+        }
+      }
+
+      // plus button sizees
+      &.small {
+        height: 1.75rem;
+        width: 1.75rem;
+      }
+
+      &.small-medium {
+        height: 2rem;
+        width: 2rem;
+      }
+
+      &.medium {
+        height: 2.5rem;
+        width: 2.5rem;
+      }
+
+      &.medium-large {
+        height: 2.75rem;
+        width: 2.75rem;
+        .avatar,
+        .initials-avatar {
+          height: 2.75rem;
+          width: 2.75rem;
+        }
+      }
+
+      &.large {
+        height: 3.25rem;
+        width: 3.25rem;
+      }
+    }
+  }
+}
