@@ -16,6 +16,7 @@ const Template: ComponentStory<typeof ReadOnlyInfo> = (args) => {
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'ReadOnlyInfo'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   // assign props here

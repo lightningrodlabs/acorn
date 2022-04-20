@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
 import Typography from '../components/Typography/Typography'
-import Icon from '../components/Icon/Icon'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -43,6 +42,7 @@ const Template: ComponentStory<typeof Typography> = (args) => {
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'Typography'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   style: 'h1',
