@@ -21,7 +21,7 @@ import EVRightColumn from '../components/ExpandedViewMode/EVRightColumn/EvRightC
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 
-const creator = {
+const creator: Profile = {
   firstName: 'Pegah',
   lastName: 'Vaezi',
   handle: '389457985y498592847',
@@ -31,7 +31,9 @@ const creator = {
   agentPubKey: '389457985y498592847',
   isImported: false,
 }
+
 const comment = {
+  headerHash: '1244134',
   outcomeHeaderHash: '389457985y498592847',
   content:
     'can anyone here help me with several google analytics account setups? I need some training and have clients using square and wordpress. I used to just rely on monster insights plug-in but with GA4 I think things have changed. HALP!',
@@ -42,7 +44,8 @@ const comment = {
 
 const outcome: ComputedOutcome = {
   headerHash: '12344',
-  content: 'test content',
+  content:
+    'This is the content property of an Outcome, it can get long sometimes',
   creatorAgentPubKey: 'creatoragentpubkey',
   editorAgentPubKey: 'editoryagentpubkey',
   timestampCreated: Date.now(),
@@ -63,6 +66,7 @@ const outcome: ComputedOutcome = {
 }
 
 const projectId = '1244323532'
+
 const pegah: Profile = {
   firstName: 'Pegah',
   lastName: 'Vaezi',
@@ -122,9 +126,12 @@ const details = () => (
 const comments = () => (
   <EvComments
     projectId={projectId}
+    outcomeContent="This is the content property of an Outcome, it can get long sometimes"
     outcomeHeaderHash={''}
-    profiles={{}}
-    comments={[]}
+    profiles={{
+      '389457985y498592847': creator,
+    }}
+    comments={[comment]}
     activeAgentPubKey={''}
     createOutcomeComment={function (
       outcomeComment: OutcomeComment

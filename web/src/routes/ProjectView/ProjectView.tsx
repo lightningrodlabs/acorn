@@ -201,7 +201,13 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   const details = (
     <ConnectedEvDetails projectId={projectId} outcome={expandedViewOutcome} />
   )
-  const comments = <ConnectedEvComments projectId={projectId} />
+  const outcomeContent = expandedViewOutcome ? expandedViewOutcome.content : ''
+  const comments = (
+    <ConnectedEvComments
+      projectId={projectId}
+      outcomeContent={outcomeContent}
+    />
+  )
   const rightColumn = (
     <ConnectedEVRightColumn
       projectId={projectId}

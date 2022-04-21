@@ -82,7 +82,7 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
           />
           <EVLeftColumn
             activeTab={activeTab}
-            onChange={(newTab) => setActiveTab(newTab)}
+            onChange={setActiveTab}
             commentCount={commentCount}
             outcomeId={outcomeId}
           />
@@ -92,7 +92,9 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
             details={details}
             comments={comments}
           />
-          {rightColumn}
+          {/* Only show the rightColumn while */}
+          {/* viewing Details */}
+          {activeTab === ExpandedViewTab.Details && rightColumn}
         </div>
       </CSSTransition>
     </>

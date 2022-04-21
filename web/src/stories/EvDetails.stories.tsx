@@ -16,7 +16,7 @@ import {
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Expanded View/EvDetails',
+  title: 'Expanded View/Tabs/EvDetails',
   component: EvDetails,
 } as ComponentMeta<typeof EvDetails>
 

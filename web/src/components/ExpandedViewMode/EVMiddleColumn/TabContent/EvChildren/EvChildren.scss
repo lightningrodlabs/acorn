@@ -1,0 +1,9 @@
+.ev-children {
+  display: flex;
+  flex-direction: column;
+  
+  .ev-children-outcome-list {
+    display: flex;
+    flex-direction: column;
+  }
+}

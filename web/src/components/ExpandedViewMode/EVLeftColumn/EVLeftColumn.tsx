@@ -33,10 +33,6 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
       text: 'tree view',
       icon: 'comment.svg',
     },
-    {
-      text: 'activity history',
-      icon: 'activity-history.svg',
-    },
   ]
 
   return (

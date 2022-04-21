@@ -10,7 +10,7 @@ import EvComments, {
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Expanded View/EvComments',
+  title: 'Expanded View/Tabs/EvComments',
   component: EvComments,
 } as ComponentMeta<typeof EvComments>
 
@@ -24,6 +24,8 @@ Primary.storyName = 'EvComments'
 
 const props: EvCommentsProps = {
   projectId: '1241241',
+  outcomeContent:
+    'This is the title of an outcome that we are viewing the comments of',
   outcomeHeaderHash: '1243523',
   activeAgentPubKey: '1245314',
   profiles: {

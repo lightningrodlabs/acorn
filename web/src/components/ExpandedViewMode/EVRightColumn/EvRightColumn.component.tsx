@@ -24,6 +24,7 @@ import { pickColorForString } from '../../../styles'
 
 import './EVRightColumn.scss'
 import Typography from '../../Typography/Typography'
+import ReadOnlyInfo from '../../ReadOnlyInfo/ReadOnlyInfo'
 
 export type EvRightColumnOwnProps = {
   projectId: CellIdString
@@ -225,6 +226,17 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
     onClose()
   }
 
+  const readOnlyInfos: { icon: React.ReactElement; text: string }[] = [
+    // @ts-ignore
+    { icon: <Icon name="x.svg" />, text: reportedAchievementStatus },
+  ]
+  if (isUncertain) {
+    readOnlyInfos.push({
+      // @ts-ignore
+      icon: <Icon name="activity-history.svg" />,
+      text: 'Uncertain Scope',
+    })
+  }
   return (
     <div className="expanded-view-right-column">
       {/* If this Outcome has children, then we can only */}
@@ -232,24 +244,9 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
       {/* not annotate them */}
       {hasChildren && (
         <>
-          This outcome is
-          {/* TODO: ReadOnlyInfo */}
-          <ButtonAction
-            size="medium"
-            onClick={() => {}}
-            // @ts-ignore
-            icon={<Icon name="x.svg" />}
-            text={reportedAchievementStatus}
-          />
-          {isUncertain && (
-            <ButtonAction
-              size="medium"
-              onClick={() => {}}
-              // @ts-ignore
-              icon={<Icon name="x.svg" />}
-              text="Uncertain Scope"
-            />
-          )}
+          {/* TODO: set typography */}
+          <Typography style="h8">This outcome is</Typography>
+          <ReadOnlyInfo infos={readOnlyInfos} />
         </>
       )}
       {/* We can only annotate the achievementStatus and scope */}

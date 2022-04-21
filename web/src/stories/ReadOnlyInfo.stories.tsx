@@ -2,7 +2,10 @@ import React from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
-import ReadOnlyInfo from '../components/ReadOnlyInfo/ReadOnlyInfo'
+import ReadOnlyInfo, {
+  ReadOnlyInfoProps,
+} from '../components/ReadOnlyInfo/ReadOnlyInfo'
+import Icon from '../components/Icon/Icon'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -19,5 +22,16 @@ export const Primary = Template.bind({})
 Primary.storyName = 'ReadOnlyInfo'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
-  // assign props here
-}
+  infos: [
+    {
+      text: '12 comments',
+      // @ts-ignore
+      icon: <Icon name="activity-history.svg" />,
+    },
+    {
+      text: '12 comments',
+      // @ts-ignore
+      icon: <Icon name="activity-history.svg" />,
+    },
+  ],
+} as ReadOnlyInfoProps

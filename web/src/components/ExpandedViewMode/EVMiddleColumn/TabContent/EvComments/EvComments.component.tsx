@@ -11,9 +11,12 @@ import { OutcomeComment, Profile } from '../../../../../types'
 import CommentInput from '../../../../CommentInput/CommentInput'
 import CommentPosted from '../../../../CommentPosted/CommentPosted'
 import './EvComments.scss'
+import EvReadOnlyHeading from '../../../../EvReadOnlyHeading/EvReadOnlyHeading'
+import Icon from '../../../../Icon/Icon'
 
 export type EvCommentsOwnProps = {
   projectId: CellIdString
+  outcomeContent: string
 }
 
 export type EvCommentsConnectorStateProps = {
@@ -33,6 +36,7 @@ export type EvCommentsProps = EvCommentsOwnProps &
 
 const EvComments: React.FC<EvCommentsProps> = ({
   outcomeHeaderHash,
+  outcomeContent,
   profiles,
   comments,
   createOutcomeComment,
@@ -93,30 +97,34 @@ const EvComments: React.FC<EvCommentsProps> = ({
   }
 
   return (
-    <>
-      <div className="comments">
-        <div className="comment-history-container" ref={commentHistoryRef}>
-          {comments
-            // order the comments by most recent, to least recent
-            .sort((a, b) => (a.unixTimestamp < b.unixTimestamp ? -1 : 1))
-            .map((comment) => {
-              return (
-                <CommentPosted
-                  key={comment.headerHash}
-                  comment={comment}
-                  creator={profiles[comment.creatorAgentPubKey]}
-                />
-              )
-            })}
-        </div>
-        <CommentInput
-          value={value}
-          setValue={setValue}
-          onKeyDown={onKeyDown}
-          submitComment={submitComment}
-        />
+    <div className="comments">
+      <EvReadOnlyHeading
+        headingText={outcomeContent}
+        // @ts-ignore
+        overviewIcon={<Icon name="activity-history.svg" />}
+        overviewText={`${comments.length} comments`}
+      />
+      <div className="comment-history-container" ref={commentHistoryRef}>
+        {comments
+          // order the comments by most recent, to least recent
+          .sort((a, b) => (a.unixTimestamp < b.unixTimestamp ? -1 : 1))
+          .map((comment) => {
+            return (
+              <CommentPosted
+                key={comment.headerHash}
+                comment={comment}
+                creator={profiles[comment.creatorAgentPubKey]}
+              />
+            )
+          })}
       </div>
-    </>
+      <CommentInput
+        value={value}
+        setValue={setValue}
+        onKeyDown={onKeyDown}
+        submitComment={submitComment}
+      />
+    </div>
   )
 }
 
