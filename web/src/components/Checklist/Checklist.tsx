@@ -14,9 +14,9 @@ export type ChecklistItemType = {
 export type ChecklistProps = {
   size: 'small' | 'medium' | 'large'
   listItems: ChecklistItemType[]
-  onChange: (index: number, text: string, isChecked: boolean) => void
-  onAdd: (newText: string) => void
-  onRemove: (index: number) => void
+  onChange: (index: number, text: string, isChecked: boolean) => Promise<void>
+  onAdd: (newText: string) => Promise<void>
+  onRemove: (index: number) => Promise<void>
 }
 
 const Checklist: React.FC<ChecklistProps> = ({

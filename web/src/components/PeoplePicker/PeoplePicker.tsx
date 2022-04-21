@@ -6,21 +6,15 @@ import Avatar from '../Avatar/Avatar'
 import { AgentPubKeyB64, CellIdString, HeaderHashB64 } from '../../types/shared'
 import { Profile } from '../../types'
 
-export type PeoplePickerOwnProps = {
+export type PeoplePickerProps = {
   projectId: CellIdString
   onClose: () => void
-}
-
-export type PeoplePickerConnectorStateProps = {
   activeAgentPubKey: AgentPubKeyB64
   people: (Profile & {
     isOutcomeMember: boolean
     outcomeMemberHeaderHash: HeaderHashB64
   })[]
   outcomeHeaderHash: HeaderHashB64
-}
-
-export type PeoplePickerConnectorDispatchProps = {
   createOutcomeMember: (
     outcomeHeaderHash: HeaderHashB64,
     memberAgentPubKey: AgentPubKeyB64,
@@ -28,10 +22,6 @@ export type PeoplePickerConnectorDispatchProps = {
   ) => Promise<void>
   deleteOutcomeMember: (headerHash: HeaderHashB64) => Promise<void>
 }
-
-export type PeoplePickerProps = PeoplePickerOwnProps &
-  PeoplePickerConnectorStateProps &
-  PeoplePickerConnectorDispatchProps
 
 const PeoplePicker: React.FC<PeoplePickerProps> = ({
   activeAgentPubKey,

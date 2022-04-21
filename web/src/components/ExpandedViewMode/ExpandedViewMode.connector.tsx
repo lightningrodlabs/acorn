@@ -56,14 +56,15 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
 }) => {
   const outcomeContent = outcome ? outcome.content : ''
   const childrenList =
-    outcome && outcome.children ? (
+    outcome && outcome.children && outcome.children.length ? (
       <EvChildren
         outcomeContent={outcomeContent}
         directChildren={outcome.children}
       />
     ) : null
+  // TODO: connect tasklist
   const taskList =
-    outcome && outcome.children ? null : (
+    outcome && outcome.children && outcome.children.length ? null : (
       <EvTaskList outcomeContent={outcomeContent} tasks={[]} />
     )
   // redux connected expanded view components

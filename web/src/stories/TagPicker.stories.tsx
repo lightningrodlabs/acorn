@@ -25,47 +25,58 @@ const Template: ComponentStory<typeof TagPickerComponent> = (args) => {
 }
 
 export const TagPicker = Template.bind({})
-
 // 'single story hoist' (place the component at the 'top level' without nesting in the storybook menu)
 TagPicker.storyName = 'TagPicker'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
-TagPicker.args = {
+const args: TagPickerProps = {
   tags: [
     {
       text: 'Release 0.6.2',
       backgroundColor: '#00A094',
-      id: '1',
+      headerHash: '1',
     },
     {
       text: 'Code Refactor',
       backgroundColor: '#1C57C6',
-      id: '2',
+      headerHash: '2',
     },
     {
       text: 'Rust Bug',
       backgroundColor: '#B45C11',
-      id: '3',
+      headerHash: '3',
     },
     {
       text: 'UI Bug',
       backgroundColor: 'purple',
-      id: '4',
+      headerHash: '4',
     },
     {
       text: 'UI Bug',
       backgroundColor: 'purple',
-      id: '5',
+      headerHash: '5',
     },
     {
       text: 'UI Bug',
       backgroundColor: 'purple',
-      id: '6',
+      headerHash: '6',
     },
     {
       text: 'UI Bug',
       backgroundColor: 'purple',
-      id: '7',
+      headerHash: '7',
     },
   ],
   selectedTags: ['1', '3', '7'],
-} as TagPickerProps
+  onChange: function (newSelectedTags: string[]): void {
+    throw new Error('Function not implemented.')
+  },
+  filterText: '',
+  setFilterText: function (text: string): void {
+    throw new Error('Function not implemented.')
+  },
+  onSaveTag: function (text: string, backgroundColor: string): Promise<void> {
+    throw new Error('Function not implemented.')
+  },
+}
+
+TagPicker.args = args

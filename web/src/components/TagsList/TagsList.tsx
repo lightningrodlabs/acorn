@@ -1,29 +1,35 @@
 import React, { useState } from 'react'
+import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
+import { Tag as TagType } from '../../types'
 import Tag from '../Tag/Tag'
 import TagPicker from '../TagPicker/TagPicker'
 import Icon from '../Icon/Icon'
 
 import './TagsList.scss'
 
-export type TagData = {
-  text: string
-  backgroundColor: string
-  id: string
-}
-
 export type TagsListProps = {
-  tags: TagData[]
+  tags: WithHeaderHash<TagType>[]
+  selectedTags: HeaderHashB64[]
+  onChange: (newSelectedTags: HeaderHashB64[]) => void
+  onSaveTag: (text: string, backgroundColor: string) => Promise<void>
   showAddTagButton: boolean
 }
 
-const TagsList: React.FC<TagsListProps> = ({ tags, showAddTagButton }) => {
+const TagsList: React.FC<TagsListProps> = ({
+  tags,
+  selectedTags,
+  onChange,
+  onSaveTag,
+  showAddTagButton,
+}) => {
   const [isOpenTagPicker, setIsOpenTagPicker] = useState(false)
-
+  const [filterText, setFilterText] = useState('')
   return (
     <div className="tags-list-wrapper">
-      {tags.map((tag) => {
+      {selectedTags.map((tagHeaderHash) => {
+        const tag = tags.find((tag) => tag.headerHash === tagHeaderHash)
         return (
-          <div className="tags-list-item">
+          <div key={tagHeaderHash} className="tags-list-item">
             <Tag text={tag.text} backgroundColor={tag.backgroundColor} />
           </div>
         )
@@ -32,7 +38,10 @@ const TagsList: React.FC<TagsListProps> = ({ tags, showAddTagButton }) => {
         <div className="add-tag-button-with-tag-picker">
           <div
             className="add-tag-button"
-            onClick={() => setIsOpenTagPicker(!isOpenTagPicker)}
+            onClick={() => {
+              setIsOpenTagPicker(!isOpenTagPicker)
+              setFilterText('')
+            }}
           >
             <div className="add-tag-button-icons">
               <Icon name="plus.svg" className="grey not-hoverable" />
@@ -44,10 +53,11 @@ const TagsList: React.FC<TagsListProps> = ({ tags, showAddTagButton }) => {
           {isOpenTagPicker && (
             <TagPicker
               tags={tags}
-              selectedTags={[]}
-              onChange={function (newSelectedTags: string[]): void {
-                throw new Error('Function not implemented.')
-              }}
+              selectedTags={selectedTags}
+              onChange={onChange}
+              onSaveTag={onSaveTag}
+              filterText={filterText}
+              setFilterText={setFilterText}
             />
           )}
         </div>

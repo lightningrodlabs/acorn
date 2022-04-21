@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
+import { Tag as TagType } from '../../types'
 import Button from '../Button/Button'
 import Checkbox from '../Checkbox/Checkbox'
 import Icon from '../Icon/Icon'
@@ -7,9 +9,9 @@ import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import './TagPicker.scss'
 
 export type TagPickerDisplayTagsProps = {
-  tags: { text: string; backgroundColor: string; id: string }[]
-  selectedTags: string[]
-  onChange: (newSelectedTags: string[]) => void
+  tags: WithHeaderHash<TagType>[]
+  selectedTags: HeaderHashB64[]
+  onChange: (newSelectedTags: HeaderHashB64[]) => void
   filterText: string
   setFilterText: (text: string) => void
   setIsCreateTagOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -63,18 +65,23 @@ const TagPickerDisplayTags: React.FC<TagPickerDisplayTagsProps> = ({
               : true
           })
           .map((tag) => {
-            const isChecked = selectedTags.includes(tag.id)
+            const isChecked = selectedTags.includes(tag.headerHash)
             const onSelectOption = (isChecked: boolean) => {
-              if (isChecked && !selectedTags.includes(tag.id)) {
+              if (isChecked && !selectedTags.includes(tag.headerHash)) {
                 // add it, since its not there
-                onChange([...selectedTags, tag.id])
-              } else if (!isChecked && selectedTags.includes(tag.id)) {
+                onChange([...selectedTags, tag.headerHash])
+              } else if (!isChecked && selectedTags.includes(tag.headerHash)) {
                 // remove it, since its there and shouldn't be
-                onChange(selectedTags.filter((id) => id !== tag.id))
+                onChange(
+                  selectedTags.filter(
+                    (headerHash) => headerHash !== tag.headerHash
+                  )
+                )
               }
             }
             return (
               <div
+                key={tag.headerHash}
                 className="tag-picker-tag-option"
                 onClick={() => onSelectOption(!isChecked)}
               >
@@ -147,7 +154,9 @@ const CreateOrEditTag: React.FC<CreateOrEditTagProps> = ({
           }}
           invalidInput={hasTypedText && tagTextValid}
           validInput={tagTextValid}
-          errorText={hasTypedText && !tagTextValid ? 'A label is required.' : ''}
+          errorText={
+            hasTypedText && !tagTextValid ? 'A label is required.' : ''
+          }
           label="Label"
           placeholder="Release 0.6.2"
         />
@@ -214,12 +223,12 @@ TagPicker default export Component
 */
 
 export type TagPickerProps = {
-  tags: { text: string; backgroundColor: string; id: string }[]
-  selectedTags: string[]
-  onChange: (newSelectedTags: string[]) => void
+  tags: WithHeaderHash<TagType>[]
+  selectedTags: HeaderHashB64[]
+  onChange: (newSelectedTags: HeaderHashB64[]) => void
   filterText: string
   setFilterText: (text: string) => void
-  onSaveTag: (text: string, color: string) => Promise<void>
+  onSaveTag: (text: string, backgroundColor: string) => Promise<void>
 }
 
 const TagPicker: React.FC<TagPickerProps> = ({
@@ -231,6 +240,10 @@ const TagPicker: React.FC<TagPickerProps> = ({
   onSaveTag,
 }) => {
   const [isCreateTagOpen, setIsCreateTagOpen] = useState(false)
+  const onSaveTagInner = async (text: string, backgroundColor: string) => {
+    await onSaveTag(text, backgroundColor)
+    setIsCreateTagOpen(false)
+  }
   return (
     <>
       <div className="tag-picker-wrapper">
@@ -247,7 +260,7 @@ const TagPicker: React.FC<TagPickerProps> = ({
         {isCreateTagOpen && (
           <CreateOrEditTag
             onCancel={() => setIsCreateTagOpen(false)}
-            onSave={onSaveTag}
+            onSave={onSaveTagInner}
           />
         )}
       </div>
