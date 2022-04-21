@@ -9,7 +9,7 @@ import {
 import { connect, useSelector } from 'react-redux'
 
 import { GO_TO_OUTCOME } from '../../searchParams'
-import MapView from './MapView/MapView'
+import MapView from './MapView/MapView.connector'
 import PriorityView from './PriorityView/PriorityView'
 import TableView from './TableView/TableView'
 import ConnectedEVRightColumn from '../../components/ExpandedViewMode/EVRightColumn/EVRightColumn.connector'
