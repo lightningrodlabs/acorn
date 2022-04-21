@@ -67,6 +67,7 @@ const props: EvDetailsProps = {
   outcomeHeaderHash: '1243523',
   activeAgentPubKey: '1245314',
   outcome: outcome,
+  projectTags: [],
   people: [
     {
       ...pegah,
@@ -79,6 +80,7 @@ const props: EvDetailsProps = {
   },
   assignees: [{ profile: pegah, outcomeMemberHeaderHash: '124' }],
   editingPeers: [],
+  onSaveTag: async () => {},
   updateOutcome: async () => {},
   createOutcomeMember: async () => {},
   deleteOutcomeMember: async () => {},

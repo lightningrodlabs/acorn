@@ -110,6 +110,7 @@ const details = (
     outcome={smallOutcome}
     activeAgentPubKey={'124234134'}
     outcomeHeaderHash={'1344151'}
+    projectTags={[]}
     people={[
       {
         ...pegah,
@@ -146,6 +147,9 @@ const details = (
     endDescriptionEdit={function (outcomeHeaderHash: string): void {
       throw new Error('Function not implemented.')
     }}
+    onSaveTag={function (text: string, backgroundColor: string): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
   />
 )
 
@@ -178,6 +182,19 @@ const taskList = (
   <EvTaskList
     outcomeContent="This is the content property of an Outcome, it can get long sometimes"
     tasks={[]}
+    onChange={function (
+      index: number,
+      text: string,
+      isChecked: boolean
+    ): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
+    onAdd={function (newText: string): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
+    onRemove={function (index: number): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
   />
 )
 
