@@ -10,11 +10,8 @@ import { setScreenDimensions } from '../../../redux/ephemeral/screensize/actions
 import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions'
 
 import EmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
-import OutcomeTitleQuickEdit from '../../../components/OutcomeTitleQuickEdit/OutcomeTitleQuickEdit.connector'
 import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar.connector'
-import OutcomeHoverOverlayButtons from '../../../components/OutcomeHoverOverlayButtons/OutcomeHoverOverlayButtons.connector'
 import ConnectionConnectors from '../../../components/ConnectionConnectors/ConnectionConnectors.connector'
-import { firstZoomThreshold } from '../../../drawing/dimensions'
 
 
 function MapView({
@@ -73,24 +70,12 @@ function MapView({
       {/* transform everything in this container according  */}
       {/* to the same scaling and tranlating as the canvas */}
       {/* is being scaled and translated, using css matrix transforms */}
-      <div className="transform-container" style={transform}>
-        {/* Only present this OutcomeTitleQuickEdit */}
-        {/* if the scale is greater than or equal to 60% (or we are creating a Outcome) */}
-        {/* because otherwise the font size gets to small and the text is cut off */}
-        {outcomeFormIsOpen && (
-          <OutcomeTitleQuickEdit
-            projectId={projectId}
-            presentToUser={scale >= firstZoomThreshold || !outcomeIsBeingEdited}
-          />
-        )}
-      </div>
+      {/* <div className="transform-container" style={transform}></div> */}
+
       {/* below items inside 'outcome-form-position-container' maintain their normal scale */}
       {/* while positioning themselves absolutely (position: absolute) on the screen */}
       {/* in coordinates that match with the outcomes being drawn on the canvas */}
       <div className="outcome-form-position-container">
-        {hasHover && (
-          <OutcomeHoverOverlayButtons onExpandClick={openExpandedView} />
-        )}
         {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
         {refCanvas.current && <ConnectionConnectors canvas={refCanvas.current} />}
       </div>

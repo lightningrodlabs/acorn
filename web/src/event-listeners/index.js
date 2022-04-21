@@ -441,7 +441,7 @@ export default function setupEventListeners(store, canvas) {
     store.dispatch(unsetMousedown())
   }
 
-  function canvasDblclick(event) {
+  function canvasDoubleclick(event) {
     const state = store.getState()
     const {
       ui: {
@@ -462,10 +462,7 @@ export default function setupEventListeners(store, canvas) {
       event.clientY
     )
     if (outcomeHeaderHash) {
-      let outcomeCoord = outcomeCoordinates[outcomeHeaderHash]
-      store.dispatch(unselectAll())
-      store.dispatch(openOutcomeForm(outcomeCoord.x, outcomeCoord.y, outcomeHeaderHash))
-      store.dispatch(updateContent(outcomes[outcomeHeaderHash].content))
+      store.dispatch(openExpandedView(outcomeHeaderHash))
     }
   }
 
@@ -478,7 +475,7 @@ export default function setupEventListeners(store, canvas) {
   canvas.addEventListener('wheel', canvasWheel)
   canvas.addEventListener('mousedown', canvasMousedown)
   canvas.addEventListener('mouseup', canvasMouseup)
-  canvas.addEventListener('dblclick', canvasDblclick)
+  canvas.addEventListener('dblclick', canvasDoubleclick)
   // This listener is bound to the canvas only so clicks on other parts of
   // the UI like the OutcomeForm won't trigger it.
   canvas.addEventListener('click', canvasClick)
@@ -493,7 +490,7 @@ export default function setupEventListeners(store, canvas) {
     canvas.removeEventListener('wheel', canvasWheel)
     canvas.removeEventListener('mousedown', canvasMousedown)
     canvas.removeEventListener('mouseup', canvasMouseup)
-    canvas.removeEventListener('dblclick', canvasDblclick)
+    canvas.removeEventListener('dblclick', canvasDoubleclick)
     // This listener is bound to the canvas only so clicks on other parts of
     // the UI like the OutcomeForm won't trigger it.
     canvas.removeEventListener('click', canvasClick)
