@@ -1,0 +1,15 @@
+.metadata-with-label-wrapper {
+  display: flex;
+  flex-direction: row;
+
+  .metadata-with-label-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .metadata-with-label-label {
+      // TODO: fix this value
+      margin-bottom: 1rem;
+    }
+  }
+}

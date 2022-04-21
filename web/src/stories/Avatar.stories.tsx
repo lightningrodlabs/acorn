@@ -7,7 +7,7 @@ import Icon from '../components/Icon/Icon'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/Avatar',
+  title: 'Avatars/Avatar',
   component: Avatar,
 } as ComponentMeta<typeof Avatar>
 
@@ -17,6 +17,7 @@ const Template: ComponentStory<typeof Avatar> = (args) => {
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'Avatar'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   size: 'medium',

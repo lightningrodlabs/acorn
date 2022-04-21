@@ -1,3 +1,5 @@
+@import './fonts.scss';
+
 :root {
   // color names from https://www.color-name.com
 
@@ -7,10 +9,12 @@
   // text
   --text-color-primary: #222222; //Raisin Black
   --text-color-secondary: #4d4d4d; //Dark Liver
-  --text-color-tetiary: #8d8c8c; //Philippine Gray
+  --text-color-tertiary: #8d8c8c; //Philippine Gray
+  --text-color-quaternary: #9d9d9d; //Spanish Gray
   --text-color-caption: #bcbcbc; //Silver
   --text-color-placeholder: #c4c4c4; //Philippine Gray
   --text-color-strikethrough: #aea49972; //Pale Silver
+  --text-color-dark-bg: #ffffff;
 
   // background
   --bg-color-primary: #f7f5f3; //Cultured

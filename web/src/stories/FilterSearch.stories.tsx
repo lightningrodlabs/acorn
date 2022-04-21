@@ -7,7 +7,7 @@ import Icon from '../components/Icon/Icon'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/FilterSearch',
+  title: 'Filters/FilterSearch',
   component: FilterSearch,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
@@ -17,17 +17,18 @@ export default {
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof FilterSearch> = (args) => {
-  const [selectedState, setSelectedState] = useState(false)
+  const [filterText, setFilterText] = useState('')
   return (
     <FilterSearch
       {...args}
-      isSelected={selectedState}
-      onChange={(state) => setSelectedState(state)}
+      filterText={filterText}
+      setFilterText={setFilterText}
     />
   )
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'FilterSearch'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   size: 'medium',

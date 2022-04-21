@@ -6,15 +6,18 @@ import './FilterSearch.scss'
 export type FilterSearchProps = {
   size: 'small' | 'medium' | 'large'
   placeholderText: string
+  filterText: string
+  setFilterText: (text: string) => void
   autoFocus?: boolean
 }
 
 const FilterSearch: React.FC<FilterSearchProps> = ({
   size = 'medium',
+  filterText,
+  setFilterText,
   placeholderText,
   autoFocus,
 }) => {
-  const [filterText, setFilterText] = useState('')
   return (
     <div
       className={`filter-search-wrapper ${

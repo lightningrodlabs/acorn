@@ -1,47 +1,76 @@
 .button {
-  border-radius: 25px;
-  background: #6600ff;
-  border: 1px solid #6600ff;
-  color: #ffffff;
-  outline: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font: 0.875rem var(--font-family-primary-extrabold);
+  color: var(--text-color-primary);
+  background-color: var(--bg-color-secondary);
+  box-shadow: 0rem 0rem 1.25rem var(--shadow-color);
+  min-width: 4rem;
+  padding: 1rem;
   border: none;
-  font-size: 16px;
-  line-height: 19px;
-  padding: 16px 42px;
+  box-sizing: border-box;
+  border-radius: 0.625rem;
   cursor: pointer;
-  font-family: 'gilroyextrabold', Helvetica, sans-serif;
-  transition: 0.2s all;
+  transition: 0.2s box-shadow ease;
+  -webkit-font-smoothing: antialiased;
+
+  &.secondary {
+    font: 0.875rem var(--font-family-primary-medium);
+  }
+
+  &.disabled {
+    opacity: 0.6;
+    cursor: default;
+
+    &:hover {
+      box-shadow: 0rem 0rem 1.25rem var(--shadow-color);
+    }
+  }
+
+  // border-radius: 25px;
+  // background: #6600ff;
+  // border: 1px solid #6600ff;
+  // color: #ffffff;
+  // outline: none;
+  // border: none;
+  // font-size: 1rem;
+  // line-height: 19px;
+  // padding: 16px 42px;
+  // cursor: pointer;
+  // font-family: 'gilroyextrabold', Helvetica, sans-serif;
+  // transition: 0.2s all;
 
   &:hover {
-    opacity: 0.8;
+    box-shadow: 0rem 0rem 1.25rem var(--shadow-color-hover);
   }
 
   // buttons colors
   &.purple {
-    background: #6600ff;
+    background-color: #6600ff;
     color: #ffffff;
   }
   &.green {
-    background: #00afa4;
+    background-color: #00afa4;
     color: #ffffff;
   }
 
   // buttons sizes
   &.small {
-    font-size: 13px;
-    line-height: 16px;
-    padding: 10px 20px;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    padding: 0.625rem 1rem;
   }
   &.medium {
-    font-size: 14px;
-    line-height: 18px;
-    padding: 11px 28px;
+    font-size: 1rem;
+    line-height: 1.45;
+    padding: 0.75rem 1.25rem;
   }
   &.large {
-    font-size: 16px;
-    line-height: 20px;
-    padding: 15px 30px;
-    min-width: 135px;
+    font-size: 1.25rem;
+    line-height: 1.45;
+    padding: 1rem 2rem;
+    min-width: 8rem;
   }
 
   // stroked button (transparent background)

@@ -16,6 +16,7 @@ const Template: ComponentStory<typeof ExpandChevron> = (args) => {
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'ExpandChevron'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   // assign props here

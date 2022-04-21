@@ -1,0 +1,49 @@
+
+.button-tab-icon-wrapper {
+  color: #a3a3a3;
+  display: flex;
+  flex-direction: row;
+  font-size: 13px;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
+  font-weight: normal;
+  cursor: pointer;
+  align-items: center;
+  padding: 6px 0;
+  margin-right: 16px;
+  margin-left: 8px;
+  transition: color 0.3s ease;
+}
+
+.button-tab-icon-wrapper.feature-in-development {
+  cursor: default;
+}
+
+.button-tab-icon-wrapper.feature-in-development .icon:not(.not-hoverable) {
+  cursor: default;
+}
+
+/* NavBar Item Hover State */
+
+.button-tab-icon-wrapper:hover {
+  color: #222222;
+
+}
+
+.button-tab-icon-wrapper:hover .icon:not(.not-hoverable) .inner-icon {
+  transition: all 0.3s;
+  background-color: #222222;
+}
+
+/* NavBar Item Active State */
+
+.button-tab-icon-wrapper.active-tab {
+  color: #222222;
+}
+
+.button-tab-icon-wrapper.active-tab .icon:not(.not-hoverable) .inner-icon {
+  background-color: #222222;
+}
+
+.button-tab-icon-wrapper .icon.very-small.grey {
+  margin-right: 4px;
+}

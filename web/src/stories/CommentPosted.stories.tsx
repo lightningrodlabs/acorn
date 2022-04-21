@@ -3,11 +3,10 @@ import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
 import CommentPosted from '../components/CommentPosted/CommentPosted'
-import Icon from '../components/Icon/Icon'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/CommentPosted',
+  title: 'Comments/CommentPosted',
   component: CommentPosted,
 } as ComponentMeta<typeof CommentPosted>
 
@@ -17,6 +16,7 @@ const Template: ComponentStory<typeof CommentPosted> = (args) => {
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'CommentPosted'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   creator: {

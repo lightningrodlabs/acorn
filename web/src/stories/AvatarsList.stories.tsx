@@ -6,7 +6,7 @@ import AvatarsList from '../components/AvatarsList/AvatarsList'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/AvatarsList',
+  title: 'Avatars/AvatarsList',
   component: AvatarsList,
 } as ComponentMeta<typeof AvatarsList>
 
@@ -16,6 +16,7 @@ const Template: ComponentStory<typeof AvatarsList> = (args) => {
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'AvatarsList'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   showInviteButton: true,

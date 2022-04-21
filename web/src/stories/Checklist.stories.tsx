@@ -51,6 +51,7 @@ const Template: ComponentStory<typeof Checklist> = (args) => {
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'Checklist'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   size: 'medium',

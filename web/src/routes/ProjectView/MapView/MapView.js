@@ -11,7 +11,6 @@ import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions
 
 import EmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
 import OutcomeTitleQuickEdit from '../../../components/OutcomeTitleQuickEdit/OutcomeTitleQuickEdit.connector'
-import VerticalActionsList from '../../../components/VerticalActionsList/VerticalActionsList.connector'
 import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar.connector'
 import OutcomeHoverOverlayButtons from '../../../components/OutcomeHoverOverlayButtons/OutcomeHoverOverlayButtons.connector'
 import ConnectionConnectors from '../../../components/ConnectionConnectors/ConnectionConnectors.connector'
@@ -89,9 +88,6 @@ function MapView({
       {/* while positioning themselves absolutely (position: absolute) on the screen */}
       {/* in coordinates that match with the outcomes being drawn on the canvas */}
       <div className="outcome-form-position-container">
-        {outcomeFormIsOpen && outcomeIsBeingEdited && (
-          <VerticalActionsList projectId={projectId} />
-        )}
         {hasHover && (
           <OutcomeHoverOverlayButtons onExpandClick={openExpandedView} />
         )}

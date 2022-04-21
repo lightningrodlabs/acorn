@@ -36,7 +36,7 @@ const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
     <div className="expanded-view-content">
       <DescendantsAchievementStatus
         childrenCount={childrenCount}
-        computedAchievedmentStatus={computedAchievementStatus}
+        computedAchievementStatus={computedAchievementStatus}
       />
       <div className="expanded-view-inner-content">
         {activeTab === ExpandedViewTab.Details && details}

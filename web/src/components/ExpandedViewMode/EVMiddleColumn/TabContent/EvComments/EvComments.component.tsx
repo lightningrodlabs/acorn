@@ -10,28 +10,28 @@ import {
 import { OutcomeComment, Profile } from '../../../../../types'
 import CommentInput from '../../../../CommentInput/CommentInput'
 import CommentPosted from '../../../../CommentPosted/CommentPosted'
-import './Comments.scss'
+import './EvComments.scss'
 
-export type CommentsOwnProps = {
+export type EvCommentsOwnProps = {
   projectId: CellIdString
 }
 
-export type CommentsConnectorStateProps = {
+export type EvCommentsConnectorStateProps = {
   outcomeHeaderHash: HeaderHashB64
   profiles: { [agentPubKey: AgentPubKeyB64]: Profile }
   comments: WithHeaderHash<OutcomeComment>[]
   activeAgentPubKey: AgentPubKeyB64
 }
 
-export type CommentsConnectorDispatchProps = {
+export type EvCommentsConnectorDispatchProps = {
   createOutcomeComment: (outcomeComment: OutcomeComment) => Promise<void>
 }
 
-export type CommentsProps = CommentsOwnProps &
-  CommentsConnectorStateProps &
-  CommentsConnectorDispatchProps
+export type EvCommentsProps = EvCommentsOwnProps &
+  EvCommentsConnectorStateProps &
+  EvCommentsConnectorDispatchProps
 
-const Comments: React.FC<CommentsProps> = ({
+const EvComments: React.FC<EvCommentsProps> = ({
   outcomeHeaderHash,
   profiles,
   comments,
@@ -120,4 +120,4 @@ const Comments: React.FC<CommentsProps> = ({
   )
 }
 
-export default Comments
+export default EvComments

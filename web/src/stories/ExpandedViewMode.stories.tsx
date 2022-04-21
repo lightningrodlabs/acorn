@@ -10,12 +10,13 @@ import {
   Outcome,
   OutcomeComment,
   ProjectMeta,
+  Profile,
 } from '../types'
 import ExpandedViewMode, {
   ExpandedViewModeProps,
 } from '../components/ExpandedViewMode/ExpandedViewMode.component'
 import EvDetails from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvDetails/EvDetails.component'
-import Comments from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/Comments/Comments.component'
+import EvComments from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvComments/EvComments.component'
 import EVRightColumn from '../components/ExpandedViewMode/EVRightColumn/EvRightColumn.component'
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
@@ -62,6 +63,16 @@ const outcome: ComputedOutcome = {
 }
 
 const projectId = '1244323532'
+const pegah: Profile = {
+  firstName: 'Pegah',
+  lastName: 'Vaezi',
+  handle: '389457985y498592847',
+  status: 'Online',
+  avatarUrl:
+    'https://i.pinimg.com/550x/c0/3d/3f/c03d3f965a8091206f4a0e742bb97c9f.jpg',
+  agentPubKey: '389457985y498592847',
+  isImported: false,
+}
 
 const details = () => (
   <EvDetails
@@ -69,13 +80,25 @@ const details = () => (
     outcome={outcome}
     activeAgentPubKey={'124234134'}
     outcomeHeaderHash={'1344151'}
-    assignees={[]}
+    people={[
+      {
+        ...pegah,
+        isOutcomeMember: true,
+        outcomeMemberHeaderHash: '1241',
+      },
+    ]}
+    profiles={{
+      '389457985y498592847': pegah,
+    }}
+    assignees={[{ profile: pegah, outcomeMemberHeaderHash: '124' }]}
     editingPeers={[]}
-    profiles={{}}
     updateOutcome={function (
       outcome: Outcome,
       headerHash: string
     ): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
+    createOutcomeMember={function (headerHash: string): Promise<void> {
       throw new Error('Function not implemented.')
     }}
     deleteOutcomeMember={function (headerHash: string): Promise<void> {
@@ -97,7 +120,7 @@ const details = () => (
 )
 
 const comments = () => (
-  <Comments
+  <EvComments
     projectId={projectId}
     outcomeHeaderHash={''}
     profiles={{}}
@@ -147,7 +170,7 @@ const rightColumn = () => (
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/ExpandedViewMode',
+  title: 'Expanded View/ExpandedViewMode',
   component: ExpandedViewMode,
 } as ComponentMeta<typeof ExpandedViewMode>
 
@@ -157,6 +180,7 @@ const Template: ComponentStory<typeof ExpandedViewMode> = (args) => {
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'ExpandedViewMode'
 
 const args: ExpandedViewModeProps = {
   projectId: '1234323',

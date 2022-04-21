@@ -6,7 +6,7 @@ import ReadOnlyInfo from '../components/ReadOnlyInfo/ReadOnlyInfo'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/ReadOnlyInfo',
+  title: 'Expanded View/ReadOnlyInfo',
   component: ReadOnlyInfo,
 } as ComponentMeta<typeof ReadOnlyInfo>
 

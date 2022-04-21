@@ -3,8 +3,8 @@ import moment from 'moment'
 import TextareaAutosize from 'react-textarea-autosize'
 
 import Avatar from '../../../../Avatar/Avatar'
-import PeopleInfoPopup from '../../../../PersonInfoPopup/PersonInfoPopup'
-import PeoplePicker from '../../../../PeoplePicker/PeoplePicker.connector'
+import PersonInfoPopup from '../../../../PersonInfoPopup/PersonInfoPopup'
+import PeoplePicker from '../../../../PeoplePicker/PeoplePicker'
 import Icon from '../../../../Icon/Icon'
 import {
   AssigneeWithHeaderHash,
@@ -19,6 +19,8 @@ import {
 } from '../../../../../types/shared'
 
 import './EvDetails.scss'
+import TagsList from '../../../../TagsList/TagsList'
+import MetadataWithLabel from '../../../../MetadataWithLabel/MetadataWithLabel'
 
 /*
 testing data
@@ -53,14 +55,27 @@ export type EvDetailsOwnProps = {
 export type EvDetailsConnectorStateProps = {
   activeAgentPubKey: AgentPubKeyB64
   outcomeHeaderHash: HeaderHashB64
+  // a list of specifically the assignees
   assignees: AssigneeWithHeaderHash[]
+  // an object with ALL profiles
+  profiles: { [agentPubKey: AgentPubKeyB64]: Profile }
+  // a list of all profiles, with data about
+  // whether the person is an assignee on each object
+  people: (Profile & {
+    isOutcomeMember: boolean
+    outcomeMemberHeaderHash: HeaderHashB64
+  })[]
   // TODO: fix this type
   editingPeers: {}[]
-  profiles: { [agentPubKey: AgentPubKeyB64]: Profile }
 }
 
 export type EvDetailsConnectorDispatchProps = {
   updateOutcome: (outcome: Outcome, headerHash: HeaderHashB64) => Promise<void>
+  createOutcomeMember: (
+    outcomeHeaderHash: HeaderHashB64,
+    memberAgentPubKey: AgentPubKeyB64,
+    creatorAgentPubKey: AgentPubKeyB64
+  ) => Promise<void>
   deleteOutcomeMember: (headerHash: HeaderHashB64) => Promise<void>
   startTitleEdit: (outcomeHeaderHash: HeaderHashB64) => void
   endTitleEdit: (outcomeHeaderHash: HeaderHashB64) => void
@@ -80,9 +95,11 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   activeAgentPubKey,
   outcomeHeaderHash,
   assignees,
+  people,
   profiles,
   // dispatch props
   updateOutcome,
+  createOutcomeMember,
   deleteOutcomeMember,
   startTitleEdit,
   endTitleEdit,
@@ -223,7 +240,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
               <div className="member-editing-title-wrapper">
                 <Avatar
                   withStatusBorder
-                  size='small-medium'
+                  size="small-medium"
                   firstName={titleEditor.firstName}
                   lastName={titleEditor.lastName}
                   avatarUrl={titleEditor.avatarUrl}
@@ -266,124 +283,139 @@ const EvDetails: React.FC<EvDetailsProps> = ({
         <div>Github Link</div>
 
         {/* Tags */}
-        <div>Tags</div>
+        <div>
+          <TagsList tags={[]} showAddTagButton={true} />
+        </div>
 
         <div className="squirrels-timeframe-row">
           <div className="expanded-view-squirrels-wrapper">
-            <div className="expanded-view-squirrels-title">Assignees</div>
-            <div className="expanded-view-squirrels-content">
-              {assignees.map((assignee, index) => {
-                // TODO: fix the highlight for avatars showing all at once
-                // instead of only highlighting the selected avatar
-                const highlighted = personInfoPopup
-                  ? personInfoPopup.outcomeMemberHeaderHash ===
-                    assignee.outcomeMemberHeaderHash
-                  : false
-                return (
-                  <div className="expanded-view-squirrel-wrapper">
-                    <Avatar
-                      withWhiteBorder
-                      key={index}
-                      size='medium'
-                      firstName={assignee.profile.firstName}
-                      lastName={assignee.profile.lastName}
-                      avatarUrl={assignee.profile.avatarUrl}
-                      imported={assignee.profile.isImported}
-                      // @ts-ignore
-                      withWhiteBorder
-                      withStatus
-                      selfAssignedStatus={assignee.profile.status}
-                      clickable
-                      onClick={() =>
-                        setPersonInfoPopup(personInfoPopup ? null : assignee)
-                      }
-                      highlighted={highlighted}
-                    />
-                  </div>
-                )
-              })}
-              {personInfoPopup && (
-                <PeopleInfoPopup
-                  onClose={() => setPersonInfoPopup(null)}
-                  person={personInfoPopup}
-                  deleteOutcomeMember={deleteOutcomeMember}
-                />
-              )}
-              <div className="expanded-view-squirrels-add-wrapper">
-                {/* @ts-ignore */}
-                <Icon
-                  className="add-squirrel-plus-icon"
-                  name="plus.svg"
-                  size="small"
-                  onClick={() => setEditAssignees(!editAssignees)}
-                  withTooltip
-                  tooltipText="Add Squirrels"
-                />
-                {editAssignees && (
-                  <PeoplePicker
-                    projectId={projectId}
-                    onClose={() => setEditAssignees(false)}
+            <MetadataWithLabel label="Assignees">
+              <div className="expanded-view-squirrels-content">
+                {assignees.map((assignee, index) => {
+                  // TODO: fix the highlight for avatars showing all at once
+                  // instead of only highlighting the selected avatar
+                  const highlighted = personInfoPopup
+                    ? personInfoPopup.outcomeMemberHeaderHash ===
+                      assignee.outcomeMemberHeaderHash
+                    : false
+                  return (
+                    <div className="expanded-view-squirrel-wrapper">
+                      <Avatar
+                        withWhiteBorder
+                        key={index}
+                        size="medium"
+                        firstName={assignee.profile.firstName}
+                        lastName={assignee.profile.lastName}
+                        avatarUrl={assignee.profile.avatarUrl}
+                        imported={assignee.profile.isImported}
+                        // @ts-ignore
+                        withWhiteBorder
+                        withStatus
+                        selfAssignedStatus={assignee.profile.status}
+                        clickable
+                        onClick={() =>
+                          setPersonInfoPopup(personInfoPopup ? null : assignee)
+                        }
+                        highlighted={highlighted}
+                      />
+                    </div>
+                  )
+                })}
+                {personInfoPopup && (
+                  <PersonInfoPopup
+                    onClose={() => setPersonInfoPopup(null)}
+                    person={personInfoPopup}
+                    deleteOutcomeMember={deleteOutcomeMember}
                   />
                 )}
-              </div>
-            </div>
-          </div>
-          <div className="timeframe-wrapper">
-            <div className="expanded-view-timeframe-title">Timeframe</div>
-            <div
-              className="expanded-view-timeframe-display"
-              // TODO: bring this back
-              // onClick={() => setEditTimeframe(!editTimeframe)}
-            >
-              {fromDate && fromDate.format('MMM D, YYYY')}
-              {toDate && ' - '}
-              {toDate && toDate.format('MMM D, YYYY')}
-              {!fromDate && !toDate && 'Click to set timeframe'}
-            </div>
-          </div>
-        </div>
-        <div className="expanded-view-description-wrapper">
-          {editingDescriptionPeer ? (
-            <div>
-              <div className="member-editing-description-wrapper">
-                <Avatar
-                  withStatusBorder
-                  size='small-medium'
-                  firstName={descriptionEditor.firstName}
-                  lastName={descriptionEditor.lastName}
-                  avatarUrl={descriptionEditor.avatarUrl}
-                  // @ts-ignore
-                  isImported={descriptionEditor.isImported}
-                  headerHash={descriptionEditor.address}
-                  connectionStatus={'connected'}
-                  selfAssignedStatus={descriptionEditor.status}
-                />
-              </div>
-              <div className="expanded-view-description-editing-placeholder">
-                <div className="expanded-view-description">
-                  <TextareaAutosize
-                    disabled={!!editingDescriptionPeer}
-                    placeholder="Add description here"
-                    value={description}
-                    onBlur={onDescriptionBlur}
-                    onChange={handleOnChangeDescription}
-                    onFocus={onDescriptionFocus}
+                <div className="expanded-view-squirrels-add-wrapper">
+                  {/* @ts-ignore */}
+                  <Icon
+                    className="add-squirrel-plus-icon"
+                    name="plus.svg"
+                    size="small"
+                    onClick={() => setEditAssignees(!editAssignees)}
+                    withTooltip
+                    tooltipText="Add Squirrels"
                   />
+                  {editAssignees && (
+                    <PeoplePicker
+                      projectId={projectId}
+                      onClose={() => setEditAssignees(false)}
+                      activeAgentPubKey={activeAgentPubKey}
+                      people={people}
+                      outcomeHeaderHash={outcomeHeaderHash}
+                      createOutcomeMember={createOutcomeMember}
+                      deleteOutcomeMember={deleteOutcomeMember}
+                    />
+                  )}
                 </div>
               </div>
-            </div>
-          ) : (
-            <div className="expanded-view-description">
-              <TextareaAutosize
-                placeholder="Add description here"
-                value={description}
-                onBlur={onDescriptionBlur}
-                onChange={handleOnChangeDescription}
-                onFocus={onDescriptionFocus}
-              />
-            </div>
-          )}
+            </MetadataWithLabel>
+          </div>
+          <div className="timeframe-wrapper">
+            <MetadataWithLabel label="Timeframe">
+              <div
+                className="expanded-view-timeframe-display"
+                // TODO: bring this back
+                // onClick={() => setEditTimeframe(!editTimeframe)}
+              >
+                {fromDate && fromDate.format('MMM D, YYYY')}
+                {toDate && ' - '}
+                {toDate && toDate.format('MMM D, YYYY')}
+                {!fromDate && !toDate && 'Click to set timeframe'}
+              </div>
+            </MetadataWithLabel>
+          </div>
         </div>
+        <MetadataWithLabel
+          label="Description"
+          // @ts-ignore
+          icon={<Icon name="text-align-left.svg" />}
+        >
+          <div className="expanded-view-description-wrapper">
+            {editingDescriptionPeer ? (
+              <div>
+                <div className="member-editing-description-wrapper">
+                  <Avatar
+                    withStatusBorder
+                    size="small-medium"
+                    firstName={descriptionEditor.firstName}
+                    lastName={descriptionEditor.lastName}
+                    avatarUrl={descriptionEditor.avatarUrl}
+                    // @ts-ignore
+                    isImported={descriptionEditor.isImported}
+                    headerHash={descriptionEditor.address}
+                    connectionStatus={'connected'}
+                    selfAssignedStatus={descriptionEditor.status}
+                  />
+                </div>
+                <div className="expanded-view-description-editing-placeholder">
+                  <div className="expanded-view-description">
+                    <TextareaAutosize
+                      disabled={!!editingDescriptionPeer}
+                      placeholder="Add description here"
+                      value={description}
+                      onBlur={onDescriptionBlur}
+                      onChange={handleOnChangeDescription}
+                      onFocus={onDescriptionFocus}
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="expanded-view-description">
+                <TextareaAutosize
+                  placeholder="Add description here"
+                  value={description}
+                  onBlur={onDescriptionBlur}
+                  onChange={handleOnChangeDescription}
+                  onFocus={onDescriptionFocus}
+                />
+              </div>
+            )}
+          </div>
+        </MetadataWithLabel>
       </div>
     </>
   )

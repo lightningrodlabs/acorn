@@ -6,7 +6,7 @@ import GithubLinkComponent from '../components/GithubLink/GithubLink'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/GithubLink',
+  title: 'Expanded View/GithubLink',
   component: GithubLinkComponent,
 } as ComponentMeta<typeof GithubLinkComponent>
 
@@ -16,7 +16,6 @@ const Template: ComponentStory<typeof GithubLinkComponent> = (args) => {
 }
 
 export const GithubLink = Template.bind({})
-
 GithubLink.storyName = 'GithubLink'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 GithubLink.args = {

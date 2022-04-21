@@ -14,7 +14,7 @@ export type PeoplePickerOwnProps = {
 export type PeoplePickerConnectorStateProps = {
   activeAgentPubKey: AgentPubKeyB64
   people: (Profile & {
-    isMember: boolean
+    isOutcomeMember: boolean
     outcomeMemberHeaderHash: HeaderHashB64
   })[]
   outcomeHeaderHash: HeaderHashB64
@@ -83,13 +83,13 @@ const PeoplePicker: React.FC<PeoplePickerProps> = ({
           })
           // sort members (people attached to Outcome) to the top of the list
           .sort((p1, p2) => {
-            if (p1.isMember && !p2.isMember) return -1
-            else if (p1.isMember && p2.isMember) return 0
-            else if (!p1.isMember && p2.isMember) return 1
+            if (p1.isOutcomeMember && !p2.isOutcomeMember) return -1
+            else if (p1.isOutcomeMember && p2.isOutcomeMember) return 0
+            else if (!p1.isOutcomeMember && p2.isOutcomeMember) return 1
           })
           .map((person, index) => {
             const onClick = () => {
-              if (person.isMember)
+              if (person.isOutcomeMember)
                 deleteOutcomeMember(person.outcomeMemberHeaderHash)
               else
                 createOutcomeMember(
@@ -101,7 +101,7 @@ const PeoplePicker: React.FC<PeoplePickerProps> = ({
             return (
               <li
                 key={index}
-                className={person.isMember ? 'member' : ''}
+                className={person.isOutcomeMember ? 'member' : ''}
                 onClick={onClick}
               >
                 <Avatar
@@ -119,14 +119,14 @@ const PeoplePicker: React.FC<PeoplePickerProps> = ({
                   </span>
                   <div className="person-handle">{person.handle}</div>
                 </div>
-                {!person.isMember && (
+                {!person.isOutcomeMember && (
                   <Icon
                     name="radio-button.svg"
                     size="small"
                     className="light-grey radio-button"
                   />
                 )}
-                {person.isMember && (
+                {person.isOutcomeMember && (
                   <Icon
                     name="radio-button-checked.svg"
                     size="small"

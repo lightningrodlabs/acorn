@@ -25,7 +25,7 @@ function ValidatingFormInput({
     onChange(e.target.value)
   }
 
-  let inputClassName = withAtSymbol ? 'with_at_symbol' : ''
+  let inputClassName = withAtSymbol ? 'with-at-symbol' : ''
   if (invalidInput) {
     inputClassName += ' invalid-input'
   }
@@ -37,10 +37,10 @@ function ValidatingFormInput({
   }
 
   return (
-    <div className='validating_form_input'>
+    <div className='validating-form-input'>
       <label htmlFor={label}>{label}</label>
-      {helpText && <p className='help_text'>{helpText}</p>}
-      <div className='input_wrapper'>
+      {helpText && <p className='help-text'>{helpText}</p>}
+      <div className='input-wrapper'>
         <input
           type='text'
           className={inputClassName}
@@ -50,8 +50,8 @@ function ValidatingFormInput({
           placeholder={placeholder}
           readOnly={readOnly}
         />
-        {errorText && <div className='error_text'>{errorText}</div>}
-        {withAtSymbol && <div className='at_symbol'>@ </div>}
+        {errorText && <div className='error-text'>{errorText}</div>}
+        {withAtSymbol && <div className='at-symbol'>@ </div>}
         {invalidInput && (
           <img src={ValidationX} className='validation-mark' />
         )}

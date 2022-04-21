@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
+import moment from 'moment'
 
 import {
   AgentPubKeyB64,
@@ -18,11 +19,11 @@ import ButtonToggleSwitch from '../../ButtonToggleSwitch/ButtonToggleSwitch'
 import Icon from '../../Icon/Icon'
 import ButtonAction from '../../ButtonAction/ButtonAction'
 import ButtonCheckbox from '../../ButtonCheckbox/ButtonCheckbox'
+import SelectDropdown from '../../SelectDropdown/SelectDropdown'
 import { pickColorForString } from '../../../styles'
 
 import './EVRightColumn.scss'
-import SelectDropdown from '../../SelectDropdown/SelectDropdown'
-import moment from 'moment'
+import Typography from '../../Typography/Typography'
 
 export type EvRightColumnOwnProps = {
   projectId: CellIdString
@@ -259,7 +260,8 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
           {/* annotated Small and has no children */}
           {isSmall && (
             <>
-              Achievement Status
+              {/* TODO: set typography */}
+              <Typography style="h8">Achievement Status</Typography>
               <SelectDropdown
                 size="medium"
                 selectedOptionId={achievementStatusSelected}
@@ -268,7 +270,8 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
               />
             </>
           )}
-          Scope
+          {/* TODO: set typography */}
+          <Typography style="h8">Scope</Typography>
           <ButtonToggleSwitch
             size="medium"
             switchState={computedScopeBoolean}
@@ -287,7 +290,8 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
         </>
       )}
       {/* Mark As Section */}
-      Mark as
+      {/* TODO: set typography */}
+      <Typography style="h8">Mark as</Typography>
       {/* We can only mark an Uncertain scope Outcome */}
       {/* as being 'in breakdown' mode */}
       {isUncertain && (
@@ -317,7 +321,8 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
         text="Entry Point"
       />
       {/* Actions section */}
-      Actions
+      {/* TODO: set typography */}
+      <Typography style="h8">Actions</Typography>
       <ButtonAction
         size="medium"
         onClick={() => {}}

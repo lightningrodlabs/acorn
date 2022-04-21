@@ -7,7 +7,7 @@
   &.with-strikethrough {
     .checklist-item-wrapper-text {
       &.checked {
-        color: var(--text-color-tetiary);
+        color: var(--text-color-tertiary);
         text-decoration: line-through var(--text-color-strikethrough);
       }
     }
@@ -23,7 +23,7 @@
     line-height: 1.45;
 
     // &.checked {
-    //   color: var(--text-color-tetiary);
+    //   color: var(--text-color-tertiary);
     //   text-decoration: line-through var(--text-color-strikethrough);
     // }
 

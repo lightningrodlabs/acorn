@@ -7,7 +7,7 @@ import Icon from '../components/Icon/Icon'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/FilterButton',
+  title: 'Filters/FilterButton',
   component: FilterButton,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
@@ -28,6 +28,7 @@ const Template: ComponentStory<typeof FilterButton> = (args) => {
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'FilterButton'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   size: 'medium',

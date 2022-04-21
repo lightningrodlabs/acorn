@@ -53,6 +53,9 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
     }
   }, [outcomeHeaderHash])
 
+  // TODO: set up the notion of an Outcome Id
+  const outcomeId = 124543
+
   return (
     <>
       <CSSTransition
@@ -81,6 +84,7 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
             activeTab={activeTab}
             onChange={(newTab) => setActiveTab(newTab)}
             commentCount={commentCount}
+            outcomeId={outcomeId}
           />
           <EVMiddleColumn
             activeTab={activeTab}

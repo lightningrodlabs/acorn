@@ -1,17 +1,21 @@
 import React from 'react'
+import ButtonTabIcon from '../../ButtonTabIcon/ButtonTabIcon'
 
 import Icon from '../../Icon/Icon'
+import Typography from '../../Typography/Typography'
 import { ExpandedViewTab } from '../NavEnum'
 
 import './EVLeftColumn.scss'
 
 export type EvLeftColumnProps = {
+  outcomeId: number
   onChange: (expandedViewTab: ExpandedViewTab) => void
   activeTab: ExpandedViewTab
   commentCount: number
 }
 
 const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
+  outcomeId,
   onChange,
   activeTab,
   commentCount,
@@ -35,31 +39,23 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
     },
   ]
 
-  // TODO
-  const outcomeId = 124354
-
   return (
     <div className="expanded-view-nav-column">
-      <div className="expanded-view-outcome-id">{outcomeId}</div>
+      <div className="expanded-view-outcome-id">
+        {/* TODO: set typography */}
+        <Typography style="caption1">{outcomeId.toString()}</Typography>
+      </div>
       {navItems.map(({ text, icon }, index) => {
-        const activeClass = activeTab === index ? 'active-tab' : ''
         return (
-          <div
-            className={`expanded-view-nav-column-item ${activeClass} ${
-              index === ExpandedViewTab.ActivityHistory
-                ? 'feature-in-development'
-                : ''
-            }`}
+          <ButtonTabIcon
             key={index}
+            label={text}
+            iconName={icon}
+            active={activeTab === index}
             onClick={() =>
               index !== ExpandedViewTab.ActivityHistory && onChange(index)
             }
-          >
-            {/* @ts-ignore */}
-            <Icon name={icon} size="small" className="grey" />
-            {/* TODO: add tooltip text */}
-            {/* {text} */}
-          </div>
+          />
         )
       })}
     </div>

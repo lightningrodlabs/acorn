@@ -6,7 +6,7 @@ import MarkdownInput from '../components/MarkdownInput/MarkdownInput'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/MarkdownInput',
+  title: 'Expanded View/MarkdownInput',
   component: MarkdownInput,
 } as ComponentMeta<typeof MarkdownInput>
 
@@ -16,6 +16,7 @@ const Template: ComponentStory<typeof MarkdownInput> = (args) => {
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'MarkdownInput'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   // assign props here

@@ -45,7 +45,7 @@ function mapStateToProps(
       )
       return {
         ...agent, // address, name, avatarUrl
-        isMember: member ? true : false,
+        isOutcomeMember: member ? true : false,
         outcomeMemberHeaderHash: member ? member.headerHash : null,
       }
     })

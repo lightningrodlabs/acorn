@@ -6,7 +6,7 @@ import OutcomeListItem from '../components/OutcomeListItem/OutcomeListItem'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/OutcomeListItem',
+  title: 'Table View/OutcomeListItem',
   component: OutcomeListItem,
 } as ComponentMeta<typeof OutcomeListItem>
 

@@ -1,42 +1,47 @@
 import React from 'react'
 import { ComputedAchievementStatus } from '../../types'
+import Typography from '../Typography/Typography'
 import './DescendantsAchievementStatus.scss'
 
 export type DescendantsAchievementStatusProps = {
   childrenCount: number
-  computedAchievedmentStatus: ComputedAchievementStatus
+  computedAchievementStatus: ComputedAchievementStatus
 }
 
 const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> = ({
   childrenCount,
-  computedAchievedmentStatus,
+  computedAchievementStatus,
 }) => {
   return (
     <div className="descendants-achievement-status">
       {/* case: No Children */}
       {childrenCount === 0 && (
         <>
-          This outcome has no children.<div>i</div>
+          {/* TODO: set typography */}
+          <Typography style="caption1">
+            This outcome has no children.
+          </Typography>{' '}
+          <div>i</div>
         </>
       )}
       {childrenCount > 0 && (
         <>
           {/* case: No Uncertains */}
-          {computedAchievedmentStatus.uncertains === 0 && (
+          {computedAchievementStatus.uncertains === 0 && (
             <>
-              {computedAchievedmentStatus.smallsAchieved.toString()}/
-              {computedAchievedmentStatus.smallsTotal.toString()}
+              {computedAchievementStatus.smallsAchieved.toString()}/
+              {computedAchievementStatus.smallsTotal.toString()}
             </>
           )}
           {/* case: With Uncertains */}
-          {computedAchievedmentStatus.uncertains !== 0 && (
+          {computedAchievementStatus.uncertains !== 0 && (
             <>
               <div>
-                {computedAchievedmentStatus.smallsAchieved.toString()}/
-                {computedAchievedmentStatus.smallsTotal.toString()}
+                {computedAchievementStatus.smallsAchieved.toString()}/
+                {computedAchievementStatus.smallsTotal.toString()}
               </div>
               <div className="descendants-achievement-status-uncertains">
-                {computedAchievedmentStatus.uncertains.toString()}
+                {computedAchievementStatus.uncertains.toString()}
               </div>
             </>
           )}

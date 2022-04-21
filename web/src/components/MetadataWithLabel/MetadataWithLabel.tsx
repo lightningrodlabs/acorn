@@ -1,14 +1,29 @@
 import React from 'react'
+import Typography from '../Typography/Typography'
 import './MetadataWithLabel.scss'
 
 export type MetadataWithLabelProps = {
-  // proptypes
+  label: string
+  icon?: React.ReactElement
 }
 
 const MetadataWithLabel: React.FC<MetadataWithLabelProps> = ({
-  // prop declarations
+  icon,
+  label,
+  children,
 }) => {
-  return <div></div>
+  return (
+    <div className="metadata-with-label-wrapper">
+      {icon ? icon : null}
+      <div className="metadata-with-label-column">
+        <div className="metadata-with-label-label">
+          {/* TODO: set typography */}
+          <Typography style="subtitle2">{label}</Typography>
+        </div>
+        {children}
+      </div>
+    </div>
+  )
 }
 
 export default MetadataWithLabel

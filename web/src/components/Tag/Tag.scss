@@ -1,0 +1,19 @@
+// :root {
+//   --light: 70;
+//   /* the threshold at which colors are considered "light." Range: integers from 0 to 100,
+//   recommended 50 - 70 */
+//   --threshold: 60;
+// }
+
+.tag-wrapper {
+  font: 0.75rem var(--font-family-primary-bold);
+  line-height: 1.65;
+  color: var(--text-color-dark-bg);
+  letter-spacing: 0.02rem;
+  /* Any lightness value below the threshold will result in white, any above will result in black */
+  //   --switch: calc((var(--light) - var(--threshold)) * -100%);
+  //   color: hsl(0, 0%, var(--switch));
+  padding: 0.175rem 0.6875rem;
+  border-radius: 0.5rem;
+  width: fit-content;
+}

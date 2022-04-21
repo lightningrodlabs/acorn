@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { connect } from 'react-redux'
 import ProjectsZomeApi from '../../../../../api/projectsApi'
 import { getAppWs } from '../../../../../hcWebsockets'
@@ -7,11 +8,11 @@ import {
   startDescriptionEdit,
   endDescriptionEdit,
 } from '../../../../../redux/ephemeral/outcome-editing/actions'
-import { deleteOutcomeMember } from '../../../../../redux/persistent/projects/outcome-members/actions'
+import { createOutcomeMember, deleteOutcomeMember } from '../../../../../redux/persistent/projects/outcome-members/actions'
 import { updateOutcome } from '../../../../../redux/persistent/projects/outcomes/actions'
 import { RootState } from '../../../../../redux/reducer'
 import { AssigneeWithHeaderHash, Outcome } from '../../../../../types'
-import { HeaderHashB64 } from '../../../../../types/shared'
+import { HeaderHashB64, AgentPubKeyB64 } from '../../../../../types/shared'
 import { cellIdFromString } from '../../../../../utils'
 import EvDetails, {
   EvDetailsConnectorDispatchProps,
@@ -44,6 +45,32 @@ function mapStateToProps(
       })
   }
 
+  // people
+  // all project members, plus a bit of data about
+  // whether the person is an assignee on a specific outcome
+  // or not
+  const members = state.projects.members[projectId] || {}
+  const membersOfOutcome = Object.keys(outcomeMembers)
+    .map((address) => outcomeMembers[address])
+    .filter(
+      (outcomeMember) => outcomeMember.outcomeHeaderHash === outcomeHeaderHash
+    )
+  const people = Object.keys(members)
+    .map((address) => state.agents[address])
+    // just in case we've received a 'member' before the agents profile
+    // filter out any missing profiles for now
+    .filter((agent) => agent)
+    .map((agent) => {
+      const member = membersOfOutcome.find(
+        (outcomeMember) => outcomeMember.memberAgentPubKey === agent.agentPubKey
+      )
+      return {
+        ...agent, // address, name, avatarUrl
+        isOutcomeMember: member ? true : false,
+        outcomeMemberHeaderHash: member ? member.headerHash : null,
+      }
+    })
+
   // TODO: fix this fn
   // it shouldn't use `delete`
   // editingPeers
@@ -68,6 +95,7 @@ function mapStateToProps(
     profiles: state.agents,
     editingPeers,
     assignees,
+    people,
   }
 }
 
@@ -86,6 +114,22 @@ function mapDispatchToProps(
         entry: outcome,
       })
       return dispatch(updateOutcome(cellIdString, updatedOutcome))
+    },
+    createOutcomeMember: async (
+      outcomeHeaderHash: HeaderHashB64,
+      memberAgentPubKey: AgentPubKeyB64,
+      creatorAgentPubKey: AgentPubKeyB64
+    ) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomeMember = await projectsZomeApi.outcomeMember.create(cellId, {
+        outcomeHeaderHash,
+        memberAgentPubKey: memberAgentPubKey,
+        creatorAgentPubKey,
+        unixTimestamp: moment().unix(),
+        isImported: false,
+      })
+      return dispatch(createOutcomeMember(cellIdString, outcomeMember))
     },
     deleteOutcomeMember: async (headerHash: HeaderHashB64) => {
       const appWebsocket = await getAppWs()
