@@ -1,15 +1,24 @@
 import React from 'react'
-import Checklist from '../../../../Checklist/Checklist'
+import Checklist, { ChecklistItemType } from '../../../../Checklist/Checklist'
 import EvReadOnlyHeading from '../../../../EvReadOnlyHeading/EvReadOnlyHeading'
 import Icon from '../../../../Icon/Icon'
 import './EvTaskList.scss'
 
 export type EvTaskListProps = {
   outcomeContent: string
-  tasks: any[]
+  tasks: ChecklistItemType[]
+  onChange: (index: number, text: string, isChecked: boolean) => Promise<void>
+  onAdd: (newText: string) => Promise<void>
+  onRemove: (index: number) => Promise<void>
 }
 
-const EvTaskList: React.FC<EvTaskListProps> = ({ outcomeContent, tasks }) => {
+const EvTaskList: React.FC<EvTaskListProps> = ({
+  outcomeContent,
+  tasks,
+  onChange,
+  onAdd,
+  onRemove,
+}) => {
   return (
     <div className="ev-children">
       <EvReadOnlyHeading
@@ -21,20 +30,10 @@ const EvTaskList: React.FC<EvTaskListProps> = ({ outcomeContent, tasks }) => {
       <div className="ev-children-outcome-list">
         <Checklist
           size="medium"
-          listItems={[]}
-          onChange={function (
-            index: number,
-            text: string,
-            isChecked: boolean
-          ): void {
-            throw new Error('Function not implemented.')
-          }}
-          onAdd={function (newText: string): void {
-            throw new Error('Function not implemented.')
-          }}
-          onRemove={function (index: number): void {
-            throw new Error('Function not implemented.')
-          }}
+          listItems={tasks}
+          onChange={onChange}
+          onAdd={onAdd}
+          onRemove={onRemove}
         />
       </div>
     </div>

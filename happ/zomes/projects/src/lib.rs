@@ -8,6 +8,7 @@ use hdk_crud::{
     signals::{create_receive_signal_cap_grant, ActionSignal},
 };
 use project::{
+    tag::crud::Tag,
     connection::crud::Connection,
     entry_point::crud::EntryPoint,
     member::entry::{join_project_during_init, Member, MemberSignal, MEMBER_PATH},
@@ -32,6 +33,7 @@ pub fn init(_: ()) -> ExternResult<InitCallbackResult> {
 
 entry_defs!(
     PathEntry::entry_def(),
+    Tag::entry_def(),
     Connection::entry_def(),
     EntryPoint::entry_def(),
     Outcome::entry_def(),
@@ -50,6 +52,7 @@ SIGNALS
 // untagged because the useful tagging is done internally on the *Signal objects
 #[serde(tag = "signalType", content = "data")]
 pub enum SignalType {
+    Tag(ActionSignal<Tag>),
     Connection(ActionSignal<Connection>),
     EntryPoint(ActionSignal<EntryPoint>),
     Outcome(ActionSignal<Outcome>),
@@ -71,6 +74,11 @@ pub enum SignalType {
     RealtimeInfo(RealtimeInfoSignal),
 }
 
+impl From<ActionSignal<Tag>> for SignalType {
+    fn from(value: ActionSignal<Tag>) -> Self {
+        SignalType::Tag(value)
+    }
+}
 impl From<ActionSignal<Connection>> for SignalType {
     fn from(value: ActionSignal<Connection>) -> Self {
         SignalType::Connection(value)
