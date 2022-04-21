@@ -1,7 +1,5 @@
 import React from 'react'
 import ButtonTabIcon from '../../ButtonTabIcon/ButtonTabIcon'
-
-import Icon from '../../Icon/Icon'
 import Typography from '../../Typography/Typography'
 import { ExpandedViewTab } from '../NavEnum'
 
@@ -12,6 +10,8 @@ export type EvLeftColumnProps = {
   onChange: (expandedViewTab: ExpandedViewTab) => void
   activeTab: ExpandedViewTab
   commentCount: number
+  childrenCount: number
+  taskListCount: number
 }
 
 const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
@@ -19,19 +19,29 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
   onChange,
   activeTab,
   commentCount,
+  childrenCount,
+  taskListCount,
 }) => {
   const navItems = [
     {
       text: 'Details',
       icon: 'pencil.svg',
+      tab: ExpandedViewTab.Details,
     },
     {
       text: `Comments (${commentCount})`,
       icon: 'comment.svg',
+      tab: ExpandedViewTab.Comments,
     },
     {
-      text: 'tree view',
-      icon: 'comment.svg',
+      text:
+        childrenCount > 0
+          ? `Children (${childrenCount})`
+          : `Task List (${taskListCount})`,
+      // TODO: set icons
+      icon: childrenCount > 0 ? 'hierarchy.svg' : 'x.svg',
+      tab:
+        childrenCount > 0 ? ExpandedViewTab.ChildrenList : ExpandedViewTab.TaskList,
     },
   ]
 
@@ -41,16 +51,14 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
         {/* TODO: set typography */}
         <Typography style="caption1">{outcomeId.toString()}</Typography>
       </div>
-      {navItems.map(({ text, icon }, index) => {
+      {navItems.map(({ text, icon, tab }) => {
         return (
           <ButtonTabIcon
-            key={index}
+            key={`tab-${tab}`}
             label={text}
             iconName={icon}
-            active={activeTab === index}
-            onClick={() =>
-              index !== ExpandedViewTab.ActivityHistory && onChange(index)
-            }
+            active={activeTab === tab}
+            onClick={() => onChange(tab)}
           />
         )
       })}

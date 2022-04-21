@@ -2,13 +2,15 @@ import React from 'react'
 import './ProgressIndicator.scss'
 
 export type ProgressIndicatorProps = {
-  // proptypes
+  progress: number // between 0 and 100 inclusive
 }
 
 const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
-  // prop declarations
+  progress
 }) => {
-  return <div></div>
+  return <div>
+    {progress.toString()}
+  </div>
 }
 
 export default ProgressIndicator

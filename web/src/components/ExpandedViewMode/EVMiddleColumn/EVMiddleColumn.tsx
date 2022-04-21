@@ -14,12 +14,16 @@ export type EVMiddleColumnProps = {
   outcome: ComputedOutcome
   details: React.ReactElement
   comments: React.ReactElement
+  childrenList?: React.ReactElement
+  taskList?: React.ReactElement
 }
 
 const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
   activeTab,
   details,
   comments,
+  childrenList,
+  taskList,
   outcome,
 }) => {
   // a default in case of loading/transitioning
@@ -41,6 +45,8 @@ const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
       <div className="expanded-view-inner-content">
         {activeTab === ExpandedViewTab.Details && details}
         {activeTab === ExpandedViewTab.Comments && comments}
+        {activeTab === ExpandedViewTab.ChildrenList && childrenList}
+        {activeTab === ExpandedViewTab.TaskList && taskList}
       </div>
     </div>
   )

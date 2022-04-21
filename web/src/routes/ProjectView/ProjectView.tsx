@@ -12,9 +12,6 @@ import { GO_TO_OUTCOME } from '../../searchParams'
 import MapView from './MapView/MapView.connector'
 import PriorityView from './PriorityView/PriorityView'
 import TableView from './TableView/TableView'
-import ConnectedEVRightColumn from '../../components/ExpandedViewMode/EVRightColumn/EVRightColumn.connector'
-import ConnectedEvComments from '../../components/ExpandedViewMode/EvMiddleColumn/TabContent/EvComments/EvComments.connector'
-import ConnectedEvDetails from '../../components/ExpandedViewMode/EvMiddleColumn/TabContent/EvDetails/EvDetails.connector'
 import ConnectedExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode.connector'
 
 // data
@@ -197,25 +194,6 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
     setActiveEntryPoints(entryPointHeaderHashes)
   }, [JSON.stringify(entryPointHeaderHashes)])
 
-  // redux connected expanded view components
-  const details = (
-    <ConnectedEvDetails projectId={projectId} outcome={expandedViewOutcome} />
-  )
-  const outcomeContent = expandedViewOutcome ? expandedViewOutcome.content : ''
-  const comments = (
-    <ConnectedEvComments
-      projectId={projectId}
-      outcomeContent={outcomeContent}
-    />
-  )
-  const rightColumn = (
-    <ConnectedEVRightColumn
-      projectId={projectId}
-      onClose={closeExpandedView}
-      outcome={expandedViewOutcome}
-    />
-  )
-
   return (
     <>
       <ComputedOutcomeContext.Provider value={computedOutcomes}>
@@ -227,9 +205,6 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
         </Switch>
         <ConnectedExpandedViewMode
           projectId={projectId}
-          details={details}
-          comments={comments}
-          rightColumn={rightColumn}
           onClose={closeExpandedView}
           outcome={expandedViewOutcome}
         />

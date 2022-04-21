@@ -15,6 +15,8 @@ export type ExpandedViewModeOwnProps = {
   outcome: ComputedOutcome
   details: React.ReactElement
   comments: React.ReactElement
+  childrenList: React.ReactElement
+  taskList: React.ReactElement
   rightColumn: React.ReactElement
 }
 
@@ -33,6 +35,8 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
   commentCount,
   details,
   comments,
+  childrenList,
+  taskList,
   rightColumn,
   onClose,
 }) => {
@@ -55,6 +59,11 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
 
   // TODO: set up the notion of an Outcome Id
   const outcomeId = 124543
+
+  const childrenCount =
+    outcome && outcome.children ? outcome.children.length : 0
+  // TODO: tasklist
+  const taskListCount = 0
 
   return (
     <>
@@ -84,6 +93,8 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
             activeTab={activeTab}
             onChange={setActiveTab}
             commentCount={commentCount}
+            childrenCount={childrenCount}
+            taskListCount={taskListCount}
             outcomeId={outcomeId}
           />
           <EVMiddleColumn
@@ -91,6 +102,8 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
             outcome={outcome}
             details={details}
             comments={comments}
+            childrenList={childrenList}
+            taskList={taskList}
           />
           {/* Only show the rightColumn while */}
           {/* viewing Details */}

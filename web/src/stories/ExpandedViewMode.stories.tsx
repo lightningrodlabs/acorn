@@ -18,6 +18,9 @@ import ExpandedViewMode, {
 import EvDetails from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvDetails/EvDetails.component'
 import EvComments from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvComments/EvComments.component'
 import EVRightColumn from '../components/ExpandedViewMode/EVRightColumn/EvRightColumn.component'
+import EvTaskListStories from './EvTaskList.stories'
+import EvTaskList from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvTaskList/EvTaskList'
+import EvChildren from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvChildren/EvChildren'
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 
@@ -42,7 +45,7 @@ const comment = {
   isImported: false,
 }
 
-const outcome: ComputedOutcome = {
+const smallOutcome: ComputedOutcome = {
   headerHash: '12344',
   content:
     'This is the content property of an Outcome, it can get long sometimes',
@@ -65,6 +68,29 @@ const outcome: ComputedOutcome = {
   children: [],
 }
 
+const bigOutcome: ComputedOutcome = {
+  headerHash: '12344',
+  content:
+    'This is the content property of an Outcome, it can get long sometimes',
+  creatorAgentPubKey: 'creatoragentpubkey',
+  editorAgentPubKey: 'editoryagentpubkey',
+  timestampCreated: Date.now(),
+  timestampUpdated: Date.now(),
+  scope: { Small: 'Achieved' }, // ignore
+  tags: [],
+  description: 'test description',
+  timeFrame: null, // { fromDate: Date.now(), toDate: Date.now() },
+  isImported: false,
+  computedScope: ComputedScope.Big,
+  computedAchievementStatus: {
+    uncertains: 0,
+    smallsAchieved: 1,
+    smallsTotal: 1,
+    simple: ComputedSimpleAchievementStatus.Achieved,
+  },
+  children: [smallOutcome],
+}
+
 const projectId = '1244323532'
 
 const pegah: Profile = {
@@ -78,10 +104,10 @@ const pegah: Profile = {
   isImported: false,
 }
 
-const details = () => (
+const details = (
   <EvDetails
     projectId={projectId}
-    outcome={outcome}
+    outcome={smallOutcome}
     activeAgentPubKey={'124234134'}
     outcomeHeaderHash={'1344151'}
     people={[
@@ -123,7 +149,7 @@ const details = () => (
   />
 )
 
-const comments = () => (
+const comments = (
   <EvComments
     projectId={projectId}
     outcomeContent="This is the content property of an Outcome, it can get long sometimes"
@@ -141,11 +167,25 @@ const comments = () => (
   />
 )
 
-const rightColumn = () => (
+const childrenList = (
+  <EvChildren
+    outcomeContent="This is the content property of an Outcome, it can get long sometimes"
+    directChildren={[smallOutcome]}
+  />
+)
+
+const taskList = (
+  <EvTaskList
+    outcomeContent="This is the content property of an Outcome, it can get long sometimes"
+    tasks={[]}
+  />
+)
+
+const rightColumn = (
   <EVRightColumn
     projectId={projectId}
     onClose={() => {}}
-    outcome={outcome}
+    outcome={smallOutcome}
     activeAgentPubKey={''}
     outcomeHeaderHash={''}
     isEntryPoint={false}
@@ -186,19 +226,40 @@ const Template: ComponentStory<typeof ExpandedViewMode> = (args) => {
   return <ExpandedViewMode {...args} />
 }
 
-export const Primary = Template.bind({})
-Primary.storyName = 'ExpandedViewMode'
+/*
+  Without Children story
+*/
 
+export const WithoutChildren = Template.bind({})
 const args: ExpandedViewModeProps = {
   projectId: '1234323',
-  outcome,
+  outcome: smallOutcome,
   outcomeHeaderHash: '112412343',
   commentCount: 3,
-  details: details(),
-  comments: comments(),
-  rightColumn: rightColumn(),
+  details: details,
+  comments: comments,
+  childrenList: null,
+  taskList: taskList,
+  rightColumn: rightColumn,
   onClose: () => {},
 }
+WithoutChildren.args = args
 
-// Primary.args = args
-Primary.args = args
+/*
+  With Children story
+*/
+
+export const WithChildren = Template.bind({})
+const withChildrenArgs: ExpandedViewModeProps = {
+  projectId: '1234323',
+  outcome: bigOutcome,
+  outcomeHeaderHash: '112412343',
+  commentCount: 3,
+  details: details,
+  comments: comments,
+  childrenList: childrenList,
+  taskList: null,
+  rightColumn: rightColumn,
+  onClose: () => {},
+}
+WithChildren.args = withChildrenArgs

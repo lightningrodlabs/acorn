@@ -27,5 +27,7 @@ EvLeftColumn.args = {
   onChange: () => {},
   activeTab: ExpandedViewTab.Details,
   commentCount: 1,
-  outcomeId: 142314
+  childrenCount: 0,
+  taskListCount: 1,
+  outcomeId: 142314,
 } as EvLeftColumnProps

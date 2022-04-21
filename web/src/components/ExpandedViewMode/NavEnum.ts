@@ -1,6 +1,6 @@
 export enum ExpandedViewTab {
   Details,
   Comments,
-  ListView,
-  ActivityHistory
+  ChildrenList,
+  TaskList
 }
