@@ -10,15 +10,15 @@ import { cellIdFromString } from '../../../../../utils'
 import { RootState } from '../../../../../redux/reducer'
 import { HeaderHashB64 } from '../../../../../types/shared'
 import { OutcomeComment } from '../../../../../types'
-import Comments, {
-  CommentsConnectorStateProps,
-  CommentsOwnProps,
-} from './Comments.component'
+import EvComments, {
+  EvCommentsConnectorStateProps,
+  EvCommentsOwnProps,
+} from './EvComments.component'
 
 function mapStateToProps(
   state: RootState,
-  ownProps: CommentsOwnProps
-): CommentsConnectorStateProps {
+  ownProps: EvCommentsOwnProps
+): EvCommentsConnectorStateProps {
   const { projectId } = ownProps
   const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
   const outcomeComments = state.projects.outcomeComments[projectId] || {}
@@ -74,4 +74,4 @@ function mapDispatchToProps(dispatch, ownProps) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Comments)
+export default connect(mapStateToProps, mapDispatchToProps)(EvComments)

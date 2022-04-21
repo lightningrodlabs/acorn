@@ -13,7 +13,7 @@ import MapView from './MapView/MapView'
 import PriorityView from './PriorityView/PriorityView'
 import TableView from './TableView/TableView'
 import ConnectedEVRightColumn from '../../components/ExpandedViewMode/EVRightColumn/EVRightColumn.connector'
-import ConnectedComments from '../../components/ExpandedViewMode/EvMiddleColumn/TabContent/Comments/Comments.connector'
+import ConnectedEvComments from '../../components/ExpandedViewMode/EvMiddleColumn/TabContent/EvComments/EvComments.connector'
 import ConnectedEvDetails from '../../components/ExpandedViewMode/EvMiddleColumn/TabContent/EvDetails/EvDetails.connector'
 import ConnectedExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode.connector'
 
@@ -201,7 +201,7 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   const details = (
     <ConnectedEvDetails projectId={projectId} outcome={expandedViewOutcome} />
   )
-  const comments = <ConnectedComments projectId={projectId} />
+  const comments = <ConnectedEvComments projectId={projectId} />
   const rightColumn = (
     <ConnectedEVRightColumn
       projectId={projectId}
