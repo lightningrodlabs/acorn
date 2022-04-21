@@ -22,6 +22,7 @@ export const ReplaceMe = Template.bind({})
 // 'single story hoist' (place the component at the 'top level' without nesting in the storybook menu)
 ReplaceMe.storyName = 'ReplaceMe'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
-ReplaceMe.args = {
+const args: ReplaceMeProps = {
   // assign props here
-} as ReplaceMeProps
+}
+ReplaceMe.args = args
