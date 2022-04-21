@@ -21,6 +21,7 @@ pub(crate) mod fixtures {
         outcome_member::crud::OutcomeMember,
         outcome_vote::crud::OutcomeVote,
         project_meta::crud::{PriorityMode, ProjectMeta},
+        tag::crud::Tag,
     };
 
     fixturator!(
@@ -58,12 +59,16 @@ pub(crate) mod fixtures {
         constructor fn new(AgentPubKeyB64, f64, String, OptionString, String, bool, PriorityMode, VecHeaderHashB64);
     );
 
+    fixturator!(
+      Tag;
+        constructor fn new(String, String);
+    );
+
     type VecHeaderHashB64 = Vec<HeaderHashB64>;
     type OptionAgentPubKeyB64 = Option<AgentPubKeyB64>;
     type OptionString = Option<String>;
     type Optionf64 = Option<f64>;
     type Optionu32 = Option<u32>;
-    type OptionVecString = Option<Vec<String>>;
     type OptionTimeFrame = Option<TimeFrame>;
 
     fixturator!(
@@ -167,19 +172,6 @@ pub(crate) mod fixtures {
     );
 
     fixturator!(
-      OptionVecString;
-      curve Empty {
-          None
-      };
-      curve Unpredictable {
-        Some(Vec::new())
-      };
-      curve Predictable {
-        Some(Vec::new())
-      };
-    );
-
-    fixturator!(
       OptionTimeFrame;
       curve Empty {
           None
@@ -194,6 +186,6 @@ pub(crate) mod fixtures {
 
     fixturator!(
       Outcome;
-        constructor fn new(String, AgentPubKeyB64, OptionAgentPubKeyB64, f64, Optionf64, Scope, OptionVecString, String, OptionTimeFrame, bool);
+        constructor fn new(String, AgentPubKeyB64, OptionAgentPubKeyB64, f64, Optionf64, Scope, VecHeaderHashB64, String, OptionTimeFrame, bool);
     );
 }
