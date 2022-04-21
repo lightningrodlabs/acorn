@@ -3,7 +3,6 @@ import moment from 'moment'
 import './PriorityOutcome.scss'
 import Avatar from '../Avatar/Avatar'
 import Icon from '../Icon/Icon'
-import HierarchyIcon from '../HierarchyIcon/HierarchyIcon'
 import Button from '../Button/Button'
 
 export default function PriorityOutcome({ whoami, outcome, votes, setPriorityPickerAddress }) {
@@ -30,11 +29,7 @@ export default function PriorityOutcome({ whoami, outcome, votes, setPriorityPic
     <div className="priority-quadrant-outcome-item">
       <div className="priority-quadrant-outcome-iconANDmark">
         <div className="priority-quadrant-outcome-icon">
-          <HierarchyIcon
-            size="small"
-            hierarchy={outcome.hierarchy}
-            status={outcome.status}
-          />
+          {/* TODO */}
         </div>
         {myVote && <div className="priority-myvote-mark" />}
       </div>

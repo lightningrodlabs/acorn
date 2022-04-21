@@ -1,26 +1,22 @@
 import React, { useState } from 'react'
-import { connect } from 'react-redux'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import _ from 'lodash'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { useHistory, useLocation } from 'react-router-dom'
-
-import './PriorityUniversal.scss'
-
-import { openExpandedView } from '../../../../redux/ephemeral/expanded-view/actions'
 
 import Avatar from '../../../../components/Avatar/Avatar'
 import Icon from '../../../../components/Icon/Icon'
-import StatusIcon from '../../../../components/StatusIcon/StatusIcon'
-import { updateProjectMeta } from '../../../../redux/persistent/projects/project-meta/actions'
 import TimeframeFormat from '../../../../components/TimeframeFormat'
 import GuidebookNavLink from '../../../../components/GuidebookNavLink/GuidebookNavLink'
-import { animatePanAndZoom } from '../../../../redux/ephemeral/viewport/actions'
-import ProjectsZomeApi from '../../../../api/projectsApi'
-import { getAppWs } from '../../../../hcWebsockets'
-import { cellIdFromString } from '../../../../utils'
+
+import './PriorityUniversal.scss'
 
 // an individual list item
-function UniversalOutcome({ liveIndex, outcome, openExpandedView, goToOutcome }) {
+function UniversalOutcome({
+  liveIndex,
+  outcome,
+  openExpandedView,
+  goToOutcome,
+}) {
   return (
     <div className="universal-priority-outcomes-list-row">
       <div className="universal-priority-outcome-item-wrapper">
@@ -28,36 +24,38 @@ function UniversalOutcome({ liveIndex, outcome, openExpandedView, goToOutcome })
           <div className="universal-priority-number-wrapper">
             <div className="universal-priority-order-number">{liveIndex}.</div>{' '}
           </div>
-          <div className="universal-priority-outcome-title-status" >
+          <div className="universal-priority-outcome-title-status">
             <div className="universal-priority-outcome-item-status">
-              <StatusIcon
-                status={outcome.status}
-                notHoverable
-                hideTooltip
-                className="indented-view-outcome-content-status-color"
-              />
+              {/* TODO */}
             </div>
 
-            <div className="universal-priority-outcome-item-title">{outcome.content}</div>
+            <div className="universal-priority-outcome-item-title">
+              {outcome.content}
+            </div>
           </div>
         </div>
         <div className="universal-priority-outcome-item-metadata">
           <div className="universal-priority-outcome-item-members">
-            {outcome.members.map(member => {
-              return <div className="universal-priority-outcome-item-member-avatar" key={member.headerHash}>
-                <Avatar
-                  firstName={member.firstName}
-                  lastName={member.lastName}
-                  avatarUrl={member.avatarUrl}
-                  imported={member.isImported}
-                  size='medium'
-                  withWhiteBorder
-                  withStatus
-                  selfAssignedStatus={member.status}
-                  withTooltip
-                  tooltipText={`${member.firstName} ${member.lastName}`}
-                />
-              </div>
+            {outcome.members.map((member) => {
+              return (
+                <div
+                  className="universal-priority-outcome-item-member-avatar"
+                  key={member.headerHash}
+                >
+                  <Avatar
+                    firstName={member.firstName}
+                    lastName={member.lastName}
+                    avatarUrl={member.avatarUrl}
+                    imported={member.isImported}
+                    size="medium"
+                    withWhiteBorder
+                    withStatus
+                    selfAssignedStatus={member.status}
+                    withTooltip
+                    tooltipText={`${member.firstName} ${member.lastName}`}
+                  />
+                </div>
+              )
             })}
           </div>
           <div className="universal-priority-outcome-item-date">
@@ -94,7 +92,13 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   ...draggableStyle,
 })
 // wraps an individual list item in a draggable wrapper
-function PriorityUniversalDraggableOutcome({ outcome, index, whileDraggingIndexes, openExpandedView, goToOutcome }) {
+function PriorityUniversalDraggableOutcome({
+  outcome,
+  index,
+  whileDraggingIndexes,
+  openExpandedView,
+  goToOutcome,
+}) {
   let liveIndex
   if (!whileDraggingIndexes) {
     // no dragging happening
@@ -102,19 +106,32 @@ function PriorityUniversalDraggableOutcome({ outcome, index, whileDraggingIndexe
   } else if (whileDraggingIndexes.source === index) {
     // item being rendered IS the item being dragged
     liveIndex = whileDraggingIndexes.destination + 1
-  } else if (index < whileDraggingIndexes.source && index < whileDraggingIndexes.destination) {
+  } else if (
+    index < whileDraggingIndexes.source &&
+    index < whileDraggingIndexes.destination
+  ) {
     // item is above the list than what is being dragged and where it
     // is being dragged to
     liveIndex = index + 1
-  } else if (index > whileDraggingIndexes.source && index <= whileDraggingIndexes.destination) {
+  } else if (
+    index > whileDraggingIndexes.source &&
+    index <= whileDraggingIndexes.destination
+  ) {
     liveIndex = index // means it has gained a spot
-  } else if (index < whileDraggingIndexes.source && index >= whileDraggingIndexes.destination) {
+  } else if (
+    index < whileDraggingIndexes.source &&
+    index >= whileDraggingIndexes.destination
+  ) {
     liveIndex = index + 2 // means it has lost a spots
   } else {
     liveIndex = index + 1
   }
   return (
-    <Draggable key={outcome.headerHash} draggableId={outcome.headerHash} index={index}>
+    <Draggable
+      key={outcome.headerHash}
+      draggableId={outcome.headerHash}
+      index={index}
+    >
       {(provided, snapshot) => {
         return (
           <div
@@ -140,7 +157,12 @@ function PriorityUniversalDraggableOutcome({ outcome, index, whileDraggingIndexe
 }
 
 // the area within which outcomes are droppable
-function PriorityUniversalDroppable({ outcomes, whileDraggingIndexes, openExpandedView, goToOutcome }) {
+function PriorityUniversalDroppable({
+  outcomes,
+  whileDraggingIndexes,
+  openExpandedView,
+  goToOutcome,
+}) {
   return (
     <Droppable droppableId="droppable">
       {(provided, _snapshot) => (
@@ -174,7 +196,7 @@ function PriorityUniversal({
   projectId,
   updateProjectMeta,
   openExpandedView,
-  goToOutcome
+  goToOutcome,
 }) {
   const history = useHistory()
   const location = useLocation()
@@ -201,7 +223,7 @@ function PriorityUniversal({
   const onDragUpdate = (update) => {
     setWhileDraggingIndexes({
       source: update.source.index,
-      destination: update.destination.index
+      destination: update.destination.index,
     })
   }
   const onDragEnd = async (result) => {
@@ -275,17 +297,24 @@ function PriorityUniversal({
       <div className="universal-priority-divider-line"></div>
 
       <div className="universal-priority-outcomes-list-wrapper">
-        {topPriorityOutcomes.length === 0 && <div className="top-priority-empty-state-wrapper">
-         {/* TODO: fix image url */}
-          <img src="img/intro-screen-image-4.svg" className="top-priority-empty-state-image" />
-          <h4>You haven't marked any outcomes as top priority.
-            <br />
-            <GuidebookNavLink guidebookId='intro_universal_priorityMode'>Learn how to start prioritizing here.</GuidebookNavLink> </h4></div>}
-        {topPriorityOutcomes.length !== 0 &&
-          <DragDropContext
-            onDragEnd={onDragEnd}
-            onDragUpdate={onDragUpdate}
-          >
+        {topPriorityOutcomes.length === 0 && (
+          <div className="top-priority-empty-state-wrapper">
+            {/* TODO: fix image url */}
+            <img
+              src="img/intro-screen-image-4.svg"
+              className="top-priority-empty-state-image"
+            />
+            <h4>
+              You haven't marked any outcomes as top priority.
+              <br />
+              <GuidebookNavLink guidebookId="intro_universal_priorityMode">
+                Learn how to start prioritizing here.
+              </GuidebookNavLink>{' '}
+            </h4>
+          </div>
+        )}
+        {topPriorityOutcomes.length !== 0 && (
+          <DragDropContext onDragEnd={onDragEnd} onDragUpdate={onDragUpdate}>
             <PriorityUniversalDroppable
               outcomes={topPriorityOutcomes}
               whileDraggingIndexes={whileDraggingIndexes}
@@ -293,59 +322,10 @@ function PriorityUniversal({
               goToOutcome={navAndGoToOutcome}
             />
           </DragDropContext>
-        }
+        )}
       </div>
     </div>
   )
 }
 
-function mapStateToProps(state) {
-  const projectId = state.ui.activeProject
-  const agents = state.agents
-  const outcomes = state.projects.outcomes[projectId] || {}
-  const outcomeMembers = state.projects.outcomeMembers[projectId] || {}
-  const projectMeta = state.projects.projectMeta[projectId]
-
-  // add members on to outcome state objects
-  const allOutcomesArray = Object.values(outcomes).map(outcome => {
-    const extensions = {}
-    extensions.members = Object.values(outcomeMembers)
-      .filter(outcomeMember => outcomeMember.outcomeHeaderHash === outcome.headerHash)
-      .map(outcomeMember => agents[outcomeMember.memberAgentPubKey])
-      .filter(outcomeMember => outcomeMember) // filter out undefined results
-    return {
-      ...outcome,
-      ...extensions,
-    }
-  })
-  const allOutcomes = _.keyBy(allOutcomesArray, 'headerHash')
-
-  return {
-    projectId,
-    projectMeta,
-    outcomes: allOutcomes,
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    openExpandedView: (headerHash) => dispatch(openExpandedView(headerHash)),
-    goToOutcome: (headerHash) => {
-      return dispatch(animatePanAndZoom(headerHash))
-    },
-    updateProjectMeta: async (projectMeta, headerHash, cellIdString) => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const cellId = cellIdFromString(cellIdString)
-      const updatedProjectMeta = await projectsZomeApi.projectMeta.update(cellId, {
-            entry: projectMeta,
-            headerHash,
-          })
-      return dispatch(
-        updateProjectMeta(cellIdString, updatedProjectMeta)
-      )
-    },
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PriorityUniversal)
+export default PriorityUniversal

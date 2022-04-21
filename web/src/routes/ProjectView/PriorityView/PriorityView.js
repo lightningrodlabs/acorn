@@ -2,19 +2,18 @@ import React, { useContext } from 'react'
 import { Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import './PriorityView.scss'
 
 import { updateProjectMeta } from '../../../redux/persistent/projects/project-meta/actions'
-
 import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeView'
-import outcomesAsTrees from '../../../redux/persistent/projects/outcomes/outcomesAsTrees'
-import PriorityUniversal from './PriorityUniversal/PriorityUniversal'
+import PriorityUniversal from './PriorityUniversal/PriorityUniversal.connector'
 import PriorityVote from './PriorityVote/PriorityVote'
 import { PriorityModeOptions } from '../../../constants'
 import ProjectsZomeApi from '../../../api/projectsApi'
 import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
 import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
+
+import './PriorityView.scss'
 
 function PriorityMode({ projectId, projectMeta, updateProjectMeta }) {
   const computedOutcomes = useContext(ComputedOutcomeContext)
@@ -37,7 +36,6 @@ function PriorityMode({ projectId, projectMeta, updateProjectMeta }) {
       <IndentedTreeView
         outcomeTrees={computedOutcomes.computedOutcomesAsTree}
         projectMeta={projectMeta}
-        projectId={projectId}
         updateProjectMeta={wrappedUpdateProjectMeta}
       />
       {main}
