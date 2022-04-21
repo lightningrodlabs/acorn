@@ -11,11 +11,13 @@ import {
   ComputedOutcome,
   Outcome,
   Profile,
+  Tag,
 } from '../../../../../types'
 import {
   AgentPubKeyB64,
   CellIdString,
   HeaderHashB64,
+  WithHeaderHash,
 } from '../../../../../types/shared'
 
 import './EvDetails.scss'
@@ -55,6 +57,7 @@ export type EvDetailsOwnProps = {
 export type EvDetailsConnectorStateProps = {
   activeAgentPubKey: AgentPubKeyB64
   outcomeHeaderHash: HeaderHashB64
+  projectTags: WithHeaderHash<Tag>[]
   // a list of specifically the assignees
   assignees: AssigneeWithHeaderHash[]
   // an object with ALL profiles
@@ -70,6 +73,7 @@ export type EvDetailsConnectorStateProps = {
 }
 
 export type EvDetailsConnectorDispatchProps = {
+  onSaveTag: (text: string, backgroundColor: string) => Promise<void>
   updateOutcome: (outcome: Outcome, headerHash: HeaderHashB64) => Promise<void>
   createOutcomeMember: (
     outcomeHeaderHash: HeaderHashB64,
@@ -93,11 +97,13 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   outcome,
   // state props
   activeAgentPubKey,
+  projectTags,
   outcomeHeaderHash,
   assignees,
   people,
   profiles,
   // dispatch props
+  onSaveTag,
   updateOutcome,
   createOutcomeMember,
   deleteOutcomeMember,
@@ -114,30 +120,6 @@ const EvDetails: React.FC<EvDetailsProps> = ({
         creator = profiles[value]
     })
   }
-
-  const [outcomeState, setOutcomeState] = useState<ComputedOutcome>()
-  const [assigneesState, setAssigneesState] = useState<
-    AssigneeWithHeaderHash[]
-  >()
-  const [creatorState, setCreatorState] = useState<Profile>()
-
-  useEffect(() => {
-    if (outcome) {
-      setOutcomeState({ ...outcome })
-    }
-  }, [outcome])
-
-  useEffect(() => {
-    if (assignees) {
-      setAssigneesState([...assignees])
-    }
-  }, [assignees])
-
-  useEffect(() => {
-    if (creator) {
-      setCreatorState({ ...creator })
-    }
-  }, [creator])
 
   const [editAssignees, setEditAssignees] = useState(false)
   const [
@@ -169,30 +151,24 @@ const EvDetails: React.FC<EvDetailsProps> = ({
     setDescription(outcomeDescription)
   }, [outcomeDescription])
 
+  const cleanOutcome = () => {
+    return {
+      ...outcome,
+      editorAgentPubKey: activeAgentPubKey,
+      timestampUpdated: moment().unix(),
+      content,
+      description,
+    }
+  }
+  const updateOutcomeWithLatest = () => {
+    updateOutcome(cleanOutcome(), outcomeHeaderHash)
+  }
   const onTitleBlur = () => {
-    updateOutcome(
-      {
-        ...outcome,
-        editorAgentPubKey: activeAgentPubKey,
-        timestampUpdated: moment().unix(),
-        content,
-        description,
-      },
-      outcomeHeaderHash
-    )
+    updateOutcomeWithLatest()
     endTitleEdit(outcomeHeaderHash)
   }
   const onDescriptionBlur = () => {
-    updateOutcome(
-      {
-        ...outcome,
-        editorAgentPubKey: activeAgentPubKey,
-        timestampUpdated: moment().unix(),
-        content,
-        description,
-      },
-      outcomeHeaderHash
-    )
+    updateOutcomeWithLatest()
     endDescriptionEdit(outcomeHeaderHash)
   }
   const onTitleFocus = () => {
@@ -217,9 +193,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   }
 
   // const isBeingEdited = false
-
   // find out if any of the peers is editing title, then take the agent key from that and use to feed into avatar
-
   const editingTitlePeer = editingPeers.find(
     (peerInfo) => peerInfo.outcomeBeingEdited.isTitle
   )
@@ -230,6 +204,14 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   const descriptionEditor = editingDescriptionPeer
     ? editingDescriptionPeer.profileInfo
     : {}
+
+  // TAGS
+  const selectedTags = outcome ? outcome.tags : []
+  const onSelectNewTags = async (newSelectedTags: HeaderHashB64[]) => {
+    const newOutcome = cleanOutcome()
+    newOutcome.tags = newSelectedTags
+    updateOutcome(newOutcome, outcomeHeaderHash)
+  }
 
   return (
     <>
@@ -284,7 +266,13 @@ const EvDetails: React.FC<EvDetailsProps> = ({
 
         {/* Tags */}
         <div>
-          <TagsList tags={[]} showAddTagButton={true} />
+          <TagsList
+            tags={projectTags}
+            showAddTagButton={true}
+            selectedTags={selectedTags}
+            onChange={onSelectNewTags}
+            onSaveTag={onSaveTag}
+          />
         </div>
 
         <div className="squirrels-timeframe-row">

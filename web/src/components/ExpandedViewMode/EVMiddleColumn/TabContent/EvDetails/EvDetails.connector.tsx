@@ -8,8 +8,12 @@ import {
   startDescriptionEdit,
   endDescriptionEdit,
 } from '../../../../../redux/ephemeral/outcome-editing/actions'
-import { createOutcomeMember, deleteOutcomeMember } from '../../../../../redux/persistent/projects/outcome-members/actions'
+import {
+  createOutcomeMember,
+  deleteOutcomeMember,
+} from '../../../../../redux/persistent/projects/outcome-members/actions'
 import { updateOutcome } from '../../../../../redux/persistent/projects/outcomes/actions'
+import { createTag } from '../../../../../redux/persistent/projects/tags/actions'
 import { RootState } from '../../../../../redux/reducer'
 import { AssigneeWithHeaderHash, Outcome } from '../../../../../types'
 import { HeaderHashB64, AgentPubKeyB64 } from '../../../../../types/shared'
@@ -27,6 +31,8 @@ function mapStateToProps(
   const { projectId } = ownProps
   const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
   const outcomeMembers = state.projects.outcomeMembers[projectId] || {}
+  const tags = state.projects.tags[projectId] || {}
+  const projectTags = Object.values(tags)
 
   // assignees
   let assignees: AssigneeWithHeaderHash[] = []
@@ -91,6 +97,7 @@ function mapStateToProps(
 
   return {
     outcomeHeaderHash,
+    projectTags,
     activeAgentPubKey: state.agentAddress,
     profiles: state.agents,
     editingPeers,
@@ -106,6 +113,15 @@ function mapDispatchToProps(
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
+    onSaveTag: async (text: string, backgroundColor: string) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const createdTag = await projectsZomeApi.tag.create(cellId, {
+        text,
+        backgroundColor,
+      })
+      return dispatch(createTag(cellIdString, createdTag))
+    },
     updateOutcome: async (outcome: Outcome, headerHash: HeaderHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
