@@ -24,12 +24,12 @@ const TagsList: React.FC<TagsListProps> = ({
 }) => {
   const [isOpenTagPicker, setIsOpenTagPicker] = useState(false)
   const [filterText, setFilterText] = useState('')
-
   return (
     <div className="tags-list-wrapper">
-      {tags.map((tag) => {
+      {selectedTags.map((tagHeaderHash) => {
+        const tag = tags.find((tag) => tag.headerHash === tagHeaderHash)
         return (
-          <div key={tag.headerHash} className="tags-list-item">
+          <div key={tagHeaderHash} className="tags-list-item">
             <Tag text={tag.text} backgroundColor={tag.backgroundColor} />
           </div>
         )

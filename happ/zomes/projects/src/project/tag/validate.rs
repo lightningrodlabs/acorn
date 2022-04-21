@@ -11,7 +11,7 @@ pub fn validate_tag(validate_data: ValidateData) -> ExternResult<ValidateCallbac
         }
     };
 
-    if (proposed_tag.background_color.len() != 4 || proposed_tag.background_color.len() != 7)
+    if !(proposed_tag.background_color.len() == 4 || proposed_tag.background_color.len() == 7)
         || !proposed_tag.background_color.starts_with("#")
     {
         return Ok(Error::BadTagColor.into());

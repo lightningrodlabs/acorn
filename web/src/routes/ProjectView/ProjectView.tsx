@@ -23,6 +23,7 @@ import { fetchConnections } from '../../redux/persistent/projects/connections/ac
 import { fetchOutcomeMembers } from '../../redux/persistent/projects/outcome-members/actions'
 import { fetchOutcomeComments } from '../../redux/persistent/projects/outcome-comments/actions'
 import { fetchOutcomeVotes } from '../../redux/persistent/projects/outcome-votes/actions'
+import { fetchTags } from '../../redux/persistent/projects/tags/actions'
 // ui
 import { setActiveEntryPoints } from '../../redux/ephemeral/active-entry-points/actions'
 import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
@@ -70,6 +71,7 @@ export type ProjectViewInnerConnectorDispatchProps = {
   fetchOutcomeMembers
   fetchOutcomeVotes
   fetchOutcomeComments
+  fetchTags
   goToOutcome
   triggerRealtimeInfoSignal
 }
@@ -94,6 +96,7 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   fetchOutcomeMembers,
   fetchOutcomeVotes,
   fetchOutcomeComments,
+  fetchTags,
   goToOutcome,
   triggerRealtimeInfoSignal,
 }) => {
@@ -175,6 +178,7 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
     fetchProjectMeta()
     fetchMembers()
     fetchEntryPoints()
+    fetchTags()
     // once Outcomes and Connections, which affect layout are both
     // 1. fetched, and
     // 2. animated to their final position
@@ -310,6 +314,12 @@ function mapDispatchToProps(
         { All: null }
       )
       dispatch(fetchOutcomeComments(cellIdString, outcomeComments))
+    },
+    fetchTags: async () => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const tags = await projectsZomeApi.tag.fetch(cellId, { All: null })
+      dispatch(fetchTags(cellIdString, tags))
     },
     goToOutcome: (outcomeHeaderHash: HeaderHashB64) =>
       dispatch(animatePanAndZoom(outcomeHeaderHash)),

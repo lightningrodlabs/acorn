@@ -121,6 +121,7 @@ export default function MapViewOutcomeTitleForm({
         // defaults
         editorAgentPubKey: null,
         scope: { Uncertain: 0 },
+        tags: [],
         description: '',
         isImported: false,
       },
