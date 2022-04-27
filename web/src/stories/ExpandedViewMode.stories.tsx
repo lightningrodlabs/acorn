@@ -48,7 +48,7 @@ const comment = {
 const smallOutcome: ComputedOutcome = {
   headerHash: '12344',
   content:
-    'This is the content property of an Outcome, it can get long sometimes',
+    'New API in typescript definitions are written Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
   creatorAgentPubKey: 'creatoragentpubkey',
   editorAgentPubKey: 'editoryagentpubkey',
   timestampCreated: Date.now(),

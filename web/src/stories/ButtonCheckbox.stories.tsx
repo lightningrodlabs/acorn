@@ -32,6 +32,6 @@ Primary.storyName = 'ButtonCheckbox'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   size: 'medium',
-  icon: <Icon name="hierarchy-leaf.svg" size="small not-hoverable" />,
+  icon: <Icon name="leaf.svg" size="small not-hoverable" />,
   text: 'Checkbox',
 }

@@ -1,5 +1,6 @@
 .typography {
   -webkit-font-smoothing: antialiased;
+  color: var(--text-color-primary);
   // Headings
   &.h1 {
     font: 2rem var(--font-family-primary-extrabold);

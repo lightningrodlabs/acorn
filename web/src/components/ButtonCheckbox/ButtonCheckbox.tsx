@@ -21,7 +21,9 @@ const ButtonCheckbox: React.FC<ButtonCheckboxProps> = ({
 }) => {
   return (
     <div
-      className={`button-checkbox-wrapper ${isChecked ? 'selected' : ''} `}
+      className={`button-checkbox-wrapper ${isChecked ? 'selected' : ''} ${
+        size === 'small' ? 'small' : size === 'large' ? 'large' : ''
+      }`}
       onClick={() => onChange(!isChecked)}
     >
       <div className="button-checkbox-icon-text">

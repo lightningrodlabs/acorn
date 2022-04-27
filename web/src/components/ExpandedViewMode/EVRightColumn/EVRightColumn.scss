@@ -1,3 +1,25 @@
-.expanded-view-right-column {
-  padding: 50px;
+.expanded-view-right-column-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+  width: 11.25rem;
+  padding: 3.5rem 3.5rem 1.75rem 3.5rem;
+
+  .ev-right-column-section {
+    margin-bottom: 1rem;
+
+    .ev-right-column-heading {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .read-only-info-wrapper,
+  .select-dropdown-wrapper,
+  .button-toggle-switch-wrapper,
+  .button-checkbox-wrapper,
+  .button-action-wrapper {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
 }

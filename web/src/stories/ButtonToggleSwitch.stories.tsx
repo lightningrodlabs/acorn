@@ -33,11 +33,11 @@ Primary.storyName = 'ButtonToggleSwitch'
 Primary.args = {
   size: 'medium',
   state1: {
-    icon: <Icon name="hierarchy-leaf.svg" size="small not-hoverable" />,
+    icon: <Icon name="leaf.svg" size="small not-hoverable" />,
     text: 'State 1',
   },
   state2: {
-    icon: <Icon name="hierarchy-leaf.svg" size="small not-hoverable" />,
+    icon: <Icon name="leaf.svg" size="small not-hoverable" />,
     text: 'State 2',
   },
 }

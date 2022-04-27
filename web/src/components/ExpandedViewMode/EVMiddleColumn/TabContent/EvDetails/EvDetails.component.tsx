@@ -23,6 +23,8 @@ import {
 import './EvDetails.scss'
 import TagsList from '../../../../TagsList/TagsList'
 import MetadataWithLabel from '../../../../MetadataWithLabel/MetadataWithLabel'
+import Typography from '../../../../Typography/Typography'
+import GithubLink from '../../../../GithubLink/GithubLink'
 
 /*
 testing data
@@ -216,6 +218,8 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   return (
     <>
       <div className="expanded-view-details-wrapper">
+        {/* Expanded View Title */}
+
         <div className="expanded-view-title-wrapper">
           {editingTitlePeer ? (
             <div>
@@ -254,7 +258,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                 onBlur={onTitleBlur}
                 onChange={handleOnChangeTitle}
                 onKeyPress={handleOnChangeTitle}
-                placeholder="Add a title..."
+                placeholder="Add outcome statement"
                 onFocus={onTitleFocus}
               />
             </div>
@@ -262,10 +266,13 @@ const EvDetails: React.FC<EvDetailsProps> = ({
         </div>
 
         {/* Github Link */}
-        <div>Github Link</div>
+
+        <div className="expanded-view-github-link">
+          <GithubLink />
+        </div>
 
         {/* Tags */}
-        <div>
+        <div className="expanded-view-tags">
           <TagsList
             tags={projectTags}
             showAddTagButton={true}

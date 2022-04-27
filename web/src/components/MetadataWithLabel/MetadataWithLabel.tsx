@@ -18,7 +18,7 @@ const MetadataWithLabel: React.FC<MetadataWithLabelProps> = ({
       <div className="metadata-with-label-column">
         <div className="metadata-with-label-label">
           {/* TODO: set typography */}
-          <Typography style="subtitle2">{label}</Typography>
+          <Typography style="h6">{label}</Typography>
         </div>
         {children}
       </div>

@@ -167,7 +167,7 @@ export default function MultiEditBar({
     modalClassname = 'hierarchy-popup'
     modalHeading = 'Setting Hierarchy for Multiple Cards'
     modalContent = hierarchyAlertContent
-    modalIcon = 'hierarchy-leaf.svg'
+    modalIcon = 'leaf.svg'
   }
 
   return (

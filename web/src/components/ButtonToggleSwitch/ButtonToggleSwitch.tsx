@@ -18,9 +18,13 @@ const ButtonToggleSwitch: React.FC<ButtonToggleSwitchProps> = ({
   state2,
 }) => {
   return (
-    <div className="button-toggle-switch-wrapper">
+    <div
+      className={`button-toggle-switch-wrapper ${
+        size === 'small' ? 'small' : size === 'large' ? 'large' : ''
+      }`}
+    >
       {/* {switchState.toString()} */}
-      {/* cative state background border */}
+      {/* active state background border */}
       <div className="button-toggle-switch-inner-wrapper">
         <div
           className={`selected-state-bg ${switchState ? 'state2' : 'state1'}`}

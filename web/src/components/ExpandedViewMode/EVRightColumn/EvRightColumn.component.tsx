@@ -119,10 +119,14 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
     outcome && 'Small' in outcome.scope ? outcome.scope.Small : 'Achieved'
   const achievementStatusOptions = [
     // @ts-ignore
-    { icon: <Icon name={'x.svg'} />, text: 'Achieved', id: 'Achieved' },
+    {
+      icon: <Icon name={'achieved.svg'} className="achieved not-hoverable" />,
+      text: 'Achieved',
+      id: 'Achieved',
+    },
     {
       // @ts-ignore
-      icon: <Icon name={'x.svg'} />,
+      icon: <Icon name={'x.svg'} className="not-hoverable" />,
       text: 'Not Achieved',
       id: 'NotAchieved',
     },
@@ -228,112 +232,131 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
 
   const readOnlyInfos: { icon: React.ReactElement; text: string }[] = [
     // @ts-ignore
-    { icon: <Icon name="x.svg" />, text: reportedAchievementStatus },
+    {
+      icon: <Icon name="x.svg" className="not-hoverable" />,
+      text: reportedAchievementStatus,
+    },
   ]
   if (isUncertain) {
     readOnlyInfos.push({
       // @ts-ignore
-      icon: <Icon name="activity-history.svg" />,
+      icon: <Icon name="activity-history.svg" className="not-hoverable"/>,
       text: 'Uncertain Scope',
     })
   }
   return (
-    <div className="expanded-view-right-column">
+    <div className="expanded-view-right-column-wrapper">
       {/* If this Outcome has children, then we can only */}
       {/* read the computed achievement status and scope, */}
       {/* not annotate them */}
       {hasChildren && (
-        <>
-          {/* TODO: set typography */}
-          <Typography style="h8">This outcome is</Typography>
+        <div className="ev-right-column-section">
+          <Typography style="h7">
+            <div className="ev-right-column-heading">This outcome is</div>
+          </Typography>
           <ReadOnlyInfo infos={readOnlyInfos} />
-        </>
+        </div>
       )}
       {/* We can only annotate the achievementStatus and scope */}
       {/* if this Outcome has no children */}
       {!hasChildren && (
-        <>
+        <div className="ev-right-column-section">
           {/* We can only annotate Achievement Status if this Outcome is */}
           {/* annotated Small and has no children */}
           {isSmall && (
-            <>
-              {/* TODO: set typography */}
-              <Typography style="h8">Achievement Status</Typography>
+            <div className="ev-right-column-section">
+              <Typography style="h7">
+                <div className="ev-right-column-heading">
+                  Achievement Status
+                </div>
+              </Typography>
               <SelectDropdown
-                size="medium"
+                size="small"
                 selectedOptionId={achievementStatusSelected}
                 options={achievementStatusOptions}
                 onSelect={onAchievementStatusSelect}
               />
-            </>
+            </div>
           )}
-          {/* TODO: set typography */}
-          <Typography style="h8">Scope</Typography>
-          <ButtonToggleSwitch
-            size="medium"
-            switchState={computedScopeBoolean}
-            onSwitchState={onScopeSwitchState}
-            state1={{
-              // @ts-ignore
-              icon: <Icon name="x.svg" />,
-              text: 'Small',
-            }}
-            state2={{
-              // @ts-ignore
-              icon: <Icon name="x.svg" />,
-              text: 'Uncertain',
-            }}
-          />
-        </>
+
+          <div className="ev-right-column-section">
+            <Typography style="h7">
+              {' '}
+              <div className="ev-right-column-heading">Scope</div>
+            </Typography>
+            <ButtonToggleSwitch
+              size="small"
+              switchState={computedScopeBoolean}
+              onSwitchState={onScopeSwitchState}
+              state1={{
+                // @ts-ignore
+                icon: <Icon name="leaf.svg" className="not-hoverable"/>,
+                text: 'Small',
+              }}
+              state2={{
+                // @ts-ignore
+                icon: <Icon name="uncertain.svg" className="uncertain not-hoverable"/>,
+                text: 'Uncertain',
+              }}
+            />
+          </div>
+        </div>
       )}
       {/* Mark As Section */}
-      {/* TODO: set typography */}
-      <Typography style="h8">Mark as</Typography>
-      {/* We can only mark an Uncertain scope Outcome */}
-      {/* as being 'in breakdown' mode */}
-      {isUncertain && (
+
+      <div className="ev-right-column-section">
+        <Typography style="h7">
+          <div className="ev-right-column-heading">Mark as</div>
+        </Typography>
+        {/* We can only mark an Uncertain scope Outcome */}
+        {/* as being 'in breakdown' mode */}
+        {isUncertain && (
+          <ButtonCheckbox
+            size="small"
+            isChecked={false}
+            onChange={() => {}}
+            // @ts-ignore
+            icon={<Icon name="x.svg" className="not-hoverable"/>}
+            text="In Breakdown"
+          />
+        )}
         <ButtonCheckbox
-          size="medium"
-          isChecked={false}
-          onChange={() => {}}
+          size="small"
+          isChecked={isHighPriority}
+          onChange={setIsHighPriority}
           // @ts-ignore
-          icon={<Icon name="x.svg" />}
-          text="In Breakdown"
+          icon={<Icon name="sort-asc.svg" className="not-hoverable"/>}
+          text="High Priority"
         />
-      )}
-      <ButtonCheckbox
-        size="medium"
-        isChecked={isHighPriority}
-        onChange={setIsHighPriority}
-        // @ts-ignore
-        icon={<Icon name="x.svg" />}
-        text="High Priority"
-      />
-      <ButtonCheckbox
-        size="medium"
-        isChecked={isEntryPoint}
-        onChange={entryPointClickAction}
-        // @ts-ignore
-        icon={<Icon name="x.svg" />}
-        text="Entry Point"
-      />
+        <ButtonCheckbox
+          size="small"
+          isChecked={isEntryPoint}
+          onChange={entryPointClickAction}
+          // @ts-ignore
+          icon={<Icon name="door-open.svg" className="not-hoverable"/>}
+          text="Entry Point"
+        />
+      </div>
       {/* Actions section */}
-      {/* TODO: set typography */}
-      <Typography style="h8">Actions</Typography>
-      <ButtonAction
-        size="medium"
-        onClick={() => {}}
-        // @ts-ignore
-        icon={<Icon name="x.svg" />}
-        text="Share"
-      />
-      <ButtonAction
-        size="medium"
-        onClick={deleteAndClose}
-        // @ts-ignore
-        icon={<Icon name="x.svg" />}
-        text="Archive"
-      />
+      <div className="ev-right-column-section">
+        <Typography style="h7">
+          <div className="ev-right-column-heading">Actions</div>
+        </Typography>
+        <ButtonAction
+          size="small"
+          onClick={() => {}}
+          // @ts-ignore
+          icon={<Icon name="share.svg" className="not-hoverable" />}
+          text="Share"
+        />
+        <ButtonAction
+          size="small"
+          onClick={deleteAndClose}
+          // @ts-ignore
+          icon={<Icon name="archive.svg" className="not-hoverable" />}
+          text="Archive"
+        />
+      </div>
     </div>
   )
 }
