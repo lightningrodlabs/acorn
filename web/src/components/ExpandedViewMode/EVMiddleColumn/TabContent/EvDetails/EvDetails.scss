@@ -1,9 +1,16 @@
 .ev-details-wrapper {
-  padding: 12px 24px 24px 24px;
+  padding: 1rem 2rem 0 2rem;
   display: flex;
   flex-direction: column;
-  max-height: 100%;
   -webkit-font-smoothing: antialiased;
+  height: 100%;
+  position: relative;
+  overflow-y: hidden;
+  box-sizing: border-box;
+}
+
+.ev-details-inner-wrapper {
+  overflow-y: scroll;
 }
 
 // Title

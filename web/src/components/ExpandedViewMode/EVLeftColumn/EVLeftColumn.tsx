@@ -25,12 +25,12 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
   const navItems = [
     {
       text: 'Details',
-      icon: 'pencil.svg',
+      icon: 'details.svg',
       tab: ExpandedViewTab.Details,
     },
     {
       text: `Comments (${commentCount})`,
-      icon: 'comment.svg',
+      icon: 'chats-circle.svg',
       tab: ExpandedViewTab.Comments,
     },
     {
@@ -39,7 +39,7 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
           ? `Children (${childrenCount})`
           : `Task List (${taskListCount})`,
       // TODO: set icons
-      icon: childrenCount > 0 ? 'hierarchy.svg' : 'x.svg',
+      icon: childrenCount > 0 ? 'hierarchy.svg' : 'squares-check.svg',
       tab:
         childrenCount > 0 ? ExpandedViewTab.ChildrenList : ExpandedViewTab.TaskList,
     },

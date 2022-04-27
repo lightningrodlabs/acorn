@@ -30,11 +30,10 @@
 }
 
 .expanded-view-wrapper {
-  box-shadow: 0px 0px 24px #0000001f;
-  // TODO: check what this width should be
-  // and define it in REM?
-  width: 964px;
-  background: #ffffff;
+  height: calc(100vh - 6rem);
+  box-shadow: 0 0 2.5rem var(--color-shadow-dark);
+  width: 59.125rem;
+  background: var(--bg-color-expanded-view);
   border-radius: 16px;
   display: flex;
   flex-direction: row;
@@ -82,7 +81,7 @@
 
 /* expanded view date picker */
 
-.expanded-view-wrapper>.date_picker_wrapper {
+.expanded-view-wrapper > .date_picker_wrapper {
   transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
@@ -97,7 +96,9 @@
   display: inline-block;
 }
 
-.expanded-view-header, .expanded-view-content, .expanded-view-footer {
+.expanded-view-header,
+.ev-middle-column-wrapper,
+.expanded-view-footer {
   display: inline-block;
 }
 

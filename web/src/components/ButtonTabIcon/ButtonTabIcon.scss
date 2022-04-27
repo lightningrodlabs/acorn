@@ -1,17 +1,16 @@
 
 .button-tab-icon-wrapper {
-  color: #a3a3a3;
+  color: var(--text-color-quaternary);
   display: flex;
-  flex-direction: row;
-  font-size: 13px;
-  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
-  font-weight: normal;
   cursor: pointer;
   align-items: center;
-  padding: 6px 0;
-  margin-right: 16px;
-  margin-left: 8px;
-  transition: color 0.3s ease;
+  transition: 0.2s all ease;
+  padding: 1rem;
+
+  .icon {
+    width: 2.625rem;
+    height: 2.625rem;
+  }
 }
 
 .button-tab-icon-wrapper.feature-in-development {
@@ -25,23 +24,23 @@
 /* NavBar Item Hover State */
 
 .button-tab-icon-wrapper:hover {
-  color: #222222;
+  color: var(--text-color-primary);
 
 }
 
 .button-tab-icon-wrapper:hover .icon:not(.not-hoverable) .inner-icon {
   transition: all 0.3s;
-  background-color: #222222;
+  background-color: var(--text-color-primary);
 }
 
 /* NavBar Item Active State */
 
 .button-tab-icon-wrapper.active-tab {
-  color: #222222;
+  color: var(--text-color-primary);
 }
 
 .button-tab-icon-wrapper.active-tab .icon:not(.not-hoverable) .inner-icon {
-  background-color: #222222;
+  background-color: var(--text-color-primary);
 }
 
 .button-tab-icon-wrapper .icon.very-small.grey {
