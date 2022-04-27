@@ -24,7 +24,21 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
   onClickButton,
 }) => {
   return (
-    <div className="avatars-list-wrapper">
+    <div
+      className={`avatars-list-wrapper ${
+        size === 'small'
+          ? 'small'
+          : size === 'small-medium'
+          ? 'small-medium'
+          : size === 'medium'
+          ? 'medium'
+          : size === 'medium-large'
+          ? 'medium-large'
+          : size === 'large'
+          ? 'large'
+          : ''
+      }`}
+    >
       {profiles.map((profile) => {
         if (!profile) {
           return null
@@ -41,28 +55,20 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
         const isProfilePresent = true
 
         return (
-          <div
+          <Avatar
             key={profile.agentPubKey}
-            className={
-              isProfilePresent
-                ? 'avatars-list-wrapper-avatars'
-                : 'avatars-list-wrapper-avatars disconnected'
-            }
-          >
-            {/* title={`${profile.firstName} ${profile.lastName}`} */}
-            <Avatar
-              firstName={profile.firstName}
-              lastName={profile.lastName}
-              avatarUrl={profile.avatarUrl}
-              imported={profile.isImported}
-              selfAssignedStatus={profile.status}
-              size={size}
-              withWhiteBorder
-              withStatus={isProfilePresent}
-              clickable
-              withTooltip
-            />
-          </div>
+            firstName={profile.firstName}
+            lastName={profile.lastName}
+            avatarUrl={profile.avatarUrl}
+            imported={profile.isImported}
+            selfAssignedStatus={profile.status}
+            size={size}
+            withWhiteBorder
+            disconnected={!isProfilePresent}
+            withStatus={isProfilePresent}
+            clickable
+            withTooltip
+          />
         )
       })}
       {/* Invite members button or Add Assignees button(optional) */}
@@ -93,8 +99,14 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
                   ? 'plus.svg'
                   : ''
               }
-              size="small"
-              className="dark-grey"
+              size="medium"
+              className={`grey ${
+                showInviteButton
+                  ? 'invite-members'
+                  : showAddButton
+                  ? 'add-assignees'
+                  : ''
+              }`}
               withTooltip
               tooltipText={
                 showInviteButton

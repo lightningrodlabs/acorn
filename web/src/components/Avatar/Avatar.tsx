@@ -10,6 +10,7 @@ interface AvatarProps {
   lastName: string
   avatarUrl: string
   highlighted?: boolean
+  disconnected?: boolean
   clickable?: boolean
   onClick?: () => void
   imported: boolean
@@ -26,6 +27,7 @@ function Avatar({
   lastName,
   avatarUrl,
   highlighted,
+  disconnected,
   size = 'medium',
   clickable,
   onClick,
@@ -44,7 +46,9 @@ function Avatar({
   if (imported) classes.push('imported')
   if (withStatus) classes.push('with-status')
   if (withTooltip) classes.push('with-tooltip')
+  if (disconnected) classes.push('disconnected')
 
+  // avatar with no image, showing initials
   if (!avatarUrl) {
     const backgroundInitialsAvatar = pickColorForString(firstName)
 
@@ -93,6 +97,7 @@ function Avatar({
     )
   }
 
+  // avatar with image
   classes.push('avatar')
   return (
     <div

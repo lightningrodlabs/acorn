@@ -25,6 +25,7 @@ import TagsList from '../../../../TagsList/TagsList'
 import MetadataWithLabel from '../../../../MetadataWithLabel/MetadataWithLabel'
 import Typography from '../../../../Typography/Typography'
 import GithubLink from '../../../../GithubLink/GithubLink'
+import AvatarsList from '../../../../AvatarsList/AvatarsList'
 
 /*
 testing data
@@ -217,10 +218,10 @@ const EvDetails: React.FC<EvDetailsProps> = ({
 
   return (
     <>
-      <div className="expanded-view-details-wrapper">
+      <div className="ev-details-wrapper">
         {/* Expanded View Title */}
 
-        <div className="expanded-view-title-wrapper">
+        <div className="ev-title-wrapper">
           {editingTitlePeer ? (
             <div>
               <div className="member-editing-title-wrapper">
@@ -237,8 +238,8 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                   selfAssignedStatus={titleEditor.status}
                 />
               </div>
-              <div className="expanded-view-title-editing-placeholder">
-                <div className="expanded-view-title">
+              <div className="ev-title-editing-placeholder">
+                <div className="ev-title">
                   <TextareaAutosize
                     disabled={!!editingTitlePeer}
                     value={content}
@@ -252,7 +253,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
               </div>
             </div>
           ) : (
-            <div className="expanded-view-title">
+            <div className="ev-title">
               <TextareaAutosize
                 value={content}
                 onBlur={onTitleBlur}
@@ -267,12 +268,12 @@ const EvDetails: React.FC<EvDetailsProps> = ({
 
         {/* Github Link */}
 
-        <div className="expanded-view-github-link">
+        <div className="ev-github-link">
           <GithubLink />
         </div>
 
         {/* Tags */}
-        <div className="expanded-view-tags">
+        <div className="ev-tags">
           <TagsList
             tags={projectTags}
             showAddTagButton={true}
@@ -282,83 +283,49 @@ const EvDetails: React.FC<EvDetailsProps> = ({
           />
         </div>
 
-        <div className="squirrels-timeframe-row">
-          <div className="expanded-view-squirrels-wrapper">
+        <div className="ev-assginees-and-time-row">
+          <div className="ev-assignees-wrapper">
             <MetadataWithLabel label="Assignees">
-              <div className="expanded-view-squirrels-content">
-                {assignees.map((assignee, index) => {
-                  // TODO: fix the highlight for avatars showing all at once
-                  // instead of only highlighting the selected avatar
-                  const highlighted = personInfoPopup
-                    ? personInfoPopup.outcomeMemberHeaderHash ===
-                      assignee.outcomeMemberHeaderHash
-                    : false
-                  return (
-                    <div className="expanded-view-squirrel-wrapper">
-                      <Avatar
-                        withWhiteBorder
-                        key={index}
-                        size="medium"
-                        firstName={assignee.profile.firstName}
-                        lastName={assignee.profile.lastName}
-                        avatarUrl={assignee.profile.avatarUrl}
-                        imported={assignee.profile.isImported}
-                        // @ts-ignore
-                        withWhiteBorder
-                        withStatus
-                        selfAssignedStatus={assignee.profile.status}
-                        clickable
-                        onClick={() =>
-                          setPersonInfoPopup(personInfoPopup ? null : assignee)
-                        }
-                        highlighted={highlighted}
-                      />
-                    </div>
-                  )
-                })}
-                {personInfoPopup && (
-                  <PersonInfoPopup
-                    onClose={() => setPersonInfoPopup(null)}
-                    person={personInfoPopup}
+              <AvatarsList
+                profiles={assignees.map((assignee) => assignee.profile)}
+                showAddButton
+                onClickButton={() => setEditAssignees(true)}
+              />
+
+              {/* {personInfoPopup && (
+                <PersonInfoPopup
+                  onClose={() => setPersonInfoPopup(null)}
+                  person={personInfoPopup}
+                  deleteOutcomeMember={deleteOutcomeMember}
+                />
+              )} */}
+              <div className="ev-add-members-popup-wrapper">
+                {editAssignees && (
+                  <PeoplePicker
+                    projectId={projectId}
+                    onClose={() => setEditAssignees(false)}
+                    activeAgentPubKey={activeAgentPubKey}
+                    people={people}
+                    outcomeHeaderHash={outcomeHeaderHash}
+                    createOutcomeMember={createOutcomeMember}
                     deleteOutcomeMember={deleteOutcomeMember}
                   />
                 )}
-                <div className="expanded-view-squirrels-add-wrapper">
-                  {/* @ts-ignore */}
-                  <Icon
-                    className="add-squirrel-plus-icon"
-                    name="plus.svg"
-                    size="small"
-                    onClick={() => setEditAssignees(!editAssignees)}
-                    withTooltip
-                    tooltipText="Add Squirrels"
-                  />
-                  {editAssignees && (
-                    <PeoplePicker
-                      projectId={projectId}
-                      onClose={() => setEditAssignees(false)}
-                      activeAgentPubKey={activeAgentPubKey}
-                      people={people}
-                      outcomeHeaderHash={outcomeHeaderHash}
-                      createOutcomeMember={createOutcomeMember}
-                      deleteOutcomeMember={deleteOutcomeMember}
-                    />
-                  )}
-                </div>
               </div>
             </MetadataWithLabel>
           </div>
-          <div className="timeframe-wrapper">
-            <MetadataWithLabel label="Timeframe">
+          <div className="ev-time-wrapper">
+            {/* TODO: make label based on the scope of the outcome */}
+            <MetadataWithLabel label="Breakdown Time Est.">
               <div
-                className="expanded-view-timeframe-display"
+                className="ev-timeframe-display"
                 // TODO: bring this back
                 // onClick={() => setEditTimeframe(!editTimeframe)}
               >
                 {fromDate && fromDate.format('MMM D, YYYY')}
                 {toDate && ' - '}
                 {toDate && toDate.format('MMM D, YYYY')}
-                {!fromDate && !toDate && 'Click to set timeframe'}
+                {!fromDate && !toDate && 'Click to set time'}
               </div>
             </MetadataWithLabel>
           </div>
@@ -368,7 +335,8 @@ const EvDetails: React.FC<EvDetailsProps> = ({
           // @ts-ignore
           icon={<Icon name="text-align-left.svg" />}
         >
-          <div className="expanded-view-description-wrapper">
+          <div className="ev-description-wrapper">
+            {/* If description is being edited by someone */}
             {editingDescriptionPeer ? (
               <div>
                 <div className="member-editing-description-wrapper">
@@ -385,8 +353,8 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                     selfAssignedStatus={descriptionEditor.status}
                   />
                 </div>
-                <div className="expanded-view-description-editing-placeholder">
-                  <div className="expanded-view-description">
+                <div className="ev-description-editing-placeholder">
+                  <div className="ev-description">
                     <TextareaAutosize
                       disabled={!!editingDescriptionPeer}
                       placeholder="Add description here"
@@ -399,7 +367,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                 </div>
               </div>
             ) : (
-              <div className="expanded-view-description">
+              <div className="ev-description">
                 <TextareaAutosize
                   placeholder="Add description here"
                   value={description}
