@@ -5,8 +5,6 @@ import {
     DELETE_OUTCOME_FULLY
 } from '../../persistent/projects/outcomes/actions'
 import {
-    createConnection,
-    fetchConnections,
     AFFECT_LAYOUT_DELETE_CONNECTION,
     PREVIEW_CONNECTIONS,
     CLEAR_CONNECTIONS_PREVIEW,
@@ -23,6 +21,12 @@ import performLayoutAnimation from '../animations/layout'
 
 const isOneOfLayoutAffectingActions = (action) => {
     const { type } = action
+    // DELETE_EDGE should be here
+    // except that there is an instance where we
+    // quickly in succession delete an edge and then
+    // create a new one, so we have to manually instruct
+    // in that case (via a separate TRIGGER_UPDATE_LAYOUT action)
+    // whether or not to perform the layout update
     return type === TRIGGER_UPDATE_LAYOUT
         || type === PREVIEW_CONNECTIONS
         || type === CLEAR_CONNECTIONS_PREVIEW
@@ -31,7 +35,6 @@ const isOneOfLayoutAffectingActions = (action) => {
         || type === DELETE_OUTCOME_FULLY
         || type === CREATE_CONNECTION
         || type === FETCH_CONNECTIONS
-        || (action.type === AFFECT_LAYOUT_DELETE_CONNECTION && action.affectLayout)
 }
 
 const isOneOfViewportAffectingActions = (action) => {
@@ -62,24 +65,6 @@ const layoutWatcher = store => {
       // (anything that deletes or adds Outcomes or Connections which form the graph we
       // pass to dagre to generate a layout) that this kicks in, and handles the creation of an animation
       // from the current layout to the new layout, by using the TWEENJS library
-
-      // catch and handle this uniquely special action
-      // which has a special case of being a delete firing very close in time to
-      // a create action (since we delete an Connection then immediately create one)
-      // and allow preventing that action in special cases from causing a layout animation
-      // to occur
-      const specialLayoutAffectingDeleteConnection = action.type === AFFECT_LAYOUT_DELETE_CONNECTION
-      if (specialLayoutAffectingDeleteConnection) {
-        if (!action.affectLayout) {
-          // just dispatch the "real" action and return that
-          return store.dispatch(action.asyncAction)
-        } else {
-          // wait for the async action to complete before running re-layout
-          await store.dispatch(action.asyncAction)
-          // now the store will have the connection removed from state
-          // meaning the end calculated layout will be proper
-        }
-      }
 
       let currentState
       const shouldReLayout = isOneOfLayoutAffectingActions(action)

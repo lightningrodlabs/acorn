@@ -3,7 +3,7 @@ import { RootState } from '../../redux/reducer'
 import {
   createOutcomeWithConnection,
 } from '../../redux/persistent/projects/outcomes/actions'
-import { affectLayoutDeleteConnection } from '../../redux/persistent/projects/connections/actions'
+import { deleteConnection } from '../../redux/persistent/projects/connections/actions'
 import {
   closeOutcomeForm,
   updateContent,
@@ -12,6 +12,7 @@ import MapViewOutcomeTitleForm from './MapViewOutcomeTitleForm.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
+import { HeaderHashB64 } from '../../types/shared'
 
 // https://react-redux.js.org/using-react-redux/connect-mapstate
 // Designed to grab selective data off of a redux state tree in order
@@ -67,20 +68,16 @@ function mapDispatchToProps(dispatch, ownProps) {
     updateContent: (content) => {
       dispatch(updateContent(content))
     },
-    deleteConnection: async (address) => {
+    deleteConnection: async (headerHash: HeaderHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      // false because we will only be archiving
+      // we will only be archiving
       // an connection here in the context of immediately replacing
       // it with another during a createOutcomeWithConnection
       // thus we don't want a glitchy animation
-      const affectLayout = false
-      const layoutAction = await affectLayoutDeleteConnection(
-        cellIdString,
-        address,
-        affectLayout
-      )
-      return dispatch(layoutAction)
+      // so we DON'T call TRIGGER_UPDATE_LAYOUT
+      await projectsZomeApi.connection.delete(cellId, headerHash)
+      return dispatch(deleteConnection(cellIdString, headerHash))
     },
     createOutcomeWithConnection: async (entry, maybeLinkedOutcome) => {
       const appWebsocket = await getAppWs()

@@ -11,11 +11,11 @@ import {
 import {
   SEND_REALTIME_INFO,
   SEND_EXIT_PROJECT_SIGNAL,
-  sendRealtimeInfoSignal
 } from './actions'
 import ProjectsZomeApi from '../../../../api/projectsApi'
 import { getAppWs } from '../../../../hcWebsockets'
 import { cellIdFromString } from '../../../../utils'
+import { RootState } from '../../../reducer'
 
 const isOneOfRealtimeInfoAffectingActions = (action) => {
   const { type } = action
@@ -39,21 +39,19 @@ const isProjectExitAction = (action) => {
 const realtimeInfoWatcher = (store) => {
   // return the action handler middleware
   return (next) => async (action) => {
-    const shouldSendRealtimeSignal = isOneOfRealtimeInfoAffectingActions(action)
-    const appWebsocket = await getAppWs()
-    const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-    if (shouldSendRealtimeSignal) {
+    if (isOneOfRealtimeInfoAffectingActions(action)) {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       let result = next(action)
-      let state = store.getState()
+      let state: RootState = store.getState()
       const { cellIdString, payload } = getRealtimeInfo(state)
       const cellId = cellIdFromString(cellIdString)
       await projectsZomeApi.realtimeInfoSignal.send(cellId, payload)
-      store.dispatch(sendRealtimeInfoSignal(cellIdString, payload))
       return result
-    }
-    const shouldSendProjectExitSignal = isProjectExitAction(action)
-    if (shouldSendProjectExitSignal) {
-      let state = store.getState()
+    } else if (isProjectExitAction(action)) {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      let state: RootState = store.getState()
       const cellIdString = state.ui.activeProject
       const payload = {
         projectId: '',
@@ -61,18 +59,17 @@ const realtimeInfoWatcher = (store) => {
         outcomeExpandedView: null,
       }
       const cellId = cellIdFromString(cellIdString)
-      await projectsZomeApi.realtimeInfoSignal.send(cellId, payload)
-      store.dispatch(sendRealtimeInfoSignal(cellIdString, payload))
-      // does this action even need to be sent? there is no reducer/state change from it
+      // TODO: catch and log error, but don't
+      // await this call
+      projectsZomeApi.realtimeInfoSignal.send(cellId, payload)
+      return next(action)
+    } else {
+      return next(action)
     }
-
-    // return result
-    let result = next(action)
-    return result
   }
 }
 // cherry-pick the relevant state for sending as a RealtimeInfo Signal
-function getRealtimeInfo(state) {
+function getRealtimeInfo(state: RootState) {
   let cellIdString = state.ui.activeProject
   let payload = {
     projectId: state.ui.activeProject,

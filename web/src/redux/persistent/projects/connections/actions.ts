@@ -48,22 +48,6 @@ const [[
   deleteConnection
 ]] = createCrudActionCreators<Connection>('CONNECTION')
 
-// this action gets caught and
-// handled in the web/src/layout/middleware.js
-// it allows the dispatcher of a usual 'deleteConnection' action
-// to specify whether that action should or shouldn't trigger
-// a layout update on its successful completion of the call
-const affectLayoutDeleteConnection = async (cellIdString, payload, affectLayout) => {
-  const cellId = cellIdFromString(cellIdString)
-  const appWebsocket = await getAppWs()
-  const projectsZomeApi = new ProjectZomeApi(appWebsocket)
-  await projectsZomeApi.connection.delete(cellId, payload) 
-  return {
-    type: AFFECT_LAYOUT_DELETE_CONNECTION,
-    affectLayout,
-  }
-}
-
 export {
   CREATE_CONNECTION,
   FETCH_CONNECTIONS,
@@ -78,5 +62,4 @@ export {
   deleteConnection,
   previewConnections,
   clearConnectionsPreview,
-  affectLayoutDeleteConnection
 }
