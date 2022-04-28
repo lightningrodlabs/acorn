@@ -5,6 +5,9 @@ import './GithubLink.scss'
 
 export type GithubLinkProps = {
   githubLink?: string
+  onSubmit: () => void
+  isEditing: boolean
+  setIsEditing: (isEditing: boolean) => void
   inputLinkText: string
   inputLinkTextInvalid?: boolean
   setInputLinkText: (linkText: string) => void
@@ -12,6 +15,9 @@ export type GithubLinkProps = {
 
 const GithubLink: React.FC<GithubLinkProps> = ({
   githubLink,
+  onSubmit,
+  isEditing,
+  setIsEditing,
   inputLinkText,
   inputLinkTextInvalid,
   setInputLinkText,
@@ -19,7 +25,7 @@ const GithubLink: React.FC<GithubLinkProps> = ({
   return (
     <div className="github-link-wrapper">
       <Icon name="github.svg" size="small" className="not-hoverable" />
-      {githubLink && (
+      {!isEditing && (
         <div className="github-link-display">
           #221
           <div className="github-link-display-external-link">
@@ -32,6 +38,7 @@ const GithubLink: React.FC<GithubLinkProps> = ({
           {/* Edit button to show on hover */}
           <div className="github-link-edit-button">
             <Icon
+              onClick={() => setIsEditing(true)}
               name="edit.svg"
               className="light-grey not-hoverable"
               size="small"
@@ -40,7 +47,7 @@ const GithubLink: React.FC<GithubLinkProps> = ({
         </div>
       )}
       {/* The Github Input */}
-      {!githubLink && (
+      {isEditing && (
         <input
           className={inputLinkTextInvalid ? 'invalid' : ''}
           type="text"
@@ -49,15 +56,15 @@ const GithubLink: React.FC<GithubLinkProps> = ({
           onChange={(keyboardEvent) => {
             setInputLinkText(keyboardEvent.target.value)
           }}
-          //   onKeyDown={(keyboardEvent) => {
-          //     // check if this is Enter button
-          //     // if enter button, then call onAdd
-          //     // also validate that there is some text written
-          //     if (keyboardEvent.key === 'Enter' && typingText.length > 0) {
-          //       onAdd(typingText)
-          //       setTypingText('')
-          //     }
-          //   }}
+          onKeyDown={(keyboardEvent) => {
+            // check if this is Enter button
+            // if enter button, then call onAdd
+            // also validate that there is some text written
+            if (keyboardEvent.key === 'Enter' && inputLinkText.length > 0) {
+              onSubmit()
+              setInputLinkText('')
+            }
+          }}
         />
       )}
     </div>
