@@ -8,18 +8,20 @@ import {
 } from './actions'
 import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64, WithHeaderHash } from '../../../../types/shared'
+import { Action, CellIdString, HeaderHashB64, WithHeaderHash } from '../../../../types/shared'
 import { WireElement } from '../../../../api/hdkCrud'
 import { DeleteOutcomeFullyResponse, OutcomeComment } from '../../../../types'
 
-type State = {
-  [cellId: CellIdString]: {
-    [headerHash: HeaderHashB64]: WithHeaderHash<OutcomeComment>
-  }
+export type ProjectOutcomeCommentsState = {
+  [headerHash: HeaderHashB64]: WithHeaderHash<OutcomeComment>
 }
-const defaultState: State = {}
 
-export default function (state: State = defaultState, action: Action<WireElement<OutcomeComment>> | Action<DeleteOutcomeFullyResponse>): State {
+export type OutcomeCommentsState = {
+  [cellId: CellIdString]: ProjectOutcomeCommentsState
+}
+const defaultState: OutcomeCommentsState = {}
+
+export default function (state: OutcomeCommentsState = defaultState, action: Action<WireElement<OutcomeComment>> | Action<DeleteOutcomeFullyResponse>): OutcomeCommentsState {
   const { payload, type } = action
 
   if (

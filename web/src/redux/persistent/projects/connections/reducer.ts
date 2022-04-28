@@ -13,18 +13,19 @@ import { isCrud, crudReducer } from '../../crudRedux'
 import { CellIdString, HeaderHashB64 } from '../../../../types/shared'
 import { Connection, CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyResponse } from '../../../../types'
 
-
-type State = { 
-  [cellId: CellIdString]: {
-    [headerHashOrPreviewId: string]: Connection & {
-      headerHash?: HeaderHashB64 
-    }
+export type ProjectConnectionsState = {
+  [headerHashOrPreviewId: string]: Connection & {
+    headerHash?: HeaderHashB64 
   }
 }
-const defaultState: State = {}
+
+export type ConnectionsState = { 
+  [cellId: CellIdString]: ProjectConnectionsState
+}
+const defaultState: ConnectionsState = {}
 const PREVIEW_KEY_STRING = 'preview'
 
-export default function (state: State = defaultState, action): State {
+export default function (state: ConnectionsState = defaultState, action): ConnectionsState {
   // start out by checking whether this a standard CRUD operation
   if (isCrud(action, CREATE_CONNECTION, FETCH_CONNECTIONS, UPDATE_CONNECTION, DELETE_CONNECTION)) {
     return crudReducer<Connection>(

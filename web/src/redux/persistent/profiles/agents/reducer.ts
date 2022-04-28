@@ -11,15 +11,15 @@ import { AgentPubKeyB64 } from '../../../../types/shared'
 import { Profile } from '../../../../types'
 import { WireElement } from '../../../../api/hdkCrud'
 
-type State = {
+export type AgentsState = {
   [agentPubKey: AgentPubKeyB64]: Profile
 }
-const defaultState: State = {}
+const defaultState: AgentsState = {}
 
 export default function (
-  state: State = defaultState,
+  state: AgentsState = defaultState,
   action: AgentsAction
-): State {
+): AgentsState {
   const { payload, type } = action
   switch (type) {
     case FETCH_AGENTS:

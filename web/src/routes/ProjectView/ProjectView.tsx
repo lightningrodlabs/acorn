@@ -47,6 +47,7 @@ import outcomesAsTrees from '../../redux/persistent/projects/outcomes/outcomesAs
 import ComputedOutcomeContext from '../../context/ComputedOutcomeContext'
 import { CellIdString, HeaderHashB64 } from '../../types/shared'
 import { ComputedOutcome } from '../../types'
+import { createSelector } from 'reselect'
 
 export type ProjectViewInnerOwnProps = {
   projectId: CellIdString
@@ -80,6 +81,45 @@ export type ProjectViewInnerProps = ProjectViewInnerOwnProps &
   ProjectViewInnerConnectorStateProps &
   ProjectViewInnerConnectorDispatchProps
 
+// const treeData = {
+//   agents: state.agents,
+//   outcomes: state.projects.outcomes[projectId] || ({} as any),
+//   connections: state.projects.connections[projectId] || ({} as any),
+//   outcomeMembers: state.projects.outcomeMembers[projectId] || ({} as any),
+//   outcomeVotes: state.projects.outcomeVotes[projectId] || ({} as any),
+//   outcomeComments:
+//     state.projects.outcomeComments[projectId] || ({} as any),
+// }
+
+const selectDataForOutcomesAsTrees = createSelector(
+  (state: RootState) => state.agents,
+  (state: RootState) => state.projects.outcomes[state.ui.activeProject] || {},
+  (state: RootState) => state.projects.connections[state.ui.activeProject] || {},
+  (state: RootState) => state.projects.outcomeMembers[state.ui.activeProject] || {},
+  // (state: RootState) => state.projects.outcomeVotes[state.ui.activeProject],
+  // (state: RootState) => state.projects.outcomeComments[state.ui.activeProject],
+  (
+    agents,
+    outcomes,
+    connections,
+    outcomeMembers,
+    // outcomeVotes,
+    // outcomeComments
+  ) => {
+    console.log('recalculating computedOutcomes!')
+    const treeData = {
+      agents,
+      outcomes,
+      connections,
+      outcomeMembers,
+      outcomeVotes: {},
+      outcomeComments: {},
+    }
+    const outcomeTrees = outcomesAsTrees(treeData, { withMembers: true })
+    return outcomeTrees
+  }
+)
+
 const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   projectId,
   expandedViewOutcomeHeaderHash,
@@ -106,33 +146,11 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   const sendRealtimeInfoFrequency = 10000
   const instance = useRef<NodeJS.Timeout>()
 
-  // const equalityFn = (left: RootState, right: RootState) => {
-  // TODO: perform the equality check, to decide whether to recompute
-  // return false
-  // }
-  const computedOutcomes = useSelector(
-    (state: RootState) => {
-      const treeData = {
-        agents: state.agents,
-        outcomes: state.projects.outcomes[projectId] || ({} as any),
-        connections: state.projects.connections[projectId] || ({} as any),
-        outcomeMembers: state.projects.outcomeMembers[projectId] || ({} as any),
-        outcomeVotes: state.projects.outcomeVotes[projectId] || ({} as any),
-        outcomeComments:
-          state.projects.outcomeComments[projectId] || ({} as any),
-      }
-      const outcomeTrees = outcomesAsTrees(treeData, { withMembers: true })
+  // we use useSelector + createSelector here
+  // to prevent inefficient CPU expensive calls to outcomesAsTrees
+  // which is responsible for calculating the 'shape of the tree'
+  const computedOutcomes = useSelector(selectDataForOutcomesAsTrees)
 
-      // TODO: map over the outcomes, converting each one from an WithHeaderHash<Outcome>
-      // to a ComputedOutcome
-      // const computedOutcomes =  outcomes.map((outcome) => {
-      // convert outcome
-      // return outcome
-      // })
-      // return the computedOutcomes
-      return outcomeTrees
-    } /*, equalityFn */
-  )
   let expandedViewOutcome: ComputedOutcome
   if (expandedViewOutcomeHeaderHash) {
     expandedViewOutcome =
