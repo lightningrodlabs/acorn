@@ -1,7 +1,7 @@
 .expanded-view-nav-column {
   display: flex;
   flex-direction: column;
-  margin: 5px 10px 0 16px;
-  z-index: 1;
-  border-right: 0.125rem solid var(--border-color-timberwolf);
+  align-items: center;
+  padding: 1rem;
+  border-right: 0.165rem solid var(--border-color-platinum);
 }

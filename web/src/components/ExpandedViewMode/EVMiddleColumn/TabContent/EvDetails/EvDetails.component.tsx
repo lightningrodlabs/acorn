@@ -220,165 +220,167 @@ const EvDetails: React.FC<EvDetailsProps> = ({
     <>
       <div className="ev-details-wrapper">
         {/* Expanded View Title */}
-
-        <div className="ev-title-wrapper">
-          {editingTitlePeer ? (
-            <div>
-              <div className="member-editing-title-wrapper">
-                <Avatar
-                  withStatusBorder
-                  size="small-medium"
-                  firstName={titleEditor.firstName}
-                  lastName={titleEditor.lastName}
-                  avatarUrl={titleEditor.avatarUrl}
-                  // @ts-ignore
-                  isImported={titleEditor.isImported}
-                  headerHash={titleEditor.address}
-                  connectionStatus={'connected'}
-                  selfAssignedStatus={titleEditor.status}
-                />
-              </div>
-              <div className="ev-title-editing-placeholder">
-                <div className="ev-title">
-                  <TextareaAutosize
-                    disabled={!!editingTitlePeer}
-                    value={content}
-                    onBlur={onTitleBlur}
-                    onChange={handleOnChangeTitle}
-                    onKeyPress={handleOnChangeTitle}
-                    placeholder="Add a title..."
-                    onFocus={onTitleFocus}
+        <div className="ev-details-inner-wrapper">
+          <div className="ev-title-wrapper">
+            {editingTitlePeer ? (
+              <div>
+                <div className="member-editing-title-wrapper">
+                  <Avatar
+                    withStatusBorder
+                    size="small-medium"
+                    firstName={titleEditor.firstName}
+                    lastName={titleEditor.lastName}
+                    avatarUrl={titleEditor.avatarUrl}
+                    // @ts-ignore
+                    isImported={titleEditor.isImported}
+                    headerHash={titleEditor.address}
+                    connectionStatus={'connected'}
+                    selfAssignedStatus={titleEditor.status}
                   />
                 </div>
+                <div className="ev-title-editing-placeholder">
+                  <div className="ev-title">
+                    <TextareaAutosize
+                      disabled={!!editingTitlePeer}
+                      value={content}
+                      onBlur={onTitleBlur}
+                      onChange={handleOnChangeTitle}
+                      onKeyPress={handleOnChangeTitle}
+                      placeholder="Add a title..."
+                      onFocus={onTitleFocus}
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="ev-title">
-              <TextareaAutosize
-                value={content}
-                onBlur={onTitleBlur}
-                onChange={handleOnChangeTitle}
-                onKeyPress={handleOnChangeTitle}
-                placeholder="Add outcome statement"
-                onFocus={onTitleFocus}
-              />
-            </div>
-          )}
-        </div>
+            ) : (
+              <div className="ev-title">
+                <TextareaAutosize
+                  value={content}
+                  onBlur={onTitleBlur}
+                  onChange={handleOnChangeTitle}
+                  onKeyPress={handleOnChangeTitle}
+                  placeholder="Add outcome statement"
+                  onFocus={onTitleFocus}
+                />
+              </div>
+            )}
+          </div>
 
-        {/* Github Link */}
+          {/* Github Link */}
 
-        <div className="ev-github-link">
-          <GithubLink />
-        </div>
+          <div className="ev-github-link">
+            <GithubLink />
+          </div>
 
-        {/* Tags */}
-        <div className="ev-tags">
-          <TagsList
-            tags={projectTags}
-            showAddTagButton={true}
-            selectedTags={selectedTags}
-            onChange={onSelectNewTags}
-            onSaveTag={onSaveTag}
-          />
-        </div>
+          {/* Tags */}
+          <div className="ev-tags">
+            <TagsList
+              tags={projectTags}
+              showAddTagButton={true}
+              selectedTags={selectedTags}
+              onChange={onSelectNewTags}
+              onSaveTag={onSaveTag}
+            />
+          </div>
 
-        <div className="ev-assginees-and-time-row">
-          <div className="ev-assignees-wrapper">
-            <MetadataWithLabel label="Assignees">
-              <AvatarsList
-                profiles={assignees.map((assignee) => assignee.profile)}
-                showAddButton
-                onClickButton={() => setEditAssignees(true)}
-              />
+          <div className="ev-assginees-and-time-row">
+            <div className="ev-assignees-wrapper">
+              <MetadataWithLabel label="Assignees">
+                <AvatarsList
+                  size="small-medium"
+                  profiles={assignees.map((assignee) => assignee.profile)}
+                  showAddButton
+                  onClickButton={() => setEditAssignees(true)}
+                />
 
-              {/* {personInfoPopup && (
+                {/* {personInfoPopup && (
                 <PersonInfoPopup
                   onClose={() => setPersonInfoPopup(null)}
                   person={personInfoPopup}
                   deleteOutcomeMember={deleteOutcomeMember}
                 />
               )} */}
-              <div className="ev-add-members-popup-wrapper">
-                {editAssignees && (
-                  <PeoplePicker
-                    projectId={projectId}
-                    onClose={() => setEditAssignees(false)}
-                    activeAgentPubKey={activeAgentPubKey}
-                    people={people}
-                    outcomeHeaderHash={outcomeHeaderHash}
-                    createOutcomeMember={createOutcomeMember}
-                    deleteOutcomeMember={deleteOutcomeMember}
-                  />
-                )}
-              </div>
-            </MetadataWithLabel>
-          </div>
-          <div className="ev-time-wrapper">
-            {/* TODO: make label based on the scope of the outcome */}
-            <MetadataWithLabel label="Breakdown Time Est.">
-              <div
-                className="ev-timeframe-display"
-                // TODO: bring this back
-                // onClick={() => setEditTimeframe(!editTimeframe)}
-              >
-                {fromDate && fromDate.format('MMM D, YYYY')}
-                {toDate && ' - '}
-                {toDate && toDate.format('MMM D, YYYY')}
-                {!fromDate && !toDate && 'Click to set time'}
-              </div>
-            </MetadataWithLabel>
-          </div>
-        </div>
-        <MetadataWithLabel
-          label="Description"
-          // @ts-ignore
-          icon={<Icon name="text-align-left.svg" />}
-        >
-          <div className="ev-description-wrapper">
-            {/* If description is being edited by someone */}
-            {editingDescriptionPeer ? (
-              <div>
-                <div className="member-editing-description-wrapper">
-                  <Avatar
-                    withStatusBorder
-                    size="small-medium"
-                    firstName={descriptionEditor.firstName}
-                    lastName={descriptionEditor.lastName}
-                    avatarUrl={descriptionEditor.avatarUrl}
-                    // @ts-ignore
-                    isImported={descriptionEditor.isImported}
-                    headerHash={descriptionEditor.address}
-                    connectionStatus={'connected'}
-                    selfAssignedStatus={descriptionEditor.status}
-                  />
+                <div className="ev-add-members-popup-wrapper">
+                  {editAssignees && (
+                    <PeoplePicker
+                      projectId={projectId}
+                      onClose={() => setEditAssignees(false)}
+                      activeAgentPubKey={activeAgentPubKey}
+                      people={people}
+                      outcomeHeaderHash={outcomeHeaderHash}
+                      createOutcomeMember={createOutcomeMember}
+                      deleteOutcomeMember={deleteOutcomeMember}
+                    />
+                  )}
                 </div>
-                <div className="ev-description-editing-placeholder">
-                  <div className="ev-description">
-                    <TextareaAutosize
-                      disabled={!!editingDescriptionPeer}
-                      placeholder="Add description here"
-                      value={description}
-                      onBlur={onDescriptionBlur}
-                      onChange={handleOnChangeDescription}
-                      onFocus={onDescriptionFocus}
+              </MetadataWithLabel>
+            </div>
+            <div className="ev-time-wrapper">
+              {/* TODO: make label based on the scope of the outcome */}
+              <MetadataWithLabel label="Breakdown Time Est.">
+                <div
+                  className="ev-timeframe-display"
+                  // TODO: bring this back
+                  // onClick={() => setEditTimeframe(!editTimeframe)}
+                >
+                  {fromDate && fromDate.format('MMM D, YYYY')}
+                  {toDate && ' - '}
+                  {toDate && toDate.format('MMM D, YYYY')}
+                  {!fromDate && !toDate && 'Click to set time'}
+                </div>
+              </MetadataWithLabel>
+            </div>
+          </div>
+          <MetadataWithLabel
+            label="Description"
+            // @ts-ignore
+            icon={<Icon name="text-align-left.svg" />}
+          >
+            <div className="ev-description-wrapper">
+              {/* If description is being edited by someone */}
+              {editingDescriptionPeer ? (
+                <div>
+                  <div className="member-editing-description-wrapper">
+                    <Avatar
+                      withStatusBorder
+                      size="small-medium"
+                      firstName={descriptionEditor.firstName}
+                      lastName={descriptionEditor.lastName}
+                      avatarUrl={descriptionEditor.avatarUrl}
+                      // @ts-ignore
+                      isImported={descriptionEditor.isImported}
+                      headerHash={descriptionEditor.address}
+                      connectionStatus={'connected'}
+                      selfAssignedStatus={descriptionEditor.status}
                     />
                   </div>
+                  <div className="ev-description-editing-placeholder">
+                    <div className="ev-description">
+                      <TextareaAutosize
+                        disabled={!!editingDescriptionPeer}
+                        placeholder="Add description here"
+                        value={description}
+                        onBlur={onDescriptionBlur}
+                        onChange={handleOnChangeDescription}
+                        onFocus={onDescriptionFocus}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="ev-description">
-                <TextareaAutosize
-                  placeholder="Add description here"
-                  value={description}
-                  onBlur={onDescriptionBlur}
-                  onChange={handleOnChangeDescription}
-                  onFocus={onDescriptionFocus}
-                />
-              </div>
-            )}
-          </div>
-        </MetadataWithLabel>
+              ) : (
+                <div className="ev-description">
+                  <TextareaAutosize
+                    placeholder="Add description here"
+                    value={description}
+                    onBlur={onDescriptionBlur}
+                    onChange={handleOnChangeDescription}
+                    onFocus={onDescriptionFocus}
+                  />
+                </div>
+              )}
+            </div>
+          </MetadataWithLabel>
+        </div>
       </div>
     </>
   )
