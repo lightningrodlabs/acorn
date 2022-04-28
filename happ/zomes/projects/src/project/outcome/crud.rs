@@ -157,18 +157,21 @@ impl fmt::Display for RelationInput {
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
+#[serde(rename_all = "camelCase")]
 pub struct LinkedOutcomeDetails {
     outcome_header_hash: HeaderHashB64,
     relation: RelationInput,
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
+#[serde(rename_all = "camelCase")]
 pub struct CreateOutcomeWithConnectionInput {
     entry: Outcome,
     maybe_linked_outcome: Option<LinkedOutcomeDetails>,
 }
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
+#[serde(rename_all = "camelCase")]
 pub struct CreateOutcomeWithConnectionOutput {
     outcome: WireElement<Outcome>,
     maybe_connection: Option<WireElement<Connection>>,

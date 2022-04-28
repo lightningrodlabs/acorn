@@ -82,7 +82,6 @@ function mapDispatchToProps(dispatch, ownProps) {
     createOutcomeWithConnection: async (entry, maybeLinkedOutcome) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      // this api function is not being picked up by intellisense
       const outcomeWithConnection = await projectsZomeApi.outcome.createOutcomeWithConnection(
         cellId,
         {
