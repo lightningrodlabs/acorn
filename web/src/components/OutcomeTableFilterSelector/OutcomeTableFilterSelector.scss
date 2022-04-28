@@ -1,5 +1,33 @@
-.outcome-table-filter-selector {
-  margin: 8px 8px 8px 8px;
+.outcome-table-view-filters-wrapper {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 1rem 0.5rem;
+
+  .table-view-filter-wrapper {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+
+    &:first-child {
+      padding-right: 0.625rem;
+      margin-right: 0.625rem;
+      border-right: 0.125rem solid var(--border-color-platinum);
+    }
+  }
+
+  .filter-search-wrapper {
+    width: 18rem;
+    height: 2.5rem;
+    padding-right: 1rem;
+    box-sizing: border-box;
+  }
+
+  .filter-button-wrapper {
+    .avatar-wrapper,
+    .avatar {
+      height: 1.125rem;
+      width: 1.125rem;
+    }
+  }
 }

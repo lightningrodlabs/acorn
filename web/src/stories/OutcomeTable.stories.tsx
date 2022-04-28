@@ -8,7 +8,7 @@ import OutcomeTableComponent, {
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/OutcomeTable',
+  title: 'Table View/OutcomeTable',
   component: OutcomeTableComponent,
 } as ComponentMeta<typeof OutcomeTableComponent>
 

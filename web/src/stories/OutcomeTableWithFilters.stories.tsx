@@ -9,7 +9,7 @@ import { ComputedOutcome, ComputedScope, ComputedSimpleAchievementStatus, Profil
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/OutcomeTableWithFilters',
+  title: 'Table View/OutcomeTableWithFilters',
   component: OutcomeTableWithFiltersComponent,
 } as ComponentMeta<typeof OutcomeTableWithFiltersComponent>
 

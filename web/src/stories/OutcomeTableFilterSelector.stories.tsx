@@ -8,7 +8,7 @@ import OutcomeTableFilterSelectorComponent, {
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/OutcomeTableFilterSelector',
+  title: 'Table View/OutcomeTableFilterSelector',
   component: OutcomeTableFilterSelectorComponent,
 } as ComponentMeta<typeof OutcomeTableFilterSelectorComponent>
 

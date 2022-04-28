@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
+import AvatarsListStories from '../../stories/AvatarsList.stories'
 import { ComputedOutcome } from '../../types'
+import ExpandChevron from '../ExpandChevron/ExpandChevron'
 import Icon from '../Icon/Icon'
+import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
 import filterMatch, { OutcomeTableFilter } from './filterMatch'
 import './OutcomeTableRow.scss'
 
@@ -28,32 +31,52 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   return (
     <>
       {parentExpanded && match && (
-        <tr>
-          <td>{'123456'}</td>
-          <td>
-            <div className="outcome-table-row">
-              {'-'.repeat(indentationLevel)}
-              {outcome.children.length > 0 && (
-                <button
-                  type="button"
+        <>
+          {/* ID number metadata */}
+          <div className="outcome-table-row-metadata-wrapper id-number">
+            {/* TODO: make ID number display dynamic */}
+            {'123456'}
+          </div>
+          {/* Outcome statement & progress indicator metadata */}
+          <div className="outcome-table-row-metadata-wrapper outcome-statement-wrapper">
+            {/* TODO: make the spacing for nested children right */}
+            {/* the number 2.5 below should match the chevron width on the left */}
+            <div style={{ marginLeft: `${indentationLevel * 2.5}rem` }} />
+            {outcome.children.length > 0 && (
+              /* expand chevron component */
+              <>
+                <ExpandChevron
+                  expanded={expanded}
                   onClick={() => {
                     setExpanded(!expanded)
                   }}
-                >
-                  {expanded ? 'v' : '>'}
-                </button>
-              )}
+                />
+              </>
+            )}
+            {/* TODO: make progress data dynamic */}
+            <ProgressIndicator progress={0} />
+            {/* Outcome statement text */}
+            <div
+              className="outcome-statement-text"
+              onClick={() => openExpandedView(outcome.headerHash)}
+            >
               {outcome.content}
-              <div onClick={() => openExpandedView(outcome.headerHash)}>
-                {/* @ts-ignore */}
-                <Icon name="expand.svg" size="small" className="light-grey" />
-              </div>
             </div>
-          </td>
-          <td>{outcome.members}</td>
-          <td>{outcome.tags}</td>
-          <td>{outcome.timeFrame}</td>
-        </tr>
+          </div>
+          {/* Assignees */}
+          <div className="outcome-table-row-metadata-wrapper">
+            {outcome.members}
+          </div>
+          {/* Tags */}
+          <div className="outcome-table-row-metadata-wrapper">
+            {outcome.tags}
+          </div>
+          {/* Time */}
+          {/* TODO: update time display for different scopes */}
+          <div className="outcome-table-row-metadata-wrapper">
+            {outcome.timeFrame}
+          </div>
+        </>
       )}
       {outcome.children.length > 0 &&
         outcome.children.map((outcomeChild) => (

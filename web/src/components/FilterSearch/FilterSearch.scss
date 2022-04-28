@@ -8,6 +8,8 @@
   width: 100%;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
+  background-color: var(--bg-color-secondary);
+  position: relative;
 
   &:focus-within {
     border: 2px solid var(--border-color-secondary);
@@ -41,6 +43,8 @@
   }
 
   .clear-button {
+    position: absolute;
+    right: 0.5rem;
     .icon .inner-icon {
       transition: 0.2s all ease;
     }

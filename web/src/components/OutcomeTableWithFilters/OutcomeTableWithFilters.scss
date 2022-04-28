@@ -1,8 +1,9 @@
 .outcome-table-with-filters {
-  margin: 62px 8px 0 8px;
+  // margin: 62px 8px 0 8px;
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 128px);
+  // height: calc(100vh - 128px);
   display: flex;
   flex-direction: column;
+  background-color: var(--bg-color-tertiary);
 }

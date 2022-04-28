@@ -1,0 +1,25 @@
+.expand-chevron-wrapper {
+  padding: 0.25rem;
+  cursor: pointer;
+  transition: 0.2s background-color ease-in;
+  border-radius: 0.5rem;
+
+  &:hover {
+    background-color: var(--bg-color-secondary);
+
+    .icon .inner-icon {
+      background-color: var(--text-color-primary);
+    }
+  }
+
+  .icon {
+    transition: transform 0.2s ease-in;
+  }
+
+  &.expanded {
+    .icon {
+      transform: rotateX(90deg);
+      -webkit-transform: rotate(90deg);
+    }
+  }
+}

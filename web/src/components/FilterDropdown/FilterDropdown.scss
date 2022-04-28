@@ -102,6 +102,8 @@
   border-radius: 0.5rem;
   width: 100%;
   box-sizing: border-box;
+  position: absolute;
+  z-index: 2;
 
   .filter-dropdown-menu-option {
     display: flex;
@@ -110,6 +112,7 @@
     padding: 0.675rem 1rem;
     cursor: pointer;
     transition: 0.2s all ease;
+    user-select: none;
 
     &:first-child {
       border-radius: 0.625rem 0.625rem 0 0;

@@ -16,27 +16,21 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
   openExpandedView,
 }) => {
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>ID#</th>
-          <th>Outcome Statement</th>
-          <th>Assignees</th>
-          <th>Tags</th>
-          <th>Time</th>
-        </tr>
-      </thead>
-      <tbody>
-        {outcomeTrees.map((outcome) => (
-          <OutcomeTableRow
-            outcome={outcome}
-            filter={filter}
-            parentExpanded={true}
-            indentationLevel={0}
-            openExpandedView={openExpandedView}
-          />
-        ))}
-      </tbody>
+    <table className="outcome-table-wrapper">
+      <div className="outcome-table-metadata-header">ID#</div>
+      <div className="outcome-table-metadata-header">Outcome Statement</div>
+      <div className="outcome-table-metadata-header">Assignees</div>
+      <div className="outcome-table-metadata-header">Tags</div>
+      <div className="outcome-table-metadata-header">Time</div>
+      {outcomeTrees.map((outcome) => (
+        <OutcomeTableRow
+          outcome={outcome}
+          filter={filter}
+          parentExpanded={true}
+          indentationLevel={0}
+          openExpandedView={openExpandedView}
+        />
+      ))}
     </table>
   )
 }
