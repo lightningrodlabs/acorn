@@ -34,15 +34,17 @@ const TableView: React.FC<TableViewProps> = ({
       return ['tag', 'sprint', 'v0.0.1']
     } /*, equalityFn */
   )
-  
+
   return (
-    <OutcomeTableWithFilters
-      tagList={outcomeTagList}
-      whoAmI={whoAmI}
-      projectMemberProfiles={projectMemberProfiles}
-      computedOutcomesAsTree={computedOutcomesAsTree}
-      openExpandedView={openExpandedView}
-    />
+    <div className="table-view">
+      <OutcomeTableWithFilters
+        tagList={outcomeTagList}
+        whoAmI={whoAmI}
+        projectMemberProfiles={projectMemberProfiles}
+        computedOutcomesAsTree={computedOutcomesAsTree}
+        openExpandedView={openExpandedView}
+      />
+    </div>
   )
 }
 
@@ -61,8 +63,9 @@ function mapStateToProps(state: RootState) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    openExpandedView: (headerHash: HeaderHashB64) =>
-      dispatch(openExpandedView(headerHash)),
+    openExpandedView: (headerHash: HeaderHashB64) => {
+      return dispatch(openExpandedView(headerHash))
+    }
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(TableView)
