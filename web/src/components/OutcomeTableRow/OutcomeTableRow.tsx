@@ -40,8 +40,8 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
           {/* Outcome statement & progress indicator metadata */}
           <div className="outcome-table-row-metadata-wrapper outcome-statement-wrapper">
             {/* TODO: make the spacing for nested children right */}
-            {/* the number 2.5 below should match the chevron width on the left */}
-            <div style={{ marginLeft: `${indentationLevel * 2.5}rem` }} />
+            {/* the width 2.375rem below should match the chevron width on the left */}
+            <div style={{ marginLeft: `${indentationLevel * 2.375}rem` }} />
             {outcome.children.length > 0 && (
               /* expand chevron component */
               <>
@@ -59,6 +59,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
             <div
               className="outcome-statement-text"
               onClick={() => openExpandedView(outcome.headerHash)}
+              title={outcome.content}
             >
               {outcome.content}
             </div>
