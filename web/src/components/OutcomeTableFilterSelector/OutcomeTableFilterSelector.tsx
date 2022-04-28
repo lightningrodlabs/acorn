@@ -59,10 +59,6 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
   const tagOptions = tagList.map((tag) => {
     return { innerListItem: <>{tag}</>, id: tag }
   })
-  // [
-  //   // get list of tags, maybe using something like useSelector, which performs a computation over the state by checking the tags of outcomes
-  // ]
-  const [filterText, setOutcomeTableFilterText] = useState('')
   function isOnlyMeAssigned(filter: OutcomeTableFilter, whoAmI: Profile) {
     if ('assignees' in filter) {
       return (

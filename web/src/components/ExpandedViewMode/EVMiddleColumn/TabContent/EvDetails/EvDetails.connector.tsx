@@ -151,6 +151,7 @@ function mapDispatchToProps(
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       await projectsZomeApi.outcomeMember.delete(cellId, headerHash)
+      console.log('deleted outcome member')
       return dispatch(deleteOutcomeMember(cellIdString, headerHash))
     },
     startTitleEdit: (outcomeHeaderHash: HeaderHashB64) => {

@@ -11,25 +11,26 @@ import {
 } from './actions'
 import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64, WithHeaderHash } from '../../../../types/shared'
+import { Action, CellIdString, HeaderHashB64, WithHeaderHash } from '../../../../types/shared'
 import { DeleteOutcomeFullyResponse, EntryPoint, EntryPointDetails } from '../../../../types'
 import { WireElement } from '../../../../api/hdkCrud'
 
 // state is at the highest level an object with cellIds
 // which are like Projects... EntryPoints exist within Projects
 // so they are contained per project in the top level state
+export type ProjectEntryPointsState = {
+  [headerHash: HeaderHashB64]: WithHeaderHash<EntryPoint>
+}
 
 // state is an object where the keys are the entry headerHashes of "EntryPoints"
 // and the values are modified versions of the EntryPoint data structures that
 // also contain their headerHash on those objects
-type State = {
-  [cellId: CellIdString]: {
-    [headerHash: HeaderHashB64]: WithHeaderHash<EntryPoint>
-  }
+type EntryPointsState = {
+  [cellId: CellIdString]: ProjectEntryPointsState
 }
-const defaultState: State = {}
+const defaultState: EntryPointsState = {}
 
-export default function (state: State = defaultState, action: EntryPointsAction | Action<DeleteOutcomeFullyResponse>): State {
+export default function (state: EntryPointsState = defaultState, action: EntryPointsAction | Action<DeleteOutcomeFullyResponse>): EntryPointsState {
   if (
     isCrud(
       action,

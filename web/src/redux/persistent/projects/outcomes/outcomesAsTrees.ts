@@ -2,34 +2,24 @@ import _ from 'lodash'
 import { ProjectComputedOutcomes } from '../../../../context/ComputedOutcomeContext'
 import {
   ComputedOutcome,
-  Connection,
   OptionalOutcomeData,
-  Outcome,
-  OutcomeComment,
-  OutcomeMember,
-  OutcomeVote,
 } from '../../../../types'
-import { HeaderHashB64, WithHeaderHash } from '../../../../types/shared'
-import { RootState } from '../../../reducer'
+import { HeaderHashB64 } from '../../../../types/shared'
+import { AgentsState } from '../../profiles/agents/reducer'
+import { ProjectConnectionsState } from '../connections/reducer'
+import { ProjectOutcomeCommentsState } from '../outcome-comments/reducer'
+import { ProjectOutcomeMembersState } from '../outcome-members/reducer'
+import { ProjectOutcomeVotesState } from '../outcome-votes/reducer'
 import { computeAchievementStatus, computeScope } from './computedState'
+import { ProjectOutcomesState } from './reducer'
 
 export type TreeData = {
-  agents: RootState['agents']
-  outcomes: {
-    [headerHash: HeaderHashB64]: WithHeaderHash<Outcome>
-  }
-  connections: {
-    [headerHash: HeaderHashB64]: WithHeaderHash<Connection>
-  }
-  outcomeMembers: {
-    [headerHash: HeaderHashB64]: WithHeaderHash<OutcomeMember>
-  }
-  outcomeVotes: {
-    [headerHash: HeaderHashB64]: WithHeaderHash<OutcomeVote>
-  }
-  outcomeComments: {
-    [headerHash: HeaderHashB64]: WithHeaderHash<OutcomeComment>
-  }
+  agents: AgentsState
+  outcomes: ProjectOutcomesState
+  connections: ProjectConnectionsState
+  outcomeMembers: ProjectOutcomeMembersState
+  outcomeVotes: ProjectOutcomeVotesState
+  outcomeComments: ProjectOutcomeCommentsState
 }
 
 export default function outcomesAsTrees(

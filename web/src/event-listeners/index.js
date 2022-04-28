@@ -43,7 +43,6 @@ import {
   updateContent,
 } from '../redux/ephemeral/outcome-form/actions'
 import { deleteOutcomeFully } from '../redux/persistent/projects/outcomes/actions'
-import { affectLayoutDeleteConnection } from '../redux/persistent/projects/connections/actions'
 import { setScreenDimensions } from '../redux/ephemeral/screensize/actions'
 import { changeTranslate, changeScale } from '../redux/ephemeral/viewport/actions'
 import { openExpandedView } from '../redux/ephemeral/expanded-view/actions'
@@ -60,6 +59,8 @@ import handleConnectionConnectMouseUp from '../redux/ephemeral/connection-connec
 import ProjectsZomeApi from '../api/projectsApi'
 import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
+import { triggerUpdateLayout } from '../redux/ephemeral/layout/actions'
+import { deleteConnection } from '../redux/persistent/projects/connections/actions'
 
 // ASSUMPTION: one parent (existingParentConnectionAddress)
 function handleMouseUpForOutcomeForm(state, event, store, fromAddress, relation, existingParentConnectionAddress) {
@@ -135,12 +136,13 @@ export default function setupEventListeners(store, canvas) {
           !state.ui.expandedView.isOpen
         ) {
           let firstOfSelection = selection.selectedConnections[0]
-          // affectLayout means this action will trigger a recalc
-          // and layout animation update, which is natural in this context
-          const affectLayout = true
-          // TODO: refactor this weirdness
-          const affectLayoutAction = await affectLayoutDeleteConnection(activeProject, firstOfSelection, affectLayout)
-          store.dispatch(affectLayoutAction)
+          await projectsZomeApi.connection.delete(cellId, firstOfSelection)
+          store.dispatch(deleteConnection(activeProject, firstOfSelection))
+          // this action will trigger a recalc
+          // and layout animation update, which is natural in this context.
+          // we have to trigger it manually because there is a scenario where
+          // deleteConnection should NOT trigger a layout recalc
+          store.dispatch(triggerUpdateLayout())
           // if on firefox, and matched this case
           // prevent the browser from navigating back to the last page
           event.preventDefault()

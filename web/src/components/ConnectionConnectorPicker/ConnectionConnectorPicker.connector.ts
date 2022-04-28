@@ -44,7 +44,6 @@ function mapDispatchToProps(dispatch) {
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       return Promise.all(
         childrenAddresses.map(async (childHeaderHash) => {
-          // does the camel case conversion work both ways?
           const connection = await projectsZomeApi.connection.create(
             cellId,
             {

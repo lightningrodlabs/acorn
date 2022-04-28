@@ -186,7 +186,7 @@ export default function MultiEditBar({
         )}
         {/* delete */}
         <Icon
-          name='delete.svg'
+          name='archive.svg'
           key='delete'
           className={multiEditBarDeleteClass}
           onClick={() => toggleView('delete')}
@@ -212,7 +212,7 @@ export default function MultiEditBar({
         <ModalContent
           heading='Archiving'
           content={deleteContent}
-          icon='delete.svg'
+          icon='archive.svg'
           primaryButton='Yes, Delete'
           altButton='Nevermind'
           primaryButtonAction={deleteOutcomes}

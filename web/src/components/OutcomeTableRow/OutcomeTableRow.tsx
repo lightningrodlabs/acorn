@@ -65,7 +65,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
           </div>
           {/* Assignees */}
           <div className="outcome-table-row-metadata-wrapper">
-            {outcome.members}
+            {/* {outcome.members} */}
           </div>
           {/* Tags */}
           <div className="outcome-table-row-metadata-wrapper">
