@@ -21,6 +21,7 @@ const sharedOutcomeProperties = {
   timestampCreated: Date.now(),
   timestampUpdated: Date.now(),
   tags: [],
+  githubLink: '',
   description: 'test description',
   timeFrame: null, // { fromDate: Date.now(), toDate: Date.now() },
   isImported: false,
@@ -28,7 +29,7 @@ const sharedOutcomeProperties = {
 
 const noChildrenSmallOutcome: ComputedOutcome = {
   ...sharedOutcomeProperties,
-  scope: { Small: 'Achieved' },
+  scope: { Small: { achievementStatus: 'NotAchieved', targetDate: null, taskList: [] } },
   computedScope: ComputedScope.Small,
   computedAchievementStatus: {
     uncertains: 0,
@@ -41,7 +42,7 @@ const noChildrenSmallOutcome: ComputedOutcome = {
 
 const noChildrenUncertainOutcome: ComputedOutcome = {
   ...sharedOutcomeProperties,
-  scope: { Uncertain: 0 },
+  scope: { Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false } },
   computedScope: ComputedScope.Uncertain,
   computedAchievementStatus: {
     uncertains: 0,
@@ -54,7 +55,8 @@ const noChildrenUncertainOutcome: ComputedOutcome = {
 
 const bigUncertainOutcome: ComputedOutcome = {
   ...sharedOutcomeProperties,
-  scope: { Uncertain: 0 }, // ignored
+   // ignored
+  scope: { Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false } },
   computedScope: ComputedScope.Uncertain,
   computedAchievementStatus: {
     uncertains: 2,
@@ -68,7 +70,8 @@ const bigUncertainOutcome: ComputedOutcome = {
 
 const bigCertainOutcome: ComputedOutcome = {
   ...sharedOutcomeProperties,
-  scope: { Uncertain: 0 }, // ignored
+  // ignored
+  scope: { Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false } }, 
   computedScope: ComputedScope.Big,
   computedAchievementStatus: {
     uncertains: 0,

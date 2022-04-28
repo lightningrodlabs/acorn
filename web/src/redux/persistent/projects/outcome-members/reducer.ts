@@ -1,15 +1,19 @@
-
 import _ from 'lodash'
 
 import {
   CREATE_OUTCOME_MEMBER,
   FETCH_OUTCOME_MEMBERS,
   UPDATE_OUTCOME_MEMBER,
+  DELETE_OUTCOME_MEMBER,
 } from './actions'
 import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { DELETE_OUTCOME_COMMENT } from '../outcome-comments/actions'
-import { Action, CellIdString, HeaderHashB64, WithHeaderHash } from '../../../../types/shared'
+import {
+  Action,
+  CellIdString,
+  HeaderHashB64,
+  WithHeaderHash,
+} from '../../../../types/shared'
 import { WireElement } from '../../../../api/hdkCrud'
 import { DeleteOutcomeFullyResponse, OutcomeMember } from '../../../../types'
 
@@ -22,7 +26,12 @@ export type OutcomeMembersState = {
 }
 const defaultState: OutcomeMembersState = {}
 
-export default function (state: OutcomeMembersState = defaultState, action: Action<WireElement<OutcomeMember>> | Action<DeleteOutcomeFullyResponse>): OutcomeMembersState {
+export default function (
+  state: OutcomeMembersState = defaultState,
+  action:
+    | Action<WireElement<OutcomeMember>>
+    | Action<DeleteOutcomeFullyResponse>
+): OutcomeMembersState {
   const { payload, type } = action
 
   if (
@@ -31,7 +40,7 @@ export default function (state: OutcomeMembersState = defaultState, action: Acti
       CREATE_OUTCOME_MEMBER,
       FETCH_OUTCOME_MEMBERS,
       UPDATE_OUTCOME_MEMBER,
-      DELETE_OUTCOME_COMMENT
+      DELETE_OUTCOME_MEMBER
     )
   ) {
     const crudAction = action as Action<WireElement<OutcomeMember>>
@@ -41,7 +50,7 @@ export default function (state: OutcomeMembersState = defaultState, action: Acti
       CREATE_OUTCOME_MEMBER,
       FETCH_OUTCOME_MEMBERS,
       UPDATE_OUTCOME_MEMBER,
-      DELETE_OUTCOME_COMMENT
+      DELETE_OUTCOME_MEMBER
     )
   }
 
@@ -60,7 +69,8 @@ export default function (state: OutcomeMembersState = defaultState, action: Acti
         ...state,
         [cellId]: _.pickBy(
           state[cellId],
-          (_value, key) => deleteFullyResponse.deletedOutcomeMembers.indexOf(key) === -1
+          (_value, key) =>
+            deleteFullyResponse.deletedOutcomeMembers.indexOf(key) === -1
         ),
       }
     // DEFAULT

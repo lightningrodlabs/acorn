@@ -30,10 +30,10 @@ const args: OutcomeListItemProps = {
     editorAgentPubKey: 'editoryagentpubkey',
     timestampCreated: Date.now(),
     timestampUpdated: Date.now(),
-    scope: { Small: 'Achieved' },
+    scope: { Small: { achievementStatus: 'Achieved', taskList: [], targetDate: null } },
     tags: [],
     description: 'test description',
-    timeFrame: null, // { fromDate: Date.now(), toDate: Date.now() },
+    githubLink: '',
     isImported: false,
     computedScope: ComputedScope.Small,
     computedAchievementStatus: {
