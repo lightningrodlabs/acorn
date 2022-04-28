@@ -3,7 +3,6 @@ import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
 import ChecklistItem from '../components/ChecklistItem/ChecklistItem'
-import { ChecklistItemType } from '../components/Checklist/Checklist'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -21,8 +20,8 @@ const Template: ComponentStory<typeof ChecklistItem> = (args) => {
   return (
     <ChecklistItem
       {...args}
-      isChecked={selectedState}
-      onChangeCheck={(state) => setSelectedState(state)}
+      complete={selectedState}
+      onChangeComplete={(state) => setSelectedState(state)}
     />
   )
 }

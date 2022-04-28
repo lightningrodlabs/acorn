@@ -7,15 +7,15 @@ import Icon from '../Icon/Icon'
 import './Checklist.scss'
 
 export type ChecklistItemType = {
-  text: string
-  isChecked: boolean
+  task: string
+  complete: boolean
 }
 
 export type ChecklistProps = {
   size: 'small' | 'medium' | 'large'
   listItems: ChecklistItemType[]
-  onChange: (index: number, text: string, isChecked: boolean) => Promise<void>
-  onAdd: (newText: string) => Promise<void>
+  onChange: (index: number, task: string, complete: boolean) => Promise<void>
+  onAdd: (newTask: string) => Promise<void>
   onRemove: (index: number) => Promise<void>
 }
 
@@ -37,18 +37,19 @@ const Checklist: React.FC<ChecklistProps> = ({
           <ChecklistItem
             withStrikethrough
             size={size}
-            text={listItem.text}
-            isChecked={listItem.isChecked}
-            onChangeCheck={(isChecked) =>
-              onChange(index, listItem.text, isChecked)
+            task={listItem.task}
+            complete={listItem.complete}
+            onChangeComplete={(isChecked) =>
+              onChange(index, listItem.task, isChecked)
             }
-            onChangeText={(text) => onChange(index, text, listItem.isChecked)}
+            onChangeTask={(text) => onChange(index, text, listItem.complete)}
           />
           {/* Remove button */}
           <div
             className="checklist-remove-button-wrapper"
             onClick={() => onRemove(index)}
           >
+            {/* @ts-ignore */}
             <Icon
               name="delete-bin.svg"
               size="small"

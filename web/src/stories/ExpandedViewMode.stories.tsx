@@ -18,7 +18,6 @@ import ExpandedViewMode, {
 import EvDetails from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvDetails/EvDetails.component'
 import EvComments from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvComments/EvComments.component'
 import EVRightColumn from '../components/ExpandedViewMode/EVRightColumn/EvRightColumn.component'
-import EvTaskListStories from './EvTaskList.stories'
 import EvTaskList from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvTaskList/EvTaskList'
 import EvChildren from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvChildren/EvChildren'
 
@@ -53,10 +52,10 @@ const smallOutcome: ComputedOutcome = {
   editorAgentPubKey: 'editoryagentpubkey',
   timestampCreated: Date.now(),
   timestampUpdated: Date.now(),
-  scope: { Small: 'Achieved' },
+  scope: { Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] } },
   tags: [],
+  githubLink: '',
   description: 'test description',
-  timeFrame: null, // { fromDate: Date.now(), toDate: Date.now() },
   isImported: false,
   computedScope: ComputedScope.Small,
   computedAchievementStatus: {
@@ -76,10 +75,11 @@ const bigOutcome: ComputedOutcome = {
   editorAgentPubKey: 'editoryagentpubkey',
   timestampCreated: Date.now(),
   timestampUpdated: Date.now(),
-  scope: { Small: 'Achieved' }, // ignore
+  // this is ignored when the computedStatus is not Small
+  scope: { Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] } }, 
   tags: [],
+  githubLink: 'https://github.com/lightningrodlabs/acorn/issues/2',
   description: 'test description',
-  timeFrame: null, // { fromDate: Date.now(), toDate: Date.now() },
   isImported: false,
   computedScope: ComputedScope.Big,
   computedAchievementStatus: {

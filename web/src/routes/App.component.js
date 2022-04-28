@@ -16,7 +16,7 @@ import Footer from '../components/Footer/Footer'
 // import new routes here
 import CreateProfilePage from './CreateProfilePage/CreateProfilePage.connector'
 import Dashboard from './Dashboard/Dashboard.connector'
-import ProjectView from './ProjectView/ProjectView'
+import ProjectView from './ProjectView/ProjectView.connector'
 // import RunUpdate from './RunUpdate/RunUpdate'
 
 import IntroScreen from '../components/IntroScreen/IntroScreen'

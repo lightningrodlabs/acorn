@@ -7,8 +7,8 @@ import './EvTaskList.scss'
 export type EvTaskListProps = {
   outcomeContent: string
   tasks: ChecklistItemType[]
-  onChange: (index: number, text: string, isChecked: boolean) => Promise<void>
-  onAdd: (newText: string) => Promise<void>
+  onChange: (index: number, task: string, complete: boolean) => Promise<void>
+  onAdd: (newTask: string) => Promise<void>
   onRemove: (index: number) => Promise<void>
 }
 

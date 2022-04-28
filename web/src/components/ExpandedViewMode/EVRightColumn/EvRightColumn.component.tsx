@@ -8,12 +8,16 @@ import {
   WithHeaderHash,
 } from '../../../types/shared'
 import {
+  AchievementStatus,
   ComputedOutcome,
   ComputedScope,
   ComputedSimpleAchievementStatus,
   EntryPoint,
   Outcome,
   ProjectMeta,
+  Scope,
+  ScopeSmallVariant,
+  ScopeUncertainVariant,
 } from '../../../types'
 import ButtonToggleSwitch from '../../ButtonToggleSwitch/ButtonToggleSwitch'
 import Icon from '../../Icon/Icon'
@@ -25,6 +29,7 @@ import { pickColorForString } from '../../../styles'
 import './EVRightColumn.scss'
 import Typography from '../../Typography/Typography'
 import ReadOnlyInfo from '../../ReadOnlyInfo/ReadOnlyInfo'
+import cleanOutcome from '../../../api/cleanOutcome'
 
 export type EvRightColumnOwnProps = {
   projectId: CellIdString
@@ -55,22 +60,19 @@ export type EvRightColumnProps = EvRightColumnOwnProps &
   EvRightColumnConnectorStateProps &
   EvRightColumnConnectorDispatchProps
 
-// we can't pass a ComputedOutcome to the backend
-// so we strip it back to just the holochain version of an Outcome
-const cleanOutcome = (computedOutcome: ComputedOutcome): Outcome => {
-  const {
-    computedAchievementStatus,
-    computedScope,
-    headerHash,
-    children,
-    members,
-    comments,
-    votes,
-    ...outcome
-  } = computedOutcome
-  return {
-    ...outcome,
-  }
+const defaultUncertainScope: ScopeUncertainVariant = {
+  Uncertain: {
+    timeFrame: null,
+    smallsEstimate: 0,
+    inBreakdown: false,
+  },
+}
+const defaultSmallScope: ScopeSmallVariant = {
+  Small: {
+    achievementStatus: 'NotAchieved',
+    taskList: [],
+    targetDate: null,
+  },
 }
 
 const EVRightColumn: React.FC<EvRightColumnProps> = ({
@@ -116,7 +118,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
       break
   }
   const achievementStatusSelected =
-    outcome && 'Small' in outcome.scope ? outcome.scope.Small : 'Achieved'
+    outcome && 'Small' in outcome.scope ? outcome.scope.Small.achievementStatus : 'Achieved'
   const achievementStatusOptions = [
     // @ts-ignore
     {
@@ -131,13 +133,19 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
       id: 'NotAchieved',
     },
   ]
-  const onAchievementStatusSelect = (id: 'Achieved' | 'NotAchieved') => {
+  const onAchievementStatusSelect = (achievementStatus: AchievementStatus) => {
+    const cleanedOutcome = cleanOutcome(outcome)
     return updateOutcome(
       {
-        ...cleanOutcome(outcome),
+        ...cleanedOutcome,
         editorAgentPubKey: activeAgentPubKey,
         timestampUpdated: moment().unix(),
-        scope: { Small: id },
+        scope: {
+          Small: {
+            ...(cleanedOutcome.scope as ScopeSmallVariant).Small,
+            achievementStatus,
+          },
+        },
       },
       outcomeHeaderHash
     )
@@ -152,12 +160,18 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
     ? outcome.computedScope === ComputedScope.Uncertain
     : false
   const onScopeSwitchState = async (state: boolean) => {
+    let scope: Scope
+    if (state) {
+      scope = defaultUncertainScope
+    } else {
+      scope = defaultSmallScope
+    }
     return updateOutcome(
       {
         ...cleanOutcome(outcome),
         editorAgentPubKey: activeAgentPubKey,
         timestampUpdated: moment().unix(),
-        scope: state ? { Uncertain: 0 } : { Small: 'NotAchieved' },
+        scope,
       },
       outcomeHeaderHash
     )
@@ -240,7 +254,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
   if (isUncertain) {
     readOnlyInfos.push({
       // @ts-ignore
-      icon: <Icon name="activity-history.svg" className="not-hoverable"/>,
+      icon: <Icon name="activity-history.svg" className="not-hoverable" />,
       text: 'Uncertain Scope',
     })
   }
@@ -290,12 +304,17 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
               onSwitchState={onScopeSwitchState}
               state1={{
                 // @ts-ignore
-                icon: <Icon name="leaf.svg" className="not-hoverable"/>,
+                icon: <Icon name="leaf.svg" className="not-hoverable" />,
                 text: 'Small',
               }}
               state2={{
                 // @ts-ignore
-                icon: <Icon name="uncertain.svg" className="uncertain not-hoverable"/>,
+                icon: (
+                  <Icon
+                    name="uncertain.svg"
+                    className="uncertain not-hoverable"
+                  />
+                ),
                 text: 'Uncertain',
               }}
             />
@@ -316,7 +335,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
             isChecked={false}
             onChange={() => {}}
             // @ts-ignore
-            icon={<Icon name="x.svg" className="not-hoverable"/>}
+            icon={<Icon name="x.svg" className="not-hoverable" />}
             text="In Breakdown"
           />
         )}
@@ -325,7 +344,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
           isChecked={isHighPriority}
           onChange={setIsHighPriority}
           // @ts-ignore
-          icon={<Icon name="sort-asc.svg" className="not-hoverable"/>}
+          icon={<Icon name="sort-asc.svg" className="not-hoverable" />}
           text="High Priority"
         />
         <ButtonCheckbox
@@ -333,7 +352,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
           isChecked={isEntryPoint}
           onChange={entryPointClickAction}
           // @ts-ignore
-          icon={<Icon name="door-open.svg" className="not-hoverable"/>}
+          icon={<Icon name="door-open.svg" className="not-hoverable" />}
           text="Entry Point"
         />
       </div>
