@@ -1,7 +1,8 @@
 use crate::{
     get_peers_content,
-    project::{error::Error, outcome::crud::UIEnum},
+    project::{error::Error},
     SignalType,
+    ui_enum::UIEnum,
 };
 use hdk::prelude::*;
 use hdk_crud::{

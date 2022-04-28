@@ -2,6 +2,7 @@ use hdk::prelude::*;
 use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 
 pub mod project;
+pub mod ui_enum;
 
 use hdk_crud::{
     retrieval::{fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry},
