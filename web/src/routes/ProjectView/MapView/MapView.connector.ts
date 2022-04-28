@@ -1,13 +1,15 @@
 import { connect } from 'react-redux'
 import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions'
 import { RootState } from '../../../redux/reducer'
+import { HeaderHashB64 } from '../../../types/shared'
 import MapView from './MapView.component'
 
 function mapDispatchToProps(dispatch) {
   return {
-    openExpandedView: (address) => dispatch(openExpandedView(address)),
+    openExpandedView: (headerHash: HeaderHashB64) => dispatch(openExpandedView(headerHash)),
   }
 }
+
 
 function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject

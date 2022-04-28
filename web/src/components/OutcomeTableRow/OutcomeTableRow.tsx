@@ -50,7 +50,8 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
               </div>
             </div>
           </td>
-          <td>{outcome.members}</td>
+          <td>members</td>
+          {/* <td>{outcome.members}</td> */}
           <td>{outcome.tags}</td>
           <td>{outcome.timeFrame}</td>
         </tr>
