@@ -1,22 +1,23 @@
 import React, { useState } from 'react'
-import AvatarsListStories from '../../stories/AvatarsList.stories'
-import { ComputedOutcome } from '../../types'
+import { ComputedOutcome, Tag } from '../../types'
+import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
 import ExpandChevron from '../ExpandChevron/ExpandChevron'
-import Icon from '../Icon/Icon'
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
+import TagsList from '../TagsList/TagsList'
 import filterMatch, { OutcomeTableFilter } from './filterMatch'
 import './OutcomeTableRow.scss'
 
 export type OutcomeTableRowProps = {
+  projectTags: WithHeaderHash<Tag>[]
   outcome: ComputedOutcome
   filter: OutcomeTableFilter
   parentExpanded: boolean
   indentationLevel: number
-  // TODO: define this type
-  openExpandedView
+  openExpandedView: (headerHash: HeaderHashB64) => void
 }
 
 const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
+  projectTags,
   outcome,
   filter,
   parentExpanded,
@@ -32,11 +33,13 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
     <>
       {parentExpanded && match && (
         <>
+
           {/* ID number metadata */}
           <div className="outcome-table-row-metadata-wrapper id-number">
             {/* TODO: make ID number display dynamic */}
             {'123456'}
           </div>
+
           {/* Outcome statement & progress indicator metadata */}
           <div className="outcome-table-row-metadata-wrapper outcome-statement-wrapper">
             {/* TODO: make the spacing for nested children right */}
@@ -64,24 +67,33 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
               {outcome.content}
             </div>
           </div>
+
           {/* Assignees */}
           <div className="outcome-table-row-metadata-wrapper">
             {/* {outcome.members} */}
           </div>
+
           {/* Tags */}
           <div className="outcome-table-row-metadata-wrapper">
-            {outcome.tags}
+            <TagsList
+              tags={projectTags}
+              selectedTags={outcome.tags}
+              showAddTagButton={false}
+            />
           </div>
+
           {/* Time */}
           {/* TODO: update time display for different scopes */}
           <div className="outcome-table-row-metadata-wrapper">
-            {outcome.timeFrame}
+            {/* {outcome.timeFrame} */}
+            March 12 - 24, 2022
           </div>
         </>
       )}
       {outcome.children.length > 0 &&
         outcome.children.map((outcomeChild) => (
           <OutcomeTableRow
+            projectTags={projectTags}
             outcome={outcomeChild}
             filter={filter}
             parentExpanded={expanded && parentExpanded}

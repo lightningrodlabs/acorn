@@ -12,7 +12,7 @@ import { createSelector } from 'reselect'
 import { GO_TO_OUTCOME } from '../../searchParams'
 import MapView from './MapView/MapView.connector'
 import PriorityView from './PriorityView/PriorityView'
-import TableView from './TableView/TableView'
+import TableView from './TableView/TableView.connector'
 import ConnectedExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode.connector'
 
 import { RootState } from '../../redux/reducer'

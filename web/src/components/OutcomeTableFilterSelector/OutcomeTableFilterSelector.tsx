@@ -1,15 +1,18 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   ComputedScope,
   ComputedSimpleAchievementStatus,
   Profile,
+  Tag as TagType,
 } from '../../types'
+import { WithHeaderHash } from '../../types/shared'
 import Avatar from '../Avatar/Avatar'
 import FilterButton from '../FilterButton/FilterButton'
 import FilterDropdown from '../FilterDropdown/FilterDropdown'
 import FilterSearch from '../FilterSearch/FilterSearch'
 import Icon from '../Icon/Icon'
 import { OutcomeTableFilter } from '../OutcomeTableRow/filterMatch'
+import Tag from '../Tag/Tag'
 import Typography from '../Typography/Typography'
 import './OutcomeTableFilterSelector.scss'
 
@@ -18,7 +21,7 @@ export type OutcomeTableFilterSelectorProps = {
   onApplyOutcomeTableFilter: (filters: OutcomeTableFilter) => void
   filter: OutcomeTableFilter
   projectMemberProfiles: Profile[]
-  tagList: string[]
+  projectTags: WithHeaderHash<TagType>[]
 }
 
 const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
@@ -26,7 +29,7 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
   onApplyOutcomeTableFilter,
   filter,
   projectMemberProfiles,
-  tagList,
+  projectTags,
 }) => {
   const achievementStatusOptions = [
     {
@@ -52,12 +55,17 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
   ) //also include avatar icon
   function profileOption(profile: Profile) {
     return {
-      innerListItem: profile.firstName,
+      innerListItem: <>profile.firstName</>,
       id: profile.agentPubKey,
     }
   }
-  const tagOptions = tagList.map((tag) => {
-    return { innerListItem: <>{tag}</>, id: tag }
+  const tagOptions = projectTags.map((tag) => {
+    return {
+      innerListItem: (
+        <Tag text={tag.text} backgroundColor={tag.backgroundColor} />
+      ),
+      id: tag.headerHash,
+    }
   })
   function isOnlyMeAssigned(filter: OutcomeTableFilter, whoAmI: Profile) {
     if ('assignees' in filter) {
@@ -120,6 +128,7 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           }
           options={achievementStatusOptions}
           text="Achievement Status"
+          // @ts-ignore
           icon={<Icon name="circle-dashed.svg" />}
           size="medium"
           onChange={(newSelectionOptions) => {
@@ -136,6 +145,7 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           selectedOptions={filter.scope ? filter.scope : []}
           options={scopeOptions}
           text="Scope"
+          // @ts-ignore
           icon={<Icon name="leaf.svg" />}
           size="medium"
           onChange={(newSelectionOptions) => {
@@ -152,6 +162,7 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           selectedOptions={filter.assignees ? filter.assignees : []}
           options={assigneeOptions}
           text="Assignees"
+          // @ts-ignore
           icon={<Icon name="assignees.svg" />}
           size="medium"
           onChange={(newSelectionOptions) => {
@@ -168,6 +179,7 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           selectedOptions={filter.tags ? filter.tags : []}
           options={tagOptions}
           text="Tags"
+          // @ts-ignore
           icon={<Icon name="tag.svg" />}
           size="medium"
           onChange={(newSelectionOptions) => {

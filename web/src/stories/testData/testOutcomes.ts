@@ -3,6 +3,7 @@ import {
   ComputedScope,
   ComputedSimpleAchievementStatus,
 } from '../../types'
+import { testTag1HeaderHash } from './testTags'
 
 const testSmallOutcome: ComputedOutcome = {
   headerHash: '12344',
@@ -15,7 +16,7 @@ const testSmallOutcome: ComputedOutcome = {
   scope: {
     Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] },
   },
-  tags: [],
+  tags: [testTag1HeaderHash],
   description:
     'Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
   githubLink: '',

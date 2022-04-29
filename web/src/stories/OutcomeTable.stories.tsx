@@ -5,6 +5,8 @@ import '../variables.scss'
 import OutcomeTableComponent, {
   OutcomeTableProps,
 } from '../components/OutcomeTable/OutcomeTable'
+import testTags from './testData/testTags'
+import { testBigOutcome } from './testData/testOutcomes'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -23,6 +25,11 @@ export const OutcomeTable = Template.bind({})
 OutcomeTable.storyName = 'OutcomeTable'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 const args: OutcomeTableProps = {
-  // assign props here
+  projectTags: testTags,
+  outcomeTrees: [testBigOutcome],
+  filter: {},
+  openExpandedView: function (headerHash: string): void {
+    throw new Error('Function not implemented.')
+  },
 }
 OutcomeTable.args = args
