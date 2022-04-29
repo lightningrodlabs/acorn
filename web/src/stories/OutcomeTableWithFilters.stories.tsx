@@ -28,7 +28,7 @@ OutcomeTableWithFilters.storyName = 'OutcomeTableWithFilters'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 const args: OutcomeTableWithFiltersProps = {
   whoAmI: testProfile,
-  projectMemberProfiles: [],
+  projectMemberProfiles: [testProfile],
   computedOutcomesAsTree: [
     // a sample outcome (has children)
     testBigOutcome

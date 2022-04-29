@@ -70,7 +70,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
 
           {/* Assignees */}
           <div className="outcome-table-row-metadata-wrapper">
-            <AvatarsList size="small" profiles={outcome.members} />
+            <AvatarsList size="small" profiles={outcome.members || []} />
           </div>
 
           {/* Tags */}

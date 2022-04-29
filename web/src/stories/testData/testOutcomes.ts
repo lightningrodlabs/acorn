@@ -3,6 +3,7 @@ import {
   ComputedScope,
   ComputedSimpleAchievementStatus,
 } from '../../types'
+import testProfile from './testProfile'
 import { testTag1HeaderHash } from './testTags'
 
 const testSmallOutcome: ComputedOutcome = {
@@ -54,6 +55,7 @@ const testBigOutcome: ComputedOutcome = {
     smallsTotal: 1,
     simple: ComputedSimpleAchievementStatus.Achieved,
   },
+  members: [testProfile, testProfile],
   children: [testSmallOutcome],
 }
 

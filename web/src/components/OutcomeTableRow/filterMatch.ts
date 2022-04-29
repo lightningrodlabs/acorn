@@ -56,7 +56,7 @@ export default function filterMatch(
     assigneesMatch = false
     for (const assignee of filter.assignees) {
       // assuming assignee filter selection is an OR rather than AND
-      if (outcome.members.map((m) => m.agentPubKey).includes(assignee)) {
+      if ((outcome.members || []).map((m) => m.agentPubKey).includes(assignee)) {
         assigneesMatch = true
         break
       }
