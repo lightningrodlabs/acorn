@@ -1,6 +1,6 @@
 import dagre from 'dagre'
 import { outcomeWidth, getOutcomeHeight } from './dimensions'
-import outcomesAsTrees from '../redux/persistent/projects/outcomes/outcomesAsTrees'
+import outcomesAsTrees, { TreeData } from '../redux/persistent/projects/outcomes/outcomesAsTrees'
 
 const VERTICAL_SPACING = 50
 
@@ -80,7 +80,7 @@ function layoutForTree(tree) {
   return coordinates
 }
 
-export default function layoutFormula(data) {
+export default function layoutFormula(data: TreeData) {
   const trees = outcomesAsTrees(data)
 
   let coordinates = {}

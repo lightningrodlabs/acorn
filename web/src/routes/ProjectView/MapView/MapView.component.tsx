@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react'
 import { useStore } from 'react-redux'
 
 import render from '../../../drawing'
-import { firstZoomThreshold } from '../../../drawing/dimensions'
 import setupEventListeners from '../../../event-listeners'
 import { setScreenDimensions } from '../../../redux/ephemeral/screensize/actions'
 
