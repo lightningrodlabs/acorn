@@ -33,7 +33,6 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
     <>
       {parentExpanded && match && (
         <>
-
           {/* ID number metadata */}
           <div className="outcome-table-row-metadata-wrapper id-number">
             {/* TODO: make ID number display dynamic */}
