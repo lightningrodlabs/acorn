@@ -15,17 +15,25 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({ outcome }) => {
       {/* ID */}
       {/* TODO: set typography */}
       {/* TODO: setup outcome id */}
-      <Typography style="caption1">123411</Typography>
+      <div className="outcome-list-item-id">
+        <Typography style="caption3">123411</Typography>
+      </div>
 
       {/* Leaf (or not) */}
-      <Icon name='leaf.svg' />
+      <div className="outcome-list-item-icon-wrapper">
+        <Icon name="leaf.svg" className="not-hoverable" />
+      </div>
 
       {/* ProgressIndicator */}
-      <ProgressIndicator progress={0} />
+      <div className="outcome-list-item-icon-wrapper">
+        <ProgressIndicator progress={0} />
+      </div>
 
-      {/* Content */}
+      {/* Outcome statement text */}
       {/* TODO: set typography */}
-      <Typography style="caption1">{outcome.content}</Typography>
+      <div className="outcome-list-item-statement">
+        <Typography style="h7">{outcome.content}</Typography>
+      </div>
     </div>
   )
 }

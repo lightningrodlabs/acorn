@@ -110,11 +110,13 @@ const EvComments: React.FC<EvCommentsProps> = ({
           .sort((a, b) => (a.unixTimestamp < b.unixTimestamp ? -1 : 1))
           .map((comment) => {
             return (
-              <CommentPosted
-                key={comment.headerHash}
-                comment={comment}
-                creator={profiles[comment.creatorAgentPubKey]}
-              />
+              <div className="comments-posted-list-item">
+                <CommentPosted
+                  key={comment.headerHash}
+                  comment={comment}
+                  creator={profiles[comment.creatorAgentPubKey]}
+                />
+              </div>
             )
           })}
       </div>

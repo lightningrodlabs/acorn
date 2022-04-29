@@ -14,6 +14,7 @@ import EvChildren from '../components/ExpandedViewMode/EVMiddleColumn/TabContent
 import testComments from './testData/testComments'
 import testProfile from './testData/testProfile'
 import { testBigOutcome, testSmallOutcome } from './testData/testOutcomes'
+import testTags from './testData/testTags'
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 
@@ -25,7 +26,7 @@ const details = (
     outcome={testSmallOutcome}
     activeAgentPubKey={'124234134'}
     outcomeHeaderHash={'1344151'}
-    projectTags={[]}
+    projectTags={testTags}
     people={[
       {
         ...testProfile,
@@ -96,7 +97,21 @@ const childrenList = (
 const taskList = (
   <EvTaskList
     outcomeContent="This is the content property of an Outcome, it can get long sometimes"
-    tasks={[]}
+    tasks={[
+      {
+        task: 'create a scope of work, for development',
+        complete: true,
+      },
+      {
+        task: 'create a scope of work, for design',
+        complete: true,
+      },
+      {
+        task:
+          'Fix entry points list for a project not showing up before entering',
+        complete: false,
+      },
+    ]}
     onChange={function (
       index: number,
       text: string,

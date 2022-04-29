@@ -1,9 +1,11 @@
-.ev-children {
+.ev-children-view-wrapper {
   display: flex;
   flex-direction: column;
-  
-  .ev-children-outcome-list {
+
+  .ev-children-view-outcome-list {
     display: flex;
     flex-direction: column;
+    padding-top: 1rem;
+    overflow-y: scroll;
   }
 }

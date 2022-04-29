@@ -1,0 +1,17 @@
+.ev-tasks-view-wrapper {
+  display: flex;
+  flex-direction: column;
+
+  .ev-tasks-view-list {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    padding-top: 1.5rem;
+
+    .checklist-item-row,
+    .add-checklist-item-wrapper {
+      padding-right: 3rem;
+      padding-left: 3rem;
+    }
+  }
+}
