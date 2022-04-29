@@ -1,6 +1,5 @@
 import React from 'react'
 import Icon from '../Icon/Icon'
-import Typography from '../Typography/Typography'
 import './GithubLink.scss'
 
 export type GithubLinkProps = {
@@ -22,21 +21,29 @@ const GithubLink: React.FC<GithubLinkProps> = ({
   inputLinkTextInvalid,
   setInputLinkText,
 }) => {
+  const regex = /\d+/g
+  const linkNumber = githubLink ? githubLink.match(regex) : null
+
   return (
     <div className="github-link-wrapper">
+      {/* @ts-ignore */}
       <Icon name="github.svg" size="small" className="not-hoverable" />
       {!isEditing && (
         <div className="github-link-display">
-          #221
-          <div className="github-link-display-external-link">
-            <Icon
-              name="external-link.svg"
-              size="small"
-              className="not-hoverable"
-            />
-          </div>
+          <a href={githubLink} target="_blank">
+            #{linkNumber}
+            <span className="github-link-display-external-link">
+              {/* @ts-ignore */}
+              <Icon
+                name="external-link.svg"
+                size="small"
+                className="not-hoverable"
+              />
+            </span>
+          </a>
           {/* Edit button to show on hover */}
           <div className="github-link-edit-button">
+            {/* @ts-ignore */}
             <Icon
               onClick={() => setIsEditing(true)}
               name="edit.svg"
@@ -62,7 +69,9 @@ const GithubLink: React.FC<GithubLinkProps> = ({
             // also validate that there is some text written
             if (keyboardEvent.key === 'Enter' && inputLinkText.length > 0) {
               onSubmit()
-              setInputLinkText('')
+            } else if (keyboardEvent.key === 'Escape') {
+              setIsEditing(false)
+              setInputLinkText(githubLink)
             }
           }}
         />

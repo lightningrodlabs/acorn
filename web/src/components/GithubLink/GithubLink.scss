@@ -29,16 +29,26 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    font: 1rem var(--font-family-primary-extrabold);
-    color: var(--color-ultramarine-blue);
     cursor: pointer;
     padding: 0.125rem;
     transition: 0.2s all ease;
     position: relative;
 
+    a {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      text-decoration: none;
+      font: 1rem var(--font-family-primary-extrabold);
+      color: var(--color-ultramarine-blue);
+    }
+
     &:hover {
       opacity: 0.8;
-      text-decoration: underline;
+
+      a {
+        text-decoration: underline;
+      }
 
       .github-link-edit-button {
         display: flex;

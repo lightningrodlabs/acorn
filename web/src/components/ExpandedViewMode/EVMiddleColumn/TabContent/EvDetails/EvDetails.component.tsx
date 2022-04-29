@@ -279,7 +279,8 @@ const EvDetails: React.FC<EvDetailsProps> = ({
 
           <div className="ev-github-link">
             <GithubLink
-              githubLink={githubInputLinkText}
+              // the current persisted value
+              githubLink={outcomeGithubLink}
               onSubmit={async () => {
                 await updateOutcomeWithLatest()
                 setIsEditingGithubLink(false)

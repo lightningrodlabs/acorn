@@ -118,7 +118,9 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
       break
   }
   const achievementStatusSelected =
-    outcome && 'Small' in outcome.scope ? outcome.scope.Small.achievementStatus : 'Achieved'
+    outcome && 'Small' in outcome.scope
+      ? outcome.scope.Small.achievementStatus
+      : 'Achieved'
   const achievementStatusOptions = [
     // @ts-ignore
     {
@@ -177,21 +179,28 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
     )
   }
 
-  // TODO: in breakdown
   const isUncertain = outcome
     ? outcome.computedScope === ComputedScope.Uncertain
     : false
-  // const setInBreakdown = (inBreakdown: boolean) => {
-  //   updateOutcome(
-  //     {
-  //       ...outcome,
-  //       editorAgentPubKey: activeAgentPubKey,
-  //       timestampUpdated: moment().unix(),
-  //       // scope, update inBreakdown
-  //     },
-  //     outcomeHeaderHash
-  //   )
-  // }
+  const inBreakdown =
+    outcome && 'Uncertain' in outcome.scope
+      ? outcome.scope.Uncertain.inBreakdown
+      : false
+  const setInBreakdown = async (inBreakdown: boolean) => {
+    const timeFrame =
+      'Uncertain' in outcome.scope ? outcome.scope.Uncertain.timeFrame : null
+    const smallsEstimate =
+      'Uncertain' in outcome.scope ? outcome.scope.Uncertain.smallsEstimate : 0
+    return updateOutcome(
+      {
+        ...outcome,
+        editorAgentPubKey: activeAgentPubKey,
+        timestampUpdated: moment().unix(),
+        scope: { Uncertain: { inBreakdown, timeFrame, smallsEstimate } },
+      },
+      outcomeHeaderHash
+    )
+  }
 
   // High Priority
   // see if the outcome of interest is listed in the set
@@ -332,8 +341,8 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
         {isUncertain && (
           <ButtonCheckbox
             size="small"
-            isChecked={false}
-            onChange={() => {}}
+            isChecked={inBreakdown}
+            onChange={setInBreakdown}
             // @ts-ignore
             icon={<Icon name="x.svg" className="not-hoverable" />}
             text="In Breakdown"
