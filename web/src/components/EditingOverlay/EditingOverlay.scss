@@ -1,0 +1,47 @@
+.editing-overlay {
+  position: relative;
+  
+  .editing-overlay-avatar-wrapper {
+    position: absolute;
+    left: -46px;
+    top: 12px;
+  }
+
+  .editing-overlay-animation {
+    background-color: #f8f6f2;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    z-index: 2;
+    opacity: 0.6;
+
+    &::before {
+      content: '';
+      display: block;
+      position: absolute;
+      left: -200px;
+      top: 0;
+      height: 100%;
+      width: 300px;
+      background: linear-gradient(
+        to right,
+        transparent 0%,
+        #baa692 50%,
+        transparent 100%
+      );
+      animation: editing 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      opacity: 0.2;
+    }
+  }
+}
+
+@keyframes editing {
+  from {
+    left: -300px;
+  }
+
+  to {
+    left: 100%;
+  }
+}

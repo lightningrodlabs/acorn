@@ -1,0 +1,24 @@
+// Description
+.markdown-description-wrapper {
+  position: relative;
+
+  .markdown-description-content {
+    margin-top: 0.25rem;
+
+    textarea {
+      width: 100%;
+      padding: 0;
+      margin: 0;
+      outline: none;
+      border: 0;
+      resize: none;
+      font: 1.05rem var(--font-family-primary-medium);
+      line-height: 1.45;
+      background-color: transparent;
+
+      &::placeholder {
+        color: var(--text-color-placeholder);
+      }
+    }
+  }
+}

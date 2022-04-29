@@ -5,12 +5,8 @@ import '../variables.scss'
 import EvDetails, {
   EvDetailsProps,
 } from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvDetails/EvDetails.component'
-import {
-  ComputedOutcome,
-  ComputedScope,
-  ComputedSimpleAchievementStatus,
-  Profile,
-} from '../types'
+import testProfile from './testData/testProfile'
+import { testBigOutcome } from './testData/testOutcomes'
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 
@@ -28,57 +24,23 @@ const Template: ComponentStory<typeof EvDetails> = (args) => {
 export const Primary = Template.bind({})
 Primary.storyName = 'EvDetails'
 
-const outcome: ComputedOutcome = {
-  headerHash: '12344',
-  content: 'test content',
-  creatorAgentPubKey: 'creatoragentpubkey',
-  editorAgentPubKey: 'editoryagentpubkey',
-  timestampCreated: Date.now(),
-  timestampUpdated: Date.now(),
-  tags: [],
-  description: 'test description',
-  timeFrame: null, // { fromDate: Date.now(), toDate: Date.now() },
-  isImported: false,
-  scope: { Uncertain: 0 }, // ignored
-  computedScope: ComputedScope.Uncertain,
-  computedAchievementStatus: {
-    uncertains: 2,
-    smallsAchieved: 0,
-    smallsTotal: 0,
-    simple: ComputedSimpleAchievementStatus.NotAchieved,
-  },
-  // @ts-ignore
-  children: [{}, {}],
-}
-
-const pegah: Profile = {
-  firstName: 'Pegah',
-  lastName: 'Vaezi',
-  handle: '389457985y498592847',
-  status: 'Online',
-  avatarUrl:
-    'https://i.pinimg.com/550x/c0/3d/3f/c03d3f965a8091206f4a0e742bb97c9f.jpg',
-  agentPubKey: '389457985y498592847',
-  isImported: false,
-}
-
 const props: EvDetailsProps = {
   projectId: '1241241',
   outcomeHeaderHash: '1243523',
   activeAgentPubKey: '1245314',
-  outcome: outcome,
+  outcome: testBigOutcome,
   projectTags: [],
   people: [
     {
-      ...pegah,
+      ...testProfile,
       isOutcomeMember: true,
       outcomeMemberHeaderHash: '1241',
     },
   ],
   profiles: {
-    '389457985y498592847': pegah,
+    '389457985y498592847': testProfile,
   },
-  assignees: [{ profile: pegah, outcomeMemberHeaderHash: '124' }],
+  assignees: [{ profile: testProfile, outcomeMemberHeaderHash: '124' }],
   editingPeers: [],
   onSaveTag: async () => {},
   updateOutcome: async () => {},

@@ -8,160 +8,87 @@
   flex: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
 
-.ev-details-inner-wrapper {
-  padding-left: 3rem;
-}
+  .ev-details-inner-wrapper {
+    padding-left: 3rem;
 
-// Title
-.ev-title-wrapper {
-  margin-bottom: 1.5rem;
-  position: relative;
+    // Title
+    .ev-title-wrapper {
+      margin-bottom: 1.5rem;
+      position: relative;
 
-  .ev-title {
-    input {
-      width: 100%;
-      outline: none;
-      border: none;
-      font: 1.5rem var(--font-family-primary-bold);
-      line-height: 1.35;
-      padding: 0;
-    }
+      .ev-title {
+        input {
+          width: 100%;
+          outline: none;
+          border: none;
+          font: 1.5rem var(--font-family-primary-bold);
+          line-height: 1.35;
+          padding: 0;
+        }
 
-    textarea {
-      width: 100%;
-      outline: none;
-      border: none;
-      font: 1.5rem var(--font-family-primary-bold);
-      line-height: 1.35;
-      letter-spacing: 0.01rem;
-      padding: 0;
-      resize: none;
-      background: transparent;
+        textarea {
+          width: 100%;
+          outline: none;
+          border: none;
+          font: 1.5rem var(--font-family-primary-bold);
+          line-height: 1.35;
+          letter-spacing: 0.01rem;
+          padding: 0;
+          resize: none;
+          background: transparent;
 
-      &::placeholder {
-        color: var(--text-color-placeholder);
+          &::placeholder {
+            color: var(--text-color-placeholder);
+          }
+        }
       }
     }
-  }
-}
 
-// Github link and tags
-.ev-github-link,
-.ev-tags {
-  margin-bottom: 1.5rem;
-}
+    // Github link and tags
+    .ev-github-link,
+    .ev-tags {
+      margin-bottom: 1.5rem;
+    }
 
-// Description
-.ev-description-wrapper {
-  position: relative;
+    /* assinees and time row */
+    .ev-assignees-and-time-row {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 2rem;
 
-  .ev-description-content {
-    margin-top: 0.25rem;
+      /* assigness section */
+      .ev-assignees-wrapper {
+        width: 50%;
+        position: relative;
 
-    textarea {
-      width: 100%;
-      padding: 0;
-      margin: 0;
-      outline: none;
-      border: 0;
-      resize: none;
-      font: 1.05rem var(--font-family-primary-medium);
-      line-height: 1.45;
-      background-color: transparent;
-
-      &::placeholder {
-        color: var(--text-color-placeholder);
+        .picker-popup {
+          top: 5.25rem;
+          left: 0;
+        }
       }
-    }
-  }
-}
 
-// if title or description is being edited
-.member-editing-title-wrapper,
-.member-editing-description-wrapper {
-  position: absolute;
-  left: -46px;
-  top: 12px;
-}
+      /* time */
+      .ev-time-wrapper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 50%;
 
-.ev-title-editing-placeholder,
-.ev-description-editing-placeholder {
-  background-color: #f8f6f2;
-  border-radius: 8px;
-  position: relative;
-  overflow: hidden;
-  cursor: default;
-  z-index: 2;
-  opacity: 0.6;
-}
+        .ev-time-display {
+          font: 1rem var(--font-family-primary-medium);
+          color: var(-text-color-primary);
+          cursor: pointer;
+          transition: 0.2s all ease;
+          padding: 0.25rem 0;
+          color: var(--text-color-placeholder);
+        }
 
-.ev-title-editing-placeholder::before,
-.ev-description-editing-placeholder::before {
-  content: '';
-  display: block;
-  position: absolute;
-  left: -200px;
-  top: 0;
-  height: 100%;
-  width: 300px;
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    #baa692 50%,
-    transparent 100%
-  );
-  animation: editing 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  opacity: 0.2;
-}
-
-@keyframes editing {
-  from {
-    left: -300px;
-  }
-
-  to {
-    left: 100%;
-  }
-}
-
-/* assinees and time row */
-.ev-assginees-and-time-row {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 2rem;
-
-  /* assigness section */
-  .ev-assignees-wrapper {
-    width: 50%;
-    position: relative;
-
-    .picker-popup {
-      top: 5.25rem;
-      left: 0;
-    }
-  }
-
-  /* time */
-  .ev-time-wrapper {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-
-    .ev-time-display {
-      font: 1rem var(--font-family-primary-medium);
-      color: var(-text-color-primary);
-      cursor: pointer;
-      transition: 0.2s all ease;
-      padding: 0.25rem 0;
-      color: var(--text-color-placeholder)
-    }
-
-    .picker-popup {
-      top: 5.25rem;
-      left: 0;
+        .picker-popup {
+          top: 5.25rem;
+          left: 0;
+        }
+      }
     }
   }
 }

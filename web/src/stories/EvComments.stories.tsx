@@ -5,7 +5,8 @@ import '../variables.scss'
 import EvComments, {
   EvCommentsProps,
 } from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvComments/EvComments.component'
-import testComments from './testComments'
+import testComments from './testData/testComments'
+import testProfile from './testData/testProfile'
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 
@@ -30,18 +31,8 @@ const props: EvCommentsProps = {
   outcomeHeaderHash: '1243523',
   activeAgentPubKey: '1245314',
   profiles: {
-    '389457985y498592847': {
-      firstName: 'Pegah',
-      lastName: 'Vaezi',
-      handle: '389457985y498592847',
-      status: 'Online',
-      avatarUrl:
-        'https://i.pinimg.com/550x/c0/3d/3f/c03d3f965a8091206f4a0e742bb97c9f.jpg',
-      agentPubKey: '389457985y498592847',
-      isImported: false,
-    },
+    '389457985y498592847': testProfile,
   },
-
   comments: testComments,
   createOutcomeComment: async () => {},
 }

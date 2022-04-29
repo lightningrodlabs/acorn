@@ -2,16 +2,7 @@ import React from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
-import {
-  ComputedOutcome,
-  ComputedScope,
-  ComputedSimpleAchievementStatus,
-  EntryPoint,
-  Outcome,
-  OutcomeComment,
-  ProjectMeta,
-  Profile,
-} from '../types'
+import { EntryPoint, Outcome, OutcomeComment, ProjectMeta } from '../types'
 import ExpandedViewMode, {
   ExpandedViewModeProps,
 } from '../components/ExpandedViewMode/ExpandedViewMode.component'
@@ -20,100 +11,32 @@ import EvComments from '../components/ExpandedViewMode/EVMiddleColumn/TabContent
 import EVRightColumn from '../components/ExpandedViewMode/EVRightColumn/EvRightColumn.component'
 import EvTaskList from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvTaskList/EvTaskList'
 import EvChildren from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvChildren/EvChildren'
-import testComments from './testComments'
+import testComments from './testData/testComments'
+import testProfile from './testData/testProfile'
+import { testBigOutcome, testSmallOutcome } from './testData/testOutcomes'
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 
-const creator: Profile = {
-  firstName: 'Pegah',
-  lastName: 'Vaezi',
-  handle: '389457985y498592847',
-  status: 'Online',
-  avatarUrl:
-    'https://i.pinimg.com/550x/c0/3d/3f/c03d3f965a8091206f4a0e742bb97c9f.jpg',
-  agentPubKey: '389457985y498592847',
-  isImported: false,
-}
-
-const smallOutcome: ComputedOutcome = {
-  headerHash: '12344',
-  content:
-    'New API in typescript definitions are written Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
-  creatorAgentPubKey: 'creatoragentpubkey',
-  editorAgentPubKey: 'editoryagentpubkey',
-  timestampCreated: Date.now(),
-  timestampUpdated: Date.now(),
-  scope: { Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] } },
-  tags: [],
-  description:
-    'Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
-  githubLink: '',
-  isImported: false,
-  computedScope: ComputedScope.Small,
-  computedAchievementStatus: {
-    uncertains: 0,
-    smallsAchieved: 0,
-    smallsTotal: 0,
-    simple: ComputedSimpleAchievementStatus.NotAchieved,
-  },
-  children: [],
-}
-
-const bigOutcome: ComputedOutcome = {
-  headerHash: '12344',
-  content:
-    'This is the content property of an Outcome, it can get long sometimes',
-  creatorAgentPubKey: 'creatoragentpubkey',
-  editorAgentPubKey: 'editoryagentpubkey',
-  timestampCreated: Date.now(),
-  timestampUpdated: Date.now(),
-  // this is ignored when the computedStatus is not Small
-  scope: { Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] } }, 
-  tags: [],
-  githubLink: 'https://github.com/lightningrodlabs/acorn/issues/2',
-  description: 'test description',
-  isImported: false,
-  computedScope: ComputedScope.Big,
-  computedAchievementStatus: {
-    uncertains: 0,
-    smallsAchieved: 1,
-    smallsTotal: 1,
-    simple: ComputedSimpleAchievementStatus.Achieved,
-  },
-  children: [smallOutcome],
-}
-
 const projectId = '1244323532'
-
-const pegah: Profile = {
-  firstName: 'Pegah',
-  lastName: 'Vaezi',
-  handle: '389457985y498592847',
-  status: 'Online',
-  avatarUrl:
-    'https://i.pinimg.com/550x/c0/3d/3f/c03d3f965a8091206f4a0e742bb97c9f.jpg',
-  agentPubKey: '389457985y498592847',
-  isImported: false,
-}
 
 const details = (
   <EvDetails
     projectId={projectId}
-    outcome={smallOutcome}
+    outcome={testSmallOutcome}
     activeAgentPubKey={'124234134'}
     outcomeHeaderHash={'1344151'}
     projectTags={[]}
     people={[
       {
-        ...pegah,
+        ...testProfile,
         isOutcomeMember: true,
         outcomeMemberHeaderHash: '1241',
       },
     ]}
     profiles={{
-      '389457985y498592847': pegah,
+      '389457985y498592847': testProfile,
     }}
-    assignees={[{ profile: pegah, outcomeMemberHeaderHash: '124' }]}
+    assignees={[{ profile: testProfile, outcomeMemberHeaderHash: '124' }]}
     editingPeers={[]}
     updateOutcome={function (
       outcome: Outcome,
@@ -151,7 +74,7 @@ const comments = (
     outcomeContent="This is the content property of an Outcome, it can get long sometimes"
     outcomeHeaderHash={''}
     profiles={{
-      '389457985y498592847': creator,
+      '389457985y498592847': testProfile,
     }}
     comments={testComments}
     activeAgentPubKey={''}
@@ -166,7 +89,7 @@ const comments = (
 const childrenList = (
   <EvChildren
     outcomeContent="This is the content property of an Outcome, it can get long sometimes"
-    directChildren={[smallOutcome]}
+    directChildren={[testSmallOutcome]}
   />
 )
 
@@ -194,7 +117,7 @@ const rightColumn = (
   <EVRightColumn
     projectId={projectId}
     onClose={() => {}}
-    outcome={smallOutcome}
+    outcome={testSmallOutcome}
     activeAgentPubKey={''}
     outcomeHeaderHash={''}
     isEntryPoint={false}
@@ -242,7 +165,7 @@ const Template: ComponentStory<typeof ExpandedViewMode> = (args) => {
 export const WithoutChildren = Template.bind({})
 const args: ExpandedViewModeProps = {
   projectId: '1234323',
-  outcome: smallOutcome,
+  outcome: testSmallOutcome,
   outcomeHeaderHash: '112412343',
   commentCount: 3,
   details: details,
@@ -261,7 +184,7 @@ WithoutChildren.args = args
 export const WithChildren = Template.bind({})
 const withChildrenArgs: ExpandedViewModeProps = {
   projectId: '1234323',
-  outcome: bigOutcome,
+  outcome: testBigOutcome,
   outcomeHeaderHash: '112412343',
   commentCount: 3,
   details: details,
