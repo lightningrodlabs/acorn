@@ -31,6 +31,11 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
   projectMemberProfiles,
   projectTags,
 }) => {
+  const whoAmIFirstName = whoAmI ? whoAmI.firstName : 'J'
+  const whoAmILastName = whoAmI ? whoAmI.lastName : 'J'
+  const whoAmIAvatarUrl = whoAmI ? whoAmI.avatarUrl : ''
+  const activeAgentPubKey = whoAmI ? whoAmI.agentPubKey : ''
+
   const achievementStatusOptions = [
     {
       innerListItem: <>Achieved</>,
@@ -52,10 +57,21 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
   ]
   const assigneeOptions = projectMemberProfiles.map((profile) =>
     profileOption(profile)
-  ) //also include avatar icon
+  )
   function profileOption(profile: Profile) {
     return {
-      innerListItem: <>profile.firstName</>,
+      innerListItem: (
+        <>
+          {/* TODO: style this */}
+          <Avatar
+            size="small"
+            firstName={profile.firstName}
+            lastName={profile.lastName}
+            avatarUrl={profile.avatarUrl}
+          />
+          {profile.firstName}
+        </>
+      ),
       id: profile.agentPubKey,
     }
   }
@@ -67,11 +83,11 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
       id: tag.headerHash,
     }
   })
-  function isOnlyMeAssigned(filter: OutcomeTableFilter, whoAmI: Profile) {
+  function isOnlyMeAssigned(filter: OutcomeTableFilter) {
     if ('assignees' in filter) {
       return (
         filter.assignees.length === 1 &&
-        filter.assignees[0] === whoAmI.agentPubKey
+        filter.assignees[0] === activeAgentPubKey
       )
     } else {
       return false
@@ -100,22 +116,22 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           icon={
             <Avatar
               size="small"
-              firstName={whoAmI.firstName}
-              lastName={whoAmI.lastName}
-              avatarUrl={whoAmI.avatarUrl}
+              firstName={whoAmIFirstName}
+              lastName={whoAmILastName}
+              avatarUrl={whoAmIAvatarUrl}
               imported={false}
             />
           }
-          isSelected={isOnlyMeAssigned(filter, whoAmI)}
+          isSelected={isOnlyMeAssigned(filter)}
           onChange={() =>
-            isOnlyMeAssigned(filter, whoAmI)
+            isOnlyMeAssigned(filter)
               ? onApplyOutcomeTableFilter({
                   ...filter,
                   assignees: [],
                 })
               : onApplyOutcomeTableFilter({
                   ...filter,
-                  assignees: [whoAmI.agentPubKey],
+                  assignees: [activeAgentPubKey],
                 })
           }
         />

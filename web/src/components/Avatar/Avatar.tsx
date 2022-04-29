@@ -13,7 +13,7 @@ interface AvatarProps {
   disconnected?: boolean
   clickable?: boolean
   onClick?: () => void
-  imported: boolean
+  imported?: boolean
   withStatus?: boolean
   withWhiteBorder?: boolean
   withStatusBorder?: boolean

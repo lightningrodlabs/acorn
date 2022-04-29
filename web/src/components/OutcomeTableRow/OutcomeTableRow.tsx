@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { ComputedOutcome, Tag } from '../../types'
 import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
+import AvatarsList from '../AvatarsList/AvatarsList'
 import ExpandChevron from '../ExpandChevron/ExpandChevron'
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
 import TagsList from '../TagsList/TagsList'
@@ -69,7 +70,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
 
           {/* Assignees */}
           <div className="outcome-table-row-metadata-wrapper">
-            {/* {outcome.members} */}
+            <AvatarsList size="small" profiles={outcome.members} />
           </div>
 
           {/* Tags */}

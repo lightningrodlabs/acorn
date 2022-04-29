@@ -19,6 +19,7 @@ function mapStateToProps(state: RootState): TableViewConnectorStateProps {
   const projectMemberProfiles = Object.keys(projectMembers)
     .map((address) => state.agents[address])
     .filter((agent) => agent)
+  console.log(projectMemberProfiles)
 
   const projectTags = Object.values(projectTagsObject)
   return {
