@@ -8,17 +8,35 @@ export type ProgressIndicatorProps = {
 
 const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ progress }) => {
   return (
+    // Note: uncertain scope does not have progress indicator symbol
+    // intead it has a uncertain scope symbol (red circle with question mark)
+
     <div className="progress-indicator-wrapper">
       {/* {progress.toString()} */}
-      {/* if not achieved */}
-      {progress === 0 && <Icon name="circle-dashed.svg" size="small" />}
-      {/* if partially achieved (excludes uncertain scope) */}
+      {/* if not achieved  */}
+      {/* Symbol: yellow dashed circle */}
+      {progress === 0 && (
+        <Icon
+          name="circle-dashed.svg"
+          size="small"
+          className="not-hoverable not-achieved"
+        />
+      )}
+      {/* if partially achieved */}
+      {/* Symbol: grey circle border with dynamic progree percentage */}
       {progress > 0 && progress < 0 && (
         // TODO: render dynamic progress circle here
-        <Icon name="circle-dashed.svg" size="small" />
+        <Icon name="circle-dashed.svg" size="small" className="not-hoverable" />
       )}
-      {/* if fully achieved (excludes uncertain scope) */}
-      {progress === 100 && <Icon name="circle-check.svg" size="small" />}
+      {/* if fully achieved */}
+      {/* Symbol: green circle with checkmark */}
+      {progress === 100 && (
+        <Icon
+          name="circle-check.svg"
+          size="small"
+          className="not-hoverable achieved"
+        />
+      )}
     </div>
   )
 }

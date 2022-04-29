@@ -43,7 +43,9 @@ const smallOutcome: ComputedOutcome = {
   editorAgentPubKey: 'editoryagentpubkey',
   timestampCreated: Date.now(),
   timestampUpdated: Date.now(),
-  scope: { Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] } },
+  scope: {
+    Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] },
+  },
   tags: [],
   description:
     'Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
@@ -68,7 +70,9 @@ const bigOutcome: ComputedOutcome = {
   timestampCreated: Date.now(),
   timestampUpdated: Date.now(),
   // this is ignored when the computedStatus is not Small
-  scope: { Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] } }, 
+  scope: {
+    Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] },
+  },
   tags: [],
   githubLink: 'https://github.com/lightningrodlabs/acorn/issues/2',
   description: 'test description',
@@ -173,7 +177,21 @@ const childrenList = (
 const taskList = (
   <EvTaskList
     outcomeContent="This is the content property of an Outcome, it can get long sometimes"
-    tasks={[]}
+    tasks={[
+      {
+        task: 'create a scope of work, for development',
+        complete: true,
+      },
+      {
+        task: 'create a scope of work, for design',
+        complete: true,
+      },
+      {
+        task:
+          'Fix entry points list for a project not showing up before entering',
+        complete: false,
+      },
+    ]}
     onChange={function (
       index: number,
       text: string,

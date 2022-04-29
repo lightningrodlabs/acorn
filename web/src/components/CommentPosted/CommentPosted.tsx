@@ -19,9 +19,10 @@ const CommentPosted: React.FC<CommentPostedProps> = ({ comment, creator }) => {
           lastName={creator.lastName}
           avatarUrl={creator.avatarUrl}
           imported={creator.isImported}
-          size="medium-large"
+          size="medium"
           withStatus
           selfAssignedStatus={creator.status}
+          withWhiteBorder
         />
       </div>
       <div className="comment-posted-content">

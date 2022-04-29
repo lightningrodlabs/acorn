@@ -15,14 +15,14 @@ const EvChildren: React.FC<EvChildrenProps> = ({
   directChildren,
 }) => {
   return (
-    <div className="ev-children">
+    <div className="ev-children-view-wrapper">
       <EvReadOnlyHeading
         headingText={outcomeContent}
         // @ts-ignore
         overviewIcon={<Icon name="activity-history.svg" />}
         overviewText={`${directChildren.length} children`}
       />
-      <div className="ev-children-outcome-list">
+      <div className="ev-children-view-outcome-list">
         {directChildren.map((outcome) => {
           return <OutcomeListItem key={outcome.headerHash} outcome={outcome} />
         })}

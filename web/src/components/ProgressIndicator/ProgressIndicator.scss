@@ -2,5 +2,16 @@
   .icon {
     height: 1.25rem;
     width: 1.25rem;
+
+    &.not-achieved {
+      .inner-icon {
+        background-color: var(--color-topaz);
+      }
+    }
+    &.achieved {
+      .inner-icon {
+        background-color: var(--color-green);
+      }
+    }
   }
 }

@@ -84,23 +84,7 @@ const Checklist: React.FC<ChecklistProps> = ({
           }}
         />
       </div>
-      {/* <div
-        className={`checklist-item-wrapper-text ${isChecked ? 'checked' : ''}
-        ${size === 'small' ? 'small' : size === 'large' ? 'large' : ''}`}
-      >
-        {text}
-      </div> */}
     </div>
-    // <div
-    //   onClick={() => onChange(!isChecked)}
-    //   className={`Checklist-wrapper ${isChecked ? 'checked' : ''}
-    //   ${(size === 'small') ? 'small' : (size === 'large') ? 'large' : ''}
-    //   `}
-    // >
-    //   {isChecked && (
-    //     <Icon name="check.svg" className="white not-hoverable" />
-    //   )}
-    // </div>
   )
 }
 

@@ -2,7 +2,9 @@ import React from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
-import EvTaskListComponent, { EvTaskListProps } from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvTaskList/EvTaskList'
+import EvTaskListComponent, {
+  EvTaskListProps,
+} from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvTaskList/EvTaskList'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -22,5 +24,10 @@ EvTaskList.storyName = 'EvTaskList'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 EvTaskList.args = {
   outcomeContent: 'This is the outcome content',
-  tasks: []
+  tasks: [
+    {
+      task: 'string',
+      complete: true,
+    },
+  ],
 } as EvTaskListProps

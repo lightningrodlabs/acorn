@@ -15,17 +15,13 @@
 
   .checkbox-wrapper {
     margin-right: 0.625rem;
+    margin-top: 0.125rem;
   }
 
   .checklist-item-wrapper-text {
     font: 1rem var(--font-family-primary-medium);
     color: var(--text-color-primary);
     line-height: 1.45;
-
-    // &.checked {
-    //   color: var(--text-color-tertiary);
-    //   text-decoration: line-through var(--text-color-strikethrough);
-    // }
 
     &.small {
       font: 0.825rem var(--font-family-primary-medium);

@@ -20,14 +20,14 @@ const EvTaskList: React.FC<EvTaskListProps> = ({
   onRemove,
 }) => {
   return (
-    <div className="ev-children">
+    <div className="ev-tasks-view-wrapper">
       <EvReadOnlyHeading
         headingText={outcomeContent}
         // @ts-ignore
         overviewIcon={<Icon name="activity-history.svg" />}
         overviewText={`${tasks.length} tasks`}
       />
-      <div className="ev-children-outcome-list">
+      <div className="ev-tasks-view-list">
         <Checklist
           size="medium"
           listItems={tasks}

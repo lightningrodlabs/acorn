@@ -45,7 +45,7 @@ const PeoplePicker: React.FC<PeoplePickerProps> = ({
           type="text"
           onChange={(e) => setFilterText(e.target.value)}
           value={filterText}
-          placeholder="search squirrels..."
+          placeholder="Search members"
           autoFocus
         />
         {filterText !== '' && (
