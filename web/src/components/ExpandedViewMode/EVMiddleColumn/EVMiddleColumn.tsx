@@ -42,12 +42,10 @@ const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
         childrenCount={childrenCount}
         computedAchievementStatus={computedAchievementStatus}
       />
-      <div className="ev-middle-column-tab-content">
-        {activeTab === ExpandedViewTab.Details && details}
-        {activeTab === ExpandedViewTab.Comments && comments}
-        {activeTab === ExpandedViewTab.ChildrenList && childrenList}
-        {activeTab === ExpandedViewTab.TaskList && taskList}
-      </div>
+      {activeTab === ExpandedViewTab.Details && details}
+      {activeTab === ExpandedViewTab.Comments && comments}
+      {activeTab === ExpandedViewTab.ChildrenList && childrenList}
+      {activeTab === ExpandedViewTab.TaskList && taskList}
     </div>
   )
 }

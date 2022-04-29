@@ -1,28 +1,10 @@
-.comments {
-  position: relative;
-  font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
-  height: 100%;
+.comments-posted-wrapper {
+  overflow-y: scroll;
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
-.comment-history-container {
-  padding: 30px 24px 0 24px;
-  overflow-y: scroll;
-  flex: 1;
+.comments-view-input-wrapper {
+  padding: 0 2.75rem 2rem 2.75rem;
 }
-
-
-// TODO: were these used? they seem not to be
-
-// .comment {
-//   /* width: 400px; */
-//   display: flex;
-//   flex-wrap: nowrap;
-// }
-
-// .comment > div:last-child {
-//   display: flex;
-//   flex-direction: column;
-//   width: 100%;
-// }

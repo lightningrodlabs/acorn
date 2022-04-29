@@ -7,6 +7,7 @@ import { ExpandedViewTab } from './NavEnum'
 import { CellIdString, HeaderHashB64 } from '../../types/shared'
 import { ComputedOutcome } from '../../types'
 import './ExpandedViewMode.scss'
+import ButtonClose from '../ButtonClose/ButtonClose'
 
 // props passed to the component by the parent
 export type ExpandedViewModeOwnProps = {
@@ -82,13 +83,14 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
         classNames="expanded-view-wrapper"
       >
         <div className="expanded-view-wrapper">
+          <ButtonClose onClick={onClose} size="medium" />
           {/* @ts-ignore */}
-          <Icon
+          {/* <Icon
             onClick={onClose}
             name="x.svg"
             size="small-close"
             className="light-grey"
-          />
+          /> */}
           <EVLeftColumn
             activeTab={activeTab}
             onChange={setActiveTab}
@@ -97,17 +99,19 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
             taskListCount={taskListCount}
             outcomeId={outcomeId}
           />
-          <EVMiddleColumn
-            activeTab={activeTab}
-            outcome={outcome}
-            details={details}
-            comments={comments}
-            childrenList={childrenList}
-            taskList={taskList}
-          />
-          {/* Only show the rightColumn while */}
-          {/* viewing Details */}
-          {activeTab === ExpandedViewTab.Details && rightColumn}
+          <div className="expanded-view-tab-view-wrapper">
+            <EVMiddleColumn
+              activeTab={activeTab}
+              outcome={outcome}
+              details={details}
+              comments={comments}
+              childrenList={childrenList}
+              taskList={taskList}
+            />
+            {/* Only show the rightColumn while */}
+            {/* viewing Details */}
+            {activeTab === ExpandedViewTab.Details && rightColumn}
+          </div>
         </div>
       </CSSTransition>
     </>

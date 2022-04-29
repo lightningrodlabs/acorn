@@ -1,20 +1,27 @@
 import React from 'react'
+import Icon from '../Icon/Icon'
 import Typography from '../Typography/Typography'
 import './MetadataWithLabel.scss'
 
 export type MetadataWithLabelProps = {
   label: string
-  icon?: React.ReactElement
+  iconName?: string
 }
 
 const MetadataWithLabel: React.FC<MetadataWithLabelProps> = ({
-  icon,
+  iconName,
   label,
   children,
 }) => {
   return (
     <div className="metadata-with-label-wrapper">
-      {icon ? icon : null}
+      {/* Optional icon for the label */}
+      {iconName && (
+        <div className="metadata-with-label-icon">
+          <Icon name={iconName} size="small" className="not-hoverable" />
+        </div>
+      )}
+      {/* Content under the label */}
       <div className="metadata-with-label-column">
         <div className="metadata-with-label-label">
           {/* TODO: set typography */}

@@ -1,48 +1,38 @@
-
 .button-tab-icon-wrapper {
   color: var(--text-color-quaternary);
   display: flex;
   cursor: pointer;
   align-items: center;
+  border-radius: 0.5rem;
+  width: fit-content;
+  padding: 0.5rem;
+  box-sizing: border-box;
   transition: 0.2s all ease;
-  padding: 1rem;
 
   .icon {
-    width: 2.625rem;
-    height: 2.625rem;
+    width: 2.75rem;
+    height: 2.75rem;
+
+    .inner-icon {
+      background-color: var(--icon-color-light-grey);
+    }
   }
-}
 
-.button-tab-icon-wrapper.feature-in-development {
-  cursor: default;
-}
+  &:hover {
+    background-color: var(--bg-color-hover);
 
-.button-tab-icon-wrapper.feature-in-development .icon:not(.not-hoverable) {
-  cursor: default;
-}
+    .icon {
+      .inner-icon {
+        background-color: var(--text-color-primary);
+      }
+    }
+  }
 
-/* NavBar Item Hover State */
+  &.active {
+    background-color: var(--bg-color-hover);
 
-.button-tab-icon-wrapper:hover {
-  color: var(--text-color-primary);
-
-}
-
-.button-tab-icon-wrapper:hover .icon:not(.not-hoverable) .inner-icon {
-  transition: all 0.3s;
-  background-color: var(--text-color-primary);
-}
-
-/* NavBar Item Active State */
-
-.button-tab-icon-wrapper.active-tab {
-  color: var(--text-color-primary);
-}
-
-.button-tab-icon-wrapper.active-tab .icon:not(.not-hoverable) .inner-icon {
-  background-color: var(--text-color-primary);
-}
-
-.button-tab-icon-wrapper .icon.very-small.grey {
-  margin-right: 4px;
+    .icon .inner-icon {
+      background-color: var(--text-color-primary);
+    }
+  }
 }

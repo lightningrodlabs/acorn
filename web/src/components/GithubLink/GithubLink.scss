@@ -16,6 +16,7 @@
     font: 1rem var(--font-family-primary-medium);
     border: 0;
     outline: 0;
+    background-color: transparent;
 
     &::placeholder {
       color: var(--text-color-placeholder);
@@ -57,8 +58,6 @@
 
     .github-link-edit-button {
       margin-left: 0.25rem;
-      // position: absolute;
-      // left: 1rem;
       display: none;
       transition: 0.2s background-color ease;
 

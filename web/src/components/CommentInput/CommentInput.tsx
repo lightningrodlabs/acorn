@@ -32,7 +32,7 @@ const CommentInput: React.FC<CommentInputProps> = ({
             name="send-plane.svg"
             className="small grey"
             onClick={submitComment}
-            withTooltip
+            withTooltipTop
             tooltipText="⌘ + ↩"
           />
         </div>

@@ -319,7 +319,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
               {/* TODO: make label based on the scope of the outcome */}
               <MetadataWithLabel label="Breakdown Time Est.">
                 <div
-                  className="ev-timeframe-display"
+                  className="ev-time-display"
                   // TODO: bring this back
                   // onClick={() => setEditTimeframe(!editTimeframe)}
                 >
@@ -331,11 +331,9 @@ const EvDetails: React.FC<EvDetailsProps> = ({
               </MetadataWithLabel>
             </div>
           </div>
-          <MetadataWithLabel
-            label="Description"
-            // @ts-ignore
-            icon={<Icon name="text-align-left.svg" />}
-          >
+
+          {/* Description */}
+          <MetadataWithLabel label="Description" iconName="text-align-left.svg">
             <div className="ev-description-wrapper">
               {/* If description is being edited by someone */}
               {editingDescriptionPeer ? (
@@ -355,7 +353,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                     />
                   </div>
                   <div className="ev-description-editing-placeholder">
-                    <div className="ev-description">
+                    <div className="ev-description-content">
                       <TextareaAutosize
                         disabled={!!editingDescriptionPeer}
                         placeholder="Add description here"
@@ -368,9 +366,9 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                   </div>
                 </div>
               ) : (
-                <div className="ev-description">
+                <div className="ev-description-content">
                   <TextareaAutosize
-                    placeholder="Add description here"
+                    placeholder="Add description here (markdown enabled)"
                     value={description}
                     onBlur={onDescriptionBlur}
                     onChange={handleOnChangeDescription}

@@ -20,7 +20,7 @@ const Template: ComponentStory<typeof DescendantsAchievementStatusComponent> = (
 
 export const NoChildren = Template.bind({})
 // 'single story hoist' (place the component at the 'top level' without nesting in the storybook menu)
-NoChildren.storyName = 'No Children'
+NoChildren.storyName = 'Uncertain, No Children'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 NoChildren.args = {
   childrenCount: 0,
@@ -34,7 +34,7 @@ NoChildren.args = {
 
 export const Uncertain = Template.bind({})
 // 'single story hoist' (place the component at the 'top level' without nesting in the storybook menu)
-Uncertain.storyName = 'Uncertain'
+Uncertain.storyName = 'Uncertain with Children'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Uncertain.args = {
   childrenCount: 1,
@@ -48,7 +48,7 @@ Uncertain.args = {
 
 export const Certain = Template.bind({})
 // 'single story hoist' (place the component at the 'top level' without nesting in the storybook menu)
-Certain.storyName = 'Certain'
+Certain.storyName = 'Big (certain, not small)'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Certain.args = {
   childrenCount: 12,

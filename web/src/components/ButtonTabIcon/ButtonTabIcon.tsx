@@ -9,21 +9,24 @@ export type ButtonTabIconProps = {
   onClick: () => void
 }
 
-const ButtonTabIcon: React.FC<ButtonTabIconProps> = (
-  {
-    label,
-    iconName,
-    active,
-    onClick
-  }
-) => {
-  const activeClass = active ? 'active-tab' : ''
+const ButtonTabIcon: React.FC<ButtonTabIconProps> = ({
+  label,
+  iconName,
+  active,
+  onClick,
+}) => {
   return (
     <div
-      className={`button-tab-icon-wrapper ${activeClass}`}
+      className={`button-tab-icon-wrapper ${active ? 'active' : ''}`}
       onClick={onClick}
     >
-      <Icon name={iconName} size='large' className="grey" />
+      <Icon
+        name={iconName}
+        size="large"
+        className="grey"
+        withTooltip
+        tooltipText={label}
+      />
       {/* TODO: add tooltip text */}
       {/* {label} */}
     </div>

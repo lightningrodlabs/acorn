@@ -1,12 +1,20 @@
 .expanded-view-right-column-wrapper {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  width: 11.25rem;
-  padding: 3.5rem 3.5rem 1.75rem 3.5rem;
+  overflow: hidden;
+  height: 100%;
+
+  .ev-right-column-inner-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: scroll;
+    padding: 2.5rem 3rem 0 2rem;
+    width: 11.25rem;
+  }
 
   .ev-right-column-section {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 
     .ev-right-column-heading {
       margin-bottom: 0.5rem;

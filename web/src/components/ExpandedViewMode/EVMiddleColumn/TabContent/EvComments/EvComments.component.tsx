@@ -52,7 +52,7 @@ const EvComments: React.FC<EvCommentsProps> = ({
     // .current is on any ref,
     // its whatever the ref is right now,
     // which in this case a reference
-    // to the .comment-history-container div
+    // to the .comments-posted-wrapper div
     setTimeout(() => {
       commentHistoryRef.current.scrollTop =
         commentHistoryRef.current.scrollHeight
@@ -97,14 +97,14 @@ const EvComments: React.FC<EvCommentsProps> = ({
   }
 
   return (
-    <div className="comments">
+    <>
       <EvReadOnlyHeading
         headingText={outcomeContent}
         // @ts-ignore
         overviewIcon={<Icon name="activity-history.svg" />}
         overviewText={`${comments.length} comments`}
       />
-      <div className="comment-history-container" ref={commentHistoryRef}>
+      <div className="comments-posted-wrapper" ref={commentHistoryRef}>
         {comments
           // order the comments by most recent, to least recent
           .sort((a, b) => (a.unixTimestamp < b.unixTimestamp ? -1 : 1))
@@ -118,13 +118,15 @@ const EvComments: React.FC<EvCommentsProps> = ({
             )
           })}
       </div>
-      <CommentInput
-        value={value}
-        setValue={setValue}
-        onKeyDown={onKeyDown}
-        submitComment={submitComment}
-      />
-    </div>
+      <div className="comments-view-input-wrapper">
+        <CommentInput
+          value={value}
+          setValue={setValue}
+          onKeyDown={onKeyDown}
+          submitComment={submitComment}
+        />
+      </div>
+    </>
   )
 }
 

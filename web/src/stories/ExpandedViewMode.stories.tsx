@@ -21,6 +21,7 @@ import EVRightColumn from '../components/ExpandedViewMode/EVRightColumn/EvRightC
 import EvTaskListStories from './EvTaskList.stories'
 import EvTaskList from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvTaskList/EvTaskList'
 import EvChildren from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvChildren/EvChildren'
+import testComments from './testComments'
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 
@@ -35,16 +36,6 @@ const creator: Profile = {
   isImported: false,
 }
 
-const comment = {
-  headerHash: '1244134',
-  outcomeHeaderHash: '389457985y498592847',
-  content:
-    'can anyone here help me with several google analytics account setups? I need some training and have clients using square and wordpress. I used to just rely on monster insights plug-in but with GA4 I think things have changed. HALP!',
-  creatorAgentPubKey: '389457985y498592847',
-  unixTimestamp: Date.now(), //f64,
-  isImported: false,
-}
-
 const smallOutcome: ComputedOutcome = {
   headerHash: '12344',
   content:
@@ -55,7 +46,8 @@ const smallOutcome: ComputedOutcome = {
   timestampUpdated: Date.now(),
   scope: { Small: 'Achieved' },
   tags: [],
-  description: 'test description',
+  description:
+    'Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
   timeFrame: null, // { fromDate: Date.now(), toDate: Date.now() },
   isImported: false,
   computedScope: ComputedScope.Small,
@@ -161,7 +153,7 @@ const comments = (
     profiles={{
       '389457985y498592847': creator,
     }}
-    comments={[comment]}
+    comments={testComments}
     activeAgentPubKey={''}
     createOutcomeComment={function (
       outcomeComment: OutcomeComment

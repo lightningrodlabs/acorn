@@ -1,26 +1,25 @@
 .ev-details-wrapper {
-  padding: 1rem 2rem 0 2rem;
+  padding-right: 3rem;
   display: flex;
   flex-direction: column;
-  -webkit-font-smoothing: antialiased;
-  height: 100%;
   position: relative;
-  overflow-y: hidden;
+  overflow-y: scroll;
   box-sizing: border-box;
+  flex: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .ev-details-inner-wrapper {
-  overflow-y: scroll;
+  padding-left: 3rem;
 }
 
 // Title
 .ev-title-wrapper {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
   position: relative;
 
   .ev-title {
-    padding: 16px 4px;
-
     input {
       width: 100%;
       outline: none;
@@ -57,29 +56,24 @@
 // Description
 .ev-description-wrapper {
   position: relative;
-  margin-top: 16px;
 
-  .ev-description {
-    border-radius: 12px;
-    padding: 16px 4px;
-    color: #a3a3a3;
-    margin-bottom: 16px;
-    flex: 1;
-    overflow-y: scroll;
+  .ev-description-content {
+    margin-top: 0.25rem;
 
     textarea {
       width: 100%;
-      height: 240px;
       padding: 0;
       margin: 0;
       outline: none;
       border: 0;
       resize: none;
-      font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
-      font-size: 14px;
+      font: 1.05rem var(--font-family-primary-medium);
       line-height: 1.45;
-      letter-spacing: 0.1px;
       background-color: transparent;
+
+      &::placeholder {
+        color: var(--text-color-placeholder);
+      }
     }
   }
 }
@@ -156,11 +150,13 @@
     flex-direction: column;
     width: 50%;
 
-    .ev-timeframe-display {
+    .ev-time-display {
       font: 1rem var(--font-family-primary-medium);
       color: var(-text-color-primary);
       cursor: pointer;
       transition: 0.2s all ease;
+      padding: 0.25rem 0;
+      color: var(--text-color-placeholder)
     }
 
     .picker-popup {

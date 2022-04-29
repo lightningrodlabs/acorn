@@ -15,8 +15,10 @@ const EvReadOnlyHeading: React.FC<EvReadOnlyHeadingProps> = ({
   overviewText,
 }) => {
   return (
-    <div className="ev-read-only-heading">
-      <Typography style="h2">{headingText}</Typography>
+    <div className="ev-read-only-heading-wrapper">
+      <div className="ev-read-only-heading">
+        <Typography style="h3">{headingText}</Typography>
+      </div>
       <div>
         <ReadOnlyInfo infos={[{ icon: overviewIcon, text: overviewText }]} />
       </div>

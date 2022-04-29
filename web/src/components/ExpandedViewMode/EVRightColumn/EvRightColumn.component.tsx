@@ -240,122 +240,129 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
   if (isUncertain) {
     readOnlyInfos.push({
       // @ts-ignore
-      icon: <Icon name="activity-history.svg" className="not-hoverable"/>,
+      icon: <Icon name="activity-history.svg" className="not-hoverable" />,
       text: 'Uncertain Scope',
     })
   }
   return (
     <div className="expanded-view-right-column-wrapper">
-      {/* If this Outcome has children, then we can only */}
-      {/* read the computed achievement status and scope, */}
-      {/* not annotate them */}
-      {hasChildren && (
-        <div className="ev-right-column-section">
-          <Typography style="h7">
-            <div className="ev-right-column-heading">This outcome is</div>
-          </Typography>
-          <ReadOnlyInfo infos={readOnlyInfos} />
-        </div>
-      )}
-      {/* We can only annotate the achievementStatus and scope */}
-      {/* if this Outcome has no children */}
-      {!hasChildren && (
-        <div className="ev-right-column-section">
-          {/* We can only annotate Achievement Status if this Outcome is */}
-          {/* annotated Small and has no children */}
-          {isSmall && (
-            <div className="ev-right-column-section">
-              <Typography style="h7">
-                <div className="ev-right-column-heading">
-                  Achievement Status
-                </div>
-              </Typography>
-              <SelectDropdown
-                size="small"
-                selectedOptionId={achievementStatusSelected}
-                options={achievementStatusOptions}
-                onSelect={onAchievementStatusSelect}
-              />
-            </div>
-          )}
-
+      <div className="ev-right-column-inner-wrapper">
+        {/* If this Outcome has children, then we can only */}
+        {/* read the computed achievement status and scope, */}
+        {/* not annotate them */}
+        {hasChildren && (
           <div className="ev-right-column-section">
             <Typography style="h7">
-              {' '}
-              <div className="ev-right-column-heading">Scope</div>
+              <div className="ev-right-column-heading">This outcome is</div>
             </Typography>
-            <ButtonToggleSwitch
-              size="small"
-              switchState={computedScopeBoolean}
-              onSwitchState={onScopeSwitchState}
-              state1={{
-                // @ts-ignore
-                icon: <Icon name="leaf.svg" className="not-hoverable"/>,
-                text: 'Small',
-              }}
-              state2={{
-                // @ts-ignore
-                icon: <Icon name="uncertain.svg" className="uncertain not-hoverable"/>,
-                text: 'Uncertain',
-              }}
-            />
+            <ReadOnlyInfo infos={readOnlyInfos} />
           </div>
-        </div>
-      )}
-      {/* Mark As Section */}
+        )}
+        {/* We can only annotate the achievementStatus and scope */}
+        {/* if this Outcome has no children */}
+        {!hasChildren && (
+          <div className="ev-right-column-section">
+            {/* We can only annotate Achievement Status if this Outcome is */}
+            {/* annotated Small and has no children */}
+            {isSmall && (
+              <div className="ev-right-column-section">
+                <Typography style="h7">
+                  <div className="ev-right-column-heading">
+                    Achievement Status
+                  </div>
+                </Typography>
+                <SelectDropdown
+                  size="small"
+                  selectedOptionId={achievementStatusSelected}
+                  options={achievementStatusOptions}
+                  onSelect={onAchievementStatusSelect}
+                />
+              </div>
+            )}
 
-      <div className="ev-right-column-section">
-        <Typography style="h7">
-          <div className="ev-right-column-heading">Mark as</div>
-        </Typography>
-        {/* We can only mark an Uncertain scope Outcome */}
-        {/* as being 'in breakdown' mode */}
-        {isUncertain && (
+            <div className="ev-right-column-section">
+              <Typography style="h7">
+                {' '}
+                <div className="ev-right-column-heading">Scope</div>
+              </Typography>
+              <ButtonToggleSwitch
+                size="small"
+                switchState={computedScopeBoolean}
+                onSwitchState={onScopeSwitchState}
+                state1={{
+                  // @ts-ignore
+                  icon: <Icon name="leaf.svg" className="not-hoverable" />,
+                  text: 'Small',
+                }}
+                state2={{
+                  // @ts-ignore
+                  icon: (
+                    <Icon
+                      name="uncertain.svg"
+                      className="uncertain not-hoverable"
+                    />
+                  ),
+                  text: 'Uncertain',
+                }}
+              />
+            </div>
+          </div>
+        )}
+        {/* Mark As Section */}
+
+        <div className="ev-right-column-section">
+          <Typography style="h7">
+            <div className="ev-right-column-heading">Mark as</div>
+          </Typography>
+          {/* We can only mark an Uncertain scope Outcome */}
+          {/* as being 'in breakdown' mode */}
+          {isUncertain && (
+            <ButtonCheckbox
+              size="small"
+              isChecked={false}
+              onChange={() => {}}
+              // @ts-ignore
+              icon={<Icon name="x.svg" className="not-hoverable" />}
+              text="In Breakdown"
+            />
+          )}
           <ButtonCheckbox
             size="small"
-            isChecked={false}
-            onChange={() => {}}
+            isChecked={isHighPriority}
+            onChange={setIsHighPriority}
             // @ts-ignore
-            icon={<Icon name="x.svg" className="not-hoverable"/>}
-            text="In Breakdown"
+            icon={<Icon name="sort-asc.svg" className="not-hoverable" />}
+            text="High Priority"
           />
-        )}
-        <ButtonCheckbox
-          size="small"
-          isChecked={isHighPriority}
-          onChange={setIsHighPriority}
-          // @ts-ignore
-          icon={<Icon name="sort-asc.svg" className="not-hoverable"/>}
-          text="High Priority"
-        />
-        <ButtonCheckbox
-          size="small"
-          isChecked={isEntryPoint}
-          onChange={entryPointClickAction}
-          // @ts-ignore
-          icon={<Icon name="door-open.svg" className="not-hoverable"/>}
-          text="Entry Point"
-        />
-      </div>
-      {/* Actions section */}
-      <div className="ev-right-column-section">
-        <Typography style="h7">
-          <div className="ev-right-column-heading">Actions</div>
-        </Typography>
-        <ButtonAction
-          size="small"
-          onClick={() => {}}
-          // @ts-ignore
-          icon={<Icon name="share.svg" className="not-hoverable" />}
-          text="Share"
-        />
-        <ButtonAction
-          size="small"
-          onClick={deleteAndClose}
-          // @ts-ignore
-          icon={<Icon name="archive.svg" className="not-hoverable" />}
-          text="Archive"
-        />
+          <ButtonCheckbox
+            size="small"
+            isChecked={isEntryPoint}
+            onChange={entryPointClickAction}
+            // @ts-ignore
+            icon={<Icon name="door-open.svg" className="not-hoverable" />}
+            text="Entry Point"
+          />
+        </div>
+        {/* Actions section */}
+        <div className="ev-right-column-section">
+          <Typography style="h7">
+            <div className="ev-right-column-heading">Actions</div>
+          </Typography>
+          <ButtonAction
+            size="small"
+            onClick={() => {}}
+            // @ts-ignore
+            icon={<Icon name="share.svg" className="not-hoverable" />}
+            text="Share"
+          />
+          <ButtonAction
+            size="small"
+            onClick={deleteAndClose}
+            // @ts-ignore
+            icon={<Icon name="archive.svg" className="not-hoverable" />}
+            text="Archive"
+          />
+        </div>
       </div>
     </div>
   )
