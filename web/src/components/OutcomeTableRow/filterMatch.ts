@@ -1,5 +1,9 @@
-import { ComputedOutcome, ComputedScope, ComputedSimpleAchievementStatus } from "../../types"
-import { AgentPubKeyB64 } from "../../types/shared"
+import {
+  ComputedOutcome,
+  ComputedScope,
+  ComputedSimpleAchievementStatus,
+} from '../../types'
+import { AgentPubKeyB64 } from '../../types/shared'
 
 export type OutcomeTableFilter = {
   keywordOrId?: string
@@ -9,7 +13,10 @@ export type OutcomeTableFilter = {
   tags?: string[]
 }
 
-export default function filterMatch(outcome: ComputedOutcome, filter: OutcomeTableFilter) {
+export default function filterMatch(
+  outcome: ComputedOutcome,
+  filter: OutcomeTableFilter
+) {
   let keywordOrIdMatch = true
   let achievementStatusMatch = true
   let scopeMatch = true
@@ -48,9 +55,9 @@ export default function filterMatch(outcome: ComputedOutcome, filter: OutcomeTab
   if ('assignees' in filter) {
     assigneesMatch = false
     for (const assignee of filter.assignees) {
-      // TODO
-      if (outcome.members.includes(assignee)) {
-        assigneesMatch = true // assuming assignee filter selection is an OR rather than AND
+      // assuming assignee filter selection is an OR rather than AND
+      if ((outcome.members || []).map((m) => m.agentPubKey).includes(assignee)) {
+        assigneesMatch = true
         break
       }
     }

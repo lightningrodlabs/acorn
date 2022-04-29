@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
-import { openExpandedView } from '../../redux/ephemeral/expanded-view/actions'
-import { ComputedOutcome, Profile } from '../../types'
-import { HeaderHashB64 } from '../../types/shared'
+import { ComputedOutcome, Profile, Tag } from '../../types'
+import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
 import OutcomeTable from '../OutcomeTable/OutcomeTable'
 import OutcomeTableFilterSelector from '../OutcomeTableFilterSelector/OutcomeTableFilterSelector'
 import { OutcomeTableFilter } from '../OutcomeTableRow/filterMatch'
 import './OutcomeTableWithFilters.scss'
 
 export type OutcomeTableWithFiltersProps = {
-  tagList: string[]
+  projectTags: WithHeaderHash<Tag>[]
   whoAmI: Profile
   projectMemberProfiles: Profile[]
   computedOutcomesAsTree: ComputedOutcome[]
@@ -16,10 +15,10 @@ export type OutcomeTableWithFiltersProps = {
 }
 
 const OutcomeTableWithFilters: React.FC<OutcomeTableWithFiltersProps> = ({
+  projectTags,
   whoAmI,
   projectMemberProfiles,
   computedOutcomesAsTree,
-  tagList,
   openExpandedView,
 }) => {
   const [filter, setOutcomeTableFilter] = useState<OutcomeTableFilter>({
@@ -28,13 +27,14 @@ const OutcomeTableWithFilters: React.FC<OutcomeTableWithFiltersProps> = ({
   return (
     <div className="outcome-table-with-filters">
       <OutcomeTableFilterSelector
-        tagList={tagList}
+        projectTags={projectTags}
         whoAmI={whoAmI}
         onApplyOutcomeTableFilter={setOutcomeTableFilter}
         filter={filter}
         projectMemberProfiles={projectMemberProfiles}
       />
       <OutcomeTable
+        projectTags={projectTags}
         outcomeTrees={computedOutcomesAsTree}
         filter={filter}
         openExpandedView={openExpandedView}

@@ -36,4 +36,6 @@ WithLink.args = withLinkArgs
 
 export const WithoutLink = Template.bind({})
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
-WithoutLink.args = {}
+WithoutLink.args = {
+  isEditing: true
+}

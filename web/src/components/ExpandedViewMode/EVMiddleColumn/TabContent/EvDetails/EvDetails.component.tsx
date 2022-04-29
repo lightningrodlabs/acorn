@@ -3,9 +3,7 @@ import moment from 'moment'
 import TextareaAutosize from 'react-textarea-autosize'
 
 import Avatar from '../../../../Avatar/Avatar'
-import PersonInfoPopup from '../../../../PersonInfoPopup/PersonInfoPopup'
 import PeoplePicker from '../../../../PeoplePicker/PeoplePicker'
-import Icon from '../../../../Icon/Icon'
 import {
   AssigneeWithHeaderHash,
   ComputedOutcome,
@@ -23,9 +21,10 @@ import {
 import './EvDetails.scss'
 import TagsList from '../../../../TagsList/TagsList'
 import MetadataWithLabel from '../../../../MetadataWithLabel/MetadataWithLabel'
-import Typography from '../../../../Typography/Typography'
 import GithubLink from '../../../../GithubLink/GithubLink'
 import AvatarsList from '../../../../AvatarsList/AvatarsList'
+import MarkdownDescription from '../../../../MarkdownDescription/MarkdownDescription'
+import EditingOverlay from '../../../../EditingOverlay/EditingOverlay'
 
 /*
 testing data
@@ -116,25 +115,6 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   endDescriptionEdit,
   editingPeers,
 }) => {
-  let creator: Profile
-  if (outcome) {
-    Object.keys(profiles).forEach((value) => {
-      if (profiles[value].agentPubKey === outcome.creatorAgentPubKey)
-        creator = profiles[value]
-    })
-  }
-
-  const [editAssignees, setEditAssignees] = useState(false)
-
-  // the live editor state
-  const [content, setContent] = useState('')
-  // the live editor state
-  const [description, setDescription] = useState('')
-
-  // the live github link editor state
-  const [githubInputLinkText, setGithubInputLinkText] = useState('')
-  const [isEditingGithubLink, setIsEditingGithubLink] = useState(false)
-
   // reset
   useEffect(() => {
     if (!outcomeHeaderHash) {
@@ -142,25 +122,6 @@ const EvDetails: React.FC<EvDetailsProps> = ({
       // setEditTimeframe(false)
     }
   }, [outcomeHeaderHash])
-
-  // handle change (or update) of outcome
-  const outcomeContent = outcome ? outcome.content : ''
-  const outcomeDescription = outcome ? outcome.description : ''
-  const outcomeGithubLink = outcome ? outcome.githubLink : ''
-  useEffect(() => {
-    setContent(outcomeContent)
-  }, [outcomeContent])
-  useEffect(() => {
-    setDescription(outcomeDescription)
-  }, [outcomeDescription])
-  useEffect(() => {
-    setGithubInputLinkText(outcomeGithubLink)
-    if (!outcomeGithubLink) {
-      setIsEditingGithubLink(true)
-    } else {
-      setIsEditingGithubLink(false)
-    }
-  }, [outcomeGithubLink])
 
   const cleanOutcome = (): Outcome => {
     return {
@@ -175,27 +136,58 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   const updateOutcomeWithLatest = async () => {
     await updateOutcome(cleanOutcome(), outcomeHeaderHash)
   }
+
+  /*
+    Title
+  */
+  // the live editor state
+  const [content, setContent] = useState('')
+  // handle change (or update) of outcome
+  const outcomeContent = outcome ? outcome.content : ''
+  useEffect(() => {
+    setContent(outcomeContent)
+  }, [outcomeContent])
   const onTitleBlur = () => {
     updateOutcomeWithLatest()
     endTitleEdit(outcomeHeaderHash)
   }
-  const onDescriptionBlur = () => {
-    updateOutcomeWithLatest()
-    endDescriptionEdit(outcomeHeaderHash)
-  }
   const onTitleFocus = () => {
     startTitleEdit(outcomeHeaderHash)
-  }
-  const onDescriptionFocus = () => {
-    startDescriptionEdit(outcomeHeaderHash)
   }
   const handleOnChangeTitle = ({ target }) => {
     setContent(target.value)
   }
-  const handleOnChangeDescription = ({ target }) => {
-    setDescription(target.value)
-  }
+  // is someone else editing it?
+  // if so, local person can't
+  const editingTitlePeer = editingPeers.find(
+    (peerInfo) => peerInfo.outcomeBeingEdited.isTitle
+  )
+  const titleEditor = editingTitlePeer ? editingTitlePeer.profileInfo : {}
 
+  /*
+    Github Link
+  */
+  // the live github link editor state
+  const [githubInputLinkText, setGithubInputLinkText] = useState('')
+  const [isEditingGithubLink, setIsEditingGithubLink] = useState(false)
+  const outcomeGithubLink = outcome ? outcome.githubLink : ''
+  useEffect(() => {
+    setGithubInputLinkText(outcomeGithubLink)
+    if (!outcomeGithubLink) {
+      setIsEditingGithubLink(true)
+    } else {
+      setIsEditingGithubLink(false)
+    }
+  }, [outcomeGithubLink])
+
+  /*
+    Assignees
+  */
+  const [editAssignees, setEditAssignees] = useState(false)
+
+  /*
+    Times
+  */
   let fromDate: moment.Moment, toDate: moment.Moment
   if (outcome) {
     // fromDate = outcome.timeFrame
@@ -204,20 +196,9 @@ const EvDetails: React.FC<EvDetailsProps> = ({
     // toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
   }
 
-  // const isBeingEdited = false
-  // find out if any of the peers is editing title, then take the agent key from that and use to feed into avatar
-  const editingTitlePeer = editingPeers.find(
-    (peerInfo) => peerInfo.outcomeBeingEdited.isTitle
-  )
-  const editingDescriptionPeer = editingPeers.find(
-    (peerInfo) => !peerInfo.outcomeBeingEdited.isTitle
-  )
-  const titleEditor = editingTitlePeer ? editingTitlePeer.profileInfo : {}
-  const descriptionEditor = editingDescriptionPeer
-    ? editingDescriptionPeer.profileInfo
-    : {}
-
-  // TAGS
+  /*
+    TAGS
+  */
   const selectedTags = outcome ? outcome.tags : []
   const onSelectNewTags = async (newSelectedTags: HeaderHashB64[]) => {
     const newOutcome = cleanOutcome()
@@ -225,45 +206,57 @@ const EvDetails: React.FC<EvDetailsProps> = ({
     updateOutcome(newOutcome, outcomeHeaderHash)
   }
 
+  /* 
+    Description
+  */
+  // the live editor state
+  const [description, setDescription] = useState('')
+  // the latest persisted state
+  const outcomeDescription = outcome ? outcome.description : ''
+  // sync the live editor state with the
+  // persisted state, if the persisted state changes
+  // "underneath" us, or because of us
+  useEffect(() => {
+    setDescription(outcomeDescription)
+  }, [outcomeDescription])
+  // find out if any of the peers is editing title
+  // then take the profile metadata from that and
+  // use to feed into avatar
+  const onDescriptionBlur = () => {
+    updateOutcomeWithLatest()
+    endDescriptionEdit(outcomeHeaderHash)
+  }
+  const onDescriptionFocus = () => {
+    startDescriptionEdit(outcomeHeaderHash)
+  }
+  const handleOnChangeDescription = (value: string) => {
+    setDescription(value)
+  }
+  // is someone else editing it?
+  // if so, local person can't
+  const editingDescriptionPeer = editingPeers.find(
+    (peerInfo) => !peerInfo.outcomeBeingEdited.isTitle
+  )
+  const descriptionEditor = editingDescriptionPeer
+    ? editingDescriptionPeer.profileInfo
+    : {}
+
+  /*
+    Component
+  */
   return (
     <>
       <div className="ev-details-wrapper">
         {/* Expanded View Title */}
         <div className="ev-details-inner-wrapper">
           <div className="ev-title-wrapper">
-            {editingTitlePeer ? (
-              <div>
-                <div className="member-editing-title-wrapper">
-                  <Avatar
-                    withStatusBorder
-                    size="small-medium"
-                    firstName={titleEditor.firstName}
-                    lastName={titleEditor.lastName}
-                    avatarUrl={titleEditor.avatarUrl}
-                    // @ts-ignore
-                    isImported={titleEditor.isImported}
-                    headerHash={titleEditor.address}
-                    connectionStatus={'connected'}
-                    selfAssignedStatus={titleEditor.status}
-                  />
-                </div>
-                <div className="ev-title-editing-placeholder">
-                  <div className="ev-title">
-                    <TextareaAutosize
-                      disabled={!!editingTitlePeer}
-                      value={content}
-                      onBlur={onTitleBlur}
-                      onChange={handleOnChangeTitle}
-                      onKeyPress={handleOnChangeTitle}
-                      placeholder="Add a title..."
-                      onFocus={onTitleFocus}
-                    />
-                  </div>
-                </div>
-              </div>
-            ) : (
+            <EditingOverlay
+              isBeingEditedByOther={!!editingTitlePeer}
+              personEditing={titleEditor}
+            >
               <div className="ev-title">
                 <TextareaAutosize
+                  disabled={!!editingTitlePeer}
                   value={content}
                   onBlur={onTitleBlur}
                   onChange={handleOnChangeTitle}
@@ -272,11 +265,10 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                   onFocus={onTitleFocus}
                 />
               </div>
-            )}
+            </EditingOverlay>
           </div>
 
           {/* Github Link */}
-
           <div className="ev-github-link">
             <GithubLink
               // the current persisted value
@@ -303,7 +295,9 @@ const EvDetails: React.FC<EvDetailsProps> = ({
             />
           </div>
 
-          <div className="ev-assginees-and-time-row">
+          {/* Assignees and Time related fields */}
+          <div className="ev-assignees-and-time-row">
+            {/* Assignees */}
             <div className="ev-assignees-wrapper">
               <MetadataWithLabel label="Assignees">
                 <AvatarsList
@@ -312,14 +306,6 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                   showAddButton
                   onClickButton={() => setEditAssignees(true)}
                 />
-
-                {/* {personInfoPopup && (
-                <PersonInfoPopup
-                  onClose={() => setPersonInfoPopup(null)}
-                  person={personInfoPopup}
-                  deleteOutcomeMember={deleteOutcomeMember}
-                />
-              )} */}
                 <div className="ev-add-members-popup-wrapper">
                   {editAssignees && (
                     <PeoplePicker
@@ -335,6 +321,8 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                 </div>
               </MetadataWithLabel>
             </div>
+
+            {/* Time related */}
             <div className="ev-time-wrapper">
               {/* TODO: make label based on the scope of the outcome */}
               <MetadataWithLabel label="Breakdown Time Est.">
@@ -353,51 +341,14 @@ const EvDetails: React.FC<EvDetailsProps> = ({
           </div>
 
           {/* Description */}
-          <MetadataWithLabel label="Description" iconName="text-align-left.svg">
-            <div className="ev-description-wrapper">
-              {/* If description is being edited by someone */}
-              {editingDescriptionPeer ? (
-                <div>
-                  <div className="member-editing-description-wrapper">
-                    <Avatar
-                      withStatusBorder
-                      size="small-medium"
-                      firstName={descriptionEditor.firstName}
-                      lastName={descriptionEditor.lastName}
-                      avatarUrl={descriptionEditor.avatarUrl}
-                      // @ts-ignore
-                      isImported={descriptionEditor.isImported}
-                      headerHash={descriptionEditor.address}
-                      connectionStatus={'connected'}
-                      selfAssignedStatus={descriptionEditor.status}
-                    />
-                  </div>
-                  <div className="ev-description-editing-placeholder">
-                    <div className="ev-description-content">
-                      <TextareaAutosize
-                        disabled={!!editingDescriptionPeer}
-                        placeholder="Add description here"
-                        value={description}
-                        onBlur={onDescriptionBlur}
-                        onChange={handleOnChangeDescription}
-                        onFocus={onDescriptionFocus}
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="ev-description-content">
-                  <TextareaAutosize
-                    placeholder="Add description here (markdown enabled)"
-                    value={description}
-                    onBlur={onDescriptionBlur}
-                    onChange={handleOnChangeDescription}
-                    onFocus={onDescriptionFocus}
-                  />
-                </div>
-              )}
-            </div>
-          </MetadataWithLabel>
+          <MarkdownDescription
+            isBeingEditedByOther={!!editingDescriptionPeer}
+            personEditing={descriptionEditor}
+            onBlur={onDescriptionBlur}
+            onFocus={onDescriptionFocus}
+            onChange={handleOnChangeDescription}
+            value={description}
+          />
         </div>
       </div>
     </>

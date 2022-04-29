@@ -5,6 +5,9 @@ import '../variables.scss'
 import OutcomeTableFilterSelectorComponent, {
   OutcomeTableFilterSelectorProps,
 } from '../components/OutcomeTableFilterSelector/OutcomeTableFilterSelector'
+import { OutcomeTableFilter } from '../components/OutcomeTableRow/filterMatch'
+import testProfile from './testData/testProfile'
+import testTags from './testData/testTags'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -23,6 +26,12 @@ export const OutcomeTableFilterSelector = Template.bind({})
 OutcomeTableFilterSelector.storyName = 'OutcomeTableFilterSelector'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 const args: OutcomeTableFilterSelectorProps = {
-  // assign props here
+  whoAmI: testProfile,
+  onApplyOutcomeTableFilter: function (filters: OutcomeTableFilter): void {
+    throw new Error('Function not implemented.')
+  },
+  filter: {},
+  projectMemberProfiles: [],
+  projectTags: testTags
 }
 OutcomeTableFilterSelector.args = args

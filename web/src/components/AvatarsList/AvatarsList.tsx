@@ -12,7 +12,7 @@ export type AvatarsListProps = {
   showPresence?: boolean
   showInviteButton?: boolean
   showAddButton?: boolean
-  onClickButton: () => void
+  onClickButton?: () => void
 }
 
 const AvatarsList: React.FC<AvatarsListProps> = ({

@@ -10,8 +10,8 @@ import './TagsList.scss'
 export type TagsListProps = {
   tags: WithHeaderHash<TagType>[]
   selectedTags: HeaderHashB64[]
-  onChange: (newSelectedTags: HeaderHashB64[]) => void
-  onSaveTag: (text: string, backgroundColor: string) => Promise<void>
+  onChange?: (newSelectedTags: HeaderHashB64[]) => void
+  onSaveTag?: (text: string, backgroundColor: string) => Promise<void>
   showAddTagButton: boolean
 }
 
