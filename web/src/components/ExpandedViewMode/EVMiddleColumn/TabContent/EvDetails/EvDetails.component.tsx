@@ -125,46 +125,55 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   }
 
   const [editAssignees, setEditAssignees] = useState(false)
-  const [
-    personInfoPopup,
-    setPersonInfoPopup,
-  ] = useState<AssigneeWithHeaderHash>(null)
 
   // the live editor state
   const [content, setContent] = useState('')
   // the live editor state
   const [description, setDescription] = useState('')
 
+  // the live github link editor state
+  const [githubInputLinkText, setGithubInputLinkText] = useState('')
+  const [isEditingGithubLink, setIsEditingGithubLink] = useState(false)
+
   // reset
   useEffect(() => {
     if (!outcomeHeaderHash) {
       setEditAssignees(false)
-      setPersonInfoPopup(null)
       // setEditTimeframe(false)
     }
   }, [outcomeHeaderHash])
 
-  // handle change of outcome
+  // handle change (or update) of outcome
   const outcomeContent = outcome ? outcome.content : ''
   const outcomeDescription = outcome ? outcome.description : ''
+  const outcomeGithubLink = outcome ? outcome.githubLink : ''
   useEffect(() => {
     setContent(outcomeContent)
   }, [outcomeContent])
   useEffect(() => {
     setDescription(outcomeDescription)
   }, [outcomeDescription])
+  useEffect(() => {
+    setGithubInputLinkText(outcomeGithubLink)
+    if (!outcomeGithubLink) {
+      setIsEditingGithubLink(true)
+    } else {
+      setIsEditingGithubLink(false)
+    }
+  }, [outcomeGithubLink])
 
-  const cleanOutcome = () => {
+  const cleanOutcome = (): Outcome => {
     return {
       ...outcome,
       editorAgentPubKey: activeAgentPubKey,
       timestampUpdated: moment().unix(),
       content,
       description,
+      githubLink: githubInputLinkText,
     }
   }
-  const updateOutcomeWithLatest = () => {
-    updateOutcome(cleanOutcome(), outcomeHeaderHash)
+  const updateOutcomeWithLatest = async () => {
+    await updateOutcome(cleanOutcome(), outcomeHeaderHash)
   }
   const onTitleBlur = () => {
     updateOutcomeWithLatest()
@@ -189,10 +198,10 @@ const EvDetails: React.FC<EvDetailsProps> = ({
 
   let fromDate: moment.Moment, toDate: moment.Moment
   if (outcome) {
-    fromDate = outcome.timeFrame
-      ? moment.unix(outcome.timeFrame.fromDate)
-      : null
-    toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
+    // fromDate = outcome.timeFrame
+    //   ? moment.unix(outcome.timeFrame.fromDate)
+    //   : null
+    // toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
   }
 
   // const isBeingEdited = false
@@ -269,7 +278,18 @@ const EvDetails: React.FC<EvDetailsProps> = ({
           {/* Github Link */}
 
           <div className="ev-github-link">
-            <GithubLink />
+            <GithubLink
+              // the current persisted value
+              githubLink={outcomeGithubLink}
+              onSubmit={async () => {
+                await updateOutcomeWithLatest()
+                setIsEditingGithubLink(false)
+              }}
+              isEditing={isEditingGithubLink}
+              setIsEditing={setIsEditingGithubLink}
+              inputLinkText={githubInputLinkText}
+              setInputLinkText={setGithubInputLinkText}
+            />
           </div>
 
           {/* Tags */}

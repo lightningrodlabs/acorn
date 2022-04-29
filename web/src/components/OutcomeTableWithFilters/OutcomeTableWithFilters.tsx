@@ -20,9 +20,10 @@ const OutcomeTableWithFilters: React.FC<OutcomeTableWithFiltersProps> = ({
   projectMemberProfiles,
   computedOutcomesAsTree,
   tagList,
+  openExpandedView,
 }) => {
   const [filter, setOutcomeTableFilter] = useState<OutcomeTableFilter>({
-    keywordOrId: 'n',
+    keywordOrId: '',
   })
   return (
     <div className="outcome-table-with-filters">

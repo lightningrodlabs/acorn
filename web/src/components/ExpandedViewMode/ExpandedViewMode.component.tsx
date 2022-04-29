@@ -63,8 +63,13 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
 
   const childrenCount =
     outcome && outcome.children ? outcome.children.length : 0
-  // TODO: tasklist
-  const taskListCount = 0
+
+  const showTaskListMenuItem =
+    childrenCount === 0 && outcome && 'Small' in outcome.scope
+  const taskListCount =
+    childrenCount === 0 && outcome && 'Small' in outcome.scope
+      ? outcome.scope.Small.taskList.length
+      : 0
 
   return (
     <>
@@ -96,6 +101,7 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
             onChange={setActiveTab}
             commentCount={commentCount}
             childrenCount={childrenCount}
+            showTaskList={showTaskListMenuItem}
             taskListCount={taskListCount}
             outcomeId={outcomeId}
           />

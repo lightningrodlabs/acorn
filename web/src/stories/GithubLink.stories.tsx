@@ -14,21 +14,22 @@ export default {
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof GithubLinkComponent> = (args) => {
-  const [linkText, setLinkText] = useState(
-    'https://github.com/h-be/acorn/issues/94'
+  const [inputLinkText, setInputLinkText] = useState(
+    args.githubLink
   )
   return (
     <GithubLinkComponent
       {...args}
-      linkText={linkText}
-      setLinkText={setLinkText}
+      githubLink={args.githubLink}
+      inputLinkText={inputLinkText}
+      setInputLinkText={setInputLinkText}
     />
   )
 }
 
 export const WithLink = Template.bind({})
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
-const withLinkArgs: GithubLinkProps = {
+const withLinkArgs = {
   githubLink: 'https://github.com/h-be/acorn/issues/94',
 }
 WithLink.args = withLinkArgs

@@ -30,7 +30,7 @@ export function computeAchievementStatus(
       ? children.reduce((memo, currentValue) => {
           return memo + currentValue.computedAchievementStatus.smallsAchieved
         }, 0)
-      : 'Small' in self.scope && self.scope.Small === 'Achieved'
+      : 'Small' in self.scope && self.scope.Small.achievementStatus === 'Achieved'
       ? 1
       : 0
   const smallsTotal =

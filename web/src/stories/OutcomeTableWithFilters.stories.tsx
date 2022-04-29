@@ -37,10 +37,10 @@ const smallOutcome: ComputedOutcome = {
   editorAgentPubKey: 'editoryagentpubkey',
   timestampCreated: Date.now(),
   timestampUpdated: Date.now(),
-  scope: { Small: 'Achieved' },
+  scope: { Small: { achievementStatus: 'Achieved', taskList: [], targetDate: null } },
   tags: [],
+  githubLink: '',
   description: 'test description',
-  timeFrame: null, // { fromDate: Date.now(), toDate: Date.now() },
   isImported: false,
   computedScope: ComputedScope.Small,
   computedAchievementStatus: {
@@ -60,10 +60,11 @@ const bigOutcome: ComputedOutcome = {
   editorAgentPubKey: 'editoryagentpubkey',
   timestampCreated: Date.now(),
   timestampUpdated: Date.now(),
-  scope: { Small: 'Achieved' }, // ignore
+   // ignored in this case
+  scope: { Small: { achievementStatus: 'Achieved', taskList: [], targetDate: null } },
   tags: [],
   description: 'test description',
-  timeFrame: null, // { fromDate: Date.now(), toDate: Date.now() },
+  githubLink: '',
   isImported: false,
   computedScope: ComputedScope.Big,
   computedAchievementStatus: {

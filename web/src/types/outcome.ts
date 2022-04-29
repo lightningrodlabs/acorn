@@ -12,25 +12,35 @@ export interface Outcome {
   scope: Scope
   tags: Option<Array<string>>
   description: string
-  timeFrame: Option<TimeFrame>
   isImported: boolean
+  githubLink: string
 }
 
 export type AchievementStatus = 'Achieved' | 'NotAchieved'
-export interface Small {
-  Small: AchievementStatus
+export type SmallTask = {
+  complete: boolean
+  task: string
+}
+export interface SmallScope {
+  achievementStatus: AchievementStatus
+  targetDate: Option<number>
+  taskList: Array<SmallTask>
 }
 
-export type SmallsEstimate = number
-export interface Uncertain {
-  Uncertain: Option<SmallsEstimate>
-}
-
-export type Scope = Small | Uncertain
 export interface TimeFrame {
   fromDate: number //f64,
   toDate: number //f64,
 }
+export type SmallsEstimate = number
+export interface UncertainScope {
+  smallsEstimate: Option<SmallsEstimate>
+  timeFrame: Option<TimeFrame>
+  inBreakdown: boolean
+}
+
+export type ScopeSmallVariant = { Small: SmallScope }
+export type ScopeUncertainVariant = { Uncertain: UncertainScope }
+export type Scope = ScopeSmallVariant | ScopeUncertainVariant
 
 export type ComputedAchievementStatus = {
   uncertains: number

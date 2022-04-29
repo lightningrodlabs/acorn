@@ -73,7 +73,6 @@ function MapView({
         {outcomeFormIsOpen && (
           <MapViewOutcomeTitleForm
             projectId={projectId}
-            presentToUser={scale >= firstZoomThreshold}
           />
         )}
       </div>

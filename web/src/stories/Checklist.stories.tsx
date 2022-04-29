@@ -17,28 +17,28 @@ export default {
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof Checklist> = (args) => {
   const [listItems, setListItems] = useState<ChecklistItemType[]>([
-    { text: 'Create a scope of work, for development.', isChecked: true },
-    { text: 'Create a scope of work, for development.', isChecked: false },
-    { text: 'Create a scope of work, for development.', isChecked: false },
+    { task: 'Create a scope of work, for development.', complete: true },
+    { task: 'Create a scope of work, for development.', complete: false },
+    { task: 'Create a scope of work, for development.', complete: false },
   ])
   return (
     <Checklist
       {...args}
       listItems={listItems}
-      onChange={(index, text, isChecked) => {
+      onChange={async (index, task, complete) => {
         const newListItems = listItems.map((listItem, liIndex) => {
           if (index === liIndex) {
-            return { text, isChecked }
+            return { task, complete }
           } else {
             return listItem
           }
         })
         setListItems(newListItems)
       }}
-      onAdd={(text) => {
-        setListItems([...listItems, { text: text, isChecked: false }])
+      onAdd={async (task) => {
+        setListItems([...listItems, { task, complete: false }])
       }}
-      onRemove={(index) => {
+      onRemove={async (index) => {
         // clone the array
         const newListItems = [...listItems]
         // remove the indicated one from the list

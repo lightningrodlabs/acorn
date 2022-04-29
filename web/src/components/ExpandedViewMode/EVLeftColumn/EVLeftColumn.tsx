@@ -12,6 +12,7 @@ export type EvLeftColumnProps = {
   commentCount: number
   childrenCount: number
   taskListCount: number
+  showTaskList: boolean
 }
 
 const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
@@ -21,6 +22,7 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
   commentCount,
   childrenCount,
   taskListCount,
+  showTaskList,
 }) => {
   const navItems = [
     {
@@ -33,17 +35,22 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
       icon: 'chats-circle.svg',
       tab: ExpandedViewTab.Comments,
     },
-    {
-      text:
-        childrenCount > 0
-          ? `Children (${childrenCount})`
-          : `Task List (${taskListCount})`,
-      // TODO: set icons
-      icon: childrenCount > 0 ? 'hierarchy.svg' : 'squares-check.svg',
-      tab:
-        childrenCount > 0 ? ExpandedViewTab.ChildrenList : ExpandedViewTab.TaskList,
-    },
+    ,
   ]
+  
+  if (childrenCount > 0) {
+    navItems.push({
+      text: `Children (${childrenCount})`,
+      icon: 'hierarchy.svg',
+      tab: ExpandedViewTab.ChildrenList,
+    })
+  } else if (showTaskList) {
+    navItems.push({
+      text: `Task List (${taskListCount})`,
+      icon: 'squares-check.svg',
+      tab: ExpandedViewTab.TaskList,
+    })
+  }
 
   return (
     <div className="expanded-view-nav-column">

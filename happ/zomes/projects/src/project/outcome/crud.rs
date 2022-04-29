@@ -5,6 +5,7 @@ use crate::project::{
     outcome_member::crud::{delete_outcome_members, OutcomeMember},
     outcome_vote::crud::{get_outcome_vote_path, OutcomeVote},
 };
+use crate::ui_enum::UIEnum;
 use crate::{get_peers_content, SignalType};
 use hdk::prelude::*;
 use hdk_crud::{
@@ -23,6 +24,8 @@ use hdk_crud::{
 use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 use std::fmt;
 
+use super::{small_scope::SmallScope, uncertain_scope::UncertainScope};
+
 // A Outcome Card. This is a card on the SoA Tree which can be small or non-small, complete or
 // incomplete, certain or uncertain, and contains text content.
 // user hash and unix timestamp are included to prevent hash collisions.
@@ -38,8 +41,8 @@ pub struct Outcome {
     pub scope: Scope,
     pub tags: Vec<HeaderHashB64>,
     pub description: String,
-    pub time_frame: Option<TimeFrame>,
     pub is_imported: bool,
+    pub github_link: String,
 }
 
 impl Outcome {
@@ -52,8 +55,8 @@ impl Outcome {
         scope: Scope,
         tags: Vec<HeaderHashB64>,
         description: String,
-        time_frame: Option<TimeFrame>,
         is_imported: bool,
+        github_link: String,
     ) -> Self {
         Self {
             content,
@@ -64,67 +67,16 @@ impl Outcome {
             scope,
             tags,
             description,
-            time_frame,
             is_imported,
+            github_link,
         }
     }
 }
-
-#[derive(Debug, Serialize, Deserialize, SerializedBytes, Clone, PartialEq)]
-pub struct UIEnum(pub String);
 
 #[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
 pub enum Scope {
-    Small(AchievementStatus),
-    Uncertain(SmallsEstimate),
-}
-
-#[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-pub struct SmallsEstimate(pub Option<u32>);
-impl SmallsEstimate {
-    pub fn new(estimate: Option<u32>) -> Self {
-        Self(estimate)
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-#[serde(from = "UIEnum")]
-#[serde(into = "UIEnum")]
-pub enum AchievementStatus {
-    Achieved,
-    NotAchieved,
-}
-impl From<UIEnum> for AchievementStatus {
-    fn from(ui_enum: UIEnum) -> Self {
-        match ui_enum.0.as_str() {
-            "NotAchieved" => Self::NotAchieved,
-            "Achieved" => Self::Achieved,
-            _ => Self::NotAchieved,
-        }
-    }
-}
-impl From<AchievementStatus> for UIEnum {
-    fn from(achievement_level: AchievementStatus) -> Self {
-        Self(achievement_level.to_string())
-    }
-}
-impl fmt::Display for AchievementStatus {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-#[serde(rename_all = "camelCase")]
-pub struct TimeFrame {
-    from_date: f64,
-    to_date: f64,
-}
-
-impl TimeFrame {
-    pub fn new(from_date: f64, to_date: f64) -> Self {
-        Self { from_date, to_date }
-    }
+    Small(SmallScope),
+    Uncertain(UncertainScope),
 }
 
 crud!(Outcome, outcome, "outcome", get_peers_content, SignalType);
@@ -205,13 +157,15 @@ pub fn create_outcome_with_connection(
         Some(linked_outcome_details) => {
             let (parent_header_hash, child_header_hash) = match linked_outcome_details.relation {
                 // new outcome becomes parent
-                RelationInput::ExistingOutcomeAsChild => {
-                    (new_outcome_header_hash, linked_outcome_details.outcome_header_hash)
-                }
+                RelationInput::ExistingOutcomeAsChild => (
+                    new_outcome_header_hash,
+                    linked_outcome_details.outcome_header_hash,
+                ),
                 // new outcome becomes child
-                RelationInput::ExistingOutcomeAsParent => {
-                    (linked_outcome_details.outcome_header_hash, new_outcome_header_hash)
-                }
+                RelationInput::ExistingOutcomeAsParent => (
+                    linked_outcome_details.outcome_header_hash,
+                    new_outcome_header_hash,
+                ),
             };
             let random = sys_time()?;
             let r0 = random.as_millis();

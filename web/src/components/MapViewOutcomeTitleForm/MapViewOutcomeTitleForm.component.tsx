@@ -12,33 +12,67 @@ import {
   secondZoomThreshold,
 } from '../../drawing/dimensions'
 import './MapViewOutcomeTitleForm.scss'
+import {
+  AgentPubKeyB64,
+  CellIdString,
+  HeaderHashB64,
+  Option,
+} from '../../types/shared'
+import { LinkedOutcomeDetails, Outcome, RelationInput } from '../../types'
 
-// if editAddress is present (as a Outcome address) it means we are currently EDITING that Outcome
-export default function MapViewOutcomeTitleForm({
-  presentToUser,
-  activeAgentPubKey,
-  scale,
+export type MapViewOutcomeTitleFormOwnProps = {
+  projectId: CellIdString
+}
+
+export type MapViewOutcomeTitleFormConnectorStateProps = {
+  activeAgentPubKey: AgentPubKeyB64
+  scale
   // the value of the text input
-  content,
+  content: string
+  // coordinates in css terms for the box
+  leftConnectionXPosition: number
+  topConnectionYPosition: number
   // (optional) the address of a Outcome to connect this Outcome to
   // in the case of creating a Outcome
-  fromAddress,
+  fromAddress: HeaderHashB64
   // (optional) the relation (relation_as_{child|parent}) between the two
   // in the case of creating a Outcome
-  relation,
+  relation: RelationInput
   // (optional) the address of an existing connection that
   // indicates this Outcome as the child of another (a.k.a has a parent)
   // ASSUMPTION: one parent
+  existingParentConnectionAddress: HeaderHashB64
+}
+
+export type MapViewOutcomeTitleFormConnectorDispatchProps = {
+  // callbacks
+  updateContent: (content: string) => void
+  deleteConnection: (headerHash: HeaderHashB64) => Promise<void>
+  createOutcomeWithConnection: (
+    entry: Outcome,
+    maybeLinkedOutcome: Option<LinkedOutcomeDetails>
+  ) => Promise<void>
+  closeOutcomeForm: () => void
+}
+
+export type MapViewOutcomeTitleFormProps = MapViewOutcomeTitleFormOwnProps &
+  MapViewOutcomeTitleFormConnectorStateProps &
+  MapViewOutcomeTitleFormConnectorDispatchProps
+
+const MapViewOutcomeTitleForm: React.FC<MapViewOutcomeTitleFormProps> = ({
+  activeAgentPubKey,
+  scale,
+  content,
+  fromAddress,
+  relation,
   existingParentConnectionAddress,
-  // coordinates in css terms for the box
   leftConnectionXPosition,
   topConnectionYPosition,
-  // callbacks
   updateContent,
   deleteConnection,
   createOutcomeWithConnection,
   closeOutcomeForm,
-}) {
+}) => {
   /* EVENT HANDLERS */
   // when the text value changes
   const handleChange = (event) => {
@@ -79,12 +113,8 @@ export default function MapViewOutcomeTitleForm({
       return
     }
 
-    // depending on editAddress, this
-    // might be an update to an existing...
-    // otherwise it's a new Outcome being created
-    if (presentToUser) {
-      await innerCreateOutcomeWithConnection()
-    }
+    // create the new Outcome (and maybe Connection)
+    await innerCreateOutcomeWithConnection()
 
     const isKeyboardTrigger = !event
     // don't close this if it was a click on the vertical-actions-list
@@ -119,11 +149,15 @@ export default function MapViewOutcomeTitleForm({
         creatorAgentPubKey: activeAgentPubKey,
         timestampCreated: moment().unix(),
         // defaults
+        timestampUpdated: null,
         editorAgentPubKey: null,
-        scope: { Uncertain: 0 },
+        scope: {
+          Uncertain: { smallsEstimate: 0, timeFrame: null, inBreakdown: false },
+        },
         tags: [],
         description: '',
         isImported: false,
+        githubLink: '',
       },
       fromAddress ? { outcomeHeaderHash: fromAddress, relation } : null
     )
@@ -154,23 +188,23 @@ export default function MapViewOutcomeTitleForm({
       // ref for the sake of onClickOutside
       ref={ref}
     >
-      {presentToUser && (
-        <form
-          className="map-view-outcome-title-form-form"
-          onSubmit={handleSubmit}
-        >
-          <TextareaAutosize
-            autoFocus
-            placeholder="Add a title..."
-            value={content}
-            onChange={handleChange}
-            onKeyDown={handleKeyDown}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            style={textStyle}
-          />
-        </form>
-      )}
+      <form
+        className="map-view-outcome-title-form-form"
+        onSubmit={handleSubmit}
+      >
+        <TextareaAutosize
+          autoFocus
+          placeholder="Add a title..."
+          value={content}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          style={textStyle}
+        />
+      </form>
     </div>
   )
 }
+
+export default MapViewOutcomeTitleForm

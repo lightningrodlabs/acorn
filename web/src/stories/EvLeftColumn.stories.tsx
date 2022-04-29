@@ -29,5 +29,6 @@ EvLeftColumn.args = {
   commentCount: 1,
   childrenCount: 0,
   taskListCount: 1,
+  showTaskList: true,
   outcomeId: 142314,
 } as EvLeftColumnProps
