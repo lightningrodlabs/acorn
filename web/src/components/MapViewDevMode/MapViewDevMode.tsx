@@ -44,6 +44,21 @@ const outcome2: WithHeaderHash<Outcome> = {
   githubLink: '',
   headerHash: '413',
 }
+const outcome3: WithHeaderHash<Outcome> = {
+  content: 'Acorn no longer uses a legacy sunmaintained library',
+  creatorAgentPubKey: '',
+  editorAgentPubKey: '',
+  timestampCreated: 0,
+  timestampUpdated: 0,
+  scope: {
+    Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] },
+  },
+  tags: [],
+  description: '',
+  isImported: false,
+  githubLink: '',
+  headerHash: '414',
+}
 
 const connection1: WithHeaderHash<Connection> = {
   parentHeaderHash: '412',
@@ -56,6 +71,7 @@ const connection1: WithHeaderHash<Connection> = {
 const outcomesState: ProjectOutcomesState = {
   ['412']: outcome1,
   ['413']: outcome2,
+  ['414']: outcome3
 }
 const connectionsState: ProjectConnectionsState = {
   ['123']: connection1,
@@ -102,7 +118,7 @@ const defaultState: RootState = {
         x: 0,
         y: 0,
       },
-      scale: 0.5,
+      scale: 1,
     },
     screensize: {
       width: 1000,
@@ -153,18 +169,17 @@ const MapViewDevMode: React.FC<MapViewDevModeProps> = (
 
     // Get the size of the canvas in CSS pixels.
     const rect = canvas.getBoundingClientRect()
-
-    // card width is fixed on zoom level 100%
     const screenWidth = rect.width * dpr
-
-    // card height is dynamic based on the text length,
-    // and whether it has tags, assignees and time
     const screenHeight = rect.height * dpr
     defaultState.ui.screensize.width = screenWidth
     defaultState.ui.screensize.height = screenHeight
     // Give the canvas pixel dimensions of their CSS
     // size * the device pixel ratio.
     render(store, canvas)
+
+    // card width is fixed on zoom level 100%
+    // card height is dynamic based on the text length,
+    // and whether it has tags, assignees and time
   })
   return (
     <div className="map-view-dev-mode">

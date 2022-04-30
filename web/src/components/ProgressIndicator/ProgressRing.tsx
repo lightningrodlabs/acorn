@@ -2,13 +2,26 @@ import React from 'react'
 
 export type ProgressRingProps = {
   progress: number
+  strokeWidth?: number
+  size?: number
 }
 
-const ProgressRing: React.FC<ProgressRingProps> = ({ progress }) => {
+const ProgressRing: React.FC<ProgressRingProps> = ({
+  progress,
+  size = 22,
+  strokeWidth = 5,
+}) => {
+  // since the stroke occurs from the "center"
+  // of the arced line that runs around the
+  // circumference of the circle, we have
+  // to adjust for it
+  const radius = (size - strokeWidth) / 2
+
   // this value represents circumference
-  // of the circle. We get it by:
-  // 2 * r * PI -> 2 * 8.5 * PI = 53
-  const circumference = 53
+  // of the circle. We use the fundamental
+  // formula for circumference of a circle
+  // to get it from the radius
+  const circumference = 2 * radius * Math.PI
 
   // circumference = stroke-dasharray
   // stroke-dashoffset = stroke-dasharray - (progress-point/100) * stroke-dasharray
@@ -17,39 +30,38 @@ const ProgressRing: React.FC<ProgressRingProps> = ({ progress }) => {
     <span
       style={{
         transform: 'rotate(-90deg)',
-        width: '22px',
-        height: '22px',
+        width: `${size}px`,
+        height: `${size}px`,
         display: 'inline-flex',
       }}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="22"
-        height="22"
-        viewBox="0 0 22 22"
+        width={size.toString()}
+        height={size.toString()}
+        viewBox={`0 0 ${size} ${size}`}
       >
         <circle
-          style={{ transition: 'stroke-dashoffset 0.35s;' }}
+          style={{ transition: 'stroke-dashoffset 0.35s' }}
           stroke="var(--text-color-placeholder)"
-          stroke-width="5"
-          stroke-linecap="round"
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
           fill="transparent"
           cx="50%"
           cy="50%"
-          // r = ( width * 2 ) - stroke-width
-          r="8.5"
+          r={radius}
         />
         <circle
-          style={{ transition: 'stroke-dashoffset 0.35s;' }}
+          style={{ transition: 'stroke-dashoffset 0.35s' }}
           stroke="var(--color-ultramarine-blue)"
-          stroke-width="5"
-          stroke-linecap="round"
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
           fill="transparent"
           cx="50%"
           cy="50%"
-          r="8.5"
-          stroke-dasharray={circumference.toString()}
-          stroke-dashoffset={dashoffset}
+          r={radius}
+          strokeDasharray={circumference.toString()}
+          strokeDashoffset={dashoffset}
         />
       </svg>
     </span>

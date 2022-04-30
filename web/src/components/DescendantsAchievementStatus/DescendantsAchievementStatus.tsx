@@ -32,9 +32,17 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
           {/* Smalls */}
           {computedAchievementStatus.smallsTotal !== 0 && (
             <div className="descendants-wrapper smalls">
-              <Icon name="leaf.svg" />
+              <div className="descendants-scope">
+                <Icon name="leaf.svg" />
+              </div>
               {/* TODO: pass real progress here */}
-              <ProgressIndicator progress={40} />
+              <ProgressIndicator
+                progress={
+                  (computedAchievementStatus.smallsAchieved /
+                    computedAchievementStatus.smallsTotal) *
+                  100
+                }
+              />
               {computedAchievementStatus.smallsAchieved.toString()}/
               {computedAchievementStatus.smallsTotal.toString()}
             </div>

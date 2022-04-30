@@ -37,13 +37,13 @@
     }
 
     &.smalls {
-      .icon .inner-icon {
+      .descendants-scope .icon .inner-icon {
         background-color: var(--color-green);
       }
     }
 
     &.uncertains {
-      .icon .inner-icon {
+      .descendants-scope .icon .inner-icon {
         background-color: var(--color-pumpkin);
       }
     }

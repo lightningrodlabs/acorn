@@ -26,7 +26,9 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ progress }) => {
       )}
       {/* if partially achieved */}
       {/* Symbol: grey circle border with dynamic progree percentage */}
-      {progress > 0 && progress < 100 && <ProgressRing progress={progress} />}
+      {progress > 0 && progress < 100 && (
+        <ProgressRing strokeWidth={4} size={16} progress={progress} />
+      )}
       {/* if fully achieved */}
       {/* Symbol: green circle with checkmark */}
       {progress === 100 && (

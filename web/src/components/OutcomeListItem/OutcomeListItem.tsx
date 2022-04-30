@@ -10,9 +10,10 @@ export type OutcomeListItemProps = {
 }
 
 const OutcomeListItem: React.FC<OutcomeListItemProps> = ({ outcome }) => {
-
-  // TODO: make this dynamic
-  const progress = 30
+  const progress =
+    (outcome.computedAchievementStatus.smallsAchieved /
+      outcome.computedAchievementStatus.smallsTotal) *
+    100
   return (
     <div className="outcome-list-item">
       {/* ID */}
