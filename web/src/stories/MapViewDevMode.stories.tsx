@@ -7,9 +7,17 @@ import MapViewDevModeComponent, {
 } from '../components/MapViewDevMode/MapViewDevMode'
 import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
 import { ProjectOutcomesState } from '../redux/persistent/projects/outcomes/reducer'
-import { Outcome, Connection } from '../types'
+import { Connection } from '../types'
 import { WithHeaderHash } from '../types/shared'
-import { testSmallAchievedOutcome, testSmallNotAchievedOutcome } from './testData/testOutcomes'
+import {
+  testBigAchievedOutcome,
+  testBigNotAchievedOutcome,
+  testBigPartiallyAchievedOutcome,
+  testSmallAchievedOutcome,
+  testSmallNotAchievedOutcome,
+  testUncertainWithChildrenOutcome,
+  testUncertainWithoutChildrenOutcome,
+} from './testData/testOutcomes'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -35,11 +43,25 @@ const connection1: WithHeaderHash<Connection> = {
 }
 
 const smallNotAchieved: ProjectOutcomesState = {
-  ['12344']: testSmallNotAchievedOutcome,
+  ['test-small-not-achieved-header-hash']: testSmallNotAchievedOutcome,
 }
-
 const smallAchieved: ProjectOutcomesState = {
-  ['12345']: testSmallAchievedOutcome,
+  ['test-small-achieved-header-hash']: testSmallAchievedOutcome,
+}
+const bigNotAchieved: ProjectOutcomesState = {
+  ['test-big-not-achieved-header-hash']: testBigNotAchievedOutcome,
+}
+const bigPartiallyAchieved: ProjectOutcomesState = {
+  ['test-big-partially-achieved-header-hash']: testBigPartiallyAchievedOutcome,
+}
+const bigAchieved: ProjectOutcomesState = {
+  ['test-big-achieved-header-hash']: testBigAchievedOutcome,
+}
+const uncertainWithoutChildren: ProjectOutcomesState = {
+  ['test-uncertain-without-children-header-hash']: testUncertainWithoutChildrenOutcome,
+}
+const uncertainWithChildren: ProjectOutcomesState = {
+  ['test-uncertain-with-children-header-hash']: testUncertainWithChildrenOutcome,
 }
 
 const emptyConnectionsState: ProjectConnectionsState = {}
@@ -55,8 +77,9 @@ const emptyConnectionsState: ProjectConnectionsState = {}
 
 /* End Data */
 
-export const SmallNotAchieved = Template.bind({})
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
+
+export const SmallNotAchieved = Template.bind({})
 const args1: MapViewDevModeProps = {
   outcomes: smallNotAchieved,
   connections: emptyConnectionsState,
@@ -64,9 +87,43 @@ const args1: MapViewDevModeProps = {
 SmallNotAchieved.args = args1
 
 export const SmallAchieved = Template.bind({})
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
 const args2: MapViewDevModeProps = {
   outcomes: smallAchieved,
   connections: emptyConnectionsState,
 }
 SmallAchieved.args = args2
+
+export const BigNotAchieved = Template.bind({})
+const args3: MapViewDevModeProps = {
+  outcomes: bigNotAchieved,
+  connections: emptyConnectionsState,
+}
+BigNotAchieved.args = args3
+
+export const BigPartiallyAchieved = Template.bind({})
+const args4: MapViewDevModeProps = {
+  outcomes: bigPartiallyAchieved,
+  connections: emptyConnectionsState,
+}
+BigPartiallyAchieved.args = args4
+
+export const BigAchieved = Template.bind({})
+const args5: MapViewDevModeProps = {
+  outcomes: bigAchieved,
+  connections: emptyConnectionsState,
+}
+BigAchieved.args = args5
+
+export const UncertainWithoutChildren = Template.bind({})
+const args6: MapViewDevModeProps = {
+  outcomes: uncertainWithoutChildren,
+  connections: emptyConnectionsState,
+}
+UncertainWithoutChildren.args = args6
+
+export const UncertainWithChildren = Template.bind({})
+const args7: MapViewDevModeProps = {
+  outcomes: uncertainWithChildren,
+  connections: emptyConnectionsState,
+}
+UncertainWithChildren.args = args7
