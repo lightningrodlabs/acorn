@@ -6,7 +6,7 @@ import EvDetails, {
   EvDetailsProps,
 } from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvDetails/EvDetails.component'
 import testProfile from './testData/testProfile'
-import { testBigOutcome } from './testData/testOutcomes'
+import { testBigAchievedOutcome } from './testData/testOutcomes'
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 
@@ -28,7 +28,7 @@ const props: EvDetailsProps = {
   projectId: '1241241',
   outcomeHeaderHash: '1243523',
   activeAgentPubKey: '1245314',
-  outcome: testBigOutcome,
+  outcome: testBigAchievedOutcome,
   projectTags: [],
   people: [
     {

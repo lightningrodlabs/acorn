@@ -13,7 +13,7 @@ import EvTaskList from '../components/ExpandedViewMode/EVMiddleColumn/TabContent
 import EvChildren from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvChildren/EvChildren'
 import testComments from './testData/testComments'
 import testProfile from './testData/testProfile'
-import { testBigOutcome, testSmallOutcome } from './testData/testOutcomes'
+import { testBigAchievedOutcome, testSmallAchievedOutcome } from './testData/testOutcomes'
 import testTags from './testData/testTags'
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
@@ -23,7 +23,7 @@ const projectId = '1244323532'
 const details = (
   <EvDetails
     projectId={projectId}
-    outcome={testSmallOutcome}
+    outcome={testSmallAchievedOutcome}
     activeAgentPubKey={'124234134'}
     outcomeHeaderHash={'1344151'}
     projectTags={testTags}
@@ -90,7 +90,7 @@ const comments = (
 const childrenList = (
   <EvChildren
     outcomeContent="This is the content property of an Outcome, it can get long sometimes"
-    directChildren={[testSmallOutcome]}
+    directChildren={[testSmallAchievedOutcome]}
   />
 )
 
@@ -132,7 +132,7 @@ const rightColumn = (
   <EVRightColumn
     projectId={projectId}
     onClose={() => {}}
-    outcome={testSmallOutcome}
+    outcome={testSmallAchievedOutcome}
     activeAgentPubKey={''}
     outcomeHeaderHash={''}
     isEntryPoint={false}
@@ -180,7 +180,7 @@ const Template: ComponentStory<typeof ExpandedViewMode> = (args) => {
 export const WithoutChildren = Template.bind({})
 const args: ExpandedViewModeProps = {
   projectId: '1234323',
-  outcome: testSmallOutcome,
+  outcome: testSmallAchievedOutcome,
   outcomeHeaderHash: '112412343',
   commentCount: 3,
   details: details,
@@ -199,7 +199,7 @@ WithoutChildren.args = args
 export const WithChildren = Template.bind({})
 const withChildrenArgs: ExpandedViewModeProps = {
   projectId: '1234323',
-  outcome: testBigOutcome,
+  outcome: testBigAchievedOutcome,
   outcomeHeaderHash: '112412343',
   commentCount: 3,
   details: details,

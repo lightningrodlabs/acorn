@@ -5,7 +5,7 @@ import '../variables.scss'
 import OutcomeTableRowComponent, {
   OutcomeTableRowProps,
 } from '../components/OutcomeTableRow/OutcomeTableRow'
-import { testBigOutcome } from './testData/testOutcomes'
+import { testBigAchievedOutcome } from './testData/testOutcomes'
 import testTags from './testData/testTags'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -26,7 +26,7 @@ OutcomeTableRow.storyName = 'OutcomeTableRow'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 const args: OutcomeTableRowProps = {
   projectTags: testTags,
-  outcome: testBigOutcome,
+  outcome: testBigAchievedOutcome,
   filter: {},
   parentExpanded: true,
   indentationLevel: 0,

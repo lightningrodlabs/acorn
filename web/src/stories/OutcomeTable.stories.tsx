@@ -6,7 +6,7 @@ import OutcomeTableComponent, {
   OutcomeTableProps,
 } from '../components/OutcomeTable/OutcomeTable'
 import testTags from './testData/testTags'
-import { testBigOutcome } from './testData/testOutcomes'
+import { testBigAchievedOutcome } from './testData/testOutcomes'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -26,7 +26,7 @@ OutcomeTable.storyName = 'OutcomeTable'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 const args: OutcomeTableProps = {
   projectTags: testTags,
-  outcomeTrees: [testBigOutcome],
+  outcomeTrees: [testBigAchievedOutcome],
   filter: {},
   openExpandedView: function (headerHash: string): void {
     throw new Error('Function not implemented.')

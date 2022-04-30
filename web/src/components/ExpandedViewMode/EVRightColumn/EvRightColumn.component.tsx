@@ -30,6 +30,7 @@ import './EVRightColumn.scss'
 import Typography from '../../Typography/Typography'
 import ReadOnlyInfo from '../../ReadOnlyInfo/ReadOnlyInfo'
 import cleanOutcome from '../../../api/cleanOutcome'
+import ProgressIndicator from '../../ProgressIndicator/ProgressIndicator'
 
 export type EvRightColumnOwnProps = {
   projectId: CellIdString
@@ -95,7 +96,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
   const hasChildren = outcome ? outcome.children.length > 0 : false
 
   // Annotated Achievement Status
-  let computedSimpleAchievedmentStatus = (outcome
+  let computedAchievementStatus = outcome
     ? outcome.computedAchievementStatus
     : {
         // default while loading
@@ -104,9 +105,8 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
         uncertains: 0,
         simple: ComputedSimpleAchievementStatus.NotAchieved,
       }
-  ).simple
   let reportedAchievementStatus: string
-  switch (computedSimpleAchievedmentStatus) {
+  switch (computedAchievementStatus.simple) {
     case ComputedSimpleAchievementStatus.Achieved:
       reportedAchievementStatus = 'Achieved'
       break
@@ -122,15 +122,13 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
       ? outcome.scope.Small.achievementStatus
       : 'Achieved'
   const achievementStatusOptions = [
-    // @ts-ignore
     {
-      icon: <Icon name={'achieved.svg'} className="achieved not-hoverable" />,
+      icon: <ProgressIndicator progress={100} />,
       text: 'Achieved',
       id: 'Achieved',
     },
     {
-      // @ts-ignore
-      icon: <Icon name={'x.svg'} className="not-hoverable" />,
+      icon: <ProgressIndicator progress={0} />,
       text: 'Not Achieved',
       id: 'NotAchieved',
     },
@@ -254,16 +252,25 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
   }
 
   const readOnlyInfos: { icon: React.ReactElement; text: string }[] = [
-    // @ts-ignore
     {
-      icon: <Icon name="x.svg" className="not-hoverable" />,
+      icon: (
+        <ProgressIndicator
+          progress={
+            isUncertain
+              ? 0
+              : (computedAchievementStatus.smallsAchieved /
+                  computedAchievementStatus.smallsTotal) *
+                100
+          }
+        />
+      ),
       text: reportedAchievementStatus,
     },
   ]
   if (isUncertain) {
     readOnlyInfos.push({
       // @ts-ignore
-      icon: <Icon name="activity-history.svg" className="not-hoverable" />,
+      icon: <Icon name="uncertain.svg" className="uncertain not-hoverable" />,
       text: 'Uncertain Scope',
     })
   }
@@ -318,7 +325,6 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
                   text: 'Small',
                 }}
                 state2={{
-                  // @ts-ignore
                   icon: (
                     <Icon
                       name="uncertain.svg"

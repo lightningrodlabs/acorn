@@ -7,7 +7,7 @@ import OutcomeTableWithFiltersComponent, {
 } from '../components/OutcomeTableWithFilters/OutcomeTableWithFilters'
 import { ComputedOutcome, ComputedScope, ComputedSimpleAchievementStatus, Profile } from '../types'
 import testProfile from './testData/testProfile'
-import { testBigOutcome } from './testData/testOutcomes'
+import { testBigAchievedOutcome } from './testData/testOutcomes'
 import testTags from './testData/testTags'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -31,7 +31,7 @@ const args: OutcomeTableWithFiltersProps = {
   projectMemberProfiles: [testProfile],
   computedOutcomesAsTree: [
     // a sample outcome (has children)
-    testBigOutcome
+    testBigAchievedOutcome
   ],
   openExpandedView: function (headerHash: string): void {
     throw new Error('Function not implemented.')

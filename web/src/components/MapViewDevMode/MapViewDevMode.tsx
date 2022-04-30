@@ -5,159 +5,95 @@ import { ProjectConnectionsState } from '../../redux/persistent/projects/connect
 import { TreeData } from '../../redux/persistent/projects/outcomes/outcomesAsTrees'
 import { ProjectOutcomesState } from '../../redux/persistent/projects/outcomes/reducer'
 import { RootState } from '../../redux/reducer'
-import { Connection, Outcome } from '../../types'
-import { WithHeaderHash } from '../../types/shared'
 import './MapViewDevMode.scss'
 
-export type MapViewDevModeProps = {
-  // proptypes
-}
-
-const outcome1: WithHeaderHash<Outcome> = {
-  content:
-    'Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions',
-  creatorAgentPubKey: '',
-  editorAgentPubKey: '',
-  timestampCreated: 0,
-  timestampUpdated: 0,
-  scope: {
-    Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] },
-  },
-  tags: [],
-  description: '',
-  isImported: false,
-  githubLink: '',
-  headerHash: '412',
-}
-const outcome2: WithHeaderHash<Outcome> = {
-  content: 'Acorn no longer uses a legacy sunmaintained library',
-  creatorAgentPubKey: '',
-  editorAgentPubKey: '',
-  timestampCreated: 0,
-  timestampUpdated: 0,
-  scope: {
-    Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] },
-  },
-  tags: [],
-  description: '',
-  isImported: false,
-  githubLink: '',
-  headerHash: '413',
-}
-const outcome3: WithHeaderHash<Outcome> = {
-  content: 'Acorn no longer uses a legacy sunmaintained library',
-  creatorAgentPubKey: '',
-  editorAgentPubKey: '',
-  timestampCreated: 0,
-  timestampUpdated: 0,
-  scope: {
-    Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] },
-  },
-  tags: [],
-  description: '',
-  isImported: false,
-  githubLink: '',
-  headerHash: '414',
-}
-
-const connection1: WithHeaderHash<Connection> = {
-  parentHeaderHash: '412',
-  childHeaderHash: '413',
-  randomizer: 1241,
-  isImported: false,
-  headerHash: '4124131',
-}
-
-const outcomesState: ProjectOutcomesState = {
-  ['412']: outcome1,
-  ['413']: outcome2,
-  ['414']: outcome3
-}
-const connectionsState: ProjectConnectionsState = {
-  ['123']: connection1,
-}
-
-const treeData: TreeData = {
-  outcomes: outcomesState,
-  connections: connectionsState,
-  agents: {},
-  outcomeMembers: {},
-  outcomeVotes: {},
-  outcomeComments: {},
-}
-const layout = layoutFormula(treeData)
-
-const defaultState: RootState = {
-  ui: {
-    keyboard: {
-      shiftKeyDown: null,
-    },
-    mouse: {
-      mousedown: null,
-      coordinate: {
-        x: 0,
-        y: 0,
-      },
-    },
-    realtimeInfo: {},
-    selection: {
-      selectedConnections: [],
-      selectedOutcomes: [],
-    },
-    hover: {
-      hoveredConnection: null,
-    },
-    layout: layout,
-    connectionConnector: {
-      fromAddress: null,
-    },
-    outcomeForm: {},
-    activeEntryPoints: [],
-    viewport: {
-      translate: {
-        x: 0,
-        y: 0,
-      },
-      scale: 1,
-    },
-    screensize: {
-      width: 1000,
-      height: 1000,
-    },
-    activeProject: '123',
-  },
-  projects: {
-    outcomes: {
-      ['123']: outcomesState,
-    },
-    connections: {
-      ['123']: connectionsState,
-    },
-    outcomeMembers: {
-      ['123']: {},
-    },
-    entryPoints: {
-      ['123']: {},
-    },
-    projectMeta: {
-      ['123']: {
-        topPriorityOutcomes: [],
-      },
-    },
-  },
-}
-
-const store = {
-  getState: (): RootState => {
-    return defaultState
-  },
-}
-
-const MapViewDevMode: React.FC<MapViewDevModeProps> = (
-  {
-    // prop declarations
-  }
+const buildState = (
+  outcomes: ProjectOutcomesState,
+  connections: ProjectConnectionsState,
+  screenWidth: number,
+  screenHeight: number
 ) => {
+  const treeData: TreeData = {
+    outcomes,
+    connections,
+    agents: {},
+    outcomeMembers: {},
+    outcomeVotes: {},
+    outcomeComments: {},
+  }
+  const layout = layoutFormula(treeData)
+
+  const defaultState: RootState = {
+    ui: {
+      keyboard: {
+        shiftKeyDown: null,
+      },
+      mouse: {
+        mousedown: null,
+        coordinate: {
+          x: 0,
+          y: 0,
+        },
+      },
+      realtimeInfo: {},
+      selection: {
+        selectedConnections: [],
+        selectedOutcomes: [],
+      },
+      hover: {
+        hoveredConnection: null,
+      },
+      layout: layout,
+      connectionConnector: {
+        fromAddress: null,
+      },
+      outcomeForm: {},
+      activeEntryPoints: [],
+      viewport: {
+        translate: {
+          x: 0,
+          y: 0,
+        },
+        scale: 1,
+      },
+      screensize: {
+        width: screenWidth,
+        height: screenHeight,
+      },
+      activeProject: '123',
+    },
+    projects: {
+      outcomes: {
+        ['123']: outcomes,
+      },
+      connections: {
+        ['123']: connections,
+      },
+      outcomeMembers: {
+        ['123']: {},
+      },
+      entryPoints: {
+        ['123']: {},
+      },
+      projectMeta: {
+        ['123']: {
+          topPriorityOutcomes: [],
+        },
+      },
+    },
+  }
+  return defaultState
+}
+
+export type MapViewDevModeProps = {
+  outcomes: ProjectOutcomesState
+  connections: ProjectConnectionsState
+}
+
+const MapViewDevMode: React.FC<MapViewDevModeProps> = ({
+  outcomes,
+  connections,
+}) => {
   const refCanvas = useRef()
   useEffect(() => {
     const canvas = refCanvas.current
@@ -171,10 +107,17 @@ const MapViewDevMode: React.FC<MapViewDevModeProps> = (
     const rect = canvas.getBoundingClientRect()
     const screenWidth = rect.width * dpr
     const screenHeight = rect.height * dpr
-    defaultState.ui.screensize.width = screenWidth
-    defaultState.ui.screensize.height = screenHeight
-    // Give the canvas pixel dimensions of their CSS
     // size * the device pixel ratio.
+    // Give the canvas pixel dimensions of their CSS
+
+    const state = buildState(outcomes, connections, screenWidth, screenHeight)
+    // fake redux store with the only
+    // important function for here
+    const store = {
+      getState: (): RootState => {
+        return state
+      },
+    }
     render(store, canvas)
 
     // card width is fixed on zoom level 100%

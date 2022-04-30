@@ -51,7 +51,9 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
           {/* Uncertains */}
           {computedAchievementStatus.uncertains !== 0 && (
             <div className="descendants-wrapper uncertains">
-              <Icon name="uncertain.svg" />
+              <div className="descendants-scope">
+                <Icon name="uncertain.svg" />
+              </div>
               {computedAchievementStatus.uncertains.toString()}
             </div>
           )}
