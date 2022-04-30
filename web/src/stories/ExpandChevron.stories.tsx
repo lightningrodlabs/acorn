@@ -6,7 +6,7 @@ import ExpandChevron from '../components/ExpandChevron/ExpandChevron'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/ExpandChevron',
+  title: 'Buttons/ExpandChevron',
   component: ExpandChevron,
 } as ComponentMeta<typeof ExpandChevron>
 

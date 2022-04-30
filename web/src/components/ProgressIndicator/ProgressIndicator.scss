@@ -8,6 +8,21 @@
         background-color: var(--color-topaz);
       }
     }
+
+    &.partially-achieved {
+      svg {
+        g {
+          path {
+            stroke: yellow;
+          }
+        }
+      }
+
+      .inner-icon {
+        // background-color: unset;
+      }
+    }
+
     &.achieved {
       .inner-icon {
         background-color: var(--color-green);

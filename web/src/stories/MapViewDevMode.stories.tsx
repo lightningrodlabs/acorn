@@ -8,7 +8,7 @@ import MapViewDevModeComponent, {
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/MapViewDevMode',
+  title: 'Map View/MapViewDevMode',
   component: MapViewDevModeComponent,
 } as ComponentMeta<typeof MapViewDevModeComponent>
 

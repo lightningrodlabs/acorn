@@ -1,6 +1,8 @@
 import React from 'react'
 import Icon from '../Icon/Icon'
+
 import './ProgressIndicator.scss'
+import ProgressRing from './ProgressRing'
 
 export type ProgressIndicatorProps = {
   progress: number // between 0 and 100 inclusive
@@ -24,10 +26,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ progress }) => {
       )}
       {/* if partially achieved */}
       {/* Symbol: grey circle border with dynamic progree percentage */}
-      {progress > 0 && progress < 0 && (
-        // TODO: render dynamic progress circle here
-        <Icon name="circle-dashed.svg" size="small" className="not-hoverable" />
-      )}
+      {progress > 0 && progress < 100 && <ProgressRing progress={progress} />}
       {/* if fully achieved */}
       {/* Symbol: green circle with checkmark */}
       {progress === 100 && (

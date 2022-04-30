@@ -10,6 +10,9 @@ export type OutcomeListItemProps = {
 }
 
 const OutcomeListItem: React.FC<OutcomeListItemProps> = ({ outcome }) => {
+
+  // TODO: make this dynamic
+  const progress = 30
   return (
     <div className="outcome-list-item">
       {/* ID */}
@@ -26,7 +29,7 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({ outcome }) => {
 
       {/* ProgressIndicator */}
       <div className="outcome-list-item-icon-wrapper">
-        <ProgressIndicator progress={0} />
+        <ProgressIndicator progress={progress} />
       </div>
 
       {/* Outcome statement text */}

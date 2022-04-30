@@ -1,6 +1,7 @@
 import React from 'react'
 import { ComputedAchievementStatus } from '../../types'
 import Icon from '../Icon/Icon'
+import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
 import Typography from '../Typography/Typography'
 import './DescendantsAchievementStatus.scss'
 
@@ -32,7 +33,8 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
           {computedAchievementStatus.smallsTotal !== 0 && (
             <div className="descendants-wrapper smalls">
               <Icon name="leaf.svg" />
-              {/* TODO: add progress indicator here */}
+              {/* TODO: pass real progress here */}
+              <ProgressIndicator progress={40} />
               {computedAchievementStatus.smallsAchieved.toString()}/
               {computedAchievementStatus.smallsTotal.toString()}
             </div>

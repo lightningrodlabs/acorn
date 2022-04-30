@@ -14,7 +14,8 @@ export type MapViewDevModeProps = {
 }
 
 const outcome1: WithHeaderHash<Outcome> = {
-  content: 'test1',
+  content:
+    'Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions',
   creatorAgentPubKey: '',
   editorAgentPubKey: '',
   timestampCreated: 0,
@@ -29,7 +30,7 @@ const outcome1: WithHeaderHash<Outcome> = {
   headerHash: '412',
 }
 const outcome2: WithHeaderHash<Outcome> = {
-  content: 'test2',
+  content: 'Acorn no longer uses a legacy sunmaintained library',
   creatorAgentPubKey: '',
   editorAgentPubKey: '',
   timestampCreated: 0,
@@ -146,11 +147,18 @@ const MapViewDevMode: React.FC<MapViewDevModeProps> = (
     const canvas = refCanvas.current
     canvas.width = document.body.clientWidth
     canvas.height = document.body.clientHeight
+
     // Get the device pixel ratio, falling back to 1.
     const dpr = window.devicePixelRatio || 1
+
     // Get the size of the canvas in CSS pixels.
     const rect = canvas.getBoundingClientRect()
+
+    // card width is fixed on zoom level 100%
     const screenWidth = rect.width * dpr
+
+    // card height is dynamic based on the text length,
+    // and whether it has tags, assignees and time
     const screenHeight = rect.height * dpr
     defaultState.ui.screensize.width = screenWidth
     defaultState.ui.screensize.height = screenHeight

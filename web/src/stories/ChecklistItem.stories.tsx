@@ -6,7 +6,7 @@ import ChecklistItem from '../components/ChecklistItem/ChecklistItem'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/ChecklistItem',
+  title: 'Checkbox & Checklist/ChecklistItem',
   component: ChecklistItem,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {

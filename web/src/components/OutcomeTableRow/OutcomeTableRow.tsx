@@ -57,7 +57,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
               </>
             )}
             {/* TODO: make progress data dynamic */}
-            <ProgressIndicator progress={0} />
+            <ProgressIndicator progress={66} />
             {/* Outcome statement text */}
             <div
               className="outcome-statement-text"

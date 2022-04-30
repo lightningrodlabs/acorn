@@ -12,6 +12,7 @@ import FilterDropdown from '../FilterDropdown/FilterDropdown'
 import FilterSearch from '../FilterSearch/FilterSearch'
 import Icon from '../Icon/Icon'
 import { OutcomeTableFilter } from '../OutcomeTableRow/filterMatch'
+import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
 import Tag from '../Tag/Tag'
 import Typography from '../Typography/Typography'
 import './OutcomeTableFilterSelector.scss'
@@ -38,22 +39,36 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
 
   const achievementStatusOptions = [
     {
-      innerListItem: <>Achieved</>,
+      innerListItem: (
+        <>
+          <ProgressIndicator progress={100} /> Achieved
+        </>
+      ),
       id: ComputedSimpleAchievementStatus.Achieved,
     },
     {
-      innerListItem: <>Not Achieved</>,
+      innerListItem: (
+        <>
+          <ProgressIndicator progress={0} />
+          Not Achieved
+        </>
+      ),
       id: ComputedSimpleAchievementStatus.NotAchieved,
     },
     {
-      innerListItem: <>Partially Achieved</>,
+      innerListItem: (
+        <>
+          <ProgressIndicator progress={33} />
+          Partially Achieved
+        </>
+      ),
       id: ComputedSimpleAchievementStatus.PartiallyAchieved,
     },
   ]
   const scopeOptions = [
     { innerListItem: <>Small</>, id: ComputedScope.Small },
     { innerListItem: <>Uncertain</>, id: ComputedScope.Uncertain },
-    { innerListItem: <>Big</>, id: ComputedScope.Big },
+    { innerListItem: <>Other</>, id: ComputedScope.Big },
   ]
   const assigneeOptions = projectMemberProfiles.map((profile) =>
     profileOption(profile)
