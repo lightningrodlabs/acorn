@@ -5,16 +5,26 @@
   and use well defined functions for rendering those specific parts
   to the canvas.
 */
-import drawOutcomeCard from './drawOutcomeCard'
-import drawConnection, { calculateConnectionCoordsByOutcomeCoords } from './drawConnection'
+import drawOutcomeCard from './drawOutcome'
+import drawConnection, {
+  calculateConnectionCoordsByOutcomeCoords,
+} from './drawConnection'
 import drawOverlay from './drawOverlay'
-import drawSelectBox from '../drawing/drawSelectBox'
+import drawSelectBox from './drawSelectBox'
 import drawEntryPoints from './drawEntryPoints'
 import {
   RELATION_AS_PARENT,
   RELATION_AS_CHILD,
 } from '../redux/ephemeral/connection-connector/actions'
-import { CONNECTOR_VERTICAL_SPACING, firstZoomThreshold } from './dimensions'
+import {
+  CONNECTOR_VERTICAL_SPACING,
+  firstZoomThreshold,
+  getOutcomeHeight,
+  outcomeHeight,
+  outcomeWidth,
+} from './dimensions'
+import { Tag } from '../types'
+import { WithHeaderHash } from '../types/shared'
 
 function setupCanvas(canvas) {
   // Get the device pixel ratio, falling back to 1.
@@ -34,7 +44,7 @@ function setupCanvas(canvas) {
 // render the state contained in store onto the canvas
 // `store` is a redux store
 // `canvas` is a reference to an HTML5 canvas DOM element
-function render(store, canvas) {
+function render(store, computedOutcomesKeyed, canvas) {
   // Get the 2 dimensional drawing context of the canvas (there is also 3 dimensional, e.g.)
   const ctx = setupCanvas(canvas)
 
@@ -66,19 +76,26 @@ function render(store, canvas) {
   const projectId = state.ui.activeProject
   const activeEntryPoints = state.ui.activeEntryPoints
   if (!projectId) return
-  const outcomes = state.projects.outcomes[projectId]
+  const outcomes = computedOutcomesKeyed // state.projects.outcomes[projectId]
   const connections = state.projects.connections[projectId]
   const outcomeMembers = state.projects.outcomeMembers[projectId]
   const entryPoints = state.projects.entryPoints[projectId]
   const projectMeta = state.projects.projectMeta[projectId]
+  const projectTags = Object.values(
+    state.projects.tags[projectId]
+  ) as WithHeaderHash<Tag>[]
 
   // draw things relating to the project, if the project has fully loaded
   if (outcomes && connections && outcomeMembers && entryPoints && projectMeta) {
     const topPriorityOutcomes = projectMeta.topPriorityOutcomes
     // converts the outcomes object to an array
-    const outcomesAsArray = Object.keys(outcomes).map(headerHash => outcomes[headerHash])
+    const outcomesAsArray = Object.keys(outcomes).map(
+      (headerHash) => outcomes[headerHash]
+    )
     // convert the connections object to an array
-    const connectionsAsArray = Object.keys(connections).map(headerHash => connections[headerHash])
+    const connectionsAsArray = Object.keys(connections).map(
+      (headerHash) => connections[headerHash]
+    )
 
     const coordinates = state.ui.layout
 
@@ -86,7 +103,7 @@ function render(store, canvas) {
       DRAW ENTRY POINTS
     */
     const activeEntryPointsObjects = activeEntryPoints.map(
-      entryPointAddress => entryPoints[entryPointAddress]
+      (entryPointAddress) => entryPoints[entryPointAddress]
     )
     drawEntryPoints(
       ctx,
@@ -101,12 +118,16 @@ function render(store, canvas) {
     */
     // render each connection to the canvas, basing it off the rendering coordinates of the parent and child nodes
     connectionsAsArray.forEach(function (connection) {
-
       // if in the pending re-parenting mode for the child card of an existing connection,
       // temporarily omit/hide the existing connection from view
       // ASSUMPTION: one parent
-      const pendingReParent = (state.ui.connectionConnector.fromAddress === connection.childHeaderHash && state.ui.connectionConnector.relation === RELATION_AS_CHILD)
-        || (state.ui.outcomeForm.isOpen && state.ui.outcomeForm.fromAddress === connection.childHeaderHash && state.ui.outcomeForm.relation === RELATION_AS_CHILD)
+      const pendingReParent =
+        (state.ui.connectionConnector.fromAddress ===
+          connection.childHeaderHash &&
+          state.ui.connectionConnector.relation === RELATION_AS_CHILD) ||
+        (state.ui.outcomeForm.isOpen &&
+          state.ui.outcomeForm.fromAddress === connection.childHeaderHash &&
+          state.ui.outcomeForm.relation === RELATION_AS_CHILD)
       if (pendingReParent) return
 
       const childCoords = coordinates[connection.childHeaderHash]
@@ -117,17 +138,27 @@ function render(store, canvas) {
       // we can only render this connection
       // if we know the coordinates of the Outcomes it connects
       if (childCoords && parentCoords) {
-        const [connection1port, connection2port] = calculateConnectionCoordsByOutcomeCoords(
+        const [
+          connection1port,
+          connection2port,
+        ] = calculateConnectionCoordsByOutcomeCoords(
           childCoords,
           parentCoords,
           parentOutcomeText,
           ctx
         )
-        const isHovered = state.ui.hover.hoveredConnection === connection.headerHash
+        const isHovered =
+          state.ui.hover.hoveredConnection === connection.headerHash
         const isSelected = state.ui.selection.selectedConnections.includes(
           connection.headerHash
         )
-        drawConnection(connection1port, connection2port, ctx, isHovered, isSelected)
+        drawConnection(
+          connection1port,
+          connection2port,
+          ctx,
+          isHovered,
+          isSelected
+        )
       }
     })
 
@@ -135,13 +166,13 @@ function render(store, canvas) {
       SEPARATE SELECTED & UNSELECTED OUTCOMES
     */
     // in order to create layers behind and in front of the editing highlight overlay
-    const unselectedOutcomes = outcomesAsArray.filter(outcome => {
+    const unselectedOutcomes = outcomesAsArray.filter((outcome) => {
       return (
-        state.ui.selection.selectedOutcomes.indexOf(outcome.headerHash) === -1 &&
-        state.ui.outcomeForm.editAddress !== outcome.headerHash
+        state.ui.selection.selectedOutcomes.indexOf(outcome.headerHash) ===
+          -1 && state.ui.outcomeForm.editAddress !== outcome.headerHash
       )
     })
-    const selectedOutcomes = outcomesAsArray.filter(outcome => {
+    const selectedOutcomes = outcomesAsArray.filter((outcome) => {
       return (
         state.ui.selection.selectedOutcomes.indexOf(outcome.headerHash) > -1 &&
         state.ui.outcomeForm.editAddress !== outcome.headerHash
@@ -152,45 +183,70 @@ function render(store, canvas) {
       DRAW UNSELECTED OUTCOMES
     */
     // render each unselected outcome to the canvas
-    unselectedOutcomes.forEach(outcome => {
+    unselectedOutcomes.forEach((outcome) => {
       // use the set of coordinates at the same index
       // in the coordinates array
       const isHovered = state.ui.hover.hoveredOutcome === outcome.headerHash
       const isSelected = false
       const isEditing = false
-      let editInfoObjects = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash)
+      let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(
+        (agentInfo) =>
+          agentInfo.outcomeBeingEdited !== null &&
+          agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash
+      )
       const isBeingEdited = editInfoObjects.length > 0
-      const isBeingEditedBy = editInfoObjects.length === 1
-        ? state.agents[editInfoObjects[0].agentPubKey].handle
-        : editInfoObjects.length > 1
+      const isBeingEditedBy =
+        editInfoObjects.length === 1
+          ? state.agents[editInfoObjects[0].agentPubKey].handle
+          : editInfoObjects.length > 1
           ? `${editInfoObjects.length} people`
           : null
       // a combination of those editing + those with expanded view open
       const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.outcomeExpandedView === outcome.headerHash || (agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash))
-        .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
+        .filter(
+          (agentInfo) =>
+            agentInfo.outcomeExpandedView === outcome.headerHash ||
+            (agentInfo.outcomeBeingEdited !== null &&
+              agentInfo.outcomeBeingEdited.outcomeHeaderHash ===
+                outcome.headerHash)
+        )
+        .map(
+          (realtimeInfoObject) => state.agents[realtimeInfoObject.agentPubKey]
+        )
 
-      const membersOfOutcome = Object.keys(outcomeMembers)
-        .map(headerHash => outcomeMembers[headerHash])
-        .filter(outcomeMember => outcomeMember.outcomeHeaderHash === outcome.headerHash)
-        .map(outcomeMember => state.agents[outcomeMember.memberAgentPubKey])
-      const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === outcome.headerHash)
-      drawOutcomeCard({
-        scale: scale,
-        outcome: outcome,
-        members: membersOfOutcome,
-        coordinates: coordinates[outcome.headerHash],
-        isEditing: isEditing, // self
-        editText: '',
-        isSelected: isSelected,
-        isHovered: isHovered,
-        ctx: ctx,
-        isBeingEdited: isBeingEdited, // by other
-        isBeingEditedBy: isBeingEditedBy, // other
-        allMembersActiveOnOutcome: allMembersActiveOnOutcome,
-        isTopPriorityOutcome: isTopPriorityOutcome,
-      })
+      // const membersOfOutcome = Object.keys(outcomeMembers)
+      //   .map(headerHash => outcomeMembers[headerHash])
+      //   .filter(outcomeMember => outcomeMember.outcomeHeaderHash === outcome.headerHash)
+      //   .map(outcomeMember => state.agents[outcomeMember.memberAgentPubKey])
+      const isTopPriorityOutcome = !!topPriorityOutcomes.find(
+        (headerHash) => headerHash === outcome.headerHash
+      )
+      if (coordinates[outcome.headerHash]) {
+        drawOutcomeCard({
+          zoomLevel: scale,
+          outcome: outcome,
+          outcomeLeftX: coordinates[outcome.headerHash].x,
+          outcomeTopY: coordinates[outcome.headerHash].y,
+          isSelected: isSelected,
+          ctx: ctx,
+          isTopPriority: isTopPriorityOutcome,
+          outcomeHeight: getOutcomeHeight({
+            ctx,
+            statement: outcome.content,
+            zoomLevel: scale,
+            width: outcomeWidth,
+          }),
+          outcomeWidth: outcomeWidth,
+          projectTags,
+          // members: membersOfOutcome,
+          // isEditing: isEditing, // self
+          // editText: '',
+          // isHovered: isHovered,
+          // isBeingEdited: isBeingEdited, // by other
+          // isBeingEditedBy: isBeingEditedBy, // other
+          // allMembersActiveOnOutcome: allMembersActiveOnOutcome,
+        })
+      }
     })
 
     /*
@@ -233,43 +289,72 @@ function render(store, canvas) {
     /*
       DRAW SELECTED OUTCOMES
     */
-    selectedOutcomes.forEach(outcome => {
+    selectedOutcomes.forEach((outcome) => {
       // use the set of coordinates at the same index
       // in the coordinates array
       const isHovered = state.ui.hover.hoveredOutcome === outcome.headerHash
       const isSelected = true
       const isEditing = false
-      let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(agentInfo => agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash)
+      let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(
+        (agentInfo) =>
+          agentInfo.outcomeBeingEdited !== null &&
+          agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash
+      )
       const isBeingEdited = editInfoObjects.length > 0
-      const isBeingEditedBy = editInfoObjects.length === 1
-        ? state.agents[editInfoObjects[0].agentPubKey].handle
-        : editInfoObjects.length > 1
+      const isBeingEditedBy =
+        editInfoObjects.length === 1
+          ? state.agents[editInfoObjects[0].agentPubKey].handle
+          : editInfoObjects.length > 1
           ? `${editInfoObjects.length} people`
           : null
       // a combination of those editing + those with expanded view open
       const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.outcomeExpandedView === outcome.headerHash || (agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash))
-        .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
+        .filter(
+          (agentInfo) =>
+            agentInfo.outcomeExpandedView === outcome.headerHash ||
+            (agentInfo.outcomeBeingEdited !== null &&
+              agentInfo.outcomeBeingEdited.outcomeHeaderHash ===
+                outcome.headerHash)
+        )
+        .map(
+          (realtimeInfoObject) => state.agents[realtimeInfoObject.agentPubKey]
+        )
       const membersOfOutcome = Object.keys(outcomeMembers)
-        .map(headerHash => outcomeMembers[headerHash])
-        .filter(outcomeMember => outcomeMember.outcomeHeaderHash === outcome.headerHash)
-        .map(outcomeMember => state.agents[outcomeMember.memberAgentPubKey])
-      const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === outcome.headerHash)
-      drawOutcomeCard({
-        scale: scale,
-        outcome: outcome,
-        members: membersOfOutcome,
-        coordinates: coordinates[outcome.headerHash],
-        isEditing: isEditing,
-        editText: '',
-        isSelected: isSelected,
-        isHovered: isHovered,
-        ctx: ctx,
-        isBeingEdited: isBeingEdited,
-        isBeingEditedBy: isBeingEditedBy,
-        allMembersActiveOnOutcome: allMembersActiveOnOutcome,
-        isTopPriorityOutcome: isTopPriorityOutcome,
-      })
+        .map((headerHash) => outcomeMembers[headerHash])
+        .filter(
+          (outcomeMember) =>
+            outcomeMember.outcomeHeaderHash === outcome.headerHash
+        )
+        .map((outcomeMember) => state.agents[outcomeMember.memberAgentPubKey])
+      const isTopPriorityOutcome = !!topPriorityOutcomes.find(
+        (headerHash) => headerHash === outcome.headerHash
+      )
+      if (coordinates[outcome.headerHash]) {
+        drawOutcomeCard({
+          zoomLevel: scale,
+          outcome: outcome,
+          outcomeLeftX: coordinates[outcome.headerHash].x,
+          outcomeTopY: coordinates[outcome.headerHash].y,
+          isSelected: isSelected,
+          ctx: ctx,
+          isTopPriority: isTopPriorityOutcome,
+          outcomeHeight: getOutcomeHeight({
+            ctx,
+            statement: outcome.content,
+            zoomLevel: scale,
+            width: outcomeWidth,
+          }),
+          outcomeWidth,
+          projectTags,
+          // members: membersOfOutcome,
+          // isEditing: isEditing,
+          // editText: '',
+          // isHovered: isHovered,
+          // isBeingEdited: isBeingEdited,
+          // isBeingEditedBy: isBeingEditedBy,
+          // allMembersActiveOnOutcome: allMembersActiveOnOutcome,
+        })
+      }
     })
 
     /*
@@ -296,7 +381,10 @@ function render(store, canvas) {
         childCoords = newOutcomeCoords
         parentCoords = fromOutcomeCoords
       }
-      const [connection1port, connection2port] = calculateConnectionCoordsByOutcomeCoords(
+      const [
+        connection1port,
+        connection2port,
+      ] = calculateConnectionCoordsByOutcomeCoords(
         childCoords,
         parentCoords,
         fromOutcomeText,
@@ -331,12 +419,15 @@ function render(store, canvas) {
       if (toAddress) {
         toCoords = coordinates[toAddress]
         toContent = outcomes[toAddress].content
-          ;[toAsChildCoord, toAsParentCoord] = calculateConnectionCoordsByOutcomeCoords(
-            toCoords,
-            toCoords,
-            toContent,
-            ctx
-          )
+        ;[
+          toAsChildCoord,
+          toAsParentCoord,
+        ] = calculateConnectionCoordsByOutcomeCoords(
+          toCoords,
+          toCoords,
+          toContent,
+          ctx
+        )
       }
       // in drawConnection, it draws at exactly the two coordinates given,
       // so we could pass them in either order/position
@@ -351,63 +442,19 @@ function render(store, canvas) {
           relation === RELATION_AS_PARENT ? toAsChildCoord : toAsParentCoord
       }
       if (relation === RELATION_AS_CHILD) {
-        fromConnectionCoord.y = fromConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
+        fromConnectionCoord.y =
+          fromConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
         // only modify if we're dealing with an actual outcome being connected to
         if (toAddress)
           toConnectionCoord.y = toConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
       } else if (relation === RELATION_AS_PARENT) {
-        fromConnectionCoord.y = fromConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
+        fromConnectionCoord.y =
+          fromConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
         // only modify if we're dealing with an actual outcome being connected to
         if (toAddress)
           toConnectionCoord.y = toConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
       }
       drawConnection(fromConnectionCoord, toConnectionCoord, ctx)
-    }
-
-    /*
-      DRAW OUTCOME BEING EDITED in QUICK EDIT MODE
-    */
-    // so in front of the overlay as well
-    if (state.ui.outcomeForm.editAddress) {
-      // editing an existing Outcome
-      const editingOutcome = outcomes[state.ui.outcomeForm.editAddress]
-      // we only allow this outcome
-      // to be edited using 'quickedit'
-      // above the first zoom threshold
-      const isEditing = scale >= firstZoomThreshold
-      const editText = state.ui.outcomeForm.content
-      let editInfoObjects = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeHeaderHash === state.ui.outcomeForm.editAddress)
-      const isBeingEdited = editInfoObjects.length > 0
-      const isBeingEditedBy = editInfoObjects.length === 1
-        ? state.agents[editInfoObjects[0].agentPubKey].handle
-        : editInfoObjects.length > 1
-          ? `${editInfoObjects.length} people`
-          : null
-      // a combination of those editing + those with expanded view open
-      const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
-        .filter(agentInfo => agentInfo.outcomeExpandedView === state.ui.outcomeForm.editAddress || (agentInfo.outcomeBeingEdited !== null && agentInfo.outcomeBeingEdited.outcomeHeaderHash === state.ui.outcomeForm.editAddress))
-        .map(realtimeInfoObject => state.agents[realtimeInfoObject.agentPubKey])
-      const membersOfOutcome = Object.keys(outcomeMembers)
-        .map(headerHash => outcomeMembers[headerHash])
-        .filter(outcomeMember => outcomeMember.outcomeHeaderHash === editingOutcome.headerHash)
-        .map(outcomeMember => state.agents[outcomeMember.memberAgentPubKey])
-      const isTopPriorityOutcome = !!topPriorityOutcomes.find(headerHash => headerHash === state.ui.outcomeForm.editAddress)
-      drawOutcomeCard({
-        scale: scale,
-        outcome: editingOutcome,
-        members: membersOfOutcome,
-        coordinates: coordinates[editingOutcome.headerHash],
-        isEditing: isEditing,
-        editText: editText,
-        isSelected: false,
-        isHovered: false,
-        ctx: ctx,
-        isBeingEdited: isBeingEdited,
-        isBeingEditedBy: isBeingEditedBy,
-        allMembersActiveOnOutcome: allMembersActiveOnOutcome,
-        isTopPriorityOutcome: isTopPriorityOutcome,
-      })
     }
   }
 
@@ -420,21 +467,24 @@ function render(store, canvas) {
     const isSelected = false
     const isEditing = true
     const isTopPriorityOutcome = false
-    // TODO: fix for new data structure
     drawOutcomeCard({
-      scale: scale,
-      outcome: { status: 'Uncertain' },
-      members: [],
-      coordinates: { x: state.ui.outcomeForm.leftConnectionXPosition, y: state.ui.outcomeForm.topConnectionYPosition },
-      isEditing: isEditing,
-      editText: state.ui.outcomeForm.content,
+      zoomLevel: scale,
+      // outcome: { status: 'Uncertain' },
+      outcomeHeight: outcomeHeight,
+      outcomeWidth,
+      projectTags,
+      outcomeLeftX: state.ui.outcomeForm.leftConnectionXPosition,
+      outcomeTopY: state.ui.outcomeForm.topConnectionYPosition,
       isSelected: isSelected,
-      isHovered: isHovered,
       ctx: ctx,
-      isBeingEdited: false,
-      isBeingEditedBy: '',
-      isTopPriorityOutcome: isTopPriorityOutcome,
-      allMembersActiveOnOutcome: [],
+      isTopPriority: isTopPriorityOutcome,
+      // members: [],
+      // isEditing: isEditing,
+      // editText: state.ui.outcomeForm.content,
+      // isHovered: isHovered,
+      // isBeingEdited: false,
+      // isBeingEditedBy: '',
+      // allMembersActiveOnOutcome: [],
     })
   }
 }

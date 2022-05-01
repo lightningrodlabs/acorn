@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import { useStore } from 'react-redux'
 
 import render from '../../../drawing'
@@ -10,6 +10,7 @@ import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar.connecto
 import ConnectionConnectors from '../../../components/ConnectionConnectors/ConnectionConnectors.connector'
 import MapViewOutcomeTitleForm from '../../../components/MapViewOutcomeTitleForm/MapViewOutcomeTitleForm.connector'
 import './MapView.scss'
+import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
 
 function MapView({
   projectId,
@@ -21,6 +22,8 @@ function MapView({
 }) {
   const store = useStore()
   const refCanvas = useRef()
+
+  const { computedOutcomesKeyed } = useContext(ComputedOutcomeContext)
 
   useEffect(() => {
     const canvas = refCanvas.current
@@ -35,16 +38,16 @@ function MapView({
     store.dispatch(setScreenDimensions(rect.width * dpr, rect.height * dpr))
     // attach keyboard and mouse events
     const removeEventListeners = setupEventListeners(store, canvas)
-    render(store, canvas)
+    render(store, computedOutcomesKeyed, canvas)
     const unsub = store.subscribe(() => {
-      render(store, canvas)
+      render(store, computedOutcomesKeyed, canvas)
     })
 
     return function cleanup() {
       unsub()
       removeEventListeners()
     }
-  }, []) // only run on initial mount
+  }, [computedOutcomesKeyed]) // only run on initial mount
 
   const transform = {
     transform: `matrix(${scale}, 0, 0, ${scale}, ${translate.x}, ${translate.y})`,
