@@ -1,6 +1,8 @@
 import dagre from 'dagre'
 import { outcomeWidth, getOutcomeHeight } from './dimensions'
-import outcomesAsTrees, { TreeData } from '../redux/persistent/projects/outcomes/outcomesAsTrees'
+import outcomesAsTrees, {
+  TreeData,
+} from '../redux/persistent/projects/outcomes/outcomesAsTrees'
 
 const VERTICAL_SPACING = 50
 
@@ -20,7 +22,11 @@ function getBoundingRec(outcome, allOutcomeCoordinates) {
       return
     }
     const width = outcomeWidth
-    const height = getOutcomeHeight(null, outcomeToCheck.content)
+    const height = getOutcomeHeight({
+      statement: outcomeToCheck.content,
+      zoomLevel: 1,
+      width: outcomeWidth,
+    })
     const top = topLeftCoord.y
     const left = topLeftCoord.x
     const right = left + width
@@ -46,15 +52,22 @@ export { getBoundingRec }
 
 function layoutForTree(tree) {
   // create a graph
-  const graph = new dagre.graphlib.Graph().setGraph({}).setDefaultEdgeLabel(function () {
-    return {}
-  })
+  const graph = new dagre.graphlib.Graph()
+    .setGraph({})
+    .setDefaultEdgeLabel(function () {
+      return {}
+    })
 
   // use recursion to add each outcome as a node in the graph
   function addOutcome(outcome) {
     graph.setNode(outcome.headerHash, {
       width: outcomeWidth,
-      height: getOutcomeHeight(null, outcome.content) + VERTICAL_SPACING,
+      height:
+        getOutcomeHeight({
+          statement: outcome.content,
+          zoomLevel: 1,
+          width: outcomeWidth,
+        }) + VERTICAL_SPACING,
     })
     outcome.children.forEach((childOutcome) => {
       addOutcome(childOutcome)

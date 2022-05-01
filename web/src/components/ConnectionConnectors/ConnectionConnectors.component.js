@@ -122,7 +122,8 @@ const ConnectionConnector = ({
   dispatch,
 }) => {
   const ctx = canvas.getContext('2d')
-  const outcomeHeight = getOutcomeHeight(ctx, outcome.content)
+  // TODO
+  const outcomeHeight = getOutcomeHeight({ ctx, statement: outcome.content, zoomLevel: 1, width: outcomeWidth })
 
   // calculate the coordinates on the page, based
   // on what the coordinates on the canvas would be

@@ -1,5 +1,8 @@
-import { outcomeWidth, getOutcomeHeight, outcomeHeight } from './dimensions'
-import layoutFormula from './layoutFormula'
+import {
+  outcomeWidth,
+  getOutcomeHeight,
+  outcomeHeight,
+} from './dimensions'
 import { coordsPageToCanvas } from './coordinateSystems'
 import linePoint from 'intersects/line-point'
 import { calculateConnectionCoordsByOutcomeCoords } from './drawConnection'
@@ -33,9 +36,10 @@ export function checkForConnectionAtCoordinates(
   // keep track of whether an connection intersects the mouse
   let overConnectionAddress
   Object.keys(connections)
-    .map(headerHash => connections[headerHash])
-    .forEach(connection => {
-      const parentOutcomeCoords = outcomeCoordinates[connection.parentHeaderHash]
+    .map((headerHash) => connections[headerHash])
+    .forEach((connection) => {
+      const parentOutcomeCoords =
+        outcomeCoordinates[connection.parentHeaderHash]
       const childOutcomeCoords = outcomeCoordinates[connection.childHeaderHash]
       const parentOutcomeText = outcomes[connection.parentHeaderHash]
         ? outcomes[connection.parentHeaderHash].content
@@ -101,8 +105,8 @@ export function checkForOutcomeAtCoordinates(
   // keep track of whether a outcome was selected
   let clickedAddress
   Object.keys(outcomes)
-    .map(headerHash => outcomes[headerHash])
-    .forEach(outcome => {
+    .map((headerHash) => outcomes[headerHash])
+    .forEach((outcome) => {
       // convert the topLeft and bottomRight points of the outcome to canvas
       const coords = outcomeCoordinates[outcome.headerHash]
 
@@ -112,13 +116,22 @@ export function checkForOutcomeAtCoordinates(
 
       const bottomRight = {
         x: coords.x + outcomeWidth,
-        y: coords.y + getOutcomeHeight(ctx, outcome.content),
+        // TODO zoom level
+        y:
+          coords.y +
+          getOutcomeHeight({
+            ctx,
+            statement: outcome.content,
+            width: outcomeWidth,
+            zoomLevel: 1,
+          }),
       }
 
       // if click occurred within the box of a Outcome
       if (
         convertedClick.x >= coords.x &&
-        (convertedClick.x <= bottomRight.x) && (convertedClick.y >= coords.y) &&
+        convertedClick.x <= bottomRight.x &&
+        convertedClick.y >= coords.y &&
         convertedClick.y <= bottomRight.y
       ) {
         clickedAddress = outcome.headerHash
@@ -141,8 +154,8 @@ export function checkForOutcomeAtCoordinatesInBox(
   // keep track of whether a outcome was selected
   let clickedAddresses = {}
   Object.keys(outcomes)
-    .map(headerHash => outcomes[headerHash])
-    .forEach(outcome => {
+    .map((headerHash) => outcomes[headerHash])
+    .forEach((outcome) => {
       // convert the topLeft and bottomRight points of the outcome to canvas
       const coords = outcomeCoordinates[outcome.headerHash]
       const bottomRight = {

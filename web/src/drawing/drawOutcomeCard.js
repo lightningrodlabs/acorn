@@ -6,26 +6,28 @@ import {
   outcomeWidth,
   cornerRadius,
   borderWidth,
-  textBoxMarginLeft,
-  textBoxMarginTop,
+  outcomePaddingHorizontal,
+  OUTCOME_VERTICAL_SPACE_BETWEEN,
   fontSizeInt,
   fontSizeLargeInt,
   fontSizeExtraLargeInt,
   lineSpacing,
-  letterSpacing,
   getOutcomeHeight,
   getLinesForParagraphs,
   firstZoomThreshold,
   secondZoomThreshold,
   lineSpacingExtraLarge,
   lineSpacingLarge,
+  outcomeMetaPadding,
+  selectedOutlineWidth,
+  selectedOutlineMargin,
 } from './dimensions'
 
 import {
-  selectedColor,
-  colors,
+  SELECTED_COLOR,
   pickColorForString,
   SELF_ASSIGNED_STATUS_COLORS,
+  STATEMENT_FONT_COLOR,
 } from '../styles'
 import { getOrSetImageForUrl } from './imageCache'
 import moment from 'moment'
@@ -48,16 +50,7 @@ export default function render({
   allMembersActiveOnOutcome, // realtime info
   isTopPriorityOutcome,
 }) {
-
   ctx.save()
-
-  // these create shadow effects for
-  // the outcome card, a dream-like effect
-  // for everything painted on it
-  ctx.shadowColor = '#00000020'
-  ctx.shadowBlur = 30
-  ctx.shadowOffsetX = 0
-  ctx.shadowOffsetY = 0
 
   let outcomeLeftX, outcomeTopY
   if (coordinates) {
@@ -74,7 +67,12 @@ export default function render({
   // even though it's not getting drawn on the canvas
   const text = isEditing ? editText : outcome.content
 
-  const outcomeHeight = getOutcomeHeight(ctx, text, scale, isEditing)
+  const outcomeHeight = getOutcomeHeight({
+    ctx,
+    statement: text,
+    zoomLevel: scale,
+    width: outcomeWidth - 2 * outcomePaddingHorizontal,
+  })
 
   // set up border color
   // TODO: fix for new data structure
@@ -91,9 +89,6 @@ export default function render({
   const halfBorder = borderWidth / 2 // for use with 'stroke' of the border
   const twiceBorder = borderWidth * 2
 
-  const selectedOutlineMargin = 1
-  const selectedOutlineWidth = '4'
-
   // display leaf icon for small outcome
   // const leafHierarchyIcon = iconForHierarchy(outcome.hierarchy)
   // TODO: fix for new data structure
@@ -108,33 +103,35 @@ export default function render({
       ctx.drawImage(leafImg, outcomeLeftX - 24, outcomeTopY - 24, 30, 30)
     }
   }
+
   // card background
   drawRoundCornerRectangle({
-    context: ctx,
+    ctx,
     xPosition: outcomeLeftX + borderWidth,
     yPosition: outcomeTopY + borderWidth,
     width: outcomeWidth - twiceBorder,
     height: outcomeHeight - twiceBorder,
     radius: cornerRadius - 1,
     color: backgroundColor,
-    stroke: false,
-    strokeWidth: '0',
-    boxShadow: true,
-    topPriorityOutcomeGlow: isTopPriorityOutcome ? borderColor : null,
+    useStroke: false,
+    useBoxShadow: true,
+    useGlow: isTopPriorityOutcome,
+    glowColor: isTopPriorityOutcome ? borderColor : '',
   })
+
   // card border
   drawRoundCornerRectangle({
-    context: ctx,
+    ctx,
     xPosition: outcomeLeftX + halfBorder,
     yPosition: outcomeTopY + halfBorder,
     width: outcomeWidth - borderWidth,
     height: outcomeHeight - borderWidth,
     radius: cornerRadius,
     color: borderColor,
-    stroke: true,
-    strokeWidth: '4',
-    boxShadow: false,
-    topPriorityOutcomeGlow: false,
+    useStroke: true,
+    strokeWidth: 4,
+    useBoxShadow: false,
+    useGlow: false,
   })
 
   // selection outline (purple)
@@ -164,17 +161,17 @@ export default function render({
     let cr = cornerRadius + selectedOutlineMargin * 2 + 2
 
     drawRoundCornerRectangle({
-      context: ctx,
+      ctx,
       xPosition: xStart,
       yPosition: yStart,
       width: w,
       height: h,
       radius: cr,
-      color: selectedColor,
-      stroke: true,
+      color: SELECTED_COLOR,
+      useStroke: true,
       strokeWidth: selectedOutlineWidth,
-      boxShadow: false,
-      topPriorityOutcomeGlow: false,
+      useBoxShadow: false,
+      useGlow: false,
     })
   }
   /*
@@ -184,9 +181,14 @@ export default function render({
   // in which case the text is being rendered in the textarea
   // html element being overlaid on top of this Outcome
   if (!isEditing) {
-    const textBoxLeft = outcomeLeftX + textBoxMarginLeft
-    const textBoxTop = outcomeTopY + textBoxMarginTop
-    const lines = getLinesForParagraphs(ctx, text, scale)
+    const textBoxLeft = outcomeLeftX + outcomePaddingHorizontal
+    const textBoxTop = outcomeTopY + OUTCOME_VERTICAL_SPACE_BETWEEN
+    const lines = getLinesForParagraphs({
+      ctx,
+      statement: text,
+      zoomLevel: scale,
+      maxWidth: outcomeWidth - 2 * outcomePaddingHorizontal,
+    })
     // for space reasons
     // we limit the number of visible lines of the Outcome Title to 2 or 3,
     // and provide an ellipsis if there are more lines than that
@@ -204,11 +206,8 @@ export default function render({
       lineSpacingToUse = lineSpacingLarge
       fontSizeToUse = fontSizeLargeInt
     }
-    let titleTextColor = '#4D4D4D'
-    // if (isBeingEdited) {
-    //   titleTextColor = '#888888'
-    // }
-    ctx.fillStyle = titleTextColor
+    
+    ctx.fillStyle = STATEMENT_FONT_COLOR
     lines.slice(0, lineLimit).forEach((line, index) => {
       let linePosition = index * (fontSizeToUse + lineSpacingToUse)
       let lineText = line
@@ -222,7 +221,6 @@ export default function render({
     })
   }
 
-  const outcomeMetaPadding = 12
   /*
   TIMEFRAME
   */
@@ -238,8 +236,8 @@ export default function render({
     const xImgDraw = outcomeLeftX + outcomeMetaPadding + 4
     const yImgDraw =
       outcomeTopY + outcomeHeight - calendarHeight - outcomeMetaPadding - 6
-    const textBoxLeft = xImgDraw + textBoxMarginLeft - 12
-    const textBoxTop = yImgDraw + textBoxMarginTop / 4 - 6
+    const textBoxLeft = xImgDraw + outcomePaddingHorizontal - 12
+    const textBoxTop = yImgDraw + OUTCOME_VERTICAL_SPACE_BETWEEN / 4 - 6
     let timeframeTextColor = '#898989'
     // if (isBeingEdited) {
     //   timeframeTextColor = '#888888'
@@ -386,7 +384,8 @@ function drawMembersAvatars(
       outcomeMetaPadding -
       (index + 1) * avatarWidth -
       index * avatarSpace
-    const yAvatarDraw = outcomeTopY + outcomeHeight - outcomeMetaPadding - avatarHeight
+    const yAvatarDraw =
+      outcomeTopY + outcomeHeight - outcomeMetaPadding - avatarHeight
 
     drawAvatar(member, ctx, xAvatarDraw, yAvatarDraw)
   })
@@ -437,11 +436,7 @@ function drawAvatar(member, ctx, xAvatarDraw, yAvatarDraw, strokeColor) {
     /*
       when there is a image avatar
     */
-    const img = getOrSetImageForUrl(
-      member.avatarUrl,
-      avatarWidth,
-      avatarHeight
-    )
+    const img = getOrSetImageForUrl(member.avatarUrl, avatarWidth, avatarHeight)
     // assume that it will be drawn the next time 'render' is called
     // if it isn't already set
     if (!img) return

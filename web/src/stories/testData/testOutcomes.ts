@@ -4,7 +4,13 @@ import {
   ComputedSimpleAchievementStatus,
 } from '../../types'
 import testProfile from './testProfile'
-import { testTag1HeaderHash } from './testTags'
+import {
+  testTag1HeaderHash,
+  testTag2HeaderHash,
+  testTag3HeaderHash,
+  testTag4HeaderHash,
+  testTag5HeaderHash,
+} from './testTags'
 
 /* Small, Not Achieved */
 
@@ -17,9 +23,15 @@ const testSmallNotAchievedOutcome: ComputedOutcome = {
   timestampCreated: Date.now(),
   timestampUpdated: Date.now(),
   scope: {
-    Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] },
+    Small: { achievementStatus: 'NotAchieved', targetDate: null, taskList: [] },
   },
-  tags: [testTag1HeaderHash],
+  tags: [
+    testTag1HeaderHash,
+    testTag2HeaderHash,
+    testTag3HeaderHash,
+    testTag4HeaderHash,
+    testTag5HeaderHash,
+  ],
   description:
     'Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
   githubLink: '',
@@ -29,7 +41,7 @@ const testSmallNotAchievedOutcome: ComputedOutcome = {
     uncertains: 0,
     smallsAchieved: 0,
     smallsTotal: 0,
-    simple: ComputedSimpleAchievementStatus.Achieved,
+    simple: ComputedSimpleAchievementStatus.NotAchieved,
   },
   children: [],
 }
@@ -180,7 +192,8 @@ const testUncertainWithoutChildrenOutcome: ComputedOutcome = {
 
 const testUncertainWithChildrenOutcome: ComputedOutcome = {
   headerHash: 'test-uncertain-with-children-header-hash',
-  content: 'Uncertain With Children, Acorn no longer uses a legacy unmaintained library',
+  content:
+    'Uncertain With Children, Acorn no longer uses a legacy unmaintained library',
   creatorAgentPubKey: 'creatoragentpubkey',
   editorAgentPubKey: 'editoryagentpubkey',
   timestampCreated: Date.now(),

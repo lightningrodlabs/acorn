@@ -39,16 +39,17 @@ export default function drawEntryPoints(
     const width = right - left
     const height = bottom - top
     drawRoundCornerRectangle({
-      context: ctx,
+      ctx,
       xPosition: left,
       yPosition: top,
       width: width,
       height: height,
       radius: 15,
       color: entryPoint.color,
-      stroke: true,
+      useStroke: true,
       strokeWidth: 2,
-      boxShadow: false
+      useBoxShadow: false,
+      useGlow: false,
     })
     ctx.fillStyle = entryPoint.color
     ctx.font = '25px ' + 'PlusJakartaSans-bold'

@@ -5,10 +5,6 @@ import '../variables.scss'
 import MapViewDevModeComponent, {
   MapViewDevModeProps,
 } from '../components/MapViewDevMode/MapViewDevMode'
-import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
-import { ProjectOutcomesState } from '../redux/persistent/projects/outcomes/reducer'
-import { Connection } from '../types'
-import { WithHeaderHash } from '../types/shared'
 import {
   testBigAchievedOutcome,
   testBigNotAchievedOutcome,
@@ -18,6 +14,7 @@ import {
   testUncertainWithChildrenOutcome,
   testUncertainWithoutChildrenOutcome,
 } from './testData/testOutcomes'
+import testTags from './testData/testTags'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -30,100 +27,65 @@ const Template: ComponentStory<typeof MapViewDevModeComponent> = (args) => {
   return <MapViewDevModeComponent {...args} />
 }
 
-/*
-  Data
-*/
-
-const connection1: WithHeaderHash<Connection> = {
-  parentHeaderHash: '412',
-  childHeaderHash: '413',
-  randomizer: 1241,
-  isImported: false,
-  headerHash: '4124131',
-}
-
-const smallNotAchieved: ProjectOutcomesState = {
-  ['test-small-not-achieved-header-hash']: testSmallNotAchievedOutcome,
-}
-const smallAchieved: ProjectOutcomesState = {
-  ['test-small-achieved-header-hash']: testSmallAchievedOutcome,
-}
-const bigNotAchieved: ProjectOutcomesState = {
-  ['test-big-not-achieved-header-hash']: testBigNotAchievedOutcome,
-}
-const bigPartiallyAchieved: ProjectOutcomesState = {
-  ['test-big-partially-achieved-header-hash']: testBigPartiallyAchievedOutcome,
-}
-const bigAchieved: ProjectOutcomesState = {
-  ['test-big-achieved-header-hash']: testBigAchievedOutcome,
-}
-const uncertainWithoutChildren: ProjectOutcomesState = {
-  ['test-uncertain-without-children-header-hash']: testUncertainWithoutChildrenOutcome,
-}
-const uncertainWithChildren: ProjectOutcomesState = {
-  ['test-uncertain-with-children-header-hash']: testUncertainWithChildrenOutcome,
-}
-
-const emptyConnectionsState: ProjectConnectionsState = {}
-
-// const outcomesState: ProjectOutcomesState = {
-//   ['412']: outcome1,
-//   ['413']: outcome2,
-//   ['414']: outcome3,
-// }
-// const connectionsState: ProjectConnectionsState = {
-//   ['123']: connection1,
-// }
-
-/* End Data */
-
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
+
+const sharedArgs = {
+  projectTags: testTags,
+  outcomeLeftX: 200,
+  outcomeTopY: 200,
+  outcomeHeight: 500,
+  outcomeWidth: 300,
+  // variants
+  zoomLevel: 1,
+  isSelected: false,
+  isTopPriority: false,
+}
 
 export const SmallNotAchieved = Template.bind({})
 const args1: MapViewDevModeProps = {
-  outcomes: smallNotAchieved,
-  connections: emptyConnectionsState,
+  ...sharedArgs,
+  outcome: testSmallNotAchievedOutcome,
 }
 SmallNotAchieved.args = args1
 
 export const SmallAchieved = Template.bind({})
 const args2: MapViewDevModeProps = {
-  outcomes: smallAchieved,
-  connections: emptyConnectionsState,
+  ...sharedArgs,
+  outcome: testSmallAchievedOutcome,
 }
 SmallAchieved.args = args2
 
 export const BigNotAchieved = Template.bind({})
 const args3: MapViewDevModeProps = {
-  outcomes: bigNotAchieved,
-  connections: emptyConnectionsState,
+  ...sharedArgs,
+  outcome: testBigNotAchievedOutcome,
 }
 BigNotAchieved.args = args3
 
 export const BigPartiallyAchieved = Template.bind({})
 const args4: MapViewDevModeProps = {
-  outcomes: bigPartiallyAchieved,
-  connections: emptyConnectionsState,
+  ...sharedArgs,
+  outcome: testBigPartiallyAchievedOutcome,
 }
 BigPartiallyAchieved.args = args4
 
 export const BigAchieved = Template.bind({})
 const args5: MapViewDevModeProps = {
-  outcomes: bigAchieved,
-  connections: emptyConnectionsState,
+  ...sharedArgs,
+  outcome: testBigAchievedOutcome,
 }
 BigAchieved.args = args5
 
 export const UncertainWithoutChildren = Template.bind({})
 const args6: MapViewDevModeProps = {
-  outcomes: uncertainWithoutChildren,
-  connections: emptyConnectionsState,
+  ...sharedArgs,
+  outcome: testUncertainWithoutChildrenOutcome,
 }
 UncertainWithoutChildren.args = args6
 
 export const UncertainWithChildren = Template.bind({})
 const args7: MapViewDevModeProps = {
-  outcomes: uncertainWithChildren,
-  connections: emptyConnectionsState,
+  ...sharedArgs,
+  outcome: testUncertainWithChildrenOutcome,
 }
 UncertainWithChildren.args = args7
