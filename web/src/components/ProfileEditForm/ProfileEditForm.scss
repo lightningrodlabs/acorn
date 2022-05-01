@@ -15,22 +15,6 @@
   margin-bottom: 64px;
 }
 
-.profile_edit_form h1 {
-  font-size: 24px;
-  line-height: 32px;
-  color: #4d4d4d;
-  font-family: 'gilroyextrabold', 'gilroyextrabold', Helvetica, sans-serif;
-  font-weight: normal;
-  letter-spacing: 0.5px;
-}
-
-.profile_edit_form h4 {
-  font-size: 14px;
-  line-height: 17px;
-  color: #717171;
-  font-weight: normal;
-}
-
 .help_text {
   flex: 1;
 }
@@ -51,14 +35,8 @@
 }
 
 .profile_edit_form .profile_edit_form_avatar {
-  margin-top: 24px;
+  margin-top: 1.625rem;
   margin-left: 6px;
-  height: 40px;
-  width: 40px;
-  overflow: hidden;
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: center;
 }
 
 .profile_edit_form button {
@@ -70,7 +48,16 @@
     text-align: center;
     margin: 0 auto;
   }
-  .validating_form_input {
+  .validating-form-input {
     margin-bottom: 30px;
   }
+}
+
+// new styles
+
+.profile-edit-form-title-wrapper {
+  margin-bottom: 1rem;
+}
+
+.profile-edit-form-subtitle-wrapper {
 }

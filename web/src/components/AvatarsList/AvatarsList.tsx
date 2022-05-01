@@ -13,6 +13,7 @@ export type AvatarsListProps = {
   showInviteButton?: boolean
   showAddButton?: boolean
   onClickButton?: () => void
+  withStatus?: boolean
 }
 
 const AvatarsList: React.FC<AvatarsListProps> = ({
@@ -22,6 +23,7 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
   showInviteButton,
   showAddButton,
   onClickButton,
+  withStatus = true,
 }) => {
   return (
     <div
@@ -65,7 +67,7 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
             size={size}
             withWhiteBorder
             disconnected={!isProfilePresent}
-            withStatus={isProfilePresent}
+            withStatus={withStatus && isProfilePresent}
             clickable
             withTooltip
           />

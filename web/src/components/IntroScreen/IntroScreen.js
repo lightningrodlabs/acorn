@@ -67,7 +67,8 @@ export default function IntroScreen() {
                 className={`screen screen-${index} ${index === screenContent ? 'active-screen' : ''
                   }`}>
                 <div className='intro-screen-image'>
-                  <img src={screen.image} />
+
+                  {/* <img src={screen.image} /> */}
                 </div>
                 <div className='intro-screen-text'>
                   <div className='intro-screen-title'>{screen.title}</div>

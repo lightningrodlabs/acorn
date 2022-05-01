@@ -6,6 +6,7 @@ import './ValidatingFormInput.scss'
 
 import ValidationCheck from '../../images/circle-check.svg'
 import ValidationX from '../../images/circle-x.svg'
+import Typography from '../Typography/Typography'
 
 function ValidatingFormInput({
   withAtSymbol,
@@ -38,7 +39,8 @@ function ValidatingFormInput({
 
   return (
     <div className='validating-form-input'>
-      <label htmlFor={label}>{label}</label>
+      <Typography style="label"><label htmlFor={label}>{label}</label></Typography>
+
       {helpText && <p className='help-text'>{helpText}</p>}
       <div className='input-wrapper'>
         <input
@@ -53,10 +55,10 @@ function ValidatingFormInput({
         {errorText && <div className='error-text'>{errorText}</div>}
         {withAtSymbol && <div className='at-symbol'>@ </div>}
         {invalidInput && (
-          <img src={ValidationX} className='validation-mark' />
+          <img src={ValidationX} className='validation-mark invalid' />
         )}
         {validInput && (
-          <img src={ValidationCheck} className='validation-mark' />
+          <img src={ValidationCheck} className='validation-mark valid' />
         )}
       </div>
     </div>

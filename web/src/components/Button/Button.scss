@@ -5,7 +5,7 @@
   font: 0.875rem var(--font-family-primary-extrabold);
   color: var(--text-color-primary);
   background-color: var(--bg-color-secondary);
-  box-shadow: 0rem 0rem 1.25rem var(--shadow-color);
+  box-shadow: 0rem 0rem 0.75rem var(--shadow-color);
   min-width: 4rem;
   padding: 1rem;
   border: none;
@@ -14,6 +14,7 @@
   cursor: pointer;
   transition: 0.2s box-shadow ease;
   -webkit-font-smoothing: antialiased;
+  margin: 1rem;
 
   &.secondary {
     font: 0.875rem var(--font-family-primary-medium);
@@ -24,7 +25,7 @@
     cursor: default;
 
     &:hover {
-      box-shadow: 0rem 0rem 1.25rem var(--shadow-color);
+      box-shadow: 0rem 0rem 0.75rem var(--shadow-color);
     }
   }
 
@@ -64,7 +65,7 @@
   &.medium {
     font-size: 1rem;
     line-height: 1.45;
-    padding: 0.75rem 1.25rem;
+    padding: 0.875rem 1.5rem;
   }
   &.large {
     font-size: 1.25rem;

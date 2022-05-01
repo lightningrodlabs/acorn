@@ -212,7 +212,7 @@ export default function HeaderRightPanel({
                       <SearchResultItem
                         text={outcome.content}
                         name="title.svg"
-                        onExpandClick={openExpandedView} 
+                        onExpandClick={openExpandedView}
                         panAndZoom={animatePanAndZoom}
                         outcomeHeaderHash={outcome.headerHash}
                       />
@@ -257,7 +257,7 @@ export default function HeaderRightPanel({
         {/* is currently open or closed */}
         {/* Guidebook Button */}
         {/* @ts-ignore */}
-        <NavLink
+        {/* <NavLink
           className="header-right-panel-icon"
           to={`${location.pathname}${
             isGuideOpen ? '' : '?' + GUIDE_IS_OPEN + '=1'
@@ -266,7 +266,7 @@ export default function HeaderRightPanel({
           // and remember not to show that in the future (store that locally) aka persist
           onClick={hideGuidebookHelpMessage}
         >
-          {/* @ts-ignore */}
+
           <Icon
             name="booklet.svg"
             className="header-right-panel-icon"
@@ -274,8 +274,11 @@ export default function HeaderRightPanel({
             tooltipText="Guidebook"
             size="small"
           />
-        </NavLink>
-        <div className="avatar-and-status-wrapper">
+        </NavLink> */}
+        <div
+          className="avatar-and-status-wrapper"
+          onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}
+        >
           <div
             className="avatar-container"
             onMouseEnter={onHoverAvatarEnter}
@@ -289,8 +292,7 @@ export default function HeaderRightPanel({
               imported={whoami.entry.isImported}
               highlighted={isAvatarMenuOpen || isAvatarHover}
               clickable
-              onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}
-              size='small-medium'
+              size="small-medium"
               withStatus
               withWhiteBorder
               selfAssignedStatus={status}
