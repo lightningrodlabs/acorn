@@ -23,7 +23,7 @@ import {
   outcomeHeight,
   outcomeWidth,
 } from './dimensions'
-import { Tag } from '../types'
+import { ComputedScope, ComputedSimpleAchievementStatus, Tag } from '../types'
 import { WithHeaderHash } from '../types/shared'
 
 function setupCanvas(canvas) {
@@ -82,7 +82,7 @@ function render(store, computedOutcomesKeyed, canvas) {
   const entryPoints = state.projects.entryPoints[projectId]
   const projectMeta = state.projects.projectMeta[projectId]
   const projectTags = Object.values(
-    state.projects.tags[projectId]
+    state.projects.tags[projectId] || {}
   ) as WithHeaderHash<Tag>[]
 
   // draw things relating to the project, if the project has fully loaded
@@ -469,7 +469,26 @@ function render(store, computedOutcomesKeyed, canvas) {
     const isTopPriorityOutcome = false
     drawOutcomeCard({
       zoomLevel: scale,
-      // outcome: { status: 'Uncertain' },
+      outcome: {
+        content: '',
+        creatorAgentPubKey: '',
+        editorAgentPubKey: '',
+        timestampCreated: Date.now(),
+        timestampUpdated: Date.now(),
+        scope: { Uncertain: {} },
+        tags: [],
+        description: '',
+        isImported: false,
+        githubLink: '',
+        computedScope: ComputedScope.Uncertain,
+        computedAchievementStatus: {
+          simple: ComputedSimpleAchievementStatus.NotAchieved,
+          smallsAchieved: 0,
+          smallsTotal: 0,
+          uncertains: 0,
+        },
+        children: [],
+      },
       outcomeHeight: outcomeHeight,
       outcomeWidth,
       projectTags,

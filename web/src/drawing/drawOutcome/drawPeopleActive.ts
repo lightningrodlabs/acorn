@@ -2,6 +2,7 @@ import { Profile } from '../../types'
 import draw from '../draw'
 import drawAvatar from './drawAvatar'
 
+// TODO
 const drawPeopleActive = ({
   members,
   xPosition,

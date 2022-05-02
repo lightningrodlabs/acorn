@@ -10,7 +10,7 @@ export const avatarHeight = 26
 export const avatarRadius = 13
 
 export const outcomeWidth = 360
-export const outcomeHeight = 160
+export const outcomeHeight = 360
 export const cornerRadius = 15 // for outcome, main card
 export const borderWidth = 4
 
@@ -41,7 +41,7 @@ export const AVATAR_SIZE = 26
 export const TIME_FONT_SIZE_REM = 1
 export const TIME_FONT_FAMILY = 'PlusJakartaSans-medium'
 
-export const PROGRESS_BAR_HEIGHT = 20
+export const PROGRESS_BAR_HEIGHT = 16
 
 export const firstZoomThreshold = 0.6
 export const secondZoomThreshold = 0.4
