@@ -101,7 +101,7 @@ const EvComments: React.FC<EvCommentsProps> = ({
       <EvReadOnlyHeading
         headingText={outcomeContent}
         // @ts-ignore
-        overviewIcon={<Icon name="activity-history.svg" />}
+        overviewIcon={<Icon name="chats-circle.svg" />}
         overviewText={`${comments.length} comments`}
       />
       <div className="comments-posted-wrapper" ref={commentHistoryRef}>

@@ -9,7 +9,7 @@ import {
   ComputedScope,
   ComputedSimpleAchievementStatus,
 } from '../../../types'
-import { borderWidth, cornerRadius } from '../../dimensions'
+import { borderWidth, cornerRadiusBorder } from '../../dimensions'
 import drawColoredBorder from '../drawColoredBorder'
 
 export const argsForDrawColoredBorder = ({
@@ -70,7 +70,7 @@ export const argsForDrawColoredBorder = ({
     width,
     height,
     strokeWidth,
-    cornerRadius,
+    cornerRadius: cornerRadiusBorder,
     borderColor,
     ctx,
   }

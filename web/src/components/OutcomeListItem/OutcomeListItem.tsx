@@ -35,7 +35,7 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({ outcome }) => {
 
       {/* Outcome statement text */}
       {/* TODO: set typography */}
-      <div className="outcome-list-item-statement">
+      <div className="outcome-list-item-statement" title={outcome.content}>
         <Typography style="h7">{outcome.content}</Typography>
       </div>
     </div>

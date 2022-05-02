@@ -30,23 +30,6 @@ function Footer() {
           target='_blank'>
           <Button text='Report Issue' size='small' className='green' />
         </a>
-        <Route path='/project/:projectId/map'>
-          {/* <div className='bottom-left-panel-entry-points'>
-            <Icon
-              name='door-open.svg'
-              size=''
-              className={`grey ${openEntryPointPicker ? 'active' : ''}`}
-              withTooltipTop
-              tooltipText='Entry Points'
-              onClick={() => setOpenEntryPointPicker(!openEntryPointPicker)}
-            />
-    
-          </div> */}
-          {/* <EntryPointPicker
-            isOpen={openEntryPointPicker}
-            onClose={() => setOpenEntryPointPicker(false)}
-          /> */}
-        </Route>
       </div>
       {projectPage && (
         <div className={bottomRightPanelClassName}>

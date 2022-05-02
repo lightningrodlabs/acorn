@@ -23,6 +23,7 @@
   &.disabled {
     opacity: 0.6;
     cursor: default;
+    color: var(--color-silver);
 
     &:hover {
       box-shadow: 0rem 0rem 0.75rem var(--shadow-color);
@@ -60,7 +61,8 @@
   &.small {
     font-size: 0.875rem;
     line-height: 1.45;
-    padding: 0.625rem 1rem;
+    padding: 0.625rem 0.875rem;
+    margin: 0.25rem;
   }
   &.medium {
     font-size: 1rem;

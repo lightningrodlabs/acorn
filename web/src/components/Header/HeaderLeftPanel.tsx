@@ -102,6 +102,7 @@ function HeaderLeftPanel({
               {/* Project Name and Settings */}
               <div className="current-project-content">
                 <div className="bottom-right-panel-view-modes">
+                  {/* map view button */}
                   <NavLink
                     to={`/project/${projectId}/map`}
                     activeClassName="view-mode-active"
@@ -109,12 +110,29 @@ function HeaderLeftPanel({
                   >
                     <Icon
                       name="map.svg"
-                      size=""
-                      className="grey"
+                      size="view-mode"
+                      className="light-grey"
                       withTooltip
                       tooltipText="Map View"
                     />
                   </NavLink>
+
+                  {/* table view button */}
+                  <NavLink
+                    to={`/project/${projectId}/table`}
+                    activeClassName="view-mode-active"
+                    className="view-mode-link"
+                  >
+                    <Icon
+                      name="table.svg"
+                      size="view-mode"
+                      className="light-grey"
+                      withTooltip
+                      tooltipText="Table View"
+                    />
+                  </NavLink>
+
+                  {/* priority view button */}
                   <NavLink
                     to={`/project/${projectId}/priority`}
                     activeClassName="view-mode-active"
@@ -123,42 +141,13 @@ function HeaderLeftPanel({
                     <Icon
                       name="sort-asc.svg"
                       size="view-mode"
-                      className="grey"
+                      className="light-grey"
                       withTooltip
                       tooltipText="Priority View"
                     />
                   </NavLink>
-                  <NavLink
-                    to={`/project/${projectId}/table`}
-                    activeClassName="view-mode-active"
-                    className="view-mode-link"
-                  >
-                    <Icon
-                      name="door-open.svg"
-                      size="view-mode"
-                      className="grey"
-                      withTooltip
-                      tooltipText="Table View"
-                    />
-                  </NavLink>
                   {/* <Icon name='timeline.svg' className='grey' size='view-mode' /> */}
                 </div>
-
-                {/* <ProjectMapViewOnly>
-                 
-                  <Icon
-                    name="map.svg"
-                    className="view-mode grey not-hoverable"
-                  />
-                </ProjectMapViewOnly>
-                <ProjectPriorityViewOnly>
-                 
-                  <Icon
-                    name="sort-asc.svg"
-                    className="view-mode grey not-hoverable"
-                  />
-                </ProjectPriorityViewOnly> */}
-
                 <div className="current-project-name">{projectName}</div>
                 <div className="divider-line"></div>
                 {/* @ts-ignore */}

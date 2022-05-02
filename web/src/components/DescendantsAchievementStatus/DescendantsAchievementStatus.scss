@@ -32,18 +32,22 @@
     line-height: 1.45;
     margin-right: 1rem;
 
-    .icon {
+    .progress-indicator-wrapper {
+      margin-right: 0.375rem;
+    }
+
+    .descendants-scope-wrapper {
       margin-right: 0.3rem;
     }
 
     &.smalls {
-      .descendants-scope .icon .inner-icon {
+      .descendants-scope-wrapper .icon .inner-icon {
         background-color: var(--color-green);
       }
     }
 
     &.uncertains {
-      .descendants-scope .icon .inner-icon {
+      .descendants-scope-wrapper .icon .inner-icon {
         background-color: var(--color-pumpkin);
       }
     }
