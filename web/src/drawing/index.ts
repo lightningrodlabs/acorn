@@ -35,7 +35,6 @@ import { HeaderHashB64, WithHeaderHash } from '../types/shared'
 import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
 import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
 import { ProjectOutcomeMembersState } from '../redux/persistent/projects/outcome-members/reducer'
-import { number } from 'prop-types'
 
 function setupCanvas(canvas) {
   // Get the device pixel ratio, falling back to 1.
@@ -98,7 +97,6 @@ export type renderProps = {
   computedOutcomesKeyed: {
     [headerHash: string]: ComputedOutcome
   }
-  canvas: HTMLCanvasElement
 }
 
 // Render is responsible for painting all the existing outcomes & connections,
@@ -106,37 +104,39 @@ export type renderProps = {
 // render the state contained in store onto the canvas
 // `store` is a redux store
 // `canvas` is a reference to an HTML5 canvas DOM element
-function render({
-  projectTags,
-  screenWidth,
-  screenHeight,
-  zoomLevel,
-  coordinates,
-  translate,
-  activeEntryPoints,
-  computedOutcomesKeyed,
-  connections,
-  outcomeMembers,
-  entryPoints,
-  projectMeta,
-  connectionConnectorFromAddress,
-  connectionConnectorRelation,
-  outcomeFormIsOpen,
-  outcomeFormFromHeaderHash,
-  outcomeFormRelation,
-  hoveredConnectionHeaderHash,
-  selectedConnections,
-  selectedOutcomes,
-  connectionConnectorToAddress,
-  mouseLiveCoordinate,
-  shiftKeyDown,
-  outcomeFormLeftConnectionX,
-  outcomeFormTopConnectionY,
-  startedSelection,
-  startedSelectionCoordinate,
-  currentSelectionBoxSize,
-  canvas,
-}: renderProps) {
+function render(
+  {
+    projectTags,
+    screenWidth,
+    screenHeight,
+    zoomLevel,
+    coordinates,
+    translate,
+    activeEntryPoints,
+    computedOutcomesKeyed,
+    connections,
+    outcomeMembers,
+    entryPoints,
+    projectMeta,
+    connectionConnectorFromAddress,
+    connectionConnectorRelation,
+    outcomeFormIsOpen,
+    outcomeFormFromHeaderHash,
+    outcomeFormRelation,
+    hoveredConnectionHeaderHash,
+    selectedConnections,
+    selectedOutcomes,
+    connectionConnectorToAddress,
+    mouseLiveCoordinate,
+    shiftKeyDown,
+    outcomeFormLeftConnectionX,
+    outcomeFormTopConnectionY,
+    startedSelection,
+    startedSelectionCoordinate,
+    currentSelectionBoxSize,
+  }: renderProps,
+  canvas: HTMLCanvasElement
+) {
   // Get the 2 dimensional drawing context of the canvas (there is also 3 dimensional, e.g.)
   const ctx = setupCanvas(canvas)
 

@@ -11,97 +11,29 @@ import ConnectionConnectors from '../../../components/ConnectionConnectors/Conne
 import MapViewOutcomeTitleForm from '../../../components/MapViewOutcomeTitleForm/MapViewOutcomeTitleForm.connector'
 import './MapView.scss'
 import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
-import {
-  CellIdString,
-  HeaderHashB64,
-  WithHeaderHash,
-} from '../../../types/shared'
-import { ProjectMeta, RelationInput, Tag } from '../../../types'
-import { ProjectEntryPointsState } from '../../../redux/persistent/projects/entry-points/reducer'
-import { ProjectOutcomeMembersState } from '../../../redux/persistent/projects/outcome-members/reducer'
-import { ProjectConnectionsState } from '../../../redux/persistent/projects/connections/reducer'
+import { CellIdString } from '../../../types/shared'
+import { RootState } from '../../../redux/reducer'
+import selectRenderProps from './selector'
 
 export type MapViewProps = {
   projectId: CellIdString
-  activeEntryPoints: HeaderHashB64[]
-  coordinates: {
-    [outcomeHeaderHash: HeaderHashB64]: {
-      x: number
-      y: number
-    }
-  }
-  projectTags: WithHeaderHash<Tag>[]
   hasSelection: boolean
+  outcomeFormIsOpen: boolean
   translate: {
     x: number
     y: number
   }
   zoomLevel: number
-  screenWidth: number
-  screenHeight: number
   showEmptyState: boolean
-  projectMeta: WithHeaderHash<ProjectMeta>
-  entryPoints: ProjectEntryPointsState
-  outcomeMembers: ProjectOutcomeMembersState
-  connections: ProjectConnectionsState
-  connectionConnectorFromAddress: HeaderHashB64
-  connectionConnectorRelation: RelationInput
-  outcomeFormIsOpen: boolean
-  outcomeFormFromHeaderHash: HeaderHashB64
-  outcomeFormRelation: RelationInput
-  hoveredConnectionHeaderHash: HeaderHashB64
-  selectedConnections: HeaderHashB64[]
-  selectedOutcomes: HeaderHashB64[]
-  connectionConnectorToAddress: HeaderHashB64
-  mouseLiveCoordinate: {
-    x: number
-    y: number
-  }
-  shiftKeyDown: boolean
-  outcomeFormLeftConnectionX: number
-  outcomeFormTopConnectionY: number
-  startedSelection: boolean
-  startedSelectionCoordinate: {
-    x: number
-    y: number
-  }
-  currentSelectionBoxSize: {
-    w: number
-    h: number
-  }
 }
 
 const MapView: React.FC<MapViewProps> = ({
   projectId,
-  activeEntryPoints,
-  coordinates,
-  hasSelection,
-  projectTags,
-  translate,
-  zoomLevel,
-  screenWidth,
-  screenHeight,
   showEmptyState,
-  projectMeta,
-  entryPoints,
-  outcomeMembers,
-  connections,
-  connectionConnectorFromAddress,
-  connectionConnectorRelation,
+  zoomLevel,
+  translate,
   outcomeFormIsOpen,
-  outcomeFormFromHeaderHash,
-  outcomeFormRelation,
-  hoveredConnectionHeaderHash,
-  selectedConnections,
-  selectedOutcomes,
-  connectionConnectorToAddress,
-  mouseLiveCoordinate,
-  shiftKeyDown,
-  outcomeFormLeftConnectionX,
-  outcomeFormTopConnectionY,
-  startedSelection,
-  startedSelectionCoordinate,
-  currentSelectionBoxSize,
+  hasSelection,
 }) => {
   const store = useStore()
   const refCanvas = useRef<HTMLCanvasElement>()
@@ -127,77 +59,26 @@ const MapView: React.FC<MapViewProps> = ({
     }
   }, [])
 
+  // set this up newly, any time the
+  // outcomes and connections change
   useEffect(() => {
     const canvas = refCanvas.current
-    if (!projectId) return
-    render({
-      screenWidth,
-      screenHeight,
-      zoomLevel,
-      projectTags,
-      translate,
-      coordinates,
-      computedOutcomesKeyed,
-      activeEntryPoints,
-      projectMeta,
-      entryPoints,
-      outcomeMembers,
-      connections,
-      connectionConnectorFromAddress,
-      connectionConnectorRelation,
-      outcomeFormIsOpen,
-      outcomeFormFromHeaderHash,
-      outcomeFormRelation,
-      hoveredConnectionHeaderHash,
-      selectedConnections,
-      selectedOutcomes,
-      connectionConnectorToAddress,
-      mouseLiveCoordinate,
-      shiftKeyDown,
-      outcomeFormLeftConnectionX,
-      outcomeFormTopConnectionY,
-      startedSelection,
-      startedSelectionCoordinate,
-      currentSelectionBoxSize,
-      canvas,
+    const unsub = store.subscribe(() => {
+      const state: RootState = store.getState()
+      const activeProject = state.ui.activeProject
+      if (activeProject) {
+        const renderProps = selectRenderProps({
+          state,
+          computedOutcomesKeyed,
+          activeProject,
+        })
+        render(renderProps, canvas)
+      }
     })
-    // const unsub = store.subscribe(() => {
-    //   render(store, computedOutcomesKeyed, canvas)
-    // })
-    // return function cleanup() {
-    //   unsub()
-    // }
-  }, [
-    projectId,
-    screenWidth,
-    screenHeight,
-    zoomLevel,
-    projectTags,
-    translate,
-    coordinates,
-    computedOutcomesKeyed,
-    activeEntryPoints,
-    projectMeta,
-    entryPoints,
-    outcomeMembers,
-    connections,
-    connectionConnectorFromAddress,
-    connectionConnectorRelation,
-    outcomeFormIsOpen,
-    outcomeFormFromHeaderHash,
-    outcomeFormRelation,
-    hoveredConnectionHeaderHash,
-    selectedConnections,
-    selectedOutcomes,
-    connectionConnectorToAddress,
-    mouseLiveCoordinate,
-    shiftKeyDown,
-    outcomeFormLeftConnectionX,
-    outcomeFormTopConnectionY,
-    startedSelection,
-    startedSelectionCoordinate,
-    currentSelectionBoxSize,
-  ])
+    return function cleanup() {
+      unsub()
+    }
+  }, [computedOutcomesKeyed])
 
   const transform = {
     transform: `matrix(${zoomLevel}, 0, 0, ${zoomLevel}, ${translate.x}, ${translate.y})`,
