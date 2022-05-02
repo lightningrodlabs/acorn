@@ -75,7 +75,11 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
 
           {/* Assignees */}
           <div className="outcome-table-row-metadata-wrapper">
-            <AvatarsList size="small" profiles={outcome.members || []} />
+            <AvatarsList
+              withStatus={false}
+              size="small"
+              profiles={outcome.members || []}
+            />
           </div>
 
           {/* Tags */}
@@ -89,7 +93,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
 
           {/* Time */}
           {/* TODO: update time display for different scopes */}
-          <div className="outcome-table-row-metadata-wrapper">
+          <div className="outcome-table-row-metadata-wrapper time">
             {/* {outcome.timeFrame} */}
             March 12 - 24, 2022
           </div>

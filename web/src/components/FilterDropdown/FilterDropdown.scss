@@ -114,6 +114,21 @@
     transition: 0.2s all ease;
     user-select: none;
 
+    .progress-indicator-wrapper {
+      margin-right: 0.375rem;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+
+      .icon,
+      .progress-ring {
+        width: 1rem;
+        height: 1rem;
+        padding: 0;
+      }
+    }
+
     &:first-child {
       border-radius: 0.625rem 0.625rem 0 0;
       padding-top: 1rem;

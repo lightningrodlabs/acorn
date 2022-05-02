@@ -50,4 +50,8 @@
 .preferences-save-button {
   text-align: center;
   margin-top: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }

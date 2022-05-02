@@ -107,7 +107,7 @@
 .screen-dots-wrapper {
   display: flex;
   flex-direction: row;
-  margin: 0 auto;
+  margin: 1rem auto;
   width: 76px;
 }
 
@@ -127,4 +127,7 @@
 .sign-up-button {
   text-align: center;
   margin-top: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }

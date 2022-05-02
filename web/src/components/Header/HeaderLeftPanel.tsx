@@ -1,5 +1,5 @@
-import React from 'react'
-import { NavLink, Route, useLocation } from 'react-router-dom'
+import React, { useRef, useState } from 'react'
+import { NavLink, Route, useLocation, useRouteMatch } from 'react-router-dom'
 
 import ExportMenuItem from '../ExportMenuItem/ExportMenuItem.connector'
 import Icon from '../Icon/Icon'
@@ -11,8 +11,14 @@ import { ENTRY_POINTS } from '../../searchParams'
 import MembersIndicator from '../MembersIndicator/MembersIndicator'
 
 import DoorOpen from '../../images/door-open.svg'
+import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
+import useOnClickOutside from 'use-onclickoutside'
 
-function ActiveEntryPoint({ entryPoint, activeEntryPointAddresses, goToOutcome }) {
+function ActiveEntryPoint({
+  entryPoint,
+  activeEntryPointAddresses,
+  goToOutcome,
+}) {
   const location = useLocation()
   const entryPointsAbsentThisOne = activeEntryPointAddresses
     .filter((headerHash) => headerHash !== entryPoint.headerHash)
@@ -60,8 +66,24 @@ function HeaderLeftPanel({
   // since your own avatar and status is already showing
   // on top right side of the screen all the time!
   const membersMinusMe = whoami
-    ? members.filter((member) => member.address !== whoami.entry.agentPubKey)
+    ? members.filter(
+        (member) => member.agentPubKey !== whoami.entry.agentPubKey
+      )
     : []
+
+  const ref = useRef()
+
+  // map, table and priority view routes
+
+  const projectPage = useRouteMatch('/project/:projectId')
+  const projectId = projectPage ? projectPage.params.projectId : null
+  const mapPage = useRouteMatch('/project/:projectId/map')
+
+  // for entry points
+
+  useOnClickOutside(ref, () => setOpenEntryPointPicker(false))
+  const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
+
   return (
     <>
       <div className="header-left-panel">
@@ -79,27 +101,87 @@ function HeaderLeftPanel({
             <div className="current-project-wrapper">
               {/* Project Name and Settings */}
               <div className="current-project-content">
-                <ProjectMapViewOnly>
-                  {/* @ts-ignore */}
+                <div className="bottom-right-panel-view-modes">
+                  <NavLink
+                    to={`/project/${projectId}/map`}
+                    activeClassName="view-mode-active"
+                    className="view-mode-link"
+                  >
+                    <Icon
+                      name="map.svg"
+                      size=""
+                      className="grey"
+                      withTooltip
+                      tooltipText="Map View"
+                    />
+                  </NavLink>
+                  <NavLink
+                    to={`/project/${projectId}/priority`}
+                    activeClassName="view-mode-active"
+                    className="view-mode-link"
+                  >
+                    <Icon
+                      name="sort-asc.svg"
+                      size="view-mode"
+                      className="grey"
+                      withTooltip
+                      tooltipText="Priority View"
+                    />
+                  </NavLink>
+                  <NavLink
+                    to={`/project/${projectId}/table`}
+                    activeClassName="view-mode-active"
+                    className="view-mode-link"
+                  >
+                    <Icon
+                      name="door-open.svg"
+                      size="view-mode"
+                      className="grey"
+                      withTooltip
+                      tooltipText="Table View"
+                    />
+                  </NavLink>
+                  {/* <Icon name='timeline.svg' className='grey' size='view-mode' /> */}
+                </div>
+
+                {/* <ProjectMapViewOnly>
+                 
                   <Icon
                     name="map.svg"
                     className="view-mode grey not-hoverable"
                   />
                 </ProjectMapViewOnly>
                 <ProjectPriorityViewOnly>
-                  {/* @ts-ignore */}
+                 
                   <Icon
                     name="sort-asc.svg"
                     className="view-mode grey not-hoverable"
                   />
-                </ProjectPriorityViewOnly>
+                </ProjectPriorityViewOnly> */}
+
                 <div className="current-project-name">{projectName}</div>
                 <div className="divider-line"></div>
-                {/* <div
-                className="header-open-project-settings"
-                
-              > */}
                 {/* @ts-ignore */}
+
+                {/* Entry points */}
+                <div className="header-left-panel-entry-points-button">
+                  <Icon
+                    name="door-open.svg"
+                    size="view-mode"
+                    className={`${openEntryPointPicker ? 'active' : ''}`}
+                    withTooltip
+                    tooltipText="Entry Points"
+                    onClick={() =>
+                      setOpenEntryPointPicker(!openEntryPointPicker)
+                    }
+                  />
+                  <EntryPointPicker
+                    isOpen={openEntryPointPicker}
+                    onClose={() => setOpenEntryPointPicker(false)}
+                  />
+                </div>
+
+                {/* Settings */}
                 <Icon
                   name="settings.svg"
                   withTooltip
@@ -107,7 +189,7 @@ function HeaderLeftPanel({
                   size="header"
                   onClick={() => setShowProjectSettingsOpen(true)}
                 />
-                {/* </div> */}
+
                 <div className="export-wrapper">
                   {/* @ts-ignore */}
                   <Icon
@@ -140,13 +222,11 @@ function HeaderLeftPanel({
               </div>
             </div>
             {/* Team Members Indicator */}
-            {membersMinusMe.length > 0 && (
-              <MembersIndicator 
-                members={membersMinusMe}
-                presentMembers={presentMembers}
-                onClickInviteMember={openInviteMembersModal}
-              />
-            )}
+            <MembersIndicator
+              members={membersMinusMe}
+              presentMembers={presentMembers}
+              onClickInviteMember={openInviteMembersModal}
+            />
           </Route>
         )}
       </div>

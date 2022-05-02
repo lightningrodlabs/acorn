@@ -225,57 +225,7 @@
 
 /* dashboard project invite members */
 
-.dashboard-invite-members-button {
-  border: 2px solid #d0d0d0;
-  border-radius: 50%;
-  text-align: center;
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  box-sizing: border-box;
-  background-color: #fbf9f7;
-  transition: 0.2s all ease;
-}
-
-.dashboard-invite-members-button-wrapper {
-  border: 3px solid #fbf9f7;
-  border-radius: 50%;
-  z-index: 1;
-}
-
-.dashboard-invite-members-button:hover {
-  background-color: #f5f2ef;
-  border-color: #5f65ff;
-}
-
-.dashboard-invite-members-button .icon {
-  padding: 2px;
-}
-
-.dashboard-invite-members-button:hover .inner-icon {
-  background-color: #5f65ff;
-}
-
-/* dashboard project members list */
-
 .dashboard-list-project-members {
-  display: flex;
-  flex-direction: row;
-}
-
-.dashboard-list-project-member-list {
-  display: flex;
-  margin-right: -6px;
-}
-
-.dashboard-list-project-member-list .avatar-wrapper.with-border.white{
-  border: 3px solid #fbf9f7;
-  margin-left: -6px;
-  border-radius: 50%;
-  position: relative;
-  cursor: default;
+  // display: flex;
+  // flex-direction: row;
 }

@@ -8,22 +8,24 @@
 
 .create_profile_page .profile_create_wrapper {
   height: 100%;
-  width: 50%;
+  width: 60%;
   min-width: 556px;
   display: flex;
   align-items: center;
-  padding: 20px;
+  padding: 20px 4rem;
+  box-sizing: border-box;
 }
 
 .create_profile_splash_image {
-  background-image: url('../../images/splash-image.png');
+  background-image: url('../../images/splash-image-valeriia-miller.jpg');
   background-repeat: no-repeat;
   background-size: cover;
-  width: 50%;
+  width: 40%;
+  background-position: bottom;
 }
 
 @media only screen and (max-height: 800px) {
-  .validating_form_input {
+  .validating-form-input {
     margin-bottom: 35px;
   }
   .profile_edit_form_title {

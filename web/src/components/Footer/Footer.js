@@ -31,7 +31,7 @@ function Footer() {
           <Button text='Report Issue' size='small' className='green' />
         </a>
         <Route path='/project/:projectId/map'>
-          <div className='bottom-left-panel-entry-points'>
+          {/* <div className='bottom-left-panel-entry-points'>
             <Icon
               name='door-open.svg'
               size=''
@@ -40,18 +40,18 @@ function Footer() {
               tooltipText='Entry Points'
               onClick={() => setOpenEntryPointPicker(!openEntryPointPicker)}
             />
-            {/* <img src='img/door-open.svg' /> entry points */}
-          </div>
-          <EntryPointPicker
+    
+          </div> */}
+          {/* <EntryPointPicker
             isOpen={openEntryPointPicker}
             onClose={() => setOpenEntryPointPicker(false)}
-          />
+          /> */}
         </Route>
       </div>
       {projectPage && (
         <div className={bottomRightPanelClassName}>
           {mapPage && <Zoom />}
-          <div className='bottom-right-panel-view-modes'>
+          {/* <div className='bottom-right-panel-view-modes'>
             <NavLink
               to={`/project/${projectId}/map`}
               activeClassName='view-mode-active'
@@ -88,8 +88,8 @@ function Footer() {
                 tooltipText='Table View'
               />
             </NavLink>
-            {/* <Icon name='timeline.svg' className='grey' size='view-mode' /> */}
-          </div>
+           
+          </div> */}
         </div>
       )}
     </div>

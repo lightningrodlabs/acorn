@@ -72,10 +72,11 @@
   padding: 2px;
   display: inline-block;
   position: relative;
+   
 }
 
 .view-mode-active .icon .inner-icon {
-  background-color: #5f65ff;
+  background-color: var(--text-color-primary);
 }
 
 a.bottom-right-panel-view-modes {

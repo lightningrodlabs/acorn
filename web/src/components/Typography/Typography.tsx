@@ -14,6 +14,7 @@ export type TypographyProps = {
     | 'h8'
     | 'subtitle1'
     | 'subtitle2'
+    | 'subtitle3'
     | 'description'
     | 'body1'
     | 'body2'
@@ -22,6 +23,7 @@ export type TypographyProps = {
     | 'caption3'
     | 'caption4'
     | 'button-text'
+    | 'label'
   text?: string
 }
 

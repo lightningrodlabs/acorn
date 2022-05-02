@@ -7,20 +7,10 @@
   --color-silver: #bebebe; //Silver
   --color-green: #008414; //Green
   --color-pumpkin: #c46310; //Pumpkin skin
-  --color-topaz: #F7CF75; //Topaz
+  --color-topaz: #f7cf75; //Topaz
   --color-ultramarine-blue: #344cff; //Ultamarine blue
   --color-gray: #808080; //Gray
-
-  // text
-  --text-color-primary: #222222; //Raisin Black
-  --text-color-secondary: #4d4d4d; //Dark Liver
-  --text-color-tertiary: #8d8c8c; //Philippine Gray
-  --text-color-quaternary: #9d9d9d; //Spanish Gray
-  --text-color-caption: #bcbcbc; //Silver
-  --text-color-placeholder: #bdbdbd; //Philippine Gray
-  --text-color-strikethrough: #aea49972; //Pale Silver
-  --text-color-dark-bg: #ffffff;
-  --text-color-invalid: #ff5d36;
+  --color-alto: #d0d0d0; //Alto
 
   // icon
   --icon-color-light-grey: #9d9d9d; //Spanish Gray
@@ -50,5 +40,15 @@
   --font-family-primary-semibold: 'PlusJakartaSans-semibold', sans-serif;
   --font-family-primary-medium: 'PlusJakartaSans-medium', sans-serif;
   --font-family-primary-regular: 'PlusJakartaSans-regular', sans-serif;
-}
 
+    // text
+    --text-color-primary: #222222; //Raisin Black
+    --text-color-secondary: #4d4d4d; //Dark Liver
+    --text-color-tertiary: #8d8c8c; //Philippine Gray
+    --text-color-quaternary: #9d9d9d; //Spanish Gray
+    --text-color-caption: #bcbcbc; //Silver
+    --text-color-placeholder: #bdbdbd; //Philippine Gray
+    --text-color-strikethrough: #aea49972; //Pale Silver
+    --text-color-dark-bg: #ffffff;
+    --text-color-invalid: #ff5d36;
+}

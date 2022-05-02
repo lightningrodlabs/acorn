@@ -28,10 +28,11 @@ const ProgressRing: React.FC<ProgressRingProps> = ({
   const dashoffset = circumference - (progress / 100) * circumference
   return (
     <span
+      className="progress-ring"
       style={{
         transform: 'rotate(-90deg)',
-        width: `${size}px`,
-        height: `${size}px`,
+        width: `${size}`,
+        height: `${size}`,
         display: 'inline-flex',
       }}
     >
@@ -43,8 +44,8 @@ const ProgressRing: React.FC<ProgressRingProps> = ({
       >
         <circle
           style={{ transition: 'stroke-dashoffset 0.35s' }}
-          stroke="var(--text-color-placeholder)"
-          strokeWidth={strokeWidth}
+          stroke="var(--color-alto)"
+          strokeWidth={`${strokeWidth}`}
           strokeLinecap="round"
           fill="transparent"
           cx="50%"

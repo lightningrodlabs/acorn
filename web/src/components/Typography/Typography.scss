@@ -7,11 +7,11 @@
     line-height: 1.45;
   }
   &.h2 {
-    font: 1.75rem var(--font-family-primary-bold);
+    font: 1.75rem var(--font-family-primary-extrabold);
     line-height: 1.45;
   }
   &.h3 {
-    font: 1.5rem var(--font-family-primary-bold);
+    font: 1.5rem var(--font-family-primary-extrabold);
     line-height: 1.35;
   }
   &.h4 {
@@ -58,6 +58,11 @@
     color: var(--text-color-secondary);
     line-height: 1.45;
   }
+  &.subtitle3 {
+    font: 1rem var(--font-family-primary-medium);
+    color: var(--text-color-tertiary);
+    line-height: 1.45;
+  }
   // Captions
   &.caption1 {
     font: 1rem var(--font-family-primary-bold);
@@ -78,5 +83,11 @@
     font: 0.815rem var(--font-family-primary-medium);
     color: var(--text-color-caption);
     line-height: 1.45;
+  }
+  // label
+  &.label {
+    font: 1rem var(--font-family-primary-extrabold);
+    color: var(--text-color-secondary);
+    line-height: 1.75;
   }
 }

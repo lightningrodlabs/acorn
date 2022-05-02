@@ -10,6 +10,7 @@ import { pickColorForString } from '../../styles'
 
 import ProjectSettingsModal from '../../components/ProjectSettingsModal/ProjectSettingsModal.connector'
 import { ENTRY_POINTS, GO_TO_OUTCOME } from '../../searchParams'
+import AvatarsList from '../../components/AvatarsList/AvatarsList'
 
 function DashboardListProjectLoading() {
   return (
@@ -98,44 +99,14 @@ function DashboardListProject({
         </div>
         <div className="dashboard-list-project-members-settings">
           <div className="dashboard-list-project-members">
-            <div className="dashboard-list-project-member-list">
-              {project.members.map(
-                (member) =>
-                  member && (
-                    // title={`${member.firstName} ${member.lastName}`}
-                    <div key={member.headerHash}  >
-                      <Avatar
-                        firstName={member.firstName}
-                        lastName={member.lastName}
-                        avatarUrl={member.avatarUrl}
-                        imported={member.isImported}
-                        size='medium'
-                        withStatus
-                        withWhiteBorder
-                        selfAssignedStatus={member.status}
-                        withTooltip
-                        tooltipText={`${member.firstName} ${member.lastName}`}
-                      />
-                    </div>
-                  )
-              )}
-            </div>
-            {/* Invite Members */}
-            <div className="dashboard-invite-members-button-wrapper">
-              <div
-                className="dashboard-invite-members-button"
-                onClick={() => setShowInviteMembersModal(project.passphrase)}
-              >
-                <Icon
-                  withTooltip
-                  tooltipText="Invite Members"
-                  name="user-plus.svg"
-                  size="small"
-                  className="grey"
-                />
-              </div>
-            </div>
+            <AvatarsList
+              size="small-medium"
+              profiles={project.members}
+              showInviteButton
+              onClickButton={() => setShowInviteMembersModal(project.passphrase)}
+            />
           </div>
+
           {/* project item settings */}
           <div
             className="dashboard-list-project-settings-button"

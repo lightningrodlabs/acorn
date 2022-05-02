@@ -7,7 +7,7 @@
   align-items: center;
 }
 
-.create-project-modal-wrapper .validating_form_input {
+.create-project-modal-wrapper .validating-form-input {
   margin-bottom: 28px;
 }
 
@@ -19,10 +19,10 @@
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  margin-bottom: 28px;
+  // margin-top: 2rem;
 }
 
-.create-project-image-row .validating_form_input {
+.create-project-image-row .validating-form-input {
   margin-bottom: 0;
 }
 
@@ -33,7 +33,7 @@
   background-size: cover;
   background-repeat: no-repeat;
   border-radius: 5px;
-  border: 1.2px solid #f3efeb;
+  border: 0.125rem solid #f3efeb;
 }
 
 /* create project modal animation */
@@ -73,6 +73,6 @@
 }
 
 .project-created-modal.project-created .project-modal-content-spacer {
-  margin-bottom: 104px;
-  margin-top: 104px;
+  margin-bottom: 7rem;
+  margin-top: 3rem;
 }

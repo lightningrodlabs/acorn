@@ -76,16 +76,22 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
   function profileOption(profile: Profile) {
     return {
       innerListItem: (
-        <>
-          {/* TODO: style this */}
-          <Avatar
-            size="small"
-            firstName={profile.firstName}
-            lastName={profile.lastName}
-            avatarUrl={profile.avatarUrl}
-          />
-          {profile.firstName}
-        </>
+        <div className="filter-menu-assingees-list-item">
+          <div className="filter-menu-assingees-list-item-avatar">
+            <Avatar
+              size="small"
+              firstName={profile.firstName}
+              lastName={profile.lastName}
+              avatarUrl={profile.avatarUrl}
+              withWhiteBorder
+            />
+          </div>
+          <div className="filter-menu-assingees-list-item-name">
+            {profile.firstName}
+            {"  "}
+            {profile.lastName}
+          </div>
+        </div>
       ),
       id: profile.agentPubKey,
     }
@@ -171,7 +177,7 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
         />
       </div>
       {/* Scope filter */}
-      <div className="table-view-filter-wrapper">
+      <div className="table-view-filter-wrapper scope">
         <FilterDropdown
           selectedOptions={filter.scope ? filter.scope : []}
           options={scopeOptions}
@@ -188,7 +194,7 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
         />
       </div>
       {/* Assignees filter */}
-      <div className="table-view-filter-wrapper">
+      <div className="table-view-filter-wrapper assignees">
         <FilterDropdown
           selectedOptions={filter.assignees ? filter.assignees : []}
           options={assigneeOptions}
@@ -205,7 +211,7 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
         />
       </div>
       {/* Tags filter */}
-      <div className="table-view-filter-wrapper">
+      <div className="table-view-filter-wrapper tags">
         <FilterDropdown
           selectedOptions={filter.tags ? filter.tags : []}
           options={tagOptions}

@@ -11,14 +11,6 @@
   text-align: left;
   font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
 
-  label {
-    color: #4d4d4d;
-    font-size: 1rem;
-    line-height: 1.45;
-    display: block;
-    font-family: 'gilroyextrabold', Helvetica, sans-serif;
-  }
-
   .help-text {
     color: #898989;
     font-size: 0.875rem;
@@ -33,6 +25,7 @@
     position: relative;
 
     input {
+      margin-top: 0.25rem;
       border: 0.125rem solid #f3efeb;
       outline: none;
       font-size: 0.875rem;
@@ -72,8 +65,8 @@
 
   .at-symbol {
     position: absolute;
-    top: 0.6875rem;
-    left: 0.6875rem;
+    top: 0.9875rem;
+    left: 0.7875rem;
     font-size: 0.875rem;
     color: #8c8c8c;
   }
@@ -88,7 +81,17 @@
 
   .validation-mark {
     position: absolute;
-    top: 0.825rem;
+    top: 1rem;
     right: 0.625rem;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--bg-color-secondary);
+    padding-left: 0.25rem;
+
+    &.valid {
+    }
+
+    &.invlid {
+    }
   }
 }
