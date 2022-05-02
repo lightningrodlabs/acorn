@@ -11,22 +11,108 @@ import ConnectionConnectors from '../../../components/ConnectionConnectors/Conne
 import MapViewOutcomeTitleForm from '../../../components/MapViewOutcomeTitleForm/MapViewOutcomeTitleForm.connector'
 import './MapView.scss'
 import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
+import {
+  CellIdString,
+  HeaderHashB64,
+  WithHeaderHash,
+} from '../../../types/shared'
+import { ProjectMeta, RelationInput, Tag } from '../../../types'
+import { ProjectEntryPointsState } from '../../../redux/persistent/projects/entry-points/reducer'
+import { ProjectOutcomeMembersState } from '../../../redux/persistent/projects/outcome-members/reducer'
+import { ProjectConnectionsState } from '../../../redux/persistent/projects/connections/reducer'
 
-function MapView({
+export type MapViewProps = {
+  projectId: CellIdString
+  activeEntryPoints: HeaderHashB64[]
+  coordinates: {
+    [outcomeHeaderHash: HeaderHashB64]: {
+      x: number
+      y: number
+    }
+  }
+  projectTags: WithHeaderHash<Tag>[]
+  hasSelection: boolean
+  translate: {
+    x: number
+    y: number
+  }
+  zoomLevel: number
+  screenWidth: number
+  screenHeight: number
+  showEmptyState: boolean
+  projectMeta: WithHeaderHash<ProjectMeta>
+  entryPoints: ProjectEntryPointsState
+  outcomeMembers: ProjectOutcomeMembersState
+  connections: ProjectConnectionsState
+  connectionConnectorFromAddress: HeaderHashB64
+  connectionConnectorRelation: RelationInput
+  outcomeFormIsOpen: boolean
+  outcomeFormFromHeaderHash: HeaderHashB64
+  outcomeFormRelation: RelationInput
+  hoveredConnectionHeaderHash: HeaderHashB64
+  selectedConnections: HeaderHashB64[]
+  selectedOutcomes: HeaderHashB64[]
+  connectionConnectorToAddress: HeaderHashB64
+  mouseLiveCoordinate: {
+    x: number
+    y: number
+  }
+  shiftKeyDown: boolean
+  outcomeFormLeftConnectionX: number
+  outcomeFormTopConnectionY: number
+  startedSelection: boolean
+  startedSelectionCoordinate: {
+    x: number
+    y: number
+  }
+  currentSelectionBoxSize: {
+    w: number
+    h: number
+  }
+}
+
+const MapView: React.FC<MapViewProps> = ({
   projectId,
+  activeEntryPoints,
+  coordinates,
   hasSelection,
-  outcomeFormIsOpen,
+  projectTags,
   translate,
-  scale,
+  zoomLevel,
+  screenWidth,
+  screenHeight,
   showEmptyState,
-}) {
+  projectMeta,
+  entryPoints,
+  outcomeMembers,
+  connections,
+  connectionConnectorFromAddress,
+  connectionConnectorRelation,
+  outcomeFormIsOpen,
+  outcomeFormFromHeaderHash,
+  outcomeFormRelation,
+  hoveredConnectionHeaderHash,
+  selectedConnections,
+  selectedOutcomes,
+  connectionConnectorToAddress,
+  mouseLiveCoordinate,
+  shiftKeyDown,
+  outcomeFormLeftConnectionX,
+  outcomeFormTopConnectionY,
+  startedSelection,
+  startedSelectionCoordinate,
+  currentSelectionBoxSize,
+}) => {
   const store = useStore()
-  const refCanvas = useRef()
+  const refCanvas = useRef<HTMLCanvasElement>()
 
   const { computedOutcomesKeyed } = useContext(ComputedOutcomeContext)
 
+  // only run this one on initial mount (and unmount for cleanup)
   useEffect(() => {
     const canvas = refCanvas.current
+    // attach keyboard and mouse events
+    const removeEventListeners = setupEventListeners(store, canvas)
     canvas.width = document.body.clientWidth
     canvas.height = document.body.clientHeight
     // Get the device pixel ratio, falling back to 1.
@@ -36,21 +122,85 @@ function MapView({
     // Give the canvas pixel dimensions of their CSS
     // size * the device pixel ratio.
     store.dispatch(setScreenDimensions(rect.width * dpr, rect.height * dpr))
-    // attach keyboard and mouse events
-    const removeEventListeners = setupEventListeners(store, canvas)
-    render(store, computedOutcomesKeyed, canvas)
-    const unsub = store.subscribe(() => {
-      render(store, computedOutcomesKeyed, canvas)
-    })
-
     return function cleanup() {
-      unsub()
       removeEventListeners()
     }
-  }, [computedOutcomesKeyed]) // only run on initial mount
+  }, [])
+
+  useEffect(() => {
+    const canvas = refCanvas.current
+    if (!projectId) return
+    render({
+      screenWidth,
+      screenHeight,
+      zoomLevel,
+      projectTags,
+      translate,
+      coordinates,
+      computedOutcomesKeyed,
+      activeEntryPoints,
+      projectMeta,
+      entryPoints,
+      outcomeMembers,
+      connections,
+      connectionConnectorFromAddress,
+      connectionConnectorRelation,
+      outcomeFormIsOpen,
+      outcomeFormFromHeaderHash,
+      outcomeFormRelation,
+      hoveredConnectionHeaderHash,
+      selectedConnections,
+      selectedOutcomes,
+      connectionConnectorToAddress,
+      mouseLiveCoordinate,
+      shiftKeyDown,
+      outcomeFormLeftConnectionX,
+      outcomeFormTopConnectionY,
+      startedSelection,
+      startedSelectionCoordinate,
+      currentSelectionBoxSize,
+      canvas,
+    })
+    // const unsub = store.subscribe(() => {
+    //   render(store, computedOutcomesKeyed, canvas)
+    // })
+    // return function cleanup() {
+    //   unsub()
+    // }
+  }, [
+    projectId,
+    screenWidth,
+    screenHeight,
+    zoomLevel,
+    projectTags,
+    translate,
+    coordinates,
+    computedOutcomesKeyed,
+    activeEntryPoints,
+    projectMeta,
+    entryPoints,
+    outcomeMembers,
+    connections,
+    connectionConnectorFromAddress,
+    connectionConnectorRelation,
+    outcomeFormIsOpen,
+    outcomeFormFromHeaderHash,
+    outcomeFormRelation,
+    hoveredConnectionHeaderHash,
+    selectedConnections,
+    selectedOutcomes,
+    connectionConnectorToAddress,
+    mouseLiveCoordinate,
+    shiftKeyDown,
+    outcomeFormLeftConnectionX,
+    outcomeFormTopConnectionY,
+    startedSelection,
+    startedSelectionCoordinate,
+    currentSelectionBoxSize,
+  ])
 
   const transform = {
-    transform: `matrix(${scale}, 0, 0, ${scale}, ${translate.x}, ${translate.y})`,
+    transform: `matrix(${zoomLevel}, 0, 0, ${zoomLevel}, ${translate.x}, ${translate.y})`,
   }
   return (
     <>
@@ -72,11 +222,7 @@ function MapView({
 
         {/* if the scale is greater than or equal to 60% (or we are creating a Outcome) */}
         {/* because otherwise the font size gets to small and the text is cut off */}
-        {outcomeFormIsOpen && (
-          <MapViewOutcomeTitleForm
-            projectId={projectId}
-          />
-        )}
+        {outcomeFormIsOpen && <MapViewOutcomeTitleForm projectId={projectId} />}
       </div>
 
       {/* below items inside 'outcome-form-position-container' maintain their normal scale */}

@@ -23,8 +23,19 @@ import {
   outcomeHeight,
   outcomeWidth,
 } from './dimensions'
-import { ComputedScope, ComputedSimpleAchievementStatus, Tag } from '../types'
-import { WithHeaderHash } from '../types/shared'
+import {
+  ComputedOutcome,
+  ComputedScope,
+  ComputedSimpleAchievementStatus,
+  ProjectMeta,
+  RelationInput,
+  Tag,
+} from '../types'
+import { HeaderHashB64, WithHeaderHash } from '../types/shared'
+import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
+import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
+import { ProjectOutcomeMembersState } from '../redux/persistent/projects/outcome-members/reducer'
+import { number } from 'prop-types'
 
 function setupCanvas(canvas) {
   // Get the device pixel ratio, falling back to 1.
@@ -39,51 +50,114 @@ function setupCanvas(canvas) {
   return ctx
 }
 
+export type renderProps = {
+  projectTags: WithHeaderHash<Tag>[]
+  screenWidth: number
+  screenHeight: number
+  zoomLevel: number
+  translate: {
+    x: number
+    y: number
+  }
+  activeEntryPoints: HeaderHashB64[]
+  projectMeta: WithHeaderHash<ProjectMeta>
+  entryPoints: ProjectEntryPointsState
+  outcomeMembers: ProjectOutcomeMembersState
+  connections: ProjectConnectionsState
+  connectionConnectorFromAddress: HeaderHashB64
+  connectionConnectorRelation: RelationInput
+  outcomeFormIsOpen: boolean
+  outcomeFormFromHeaderHash: HeaderHashB64
+  outcomeFormRelation: RelationInput
+  hoveredConnectionHeaderHash: HeaderHashB64
+  selectedConnections: HeaderHashB64[]
+  selectedOutcomes: HeaderHashB64[]
+  connectionConnectorToAddress: HeaderHashB64
+  mouseLiveCoordinate: {
+    x: number
+    y: number
+  }
+  shiftKeyDown: boolean
+  outcomeFormLeftConnectionX: number
+  outcomeFormTopConnectionY: number
+  startedSelection: boolean
+  startedSelectionCoordinate: {
+    x: number
+    y: number
+  }
+  currentSelectionBoxSize: {
+    w: number
+    h: number
+  }
+  coordinates: {
+    [outcomeHeaderHash: HeaderHashB64]: {
+      x: number
+      y: number
+    }
+  }
+  computedOutcomesKeyed: {
+    [headerHash: string]: ComputedOutcome
+  }
+  canvas: HTMLCanvasElement
+}
+
 // Render is responsible for painting all the existing outcomes & connections,
 // as well as the yet to be created (pending) ones (For new Outcome / new Connection / edit Connection)
 // render the state contained in store onto the canvas
 // `store` is a redux store
 // `canvas` is a reference to an HTML5 canvas DOM element
-function render(store, computedOutcomesKeyed, canvas) {
+function render({
+  projectTags,
+  screenWidth,
+  screenHeight,
+  zoomLevel,
+  coordinates,
+  translate,
+  activeEntryPoints,
+  computedOutcomesKeyed,
+  connections,
+  outcomeMembers,
+  entryPoints,
+  projectMeta,
+  connectionConnectorFromAddress,
+  connectionConnectorRelation,
+  outcomeFormIsOpen,
+  outcomeFormFromHeaderHash,
+  outcomeFormRelation,
+  hoveredConnectionHeaderHash,
+  selectedConnections,
+  selectedOutcomes,
+  connectionConnectorToAddress,
+  mouseLiveCoordinate,
+  shiftKeyDown,
+  outcomeFormLeftConnectionX,
+  outcomeFormTopConnectionY,
+  startedSelection,
+  startedSelectionCoordinate,
+  currentSelectionBoxSize,
+  canvas,
+}: renderProps) {
   // Get the 2 dimensional drawing context of the canvas (there is also 3 dimensional, e.g.)
   const ctx = setupCanvas(canvas)
 
-  // pull the current state from the store
-  const state = store.getState()
-
-  // scale x, skew x, skew y, scale y, translate x, and translate y
-  const {
-    ui: {
-      viewport: { translate, scale },
-    },
-  } = state
+  // zoomLevel x, skew x, skew y, zoomLevel y, translate x, and translate y
   ctx.setTransform(1, 0, 0, 1, 0, 0) // normalize
   // clear the entirety of the canvas
-  ctx.clearRect(0, 0, state.ui.screensize.width, state.ui.screensize.height)
+  ctx.clearRect(0, 0, screenWidth, screenHeight)
 
-  // Scale all drawing operations by the dpr, as well as the zoom, so you
+  // zoomLevel all drawing operations by the dpr, as well as the zoom, so you
   // don't have to worry about the difference.
   const dpr = window.devicePixelRatio || 1
   ctx.setTransform(
-    scale * dpr,
+    zoomLevel * dpr,
     0,
     0,
-    scale * dpr,
+    zoomLevel * dpr,
     translate.x * dpr,
     translate.y * dpr
   )
 
-  const projectId = state.ui.activeProject
-  const activeEntryPoints = state.ui.activeEntryPoints
-  if (!projectId) return
-  const outcomes = computedOutcomesKeyed // state.projects.outcomes[projectId]
-  const connections = state.projects.connections[projectId]
-  const outcomeMembers = state.projects.outcomeMembers[projectId]
-  const entryPoints = state.projects.entryPoints[projectId]
-  const projectMeta = state.projects.projectMeta[projectId]
-  const projectTags = Object.values(
-    state.projects.tags[projectId] || {}
-  ) as WithHeaderHash<Tag>[]
+  const outcomes = computedOutcomesKeyed
 
   // draw things relating to the project, if the project has fully loaded
   if (outcomes && connections && outcomeMembers && entryPoints && projectMeta) {
@@ -96,8 +170,6 @@ function render(store, computedOutcomesKeyed, canvas) {
     const connectionsAsArray = Object.keys(connections).map(
       (headerHash) => connections[headerHash]
     )
-
-    const coordinates = state.ui.layout
 
     /*
       DRAW ENTRY POINTS
@@ -122,12 +194,11 @@ function render(store, computedOutcomesKeyed, canvas) {
       // temporarily omit/hide the existing connection from view
       // ASSUMPTION: one parent
       const pendingReParent =
-        (state.ui.connectionConnector.fromAddress ===
-          connection.childHeaderHash &&
-          state.ui.connectionConnector.relation === RELATION_AS_CHILD) ||
-        (state.ui.outcomeForm.isOpen &&
-          state.ui.outcomeForm.fromAddress === connection.childHeaderHash &&
-          state.ui.outcomeForm.relation === RELATION_AS_CHILD)
+        (connectionConnectorFromAddress === connection.childHeaderHash &&
+          connectionConnectorRelation === RELATION_AS_CHILD) ||
+        (outcomeFormIsOpen &&
+          outcomeFormFromHeaderHash === connection.childHeaderHash &&
+          outcomeFormRelation === RELATION_AS_CHILD)
       if (pendingReParent) return
 
       const childCoords = coordinates[connection.childHeaderHash]
@@ -147,11 +218,8 @@ function render(store, computedOutcomesKeyed, canvas) {
           parentOutcomeText,
           ctx
         )
-        const isHovered =
-          state.ui.hover.hoveredConnection === connection.headerHash
-        const isSelected = state.ui.selection.selectedConnections.includes(
-          connection.headerHash
-        )
+        const isHovered = hoveredConnectionHeaderHash === connection.headerHash
+        const isSelected = selectedConnections.includes(connection.headerHash)
         drawConnection(
           connection1port,
           connection2port,
@@ -167,16 +235,10 @@ function render(store, computedOutcomesKeyed, canvas) {
     */
     // in order to create layers behind and in front of the editing highlight overlay
     const unselectedOutcomes = outcomesAsArray.filter((outcome) => {
-      return (
-        state.ui.selection.selectedOutcomes.indexOf(outcome.headerHash) ===
-          -1 && state.ui.outcomeForm.editAddress !== outcome.headerHash
-      )
+      return selectedOutcomes.indexOf(outcome.headerHash) === -1
     })
-    const selectedOutcomes = outcomesAsArray.filter((outcome) => {
-      return (
-        state.ui.selection.selectedOutcomes.indexOf(outcome.headerHash) > -1 &&
-        state.ui.outcomeForm.editAddress !== outcome.headerHash
-      )
+    const selectedOutcomesActual = outcomesAsArray.filter((outcome) => {
+      return selectedOutcomes.indexOf(outcome.headerHash) > -1
     })
 
     /*
@@ -186,33 +248,33 @@ function render(store, computedOutcomesKeyed, canvas) {
     unselectedOutcomes.forEach((outcome) => {
       // use the set of coordinates at the same index
       // in the coordinates array
-      const isHovered = state.ui.hover.hoveredOutcome === outcome.headerHash
       const isSelected = false
-      const isEditing = false
-      let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(
-        (agentInfo) =>
-          agentInfo.outcomeBeingEdited !== null &&
-          agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash
-      )
-      const isBeingEdited = editInfoObjects.length > 0
-      const isBeingEditedBy =
-        editInfoObjects.length === 1
-          ? state.agents[editInfoObjects[0].agentPubKey].handle
-          : editInfoObjects.length > 1
-          ? `${editInfoObjects.length} people`
-          : null
+      // const isHovered = state.ui.hover.hoveredOutcome === outcome.headerHash
+      // const isEditing = false
+      // let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(
+      //   (agentInfo) =>
+      //     agentInfo.outcomeBeingEdited !== null &&
+      //     agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash
+      // )
+      // const isBeingEdited = editInfoObjects.length > 0
+      // const isBeingEditedBy =
+      //   editInfoObjects.length === 1
+      //     ? state.agents[editInfoObjects[0].agentPubKey].handle
+      //     : editInfoObjects.length > 1
+      //     ? `${editInfoObjects.length} people`
+      //     : null
       // a combination of those editing + those with expanded view open
-      const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
-        .filter(
-          (agentInfo) =>
-            agentInfo.outcomeExpandedView === outcome.headerHash ||
-            (agentInfo.outcomeBeingEdited !== null &&
-              agentInfo.outcomeBeingEdited.outcomeHeaderHash ===
-                outcome.headerHash)
-        )
-        .map(
-          (realtimeInfoObject) => state.agents[realtimeInfoObject.agentPubKey]
-        )
+      // const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
+      //   .filter(
+      //     (agentInfo) =>
+      //       agentInfo.outcomeExpandedView === outcome.headerHash ||
+      //       (agentInfo.outcomeBeingEdited !== null &&
+      //         agentInfo.outcomeBeingEdited.outcomeHeaderHash ===
+      //           outcome.headerHash)
+      //   )
+      //   .map(
+      //     (realtimeInfoObject) => state.agents[realtimeInfoObject.agentPubKey]
+      //   )
 
       // const membersOfOutcome = Object.keys(outcomeMembers)
       //   .map(headerHash => outcomeMembers[headerHash])
@@ -223,7 +285,7 @@ function render(store, computedOutcomesKeyed, canvas) {
       )
       if (coordinates[outcome.headerHash]) {
         drawOutcomeCard({
-          zoomLevel: scale,
+          zoomLevel: zoomLevel,
           outcome: outcome,
           outcomeLeftX: coordinates[outcome.headerHash].x,
           outcomeTopY: coordinates[outcome.headerHash].y,
@@ -233,7 +295,7 @@ function render(store, computedOutcomesKeyed, canvas) {
           outcomeHeight: getOutcomeHeight({
             ctx,
             statement: outcome.content,
-            zoomLevel: scale,
+            zoomLevel: zoomLevel,
             width: outcomeWidth,
           }),
           outcomeWidth: outcomeWidth,
@@ -253,13 +315,13 @@ function render(store, computedOutcomesKeyed, canvas) {
       DRAW SELECT BOX
     */
     if (
-      state.ui.keyboard.shiftKeyDown &&
-      state.ui.mouse.mousedown &&
-      state.ui.mouse.coordinate.x !== 0
+      shiftKeyDown &&
+      startedSelection &&
+      startedSelectionCoordinate.x !== 0
     ) {
       drawSelectBox(
-        state.ui.mouse.coordinate,
-        state.ui.mouse.size,
+        startedSelectionCoordinate,
+        currentSelectionBoxSize,
         canvas.getContext('2d')
       )
     }
@@ -268,57 +330,47 @@ function render(store, computedOutcomesKeyed, canvas) {
       DRAW EDITING HIGHLIGHT SEMI-TRANSPARENT OVERLAY
     */
     /* if shift key not held down and there are more than 1 Outcomes selected */
-    if (
-      state.ui.outcomeForm.editAddress ||
-      (state.ui.selection.selectedOutcomes.length > 1 &&
-        !state.ui.keyboard.shiftKeyDown)
-    ) {
+    if (selectedOutcomes.length > 1 && !shiftKeyDown) {
       // counteract the translation
       ctx.save()
       ctx.setTransform(1, 0, 0, 1, 0, 0)
-      drawOverlay(
-        ctx,
-        0,
-        0,
-        state.ui.screensize.width,
-        state.ui.screensize.height
-      )
+      drawOverlay(ctx, 0, 0, screenWidth, screenHeight)
       ctx.restore()
     }
 
     /*
       DRAW SELECTED OUTCOMES
     */
-    selectedOutcomes.forEach((outcome) => {
+    selectedOutcomesActual.forEach((outcome) => {
       // use the set of coordinates at the same index
       // in the coordinates array
-      const isHovered = state.ui.hover.hoveredOutcome === outcome.headerHash
       const isSelected = true
-      const isEditing = false
-      let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(
-        (agentInfo) =>
-          agentInfo.outcomeBeingEdited !== null &&
-          agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash
-      )
-      const isBeingEdited = editInfoObjects.length > 0
-      const isBeingEditedBy =
-        editInfoObjects.length === 1
-          ? state.agents[editInfoObjects[0].agentPubKey].handle
-          : editInfoObjects.length > 1
-          ? `${editInfoObjects.length} people`
-          : null
+      // const isHovered = state.ui.hover.hoveredOutcome === outcome.headerHash
+      // const isEditing = false
+      // let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(
+      //   (agentInfo) =>
+      //     agentInfo.outcomeBeingEdited !== null &&
+      //     agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash
+      // )
+      // const isBeingEdited = editInfoObjects.length > 0
+      // const isBeingEditedBy =
+      //   editInfoObjects.length === 1
+      //     ? state.agents[editInfoObjects[0].agentPubKey].handle
+      //     : editInfoObjects.length > 1
+      //     ? `${editInfoObjects.length} people`
+      //     : null
       // a combination of those editing + those with expanded view open
-      const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
-        .filter(
-          (agentInfo) =>
-            agentInfo.outcomeExpandedView === outcome.headerHash ||
-            (agentInfo.outcomeBeingEdited !== null &&
-              agentInfo.outcomeBeingEdited.outcomeHeaderHash ===
-                outcome.headerHash)
-        )
-        .map(
-          (realtimeInfoObject) => state.agents[realtimeInfoObject.agentPubKey]
-        )
+      // const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
+      //   .filter(
+      //     (agentInfo) =>
+      //       agentInfo.outcomeExpandedView === outcome.headerHash ||
+      //       (agentInfo.outcomeBeingEdited !== null &&
+      //         agentInfo.outcomeBeingEdited.outcomeHeaderHash ===
+      //           outcome.headerHash)
+      //   )
+      //   .map(
+      //     (realtimeInfoObject) => state.agents[realtimeInfoObject.agentPubKey]
+      //   )
       // const membersOfOutcome = Object.keys(outcomeMembers)
       //   .map((headerHash) => outcomeMembers[headerHash])
       //   .filter(
@@ -331,7 +383,7 @@ function render(store, computedOutcomesKeyed, canvas) {
       )
       if (coordinates[outcome.headerHash]) {
         drawOutcomeCard({
-          zoomLevel: scale,
+          zoomLevel: zoomLevel,
           outcome: outcome,
           outcomeLeftX: coordinates[outcome.headerHash].x,
           outcomeTopY: coordinates[outcome.headerHash].y,
@@ -341,7 +393,7 @@ function render(store, computedOutcomesKeyed, canvas) {
           outcomeHeight: getOutcomeHeight({
             ctx,
             statement: outcome.content,
-            zoomLevel: scale,
+            zoomLevel: zoomLevel,
             width: outcomeWidth,
           }),
           outcomeWidth,
@@ -361,23 +413,20 @@ function render(store, computedOutcomesKeyed, canvas) {
       DRAW PENDING CONNECTION FOR OUTCOME FORM
     */
     // render the connection that is pending to be created to the open outcome form
-    if (state.ui.outcomeForm.isOpen && state.ui.outcomeForm.fromAddress) {
-      const fromOutcomeCoords = coordinates[state.ui.outcomeForm.fromAddress]
+    if (outcomeFormIsOpen && outcomeFormFromHeaderHash) {
+      const fromOutcomeCoords = coordinates[outcomeFormFromHeaderHash]
       const newOutcomeCoords = {
-        x: state.ui.outcomeForm.leftConnectionXPosition,
-        y: state.ui.outcomeForm.topConnectionYPosition,
+        x: outcomeFormLeftConnectionX,
+        y: outcomeFormTopConnectionY,
       }
-      const fromOutcomeText = state.projects.outcomes[
-        state.ui.outcomeForm.fromAddress
-      ]
-        ? outcomes[state.ui.outcomeForm.fromAddress].content
+      const fromOutcomeText = outcomes[outcomeFormFromHeaderHash]
+        ? outcomes[outcomeFormFromHeaderHash].content
         : ''
       let childCoords, parentCoords
-      const { relation } = state.ui.outcomeForm
-      if (relation === RELATION_AS_CHILD) {
+      if (outcomeFormRelation === RELATION_AS_CHILD) {
         childCoords = fromOutcomeCoords
         parentCoords = newOutcomeCoords
-      } else if (relation === RELATION_AS_PARENT) {
+      } else if (outcomeFormRelation === RELATION_AS_PARENT) {
         childCoords = newOutcomeCoords
         parentCoords = fromOutcomeCoords
       }
@@ -397,11 +446,9 @@ function render(store, computedOutcomesKeyed, canvas) {
       DRAW PENDING CONNECTION FOR "CONNECTION CONNECTOR"
     */
     // render the connection that is pending to be created between existing Outcomes
-    if (state.ui.connectionConnector.fromAddress) {
-      const { fromAddress, relation, toAddress } = state.ui.connectionConnector
-      const { liveCoordinate } = state.ui.mouse
-      const fromCoords = coordinates[fromAddress]
-      const fromContent = outcomes[fromAddress].content
+    if (connectionConnectorFromAddress) {
+      const fromCoords = coordinates[connectionConnectorFromAddress]
+      const fromContent = outcomes[connectionConnectorFromAddress].content
       const [
         fromAsChildCoord,
         fromAsParentCoord,
@@ -416,9 +463,9 @@ function render(store, computedOutcomesKeyed, canvas) {
       // upper or lower port
       // the opposite of whichever the "from" port is connected to
       let toCoords, toContent, toAsChildCoord, toAsParentCoord
-      if (toAddress) {
-        toCoords = coordinates[toAddress]
-        toContent = outcomes[toAddress].content
+      if (connectionConnectorToAddress) {
+        toCoords = coordinates[connectionConnectorToAddress]
+        toContent = outcomes[connectionConnectorToAddress].content
         ;[
           toAsChildCoord,
           toAsParentCoord,
@@ -432,26 +479,30 @@ function render(store, computedOutcomesKeyed, canvas) {
       // in drawConnection, it draws at exactly the two coordinates given,
       // so we could pass them in either order/position
       const fromConnectionCoord =
-        relation === RELATION_AS_PARENT ? fromAsParentCoord : fromAsChildCoord
+        connectionConnectorRelation === RELATION_AS_PARENT
+          ? fromAsParentCoord
+          : fromAsChildCoord
       // use the current mouse coordinate position, liveCoordinate, by default
-      let toConnectionCoord = liveCoordinate
+      let toConnectionCoord = mouseLiveCoordinate
       // use the coordinates relating to a Outcome which it is pending that
       // this connection will connect the "from" Outcome "to"
-      if (toAddress) {
+      if (connectionConnectorToAddress) {
         toConnectionCoord =
-          relation === RELATION_AS_PARENT ? toAsChildCoord : toAsParentCoord
+          connectionConnectorRelation === RELATION_AS_PARENT
+            ? toAsChildCoord
+            : toAsParentCoord
       }
-      if (relation === RELATION_AS_CHILD) {
+      if (connectionConnectorRelation === RELATION_AS_CHILD) {
         fromConnectionCoord.y =
           fromConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
         // only modify if we're dealing with an actual outcome being connected to
-        if (toAddress)
+        if (connectionConnectorToAddress)
           toConnectionCoord.y = toConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
-      } else if (relation === RELATION_AS_PARENT) {
+      } else if (connectionConnectorRelation === RELATION_AS_PARENT) {
         fromConnectionCoord.y =
           fromConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
         // only modify if we're dealing with an actual outcome being connected to
-        if (toAddress)
+        if (connectionConnectorToAddress)
           toConnectionCoord.y = toConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
       }
       drawConnection(fromConnectionCoord, toConnectionCoord, ctx)
@@ -462,13 +513,13 @@ function render(store, computedOutcomesKeyed, canvas) {
     DRAW NEW OUTCOME PLACEHOLDER
   */
   // creating a new Outcome
-  if (!state.ui.outcomeForm.editAddress && state.ui.outcomeForm.isOpen) {
+  if (outcomeFormIsOpen) {
     const isHovered = false
     const isSelected = false
     const isEditing = true
     const isTopPriorityOutcome = false
     drawOutcomeCard({
-      zoomLevel: scale,
+      zoomLevel: zoomLevel,
       outcome: {
         headerHash: '',
         content: '',
@@ -495,8 +546,8 @@ function render(store, computedOutcomesKeyed, canvas) {
       outcomeHeight: outcomeHeight,
       outcomeWidth,
       projectTags,
-      outcomeLeftX: state.ui.outcomeForm.leftConnectionXPosition,
-      outcomeTopY: state.ui.outcomeForm.topConnectionYPosition,
+      outcomeLeftX: outcomeFormLeftConnectionX,
+      outcomeTopY: outcomeFormTopConnectionY,
       isSelected: isSelected,
       ctx: ctx,
       isTopPriority: isTopPriorityOutcome,
