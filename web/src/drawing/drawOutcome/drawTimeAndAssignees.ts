@@ -105,7 +105,10 @@ const drawTime = ({
         measurements.actualBoundingBoxAscent +
         measurements.actualBoundingBoxDescent
 
-      ctx.fillText(text, xPosition, yPosition)
+      // margin top fpr date line to center
+      // with avatars list
+      const drawAtY = yPosition + 6
+      ctx.fillText(text, xPosition, drawAtY)
     })
   }
   return height

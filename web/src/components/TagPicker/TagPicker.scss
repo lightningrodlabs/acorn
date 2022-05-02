@@ -56,6 +56,7 @@
     //   Tags list
     .tag-picker-list-wrapper {
       max-height: 12.25rem;
+      flex: 1;
       overflow-y: scroll;
 
       .tag-picker-tag-option {
@@ -165,7 +166,7 @@
 
       .create-or-edit-tag-color-display-wrapper {
         // related to validating form input
-        margin-top: 1.875rem;
+        margin-top: 2.375rem;
         position: relative;
 
         .create-or-edit-tag-color-swatch {

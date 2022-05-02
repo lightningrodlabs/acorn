@@ -9,18 +9,19 @@ export const avatarWidth = 26
 export const avatarHeight = 26
 export const avatarRadius = 13
 
-export const outcomeWidth = 360
+export const outcomeWidth = 400
 export const outcomeHeight = 360
-export const cornerRadius = 15 // for outcome, main card
-export const borderWidth = 4
+export const cornerRadius = 16 // for outcome, main card
+export const cornerRadiusBorder = 20 // for the border
+export const borderWidth = 7
 
-export const outcomePaddingHorizontal = 20
+export const outcomePaddingHorizontal = 40
 // affects not only the top and bottom padding,
 // but also the space in between items in the vertical layout
 export const OUTCOME_VERTICAL_SPACE_BETWEEN = 32
 
-export const selectedOutlineMargin = 1
-export const selectedOutlineWidth = 4
+export const selectedOutlineMargin = 4
+export const selectedOutlineWidth = 3
 
 // these two values need to match with each other
 // as the system is dumb about the font height
@@ -30,18 +31,18 @@ export const DESCENDANTS_ACHIEVEMENT_STATUS_FONT_FAMILY =
   'PlusJakartaSans-medium'
 
 export const TAGS_SPACE_BETWEEN = 10
-export const TAGS_TAG_CORNER_RADIUS = 4
-export const TAGS_TAG_HORIZONTAL_PADDING = 8
-export const TAGS_TAG_VERTICAL_PADDING = 4
-export const TAGS_TAG_FONT_SIZE_REM = 0.8
-export const TAGS_TAG_FONT_FAMILY = 'PlusJakartaSans-medium'
+export const TAGS_TAG_CORNER_RADIUS = 6
+export const TAGS_TAG_HORIZONTAL_PADDING = 8.5
+export const TAGS_TAG_VERTICAL_PADDING = 5
+export const TAGS_TAG_FONT_SIZE_REM = 0.75
+export const TAGS_TAG_FONT_FAMILY = 'PlusJakartaSans-bold'
 
 export const AVATAR_SPACE = -4
 export const AVATAR_SIZE = 26
-export const TIME_FONT_SIZE_REM = 1
-export const TIME_FONT_FAMILY = 'PlusJakartaSans-medium'
+export const TIME_FONT_SIZE_REM = 0.875
+export const TIME_FONT_FAMILY = 'PlusJakartaSans-bold'
 
-export const PROGRESS_BAR_HEIGHT = 16
+export const PROGRESS_BAR_HEIGHT = 10
 
 export const firstZoomThreshold = 0.6
 export const secondZoomThreshold = 0.4
@@ -69,7 +70,7 @@ export const fontSizeExtraLarge = '40px'
 export const fontSizeExtraLargeInt = 40
 export const lineSpacingExtraLarge = 2
 
-export const fontFamily = 'PlusJakartaSans-medium'
+export const fontFamily = 'PlusJakartaSans-bold'
 
 // line wrapping code from https://stackoverflow.com/questions/2936112/
 function getLines({

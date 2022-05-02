@@ -19,7 +19,7 @@ const EvChildren: React.FC<EvChildrenProps> = ({
       <EvReadOnlyHeading
         headingText={outcomeContent}
         // @ts-ignore
-        overviewIcon={<Icon name="activity-history.svg" />}
+        overviewIcon={<Icon name="hierarchy.svg" />}
         overviewText={`${directChildren.length} children`}
       />
       <div className="ev-children-view-outcome-list">

@@ -1,8 +1,8 @@
 .read-only-info-wrapper {
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-color-secondary);
-  box-shadow: 0rem 0rem 1.25rem var(--shadow-color);
+  background-color: var(--bg-color-tertiary);
+  box-shadow: 0rem 0rem 1.25rem var(--shadow-color-read-only);
   width: 11.25rem;
   box-sizing: border-box;
   border-radius: 0.625rem;
@@ -17,6 +17,7 @@
 
     .read-only-info-icon {
       margin-right: 0.625rem;
+
       .icon {
         height: 0.875rem;
         width: 0.875rem;

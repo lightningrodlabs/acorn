@@ -42,21 +42,38 @@ const colors = {
   InReview: '#00E2FF',
 }
 
+
+// map view colors 
+
 const SELECTED_COLOR = '#5F65FF'
-const TOP_PRIORITY_GLOW_COLOR = 'pink'
+const TOP_PRIORITY_GLOW_COLOR = '#334CF8'
 const STATEMENT_FONT_COLOR = '#222222'
 const DEFAULT_OUTCOME_BACKGROUND_COLOR = '#FFFFFF'
+
+
 const NOT_ACHIEVED_BACKGROUND_COLOR = '#F7F5EF'
 const ACHIEVED_BACKGROUND_COLOR = '#E9EFE7'
+
+// canvas outcome border
 const DEFAULT_OUTCOME_BORDER_COLOR = '#FFFFFF'
 const NOT_ACHIEVED_BORDER_COLOR = '#A89958'
 const ACHIEVED_BORDER_COLOR = '#15841D'
+
+// canvas outcome descendants achievement status
 const DESCENDANTS_ACHIEVEMENT_STATUS_DEFAULT_FONT_COLOR = '#797979'
 const DESCENDANTS_ACHIEVEMENT_STATUS_ACHIEVED_FONT_COLOR = '#15841D'
+
+// canvas outcome tags
 const TAGS_TAG_FONT_COLOR = '#FFFFFF'
+
+// canvas outcome avatar
 const AVATAR_INITIALS_TEXT_COLOR = '#FFFFFF'
 const AVATAR_STROKE_COLOR = '#FFFFFF'
-const TIME_TEXT_COLOR = '#000000'
+
+// canvas outcome time
+const TIME_TEXT_COLOR = '#797979'
+
+// canvas outcome progress bar
 const PROGRESS_BAR_BACKGROUND_COLOR = '#D0D0D0'
 const PROGRESS_BAR_FOREGROUND_COLOR = '#334CF8'
 

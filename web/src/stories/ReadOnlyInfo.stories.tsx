@@ -26,12 +26,12 @@ Primary.args = {
     {
       text: '12 comments',
       // @ts-ignore
-      icon: <Icon name="activity-history.svg" />,
+      icon: <Icon name="chats-circle.svg" />,
     },
     {
       text: '12 comments',
       // @ts-ignore
-      icon: <Icon name="activity-history.svg" />,
+      icon: <Icon name="chats-circle.svg" />,
     },
   ],
 } as ReadOnlyInfoProps

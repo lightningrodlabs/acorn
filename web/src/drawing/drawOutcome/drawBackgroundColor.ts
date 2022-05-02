@@ -19,6 +19,15 @@ const drawBackgroundColor = ({
   ctx: CanvasRenderingContext2D
 }) =>
   draw(ctx, () => {
+    // these create shadow effects for
+    // the outcome card, a dream-like effect
+    // for everything painted on it
+    ctx.shadowColor = '#C7BEB460'
+    ctx.shadowBlur = 30
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
+
+
     drawRoundCornerRectangle({
       ctx,
       xPosition,

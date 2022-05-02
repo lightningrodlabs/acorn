@@ -29,6 +29,10 @@
         opacity: 0.8;
       }
 
+      &.active {
+        // TODO: set active style
+      }
+
       span {
         user-select: none;
       }

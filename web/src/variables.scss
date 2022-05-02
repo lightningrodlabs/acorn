@@ -13,13 +13,15 @@
   --color-alto: #d0d0d0; //Alto
 
   // icon
-  --icon-color-light-grey: #9d9d9d; //Spanish Gray
+  --icon-color-light-grey: #b5b5b5; //Spanish Gray
 
   // background
   --bg-color-primary: #f7f5f3; //Cultured
   --bg-color-secondary: #ffffff; //White
+  --bg-color-secondary-read-only: #ffffff79; //White (50%)
   --bg-color-tertiary: #fbfbf9; //Lotion
   --bg-color-hover: #f4f1ed; //Isabelline
+  --bg-color-canvas: #f4f2f0; //Isabelline 2
 
   // border
   --border-color-primary: #222222; //Raisin Black
@@ -31,8 +33,10 @@
 
   // shadow
   --shadow-color: #c7beb472; //Pale Silver (40% opacity)
+  --shadow-color-read-only: #c7beb42b; //Pale Silver (20% opacity)
   --shadow-color-dark: #c7beb4bd; //Pale Silver (80% opacity)
   --shadow-color-hover: #c7beb4bd; //Pale Silver
+  --shadow-color-high-priority: #334cf8; //
 
   // typography
   --font-family-primary-extrabold: 'PlusJakartaSans-extrabold', sans-serif;
@@ -41,14 +45,14 @@
   --font-family-primary-medium: 'PlusJakartaSans-medium', sans-serif;
   --font-family-primary-regular: 'PlusJakartaSans-regular', sans-serif;
 
-    // text
-    --text-color-primary: #222222; //Raisin Black
-    --text-color-secondary: #4d4d4d; //Dark Liver
-    --text-color-tertiary: #8d8c8c; //Philippine Gray
-    --text-color-quaternary: #9d9d9d; //Spanish Gray
-    --text-color-caption: #bcbcbc; //Silver
-    --text-color-placeholder: #bdbdbd; //Philippine Gray
-    --text-color-strikethrough: #aea49972; //Pale Silver
-    --text-color-dark-bg: #ffffff;
-    --text-color-invalid: #ff5d36;
+  // text
+  --text-color-primary: #222222; //Raisin Black
+  --text-color-secondary: #4d4d4d; //Dark Liver
+  --text-color-tertiary: #8d8c8c; //Philippine Gray
+  --text-color-quaternary: #9d9d9d; //Spanish Gray
+  --text-color-caption: #bcbcbc; //Silver
+  --text-color-placeholder: #bdbdbd; //Philippine Gray
+  --text-color-strikethrough: #aea49972; //Pale Silver
+  --text-color-dark-bg: #ffffff;
+  --text-color-invalid: #ff5d36;
 }

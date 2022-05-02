@@ -88,7 +88,7 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           </div>
           <div className="filter-menu-assingees-list-item-name">
             {profile.firstName}
-            {"  "}
+            {'  '}
             {profile.lastName}
           </div>
         </div>
@@ -228,9 +228,13 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
         />
       </div>
       {/* Clear filter selection */}
-      <Typography style="body1">
-        <div onClick={() => onApplyOutcomeTableFilter({})}>clear selection</div>
-      </Typography>
+      <div className="table-view-filter-wrapper-clear">
+        <Typography style="caption4">
+          <div onClick={() => onApplyOutcomeTableFilter({})}>
+            Clear selection
+          </div>
+        </Typography>
+      </div>
 
       {/* TODO: add save filter selection function */}
       {/* <div>save filter selection</div> */}

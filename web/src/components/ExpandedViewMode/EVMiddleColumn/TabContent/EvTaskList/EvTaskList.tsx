@@ -24,7 +24,7 @@ const EvTaskList: React.FC<EvTaskListProps> = ({
       <EvReadOnlyHeading
         headingText={outcomeContent}
         // @ts-ignore
-        overviewIcon={<Icon name="activity-history.svg" />}
+        overviewIcon={<Icon name="sqaures-check.svg" />}
         overviewText={`${tasks.length} tasks`}
       />
       <div className="ev-tasks-view-list">

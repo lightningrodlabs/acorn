@@ -25,6 +25,7 @@ const TagsList: React.FC<TagsListProps> = ({
   const [isOpenTagPicker, setIsOpenTagPicker] = useState(false)
   const [filterText, setFilterText] = useState('')
   return (
+    // TODO: make on click outside possible to close the popup
     <div className="tags-list-wrapper">
       {selectedTags.map((tagHeaderHash) => {
         const tag = tags.find((tag) => tag.headerHash === tagHeaderHash)
@@ -37,7 +38,7 @@ const TagsList: React.FC<TagsListProps> = ({
       {showAddTagButton && (
         <div className="add-tag-button-with-tag-picker">
           <div
-            className="add-tag-button"
+            className={`add-tag-button ${isOpenTagPicker ? 'active' : ''}`}
             onClick={() => {
               setIsOpenTagPicker(!isOpenTagPicker)
               setFilterText('')
