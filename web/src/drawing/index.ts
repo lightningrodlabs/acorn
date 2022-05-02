@@ -319,13 +319,13 @@ function render(store, computedOutcomesKeyed, canvas) {
         .map(
           (realtimeInfoObject) => state.agents[realtimeInfoObject.agentPubKey]
         )
-      const membersOfOutcome = Object.keys(outcomeMembers)
-        .map((headerHash) => outcomeMembers[headerHash])
-        .filter(
-          (outcomeMember) =>
-            outcomeMember.outcomeHeaderHash === outcome.headerHash
-        )
-        .map((outcomeMember) => state.agents[outcomeMember.memberAgentPubKey])
+      // const membersOfOutcome = Object.keys(outcomeMembers)
+      //   .map((headerHash) => outcomeMembers[headerHash])
+      //   .filter(
+      //     (outcomeMember) =>
+      //       outcomeMember.outcomeHeaderHash === outcome.headerHash
+      //   )
+      //   .map((outcomeMember) => state.agents[outcomeMember.memberAgentPubKey])
       const isTopPriorityOutcome = !!topPriorityOutcomes.find(
         (headerHash) => headerHash === outcome.headerHash
       )
@@ -470,12 +470,15 @@ function render(store, computedOutcomesKeyed, canvas) {
     drawOutcomeCard({
       zoomLevel: scale,
       outcome: {
+        headerHash: '',
         content: '',
         creatorAgentPubKey: '',
         editorAgentPubKey: '',
         timestampCreated: Date.now(),
         timestampUpdated: Date.now(),
-        scope: { Uncertain: {} },
+        scope: {
+          Uncertain: { smallsEstimate: 0, timeFrame: null, inBreakdown: false },
+        },
         tags: [],
         description: '',
         isImported: false,
