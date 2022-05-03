@@ -11,22 +11,40 @@ import ConnectionConnectors from '../../../components/ConnectionConnectors/Conne
 import MapViewOutcomeTitleForm from '../../../components/MapViewOutcomeTitleForm/MapViewOutcomeTitleForm.connector'
 import './MapView.scss'
 import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
+import { CellIdString } from '../../../types/shared'
+import { RootState } from '../../../redux/reducer'
+import selectRenderProps from './selector'
 
-function MapView({
+export type MapViewProps = {
+  projectId: CellIdString
+  hasSelection: boolean
+  outcomeFormIsOpen: boolean
+  translate: {
+    x: number
+    y: number
+  }
+  zoomLevel: number
+  showEmptyState: boolean
+}
+
+const MapView: React.FC<MapViewProps> = ({
   projectId,
-  hasSelection,
-  outcomeFormIsOpen,
-  translate,
-  scale,
   showEmptyState,
-}) {
+  zoomLevel,
+  translate,
+  outcomeFormIsOpen,
+  hasSelection,
+}) => {
   const store = useStore()
-  const refCanvas = useRef()
+  const refCanvas = useRef<HTMLCanvasElement>()
 
   const { computedOutcomesKeyed } = useContext(ComputedOutcomeContext)
 
+  // only run this one on initial mount (and unmount for cleanup)
   useEffect(() => {
     const canvas = refCanvas.current
+    // attach keyboard and mouse events
+    const removeEventListeners = setupEventListeners(store, canvas)
     canvas.width = document.body.clientWidth
     canvas.height = document.body.clientHeight
     // Get the device pixel ratio, falling back to 1.
@@ -36,21 +54,34 @@ function MapView({
     // Give the canvas pixel dimensions of their CSS
     // size * the device pixel ratio.
     store.dispatch(setScreenDimensions(rect.width * dpr, rect.height * dpr))
-    // attach keyboard and mouse events
-    const removeEventListeners = setupEventListeners(store, canvas)
-    render(store, computedOutcomesKeyed, canvas)
-    const unsub = store.subscribe(() => {
-      render(store, computedOutcomesKeyed, canvas)
-    })
-
     return function cleanup() {
-      unsub()
       removeEventListeners()
     }
-  }, [computedOutcomesKeyed]) // only run on initial mount
+  }, [])
+
+  // set this up newly, any time the
+  // outcomes and connections change
+  useEffect(() => {
+    const canvas = refCanvas.current
+    const unsub = store.subscribe(() => {
+      const state: RootState = store.getState()
+      const activeProject = state.ui.activeProject
+      if (activeProject) {
+        const renderProps = selectRenderProps({
+          state,
+          computedOutcomesKeyed,
+          activeProject,
+        })
+        render(renderProps, canvas)
+      }
+    })
+    return function cleanup() {
+      unsub()
+    }
+  }, [computedOutcomesKeyed])
 
   const transform = {
-    transform: `matrix(${scale}, 0, 0, ${scale}, ${translate.x}, ${translate.y})`,
+    transform: `matrix(${zoomLevel}, 0, 0, ${zoomLevel}, ${translate.x}, ${translate.y})`,
   }
   return (
     <>

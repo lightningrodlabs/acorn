@@ -50,7 +50,6 @@ export const argsForDrawColoredBorder = ({
       ComputedSimpleAchievementStatus.NotAchieved
   ) {
     borderColor = NOT_ACHIEVED_BORDER_COLOR
-    console.log('test is it ever here')
   } else if (
     outcome.computedScope === ComputedScope.Big &&
     outcome.computedAchievementStatus.simple ===
@@ -63,7 +62,6 @@ export const argsForDrawColoredBorder = ({
   } else {
     borderColor = DEFAULT_OUTCOME_BORDER_COLOR
   }
-  console.log(outcome.computedScope, outcome.computedAchievementStatus.simple)
   const args: Parameters<typeof drawColoredBorder>[0] = {
     xPosition,
     yPosition,

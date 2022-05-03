@@ -1,28 +1,20 @@
 import { connect } from 'react-redux'
-import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions'
 import { RootState } from '../../../redux/reducer'
-import { HeaderHashB64 } from '../../../types/shared'
-import MapView from './MapView.component'
+import MapView, { MapViewProps } from './MapView.component'
 
 function mapDispatchToProps(dispatch) {
-  return {
-    openExpandedView: (headerHash: HeaderHashB64) => dispatch(openExpandedView(headerHash)),
-  }
+  return {}
 }
 
-
-function mapStateToProps(state: RootState) {
+function mapStateToProps(state: RootState): MapViewProps {
   const projectId = state.ui.activeProject
+
   return {
     projectId,
+    translate: state.ui.viewport.translate,
+    zoomLevel: state.ui.viewport.scale,
     // map from an array type (the selectedOutcomes) to a simple boolean type
     hasSelection: state.ui.selection.selectedOutcomes.length > 0,
-    hasHover:
-      state.ui.hover.hoveredOutcome &&
-      state.ui.hover.hoveredOutcome !== state.ui.outcomeForm.editAddress,
-    outcomeFormIsOpen: state.ui.outcomeForm.isOpen,
-    translate: state.ui.viewport.translate,
-    scale: state.ui.viewport.scale,
     // TODO: make this also based on whether the user has just registered (created their profile)
     showEmptyState:
       !!state.agentAddress &&
@@ -30,6 +22,7 @@ function mapStateToProps(state: RootState) {
         Object.values(state.projects.outcomes[projectId]).length === 0) ||
         // project is loading
         !state.projects.outcomes[projectId]),
+    outcomeFormIsOpen: state.ui.outcomeForm.isOpen,
   }
 }
 
