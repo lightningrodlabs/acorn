@@ -4,6 +4,9 @@ import {
   ComputedSimpleAchievementStatus,
 } from '../../types'
 import draw from '../draw'
+import { getOrSetImageForUrl } from '../imageCache'
+import leafGreenSvg from '../../images/leaf-green.svg'
+import uncertainSvg from '../../images/uncertain.svg'
 
 const drawDescendantsAchievementStatus = ({
   fontSize,
@@ -38,19 +41,84 @@ const drawDescendantsAchievementStatus = ({
     ctx.font = `${fontSize.toString()}rem ${fontFamily}`
     ctx.textBaseline = 'top'
 
+    const imageSize = 18
+    const spaceBetweenSections = 10
+    const spaceBetweenIconAndText = 4
+
     if (withChildren) {
-      // TODO: add icons
-      let text = ''
+      let smallsTextWidth: number
+
+      // Smalls
       if (computedAchievementStatus.smallsTotal > 0) {
-        text += `${computedAchievementStatus.smallsAchieved}/${computedAchievementStatus.smallsTotal}`
+        const smallsImg = getOrSetImageForUrl(leafGreenSvg, imageSize, imageSize)
+        if (smallsImg) {
+          ctx.drawImage(smallsImg, xPosition, yPosition, imageSize, imageSize)
+        }
+        const percentageText =
+          computedAchievementStatus.uncertains === 0
+            ? ` (${Math.floor(
+                (computedAchievementStatus.smallsAchieved /
+                  computedAchievementStatus.smallsTotal) *
+                  100
+              )}%)`
+            : ''
+        const smallsText = `${computedAchievementStatus.smallsAchieved}/${computedAchievementStatus.smallsTotal}${percentageText}`
+        ctx.fillText(
+          smallsText,
+          xPosition + imageSize + spaceBetweenIconAndText,
+          yPosition
+        )
+        smallsTextWidth = ctx.measureText(smallsText).width
       }
+
+      // Uncertains
       if (computedAchievementStatus.uncertains > 0) {
-        text += ` ${computedAchievementStatus.uncertains}`
+        const uncertainsImg = getOrSetImageForUrl(
+          uncertainSvg,
+          imageSize,
+          imageSize
+        )
+        if (uncertainsImg) {
+          ctx.drawImage(
+            uncertainsImg,
+            xPosition +
+              imageSize +
+              spaceBetweenIconAndText +
+              smallsTextWidth +
+              spaceBetweenSections,
+            yPosition,
+            imageSize,
+            imageSize
+          )
+        }
+        const uncertainsText = computedAchievementStatus.uncertains.toString()
+        ctx.fillText(
+          uncertainsText,
+          xPosition +
+            imageSize +
+            spaceBetweenIconAndText +
+            smallsTextWidth +
+            spaceBetweenSections +
+            imageSize +
+            spaceBetweenIconAndText,
+          yPosition
+        )
       }
-      ctx.fillText(text, xPosition, yPosition)
     } else if (computedScope === ComputedScope.Uncertain) {
-      // TODO: add icons
-      ctx.fillText('Uncertain Scope', xPosition, yPosition)
+      // Uncertain, without children
+      const uncertainsImg = getOrSetImageForUrl(
+        uncertainSvg,
+        imageSize,
+        imageSize
+      )
+      if (uncertainsImg) {
+        ctx.drawImage(uncertainsImg, xPosition, yPosition, imageSize, imageSize)
+      }
+      ctx.fillText(
+        'Uncertain Scope',
+        xPosition + imageSize + spaceBetweenIconAndText,
+        yPosition
+      )
     } else if (computedScope === ComputedScope.Big) {
     } else {
       // Small

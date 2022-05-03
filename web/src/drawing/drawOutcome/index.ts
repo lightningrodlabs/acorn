@@ -55,8 +55,6 @@ const drawOutcome = ({
   ctx: CanvasRenderingContext2D
 }) =>
   draw(ctx, () => {
-    
-
     drawSelectedBorder(
       argsForDrawSelectedBorder({
         ctx,
@@ -97,7 +95,15 @@ const drawOutcome = ({
         ctx,
       })
     )
-    drawSmallLeaf(argsForDrawSmallLeaf({ outcome, ctx }))
+    drawSmallLeaf(
+      argsForDrawSmallLeaf({
+        outcome,
+        outcomeLeftX,
+        outcomeTopY,
+        outcomeWidth,
+        ctx,
+      })
+    )
     drawDescendantsAchievementStatus(
       argsForDrawDescendantsAchievementStatus({
         outcome,
