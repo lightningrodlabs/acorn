@@ -8,6 +8,7 @@ import Avatar from '../Avatar/Avatar'
 import useOnClickOutside from 'use-onclickoutside'
 import { CSSTransition } from 'react-transition-group'
 import { ProjectMapViewOnly } from '../ViewFilters/ViewFilters'
+import Typography from '../Typography/Typography'
 
 function AvatarMenuItem({
   title,
@@ -253,30 +254,16 @@ export default function HeaderRightPanel({
       </ProjectMapViewOnly>
 
       <div className="header-right-panel">
-        {/* Help
-        <Icon name="external-link.svg" /> */}
-        {/* open or close the guidebook, depending on if it */}
-        {/* is currently open or closed */}
-        {/* Guidebook Button */}
-        {/* @ts-ignore */}
-        {/* <NavLink
-          className="header-right-panel-icon"
-          to={`${location.pathname}${
-            isGuideOpen ? '' : '?' + GUIDE_IS_OPEN + '=1'
-          }`}
-          // if clicked on guidebook for the first time, remove the help message
-          // and remember not to show that in the future (store that locally) aka persist
-          onClick={hideGuidebookHelpMessage}
-        >
-
+        {/* Help button */}
+        <div className="help-button-external">
+          <Typography style="h8">Help</Typography>
           <Icon
-            name="booklet.svg"
-            className="header-right-panel-icon"
-            withTooltip
-            tooltipText="Guidebook"
+            name="external-link.svg"
             size="small"
+            className="grey not-hoverable"
           />
-        </NavLink> */}
+        </div>
+
         <div
           className="avatar-and-status-wrapper"
           onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}
