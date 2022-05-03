@@ -253,6 +253,8 @@ export default function HeaderRightPanel({
       </ProjectMapViewOnly>
 
       <div className="header-right-panel">
+        {/* Help
+        <Icon name="external-link.svg" /> */}
         {/* open or close the guidebook, depending on if it */}
         {/* is currently open or closed */}
         {/* Guidebook Button */}
@@ -298,12 +300,6 @@ export default function HeaderRightPanel({
               selfAssignedStatus={status}
             />
           </div>
-          {/* Current status circle color under avatar*/}
-          {/* <div className="status-circle-wrapper">
-            <div
-              className={`status-circle ${StatusCssColorClass[status]}`}
-            ></div>
-          </div> */}
         </div>
         {/* Profile Menu */}
         {isAvatarMenuOpen && (

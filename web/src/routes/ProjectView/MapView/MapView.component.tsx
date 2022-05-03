@@ -54,13 +54,6 @@ function MapView({
   }
   return (
     <>
-      {/* TODO: Guidebook to be replaced with External help button */}
-      {/* {showGuidebookHelpMessage && (
-        <div className="guidebook_open_help">
-          <h4>Click on the Guidebook to learn more</h4>
-          <img src="img/arrow-curved.svg" />
-        </div>
-      )} */}
       <canvas ref={refCanvas} />
       {showEmptyState && <EmptyState />}
       {/* transform everything in this container according  */}
@@ -72,11 +65,7 @@ function MapView({
 
         {/* if the scale is greater than or equal to 60% (or we are creating a Outcome) */}
         {/* because otherwise the font size gets to small and the text is cut off */}
-        {outcomeFormIsOpen && (
-          <MapViewOutcomeTitleForm
-            projectId={projectId}
-          />
-        )}
+        {outcomeFormIsOpen && <MapViewOutcomeTitleForm projectId={projectId} />}
       </div>
 
       {/* below items inside 'outcome-form-position-container' maintain their normal scale */}

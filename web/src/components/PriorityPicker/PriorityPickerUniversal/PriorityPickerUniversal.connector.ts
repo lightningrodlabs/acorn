@@ -13,7 +13,7 @@ function mapStateToProps(state: RootState, ownProps) {
   const projectMeta = state.projects.projectMeta[projectId]
   const topPriorityOutcomes = projectMeta ? projectMeta.topPriorityOutcomes : []
   // see if the outcome of interest is listed in the set
-  // of top priority outcomes for the project
+  // of high priority outcomes for the project
   const isTopPriorityOutcome = !!topPriorityOutcomes.find(
     (headerHash) => headerHash === outcomeHeaderHash
   )
