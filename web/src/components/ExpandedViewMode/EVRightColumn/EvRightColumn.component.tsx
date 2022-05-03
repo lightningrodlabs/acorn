@@ -202,7 +202,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
 
   // High Priority
   // see if the outcome of interest is listed in the set
-  // of top priority outcomes for the project
+  // of high priority outcomes for the project
   const topPriorityOutcomes = projectMeta ? projectMeta.topPriorityOutcomes : []
   const isHighPriority = !!topPriorityOutcomes.find(
     (headerHash) => headerHash === outcomeHeaderHash

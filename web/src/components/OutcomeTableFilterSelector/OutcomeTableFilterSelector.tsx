@@ -228,16 +228,26 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
         />
       </div>
       {/* Clear filter selection */}
-      <div className="table-view-filter-wrapper-clear">
-        <Typography style="caption4">
-          <div onClick={() => onApplyOutcomeTableFilter({})}>
-            Clear selection
-          </div>
-        </Typography>
-      </div>
 
-      {/* TODO: add save filter selection function */}
-      {/* <div>save filter selection</div> */}
+      {
+        (filter.keywordOrId ||
+          filter.achievementStatus ||
+          filter.assignees ||
+          filter.scope ||
+          filter.tags) && (
+          // Clear filter selection button
+          <div className="table-view-filter-wrapper-clear">
+            <Typography style="caption4">
+              <div onClick={() => onApplyOutcomeTableFilter({})}>
+                Clear selection
+              </div>
+            </Typography>
+          </div>
+        )
+
+        /* TODO: add save filter selection function */
+        /* <div>save filter selection</div> */
+      }
     </div>
   )
 }

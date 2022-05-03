@@ -15,6 +15,7 @@
   transition: 0.2s box-shadow ease;
   -webkit-font-smoothing: antialiased;
   margin: 1rem;
+  text-decoration: none;
 
   &.secondary {
     font: 0.875rem var(--font-family-primary-medium);

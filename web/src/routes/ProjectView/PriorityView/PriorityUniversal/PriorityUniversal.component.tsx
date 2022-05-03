@@ -285,7 +285,7 @@ function PriorityUniversal({
     <div className="universal-priority-wrapper">
       <div className="universal-priority-header">
         <div className="universal-priority-heading">
-          <h1>Top Priority Outcomes ({topPriorityOutcomes.length})</h1>
+          <h1>High Priority Outcomes ({topPriorityOutcomes.length})</h1>
         </div>
         <div className="universal-priority-subheading">
           <h4>
