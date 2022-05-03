@@ -5,7 +5,7 @@ import {
 } from '../../types'
 import draw from '../draw'
 import { getOrSetImageForUrl } from '../imageCache'
-import leafSvg from '../../images/leaf.svg'
+import leafGreenSvg from '../../images/leaf-green.svg'
 import uncertainSvg from '../../images/uncertain.svg'
 
 const drawDescendantsAchievementStatus = ({
@@ -50,7 +50,7 @@ const drawDescendantsAchievementStatus = ({
 
       // Smalls
       if (computedAchievementStatus.smallsTotal > 0) {
-        const smallsImg = getOrSetImageForUrl(leafSvg, imageSize, imageSize)
+        const smallsImg = getOrSetImageForUrl(leafGreenSvg, imageSize, imageSize)
         if (smallsImg) {
           ctx.drawImage(smallsImg, xPosition, yPosition, imageSize, imageSize)
         }
