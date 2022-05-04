@@ -34,7 +34,7 @@ const MarkdownDescription: React.FC<MarkdownDescriptionProps> = ({
           <div className="markdown-description-content">
             <TextareaAutosize
               disabled={isBeingEditedByOther}
-              placeholder="Add description here (markdown enabled)"
+              placeholder="Add description here"
               value={value}
               onBlur={onBlur}
               onChange={(e) => onChange(e.target.value)}
