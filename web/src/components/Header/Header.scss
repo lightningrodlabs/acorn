@@ -5,7 +5,6 @@
 }
 
 .header {
-  /* width: 100%; */
   margin: 8px;
   display: flex;
   justify-content: space-between;
@@ -15,15 +14,17 @@
 
 .header-left-panel {
   display: flex;
+  flex-direction: row;
+  align-items: center;
   margin-right: 8px;
-  max-height: 46px;
+  height: 3rem;
 }
 
 .header-left-panel.second-row {
   top: 60px;
   left: 4px;
   position: absolute;
-  height: 46px;
+  height: 2rem;
 }
 
 .logo {
@@ -34,7 +35,7 @@
   display: flex;
   align-items: center;
   margin-right: 5px;
-  height: 46px;
+  height: 3rem;
 }
 
 .logo-name {
@@ -56,11 +57,9 @@
   background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
   border-radius: 10px;
   display: -webkit-flex;
-  /* Safari */
   -webkit-align-items: center;
-  /* Safari 7.0+ */
-  display: flex;
   align-items: center;
+  height: 100%;
 }
 
 .current-project-content {
@@ -268,17 +267,50 @@
   background: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: center;
-  align-content: center;
+  justify-content: space-between;
   box-sizing: border-box;
-  max-height: 46px;
-}
+  height: 3rem;
 
-.header-right-panel-icon .icon {
-  position: relative;
-  margin-right: 8px;
-  display: flex;
+  .icon {
+    position: relative;
+    margin-right: 8px;
+    display: flex;
+  }
+
+  .help-button-external {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.25rem;
+    cursor: pointer;
+
+    .typography {
+      color: var(--text-color-secondary);
+    }
+
+    &:hover {
+      .typography {
+        color: var(--text-color-primary);
+      }
+
+      .icon .inner-icon {
+        background-color: var(--text-color-primary);
+      }
+    }
+
+    .icon {
+      height: 1rem;
+      width: 1rem;
+      padding: 0;
+      margin-left: 0.25rem;
+
+      .inner-icon {
+        background-color: var(--text-color-secondary);
+      }
+    }
+  }
 }
 
 .search-button-wrapper {
@@ -487,16 +519,6 @@
   margin-left: 0.2rem;
 }
 
-/* Guidebook */
-
-// .guidebook-modal.modal-wrapper {
-//   width: 800px;
-//   max-width: calc(100vw - 120px);
-//   padding: 60px;
-//   max-height: 1000px;
-//   height: calc(100vh - 120px);
-// }
-
 /* profile section on header */
 
 /* Status circle */
@@ -557,7 +579,6 @@
   background: #f4f4f4;
   color: #5f65ff;
 }
-
 
 .profile-wrapper button p {
   font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
