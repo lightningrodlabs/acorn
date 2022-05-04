@@ -6,7 +6,7 @@ import outcomesAsTrees, {
 import { ComputedOutcome, Tag } from '../types'
 import { HeaderHashB64, WithHeaderHash } from '../types/shared'
 
-const VERTICAL_SPACING = 50
+const VERTICAL_SPACING = 160
 
 function getBoundingRec(
   outcome: ComputedOutcome,

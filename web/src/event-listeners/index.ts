@@ -44,7 +44,10 @@ import {
 } from '../redux/ephemeral/outcome-form/actions'
 import { deleteOutcomeFully } from '../redux/persistent/projects/outcomes/actions'
 import { setScreenDimensions } from '../redux/ephemeral/screensize/actions'
-import { changeTranslate, changeScale } from '../redux/ephemeral/viewport/actions'
+import {
+  changeTranslate,
+  changeScale,
+} from '../redux/ephemeral/viewport/actions'
 import { openExpandedView } from '../redux/ephemeral/expanded-view/actions'
 import { MOUSE, TRACKPAD } from '../redux/ephemeral/local-preferences/reducer'
 
@@ -62,11 +65,26 @@ import { cellIdFromString } from '../utils'
 import { triggerUpdateLayout } from '../redux/ephemeral/layout/actions'
 import { deleteConnection } from '../redux/persistent/projects/connections/actions'
 import { HeaderHashB64 } from '../types/shared'
-import { ComputedOutcome } from '../types'
+import { ComputedOutcome, RelationInput } from '../types'
 import { RootState } from '../redux/reducer'
+import { MouseEvent } from 'react'
 
 // ASSUMPTION: one parent (existingParentConnectionAddress)
-function handleMouseUpForOutcomeForm(state, event, store, fromAddress, relation, existingParentConnectionAddress) {
+function handleMouseUpForOutcomeForm({
+  state,
+  event,
+  store,
+  fromAddress,
+  relation,
+  existingParentConnectionAddress,
+}: {
+  state: RootState
+  event: MouseEvent
+  store: any // redux store, for the sake of dispatch
+  fromAddress?: HeaderHashB64
+  relation: RelationInput
+  existingParentConnectionAddress: HeaderHashB64
+}) {
   const calcedPoint = coordsPageToCanvas(
     {
       x: event.clientX,
@@ -77,13 +95,23 @@ function handleMouseUpForOutcomeForm(state, event, store, fromAddress, relation,
   )
   store.dispatch(
     // ASSUMPTION: one parent (existingParentConnectionAddress)
-    openOutcomeForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation, existingParentConnectionAddress)
+    openOutcomeForm(
+      calcedPoint.x,
+      calcedPoint.y,
+      null,
+      fromAddress,
+      relation,
+      existingParentConnectionAddress
+    )
   )
 }
 
 // outcomes is ComputedOutcomes in an object, keyed by their headerHash
-export default function setupEventListeners(store, canvas: HTMLCanvasElement, outcomes: { [headerHash: HeaderHashB64]: ComputedOutcome }) {
-
+export default function setupEventListeners(
+  store,
+  canvas: HTMLCanvasElement,
+  outcomes: { [headerHash: HeaderHashB64]: ComputedOutcome }
+) {
   const ctx = canvas.getContext('2d')
 
   function windowResize(event) {
@@ -121,7 +149,9 @@ export default function setupEventListeners(store, canvas: HTMLCanvasElement, ou
           !state.ui.outcomeForm.isOpen &&
           !state.ui.expandedView.isOpen
         ) {
-          store.dispatch(openExpandedView(state.ui.selection.selectedOutcomes[0]))
+          store.dispatch(
+            openExpandedView(state.ui.selection.selectedOutcomes[0])
+          )
         }
         break
       case 'Shift':
@@ -159,10 +189,11 @@ export default function setupEventListeners(store, canvas: HTMLCanvasElement, ou
           !state.ui.expandedView.isOpen
         ) {
           let firstOfSelection = selection.selectedOutcomes[0]
-          const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(cellId, firstOfSelection)
-          store.dispatch(
-            deleteOutcomeFully(activeProject, fullyDeletedOutcome)
+          const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(
+            cellId,
+            firstOfSelection
           )
+          store.dispatch(deleteOutcomeFully(activeProject, fullyDeletedOutcome))
           // if on firefox, and matched this case
           // prevent the browser from navigating back to the last page
           event.preventDefault()
@@ -259,7 +290,7 @@ export default function setupEventListeners(store, canvas: HTMLCanvasElement, ou
       }
       return
     }
-    
+
     const outcomeHeaderHash = checkForOutcomeAtCoordinates(
       ctx,
       translate,
@@ -280,20 +311,28 @@ export default function setupEventListeners(store, canvas: HTMLCanvasElement, ou
       event.clientY,
       outcomes
     )
-    if (connectionAddress && state.ui.hover.hoveredOutcome !== connectionAddress) {
+    if (
+      connectionAddress &&
+      state.ui.hover.hoveredOutcome !== connectionAddress
+    ) {
       store.dispatch(hoverConnection(connectionAddress))
     } else if (!outcomeHeaderHash && state.ui.hover.hoveredConnection) {
       store.dispatch(unhoverConnection())
     }
 
-    if (outcomeHeaderHash && state.ui.hover.hoveredOutcome !== outcomeHeaderHash) {
+    if (
+      outcomeHeaderHash &&
+      state.ui.hover.hoveredOutcome !== outcomeHeaderHash
+    ) {
       store.dispatch(hoverOutcome(outcomeHeaderHash))
       // hook up if the connection connector to a new Outcome
       // if we are using the connection connector
       // and IMPORTANTLY if Outcome is in the list of `validToAddresses`
       if (
         state.ui.connectionConnector.fromAddress &&
-        state.ui.connectionConnector.validToAddresses.includes(outcomeHeaderHash)
+        state.ui.connectionConnector.validToAddresses.includes(
+          outcomeHeaderHash
+        )
       ) {
         store.dispatch(setConnectionConnectorTo(outcomeHeaderHash))
       }
@@ -355,9 +394,8 @@ export default function setupEventListeners(store, canvas: HTMLCanvasElement, ou
     if (state.ui.keyboard.gKeyDown) {
       // opening the OutcomeForm is dependent on
       // holding down the `g` keyboard key modifier
-      handleMouseUpForOutcomeForm(state, event, store)
-    }
-    else if (outcomesAddresses) {
+      handleMouseUpForOutcomeForm({ state, event, store })
+    } else if (outcomesAddresses) {
       // finishing a drag box selection action
       outcomesAddresses.forEach((value) => store.dispatch(selectOutcome(value)))
     } else {
@@ -388,7 +426,7 @@ export default function setupEventListeners(store, canvas: HTMLCanvasElement, ou
         state,
         event.clientX,
         event.clientY,
-        outcomes,
+        outcomes
       )
       if (clickedConnectionAddress) {
         store.dispatch(unselectAll())
@@ -402,7 +440,8 @@ export default function setupEventListeners(store, canvas: HTMLCanvasElement, ou
         // if using shift, and Outcome is already selected, unselect it
         if (
           event.shiftKey &&
-          state.ui.selection.selectedOutcomes.indexOf(clickedOutcomeAddress) > -1
+          state.ui.selection.selectedOutcomes.indexOf(clickedOutcomeAddress) >
+            -1
         ) {
           store.dispatch(unselectOutcome(clickedOutcomeAddress))
         } else {
@@ -428,7 +467,12 @@ export default function setupEventListeners(store, canvas: HTMLCanvasElement, ou
   function canvasMouseup(event) {
     const state = store.getState()
     // ASSUMPTION: one parent (existingParentConnectionAddress)
-    const { fromAddress, relation, toAddress, existingParentConnectionAddress } = state.ui.connectionConnector
+    const {
+      fromAddress,
+      relation,
+      toAddress,
+      existingParentConnectionAddress,
+    } = state.ui.connectionConnector
     const { activeProject } = state.ui
     if (fromAddress) {
       // covers the case where we are hovered over a Outcome
@@ -447,7 +491,14 @@ export default function setupEventListeners(store, canvas: HTMLCanvasElement, ou
       // covers the case where we are not hovered over a Outcome
       // and thus making a new Outcome and connection/Connection
       if (!toAddress) {
-        handleMouseUpForOutcomeForm(state, event, store, fromAddress, relation, existingParentConnectionAddress)
+        handleMouseUpForOutcomeForm({
+          state,
+          event,
+          store,
+          fromAddress,
+          relation,
+          existingParentConnectionAddress,
+        })
       }
     }
 
