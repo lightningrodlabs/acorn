@@ -182,7 +182,9 @@ function render(
       activeEntryPointsObjects,
       outcomes,
       connectionsAsArray,
-      coordinates
+      coordinates,
+      zoomLevel,
+      projectTags
     )
 
     /*
