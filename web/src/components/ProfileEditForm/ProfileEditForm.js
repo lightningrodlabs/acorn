@@ -7,6 +7,9 @@ import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import Avatar from '../Avatar/Avatar'
 import Icon from '../Icon/Icon'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
+import Typography from '../Typography/Typography'
+
+import AvatarPlaceholder from '../../images/avatar-placeholder.svg'
 
 const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/
 
@@ -107,7 +110,8 @@ function ProfileEditForm({
 
   const usernameHelp =
     'Choose something easy for your teammates to use and recall. Avoid space and @.'
-  const avatarShow = avatarUrl || 'img/avatar-placeholder.svg'
+  console.log(AvatarPlaceholder)
+  const avatarShow = avatarUrl || AvatarPlaceholder
 
   const actionButton = (
     <ButtonWithPendingState
@@ -120,8 +124,15 @@ function ProfileEditForm({
   return (
     <div className='profile_edit_form'>
       <div className='profile_edit_form_title'>
-        <h1>{titleText}</h1>
-        <h4>{subText}</h4>
+        <div className='profile-edit-form-title-wrapper'>
+          <Typography style='h3'>{titleText}</Typography>
+        </div>
+        <div className='profile-edit-form-subtitle-wrapper'>
+          <Typography style='subtitle3'>{subText}</Typography>
+        </div>
+
+        {/* <h4>{subText}</h4>
+        <h4>{subText}</h4> */}
       </div>
       <form onSubmit={innerOnSubmit}>
         <div className='row'>
@@ -136,7 +147,7 @@ function ProfileEditForm({
                 : ''
             }
             label='First Name'
-            placeholder='Harry'
+            placeholder='Katherine'
           />
           <div style={{ flex: 0.1 }} />
           <ValidatingFormInput
@@ -150,7 +161,7 @@ function ProfileEditForm({
                 : ''
             }
             label='Last Name'
-            placeholder='Potter'
+            placeholder='Johnson'
           />
         </div>
         <div className='row'>
@@ -164,7 +175,7 @@ function ProfileEditForm({
             errorText={
               handle.length > 0 && !isValidUserName ? errorUsername : ''
             }
-            placeholder='harrypotter'
+            placeholder='katherinejohnson'
             withAtSymbol
           />
         </div>
@@ -183,7 +194,7 @@ function ProfileEditForm({
             }
           />
           <div className='profile_edit_form_avatar'>
-            <Avatar avatarUrl={avatarShow} large />
+            <Avatar avatarUrl={avatarShow} size='medium' />
           </div>
         </div>
         <div className='row'>

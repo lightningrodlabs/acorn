@@ -1,0 +1,142 @@
+.avatars-list-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  display: flex;
+
+  // avatar list sizes
+  &.small {
+    height: 1.75rem;
+    width: 1.75rem;
+    .avatar,
+    .initials-avatar,
+    .avatars-list-button,
+    .icon {
+      height: 1.75rem;
+      width: 1.75rem;
+    }
+    .icon {
+      padding: 0.375rem;
+    }
+  }
+
+  &.small-medium {
+    // height: 2rem;
+    // width: 2rem;
+    .avatar,
+    .initials-avatar,
+    .avatars-list-button,
+    .icon {
+      height: 2rem;
+      width: 2rem;
+    }
+    .icon {
+      padding: 0.375rem;
+    }
+  }
+
+  &.medium {
+    // height: 2.5rem;
+    // width: 2.5rem;
+    .avatar,
+    .initials-avatar,
+    .avatars-list-button,
+    .icon {
+      height: 2.5rem;
+      width: 2.5rem;
+    }
+
+    .icon {
+      padding: 0.5rem;
+    }
+  }
+
+  &.medium-large {
+    height: 2.75rem;
+    width: 2.75rem;
+    .avatar,
+    .initials-avatar,
+    .avatars-list-button,
+    .icon {
+      height: 2.75rem;
+      width: 2.75rem;
+    }
+
+    .icon {
+      padding: 0.625rem;
+    }
+  }
+
+  &.large {
+    height: 3.25rem;
+    width: 3.25rem;
+    .avatar,
+    .initials-avatar,
+    .avatars-list-button,
+    .icon {
+      height: 3.25rem;
+      width: 3.25rem;
+    }
+
+    .icon.invite-members {
+      padding: 0.725rem;
+    }
+  }
+
+  // overlap amount between profiles based on
+  // avatars list size
+  .avatar-wrapper {
+    &:not(:first-child) {
+      margin-left: -0.5rem;
+    }
+
+    &.small {
+      &:not(:first-child) {
+        margin-left: -0.375rem;
+      }
+    }
+
+    &.large {
+      &:not(:first-child) {
+        margin-left: -0.625rem;
+      }
+    }
+  }
+
+  /* Invite Members or Add Assignees Button */
+
+  .avatars-list-button-wrapper {
+    border: 0.25rem solid #ffffff;
+    border-radius: 50%;
+    z-index: 1;
+    margin-left: -0.5rem;
+
+    .avatars-list-button {
+      border-radius: 50%;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-color-primary);
+      transition: 0.2s all ease;
+
+      &:hover {
+        opacity: 0.8;
+
+        .inner-icon {
+          background-color: #5f65ff;
+        }
+      }
+
+      .icon {
+        &:hover {
+          .inner-icon {
+            background-color: var(--text-color-primary);
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+.metadata-with-label-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+
+  .metadata-with-label-icon {
+    margin-top: 0.25rem;
+    margin-right: 0.5rem;
+
+    .icon {
+      width: 1.125rem;
+      height: 1.125rem;
+      padding: 0;
+    }
+  }
+
+  .metadata-with-label-column {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .metadata-with-label-label {
+      // TODO: fix this value
+      margin-bottom: 0.5rem;
+    }
+  }
+}

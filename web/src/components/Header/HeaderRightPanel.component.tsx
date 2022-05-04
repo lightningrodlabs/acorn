@@ -8,6 +8,7 @@ import Avatar from '../Avatar/Avatar'
 import useOnClickOutside from 'use-onclickoutside'
 import { CSSTransition } from 'react-transition-group'
 import { ProjectMapViewOnly } from '../ViewFilters/ViewFilters'
+import Typography from '../Typography/Typography'
 
 function AvatarMenuItem({
   title,
@@ -212,7 +213,7 @@ export default function HeaderRightPanel({
                       <SearchResultItem
                         text={outcome.content}
                         name="title.svg"
-                        onExpandClick={openExpandedView} 
+                        onExpandClick={openExpandedView}
                         panAndZoom={animatePanAndZoom}
                         outcomeHeaderHash={outcome.headerHash}
                       />
@@ -253,29 +254,20 @@ export default function HeaderRightPanel({
       </ProjectMapViewOnly>
 
       <div className="header-right-panel">
-        {/* open or close the guidebook, depending on if it */}
-        {/* is currently open or closed */}
-        {/* Guidebook Button */}
-        {/* @ts-ignore */}
-        <NavLink
-          className="header-right-panel-icon"
-          to={`${location.pathname}${
-            isGuideOpen ? '' : '?' + GUIDE_IS_OPEN + '=1'
-          }`}
-          // if clicked on guidebook for the first time, remove the help message
-          // and remember not to show that in the future (store that locally) aka persist
-          onClick={hideGuidebookHelpMessage}
-        >
-          {/* @ts-ignore */}
+        {/* Help button */}
+        <div className="help-button-external">
+          <Typography style="h8">Help</Typography>
           <Icon
-            name="booklet.svg"
-            className="header-right-panel-icon"
-            withTooltip
-            tooltipText="Guidebook"
+            name="external-link.svg"
             size="small"
+            className="grey not-hoverable"
           />
-        </NavLink>
-        <div className="avatar-and-status-wrapper">
+        </div>
+
+        <div
+          className="avatar-and-status-wrapper"
+          onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}
+        >
           <div
             className="avatar-container"
             onMouseEnter={onHoverAvatarEnter}
@@ -289,19 +281,12 @@ export default function HeaderRightPanel({
               imported={whoami.entry.isImported}
               highlighted={isAvatarMenuOpen || isAvatarHover}
               clickable
-              onClick={() => setIsAvatarMenuOpen(!isAvatarMenuOpen)}
-              smallMedium
+              size="small-medium"
               withStatus
               withWhiteBorder
               selfAssignedStatus={status}
             />
           </div>
-          {/* Current status circle color under avatar*/}
-          {/* <div className="status-circle-wrapper">
-            <div
-              className={`status-circle ${StatusCssColorClass[status]}`}
-            ></div>
-          </div> */}
         </div>
         {/* Profile Menu */}
         {isAvatarMenuOpen && (

@@ -97,7 +97,7 @@ module.exports = {
           },
         },
       },
-      // .png images
+      // .png, .jpg, .svg images
       {
         test: /\.(png|jpg|svg)$/,
         use: {

@@ -16,6 +16,7 @@ function mapStateToProps(state: RootState) {
   } = state
   const outcomes = state.projects.outcomes[activeProject] || {}
   const connections = state.projects.connections[activeProject] || {}
+  const projectTags = Object.values(state.projects.tags[activeProject] || {})
   const coordinates = state.ui.layout
   const selectedOutcomeAddresses = state.ui.selection.selectedOutcomes
   const hoveredOutcomeAddress = state.ui.hover.hoveredOutcome
@@ -45,6 +46,8 @@ function mapStateToProps(state: RootState) {
 
   return {
     activeProject,
+    projectTags,
+    zoomLevel: state.ui.viewport.scale,
     coordinates,
     coordsCanvasToPage: (coordinate) => {
       return coordsCanvasToPage(coordinate, translate, scale)
@@ -62,8 +65,20 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    setConnectionConnectorFrom: (address, relation, validToAddresses, existingParentConnectionAddress) => {
-      return dispatch(setConnectionConnectorFrom(address, relation, validToAddresses, existingParentConnectionAddress))
+    setConnectionConnectorFrom: (
+      address,
+      relation,
+      validToAddresses,
+      existingParentConnectionAddress
+    ) => {
+      return dispatch(
+        setConnectionConnectorFrom(
+          address,
+          relation,
+          validToAddresses,
+          existingParentConnectionAddress
+        )
+      )
     },
     setConnectionConnectorTo: (address) => {
       return dispatch(setConnectionConnectorTo(address))
@@ -72,4 +87,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConnectionConnectors)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ConnectionConnectors)

@@ -1,4 +1,3 @@
-import { fontFamily } from './dimensions'
 import drawRoundCornerRectangle from './drawRoundCornerRectangle'
 import { getBoundingRec } from './layoutFormula'
 
@@ -7,7 +6,9 @@ export default function drawEntryPoints(
   activeEntryPoints,
   outcomes,
   connectionsAsArray,
-  coordinates
+  coordinates,
+  zoomLevel,
+  projectTags
 ) {
   // recursively calls itself
   // so that it constructs the full sub-tree for each root Outcome
@@ -16,19 +17,27 @@ export default function drawEntryPoints(
       ...outcomes[outcomeHeaderHash],
       children: connectionsAsArray
         // find the connections indicating the children of this outcome
-        .filter(connection => connection.parentHeaderHash === outcomeHeaderHash)
+        .filter(
+          (connection) => connection.parentHeaderHash === outcomeHeaderHash
+        )
         // actually nest the children Outcomes, recurse
-        .map(connection => getOutcome(connection.childHeaderHash))
+        .map((connection) => getOutcome(connection.childHeaderHash)),
     }
   }
 
   // start with the entry point Outcomes, and recurse down to their children
-  activeEntryPoints.forEach(entryPoint => {
+  activeEntryPoints.forEach((entryPoint) => {
     const outcome = getOutcome(entryPoint.outcomeHeaderHash)
     // for each outcomeTree
     // calculate its bounding rectangle
     // by checking the coordinates recursively for it and all its children
-    const boundingRec = getBoundingRec(outcome, coordinates)
+    const boundingRec = getBoundingRec(
+      outcome,
+      zoomLevel,
+      ctx,
+      projectTags,
+      coordinates
+    )
     if (!boundingRec) {
       return
     }
@@ -39,21 +48,25 @@ export default function drawEntryPoints(
     const width = right - left
     const height = bottom - top
     drawRoundCornerRectangle({
-      context: ctx,
+      ctx,
       xPosition: left,
       yPosition: top,
       width: width,
       height: height,
       radius: 15,
       color: entryPoint.color,
-      stroke: true,
+      useStroke: true,
       strokeWidth: 2,
-      boxShadow: false
+      useBoxShadow: false,
+      useGlow: false,
     })
     ctx.fillStyle = entryPoint.color
     ctx.font = '25px ' + 'PlusJakartaSans-bold'
     // distance of entry point title from dotted rectangle
-    let content = outcome.content.length < 40 ? outcome.content : outcome.content.slice(0, 40) + '...'
+    let content =
+      outcome.content.length < 40
+        ? outcome.content
+        : outcome.content.slice(0, 40) + '...'
     ctx.fillText(content, left, top - 20)
     ctx.restore()
   })

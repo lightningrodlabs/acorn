@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 
 import './ErrorScreen.scss'
 
+import ErrorScreenImage from '../../images/error-screen-image.png'
+
 import Button from '../Button/Button'
 import Icon from '../Icon/Icon'
 
@@ -55,7 +57,7 @@ function ErrorScreen({ stackTrace }) {
 
         </div>
         <div className='error-screen-column-right'>
-          <img src='img/error-screen-image.png' />
+          <img src={ErrorScreenImage} />
         </div>
       </div>
     </div>

@@ -1,0 +1,38 @@
+.outcome-list-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0.625rem 1.25rem 0.625rem 3rem;
+  transition: 0.2s background-color ease;
+
+
+  &:hover {
+    background-color: var(--bg-color-hover);
+  }
+
+  .outcome-list-item-id {
+    margin-right: 1rem;
+  }
+
+  .outcome-list-item-icon-wrapper {
+    margin-right: 0.25rem;
+    // margin-top: 0.125rem;
+
+    .icon {
+      padding: 0.125rem;
+      width: 1.375rem;
+      height: 1.375rem;
+    }
+  }
+
+  .outcome-list-item-statement {
+    transition: 0.2s all ease;
+    overflow: hidden;
+
+    div {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+}

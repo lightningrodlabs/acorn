@@ -28,7 +28,7 @@ function sumChars(str) {
   return sum
 }
 
-const pickColorForString = string => {
+const pickColorForString = (string) => {
   // pick a deterministic color from the list
   let index = sumChars(string) % colorPalette.length
   return colorPalette[index]
@@ -42,12 +42,66 @@ const colors = {
   InReview: '#00E2FF',
 }
 
-const selectedColor = '#5F65FF'
+
+// map view colors 
+
+const SELECTED_COLOR = '#5F65FF'
+const TOP_PRIORITY_GLOW_COLOR = '#334CF8'
+const STATEMENT_FONT_COLOR = '#222222'
+const DEFAULT_OUTCOME_BACKGROUND_COLOR = '#FFFFFF'
+
+
+const NOT_ACHIEVED_BACKGROUND_COLOR = '#F7F5EF'
+const ACHIEVED_BACKGROUND_COLOR = '#E9EFE7'
+
+// canvas outcome border
+const DEFAULT_OUTCOME_BORDER_COLOR = '#FFFFFF'
+const NOT_ACHIEVED_BORDER_COLOR = '#A89958'
+const ACHIEVED_BORDER_COLOR = '#15841D'
+
+// canvas outcome descendants achievement status
+const DESCENDANTS_ACHIEVEMENT_STATUS_DEFAULT_FONT_COLOR = '#797979'
+const DESCENDANTS_ACHIEVEMENT_STATUS_ACHIEVED_FONT_COLOR = '#15841D'
+
+// canvas outcome tags
+const TAGS_TAG_FONT_COLOR = '#FFFFFF'
+
+// canvas outcome avatar
+const AVATAR_INITIALS_TEXT_COLOR = '#FFFFFF'
+const AVATAR_STROKE_COLOR = '#FFFFFF'
+
+// canvas outcome time
+const TIME_TEXT_COLOR = '#797979'
+
+// canvas outcome progress bar
+const PROGRESS_BAR_BACKGROUND_COLOR = '#D0D0D0'
+const PROGRESS_BAR_FOREGROUND_COLOR = '#334CF8'
 
 const SELF_ASSIGNED_STATUS_COLORS = {
   Online: '#00d0c0',
   Away: '#ffc400',
-  Offline: '#d1d1d1'
+  Offline: '#d1d1d1',
 }
 
-export { colors, pickColorForString, selectedColor, SELF_ASSIGNED_STATUS_COLORS }
+export {
+  colors,
+  pickColorForString,
+  STATEMENT_FONT_COLOR,
+  SELECTED_COLOR,
+  TOP_PRIORITY_GLOW_COLOR,
+  DEFAULT_OUTCOME_BACKGROUND_COLOR,
+  NOT_ACHIEVED_BACKGROUND_COLOR,
+  ACHIEVED_BACKGROUND_COLOR,
+  DEFAULT_OUTCOME_BORDER_COLOR,
+  NOT_ACHIEVED_BORDER_COLOR,
+  ACHIEVED_BORDER_COLOR,
+  DESCENDANTS_ACHIEVEMENT_STATUS_DEFAULT_FONT_COLOR,
+  DESCENDANTS_ACHIEVEMENT_STATUS_ACHIEVED_FONT_COLOR,
+  TAGS_TAG_FONT_COLOR,
+  AVATAR_INITIALS_TEXT_COLOR,
+  AVATAR_STROKE_COLOR,
+  TIME_TEXT_COLOR,
+  PROGRESS_BAR_BACKGROUND_COLOR,
+  PROGRESS_BAR_FOREGROUND_COLOR,
+  SELF_ASSIGNED_STATUS_COLORS,
+}

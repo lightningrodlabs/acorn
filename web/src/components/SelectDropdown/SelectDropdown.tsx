@@ -6,7 +6,7 @@ import './SelectDropdown.scss'
 export type SelectDropdownProps = {
   size: 'small' | 'medium' | 'large'
   selectedOptionId: string
-  options: { icon: React.Component; text: string; id: string }[]
+  options: { icon: React.ReactElement; text: string; id: string }[]
   onSelect: (id: string) => void
 }
 
@@ -27,13 +27,13 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
     onSelect(id)
   }
   return (
-    <>
+    <div className="select-dropdown-wrapper">
       {/* Main dropdown button */}
       <div
         onClick={() => setIsOpenDropdownMenu(!isOpenDropdownMenu)}
-        className={`select-dropdown-wrapper ${
-          isOpenDropdownMenu ? 'focused' : ''
-        }`}
+        className={`select-dropdown-button 
+        ${isOpenDropdownMenu ? 'focused' : ''}  
+        ${size === 'small' ? 'small' : size === 'large' ? 'large' : ''}`}
       >
         <div className="select-dropdown-selected-option">
           <div className="select-dropdown-icon">{selectedIcon}</div>
@@ -53,7 +53,9 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
           {options.map((option) => (
             <div
               onClick={() => onClickOption(option.id)}
-              className="select-dropdown-menu-option"
+              className={`select-dropdown-menu-option ${
+                size === 'small' ? 'small' : size === 'large' ? 'large' : ''
+              }`}
             >
               <div className="select-dropdown-menu-option-icon">
                 {option.icon}
@@ -65,7 +67,7 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
           ))}
         </div>
       )}
-    </>
+    </div>
   )
 }
 

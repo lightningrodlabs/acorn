@@ -1,92 +1,97 @@
-.validating_form_inputANDError {
+.validating-form-inputANDError {
   display: flex;
   flex-direction: column;
 }
 
-.validating_form_input {
-  margin-bottom: 38px;
+.validating-form-input {
+  margin-bottom: 2.375rem;
   flex: 1;
   display: flex;
   flex-direction: column;
   text-align: left;
   font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
-}
 
-.validating_form_input label {
-  color: #4d4d4d;
-  line-height: 20px;
-  font-size: 16px;
-  display: block;
-  font-family: 'gilroyextrabold', Helvetica, sans-serif;
-}
+  .help-text {
+    color: #898989;
+    font-size: 0.875rem;
+    line-height: 1.45;
+    margin: 0.125rem 0 0.25rem 0;
+    flex: 1;
+  }
 
-.validating_form_input .help_text {
-  color: #898989;
-  font-size: 14px;
-  line-height: 18px;
-  margin: 2px 0 4px 0;
-  flex: 1;
-}
+  .input-wrapper {
+    flex: 1;
+    display: flex;
+    position: relative;
 
-.validating_form_input .input_wrapper {
-  flex: 1;
-  display: flex;
-  position: relative;
-  margin-top: 6px;
-}
+    input {
+      margin-top: 0.25rem;
+      border: 0.125rem solid #f3efeb;
+      outline: none;
+      font-size: 0.875rem;
+      line-height: 1.3125rem;
+      color: #222222;
+      padding: 0.75rem;
+      border-radius: 0.625rem;
+      display: block;
+      flex: 1;
+      font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
+      height: 1rem;
+      transition: border 0.1s ease-in;
 
-.validating_form_input .input_wrapper input {
-  border: 1.2px solid #f3efeb;
-  outline: none;
-  font-size: 14px;
-  line-height: 21px;
-  color: #222222;
-  padding: 11px;
-  border-radius: 8px;
-  display: block;
-  flex: 1;
-  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
-  height: 16px;
-  transition: border 0.1s ease-in;
-}
+      &.invalid-input {
+        border: 0.125rem solid #ff5d36;
+      }
 
-.validating_form_input .input_wrapper input:focus {
-  border: 1.2px solid #5f65ff;
-}
+      &.valid-input {
+        border: 0.125rem solid #00d6c8;
+      }
 
-.validating_form_input .input_wrapper input::placeholder {
-  color: #bdbdbd;
-}
+      &:focus {
+        border: 0.125rem solid var(--border-color-primary);
+      }
 
-.validating_form_input input.with_at_symbol {
-  padding-left: 26px;
-}
+      &::placeholder {
+        color: #bdbdbd;
+      }
+    }
+  }
 
-.validating_form_input .at_symbol {
-  position: absolute;
-  top: 11px;
-  left: 11px;
-  font-size: 14px;
-  color: #8c8c8c;
-}
+  input {
+    &.with-at-symbol {
+      padding-left: 1.625rem;
+    }
+  }
 
-.error_text {
-  color: #ff5d36;
-  font-size: 12px;
-  position: absolute;
-  top: 45px;
-}
+  .at-symbol {
+    position: absolute;
+    top: 0.9875rem;
+    left: 0.7875rem;
+    font-size: 0.875rem;
+    color: #8c8c8c;
+  }
 
-.validating_form_input .input_wrapper input.invalid-input {
-  border: 1.2px solid #ff5d36;
-}
+  .error-text {
+    color: #ff5d36;
+    font-size: 0.75rem;
+    position: absolute;
+    top: 3.125rem;
+    left: 0.25rem;
+  }
 
-.validating_form_input .input_wrapper input.valid-input {
-  border: 1.2px solid #00d6c8;
-}
+  .validation-mark {
+    position: absolute;
+    top: 1rem;
+    right: 0.625rem;
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--bg-color-secondary);
+    padding-left: 0.25rem;
 
-.validation-mark {
-  position: absolute;
-  top: 12px;
-  right: 9px;
+    &.valid {
+    }
+
+    &.invlid {
+    }
+  }
 }

@@ -1,10 +1,6 @@
 import TWEEN from '@tweenjs/tween.js'
-import {
-    CREATE_OUTCOME_WITH_CONNECTION
-} from '../../persistent/projects/outcomes/actions'
-import {
-  updateLayout
-} from '../layout/actions'
+import { CREATE_OUTCOME_WITH_CONNECTION } from '../../persistent/projects/outcomes/actions'
+import { updateLayout } from '../layout/actions'
 import layoutFormula from '../../../drawing/layoutFormula'
 
 export default function performLayoutAnimation(store, action, currentState) {
@@ -13,12 +9,14 @@ export default function performLayoutAnimation(store, action, currentState) {
   const nextState = store.getState()
   const projectId = nextState.ui.activeProject
   const graphData = {
-      outcomes: nextState.projects.outcomes[projectId] || {},
-      connections: nextState.projects.connections[projectId] || {},
+    outcomes: nextState.projects.outcomes[projectId] || {},
+    connections: nextState.projects.connections[projectId] || {},
   }
+  const zoomLevel = nextState.ui.viewport.scale
+  const projectTags = Object.values(nextState.projects.tags[projectId] || {})
   // this is our final destination layout
   // that we'll be animating to
-  const newLayout = layoutFormula(graphData)
+  const newLayout = layoutFormula(graphData, zoomLevel, projectTags)
   let outcomeCreatedCoord = {}
   // if creating a Outcome, we also want to animate
   // from the position wherever the user was creating it
@@ -32,7 +30,7 @@ export default function performLayoutAnimation(store, action, currentState) {
       y: currentState.ui.outcomeForm.topConnectionYPosition,
     }
   }
-  
+
   // this is expanding coordinates for Outcomes
   // where the key is their headerHash
   // and the value is an object with `x` and `y` values
@@ -41,7 +39,7 @@ export default function performLayoutAnimation(store, action, currentState) {
     // do this to add any new ones
     // that will just start out in their final position
     ...newLayout,
-    // do this to override the coordinates of the newly 
+    // do this to override the coordinates of the newly
     // created Outcome when handling a create action
     // and make its original position equal to the position
     // of the Outcome Form when it was open

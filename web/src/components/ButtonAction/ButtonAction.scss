@@ -12,6 +12,7 @@
   cursor: pointer;
   transition: 0.2s box-shadow ease;
   -webkit-font-smoothing: antialiased;
+  user-select: none;
 
   &:hover {
     box-shadow: 0rem 0rem 1.25rem var(--shadow-color-hover);
@@ -19,9 +20,29 @@
 
   .button-action-icon {
     margin-right: 0.625rem;
+    .icon {
+      height: 0.875rem;
+      width: 0.875rem;
+      padding: 0;
+    }
   }
 
   .button-action-text {
     user-select: none; /* Standard */
+  }
+
+  &.small {
+    padding: 0.875rem 1.25rem 0.875rem 0.875rem;
+
+  }
+
+  &.large {
+    padding: 1rem 1.5rem 1rem 1rem;
+    font: 1rem var(--font-family-primary-bold);
+
+    .button-action-icon .icon {
+      height: 1rem;
+      width: 1rem;
+    }
   }
 }

@@ -11,16 +11,18 @@ pub(crate) mod fixtures {
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use holo_hash::{AgentPubKeyB64, HeaderHashB64};
-    use projects::project::outcome::crud::{AchievementStatus, Outcome, Scope, SmallsEstimate};
+    use projects::project::outcome::crud::{Outcome, Scope};
+    use projects::project::outcome::small_scope::{SmallScope, SmallTask, AchievementStatus};
+    use projects::project::outcome::uncertain_scope::{UncertainScope, SmallsEstimate, TimeFrame};
     use projects::project::{
         connection::crud::Connection,
         entry_point::crud::EntryPoint,
         member::entry::Member,
-        outcome::crud::TimeFrame,
         outcome_comment::crud::OutcomeComment,
         outcome_member::crud::OutcomeMember,
         outcome_vote::crud::OutcomeVote,
         project_meta::crud::{PriorityMode, ProjectMeta},
+        tag::crud::Tag,
     };
 
     fixturator!(
@@ -58,12 +60,17 @@ pub(crate) mod fixtures {
         constructor fn new(AgentPubKeyB64, f64, String, OptionString, String, bool, PriorityMode, VecHeaderHashB64);
     );
 
+    fixturator!(
+      Tag;
+        constructor fn new(String, String);
+    );
+
     type VecHeaderHashB64 = Vec<HeaderHashB64>;
+    type VecSmallTask = Vec<SmallTask>;
     type OptionAgentPubKeyB64 = Option<AgentPubKeyB64>;
     type OptionString = Option<String>;
     type Optionf64 = Option<f64>;
     type Optionu32 = Option<u32>;
-    type OptionVecString = Option<Vec<String>>;
     type OptionTimeFrame = Option<TimeFrame>;
 
     fixturator!(
@@ -79,16 +86,30 @@ pub(crate) mod fixtures {
     fixturator!(
       Scope;
       enum [ Small Uncertain ];
-      curve Empty Scope::Uncertain(fixt!(SmallsEstimate));
+      curve Empty Scope::Uncertain(fixt!(UncertainScope));
       curve Unpredictable match ScopeVariant::random() {
-        ScopeVariant::Small => Scope::Small(fixt!(AchievementStatus)),
-        ScopeVariant::Uncertain => Scope::Uncertain(fixt!(SmallsEstimate)),
+        ScopeVariant::Small => Scope::Small(fixt!(SmallScope)),
+        ScopeVariant::Uncertain => Scope::Uncertain(fixt!(UncertainScope)),
       };
       curve Predictable match ScopeVariant::nth(get_fixt_index!()) {
-        ScopeVariant::Small => Scope::Small(AchievementStatusFixturator::new_indexed(Predictable, get_fixt_index!()).next().unwrap()),
-        ScopeVariant::Uncertain => Scope::Uncertain(SmallsEstimateFixturator::new_indexed(Predictable, get_fixt_index!()).next().unwrap()),
-
+        ScopeVariant::Small => Scope::Small(SmallScopeFixturator::new_indexed(Predictable, get_fixt_index!()).next().unwrap()),
+        ScopeVariant::Uncertain => Scope::Uncertain(UncertainScopeFixturator::new_indexed(Predictable, get_fixt_index!()).next().unwrap()),
       };
+    );
+
+    fixturator!(
+      SmallScope;
+      constructor fn new(AchievementStatus, Optionf64, VecSmallTask);
+    );
+
+    fixturator!(
+      SmallTask;
+      constructor fn new(bool, String);
+    );
+
+    fixturator!(
+      UncertainScope;
+      constructor fn new(SmallsEstimate, OptionTimeFrame, bool);
     );
 
     fixturator!(
@@ -111,6 +132,19 @@ pub(crate) mod fixtures {
       };
       curve Predictable {
         vec![HeaderHashB64Fixturator::new(Predictable).next().unwrap()]
+      };
+    );
+
+    fixturator!(
+      VecSmallTask;
+      curve Empty {
+          Vec::new()
+      };
+      curve Unpredictable {
+        vec![SmallTaskFixturator::new(Unpredictable).next().unwrap()]
+      };
+      curve Predictable {
+        vec![SmallTaskFixturator::new(Predictable).next().unwrap()]
       };
     );
 
@@ -167,19 +201,6 @@ pub(crate) mod fixtures {
     );
 
     fixturator!(
-      OptionVecString;
-      curve Empty {
-          None
-      };
-      curve Unpredictable {
-        Some(Vec::new())
-      };
-      curve Predictable {
-        Some(Vec::new())
-      };
-    );
-
-    fixturator!(
       OptionTimeFrame;
       curve Empty {
           None
@@ -194,6 +215,6 @@ pub(crate) mod fixtures {
 
     fixturator!(
       Outcome;
-        constructor fn new(String, AgentPubKeyB64, OptionAgentPubKeyB64, f64, Optionf64, Scope, OptionVecString, String, OptionTimeFrame, bool);
+        constructor fn new(String, AgentPubKeyB64, OptionAgentPubKeyB64, f64, Optionf64, Scope, VecHeaderHashB64, String, bool, String);
     );
 }

@@ -1,5 +1,6 @@
 import React from 'react'
 import Avatar from '../Avatar/Avatar'
+import AvatarsList from '../AvatarsList/AvatarsList'
 import Icon from '../Icon/Icon'
 
 import './MembersIndicator.scss'
@@ -55,56 +56,13 @@ const MembersIndicator: React.FC<MembersIndicatorProps> = ({
 
   return (
     <div className="members-indicator-wrapper">
-      {members.map((member) => {
-        if (!member) {
-          return null
-        }
-
-        // check if the member is in the
-        // list of present members
-        // (presence being "has the project open presently")
-        const isMemberPresent = presentMembers.find(
-          (presentMember) => presentMember === member.address
-        )
-        return (
-          <div
-            key={member.headerHash}
-            className={
-              isMemberPresent
-                ? 'members-indicator-wrapper-avatars'
-                : 'members-indicator-wrapper-avatars disconnected'
-            }
-          >
-            {/* title={`${member.firstName} ${member.lastName}`} */}
-            <Avatar
-              firstName={member.firstName}
-              lastName={member.lastName}
-              avatarUrl={member.avatarUrl}
-              imported={member.isImported}
-              selfAssignedStatus={member.status}
-              smallMedium
-              withWhiteBorder
-              withStatus={isMemberPresent}
-              clickable
-              withTooltip
-              tooltipText={`${member.firstName} ${member.lastName}`}
-            />
-          </div>
-        )
-      })}
-      {/* Invite Members */}
-      <div className="invite-members-button-wrapper">
-        <div className="invite-members-button" onClick={onClickInviteMember}>
-          {/* @ts-ignore */}
-          <Icon
-            name="user-plus.svg"
-            size="small"
-            className="dark-grey"
-            withTooltip
-            tooltipText="Invite Members"
-          />
-        </div>
-      </div>
+      {/* TODO: re-add disconnected status */}
+      <AvatarsList
+        size="small-medium"
+        profiles={members}
+        showInviteButton
+        onClickButton={onClickInviteMember}
+      />
     </div>
   )
 }

@@ -6,7 +6,7 @@ import Checkbox from '../components/Checkbox/Checkbox'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/Checkbox',
+  title: 'Checkbox & Checklist/Checkbox',
   component: Checkbox,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {
@@ -27,6 +27,7 @@ const Template: ComponentStory<typeof Checkbox> = (args) => {
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'Checkbox'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   size: 'medium',

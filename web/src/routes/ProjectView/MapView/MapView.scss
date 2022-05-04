@@ -23,10 +23,12 @@
 
 canvas {
   position: absolute;
+  background-color: var(--bg-color-canvas);
 }
 
 /* transform */
 
-.transform-container, .outcome-form-position-container {
+.transform-container,
+.outcome-form-position-container {
   position: fixed;
 }

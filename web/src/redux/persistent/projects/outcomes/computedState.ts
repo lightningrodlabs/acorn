@@ -11,7 +11,6 @@ export function computeAchievementStatus(
   self: WithHeaderHash<Outcome>,
   children: ComputedOutcome[]
 ): ComputedAchievementStatus {
-
   // calculate the number of descendants for the 3
   // categories: uncertains, smallsAchieved, smallsTotal
   // when there are children, derive it from that
@@ -30,7 +29,8 @@ export function computeAchievementStatus(
       ? children.reduce((memo, currentValue) => {
           return memo + currentValue.computedAchievementStatus.smallsAchieved
         }, 0)
-      : 'Small' in self.scope && self.scope.Small === 'Achieved'
+      : 'Small' in self.scope &&
+        self.scope.Small.achievementStatus === 'Achieved'
       ? 1
       : 0
   const smallsTotal =
@@ -42,7 +42,11 @@ export function computeAchievementStatus(
       ? 1
       : 0
   let simple: ComputedSimpleAchievementStatus
-  if (uncertains > 0) {
+  if (
+    uncertains > 0 ||
+    ('Small' in self.scope &&
+      self.scope.Small.achievementStatus === 'NotAchieved')
+  ) {
     simple = ComputedSimpleAchievementStatus.NotAchieved
   } else if (smallsAchieved === smallsTotal) {
     simple = ComputedSimpleAchievementStatus.Achieved

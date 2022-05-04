@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { useLocation, NavLink } from 'react-router-dom'
-import Icon from '../Icon/Icon'
-import StatusIcon from '../StatusIcon/StatusIcon'
 
-import HierarchyIcon from '../HierarchyIcon/HierarchyIcon'
+import Icon from '../Icon/Icon'
+import { PriorityModeOptions } from '../../constants'
 
 import './IndentedTreeView.scss'
-import { PriorityModeOptions } from '../../constants'
 
 // Recursive because we don't know
 // how deep the nesting goes
-function NestedTreeOutcome({ outcome, level, filterText, projectMeta, updateProjectMeta }) {
+function NestedTreeOutcome({
+  outcome,
+  level,
+  filterText,
+  projectMeta,
+  updateProjectMeta,
+}) {
   level = level || 1
   // set expanded open by default only if
   // at the first or second level
@@ -23,15 +27,20 @@ function NestedTreeOutcome({ outcome, level, filterText, projectMeta, updateProj
     (outcome.content && outcome.content.toLowerCase().includes(filterText))
 
   const searchParams = new URLSearchParams(location.search)
-  const isUsingOutcomeAsContext = searchParams.get('contextOutcome') === outcome.headerHash
+  const isUsingOutcomeAsContext =
+    searchParams.get('contextOutcome') === outcome.headerHash
   const showMakeTopPriorityOutcome =
     projectMeta &&
     projectMeta.priorityMode === PriorityModeOptions.Universal &&
-    !projectMeta.topPriorityOutcomes.find((headerHash) => headerHash === outcome.headerHash)
+    !projectMeta.topPriorityOutcomes.find(
+      (headerHash) => headerHash === outcome.headerHash
+    )
   const makeTopPriority = () => {
     const toPass = {
       ...projectMeta,
-      topPriorityOutcomes: projectMeta.topPriorityOutcomes.concat([outcome.headerHash])
+      topPriorityOutcomes: projectMeta.topPriorityOutcomes.concat([
+        outcome.headerHash,
+      ]),
     }
     delete toPass.headerHash
     updateProjectMeta(toPass, projectMeta.headerHash)
@@ -58,29 +67,17 @@ function NestedTreeOutcome({ outcome, level, filterText, projectMeta, updateProj
             className="indented-view-outcome-content"
             isActive={(match) => match && isUsingOutcomeAsContext}
           >
-            {outcome.hierarchy === 'NoHierarchy' ? (
-              <StatusIcon
-                status={outcome.status}
-                notHoverable
-                hideTooltip
-                className="indented-view-outcome-content-status-color"
-              />
-            ) : (
-              <HierarchyIcon
-                size="very-small"
-                hierarchy={outcome.hierarchy}
-                status={outcome.status}
-              />
+            <div className="indented-view-outcome-text" title={outcome.content}>
+              {outcome.content}
+            </div>
+            {showMakeTopPriorityOutcome && (
+              <div
+                className="indented-view-outcome-make-top-priority"
+                onClick={makeTopPriority}
+              >
+                <Icon name="plus.svg" size="small" className="grey" />
+              </div>
             )}
-            <div className="indented-view-outcome-text" title={outcome.content}>{outcome.content}</div>
-            {showMakeTopPriorityOutcome && <div className="indented-view-outcome-make-top-priority" onClick={makeTopPriority}>
-              <Icon
-                name='plus.svg'
-                size='small'
-                className='grey'
-
-              />
-            </div>}
           </NavLink>
         </div>
       )}
@@ -88,16 +85,16 @@ function NestedTreeOutcome({ outcome, level, filterText, projectMeta, updateProj
       {/* since only what matches the filter will show anyways */}
       {(filterText.length || expanded) && outcome.children
         ? outcome.children.map((childOutcome, index) => (
-          <div className="indented-view-nested-outcome" key={index}>
-            <NestedTreeOutcome
-              filterText={filterText}
-              outcome={childOutcome}
-              level={level + 1}
-              projectMeta={projectMeta}
-              updateProjectMeta={updateProjectMeta}
-            />
-          </div>
-        ))
+            <div className="indented-view-nested-outcome" key={index}>
+              <NestedTreeOutcome
+                filterText={filterText}
+                outcome={childOutcome}
+                level={level + 1}
+                projectMeta={projectMeta}
+                updateProjectMeta={updateProjectMeta}
+              />
+            </div>
+          ))
         : null}
     </div>
   )
@@ -128,7 +125,11 @@ const MAX_WIDTH = 600
 // associated with .indented-view-outcomes class
 const INDENTED_VIEW_OUTCOMES_MARGIN = 15
 
-export default function IndentedTreeView({ outcomeTrees, projectMeta, updateProjectMeta }) {
+export default function IndentedTreeView({
+  outcomeTrees,
+  projectMeta,
+  updateProjectMeta,
+}) {
   const [filterText, setFilterText] = useState('')
   const [isResizing, setIsResizing] = useState(false)
   const [width, setWidth] = useState(DEFAULT_WIDTH)

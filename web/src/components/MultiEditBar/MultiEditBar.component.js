@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import Icon from '../Icon/Icon'
-import StatusIcon from '../StatusIcon/StatusIcon'
-import StatusPicker from '../StatusPicker'
 import DatePicker from '../DatePicker/DatePicker'
-import HierarchyPicker from '../HierarchyPicker/HierarchyPicker'
 import ConnectionConnectorPicker from '../ConnectionConnectorPicker/ConnectionConnectorPicker.connector'
 import Modal, { ModalContent } from '../Modal/Modal'
 
@@ -170,68 +167,12 @@ export default function MultiEditBar({
     modalClassname = 'hierarchy-popup'
     modalHeading = 'Setting Hierarchy for Multiple Cards'
     modalContent = hierarchyAlertContent
-    modalIcon = 'hierarchy-leaf.svg'
+    modalIcon = 'leaf.svg'
   }
 
   return (
     <>
       <div className={`multi-edit-bar ${hasSelection ? 'has-selection' : ''}`}>
-        {/* status */}
-        <StatusIcon
-          size='small-MultiEditBar'
-          key='status'
-          notHoverable
-          hideTooltip
-          status={statusColor}
-          onClick={() => toggleView('status')}
-        />
-        {viewsOpen.status && (
-          <StatusPicker
-            statusClicked={updateOutcomes('status')}
-            onClose={() => setViews({ ...defaultViews })}
-          />
-        )}
-        {/* squirrels */}
-        {/* TODO: connect multi edit squirrels */}
-        {/* <Icon
-          name='squirrel.svg'
-          size='medium-MultiEditBar'
-          className={multiEditBarSquirrelsClass}
-          key='squirrels'
-          onClick={() => toggleView('squirrels')}
-        />
-        {viewsOpen.squirrels && (
-          <PeoplePicker projectId={projectId} onClose={() => setViews({ ...defaultViews })} />
-        )} */}
-        {/* timeframe */}
-        <Icon
-          name='calendar.svg'
-          size='medium-MultiEditBar'
-          className={multiEditBarTimeframeClass}
-          key='timeframe'
-          onClick={() => toggleView('timeframe')}
-        />
-        {viewsOpen.timeframe && (
-          <DatePicker
-            onClose={() => setViews({ ...defaultViews })}
-            onSet={updateTimeframe}
-          />
-        )}
-        {/* hierarchy */}
-        <Icon
-          name='hierarchy-leaf.svg'
-          size='medium-MultiEditBar'
-          className={multiEditBarHierarchyClass}
-          key='hierarchy'
-          onClick={() => toggleView('hierarchy')}
-        />
-        {viewsOpen.hierarchy && selectedOutcomes.length > 0 && (
-          <HierarchyPicker
-            selectedHierarchy={selectedOutcomes[0].hierarchy}
-            hierarchyClicked={updateOutcomes('hierarchy')}
-            onClose={() => setViews({ ...defaultViews })}
-          />
-        )}
         {/* connection connector */}
         <Icon
           name='connection-connector.svg'
@@ -245,7 +186,7 @@ export default function MultiEditBar({
         )}
         {/* delete */}
         <Icon
-          name='delete.svg'
+          name='archive.svg'
           key='delete'
           className={multiEditBarDeleteClass}
           onClick={() => toggleView('delete')}
@@ -271,7 +212,7 @@ export default function MultiEditBar({
         <ModalContent
           heading='Archiving'
           content={deleteContent}
-          icon='delete.svg'
+          icon='archive.svg'
           primaryButton='Yes, Delete'
           altButton='Nevermind'
           primaryButtonAction={deleteOutcomes}

@@ -7,7 +7,7 @@ import Icon from '../components/Icon/Icon'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/ButtonAction',
+  title: 'Buttons/ButtonAction',
   component: ButtonAction,
 } as ComponentMeta<typeof ButtonAction>
 
@@ -17,6 +17,7 @@ const Template: ComponentStory<typeof ButtonAction> = (args) => {
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'ButtonAction'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   size: 'medium',

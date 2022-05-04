@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="21.905" height="21.91" viewBox="0 0 21.905 21.91">
+  <g id="progress-circle" transform="translate(2.5 2.504)">
+    <path id="progress-circle-bg" d="M11.453,19.905A8.453,8.453,0,1,0,3,11.453,8.453,8.453,0,0,0,11.453,19.905Z" transform="translate(-3 -3)" fill="none" stroke="#d0d0d0" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+    <path id="progress-percentage" d="M15.231,3.648A8.453,8.453,0,0,0,12,3" transform="translate(-3.547 -3)" fill="none" stroke="#344cff" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+  </g>
+</svg>

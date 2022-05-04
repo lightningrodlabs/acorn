@@ -12,10 +12,9 @@ export default function PickerTemplate({
   return (
     <div className={`${className} picker-popup`}>
       <Icon
-        className='vertical_action_close'
+        className='light-grey vertical_action_close'
         name='x.svg'
         size='very-small-close'
-        className='light-grey'
         onClick={() => onClose()}
       />
       <div className='picker-popup-heading'>{heading}</div>

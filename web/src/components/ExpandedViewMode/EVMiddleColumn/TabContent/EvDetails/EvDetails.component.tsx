@@ -3,23 +3,28 @@ import moment from 'moment'
 import TextareaAutosize from 'react-textarea-autosize'
 
 import Avatar from '../../../../Avatar/Avatar'
-import PeopleInfoPopup from '../../../../PersonInfoPopup/PersonInfoPopup'
-import PeoplePicker from '../../../../PeoplePicker/PeoplePicker.connector'
-import Icon from '../../../../Icon/Icon'
-import { ExpandedViewTab } from '../../../NavEnum'
+import PeoplePicker from '../../../../PeoplePicker/PeoplePicker'
 import {
   AssigneeWithHeaderHash,
   ComputedOutcome,
   Outcome,
   Profile,
+  Tag,
 } from '../../../../../types'
 import {
   AgentPubKeyB64,
   CellIdString,
   HeaderHashB64,
+  WithHeaderHash,
 } from '../../../../../types/shared'
 
 import './EvDetails.scss'
+import TagsList from '../../../../TagsList/TagsList'
+import MetadataWithLabel from '../../../../MetadataWithLabel/MetadataWithLabel'
+import GithubLink from '../../../../GithubLink/GithubLink'
+import AvatarsList from '../../../../AvatarsList/AvatarsList'
+import MarkdownDescription from '../../../../MarkdownDescription/MarkdownDescription'
+import EditingOverlay from '../../../../EditingOverlay/EditingOverlay'
 
 /*
 testing data
@@ -49,20 +54,34 @@ const _member = {
 export type EvDetailsOwnProps = {
   projectId: CellIdString
   outcome: ComputedOutcome
-  setActiveTab: React.Dispatch<React.SetStateAction<ExpandedViewTab>>
 }
 
 export type EvDetailsConnectorStateProps = {
   activeAgentPubKey: AgentPubKeyB64
   outcomeHeaderHash: HeaderHashB64
+  projectTags: WithHeaderHash<Tag>[]
+  // a list of specifically the assignees
   assignees: AssigneeWithHeaderHash[]
-  // TODO: what type?
-  editingPeers: any
+  // an object with ALL profiles
   profiles: { [agentPubKey: AgentPubKeyB64]: Profile }
+  // a list of all profiles, with data about
+  // whether the person is an assignee on each object
+  people: (Profile & {
+    isOutcomeMember: boolean
+    outcomeMemberHeaderHash: HeaderHashB64
+  })[]
+  // TODO: fix this type
+  editingPeers: {}[]
 }
 
 export type EvDetailsConnectorDispatchProps = {
+  onSaveTag: (text: string, backgroundColor: string) => Promise<void>
   updateOutcome: (outcome: Outcome, headerHash: HeaderHashB64) => Promise<void>
+  createOutcomeMember: (
+    outcomeHeaderHash: HeaderHashB64,
+    memberAgentPubKey: AgentPubKeyB64,
+    creatorAgentPubKey: AgentPubKeyB64
+  ) => Promise<void>
   deleteOutcomeMember: (headerHash: HeaderHashB64) => Promise<void>
   startTitleEdit: (outcomeHeaderHash: HeaderHashB64) => void
   endTitleEdit: (outcomeHeaderHash: HeaderHashB64) => void
@@ -78,14 +97,17 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   // own props
   projectId,
   outcome,
-  setActiveTab,
   // state props
   activeAgentPubKey,
+  projectTags,
   outcomeHeaderHash,
   assignees,
+  people,
   profiles,
   // dispatch props
+  onSaveTag,
   updateOutcome,
+  createOutcomeMember,
   deleteOutcomeMember,
   startTitleEdit,
   endTitleEdit,
@@ -93,300 +115,240 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   endDescriptionEdit,
   editingPeers,
 }) => {
-  let creator: Profile
-  if (outcome) {
-    Object.keys(profiles).forEach((value) => {
-      if (profiles[value].agentPubKey === outcome.creatorAgentPubKey)
-        creator = profiles[value]
-    })
-  }
-
-  const [outcomeState, setOutcomeState] = useState<ComputedOutcome>()
-  const [assigneesState, setAssigneesState] = useState<
-    AssigneeWithHeaderHash[]
-  >()
-  const [creatorState, setCreatorState] = useState<Profile>()
-
-  useEffect(() => {
-    if (outcome) {
-      setOutcomeState({ ...outcome })
-    }
-  }, [outcome])
-
-  useEffect(() => {
-    if (assignees) {
-      setAssigneesState([...assignees])
-    }
-  }, [assignees])
-
-  useEffect(() => {
-    if (creator) {
-      setCreatorState({ ...creator })
-    }
-  }, [creator])
-
-  const [editAssignees, setEditAssignees] = useState(false)
-  const [
-    personInfoPopup,
-    setPersonInfoPopup,
-  ] = useState<AssigneeWithHeaderHash>(null)
-
-  // the live editor state
-  const [content, setContent] = useState('')
-  // the live editor state
-  const [description, setDescription] = useState('')
-
   // reset
   useEffect(() => {
     if (!outcomeHeaderHash) {
-      setActiveTab(ExpandedViewTab.Details)
       setEditAssignees(false)
-      setPersonInfoPopup(null)
       // setEditTimeframe(false)
     }
   }, [outcomeHeaderHash])
 
-  // handle change of outcome
+  const cleanOutcome = (): Outcome => {
+    return {
+      ...outcome,
+      editorAgentPubKey: activeAgentPubKey,
+      timestampUpdated: moment().unix(),
+      content,
+      description,
+      githubLink: githubInputLinkText,
+    }
+  }
+  const updateOutcomeWithLatest = async () => {
+    await updateOutcome(cleanOutcome(), outcomeHeaderHash)
+  }
+
+  /*
+    Title
+  */
+  // the live editor state
+  const [content, setContent] = useState('')
+  // handle change (or update) of outcome
   const outcomeContent = outcome ? outcome.content : ''
-  const outcomeDescription = outcome ? outcome.description : ''
   useEffect(() => {
     setContent(outcomeContent)
   }, [outcomeContent])
-  useEffect(() => {
-    setDescription(outcomeDescription)
-  }, [outcomeDescription])
-
   const onTitleBlur = () => {
-    updateOutcome(
-      {
-        ...outcome,
-        editorAgentPubKey: activeAgentPubKey,
-        timestampUpdated: moment().unix(),
-        content,
-        description,
-      },
-      outcomeHeaderHash
-    )
+    updateOutcomeWithLatest()
     endTitleEdit(outcomeHeaderHash)
-  }
-  const onDescriptionBlur = () => {
-    updateOutcome(
-      {
-        ...outcome,
-        editorAgentPubKey: activeAgentPubKey,
-        timestampUpdated: moment().unix(),
-        content,
-        description,
-      },
-      outcomeHeaderHash
-    )
-    endDescriptionEdit(outcomeHeaderHash)
   }
   const onTitleFocus = () => {
     startTitleEdit(outcomeHeaderHash)
   }
-  const onDescriptionFocus = () => {
-    startDescriptionEdit(outcomeHeaderHash)
-  }
   const handleOnChangeTitle = ({ target }) => {
     setContent(target.value)
   }
-  const handleOnChangeDescription = ({ target }) => {
-    setDescription(target.value)
-  }
-
-  let fromDate: moment.Moment, toDate: moment.Moment
-  if (outcome) {
-    fromDate = outcome.timeFrame
-      ? moment.unix(outcome.timeFrame.fromDate)
-      : null
-    toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
-  }
-
-  // const isBeingEdited = false
-
-  // find out if any of the peers is editing title, then take the agent key from that and use to feed into avatar
-
+  // is someone else editing it?
+  // if so, local person can't
   const editingTitlePeer = editingPeers.find(
     (peerInfo) => peerInfo.outcomeBeingEdited.isTitle
   )
+  const titleEditor = editingTitlePeer ? editingTitlePeer.profileInfo : {}
+
+  /*
+    Github Link
+  */
+  // the live github link editor state
+  const [githubInputLinkText, setGithubInputLinkText] = useState('')
+  const [isEditingGithubLink, setIsEditingGithubLink] = useState(false)
+  const outcomeGithubLink = outcome ? outcome.githubLink : ''
+  useEffect(() => {
+    setGithubInputLinkText(outcomeGithubLink)
+    if (!outcomeGithubLink) {
+      setIsEditingGithubLink(true)
+    } else {
+      setIsEditingGithubLink(false)
+    }
+  }, [outcomeGithubLink])
+
+  /*
+    Assignees
+  */
+  const [editAssignees, setEditAssignees] = useState(false)
+
+  /*
+    Times
+  */
+  let fromDate: moment.Moment, toDate: moment.Moment
+  if (outcome) {
+    // fromDate = outcome.timeFrame
+    //   ? moment.unix(outcome.timeFrame.fromDate)
+    //   : null
+    // toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
+  }
+
+  /*
+    TAGS
+  */
+  const selectedTags = outcome ? outcome.tags : []
+  const onSelectNewTags = async (newSelectedTags: HeaderHashB64[]) => {
+    const newOutcome = cleanOutcome()
+    newOutcome.tags = newSelectedTags
+    updateOutcome(newOutcome, outcomeHeaderHash)
+  }
+
+  /* 
+    Description
+  */
+  // the live editor state
+  const [description, setDescription] = useState('')
+  // the latest persisted state
+  const outcomeDescription = outcome ? outcome.description : ''
+  // sync the live editor state with the
+  // persisted state, if the persisted state changes
+  // "underneath" us, or because of us
+  useEffect(() => {
+    setDescription(outcomeDescription)
+  }, [outcomeDescription])
+  // find out if any of the peers is editing title
+  // then take the profile metadata from that and
+  // use to feed into avatar
+  const onDescriptionBlur = () => {
+    updateOutcomeWithLatest()
+    endDescriptionEdit(outcomeHeaderHash)
+  }
+  const onDescriptionFocus = () => {
+    startDescriptionEdit(outcomeHeaderHash)
+  }
+  const handleOnChangeDescription = (value: string) => {
+    setDescription(value)
+  }
+  // is someone else editing it?
+  // if so, local person can't
   const editingDescriptionPeer = editingPeers.find(
     (peerInfo) => !peerInfo.outcomeBeingEdited.isTitle
   )
-  const titleEditor = editingTitlePeer ? editingTitlePeer.profileInfo : {}
   const descriptionEditor = editingDescriptionPeer
     ? editingDescriptionPeer.profileInfo
     : {}
 
+  /*
+    Component
+  */
   return (
     <>
-      <div className="expanded-view-details-wrapper">
-        <div className="expanded-view-title-wrapper">
-          {editingTitlePeer ? (
-            <div>
-              <div className="member-editing-title-wrapper">
-                <Avatar
-                  withStatusBorder
-                  smallMedium
-                  firstName={titleEditor.firstName}
-                  lastName={titleEditor.lastName}
-                  avatarUrl={titleEditor.avatarUrl}
-                  // @ts-ignore
-                  isImported={titleEditor.isImported}
-                  headerHash={titleEditor.address}
-                  connectionStatus={'connected'}
-                  selfAssignedStatus={titleEditor.status}
-                />
-              </div>
-              <div className="expanded-view-title-editing-placeholder">
-                <div className="expanded-view-title">
-                  <TextareaAutosize
-                    disabled={editingTitlePeer}
-                    value={content}
-                    onBlur={onTitleBlur}
-                    onChange={handleOnChangeTitle}
-                    onKeyPress={handleOnChangeTitle}
-                    placeholder="Add a title..."
-                    onFocus={onTitleFocus}
-                  />
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="expanded-view-title">
-              <TextareaAutosize
-                value={content}
-                onBlur={onTitleBlur}
-                onChange={handleOnChangeTitle}
-                onKeyPress={handleOnChangeTitle}
-                placeholder="Add a title..."
-                onFocus={onTitleFocus}
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Github Link */}
-        <div>Github Link</div>
-
-        {/* Tags */}
-        <div>Tags</div>
-
-        <div className="squirrels-timeframe-row">
-          <div className="expanded-view-squirrels-wrapper">
-            <div className="expanded-view-squirrels-title">Assignees</div>
-            <div className="expanded-view-squirrels-content">
-              {assignees.map((assignee, index) => {
-                // TODO: fix the highlight for avatars showing all at once
-                // instead of only highlighting the selected avatar
-                const highlighted = personInfoPopup
-                  ? personInfoPopup.outcomeMemberHeaderHash ===
-                    assignee.outcomeMemberHeaderHash
-                  : false
-                return (
-                  <div className="expanded-view-squirrel-wrapper">
-                    <Avatar
-                      withWhiteBorder
-                      key={index}
-                      firstName={assignee.profile.firstName}
-                      lastName={assignee.profile.lastName}
-                      avatarUrl={assignee.profile.avatarUrl}
-                      imported={assignee.profile.isImported}
-                      medium
-                      // @ts-ignore
-                      withWhiteBorder
-                      withStatus
-                      selfAssignedStatus={assignee.profile.status}
-                      clickable
-                      onClick={() =>
-                        setPersonInfoPopup(personInfoPopup ? null : assignee)
-                      }
-                      highlighted={highlighted}
-                    />
-                  </div>
-                )
-              })}
-              {personInfoPopup && (
-                <PeopleInfoPopup
-                  onClose={() => setPersonInfoPopup(null)}
-                  person={personInfoPopup}
-                  deleteOutcomeMember={deleteOutcomeMember}
-                />
-              )}
-              <div className="expanded-view-squirrels-add-wrapper">
-                {/* @ts-ignore */}
-                <Icon
-                  className="add-squirrel-plus-icon"
-                  name="plus.svg"
-                  size="small"
-                  onClick={() => setEditAssignees(!editAssignees)}
-                  withTooltip
-                  tooltipText="Add Squirrels"
-                />
-                {editAssignees && (
-                  <PeoplePicker
-                    projectId={projectId}
-                    onClose={() => setEditAssignees(false)}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="timeframe-wrapper">
-            <div className="expanded-view-timeframe-title">Timeframe</div>
-            <div
-              className="expanded-view-timeframe-display"
-              // TODO: bring this back
-              // onClick={() => setEditTimeframe(!editTimeframe)}
+      <div className="ev-details-wrapper">
+        {/* Expanded View Title */}
+        <div className="ev-details-inner-wrapper">
+          <div className="ev-title-wrapper">
+            <EditingOverlay
+              isBeingEditedByOther={!!editingTitlePeer}
+              personEditing={titleEditor}
             >
-              {fromDate && fromDate.format('MMM D, YYYY')}
-              {toDate && ' - '}
-              {toDate && toDate.format('MMM D, YYYY')}
-              {!fromDate && !toDate && 'Click to set timeframe'}
-            </div>
-          </div>
-        </div>
-        <div className="expanded-view-description-wrapper">
-          {editingDescriptionPeer ? (
-            <div>
-              <div className="member-editing-description-wrapper">
-                <Avatar
-                  withStatusBorder
-                  smallMedium
-                  firstName={descriptionEditor.firstName}
-                  lastName={descriptionEditor.lastName}
-                  avatarUrl={descriptionEditor.avatarUrl}
-                  // @ts-ignore
-                  isImported={descriptionEditor.isImported}
-                  headerHash={descriptionEditor.address}
-                  connectionStatus={'connected'}
-                  selfAssignedStatus={descriptionEditor.status}
+              <div className="ev-title">
+                <TextareaAutosize
+                  disabled={!!editingTitlePeer}
+                  value={content}
+                  onBlur={onTitleBlur}
+                  onChange={handleOnChangeTitle}
+                  onKeyPress={handleOnChangeTitle}
+                  placeholder="Add outcome statement"
+                  onFocus={onTitleFocus}
                 />
               </div>
-              <div className="expanded-view-description-editing-placeholder">
-                <div className="expanded-view-description">
-                  <TextareaAutosize
-                    disabled={editingDescriptionPeer}
-                    placeholder="Add description here"
-                    value={description}
-                    onBlur={onDescriptionBlur}
-                    onChange={handleOnChangeDescription}
-                    onFocus={onDescriptionFocus}
-                  />
+            </EditingOverlay>
+          </div>
+
+          {/* Github Link */}
+          <div className="ev-github-link">
+            <GithubLink
+              // the current persisted value
+              githubLink={outcomeGithubLink}
+              onSubmit={async () => {
+                await updateOutcomeWithLatest()
+                setIsEditingGithubLink(false)
+              }}
+              isEditing={isEditingGithubLink}
+              setIsEditing={setIsEditingGithubLink}
+              inputLinkText={githubInputLinkText}
+              setInputLinkText={setGithubInputLinkText}
+            />
+          </div>
+
+          {/* Tags */}
+          <div className="ev-tags">
+            <TagsList
+              tags={projectTags}
+              showAddTagButton={true}
+              selectedTags={selectedTags}
+              onChange={onSelectNewTags}
+              onSaveTag={onSaveTag}
+            />
+          </div>
+
+          {/* Assignees and Time related fields */}
+          <div className="ev-assignees-and-time-row">
+            {/* Assignees */}
+            <div className="ev-assignees-wrapper">
+              <MetadataWithLabel label="Assignees">
+                <AvatarsList
+                  size="small-medium"
+                  profiles={assignees.map((assignee) => assignee.profile)}
+                  showAddButton
+                  onClickButton={() => setEditAssignees(true)}
+                />
+                <div className="ev-add-members-popup-wrapper">
+                  {editAssignees && (
+                    <PeoplePicker
+                      projectId={projectId}
+                      onClose={() => setEditAssignees(false)}
+                      activeAgentPubKey={activeAgentPubKey}
+                      people={people}
+                      outcomeHeaderHash={outcomeHeaderHash}
+                      createOutcomeMember={createOutcomeMember}
+                      deleteOutcomeMember={deleteOutcomeMember}
+                    />
+                  )}
                 </div>
-              </div>
+              </MetadataWithLabel>
             </div>
-          ) : (
-            <div className="expanded-view-description">
-              <TextareaAutosize
-                placeholder="Add description here"
-                value={description}
-                onBlur={onDescriptionBlur}
-                onChange={handleOnChangeDescription}
-                onFocus={onDescriptionFocus}
-              />
+
+            {/* Time related */}
+            <div className="ev-time-wrapper">
+              {/* TODO: make label based on the scope of the outcome */}
+              <MetadataWithLabel label="Breakdown Time Est.">
+                <div
+                  className="ev-time-display"
+                  // TODO: bring this back
+                  // onClick={() => setEditTimeframe(!editTimeframe)}
+                >
+                  {fromDate && fromDate.format('MMM D, YYYY')}
+                  {toDate && ' - '}
+                  {toDate && toDate.format('MMM D, YYYY')}
+                  {!fromDate && !toDate && 'Click to set time'}
+                </div>
+              </MetadataWithLabel>
             </div>
-          )}
+          </div>
+
+          {/* Description */}
+          <MarkdownDescription
+            isBeingEditedByOther={!!editingDescriptionPeer}
+            personEditing={descriptionEditor}
+            onBlur={onDescriptionBlur}
+            onFocus={onDescriptionFocus}
+            onChange={handleOnChangeDescription}
+            value={description}
+          />
         </div>
       </div>
     </>

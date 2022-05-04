@@ -32,12 +32,16 @@
   cursor: default;
 }
 
+.icon.uncertain .inner-icon {
+  background-color: var(--color-pumpkin);
+}
+
 .icon.grey .inner-icon {
   background-color: #898989;
 }
 
 .icon.light-grey .inner-icon {
-  background-color: var(--color-silver)
+  background-color: var(--color-silver);
 }
 
 .icon.purple .inner-icon {
@@ -203,7 +207,6 @@
   height: 12px;
   margin-top: -4px;
 }
-
 
 .tooltip-text-wrapper {
   background-color: #5f65ff;

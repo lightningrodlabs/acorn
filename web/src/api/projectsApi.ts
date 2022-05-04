@@ -12,6 +12,7 @@ import {
   OutcomeVote,
   ProjectMeta,
   RealtimeInfoInput,
+  Tag,
 } from '../types'
 import { createCrudFunctions, WireElement } from './hdkCrud'
 import { AppWebsocket, CellId } from '@holochain/client'
@@ -26,9 +27,11 @@ const ENTRY_TYPE_NAMES = {
   OUTCOME_MEMBER: 'outcome_member',
   ENTRY_POINT: 'entry_point',
   OUTCOME_VOTE: 'outcome_vote',
+  TAG: 'tag',
   PROJECT_META: 'project_meta',
 }
 
+// Custom / non hdk_crud
 const ZOME_FN_NAMES = {
   CREATE_OUTCOME_WITH_CONNECTION: 'create_outcome_with_connection',
   DELETE_OUTCOME_FULLY: 'delete_outcome_fully',
@@ -181,6 +184,14 @@ const MembersApi = (appWebsocket: AppWebsocket) => {
   }
 }
 
+const TagApi = (appWebsocket: AppWebsocket) => {
+  return createCrudFunctions<Tag>(
+    appWebsocket,
+    PROJECTS_ZOME_NAME,
+    ENTRY_TYPE_NAMES.TAG
+  )
+}
+
 export default class ProjectsZomeApi {
   appWebsocket: AppWebsocket
   outcome: ReturnType<typeof OutcomeApi>
@@ -189,6 +200,7 @@ export default class ProjectsZomeApi {
   outcomeComment: ReturnType<typeof OutcomeCommentApi>
   outcomeMember: ReturnType<typeof OutcomeMemberApi>
   outcomeVote: ReturnType<typeof OutcomeVoteApi>
+  tag: ReturnType<typeof TagApi>
   projectMeta: ReturnType<typeof ProjectMetaApi>
   realtimeInfoSignal: ReturnType<typeof RealtimeInfoSignalApi>
   member: ReturnType<typeof MembersApi>
@@ -205,6 +217,7 @@ export default class ProjectsZomeApi {
     this.outcomeVote = OutcomeVoteApi(appWebsocket)
     this.projectMeta = ProjectMetaApi(appWebsocket)
     this.member = MembersApi(appWebsocket)
+    this.tag = TagApi(appWebsocket)
     this.realtimeInfoSignal = RealtimeInfoSignalApi(appWebsocket)
   }
 }

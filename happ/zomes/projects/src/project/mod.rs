@@ -1,4 +1,5 @@
 pub mod connection;
+pub mod tag;
 pub mod entry_point;
 pub mod error;
 pub mod member;

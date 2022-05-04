@@ -5,20 +5,20 @@ import './ChecklistItem.scss'
 
 export type ChecklistItemProps = {
   size: 'small' | 'medium' | 'large'
-  text: string
-  isChecked: boolean
-  onChangeCheck: (isChecked: boolean) => void
-  onChangeText: (text: string) => void
+  task: string
+  complete: boolean
+  onChangeComplete: (complete: boolean) => void
+  onChangeTask: (task: string) => void
   textEditable?: boolean
   withStrikethrough?: boolean
 }
 
 const ChecklistItem: React.FC<ChecklistItemProps> = ({
   size = 'medium',
-  text,
-  isChecked,
-  onChangeCheck,
-  onChangeText,
+  task,
+  complete,
+  onChangeComplete,
+  onChangeTask,
   textEditable,
   withStrikethrough,
 }) => {
@@ -31,17 +31,17 @@ const ChecklistItem: React.FC<ChecklistItemProps> = ({
     >
       <Checkbox
         size={size}
-        isChecked={isChecked}
-        onChange={onChangeCheck}
+        isChecked={complete}
+        onChange={onChangeComplete}
       />
       <div
-        className={`checklist-item-wrapper-text ${isChecked ? 'checked' : ''}
+        className={`checklist-item-wrapper-text ${complete ? 'checked' : ''}
         ${size === 'small' ? 'small' : size === 'large' ? 'large' : ''}`}
       >
         {/* TODO: make this text optionally editable */}
         {/* textEditable */}
         {/* onChangeText */}
-        {text}
+        {task}
       </div>
     </div>
   )

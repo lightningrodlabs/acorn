@@ -5,7 +5,6 @@
 }
 
 .header {
-  /* width: 100%; */
   margin: 8px;
   display: flex;
   justify-content: space-between;
@@ -15,15 +14,17 @@
 
 .header-left-panel {
   display: flex;
+  flex-direction: row;
+  align-items: center;
   margin-right: 8px;
-  max-height: 46px;
+  height: 3rem;
 }
 
 .header-left-panel.second-row {
   top: 60px;
   left: 4px;
   position: absolute;
-  height: 46px;
+  height: 2rem;
 }
 
 .logo {
@@ -34,7 +35,7 @@
   display: flex;
   align-items: center;
   margin-right: 5px;
-  height: 46px;
+  height: 3rem;
 }
 
 .logo-name {
@@ -56,11 +57,9 @@
   background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
   border-radius: 10px;
   display: -webkit-flex;
-  /* Safari */
   -webkit-align-items: center;
-  /* Safari 7.0+ */
-  display: flex;
   align-items: center;
+  height: 100%;
 }
 
 .current-project-content {
@@ -72,7 +71,7 @@
 
 .current-project-name {
   margin: 0 12px 2px 0px;
-  font-family: 'PlusJakartaSans-bold', Helvetica, Sans-Serif;
+  font-family: 'PlusJakartaSans-extrabold', Helvetica, Sans-Serif;
   font-weight: normal;
   font-size: 14px;
   color: #4d4d4d;
@@ -110,6 +109,25 @@
   margin-right: 10px;
 }
 
+// Entry points button and menu
+
+.header-left-panel-entry-points-button {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .icon {
+    padding: 4px;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    position: relative;
+    margin: 0 8px 0 0;
+    box-sizing: border-box;
+  }
+}
+
 /* Export */
 
 .export-wrapper {
@@ -118,7 +136,7 @@
 }
 
 .export-list-wrapper {
-  margin-top: 4px;
+  margin-top: 0.75rem;
   position: absolute;
   border-radius: 14px;
   background-color: #ffffff;
@@ -172,7 +190,6 @@
   box-shadow: 0px 0px 14px #0000000f;
 }
 
-
 .active-entry-point-content {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -184,7 +201,6 @@
 .active-entry-point-content:hover {
   color: #5f65ff;
 }
-
 
 .active-entry-point img {
   height: 14px;
@@ -199,7 +215,7 @@
   visibility: hidden;
 }
 
-.active-entry-point:hover>.active-entry-point-close {
+.active-entry-point:hover > .active-entry-point-close {
   visibility: visible;
 }
 
@@ -251,17 +267,50 @@
   background: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: center;
-  align-content: center;
+  justify-content: space-between;
   box-sizing: border-box;
-  max-height: 46px;
-}
+  height: 3rem;
 
-.header-right-panel-icon .icon {
-  position: relative;
-  margin-right: 8px;
-  display: flex;
+  .icon {
+    position: relative;
+    margin-right: 8px;
+    display: flex;
+  }
+
+  .help-button-external {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0.25rem;
+    cursor: pointer;
+
+    .typography {
+      color: var(--text-color-secondary);
+    }
+
+    &:hover {
+      .typography {
+        color: var(--text-color-primary);
+      }
+
+      .icon .inner-icon {
+        background-color: var(--text-color-primary);
+      }
+    }
+
+    .icon {
+      height: 1rem;
+      width: 1rem;
+      padding: 0;
+      margin-left: 0.25rem;
+
+      .inner-icon {
+        background-color: var(--text-color-secondary);
+      }
+    }
+  }
 }
 
 .search-button-wrapper {
@@ -311,13 +360,15 @@
   justify-content: left;
 }
 
-.search-button-wrapper.search-is-open.results-dropdown-is-open .search-icon-input {
+.search-button-wrapper.search-is-open.results-dropdown-is-open
+  .search-icon-input {
   padding: 11px 12px;
   width: 100%;
   box-sizing: border-box;
 }
 
-.search-open-icon {}
+.search-open-icon {
+}
 
 .search-button-wrapper input {
   width: 280px;
@@ -373,12 +424,12 @@
   flex-direction: row;
   justify-content: left;
   padding: 12px;
-  border-bottom: 2px solid #EBEAE8;
+  border-bottom: 2px solid #ebeae8;
 }
 
 .search-results-filter-wrapper {
-  background-color: #F4F0EC;
-  border: 2px solid #F4F0EC;
+  background-color: #f4f0ec;
+  border: 2px solid #f4f0ec;
   color: #535353;
   padding: 3px 16px 5px 16px;
   border-radius: 20px;
@@ -398,18 +449,17 @@
   border: 2px solid #d7eff1;
 }
 
-
 .search-results-filter-wrapper.Comments {
   background-color: #f1e5f7;
   border: 2px solid #f1e5f7;
 }
 
 .search-results-filter-wrapper.filter-is-applied {
-  border: 2px solid #5F65F8;
+  border: 2px solid #5f65f8;
 }
 
 .search-results-filter-wrapper:hover {
-  opacity: 0.8
+  opacity: 0.8;
 }
 
 .search-results-list {
@@ -428,14 +478,12 @@
 }
 
 .search-result-item-wrapper:hover {
-  background-color: #F4F3F2;
+  background-color: #f4f3f2;
 }
 
 .search-result-item-wrapper:last-child {
   margin-bottom: 8px;
 }
-
-
 
 .search-result-item-wrapper .search-result-item-text {
   margin-left: 8px;
@@ -459,26 +507,16 @@
   display: none;
 }
 
-.search-result-item-wrapper:hover>.search-result-item-buttons {
+.search-result-item-wrapper:hover > .search-result-item-buttons {
   display: flex;
   flex-direction: row;
   position: absolute;
   right: 0.5rem;
-  background-color: #F4F3F2;
+  background-color: #f4f3f2;
 }
 
 .search-result-item-buttons .icon {
   margin-left: 0.2rem;
-}
-
-/* Guidebook */
-
-.guidebook-modal.modal-wrapper {
-  width: 800px;
-  max-width: calc(100vw - 120px);
-  padding: 60px;
-  max-height: 1000px;
-  height: calc(100vh - 120px);
 }
 
 /* profile section on header */
@@ -536,16 +574,11 @@
   align-items: center;
 }
 
-.profile-wrapper button:hover, .profile-wrapper button.active {
+.profile-wrapper button:hover,
+.profile-wrapper button.active {
   background: #f4f4f4;
   color: #5f65ff;
 }
-
-/* .profile-wrapper button .icon {
-  border-radius: 50%;
-  height: 16px;
-  width: 16px;
-} */
 
 .profile-wrapper button p {
   font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
@@ -561,29 +594,9 @@
   background-color: grey;
 }
 
-/* .status-circle.status-online {
-  background-color: #00d0c0;
-}
-
-.status-circle.status-away {
-  background-color: #ffc400;
-}
-
-.status-circle.status-offline {
-  background-color: #d1d1d1;
-} */
-
-/* .user-status-icon-wrapper.user-status-is-active .avatar-container+span {
-  background-color: #5f65ff;
-} */
-
 button.status-online .icon {
   background-color: #00d0c0;
 }
-
-/* button.purple .icon {
-  background-color: #5f65ff;
-} */
 
 button.status-away .icon {
   background-color: #ffc400;
@@ -631,4 +644,8 @@ button.status-offline .icon {
 .user-status-wrapper button:hover {
   background: #f4f4f4 none repeat scroll 0% 0%;
   color: #5f65ff;
+}
+
+.view-mode-active .icon .inner-icon {
+  background-color: var(--text-color-primary);
 }

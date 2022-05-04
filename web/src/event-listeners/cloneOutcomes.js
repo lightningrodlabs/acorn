@@ -36,10 +36,9 @@ export default async function cloneOutcomes(store) {
         let newOutcomeAddress = value.outcome.headerHash
         store.dispatch(selectOutcome(value.outcome.headerHash))
         members.map(async member => {
-          // @ts-ignore
           const createdOutcomeMember = await projectsZomeApi.outcomeMember.create(cellId, {
                 outcomeHeaderHash: newOutcomeAddress,
-                agentAddress: member.agentAddress,
+                memberAgentPubKey: member.memberAgentPubKey,
                 creatorAgentPubKey: member.creatorAgentPubKey,
                 unixTimestamp: moment().unix(),
                 isImported: false

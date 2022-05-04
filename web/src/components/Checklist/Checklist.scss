@@ -22,7 +22,8 @@
 
     .checklist-remove-button-wrapper {
       position: absolute;
-      right: 0.25rem;
+      top: 0.25rem;
+      right: 0.5rem;
       cursor: pointer;
       display: none;
       padding: 0.25rem;
@@ -48,6 +49,8 @@
       margin-left: 0.625rem;
       border: 0;
       outline: 0;
+      background-color: transparent;
+      -webkit-font-smoothing: antialiased;
 
       &::placeholder {
         color: var(--text-color-placeholder);

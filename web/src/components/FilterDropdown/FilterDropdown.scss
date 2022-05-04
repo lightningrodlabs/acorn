@@ -1,6 +1,7 @@
 .filter-dropdown-wrapper-with-dropdown {
   width: fit-content;
   position: relative;
+  -webkit-font-smoothing: antialiased;
 }
 
 .filter-dropdown-wrapper {
@@ -16,7 +17,7 @@
   width: fit-content;
   cursor: pointer;
   transition: 0.2s box-shadow ease;
-  -webkit-font-smoothing: antialiased;
+
   // set relative letter-spacing to fix
   // change of size issue after
   // bolding the text on focus/selected mode
@@ -101,7 +102,8 @@
   border-radius: 0.5rem;
   width: 100%;
   box-sizing: border-box;
-  -webkit-font-smoothing: antialiased;
+  position: absolute;
+  z-index: 2;
 
   .filter-dropdown-menu-option {
     display: flex;
@@ -110,6 +112,22 @@
     padding: 0.675rem 1rem;
     cursor: pointer;
     transition: 0.2s all ease;
+    user-select: none;
+
+    .progress-indicator-wrapper {
+      margin-right: 0.375rem;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+
+      .icon,
+      .progress-ring {
+        width: 1rem;
+        height: 1rem;
+        padding: 0;
+      }
+    }
 
     &:first-child {
       border-radius: 0.625rem 0.625rem 0 0;

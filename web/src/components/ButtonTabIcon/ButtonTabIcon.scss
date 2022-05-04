@@ -1,0 +1,38 @@
+.button-tab-icon-wrapper {
+  color: var(--text-color-quaternary);
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  border-radius: 0.5rem;
+  width: fit-content;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  transition: 0.2s all ease;
+
+  .icon {
+    width: 2.75rem;
+    height: 2.75rem;
+
+    .inner-icon {
+      background-color: var(--icon-color-light-grey);
+    }
+  }
+
+  &:hover {
+    background-color: var(--bg-color-hover);
+
+    .icon {
+      .inner-icon {
+        background-color: var(--text-color-primary);
+      }
+    }
+  }
+
+  &.active {
+    background-color: var(--bg-color-hover);
+
+    .icon .inner-icon {
+      background-color: var(--text-color-primary);
+    }
+  }
+}

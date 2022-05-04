@@ -1,8 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+
+
 import './ValidatingFormInput.scss'
 
-function ValidatingFormInput ({
+import ValidationCheck from '../../images/circle-check.svg'
+import ValidationX from '../../images/circle-x.svg'
+import Typography from '../Typography/Typography'
+
+function ValidatingFormInput({
   withAtSymbol,
   readOnly,
   placeholder,
@@ -20,7 +26,7 @@ function ValidatingFormInput ({
     onChange(e.target.value)
   }
 
-  let inputClassName = withAtSymbol ? 'with_at_symbol' : ''
+  let inputClassName = withAtSymbol ? 'with-at-symbol' : ''
   if (invalidInput) {
     inputClassName += ' invalid-input'
   }
@@ -32,10 +38,11 @@ function ValidatingFormInput ({
   }
 
   return (
-    <div className='validating_form_input'>
-      <label htmlFor={label}>{label}</label>
-      {helpText && <p className='help_text'>{helpText}</p>}
-      <div className='input_wrapper'>
+    <div className='validating-form-input'>
+      <Typography style="label"><label htmlFor={label}>{label}</label></Typography>
+
+      {helpText && <p className='help-text'>{helpText}</p>}
+      <div className='input-wrapper'>
         <input
           type='text'
           className={inputClassName}
@@ -45,13 +52,13 @@ function ValidatingFormInput ({
           placeholder={placeholder}
           readOnly={readOnly}
         />
-        {errorText && <div className='error_text'>{errorText}</div>}
-        {withAtSymbol && <div className='at_symbol'>@ </div>}
+        {errorText && <div className='error-text'>{errorText}</div>}
+        {withAtSymbol && <div className='at-symbol'>@ </div>}
         {invalidInput && (
-          <img src='img/circle-x.svg' className='validation-mark' />
+          <img src={ValidationX} className='validation-mark invalid' />
         )}
         {validInput && (
-          <img src='img/circle-check.svg' className='validation-mark' />
+          <img src={ValidationCheck} className='validation-mark valid' />
         )}
       </div>
     </div>

@@ -1,19 +1,19 @@
 import _ from 'lodash'
 import { WireElement } from '../../../../api/hdkCrud'
-import { PriorityMode, ProjectMeta } from '../../../../types'
-import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64, Option, WithHeaderHash } from '../../../../types/shared'
+import { ProjectMeta } from '../../../../types'
+import { Action, CellIdString, WithHeaderHash } from '../../../../types/shared'
 import {
   SIMPLE_CREATE_PROJECT_META,
   FETCH_PROJECT_META,
   UPDATE_PROJECT_META 
 } from './actions'
 
-type State = {
+export type ProjectMetaState = {
   [cellId: CellIdString]: WithHeaderHash<ProjectMeta>
 }
-const defaultState: State = {}
+const defaultState: ProjectMetaState = {}
 
-export default function (state: State = defaultState, action: Action<WireElement<ProjectMeta>>) {
+export default function (state: ProjectMetaState = defaultState, action: Action<WireElement<ProjectMeta>>): ProjectMetaState {
   const { payload, type } = action
   switch (type) {
     case SIMPLE_CREATE_PROJECT_META:

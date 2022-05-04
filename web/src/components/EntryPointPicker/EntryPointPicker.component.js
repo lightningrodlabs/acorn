@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
-import { connect } from 'react-redux'
 
 import './EntryPointPicker.scss'
+
+import DoorClosed from '../../images/door-closed.svg'
 
 import GuidebookNavLink from '../GuidebookNavLink/GuidebookNavLink'
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
@@ -124,7 +125,7 @@ export default function EntryPointPicker({ entryPoints, isOpen, onClose, activeE
           {entryPoints.length === 0 && (
             <li className='entry-points-empty-state-content'>
               <img
-                src='img/door-closed.svg'
+                src={DoorClosed}
                 className='entry-points-empty-state-image'
               />
               <div className='entry-points-empty-state-image-circle'></div>
@@ -141,10 +142,10 @@ export default function EntryPointPicker({ entryPoints, isOpen, onClose, activeE
             </li>
           )}
         </ul>
-        <img
+        {/* <img
           className='entry-point-picker-pointer'
           src='img/popup-curved-pointer-downside.svg'
-        />
+        /> */}
       </PickerTemplate>
     </CSSTransition>
   )

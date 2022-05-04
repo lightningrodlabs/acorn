@@ -11,18 +11,19 @@ import {
 } from './actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 import { FETCH_ENTRY_POINT_DETAILS } from '../entry-points/actions'
-import { Action, AgentPubKeyB64, CellIdString, HeaderHashB64, Option, WithHeaderHash } from '../../../../types/shared'
+import { Action, CellIdString, HeaderHashB64, Option, WithHeaderHash } from '../../../../types/shared'
 import { CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyResponse, EntryPointDetails, Outcome, Scope, TimeFrame } from '../../../../types'
 import { WireElement } from '../../../../api/hdkCrud'
 
-type State = {
-  [cellId: CellIdString]: {
-    [headerHash: HeaderHashB64]: WithHeaderHash<Outcome>
-  }
+export type ProjectOutcomesState = {
+  [headerHash: HeaderHashB64]: WithHeaderHash<Outcome>
 }
-const defaultState: State = {}
+export type OutcomesState = {
+  [cellId: CellIdString]: ProjectOutcomesState
+}
+const defaultState: OutcomesState = {}
 
-export default function (state: State = defaultState, action: OutcomesAction | Action<EntryPointDetails> | Action<DeleteOutcomeFullyResponse>): State {
+export default function (state: OutcomesState = defaultState, action: OutcomesAction | Action<EntryPointDetails> | Action<DeleteOutcomeFullyResponse>): OutcomesState {
   if (isCrud(action, CREATE_OUTCOME, FETCH_OUTCOMES, UPDATE_OUTCOME, DELETE_OUTCOME)) {
     const crudAction = action as Action<WireElement<Outcome>>
     return crudReducer(

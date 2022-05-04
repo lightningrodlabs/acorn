@@ -1,3 +1,28 @@
+.expanded-view-wrapper {
+  height: calc(100vh - 6rem);
+  max-height: 46.5rem;
+  box-shadow: 0 0 2.5rem var(--color-shadow-dark);
+  width: 59.125rem;
+  background-color: var(--bg-color-tertiary);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  z-index: 2;
+
+  .button-close-wrapper {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+}
+
+// css transitions (animation)
+
 .expanded-view-overlay {
   /* background: rgba(31, 31, 31, 0.4); */
   background: rgb(239 236 231 / 90%);
@@ -29,23 +54,6 @@
   opacity: 0;
 }
 
-.expanded-view-wrapper {
-  box-shadow: 0px 0px 24px #0000001f;
-  // TODO: check what this width should be
-  // and define it in REM?
-  width: 964px;
-  background: #ffffff;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: row;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  z-index: 2;
-}
-
 .expanded-view-wrapper-enter {
   -ms-transform: translate(-50%, -50%) scale(0.9);
   transform: translate(-50%, -50%) scale(0.9);
@@ -72,17 +80,29 @@
   transition: opacity 0.25s 0s, transform 0.25s;
 }
 
-.expanded-view-wrapper .small-close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  cursor: pointer;
-  padding: 6px;
+// Tab view
+
+.expanded-view-tab-view-wrapper {
+  display: flex;
+  flex-direction: row;
+  padding-top: 1.5rem;
+  flex: 1;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
+
+// .expanded-view-wrapper .small-close {
+//   position: absolute;
+//   top: 8px;
+//   right: 8px;
+//   cursor: pointer;
+//   padding: 6px;
+// }
 
 /* expanded view date picker */
 
-.expanded-view-wrapper>.date_picker_wrapper {
+.expanded-view-wrapper > .date_picker_wrapper {
   transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
@@ -91,14 +111,6 @@
 .expanded-view-main {
   display: flex;
   flex-direction: row;
-}
-
-.expanded-view-right-menu {
-  display: inline-block;
-}
-
-.expanded-view-header, .expanded-view-content, .expanded-view-footer {
-  display: inline-block;
 }
 
 .outcome-form textarea {

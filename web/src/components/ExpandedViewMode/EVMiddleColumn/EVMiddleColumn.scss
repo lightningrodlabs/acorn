@@ -1,11 +1,12 @@
-.expanded-view-content {
+.ev-middle-column-wrapper {
   display: flex;
   flex-direction: column;
   flex: 1;
-}
+  overflow: hidden;
+  height: 100%;
 
-.expanded-view-inner-content {
-  height: calc(100vh - 256px);
-  max-height: 600px;
-  min-height: 400px;
+  .descendants-achievement-status {
+    padding-left: 3rem;
+    padding-bottom: 1rem;
+  }
 }

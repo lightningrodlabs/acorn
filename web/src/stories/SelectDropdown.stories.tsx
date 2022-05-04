@@ -28,6 +28,7 @@ const Template: ComponentStory<typeof SelectDropdown> = (args) => {
 }
 
 export const Primary = Template.bind({})
+Primary.storyName = 'SelectDropdown'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   size: 'medium',

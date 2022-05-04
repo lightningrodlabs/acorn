@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
+
 import './ImportProjectModal.scss'
+
+import AcornLogo from '../../images/acorn-logo.svg'
 
 import Modal from '../Modal/Modal'
 import {
@@ -12,14 +15,16 @@ import {
 import ProjectSecret from '../ProjectSecret/ProjectSecret'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
 
+
+
 // since this is a big wordset, dynamically import it
 // instead of including in the main bundle
-async function generatePassphrase () {
+async function generatePassphrase() {
   const { default: randomWord } = await import('diceware-word')
   return `${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()}`
 }
 
-function ImportProjectFilePicker ({ showModal, onFilePicked, onCancel }) {
+function ImportProjectFilePicker({ showModal, onFilePicked, onCancel }) {
   const [fileFormatInvalidMessage, setFileFormatInvalidMessage] = useState(
     false
   )
@@ -87,13 +92,13 @@ function ImportProjectFilePicker ({ showModal, onFilePicked, onCancel }) {
   )
 }
 
-function ImportingProjectModal ({ showModal }) {
+function ImportingProjectModal({ showModal }) {
   return (
     <Modal white active={showModal} className='import-project-modal-wrapper'>
       {/* <div className='import-project-form'> */}
       {/* <ProjectModalContent> */}
       <div className='importing-modal-content'>
-        <img src='img/acorn-logo.svg' />
+        <img src={AcornLogo} />
         <div className='importing-modal-content-title'>
           Importing your project
         </div>
@@ -105,7 +110,7 @@ function ImportingProjectModal ({ showModal }) {
   )
 }
 
-function ProjectImportedModal ({ showModal, onDone, projectName, outcomeCount }) {
+function ProjectImportedModal({ showModal, onDone, projectName, outcomeCount }) {
   return (
     <Modal
       white
@@ -129,7 +134,7 @@ function ProjectImportedModal ({ showModal, onDone, projectName, outcomeCount })
   )
 }
 
-export default function ImportProjectModal ({
+export default function ImportProjectModal({
   showModal,
   onClose,
   onImportProject

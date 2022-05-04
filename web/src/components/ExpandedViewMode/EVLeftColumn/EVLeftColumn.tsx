@@ -1,65 +1,72 @@
 import React from 'react'
-
-import Icon from '../../Icon/Icon'
+import ButtonTabIcon from '../../ButtonTabIcon/ButtonTabIcon'
+import Typography from '../../Typography/Typography'
 import { ExpandedViewTab } from '../NavEnum'
 
 import './EVLeftColumn.scss'
 
 export type EvLeftColumnProps = {
+  outcomeId: number
   onChange: (expandedViewTab: ExpandedViewTab) => void
   activeTab: ExpandedViewTab
   commentCount: number
+  childrenCount: number
+  taskListCount: number
+  showTaskList: boolean
 }
 
 const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
+  outcomeId,
   onChange,
   activeTab,
   commentCount,
+  childrenCount,
+  taskListCount,
+  showTaskList,
 }) => {
   const navItems = [
     {
       text: 'Details',
-      icon: 'pencil.svg',
+      icon: 'details.svg',
+      tab: ExpandedViewTab.Details,
     },
     {
       text: `Comments (${commentCount})`,
-      icon: 'comment.svg',
+      icon: 'chats-circle.svg',
+      tab: ExpandedViewTab.Comments,
     },
-    {
-      text: 'tree view',
-      icon: 'comment.svg',
-    },
-    {
-      text: 'activity history',
-      icon: 'activity-history.svg',
-    },
+    ,
   ]
-
-  // TODO
-  const outcomeId = 124354
+  
+  if (childrenCount > 0) {
+    navItems.push({
+      text: `Children (${childrenCount})`,
+      icon: 'hierarchy.svg',
+      tab: ExpandedViewTab.ChildrenList,
+    })
+  } else if (showTaskList) {
+    navItems.push({
+      text: `Task List (${taskListCount})`,
+      icon: 'squares-check.svg',
+      tab: ExpandedViewTab.TaskList,
+    })
+  }
 
   return (
     <div className="expanded-view-nav-column">
-      <div className="expanded-view-outcome-id">{outcomeId}</div>
-      {navItems.map(({ text, icon }, index) => {
-        const activeClass = activeTab === index ? 'active-tab' : ''
+      <div className="expanded-view-outcome-id">
+        {/* TODO: set typography */}
+        <Typography style="caption1">{outcomeId.toString()}</Typography>
+      </div>
+      {navItems.map(({ text, icon, tab }) => {
         return (
-          <div
-            className={`expanded-view-nav-column-item ${activeClass} ${
-              index === ExpandedViewTab.ActivityHistory
-                ? 'feature-in-development'
-                : ''
-            }`}
-            key={index}
-            onClick={() =>
-              index !== ExpandedViewTab.ActivityHistory && onChange(index)
-            }
-          >
-            {/* @ts-ignore */}
-            <Icon name={icon} size="small" className="grey" />
-            {/* TODO: add tooltip text */}
-            {/* {text} */}
-          </div>
+          <ButtonTabIcon
+            key={`tab-${tab}`}
+            label={text}
+            iconName={icon}
+            active={activeTab === tab}
+            onClick={() => onChange(tab)}
+          />
         )
       })}
     </div>

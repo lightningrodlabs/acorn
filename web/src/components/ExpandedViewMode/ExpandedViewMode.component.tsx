@@ -1,19 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import { CSSTransition } from 'react-transition-group'
 import Icon from '../Icon/Icon'
-import EVMiddleColumn from './EVMiddleColumn/EVMiddleColumn.component'
+import EVMiddleColumn from './EVMiddleColumn/EVMiddleColumn'
 import EVLeftColumn from './EVLeftColumn/EVLeftColumn'
-import EVRightColumn from './EVRightColumn/EVRightColumn.connector'
 import { ExpandedViewTab } from './NavEnum'
 import { CellIdString, HeaderHashB64 } from '../../types/shared'
-import './ExpandedViewMode.scss'
 import { ComputedOutcome } from '../../types'
+import './ExpandedViewMode.scss'
+import ButtonClose from '../ButtonClose/ButtonClose'
 
 // props passed to the component by the parent
 export type ExpandedViewModeOwnProps = {
-  onClose: () => void
   projectId: CellIdString
+  onClose: () => void
   outcome: ComputedOutcome
+  details: React.ReactElement
+  comments: React.ReactElement
+  childrenList: React.ReactElement
+  taskList: React.ReactElement
+  rightColumn: React.ReactElement
 }
 
 // redux props
@@ -26,10 +31,14 @@ export type ExpandedViewModeProps = ExpandedViewModeOwnProps &
   ExpandedViewModeConnectorProps
 
 const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
-  projectId,
   outcome,
   outcomeHeaderHash,
   commentCount,
+  details,
+  comments,
+  childrenList,
+  taskList,
+  rightColumn,
   onClose,
 }) => {
   // Details is default tab
@@ -37,12 +46,30 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
   const [showing, setShowing] = useState(false)
 
   useEffect(() => {
+    // reset
+    if (!outcomeHeaderHash) {
+      setActiveTab(ExpandedViewTab.Details)
+    }
+
     if (showing && !outcomeHeaderHash) {
       setShowing(false)
     } else if (!showing && outcomeHeaderHash) {
       setShowing(true)
     }
   }, [outcomeHeaderHash])
+
+  // TODO: set up the notion of an Outcome Id
+  const outcomeId = 124543
+
+  const childrenCount =
+    outcome && outcome.children ? outcome.children.length : 0
+
+  const showTaskListMenuItem =
+    childrenCount === 0 && outcome && 'Small' in outcome.scope
+  const taskListCount =
+    childrenCount === 0 && outcome && 'Small' in outcome.scope
+      ? outcome.scope.Small.taskList.length
+      : 0
 
   return (
     <>
@@ -61,29 +88,36 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
         classNames="expanded-view-wrapper"
       >
         <div className="expanded-view-wrapper">
+          <ButtonClose onClick={onClose} size="medium" />
           {/* @ts-ignore */}
-          <Icon
+          {/* <Icon
             onClick={onClose}
             name="x.svg"
             size="small-close"
             className="light-grey"
-          />
+          /> */}
           <EVLeftColumn
             activeTab={activeTab}
-            onChange={(newTab) => setActiveTab(newTab)}
+            onChange={setActiveTab}
             commentCount={commentCount}
+            childrenCount={childrenCount}
+            showTaskList={showTaskListMenuItem}
+            taskListCount={taskListCount}
+            outcomeId={outcomeId}
           />
-          <EVMiddleColumn
-            projectId={projectId}
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            outcome={outcome}
-          />
-          <EVRightColumn
-            projectId={projectId}
-            onClose={onClose}
-            outcome={outcome}
-          />
+          <div className="expanded-view-tab-view-wrapper">
+            <EVMiddleColumn
+              activeTab={activeTab}
+              outcome={outcome}
+              details={details}
+              comments={comments}
+              childrenList={childrenList}
+              taskList={taskList}
+            />
+            {/* Only show the rightColumn while */}
+            {/* viewing Details */}
+            {activeTab === ExpandedViewTab.Details && rightColumn}
+          </div>
         </div>
       </CSSTransition>
     </>

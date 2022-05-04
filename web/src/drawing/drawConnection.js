@@ -1,13 +1,21 @@
 import { outcomeWidth, getOutcomeHeight } from './dimensions'
-import { selectedColor } from '../styles'
+import { SELECTED_COLOR } from '../styles'
 
 export function calculateConnectionCoordsByOutcomeCoords(
   childCoords,
   parentCoords,
-  parentOutcomeText,
+  outcome,
+  projectTags,
+  zoomLevel, // number
   ctx
 ) {
-  const parentOutcomeHeight = getOutcomeHeight(ctx, parentOutcomeText)
+  const parentOutcomeHeight = getOutcomeHeight({
+    ctx,
+    outcome,
+    projectTags,
+    width: outcomeWidth,
+    zoomLevel,
+  })
   const childConnectionCoords = {
     x: childCoords.x + outcomeWidth / 2,
     y: childCoords.y,
@@ -42,7 +50,7 @@ export default function render(
   ctx.beginPath()
   ctx.lineCap = 'round'
   ctx.lineWidth = isSelected ? 3 : 2
-  ctx.strokeStyle = isSelected ? selectedColor : '#E3DDCC'
+  ctx.strokeStyle = isSelected ? SELECTED_COLOR : '#E3DDCC'
   ctx.moveTo(connection1port.x, connection1port.y)
   ctx.lineTo(connection2port.x, connection2port.y)
   ctx.stroke()

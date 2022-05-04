@@ -1,0 +1,13 @@
+.ev-read-only-heading-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  padding: 0 3rem 2rem 3rem;
+  border-bottom: 0.125rem solid var(--border-color-platinum);
+
+  .ev-read-only-heading {
+    margin-right: 2rem;
+    flex: 1;
+    min-height: 100%;
+  }
+}

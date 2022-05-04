@@ -6,11 +6,11 @@ import './FilterDropdown.scss'
 
 export type FilterDropdownProps = {
   size: 'small' | 'medium' | 'large'
+  options: { innerListItem: React.ReactElement; id: any }[]
   selectedOptions: any[]
   onChange: (newSelectedOptions: any[]) => void
   icon: React.ReactElement
   text: string
-  options: { innerListItem: React.ReactElement; id: any }[]
 }
 
 const FilterDropdown: React.FC<FilterDropdownProps> = ({
@@ -31,7 +31,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
       <div
         onClick={() => setIsOpenDropdownMenu(!isOpenDropdownMenu)}
         className={`filter-dropdown-wrapper ${
-          isOpenDropdownMenu ? 'focused' : ''
+          isOpenDropdownMenu || selectedOptions.length > 0 ? 'focused' : ''
         } 
       ${size === 'large' ? 'large' : size === 'small' ? 'small' : ''}`}
       >

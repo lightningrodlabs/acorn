@@ -5,24 +5,21 @@ import { StatusCssColorClass, Status } from '../Header/Status'
 import Tooltip from '../Tooltip/Tooltip'
 
 interface AvatarProps {
+  size: 'small' | 'small-medium' | 'medium' | 'medium-large' | 'large'
   firstName: string
   lastName: string
   avatarUrl: string
   highlighted?: boolean
-  small?: boolean
-  smallMedium?: boolean
-  medium?: boolean
-  mediumLarge?: boolean
-  large?: boolean
+  disconnected?: boolean
   clickable?: boolean
   onClick?: () => void
-  imported: boolean
+  imported?: boolean
   withStatus?: boolean
   withWhiteBorder?: boolean
   withStatusBorder?: boolean
   selfAssignedStatus?: string
   withTooltip?: boolean
-  tooltipText?: string
+  // tooltipText?: string
 }
 
 function Avatar({
@@ -30,11 +27,8 @@ function Avatar({
   lastName,
   avatarUrl,
   highlighted,
-  small,
-  smallMedium,
-  medium,
-  mediumLarge,
-  large,
+  disconnected,
+  size = 'medium',
   clickable,
   onClick,
   imported,
@@ -43,22 +37,18 @@ function Avatar({
   withStatusBorder,
   selfAssignedStatus,
   withTooltip,
-  tooltipText,
+  // tooltipText,
 }: AvatarProps) {
   let classes = []
+  // Avatar optional properties
   if (highlighted) classes.push('highlighted')
-  // Avatar Size Options
-  if (small) classes.push('small')
-  else if (smallMedium) classes.push('small-medium')
-  else if (medium) classes.push('medium')
-  else if (mediumLarge) classes.push('medium-large')
-  else if (large) classes.push('large')
-  // Avatar other optional properties
   if (clickable) classes.push('clickable')
   if (imported) classes.push('imported')
   if (withStatus) classes.push('with-status')
-  // if (withTooltip) classes.push('with-tooltip')
+  if (withTooltip) classes.push('with-tooltip')
+  if (disconnected) classes.push('disconnected')
 
+  // avatar with no image, showing initials
   if (!avatarUrl) {
     const backgroundInitialsAvatar = pickColorForString(firstName)
 
@@ -71,9 +61,24 @@ function Avatar({
       <div
         className={`avatar-wrapper 
         ${withWhiteBorder ? 'with-border white' : ''} 
-        ${withStatusBorder ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}` : ''} 
-        ${medium ? 'medium' : ''}
-        ${smallMedium ? 'small-medium' : ''}`}
+        ${
+          withStatusBorder
+            ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}`
+            : ''
+        } 
+        ${
+          size === 'small'
+            ? 'small'
+            : size === 'small-medium'
+            ? 'small-medium'
+            : size === 'medium'
+            ? 'medium'
+            : size === 'medium-large'
+            ? 'medium-large'
+            : size === 'large'
+            ? 'large'
+            : ''
+        }`}
       >
         <div className={classes.join(' ')} onClick={onClick} style={style}>
           {firstName[0].toUpperCase()}
@@ -92,14 +97,30 @@ function Avatar({
     )
   }
 
+  // avatar with image
   classes.push('avatar')
   return (
     <div
       className={`avatar-wrapper 
       ${withWhiteBorder ? 'with-border white' : ''} 
-      ${withStatusBorder ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}` : ''}
-      ${medium ? 'medium' : ''}
-      ${smallMedium ? 'small-medium' : ''}`}
+      ${
+        withStatusBorder
+          ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}`
+          : ''
+      }
+      ${
+        size === 'small'
+          ? 'small'
+          : size === 'small-medium'
+          ? 'small-medium'
+          : size === 'medium'
+          ? 'medium'
+          : size === 'medium-large'
+          ? 'medium-large'
+          : size === 'large'
+          ? 'large'
+          : ''
+      }`}
     >
       <img src={avatarUrl} className={classes.join(' ')} onClick={onClick} />
       {/* TODO: Current status circle color under avatar*/}
@@ -110,7 +131,7 @@ function Avatar({
           ></div>
         </div>
       )}
-      {withTooltip && <Tooltip text={tooltipText} />}
+      {withTooltip && <Tooltip text={`${firstName} ${lastName}`} />}
     </div>
   )
 }

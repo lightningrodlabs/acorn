@@ -12,10 +12,14 @@
 }
 
 .project-modal-content-spacer {
-  margin-bottom: 50px;
-  margin-top: 50px;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
 }
 
 .project-modal-button {
   text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }

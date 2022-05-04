@@ -1,40 +1,69 @@
 import React from 'react'
 import { ComputedAchievementStatus } from '../../types'
+import Icon from '../Icon/Icon'
+import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
+import Typography from '../Typography/Typography'
 import './DescendantsAchievementStatus.scss'
 
 export type DescendantsAchievementStatusProps = {
-  computedAchievedmentStatus: ComputedAchievementStatus
+  childrenCount: number
+  computedAchievementStatus: ComputedAchievementStatus
 }
 
 const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> = ({
-  computedAchievedmentStatus,
+  childrenCount,
+  computedAchievementStatus,
 }) => {
   return (
     <div className="descendants-achievement-status">
-      {/* case: No Children */}
-      {computedAchievedmentStatus.smallsTotal === 0 &&
-        computedAchievedmentStatus.uncertains === 0 && (
-          <>
-            This outcome has no children.<div>i</div>
-          </>
-        )}
-      {/* case: No Uncertains */}
-      {computedAchievedmentStatus.uncertains === 0 && (
+      {/* case: No Children (uncertain) */}
+      {childrenCount === 0 && (
         <>
-          {computedAchievedmentStatus.smallsAchieved.toString()}/
-          {computedAchievedmentStatus.smallsTotal.toString()}
+          {/* TODO: set typography */}
+          <Typography style="caption2">
+            This outcome has no children.
+          </Typography>{' '}
         </>
       )}
-      {/* case: With Uncertains */}
-      {computedAchievedmentStatus.uncertains !== 0 && (
+
+      {/* case: With Children */}
+      {childrenCount > 0 && (
         <>
-          <div>
-            {computedAchievedmentStatus.smallsAchieved.toString()}/
-            {computedAchievedmentStatus.smallsTotal.toString()}
-          </div>
-          <div className='descendants-achievement-status-uncertains'>{computedAchievedmentStatus.uncertains.toString()}</div>
+          {/* Smalls */}
+          {computedAchievementStatus.smallsTotal !== 0 && (
+            <div className="descendants-wrapper smalls">
+              {/* TODO: pass real progress here */}
+              <ProgressIndicator
+                progress={
+                  (computedAchievementStatus.smallsAchieved /
+                    computedAchievementStatus.smallsTotal) *
+                  100
+                }
+              />
+              <div className="descendants-scope-wrapper">
+                <Icon name="leaf.svg" />
+              </div>
+              {computedAchievementStatus.smallsAchieved.toString()}/
+              {computedAchievementStatus.smallsTotal.toString()}
+            </div>
+          )}
+
+          {/* Uncertains */}
+          {computedAchievementStatus.uncertains !== 0 && (
+            <div className="descendants-wrapper uncertains">
+              <div className="descendants-scope-wrapper">
+                <Icon name="uncertain.svg" />
+              </div>
+              {computedAchievementStatus.uncertains.toString()}
+            </div>
+          )}
         </>
       )}
+
+      {/* More info icon */}
+      <div>
+        <Icon name="info.svg" className="light-grey" size="small" />
+      </div>
     </div>
   )
 }

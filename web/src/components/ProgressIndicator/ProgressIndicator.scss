@@ -1,0 +1,38 @@
+.progress-indicator-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  .icon {
+    height: 1.25rem;
+    width: 1.25rem;
+    padding: 0;
+
+    &.not-achieved {
+      .inner-icon {
+        background-color: var(--color-topaz);
+      }
+    }
+
+    &.partially-achieved {
+      svg {
+        g {
+          path {
+            stroke: yellow;
+          }
+        }
+      }
+
+      .inner-icon {
+        // background-color: unset;
+      }
+    }
+
+    &.achieved {
+      .inner-icon {
+        background-color: var(--color-green);
+      }
+    }
+  }
+}

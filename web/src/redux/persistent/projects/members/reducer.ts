@@ -6,14 +6,16 @@ import { AgentPubKeyB64, CellIdString } from '../../../../types/shared'
 
 import { SET_MEMBER, FETCH_MEMBERS } from './actions'
 
-type State = {
-  [cellId: CellIdString]: {
-    [address: AgentPubKeyB64]: Member
-  }
+export type ProjectMembersState = {
+  [address: AgentPubKeyB64]: Member
 }
-const defaultState: State = {}
 
-export default function (state: State = defaultState, action) {
+type MembersState = {
+  [cellId: CellIdString]: ProjectMembersState
+}
+const defaultState: MembersState = {}
+
+export default function (state: MembersState = defaultState, action): MembersState {
   const { payload, type } = action
 
   let cellIdString
