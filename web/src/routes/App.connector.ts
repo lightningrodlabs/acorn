@@ -38,7 +38,7 @@ function mapStateToProps(state: RootState) {
   }
   const presentMembers = Object.values(state.ui.realtimeInfo)
     .filter((agentInfo) => getDnaHashFromProjectId(agentInfo.projectId) === getDnaHashFromProjectId(activeProject))
-    .map((agentInfo) => agentInfo.agentPubKey).filter((agentPubKey) => members.find((member) => member.address === agentPubKey))
+    .map((agentInfo) => agentInfo.agentPubKey).filter((agentPubKey) => members.find((member) => member.agentPubKey === agentPubKey))
 
   const allProjectEntryPoints = activeProject
     ? selectEntryPoints(state, activeProject)
