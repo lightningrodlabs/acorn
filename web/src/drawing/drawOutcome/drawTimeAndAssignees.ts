@@ -8,6 +8,7 @@ import drawAvatar from './drawAvatar'
 */
 
 const drawAssignees = ({
+  onlyMeasure,
   members,
   xRightPosition,
   yPosition,
@@ -17,6 +18,7 @@ const drawAssignees = ({
   avatarSpace,
   ctx,
 }: {
+  onlyMeasure: boolean
   members: Profile[]
   xRightPosition: number
   yPosition: number
@@ -30,28 +32,32 @@ const drawAssignees = ({
     return 0 // height
   }
 
-  draw(ctx, () => {
-    // draw members avatars
-    members.forEach((member, index) => {
-      // defensive coding
-      if (!member) return
+  // don't draw in cases where we're just trying to determine
+  // what the height of this will be
+  if (!onlyMeasure) {
+    draw(ctx, () => {
+      // draw members avatars
+      members.forEach((member, index) => {
+        // defensive coding
+        if (!member) return
 
-      // adjust the x position according to the index of this member
-      // since there can be many
-      const xPosition =
-        xRightPosition - (index + 1) * avatarSize - index * avatarSpace
-      drawAvatar({
-        width: avatarSize,
-        height: avatarSize,
-        member,
-        ctx,
-        xPosition,
-        yPosition,
-        textColor: avatarInitialsTextColor,
-        strokeColor: avatarStrokeColor,
+        // adjust the x position according to the index of this member
+        // since there can be many
+        const xPosition =
+          xRightPosition - (index + 1) * avatarSize - index * avatarSpace
+        drawAvatar({
+          width: avatarSize,
+          height: avatarSize,
+          member,
+          ctx,
+          xPosition,
+          yPosition,
+          textColor: avatarInitialsTextColor,
+          strokeColor: avatarStrokeColor,
+        })
       })
     })
-  })
+  }
   return avatarSize
 }
 
@@ -60,8 +66,10 @@ const drawAssignees = ({
 */
 
 const drawTime = ({
+  onlyMeasure,
   xPosition,
   yPosition,
+  timeEstimate,
   fromDate,
   toDate,
   color,
@@ -69,8 +77,10 @@ const drawTime = ({
   fontFamily,
   ctx,
 }: {
+  onlyMeasure: boolean
   xPosition: number
   yPosition: number
+  timeEstimate?: number
   fromDate?: number // f64
   toDate: number // f64
   color: string
@@ -105,10 +115,14 @@ const drawTime = ({
         measurements.actualBoundingBoxAscent +
         measurements.actualBoundingBoxDescent
 
-      // margin top fpr date line to center
+      // margin top for date line to center
       // with avatars list
       const drawAtY = yPosition + 6
-      ctx.fillText(text, xPosition, drawAtY)
+      // don't draw in cases where we're just trying to determine
+      // what the height of this will be
+      if (!onlyMeasure) {
+        ctx.fillText(text, xPosition, drawAtY)
+      }
     })
   }
   return height
@@ -120,6 +134,7 @@ const drawTime = ({
 */
 
 const drawTimeAndAssignees = ({
+  onlyMeasure,
   // assignees
   members,
   assigneesXRightPosition,
@@ -130,6 +145,7 @@ const drawTimeAndAssignees = ({
   avatarStrokeColor,
   // time
   timeXLeftPosition,
+  timeEstimate,
   fromDate,
   toDate,
   timeTextColor,
@@ -137,6 +153,7 @@ const drawTimeAndAssignees = ({
   timeFontFamily,
   ctx,
 }: {
+  onlyMeasure: boolean
   // assignees
   members: Profile[]
   assigneesXRightPosition: number
@@ -147,6 +164,7 @@ const drawTimeAndAssignees = ({
   avatarStrokeColor: string
   // time
   timeXLeftPosition: number
+  timeEstimate?: number
   fromDate?: number // f64 date value
   toDate: number // f64 date value
   timeTextColor: string
@@ -158,6 +176,7 @@ const drawTimeAndAssignees = ({
   let timeHeight: number = 0
   draw(ctx, () => {
     assigneesHeight = drawAssignees({
+      onlyMeasure,
       ctx,
       members,
       xRightPosition: assigneesXRightPosition,
@@ -168,6 +187,7 @@ const drawTimeAndAssignees = ({
       avatarStrokeColor,
     })
     timeHeight = drawTime({
+      onlyMeasure,
       ctx,
       xPosition: timeXLeftPosition,
       yPosition,

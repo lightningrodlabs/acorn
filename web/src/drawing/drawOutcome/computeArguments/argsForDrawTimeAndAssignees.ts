@@ -1,4 +1,4 @@
-import { ComputedOutcome } from '../../../types'
+import { ComputedOutcome, Profile } from '../../../types'
 import {
   AVATAR_INITIALS_TEXT_COLOR,
   AVATAR_STROKE_COLOR,
@@ -16,6 +16,7 @@ import {
 import drawTimeAndAssignees from '../drawTimeAndAssignees'
 
 export const argsForDrawTimeAndAssignees = ({
+  onlyMeasure,
   outcome,
   outcomeLeftX,
   outcomeWidth,
@@ -24,6 +25,7 @@ export const argsForDrawTimeAndAssignees = ({
   outcomeTagsHeight,
   ctx,
 }: {
+  onlyMeasure: boolean
   outcome: ComputedOutcome
   outcomeLeftX: number
   outcomeTopY: number
@@ -48,15 +50,22 @@ export const argsForDrawTimeAndAssignees = ({
     outcomeTagsHeight +
     verticalSpacing
 
+  const members = outcome.members || []
+  const timeEstimate = null
+  const fromDate = null
+  const toDate = null
+
   const args: Parameters<typeof drawTimeAndAssignees>[0] = {
-    members: outcome.members || [],
+    onlyMeasure,
+    members,
     timeXLeftPosition,
     assigneesXRightPosition,
     yPosition,
     avatarSize: AVATAR_SIZE,
     avatarSpace: AVATAR_SPACE,
-    fromDate: Date.now() / 1000,
-    toDate: Date.now() / 1000,
+    timeEstimate,
+    fromDate,
+    toDate,
     timeTextColor: TIME_TEXT_COLOR,
     avatarInitialsTextColor: AVATAR_INITIALS_TEXT_COLOR,
     avatarStrokeColor: AVATAR_STROKE_COLOR,

@@ -1,28 +1,26 @@
-import {
-  outcomeWidth,
-  getOutcomeHeight,
-  outcomeHeight,
-} from './dimensions'
+import { outcomeWidth, getOutcomeHeight, outcomeHeight } from './dimensions'
 import { coordsPageToCanvas } from './coordinateSystems'
 import linePoint from 'intersects/line-point'
 import { calculateConnectionCoordsByOutcomeCoords } from './drawConnection'
+import { HeaderHashB64 } from '../types/shared'
+import { ComputedOutcome } from '../types'
+import { RootState } from '../redux/reducer'
 
 export function checkForConnectionAtCoordinates(
-  ctx,
-  translate,
-  scale,
-  outcomeCoordinates,
-  state,
-  mouseX,
-  mouseY
+  ctx: CanvasRenderingContext2D,
+  translate: { x: number; y: number },
+  scale: number,
+  outcomeCoordinates: { [headerHash: HeaderHashB64]: { x: number; y: number } },
+  state: RootState,
+  mouseX: number,
+  mouseY: number,
+  outcomes: { [headerHash: HeaderHashB64]: ComputedOutcome }
 ) {
-  // get coordinates of all outcomes
-
   const {
     ui: { activeProject },
   } = state
   const connections = state.projects.connections[activeProject] || {}
-  const outcomes = state.projects.outcomes[activeProject] || {}
+  const projectTags = Object.values(state.projects.tags[activeProject] || {})
   // convert the coordinates of the click to canvas space
   const convertedMouse = coordsPageToCanvas(
     {
@@ -34,20 +32,18 @@ export function checkForConnectionAtCoordinates(
   )
 
   // keep track of whether an connection intersects the mouse
-  let overConnectionAddress
+  let overConnectionAddress: string
   Object.keys(connections)
     .map((headerHash) => connections[headerHash])
     .forEach((connection) => {
       const parentOutcomeCoords =
         outcomeCoordinates[connection.parentHeaderHash]
       const childOutcomeCoords = outcomeCoordinates[connection.childHeaderHash]
-      const parentOutcomeText = outcomes[connection.parentHeaderHash]
-        ? outcomes[connection.parentHeaderHash].content
-        : ''
+      const parentOutcome = outcomes[connection.parentHeaderHash]
 
       // do not proceed if we don't have coordinates
       // for the outcomes of this connection (yet)
-      if (!parentOutcomeCoords || !childOutcomeCoords) {
+      if (!parentOutcomeCoords || !childOutcomeCoords || !parentOutcome) {
         return
       }
 
@@ -58,7 +54,9 @@ export function checkForConnectionAtCoordinates(
       ] = calculateConnectionCoordsByOutcomeCoords(
         childOutcomeCoords,
         parentOutcomeCoords,
-        parentOutcomeText,
+        parentOutcome,
+        projectTags,
+        scale,
         ctx
       )
       // if mouse intersects with the line
@@ -80,18 +78,19 @@ export function checkForConnectionAtCoordinates(
 }
 
 export function checkForOutcomeAtCoordinates(
-  ctx,
-  translate,
-  scale,
-  outcomeCoordinates,
-  state,
-  clickX,
-  clickY
+  ctx: CanvasRenderingContext2D,
+  translate: { x: number; y: number },
+  scale: number,
+  outcomeCoordinates: { [headerHash: HeaderHashB64]: { x: number; y: number } },
+  state: RootState,
+  clickX: number,
+  clickY: number,
+  outcomes: { [headerHash: HeaderHashB64]: ComputedOutcome }
 ) {
   const {
     ui: { activeProject },
   } = state
-  const outcomes = state.projects.outcomes[activeProject] || {}
+  const projectTags = Object.values(state.projects.tags[activeProject] || {})
   // convert the coordinates of the click to canvas space
   const convertedClick = coordsPageToCanvas(
     {
@@ -103,7 +102,7 @@ export function checkForOutcomeAtCoordinates(
   )
 
   // keep track of whether a outcome was selected
-  let clickedAddress
+  let clickedAddress: string
   Object.keys(outcomes)
     .map((headerHash) => outcomes[headerHash])
     .forEach((outcome) => {
@@ -116,14 +115,14 @@ export function checkForOutcomeAtCoordinates(
 
       const bottomRight = {
         x: coords.x + outcomeWidth,
-        // TODO zoom level
         y:
           coords.y +
           getOutcomeHeight({
             ctx,
-            statement: outcome.content,
+            outcome,
+            projectTags,
             width: outcomeWidth,
-            zoomLevel: 1,
+            zoomLevel: scale,
           }),
       }
 
@@ -141,15 +140,11 @@ export function checkForOutcomeAtCoordinates(
 }
 
 export function checkForOutcomeAtCoordinatesInBox(
-  outcomeCoordinates,
-  state,
+  outcomeCoordinates: { [headerHash: HeaderHashB64]: { x: number; y: number } },
   convertedClick,
-  convertedIni
+  convertedIni,
+  outcomes: { [headerHash: HeaderHashB64]: ComputedOutcome }
 ) {
-  const {
-    ui: { activeProject },
-  } = state
-  const outcomes = state.projects.outcomes[activeProject] || {}
   // convert the coordinates of the click to canvas space
   // keep track of whether a outcome was selected
   let clickedAddresses = {}

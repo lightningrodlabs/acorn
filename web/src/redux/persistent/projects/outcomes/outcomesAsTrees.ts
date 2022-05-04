@@ -1,9 +1,6 @@
 import _ from 'lodash'
 import { ProjectComputedOutcomes } from '../../../../context/ComputedOutcomeContext'
-import {
-  ComputedOutcome,
-  OptionalOutcomeData,
-} from '../../../../types'
+import { ComputedOutcome, OptionalOutcomeData } from '../../../../types'
 import { HeaderHashB64 } from '../../../../types/shared'
 import { AgentsState } from '../../profiles/agents/reducer'
 import { ProjectConnectionsState } from '../connections/reducer'
@@ -14,12 +11,12 @@ import { computeAchievementStatus, computeScope } from './computedState'
 import { ProjectOutcomesState } from './reducer'
 
 export type TreeData = {
-  agents: AgentsState
   outcomes: ProjectOutcomesState
   connections: ProjectConnectionsState
-  outcomeMembers: ProjectOutcomeMembersState
-  outcomeVotes: ProjectOutcomeVotesState
-  outcomeComments: ProjectOutcomeCommentsState
+  agents?: AgentsState
+  outcomeMembers?: ProjectOutcomeMembersState
+  outcomeVotes?: ProjectOutcomeVotesState
+  outcomeComments?: ProjectOutcomeCommentsState
 }
 
 export default function outcomesAsTrees(
@@ -104,6 +101,6 @@ export default function outcomesAsTrees(
 
   return {
     computedOutcomesAsTree,
-    computedOutcomesKeyed
+    computedOutcomesKeyed,
   }
 }

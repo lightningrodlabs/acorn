@@ -27,7 +27,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
 }) => {
   //for now assume everything is expanded by default,
   // will need to look into how to expand collapse all in one action
-  let [expanded, setExpanded] = useState(true)
+  let [expanded, setExpanded] = useState(false)
   let match = filterMatch(outcome, filter)
 
   return (

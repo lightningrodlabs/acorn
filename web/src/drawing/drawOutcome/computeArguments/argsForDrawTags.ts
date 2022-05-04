@@ -15,6 +15,7 @@ import {
 import drawTags from '../drawTags'
 
 export const argsForDrawTags = ({
+  onlyMeasure,
   outcome,
   outcomeLeftX,
   outcomeTopY,
@@ -23,6 +24,7 @@ export const argsForDrawTags = ({
   projectTags,
   ctx,
 }: {
+  onlyMeasure: boolean
   outcome: ComputedOutcome
   outcomeLeftX: number
   outcomeTopY: number
@@ -47,6 +49,7 @@ export const argsForDrawTags = ({
   const maxWidth = outcomeWidth - 2 * outcomePaddingHorizontal
 
   const args: Parameters<typeof drawTags>[0] = {
+    onlyMeasure,
     ctx,
     tagVerticalSpaceBetween: TAGS_SPACE_BETWEEN,
     tagHorizontalSpaceBetween: TAGS_SPACE_BETWEEN,

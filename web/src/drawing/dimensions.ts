@@ -1,7 +1,17 @@
+import { ComputedOutcome, ComputedScope, Tag } from '../types'
+import { WithHeaderHash } from '../types/shared'
+import {
+  argsForDrawProgressBar,
+  argsForDrawTags,
+  argsForDrawTimeAndAssignees,
+} from './drawOutcome/computeArguments'
+import drawProgressBar from './drawOutcome/drawProgressBar'
+import drawTags from './drawOutcome/drawTags'
+import drawTimeAndAssignees from './drawOutcome/drawTimeAndAssignees'
+
 export const outcomeMetaPadding = 12
 
 export const CONNECTOR_VERTICAL_SPACING = 20
-
 
 // DELETE THESE
 export const avatarSpace = -4
@@ -10,7 +20,7 @@ export const avatarHeight = 26
 export const avatarRadius = 13
 
 export const outcomeWidth = 400
-export const outcomeHeight = 360
+export const outcomeHeight = 228
 export const cornerRadius = 16 // for outcome, main card
 export const cornerRadiusBorder = 20 // for the border
 export const borderWidth = 7
@@ -111,6 +121,15 @@ export function getLinesForParagraphs({
   zoomLevel: number
   maxWidth: number
 }) {
+  // for space reasons
+  // we limit the number of visible lines of the Outcome statement to 2 or 3,
+  // and provide an ellipsis if there are more lines than that
+  let lineLimit = 4
+  // for extra large text, reduce to only two lines
+  if (zoomLevel < secondZoomThreshold) {
+    lineLimit = 3
+  }
+
   // set so that measurements are proper
   // adjust font size based on zoom level
   if (zoomLevel >= firstZoomThreshold) {
@@ -125,28 +144,37 @@ export function getLinesForParagraphs({
   }
   ctx.textBaseline = 'top'
 
-  return statement
+  const lines = statement
     .split('\n')
     .map((para) => getLines({ ctx, statement: para, maxWidth }))
     .reduce((a, b) => a.concat(b))
+
+  // limited line counts
+  // replace overflow of last line with an ellipsis
+  const linesToRender = lines.slice(0, lineLimit)
+  if (lines.length > lineLimit) {
+    const line = linesToRender[linesToRender.length - 1]
+    linesToRender[linesToRender.length - 1] = `${line.slice(
+      0,
+      line.length - 3
+    )}...`
+  }
+  return linesToRender
 }
 
 export function getOutcomeHeight({
   ctx,
-  statement,
+  outcome,
+  projectTags,
   zoomLevel,
   width,
 }: {
   ctx?: CanvasRenderingContext2D
-  statement: string
+  outcome: ComputedOutcome
+  projectTags: WithHeaderHash<Tag>[]
   zoomLevel: number
   width: number
 }) {
-  // if this outcome is being edited then
-  // its height is a variable that we need to
-  // measure because we are rendering an unknown number of
-  // lines of text
-
   if (!ctx) {
     ctx = document.createElement('canvas').getContext('2d')
   }
@@ -155,7 +183,7 @@ export function getOutcomeHeight({
   // takes font and font size into account
   const lines = getLinesForParagraphs({
     ctx,
-    statement,
+    statement: outcome.content,
     zoomLevel,
     maxWidth: width - 2 * outcomePaddingHorizontal,
   })
@@ -167,16 +195,60 @@ export function getOutcomeHeight({
   } else if (zoomLevel < firstZoomThreshold) {
     fontSizeToUse = fontSizeLargeInt
   }
-  const totalTextHeight = lines.length * (fontSizeToUse * lineHeightMultiplier)
+  const outcomeStatementHeight =
+    lines.length * (fontSizeToUse * lineHeightMultiplier)
 
+  const outcomeTagsHeight = drawTags(
+    argsForDrawTags({
+      onlyMeasure: true,
+      outcome,
+      outcomeLeftX: 0, // this number doesn't matter for measuring
+      outcomeTopY: 0, // this number doesn't matter for measuring
+      outcomeWidth: width,
+      heightOfStatement: outcomeStatementHeight,
+      projectTags,
+      ctx,
+    })
+  )
+  const outcomeTimeAndAssigneesHeight = drawTimeAndAssignees(
+    argsForDrawTimeAndAssignees({
+      onlyMeasure: true, // we don't want it actually drawn on the canvas
+      outcome: outcome,
+      outcomeLeftX: 0, // this number doesn't matter for measuring
+      outcomeTopY: 0, // this number doesn't matter for measuring
+      outcomeWidth: width,
+      outcomeStatementHeight,
+      outcomeTagsHeight: 0,
+      ctx,
+    })
+  )
+  // if its not a Big, we don't render a progress bar
+  const progress =
+    outcome.computedScope === ComputedScope.Big
+      ? (outcome.computedAchievementStatus.smallsAchieved /
+          outcome.computedAchievementStatus.smallsTotal) *
+        100
+      : 0
+  const progressBarHeight =
+    progress === 0 || progress === 100 ? 0 : PROGRESS_BAR_HEIGHT
   // calculate the outcomeHeight
   // from the top and bottom margins + the height
   // of the lines of text
+  const verticalSpacing =
+    OUTCOME_VERTICAL_SPACE_BETWEEN * 3 +
+    // if tags existed, then we need another spacer
+    (outcomeTagsHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0) +
+    // if time or assignees existed, then we need another spacer
+    (outcomeTimeAndAssigneesHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0) +
+    // if progress bar existed, then we need another spacer
+    (progressBarHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0)
+
   const detectedOutcomeHeight =
-    OUTCOME_VERTICAL_SPACE_BETWEEN * 2 +
-    totalTextHeight +
-    avatarHeight +
-    avatarSpace * 2
+    DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT +
+    outcomeStatementHeight +
+    outcomeTagsHeight +
+    outcomeTimeAndAssigneesHeight +
+    verticalSpacing
 
   // create a minimum height equal to the outcomeHeight
   return Math.max(detectedOutcomeHeight, outcomeHeight)

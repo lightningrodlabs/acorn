@@ -203,19 +203,19 @@ function render(
 
       const childCoords = coordinates[connection.childHeaderHash]
       const parentCoords = coordinates[connection.parentHeaderHash]
-      const parentOutcomeText = outcomes[connection.parentHeaderHash]
-        ? outcomes[connection.parentHeaderHash].content
-        : ''
+      const parentOutcome = outcomes[connection.parentHeaderHash]
       // we can only render this connection
       // if we know the coordinates of the Outcomes it connects
-      if (childCoords && parentCoords) {
+      if (childCoords && parentCoords && parentOutcome) {
         const [
           connection1port,
           connection2port,
         ] = calculateConnectionCoordsByOutcomeCoords(
           childCoords,
           parentCoords,
-          parentOutcomeText,
+          parentOutcome,
+          projectTags,
+          zoomLevel,
           ctx
         )
         const isHovered = hoveredConnectionHeaderHash === connection.headerHash
@@ -294,7 +294,8 @@ function render(
           isTopPriority: isTopPriorityOutcome,
           outcomeHeight: getOutcomeHeight({
             ctx,
-            statement: outcome.content,
+            outcome,
+            projectTags,
             zoomLevel: zoomLevel,
             width: outcomeWidth,
           }),
@@ -392,7 +393,8 @@ function render(
           isTopPriority: isTopPriorityOutcome,
           outcomeHeight: getOutcomeHeight({
             ctx,
-            statement: outcome.content,
+            outcome,
+            projectTags,
             zoomLevel: zoomLevel,
             width: outcomeWidth,
           }),
@@ -419,9 +421,7 @@ function render(
         x: outcomeFormLeftConnectionX,
         y: outcomeFormTopConnectionY,
       }
-      const fromOutcomeText = outcomes[outcomeFormFromHeaderHash]
-        ? outcomes[outcomeFormFromHeaderHash].content
-        : ''
+      const fromOutcome = outcomes[outcomeFormFromHeaderHash]
       let childCoords, parentCoords
       if (outcomeFormRelation === RELATION_AS_CHILD) {
         childCoords = fromOutcomeCoords
@@ -430,16 +430,20 @@ function render(
         childCoords = newOutcomeCoords
         parentCoords = fromOutcomeCoords
       }
-      const [
-        connection1port,
-        connection2port,
-      ] = calculateConnectionCoordsByOutcomeCoords(
-        childCoords,
-        parentCoords,
-        fromOutcomeText,
-        ctx
-      )
-      drawConnection(connection1port, connection2port, ctx)
+      if (childCoords && parentCoords && fromOutcome) {
+        const [
+          connection1port,
+          connection2port,
+        ] = calculateConnectionCoordsByOutcomeCoords(
+          childCoords,
+          parentCoords,
+          fromOutcome,
+          projectTags,
+          zoomLevel,
+          ctx
+        )
+        drawConnection(connection1port, connection2port, ctx)
+      }
     }
 
     /*
@@ -448,31 +452,35 @@ function render(
     // render the connection that is pending to be created between existing Outcomes
     if (connectionConnectorFromAddress) {
       const fromCoords = coordinates[connectionConnectorFromAddress]
-      const fromContent = outcomes[connectionConnectorFromAddress].content
+      const fromOutcome = outcomes[connectionConnectorFromAddress]
       const [
         fromAsChildCoord,
         fromAsParentCoord,
       ] = calculateConnectionCoordsByOutcomeCoords(
         fromCoords,
         fromCoords,
-        fromContent,
+        fromOutcome,
+        projectTags,
+        zoomLevel,
         ctx
       )
       // if there's a outcome this is pending
       // as being "to", then we will be drawing the connection to its correct
       // upper or lower port
       // the opposite of whichever the "from" port is connected to
-      let toCoords, toContent, toAsChildCoord, toAsParentCoord
+      let toCoords, toOutcome, toAsChildCoord, toAsParentCoord
       if (connectionConnectorToAddress) {
         toCoords = coordinates[connectionConnectorToAddress]
-        toContent = outcomes[connectionConnectorToAddress].content
+        toOutcome = outcomes[connectionConnectorToAddress]
         ;[
           toAsChildCoord,
           toAsParentCoord,
         ] = calculateConnectionCoordsByOutcomeCoords(
           toCoords,
           toCoords,
-          toContent,
+          toOutcome,
+          projectTags,
+          zoomLevel,
           ctx
         )
       }

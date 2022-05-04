@@ -3,6 +3,7 @@ import draw from '../draw'
 import drawRoundCornerRectangle from '../drawRoundCornerRectangle'
 
 const drawTags = ({
+  onlyMeasure,
   tagVerticalSpaceBetween,
   tagHorizontalSpaceBetween,
   tagHorizontalPadding,
@@ -17,6 +18,7 @@ const drawTags = ({
   maxWidth,
   ctx,
 }: {
+  onlyMeasure: boolean
   tagVerticalSpaceBetween: number
   tagHorizontalSpaceBetween: number
   tagHorizontalPadding: number
@@ -72,23 +74,28 @@ const drawTags = ({
         currentY += heightPlusVerticalSpace
         lines += 1
       }
-      drawRoundCornerRectangle({
-        ctx,
-        xPosition: currentX,
-        yPosition: currentY,
-        width,
-        height,
-        radius: cornerRadius,
-        color: tag.backgroundColor,
-        useStroke: false,
-        useBoxShadow: false,
-        useGlow: false,
-      })
-      ctx.fillText(
-        tag.text,
-        currentX + tagHorizontalPadding,
-        currentY + tagVerticalPadding
-      )
+      // there is a situation where we want to measure
+      // how 'high' this 'component' will be, without actually
+      // rendering it, and that's what this code is for
+      if (!onlyMeasure) {
+        drawRoundCornerRectangle({
+          ctx,
+          xPosition: currentX,
+          yPosition: currentY,
+          width,
+          height,
+          radius: cornerRadius,
+          color: tag.backgroundColor,
+          useStroke: false,
+          useBoxShadow: false,
+          useGlow: false,
+        })
+        ctx.fillText(
+          tag.text,
+          currentX + tagHorizontalPadding,
+          currentY + tagVerticalPadding
+        )
+      }
       currentX += widthPlusHorizontalSpace
     })
   })

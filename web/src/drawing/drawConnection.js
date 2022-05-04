@@ -4,15 +4,17 @@ import { SELECTED_COLOR } from '../styles'
 export function calculateConnectionCoordsByOutcomeCoords(
   childCoords,
   parentCoords,
-  parentOutcomeText,
+  outcome,
+  projectTags,
+  zoomLevel, // number
   ctx
 ) {
-  // TODO zoom level
   const parentOutcomeHeight = getOutcomeHeight({
     ctx,
-    statement: parentOutcomeText,
+    outcome,
+    projectTags,
     width: outcomeWidth,
-    zoomLevel: 1,
+    zoomLevel,
   })
   const childConnectionCoords = {
     x: childCoords.x + outcomeWidth / 2,

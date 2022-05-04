@@ -61,6 +61,9 @@ import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { triggerUpdateLayout } from '../redux/ephemeral/layout/actions'
 import { deleteConnection } from '../redux/persistent/projects/connections/actions'
+import { HeaderHashB64 } from '../types/shared'
+import { ComputedOutcome } from '../types'
+import { RootState } from '../redux/reducer'
 
 // ASSUMPTION: one parent (existingParentConnectionAddress)
 function handleMouseUpForOutcomeForm(state, event, store, fromAddress, relation, existingParentConnectionAddress) {
@@ -78,7 +81,11 @@ function handleMouseUpForOutcomeForm(state, event, store, fromAddress, relation,
   )
 }
 
-export default function setupEventListeners(store, canvas) {
+// outcomes is ComputedOutcomes in an object, keyed by their headerHash
+export default function setupEventListeners(store, canvas: HTMLCanvasElement, outcomes: { [headerHash: HeaderHashB64]: ComputedOutcome }) {
+
+  const ctx = canvas.getContext('2d')
+
   function windowResize(event) {
     // Get the device pixel ratio, falling back to 1.
     const dpr = window.devicePixelRatio || 1
@@ -92,7 +99,7 @@ export default function setupEventListeners(store, canvas) {
   async function bodyKeydown(event) {
     const appWebsocket = await getAppWs()
     const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-    let state = store.getState()
+    let state: RootState = store.getState()
     const {
       ui: { activeProject },
     } = state
@@ -252,23 +259,26 @@ export default function setupEventListeners(store, canvas) {
       }
       return
     }
+    
     const outcomeHeaderHash = checkForOutcomeAtCoordinates(
-      canvas.getContext('2d'),
+      ctx,
       translate,
       scale,
       outcomeCoordinates,
       state,
       event.clientX,
-      event.clientY
+      event.clientY,
+      outcomes
     )
     const connectionAddress = checkForConnectionAtCoordinates(
-      canvas.getContext('2d'),
+      ctx,
       translate,
       scale,
       outcomeCoordinates,
       state,
       event.clientX,
-      event.clientY
+      event.clientY,
+      outcomes
     )
     if (connectionAddress && state.ui.hover.hoveredOutcome !== connectionAddress) {
       store.dispatch(hoverConnection(connectionAddress))
@@ -361,22 +371,24 @@ export default function setupEventListeners(store, canvas) {
       const outcomeCoordinates = state.ui.layout
 
       const clickedConnectionAddress = checkForConnectionAtCoordinates(
-        canvas.getContext('2d'),
+        ctx,
         translate,
         scale,
         outcomeCoordinates,
         state,
         event.clientX,
-        event.clientY
+        event.clientY,
+        outcomes
       )
       const clickedOutcomeAddress = checkForOutcomeAtCoordinates(
-        canvas.getContext('2d'),
+        ctx,
         translate,
         scale,
         outcomeCoordinates,
         state,
         event.clientX,
-        event.clientY
+        event.clientY,
+        outcomes,
       )
       if (clickedConnectionAddress) {
         store.dispatch(unselectAll())
@@ -449,19 +461,19 @@ export default function setupEventListeners(store, canvas) {
       ui: {
         activeProject,
         viewport: { translate, scale },
-        screensize: { width },
       },
     } = state
     const outcomes = state.projects.outcomes[activeProject] || {}
     const outcomeCoordinates = state.ui.layout
     const outcomeHeaderHash = checkForOutcomeAtCoordinates(
-      canvas.getContext('2d'),
+      ctx,
       translate,
       scale,
       outcomeCoordinates,
       state,
       event.clientX,
-      event.clientY
+      event.clientY,
+      outcomes
     )
     if (outcomeHeaderHash) {
       store.dispatch(openExpandedView(outcomeHeaderHash))

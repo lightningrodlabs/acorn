@@ -3,10 +3,20 @@ import { outcomeWidth, getOutcomeHeight } from './dimensions'
 import outcomesAsTrees, {
   TreeData,
 } from '../redux/persistent/projects/outcomes/outcomesAsTrees'
+import { ComputedOutcome, Tag } from '../types'
+import { HeaderHashB64, WithHeaderHash } from '../types/shared'
 
 const VERTICAL_SPACING = 50
 
-function getBoundingRec(outcome, allOutcomeCoordinates) {
+function getBoundingRec(
+  outcome: ComputedOutcome,
+  zoomLevel: number,
+  ctx: CanvasRenderingContext2D,
+  projectTags: WithHeaderHash<Tag>[],
+  allOutcomeCoordinates: {
+    [headerHash: HeaderHashB64]: { x: number; y: number }
+  }
+) {
   const origCoord = allOutcomeCoordinates[outcome.headerHash]
   if (!origCoord) {
     return
@@ -23,8 +33,10 @@ function getBoundingRec(outcome, allOutcomeCoordinates) {
     }
     const width = outcomeWidth
     const height = getOutcomeHeight({
-      statement: outcomeToCheck.content,
-      zoomLevel: 1,
+      ctx,
+      outcome: outcomeToCheck,
+      projectTags,
+      zoomLevel,
       width: outcomeWidth,
     })
     const top = topLeftCoord.y
@@ -50,7 +62,12 @@ function getBoundingRec(outcome, allOutcomeCoordinates) {
 
 export { getBoundingRec }
 
-function layoutForTree(tree) {
+function layoutForTree(
+  ctx: CanvasRenderingContext2D,
+  tree: ComputedOutcome,
+  zoomLevel: number,
+  projectTags: WithHeaderHash<Tag>[]
+) {
   // create a graph
   const graph = new dagre.graphlib.Graph()
     .setGraph({})
@@ -59,14 +76,16 @@ function layoutForTree(tree) {
     })
 
   // use recursion to add each outcome as a node in the graph
-  function addOutcome(outcome) {
+  function addOutcome(outcome: ComputedOutcome) {
     graph.setNode(outcome.headerHash, {
       width: outcomeWidth,
       height:
         getOutcomeHeight({
-          statement: outcome.content,
-          zoomLevel: 1,
+          ctx,
+          outcome,
+          zoomLevel,
           width: outcomeWidth,
+          projectTags,
         }) + VERTICAL_SPACING,
     })
     outcome.children.forEach((childOutcome) => {
@@ -93,13 +112,20 @@ function layoutForTree(tree) {
   return coordinates
 }
 
-export default function layoutFormula(data: TreeData) {
+export default function layoutFormula(
+  data: TreeData,
+  zoomLevel: number,
+  projectTags: WithHeaderHash<Tag>[]
+) {
   const trees = outcomesAsTrees(data)
 
   let coordinates = {}
+  // just do this for efficiency, it's not going to
+  // get displayed or rendered anywhere
+  const ctx = document.createElement('canvas').getContext('2d')
   const layouts = trees.computedOutcomesAsTree.map((tree) => ({
     outcome: tree,
-    layout: layoutForTree(tree),
+    layout: layoutForTree(ctx, tree, zoomLevel, projectTags),
   }))
   const HORIZONTAL_TREE_SPACING = 15
   // coordinates will be adjusted each time through this iteration
@@ -110,7 +136,13 @@ export default function layoutFormula(data: TreeData) {
     } else {
       // in the case of all the rest, push it right, according to wherever the last one was positioned + spacing
       const lastTree = layouts[index - 1].outcome
-      const [top, right, bottom, left] = getBoundingRec(lastTree, coordinates)
+      const [top, right, bottom, left] = getBoundingRec(
+        lastTree,
+        zoomLevel,
+        ctx,
+        projectTags,
+        coordinates
+      )
       const adjusted = {}
       Object.keys(tree.layout).forEach((coordKey) => {
         adjusted[coordKey] = {

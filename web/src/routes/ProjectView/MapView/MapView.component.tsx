@@ -40,11 +40,9 @@ const MapView: React.FC<MapViewProps> = ({
 
   const { computedOutcomesKeyed } = useContext(ComputedOutcomeContext)
 
-  // only run this one on initial mount (and unmount for cleanup)
+  // only run this one on initial mount
   useEffect(() => {
     const canvas = refCanvas.current
-    // attach keyboard and mouse events
-    const removeEventListeners = setupEventListeners(store, canvas)
     canvas.width = document.body.clientWidth
     canvas.height = document.body.clientHeight
     // Get the device pixel ratio, falling back to 1.
@@ -54,15 +52,14 @@ const MapView: React.FC<MapViewProps> = ({
     // Give the canvas pixel dimensions of their CSS
     // size * the device pixel ratio.
     store.dispatch(setScreenDimensions(rect.width * dpr, rect.height * dpr))
-    return function cleanup() {
-      removeEventListeners()
-    }
   }, [])
-
+  
   // set this up newly, any time the
   // outcomes and connections change
   useEffect(() => {
     const canvas = refCanvas.current
+    // attach keyboard and mouse events
+    const removeEventListeners = setupEventListeners(store, canvas, computedOutcomesKeyed)
     const unsub = store.subscribe(() => {
       const state: RootState = store.getState()
       const activeProject = state.ui.activeProject
@@ -76,6 +73,7 @@ const MapView: React.FC<MapViewProps> = ({
       }
     })
     return function cleanup() {
+      removeEventListeners()
       unsub()
     }
   }, [computedOutcomesKeyed])

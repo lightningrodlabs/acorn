@@ -23,7 +23,11 @@ function isAncestor(descendantAddress, checkAddress, connections) {
     if (connectionWithParent.parentHeaderHash === checkAddress) {
       return true
     } else {
-      return isAncestor(connectionWithParent.parentHeaderHash, checkAddress, connections)
+      return isAncestor(
+        connectionWithParent.parentHeaderHash,
+        checkAddress,
+        connections
+      )
     }
   } else {
     // if node has no ancestors, then checkAddress must not be an ancestor
@@ -37,7 +41,9 @@ function allDescendants(ancestorAddress, connections, accumulator = []) {
     .filter((connection) => connection.parentHeaderHash === ancestorAddress)
     .map((connection) => connection.childHeaderHash)
   return accumulator
-    .concat(children.map((address) => allDescendants(address, connections, children)))
+    .concat(
+      children.map((address) => allDescendants(address, connections, children))
+    )
     .flat()
 }
 
@@ -66,14 +72,20 @@ relation as parent, other node MUST
 - have no parent
 - not be the root ancestor of 'from' node, to prevent cycles in the tree
 */
-export function calculateValidChildren(fromAddress, connections, outcomeHeaderHashes) {
+export function calculateValidChildren(
+  fromAddress,
+  connections,
+  outcomeHeaderHashes
+) {
   return outcomeHeaderHashes.filter((outcomeHeaderHash) => {
     return (
       // filter out self-address in the process
       outcomeHeaderHash !== fromAddress &&
       // find the Outcome objects without parent Outcomes
       // since they will sit at the top level
-      !connections.find((connection) => connection.childHeaderHash === outcomeHeaderHash) &&
+      !connections.find(
+        (connection) => connection.childHeaderHash === outcomeHeaderHash
+      ) &&
       !isAncestor(fromAddress, outcomeHeaderHash, connections)
     )
   })
@@ -104,6 +116,7 @@ const ConnectionConnectorHtml = ({
 
 const ConnectionConnector = ({
   activeProject,
+  projectTags,
   outcome,
   ownExistingParentConnectionAddress,
   presetExistingParentConnectionAddress,
@@ -119,11 +132,17 @@ const ConnectionConnector = ({
   setHoveredConnectionConnector,
   connections,
   outcomeHeaderHashes,
+  zoomLevel,
   dispatch,
 }) => {
   const ctx = canvas.getContext('2d')
-  // TODO
-  const outcomeHeight = getOutcomeHeight({ ctx, statement: outcome.content, zoomLevel: 1, width: outcomeWidth })
+  const outcomeHeight = getOutcomeHeight({
+    ctx,
+    outcome,
+    projectTags,
+    zoomLevel,
+    width: outcomeWidth,
+  })
 
   // calculate the coordinates on the page, based
   // on what the coordinates on the canvas would be
@@ -164,7 +183,9 @@ const ConnectionConnector = ({
         // we don't think about overriding the existing
         // parent when it comes to children, since it can have many
         // ASSUMPTION: one parent
-        direction === RELATION_AS_CHILD ? ownExistingParentConnectionAddress : undefined
+        direction === RELATION_AS_CHILD
+          ? ownExistingParentConnectionAddress
+          : undefined
       )
     }
   }
@@ -191,7 +212,8 @@ const ConnectionConnector = ({
   const connectorOnMouseOver = () => {
     setHoveredConnectionConnector(address)
     // cannot set 'to' the very same Outcome
-    if (fromAddress && address !== fromAddress) setConnectionConnectorTo(address)
+    if (fromAddress && address !== fromAddress)
+      setConnectionConnectorTo(address)
   }
   const connectorOnMouseOut = () => {
     setHoveredConnectionConnector(null)
@@ -231,6 +253,8 @@ const ConnectionConnector = ({
 
 const ConnectionConnectors = ({
   activeProject,
+  projectTags,
+  zoomLevel,
   outcomes,
   connections,
   outcomeHeaderHashes,
@@ -246,7 +270,9 @@ const ConnectionConnectors = ({
   setConnectionConnectorTo,
   dispatch,
 }) => {
-  const [hoveredConnectionConnector, setHoveredConnectionConnector] = useState(null)
+  const [hoveredConnectionConnector, setHoveredConnectionConnector] = useState(
+    null
+  )
   // work in the one currently being hovered over, if there is one
   // to the list of connection connectors that are eligible to stay
   connectorAddresses = connectorAddresses.concat(
@@ -267,16 +293,21 @@ const ConnectionConnectors = ({
           <Transition key={connectorAddress} timeout={300}>
             {(state) => (
               <ConnectionConnector
-                state={state}
+                // state={state}
                 activeProject={activeProject}
+                projectTags={projectTags}
                 outcome={outcome}
                 connections={connections}
                 outcomeHeaderHashes={outcomeHeaderHashes}
                 fromAddress={fromAddress}
                 relation={relation}
                 toAddress={toAddress}
-                ownExistingParentConnectionAddress={hasParent && hasParent.headerHash}
-                presetExistingParentConnectionAddress={existingParentConnectionAddress}
+                ownExistingParentConnectionAddress={
+                  hasParent && hasParent.headerHash
+                }
+                presetExistingParentConnectionAddress={
+                  existingParentConnectionAddress
+                }
                 address={connectorAddress}
                 setConnectionConnectorFrom={setConnectionConnectorFrom}
                 setConnectionConnectorTo={setConnectionConnectorTo}
@@ -285,6 +316,7 @@ const ConnectionConnectors = ({
                 coordsCanvasToPage={coordsCanvasToPage}
                 canvas={canvas}
                 dispatch={dispatch}
+                zoomLevel={zoomLevel}
               />
             )}
           </Transition>
