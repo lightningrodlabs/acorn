@@ -4,8 +4,8 @@ import { HolochainRunnerOptions, StateSignal, PathOptions } from 'electron-holoc
 
 // see the DEVELOPERS.md about incrementing
 // these values
-const DATABASES_VERSION_NUMBER = '1'
-const KEYSTORE_VERSION_NUMBER = '1'
+const DATABASES_VERSION_NUMBER = '2'
+const KEYSTORE_VERSION_NUMBER = '2'
 
 // these messages get seen on the splash page
 export enum StateSignalText {
