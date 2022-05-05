@@ -54,8 +54,8 @@ jobs:
       # rm the dna files from repository
       - name: clearing precompiled files
         run: |
-          rm dna/workdir/*.dna
-          rm dna/workdir/*.happ
+          rm happ/workdir/*.dna
+          rm happ/workdir/*.happ
       - uses: actions/download-artifact@master
         with:
           name: profiles-artifact
