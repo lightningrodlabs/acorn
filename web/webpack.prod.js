@@ -1,12 +1,11 @@
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
+const HTMLWebpackPlugin = require('html-webpack-plugin')
 const mainAppId = fs.readFileSync(
   path.join(__dirname, '../config-main-app-id'),
   'utf-8'
 )
-
-const storyDir = path.join(__dirname, 'src/stories')
 
 module.exports = {
   mode: 'production',
@@ -21,6 +20,15 @@ module.exports = {
       __MAIN_APP_ID__: JSON.stringify(mainAppId),
       __ADMIN_PORT__: 1235,
       __APP_PORT__: 8889,
+    }),
+    new HTMLWebpackPlugin({
+      template: './src/index.html', //source
+      filename: 'index.html', //destination
+    }),
+    new HTMLWebpackPlugin({
+      template: './src/splashscreen.html', //source
+      filename: 'splashscreen.html', //destination
+      chunks: ['splash'],
     }),
   ],
   entry: {
