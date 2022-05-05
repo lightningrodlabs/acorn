@@ -16,7 +16,7 @@ import {
 import drawTimeAndAssignees from '../drawTimeAndAssignees'
 
 export const argsForDrawTimeAndAssignees = ({
-  onlyMeasure,
+  onlyMeasure = false,
   outcome,
   outcomeLeftX,
   outcomeWidth,
@@ -25,7 +25,7 @@ export const argsForDrawTimeAndAssignees = ({
   outcomeTagsHeight,
   ctx,
 }: {
-  onlyMeasure: boolean
+  onlyMeasure?: boolean
   outcome: ComputedOutcome
   outcomeLeftX: number
   outcomeTopY: number

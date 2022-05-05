@@ -52,9 +52,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # rm the dna files from repository
-      - name: clearing precompiled dna files
+      - name: clearing precompiled files
         run: |
           rm dna/workdir/*.dna
+          rm dna/workdir/*.happ
       - uses: actions/download-artifact@master
         with:
           name: profiles-artifact

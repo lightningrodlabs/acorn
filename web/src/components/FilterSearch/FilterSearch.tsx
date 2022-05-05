@@ -24,6 +24,7 @@ const FilterSearch: React.FC<FilterSearchProps> = ({
         size === 'large' ? 'large' : size === 'small' ? 'small' : ''
       }`}
     >
+      {/* @ts-ignore */}
       <Icon name="search.svg" size="small" className="not-hoverable" />
       <input
         type="text"
@@ -39,6 +40,7 @@ const FilterSearch: React.FC<FilterSearchProps> = ({
           }}
           className="clear-button"
         >
+          {/* @ts-ignore */}
           <Icon
             name="x.svg"
             size="small"

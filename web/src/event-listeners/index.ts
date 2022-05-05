@@ -82,8 +82,8 @@ function handleMouseUpForOutcomeForm({
   event: MouseEvent
   store: any // redux store, for the sake of dispatch
   fromAddress?: HeaderHashB64
-  relation: RelationInput
-  existingParentConnectionAddress: HeaderHashB64
+  relation?: RelationInput
+  existingParentConnectionAddress?: HeaderHashB64
 }) {
   const calcedPoint = coordsPageToCanvas(
     {
@@ -383,7 +383,7 @@ export default function setupEventListeners(
   }
 
   function canvasClick(event) {
-    const state = store.getState()
+    const state: RootState = store.getState()
     // outcomesAddresses are Outcomes to be selected
     const {
       ui: {

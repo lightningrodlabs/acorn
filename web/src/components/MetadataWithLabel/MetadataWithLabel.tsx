@@ -18,6 +18,7 @@ const MetadataWithLabel: React.FC<MetadataWithLabelProps> = ({
       {/* Optional icon for the label */}
       {iconName && (
         <div className="metadata-with-label-icon">
+          {/* @ts-ignore */}
           <Icon name={iconName} size="small" className="not-hoverable" />
         </div>
       )}

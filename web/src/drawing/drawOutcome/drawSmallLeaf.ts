@@ -1,6 +1,8 @@
 import draw from '../draw'
 import { getOrSetImageForUrl } from '../imageCache'
+// @ts-ignore
 import leafGreen from '../../images/leaf-green.svg'
+// @ts-ignore
 import leafBronze from '../../images/leaf-bronze.svg'
 
 const drawSmallLeaf = ({

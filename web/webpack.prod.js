@@ -6,6 +6,8 @@ const mainAppId = fs.readFileSync(
   'utf-8'
 )
 
+const storyDir = path.join(__dirname, 'src/stories')
+
 module.exports = {
   mode: 'production',
   output: {
@@ -49,7 +51,7 @@ module.exports = {
       },
       {
         test: /\.(ts|tsx)$/,
-        exclude: /node_modules/,
+        exclude: [/node_modules/, /src\/stories/],
         use: 'ts-loader',
       },
       // fonts
@@ -65,9 +67,9 @@ module.exports = {
           },
         },
       },
-      // .png images
+      // .png, .jpg, .svg images
       {
-        test: /\.png$/,
+        test: /\.(png|jpg|svg)$/,
         use: {
           loader: 'file-loader',
           options: {

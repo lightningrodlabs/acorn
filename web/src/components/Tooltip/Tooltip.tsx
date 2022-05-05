@@ -1,6 +1,8 @@
 import React from 'react'
 
+// @ts-ignore
 import TooltipTriangleOnTop from '../../images/tooltip-triangle-top.svg'
+// @ts-ignore
 import TooltipTriangleOnBottom from '../../images/tooltip-triangle-bottom.svg'
 
 export type TooltipProps = {

@@ -87,7 +87,7 @@ async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
   // we will directly set ourselves as a member of this cell
   const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-  await dispatch(setMember(cellIdString, { address: agentAddress }))
+  await dispatch(setMember(cellIdString, { agentPubKey: agentAddress }))
   const b1 = Date.now()
   const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(
     cellId,
@@ -183,7 +183,7 @@ async function importProject(
 
   const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-  await dispatch(setMember(projectsCellIdString, { address: agentAddress }))
+  await dispatch(setMember(projectsCellIdString, { agentPubKey: agentAddress }))
   try {
     console.log(projectMeta)
     const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(

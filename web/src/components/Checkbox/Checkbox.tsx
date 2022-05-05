@@ -21,6 +21,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
       ${size === 'small' ? 'small' : size === 'large' ? 'large' : ''}
       `}
     >
+      {/* @ts-ignore */}
       {isChecked && <Icon name="check.svg" className="white not-hoverable" />}
     </div>
   )

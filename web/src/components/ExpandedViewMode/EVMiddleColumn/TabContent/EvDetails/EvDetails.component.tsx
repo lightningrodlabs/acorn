@@ -160,8 +160,10 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   // is someone else editing it?
   // if so, local person can't
   const editingTitlePeer = editingPeers.find(
+    // @ts-ignore
     (peerInfo) => peerInfo.outcomeBeingEdited.isTitle
   )
+  // @ts-ignore
   const titleEditor = editingTitlePeer ? editingTitlePeer.profileInfo : {}
 
   /*
@@ -235,10 +237,12 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   // is someone else editing it?
   // if so, local person can't
   const editingDescriptionPeer = editingPeers.find(
+    // @ts-ignore
     (peerInfo) => !peerInfo.outcomeBeingEdited.isTitle
   )
   const descriptionEditor = editingDescriptionPeer
-    ? editingDescriptionPeer.profileInfo
+    ? // @ts-ignore
+      editingDescriptionPeer.profileInfo
     : {}
 
   /*

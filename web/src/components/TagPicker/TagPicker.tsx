@@ -30,6 +30,7 @@ const TagPickerDisplayTags: React.FC<TagPickerDisplayTagsProps> = ({
       {/* search tag */}
       {tags.length > 0 && (
         <div className="tag-picker-filter">
+          {/* @ts-ignore */}
           <Icon name="search.svg" size="small" className="grey not-hoverable" />
           <input
             type="text"
@@ -44,6 +45,7 @@ const TagPickerDisplayTags: React.FC<TagPickerDisplayTagsProps> = ({
               }}
               className="clear-button"
             >
+              {/* @ts-ignore */}
               <Icon
                 name="x.svg"
                 size="small"
@@ -89,6 +91,7 @@ const TagPickerDisplayTags: React.FC<TagPickerDisplayTagsProps> = ({
                 <Tag text={tag.text} backgroundColor={tag.backgroundColor} />
 
                 <div className="tag-picker-edit-button">
+                  {/* @ts-ignore */}
                   <Icon
                     name="edit.svg"
                     className="light-grey not-hoverable"
@@ -106,7 +109,9 @@ const TagPickerDisplayTags: React.FC<TagPickerDisplayTagsProps> = ({
         onClick={() => setIsCreateTagOpen(true)}
       >
         <div className="create-new-tag-button-icons">
+          {/* @ts-ignore */}
           <Icon name="plus.svg" className="grey not-hoverable" />
+          {/* @ts-ignore */}
           <Icon name="tag.svg" className="grey not-hoverable" />
         </div>
         Create a new tag
@@ -146,6 +151,7 @@ const CreateOrEditTag: React.FC<CreateOrEditTagProps> = ({
   return (
     <div className="create-or-edit-tag-wrapper">
       <div>
+        {/* @ts-ignore */}
         <ValidatingFormInput
           value={tagText}
           onChange={(text: string) => {
@@ -161,6 +167,7 @@ const CreateOrEditTag: React.FC<CreateOrEditTagProps> = ({
           placeholder="Release 0.6.2"
         />
         <div className="tag-picker-color-row">
+          {/* @ts-ignore */}
           <ValidatingFormInput
             value={tagColor}
             onChange={(color: string) => {

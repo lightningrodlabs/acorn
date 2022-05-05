@@ -326,6 +326,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
                 }}
                 state2={{
                   icon: (
+                    /* @ts-ignore */
                     <Icon
                       name="uncertain.svg"
                       className="uncertain not-hoverable"
