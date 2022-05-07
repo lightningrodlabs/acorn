@@ -27,6 +27,14 @@
       cursor: pointer;
       display: none;
       padding: 0.25rem;
+
+      .icon {
+        .inner-icon {
+          &:hover {
+            background-color: var(--text-color-primary);
+          }
+        }
+      }
     }
   }
 

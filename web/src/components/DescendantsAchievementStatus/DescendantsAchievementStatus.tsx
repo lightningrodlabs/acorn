@@ -63,10 +63,9 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
             {/* achievement progress percentage */}
             <div className="descendants-progress-percentage">
               (
-              {(
-                computedAchievementStatus.smallsAchieved /
-                computedAchievementStatus.smallsTotal
-              ).toFixed(2)}
+              {(computedAchievementStatus.smallsAchieved /
+                computedAchievementStatus.smallsTotal) *
+                100}
               % )
             </div>
           </div>
@@ -106,10 +105,9 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
               {computedAchievementStatus.uncertains === 0 && (
                 <div className="descendants-progress-percentage">
                   (
-                  {(
-                    computedAchievementStatus.smallsAchieved /
-                    computedAchievementStatus.smallsTotal
-                  ).toFixed(2)}
+                  {(computedAchievementStatus.smallsAchieved /
+                    computedAchievementStatus.smallsTotal) *
+                    100}
                   % )
                 </div>
               )}

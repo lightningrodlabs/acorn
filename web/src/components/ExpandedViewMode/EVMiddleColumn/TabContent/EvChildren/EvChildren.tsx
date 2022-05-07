@@ -19,8 +19,10 @@ const EvChildren: React.FC<EvChildrenProps> = ({
       <EvReadOnlyHeading
         headingText={outcomeContent}
         // @ts-ignore
-        overviewIcon={<Icon name="hierarchy.svg" />}
-        overviewText={`${directChildren.length} children`}
+        overviewIcon={<Icon name="hierarchy.svg" className="not-hoverable" />}
+        overviewText={`${directChildren.length} child${
+          directChildren.length > 1 ? 'ren' : ''
+        }`}
       />
       <div className="ev-children-view-outcome-list">
         {directChildren.map((outcome) => {

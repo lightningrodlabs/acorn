@@ -23,7 +23,7 @@ const ReadOnlyInfo: React.FC<ReadOnlyInfoProps> = ({
           <div className="read-only-info-row">
             <div className="read-only-info-icon">{info.icon}</div>
             <div className="read-only-info-text">
-              <Typography style="body2">{info.text}</Typography>
+              <Typography style="body1">{info.text}</Typography>
             </div>
           </div>
         )
