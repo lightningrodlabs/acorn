@@ -8,6 +8,7 @@ import { CellIdString, HeaderHashB64 } from '../../types/shared'
 import { ComputedOutcome } from '../../types'
 import './ExpandedViewMode.scss'
 import ButtonClose from '../ButtonClose/ButtonClose'
+import Breadcrumbs from '../Breadcrumbs/Breadcrumbs'
 
 // props passed to the component by the parent
 export type ExpandedViewModeOwnProps = {
@@ -79,7 +80,11 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
         unmountOnExit
         classNames="expanded-view-overlay"
       >
-        <div className="expanded-view-overlay" />
+        <div className="expanded-view-overlay">
+          <div className="expanded-view-breadcrumbs-wrapper">
+            <Breadcrumbs />
+          </div>
+        </div>
       </CSSTransition>
       <CSSTransition
         in={showing}
@@ -89,13 +94,6 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
       >
         <div className="expanded-view-wrapper">
           <ButtonClose onClick={onClose} size="medium" />
-          {/* @ts-ignore */}
-          {/* <Icon
-            onClick={onClose}
-            name="x.svg"
-            size="small-close"
-            className="light-grey"
-          /> */}
           <EVLeftColumn
             activeTab={activeTab}
             onChange={setActiveTab}

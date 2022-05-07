@@ -84,6 +84,17 @@
     color: var(--text-color-caption);
     line-height: 1.45;
   }
+   // breadcrumbs
+  &.breadcrumbs {
+    font: 0.875rem var(--font-family-primary-medium);
+    color: var(--text-color-secondary);
+    line-height: 1.45;
+  }
+  &.breadcrumbs-bold {
+    font: 0.875rem var(--font-family-primary-bold);
+    color: var(--text-color-secondary);
+    line-height: 1.45;
+  }
   // label
   &.label {
     font: 1rem var(--font-family-primary-extrabold);

@@ -1,0 +1,26 @@
+.breadcrumbs-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.415rem 1rem;
+  background-color: var(--bg-color-secondary);
+  border-radius: 0.5rem;
+  
+  .breadcrumbs-parents {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .breadcrumbs-current-outcome {
+    margin-left: 0.125rem;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    cursor: pointer;
+  }
+}
