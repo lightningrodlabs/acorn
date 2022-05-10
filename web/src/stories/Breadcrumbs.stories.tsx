@@ -9,9 +9,9 @@ export default {
   title: 'Expanded View/Breadcrumbs',
   component: Breadcrumbs,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
+  // argTypes: {
+  //  backgroundColor: { control: 'color' },
+  // },
 } as ComponentMeta<typeof Breadcrumbs>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
