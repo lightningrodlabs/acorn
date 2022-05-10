@@ -16,7 +16,6 @@ export default {
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof Breadcrumbs> = (args) => {
-  const [selectedState, setSelectedState] = useState(false)
   return (
     <Breadcrumbs
       {...args}
