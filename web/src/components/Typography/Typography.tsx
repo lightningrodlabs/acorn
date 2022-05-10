@@ -22,6 +22,8 @@ export type TypographyProps = {
     | 'caption2'
     | 'caption3'
     | 'caption4'
+    | 'breadcrumbs'
+    | 'breadcrumbs-bold'
     | 'button-text'
     | 'label'
   text?: string

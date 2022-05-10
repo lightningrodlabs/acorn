@@ -13,7 +13,12 @@ import EvTaskList from '../components/ExpandedViewMode/EVMiddleColumn/TabContent
 import EvChildren from '../components/ExpandedViewMode/EVMiddleColumn/TabContent/EvChildren/EvChildren'
 import testComments from './testData/testComments'
 import testProfile from './testData/testProfile'
-import { testBigAchievedOutcome, testSmallAchievedOutcome } from './testData/testOutcomes'
+import {
+  testBigAchievedOutcome,
+  testBigPartiallyAchievedOutcome,
+  testSmallAchievedOutcome,
+  testSmallAchievedOutcome2,
+} from './testData/testOutcomes'
 import testTags from './testData/testTags'
 
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
@@ -72,7 +77,8 @@ const details = (
 const comments = (
   <EvComments
     projectId={projectId}
-    outcomeContent="This is the content property of an Outcome, it can get long sometimes"
+    outcomeContent="New API in typescript definitions are written 
+    Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions."
     outcomeHeaderHash={''}
     profiles={{
       '389457985y498592847': testProfile,
@@ -89,14 +95,19 @@ const comments = (
 
 const childrenList = (
   <EvChildren
-    outcomeContent="This is the content property of an Outcome, it can get long sometimes"
-    directChildren={[testSmallAchievedOutcome]}
+    outcomeContent="New API in typescript definitions are written 
+    Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions."
+    directChildren={[
+      testSmallAchievedOutcome,
+      testSmallAchievedOutcome2,
+      testBigPartiallyAchievedOutcome,
+    ]}
   />
 )
 
 const taskList = (
   <EvTaskList
-    outcomeContent="This is the content property of an Outcome, it can get long sometimes"
+    outcomeContent="New API in typescript definitions are written Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions."
     tasks={[
       {
         task: 'create a scope of work, for development',

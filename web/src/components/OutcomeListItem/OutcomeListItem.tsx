@@ -17,26 +17,30 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({ outcome }) => {
   return (
     <div className="outcome-list-item">
       {/* ID */}
-      {/* TODO: set typography */}
       {/* TODO: setup outcome id */}
       <div className="outcome-list-item-id">
         <Typography style="caption3">123411</Typography>
       </div>
 
       {/* Leaf (or not) */}
-      <div className="outcome-list-item-icon-wrapper">
+      <div className="outcome-list-item-icon-wrapper leaf">
         <Icon name="leaf.svg" className="not-hoverable" />
       </div>
 
       {/* ProgressIndicator */}
-      <div className="outcome-list-item-icon-wrapper">
+      <div className="outcome-list-item-icon-wrapper progress">
         <ProgressIndicator progress={progress} />
       </div>
 
       {/* Outcome statement text */}
-      {/* TODO: set typography */}
       <div className="outcome-list-item-statement" title={outcome.content}>
         <Typography style="h7">{outcome.content}</Typography>
+      </div>
+
+      {/* TODO: on click switch icon function */}
+      {/* Switch to hovered outcome child (on hover) */}
+      <div className="outcome-list-item-switch-button">
+        <Icon name="enter.svg" size="small" className="light-grey" />
       </div>
     </div>
   )

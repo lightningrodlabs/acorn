@@ -33,11 +33,19 @@
     margin-right: 1rem;
 
     .progress-indicator-wrapper {
-      margin-right: 0.375rem;
+      margin-right: 0.5rem;
     }
 
     .descendants-scope-wrapper {
-      margin-right: 0.3rem;
+      margin-right: 0.325rem;
+    }
+
+    .descendants-progress-percentage {
+      margin-left: 0.25rem;
+      font-family: var(--font-family-primary-regular);
+    }
+    &.achieved {
+      color: var(--color-forest-green);
     }
 
     &.smalls {
@@ -54,7 +62,12 @@
   }
 }
 
-.descendants-uncertains-wrapper {
-  // TODO: fix this number
-  padding-left: 10px;
+.more-info-wrapper {
+  .icon .inner-icon {
+    background-color: var(--icon-color-light-grey);
+
+    &:hover {
+      background-color: var(--text-color-primary);
+    }
+  }
 }

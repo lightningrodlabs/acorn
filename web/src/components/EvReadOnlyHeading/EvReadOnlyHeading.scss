@@ -2,12 +2,25 @@
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  padding: 0 3rem 2rem 3rem;
+  padding: 0 3rem 1.5rem 3rem;
   border-bottom: 0.125rem solid var(--border-color-platinum);
+  max-height: 6rem;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 
   .ev-read-only-heading {
     margin-right: 2rem;
     flex: 1;
-    min-height: 100%;
+    height: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex-wrap: nowrap;
+    display: box;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    box-orient: vertical;
+    -webkit-box-orient: vertical;
   }
 }

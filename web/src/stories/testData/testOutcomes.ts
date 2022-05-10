@@ -51,7 +51,34 @@ const testSmallNotAchievedOutcome: ComputedOutcome = {
 const testSmallAchievedOutcome: ComputedOutcome = {
   headerHash: 'test-small-achieved-header-hash',
   content:
-    'Small Achieved, New API in typescript definitions are written Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
+    'New API in typescript definitions are written Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
+  creatorAgentPubKey: 'creatoragentpubkey',
+  editorAgentPubKey: 'editoryagentpubkey',
+  timestampCreated: Date.now(),
+  timestampUpdated: Date.now(),
+  scope: {
+    Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] },
+  },
+  tags: [testTag1HeaderHash],
+  description:
+    'Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
+  githubLink: '',
+  isImported: false,
+  computedScope: ComputedScope.Small,
+  computedAchievementStatus: {
+    uncertains: 0,
+    smallsAchieved: 0,
+    smallsTotal: 0,
+    simple: ComputedSimpleAchievementStatus.Achieved,
+  },
+  children: [],
+}
+
+
+const testSmallAchievedOutcome2: ComputedOutcome = {
+  headerHash: 'test-small-achieved-header-hash2',
+  content:
+    'New API in typescript definitions are written Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
   creatorAgentPubKey: 'creatoragentpubkey',
   editorAgentPubKey: 'editoryagentpubkey',
   timestampCreated: Date.now(),
@@ -223,5 +250,6 @@ export {
   testUncertainWithoutChildrenOutcome,
   testUncertainWithChildrenOutcome,
   testSmallAchievedOutcome,
+  testSmallAchievedOutcome2,
   testSmallNotAchievedOutcome,
 }
