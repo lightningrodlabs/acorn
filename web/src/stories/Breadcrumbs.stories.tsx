@@ -19,8 +19,6 @@ const Template: ComponentStory<typeof Breadcrumbs> = (args) => {
   return (
     <Breadcrumbs
       {...args}
-      isChecked={selectedState}
-      onChange={(state) => setSelectedState(state)}
     />
   )
 }
