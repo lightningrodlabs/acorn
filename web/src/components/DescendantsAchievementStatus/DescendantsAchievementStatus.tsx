@@ -31,7 +31,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
       {tasklistCount === 0 && (
         <>
           <Typography style="caption2">
-            This outcome has no task items.
+            This outcome has no tasks.
           </Typography>{' '}
         </>
       )}
