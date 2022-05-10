@@ -76,7 +76,7 @@ const testSmallAchievedOutcome: ComputedOutcome = {
 
 
 const testSmallAchievedOutcome2: ComputedOutcome = {
-  headerHash: 'test-small-achieved-header-hash',
+  headerHash: 'test-small-achieved-header-hash2',
   content:
     'New API in typescript definitions are written Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
   creatorAgentPubKey: 'creatoragentpubkey',
