@@ -8,8 +8,9 @@ import ProjectsZomeApi from '../../../../api/projectsApi'
 import { getAppWs } from '../../../../hcWebsockets'
 import { cellIdFromString } from '../../../../utils'
 import PriorityUniversal from './PriorityUniversal.component'
+import { RootState } from '../../../../redux/reducer'
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject
   const agents = state.agents
   const outcomes = state.projects.outcomes[projectId] || {}
@@ -19,6 +20,7 @@ function mapStateToProps(state) {
   // add members on to outcome state objects
   const allOutcomesArray = Object.values(outcomes).map((outcome) => {
     const extensions = {}
+    // @ts-ignore (UNDO THIS ts-ignore)
     extensions.members = Object.values(outcomeMembers)
       .filter(
         (outcomeMember) =>

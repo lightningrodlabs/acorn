@@ -21,13 +21,13 @@ const CommentInput: React.FC<CommentInputProps> = ({
     <div className="comment-input-row">
       <div className="comment-input-wrapper">
         <TextareaAutosize
-          type="text"
           value={value}
           placeholder="Add a comment"
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={onKeyDown}
         />
         <div className="comment-input-enter-button">
+          {/* @ts-ignore */}
           <Icon
             name="send-plane.svg"
             className="small grey"

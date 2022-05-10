@@ -15,7 +15,7 @@ import {
 import drawTags from '../drawTags'
 
 export const argsForDrawTags = ({
-  onlyMeasure,
+  onlyMeasure = false,
   outcome,
   outcomeLeftX,
   outcomeTopY,
@@ -24,7 +24,7 @@ export const argsForDrawTags = ({
   projectTags,
   ctx,
 }: {
-  onlyMeasure: boolean
+  onlyMeasure?: boolean
   outcome: ComputedOutcome
   outcomeLeftX: number
   outcomeTopY: number

@@ -52,9 +52,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # rm the dna files from repository
-      - name: clearing precompiled dna files
+      - name: clearing precompiled files
         run: |
-          rm dna/workdir/*.dna
+          rm happ/workdir/*.dna
+          rm happ/workdir/*.happ
       - uses: actions/download-artifact@master
         with:
           name: profiles-artifact
@@ -94,16 +95,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.6.0-alpha.AppImage" --clobber
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.9.0-alpha3.AppImage" --clobber
       - name: upload binary (macos only)
         if: ${{ runner.os == 'macOs' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.6.0-alpha.dmg" --clobber
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-0.9.0-alpha3.dmg" --clobber
       - name: upload binary (Windows only)
         if: ${{ runner.os == 'Windows' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "electron/out/Acorn.Setup.0.6.0-alpha.exe" --clobber
+          gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "electron/out/Acorn.Setup.0.9.0-alpha3.exe" --clobber

@@ -257,6 +257,7 @@ export default function HeaderRightPanel({
         {/* Help button */}
         <div className="help-button-external">
           <Typography style="h8">Help</Typography>
+          {/* @ts-ignore */}
           <Icon
             name="external-link.svg"
             size="small"

@@ -10,6 +10,7 @@ import {
 import { ENTRY_POINTS } from '../../searchParams'
 import MembersIndicator from '../MembersIndicator/MembersIndicator'
 
+// @ts-ignore
 import DoorOpen from '../../images/door-open.svg'
 import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 import useOnClickOutside from 'use-onclickoutside'
@@ -75,7 +76,9 @@ function HeaderLeftPanel({
 
   // map, table and priority view routes
 
-  const projectPage = useRouteMatch('/project/:projectId')
+  const projectPage = useRouteMatch<{ projectId: string }>(
+    '/project/:projectId'
+  )
   const projectId = projectPage ? projectPage.params.projectId : null
   const mapPage = useRouteMatch('/project/:projectId/map')
 
@@ -108,6 +111,7 @@ function HeaderLeftPanel({
                     activeClassName="view-mode-active"
                     className="view-mode-link"
                   >
+                    {/* @ts-ignore */}
                     <Icon
                       name="map.svg"
                       size="view-mode"
@@ -123,6 +127,7 @@ function HeaderLeftPanel({
                     activeClassName="view-mode-active"
                     className="view-mode-link"
                   >
+                    {/* @ts-ignore */}
                     <Icon
                       name="table.svg"
                       size="view-mode"
@@ -138,6 +143,7 @@ function HeaderLeftPanel({
                     activeClassName="view-mode-active"
                     className="view-mode-link"
                   >
+                    {/* @ts-ignore */}
                     <Icon
                       name="sort-asc.svg"
                       size="view-mode"
@@ -154,6 +160,7 @@ function HeaderLeftPanel({
 
                 {/* Entry points */}
                 <div className="header-left-panel-entry-points-button">
+                  {/* @ts-ignore */}
                   <Icon
                     name="door-open.svg"
                     size="view-mode"
@@ -171,6 +178,7 @@ function HeaderLeftPanel({
                 </div>
 
                 {/* Settings */}
+                {/* @ts-ignore */}
                 <Icon
                   name="settings.svg"
                   withTooltip

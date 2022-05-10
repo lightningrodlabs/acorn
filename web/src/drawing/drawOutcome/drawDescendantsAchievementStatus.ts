@@ -5,7 +5,9 @@ import {
 } from '../../types'
 import draw from '../draw'
 import { getOrSetImageForUrl } from '../imageCache'
+// @ts-ignore
 import leafGreenSvg from '../../images/leaf-green.svg'
+// @ts-ignore
 import uncertainSvg from '../../images/uncertain.svg'
 
 const drawDescendantsAchievementStatus = ({

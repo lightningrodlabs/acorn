@@ -39,6 +39,7 @@ const FilterDropdown: React.FC<FilterDropdownProps> = ({
         <div className="filter-dropdown-text">{text}</div>
 
         <div className="filter-dropdown-chevron">
+          {/* @ts-ignore */}
           <Icon
             name={isOpenDropdownMenu ? 'chevron-up.svg' : 'chevron-down.svg'}
             size="small"

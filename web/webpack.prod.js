@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
+const HTMLWebpackPlugin = require('html-webpack-plugin')
 const mainAppId = fs.readFileSync(
   path.join(__dirname, '../config-main-app-id'),
   'utf-8'
@@ -19,6 +20,15 @@ module.exports = {
       __MAIN_APP_ID__: JSON.stringify(mainAppId),
       __ADMIN_PORT__: 1235,
       __APP_PORT__: 8889,
+    }),
+    new HTMLWebpackPlugin({
+      template: './src/index.html', //source
+      filename: 'index.html', //destination
+    }),
+    new HTMLWebpackPlugin({
+      template: './src/splashscreen.html', //source
+      filename: 'splashscreen.html', //destination
+      chunks: ['splash'],
     }),
   ],
   entry: {
@@ -49,7 +59,7 @@ module.exports = {
       },
       {
         test: /\.(ts|tsx)$/,
-        exclude: /node_modules/,
+        exclude: [/node_modules/, /src\/stories/],
         use: 'ts-loader',
       },
       // fonts
@@ -65,9 +75,9 @@ module.exports = {
           },
         },
       },
-      // .png images
+      // .png, .jpg, .svg images
       {
-        test: /\.png$/,
+        test: /\.(png|jpg|svg)$/,
         use: {
           loader: 'file-loader',
           options: {

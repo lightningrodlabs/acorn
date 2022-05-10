@@ -20,6 +20,7 @@ const ButtonTabIcon: React.FC<ButtonTabIconProps> = ({
       className={`button-tab-icon-wrapper ${active ? 'active' : ''}`}
       onClick={onClick}
     >
+      {/* @ts-ignore */}
       <Icon
         name={iconName}
         size="large"

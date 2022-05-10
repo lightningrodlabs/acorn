@@ -194,7 +194,7 @@ const MapViewOutcomeTitleForm: React.FC<MapViewOutcomeTitleFormProps> = ({
       >
         <TextareaAutosize
           autoFocus
-          placeholder="Add a title..."
+          placeholder="Add an outcome statement"
           value={content}
           onChange={handleChange}
           onKeyDown={handleKeyDown}

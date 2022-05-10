@@ -52,7 +52,6 @@ function UniversalOutcome({
                     withStatus
                     selfAssignedStatus={member.status}
                     withTooltip
-                    tooltipText={`${member.firstName} ${member.lastName}`}
                   />
                 </div>
               )
@@ -67,12 +66,14 @@ function UniversalOutcome({
             className="universal-priority-outcome-item-button outcome-item-button-expand"
             onClick={() => openExpandedView(outcome.headerHash)}
           >
+            {/* @ts-ignore */}
             <Icon name="expand.svg" size="small" className="grey" />
           </div>
           <div
             className="universal-priority-outcome-item-button outcome-item-button-map"
             onClick={() => goToOutcome(outcome.headerHash)}
           >
+            {/* @ts-ignore */}
             <Icon name="map.svg" size="small" className="grey" />
           </div>
         </div>

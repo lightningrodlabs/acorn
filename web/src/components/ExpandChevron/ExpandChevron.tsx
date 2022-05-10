@@ -14,6 +14,7 @@ const ExpandChevron: React.FC<ExpandChevronProps> = ({ expanded, onClick }) => {
       className={`expand-chevron-wrapper ${expanded ? 'expanded' : ''}`}
       onClick={onClick}
     >
+      {/* @ts-ignore */}
       <Icon name="chevron-right.svg" size="small" className="light-grey" />
     </div>
   )

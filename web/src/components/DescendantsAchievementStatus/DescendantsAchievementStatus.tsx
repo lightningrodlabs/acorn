@@ -96,6 +96,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
                 />
               )}
               <div className="descendants-scope-wrapper">
+                {/* @ts-ignore */}
                 <Icon name="leaf.svg" />
               </div>
               {computedAchievementStatus.smallsAchieved.toString()}/
@@ -118,6 +119,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
           {computedAchievementStatus.uncertains !== 0 && (
             <div className="descendants-wrapper uncertains">
               <div className="descendants-scope-wrapper">
+                {/* @ts-ignore */}
                 <Icon name="uncertain.svg" />
               </div>
               {computedAchievementStatus.uncertains.toString()}
@@ -129,6 +131,8 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
       {/* More info icon */}
       {/* TODO: Don't show more info icon if it's small scope */}
       <div className="more-info-wrapper">
+      <div>
+        {/* @ts-ignore */}
         <Icon name="info.svg" className="light-grey" size="small" />
       </div>
     </div>

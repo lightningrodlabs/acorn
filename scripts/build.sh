@@ -3,16 +3,16 @@
 # assumes that 
 # dna/workdir/projects.dna
 # and
-# dna/workdir/profiles.dna
+# dna/workdir/profiles.happ
 # are already pre-compiled and up to date
 # In CI this is handled via .github/workflows/release.yml
-# where it calls install-hc-tools and and dna-pack
+# where it calls install-hc-tools and and happ-pack
 
 # ensure all necessary binaries are packaged in the app
 rm -rf electron/binaries
 mkdir electron/binaries
-cp dna/workdir/projects.dna electron/binaries/projects.dna
-cp dna/workdir/profiles.dna electron/binaries/profiles.dna
+cp happ/workdir/projects.dna electron/binaries/projects.dna
+cp happ/workdir/profiles.happ electron/binaries/profiles.happ
 bash scripts/copy-binaries.sh
 
 # ui

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
-    "checkJs": true,
+    "checkJs": false,
     "sourceMap": true,
     "noImplicitAny": false,
     "module": "es6",
@@ -10,5 +10,6 @@
     "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true
-  }
+  },
+  "exclude": ["src/stories"]
 }

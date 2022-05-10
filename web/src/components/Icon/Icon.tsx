@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './Icon.scss'
 import Tooltip from '../Tooltip/Tooltip'
 
-
-function Icon ({
+function Icon({
   name,
   withBackground,
   size,
@@ -12,15 +11,25 @@ function Icon ({
   tooltipText,
   className,
   onClick = () => {},
+}: {
+  name: string
+  withBackground?: boolean
+  size?: string
+  withTooltipTop?: boolean
+  withTooltip?: boolean
+  tooltipText?: string
+  className: string
+  onClick?: () => void
 }) {
-  let [icon, setIcon] = useState('');
+  let [icon, setIcon] = useState('')
 
   useEffect(() => {
-    (async () => {
-      let importedIcon = await import(`../../images/${name}`);
-      setIcon(importedIcon.default);
+    ;(async () => {
+      // @ts-ignore
+      let importedIcon = await import(`../../images/${name}`)
+      setIcon(importedIcon.default)
     })()
-  }, [name]);
+  }, [name])
 
   return (
     <div
@@ -31,19 +40,19 @@ function Icon ({
        icon 
        ${size} 
        ${className} `}
-      onClick={onClick}>
+      onClick={onClick}
+    >
       <div
-        className='inner-icon'
+        className="inner-icon"
         style={{
           maskImage: `url(${icon})`,
           WebkitMaskImage: `url(${icon})`,
-        }}></div>
-        {withTooltip && <Tooltip text={tooltipText} />}
+        }}
+      ></div>
+      {withTooltip && <Tooltip text={tooltipText} />}
       {/* {withTooltip && <div className='tooltip-wrapper'>{`${tooltipText}`}</div>} */}
-      {withTooltipTop && (
-        <Tooltip top text={tooltipText} />
-      )}
-      
+      {withTooltipTop && <Tooltip top text={tooltipText} />}
+
       {/* {withTooltipTop && (
         <div className='tooltip-wrapper top'>{`${tooltipText}`}</div>
       )} */}

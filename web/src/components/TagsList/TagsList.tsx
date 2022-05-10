@@ -45,7 +45,9 @@ const TagsList: React.FC<TagsListProps> = ({
             }}
           >
             <div className="add-tag-button-icons">
+              {/* @ts-ignore */}
               <Icon name="plus.svg" className="grey not-hoverable" />
+              {/* @ts-ignore */}
               <Icon name="tag.svg" className="grey not-hoverable" />
             </div>
             {tags.length === 0 && <span>Add a tag</span>}

@@ -14,6 +14,7 @@ const ButtonClose: React.FC<ButtonCloseProps> = ({
 }) => {
   return (
     <div className="button-close-wrapper">
+      {/* @ts-ignore */}
       <Icon
         onClick={onClick}
         name="x.svg"
