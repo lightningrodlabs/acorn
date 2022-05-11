@@ -18,6 +18,7 @@ import {
   testBigPartiallyAchievedOutcome,
   testSmallAchievedOutcome,
   testSmallAchievedOutcome2,
+  testUncertainWithoutChildrenOutcome,
 } from './testData/testOutcomes'
 import testTags from './testData/testTags'
 
@@ -173,6 +174,76 @@ const rightColumn = (
   />
 )
 
+
+const rightColumnUncertainNoChildren = (
+  <EVRightColumn
+    projectId={projectId}
+    onClose={() => {}}
+    outcome={testUncertainWithoutChildrenOutcome}
+    activeAgentPubKey={''}
+    outcomeHeaderHash={''}
+    isEntryPoint={false}
+    entryPointHeaderHash={''}
+    projectMeta={undefined}
+    updateOutcome={function (
+      outcome: Outcome,
+      headerHash: string
+    ): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
+    updateProjectMeta={function (
+      projectMeta: ProjectMeta,
+      headerHash: string
+    ): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
+    createEntryPoint={function (entryPoint: EntryPoint): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
+    deleteEntryPoint={function (headerHash: string): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
+    onDeleteClick={function (outcomeHeaderHash: string): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
+  />
+)
+
+
+const rightColumnBig = (
+  <EVRightColumn
+    projectId={projectId}
+    onClose={() => {}}
+    outcome={testBigAchievedOutcome}
+    activeAgentPubKey={''}
+    outcomeHeaderHash={''}
+    isEntryPoint={false}
+    entryPointHeaderHash={''}
+    projectMeta={undefined}
+    updateOutcome={function (
+      outcome: Outcome,
+      headerHash: string
+    ): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
+    updateProjectMeta={function (
+      projectMeta: ProjectMeta,
+      headerHash: string
+    ): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
+    createEntryPoint={function (entryPoint: EntryPoint): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
+    deleteEntryPoint={function (headerHash: string): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
+    onDeleteClick={function (outcomeHeaderHash: string): Promise<void> {
+      throw new Error('Function not implemented.')
+    }}
+  />
+)
+
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'Expanded View/ExpandedViewMode',
@@ -185,11 +256,31 @@ const Template: ComponentStory<typeof ExpandedViewMode> = (args) => {
 }
 
 /*
+  Uncertain, No Children story
+*/
+
+export const UncertainNoChildren = Template.bind({})
+const args: ExpandedViewModeProps = {
+  projectId: '1234323',
+  outcome: testUncertainWithoutChildrenOutcome,
+  outcomeHeaderHash: '112412343231',
+  commentCount: 3,
+  details: details,
+  comments: comments,
+  childrenList: null,
+  taskList: null,
+  rightColumn: rightColumnUncertainNoChildren,
+  onClose: () => {},
+}
+UncertainNoChildren.args = args
+
+
+/*
   Without Children story
 */
 
-export const WithoutChildren = Template.bind({})
-const args: ExpandedViewModeProps = {
+export const SmallNoTasks = Template.bind({})
+const smallNoTasksArgs: ExpandedViewModeProps = {
   projectId: '1234323',
   outcome: testSmallAchievedOutcome,
   outcomeHeaderHash: '112412343',
@@ -201,13 +292,13 @@ const args: ExpandedViewModeProps = {
   rightColumn: rightColumn,
   onClose: () => {},
 }
-WithoutChildren.args = args
+SmallNoTasks.args = smallNoTasksArgs
 
 /*
-  With Children story
+  With Children story (Big, Achieved)
 */
 
-export const WithChildren = Template.bind({})
+export const Big = Template.bind({})
 const withChildrenArgs: ExpandedViewModeProps = {
   projectId: '1234323',
   outcome: testBigAchievedOutcome,
@@ -217,7 +308,8 @@ const withChildrenArgs: ExpandedViewModeProps = {
   comments: comments,
   childrenList: childrenList,
   taskList: null,
-  rightColumn: rightColumn,
+  rightColumn: rightColumnBig,
   onClose: () => {},
 }
-WithChildren.args = withChildrenArgs
+Big.args = withChildrenArgs
+

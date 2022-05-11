@@ -22,15 +22,15 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({ outcome }) => {
         <Typography style="caption3">123411</Typography>
       </div>
 
+      {/* ProgressIndicator */}
+      <div className="outcome-list-item-icon-wrapper progress">
+        <ProgressIndicator progress={progress} />
+      </div>
+
       {/* TODO: only show leaf icon for small scope children */}
       {/* Leaf (or not) */}
       <div className="outcome-list-item-icon-wrapper leaf">
         <Icon name="leaf.svg" className="not-hoverable" />
-      </div>
-
-      {/* ProgressIndicator */}
-      <div className="outcome-list-item-icon-wrapper progress">
-        <ProgressIndicator progress={progress} />
       </div>
 
       {/* Outcome statement text */}
