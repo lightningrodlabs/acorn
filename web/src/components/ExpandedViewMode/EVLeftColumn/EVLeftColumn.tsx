@@ -55,7 +55,6 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
   return (
     <div className="expanded-view-nav-column">
       <div className="expanded-view-outcome-id">
-        {/* TODO: set typography */}
         <Typography style="caption1">{outcomeId.toString()}</Typography>
       </div>
       {navItems.map(({ text, icon, tab }) => {
