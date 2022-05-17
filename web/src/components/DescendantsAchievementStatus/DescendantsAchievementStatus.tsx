@@ -30,9 +30,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
       {/* case: No Children + Small scope */}
       {tasklistCount === 0 && (
         <>
-          <Typography style="caption2">
-            This outcome has no tasks.
-          </Typography>{' '}
+          <Typography style="caption2">This outcome has no tasks.</Typography>{' '}
         </>
       )}
 
@@ -131,9 +129,10 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
       {/* More info icon */}
       {/* TODO: Don't show more info icon if it's small scope */}
       <div className="more-info-wrapper">
-      <div>
-        {/* @ts-ignore */}
-        <Icon name="info.svg" className="light-grey" size="small" />
+        <div>
+          {/* @ts-ignore */}
+          <Icon name="info.svg" className="light-grey" size="small" />
+        </div>
       </div>
     </div>
   )

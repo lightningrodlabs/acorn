@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { ComputedOutcome, Tag } from '../../types'
+import { ComputedOutcome, ComputedScope, Tag } from '../../types'
 import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
 import AvatarsList from '../AvatarsList/AvatarsList'
 import ExpandChevron from '../ExpandChevron/ExpandChevron'
+import Icon from '../Icon/Icon'
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
 import TagsList from '../TagsList/TagsList'
 import filterMatch, { OutcomeTableFilter } from './filterMatch'
@@ -44,7 +45,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
           <div className="outcome-table-row-metadata-wrapper outcome-statement-wrapper">
             {/* TODO: make the spacing for nested children right */}
             {/* the width 2.375rem below should match the chevron width on the left */}
-            <div style={{ marginLeft: `${indentationLevel * 2.375}rem` }} />
+            <div style={{ marginLeft: `${indentationLevel * 2.25}rem` }} />
             {outcome.children.length > 0 && (
               /* expand chevron component */
               <>
@@ -56,6 +57,8 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
                 />
               </>
             )}
+
+            {/* Progress Indicator */}
             <ProgressIndicator
               progress={
                 (outcome.computedAchievementStatus.smallsAchieved /
@@ -63,6 +66,15 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
                 100
               }
             />
+
+            {/* Leaf Icon (or not) */}
+            {outcome.children.length === 0 &&
+              outcome.computedScope === ComputedScope.Small && (
+                <div className="outcome-statement-leaf-icon">
+                  <Icon name="leaf.svg" className="not-hoverable" />
+                </div>
+              )}
+
             {/* Outcome statement text */}
             <div
               className="outcome-statement-text"
@@ -74,7 +86,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
           </div>
 
           {/* Assignees */}
-          <div className="outcome-table-row-metadata-wrapper">
+          <div className="outcome-table-row-metadata-wrapper assignees">
             <AvatarsList
               withStatus={false}
               size="small"
@@ -83,7 +95,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
           </div>
 
           {/* Tags */}
-          <div className="outcome-table-row-metadata-wrapper">
+          <div className="outcome-table-row-metadata-wrapper tags">
             <TagsList
               tags={projectTags}
               selectedTags={outcome.tags}
