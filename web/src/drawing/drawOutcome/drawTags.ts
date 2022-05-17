@@ -63,6 +63,9 @@ const drawTags = ({
     let currentX: number = xPosition
     let currentY: number = yPosition
     tags.forEach((tag) => {
+      if (!tag) {
+        return
+      }
       const textWidth = ctx.measureText(tag.text).width
       const width = textWidth + tagHorizontalPadding * 2
       const height = fontHeight + tagVerticalPadding * 2
