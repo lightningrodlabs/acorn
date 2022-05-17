@@ -141,18 +141,22 @@ export function checkForOutcomeAtCoordinates(
 
 export function checkForOutcomeAtCoordinatesInBox(
   outcomeCoordinates: { [headerHash: HeaderHashB64]: { x: number; y: number } },
-  convertedClick,
-  convertedIni,
-  outcomes: { [headerHash: HeaderHashB64]: ComputedOutcome }
+  corner: { x: number; y: number },
+  oppositeCorner: { x: number; y: number }
 ) {
   // convert the coordinates of the click to canvas space
   // keep track of whether a outcome was selected
   let clickedAddresses = {}
-  Object.keys(outcomes)
-    .map((headerHash) => outcomes[headerHash])
-    .forEach((outcome) => {
+  Object.keys(outcomeCoordinates)
+    // .map((headerHash) => outcomes[headerHash])
+    .forEach((headerHash) => {
       // convert the topLeft and bottomRight points of the outcome to canvas
-      const coords = outcomeCoordinates[outcome.headerHash]
+      const coords = outcomeCoordinates[headerHash]
+      console.log('test', coords)
+      // do not proceed if we don't have coordinates
+      // for the outcome (yet)
+      if (!coords) return
+
       const bottomRight = {
         x: coords.x + outcomeWidth,
         y: coords.y + outcomeHeight,
@@ -160,24 +164,24 @@ export function checkForOutcomeAtCoordinatesInBox(
 
       // if click occurred within the box of a Outcome
       if (
-        (convertedIni.x < coords.x &&
-          bottomRight.x < convertedClick.x &&
-          convertedIni.y < coords.y &&
-          bottomRight.y < convertedClick.y) ||
-        (convertedIni.x > bottomRight.x &&
-          coords.x > convertedClick.x &&
-          convertedIni.y > bottomRight.y &&
-          coords.y > convertedClick.y) ||
-        (convertedIni.x > bottomRight.x &&
-          coords.x > convertedClick.x &&
-          convertedIni.y < coords.y &&
-          bottomRight.y < convertedClick.y) ||
-        (convertedIni.x < coords.x &&
-          bottomRight.x < convertedClick.x &&
-          convertedIni.y > bottomRight.y &&
-          coords.y > convertedClick.y)
+        (oppositeCorner.x < coords.x &&
+          bottomRight.x < corner.x &&
+          oppositeCorner.y < coords.y &&
+          bottomRight.y < corner.y) ||
+        (oppositeCorner.x > bottomRight.x &&
+          coords.x > corner.x &&
+          oppositeCorner.y > bottomRight.y &&
+          coords.y > corner.y) ||
+        (oppositeCorner.x > bottomRight.x &&
+          coords.x > corner.x &&
+          oppositeCorner.y < coords.y &&
+          bottomRight.y < corner.y) ||
+        (oppositeCorner.x < coords.x &&
+          bottomRight.x < corner.x &&
+          oppositeCorner.y > bottomRight.y &&
+          coords.y > corner.y)
       ) {
-        clickedAddresses[outcome.headerHash] = 1
+        clickedAddresses[headerHash] = 1
       }
     })
   return Object.keys(clickedAddresses)

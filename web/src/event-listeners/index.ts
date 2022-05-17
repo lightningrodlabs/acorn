@@ -250,14 +250,14 @@ export default function setupEventListeners(
       ui: {
         viewport: { translate, scale },
         mouse: {
-          coordinate: { x, y },
+          coordinate: { x: initialSelectX, y: initialSelectY },
           outcomesAddresses,
         },
         screensize: { width },
       },
     } = state
     const outcomeCoordinates = state.ui.layout
-    const convertedMouse = coordsPageToCanvas(
+    const convertedCurrentMouse = coordsPageToCanvas(
       {
         x: event.clientX,
         y: event.clientY,
@@ -265,7 +265,7 @@ export default function setupEventListeners(
       translate,
       scale
     )
-    store.dispatch(setLiveCoordinate(convertedMouse))
+    store.dispatch(setLiveCoordinate(convertedCurrentMouse))
 
     // this only is true if the CANVAS was clicked
     // meaning it is not true if e.g. an ConnectionConnector html element
@@ -273,16 +273,18 @@ export default function setupEventListeners(
     if (state.ui.mouse.mousedown) {
       if (event.shiftKey) {
         if (!outcomesAddresses) {
-          store.dispatch(setCoordinate(convertedMouse))
+          store.dispatch(setCoordinate(convertedCurrentMouse))
         }
         store.dispatch(
-          setSize({ w: convertedMouse.x - x, h: convertedMouse.y - y })
+          setSize({
+            w: convertedCurrentMouse.x - initialSelectX,
+            h: convertedCurrentMouse.y - initialSelectY,
+          })
         )
         outcomeHeaderHashesToSelect = checkForOutcomeAtCoordinatesInBox(
           outcomeCoordinates,
-          state,
-          convertedMouse,
-          { x, y }
+          convertedCurrentMouse,
+          { x: initialSelectX, y: initialSelectY }
         )
         store.dispatch(setOutcomes(outcomeHeaderHashesToSelect))
       } else {
