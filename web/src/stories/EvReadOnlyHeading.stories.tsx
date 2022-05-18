@@ -25,8 +25,8 @@ EvReadOnlyHeading.storyName = 'EvReadOnlyHeading'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 EvReadOnlyHeading.args = {
   headingText:
-    'this is generally speaking going to be the title/content of an Outcome',
+    'New API in typescript definitions are written and implemented',
   // @ts-ignore
-  overviewIcon: <Icon name="activity-history.svg" className="not-hoverable" />,
+  overviewIcon: <Icon name="chats-circle.svg" className="not-hoverable" />,
   overviewText: '12 comments',
 } as EvReadOnlyHeadingProps

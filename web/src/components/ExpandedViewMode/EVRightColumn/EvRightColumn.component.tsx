@@ -285,7 +285,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
             <Typography style="h7">
               <div className="ev-right-column-heading">This outcome is</div>
             </Typography>
-            <ReadOnlyInfo infos={readOnlyInfos} />
+            <ReadOnlyInfo size="small" infos={readOnlyInfos} />
           </div>
         )}
         {/* We can only annotate the achievementStatus and scope */}
