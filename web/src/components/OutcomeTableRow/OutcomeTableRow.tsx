@@ -32,6 +32,9 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   let match = filterMatch(outcome, filter)
 
   return (
+    // TODO: find a smarter solution to structure table
+    // so that the hover state applies to the whole row
+    // and the map view icon would apear on hover
     <>
       {parentExpanded && match && (
         <>

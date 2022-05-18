@@ -25,17 +25,19 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
       <div className="outcome-table-metadata-header">Assignees</div>
       <div className="outcome-table-metadata-header">Tags</div>
       <div className="outcome-table-metadata-header">Time</div>
-      {outcomeTrees.map((outcome) => (
-        <OutcomeTableRow
-          key={outcome.headerHash}
-          projectTags={projectTags}
-          outcome={outcome}
-          filter={filter}
-          parentExpanded={true}
-          indentationLevel={0}
-          openExpandedView={openExpandedView}
-        />
-      ))}
+
+        {outcomeTrees.map((outcome) => (
+          <OutcomeTableRow
+            key={outcome.headerHash}
+            projectTags={projectTags}
+            outcome={outcome}
+            filter={filter}
+            parentExpanded={true}
+            indentationLevel={0}
+            openExpandedView={openExpandedView}
+          />
+        ))}
+
     </table>
   )
 }

@@ -352,7 +352,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
               isChecked={inBreakdown}
               onChange={setInBreakdown}
               // @ts-ignore
-              icon={<Icon name="x.svg" className="not-hoverable" />}
+              icon={<Icon name="test-tube.svg" className="not-hoverable" />}
               text="In Breakdown"
             />
           )}
