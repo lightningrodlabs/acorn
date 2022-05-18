@@ -18,7 +18,7 @@
     align-items: center;
 
     &:not(:first-child) {
-      margin-top: 1.125rem;
+      margin-top: 1rem;
     }
 
     .read-only-info-icon {
@@ -35,11 +35,11 @@
   &.small {
     padding: 1rem 1.25rem 1rem 0.875rem;
     width: fit-content;
-    font: 0.8125rem var(--font-family-primary-medium);
+    font: 0.875rem var(--font-family-primary-medium);
 
     .read-only-info-icon .icon {
-      height: 0.8125rem;
-      width: 0.8125rem;
+      height: 0.875rem;
+      width: 0.875rem;
     }
   }
 
