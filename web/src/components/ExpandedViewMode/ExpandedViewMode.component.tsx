@@ -5,7 +5,7 @@ import EVMiddleColumn from './EVMiddleColumn/EVMiddleColumn'
 import EVLeftColumn from './EVLeftColumn/EVLeftColumn'
 import { ExpandedViewTab } from './NavEnum'
 import { CellIdString, HeaderHashB64 } from '../../types/shared'
-import { ComputedOutcome } from '../../types'
+import { ComputedOutcome, ComputedScope } from '../../types'
 import './ExpandedViewMode.scss'
 import ButtonClose from '../ButtonClose/ButtonClose'
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs'
@@ -14,7 +14,9 @@ import Breadcrumbs from '../Breadcrumbs/Breadcrumbs'
 export type ExpandedViewModeOwnProps = {
   projectId: CellIdString
   onClose: () => void
+  openExpandedView: (headerHash: HeaderHashB64) => void
   outcome: ComputedOutcome
+  outcomeAndAncestors: ComputedOutcome[]
   details: React.ReactElement
   comments: React.ReactElement
   childrenList: React.ReactElement
@@ -33,7 +35,9 @@ export type ExpandedViewModeProps = ExpandedViewModeOwnProps &
 
 const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
   outcome,
+  outcomeAndAncestors,
   outcomeHeaderHash,
+  openExpandedView,
   commentCount,
   details,
   comments,
@@ -59,6 +63,35 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
     }
   }, [outcomeHeaderHash])
 
+  // we need to make sure the view isn't set to an ExpandedViewTab
+  // that doesn't exist for an Outcome of the new scope
+  useEffect(() => {
+    // don't do anything if we're dealing with the ExpandedViewMode
+    // closing itself
+    if (outcomeHeaderHash) {
+      const isSmall = outcome && outcome.computedScope === ComputedScope.Small
+      const hasChildren =
+        outcome && outcome.children && outcome.children.length > 0
+      // TODO: uncertain-refactor!
+      const isUncertainNoChildren =
+        outcome &&
+        outcome.children &&
+        outcome.children.length === 0 &&
+        outcome.computedScope === ComputedScope.Uncertain
+      if (isSmall && activeTab === ExpandedViewTab.ChildrenList) {
+        setActiveTab(ExpandedViewTab.TaskList)
+      } else if (hasChildren && activeTab === ExpandedViewTab.TaskList) {
+        setActiveTab(ExpandedViewTab.ChildrenList)
+      } else if (
+        isUncertainNoChildren &&
+        (activeTab === ExpandedViewTab.TaskList ||
+          activeTab === ExpandedViewTab.ChildrenList)
+      ) {
+        setActiveTab(ExpandedViewTab.Details)
+      }
+    }
+  }, [outcomeHeaderHash, activeTab])
+
   // TODO: set up the notion of an Outcome Id
   const outcomeId = 124543
 
@@ -82,7 +115,12 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
       >
         <div className="expanded-view-overlay">
           <div className="expanded-view-breadcrumbs-wrapper">
-            <Breadcrumbs />
+            <Breadcrumbs
+              outcomeAndAncestors={outcomeAndAncestors}
+              onClickItem={(headerHash) => {
+                openExpandedView(headerHash)
+              }}
+            />
           </div>
         </div>
       </CSSTransition>

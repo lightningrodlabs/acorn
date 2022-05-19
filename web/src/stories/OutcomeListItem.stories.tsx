@@ -30,7 +30,9 @@ const args: OutcomeListItemProps = {
     editorAgentPubKey: 'editoryagentpubkey',
     timestampCreated: Date.now(),
     timestampUpdated: Date.now(),
-    scope: { Small: { achievementStatus: 'Achieved', taskList: [], targetDate: null } },
+    scope: {
+      Small: { achievementStatus: 'Achieved', taskList: [], targetDate: null },
+    },
     tags: [],
     description: 'test description',
     githubLink: '',
@@ -44,5 +46,6 @@ const args: OutcomeListItemProps = {
     },
     children: [],
   },
+  openExpandedView: () => {},
 }
 Primary.args = args

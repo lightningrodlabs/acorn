@@ -1,5 +1,6 @@
 import React from 'react'
 import { ComputedOutcome } from '../../types'
+import { HeaderHashB64 } from '../../types/shared'
 import Icon from '../Icon/Icon'
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
 import Typography from '../Typography/Typography'
@@ -7,9 +8,10 @@ import './OutcomeListItem.scss'
 
 export type OutcomeListItemProps = {
   outcome: ComputedOutcome
+  openExpandedView: (headerHash: HeaderHashB64) => void
 }
 
-const OutcomeListItem: React.FC<OutcomeListItemProps> = ({ outcome }) => {
+const OutcomeListItem: React.FC<OutcomeListItemProps> = ({ outcome, openExpandedView }) => {
   const progress =
     (outcome.computedAchievementStatus.smallsAchieved /
       outcome.computedAchievementStatus.smallsTotal) *
@@ -38,9 +40,11 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({ outcome }) => {
         <Typography style="h7">{outcome.content}</Typography>
       </div>
 
-      {/* TODO: on click switch icon function */}
-      {/* Switch to hovered outcome child (on hover) */}
-      <div className="outcome-list-item-switch-button">
+      {/* on click navigate to the Expanded View mode for that Outcome */}
+      {/* Visible only while hovered on this child Outcome */}
+      <div className="outcome-list-item-switch-button" onClick={() => {
+        openExpandedView(outcome.headerHash)
+      }}>
         <Icon name="enter.svg" size="small" className="light-grey" />
       </div>
     </div>

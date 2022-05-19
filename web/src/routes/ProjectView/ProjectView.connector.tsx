@@ -20,7 +20,7 @@ import { setActiveEntryPoints } from '../../redux/ephemeral/active-entry-points/
 import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
 import { closeOutcomeForm } from '../../redux/ephemeral/outcome-form/actions'
 import { unselectAll } from '../../redux/ephemeral/selection/actions'
-import { closeExpandedView } from '../../redux/ephemeral/expanded-view/actions'
+import { openExpandedView, closeExpandedView } from '../../redux/ephemeral/expanded-view/actions'
 import {
   animatePanAndZoom,
   resetTranslateAndScale,
@@ -68,6 +68,7 @@ function mapDispatchToProps(
       dispatch(unselectAll())
       dispatch(resetTranslateAndScale())
     },
+    openExpandedView: (headerHash: HeaderHashB64) => dispatch(openExpandedView(headerHash)),
     closeExpandedView: () => dispatch(closeExpandedView()),
     goToOutcome: (outcomeHeaderHash: HeaderHashB64) =>
       dispatch(animatePanAndZoom(outcomeHeaderHash)),

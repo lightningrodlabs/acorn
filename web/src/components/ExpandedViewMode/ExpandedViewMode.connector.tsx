@@ -8,12 +8,11 @@ import ExpandedViewModeComponent, {
   ExpandedViewModeConnectorProps,
   ExpandedViewModeOwnProps,
 } from './ExpandedViewMode.component'
-import { AgentPubKeyB64, CellIdString } from '../../types/shared'
+import { AgentPubKeyB64, CellIdString, HeaderHashB64 } from '../../types/shared'
 import {
   ComputedOutcome,
   Outcome,
   ScopeSmallVariant,
-  SmallScope,
   SmallTask,
 } from '../../types'
 import EvChildren from './EVMiddleColumn/TabContent/EvChildren/EvChildren'
@@ -53,16 +52,20 @@ const ExpandedViewMode = connect(mapStateToProps)(ExpandedViewModeComponent)
 
 export type ConnectedExpandedViewModeProps = {
   projectId: CellIdString
+  openExpandedView: (headerHash: HeaderHashB64) => void
   activeAgentPubKey: AgentPubKeyB64
   outcome: ComputedOutcome | null
+  outcomeAndAncestors: ComputedOutcome[]
   onClose: () => void
   updateOutcome: (outcome: Outcome, headerHash: string) => Promise<void>
 }
 
 const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   projectId,
+  openExpandedView,
   activeAgentPubKey,
   outcome,
+  outcomeAndAncestors,
   onClose,
   updateOutcome,
 }) => {
@@ -92,6 +95,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       <EvChildren
         outcomeContent={outcomeContent}
         directChildren={outcome.children}
+        openExpandedView={openExpandedView}
       />
     )
   } else if (outcome && 'Small' in outcome.scope) {
@@ -144,6 +148,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   return (
     <ExpandedViewMode
       projectId={projectId}
+      openExpandedView={openExpandedView}
       details={details}
       comments={comments}
       childrenList={childrenList}
@@ -151,6 +156,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       rightColumn={rightColumn}
       onClose={onClose}
       outcome={outcome}
+      outcomeAndAncestors={outcomeAndAncestors}
     />
   )
 }

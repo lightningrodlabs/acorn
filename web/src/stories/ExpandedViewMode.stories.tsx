@@ -103,6 +103,7 @@ const childrenList = (
       testSmallAchievedOutcome2,
       testBigPartiallyAchievedOutcome,
     ]}
+    openExpandedView={() => {}}
   />
 )
 
@@ -174,7 +175,6 @@ const rightColumn = (
   />
 )
 
-
 const rightColumnUncertainNoChildren = (
   <EVRightColumn
     projectId={projectId}
@@ -208,7 +208,6 @@ const rightColumnUncertainNoChildren = (
     }}
   />
 )
-
 
 const rightColumnBig = (
   <EVRightColumn
@@ -271,9 +270,10 @@ const args: ExpandedViewModeProps = {
   taskList: null,
   rightColumn: rightColumnUncertainNoChildren,
   onClose: () => {},
+  openExpandedView: () => {},
+  outcomeAndAncestors: [],
 }
 UncertainNoChildren.args = args
-
 
 /*
   Without Children story
@@ -291,6 +291,8 @@ const smallNoTasksArgs: ExpandedViewModeProps = {
   taskList: taskList,
   rightColumn: rightColumn,
   onClose: () => {},
+  openExpandedView: () => {},
+  outcomeAndAncestors: [],
 }
 SmallNoTasks.args = smallNoTasksArgs
 
@@ -310,6 +312,7 @@ const withChildrenArgs: ExpandedViewModeProps = {
   taskList: null,
   rightColumn: rightColumnBig,
   onClose: () => {},
+  openExpandedView: () => {},
+  outcomeAndAncestors: [],
 }
 Big.args = withChildrenArgs
-

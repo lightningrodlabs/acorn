@@ -7,7 +7,6 @@ import {
   useLocation,
 } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { createSelector } from 'reselect'
 
 import { GO_TO_OUTCOME } from '../../searchParams'
 import MapView from './MapView/MapView.connector'
@@ -15,11 +14,11 @@ import PriorityView from './PriorityView/PriorityView'
 import TableView from './TableView/TableView.connector'
 import ConnectedExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode.connector'
 
-import { RootState } from '../../redux/reducer'
-import outcomesAsTrees from '../../redux/persistent/projects/outcomes/outcomesAsTrees'
 import ComputedOutcomeContext from '../../context/ComputedOutcomeContext'
 import { AgentPubKeyB64, CellIdString, HeaderHashB64 } from '../../types/shared'
 import { ComputedOutcome, Outcome } from '../../types'
+import selectAndComputeOutcomes from '../../selectors/computeOutcomes'
+import selectOutcomeAndAncestors from '../../selectors/outcomeAndAncestors'
 
 export type ProjectViewInnerOwnProps = {
   projectId: CellIdString
@@ -33,6 +32,7 @@ export type ProjectViewInnerConnectorStateProps = {
 
 export type ProjectViewInnerConnectorDispatchProps = {
   // local only
+  openExpandedView: (headerHash: HeaderHashB64) => void
   closeExpandedView: () => void
   resetProjectView: () => void
   setActiveProject: (projectId: CellIdString) => void
@@ -56,41 +56,11 @@ export type ProjectViewInnerProps = ProjectViewInnerOwnProps &
   ProjectViewInnerConnectorStateProps &
   ProjectViewInnerConnectorDispatchProps
 
-const selectDataForOutcomesAsTrees = createSelector(
-  (state: RootState) => state.agents,
-  (state: RootState) => state.projects.outcomes[state.ui.activeProject] || {},
-  (state: RootState) =>
-    state.projects.connections[state.ui.activeProject] || {},
-  (state: RootState) =>
-    state.projects.outcomeMembers[state.ui.activeProject] || {},
-  // (state: RootState) => state.projects.outcomeVotes[state.ui.activeProject],
-  // (state: RootState) => state.projects.outcomeComments[state.ui.activeProject],
-  (
-    agents,
-    outcomes,
-    connections,
-    outcomeMembers
-    // outcomeVotes,
-    // outcomeComments
-  ) => {
-    console.log('recalculating computedOutcomes!')
-    const treeData = {
-      agents,
-      outcomes,
-      connections,
-      outcomeMembers,
-      outcomeVotes: {},
-      outcomeComments: {},
-    }
-    const outcomeTrees = outcomesAsTrees(treeData, { withMembers: true })
-    return outcomeTrees
-  }
-)
-
 const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   projectId,
   activeAgentPubKey,
   expandedViewOutcomeHeaderHash,
+  openExpandedView,
   closeExpandedView,
   entryPointHeaderHashes,
   resetProjectView,
@@ -118,12 +88,21 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   // we use useSelector + createSelector here
   // to prevent inefficient CPU expensive calls to outcomesAsTrees
   // which is responsible for calculating the 'shape of the tree'
-  const computedOutcomes = useSelector(selectDataForOutcomesAsTrees)
+  const computedOutcomes = useSelector(selectAndComputeOutcomes)
+  const outcomeAndAncestorHeaderHashes = useSelector(selectOutcomeAndAncestors)
 
   let expandedViewOutcome: ComputedOutcome
+  let expandedViewOutcomeAndAncestors: ComputedOutcome[] = []
   if (expandedViewOutcomeHeaderHash) {
     expandedViewOutcome =
       computedOutcomes.computedOutcomesKeyed[expandedViewOutcomeHeaderHash]
+
+    // for breadcrumbs
+    expandedViewOutcomeAndAncestors = outcomeAndAncestorHeaderHashes.map(
+      (headerHash) => {
+        return computedOutcomes.computedOutcomesKeyed[headerHash]
+      }
+    )
   }
 
   function ifMapGoToOutcome(outcomeHeaderHash: HeaderHashB64) {
@@ -197,8 +176,10 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
         <ConnectedExpandedViewMode
           activeAgentPubKey={activeAgentPubKey}
           projectId={projectId}
+          openExpandedView={openExpandedView}
           onClose={closeExpandedView}
           outcome={expandedViewOutcome}
+          outcomeAndAncestors={expandedViewOutcomeAndAncestors}
           updateOutcome={updateOutcome}
         />
       </ComputedOutcomeContext.Provider>

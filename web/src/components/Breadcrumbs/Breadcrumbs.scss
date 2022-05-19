@@ -5,14 +5,21 @@
   padding: 0.415rem 1rem;
   background-color: var(--bg-color-secondary);
   border-radius: 0.5rem;
-  
+
   .breadcrumbs-parents {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
     flex-wrap: nowrap;
     white-space: nowrap;
     text-overflow: ellipsis;
     cursor: pointer;
-    &:hover {
-      text-decoration: underline;
+
+    .breadcrumbs-item {
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 
