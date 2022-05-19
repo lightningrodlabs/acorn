@@ -1,19 +1,25 @@
 .read-only-info-wrapper {
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-color-tertiary);
+  // background-color: var(--bg-color-tertiary);
+  background-color: var(--bg-color-secondary);
   box-shadow: 0rem 0rem 1.25rem var(--shadow-color-read-only);
   width: 11.25rem;
   box-sizing: border-box;
   border-radius: 0.625rem;
   transition: 0.2s box-shadow ease;
   -webkit-font-smoothing: antialiased;
+  padding: 1rem ;
+  font: 0.875rem var(--font-family-primary-medium);
 
   .read-only-info-row {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 1rem;
+
+    &:not(:first-child) {
+      margin-top: 1rem;
+    }
 
     .read-only-info-icon {
       margin-right: 0.625rem;
@@ -27,19 +33,19 @@
   }
 
   &.small {
-    padding: 0.875rem 1.25rem 0.875rem 0.875rem;
+    padding: 1rem 1.25rem 1rem 0.875rem;
     width: fit-content;
-    font: 0.8125rem var(--font-family-primary-bold);
+    font: 0.875rem var(--font-family-primary-medium);
 
     .read-only-info-icon .icon {
-      height: 0.8125rem;
-      width: 0.8125rem;
+      height: 0.875rem;
+      width: 0.875rem;
     }
   }
 
   &.large {
-    padding: 1rem 1.5rem 1rem 1rem;
-    font: 1rem var(--font-family-primary-bold);
+    padding: 1.125rem 1.5rem 1.125rem 1rem;
+    font: 1rem var(--font-family-primary-medium);
 
     .read-only-info-icon .icon {
       height: 1rem;
