@@ -62,6 +62,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
             )}
 
             {/* Progress Indicator */}
+            {/* if this  */}
             <ProgressIndicator
               progress={
                 (outcome.computedAchievementStatus.smallsAchieved /

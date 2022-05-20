@@ -48,11 +48,15 @@ const drawDescendantsAchievementStatus = ({
     const spaceBetweenIconAndText = 4
 
     if (withChildren) {
-      let smallsTextWidth: number
+      let smallsTextWidth: number = 0
 
       // Smalls
       if (computedAchievementStatus.smallsTotal > 0) {
-        const smallsImg = getOrSetImageForUrl(leafGreenSvg, imageSize, imageSize)
+        const smallsImg = getOrSetImageForUrl(
+          leafGreenSvg,
+          imageSize,
+          imageSize
+        )
         if (smallsImg) {
           ctx.drawImage(smallsImg, xPosition, yPosition, imageSize, imageSize)
         }
@@ -80,14 +84,19 @@ const drawDescendantsAchievementStatus = ({
           imageSize,
           imageSize
         )
+        // account for whether or
+        // not there are Smalls to display the count of
+        const leftAdjust =
+          smallsTextWidth > 0
+            ? imageSize +
+              spaceBetweenIconAndText +
+              smallsTextWidth +
+              spaceBetweenSections
+            : 0
         if (uncertainsImg) {
           ctx.drawImage(
             uncertainsImg,
-            xPosition +
-              imageSize +
-              spaceBetweenIconAndText +
-              smallsTextWidth +
-              spaceBetweenSections,
+            xPosition + leftAdjust,
             yPosition,
             imageSize,
             imageSize
@@ -96,13 +105,7 @@ const drawDescendantsAchievementStatus = ({
         const uncertainsText = computedAchievementStatus.uncertains.toString()
         ctx.fillText(
           uncertainsText,
-          xPosition +
-            imageSize +
-            spaceBetweenIconAndText +
-            smallsTextWidth +
-            spaceBetweenSections +
-            imageSize +
-            spaceBetweenIconAndText,
+          xPosition + leftAdjust + imageSize + spaceBetweenIconAndText,
           yPosition
         )
       }

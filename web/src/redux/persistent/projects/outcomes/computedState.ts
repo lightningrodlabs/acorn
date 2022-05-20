@@ -41,23 +41,46 @@ export function computeAchievementStatus(
       : 'Small' in self.scope
       ? 1
       : 0
+
+  const tasksAchieved =
+    'Small' in self.scope
+      ? self.scope.Small.taskList.reduce((memo, currentTask) => {
+          return memo + (currentTask.complete ? 1 : 0)
+        }, 0)
+      : 0
+  const tasksTotal =
+    'Small' in self.scope ? self.scope.Small.taskList.length : 0
   let simple: ComputedSimpleAchievementStatus
-  if (
+  const needsProgressHasProgress =
+    uncertains === 0 &&
+    ((smallsTotal > 0 && smallsAchieved > 0 && smallsTotal > smallsAchieved) ||
+      (tasksTotal > 0 && tasksAchieved > 0 && tasksTotal > tasksAchieved))
+  const needsProgressHasNone =
     uncertains > 0 ||
-    ('Small' in self.scope &&
-      self.scope.Small.achievementStatus === 'NotAchieved')
+    (smallsTotal > 0 && smallsAchieved === 0) ||
+    (tasksTotal > 0 && tasksAchieved === 0)
+  if (needsProgressHasProgress) {
+    // represents a 'known' as opposed to 'uncertain'
+    // amount of progress
+    simple = ComputedSimpleAchievementStatus.PartiallyAchieved
+  } else if (
+    needsProgressHasNone &&
+    // manual marking of Achieved overrides computed status
+    !(
+      'Small' in self.scope && self.scope.Small.achievementStatus === 'Achieved'
+    )
   ) {
     simple = ComputedSimpleAchievementStatus.NotAchieved
-  } else if (smallsAchieved === smallsTotal) {
-    simple = ComputedSimpleAchievementStatus.Achieved
   } else {
-    simple = ComputedSimpleAchievementStatus.PartiallyAchieved
+    simple = ComputedSimpleAchievementStatus.Achieved
   }
 
   return {
     uncertains,
     smallsAchieved,
     smallsTotal,
+    tasksAchieved,
+    tasksTotal,
     simple,
   }
 }

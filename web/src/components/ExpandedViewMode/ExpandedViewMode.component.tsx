@@ -72,7 +72,6 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
       const isSmall = outcome && outcome.computedScope === ComputedScope.Small
       const hasChildren =
         outcome && outcome.children && outcome.children.length > 0
-      // TODO: uncertain-refactor!
       const isUncertainNoChildren =
         outcome &&
         outcome.children &&

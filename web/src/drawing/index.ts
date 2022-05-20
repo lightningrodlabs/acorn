@@ -549,6 +549,8 @@ function render(
           simple: ComputedSimpleAchievementStatus.NotAchieved,
           smallsAchieved: 0,
           smallsTotal: 0,
+          tasksAchieved: 0,
+          tasksTotal: 0,
           uncertains: 0,
         },
         children: [],

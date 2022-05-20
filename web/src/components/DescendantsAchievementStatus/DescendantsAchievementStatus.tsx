@@ -1,5 +1,5 @@
 import React from 'react'
-import { ComputedAchievementStatus, ComputedOutcome } from '../../types'
+import { ComputedAchievementStatus, ComputedScope } from '../../types'
 import Icon from '../Icon/Icon'
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
 import Typography from '../Typography/Typography'
@@ -7,19 +7,19 @@ import './DescendantsAchievementStatus.scss'
 
 export type DescendantsAchievementStatusProps = {
   childrenCount: number
-  tasklistCount: number
+  computedScope: ComputedScope
   computedAchievementStatus: ComputedAchievementStatus
 }
 
 const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> = ({
   childrenCount,
-  tasklistCount,
+  computedScope,
   computedAchievementStatus,
 }) => {
   return (
     <div className="descendants-achievement-status">
       {/* case: No Children + Uncertain scope */}
-      {childrenCount === 0 && (
+      {computedScope === ComputedScope.Uncertain && childrenCount === 0 && (
         <>
           <Typography style="caption2">
             This outcome has no children.
@@ -27,48 +27,50 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
         </>
       )}
 
-      {/* case: No Children + Small scope */}
-      {tasklistCount === 0 && (
-        <>
-          <Typography style="caption2">This outcome has no tasks.</Typography>{' '}
-        </>
-      )}
+      {/* case: Small scope & With No Tasks */}
+      {computedScope === ComputedScope.Small &&
+        computedAchievementStatus.tasksTotal === 0 && (
+          <>
+            <Typography style="caption2">This outcome has no tasks.</Typography>{' '}
+          </>
+        )}
 
-      {/* case: With Children + Small scope */}
-      {tasklistCount > 0 && (
-        <>
-          {/* tasks */}
-          <div
-            className={`descendants-wrapper tasks ${
-              computedAchievementStatus.smallsAchieved ===
-              computedAchievementStatus.smallsTotal
-                ? 'achieved'
-                : ''
-            }`}
-          >
-            {/* TODO: display real total and achieved tasks */}
-            <ProgressIndicator
-              progress={
-                (computedAchievementStatus.smallsAchieved /
-                  computedAchievementStatus.smallsTotal) *
-                100
-              }
-            />
-            {/* TODO: display real total and achieved tasks */}
-            {/* number of achived and total tasks */}
-            {computedAchievementStatus.smallsAchieved.toString()}/
-            {computedAchievementStatus.smallsTotal.toString()} tasks
-            {/* achievement progress percentage */}
-            <div className="descendants-progress-percentage">
-              (
-              {(computedAchievementStatus.smallsAchieved /
-                computedAchievementStatus.smallsTotal) *
-                100}
-              % )
+      {/* case: Small scope & With Tasks */}
+      {computedScope === ComputedScope.Small &&
+        computedAchievementStatus.tasksTotal > 0 && (
+          <>
+            {/* tasks */}
+            <div
+              className={`descendants-wrapper tasks ${
+                computedAchievementStatus.tasksAchieved ===
+                computedAchievementStatus.tasksTotal
+                  ? 'achieved'
+                  : ''
+              }`}
+            >
+              <ProgressIndicator
+                progress={Math.round(
+                  (computedAchievementStatus.tasksAchieved /
+                    computedAchievementStatus.tasksTotal) *
+                    100
+                )}
+              />
+              {/* number of achieved and total tasks */}
+              {computedAchievementStatus.tasksAchieved.toString()}/
+              {computedAchievementStatus.tasksTotal.toString()} tasks
+              {/* achievement progress percentage */}
+              <div className="descendants-progress-percentage">
+                (
+                {Math.round(
+                  (computedAchievementStatus.tasksAchieved /
+                    computedAchievementStatus.tasksTotal) *
+                    100
+                )}
+                % )
+              </div>
             </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
 
       {/* case: With Children + Not Small scope (Uncertain and Big scopes) */}
       {childrenCount > 0 && (
@@ -86,11 +88,11 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
             >
               {computedAchievementStatus.uncertains === 0 && (
                 <ProgressIndicator
-                  progress={
+                  progress={Math.round(
                     (computedAchievementStatus.smallsAchieved /
                       computedAchievementStatus.smallsTotal) *
-                    100
-                  }
+                      100
+                  )}
                 />
               )}
               <div className="descendants-scope-wrapper">
@@ -104,9 +106,11 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
               {computedAchievementStatus.uncertains === 0 && (
                 <div className="descendants-progress-percentage">
                   (
-                  {(computedAchievementStatus.smallsAchieved /
-                    computedAchievementStatus.smallsTotal) *
-                    100}
+                  {Math.round(
+                    (computedAchievementStatus.smallsAchieved /
+                      computedAchievementStatus.smallsTotal) *
+                      100
+                  )}
                   % )
                 </div>
               )}
@@ -127,13 +131,16 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
       )}
 
       {/* More info icon */}
-      {/* TODO: Don't show more info icon if it's small scope */}
-      <div className="more-info-wrapper">
-        <div>
-          {/* @ts-ignore */}
-          <Icon name="info.svg" className="light-grey" size="small" />
+      {/* Don't show more info icon if it's small scope */}
+      {/* TODO: hook up onClick */}
+      {computedScope !== ComputedScope.Small && (
+        <div className="more-info-wrapper">
+          <div>
+            {/* @ts-ignore */}
+            <Icon name="info.svg" className="light-grey" size="small" />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
