@@ -31,6 +31,15 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   let [expanded, setExpanded] = useState(false)
   let match = filterMatch(outcome, filter)
 
+  const progress =
+    outcome.computedScope === ComputedScope.Small
+      ? (outcome.computedAchievementStatus.tasksAchieved /
+          outcome.computedAchievementStatus.tasksTotal) *
+        100
+      : (outcome.computedAchievementStatus.smallsAchieved /
+          outcome.computedAchievementStatus.smallsTotal) *
+        100
+
   return (
     // TODO: find a smarter solution to structure table
     // so that the hover state applies to the whole row
@@ -63,13 +72,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
 
             {/* Progress Indicator */}
             {/* if this  */}
-            <ProgressIndicator
-              progress={
-                (outcome.computedAchievementStatus.smallsAchieved /
-                  outcome.computedAchievementStatus.smallsTotal) *
-                100
-              }
-            />
+            <ProgressIndicator progress={progress} />
 
             {/* Leaf Icon (or not) */}
             {outcome.children.length === 0 &&
