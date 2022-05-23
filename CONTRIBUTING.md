@@ -32,6 +32,7 @@ In terms of getting the codebase up and running on your local development machin
 In terms of getting more familiar with the codebase, you can get a rather in-depth introduction by watching these two videos:
 - Acorn technical deep dive, Part 1: https://www.youtube.com/watch?v=PXrN_H0I0ng
 - Acorn technical deep dive, Part 2: https://www.youtube.com/watch?v=0VA9QcmoXeI
+
 While some of that code may be out of date, the general introduction should still apply, and be helpful. 
 
 In terms of getting more deeply involved, talking with other contributors, just start by reaching out to connor@sprillow.com to explore what makes sense!
