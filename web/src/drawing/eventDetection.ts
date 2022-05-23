@@ -152,7 +152,6 @@ export function checkForOutcomeAtCoordinatesInBox(
     .forEach((headerHash) => {
       // convert the topLeft and bottomRight points of the outcome to canvas
       const coords = outcomeCoordinates[headerHash]
-      console.log('test', coords)
       // do not proceed if we don't have coordinates
       // for the outcome (yet)
       if (!coords) return

@@ -109,6 +109,34 @@
   margin-right: 10px;
 }
 
+/* View Mode */
+
+.top-left-panel-view-modes {
+  margin-left: 8px;
+  margin-right: 8px;
+  display: flex;
+  flex-direction: row;
+
+  .icon {
+    margin: 0 8px 0 0;
+    height: 24px;
+    width: 24px;
+    padding: 2px;
+    display: inline-block;
+    position: relative;
+  }
+
+  a.view-mode-link {
+    vertical-align: middle;
+
+    &.view-mode-active {
+      .icon .inner-icon {
+        background-color: var(--text-color-primary);
+      }
+    }
+  }
+}
+
 // Entry points button and menu
 
 .header-left-panel-entry-points-button {

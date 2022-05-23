@@ -104,7 +104,7 @@ function HeaderLeftPanel({
             <div className="current-project-wrapper">
               {/* Project Name and Settings */}
               <div className="current-project-content">
-                <div className="bottom-right-panel-view-modes">
+                <div className="top-left-panel-view-modes">
                   {/* map view button */}
                   <NavLink
                     to={`/project/${projectId}/map`}

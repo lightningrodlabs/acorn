@@ -1,75 +1,89 @@
-.outcome-table-row-metadata-wrapper {
+.outcome-table-row-wrapper {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  font: 1rem var(--font-family-primary-medium);
-  padding: 0.5rem 1rem;
-  background-color: var(--bg-color-tertiary);
+  border-bottom: 0.125rem solid var(--border-color-bright-gray);
 
   &:hover {
     background-color: var(--bg-color-primary);
   }
 
-  &.id-number {
-    padding: 0.75rem 0.5rem;
-    font-size: 0.875rem;
-    color: var(--text-color-caption);
+  .outcome-table-row-assignees-tags-time {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
   }
 
-  &.outcome-statement-wrapper {
+  .outcome-table-row-metadata-wrapper {
+    box-sizing: border-box;
+    border-right: 0.125rem solid var(--border-color-bright-gray);
     display: flex;
     flex-direction: row;
     align-items: center;
-    font: 1rem var(--font-family-primary-semibold);
-    color: var(--text-color-secondary);
-    padding: 0.5rem 0.25rem 0.5rem 0.5rem;
+    font: 1rem var(--font-family-primary-medium);
+    padding: 0.5rem 1rem;
 
-    &:hover {
-      color: var(--text-color-primary);
+    &.id-number {
+      padding: 0.75rem 0.5rem;
+      font-size: 0.875rem;
+      color: var(--text-color-caption);
+      border-left: 0.125rem solid var(--border-color-bright-gray);
     }
 
-    .expand-chevron-wrapper {
-      margin-right: 0.375rem;
-    }
-
-    .progress-indicator-wrapper {
-      margin-right: 0.425rem;
-      width: 1.125rem;
-      height: 1.125rem;
-      aspect-ratio: 1/1;
+    &.outcome-statement-wrapper {
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: center;
-    }
-
-    .outcome-statement-leaf-icon {
-      margin-right: 0.425rem;
-
-      .icon {
-        padding: 0;
-        width: 1.125rem;
-        height: 1.125rem;
-      }
-    }
-
-    .outcome-statement-text {
-      cursor: pointer;
-      transition: 0.2s all ease;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      line-height: 1.45;
+      font: 1rem var(--font-family-primary-semibold);
+      color: var(--text-color-secondary);
+      padding: 0.5rem 0.25rem 0.5rem 0.5rem;
 
       &:hover {
-        color: var(--color-ultramarine-blue);
-        text-decoration: underline;
+        color: var(--text-color-primary);
+      }
+
+      .expand-chevron-wrapper {
+        margin-right: 0.375rem;
+      }
+
+      .progress-indicator-wrapper {
+        margin-right: 0.425rem;
+        width: 1.125rem;
+        height: 1.125rem;
+        aspect-ratio: 1/1;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .outcome-statement-leaf-icon {
+        margin-right: 0.425rem;
+
+        .icon {
+          padding: 0;
+          width: 1.125rem;
+          height: 1.125rem;
+        }
+      }
+
+      .outcome-statement-text {
+        cursor: pointer;
+        transition: 0.2s all ease;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        line-height: 1.45;
+
+        &:hover {
+          color: var(--color-ultramarine-blue);
+          text-decoration: underline;
+        }
       }
     }
-  }
 
-  &.time {
-    font-size: 0.875rem;
-    color: var(--text-color-tertiary);
+    &.time {
+      font-size: 0.875rem;
+      color: var(--text-color-tertiary);
+    }
   }
 }

@@ -10,6 +10,7 @@ import filterMatch, { OutcomeTableFilter } from './filterMatch'
 import './OutcomeTableRow.scss'
 
 export type OutcomeTableRowProps = {
+  columnWidthPercentages: [string, string, string, string, string]
   projectTags: WithHeaderHash<Tag>[]
   outcome: ComputedOutcome
   filter: OutcomeTableFilter
@@ -19,6 +20,7 @@ export type OutcomeTableRowProps = {
 }
 
 const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
+  columnWidthPercentages,
   projectTags,
   outcome,
   filter,
@@ -46,15 +48,27 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
     // and the map view icon would apear on hover
     <>
       {parentExpanded && match && (
-        <>
+        <div className="outcome-table-row-wrapper">
           {/* ID number metadata */}
-          <div className="outcome-table-row-metadata-wrapper id-number">
+          <div
+            className="outcome-table-row-metadata-wrapper id-number"
+            style={{
+              width: columnWidthPercentages[0],
+              minWidth: columnWidthPercentages[0],
+            }}
+          >
             {/* TODO: make ID number display dynamic */}
             {'123456'}
           </div>
 
           {/* Outcome statement & progress indicator metadata */}
-          <div className="outcome-table-row-metadata-wrapper outcome-statement-wrapper">
+          <div
+            className="outcome-table-row-metadata-wrapper outcome-statement-wrapper"
+            style={{
+              width: columnWidthPercentages[1],
+              minWidth: columnWidthPercentages[1],
+            }}
+          >
             {/* TODO: make the spacing for nested children right */}
             {/* the width 2.375rem below should match the chevron width on the left */}
             <div style={{ marginLeft: `${indentationLevel * 2.25}rem` }} />
@@ -92,35 +106,56 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
             </div>
           </div>
 
-          {/* Assignees */}
-          <div className="outcome-table-row-metadata-wrapper assignees">
-            <AvatarsList
-              withStatus={false}
-              size="small"
-              profiles={outcome.members || []}
-            />
-          </div>
+          <div className="outcome-table-row-assignees-tags-time">
+            {/* Assignees */}
+            <div
+              className="outcome-table-row-metadata-wrapper assignees"
+              style={{
+                width: columnWidthPercentages[2],
+                minWidth: columnWidthPercentages[2],
+              }}
+            >
+              <AvatarsList
+                withStatus={false}
+                size="small"
+                profiles={outcome.members || []}
+              />
+            </div>
 
-          {/* Tags */}
-          <div className="outcome-table-row-metadata-wrapper tags">
-            <TagsList
-              tags={projectTags}
-              selectedTags={outcome.tags}
-              showAddTagButton={false}
-            />
-          </div>
+            {/* Tags */}
+            <div
+              className="outcome-table-row-metadata-wrapper tags"
+              style={{
+                width: columnWidthPercentages[3],
+                minWidth: columnWidthPercentages[3],
+              }}
+            >
+              <TagsList
+                tags={projectTags}
+                selectedTags={outcome.tags}
+                showAddTagButton={false}
+              />
+            </div>
 
-          {/* Time */}
-          {/* TODO: update time display for different scopes */}
-          <div className="outcome-table-row-metadata-wrapper time">
-            {/* {outcome.timeFrame} */}
-            March 12 - 24, 2022
+            {/* Time */}
+            {/* TODO: update time display for different scopes */}
+            <div
+              className="outcome-table-row-metadata-wrapper time"
+              style={{
+                width: columnWidthPercentages[4],
+                minWidth: columnWidthPercentages[4],
+              }}
+            >
+              {/* {outcome.timeFrame} */}
+              March 12 - 24, 2022
+            </div>
           </div>
-        </>
+        </div>
       )}
       {outcome.children.length > 0 &&
         outcome.children.map((outcomeChild) => (
           <OutcomeTableRow
+            columnWidthPercentages={columnWidthPercentages}
             projectTags={projectTags}
             outcome={outcomeChild}
             filter={filter}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { ComputedOutcome, Tag } from '../../types'
 import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
 import { OutcomeTableFilter } from '../OutcomeTableRow/filterMatch'
@@ -18,26 +18,80 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
   filter,
   openExpandedView,
 }) => {
+  // the first two can be hardcoded
+  // the final three should always add up to 100%
+  // the final three split the remaining space
+  const [columnWidthPercentages, setColumnWidthPercentages] = useState<
+    [string, string, string, string, string]
+  >(['5rem', '40rem', '33%', '33%', '34%'])
+
   return (
     <table className="outcome-table-wrapper">
-      <div className="outcome-table-metadata-header">ID#</div>
-      <div className="outcome-table-metadata-header">Outcome Statement</div>
-      <div className="outcome-table-metadata-header">Assignees</div>
-      <div className="outcome-table-metadata-header">Tags</div>
-      <div className="outcome-table-metadata-header">Time</div>
+      {/* Headers */}
+      <div className="outcome-table-metadata-header">
+        <div
+          className="outcome-table-metadata-header-label id-label"
+          style={{
+            width: columnWidthPercentages[0],
+            minWidth: columnWidthPercentages[0],
+          }}
+        >
+          ID#
+        </div>
+        <div
+          className="outcome-table-metadata-header-label"
+          style={{
+            width: columnWidthPercentages[1],
+            minWidth: columnWidthPercentages[1],
+          }}
+        >
+          Outcome Statement
+        </div>
+        <div className="outcome-table-metadata-header-assignees-tags-time">
+          <div
+            className="outcome-table-metadata-header-label"
+            style={{
+              width: columnWidthPercentages[2],
+              minWidth: columnWidthPercentages[2],
+            }}
+          >
+            Assignees
+          </div>
+          <div
+            className="outcome-table-metadata-header-label"
+            style={{
+              width: columnWidthPercentages[3],
+              minWidth: columnWidthPercentages[3],
+            }}
+          >
+            Tags
+          </div>
+          <div
+            className="outcome-table-metadata-header-label"
+            style={{
+              width: columnWidthPercentages[4],
+              minWidth: columnWidthPercentages[4],
+            }}
+          >
+            Time
+          </div>
+        </div>
+      </div>
 
-        {outcomeTrees.map((outcome) => (
-          <OutcomeTableRow
-            key={outcome.headerHash}
-            projectTags={projectTags}
-            outcome={outcome}
-            filter={filter}
-            parentExpanded={true}
-            indentationLevel={0}
-            openExpandedView={openExpandedView}
-          />
-        ))}
+      {/* Data Rows */}
 
+      {outcomeTrees.map((outcome) => (
+        <OutcomeTableRow
+          key={outcome.headerHash}
+          columnWidthPercentages={columnWidthPercentages}
+          projectTags={projectTags}
+          outcome={outcome}
+          filter={filter}
+          parentExpanded={true}
+          indentationLevel={0}
+          openExpandedView={openExpandedView}
+        />
+      ))}
     </table>
   )
 }
