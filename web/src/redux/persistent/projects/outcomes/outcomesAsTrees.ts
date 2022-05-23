@@ -78,11 +78,16 @@ export default function outcomesAsTrees(
   // so that it constructs the full sub-tree for each root Outcome
   function getOutcome(outcomeHeaderHash: HeaderHashB64): ComputedOutcome {
     const self = allOutcomes[outcomeHeaderHash]
+    if (!self) {
+      // defensive coding, during loading
+      return undefined
+    }
     const children = connectionsAsArray
       // find the connections indicating the children of this outcome
       .filter((connection) => connection.parentHeaderHash === outcomeHeaderHash)
       // actually nest the children Outcomes, recurse
       .map((connection) => getOutcome(connection.childHeaderHash))
+      .filter((maybeOutcome) => !!maybeOutcome)
 
     const computedOutcome = {
       ...self,

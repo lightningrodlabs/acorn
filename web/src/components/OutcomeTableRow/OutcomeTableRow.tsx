@@ -1,5 +1,10 @@
 import React, { useState } from 'react'
-import { ComputedOutcome, ComputedScope, Tag } from '../../types'
+import {
+  ComputedOutcome,
+  ComputedScope,
+  ComputedSimpleAchievementStatus,
+  Tag,
+} from '../../types'
 import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
 import AvatarsList from '../AvatarsList/AvatarsList'
 import ExpandChevron from '../ExpandChevron/ExpandChevron'
@@ -33,14 +38,38 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   let [expanded, setExpanded] = useState(false)
   let match = filterMatch(outcome, filter)
 
-  const progress =
-    outcome.computedScope === ComputedScope.Small
-      ? (outcome.computedAchievementStatus.tasksAchieved /
+  let progress = 0
+
+  // TODO: refine this
+  // because it can be confusing when task list progress
+  // is out of sync with annotated 'Achieved' vs 'NotAchieved' achievement
+  // status
+  if (outcome.computedScope === ComputedScope.Small) {
+    if (
+      outcome.computedAchievementStatus.simple ===
+      ComputedSimpleAchievementStatus.Achieved
+    ) {
+      // this is to account for the fact that manually setting
+      // "Achieved" overrides the task list progress
+      progress = 100
+    } else if (
+      outcome.computedAchievementStatus.tasksAchieved === 0 &&
+      outcome.computedAchievementStatus.tasksTotal === 0
+    ) {
+      // avoid dividing 0 by 0
+      progress = 0
+    } else {
+      progress =
+        (outcome.computedAchievementStatus.tasksAchieved /
           outcome.computedAchievementStatus.tasksTotal) *
         100
-      : (outcome.computedAchievementStatus.smallsAchieved /
-          outcome.computedAchievementStatus.smallsTotal) *
-        100
+    }
+  } else {
+    progress =
+      (outcome.computedAchievementStatus.smallsAchieved /
+        outcome.computedAchievementStatus.smallsTotal) *
+      100
+  }
 
   return (
     // TODO: find a smarter solution to structure table
@@ -85,13 +114,23 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
             )}
 
             {/* Progress Indicator */}
-            {/* if this  */}
-            <ProgressIndicator progress={progress} />
+            {outcome.computedScope !== ComputedScope.Uncertain && (
+              <ProgressIndicator progress={progress} />
+            )}
 
+            {/* Uncertain Icon (or not) */}
+            {outcome.computedScope === ComputedScope.Uncertain && (
+              <div className="outcome-statement-icon">
+                <Icon
+                  name="uncertain.svg"
+                  className="not-hoverable uncertain"
+                />
+              </div>
+            )}
             {/* Leaf Icon (or not) */}
             {outcome.children.length === 0 &&
               outcome.computedScope === ComputedScope.Small && (
-                <div className="outcome-statement-leaf-icon">
+                <div className="outcome-statement-icon">
                   <Icon name="leaf.svg" className="not-hoverable" />
                 </div>
               )}
