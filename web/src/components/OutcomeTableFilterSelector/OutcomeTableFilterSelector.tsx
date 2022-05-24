@@ -144,17 +144,17 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
             />
           }
           isSelected={isOnlyMeAssigned(filter)}
-          onChange={() =>
-            isOnlyMeAssigned(filter)
-              ? onApplyOutcomeTableFilter({
-                  ...filter,
-                  assignees: [],
-                })
-              : onApplyOutcomeTableFilter({
-                  ...filter,
-                  assignees: [activeAgentPubKey],
-                })
-          }
+          onChange={() => {
+            let newFilter = {
+              ...filter,
+            }
+            if (isOnlyMeAssigned(filter)) {
+              delete newFilter.assignees
+            } else {
+              newFilter.assignees = [activeAgentPubKey]
+            }
+            onApplyOutcomeTableFilter(newFilter)
+          }}
         />
       </div>
       {/* Achievement Status filter */}
@@ -169,10 +169,15 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           icon={<Icon name="circle-dashed.svg" />}
           size="medium"
           onChange={(newSelectionOptions) => {
-            onApplyOutcomeTableFilter({
+            let newFilter = {
               ...filter,
-              achievementStatus: newSelectionOptions,
-            })
+            }
+            if (newSelectionOptions.length > 0) {
+              newFilter.achievementStatus = newSelectionOptions
+            } else {
+              delete newFilter.achievementStatus
+            }
+            onApplyOutcomeTableFilter(newFilter)
           }}
         />
       </div>
@@ -186,10 +191,15 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           icon={<Icon name="leaf.svg" />}
           size="medium"
           onChange={(newSelectionOptions) => {
-            onApplyOutcomeTableFilter({
+            let newFilter = {
               ...filter,
-              scope: newSelectionOptions,
-            })
+            }
+            if (newSelectionOptions.length > 0) {
+              newFilter.scope = newSelectionOptions
+            } else {
+              delete newFilter.scope
+            }
+            onApplyOutcomeTableFilter(newFilter)
           }}
         />
       </div>
@@ -203,10 +213,15 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           icon={<Icon name="assignees.svg" />}
           size="medium"
           onChange={(newSelectionOptions) => {
-            onApplyOutcomeTableFilter({
+            let newFilter = {
               ...filter,
-              assignees: newSelectionOptions,
-            })
+            }
+            if (newSelectionOptions.length > 0) {
+              newFilter.assignees = newSelectionOptions
+            } else {
+              delete newFilter.assignees
+            }
+            onApplyOutcomeTableFilter(newFilter)
           }}
         />
       </div>
@@ -220,10 +235,15 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           icon={<Icon name="tag.svg" />}
           size="medium"
           onChange={(newSelectionOptions) => {
-            onApplyOutcomeTableFilter({
+            let newFilter = {
               ...filter,
-              tags: newSelectionOptions,
-            })
+            }
+            if (newSelectionOptions.length > 0) {
+              newFilter.tags = newSelectionOptions
+            } else {
+              delete newFilter.tags
+            }
+            onApplyOutcomeTableFilter(newFilter)
           }}
         />
       </div>

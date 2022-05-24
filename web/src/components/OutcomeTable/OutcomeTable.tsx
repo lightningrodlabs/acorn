@@ -26,7 +26,7 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
   >(['5rem', '40rem', '33%', '33%', '34%'])
 
   return (
-    <table className="outcome-table-wrapper">
+    <div className="outcome-table-wrapper">
       {/* Headers */}
       <div className="outcome-table-metadata-header">
         <div
@@ -92,7 +92,7 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
           openExpandedView={openExpandedView}
         />
       ))}
-    </table>
+    </div>
   )
 }
 
