@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useHistory, useLocation } from 'react-router-dom'
 import { ComputedOutcome, Tag } from '../../types'
 import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
 import { OutcomeTableFilter } from '../OutcomeTableRow/filterMatch'
@@ -10,6 +11,7 @@ export type OutcomeTableProps = {
   outcomeTrees: ComputedOutcome[]
   filter: OutcomeTableFilter
   openExpandedView: (headerHash: HeaderHashB64) => void
+  goToOutcome: (headerHash: HeaderHashB64) => void
 }
 
 const OutcomeTable: React.FC<OutcomeTableProps> = ({
@@ -17,6 +19,7 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
   outcomeTrees,
   filter,
   openExpandedView,
+  goToOutcome,
 }) => {
   // the first two can be hardcoded
   // the final three should always add up to 100%
@@ -24,6 +27,15 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
   const [columnWidthPercentages, setColumnWidthPercentages] = useState<
     [string, string, string, string, string]
   >(['5rem', '40rem', '33%', '33%', '34%'])
+
+  // goToOutcome is not enough, we also
+  // need to navigate back to the Map View
+  const history = useHistory()
+  const location = useLocation()
+  const navAndGoToOutcome = (headerHash: HeaderHashB64) => {
+    history.push(location.pathname.replace('table', 'map'))
+    goToOutcome(headerHash)
+  }
 
   return (
     <div className="outcome-table-wrapper">
@@ -90,6 +102,7 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
           parentExpanded={true}
           indentationLevel={0}
           openExpandedView={openExpandedView}
+          goToOutcome={navAndGoToOutcome}
         />
       ))}
     </div>

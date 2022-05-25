@@ -22,6 +22,7 @@ export type OutcomeTableRowProps = {
   parentExpanded: boolean
   indentationLevel: number
   openExpandedView: (headerHash: HeaderHashB64) => void
+  goToOutcome: (headerHash: HeaderHashB64) => void
 }
 
 const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
@@ -32,6 +33,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   parentExpanded,
   indentationLevel,
   openExpandedView,
+  goToOutcome,
 }) => {
   //for now assume everything is expanded by default,
   // will need to look into how to expand collapse all in one action
@@ -189,6 +191,12 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
               March 12 - 24, 2022
             </div>
           </div>
+          <div
+            className="outcome-table-row-hover-button"
+            onClick={() => goToOutcome(outcome.headerHash)}
+          >
+            <Icon name="map.svg" size="small" className="grey" />
+          </div>
         </div>
       )}
       {outcome.children.length > 0 &&
@@ -201,6 +209,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
             parentExpanded={expanded && parentExpanded}
             indentationLevel={indentationLevel + 1}
             openExpandedView={openExpandedView}
+            goToOutcome={goToOutcome}
           />
         ))}
     </>

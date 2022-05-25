@@ -15,6 +15,7 @@ export type TableViewConnectorStateProps = {
 
 export type TableViewConnectorDispatchProps = {
   openExpandedView: (headerHash: HeaderHashB64) => void
+  goToOutcome: (headerHash: HeaderHashB64) => void
 }
 
 export type TableViewProps = TableViewConnectorStateProps &
@@ -25,6 +26,7 @@ const TableView: React.FC<TableViewProps> = ({
   projectMemberProfiles,
   projectTags,
   openExpandedView,
+  goToOutcome,
 }) => {
   const { computedOutcomesAsTree } = useContext(ComputedOutcomeContext)
 
@@ -36,6 +38,7 @@ const TableView: React.FC<TableViewProps> = ({
         projectMemberProfiles={projectMemberProfiles}
         computedOutcomesAsTree={computedOutcomesAsTree}
         openExpandedView={openExpandedView}
+        goToOutcome={goToOutcome}
       />
     </div>
   )

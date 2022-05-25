@@ -8,6 +8,7 @@ import TableView, {
 } from './TableView.component'
 import { WireElement } from '../../../api/hdkCrud'
 import { Profile } from '../../../types'
+import { animatePanAndZoom } from '../../../redux/ephemeral/viewport/actions'
 
 function mapStateToProps(state: RootState): TableViewConnectorStateProps {
   const projectId = state.ui.activeProject
@@ -31,6 +32,9 @@ function mapDispatchToProps(dispatch): TableViewConnectorDispatchProps {
   return {
     openExpandedView: (headerHash: HeaderHashB64) => {
       return dispatch(openExpandedView(headerHash))
+    },
+    goToOutcome: (headerHash: HeaderHashB64) => {
+      return dispatch(animatePanAndZoom(headerHash))
     },
   }
 }

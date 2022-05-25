@@ -9,6 +9,8 @@ import { getAppWs } from '../../../../hcWebsockets'
 import { cellIdFromString } from '../../../../utils'
 import PriorityUniversal from './PriorityUniversal.component'
 import { RootState } from '../../../../redux/reducer'
+import { CellIdString, HeaderHashB64 } from '../../../../types/shared'
+import { ProjectMeta } from '../../../../types'
 
 function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject
@@ -44,11 +46,17 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    openExpandedView: (headerHash) => dispatch(openExpandedView(headerHash)),
-    goToOutcome: (headerHash) => {
-      return dispatch(animatePanAndZoom(headerHash))
+    openExpandedView: (outcomeHeaderHash: HeaderHashB64) => {
+      return dispatch(openExpandedView(outcomeHeaderHash))
     },
-    updateProjectMeta: async (projectMeta, headerHash, cellIdString) => {
+    goToOutcome: (outcomeHeaderHash: HeaderHashB64) => {
+      return dispatch(animatePanAndZoom(outcomeHeaderHash))
+    },
+    updateProjectMeta: async (
+      projectMeta: ProjectMeta,
+      headerHash: HeaderHashB64,
+      cellIdString: CellIdString
+    ) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)

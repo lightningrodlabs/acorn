@@ -141,7 +141,8 @@ function EditProjectForm({
           />
         </div>
         {/* project priority mode setting */}
-        <PreferenceSelect title="Prioritization Mode" subtitle="Select your preferred prioritization mode for you and your team in this project." options={[universalOption, voteOption]} />
+        {/* MAYBE: re-enable this? */}
+        {/* <PreferenceSelect title="Prioritization Mode" subtitle="Select your preferred prioritization mode for you and your team in this project." options={[universalOption, voteOption]} /> */}
       </ProjectModalContent>
       <ProjectModalButton text='Update' onClick={submit} />
     </div>

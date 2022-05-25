@@ -1,4 +1,5 @@
 .outcome-table-row-wrapper {
+  position: relative;
   display: flex;
   flex-direction: row;
   border-bottom: 0.125rem solid var(--border-color-bright-gray);
@@ -84,6 +85,29 @@
     &.time {
       font-size: 0.875rem;
       color: var(--text-color-tertiary);
+    }
+  }
+
+  .outcome-table-row-hover-button {
+    position: absolute;
+    right: 8px;
+    top: 6px;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: transparent;
+    transition: 0.2s all ease-in-out;
+
+    .icon {
+      display: none;
+    }
+  }
+
+  &:hover {
+    .outcome-table-row-hover-button {
+      background-color: #f3f0ed;
+    }
+    .outcome-table-row-hover-button .icon {
+      display: flex;
     }
   }
 }
