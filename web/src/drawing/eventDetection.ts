@@ -1,7 +1,9 @@
 import { outcomeWidth, getOutcomeHeight, outcomeHeight } from './dimensions'
 import { coordsPageToCanvas } from './coordinateSystems'
-import linePoint from 'intersects/line-point'
-import { calculateConnectionCoordsByOutcomeCoords } from './drawConnection'
+import {
+  calculateConnectionCoordsByOutcomeCoords,
+  pathForConnection,
+} from './drawConnection'
 import { HeaderHashB64 } from '../types/shared'
 import { ComputedOutcome } from '../types'
 import { RootState } from '../redux/reducer'
@@ -59,16 +61,17 @@ export function checkForConnectionAtCoordinates(
         scale,
         ctx
       )
-      // if mouse intersects with the line
+      const connectionPath = pathForConnection({
+        fromPoint: childConnectionCoords,
+        toPoint: parentConnectionCoords,
+      })
+      // if mouse intersects with the bezier curve
+      const canvas = document.createElement('canvas')
+      const newCtx = canvas.getContext('2d')
+      // use the built-in `isPointInPath` function
+      // very useful
       if (
-        linePoint(
-          childConnectionCoords.x,
-          childConnectionCoords.y,
-          parentConnectionCoords.x,
-          parentConnectionCoords.y,
-          convertedMouse.x,
-          convertedMouse.y
-        )
+        newCtx.isPointInPath(connectionPath, convertedMouse.x, convertedMouse.y)
       ) {
         // set the overConnectionAddress to this connection headerHash
         overConnectionAddress = connection.headerHash
