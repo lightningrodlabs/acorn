@@ -236,6 +236,7 @@ export type TagPickerProps = {
   filterText: string
   setFilterText: (text: string) => void
   onSaveTag: (text: string, backgroundColor: string) => Promise<void>
+  onClose: () => void
 }
 
 const TagPicker: React.FC<TagPickerProps> = ({
@@ -245,8 +246,11 @@ const TagPicker: React.FC<TagPickerProps> = ({
   filterText,
   setFilterText,
   onSaveTag,
+  onClose,
 }) => {
-  const [isCreateTagOpen, setIsCreateTagOpen] = useState(false)
+  // if there aren't any tags, then it should
+  // be open to the create tag panel by default
+  const [isCreateTagOpen, setIsCreateTagOpen] = useState(!tags.length)
   const onSaveTagInner = async (text: string, backgroundColor: string) => {
     await onSaveTag(text, backgroundColor)
     setIsCreateTagOpen(false)
@@ -266,7 +270,13 @@ const TagPicker: React.FC<TagPickerProps> = ({
         )}
         {isCreateTagOpen && (
           <CreateOrEditTag
-            onCancel={() => setIsCreateTagOpen(false)}
+            onCancel={() => {
+              if (tags.length) {
+                setIsCreateTagOpen(false)
+              } else {
+                onClose()
+              }
+            }}
             onSave={onSaveTagInner}
           />
         )}
