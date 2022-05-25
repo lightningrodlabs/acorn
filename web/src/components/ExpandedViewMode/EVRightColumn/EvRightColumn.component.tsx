@@ -378,13 +378,13 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
           <Typography style="h7">
             <div className="ev-right-column-heading">Actions</div>
           </Typography>
-          <ButtonAction
+          {/* TODO */}
+          {/* <ButtonAction
             size="small"
             onClick={() => {}}
-            // @ts-ignore
             icon={<Icon name="share.svg" className="not-hoverable" />}
             text="Share"
-          />
+          /> */}
           <ButtonAction
             size="small"
             onClick={deleteAndClose}
