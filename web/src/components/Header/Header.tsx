@@ -16,7 +16,6 @@ function Header({
   activeEntryPoints,
   project,
   projectId,
-  hideGuidebookHelpMessage,
   goToOutcome,
   members,
   presentMembers,
@@ -90,7 +89,6 @@ function Header({
           <HeaderRightPanel
             {...{
               status,
-              hideGuidebookHelpMessage,
               whoami,
               onClickEditProfile,
               onClickPreferences,

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
-import { GUIDE_IS_OPEN } from '../../searchParams'
 import { Status, StatusCssColorClass } from './Status'
 import Icon from '../Icon/Icon'
 import Avatar from '../Avatar/Avatar'
@@ -80,7 +79,6 @@ function SearchResultsFilter({ name, filterActive, setFilter }) {
 }
 
 export default function HeaderRightPanel({
-  hideGuidebookHelpMessage,
   whoami,
   onClickEditProfile,
   onClickPreferences,
@@ -125,11 +123,6 @@ export default function HeaderRightPanel({
     setIsSearchOpen(false)
     setFilterText('')
   }, [projectId])
-
-  // check the url for GUIDE_IS_OPEN
-  // and affect the state
-  const searchParams = new URLSearchParams(location.search)
-  const isGuideOpen = !!searchParams.get(GUIDE_IS_OPEN)
 
   const noFilters = isTextFilter || isDescriptionFilter || isCommentFilter
 
@@ -255,7 +248,11 @@ export default function HeaderRightPanel({
 
       <div className="header-right-panel">
         {/* Help button */}
-        <div className="help-button-external">
+        <a
+          className="help-button-external"
+          href="https://sprillow.gitbook.io/acorn-knowledge-base/"
+          target="_blank"
+        >
           <Typography style="h8">Help</Typography>
           {/* @ts-ignore */}
           <Icon
@@ -263,7 +260,7 @@ export default function HeaderRightPanel({
             size="small"
             className="grey not-hoverable"
           />
-        </div>
+        </a>
 
         <div
           className="avatar-and-status-wrapper"

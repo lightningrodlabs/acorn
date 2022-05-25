@@ -6,7 +6,6 @@ import { useHistory, useLocation } from 'react-router-dom'
 import Avatar from '../../../../components/Avatar/Avatar'
 import Icon from '../../../../components/Icon/Icon'
 import TimeframeFormat from '../../../../components/TimeframeFormat'
-import GuidebookNavLink from '../../../../components/GuidebookNavLink/GuidebookNavLink'
 
 import './PriorityUniversal.scss'
 
@@ -308,9 +307,12 @@ function PriorityUniversal({
             <h4>
               You haven't marked any outcomes as top priority.
               <br />
-              <GuidebookNavLink guidebookId="intro_universal_priorityMode">
+              <a
+                href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/high-priority-outcomes"
+                target="_blank"
+              >
                 Learn how to start prioritizing here.
-              </GuidebookNavLink>{' '}
+              </a>{' '}
             </h4>
           </div>
         )}

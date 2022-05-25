@@ -2,7 +2,6 @@ import { InstalledAppInfo } from '@holochain/client'
 import React, { useEffect, useState } from 'react'
 import { getAllApps } from '../../projectAppIds'
 import { uidToPassphrase } from '../../secrets'
-import GuidebookNavLink from '../GuidebookNavLink/GuidebookNavLink'
 import Icon from '../Icon/Icon'
 import './PendingProjects.scss'
 
@@ -139,9 +138,9 @@ function PendingProjects({
                     </div>
                   )
                 })}
-              <GuidebookNavLink guidebookId="join_a_project">
+              <a href="https://sprillow.gitbook.io/acorn-knowledge-base/projects/join-a-project" target="_blank">
                 Having issues? Learn more about joining a project.
-              </GuidebookNavLink>
+              </a>
             </div>
           )}
         </div>

@@ -36,7 +36,6 @@ export default function App({
   updateWhoami,
   navigationPreference,
   setNavigationPreference,
-  hideGuidebookHelpMessage,
   inviteMembersModalShowing,
   openInviteMembersModal,
   hideInviteMembersModal,
@@ -82,7 +81,6 @@ export default function App({
             project={activeProjectMeta}
             presentMembers={presentMembers}
             {...{
-              hideGuidebookHelpMessage,
               activeEntryPoints,
               projectId,
               whoami,
