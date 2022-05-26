@@ -64,33 +64,13 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
     }
   }, [outcomeHeaderHash])
 
-  // we need to make sure the view isn't set to an ExpandedViewTab
-  // that doesn't exist for an Outcome of the new scope
   useEffect(() => {
     // don't do anything if we're dealing with the ExpandedViewMode
     // closing itself
     if (outcomeHeaderHash) {
-      const isSmall = outcome && outcome.computedScope === ComputedScope.Small
-      const hasChildren =
-        outcome && outcome.children && outcome.children.length > 0
-      const isUncertainNoChildren =
-        outcome &&
-        outcome.children &&
-        outcome.children.length === 0 &&
-        outcome.computedScope === ComputedScope.Uncertain
-      if (isSmall && activeTab === ExpandedViewTab.ChildrenList) {
-        setActiveTab(ExpandedViewTab.TaskList)
-      } else if (hasChildren && activeTab === ExpandedViewTab.TaskList) {
-        setActiveTab(ExpandedViewTab.ChildrenList)
-      } else if (
-        isUncertainNoChildren &&
-        (activeTab === ExpandedViewTab.TaskList ||
-          activeTab === ExpandedViewTab.ChildrenList)
-      ) {
-        setActiveTab(ExpandedViewTab.Details)
-      }
+      setActiveTab(ExpandedViewTab.Details)
     }
-  }, [outcomeHeaderHash, activeTab])
+  }, [outcomeHeaderHash])
 
   const outcomeId = hashCodeId(outcomeHeaderHash)
 
