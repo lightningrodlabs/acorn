@@ -26,7 +26,8 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
   // the final three split the remaining space
   const [columnWidthPercentages, setColumnWidthPercentages] = useState<
     [string, string, string, string, string]
-  >(['5rem', '40rem', '33%', '33%', '34%'])
+    >(['5rem', '45rem', '50%', '50%', '0%'])
+  // >(['5rem', '40rem', '33%', '33%', '34%'])
 
   // goToOutcome is not enough, we also
   // need to navigate back to the Map View
@@ -78,7 +79,8 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
           >
             Tags
           </div>
-          <div
+          {/* TODO: add back time column with hooked up data */}
+          {/* <div
             className="outcome-table-metadata-header-label"
             style={{
               width: columnWidthPercentages[4],
@@ -86,7 +88,7 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
             }}
           >
             Time
-          </div>
+          </div> */}
         </div>
       </div>
 

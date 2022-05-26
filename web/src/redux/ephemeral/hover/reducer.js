@@ -15,7 +15,7 @@ export default function (state = defaultState, action) {
   switch (type) {
     case DELETE_OUTCOME_FULLY:
       // unhover if the deleted Outcome was hovered over
-      return state.hoveredOutcome === payload.address
+      return state.hoveredOutcome === payload.outcomeHeaderHash
         ? {
             ...state,
             hoveredOutcome: null,

@@ -1,16 +1,51 @@
 import React, { useState, useEffect } from 'react'
-import moment from 'moment'
 
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import 'react-dates'
-import { DateRangePicker } from 'react-dates'
+import { DateRangePicker, SingleDatePicker } from 'react-dates'
 import { START_DATE } from 'react-dates/constants'
 import 'react-dates/lib/css/_datepicker.css'
 import 'react-dates/initialize'
 
 import './DatePicker.scss'
 
-function DatePicker({ fromDate, toDate, onClose, onSet }) {
+function DatePicker({ date, onClose, onSet }) {
+  const [internalDate, setInternalDate] = useState(date)
+
+  useEffect(() => {
+    onSet(
+      internalDate ? internalDate.unix() : null,
+    )
+  }, [internalDate])
+
+  return (
+    <PickerTemplate
+      heading='Target Date'
+      className='date_picker_wrapper'
+      onClose={onClose}>
+      <div className='date_picker_content'>
+        <SingleDatePicker
+          numberOfMonths={1}
+          onClose={() => { }}
+          focused={true}
+          onFocusChange={({ focused }) => {}}
+          date={internalDate} // momentPropTypes.momentObj or null,
+          startDateId='your_unique_id'
+          onDateChange={(newDate) =>
+            setInternalDate(newDate)
+          }
+        />
+      </div>
+    </PickerTemplate>
+  )
+}
+
+export {
+  DatePicker
+}
+
+
+function CustomDateRangePicker({ fromDate, toDate, onClose, onSet }) {
   const [dates, setDates] = useState({
     fromDate,
     toDate,
@@ -26,7 +61,7 @@ function DatePicker({ fromDate, toDate, onClose, onSet }) {
 
   return (
     <PickerTemplate
-      heading='Timeframe'
+      heading='Time'
       className='date_picker_wrapper'
       onClose={onClose}>
       <div className='date_picker_content'>
@@ -56,4 +91,4 @@ function DatePicker({ fromDate, toDate, onClose, onSet }) {
   )
 }
 
-export default DatePicker
+export default CustomDateRangePicker

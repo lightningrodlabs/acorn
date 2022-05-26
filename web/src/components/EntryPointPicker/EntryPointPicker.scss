@@ -1,11 +1,11 @@
 .entry-point-picker.picker-popup {
   /* this overrides defult top position set for picker-popup which is 0*/
-  top: 58px;
+  top: 62px;
   position: absolute;
   margin-left: 0;
   border-radius: 10px;
   background: #ffffff;
-  box-shadow: 0px 0px 1.25em var(--shadow-color-dark);
+  box-shadow: 0px 0px 1.25rem var(--shadow-color);
   padding: 20px 0px;
   z-index: 10;
   position: fixed;

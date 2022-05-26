@@ -75,18 +75,41 @@
         flex-direction: column;
         width: 50%;
 
+        .big-scope-time-estimate-wrapper {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+
+          .typography {
+            color: var(--text-color-tertiary);
+            cursor: default;
+          }
+
+          .icon {
+            width: 1.125rem;
+            height: 1.125rem;
+            padding: 0;
+            margin-right: 0.5rem;
+            cursor: default;
+          }
+
+          .more-info-wrapper {
+            margin-left: 0.75rem;
+          }
+        }
+
         .ev-time-display {
           font: 1rem var(--font-family-primary-medium);
           color: var(-text-color-primary);
+          color: var(--text-color-placeholder);
           cursor: pointer;
           transition: 0.2s all ease;
           padding: 0.25rem 0;
-          color: var(--text-color-placeholder);
         }
 
         .picker-popup {
-          top: 5.25rem;
-          left: 0;
+          top: 4.25rem;
+          left: -5rem;
         }
       }
     }

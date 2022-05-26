@@ -180,16 +180,16 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
 
             {/* Time */}
             {/* TODO: update time display for different scopes */}
-            <div
+            {/* {outcome.timeFrame} */}
+            {/* <div
               className="outcome-table-row-metadata-wrapper time"
               style={{
                 width: columnWidthPercentages[4],
                 minWidth: columnWidthPercentages[4],
               }}
             >
-              {/* {outcome.timeFrame} */}
               March 12 - 24, 2022
-            </div>
+            </div> */}
           </div>
           <div
             className="outcome-table-row-hover-button"
@@ -202,6 +202,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
       {outcome.children.length > 0 &&
         outcome.children.map((outcomeChild) => (
           <OutcomeTableRow
+            key={outcomeChild.headerHash}
             columnWidthPercentages={columnWidthPercentages}
             projectTags={projectTags}
             outcome={outcomeChild}

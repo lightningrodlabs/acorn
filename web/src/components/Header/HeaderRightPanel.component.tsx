@@ -141,6 +141,7 @@ export default function HeaderRightPanel({
               <Icon
                 name="search.svg"
                 size="small"
+                className="grey"
                 onClick={() => {
                   setIsSearchOpen(!isSearchOpen)
                   setFilterText('')

@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import TextareaAutosize from 'react-textarea-autosize'
 
-import Avatar from '../../../../Avatar/Avatar'
 import PeoplePicker from '../../../../PeoplePicker/PeoplePicker'
 import {
   AssigneeWithHeaderHash,
   ComputedOutcome,
+  ComputedScope,
   Outcome,
   Profile,
   Tag,
@@ -25,29 +25,9 @@ import GithubLink from '../../../../GithubLink/GithubLink'
 import AvatarsList from '../../../../AvatarsList/AvatarsList'
 import MarkdownDescription from '../../../../MarkdownDescription/MarkdownDescription'
 import EditingOverlay from '../../../../EditingOverlay/EditingOverlay'
-
-/*
-testing data
-*/
-
-// you can use these as values for
-// testing/ development, instead of `assignees`
-const _testAssignees = [
-  { avatarUrl: 'img/profile.png' },
-  { avatarUrl: 'img/profile.png' },
-  { avatarUrl: 'img/profile.png' },
-]
-
-const _member = {
-  firstName: 'Pegah',
-  lastName: 'Vaezi',
-  avatarUrl:
-    'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fwww.fouladiprojects.com%2Fwp-content%2Fuploads%2F2015%2F10%2FBarbourshow1.jpg&f=1&nofb=1',
-  isImported: false,
-  headerHash: 'riusry3764yiud',
-  connectionStatus: 'connected',
-  status: 'online',
-}
+import DateRangePicker, { DatePicker } from '../../../../DatePicker/DatePicker'
+import Typography from '../../../../Typography/Typography'
+import Icon from '../../../../Icon/Icon'
 
 /* end testing data */
 
@@ -190,12 +170,56 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   /*
     Times
   */
+  const [editingTimeframe, setEditingTimeframe] = useState(false)
   let fromDate: moment.Moment, toDate: moment.Moment
+  let timeFieldLabel: string
+  let durationEstimate: string
+  let onSetDate = async (fromDate: number, toDate: number) => { }
+
   if (outcome) {
-    // fromDate = outcome.timeFrame
-    //   ? moment.unix(outcome.timeFrame.fromDate)
-    //   : null
-    // toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
+    // Uncertain
+    if (outcome.computedScope === ComputedScope.Uncertain) {
+      timeFieldLabel = 'Breakdown Time Est.'
+      fromDate = 'Uncertain' in outcome.scope && outcome.scope.Uncertain.timeFrame && outcome.scope.Uncertain.timeFrame.fromDate
+        ? moment.unix(outcome.scope.Uncertain.timeFrame.fromDate)
+        : null
+      toDate = 'Uncertain' in outcome.scope && outcome.scope.Uncertain.timeFrame && outcome.scope.Uncertain.timeFrame.toDate
+        ? moment.unix(outcome.scope.Uncertain.timeFrame.toDate)
+        : null
+      onSetDate = async (fromDate: number, toDate: number) => {
+        if (!(fromDate && toDate)) return
+        let cleaned = cleanOutcome()
+        cleaned.scope = {
+          Uncertain: {
+            ...('Uncertain' in outcome.scope ? outcome.scope.Uncertain : { inBreakdown: true, smallsEstimate: null }),
+            timeFrame: { fromDate, toDate }
+          }
+        }
+        await updateOutcome(cleaned, outcomeHeaderHash)
+      }
+    } else if (outcome.computedScope === ComputedScope.Small) {
+      // Small
+      timeFieldLabel = 'Target Date'
+      toDate = 'Small' in outcome.scope && outcome.scope.Small.targetDate
+        ? moment.unix(outcome.scope.Small.targetDate)
+        : null
+      onSetDate = async (targetDate: number) => {
+        if (!targetDate) return
+        let cleaned = cleanOutcome()
+        cleaned.scope = {
+          Small: {
+            ...('Small' in outcome.scope ? outcome.scope.Small : { achievementStatus: 'NotAchieved', taskList: [] }),
+            targetDate
+          }
+        }
+        await updateOutcome(cleaned, outcomeHeaderHash)
+        setEditingTimeframe(false)
+      }
+    } else if (outcome.computedScope === ComputedScope.Big) {
+      // Big
+      timeFieldLabel = 'Achievement Time Est.'
+      durationEstimate = `${outcome.computedAchievementStatus.smallsTotal} days`
+    }
   }
 
   /*
@@ -242,7 +266,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   )
   const descriptionEditor = editingDescriptionPeer
     ? // @ts-ignore
-      editingDescriptionPeer.profileInfo
+    editingDescriptionPeer.profileInfo
     : {}
 
   /*
@@ -328,19 +352,45 @@ const EvDetails: React.FC<EvDetailsProps> = ({
 
             {/* Time related */}
             <div className="ev-time-wrapper">
-              {/* TODO: make label based on the scope of the outcome */}
-              <MetadataWithLabel label="Breakdown Time Est.">
+              {/* make label based on the scope of the outcome */}
+              <MetadataWithLabel label={timeFieldLabel}>
+                {/* For Big, it is a read-only field */}
+                {/* For Uncertain and Small, it is an editable field */}
                 <div
                   className="ev-time-display"
-                  // TODO: bring this back
-                  // onClick={() => setEditTimeframe(!editTimeframe)}
+                  onClick={() => outcome.computedScope !== ComputedScope.Big && setEditingTimeframe(!editingTimeframe)}
                 >
-                  {fromDate && fromDate.format('MMM D, YYYY')}
-                  {toDate && ' - '}
-                  {toDate && toDate.format('MMM D, YYYY')}
-                  {!fromDate && !toDate && 'Click to set time'}
+                  {/* Big - Achievement Time Est.*/}
+                  {outcome && outcome.computedScope === ComputedScope.Big && <>
+                    <div className='big-scope-time-estimate-wrapper'>
+                      <Icon name="calculator-grey.svg" className="grey not-hoverable" />
+                      <Typography style="h7">{durationEstimate}</Typography>
+                      <div className="more-info-wrapper">
+                        <a href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/time" target="_blank">
+                          <Icon name="info.svg" className="light-grey" size="small" />
+                        </a>
+                      </div>
+                    </div>
+                  </>}
+                  {/* Uncertain */}
+                  {outcome && outcome.computedScope === ComputedScope.Uncertain && <>
+                    <Typography style="body1">
+                      {fromDate && fromDate.format('MMM D, YYYY')}
+                      {toDate && ' - '}
+                      {toDate && toDate.format('MMM D, YYYY')}
+                    </Typography>
+                    {!fromDate && !toDate && <>Click to set time</>}
+                  </>}
+                  {/* Small */}
+                  {outcome && outcome.computedScope === ComputedScope.Small && <>
+                    {toDate && <Typography style="body1">{toDate.format('MMM D, YYYY')}</Typography>}
+                    {!toDate && <>Click to set time</>}
+                  </>}
                 </div>
               </MetadataWithLabel>
+
+              {editingTimeframe && outcome && outcome.computedScope === ComputedScope.Small && <DatePicker date={fromDate} onClose={() => setEditingTimeframe(false)} onSet={onSetDate} />}
+              {editingTimeframe && outcome && outcome.computedScope === ComputedScope.Uncertain && <DateRangePicker fromDate={fromDate} toDate={toDate} onClose={() => setEditingTimeframe(false)} onSet={onSetDate} />}
             </div>
           </div>
 

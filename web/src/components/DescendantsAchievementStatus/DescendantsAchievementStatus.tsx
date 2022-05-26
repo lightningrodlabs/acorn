@@ -41,18 +41,17 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
           <>
             {/* tasks */}
             <div
-              className={`descendants-wrapper tasks ${
-                computedAchievementStatus.tasksAchieved ===
+              className={`descendants-wrapper tasks ${computedAchievementStatus.tasksAchieved ===
                 computedAchievementStatus.tasksTotal
-                  ? 'achieved'
-                  : ''
-              }`}
+                ? 'achieved'
+                : ''
+                }`}
             >
               <ProgressIndicator
                 progress={Math.round(
                   (computedAchievementStatus.tasksAchieved /
                     computedAchievementStatus.tasksTotal) *
-                    100
+                  100
                 )}
               />
               {/* number of achieved and total tasks */}
@@ -64,7 +63,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
                 {Math.round(
                   (computedAchievementStatus.tasksAchieved /
                     computedAchievementStatus.tasksTotal) *
-                    100
+                  100
                 )}
                 % )
               </div>
@@ -78,20 +77,19 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
           {/* Small children */}
           {computedAchievementStatus.smallsTotal !== 0 && (
             <div
-              className={`descendants-wrapper smalls ${
-                computedAchievementStatus.uncertains === 0 &&
+              className={`descendants-wrapper smalls ${computedAchievementStatus.uncertains === 0 &&
                 computedAchievementStatus.smallsAchieved ===
-                  computedAchievementStatus.smallsTotal
-                  ? 'achieved'
-                  : ''
-              }`}
+                computedAchievementStatus.smallsTotal
+                ? 'achieved'
+                : ''
+                }`}
             >
               {computedAchievementStatus.uncertains === 0 && (
                 <ProgressIndicator
                   progress={Math.round(
                     (computedAchievementStatus.smallsAchieved /
                       computedAchievementStatus.smallsTotal) *
-                      100
+                    100
                   )}
                 />
               )}
@@ -109,7 +107,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
                   {Math.round(
                     (computedAchievementStatus.smallsAchieved /
                       computedAchievementStatus.smallsTotal) *
-                      100
+                    100
                   )}
                   % )
                 </div>
@@ -132,16 +130,17 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
 
       {/* More info icon */}
       {/* Don't show more info icon if it's small scope */}
-      {/* TODO: hook up onClick */}
       {computedScope !== ComputedScope.Small && (
         <div className="more-info-wrapper">
           <div>
-            {/* @ts-ignore */}
-            <Icon name="info.svg" className="light-grey" size="small" />
+            <a href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/progress-indicator" target="_blank">
+              <Icon name="info.svg" className="light-grey" size="small" />
+            </a>
           </div>
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   )
 }
 

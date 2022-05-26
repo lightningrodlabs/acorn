@@ -443,7 +443,7 @@ export default function setupEventListeners(
         if (
           event.shiftKey &&
           state.ui.selection.selectedOutcomes.indexOf(clickedOutcomeAddress) >
-            -1
+          -1
         ) {
           store.dispatch(unselectOutcome(clickedOutcomeAddress))
         } else {
@@ -528,8 +528,18 @@ export default function setupEventListeners(
       event.clientY,
       outcomes
     )
+    const calcedPoint = coordsPageToCanvas(
+      {
+        x: event.clientX,
+        y: event.clientY,
+      },
+      translate,
+      scale
+    )
     if (outcomeHeaderHash) {
       store.dispatch(openExpandedView(outcomeHeaderHash))
+    } else {
+      store.dispatch(openOutcomeForm(calcedPoint.x, calcedPoint.y))
     }
   }
 

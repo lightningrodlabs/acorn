@@ -31,12 +31,12 @@ export default function (state = defaultState, action) {
   switch (type) {
     case DELETE_OUTCOME_FULLY:
       // unselect if the deleted Outcome was selected
-      return state.selectedOutcomes.includes(payload.address)
+      return state.selectedOutcomes.includes(payload.outcomeHeaderHash)
         ? {
             ...state,
             selectedOutcomes: arrayWithoutElement(
               state.selectedOutcomes,
-              payload.address
+              payload.outcomeHeaderHash
             ),
           }
         : { ...state }

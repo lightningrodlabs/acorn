@@ -90,10 +90,10 @@
 
   .outcome-table-row-hover-button {
     position: absolute;
-    right: 8px;
-    top: 6px;
-    padding: 5px;
-    border-radius: 4px;
+    right: 0.5rem;
+    top: 0.25rem;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
     background-color: transparent;
     transition: 0.2s all ease-in-out;
 
@@ -104,7 +104,14 @@
 
   &:hover {
     .outcome-table-row-hover-button {
-      background-color: #f3f0ed;
+      background-color: var(--bg-color-hover);
+
+      .icon .inner-icon {
+
+        &:hover {
+          background-color: var(--border-color-primary);
+        }
+      }
     }
     .outcome-table-row-hover-button .icon {
       display: flex;

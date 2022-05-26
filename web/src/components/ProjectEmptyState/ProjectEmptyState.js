@@ -7,8 +7,7 @@ function ProjectEmptyState() {
       <div className='project-empty-state'>
         <div className='project-empty-state-text'>
           <h4>
-            Hold G and left click anywhere on canvas to create your first outcome
-            card.
+            Double click anywhere on canvas to create your first Outcome.
           </h4>
         </div>
       </div>

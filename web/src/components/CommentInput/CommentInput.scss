@@ -42,10 +42,17 @@
 }
 
 .comment-input-enter-button {
-  padding: 1rem;
+  margin: 0.5rem;
+  padding: 0.5rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: 0.2s background-color ease;
+  border-radius: 0.5rem;
+
+  &:hover {
+    background-color: var(--bg-color-hover);
+  }
 }

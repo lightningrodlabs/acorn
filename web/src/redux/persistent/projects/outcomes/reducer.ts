@@ -80,7 +80,7 @@ export default function (state: OutcomesState = defaultState, action: OutcomesAc
         ...state,
         [cellIdString]: _.pickBy(
           state[cellIdString],
-          (_value, key) => key !== deleteFullyResponse.address
+          (_value, key) => key !== deleteFullyResponse.outcomeHeaderHash
         ),
       }
     default:
