@@ -148,6 +148,11 @@ export default function ImportProjectModal({
   let hasUnmounted = false
 
   const onFilePicked = async projectData => {
+    if (!projectData.tags) {
+      alert('Cannot import projects from versions prior to v0.9.0-alpha')
+      onClose()
+      return
+    }
     setImportingProject(true)
     setProjectName(projectData.projectMeta.name)
     setOutcomeCount(Object.keys(projectData.outcomes).length)
