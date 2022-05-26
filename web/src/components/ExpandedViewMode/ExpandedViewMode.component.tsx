@@ -9,6 +9,7 @@ import { ComputedOutcome, ComputedScope } from '../../types'
 import './ExpandedViewMode.scss'
 import ButtonClose from '../ButtonClose/ButtonClose'
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs'
+import hashCodeId from '../../api/clientSideIdHash'
 
 // props passed to the component by the parent
 export type ExpandedViewModeOwnProps = {
@@ -91,8 +92,7 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
     }
   }, [outcomeHeaderHash, activeTab])
 
-  // TODO: set up the notion of an Outcome Id
-  const outcomeId = 124543
+  const outcomeId = hashCodeId(outcomeHeaderHash)
 
   const childrenCount =
     outcome && outcome.children ? outcome.children.length : 0

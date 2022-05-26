@@ -6,7 +6,7 @@ import { ExpandedViewTab } from '../NavEnum'
 import './EVLeftColumn.scss'
 
 export type EvLeftColumnProps = {
-  outcomeId: number
+  outcomeId: string
   onChange: (expandedViewTab: ExpandedViewTab) => void
   activeTab: ExpandedViewTab
   commentCount: number
@@ -37,7 +37,7 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
     },
     ,
   ]
-  
+
   if (childrenCount > 0) {
     navItems.push({
       text: `Children (${childrenCount})`,
@@ -55,7 +55,7 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
   return (
     <div className="expanded-view-nav-column">
       <div className="expanded-view-outcome-id">
-        <Typography style="caption1">{outcomeId.toString()}</Typography>
+        <Typography style="caption1">{outcomeId}</Typography>
       </div>
       {navItems.map(({ text, icon, tab }) => {
         return (

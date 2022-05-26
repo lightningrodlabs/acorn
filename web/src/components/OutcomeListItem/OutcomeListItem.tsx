@@ -1,5 +1,6 @@
 import React from 'react'
-import { ComputedOutcome, ComputedScope } from '../../types'
+import hashCodeId from '../../api/clientSideIdHash'
+import { ComputedOutcome, ComputedScope, ComputedSimpleAchievementStatus } from '../../types'
 import { HeaderHashB64 } from '../../types/shared'
 import Icon from '../Icon/Icon'
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
@@ -15,16 +16,44 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({
   outcome,
   openExpandedView,
 }) => {
-  const progress =
-    (outcome.computedAchievementStatus.smallsAchieved /
-      outcome.computedAchievementStatus.smallsTotal) *
-    100
+  // TODO: refine this
+  // because it can be confusing when task list progress
+  // is out of sync with annotated 'Achieved' vs 'NotAchieved' achievement
+  // status
+  let progress: number
+  if (outcome.computedScope === ComputedScope.Small) {
+    if (
+      outcome.computedAchievementStatus.simple ===
+      ComputedSimpleAchievementStatus.Achieved
+    ) {
+      // this is to account for the fact that manually setting
+      // "Achieved" overrides the task list progress
+      progress = 100
+    } else if (
+      outcome.computedAchievementStatus.tasksAchieved === 0 &&
+      outcome.computedAchievementStatus.tasksTotal === 0
+    ) {
+      // avoid dividing 0 by 0
+      progress = 0
+    } else {
+      progress =
+        (outcome.computedAchievementStatus.tasksAchieved /
+          outcome.computedAchievementStatus.tasksTotal) *
+        100
+    }
+  } else {
+    progress =
+      (outcome.computedAchievementStatus.smallsAchieved /
+        outcome.computedAchievementStatus.smallsTotal) *
+      100
+  }
   return (
     <div className="outcome-list-item">
       {/* ID */}
-      {/* TODO: setup outcome id */}
       <div className="outcome-list-item-id">
-        <Typography style="caption3">123411</Typography>
+        <Typography style="caption3">
+          {hashCodeId(outcome.headerHash)}
+        </Typography>
       </div>
 
       {/* ProgressIndicator */}
