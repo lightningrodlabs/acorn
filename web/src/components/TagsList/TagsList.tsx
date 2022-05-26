@@ -29,6 +29,9 @@ const TagsList: React.FC<TagsListProps> = ({
     <div className="tags-list-wrapper">
       {selectedTags.map((tagHeaderHash) => {
         const tag = tags.find((tag) => tag.headerHash === tagHeaderHash)
+        if (!tag) {
+          return
+        }
         return (
           <div key={tagHeaderHash} className="tags-list-item">
             <Tag text={tag.text} backgroundColor={tag.backgroundColor} />
