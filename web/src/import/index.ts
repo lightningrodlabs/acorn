@@ -9,6 +9,10 @@ import ProjectsZomeApi from '../api/projectsApi'
 import ProfilesZomeApi from '../api/profilesApi'
 import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
+import { createTag } from '../redux/persistent/projects/tags/actions'
+import { Outcome } from '../types'
+import { WireElement } from '../api/hdkCrud'
+import { HeaderHashB64 } from '../types/shared'
 
 export default async function importAllProjectData(
   existingAgents,
@@ -48,7 +52,7 @@ export default async function importAllProjectData(
   }
 
   // OUTCOMES
-  const outcomeHeaderHashMap = {}
+  const outcomeHeaderHashMap: { [oldHeaderHash: HeaderHashB64]: HeaderHashB64 } = {}
   // do the outcomes second, since pretty much everything else
   // is sub-data to the outcomes
   for (let outcomeHeaderHash of Object.keys(projectData.outcomes)) {
@@ -62,12 +66,11 @@ export default async function importAllProjectData(
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    let newOutcome
+    let newOutcome: WireElement<Outcome>
     try {
-      // @ts-ignore
-      const createdOutcome = await projectsZomeApi.outcome.create(projectsCellId, clone)
-      newOutcome = await dispatch(
-        createOutcome(projectsCellIdString, createdOutcome)
+      newOutcome = await projectsZomeApi.outcome.create(projectsCellId, clone)
+      dispatch(
+        createOutcome(projectsCellIdString, newOutcome)
       )
     } catch (e) {
       console.log('createOutcome error', e)
@@ -75,24 +78,19 @@ export default async function importAllProjectData(
     }
     // add this new outcome address to the outcomeHeaderHashMap
     // to keep of which new addresses map to which old addresses
-    let oldOutcomeHeaderHash
+    let oldOutcomeHeaderHash: HeaderHashB64
     // v0.5.4-alpha
     if (oldOutcome.headerHash) oldOutcomeHeaderHash = oldOutcome.headerHash
     // pre v0.5.3-alpha and prior
     else if (oldOutcome.address) oldOutcomeHeaderHash = oldOutcome.address
 
-    let newOutcomeHeaderHash
-    // v0.5.4-alpha
-    if (newOutcome.headerHash) newOutcomeHeaderHash = newOutcome.headerHash
-    // pre v0.5.3-alpha and prior
-    else if (newOutcome.address) newOutcomeHeaderHash = newOutcome.address
-
-    outcomeHeaderHashMap[oldOutcomeHeaderHash] = newOutcomeHeaderHash
+    outcomeHeaderHashMap[oldOutcomeHeaderHash] = newOutcome.headerHash
   }
 
   // CONNECTIONS
   for (let address of Object.keys(projectData.connections)) {
     const old = projectData.connections[address]
+    console.log(old)
     const clone = {
       ...old,
       parentHeaderHash: outcomeHeaderHashMap[old.parentHeaderHash],
@@ -113,7 +111,7 @@ export default async function importAllProjectData(
     }
     try {
       const createdConnection = await projectsZomeApi.connection.create(projectsCellId, clone)
-      await dispatch(
+      dispatch(
         createConnection(projectsCellIdString, createdConnection)
       )
     } catch (e) {
@@ -141,9 +139,8 @@ export default async function importAllProjectData(
       continue
     }
     try {
-      // @ts-ignore
       const createdOutcomeMember = await projectsZomeApi.outcomeMember.create(projectsCellId, clone)
-      await dispatch(
+      dispatch(
         createOutcomeMember(projectsCellIdString, createdOutcomeMember)
       )
     } catch (e) {
@@ -171,9 +168,8 @@ export default async function importAllProjectData(
       continue
     }
     try {
-      // @ts-ignore
       const createdOutcomeComment = await projectsZomeApi.outcomeComment.create(projectsCellId, clone)
-      await dispatch(
+      dispatch(
         createOutcomeComment(projectsCellIdString, createdOutcomeComment)
       )
     } catch (e) {
@@ -201,9 +197,8 @@ export default async function importAllProjectData(
       continue
     }
     try {
-      // @ts-ignore
       const createdOutcomeVote = await projectsZomeApi.outcomeVote.create(projectsCellId, clone)
-      await dispatch(
+      dispatch(
         createOutcomeVote(projectsCellIdString, createdOutcomeVote)
       )
     } catch (e) {
@@ -231,14 +226,37 @@ export default async function importAllProjectData(
       continue
     }
     try {
-      // @ts-ignore
       const createdEntryPoint = await projectsZomeApi.entryPoint.create(projectsCellId, clone)
-      await dispatch(
+      dispatch(
         createEntryPoint(projectsCellIdString, createdEntryPoint)
       )
     } catch (e) {
       console.log('createEntryPoint error', e)
       throw e
+    }
+  }
+
+  // TAGS
+  // only v0.9.0-alpha and beyond have tags
+  if (projectData.tags) {
+    for (let address of Object.keys(projectData.tags)) {
+      const old = projectData.tags[address]
+      const clone = {
+        ...old,
+      }
+      // an assigned field
+      // v0.9.0-alpha
+      delete clone.headerHash
+
+      try {
+        const createdTag = await projectsZomeApi.tag.create(projectsCellId, clone)
+        dispatch(
+          createTag(projectsCellIdString, createdTag)
+        )
+      } catch (e) {
+        console.log('createTag error', e)
+        throw e
+      }
     }
   }
 
