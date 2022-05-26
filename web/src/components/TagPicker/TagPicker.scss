@@ -156,27 +156,53 @@
     height: 100%;
 
     .validating-form-input {
-        margin-bottom: 2.25rem;
+      margin-bottom: 2.25rem;
     }
 
     .tag-picker-color-row {
       display: flex;
       flex-direction: row;
       align-items: flex-start;
+      position: relative;
 
       .create-or-edit-tag-color-display-wrapper {
         // related to validating form input
-        margin-top: 2.375rem;
+        margin-top: 2rem;
         position: relative;
 
         .create-or-edit-tag-color-swatch {
-          margin-left: 0.75rem;
           width: 2rem;
           height: 2rem;
-          border-radius: 50%;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          margin: 0.375rem;
+
+          .icon {
+            width: 1rem;
+            height: 1rem;
+            padding: 0;
+            margin: 0.5rem;
+          }
         }
-        .create-or-edit-tag-colors {
+        .create-or-edit-tag-colors-wrapper {
           position: absolute;
+          z-index: 1;
+          padding: 0.75rem;
+          background-color: white;
+          border-radius: 1rem;
+          box-shadow: 0rem 0rem 0.75rem var(--shadow-color-hover);
+          display: grid;
+          grid-template-columns: 25% 25% 25% 25%;
+          grid-column-gap: 0;
+          grid-row-gap: 0;
+          left: -4.5rem;
+          top: 3.25rem;
+
+          .popup-triangle {
+            position: absolute;
+            left: 5.125rem;
+            top: -0.75rem;
+          }
         }
       }
     }

@@ -6,7 +6,11 @@ import Checkbox from '../Checkbox/Checkbox'
 import Icon from '../Icon/Icon'
 import Tag from '../Tag/Tag'
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
+
 import './TagPicker.scss'
+
+// @ts-ignore
+import PopupTriangleWhite from '../../images/popup-triangle-white.svg'
 
 export type TagPickerDisplayTagsProps = {
   tags: WithHeaderHash<TagType>[]
@@ -136,7 +140,7 @@ const CreateOrEditTag: React.FC<CreateOrEditTagProps> = ({
   const [hasTypedText, setHasTypedText] = useState(false)
   const [hasTypedColor, setHasTypedColor] = useState(false)
   const [tagText, setTagText] = useState('')
-  const [tagColor, setTagColor] = useState('#000')
+  const [tagColor, setTagColor] = useState('#1DA094')
   const [colorPickerOpen, setColorPickerOpen] = useState(false)
   const tagTextValid = tagText.length > 0
   const tagColorValid = tagColor.length > 0 && tagColor[0] === '#'
@@ -146,7 +150,28 @@ const CreateOrEditTag: React.FC<CreateOrEditTagProps> = ({
     }
   }
 
-  const colorList = ['#123', '#432', '#765']
+  // List of color swatches
+  const colorList = [
+    '#1DA094',
+    '#103BB1',
+    '#A0871D',
+    '#4A1DA0',
+    //
+    '#104540',
+    '#911DA0',
+    '#447C21',
+    '#A01D27',
+    //
+    '#2B7691',
+    '#B45C11',
+    '#60B10F',
+    '#E27213',
+    //
+    '#ED868A',
+    '#23CBBE',
+    '#230EC7',
+    '#E2BA13',
+  ]
 
   return (
     <div className="create-or-edit-tag-wrapper">
@@ -182,7 +207,7 @@ const CreateOrEditTag: React.FC<CreateOrEditTagProps> = ({
                 : ''
             }
             label="Color"
-            placeholder="#A4B244"
+            placeholder="#1DA094"
           />
           <div className="create-or-edit-tag-color-display-wrapper">
             {/* display color */}
@@ -193,17 +218,36 @@ const CreateOrEditTag: React.FC<CreateOrEditTagProps> = ({
             />
             {/* allow color changing */}
             {colorPickerOpen && (
-              <div className="create-or-edit-tag-colors">
-                {colorList.map((color) => (
-                  <div
-                    className="create-or-edit-tag-color-swatch"
-                    style={{ backgroundColor: color }}
-                    onClick={() => {
-                      setTagColor(color)
-                      setColorPickerOpen(false)
-                    }}
-                  />
-                ))}
+              <div className="create-or-edit-tag-colors-wrapper">
+                <img className="popup-triangle" src={PopupTriangleWhite} />
+                {/* render each pre-defined color swatch from the list */}
+                {colorList.map((colorPreset, index) => {
+                  if (!colorList.includes(tagColor) && index === 0) {
+                    colorPreset = tagColor
+                  }
+                  const isSelectedColor = tagColor === colorPreset
+                  return (
+                    <div
+                      className={`create-or-edit-tag-color-swatch ${
+                        isSelectedColor ? 'selected' : ''
+                      }`}
+                      style={{ backgroundColor: colorPreset }}
+                      onClick={() => {
+                        setTagColor(colorPreset)
+                        setColorPickerOpen(false)
+                      }}
+                    >
+                      {/* show a white check icon on the selected tag color swatch */}
+                      {isSelectedColor && (
+                        <Icon
+                          name="check.svg"
+                          size="small"
+                          className="white not-hoverable"
+                        />
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             )}
           </div>
