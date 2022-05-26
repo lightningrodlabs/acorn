@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import hashCodeId from '../../api/clientSideIdHash'
 import {
   ComputedOutcome,
   ComputedScope,
@@ -74,9 +75,6 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   }
 
   return (
-    // TODO: find a smarter solution to structure table
-    // so that the hover state applies to the whole row
-    // and the map view icon would apear on hover
     <>
       {parentExpanded && match && (
         <div className="outcome-table-row-wrapper">
@@ -88,8 +86,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
               minWidth: columnWidthPercentages[0],
             }}
           >
-            {/* TODO: make ID number display dynamic */}
-            {'123456'}
+            {hashCodeId(outcome.headerHash)}
           </div>
 
           {/* Outcome statement & progress indicator metadata */}
