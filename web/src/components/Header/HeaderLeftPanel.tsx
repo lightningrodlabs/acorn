@@ -188,7 +188,6 @@ function HeaderLeftPanel({
                 />
 
                 <div className="export-wrapper">
-                  {/* @ts-ignore */}
                   <Icon
                     withTooltip
                     tooltipText="Export"

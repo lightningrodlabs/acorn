@@ -20,7 +20,7 @@ export default async function importAllProjectData(
   /*
   agents, outcomes, connections,
   outcomeMembers, outcomeComments, outcomeVotes,
-  entryPoints,
+  entryPoints, tags
   */
 
   // AGENTS

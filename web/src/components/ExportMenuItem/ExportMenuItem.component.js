@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { connect } from 'react-redux'
 
 import Modal, { ModalContent } from '../Modal/Modal'
 
@@ -10,15 +9,15 @@ const ExportMenuItem = ({ download, title, type, data, projectName }) => {
     <>
       <Modal active={popup} onClose={() => setPopup(false)}>
         <ModalContent
-          heading='Exporting'
-          icon='export.svg'
+          heading="Exporting"
+          icon="export.svg"
           content={
             <>
               You just exported the <b>{projectName}</b> canvas. You will be
               able to find it in your Downloads folder!
             </>
           }
-          primaryButton='OK'
+          primaryButton="OK"
           primaryButtonAction={() => setPopup(false)}
         />
       </Modal>
@@ -27,7 +26,8 @@ const ExportMenuItem = ({ download, title, type, data, projectName }) => {
         onClick={() => {
           setPopup(true)
         }}
-        download={download}>
+        download={download}
+      >
         {title}
       </a>
     </>
@@ -46,6 +46,7 @@ function url(type, data) {
     const outcomeComments = Object.keys(data.outcomeComments)
     const outcomeVotes = Object.keys(data.outcomeVotes)
     const entryPoints = Object.keys(data.entryPoints)
+    const tags = Object.keys(data.tags)
 
     const loop = (dataset, headers, data) => {
       const csvRows = []
@@ -59,16 +60,24 @@ function url(type, data) {
     }
 
     if (agents.length > 0) csvRows.push(loop('agents', agents, data.agents))
-    if (outcomes.length > 0) csvRows.push('\n' + loop('outcomes', outcomes, data.outcomes))
-    if (connections.length > 0) csvRows.push('\n' + loop('connections', connections, data.connections))
+    if (outcomes.length > 0)
+      csvRows.push('\n' + loop('outcomes', outcomes, data.outcomes))
+    if (connections.length > 0)
+      csvRows.push('\n' + loop('connections', connections, data.connections))
     if (outcomeMembers.length > 0)
-      csvRows.push('\n' + loop('outcomeMembers', outcomeMembers, data.outcomeMembers))
+      csvRows.push(
+        '\n' + loop('outcomeMembers', outcomeMembers, data.outcomeMembers)
+      )
     if (outcomeComments.length > 0)
-      csvRows.push('\n' + loop('outcomeComments', outcomeComments, data.outcomeComments))
+      csvRows.push(
+        '\n' + loop('outcomeComments', outcomeComments, data.outcomeComments)
+      )
     if (outcomeVotes.length > 0)
       csvRows.push('\n' + loop('outcomeVotes', outcomeVotes, data.outcomeVotes))
     if (entryPoints.length > 0)
       csvRows.push('\n' + loop('entryPoints', entryPoints, data.entryPoints))
+    if (tags.length > 0)
+      csvRows.push('\n' + loop('tags', tags, data.tags))
 
     blob = new Blob([csvRows.join('\n')], {
       type: 'text/csv',

@@ -13,11 +13,16 @@ function mapStateToProps(state: RootState) {
   const outcomeComments = state.projects.outcomeComments[activeProject] || {}
   const outcomeVotes = state.projects.outcomeVotes[activeProject] || {}
   const entryPoints = state.projects.entryPoints[activeProject] || {}
-  const activeProjectMeta = state.projects.projectMeta[activeProject] || {name: ''}
+  const tags = state.projects.tags[activeProject] || {}
+  const activeProjectMeta = state.projects.projectMeta[activeProject] || {
+    name: '',
+  }
   const projectName = activeProjectMeta.name
 
   return {
     projectName,
+    // this is the data that gets exported, as a JSON file
+    // or as a CSV
     data: {
       projectMeta: activeProjectMeta,
       agents: state.agents,
@@ -27,6 +32,7 @@ function mapStateToProps(state: RootState) {
       outcomeComments,
       outcomeVotes,
       entryPoints,
+      tags,
     },
   }
 }
