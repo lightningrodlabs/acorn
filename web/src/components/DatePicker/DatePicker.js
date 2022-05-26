@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import moment from 'moment'
 
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import 'react-dates'
@@ -28,7 +29,7 @@ function DatePicker({ date, onClose, onSet }) {
           numberOfMonths={1}
           onClose={() => { }}
           focused={true}
-          onFocusChange={({ focused }) => {}}
+          onFocusChange={({ focused }) => { }}
           date={internalDate} // momentPropTypes.momentObj or null,
           startDateId='your_unique_id'
           onDateChange={(newDate) =>
@@ -66,6 +67,12 @@ function CustomDateRangePicker({ fromDate, toDate, onClose, onSet }) {
       onClose={onClose}>
       <div className='date_picker_content'>
         <DateRangePicker
+          // enable selecting dates in the past as well
+          isOutsideRange={() => false}
+          // highlight the current date, just for usability
+          isDayHighlighted={(date) => {
+            return date.isSame(moment(), 'date')
+          }}
           numberOfMonths={1}
           minimumNights={0}
           onClose={() => { }}

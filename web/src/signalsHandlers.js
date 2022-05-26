@@ -125,7 +125,6 @@ export default (store) =>
     // TODO: update holochain-conductor-api to latest
     // which should deserialize this automatically
     payload = msgpack.decode(payload)
-    console.log('received signal', payload)
   
     if (payload.signalType === nonEntrySignalTypes.RealtimeInfo) {
       console.log('received realtime signal:', payload.data)
