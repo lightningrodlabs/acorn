@@ -11,7 +11,7 @@ module.exports = {
   mode: 'production',
   output: {
     publicPath: './',
-    filename: 'main.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
   },
   devtool: 'source-map',
@@ -24,6 +24,7 @@ module.exports = {
     new HTMLWebpackPlugin({
       template: './src/index.html', //source
       filename: 'index.html', //destination
+      chunks: ['app'],
     }),
     new HTMLWebpackPlugin({
       template: './src/splashscreen.html', //source
@@ -33,6 +34,7 @@ module.exports = {
   ],
   entry: {
     app: './src/index.js',
+    splash: './src/splashscreen.scss',
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],

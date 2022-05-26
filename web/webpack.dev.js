@@ -24,16 +24,17 @@ module.exports = {
     new HTMLWebpackPlugin({
       template: './src/index.html', //source
       filename: 'index.html', //destination
+      chunks: ['app'],
     }),
     new HTMLWebpackPlugin({
       template: './src/splashscreen.html', //source
       filename: 'splashscreen.html', //destination
-      chunks: ['splash']
+      chunks: ['splash'],
     }),
   ],
   entry: {
     app: './src/index.js',
-    splash: './src/splashscreen.scss'
+    splash: './src/splashscreen.scss',
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
