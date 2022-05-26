@@ -1,6 +1,8 @@
 .outcome-table-wrapper {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   border-top: 0.125rem solid var(--border-color-platinum);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -27,5 +29,11 @@
         border-left: 0.125rem solid var(--border-color-bright-gray);
       }
     }
+  }
+
+  .outcome-table-rows {
+    flex: 1;
+    overflow-y: scroll;
+    padding-bottom: 4rem;
   }
 }

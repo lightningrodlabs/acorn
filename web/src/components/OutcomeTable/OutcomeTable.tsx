@@ -26,7 +26,7 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
   // the final three split the remaining space
   const [columnWidthPercentages, setColumnWidthPercentages] = useState<
     [string, string, string, string, string]
-    >(['5rem', '45rem', '50%', '50%', '0%'])
+  >(['5rem', '45rem', '50%', '50%', '0%'])
   // >(['5rem', '40rem', '33%', '33%', '34%'])
 
   // goToOutcome is not enough, we also
@@ -93,20 +93,23 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
       </div>
 
       {/* Data Rows */}
-
-      {outcomeTrees.map((outcome) => (
-        <OutcomeTableRow
-          key={outcome.headerHash}
-          columnWidthPercentages={columnWidthPercentages}
-          projectTags={projectTags}
-          outcome={outcome}
-          filter={filter}
-          parentExpanded={true}
-          indentationLevel={0}
-          openExpandedView={openExpandedView}
-          goToOutcome={navAndGoToOutcome}
-        />
-      ))}
+      <div className='outcome-table-rows'>
+        <div>
+          {outcomeTrees.map((outcome) => (
+            <OutcomeTableRow
+              key={outcome.headerHash}
+              columnWidthPercentages={columnWidthPercentages}
+              projectTags={projectTags}
+              outcome={outcome}
+              filter={filter}
+              parentExpanded={true}
+              indentationLevel={0}
+              openExpandedView={openExpandedView}
+              goToOutcome={navAndGoToOutcome}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
