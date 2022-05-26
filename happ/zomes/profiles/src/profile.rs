@@ -153,11 +153,11 @@ pub fn inner_create_whoami(
     };
 
     // we don't want to cause real failure for inability to send to peers
-    let signal = AgentSignal {
+    let signal = SignalType::Agent(AgentSignal {
         entry_type: agent_signal_entry_type(),
         action: ActionType::Create,
         data: SignalData::Create(wire_element.clone()),
-    };
+    });
     let _ = send_agent_signal(signal, get_peers_to_signal);
 
     Ok(wire_element)
@@ -222,11 +222,11 @@ pub fn inner_update_whoami(
     };
     // // send update to peers
     // we don't want to cause real failure for inability to send to peers
-    let signal = AgentSignal {
+    let signal = SignalType::Agent(AgentSignal {
         entry_type: agent_signal_entry_type(),
         action: ActionType::Update,
         data: SignalData::Update(wire_element.clone()),
-    };
+    });
     let _ = send_agent_signal(signal, get_peers_to_signal);
     Ok(wire_element)
 }
@@ -282,7 +282,7 @@ SIGNALS
 */
 
 fn send_agent_signal(
-    signal: AgentSignal,
+    signal: SignalType,
     get_peers_to_signal: fn() -> ExternResult<Vec<AgentPubKey>>,
 ) -> ExternResult<()> {
     let payload = ExternIO::encode(signal)?;
@@ -325,10 +325,17 @@ pub struct AgentSignal {
     pub data: SignalData,
 }
 
+#[derive(Debug, Serialize, Deserialize, SerializedBytes)]
+// untagged because the useful tagging is done internally on the *Signal objects
+#[serde(tag = "signalType", content = "data")]
+pub enum SignalType {
+    Agent(AgentSignal),
+}
+
 // receiver (and forward to UI)
 #[hdk_extern]
 pub fn recv_remote_signal(signal: ExternIO) -> ExternResult<()> {
-    let sig: AgentSignal = signal.decode()?;
+    let sig: SignalType = signal.decode()?;
     debug!("Received remote signal {:?}", sig);
     Ok(emit_signal(&signal)?)
 }

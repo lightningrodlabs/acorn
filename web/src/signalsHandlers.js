@@ -195,6 +195,8 @@ export default (store) =>
           break
         default:
           console.log('unrecognised entryType received: ', payload.data.entryType)
+          console.log('unrecognised entryType received: ', payload.data)
+          console.log('unrecognised entryType received: ', payload)
       }
     }
   }
