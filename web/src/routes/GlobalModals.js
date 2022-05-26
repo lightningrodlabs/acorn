@@ -1,8 +1,5 @@
 import React from 'react'
-import { useHistory, useLocation } from 'react-router-dom'
 
-import GuideBook from '../components/GuideBook/GuideBook'
-import { GUIDE_IS_OPEN } from '../searchParams'
 import Modal from '../components/Modal/Modal'
 import Preferences from '../components/Preferences/Preferences'
 import ProfileEditForm from '../components/ProfileEditForm/ProfileEditForm'
@@ -28,16 +25,6 @@ export default function GlobalModals({
   hideInviteMembersModal,
   onProfileSubmit,
 }) {
-  // check the url for GUIDE_IS_OPEN
-  // and affect the state
-  const location = useLocation()
-  const history = useHistory()
-  const searchParams = new URLSearchParams(location.search)
-  const isGuideOpen = !!searchParams.get(GUIDE_IS_OPEN)
-  const onCloseGuidebook = () => {
-    const pathWithoutGuidebook = location.pathname
-    history.push(pathWithoutGuidebook)
-  }
 
   // profile edit modal
   const titleText = 'Profile Settings'
@@ -74,15 +61,6 @@ export default function GlobalModals({
         cellIdString={projectId}
         openInviteMembersModal={openInviteMembersModal}
       />
-      {/* Guidebook */}
-      <Modal
-        className="guidebook-modal"
-        white
-        active={isGuideOpen}
-        onClose={onCloseGuidebook}
-      >
-        <GuideBook />
-      </Modal>
       <InviteMembersModal
         passphrase={inviteMembersModalShowing}
         showModal={inviteMembersModalShowing}

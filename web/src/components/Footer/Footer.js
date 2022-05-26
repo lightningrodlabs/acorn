@@ -34,45 +34,6 @@ function Footer() {
       {projectPage && (
         <div className={bottomRightPanelClassName}>
           {mapPage && <Zoom />}
-          {/* <div className='bottom-right-panel-view-modes'>
-            <NavLink
-              to={`/project/${projectId}/map`}
-              activeClassName='view-mode-active'
-              className='view-mode-link'>
-              <Icon
-                name='map.svg'
-                size=''
-                className='grey'
-                withTooltipTop
-                tooltipText='Map View'
-              />
-            </NavLink>
-            <NavLink
-              to={`/project/${projectId}/priority`}
-              activeClassName='view-mode-active'
-              className='view-mode-link'>
-              <Icon
-                name='sort-asc.svg'
-                size='view-mode'
-                className='grey'
-                withTooltipTop
-                tooltipText='Priority View'
-              />
-            </NavLink>
-            <NavLink
-              to={`/project/${projectId}/table`}
-              activeClassName='view-mode-active'
-              className='view-mode-link'>
-              <Icon
-                name='door-open.svg'
-                size='view-mode'
-                className='grey'
-                withTooltipTop
-                tooltipText='Table View'
-              />
-            </NavLink>
-           
-          </div> */}
         </div>
       )}
     </div>

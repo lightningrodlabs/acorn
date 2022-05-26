@@ -205,10 +205,11 @@ function render(
 
       const childCoords = coordinates[connection.childHeaderHash]
       const parentCoords = coordinates[connection.parentHeaderHash]
+      const childOutcome = outcomes[connection.childHeaderHash]
       const parentOutcome = outcomes[connection.parentHeaderHash]
       // we can only render this connection
       // if we know the coordinates of the Outcomes it connects
-      if (childCoords && parentCoords && parentOutcome) {
+      if (childCoords && parentCoords && parentOutcome && childOutcome) {
         const [
           connection1port,
           connection2port,
@@ -222,13 +223,16 @@ function render(
         )
         const isHovered = hoveredConnectionHeaderHash === connection.headerHash
         const isSelected = selectedConnections.includes(connection.headerHash)
-        drawConnection(
+        drawConnection({
           connection1port,
           connection2port,
           ctx,
+          isAchieved:
+            childOutcome.computedAchievementStatus.simple ===
+            ComputedSimpleAchievementStatus.Achieved,
           isHovered,
-          isSelected
-        )
+          isSelected,
+        })
       }
     })
 
@@ -444,7 +448,14 @@ function render(
           zoomLevel,
           ctx
         )
-        drawConnection(connection1port, connection2port, ctx)
+        drawConnection({
+          connection1port,
+          connection2port,
+          ctx,
+          isAchieved: false,
+          isSelected: false,
+          isHovered: false,
+        })
       }
     }
 
@@ -515,7 +526,14 @@ function render(
         if (connectionConnectorToAddress)
           toConnectionCoord.y = toConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
       }
-      drawConnection(fromConnectionCoord, toConnectionCoord, ctx)
+      drawConnection({
+        connection1port: fromConnectionCoord,
+        connection2port: toConnectionCoord,
+        ctx,
+        isAchieved: false,
+        isHovered: false,
+        isSelected: false,
+      })
     }
   }
 
@@ -549,6 +567,8 @@ function render(
           simple: ComputedSimpleAchievementStatus.NotAchieved,
           smallsAchieved: 0,
           smallsTotal: 0,
+          tasksAchieved: 0,
+          tasksTotal: 0,
           uncertains: 0,
         },
         children: [],

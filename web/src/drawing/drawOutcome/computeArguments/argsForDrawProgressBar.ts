@@ -50,9 +50,18 @@ export const argsForDrawProgressBar = ({
 
   const progress =
     outcome.computedScope === ComputedScope.Big
-      ? (outcome.computedAchievementStatus.smallsAchieved /
-          outcome.computedAchievementStatus.smallsTotal) *
-        100
+      ? Math.round(
+          (outcome.computedAchievementStatus.smallsAchieved /
+            outcome.computedAchievementStatus.smallsTotal) *
+            100
+        )
+      : outcome.computedScope === ComputedScope.Small &&
+        outcome.computedAchievementStatus.tasksTotal > 0
+      ? Math.round(
+          (outcome.computedAchievementStatus.tasksAchieved /
+            outcome.computedAchievementStatus.tasksTotal) *
+            100
+        )
       : 0
   const args: Parameters<typeof drawProgressBar>[0] = {
     ctx,

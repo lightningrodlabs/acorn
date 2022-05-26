@@ -12,6 +12,7 @@ export type OutcomeTableWithFiltersProps = {
   projectMemberProfiles: Profile[]
   computedOutcomesAsTree: ComputedOutcome[]
   openExpandedView: (headerHash: HeaderHashB64) => void
+  goToOutcome: (headerHash: HeaderHashB64) => void
 }
 
 const OutcomeTableWithFilters: React.FC<OutcomeTableWithFiltersProps> = ({
@@ -20,6 +21,7 @@ const OutcomeTableWithFilters: React.FC<OutcomeTableWithFiltersProps> = ({
   projectMemberProfiles,
   computedOutcomesAsTree,
   openExpandedView,
+  goToOutcome,
 }) => {
   const [filter, setOutcomeTableFilter] = useState<OutcomeTableFilter>({
     keywordOrId: '',
@@ -38,6 +40,7 @@ const OutcomeTableWithFilters: React.FC<OutcomeTableWithFiltersProps> = ({
         outcomeTrees={computedOutcomesAsTree}
         filter={filter}
         openExpandedView={openExpandedView}
+        goToOutcome={goToOutcome}
       />
     </div>
   )

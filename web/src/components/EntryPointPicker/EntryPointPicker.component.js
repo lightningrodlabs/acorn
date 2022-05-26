@@ -6,13 +6,10 @@ import './EntryPointPicker.scss'
 
 import DoorClosed from '../../images/door-closed.svg'
 
-import GuidebookNavLink from '../GuidebookNavLink/GuidebookNavLink'
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import Icon from '../Icon/Icon'
-import selectEntryPoints from '../../redux/persistent/projects/entry-points/select'
 import { NavLink } from 'react-router-dom'
-import { ENTRY_POINTS, GUIDE_IS_OPEN } from '../../searchParams'
-import { animatePanAndZoom } from '../../redux/ephemeral/viewport/actions'
+import { ENTRY_POINTS } from '../../searchParams'
 
 function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints, goToOutcome }) {
   const dotStyle = {
@@ -131,12 +128,13 @@ export default function EntryPointPicker({ entryPoints, isOpen, onClose, activeE
               <div className='entry-points-empty-state-image-circle'></div>
               <span>
                 You currently have no entry points for this project.{' '}
-                <GuidebookNavLink
-                  guidebookId='creating_entry_points'
+                <a
+                  href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/entry-point-outcomes"
+                  target="_blank"
                   onClick={onClose}
                   className='entry-points-empty-state-content-link'>
                   Learn how to create one
-                </GuidebookNavLink>
+                </a>
                 .
               </span>
             </li>

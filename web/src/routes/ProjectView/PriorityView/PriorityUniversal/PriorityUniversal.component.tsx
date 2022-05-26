@@ -6,7 +6,6 @@ import { useHistory, useLocation } from 'react-router-dom'
 import Avatar from '../../../../components/Avatar/Avatar'
 import Icon from '../../../../components/Icon/Icon'
 import TimeframeFormat from '../../../../components/TimeframeFormat'
-import GuidebookNavLink from '../../../../components/GuidebookNavLink/GuidebookNavLink'
 
 import './PriorityUniversal.scss'
 
@@ -66,14 +65,12 @@ function UniversalOutcome({
             className="universal-priority-outcome-item-button outcome-item-button-expand"
             onClick={() => openExpandedView(outcome.headerHash)}
           >
-            {/* @ts-ignore */}
             <Icon name="expand.svg" size="small" className="grey" />
           </div>
           <div
             className="universal-priority-outcome-item-button outcome-item-button-map"
             onClick={() => goToOutcome(outcome.headerHash)}
           >
-            {/* @ts-ignore */}
             <Icon name="map.svg" size="small" className="grey" />
           </div>
         </div>
@@ -302,15 +299,18 @@ function PriorityUniversal({
           <div className="top-priority-empty-state-wrapper">
             {/* TODO: fix image url */}
             <img
-              src="img/intro-screen-image-4.svg"
+              src="images/intro-screen-image-4.svg"
               className="top-priority-empty-state-image"
             />
             <h4>
               You haven't marked any outcomes as top priority.
               <br />
-              <GuidebookNavLink guidebookId="intro_universal_priorityMode">
+              <a
+                href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/high-priority-outcomes"
+                target="_blank"
+              >
                 Learn how to start prioritizing here.
-              </GuidebookNavLink>{' '}
+              </a>{' '}
             </h4>
           </div>
         )}

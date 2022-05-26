@@ -60,7 +60,7 @@ const MapView: React.FC<MapViewProps> = ({
     const canvas = refCanvas.current
     // attach keyboard and mouse events
     const removeEventListeners = setupEventListeners(store, canvas, computedOutcomesKeyed)
-    const unsub = store.subscribe(() => {
+    const doRender = () => {
       const state: RootState = store.getState()
       const activeProject = state.ui.activeProject
       if (activeProject) {
@@ -71,7 +71,11 @@ const MapView: React.FC<MapViewProps> = ({
         })
         render(renderProps, canvas)
       }
-    })
+    }
+    // do initial render
+    doRender()
+    // re-render any time an action is dispatched
+    const unsub = store.subscribe(doRender)
     return function cleanup() {
       removeEventListeners()
       unsub()

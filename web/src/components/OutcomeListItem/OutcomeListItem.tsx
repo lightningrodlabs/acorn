@@ -1,5 +1,5 @@
 import React from 'react'
-import { ComputedOutcome } from '../../types'
+import { ComputedOutcome, ComputedScope } from '../../types'
 import { HeaderHashB64 } from '../../types/shared'
 import Icon from '../Icon/Icon'
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
@@ -11,7 +11,10 @@ export type OutcomeListItemProps = {
   openExpandedView: (headerHash: HeaderHashB64) => void
 }
 
-const OutcomeListItem: React.FC<OutcomeListItemProps> = ({ outcome, openExpandedView }) => {
+const OutcomeListItem: React.FC<OutcomeListItemProps> = ({
+  outcome,
+  openExpandedView,
+}) => {
   const progress =
     (outcome.computedAchievementStatus.smallsAchieved /
       outcome.computedAchievementStatus.smallsTotal) *
@@ -29,11 +32,13 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({ outcome, openExpanded
         <ProgressIndicator progress={progress} />
       </div>
 
-      {/* TODO: only show leaf icon for small scope children */}
+      {/* only show leaf icon for small scope children */}
       {/* Leaf (or not) */}
-      <div className="outcome-list-item-icon-wrapper leaf">
-        <Icon name="leaf.svg" className="not-hoverable" />
-      </div>
+      {outcome.computedScope === ComputedScope.Small && (
+        <div className="outcome-list-item-icon-wrapper leaf">
+          <Icon name="leaf.svg" className="not-hoverable" />
+        </div>
+      )}
 
       {/* Outcome statement text */}
       <div className="outcome-list-item-statement" title={outcome.content}>
@@ -42,9 +47,12 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({ outcome, openExpanded
 
       {/* on click navigate to the Expanded View mode for that Outcome */}
       {/* Visible only while hovered on this child Outcome */}
-      <div className="outcome-list-item-switch-button" onClick={() => {
-        openExpandedView(outcome.headerHash)
-      }}>
+      <div
+        className="outcome-list-item-switch-button"
+        onClick={() => {
+          openExpandedView(outcome.headerHash)
+        }}
+      >
         <Icon name="enter.svg" size="small" className="light-grey" />
       </div>
     </div>

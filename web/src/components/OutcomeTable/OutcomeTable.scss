@@ -1,22 +1,31 @@
 .outcome-table-wrapper {
-  display: grid;
-  grid-template-columns: 5.5rem 40rem 1fr 1fr 1fr;
-  grid-gap: 0.075rem;
-  background-color: var(--border-color-bright-gray);
+  display: flex;
+  flex-direction: column;
   border-top: 0.125rem solid var(--border-color-platinum);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
   .outcome-table-metadata-header {
+    display: flex;
+    flex-direction: row;
     font: 1rem var(--font-family-primary-bold);
     color: var(--text-color-secondary);
-    padding: 0.625rem 1rem;
     border-bottom: 0.165rem solid var(--border-color-pale-silver);
-    background-color: var(--bg-color-tertiary);
 
-    // padding for ID number header
-    &:first-child {
-      padding: 0.625rem;
+    .outcome-table-metadata-header-assignees-tags-time {
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+    }
+
+    .outcome-table-metadata-header-label {
+      box-sizing: border-box;
+      padding: 0.625rem 1rem;
+      border-right: 0.125rem solid var(--border-color-bright-gray);
+
+      &.id-label {
+        border-left: 0.125rem solid var(--border-color-bright-gray);
+      }
     }
   }
 }

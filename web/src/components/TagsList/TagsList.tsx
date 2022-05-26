@@ -61,6 +61,10 @@ const TagsList: React.FC<TagsListProps> = ({
               onSaveTag={onSaveTag}
               filterText={filterText}
               setFilterText={setFilterText}
+              onClose={() => {
+                setIsOpenTagPicker(false)
+                setFilterText('')
+              }}
             />
           )}
         </div>

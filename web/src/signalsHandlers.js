@@ -9,13 +9,14 @@ and the reducers handle them the same way
 import * as msgpack from '@msgpack/msgpack/dist'
 import * as connectionActions from './redux/persistent/projects/connections/actions'
 import * as outcomeActions from './redux/persistent/projects/outcomes/actions'
+import * as tagActions from './redux/persistent/projects/tags/actions'
 import * as outcomeVoteActions from './redux/persistent/projects/outcome-votes/actions'
 import * as outcomeMemberActions from './redux/persistent/projects/outcome-members/actions'
 import * as outcomeCommentActions from './redux/persistent/projects/outcome-comments/actions'
 import * as entryPointActions from './redux/persistent/projects/entry-points/actions'
 import * as projectMetaActions from './redux/persistent/projects/project-meta/actions'
 import { setMember } from './redux/persistent/projects/members/actions'
-import { fetchAgents, setAgent } from './redux/persistent/profiles/agents/actions'
+import { setAgent } from './redux/persistent/profiles/agents/actions'
 import { triggerUpdateLayout } from './redux/ephemeral/layout/actions'
 import { removePeerState, updatePeerState } from './redux/ephemeral/realtime-info/actions'
 import { cellIdToString } from './utils'
@@ -47,6 +48,7 @@ const SignalType = {
   Connection: 'connection',
   EntryPoint: 'entry_point',
   Outcome: 'outcome',
+  Tag: 'tag',
   // custom signal type for a outcome_with_connection
   // this is because it's important to the UI to receive both
   // the new outcome, and the connection, at the same moment
@@ -72,6 +74,7 @@ const crudActionSets = {
   OutcomeMember: outcomeMemberActions,
   OutcomeComment: outcomeCommentActions,
   EntryPoint: entryPointActions,
+  Tag: tagActions,
   ProjectMeta: projectMetaActions,
 }
 const crudTypes = {
@@ -81,6 +84,7 @@ const crudTypes = {
   outcome_member: 'OutcomeMember',
   outcome_comment: 'OutcomeComment',
   entry_point: 'EntryPoint',
+  tag: 'Tag',
   project_meta: 'ProjectMeta', // only 'update' is default crud
 }
 

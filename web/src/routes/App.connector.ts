@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
 import {
-  setHasAccessedGuidebook,
   setNavigationPreference,
 } from '../redux/ephemeral/local-preferences/actions'
 import selectEntryPoints, { selectActiveProjectMembers } from '../redux/persistent/projects/entry-points/select'
@@ -72,10 +71,6 @@ function mapDispatchToProps(dispatch) {
     dispatch,
     setNavigationPreference: (preference) => {
       return dispatch(setNavigationPreference(preference))
-    },
-    hideGuidebookHelpMessage: () => {
-      const hideAction = setHasAccessedGuidebook(true)
-      return dispatch(hideAction)
     },
     goToOutcome: (outcomeHeaderHash) => {
       return dispatch(animatePanAndZoom(outcomeHeaderHash))

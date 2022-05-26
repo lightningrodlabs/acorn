@@ -110,21 +110,7 @@ const childrenList = (
 const taskList = (
   <EvTaskList
     outcomeContent="New API in typescript definitions are written Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions."
-    tasks={[
-      {
-        task: 'create a scope of work, for development',
-        complete: true,
-      },
-      {
-        task: 'create a scope of work, for design',
-        complete: true,
-      },
-      {
-        task:
-          'Fix entry points list for a project not showing up before entering',
-        complete: false,
-      },
-    ]}
+    tasks={[]}
     onChange={function (
       index: number,
       text: string,

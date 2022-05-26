@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 
 import {
   ComputedOutcome,
+  ComputedScope,
   ComputedSimpleAchievementStatus,
 } from '../../../types'
 import { ExpandedViewTab } from '../NavEnum'
@@ -27,12 +28,15 @@ const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
   outcome,
 }) => {
   // a default in case of loading/transitioning
+  const computedScope = outcome ? outcome.computedScope : ComputedScope.Small
   const computedAchievementStatus = outcome
     ? outcome.computedAchievementStatus
     : {
         uncertains: 0,
         smallsAchieved: 0,
         smallsTotal: 0,
+        tasksAchieved: 0,
+        tasksTotal: 0,
         simple: ComputedSimpleAchievementStatus.NotAchieved,
       }
   const childrenCount = outcome ? outcome.children.length : 0
@@ -40,6 +44,7 @@ const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
     <div className="ev-middle-column-wrapper">
       <DescendantsAchievementStatus
         childrenCount={childrenCount}
+        computedScope={computedScope}
         computedAchievementStatus={computedAchievementStatus}
       />
       {activeTab === ExpandedViewTab.Details && details}

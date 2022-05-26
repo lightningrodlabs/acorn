@@ -46,6 +46,8 @@ export type ComputedAchievementStatus = {
   uncertains: number
   smallsAchieved: number
   smallsTotal: number
+  tasksTotal: number // only for Smalls, 0 the rest of the time guaranteed
+  tasksAchieved: number // only for Smalls, 0 the rest of the time guaranteed
   simple: ComputedSimpleAchievementStatus
 }
 /*

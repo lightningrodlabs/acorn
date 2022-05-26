@@ -46,8 +46,8 @@ export const argsForDrawColoredBorder = ({
     borderColor = ACHIEVED_BORDER_COLOR
   } else if (
     outcome.computedScope === ComputedScope.Small &&
-    outcome.computedAchievementStatus.simple ===
-      ComputedSimpleAchievementStatus.NotAchieved
+    outcome.computedAchievementStatus.simple !==
+      ComputedSimpleAchievementStatus.Achieved
   ) {
     borderColor = NOT_ACHIEVED_BORDER_COLOR
   } else if (
