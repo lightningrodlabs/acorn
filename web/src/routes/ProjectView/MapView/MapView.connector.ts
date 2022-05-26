@@ -9,19 +9,20 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state: RootState): MapViewProps {
   const projectId = state.ui.activeProject
 
+  // TODO: make this also based on whether the user has just registered (created their profile)
+  const showEmptyState =
+    !!state.agentAddress &&
+    ((state.projects.outcomes[projectId] &&
+      Object.values(state.projects.outcomes[projectId]).length === 0) ||
+      // project is loading
+      !state.projects.outcomes[projectId])
   return {
     projectId,
     translate: state.ui.viewport.translate,
     zoomLevel: state.ui.viewport.scale,
     // map from an array type (the selectedOutcomes) to a simple boolean type
     hasSelection: state.ui.selection.selectedOutcomes.length > 0,
-    // TODO: make this also based on whether the user has just registered (created their profile)
-    showEmptyState:
-      !!state.agentAddress &&
-      ((state.projects.outcomes[projectId] &&
-        Object.values(state.projects.outcomes[projectId]).length === 0) ||
-        // project is loading
-        !state.projects.outcomes[projectId]),
+    showEmptyState,
     outcomeFormIsOpen: state.ui.outcomeForm.isOpen,
   }
 }

@@ -237,7 +237,7 @@ export default async function importAllProjectData(
   }
 
   // TAGS
-  // only v0.9.0-alpha and beyond have tags
+  // only v1.0.0-alpha and beyond have tags
   if (projectData.tags) {
     for (let address of Object.keys(projectData.tags)) {
       const old = projectData.tags[address]
@@ -245,7 +245,7 @@ export default async function importAllProjectData(
         ...old,
       }
       // an assigned field
-      // v0.9.0-alpha
+      // v1.0.0-alpha
       delete clone.headerHash
 
       try {

@@ -149,7 +149,7 @@ export default function ImportProjectModal({
 
   const onFilePicked = async projectData => {
     if (!projectData.tags) {
-      alert('Cannot import projects from versions prior to v0.9.0-alpha')
+      alert('Cannot import projects from versions prior to v1.0.0-alpha')
       onClose()
       return
     }

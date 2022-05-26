@@ -20,7 +20,7 @@ canvas {
 }
 
 body {
-  background-color: #f7f5f3;
+  background-color: var(--bg-color-canvas);
   font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
   word-spacing: 0.05em;
 }

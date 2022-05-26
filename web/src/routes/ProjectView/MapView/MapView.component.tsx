@@ -5,7 +5,7 @@ import render from '../../../drawing'
 import setupEventListeners from '../../../event-listeners'
 import { setScreenDimensions } from '../../../redux/ephemeral/screensize/actions'
 
-import EmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
+import ProjectEmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
 import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar.connector'
 import ConnectionConnectors from '../../../components/ConnectionConnectors/ConnectionConnectors.connector'
 import MapViewOutcomeTitleForm from '../../../components/MapViewOutcomeTitleForm/MapViewOutcomeTitleForm.connector'
@@ -87,8 +87,8 @@ const MapView: React.FC<MapViewProps> = ({
   }
   return (
     <>
+      {showEmptyState && <ProjectEmptyState />}
       <canvas ref={refCanvas} />
-      {showEmptyState && <EmptyState />}
       {/* transform everything in this container according  */}
       {/* to the same scaling and tranlating as the canvas */}
       {/* is being scaled and translated, using css matrix transforms */}
