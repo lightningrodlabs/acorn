@@ -40,29 +40,29 @@ const ActionType = {
   Delete: 'delete',
 }
 
-// all possible values of `payload.entryType` off a signal
+// all possible values of `payload.signalType` off a signal
 const SignalType = {
   // Profiles Zome
-  Agent: 'agent',
+  Agent: 'Agent',
   // Projects Zome
-  Connection: 'connection',
-  EntryPoint: 'entry_point',
-  Outcome: 'outcome',
-  Tag: 'tag',
+  Connection: 'Connection',
+  EntryPoint: 'EntryPoint',
+  Outcome: 'Outcome',
+  Tag: 'Tag',
   // custom signal type for a outcome_with_connection
   // this is because it's important to the UI to receive both
   // the new outcome, and the connection, at the same moment
-  OutcomeWithConnection: 'outcome_with_connection',
+  OutcomeWithConnection: 'OutcomeWithConnection',
   // custom signal type for outcome_fully_deleted
   // this is because it's important to the UI to receive
   // both the deleted outcome, and everything connected to it that
   // has deleted at the same time
-  DeleteOutcomeFully: 'delete_outcome_fully',
-  OutcomeComment: 'outcome_comment',
-  OutcomeMember: 'outcome_member',
-  OutcomeVote: 'outcome_vote',
-  Member: 'member',
-  ProjectMeta: 'project_meta',
+  DeleteOutcomeFully: 'DeleteOutcomeFully',
+  OutcomeComment: 'OutcomeComment',
+  OutcomeMember: 'OutcomeMember',
+  OutcomeVote: 'OutcomeVote',
+  Member: 'Member',
+  ProjectMeta: 'ProjectMeta',
 }
 const nonEntrySignalTypes = {
   RealtimeInfo: 'RealtimeInfo'
@@ -125,6 +125,7 @@ export default (store) =>
     // TODO: update holochain-conductor-api to latest
     // which should deserialize this automatically
     payload = msgpack.decode(payload)
+    console.log('received signal', payload)
   
     if (payload.signalType === nonEntrySignalTypes.RealtimeInfo) {
       console.log('received realtime signal:', payload.data)
@@ -151,7 +152,7 @@ export default (store) =>
     }
     else {
       // otherwise use non-crud actions
-      switch (payload.data.entryType) {
+      switch (payload.signalType) {
         /*
           PROFILES Zome
         */
@@ -184,19 +185,18 @@ export default (store) =>
           store.dispatch(setMember(cellIdToString(cellId), payload.data.data)) //payload.data.data is type Member, not WireElement<Member>
           break
         case SignalType.OutcomeWithConnection:
+          console.log('check!')
           store.dispatch(
-            createSignalAction(outcomeActions.createOutcomeWithConnection, cellId, payload.data.data)
+            createSignalAction(outcomeActions.CREATE_OUTCOME_WITH_CONNECTION, cellId, payload.data.data)
           )
           break
         case SignalType.DeleteOutcomeFully:
           store.dispatch(
-            createSignalAction(outcomeActions.deleteOutcomeFully, cellId, payload.data.data)
+            createSignalAction(outcomeActions.DELETE_OUTCOME_FULLY, cellId, payload.data.data)
           )
           break
         default:
-          console.log('unrecognised entryType received: ', payload.data.entryType)
-          console.log('unrecognised entryType received: ', payload.data)
-          console.log('unrecognised entryType received: ', payload)
+          console.log('unrecognised signalType received: ', payload.signalType)
       }
     }
   }

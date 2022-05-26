@@ -33,7 +33,6 @@ const GithubLink: React.FC<GithubLinkProps> = ({
           <a href={githubLink} target="_blank">
             #{linkNumber}
             <span className="github-link-display-external-link">
-              {/* @ts-ignore */}
               <Icon
                 name="external-link.svg"
                 size="small"
@@ -43,7 +42,6 @@ const GithubLink: React.FC<GithubLinkProps> = ({
           </a>
           {/* Edit button to show on hover */}
           <div className="github-link-edit-button">
-            {/* @ts-ignore */}
             <Icon
               onClick={() => setIsEditing(true)}
               name="edit.svg"

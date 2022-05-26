@@ -10,7 +10,7 @@ function Icon({
   withTooltip,
   tooltipText,
   className,
-  onClick = () => {},
+  onClick = () => { },
 }: {
   name: string
   withBackground?: boolean
@@ -22,14 +22,24 @@ function Icon({
   onClick?: () => void
 }) {
   let [icon, setIcon] = useState('')
+  let unmounted = false
 
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       // @ts-ignore
       let importedIcon = await import(`../../images/${name}`)
-      setIcon(importedIcon.default)
+      if (!unmounted) {
+        setIcon(importedIcon.default)
+      }
     })()
   }, [name])
+
+
+  useEffect(() => {
+    return function unsub() {
+      unmounted = true
+    }
+  }, [])
 
   return (
     <div
