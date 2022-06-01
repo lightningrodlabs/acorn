@@ -53,7 +53,12 @@ pub fn join_project_during_init() -> ExternResult<()> {
     };
     create_entry(&member)?;
     let member_entry_hash = hash_entry(&member)?;
-    create_link(member_path_address, member_entry_hash, ())?;
+    create_link(
+        member_path_address,
+        member_entry_hash,
+        HdkLinkType::Any,
+        LinkTag::from(Vec::new()),
+    )?;
 
     Ok(())
 }

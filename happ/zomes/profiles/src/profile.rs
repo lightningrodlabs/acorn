@@ -136,12 +136,22 @@ pub fn inner_create_whoami(
 
     // list me so anyone can see my profile
     let agents_path_address = Path::from(AGENTS_PATH).path_entry_hash()?;
-    create_link(agents_path_address, entry_hash.clone(), ())?;
+    create_link(
+        agents_path_address,
+        entry_hash.clone(),
+        HdkLinkType::Any,
+        LinkTag::from(Vec::new()),
+    )?;
 
     // list me so I can specifically and quickly look up my profile
     let agent_pubkey = agent_info()?.agent_initial_pubkey;
     let agent_entry_hash = EntryHash::from(agent_pubkey);
-    create_link(agent_entry_hash, entry_hash.clone(), ())?;
+    create_link(
+        agent_entry_hash,
+        entry_hash.clone(),
+        HdkLinkType::Any,
+        LinkTag::from(Vec::new()),
+    )?;
 
     let time = sys_time()?;
     let wire_element: WireElement<Profile> = WireElement {
@@ -179,7 +189,12 @@ pub fn create_imported_profile(entry: Profile) -> ExternResult<WireElement<Profi
     let entry_hash = hash_entry(&entry)?;
     // list profile so anyone can see it
     let agents_path_address = Path::from(AGENTS_PATH).path_entry_hash()?;
-    create_link(agents_path_address, entry_hash.clone(), ())?;
+    create_link(
+        agents_path_address,
+        entry_hash.clone(),
+        HdkLinkType::Any,
+        LinkTag::from(Vec::new()),
+    )?;
     let time = sys_time()?;
     Ok(WireElement {
         entry,
@@ -244,7 +259,7 @@ pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
     match maybe_profile_link {
         Some(profile_link) => {
             match get_latest.get_latest_for_entry::<Profile>(
-                profile_link.target.clone(),
+                profile_link.target.clone().into(),
                 GetOptions::content(),
             )? {
                 Some(entry_and_hash) => {

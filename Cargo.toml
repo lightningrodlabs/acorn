@@ -1,7 +1,7 @@
 [workspace]
 members = [
-  "happ/tests/projects",
-  "happ/tests/profiles",
+  # "happ/tests/projects",
+  # "happ/tests/profiles",
   "happ/zomes/profiles",
   "happ/zomes/projects",
 ]

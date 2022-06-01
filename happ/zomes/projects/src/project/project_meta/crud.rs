@@ -1,9 +1,4 @@
-use crate::{
-    get_peers_content,
-    project::{error::Error},
-    SignalType,
-    ui_enum::UIEnum,
-};
+use crate::{get_peers_content, project::error::Error, ui_enum::UIEnum, SignalType};
 use hdk::prelude::*;
 use hdk_crud::{
     chain_actions::fetch_action::FetchAction,
@@ -117,7 +112,12 @@ pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireElemen
     let path = Path::from(PROJECT_META_PATH);
     path.ensure()?;
     let path_hash = path.path_entry_hash()?;
-    create_link(path_hash, entry_hash.clone(), ())?;
+    create_link(
+        path_hash,
+        entry_hash.clone(),
+        HdkLinkType::Any,
+        LinkTag::from(Vec::new()),
+    )?;
     let time = sys_time()?;
     let wire_entry: WireElement<ProjectMeta> = WireElement {
         entry,
