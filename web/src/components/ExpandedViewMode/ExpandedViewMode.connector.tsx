@@ -2,8 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { RootState } from '../../redux/reducer'
 import ConnectedEVRightColumn from './EVRightColumn/EVRightColumn.connector'
-import ConnectedEvComments from './EvMiddleColumn/TabContent/EvComments/EvComments.connector'
-import ConnectedEvDetails from './EvMiddleColumn/TabContent/EvDetails/EvDetails.connector'
+import ConnectedEvComments from './EVMiddleColumn/TabContent/EvComments/EvComments.connector'
+import ConnectedEvDetails from './EVMiddleColumn/TabContent/EvDetails/EvDetails.connector'
 import ExpandedViewModeComponent, {
   ExpandedViewModeConnectorProps,
   ExpandedViewModeOwnProps,
