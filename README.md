@@ -7,6 +7,6 @@
 
 [**Check out the Acorn introduction and knowledge base**](https://docs.acorn.software)
 
-[**Check out our v1.0.2-alpha release!**](https://github.com/lightningrodlabs/acorn/releases/tag/v1.0.2-alpha)
+[**Install the latest release!**](https://github.com/lightningrodlabs/acorn/releases/tag/v1.0.2-alpha)
 
 [**Are you a developer? Read on**](./DEVELOPERS.md)
