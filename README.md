@@ -1,4 +1,5 @@
-# Acorn - built with Holochain
+# Acorn
+## the State-of-Affairs Project Management software - built with Holochain
 
 ### _Acorn is in alpha testing_
 
@@ -8,4 +9,4 @@
 
 [**Check out our v1.0.2-alpha release!**](https://github.com/lightningrodlabs/acorn/releases/tag/v1.0.2-alpha)
 
-## Are you a developer? [Read on](./DEVELOPERS.md)
+[**Are you a developer? Read on**](./DEVELOPERS.md)
