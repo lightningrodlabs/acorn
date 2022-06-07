@@ -13,3 +13,6 @@ Acorn is currently in **Alpha** testing phase.
 - Join the [Acorn alpha testing list](https://forms.gle/Ani18rJhDuAGv9LQ8) to get the latest news about Acorn.
 
 - Are you a developer? [Read on](./DEVELOPERS.md).
+
+
+![A Sample of Acorn App Design showing Expanded View of an Outcome with details such as Outcome Statement, Achievement Status, GitHub Link, Tags, Assignees, Time, Description, and Action Buttons.](https://github.com/lightningrodlabs/acorn/blob/main/acorn-design-sample-may2022.png)
