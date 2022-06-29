@@ -54,7 +54,7 @@ pub mod tests {
         // to have to mock `get` calls to the HDK
 
         // now make it valid by making it
-        // as if there is a Outcome at the outcome_header_hash
+        // as if there is an Outcome at the outcome_header_hash
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_header_hash
         let mock_hdk_ref = &mut mock_hdk;
@@ -84,7 +84,7 @@ pub mod tests {
         // is_imported is false and creator_agent_pub_key refers to the agent committing (or is_imported = true)
         // -> good to go
 
-        // make it as if there is a Outcome at the outcome_header_hash
+        // make it as if there is an Outcome at the outcome_header_hash
 
         let mut mock_hdk = MockHdkT::new();
         let mock_hdk_ref = &mut mock_hdk;

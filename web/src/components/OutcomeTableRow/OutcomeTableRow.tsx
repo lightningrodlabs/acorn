@@ -1,18 +1,14 @@
 import React, { useState } from 'react'
 import hashCodeId from '../../api/clientSideIdHash'
-import {
-  ComputedOutcome,
-  ComputedScope,
-  ComputedSimpleAchievementStatus,
-  Tag,
-} from '../../types'
+import { ComputedOutcome, ComputedScope, Tag } from '../../types'
 import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
 import AvatarsList from '../AvatarsList/AvatarsList'
 import ExpandChevron from '../ExpandChevron/ExpandChevron'
 import Icon from '../Icon/Icon'
-import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
+import ProgressIndicatorCalculated from '../ProgressIndicatorCalculated/ProgressIndicatorCalculated'
 import TagsList from '../TagsList/TagsList'
 import filterMatch, { OutcomeTableFilter } from './filterMatch'
+
 import './OutcomeTableRow.scss'
 
 export type OutcomeTableRowProps = {
@@ -40,39 +36,6 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   // will need to look into how to expand collapse all in one action
   let [expanded, setExpanded] = useState(false)
   let match = filterMatch(outcome, filter)
-
-  let progress = 0
-
-  // TODO: refine this
-  // because it can be confusing when task list progress
-  // is out of sync with annotated 'Achieved' vs 'NotAchieved' achievement
-  // status
-  if (outcome.computedScope === ComputedScope.Small) {
-    if (
-      outcome.computedAchievementStatus.simple ===
-      ComputedSimpleAchievementStatus.Achieved
-    ) {
-      // this is to account for the fact that manually setting
-      // "Achieved" overrides the task list progress
-      progress = 100
-    } else if (
-      outcome.computedAchievementStatus.tasksAchieved === 0 &&
-      outcome.computedAchievementStatus.tasksTotal === 0
-    ) {
-      // avoid dividing 0 by 0
-      progress = 0
-    } else {
-      progress =
-        (outcome.computedAchievementStatus.tasksAchieved /
-          outcome.computedAchievementStatus.tasksTotal) *
-        100
-    }
-  } else {
-    progress =
-      (outcome.computedAchievementStatus.smallsAchieved /
-        outcome.computedAchievementStatus.smallsTotal) *
-      100
-  }
 
   return (
     <>
@@ -108,13 +71,14 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
                   onClick={() => {
                     setExpanded(!expanded)
                   }}
+                  size={'medium'}
                 />
               </>
             )}
 
             {/* Progress Indicator */}
             {outcome.computedScope !== ComputedScope.Uncertain && (
-              <ProgressIndicator progress={progress} />
+              <ProgressIndicatorCalculated outcome={outcome} />
             )}
 
             {/* Uncertain Icon (or not) */}

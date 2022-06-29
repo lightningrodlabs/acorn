@@ -159,7 +159,7 @@ export default function HeaderRightPanel({
                   type="text"
                   onChange={(e) => setFilterText(e.target.value.toLowerCase())}
                   value={filterText}
-                  placeholder="Search for a outcome, comment, and more"
+                  placeholder="Search for an Outcome, comment, and more"
                   autoFocus
                 />
               </CSSTransition>

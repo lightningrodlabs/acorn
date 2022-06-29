@@ -55,7 +55,7 @@ Because of "zooming and panning" features, there are two coordinate systems that
 
 `layoutFormula.js` contains the 'auto-layout' algorithm that determines that layout the of the Outcomes on the screen.
 
-`eventDetection.js` is used to check whether mousemove events, and mouseclick events occur "over" a Outcome so that we can change and update the UI, with hover states, or selection.
+`eventDetection.js` is used to check whether mousemove events, and mouseclick events occur "over" an Outcome so that we can change and update the UI, with hover states, or selection.
 
 ---
 

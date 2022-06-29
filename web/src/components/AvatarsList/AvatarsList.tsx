@@ -54,7 +54,7 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
         // )
 
         // TODO: implement showPresence logic
-        const isProfilePresent = true
+        const isProfilePresent = false
 
         return (
           <Avatar

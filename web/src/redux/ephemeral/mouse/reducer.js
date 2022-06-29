@@ -20,7 +20,7 @@ const defaultState = {
     y: 0,
   },
   // this is the START coordinate for
-  // a outcome selection action
+  // an Outcome selection action
   coordinate: {
     x: 0,
     y: 0,

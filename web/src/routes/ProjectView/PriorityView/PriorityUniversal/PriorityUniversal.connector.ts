@@ -14,33 +14,11 @@ import { ProjectMeta } from '../../../../types'
 
 function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject
-  const agents = state.agents
-  const outcomes = state.projects.outcomes[projectId] || {}
-  const outcomeMembers = state.projects.outcomeMembers[projectId] || {}
   const projectMeta = state.projects.projectMeta[projectId]
-
-  // add members on to outcome state objects
-  const allOutcomesArray = Object.values(outcomes).map((outcome) => {
-    const extensions = {}
-    // @ts-ignore (UNDO THIS ts-ignore)
-    extensions.members = Object.values(outcomeMembers)
-      .filter(
-        (outcomeMember) =>
-          outcomeMember.outcomeHeaderHash === outcome.headerHash
-      )
-      .map((outcomeMember) => agents[outcomeMember.memberAgentPubKey])
-      .filter((outcomeMember) => outcomeMember) // filter out undefined results
-    return {
-      ...outcome,
-      ...extensions,
-    }
-  })
-  const allOutcomes = _.keyBy(allOutcomesArray, 'headerHash')
 
   return {
     projectId,
     projectMeta,
-    outcomes: allOutcomes,
   }
 }
 

@@ -1,8 +1,10 @@
 .priority-view-wrapper {
-  margin: 4.5rem 8px 0 8px;
+  margin: 0;
   display: flex;
   flex-direction: row;
-  height: 100%;
+  height: 100vh;
+  padding: 4rem 0.5rem 0.5rem 0.5rem;
+  box-sizing: border-box;
 }
 
 .indented-view-wrapper {

@@ -26,7 +26,7 @@ use std::fmt;
 
 use super::{small_scope::SmallScope, uncertain_scope::UncertainScope};
 
-// A Outcome Card. This is a card on the SoA Tree which can be small or non-small, complete or
+// an Outcome Card. This is a card on the SoA Tree which can be small or non-small, complete or
 // incomplete, certain or uncertain, and contains text content.
 // user hash and unix timestamp are included to prevent hash collisions.
 #[hdk_entry(id = "outcome")]

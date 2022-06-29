@@ -4,6 +4,10 @@
   align-items: center;
   justify-content: center;
 
+  &.small {
+    transform: scale(0.625);
+  }
+
   .icon {
     height: 1.25rem;
     width: 1.25rem;

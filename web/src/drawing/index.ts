@@ -477,7 +477,7 @@ function render(
         zoomLevel,
         ctx
       )
-      // if there's a outcome this is pending
+      // if there's an Outcome this is pending
       // as being "to", then we will be drawing the connection to its correct
       // upper or lower port
       // the opposite of whichever the "from" port is connected to
@@ -505,7 +505,7 @@ function render(
           : fromAsChildCoord
       // use the current mouse coordinate position, liveCoordinate, by default
       let toConnectionCoord = mouseLiveCoordinate
-      // use the coordinates relating to a Outcome which it is pending that
+      // use the coordinates relating to an Outcome which it is pending that
       // this connection will connect the "from" Outcome "to"
       if (connectionConnectorToAddress) {
         toConnectionCoord =

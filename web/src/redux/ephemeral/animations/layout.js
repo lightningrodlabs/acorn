@@ -18,7 +18,7 @@ export default function performLayoutAnimation(store, action, currentState) {
   // that we'll be animating to
   const newLayout = layoutFormula(graphData, zoomLevel, projectTags)
   let outcomeCreatedCoord = {}
-  // if creating a Outcome, we also want to animate
+  // if creating an Outcome, we also want to animate
   // from the position wherever the user was creating it
   // to its new resting place in the new layout
   if (action.type === CREATE_OUTCOME_WITH_CONNECTION) {

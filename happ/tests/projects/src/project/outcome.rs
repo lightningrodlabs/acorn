@@ -145,7 +145,7 @@ pub mod tests {
             .entry_hash()
             .unwrap();
 
-        // it is as if there is a Outcome at the original address
+        // it is as if there is an Outcome at the original address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the Outcome
         let mock_hdk_ref = &mut mock_hdk;
@@ -193,7 +193,7 @@ pub mod tests {
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome.clone().try_into().unwrap());
 
-        // it is as if there is a Outcome at the original address
+        // it is as if there is an Outcome at the original address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_header_hash
         let mock_hdk_ref = &mut mock_hdk;

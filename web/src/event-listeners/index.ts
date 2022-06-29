@@ -477,7 +477,7 @@ export default function setupEventListeners(
     } = state.ui.connectionConnector
     const { activeProject } = state.ui
     if (fromAddress) {
-      // covers the case where we are hovered over a Outcome
+      // covers the case where we are hovered over an Outcome
       // and thus making a connection to an existing Outcome
       // AS WELL AS the case where we are not
       // (to reset the connection connector)
@@ -490,7 +490,7 @@ export default function setupEventListeners(
         activeProject,
         store.dispatch
       )
-      // covers the case where we are not hovered over a Outcome
+      // covers the case where we are not hovered over an Outcome
       // and thus making a new Outcome and connection/Connection
       if (!toAddress) {
         handleMouseUpForOutcomeForm({

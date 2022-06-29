@@ -51,7 +51,9 @@
       cursor: default;
     }
 
-    input {
+    textarea {
+      resize: none;
+      width: 100%;
       font: 1rem var(--font-family-primary-medium);
       color: var(--text-color-primary);
       margin-left: 0.625rem;
@@ -68,7 +70,7 @@
     &.small {
       font: 0.825rem var(--font-family-primary-medium);
 
-      input {
+      textarea {
         font: 0.825rem var(--font-family-primary-medium);
       }
     }
@@ -76,7 +78,7 @@
     &.large {
       font: 1.25rem var(--font-family-primary-medium);
 
-      input {
+      textarea {
         font: 1.25rem var(--font-family-primary-medium);
       }
     }

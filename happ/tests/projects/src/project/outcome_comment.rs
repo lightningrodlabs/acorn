@@ -39,7 +39,7 @@ pub mod tests {
         // now, since validation is dependent on other entries, we begin
         // to have to mock `get` calls to the HDK
 
-        // now make it as if there is a Outcome at the outcome_header_hash
+        // now make it as if there is an Outcome at the outcome_header_hash
         // so that we pass the dependency validation
 
         let mut mock_hdk = MockHdkT::new();
@@ -75,7 +75,7 @@ pub mod tests {
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome_comment.clone().try_into().unwrap());
 
-        // it is as if there is a header for a Outcome at the outcome_header_hash
+        // it is as if there is a header for an Outcome at the outcome_header_hash
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_header_hash
         let mock_hdk_ref = &mut mock_hdk;
@@ -152,7 +152,7 @@ pub mod tests {
             .entry_hash()
             .unwrap();
 
-        // it is as if there is a OutcomeComment at the original address
+        // it is as if there is an OutcomeComment at the original address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_header_hash
         let mock_hdk_ref = &mut mock_hdk;
@@ -197,7 +197,7 @@ pub mod tests {
             .entry_hash()
             .unwrap();
 
-        // it is as if there is a OutcomeComment at the original address
+        // it is as if there is an OutcomeComment at the original address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_header_hash
         let mock_hdk_ref = &mut mock_hdk;

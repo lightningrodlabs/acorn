@@ -96,7 +96,7 @@ const MapView: React.FC<MapViewProps> = ({
         {/* <div className="transform-container" style={transform}></div> */}
         {/* Only present this OutcomeTitleQuickEdit */}
 
-        {/* if the scale is greater than or equal to 60% (or we are creating a Outcome) */}
+        {/* if the scale is greater than or equal to 60% (or we are creating an Outcome) */}
         {/* because otherwise the font size gets to small and the text is cut off */}
         {outcomeFormIsOpen && <MapViewOutcomeTitleForm projectId={projectId} />}
       </div>

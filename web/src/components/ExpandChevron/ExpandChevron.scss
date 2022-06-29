@@ -4,6 +4,10 @@
   transition: 0.2s background-color ease-in;
   border-radius: 0.5rem;
 
+  &.small {
+    transform: scale(0.8);
+  }
+
   &:hover {
     background-color: var(--bg-color-secondary);
 

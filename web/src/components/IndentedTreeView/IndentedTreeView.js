@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { useLocation, NavLink } from 'react-router-dom'
+import {
+  ComputedOutcome,
+  ComputedScope,
+  Tag,
+} from '../../types'
 
 import Icon from '../Icon/Icon'
 import { PriorityModeOptions } from '../../constants'
 
 import './IndentedTreeView.scss'
+import ExpandChevron from '../ExpandChevron/ExpandChevron'
+import ProgressIndicatorCalculated from '../ProgressIndicatorCalculated/ProgressIndicatorCalculated'
 
 // Recursive because we don't know
 // how deep the nesting goes
@@ -50,7 +57,17 @@ function NestedTreeOutcome({
     <div className="indented-view-outcome">
       {match && (
         <div className="indented-view-outcome-item">
-          <div className="indented-view-outcome-item-arrow">
+          
+          {/* Expand Chevron */}
+          {outcome.children.length > 0 && (
+            <ExpandChevron
+              size='small'
+              expanded={expanded}
+              onClick={() => {
+                setExpanded(!expanded)
+              }} />
+          )}
+          {/* <div className="indented-view-outcome-item-arrow">
             {outcome.children.length > 0 && (
               <Icon
                 name={expanded ? 'chevron-down.svg' : 'chevron-right.svg'}
@@ -60,13 +77,39 @@ function NestedTreeOutcome({
               />
             )}
             {outcome.children.length == 0 && <div></div>}
-          </div>
+          </div> */}
 
           <NavLink
             to={`${location.pathname}?contextOutcome=${outcome.headerHash}`}
             className="indented-view-outcome-content"
             isActive={(match) => match && isUsingOutcomeAsContext}
           >
+
+            {/* Progress Indicator */}
+            {outcome.computedScope !== ComputedScope.Uncertain && (
+              <ProgressIndicatorCalculated outcome={outcome} size="small" />
+            )}
+
+            {/* Uncertain Icon (or not) */}
+            {outcome.computedScope === ComputedScope.Uncertain && (
+              <div className="outcome-statement-icon">
+                <Icon
+                  name="uncertain.svg"
+                  className="not-hoverable uncertain"
+                  size="very-small"
+                />
+              </div>
+            )}
+
+            {/* Leaf Icon (or not) */}
+            {outcome.children.length === 0 &&
+              outcome.computedScope === ComputedScope.Small && (
+                <div className="outcome-statement-icon">
+                  <Icon name="leaf.svg" className="not-hoverable" size="very-small" />
+                </div>
+              )}
+
+            {/* Outcome statement text */}
             <div className="indented-view-outcome-text" title={outcome.content}>
               {outcome.content}
             </div>
@@ -85,16 +128,16 @@ function NestedTreeOutcome({
       {/* since only what matches the filter will show anyways */}
       {(filterText.length || expanded) && outcome.children
         ? outcome.children.map((childOutcome, index) => (
-            <div className="indented-view-nested-outcome" key={index}>
-              <NestedTreeOutcome
-                filterText={filterText}
-                outcome={childOutcome}
-                level={level + 1}
-                projectMeta={projectMeta}
-                updateProjectMeta={updateProjectMeta}
-              />
-            </div>
-          ))
+          <div className="indented-view-nested-outcome" key={index}>
+            <NestedTreeOutcome
+              filterText={filterText}
+              outcome={childOutcome}
+              level={level + 1}
+              projectMeta={projectMeta}
+              updateProjectMeta={updateProjectMeta}
+            />
+          </div>
+        ))
         : null}
     </div>
   )
@@ -182,7 +225,7 @@ export default function IndentedTreeView({
           type="text"
           onChange={(e) => setFilterText(e.target.value.toLowerCase())}
           value={filterText}
-          placeholder="Search for a outcome"
+          placeholder="Search for an Outcome"
           autoFocus
         />
         {filterText !== '' && (

@@ -10,7 +10,7 @@ use hdk_crud::{
 };
 use holo_hash::{AgentPubKeyB64, HeaderHashB64};
 
-// a relationship between a Outcome and an Agent
+// a relationship between an Outcome and an Agent
 // representing roughly the idea of someone being "assigned to"
 // or "responsible for" or "working on"
 #[hdk_entry(id = "outcome_member")]

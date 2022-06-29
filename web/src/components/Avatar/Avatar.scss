@@ -69,9 +69,10 @@
       border-width: 0.225rem;
     }
     .status-circle {
-      border-width: 0.2rem;
-      height: 0.5rem;
-      width: 0.5rem;
+      border-width: 0.125rem;
+      height: 0.375rem;
+      width: 0.375rem;
+      aspect-ratio: 1/1;
     }
   }
 
@@ -182,6 +183,9 @@
 
     &.disconnected {
       opacity: 0.5;
+      &:hover {
+        opacity: 0.5;
+      }
     }
   }
 
@@ -207,7 +211,6 @@
 .initials-avatar.highlighted ~ .avatar-wrapper.with-border.white {
   border: 0.125rem solid #5f65ff;
 }
-
 
 // avatar's prefered set status circle
 .status-circle {

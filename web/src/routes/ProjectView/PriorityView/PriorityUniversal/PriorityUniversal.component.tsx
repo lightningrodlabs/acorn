@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import _ from 'lodash'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { useHistory, useLocation } from 'react-router-dom'
@@ -8,6 +8,10 @@ import Icon from '../../../../components/Icon/Icon'
 import TimeframeFormat from '../../../../components/TimeframeFormat'
 
 import './PriorityUniversal.scss'
+import ProgressIndicatorCalculated from '../../../../components/ProgressIndicatorCalculated/ProgressIndicatorCalculated'
+import { ComputedScope } from '../../../../types'
+import ComputedOutcomeContext from '../../../../context/ComputedOutcomeContext'
+import { HeaderHashB64 } from '../../../../types/shared'
 
 // an individual list item
 function UniversalOutcome({
@@ -25,10 +29,32 @@ function UniversalOutcome({
           </div>
           <div className="universal-priority-outcome-title-status">
             <div className="universal-priority-outcome-item-status">
-              {/* TODO */}
+              {/* Progress Indicator */}
+            {outcome.computedScope !== ComputedScope.Uncertain && (
+              <ProgressIndicatorCalculated outcome={outcome} size="small" />
+            )}
+
+            {/* Uncertain Icon (or not) */}
+            {outcome.computedScope === ComputedScope.Uncertain && (
+              <div className="outcome-statement-icon">
+                <Icon
+                  name="uncertain.svg"
+                  className="not-hoverable uncertain"
+                  size="very-small"
+                />
+              </div>
+            )}
+
+            {/* Leaf Icon (or not) */}
+            {outcome.children.length === 0 &&
+              outcome.computedScope === ComputedScope.Small && (
+                <div className="outcome-statement-icon">
+                  <Icon name="leaf.svg" className="not-hoverable" size="very-small" />
+                </div>
+              )}
             </div>
 
-            <div className="universal-priority-outcome-item-title">
+            <div className="universal-priority-outcome-item-statement">
               {outcome.content}
             </div>
           </div>
@@ -46,7 +72,7 @@ function UniversalOutcome({
                     lastName={member.lastName}
                     avatarUrl={member.avatarUrl}
                     imported={member.isImported}
-                    size="medium"
+                    size="small"
                     withWhiteBorder
                     withStatus
                     selfAssignedStatus={member.status}
@@ -56,22 +82,24 @@ function UniversalOutcome({
               )
             })}
           </div>
-          <div className="universal-priority-outcome-item-date">
+          {/* TODO: fix and add time metadata display */}
+          {/* Hiding time component here is a temp solution */}
+          {/* <div className="universal-priority-outcome-item-date">
             <TimeframeFormat timeFrame={outcome.timeFrame} />
-          </div>
+          </div> */}
         </div>
         <div className="universal-priority-outcome-item-buttons">
           <div
             className="universal-priority-outcome-item-button outcome-item-button-expand"
             onClick={() => openExpandedView(outcome.headerHash)}
           >
-            <Icon name="expand.svg" size="small" className="grey" />
+            <Icon name="expand.svg" size="small" className="grey" withTooltip tooltipText='Expand' />
           </div>
           <div
             className="universal-priority-outcome-item-button outcome-item-button-map"
             onClick={() => goToOutcome(outcome.headerHash)}
           >
-            <Icon name="map.svg" size="small" className="grey" />
+            <Icon name="map.svg" size="small" className="grey" withTooltip tooltipText='Find in Map View' />
           </div>
         </div>
       </div>
@@ -189,7 +217,6 @@ function PriorityUniversalDroppable({
 
 // the default export, and main high level component here
 function PriorityUniversal({
-  outcomes,
   projectMeta,
   projectId,
   updateProjectMeta,
@@ -202,6 +229,8 @@ function PriorityUniversal({
     history.push(location.pathname.replace('priority', 'map'))
     goToOutcome(headerHash)
   }
+
+  const { computedOutcomesKeyed } = useContext(ComputedOutcomeContext)
   /// will be { source: int, destination: int }
   // both are indexes, if set at all
   const [whileDraggingIndexes, setWhileDraggingIndexes] = useState(null)
@@ -259,24 +288,24 @@ function PriorityUniversal({
     setPendingList([])
   }
 
-  let topPriorityOutcomeAddresses = []
+  let topPriorityOutcomeAddresses: HeaderHashB64[] = []
   if (pending) {
     // make sure we only try to pick
     // and render outcomes that exist or are
     // known about
     topPriorityOutcomeAddresses = pendingList.filter(
-      (outcomeHeaderHash) => outcomes[outcomeHeaderHash]
+      (outcomeHeaderHash) => computedOutcomesKeyed[outcomeHeaderHash]
     )
   } else if (projectMeta) {
     // make sure we only try to pick
     // and render outcomes that exist or are
     // known about
     topPriorityOutcomeAddresses = projectMeta.topPriorityOutcomes.filter(
-      (outcomeHeaderHash) => outcomes[outcomeHeaderHash]
+      (outcomeHeaderHash: HeaderHashB64) => computedOutcomesKeyed[outcomeHeaderHash]
     )
   }
   const topPriorityOutcomes = topPriorityOutcomeAddresses.map(
-    (outcomeHeaderHash) => outcomes[outcomeHeaderHash]
+    (outcomeHeaderHash) => computedOutcomesKeyed[outcomeHeaderHash]
   )
 
   return (

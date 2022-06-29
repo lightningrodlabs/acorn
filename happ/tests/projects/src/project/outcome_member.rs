@@ -37,7 +37,7 @@ pub mod tests {
             ElementEntry::Present(outcome_member.clone().try_into().unwrap());
 
         // make it pass UnresolvedDependencies
-        // by making it as if there is a Outcome at the outcome_header_hash
+        // by making it as if there is an Outcome at the outcome_header_hash
         let mut outcome_element_for_invalid = fixt!(Element);
         let create_header_for_invalid = fixt!(Create);
         *outcome_element_for_invalid.as_header_mut() =
@@ -72,7 +72,7 @@ pub mod tests {
         // -> good to go
 
         // make it pass UnresolvedDependencies
-        // by making it as if there is a Outcome at the outcome_header_hash
+        // by making it as if there is an Outcome at the outcome_header_hash
         let mut outcome_element_for_valid = fixt!(Element);
         let create_header_for_valid = fixt!(Create);
         *outcome_element_for_valid.as_header_mut() =

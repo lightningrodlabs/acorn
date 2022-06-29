@@ -6,14 +6,22 @@ import ProgressRing from './ProgressRing'
 
 export type ProgressIndicatorProps = {
   progress: number // between 0 and 100 inclusive
+  size: 'small' | 'medium'
 }
 
-const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({ progress }) => {
+const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
+  progress,
+  size = 'medium',
+}) => {
   return (
     // Note: uncertain scope does not have progress indicator symbol
     // intead it has a uncertain scope symbol (red circle with question mark)
 
-    <div className="progress-indicator-wrapper">
+    <div
+      className={`progress-indicator-wrapper ${
+        size === 'small' ? 'small' : ''
+      }`}
+    >
       {/* {progress.toString()} */}
 
       {/* if not achieved  */}

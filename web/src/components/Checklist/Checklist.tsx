@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import TextareaAutosize from 'react-textarea-autosize'
 import Checkbox from '../Checkbox/Checkbox'
 import ChecklistItem from '../ChecklistItem/ChecklistItem'
 
@@ -66,10 +67,10 @@ const Checklist: React.FC<ChecklistProps> = ({
         ${size === 'small' ? 'small' : size === 'large' ? 'large' : ''}`}
       >
         <Checkbox size={size} />
-        <input
-          type="text"
-          placeholder="Add a checklist Item"
+
+        <TextareaAutosize
           value={typingText}
+          placeholder="Add a checklist Item"
           onChange={(keyboardEvent) => {
             setTypingText(keyboardEvent.target.value)
           }}
@@ -83,6 +84,7 @@ const Checklist: React.FC<ChecklistProps> = ({
             }
           }}
         />
+  
       </div>
     </div>
   )

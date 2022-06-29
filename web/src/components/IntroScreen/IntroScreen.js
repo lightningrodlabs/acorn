@@ -33,7 +33,7 @@ export default function IntroScreen() {
       image: 'img/intro-screen-image-4.svg',
       title: 'None of us is as intelligent as all of us',
       description:
-        'Completed a outcome, now wondering what makes sense to focus on next? You and your team members can weigh in and vote on different metrics that inform the priority of outcomes to ease the challenge of decision making.',
+        'Completed an Outcome, now wondering what makes sense to focus on next? You and your team members can weigh in and vote on different metrics that inform the priority of outcomes to ease the challenge of decision making.',
     },
   ]
 

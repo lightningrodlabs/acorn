@@ -25,7 +25,7 @@ function SelectBox (ctx, x, y, w, h, radius, color, stroke, strokeWidth) {
   ctx.restore()
 }
 
-// render a outcome card
+// render an Outcome card
 export default function render ({ x, y }, { w, h }, ctx) {
   if (w < 0) {
     x += w

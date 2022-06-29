@@ -49,7 +49,7 @@ const SignalType = {
   EntryPoint: 'EntryPoint',
   Outcome: 'Outcome',
   Tag: 'Tag',
-  // custom signal type for a outcome_with_connection
+  // custom signal type for an Outcome_with_connection
   // this is because it's important to the UI to receive both
   // the new outcome, and the connection, at the same moment
   OutcomeWithConnection: 'OutcomeWithConnection',

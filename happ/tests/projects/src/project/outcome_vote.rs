@@ -37,7 +37,7 @@ pub mod tests {
             ElementEntry::Present(outcome_vote.clone().try_into().unwrap());
 
         // make it pass UnresolvedDependencies
-        // by making it as if there is a Outcome at the outcome_header_hash
+        // by making it as if there is an Outcome at the outcome_header_hash
         let mut outcome_element_for_invalid = fixt!(Element);
         let create_header_for_invalid = fixt!(Create);
         *outcome_element_for_invalid.as_header_mut() =
@@ -72,7 +72,7 @@ pub mod tests {
         // -> good to go
 
         // make it pass UnresolvedDependencies
-        // by making it as if there is a Outcome at the outcome_header_hash
+        // by making it as if there is an Outcome at the outcome_header_hash
         let mut outcome_element_for_valid = fixt!(Element);
         let create_header_for_valid = fixt!(Create);
         *outcome_element_for_valid.as_header_mut() =
@@ -159,7 +159,7 @@ pub mod tests {
             .entry_hash()
             .unwrap();
 
-        // it is as if there is a OutcomeComment at the original address
+        // it is as if there is an OutcomeComment at the original address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_header_hash
         let mock_hdk_ref = &mut mock_hdk;
@@ -204,7 +204,7 @@ pub mod tests {
             .entry_hash()
             .unwrap();
 
-        // it is as if there is a OutcomeComment at the original address
+        // it is as if there is an OutcomeComment at the original address
         let mut mock_hdk = MockHdkT::new();
         // the must_get_header call for the outcome_header_hash
         let mock_hdk_ref = &mut mock_hdk;

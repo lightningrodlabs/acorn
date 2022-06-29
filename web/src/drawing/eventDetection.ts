@@ -104,7 +104,7 @@ export function checkForOutcomeAtCoordinates(
     scale
   )
 
-  // keep track of whether a outcome was selected
+  // keep track of whether an Outcome was selected
   let clickedAddress: string
   Object.keys(outcomes)
     .map((headerHash) => outcomes[headerHash])
@@ -129,7 +129,7 @@ export function checkForOutcomeAtCoordinates(
           }),
       }
 
-      // if click occurred within the box of a Outcome
+      // if click occurred within the box of an Outcome
       if (
         convertedClick.x >= coords.x &&
         convertedClick.x <= bottomRight.x &&
@@ -148,7 +148,7 @@ export function checkForOutcomeAtCoordinatesInBox(
   oppositeCorner: { x: number; y: number }
 ) {
   // convert the coordinates of the click to canvas space
-  // keep track of whether a outcome was selected
+  // keep track of whether an Outcome was selected
   let clickedAddresses = {}
   Object.keys(outcomeCoordinates)
     // .map((headerHash) => outcomes[headerHash])
@@ -164,7 +164,7 @@ export function checkForOutcomeAtCoordinatesInBox(
         y: coords.y + outcomeHeight,
       }
 
-      // if click occurred within the box of a Outcome
+      // if click occurred within the box of an Outcome
       if (
         (oppositeCorner.x < coords.x &&
           bottomRight.x < corner.x &&

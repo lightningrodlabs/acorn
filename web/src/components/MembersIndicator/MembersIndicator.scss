@@ -1,13 +1,11 @@
 .members-indicator-wrapper {
     background: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
-    display: -webkit-flex;
-    -webkit-align-items: center;
     display: flex;
     align-items: center;
     height: 3rem;
-    padding-right: 8px;
-    padding-left: 14px;
+    padding-right: 0.625rem;
+    padding-left: 0.625rem;
     margin: 0 6px;
 }
 
