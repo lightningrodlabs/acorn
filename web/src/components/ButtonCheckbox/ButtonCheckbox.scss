@@ -21,10 +21,10 @@
   }
 
   &.selected {
-    border: 0.125rem solid var(--border-color-primary);
+    border: 0.15rem solid var(--border-color-primary);
     // the padding calc below fixes the resizing of the button
     // after adding the border in checked mode
-    padding: calc(1rem - 0.125rem);
+    padding: calc(1rem - 0.15rem);
   }
 
   .button-checkbox-icon-text {
@@ -36,20 +36,20 @@
       margin-right: 0.625rem;
 
       .icon {
-        height: 0.875rem;
-        width: 0.875rem;
+        height: 1rem;
+        width: 1rem;
         padding: 0;
       }
     }
 
     .button-checkbox-text {
-      user-select: none; /* Standard */
+      user-select: none;
+      /* Standard */
     }
   }
 
   &.small {
     padding: 0.875rem 1.25rem 0.875rem 0.875rem;
-
   }
 
   &.large {

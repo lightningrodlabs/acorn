@@ -24,6 +24,7 @@ export const outcomeHeight = 228
 export const cornerRadius = 16 // for outcome, main card
 export const cornerRadiusBorder = 20 // for the border
 export const borderWidth = 7
+export const dashedBorderWidth = 5
 
 export const outcomePaddingHorizontal = 40
 // affects not only the top and bottom padding,

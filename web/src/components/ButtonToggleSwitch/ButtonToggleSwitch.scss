@@ -35,9 +35,9 @@
 
     .icon {
       margin-right: 0.625rem;
-      height: 0.875rem;
-      width: 0.875rem;
-      padding: 0;
+      height: 0.9rem;
+      width: 0.9rem;
+      padding: 0rem;
     }
   }
 
@@ -49,7 +49,7 @@
     height: 50%;
     border-radius: 0.625rem;
     position: absolute;
-    border: 2px solid var(--border-color-primary);
+    border: 0.15rem solid var(--border-color-primary);
 
     transition: 0.5s all ease;
     &.state1 {

@@ -1,4 +1,5 @@
 import React from 'react'
+import Typography from '../Typography/Typography'
 import './DashboardEmptyState.scss'
 
 function DashboardEmptyState({ onJoinClick, onCreateClick }) {
@@ -38,19 +39,22 @@ function DashboardEmptyState({ onJoinClick, onCreateClick }) {
             </div>
           </div>
         </div>
-        <div className='dashboard-empty-state-heading'>Let's get started!</div>
+        <Typography style="h2">Achieve your desired outcomes, big and small</Typography>
         <div className='dashboard-empty-state-description'>
-          You currently have no projects. <br /> Start by
-          <a className='description-link' onClick={onCreateClick}>
-            {' '}
-            creating a new project{' '}
-          </a>
-          or{' '}
-          <a className='description-link' onClick={onJoinClick}>
-            {' '}
-            joining an existing one
-          </a>
-          .
+          <Typography style="body1">You currently have no projects.</Typography>
+          <Typography style="body1">
+            <a onClick={onCreateClick}>
+              {' '}
+              Create a new project{' '}
+            </a>
+            or{' '}
+            <a onClick={onJoinClick}>
+              {' '}
+              join an existing one
+            </a> to get started
+            .</Typography>
+
+
         </div>
       </div>
     </div>

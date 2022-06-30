@@ -162,7 +162,7 @@ const testOutcomeTrees = [
   },
 ]
 
-const DEFAULT_WIDTH = 260
+const DEFAULT_WIDTH = 300
 const MIN_WIDTH = 230
 const MAX_WIDTH = 600
 // associated with .indented-view-outcomes class
@@ -240,7 +240,8 @@ export default function IndentedTreeView({
         )}
       </div>
       {/* highest level view */}
-      <NavLink
+      {/* TODO: decide if we want to remove this logic */}
+      {/* <NavLink
         to={location.pathname}
         className="highest-level-view"
         isActive={(match) => {
@@ -249,7 +250,7 @@ export default function IndentedTreeView({
         }}
       >
         Highest Level View
-      </NavLink>
+      </NavLink> */}
       {/* outcome items list */}
       <div
         className="indented-view-outcomes"

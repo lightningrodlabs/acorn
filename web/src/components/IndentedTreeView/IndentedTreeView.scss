@@ -1,84 +1,86 @@
 .indented-view-search {
   display: flex;
   align-items: center;
-  padding: 6px 8px;
-  border-radius: 8px;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
   background: var(--bg-color-secondary);
-  margin: 8px 8px 0 8px;
+  margin: 1rem 1rem 0 1rem;
+  border: 0.15rem solid var(--border-color-timberwolf);
+
+  &:focus-within {
+    border: 0.15rem solid var(--border-color-secondary);
+}
+
+.progress-indicator-wrapper {
+  margin-right: 0.25rem;
+}
+
 }
 
 .indented-view-resizer {
   position: absolute;
-  height: 100%;
-  right: 0;
-  width: 5px;
+  height: 98%;
+  top: 0.75rem;
+  right: -0.25rem;
+  width: 0.5rem;
   cursor: ew-resize;
 }
 
 .indented-view-resizer:hover {
-  border-right: 2px solid grey;
+  border-right: 0.25rem solid var(--color-pumpkin);
 }
 
-.indented-view-search .icon {
-  padding: 4px;
-}
+.indented-view-search {
 
-.indented-view-search input {
-  font-size: 0.75rem;
-  color: var(--text-color-primary);
-  border: 0;
-  outline: 0;
-  padding: 2px;
-  margin-left: 0.25rem;
-  font-family: var(--font-family-primary-bold);
-  flex: 1;
-}
+  .icon {
+    padding: 0.25rem;
+  }
 
-.indented-view-search input::placeholder {
-  color: #bdbdbd;
+  input {
+    font-size: 0.875rem;
+    color: var(--text-color-primary);
+    border: 0;
+    outline: 0;
+    padding: 2px;
+    margin-left: 0.25rem;
+    font-family: var(--font-family-primary-medium);
+    flex: 1;
+
+    &::placeholder {
+      color: var(--text-color-placeholder);
+    }
+  }
 }
 
 .indented-view-outcomes {
-  margin-left: 8px;
   height: 100%;
   overflow-y: scroll;
   padding-bottom: 3rem;
-  border-top: 1px solid #dedede;
+  padding-top: 1rem;
+
+  .indented-view-outcome {
+    font-family: var(--font-family-primary-medium);
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+    margin-left: 0.75rem;
+  }
+
 }
 
-.indented-view-outcome {
-  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
-  font-size: 0.75rem;
-  color: var(--text-color-secondary);
-}
 
-.highest-level-view {
-  margin: 8px;
-  font-family: var(--font-family-primary-bold);
-  font-size: 0.75rem;
-  color: #4d4d4d;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 8px;
-  text-decoration: none;
-}
+
 
 .indented-view-outcome-item {
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: 0.125rem;
-}
-
-.indented-view-outcome-item-arrow .icon {
-  padding: 3px;
 }
 
 .indented-view-outcome-content {
   position: relative;
   color: var(--text-color-secondary);
   cursor: pointer;
-  padding: 0.45rem 0.25rem;
+  padding: 0.625rem 0.375rem;
   border-radius: 0.5rem;
   text-decoration: none;
   flex: 1;
@@ -101,11 +103,11 @@
 .indented-view-outcome-content:hover,
 .highest-level-view:hover {
   color: var(--text-color-primary);
-  background-color: var(--bg-color-secondary);
+  background-color: var(--bg-color-primary);
 }
 
-.indented-view-outcome-content.active > .indented-view-outcome-content-text,
-.indented-view-outcome-content:focus > .indented-view-outcome-content-text {
+.indented-view-outcome-content.active>.indented-view-outcome-content-text,
+.indented-view-outcome-content:focus>.indented-view-outcome-content-text {
   color: var(--text-color-primary);
 }
 
@@ -114,13 +116,13 @@
 .highest-level-view.active,
 .highest-level-view:focus {
   color: var(--text-color-primary);
-  background-color: var(--bg-color-secondary);
+  background-color: var(--bg-color-primary);
   font-family: var(--font-family-primary-extrabold);
   text-decoration: none;
 }
 
 .indented-view-nested-outcome {
-  margin-left: 20px;
+  margin-left: 2.5rem;
 }
 
 .indented-view-outcome-content .indented-view-outcome-make-top-priority {
@@ -128,15 +130,25 @@
 }
 
 .indented-view-outcome-content:hover .indented-view-outcome-make-top-priority {
-  background: var(--bg-color-primary);
-  border-radius: 4px;
+  background: var(--bg-color-secondary);
+  border-radius: 0.25rem;
   display: flex;
   position: absolute;
-  right: 0.25rem;
+  right: 0.5rem;
 
   .icon {
-    height: 1.25rem;
-    width: 1.25rem;
+    height: 1.325rem;
+    width: 1.325rem;
     padding: 0.125rem;
+  }
+}
+
+
+.outcome-statement-icon {
+
+  .icon {
+    padding: 0.125rem;
+    width: 1.125rem;
+    height: 1.125rem;
   }
 }

@@ -5,12 +5,12 @@
   justify-content: center;
 
   &.small {
-    transform: scale(0.625);
+    transform: scale(0.9);
   }
 
   .icon {
-    height: 1.25rem;
-    width: 1.25rem;
+    height: 1.05rem;
+    width: 1.05rem;
     padding: 0;
 
     &.not-achieved {

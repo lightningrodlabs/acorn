@@ -44,7 +44,7 @@ const drawDescendantsAchievementStatus = ({
 
     const imageSize = 18
     const spaceBetweenSections = 10
-    const spaceBetweenIconAndText = 4
+    const spaceBetweenIconAndText = 5
 
     if (withChildren) {
       let smallsTextWidth: number = 0
@@ -123,7 +123,7 @@ const drawDescendantsAchievementStatus = ({
         imageSize
       )
       if (uncertainsImg) {
-        ctx.drawImage(uncertainsImg, xPosition, yPosition, imageSize, imageSize)
+        ctx.drawImage(uncertainsImg, xPosition, yPosition - 2, imageSize, imageSize)
       }
       ctx.fillText(
         'Uncertain Scope',
@@ -148,7 +148,7 @@ const drawDescendantsAchievementStatus = ({
           computedAchievementStatus.tasksTotal
       const imgToDraw = tasksCompleted ? tasksImgGreen : tasksImgGrey
       if (imgToDraw) {
-        ctx.drawImage(imgToDraw, xPosition, yPosition, imageSize, imageSize)
+        ctx.drawImage(imgToDraw, xPosition, yPosition - 2, imageSize, imageSize)
       }
       const percentageText = ` (${Math.round(
         (computedAchievementStatus.tasksAchieved /

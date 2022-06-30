@@ -17,6 +17,7 @@ import {
 import PendingProjects from '../../components/PendingProjects/PendingProjects'
 
 import './Dashboard.scss'
+import Typography from '../../components/Typography/Typography'
 
 export default function Dashboard({
   existingAgents,
@@ -121,7 +122,7 @@ export default function Dashboard({
           </NavLink>
         </div>
         <div className="dashboard-my-projects">
-          <div className="my-projects-heading">My Projects</div>
+          <div className="my-projects-heading"><Typography style="h1">My Projects</Typography> </div>
           {/* dashboard header */}
           <div className="my-projects-header">
             <div className="my-projects-header-buttons">
@@ -141,11 +142,6 @@ export default function Dashboard({
                 className="my-projects-button"
                 onClick={() => setShowImportModal(true)}
               >
-                <Icon
-                  name="import.svg"
-                  size="very-small"
-                  className="black not-hoverable"
-                />
                 <div>Import a Project</div>
               </div>
             </div>

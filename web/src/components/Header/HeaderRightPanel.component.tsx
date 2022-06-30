@@ -159,7 +159,7 @@ export default function HeaderRightPanel({
                   type="text"
                   onChange={(e) => setFilterText(e.target.value.toLowerCase())}
                   value={filterText}
-                  placeholder="Search for an Outcome, comment, and more"
+                  placeholder="Search for an Outcome, comment & more"
                   autoFocus
                 />
               </CSSTransition>
@@ -278,7 +278,7 @@ export default function HeaderRightPanel({
               lastName={whoami.entry.lastName}
               avatarUrl={whoami.entry.avatarUrl}
               imported={whoami.entry.isImported}
-              highlighted={isAvatarMenuOpen || isAvatarHover}
+              // highlighted={isAvatarMenuOpen || isAvatarHover}
               clickable
               size="small-medium"
               withStatus

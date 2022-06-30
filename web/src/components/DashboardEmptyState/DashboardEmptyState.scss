@@ -1,50 +1,38 @@
-.dashboard-empty-state-wrapper {}
-
 .dashboard-empty-state {
   display: flex;
   flex-direction: column;
   text-align: center;
   align-items: center;
   margin: 0 auto;
-  width: 650px;
-  top: 35%;
+  top: 30%;
   left: 50%;
   position: absolute;
   transform: translate(-50%, -35%);
 }
 
-.dashboard-empty-state-heading {
-  font-size: 40px;
-  font-family: 'gilroyextrabold', Helvetica, sans-serif;
-  margin-bottom: 20px;
-  margin-top: 30px;
-  color: #535353;
-  letter-spacing: 0.5px;
-}
-
 .dashboard-empty-state-description {
-  text-align: center;
-  color: #535353;
-  font-size: 22px;
-  line-height: 1.6;
-  letter-spacing: 0.3px;
-  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
-}
+  margin-top: 1rem;
 
-.dashboard-empty-state-description a {
-  color: #5f65ff;
-  cursor: pointer;
-  transition: color 0.2s ease-in;
-}
+  .typography {
+    line-height: 1.6;
+  }
 
-.dashboard-empty-state-description a:hover {
-  color: #00beb0;
+  a {
+    font-family: var(--font-family-primary-bold);
+    cursor: pointer;
+    transition: color 0.1s ease;
+
+    &:hover {
+      color: #5f65ff;
+    }
+  }
 }
 
 .dashboard-empty-state-squirrel-outer {
   display: table;
   margin: 0 auto;
   height: 100%;
+  transform: scale(0.8)
 }
 
 .dashboard-empty-state-squirrel-middle {
@@ -299,6 +287,7 @@
 }
 
 @-webkit-keyframes animation {
+
   0%,
   4%,
   6%,
@@ -309,6 +298,7 @@
     -webkit-transform: rotateX(0deg);
     transform: rotateX(0deg);
   }
+
   5%,
   50%,
   52% {
@@ -316,7 +306,9 @@
     transform: rotateX(90deg);
   }
 }
+
 @keyframes animation {
+
   0%,
   4%,
   6%,
@@ -327,6 +319,7 @@
     -webkit-transform: rotateX(0deg);
     transform: rotateX(0deg);
   }
+
   5%,
   50%,
   52% {

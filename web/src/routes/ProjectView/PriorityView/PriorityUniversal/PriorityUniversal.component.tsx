@@ -12,6 +12,7 @@ import ProgressIndicatorCalculated from '../../../../components/ProgressIndicato
 import { ComputedScope } from '../../../../types'
 import ComputedOutcomeContext from '../../../../context/ComputedOutcomeContext'
 import { HeaderHashB64 } from '../../../../types/shared'
+import Typography from '../../../../components/Typography/Typography'
 
 // an individual list item
 function UniversalOutcome({
@@ -30,28 +31,28 @@ function UniversalOutcome({
           <div className="universal-priority-outcome-title-status">
             <div className="universal-priority-outcome-item-status">
               {/* Progress Indicator */}
-            {outcome.computedScope !== ComputedScope.Uncertain && (
-              <ProgressIndicatorCalculated outcome={outcome} size="small" />
-            )}
+              {outcome.computedScope !== ComputedScope.Uncertain && (
+                <ProgressIndicatorCalculated outcome={outcome} size={'medium'} />
+              )}
 
-            {/* Uncertain Icon (or not) */}
-            {outcome.computedScope === ComputedScope.Uncertain && (
-              <div className="outcome-statement-icon">
-                <Icon
-                  name="uncertain.svg"
-                  className="not-hoverable uncertain"
-                  size="very-small"
-                />
-              </div>
-            )}
-
-            {/* Leaf Icon (or not) */}
-            {outcome.children.length === 0 &&
-              outcome.computedScope === ComputedScope.Small && (
+              {/* Uncertain Icon (or not) */}
+              {outcome.computedScope === ComputedScope.Uncertain && (
                 <div className="outcome-statement-icon">
-                  <Icon name="leaf.svg" className="not-hoverable" size="very-small" />
+                  <Icon
+                    name="uncertain.svg"
+                    className="not-hoverable uncertain"
+
+                  />
                 </div>
               )}
+
+              {/* Leaf Icon (or not) */}
+              {outcome.children.length === 0 &&
+                outcome.computedScope === ComputedScope.Small && (
+                  <div className="outcome-statement-icon">
+                    <Icon name="leaf.svg" className="not-hoverable" />
+                  </div>
+                )}
             </div>
 
             <div className="universal-priority-outcome-item-statement">
@@ -312,13 +313,13 @@ function PriorityUniversal({
     <div className="universal-priority-wrapper">
       <div className="universal-priority-header">
         <div className="universal-priority-heading">
-          <h1>High Priority Outcomes ({topPriorityOutcomes.length})</h1>
+          <Typography style="h2">High Priority Outcomes ({topPriorityOutcomes.length})</Typography>
         </div>
         <div className="universal-priority-subheading">
-          <h4>
+          <Typography style="subtitle3">
             Drag and drop the outcomes to sort their order of importance for you
             and your teammates.
-          </h4>
+          </Typography>
         </div>
       </div>
       <div className="universal-priority-divider-line"></div>
@@ -326,21 +327,20 @@ function PriorityUniversal({
       <div className="universal-priority-outcomes-list-wrapper">
         {topPriorityOutcomes.length === 0 && (
           <div className="top-priority-empty-state-wrapper">
-            {/* TODO: fix image url */}
             <img
               src="images/intro-screen-image-4.svg"
               className="top-priority-empty-state-image"
             />
-            <h4>
-              You haven't marked any outcomes as top priority.
+            <Typography style="body1">
+              You haven't marked any Outcomes as High Priority.
               <br />
               <a
                 href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/high-priority-outcomes"
                 target="_blank"
               >
-                Learn how to start prioritizing here.
+                Learn how to start prioritizing.
               </a>{' '}
-            </h4>
+            </Typography>
           </div>
         )}
         {topPriorityOutcomes.length !== 0 && (

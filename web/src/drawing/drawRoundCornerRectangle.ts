@@ -9,6 +9,7 @@ export type drawRoundCornerRectangleInput = {
   radius: number
   color: string
   useStroke: boolean
+  useDashedStroke: boolean
   strokeWidth?: number
   useBoxShadow: boolean
   useGlow: boolean
@@ -23,8 +24,9 @@ export default function drawRoundCornerRectangle({
   height,
   radius,
   color,
-  strokeWidth,
   useStroke,
+  useDashedStroke,
+  strokeWidth,
   useBoxShadow,
   useGlow,
   glowColor,
@@ -35,8 +37,14 @@ export default function drawRoundCornerRectangle({
 
     ctx.beginPath()
 
-    if (useStroke) ctx.strokeStyle = color
+    if (useStroke) ctx.strokeStyle = color 
     else ctx.fillStyle = color
+
+    // For In Breakdown Mode representation
+    if (useDashedStroke) {
+      ctx.setLineDash([10, 10])
+      ctx.lineCap = 'round'
+    }
 
     // outcome card box shadow
     if (useBoxShadow) {

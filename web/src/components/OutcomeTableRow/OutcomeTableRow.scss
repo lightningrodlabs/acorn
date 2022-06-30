@@ -104,14 +104,14 @@
 
   &:hover {
     .outcome-table-row-hover-button {
-      background-color: var(--bg-color-hover);
+      background-color: var(--bg-color-secondary);
 
-      .icon .inner-icon {
-
-        &:hover {
+      &:hover {
+        .icon .inner-icon {
           background-color: var(--border-color-primary);
         }
       }
+
     }
     .outcome-table-row-hover-button .icon {
       display: flex;
