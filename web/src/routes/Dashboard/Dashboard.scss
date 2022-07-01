@@ -30,12 +30,14 @@
   margin-right: 6px;
 }
 
-.dashboard-left-menu-item:hover, .dashboard-left-menu-item.active {
+.dashboard-left-menu-item:hover,
+.dashboard-left-menu-item.active {
   color: #5f65ff;
   background-color: #f3f2f2;
 }
 
-.dashboard-left-menu-item:hover .inner-icon, .dashboard-left-menu-item.active .inner-icon {
+.dashboard-left-menu-item:hover .inner-icon,
+.dashboard-left-menu-item.active .inner-icon {
   background-color: #5f65ff;
 }
 
@@ -53,11 +55,11 @@
   flex-direction: column;
 }
 
-@media only screen and (max-width: 1065px) {
+@media only screen and (max-width: 1024px) {
   .dashboard-my-projects {
-    float: right;
-    max-width: calc(100vw - 220px);
-    margin-right: 40px;
+    margin-right: 2rem;
+    margin-left: 2rem;
+    max-width: 100%;
   }
 }
 
@@ -121,18 +123,16 @@
 
 .my-projects-sorting {
   color: #8e8e8e;
-  font-size: 14px;
+  font-size: 0.825rem;
   display: flex;
   flex-direction: row;
   align-items: center;
   position: relative;
-  padding: 10px;
+  padding: 0.5rem 0;
 }
 
 .my-projects-sorting-selected {
-  border-radius: 30px;
-  font-size: 14px;
-  line-height: 17px;
+  font-size: 0.825rem;
   display: flex;
   cursor: pointer;
   color: #5d5d5d;

@@ -104,6 +104,8 @@
   box-sizing: border-box;
   position: absolute;
   z-index: 2;
+  max-height: 15rem;
+  overflow-y: scroll;
 
   .filter-dropdown-menu-option {
     display: flex;

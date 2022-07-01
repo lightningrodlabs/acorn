@@ -102,6 +102,18 @@
       font-size: 0.875rem;
       color: var(--text-color-tertiary);
     }
+
+    &.assignees {
+      padding: 0.25rem 1rem;
+    }
+
+    &.tags {
+      padding: 0.25rem 1rem;
+
+      .tags-list-item {
+        margin-bottom: 0.125rem;
+      }
+    }
   }
 
   .outcome-table-row-hover-button {

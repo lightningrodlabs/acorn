@@ -22,15 +22,13 @@
       }
     }
 
-    &.assignees {
-      .filter-dropdown-menu {
-        width: 12rem;
-      }
-    }
-
+    &.assignees,
     &.tags {
       .filter-dropdown-menu {
         width: 12rem;
+        .filter-dropdown-menu-option {
+          padding: 0.5rem 1rem;
+        }
       }
     }
   }

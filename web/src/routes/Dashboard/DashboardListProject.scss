@@ -34,7 +34,7 @@
 .dashboard-list-project-wrapper {
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid #f1ece9;
+  border-bottom: 0.15rem solid var(--bg-color-canvas);
   padding-top: 20px;
   padding-bottom: 20px;
   position: relative;
@@ -74,7 +74,7 @@
   font-size: 1.375rem;
   font-family: var(--font-family-secondary-extrabold);
   text-decoration: none;
-  color: var(--text-color-secondary);
+  color: var(--text-color-primary);
   display: block;
   margin-bottom: 0.5rem;
   cursor: pointer;
@@ -186,6 +186,7 @@
 .dashboard-list-project-entry-point-expanded {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .entry-point-item {
@@ -211,7 +212,10 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  padding-right: 40px;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .dashboard-list-project-members-settings {

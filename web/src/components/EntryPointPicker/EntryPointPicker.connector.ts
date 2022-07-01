@@ -8,10 +8,10 @@ function mapStateToProps(state: RootState) {
   const {
     ui: { activeProject, activeEntryPoints },
   } = state
-  const combinedEntryPoints = selectEntryPoints(state, activeProject)
+  const entryPointsAndOutcomes = selectEntryPoints(state, activeProject)
 
   return {
-    entryPoints: combinedEntryPoints,
+    entryPointsAndOutcomes,
     activeEntryPoints,
   }
 }

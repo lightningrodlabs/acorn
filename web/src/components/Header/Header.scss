@@ -77,16 +77,6 @@
   color: #4d4d4d;
 }
 
-.current-project-content .icon {
-  padding: 4px;
-  height: 24px;
-  width: 24px;
-  display: inline-block;
-  position: relative;
-  margin: 0 8px 0 0;
-  box-sizing: border-box;
-}
-
 .home-link {
   text-decoration: none;
   cursor: pointer;
@@ -107,6 +97,28 @@
   border-right: 1px solid #d9d9d9;
   height: 24px;
   margin-right: 10px;
+}
+
+.current-project-tools {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .icon {
+    padding: 4px;
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    position: relative;
+    margin: 0 8px 0 0;
+    box-sizing: border-box;
+  }
+
+  .button-close-wrapper .icon{
+    width: 1.75rem;
+    height: 1.75rem;
+    margin-right: 0;
+  }
 }
 
 /* View Mode */
@@ -134,25 +146,6 @@
         background-color: var(--text-color-primary);
       }
     }
-  }
-}
-
-// Entry points button and menu
-
-.header-left-panel-entry-points-button {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  .icon {
-    padding: 4px;
-    height: 24px;
-    width: 24px;
-    display: inline-block;
-    position: relative;
-    margin: 0 8px 0 0;
-    box-sizing: border-box;
   }
 }
 
@@ -208,9 +201,10 @@
   /* Safari 7.0+ */
   display: flex;
   align-items: center;
-  padding: 0.375rem 2rem 0.375rem 0.75rem;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
   color: #4d4d4d;
   transition: 0.5s all ease-in-out;
+  margin-top: 0.25rem;
 }
 
 .active-entry-point:hover {

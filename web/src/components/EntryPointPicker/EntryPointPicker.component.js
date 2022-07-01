@@ -10,20 +10,31 @@ import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import Icon from '../Icon/Icon'
 import { NavLink } from 'react-router-dom'
 import { ENTRY_POINTS } from '../../searchParams'
+import Checkbox from '../Checkbox/Checkbox'
 
-function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints, goToOutcome }) {
+function EntryPointPickerItem({
+  entryPoint,
+  outcome,
+  isActive,
+  activeEntryPoints,
+  goToOutcome,
+}) {
   const dotStyle = {
     backgroundColor: entryPoint.color,
   }
   const location = useLocation()
 
-  const pathWithEntryPoint = `${location.pathname
-    }?${ENTRY_POINTS}=${activeEntryPoints.concat([entryPoint.headerHash]).join(',')}`
+  const pathWithEntryPoint = `${
+    location.pathname
+  }?${ENTRY_POINTS}=${activeEntryPoints
+    .concat([entryPoint.headerHash])
+    .join(',')}`
 
-  const pathWithoutEntryPoint = `${location.pathname
-    }?${ENTRY_POINTS}=${activeEntryPoints
-      .filter(headerHash => headerHash !== entryPoint.headerHash)
-      .join(',')}`
+  const pathWithoutEntryPoint = `${
+    location.pathname
+  }?${ENTRY_POINTS}=${activeEntryPoints
+    .filter((headerHash) => headerHash !== entryPoint.headerHash)
+    .join(',')}`
 
   const onClickArrow = (event) => {
     // prevent the navigation (NavLink)
@@ -36,33 +47,35 @@ function EntryPointPickerItem({ entryPoint, isActive, activeEntryPoints, goToOut
       <NavLink
         isActive={() => isActive}
         to={isActive ? pathWithoutEntryPoint : pathWithEntryPoint}
-        className='entry-point-picker-item'>
-        <div className='entry-point-picker-dot' style={dotStyle}></div>
-        <div className='entry-point-picker-name'>{entryPoint.content}</div>
-        <div onClick={onClickArrow}
-          className='entry-point-picker-switch'>
-          <Icon name='enter.svg' size='small' className='grey' />
+        className="entry-point-picker-item"
+      >
+        <div className="entry-point-picker-dot" style={dotStyle}></div>
+        <div className="entry-point-picker-name" title={outcome.content}>
+          {outcome.content}
         </div>
-        <div className='entry-point-picker-radio'>
-          <Icon
-            name={isActive ? 'radio-button-checked.svg' : 'radio-button.svg'}
-            size='small'
-            className={isActive ? 'purple' : 'light-grey'}
-          />
+        <div onClick={onClickArrow} className="entry-point-picker-switch">
+          <Icon name="enter.svg" size="small" className="grey" />
         </div>
+        <Checkbox isChecked={isActive} size="small" />
       </NavLink>
     </li>
   )
 }
 
-export default function EntryPointPicker({ entryPoints, isOpen, onClose, activeEntryPoints, goToOutcome }) {
+export default function EntryPointPicker({
+  entryPointsAndOutcomes,
+  isOpen,
+  onClose,
+  activeEntryPoints,
+  goToOutcome,
+}) {
   const [filterText, setFilterText] = useState('')
 
   // filter people out if there's filter text defined, and don't bother case matching
-  const filteredEntryPoints = entryPoints.filter(entryPoint => {
+  const filteredEntryPoints = entryPointsAndOutcomes.filter(({ outcome }) => {
     return (
       !filterText ||
-      entryPoint.content.toLowerCase().indexOf(filterText.toLowerCase()) > -1
+      outcome.content.toLowerCase().indexOf(filterText.toLowerCase()) > -1
     )
   })
 
@@ -76,23 +89,21 @@ export default function EntryPointPicker({ entryPoints, isOpen, onClose, activeE
       in={isOpen}
       timeout={100}
       unmountOnExit
-      classNames='entry-point-picker-wrapper'>
+      classNames="entry-point-picker-wrapper"
+    >
       <PickerTemplate
-        className='entry-point-picker'
-        heading='Entry Points'
-        onClose={onClose}>
+        className="entry-point-picker"
+        heading="Entry Points"
+        onClose={onClose}
+      >
         {/* Entry Point Picker Search */}
-        <div className='entry-point-picker-search'>
-          <Icon
-            name='search.svg'
-            size='very-small'
-            className='grey not-hoverable'
-          />
+        <div className="entry-point-picker-search">
+          <Icon name="search.svg" size="small" className="grey not-hoverable" />
           <input
-            type='text'
-            onChange={e => setFilterText(e.target.value)}
+            type="text"
+            onChange={(e) => setFilterText(e.target.value)}
             value={filterText}
-            placeholder='search entry points...'
+            placeholder="Search entry points"
             autoFocus
           />
           {filterText !== '' && (
@@ -100,8 +111,8 @@ export default function EntryPointPicker({ entryPoints, isOpen, onClose, activeE
               onClick={() => {
                 setFilterText('')
               }}
-              className='clear-button'>
-              {/* @ts-ignore */}
+              className="clear-button"
+            >
               <Icon
                 name="x.svg"
                 size="small"
@@ -112,34 +123,35 @@ export default function EntryPointPicker({ entryPoints, isOpen, onClose, activeE
             </button>
           )}
         </div>
-        <div className='entry-point-picker-spacer' />
-        <ul className='entry-point-picker-list'>
-          {filteredEntryPoints.map(entryPoint => (
+        <ul className="entry-point-picker-list">
+          {filteredEntryPoints.map(({ entryPoint, outcome }) => (
             <EntryPointPickerItem
               key={entryPoint.headerHash}
               entryPoint={entryPoint}
+              outcome={outcome}
               isActive={activeEntryPoints.some(
-                headerHash => headerHash === entryPoint.headerHash
+                (headerHash) => headerHash === entryPoint.headerHash
               )}
               activeEntryPoints={activeEntryPoints}
               goToOutcome={goToOutcomeWrapped}
             />
           ))}
           {/* Entry Points Empty State */}
-          {entryPoints.length === 0 && (
-            <li className='entry-points-empty-state-content'>
+          {entryPointsAndOutcomes.length === 0 && (
+            <li className="entry-points-empty-state-content">
               <img
                 src={DoorClosed}
-                className='entry-points-empty-state-image'
+                className="entry-points-empty-state-image"
               />
-              <div className='entry-points-empty-state-image-circle'></div>
+              <div className="entry-points-empty-state-image-circle"></div>
               <span>
                 You currently have no entry points for this project.{' '}
                 <a
                   href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/entry-point-outcomes"
                   target="_blank"
                   onClick={onClose}
-                  className='entry-points-empty-state-content-link'>
+                  className="entry-points-empty-state-content-link"
+                >
                   Learn how to create one
                 </a>
                 .
@@ -147,10 +159,6 @@ export default function EntryPointPicker({ entryPoints, isOpen, onClose, activeE
             </li>
           )}
         </ul>
-        {/* <img
-          className='entry-point-picker-pointer'
-          src='img/popup-curved-pointer-downside.svg'
-        /> */}
       </PickerTemplate>
     </CSSTransition>
   )

@@ -1,22 +1,28 @@
 import React, { useRef, useState } from 'react'
 import { NavLink, Route, useLocation, useRouteMatch } from 'react-router-dom'
+import useOnClickOutside from 'use-onclickoutside'
+
+import { WireElement } from '../../api/hdkCrud'
+import {
+  AgentPubKeyB64,
+  HeaderHashB64,
+  WithHeaderHash,
+  CellIdString,
+} from '../../types/shared'
+import { ProjectMeta, Profile, EntryPoint, Outcome } from '../../types'
 
 import ExportMenuItem from '../ExportMenuItem/ExportMenuItem.connector'
 import Icon from '../Icon/Icon'
-import {
-  ProjectPriorityViewOnly,
-  ProjectMapViewOnly,
-} from '../ViewFilters/ViewFilters'
 import { ENTRY_POINTS } from '../../searchParams'
 import MembersIndicator from '../MembersIndicator/MembersIndicator'
 
 // @ts-ignore
 import DoorOpen from '../../images/door-open.svg'
 import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
-import useOnClickOutside from 'use-onclickoutside'
 
 function ActiveEntryPoint({
   entryPoint,
+  outcome,
   activeEntryPointAddresses,
   goToOutcome,
 }) {
@@ -30,24 +36,38 @@ function ActiveEntryPoint({
       {/* add title because text-overflow: ellipsis */}
       <div
         className="active-entry-point-content"
-        title={entryPoint.content}
+        title={outcome.content}
         onClick={() => goToOutcome(entryPoint.outcomeHeaderHash)}
       >
-        {entryPoint.content}
+        {outcome.content}
       </div>
-      {/* @ts-ignore */}
       <NavLink
         to={`${location.pathname}?${ENTRY_POINTS}=${entryPointsAbsentThisOne}`}
         className="active-entry-point-close"
       >
-        {/* @ts-ignore */}
         <Icon name="x.svg" size="small" className="grey" />
       </NavLink>
     </div>
   )
 }
 
-function HeaderLeftPanel({
+export type HeaderLeftPanelProps = {
+  whoami: WireElement<Profile>
+  members: Profile[]
+  presentMembers: AgentPubKeyB64[]
+  projectName: string
+  isExportOpen: boolean
+  activeEntryPoints:  {
+    entryPoint: WithHeaderHash<EntryPoint>
+    outcome: WithHeaderHash<Outcome>
+  }[]
+  openInviteMembersModal: () => void
+  setShowProjectSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  onClickExport: () => void
+  goToOutcome: (outcomeHeaderHash: HeaderHashB64) => void
+}
+
+const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   openInviteMembersModal,
   setShowProjectSettingsOpen,
   whoami,
@@ -58,9 +78,9 @@ function HeaderLeftPanel({
   goToOutcome,
   members,
   presentMembers,
-}) {
+}) => {
   const activeEntryPointAddresses = activeEntryPoints.map(
-    (entryPoint) => entryPoint.headerHash
+    ({ entryPoint }) => entryPoint.headerHash
   )
   // in this context, we'd want to display members on the project,
   // except your own self
@@ -80,7 +100,6 @@ function HeaderLeftPanel({
     '/project/:projectId'
   )
   const projectId = projectPage ? projectPage.params.projectId : null
-  const mapPage = useRouteMatch('/project/:projectId/map')
 
   // for entry points
 
@@ -90,11 +109,8 @@ function HeaderLeftPanel({
   return (
     <>
       <div className="header-left-panel">
-        {/* @ts-ignore */}
         {/* Acorn Logo */}
         <NavLink to="/" className="home-link logo">
-          {/* @ts-ignore */}
-          {/* <Icon name="acorn-logo-stroked.svg" className="not-hoverable" /> */}
           <p className="logo-name">acorn</p>
           <div className="logo-name-tag">alpha</div>
         </NavLink>
@@ -111,7 +127,6 @@ function HeaderLeftPanel({
                     activeClassName="view-mode-active"
                     className="view-mode-link"
                   >
-                    {/* @ts-ignore */}
                     <Icon
                       name="map.svg"
                       size="view-mode"
@@ -127,7 +142,6 @@ function HeaderLeftPanel({
                     activeClassName="view-mode-active"
                     className="view-mode-link"
                   >
-                    {/* @ts-ignore */}
                     <Icon
                       name="table.svg"
                       size="view-mode"
@@ -143,7 +157,6 @@ function HeaderLeftPanel({
                     activeClassName="view-mode-active"
                     className="view-mode-link"
                   >
-                    {/* @ts-ignore */}
                     <Icon
                       name="sort-asc.svg"
                       size="view-mode"
@@ -156,11 +169,10 @@ function HeaderLeftPanel({
                 </div>
                 <div className="current-project-name">{projectName}</div>
                 <div className="divider-line"></div>
-                {/* @ts-ignore */}
 
-                {/* Entry points */}
-                <div className="header-left-panel-entry-points-button">
-                  {/* @ts-ignore */}
+                <div className="current-project-tools">
+                  {/* Entry points */}
+
                   <Icon
                     name="door-open.svg"
                     size="view-mode"
@@ -171,49 +183,49 @@ function HeaderLeftPanel({
                       setOpenEntryPointPicker(!openEntryPointPicker)
                     }
                   />
+                  {/* If entry point picker is open */}
                   <EntryPointPicker
                     isOpen={openEntryPointPicker}
                     onClose={() => setOpenEntryPointPicker(false)}
                   />
-                </div>
 
-                {/* Settings */}
-                {/* @ts-ignore */}
-                <Icon
-                  name="settings.svg"
-                  withTooltip
-                  tooltipText="Project Settings"
-                  size="header"
-                  onClick={() => setShowProjectSettingsOpen(true)}
-                />
-
-                <div className="export-wrapper">
+                  {/* Settings */}
                   <Icon
+                    name="settings.svg"
                     withTooltip
-                    tooltipText="Export"
-                    name="export.svg"
+                    tooltipText="Project Settings"
                     size="header"
-                    className={isExportOpen ? 'purple' : ''}
-                    onClick={onClickExport}
+                    onClick={() => setShowProjectSettingsOpen(true)}
                   />
-                  {isExportOpen && (
-                    <div className="export-list-wrapper">
-                      <div>
-                        <ExportMenuItem
-                          type="json"
-                          title="Export as JSON (Importable)"
-                          download="acorn-project.json"
-                        />
+                  {/* Export */}
+                  <div className="export-wrapper">
+                    <Icon
+                      withTooltip
+                      tooltipText="Export"
+                      name="export.svg"
+                      size="header"
+                      className={isExportOpen ? 'purple' : ''}
+                      onClick={onClickExport}
+                    />
+                    {isExportOpen && (
+                      <div className="export-list-wrapper">
+                        <div>
+                          <ExportMenuItem
+                            type="json"
+                            title="Export as JSON (Importable)"
+                            download="acorn-project.json"
+                          />
+                        </div>
+                        <div>
+                          <ExportMenuItem
+                            type="csv"
+                            title="Export as CSV"
+                            download="acorn-project.csv"
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <ExportMenuItem
-                          type="csv"
-                          title="Export as CSV"
-                          download="acorn-project.csv"
-                        />
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -232,10 +244,11 @@ function HeaderLeftPanel({
         <Route path="/project">
           {/* Current Entry Points Tab */}
           <div className="header-left-panel second-row">
-            {activeEntryPoints.map((entryPoint) => (
+            {activeEntryPoints.map(({ entryPoint, outcome }) => (
               <ActiveEntryPoint
                 key={entryPoint.headerHash}
                 entryPoint={entryPoint}
+                outcome={outcome}
                 activeEntryPointAddresses={activeEntryPointAddresses}
                 goToOutcome={goToOutcome}
               />

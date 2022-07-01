@@ -58,7 +58,7 @@
 
   .indented-view-outcome {
     font-family: var(--font-family-primary-medium);
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: var(--text-color-secondary);
   }
 }
@@ -73,7 +73,7 @@
   position: relative;
   color: var(--text-color-secondary);
   cursor: pointer;
-  padding: 0.625rem 0.375rem;
+  padding: 0 0.375rem 0 0.75rem;
   text-decoration: none;
   flex: 1;
   display: flex;
@@ -85,27 +85,18 @@
 
   &:hover {
     color: var(--text-color-primary);
-    background-color: var(--bg-color-primary);
+    background-color: var(--bg-color-popup);
   }
 
-  &.active {
+  &.active, &:focus {
     color: var(--text-color-primary);
-    background-color: var(--bg-color-primary);
+    background-color: var(--bg-color-popup);
     font-family: var(--font-family-primary-extrabold);
     text-decoration: none;
 
     > .indented-view-outcome-content-text {
       color: var(--text-color-primary);
-    }
-  }
-  &:focus {
-    color: var(--text-color-primary);
-    background-color: var(--bg-color-primary);
-    font-family: var(--font-family-primary-extrabold);
-    text-decoration: none;
 
-    > .indented-view-outcome-content-text {
-      color: var(--text-color-primary);
     }
   }
 
@@ -129,6 +120,8 @@
     overflow: hidden;
     white-space: nowrap;
     flex: 1;
+    padding-top: 0.425rem;
+    padding-bottom: 0.425rem;
   }
 }
 
@@ -152,7 +145,7 @@
 
 .outcome-statement-icon {
   .icon {
-    padding: 0.125rem;
+    padding: 0.05rem;
     width: 1.125rem;
     height: 1.125rem;
   }
