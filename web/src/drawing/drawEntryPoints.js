@@ -44,7 +44,8 @@ export default function drawEntryPoints(
     const [top, right, bottom, left] = boundingRec
 
     ctx.save()
-    ctx.setLineDash([5, 3]) /*dashes are 5px and spaces are 3px*/
+    ctx.setLineDash([10, 7]) /*dashes are 10px and spaces are 7px*/
+    ctx.lineCap = "round"
     const width = right - left
     const height = bottom - top
     drawRoundCornerRectangle({
@@ -56,7 +57,7 @@ export default function drawEntryPoints(
       radius: 15,
       color: entryPoint.color,
       useStroke: true,
-      strokeWidth: 2,
+      strokeWidth: 5,
       useBoxShadow: false,
       useGlow: false,
     })
@@ -67,7 +68,7 @@ export default function drawEntryPoints(
       outcome.content.length < 40
         ? outcome.content
         : outcome.content.slice(0, 40) + '...'
-    ctx.fillText(content, left, top - 20)
+    ctx.fillText(content, left, top - 36)
     ctx.restore()
   })
 }

@@ -18,7 +18,7 @@ function Icon({
   withTooltipTop?: boolean
   withTooltip?: boolean
   tooltipText?: string
-  className: string
+  className?: string
   onClick?: () => void
 }) {
   let [icon, setIcon] = useState('')

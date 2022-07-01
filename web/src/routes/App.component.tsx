@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
+import { Redirect, HashRouter as Router, Switch, Route } from 'react-router-dom'
+
+import { WireElement } from '../api/hdkCrud'
 import {
-  Redirect,
-  HashRouter as Router,
-  Switch,
-  Route,
-} from 'react-router-dom'
+  HeaderHashB64,
+  AgentPubKeyB64,
+  CellIdString,
+  WithHeaderHash,
+} from '../types/shared'
+import { ProjectMeta, Profile, EntryPoint, Outcome } from '../types'
 
 import './App.scss'
 
@@ -24,14 +28,45 @@ import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 // all global modals in here
 import GlobalModals from './GlobalModals'
 
-export default function App({
+export type AppStateProps = {
+  profilesCellIdString: string
+  members: Profile[]
+  presentMembers: AgentPubKeyB64[]
+  activeEntryPoints: {
+    entryPoint: WithHeaderHash<EntryPoint>
+    outcome: WithHeaderHash<Outcome>
+  }[]
+  activeProjectMeta: WithHeaderHash<ProjectMeta>
+  projectId: CellIdString
+  agentAddress: AgentPubKeyB64
+  whoami: WireElement<Profile>
+  hasFetchedForWhoami: boolean
+  navigationPreference: 'mouse' | 'trackpad'
+  inviteMembersModalShowing: null | string // will be the passphrase if defined
+}
+
+export type AppDispatchProps = {
+  dispatch: any
+  setNavigationPreference: (preference: 'mouse' | 'trackpad') => void
+  hideInviteMembersModal: () => void
+  openInviteMembersModal: (passphrase: string) => void
+  goToOutcome: (outcomeHeaderHash: HeaderHashB64) => void
+}
+
+export type AppMergeProps = {
+  updateWhoami: (entry: Profile, headerHash: HeaderHashB64) => Promise<void>
+}
+
+export type AppProps = AppStateProps & AppDispatchProps & AppMergeProps
+
+const App: React.FC<AppProps> = ({
   members,
   presentMembers,
   activeEntryPoints,
   activeProjectMeta,
   projectId,
   agentAddress,
-  whoami, // .entry and .headerHash
+  whoami,
   hasFetchedForWhoami,
   updateWhoami,
   navigationPreference,
@@ -39,8 +74,8 @@ export default function App({
   inviteMembersModalShowing,
   openInviteMembersModal,
   hideInviteMembersModal,
-  goToOutcome
-}) {
+  goToOutcome,
+}) => {
   const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
@@ -49,7 +84,7 @@ export default function App({
     await updateWhoami(profile, whoami.headerHash)
     setShowProfileEditForm(false)
   }
-  const updateStatus = async (statusString) => {
+  const updateStatus = async (statusString: Profile['status']) => {
     await updateWhoami(
       {
         ...whoami.entry,
@@ -77,10 +112,10 @@ export default function App({
         </Switch>
         {agentAddress && (
           <Header
-            members={members}
             project={activeProjectMeta}
-            presentMembers={presentMembers}
             {...{
+              members,
+              presentMembers,
               activeEntryPoints,
               projectId,
               whoami,
@@ -89,7 +124,7 @@ export default function App({
               setShowProjectSettingsOpen,
               setShowProfileEditForm,
               setShowPreferences,
-              goToOutcome
+              goToOutcome,
             }}
           />
         )}
@@ -123,3 +158,5 @@ export default function App({
     </ErrorBoundaryScreen>
   )
 }
+
+export default App

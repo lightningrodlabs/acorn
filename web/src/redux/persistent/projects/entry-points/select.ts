@@ -24,7 +24,7 @@ function selectActiveProjectMembers(state: RootState, projectId: CellIdString) {
 
 export { selectActiveProjectMembers }
 
-export default function selectEntryPoints(state, projectId) {
+export default function selectEntryPoints(state: RootState, projectId: CellIdString) {
   const entryPoints = state.projects.entryPoints[projectId] || {}
   const outcomes = state.projects.outcomes[projectId] || {}
 
@@ -34,8 +34,8 @@ export default function selectEntryPoints(state, projectId) {
       const outcome = outcomes[entryPoint.outcomeHeaderHash]
       if (outcome) {
         return {
-          ...entryPoint,
-          content: outcome.content,
+          entryPoint,
+          outcome,
         }
       }
       return null

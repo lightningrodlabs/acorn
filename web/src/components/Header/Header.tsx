@@ -1,12 +1,42 @@
 import React, { useRef, useState } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
 import './Header.scss'
+
+import { PriorityModeOptions } from '../../constants'
+import { WireElement } from '../../api/hdkCrud'
+import {
+  AgentPubKeyB64,
+  HeaderHashB64,
+  WithHeaderHash,
+  CellIdString,
+} from '../../types/shared'
+import { ProjectMeta, Profile, EntryPoint, Outcome } from '../../types'
+
 import { Status } from './Status'
 import HeaderLeftPanel from './HeaderLeftPanel'
 import HeaderRightPanel from './HeaderRightPanel.connector'
 import HeaderMiddlePanel from './HeaderMiddlePanel'
 
-function Header({
+export type HeaderProps = {
+  whoami: WireElement<Profile>
+  activeEntryPoints: {
+    entryPoint: WithHeaderHash<EntryPoint>
+    outcome: WithHeaderHash<Outcome>
+  }[]
+  project: WithHeaderHash<ProjectMeta>
+  projectId: CellIdString
+  members: Profile[]
+  presentMembers: AgentPubKeyB64[]
+  openInviteMembersModal: (passphrase: string) => void
+  setShowProjectSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setShowProfileEditForm: React.Dispatch<React.SetStateAction<boolean>>
+  setShowPreferences: React.Dispatch<React.SetStateAction<boolean>>
+  goToOutcome: (outcomeHeaderHash: HeaderHashB64) => void
+  // holochain
+  updateStatus: (statusString: Profile['status']) => Promise<void>
+}
+
+const Header: React.FC<HeaderProps> = ({
   whoami,
   openInviteMembersModal,
   setShowProjectSettingsOpen,
@@ -19,10 +49,11 @@ function Header({
   goToOutcome,
   members,
   presentMembers,
-}) {
+}) => {
   const [isExportOpen, setIsExportOpen] = useState(false)
 
   const [status, setStatus] = useState<Status>(
+    // @ts-ignore
     whoami ? whoami.entry.status : Status.Online
   )
 
@@ -74,7 +105,7 @@ function Header({
           whoami={whoami}
           openInviteMembersModal={openInviteMembersModalForActive}
           setShowProjectSettingsOpen={setShowProjectSettingsOpen}
-          projectName={project.name}
+          projectName={project ? project.name : ''}
           isExportOpen={isExportOpen}
           onClickExport={onClickExport}
           activeEntryPoints={activeEntryPoints}
@@ -82,7 +113,9 @@ function Header({
         />
         <HeaderMiddlePanel
           projectId={projectId}
-          projectPriorityMode={project.priorityMode}
+          projectPriorityMode={
+            project ? project.priorityMode : PriorityModeOptions.Universal
+          }
         />
         {whoami && (
           // add all these values as props

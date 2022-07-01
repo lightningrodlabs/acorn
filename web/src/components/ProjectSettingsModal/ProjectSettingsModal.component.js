@@ -154,7 +154,7 @@ export default function ProjectSettingsModal({
   onClose,
   updateProjectMeta,
   openInviteMembersModal,
-  project,
+  project = {},
   cellIdString,
 }) {
   const [updatingProject, setUpdatingProject] = useState(false)

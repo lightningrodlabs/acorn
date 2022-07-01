@@ -1,18 +1,30 @@
 import { connect } from 'react-redux'
+
+import { HeaderHashB64 } from '../types/shared'
+import { Profile } from '../types'
+
 import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
-import {
-  setNavigationPreference,
-} from '../redux/ephemeral/local-preferences/actions'
-import selectEntryPoints, { selectActiveProjectMembers } from '../redux/persistent/projects/entry-points/select'
+import { setNavigationPreference } from '../redux/ephemeral/local-preferences/actions'
+import selectEntryPoints, {
+  selectActiveProjectMembers,
+} from '../redux/persistent/projects/entry-points/select'
 import { animatePanAndZoom } from '../redux/ephemeral/viewport/actions'
-import { closeInviteMembersModal, openInviteMembersModal } from '../redux/ephemeral/invite-members-modal/actions'
+import {
+  closeInviteMembersModal,
+  openInviteMembersModal,
+} from '../redux/ephemeral/invite-members-modal/actions'
 import ProfilesZomeApi from '../api/profilesApi'
 import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { RootState } from '../redux/reducer'
-import App from './App.component'
+import App, {
+  AppProps,
+  AppStateProps,
+  AppDispatchProps,
+  AppMergeProps,
+} from './App.component'
 
-function mapStateToProps(state: RootState) {
+function mapStateToProps(state: RootState): AppStateProps {
   const {
     ui: {
       hasFetchedForWhoami,
@@ -24,28 +36,37 @@ function mapStateToProps(state: RootState) {
     cells: { profiles: profilesCellIdString },
   } = state
   // defensive coding for loading phase
-  const activeProjectMeta = state.projects.projectMeta[activeProject] || {}
+  const activeProjectMeta = state.projects.projectMeta[activeProject]
 
   // select the list of folks ("Agents in holochain") who are members
   // of the active project, if there is one
   const members = activeProject
     ? selectActiveProjectMembers(state, activeProject)
     : []
-  
+
   function getDnaHashFromProjectId(activeProject) {
-    return activeProject ? activeProject.split("[:cell_id_divider:]")[0] : activeProject
+    return activeProject
+      ? activeProject.split('[:cell_id_divider:]')[0]
+      : activeProject
   }
   const presentMembers = Object.values(state.ui.realtimeInfo)
-    .filter((agentInfo) => getDnaHashFromProjectId(agentInfo.projectId) === getDnaHashFromProjectId(activeProject))
-    .map((agentInfo) => agentInfo.agentPubKey).filter((agentPubKey) => members.find((member) => member.agentPubKey === agentPubKey))
+    .filter(
+      (agentInfo) =>
+        getDnaHashFromProjectId(agentInfo.projectId) ===
+        getDnaHashFromProjectId(activeProject)
+    )
+    .map((agentInfo) => agentInfo.agentPubKey)
+    .filter((agentPubKey) =>
+      members.find((member) => member.agentPubKey === agentPubKey)
+    )
 
   const allProjectEntryPoints = activeProject
     ? selectEntryPoints(state, activeProject)
     : []
   const activeEntryPointsObjects = activeEntryPoints
-    .map((headerHash) => {
+    .map((headerHash: HeaderHashB64) => {
       return allProjectEntryPoints.find(
-        (entryPoint) => entryPoint.headerHash === headerHash
+        (entryPoint) => entryPoint.entryPoint.headerHash === headerHash
       )
     })
     // cut out invalid ones
@@ -61,12 +82,12 @@ function mapStateToProps(state: RootState) {
     agentAddress: state.agentAddress,
     navigationPreference: navigation,
     inviteMembersModalShowing: inviteMembersModal.passphrase,
-    members: members,
-    presentMembers: presentMembers,
+    members,
+    presentMembers,
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch): AppDispatchProps {
   return {
     dispatch,
     setNavigationPreference: (preference) => {
@@ -80,11 +101,15 @@ function mapDispatchToProps(dispatch) {
     },
     hideInviteMembersModal: () => {
       return dispatch(closeInviteMembersModal())
-    }
+    },
   }
 }
 
-function mergeProps(stateProps, dispatchProps, _ownProps) {
+function mergeProps(
+  stateProps: AppStateProps,
+  dispatchProps: AppDispatchProps,
+  _ownProps: {}
+): AppProps {
   const { profilesCellIdString } = stateProps
   let cellId
   if (profilesCellIdString) {
@@ -94,13 +119,14 @@ function mergeProps(stateProps, dispatchProps, _ownProps) {
   return {
     ...stateProps,
     ...dispatchProps,
-    updateWhoami: async (entry, headerHash) => {
+    updateWhoami: async (entry: Profile, headerHash: string) => {
       const appWebsocket = await getAppWs()
       const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
-      const updatedWhoami = await profilesZomeApi.profile.updateWhoami(cellId, { entry, headerHash })
-      return dispatch(
-        updateWhoami(profilesCellIdString, updatedWhoami)
-      )
+      const updatedWhoami = await profilesZomeApi.profile.updateWhoami(cellId, {
+        entry,
+        headerHash,
+      })
+      return dispatch(updateWhoami(profilesCellIdString, updatedWhoami))
     },
   }
 }

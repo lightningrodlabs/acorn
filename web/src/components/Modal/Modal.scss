@@ -45,8 +45,8 @@
   box-sizing: border-box;
   padding: 60px;
   background-color: #ffff;
-  border-radius: 10px;
-  box-shadow: 0px 0px 10px #0000001f;
+  border-radius: 1rem;
+  box-shadow: 0px 0px 1rem var(--shadow-color);
   display: flex;
   flex-direction: column;
   justify-content: space-between;

@@ -13,6 +13,7 @@ import { ComputedScope } from '../../../../types'
 import ComputedOutcomeContext from '../../../../context/ComputedOutcomeContext'
 import { HeaderHashB64 } from '../../../../types/shared'
 import Typography from '../../../../components/Typography/Typography'
+import AvatarsList from '../../../../components/AvatarsList/AvatarsList'
 
 // an individual list item
 function UniversalOutcome({
@@ -32,7 +33,10 @@ function UniversalOutcome({
             <div className="universal-priority-outcome-item-status">
               {/* Progress Indicator */}
               {outcome.computedScope !== ComputedScope.Uncertain && (
-                <ProgressIndicatorCalculated outcome={outcome} size={'medium'} />
+                <ProgressIndicatorCalculated
+                  outcome={outcome}
+                  size={'medium'}
+                />
               )}
 
               {/* Uncertain Icon (or not) */}
@@ -41,7 +45,6 @@ function UniversalOutcome({
                   <Icon
                     name="uncertain.svg"
                     className="not-hoverable uncertain"
-
                   />
                 </div>
               )}
@@ -61,28 +64,8 @@ function UniversalOutcome({
           </div>
         </div>
         <div className="universal-priority-outcome-item-metadata">
-          <div className="universal-priority-outcome-item-members">
-            {outcome.members.map((member) => {
-              return (
-                <div
-                  className="universal-priority-outcome-item-member-avatar"
-                  key={member.headerHash}
-                >
-                  <Avatar
-                    firstName={member.firstName}
-                    lastName={member.lastName}
-                    avatarUrl={member.avatarUrl}
-                    imported={member.isImported}
-                    size="small"
-                    withWhiteBorder
-                    withStatus
-                    selfAssignedStatus={member.status}
-                    withTooltip
-                  />
-                </div>
-              )
-            })}
-          </div>
+          <AvatarsList size="small" profiles={outcome.members} withStatus />
+
           {/* TODO: fix and add time metadata display */}
           {/* Hiding time component here is a temp solution */}
           {/* <div className="universal-priority-outcome-item-date">
@@ -94,13 +77,25 @@ function UniversalOutcome({
             className="universal-priority-outcome-item-button outcome-item-button-expand"
             onClick={() => openExpandedView(outcome.headerHash)}
           >
-            <Icon name="expand.svg" size="small" className="light-grey" withTooltip tooltipText='Expand' />
+            <Icon
+              name="expand.svg"
+              size="small"
+              className="light-grey"
+              withTooltip
+              tooltipText="Expand"
+            />
           </div>
           <div
             className="universal-priority-outcome-item-button outcome-item-button-map"
             onClick={() => goToOutcome(outcome.headerHash)}
           >
-            <Icon name="map.svg" size="small" className="light-grey" withTooltip tooltipText='Find in Map View' />
+            <Icon
+              name="map.svg"
+              size="small"
+              className="light-grey"
+              withTooltip
+              tooltipText="Find in Map"
+            />
           </div>
         </div>
       </div>
@@ -302,7 +297,8 @@ function PriorityUniversal({
     // and render outcomes that exist or are
     // known about
     topPriorityOutcomeAddresses = projectMeta.topPriorityOutcomes.filter(
-      (outcomeHeaderHash: HeaderHashB64) => computedOutcomesKeyed[outcomeHeaderHash]
+      (outcomeHeaderHash: HeaderHashB64) =>
+        computedOutcomesKeyed[outcomeHeaderHash]
     )
   }
   const topPriorityOutcomes = topPriorityOutcomeAddresses.map(
@@ -313,7 +309,9 @@ function PriorityUniversal({
     <div className="universal-priority-wrapper">
       <div className="universal-priority-header">
         <div className="universal-priority-heading">
-          <Typography style="h2">High Priority Outcomes ({topPriorityOutcomes.length})</Typography>
+          <Typography style="h2">
+            High Priority Outcomes ({topPriorityOutcomes.length})
+          </Typography>
         </div>
         <div className="universal-priority-subheading">
           <Typography style="subtitle3">
@@ -322,7 +320,6 @@ function PriorityUniversal({
           </Typography>
         </div>
       </div>
-      <div className="universal-priority-divider-line"></div>
 
       <div className="universal-priority-outcomes-list-wrapper">
         {topPriorityOutcomes.length === 0 && (
@@ -344,7 +341,7 @@ function PriorityUniversal({
           </div>
         )}
         {topPriorityOutcomes.length !== 0 && (
-          <DragDropContext onDragEnd={onDragEnd} onDragUpdate={onDragUpdate}>
+          <DragDropContext onDragEnd={onDragEnd} onDragUpdate={onDragUpdate} style={{overflow:'auto'}} >
             <PriorityUniversalDroppable
               outcomes={topPriorityOutcomes}
               whileDraggingIndexes={whileDraggingIndexes}

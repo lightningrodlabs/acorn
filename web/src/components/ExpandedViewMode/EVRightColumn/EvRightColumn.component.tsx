@@ -269,7 +269,6 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
   ]
   if (isUncertain) {
     readOnlyInfos.push({
-      // @ts-ignore
       icon: <Icon name="uncertain.svg" className="uncertain not-hoverable" />,
       text: 'Uncertain Scope',
     })
@@ -320,13 +319,11 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
                 switchState={computedScopeBoolean}
                 onSwitchState={onScopeSwitchState}
                 state1={{
-                  // @ts-ignore
                   icon: <Icon name="leaf.svg" className="not-hoverable" />,
                   text: 'Small',
                 }}
                 state2={{
                   icon: (
-                    /* @ts-ignore */
                     <Icon
                       name="uncertain.svg"
                       className="uncertain not-hoverable"
@@ -351,7 +348,6 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
               size="small"
               isChecked={inBreakdown}
               onChange={setInBreakdown}
-              // @ts-ignore
               icon={<Icon name="test-tube.svg" className="not-hoverable" />}
               text="In Breakdown"
             />
@@ -360,7 +356,6 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
             size="small"
             isChecked={isHighPriority}
             onChange={setIsHighPriority}
-            // @ts-ignore
             icon={<Icon name="sort-asc.svg" className="not-hoverable" />}
             text="High Priority"
           />
@@ -368,7 +363,6 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
             size="small"
             isChecked={isEntryPoint}
             onChange={entryPointClickAction}
-            // @ts-ignore
             icon={<Icon name="door-open.svg" className="not-hoverable" />}
             text="Entry Point"
           />
@@ -388,7 +382,6 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
           <ButtonAction
             size="small"
             onClick={deleteAndClose}
-            // @ts-ignore
             icon={<Icon name="archive.svg" className="not-hoverable" />}
             text="Archive"
           />

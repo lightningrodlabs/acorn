@@ -147,7 +147,7 @@ function DashboardListProject({
           </>)}
         {showEntryPoints && (
           <div className="dashboard-list-project-entry-point-expanded">
-            {project.entryPoints.map((entryPoint) => {
+            {project.entryPoints.map(({ entryPoint, outcome }) => {
               const dotStyle = {
                 backgroundColor: entryPoint.color,
               }
@@ -158,7 +158,7 @@ function DashboardListProject({
                   className="entry-point-item"
                 >
                   <div className="entry-point-color-dot" style={dotStyle} />
-                  <div className="entry-point-name">{entryPoint.content}</div>
+                  <div className="entry-point-name">{outcome.content}</div>
                 </NavLink>
               )
             })}

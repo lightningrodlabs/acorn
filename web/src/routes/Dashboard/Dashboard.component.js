@@ -109,7 +109,8 @@ export default function Dashboard({
     <>
       <div className="dashboard-background">
         <div className="dashboard-left-menu">
-          <NavLink to="/dashboard" className="dashboard-left-menu-item">
+          {/* TODO: decide if we want to have this menu on Dashboard page */}
+          {/* <NavLink to="/dashboard" className="dashboard-left-menu-item">
             <Icon name="folder.svg" size="very-small" className="grey" />
             My Projects
           </NavLink>
@@ -119,7 +120,7 @@ export default function Dashboard({
           >
             <Icon name="settings.svg" size="very-small" className="grey" />
             Settings
-          </NavLink>
+          </NavLink> */}
         </div>
         <div className="dashboard-my-projects">
           <div className="my-projects-heading"><Typography style="h1">My Projects</Typography> </div>

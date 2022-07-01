@@ -1,4 +1,5 @@
 import React from 'react'
+import { AgentPubKeyB64 } from '../../types/shared'
 import { Profile } from '../../types'
 
 import Avatar from '../Avatar/Avatar'
@@ -9,6 +10,7 @@ import './AvatarsList.scss'
 export type AvatarsListProps = {
   size: 'small' | 'small-medium' | 'medium' | 'medium-large' | 'large'
   profiles: Profile[]
+  profilesPresent?: AgentPubKeyB64[]
   showPresence?: boolean
   showInviteButton?: boolean
   showAddButton?: boolean
@@ -19,6 +21,7 @@ export type AvatarsListProps = {
 const AvatarsList: React.FC<AvatarsListProps> = ({
   size = 'medium',
   profiles,
+  profilesPresent = [],
   showPresence,
   showInviteButton,
   showAddButton,
@@ -48,13 +51,9 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
         // check if the profile is in the
         // list of present profiles
         // (presence being "has the project open presently")
-
-        //     const isprofilePresent = presentprofiles.find(
-        //   (presentprofile) => presentprofile === profile.address
-        // )
-
-        // TODO: implement showPresence logic
-        const isProfilePresent = false
+        const isProfilePresent = !!profilesPresent.find(
+          (presentprofile) => profile.agentPubKey === presentprofile
+        )
 
         return (
           <Avatar
@@ -92,7 +91,6 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
             }`}
             onClick={onClickButton}
           >
-            {/* @ts-ignore */}
             <Icon
               name={
                 showInviteButton
