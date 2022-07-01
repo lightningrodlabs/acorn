@@ -11,6 +11,7 @@ import './TagPicker.scss'
 
 // @ts-ignore
 import PopupTriangleWhite from '../../images/popup-triangle-white.svg'
+import OnClickOutside from '../OnClickOutside/OnClickOutside'
 
 export type TagPickerDisplayTagsProps = {
   tags: WithHeaderHash<TagType>[]
@@ -30,6 +31,7 @@ const TagPickerDisplayTags: React.FC<TagPickerDisplayTagsProps> = ({
   setIsCreateTagOpen,
 }) => {
   return (
+
     <div className="tag-picker-display-tags-wrapper ">
       {/* search tag */}
       {tags.length > 0 && (
@@ -174,96 +176,95 @@ const CreateOrEditTag: React.FC<CreateOrEditTagProps> = ({
   ]
 
   return (
-    <div className="create-or-edit-tag-wrapper">
-      <div>
-        {/* @ts-ignore */}
-        <ValidatingFormInput
-          value={tagText}
-          onChange={(text: string) => {
-            setHasTypedText(true)
-            setTagText(text)
-          }}
-          invalidInput={hasTypedText && tagTextValid}
-          validInput={tagTextValid}
-          errorText={
-            hasTypedText && !tagTextValid ? 'A label is required.' : ''
-          }
-          label="Label"
-          placeholder="Release 0.6.2"
-        />
-        <div className="tag-picker-color-row">
+      <div className="create-or-edit-tag-wrapper">
+        <div>
           {/* @ts-ignore */}
           <ValidatingFormInput
-            value={tagColor}
-            onChange={(color: string) => {
-              setHasTypedColor(true)
-              setTagColor(color)
+            value={tagText}
+            onChange={(text: string) => {
+              setHasTypedText(true)
+              setTagText(text)
             }}
-            invalidInput={hasTypedColor && !tagColorValid}
-            validInput={tagColorValid}
+            invalidInput={hasTypedText && tagTextValid}
+            validInput={tagTextValid}
             errorText={
-              hasTypedColor && !tagColorValid
-                ? 'A valid hex code is required.'
-                : ''
+              hasTypedText && !tagTextValid ? 'A label is required.' : ''
             }
-            label="Color"
-            placeholder="#1DA094"
+            label="Label"
+            placeholder="Release 0.6.2"
           />
-          <div className="create-or-edit-tag-color-display-wrapper">
-            {/* display color */}
-            <div
-              onClick={() => setColorPickerOpen(!colorPickerOpen)}
-              className="create-or-edit-tag-color-swatch"
-              style={{ backgroundColor: tagColor }}
+          <div className="tag-picker-color-row">
+            {/* @ts-ignore */}
+            <ValidatingFormInput
+              value={tagColor}
+              onChange={(color: string) => {
+                setHasTypedColor(true)
+                setTagColor(color)
+              }}
+              invalidInput={hasTypedColor && !tagColorValid}
+              validInput={tagColorValid}
+              errorText={
+                hasTypedColor && !tagColorValid
+                  ? 'A valid hex code is required.'
+                  : ''
+              }
+              label="Color"
+              placeholder="#1DA094"
             />
-            {/* allow color changing */}
-            {colorPickerOpen && (
-              <div className="create-or-edit-tag-colors-wrapper">
-                <img className="popup-triangle" src={PopupTriangleWhite} />
-                {/* render each pre-defined color swatch from the list */}
-                {colorList.map((colorPreset, index) => {
-                  if (!colorList.includes(tagColor) && index === 0) {
-                    colorPreset = tagColor
-                  }
-                  const isSelectedColor = tagColor === colorPreset
-                  return (
-                    <div
-                      className={`create-or-edit-tag-color-swatch ${
-                        isSelectedColor ? 'selected' : ''
-                      }`}
-                      style={{ backgroundColor: colorPreset }}
-                      onClick={() => {
-                        setTagColor(colorPreset)
-                        setColorPickerOpen(false)
-                      }}
-                    >
-                      {/* show a white check icon on the selected tag color swatch */}
-                      {isSelectedColor && (
-                        <Icon
-                          name="check.svg"
-                          size="small"
-                          className="white not-hoverable"
-                        />
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            )}
+            <div className="create-or-edit-tag-color-display-wrapper">
+              {/* display color */}
+              <div
+                onClick={() => setColorPickerOpen(!colorPickerOpen)}
+                className="create-or-edit-tag-color-swatch"
+                style={{ backgroundColor: tagColor }}
+              />
+              {/* allow color changing */}
+              {colorPickerOpen && (
+                <div className="create-or-edit-tag-colors-wrapper">
+                  <img className="popup-triangle" src={PopupTriangleWhite} />
+                  {/* render each pre-defined color swatch from the list */}
+                  {colorList.map((colorPreset, index) => {
+                    if (!colorList.includes(tagColor) && index === 0) {
+                      colorPreset = tagColor
+                    }
+                    const isSelectedColor = tagColor === colorPreset
+                    return (
+                      <div
+                        className={`create-or-edit-tag-color-swatch ${isSelectedColor ? 'selected' : ''
+                          }`}
+                        style={{ backgroundColor: colorPreset }}
+                        onClick={() => {
+                          setTagColor(colorPreset)
+                          setColorPickerOpen(false)
+                        }}
+                      >
+                        {/* show a white check icon on the selected tag color swatch */}
+                        {isSelectedColor && (
+                          <Icon
+                            name="check.svg"
+                            size="small"
+                            className="white not-hoverable"
+                          />
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
           </div>
         </div>
+        {/* create or edit tag buttons */}
+        <div className="create-or-edit-tag-buttons">
+          <Button text="Cancel" onClick={onCancel} size={'small'} secondary />
+          <Button
+            text="Save Changes"
+            onClick={onClickSave}
+            size={'small'}
+            disabled={!tagColorValid || !tagTextValid}
+          />
+        </div>
       </div>
-      {/* create or edit tag buttons */}
-      <div className="create-or-edit-tag-buttons">
-        <Button text="Cancel" onClick={onCancel} size={'small'} secondary />
-        <Button
-          text="Save Changes"
-          onClick={onClickSave}
-          size={'small'}
-          disabled={!tagColorValid || !tagTextValid}
-        />
-      </div>
-    </div>
   )
 }
 
@@ -300,7 +301,7 @@ const TagPicker: React.FC<TagPickerProps> = ({
     setIsCreateTagOpen(false)
   }
   return (
-    <>
+    <OnClickOutside onClickOutside={onClose}>
       <div className="tag-picker-wrapper">
         {!isCreateTagOpen && (
           <TagPickerDisplayTags
@@ -325,7 +326,7 @@ const TagPicker: React.FC<TagPickerProps> = ({
           />
         )}
       </div>
-    </>
+    </OnClickOutside>
   )
 }
 

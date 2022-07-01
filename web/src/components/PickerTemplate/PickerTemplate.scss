@@ -18,9 +18,9 @@
 }
 
 .picker-popup-heading {
-  font-size: 18px;
-  font-family: 'gilroyextrabold';
-  color: #717171;
+  font-size: 1rem;
+  font-family: var(--font-family-primary-extrabold);
+  color: var(--text-color-secondary);
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }

@@ -64,7 +64,7 @@
 }
 
 .universal-priority-order-number {
-  font-family: var(--font-family-primary-extrabold);
+  font-family: var(--font-family-secondary-extrabold);
   font-size: 1.15rem;
   width: 2rem;
 }
@@ -90,7 +90,7 @@
   float: right;
   position: absolute;
   right: 0.25rem;
-  top: 0.25rem;
+  top: 0.125rem;
 }
 
 .universal-priority-outcome-item-button {
@@ -100,7 +100,11 @@
   transition: 0.2s all ease-in-out;
 
   &:hover {
-    background-color: var(--bg-color-secondary);
+    background-color: var(--bg-color-tertiary);
+
+    .icon .inner-icon {
+      background-color: var(--text-color-primary);
+    }
   }
 
   .icon {
@@ -141,6 +145,7 @@
       padding: 0;
       width: 1.125rem;
       height: 1.125rem;
+
     }
   }
 }

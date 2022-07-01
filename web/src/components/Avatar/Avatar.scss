@@ -58,20 +58,20 @@
 
   // avatar sizees
   &.small {
-    height: 1.625rem;
-    width: 1.625rem;
+    height: 1.5rem;
+    width: 1.5rem;
     .avatar,
     .initials-avatar {
-      height: 1.625rem;
-      width: 1.625rem;
+      height: 1.5rem;
+      width: 1.5rem;
     }
     &.with-border {
-      border-width: 0.225rem;
+      border-width: 0.2rem;
     }
     .status-circle {
-      border-width: 0.125rem;
-      height: 0.375rem;
-      width: 0.375rem;
+      border-width: 0.15rem;
+      height: 0.3rem;
+      width: 0.3rem;
       aspect-ratio: 1/1;
     }
   }

@@ -23,9 +23,7 @@ const OutcomeTableWithFilters: React.FC<OutcomeTableWithFiltersProps> = ({
   openExpandedView,
   goToOutcome,
 }) => {
-  const [filter, setOutcomeTableFilter] = useState<OutcomeTableFilter>({
-    keywordOrId: '',
-  })
+  const [filter, setOutcomeTableFilter] = useState<OutcomeTableFilter>({})
   return (
     <div className="outcome-table-with-filters">
       <OutcomeTableFilterSelector

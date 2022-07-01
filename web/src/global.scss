@@ -21,8 +21,11 @@ canvas {
 
 body {
   background-color: var(--bg-color-canvas);
-  font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
-  word-spacing: 0.05em;
+  font-family: var(--font-family-primary-medium);
+  word-spacing: 0.005rem;
+  letter-spacing: 0.001rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 div.react {

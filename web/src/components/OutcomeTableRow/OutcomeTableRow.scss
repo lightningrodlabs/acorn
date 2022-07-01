@@ -42,8 +42,23 @@
         color: var(--text-color-primary);
       }
 
+      .outcome-table-row-metadata-left-slot {
+        width: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .outcome-table-row-metadata-right-slot {
+        width: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
       .expand-chevron-wrapper {
-        margin-right: 0.375rem;
+        margin-right: 0.25rem;
+        max-height: 1.25rem;
       }
 
       .progress-indicator-wrapper {
@@ -74,6 +89,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
         line-height: 1.45;
+        flex: 1;
 
         &:hover {
           color: var(--color-ultramarine-blue);
@@ -92,7 +108,7 @@
     position: absolute;
     right: 0.5rem;
     top: 0.25rem;
-    padding: 0.5rem;
+    padding: 0.325rem;
     border-radius: 0.5rem;
     background-color: transparent;
     transition: 0.2s all ease-in-out;
@@ -113,6 +129,7 @@
       }
 
     }
+
     .outcome-table-row-hover-button .icon {
       display: flex;
     }

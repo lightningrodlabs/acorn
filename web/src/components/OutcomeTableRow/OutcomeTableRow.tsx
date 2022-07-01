@@ -18,6 +18,7 @@ export type OutcomeTableRowProps = {
   filter: OutcomeTableFilter
   parentExpanded: boolean
   indentationLevel: number
+  expandByDefault?: boolean
   openExpandedView: (headerHash: HeaderHashB64) => void
   goToOutcome: (headerHash: HeaderHashB64) => void
 }
@@ -29,17 +30,25 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   filter,
   parentExpanded,
   indentationLevel,
+  expandByDefault = false,
   openExpandedView,
   goToOutcome,
 }) => {
-  //for now assume everything is expanded by default,
-  // will need to look into how to expand collapse all in one action
-  let [expanded, setExpanded] = useState(false)
+  let [expanded, setExpanded] = useState(expandByDefault)
   let match = filterMatch(outcome, filter)
 
+  const specialFilterApplied =
+    'keywordOrId' in filter ||
+    'achievementStatus' in filter ||
+    'scope' in filter ||
+    'assignees' in filter ||
+    'tags' in filter
+
+  const shouldRenderThisOutcome =
+    (!specialFilterApplied && parentExpanded) || (specialFilterApplied && match)
   return (
     <>
-      {parentExpanded && match && (
+      {shouldRenderThisOutcome && (
         <div className="outcome-table-row-wrapper">
           {/* ID number metadata */}
           <div
@@ -60,43 +69,44 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
               minWidth: columnWidthPercentages[1],
             }}
           >
-            {/* TODO: make the spacing for nested children right */}
-            {/* the width 2.375rem below should match the chevron width on the left */}
-            <div style={{ marginLeft: `${indentationLevel * 2.25}rem` }} />
-            {outcome.children.length > 0 && (
-              /* expand chevron component */
-              <>
-                <ExpandChevron
-                  expanded={expanded}
-                  onClick={() => {
-                    setExpanded(!expanded)
-                  }}
-                  size={'medium'}
-                />
-              </>
-            )}
+            <div style={{ marginLeft: `${indentationLevel * 2.125}rem` }} />
+            <div className="outcome-table-row-metadata-left-slot">
+              {outcome.children.length > 0 && (
+                /* expand chevron component */
+                <>
+                  <ExpandChevron
+                    expanded={expanded}
+                    onClick={() => {
+                      setExpanded(!expanded)
+                    }}
+                    size={'medium'}
+                  />
+                </>
+              )}
+              {/* Leaf Icon (or not) */}
+              {outcome.children.length === 0 &&
+                outcome.computedScope === ComputedScope.Small && (
+                  <div className="outcome-statement-icon">
+                    <Icon name="leaf.svg" className="not-hoverable" />
+                  </div>
+                )}
+            </div>
 
-            {/* Progress Indicator */}
-            {outcome.computedScope !== ComputedScope.Uncertain && (
-              <ProgressIndicatorCalculated outcome={outcome} />
-            )}
-
-            {/* Uncertain Icon (or not) */}
-            {outcome.computedScope === ComputedScope.Uncertain && (
-              <div className="outcome-statement-icon">
-                <Icon
-                  name="uncertain.svg"
-                  className="not-hoverable uncertain"
-                />
-              </div>
-            )}
-            {/* Leaf Icon (or not) */}
-            {outcome.children.length === 0 &&
-              outcome.computedScope === ComputedScope.Small && (
+            <div className="outcome-table-row-metadata-right-slot">
+              {/* Progress Indicator */}
+              {outcome.computedScope !== ComputedScope.Uncertain && (
+                <ProgressIndicatorCalculated outcome={outcome} />
+              )}
+              {/* Uncertain Icon (or not) */}
+              {outcome.computedScope === ComputedScope.Uncertain && (
                 <div className="outcome-statement-icon">
-                  <Icon name="leaf.svg" className="not-hoverable" />
+                  <Icon
+                    name="uncertain.svg"
+                    className="not-hoverable uncertain"
+                  />
                 </div>
               )}
+            </div>
 
             {/* Outcome statement text */}
             <div

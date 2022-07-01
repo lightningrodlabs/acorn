@@ -10,14 +10,16 @@
   -moz-osx-font-smoothing: grayscale;
 
   .ev-read-only-heading {
-    margin-right: 2rem;
+    font: 1.5rem var(--font-family-primary-bold);
+    line-height: 1.35;
+    letter-spacing: 0.01rem;
+    margin-right: 2.75rem;
     flex: 1;
     height: 100%;
     text-overflow: ellipsis;
     overflow: hidden;
     flex-wrap: nowrap;
-    display: box;
-    display: -webkit-box;
+    display: flex;
     line-clamp: 2;
     -webkit-line-clamp: 2;
     box-orient: vertical;

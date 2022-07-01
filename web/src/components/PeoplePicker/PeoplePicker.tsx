@@ -5,6 +5,7 @@ import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import Avatar from '../Avatar/Avatar'
 import { AgentPubKeyB64, CellIdString, HeaderHashB64 } from '../../types/shared'
 import { Profile } from '../../types'
+import Checkbox from '../Checkbox/Checkbox'
 
 export type PeoplePickerProps = {
   projectId: CellIdString
@@ -55,12 +56,18 @@ const PeoplePicker: React.FC<PeoplePickerProps> = ({
             }}
             className="clear-button"
           >
-            clear
+            <Icon
+              name="x.svg"
+              size="small"
+              className="light-grey not-hoverable"
+              withTooltip
+              tooltipText="Clear"
+            />
           </button>
         )}
       </div>
       <div className="people-picker-spacer" />
-      <ul className="people-picker-people">
+      <ul className="people-picker-list">
         {people
           // filter people out if there's filter text defined, and don't bother case matching
           // also match anywhere in the string, not just the start
@@ -103,25 +110,17 @@ const PeoplePicker: React.FC<PeoplePickerProps> = ({
                   withStatus
                   selfAssignedStatus={person.status}
                 />
-                <div className="person-nameANDhandle">
+                <div className="person-name-handle-wrapper">
                   <span className="person-name">
                     {person.firstName} {person.lastName}
                   </span>
                   <div className="person-handle">{person.handle}</div>
                 </div>
                 {!person.isOutcomeMember && (
-                  <Icon
-                    name="radio-button.svg"
-                    size="small"
-                    className="light-grey radio-button"
-                  />
+                  <Checkbox size={'medium'} />
                 )}
                 {person.isOutcomeMember && (
-                  <Icon
-                    name="radio-button-checked.svg"
-                    size="small"
-                    className="purple radio-button"
-                  />
+                  <Checkbox size={'medium'} isChecked />
                 )}
               </li>
             )

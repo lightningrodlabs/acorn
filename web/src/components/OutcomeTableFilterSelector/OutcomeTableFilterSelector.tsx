@@ -123,9 +123,15 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           placeholderText="Filter by keyword or ID number"
           filterText={filter.keywordOrId}
           setFilterText={(value) => {
-            onApplyOutcomeTableFilter({
-              keywordOrId: value.toLowerCase(),
-            })
+            let newFilter = {
+              ...filter,
+            }
+            if (value.length === 0) {
+              delete newFilter.keywordOrId
+            } else {
+              newFilter.keywordOrId = value.toLowerCase()
+            }
+            onApplyOutcomeTableFilter(newFilter)
           }}
         />
       </div>

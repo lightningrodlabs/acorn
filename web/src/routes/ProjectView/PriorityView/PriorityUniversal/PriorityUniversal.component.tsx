@@ -94,13 +94,13 @@ function UniversalOutcome({
             className="universal-priority-outcome-item-button outcome-item-button-expand"
             onClick={() => openExpandedView(outcome.headerHash)}
           >
-            <Icon name="expand.svg" size="small" className="grey" withTooltip tooltipText='Expand' />
+            <Icon name="expand.svg" size="small" className="light-grey" withTooltip tooltipText='Expand' />
           </div>
           <div
             className="universal-priority-outcome-item-button outcome-item-button-map"
             onClick={() => goToOutcome(outcome.headerHash)}
           >
-            <Icon name="map.svg" size="small" className="grey" withTooltip tooltipText='Find in Map View' />
+            <Icon name="map.svg" size="small" className="light-grey" withTooltip tooltipText='Find in Map View' />
           </div>
         </div>
       </div>

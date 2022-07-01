@@ -2,13 +2,14 @@ import React from 'react'
 import './ProjectModal.scss'
 
 import Button from '../Button/Button'
+import Typography from '../Typography/Typography'
 
 function ProjectModalHeading({ title }) {
-  return <div className='project-modal-heading'>{title}</div>
+  return <div className='project-modal-heading'><Typography style="h3">{title}</Typography></div>
 }
 
 function ProjectModalSubHeading({ title }) {
-  return <div className='project-modal-subheading'><h4>{title}</h4></div>
+  return <div className='project-modal-subheading'><Typography style="subtitle3">{title}</Typography></div>
 }
 
 function ProjectModalContent({ children }) {

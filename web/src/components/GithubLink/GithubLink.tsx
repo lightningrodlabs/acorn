@@ -1,5 +1,6 @@
 import React from 'react'
 import Icon from '../Icon/Icon'
+import OnClickOutside from '../OnClickOutside/OnClickOutside'
 import './GithubLink.scss'
 
 export type GithubLinkProps = {
@@ -21,8 +22,20 @@ const GithubLink: React.FC<GithubLinkProps> = ({
   inputLinkTextInvalid,
   setInputLinkText,
 }) => {
+  // TODO: make this validate that it is
+  // 1. a URL
+  // 2. ends with a set of numeric digits
   const regex = /\d+/g
   const linkNumber = githubLink ? githubLink.match(regex) : null
+  // validate the github link input, if validated then submit
+  const validateAndSubmit = () => {
+    if (inputLinkText.length > 0) {
+      onSubmit()
+      // TODO: change to if length not zero and url not correct
+    } else if (inputLinkText.length == 0) {
+      // TODO: make text red and do not submit
+    }
+  }
 
   return (
     <div className="github-link-wrapper">
@@ -53,26 +66,30 @@ const GithubLink: React.FC<GithubLinkProps> = ({
       )}
       {/* The Github Input */}
       {isEditing && (
-        <input
-          className={inputLinkTextInvalid ? 'invalid' : ''}
-          type="text"
-          placeholder="Add a GitHub Issue or pull request link"
-          value={inputLinkText}
-          onChange={(keyboardEvent) => {
-            setInputLinkText(keyboardEvent.target.value)
-          }}
-          onKeyDown={(keyboardEvent) => {
-            // check if this is Enter button
-            // if enter button, then call onAdd
-            // also validate that there is some text written
-            if (keyboardEvent.key === 'Enter' && inputLinkText.length > 0) {
-              onSubmit()
-            } else if (keyboardEvent.key === 'Escape') {
-              setIsEditing(false)
-              setInputLinkText(githubLink)
-            }
-          }}
-        />
+        <div className='input-with-onlick-outside'>
+          <OnClickOutside onClickOutside={validateAndSubmit}>
+            <input
+              className={inputLinkTextInvalid ? 'invalid' : ''}
+              type="text"
+              placeholder="Add a GitHub Issue or pull request link"
+              value={inputLinkText}
+              onChange={(keyboardEvent) => {
+                setInputLinkText(keyboardEvent.target.value)
+              }}
+              onKeyDown={(keyboardEvent) => {
+                // check if this is Enter button
+                // if enter button, then call onAdd
+                // also validate that there is some text written
+                if (keyboardEvent.key === 'Enter') {
+                  validateAndSubmit()
+                } else if (keyboardEvent.key === 'Escape') {
+                  setIsEditing(false)
+                  setInputLinkText(githubLink)
+                }
+              }}
+            />
+          </OnClickOutside>
+        </div>
       )}
     </div>
   )

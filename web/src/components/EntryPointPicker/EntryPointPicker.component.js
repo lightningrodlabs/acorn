@@ -101,7 +101,14 @@ export default function EntryPointPicker({ entryPoints, isOpen, onClose, activeE
                 setFilterText('')
               }}
               className='clear-button'>
-              clear
+              {/* @ts-ignore */}
+              <Icon
+                name="x.svg"
+                size="small"
+                className="light-grey not-hoverable"
+                withTooltip
+                tooltipText="Clear"
+              />
             </button>
           )}
         </div>

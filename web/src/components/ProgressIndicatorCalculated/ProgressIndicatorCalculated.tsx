@@ -9,7 +9,7 @@ import './ProgressIndicatorCalculated.scss'
 
 export type ProgressIndicatorCalculatedProps = {
   outcome: ComputedOutcome
-  size: 'small' | 'medium'
+  size?: 'small' | 'medium'
 }
 
 const ProgressIndicatorCalculated: React.FC<ProgressIndicatorCalculatedProps> = ({

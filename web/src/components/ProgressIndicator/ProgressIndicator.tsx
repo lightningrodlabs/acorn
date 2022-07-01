@@ -6,7 +6,7 @@ import ProgressRing from './ProgressRing'
 
 export type ProgressIndicatorProps = {
   progress: number // between 0 and 100 inclusive
-  size: 'small' | 'medium'
+  size?: 'small' | 'medium'
 }
 
 const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({

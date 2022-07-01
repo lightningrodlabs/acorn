@@ -23,10 +23,19 @@
       border-radius: 0.5rem;
       width: fit-content;
       cursor: pointer;
-      transition: 0.2s opacity ease;
+      transition: 0.2s ease;
+
+      .icon .inner-icon {
+        transition: 0.2s ease;
+      }
 
       &:hover {
-        opacity: 0.8;
+        color: var(--text-color-secondary);
+        background-color: var(--bg-color-canvas);
+
+        .icon .inner-icon {
+          background-color: var(--text-color-secondary);
+        }
       }
 
       &.active {

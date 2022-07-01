@@ -106,6 +106,7 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
               indentationLevel={0}
               openExpandedView={openExpandedView}
               goToOutcome={navAndGoToOutcome}
+              expandByDefault={outcomeTrees.length <= 10}
             />
           ))}
         </div>

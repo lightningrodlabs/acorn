@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useLocation, NavLink } from 'react-router-dom'
-import {
-  ComputedOutcome,
-  ComputedScope,
-  Tag,
-} from '../../types'
+import { ComputedOutcome, ComputedScope, Tag } from '../../types'
 
 import Icon from '../Icon/Icon'
 import { PriorityModeOptions } from '../../constants'
@@ -57,57 +53,55 @@ function NestedTreeOutcome({
     <div className="indented-view-outcome">
       {match && (
         <div className="indented-view-outcome-item">
-          
-          {/* Expand Chevron */}
-          {outcome.children.length > 0 && (
-            <ExpandChevron
-              size='small'
-              expanded={expanded}
-              onClick={() => {
-                setExpanded(!expanded)
-              }} />
-          )}
-          {/* <div className="indented-view-outcome-item-arrow">
-            {outcome.children.length > 0 && (
-              <Icon
-                name={expanded ? 'chevron-down.svg' : 'chevron-right.svg'}
-                size="small"
-                className="grey"
-                onClick={() => setExpanded(!expanded)}
-              />
-            )}
-            {outcome.children.length == 0 && <div></div>}
-          </div> */}
-
           <NavLink
             to={`${location.pathname}?contextOutcome=${outcome.headerHash}`}
             className="indented-view-outcome-content"
             isActive={(match) => match && isUsingOutcomeAsContext}
           >
-
-            {/* Progress Indicator */}
-            {outcome.computedScope !== ComputedScope.Uncertain && (
-              <ProgressIndicatorCalculated outcome={outcome} size="small" />
-            )}
-
-            {/* Uncertain Icon (or not) */}
-            {outcome.computedScope === ComputedScope.Uncertain && (
-              <div className="outcome-statement-icon">
-                <Icon
-                  name="uncertain.svg"
-                  className="not-hoverable uncertain"
-                  size="very-small"
+            {/* This div adds the indentation */}
+            {/* to the "IndentedTreeView" */}
+            <div style={{ marginLeft: `${(level - 1) * 1.25}rem` }} />
+            <div className="indented-view-outcome-metadata-left-slot">
+              {/* Expand Chevron */}
+              {outcome.children.length > 0 && (
+                <ExpandChevron
+                  size="small"
+                  expanded={expanded}
+                  onClick={() => {
+                    setExpanded(!expanded)
+                  }}
                 />
-              </div>
-            )}
+              )}
+              {/* Leaf Icon (or not) */}
+              {outcome.children.length === 0 &&
+                outcome.computedScope === ComputedScope.Small && (
+                  <div className="outcome-statement-icon">
+                    <Icon
+                      name="leaf.svg"
+                      className="not-hoverable"
+                      size="very-small"
+                    />
+                  </div>
+                )}
+            </div>
 
-            {/* Leaf Icon (or not) */}
-            {outcome.children.length === 0 &&
-              outcome.computedScope === ComputedScope.Small && (
+            <div className="indented-view-outcome-metadata-right-slot">
+              {/* Progress Indicator */}
+              {outcome.computedScope !== ComputedScope.Uncertain && (
+                <ProgressIndicatorCalculated outcome={outcome} size="small" />
+              )}
+
+              {/* Uncertain Icon (or not) */}
+              {outcome.computedScope === ComputedScope.Uncertain && (
                 <div className="outcome-statement-icon">
-                  <Icon name="leaf.svg" className="not-hoverable" size="very-small" />
+                  <Icon
+                    name="uncertain.svg"
+                    className="not-hoverable uncertain"
+                    size="very-small"
+                  />
                 </div>
               )}
+            </div>
 
             {/* Outcome statement text */}
             <div className="indented-view-outcome-text" title={outcome.content}>
@@ -128,16 +122,15 @@ function NestedTreeOutcome({
       {/* since only what matches the filter will show anyways */}
       {(filterText.length || expanded) && outcome.children
         ? outcome.children.map((childOutcome, index) => (
-          <div className="indented-view-nested-outcome" key={index}>
             <NestedTreeOutcome
+              key={childOutcome.headerHash}
               filterText={filterText}
               outcome={childOutcome}
               level={level + 1}
               projectMeta={projectMeta}
               updateProjectMeta={updateProjectMeta}
             />
-          </div>
-        ))
+          ))
         : null}
     </div>
   )
@@ -166,7 +159,7 @@ const DEFAULT_WIDTH = 300
 const MIN_WIDTH = 230
 const MAX_WIDTH = 600
 // associated with .indented-view-outcomes class
-const INDENTED_VIEW_OUTCOMES_MARGIN = 15
+const INDENTED_VIEW_OUTCOMES_MARGIN = 0
 
 export default function IndentedTreeView({
   outcomeTrees,
@@ -235,7 +228,14 @@ export default function IndentedTreeView({
             }}
             className="clear-button"
           >
-            clear
+            {/* @ts-ignore */}
+            <Icon
+              name="x.svg"
+              size="small"
+              className="light-grey not-hoverable"
+              withTooltip
+              tooltipText="Clear"
+            />
           </button>
         )}
       </div>

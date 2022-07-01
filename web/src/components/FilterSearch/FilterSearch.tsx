@@ -29,18 +29,17 @@ const FilterSearch: React.FC<FilterSearchProps> = ({
       <input
         type="text"
         onChange={(e) => setFilterText(e.target.value.toLowerCase())}
-        value={filterText}
+        value={filterText || ''}
         placeholder={placeholderText}
         autoFocus={autoFocus}
       />
-      {filterText !== '' && (
+      {filterText && filterText !== '' && (
         <div
           onClick={() => {
             setFilterText('')
           }}
           className="clear-button"
         >
-          {/* @ts-ignore */}
           <Icon
             name="x.svg"
             size="small"

@@ -10,6 +10,7 @@ import './ExpandedViewMode.scss'
 import ButtonClose from '../ButtonClose/ButtonClose'
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs'
 import hashCodeId from '../../api/clientSideIdHash'
+import OnClickOutside from '../OnClickOutside/OnClickOutside'
 
 // props passed to the component by the parent
 export type ExpandedViewModeOwnProps = {
@@ -134,6 +135,7 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
             {activeTab === ExpandedViewTab.Details && rightColumn}
           </div>
         </div>
+
       </CSSTransition>
     </>
   )
