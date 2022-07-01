@@ -18,8 +18,30 @@ import PendingProjects from '../../components/PendingProjects/PendingProjects'
 
 import './Dashboard.scss'
 import Typography from '../../components/Typography/Typography'
+import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 
-export default function Dashboard({
+export type DashboardStateProps = {
+  existingAgents
+  agentAddress: AgentPubKeyB64
+  profilesCellIdString: CellIdString
+  cells: CellIdString[]
+  projects
+}
+
+export type DashboardDispatchProps = {
+  createProject: (agentAddress: AgentPubKeyB64, project: { name: string, image: string }, passphrase: string) => Promise<void>
+  deactivateApp
+  fetchMembers: (cellIdString: CellIdString) => Promise<void>
+  fetchProjectMeta: (cellIdString: CellIdString) => Promise<void>
+  fetchEntryPointDetails: (cellIdString: CellIdString) => Promise<void>
+  joinProject: (passphrase: string) => Promise<boolean>
+  importProject
+  setShowInviteMembersModal: (passphrase: string) => void
+}
+
+export type DashboardProps = DashboardStateProps & DashboardDispatchProps
+
+const Dashboard: React.FC<DashboardProps> = ({
   existingAgents,
   deactivateApp,
   agentAddress,
@@ -32,11 +54,8 @@ export default function Dashboard({
   createProject,
   joinProject,
   importProject,
-  updateIsAvailable,
-  setShowUpdatePromptModal,
   setShowInviteMembersModal,
-  hideInviteMembersModal,
-}) {
+}) => {
   // createdAt, name
   const [pendingProjects, setPendingProjects] = useState([])
   const [selectedSort, setSelectedSort] = useState('createdAt')
@@ -68,10 +87,10 @@ export default function Dashboard({
     })
   }, [JSON.stringify(cells)])
 
-  const onCreateProject = (project, passphrase) =>
+  const onCreateProject = (project: { name: string, image: string }, passphrase: string) =>
     createProject(agentAddress, project, passphrase)
 
-  const onJoinProject = (passphrase) => joinProject(passphrase)
+  const onJoinProject = (passphrase: string) => joinProject(passphrase)
 
   const onImportProject = (projectData, passphrase) =>
     importProject(
@@ -122,7 +141,9 @@ export default function Dashboard({
           </NavLink>
         </div>
         <div className="dashboard-my-projects">
-          <div className="my-projects-heading"><Typography style="h1">My Projects</Typography> </div>
+          <div className="my-projects-heading">
+            <Typography style="h1">My Projects</Typography>{' '}
+          </div>
           {/* dashboard header */}
           <div className="my-projects-header">
             <div className="my-projects-header-buttons">
@@ -189,12 +210,9 @@ export default function Dashboard({
               sortedProjects.map((project) => {
                 return (
                   <DashboardListProject
-                    updateIsAvailable={updateIsAvailable}
-                    setShowUpdatePromptModal={setShowUpdatePromptModal}
                     key={'dlp-key' + project.cellId}
                     project={project}
                     setShowInviteMembersModal={setShowInviteMembersModal}
-                    hideInviteMembersModal={hideInviteMembersModal}
                   />
                 )
               })}
@@ -226,3 +244,5 @@ export default function Dashboard({
     </>
   )
 }
+
+export default Dashboard

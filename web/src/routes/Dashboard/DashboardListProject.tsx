@@ -39,14 +39,17 @@ function DashboardListProjectLoading() {
   )
 }
 
-function DashboardListProject({
+export type DashboardListProjectProps = {
+  project
+  setShowInviteMembersModal: (passphrase: string) => void
+}
+
+const DashboardListProject: React.FC<DashboardListProjectProps> = ({
   project,
   setShowInviteMembersModal,
-  hideInviteMembersModal,
-  updateIsAvailable,
-  setShowUpdatePromptModal,
-  goToOutcome
-}) {
+}) => {
+  // TODO: this is placeholder for implementing this
+  const updateIsAvailable = false
   const [showEntryPoints, setShowEntryPoints] = useState(false)
 
   const imageStyles = project.image
@@ -62,13 +65,17 @@ function DashboardListProject({
     false
   )
 
+  const openInviteMembersModal = () => {
+    setShowInviteMembersModal(project.passphrase)
+  }
+
   return (
     <div className="dashboard-list-project-wrapper">
       {updateIsAvailable && (
         <>
           <div
             className="update-required-button"
-            onClick={() => setShowUpdatePromptModal(true)}
+            onClick={() => {}}
           >
             Update required to access
           </div>
@@ -103,7 +110,7 @@ function DashboardListProject({
               size="small-medium"
               profiles={project.members}
               showInviteButton
-              onClickButton={() => setShowInviteMembersModal(project.passphrase)}
+              onClickButton={openInviteMembersModal}
             />
           </div>
 
@@ -112,9 +119,12 @@ function DashboardListProject({
             className="dashboard-list-project-settings-button"
             onClick={() => setShowProjectSettingsModal(true)}
           >
-            <Icon name="dots-horizontal.svg" size="medium" className="light-grey" />
+            <Icon
+              name="dots-horizontal.svg"
+              size="medium"
+              className="light-grey"
+            />
           </div>
-
         </div>
       </div>
 
@@ -129,10 +139,9 @@ function DashboardListProject({
               onClick={() => setShowEntryPoints(!showEntryPoints)}
             >
               <Icon
-                name='door-open.svg'
-                size='small'
-                className='grey not-clickable'
-
+                name="door-open.svg"
+                size="small"
+                className="grey not-clickable"
               />
               <div className="dashboard-list-project-entry-point-button-text">
                 {project.entryPoints.length} entry point
@@ -144,7 +153,8 @@ function DashboardListProject({
                 className={`grey ${showEntryPoints ? 'active' : ''}`}
               />
             </div>
-          </>)}
+          </>
+        )}
         {showEntryPoints && (
           <div className="dashboard-list-project-entry-point-expanded">
             {project.entryPoints.map((entryPoint) => {
@@ -170,6 +180,7 @@ function DashboardListProject({
         onClose={() => setShowProjectSettingsModal(false)}
         project={project}
         cellIdString={project.cellId}
+        openInviteMembersModal={openInviteMembersModal}
       />
     </div>
   )

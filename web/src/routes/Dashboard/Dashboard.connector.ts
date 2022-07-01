@@ -21,18 +21,18 @@ import {
 } from '../../redux/persistent/cells/actions'
 import importAllProjectData from '../../import'
 import {
-  closeInviteMembersModal,
   openInviteMembersModal,
 } from '../../redux/ephemeral/invite-members-modal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString, cellIdToString } from '../../utils'
-import { CellIdString } from '../../types/shared'
+import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { CellId } from '@holochain/client'
 import { RootState } from '../../redux/reducer'
-import Dashboard from './Dashboard.component'
+import Dashboard, { DashboardDispatchProps, DashboardStateProps } from './Dashboard.component'
+import { ProjectMeta, PriorityMode } from '../../types'
 
 async function installProjectApp(
-  passphrase
+  passphrase: string
 ): Promise<[CellIdString, CellId, string]> {
   const uid = passphraseToUid(passphrase)
   // add a bit of randomness so that
@@ -80,7 +80,7 @@ async function installProjectApp(
   return [cellIdString, cellId, installed_app_id]
 }
 
-async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
+async function createProject(passphrase: string, projectMeta: ProjectMeta, agentAddress: AgentPubKeyB64, dispatch) {
   const [cellIdString] = await installProjectApp(passphrase)
   const cellId = cellIdFromString(cellIdString)
   // because we are acting optimistically,
@@ -101,7 +101,7 @@ async function createProject(passphrase, projectMeta, agentAddress, dispatch) {
   return cellIdString
 }
 
-async function joinProject(passphrase, dispatch): Promise<boolean> {
+async function joinProject(passphrase: string, dispatch): Promise<boolean> {
   // joinProject
   // join a DNA
   // then try to find a peer
@@ -208,7 +208,7 @@ async function deactivateApp(appId, cellId, dispatch) {
 
 // ACTUAL REDUX FUNCTIONS
 
-function mapStateToProps(state: RootState) {
+function mapStateToProps(state: RootState): DashboardStateProps {
   return {
     existingAgents: state.agents,
     agentAddress: state.agentAddress,
@@ -231,18 +231,15 @@ function mapStateToProps(state: RootState) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch): DashboardDispatchProps {
   return {
-    setShowInviteMembersModal: (projectId) => {
-      return dispatch(openInviteMembersModal(projectId))
-    },
-    hideInviteMembersModal: () => {
-      return dispatch(closeInviteMembersModal())
+    setShowInviteMembersModal: (passphrase: string) => {
+      return dispatch(openInviteMembersModal(passphrase))
     },
     deactivateApp: (appId, cellId) => {
       return deactivateApp(appId, cellId, dispatch)
     },
-    fetchEntryPointDetails: async (cellIdString) => {
+    fetchEntryPointDetails: async (cellIdString: CellIdString) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
@@ -251,14 +248,14 @@ function mapDispatchToProps(dispatch) {
       )
       return dispatch(fetchEntryPointDetails(cellIdString, entryPointDetails))
     },
-    fetchMembers: async (cellIdString) => {
+    fetchMembers: async (cellIdString: CellIdString) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
       const members = await projectsZomeApi.member.fetch(cellId)
       return dispatch(fetchMembers(cellIdString, members))
     },
-    fetchProjectMeta: async (cellIdString) => {
+    fetchProjectMeta: async (cellIdString: CellIdString) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
@@ -267,7 +264,7 @@ function mapDispatchToProps(dispatch) {
       )
       return dispatch(fetchProjectMeta(cellIdString, projectMeta))
     },
-    createProject: async (agentAddress, project, passphrase) => {
+    createProject: async (agentAddress: AgentPubKeyB64, project: { name: string, image: string }, passphrase: string) => {
       // matches the createProjectMeta fn and type signature
       const projectMeta = {
         ...project, // name and image
@@ -275,12 +272,12 @@ function mapDispatchToProps(dispatch) {
         creatorAgentPubKey: agentAddress,
         createdAt: Date.now(),
         isImported: false,
-        priorityMode: 'Universal', // default
+        priorityMode: PriorityMode.Universal, // default
         topPriorityOutcomes: [],
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },
-    joinProject: (passphrase) => joinProject(passphrase, dispatch),
+    joinProject: (passphrase: string) => joinProject(passphrase, dispatch),
     importProject: (
       existingAgents,
       agentAddress,

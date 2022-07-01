@@ -19,7 +19,6 @@ function ValidatingFormInput({
   errorText,
   invalidInput,
   validInput,
-  defaultInput
 }) {
   const innerOnChange = e => {
     e.preventDefault()
@@ -32,9 +31,6 @@ function ValidatingFormInput({
   }
   if (validInput) {
     inputClassName += ' valid-input'
-  }
-  if (defaultInput) {
-    inputClassName += ''
   }
 
   return (

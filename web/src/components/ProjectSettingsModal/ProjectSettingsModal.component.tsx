@@ -8,16 +8,9 @@ import {
   ProjectModalHeading,
   ProjectModalSubHeading,
 } from '../ProjectModal/ProjectModal'
-import PreferenceSelect, { PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
+import { PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
 import Icon from '../Icon/Icon'
 import './ProjectSettingsModal.scss'
-
-// since this is a big wordset, dynamically import it
-// instead of including in the main bundle
-async function generatePassphrase() {
-  const { default: randomWord } = await import('diceware-word')
-  return `${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()}`
-}
 
 function EditProjectForm({
   updatingProject,
