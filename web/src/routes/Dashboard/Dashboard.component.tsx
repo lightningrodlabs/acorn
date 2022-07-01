@@ -18,23 +18,42 @@ import PendingProjects from '../../components/PendingProjects/PendingProjects'
 
 import './Dashboard.scss'
 import Typography from '../../components/Typography/Typography'
-import { AgentPubKeyB64, CellIdString } from '../../types/shared'
+import {
+  AgentPubKeyB64,
+  CellIdString,
+  WithHeaderHash,
+} from '../../types/shared'
+import { EntryPoint, Outcome, Profile, ProjectMeta } from '../../types'
+import { AgentsState } from '../../redux/persistent/profiles/agents/reducer'
 
 export type DashboardStateProps = {
-  existingAgents
+  existingAgents: AgentsState
   agentAddress: AgentPubKeyB64
   profilesCellIdString: CellIdString
   cells: CellIdString[]
-  projects
+  projects: Array<
+    WithHeaderHash<ProjectMeta> & {
+      cellId: CellIdString
+      members: Profile[]
+      entryPoints: {
+        entryPoint: WithHeaderHash<EntryPoint>
+        outcome: WithHeaderHash<Outcome>
+      }[]
+    }
+  >
 }
 
 export type DashboardDispatchProps = {
-  createProject: (agentAddress: AgentPubKeyB64, project: { name: string, image: string }, passphrase: string) => Promise<void>
-  deactivateApp
+  createProject: (
+    agentAddress: AgentPubKeyB64,
+    project: { name: string; image: string },
+    passphrase: string
+  ) => Promise<void>
   fetchMembers: (cellIdString: CellIdString) => Promise<void>
   fetchProjectMeta: (cellIdString: CellIdString) => Promise<void>
   fetchEntryPointDetails: (cellIdString: CellIdString) => Promise<void>
   joinProject: (passphrase: string) => Promise<boolean>
+  deactivateApp
   importProject
   setShowInviteMembersModal: (passphrase: string) => void
 }
@@ -87,8 +106,10 @@ const Dashboard: React.FC<DashboardProps> = ({
     })
   }, [JSON.stringify(cells)])
 
-  const onCreateProject = (project: { name: string, image: string }, passphrase: string) =>
-    createProject(agentAddress, project, passphrase)
+  const onCreateProject = (
+    project: { name: string; image: string },
+    passphrase: string
+  ) => createProject(agentAddress, project, passphrase)
 
   const onJoinProject = (passphrase: string) => joinProject(passphrase)
 

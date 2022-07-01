@@ -20,15 +20,16 @@ import {
   removeProjectCellId,
 } from '../../redux/persistent/cells/actions'
 import importAllProjectData from '../../import'
-import {
-  openInviteMembersModal,
-} from '../../redux/ephemeral/invite-members-modal/actions'
+import { openInviteMembersModal } from '../../redux/ephemeral/invite-members-modal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString, cellIdToString } from '../../utils'
 import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { CellId } from '@holochain/client'
 import { RootState } from '../../redux/reducer'
-import Dashboard, { DashboardDispatchProps, DashboardStateProps } from './Dashboard.component'
+import Dashboard, {
+  DashboardDispatchProps,
+  DashboardStateProps,
+} from './Dashboard.component'
 import { ProjectMeta, PriorityMode } from '../../types'
 
 async function installProjectApp(
@@ -80,7 +81,12 @@ async function installProjectApp(
   return [cellIdString, cellId, installed_app_id]
 }
 
-async function createProject(passphrase: string, projectMeta: ProjectMeta, agentAddress: AgentPubKeyB64, dispatch) {
+async function createProject(
+  passphrase: string,
+  projectMeta: ProjectMeta,
+  agentAddress: AgentPubKeyB64,
+  dispatch
+) {
   const [cellIdString] = await installProjectApp(passphrase)
   const cellId = cellIdFromString(cellIdString)
   // because we are acting optimistically,
@@ -209,25 +215,26 @@ async function deactivateApp(appId, cellId, dispatch) {
 // ACTUAL REDUX FUNCTIONS
 
 function mapStateToProps(state: RootState): DashboardStateProps {
+  const projects = Object.keys(state.projects.projectMeta).map((cellId) => {
+    const project = state.projects.projectMeta[cellId]
+    const members = state.projects.members[cellId] || {}
+    const memberProfiles = Object.keys(members).map(
+      (agentAddress) => state.agents[agentAddress]
+    )
+    const entryPoints = selectEntryPoints(state, cellId)
+    return {
+      ...project,
+      cellId,
+      members: memberProfiles,
+      entryPoints,
+    }
+  })
   return {
     existingAgents: state.agents,
     agentAddress: state.agentAddress,
     profilesCellIdString: state.cells.profiles,
     cells: state.cells.projects,
-    projects: Object.keys(state.projects.projectMeta).map((cellId) => {
-      const project = state.projects.projectMeta[cellId]
-      const members = state.projects.members[cellId] || {}
-      const memberProfiles = Object.keys(members).map(
-        (agentAddress) => state.agents[agentAddress]
-      )
-      const entryPoints = selectEntryPoints(state, cellId)
-      return {
-        ...project,
-        cellId,
-        members: memberProfiles,
-        entryPoints,
-      }
-    }),
+    projects,
   }
 }
 
@@ -264,7 +271,11 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
       )
       return dispatch(fetchProjectMeta(cellIdString, projectMeta))
     },
-    createProject: async (agentAddress: AgentPubKeyB64, project: { name: string, image: string }, passphrase: string) => {
+    createProject: async (
+      agentAddress: AgentPubKeyB64,
+      project: { name: string; image: string },
+      passphrase: string
+    ) => {
       // matches the createProjectMeta fn and type signature
       const projectMeta = {
         ...project, // name and image
