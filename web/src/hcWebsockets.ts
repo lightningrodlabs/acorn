@@ -1,4 +1,4 @@
-import { AppWebsocket, AdminWebsocket  } from '@holochain/client'
+import { AppWebsocket, AdminWebsocket } from '@holochain/client'
 
 // export for use by holochainMiddleware (redux)
 // @ts-ignore
@@ -7,6 +7,7 @@ export const APP_WS_URL = `ws://localhost:${__APP_PORT__}`
 const ADMIN_WS_URL = `ws://localhost:${__ADMIN_PORT__}`
 
 let appWs: AppWebsocket
+let appWsPromise: Promise<AppWebsocket>
 let adminWs: AdminWebsocket
 let agentPubKey
 
@@ -28,21 +29,43 @@ export async function getAdminWs(): Promise<AdminWebsocket> {
 }
 
 export async function getAppWs(signalsHandler?: any): Promise<AppWebsocket> {
-  if (appWs) {
-    return appWs
-  } else {
+  async function connect() {
     // undefined is for default request timeout
-    appWs = await AppWebsocket.connect(APP_WS_URL, undefined, signalsHandler)
-    setInterval(() => {
+    appWsPromise = AppWebsocket.connect(APP_WS_URL, undefined, signalsHandler)
+    appWs = await appWsPromise
+    appWsPromise = null
+    appWs.client.socket.addEventListener('close', async () => {
+      console.log('app websocket closed, trying to re-open')
+      await connect()
+      console.log('app websocket reconnected')
+    })
+  }
+
+  if (appWs && appWs.client.socket.readyState === appWs.client.socket.OPEN) {
+    return appWs
+  } else if (appWsPromise) {
+    // connection must have been lost
+    // wait for it to re-open
+    return await appWsPromise
+  } else if (!appWs) {
+    // this branch should only be called ONCE
+    // on the very first call to this function
+    await connect()
+    // set up logic for auto-reconnection
+    setInterval(async () => {
       if (appWs.client.socket.readyState === appWs.client.socket.OPEN) {
+        // random call just to keep the connection open
         appWs.appInfo({
-          installed_app_id: 'test'
+          installed_app_id: 'test',
         })
+      } else if (
+        appWs.client.socket.readyState === appWs.client.socket.CLOSED
+      ) {
+        // try to reconnect
+        await connect()
+        console.log('app websocket reconnected')
       }
     }, 60000)
-    appWs.client.socket.addEventListener('close', () => {
-      console.log('app websocket closed')
-    })
     return appWs
   }
 }

@@ -43,10 +43,12 @@ const realtimeInfoWatcher = (store) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       let result = next(action)
-      let state: RootState = store.getState()
-      const { cellIdString, payload } = getRealtimeInfo(state)
-      const cellId = cellIdFromString(cellIdString)
-      await projectsZomeApi.realtimeInfoSignal.send(cellId, payload)
+      if (appWebsocket.client.socket.readyState === appWebsocket.client.socket.OPEN) {
+        let state: RootState = store.getState()
+        const { cellIdString, payload } = getRealtimeInfo(state)
+        const cellId = cellIdFromString(cellIdString)
+        await projectsZomeApi.realtimeInfoSignal.send(cellId, payload)
+      }
       return result
     } else if (isProjectExitAction(action)) {
       const appWebsocket = await getAppWs()
