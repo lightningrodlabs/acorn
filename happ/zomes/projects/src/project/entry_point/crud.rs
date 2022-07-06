@@ -71,7 +71,7 @@ pub fn fetch_entry_point_details(_: ()) -> ExternResult<EntryPointDetails> {
                 Some(element) => match element.header().entry_hash() {
                     Some(entry_hash) => Ok(EntryHashB64::new(entry_hash.clone())),
                     None => Err(WasmError::Guest(
-                        "there was no entry_hash on a header for an Outcome specified as an entry_point"
+                        "there was no entry_hash on a header for a Outcome specified as an entry_point"
                             .to_string(),
                     )),
                 },
