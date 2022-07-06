@@ -16,32 +16,32 @@ jobs:
           # (required)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
-  build-happ:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      # install hc tool
-      - name: Install hc tool and wasm target
-        shell: bash # important because this runs shell scripts
-        run: |
-          npm run happ-install
-      # build hApp
-      - name: Build hApp
-        run: |
-          npm run happ-pack
-      # "upload" dna as build artifact
-      - uses: actions/upload-artifact@master
-        with:
-          name: profiles-artifact
-          path: happ/workdir/profiles.happ
-      - uses: actions/upload-artifact@master
-        with:
-          name: projects-artifact
-          path: happ/workdir/projects.dna
+  # build-happ:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     # install hc tool
+  #     - name: Install hc tool and wasm target
+  #       shell: bash # important because this runs shell scripts
+  #       run: |
+  #         npm run happ-install
+  #     # build hApp
+  #     - name: Build hApp
+  #       run: |
+  #         npm run happ-pack
+  #     # "upload" dna as build artifact
+  #     - uses: actions/upload-artifact@master
+  #       with:
+  #         name: profiles-artifact
+  #         path: happ/workdir/profiles.happ
+  #     - uses: actions/upload-artifact@master
+  #       with:
+  #         name: projects-artifact
+  #         path: happ/workdir/projects.dna
 
   # upload the app package for each target os
   upload-assets:
-    needs: build-happ
+    # needs: build-happ
     strategy:
       matrix:
         os:
@@ -52,21 +52,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       # rm the dna files from repository
-      - name: clearing precompiled files
-        run: |
-          rm happ/workdir/*.dna
-          rm happ/workdir/*.happ
-      - uses: actions/download-artifact@master
-        with:
-          name: profiles-artifact
-          path: happ/workdir
-      - uses: actions/download-artifact@master
-        with:
-          name: projects-artifact
-          path: happ/workdir
-      - name: list downloads
-        run: ls -R
-        working-directory: happ/workdir
+      # - name: clearing precompiled files
+      #   run: |
+      #     rm happ/workdir/*.dna
+      #     rm happ/workdir/*.happ
+      # - uses: actions/download-artifact@master
+      #   with:
+      #     name: profiles-artifact
+      #     path: happ/workdir
+      # - uses: actions/download-artifact@master
+      #   with:
+      #     name: projects-artifact
+      #     path: happ/workdir
+      # - name: list downloads
+      #   run: ls -R
+      #   working-directory: happ/workdir
       # depending on the windows command (when we are ready to build for it), may have to check which os currently on
       - name: Install nodejs dependencies
         run: |
