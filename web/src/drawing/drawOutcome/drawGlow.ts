@@ -30,6 +30,7 @@ const drawGlow = ({
         height,
         radius: cornerRadius,
         color: '#FFFFFF',
+        useDashedStroke: false,
         useStroke: false,
         useBoxShadow: true,
         useGlow,

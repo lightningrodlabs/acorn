@@ -32,6 +32,7 @@ const drawSelectedBorder = ({
         height,
         radius: cornerRadius,
         color: strokeColor,
+        useDashedStroke: false,
         useStroke: true,
         strokeWidth: strokeWidth,
         useBoxShadow: false,

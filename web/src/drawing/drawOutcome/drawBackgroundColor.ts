@@ -37,6 +37,7 @@ const drawBackgroundColor = ({
       radius: cornerRadius,
       color: backgroundColor,
       useBoxShadow: true,
+      useDashedStroke: false,
       useStroke: false,
       useGlow: false,
     })

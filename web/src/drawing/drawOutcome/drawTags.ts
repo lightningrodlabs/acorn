@@ -89,6 +89,7 @@ const drawTags = ({
           height,
           radius: cornerRadius,
           color: tag.backgroundColor,
+          useDashedStroke: false,
           useStroke: false,
           useBoxShadow: false,
           useGlow: false,

@@ -11,6 +11,8 @@ import {
 import { PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
 import Icon from '../Icon/Icon'
 import './ProjectSettingsModal.scss'
+import { ProjectMeta } from '../../types'
+import { WithHeaderHash } from '../../types/shared'
 
 function EditProjectForm({
   updatingProject,
@@ -147,7 +149,7 @@ export default function ProjectSettingsModal({
   onClose,
   updateProjectMeta,
   openInviteMembersModal,
-  project = {},
+  project = {} as WithHeaderHash<ProjectMeta>,
   cellIdString,
 }) {
   const [updatingProject, setUpdatingProject] = useState(false)
