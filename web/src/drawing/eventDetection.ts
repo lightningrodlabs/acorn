@@ -68,10 +68,12 @@ export function checkForConnectionAtCoordinates(
       // if mouse intersects with the bezier curve
       const canvas = document.createElement('canvas')
       const newCtx = canvas.getContext('2d')
-      // use the built-in `isPointInPath` function
-      // very useful
+      // use the built-in `isPointInStroke` function
+      // very useful. Be 'forgiving'
+      // and allow buffer on both sides
+      newCtx.lineWidth = 30
       if (
-        newCtx.isPointInPath(connectionPath, convertedMouse.x, convertedMouse.y)
+        newCtx.isPointInStroke(connectionPath, convertedMouse.x, convertedMouse.y)
       ) {
         // set the overConnectionAddress to this connection headerHash
         overConnectionAddress = connection.headerHash
