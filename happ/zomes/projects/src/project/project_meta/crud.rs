@@ -1,84 +1,25 @@
-use crate::{get_peers_content, project::error::Error, ui_enum::UIEnum, SignalType};
+use crate::{get_peers_content, project::error::Error, SignalType};
 use hdk::prelude::*;
 use hdk_crud::{
-    chain_actions::fetch_action::FetchAction,
     crud,
+    modify_chain::do_fetch::DoFetch,
     retrieval::{
         fetch_entries::FetchEntries, fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry,
         inputs::FetchOptions,
     },
-    wire_element::WireElement,
+    wire_record::WireRecord,
 };
-use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
+use holo_hash::{ActionHashB64, AgentPubKeyB64, EntryHashB64};
 use std::*;
 
-#[hdk_entry(id = "project_meta")]
-#[serde(rename_all = "camelCase")]
-#[derive(Clone, PartialEq)]
-pub struct ProjectMeta {
-    pub creator_agent_pub_key: AgentPubKeyB64,
-    pub created_at: f64,
-    pub name: String,
-    pub image: Option<String>,
-    pub passphrase: String,
-    pub is_imported: bool,
-    pub priority_mode: PriorityMode,
-    pub top_priority_outcomes: Vec<HeaderHashB64>,
-}
-
-impl ProjectMeta {
-    pub fn new(
-        creator_agent_pub_key: AgentPubKeyB64,
-        created_at: f64,
-        name: String,
-        image: Option<String>,
-        passphrase: String,
-        is_imported: bool,
-        priority_mode: PriorityMode,
-        top_priority_outcomes: Vec<HeaderHashB64>,
-    ) -> Self {
-        Self {
-            creator_agent_pub_key,
-            created_at,
-            name,
-            image,
-            passphrase,
-            is_imported,
-            priority_mode,
-            top_priority_outcomes,
-        }
-    }
-}
-
-#[derive(Serialize, Deserialize, Debug, SerializedBytes, Clone, PartialEq)]
-#[serde(from = "UIEnum")]
-#[serde(into = "UIEnum")]
-pub enum PriorityMode {
-    Universal,
-    Vote,
-}
-impl From<UIEnum> for PriorityMode {
-    fn from(ui_enum: UIEnum) -> Self {
-        match ui_enum.0.as_str() {
-            "Universal" => Self::Universal,
-            "Vote" => Self::Vote,
-            _ => Self::Vote,
-        }
-    }
-}
-impl From<PriorityMode> for UIEnum {
-    fn from(priority_mode: PriorityMode) -> Self {
-        Self(priority_mode.to_string())
-    }
-}
-impl fmt::Display for PriorityMode {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self)
-    }
-}
+use projects_integrity::{project::project_meta::entry::ProjectMeta, EntryTypes, LinkTypes};
 
 crud!(
     ProjectMeta,
+    EntryTypes,
+    EntryTypes::ProjectMeta,
+    LinkTypes,
+    LinkTypes::All,
     project_meta,
     "project_meta",
     get_peers_content,
@@ -86,42 +27,49 @@ crud!(
 );
 
 #[hdk_extern]
-pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireElement<ProjectMeta>> {
+pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireRecord<ProjectMeta>> {
     // no project_meta entry should exist at least
     // that we can know about
-    let fetch_action = FetchAction {};
+    let do_fetch = DoFetch {};
     let fetch_entries = FetchEntries {};
     let fetch_links = FetchLinks {};
     let get_latest = GetLatestEntry {};
-    match fetch_action
-        .fetch_action::<ProjectMeta, WasmError>(
+    let link_type_filter = LinkTypeFilter::try_from(LinkTypes::All)?;
+    match do_fetch
+        .do_fetch::<ProjectMeta, WasmError>(
             &fetch_entries,
             &fetch_links,
             &get_latest,
             FetchOptions::All,
             GetOptions::latest(),
-            get_project_meta_path(),
+            link_type_filter,
+            None,
+            get_project_meta_path(LinkTypes::All)?,
         )?
         .len()
     {
         0 => {}
-        _ => return Err(WasmError::Guest(Error::OnlyOneOfEntryType.to_string())),
+        _ => {
+            return Err(wasm_error!(WasmErrorInner::Guest(
+                Error::OnlyOneOfEntryType.to_string()
+            )))
+        }
     };
-    let address = create_entry(&entry)?;
     let entry_hash = hash_entry(&entry)?;
-    let path = Path::from(PROJECT_META_PATH);
+    let address = create_entry(EntryTypes::ProjectMeta(entry.clone()))?;
+    let path = Path::from(PROJECT_META_PATH).typed(LinkTypes::All)?;
     path.ensure()?;
     let path_hash = path.path_entry_hash()?;
     create_link(
         path_hash,
         entry_hash.clone(),
-        HdkLinkType::Any,
-        LinkTag::from(Vec::new()),
+        LinkTypes::All,
+        LinkTag::from(()),
     )?;
     let time = sys_time()?;
-    let wire_entry: WireElement<ProjectMeta> = WireElement {
+    let wire_entry: WireRecord<ProjectMeta> = WireRecord {
         entry,
-        header_hash: HeaderHashB64::new(address),
+        action_hash: ActionHashB64::new(address),
         entry_hash: EntryHashB64::new(entry_hash),
         created_at: time,
         updated_at: time,
@@ -131,24 +79,29 @@ pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireElemen
 
 // READ
 #[hdk_extern]
-pub fn fetch_project_meta(_: ()) -> ExternResult<WireElement<ProjectMeta>> {
-    let fetch_action = FetchAction {};
+pub fn fetch_project_meta(_: ()) -> ExternResult<WireRecord<ProjectMeta>> {
+    let do_fetch = DoFetch {};
     let fetch_entries = FetchEntries {};
     let fetch_links = FetchLinks {};
     let get_latest = GetLatestEntry {};
-    match fetch_action
-        .fetch_action::<ProjectMeta, WasmError>(
+    let link_type_filter = LinkTypeFilter::try_from(LinkTypes::All)?;
+    match do_fetch
+        .do_fetch::<ProjectMeta, WasmError>(
             &fetch_entries,
             &fetch_links,
             &get_latest,
             FetchOptions::All,
             GetOptions::latest(),
-            get_project_meta_path(),
+            link_type_filter,
+            None,
+            get_project_meta_path(LinkTypes::All)?,
         )?
         .first()
     {
         Some(wire_entry) => Ok(wire_entry.to_owned()),
-        None => Err(WasmError::Guest("no project meta exists".into())),
+        None => Err(wasm_error!(WasmErrorInner::Guest(
+            "no project meta exists".into()
+        ))),
     }
 }
 

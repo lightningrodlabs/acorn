@@ -10,7 +10,7 @@
 pub(crate) mod fixtures {
     use ::fixt::prelude::*;
     use hdk::prelude::*;
-    use holo_hash::{AgentPubKeyB64, HeaderHashB64};
+    use holo_hash::{AgentPubKeyB64, ActionHashB64};
     use profiles::profile::{Profile, Status as ProfileStatus};
 
     fixturator!(

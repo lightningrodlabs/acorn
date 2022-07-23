@@ -5,7 +5,7 @@ use crate::project::{
 use hdk::prelude::*;
 
 #[hdk_extern]
-/// The `Outcome` at the `outcome_header_hash` on the `EntryPoint` must exist and the `creator_agent_pub_key` of the
+/// The `Outcome` at the `outcome_action_hash` on the `EntryPoint` must exist and the `creator_agent_pub_key` of the
 /// `EntryPoint` must match the agent authoring the `EntryPoint`, unless the entry is imported
 pub fn validate_create_entry_entry_point(
     validate_data: ValidateData,
@@ -14,8 +14,8 @@ pub fn validate_create_entry_entry_point(
         // element must have an entry that must deserialize correctly
         match EntryPoint::try_from(&validate_data.element) {
             Ok(proposed_entry) => {
-                // header for parent Outcome at outcome_header_hash must be determined to exist
-                must_get_header(proposed_entry.outcome_header_hash.into())?;
+                // header for parent Outcome at outcome_action_hash must be determined to exist
+                must_get_header(proposed_entry.outcome_action_hash.into())?;
                 // an imported entry can have another listed as author
                 if proposed_entry.is_imported {
                     ValidateCallbackResult::Valid

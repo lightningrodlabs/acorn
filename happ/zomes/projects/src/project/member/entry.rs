@@ -1,28 +1,9 @@
 use hdk::prelude::*;
-use hdk_crud::{retrieval::utils::EntryAndHash, signals::ActionType};
+use hdk_crud::signals::ActionType;
 use holo_hash::AgentPubKeyB64;
+use projects_integrity::{project::member::entry::Member, EntryTypes, LinkTypes};
 
 pub const MEMBER_PATH: &str = "member";
-
-// This is a reference to the agent address for any users who have joined this DHT
-#[hdk_entry(id = "member")]
-#[serde(rename_all = "camelCase")]
-#[derive(Clone, PartialEq)]
-pub struct Member {
-    pub agent_pub_key: AgentPubKeyB64,
-}
-
-impl Member {
-    pub fn new(agent_pub_key: AgentPubKeyB64) -> Self {
-        Self { agent_pub_key }
-    }
-}
-
-impl From<EntryAndHash<Member>> for Member {
-    fn from(entry_and_hash: EntryAndHash<Member>) -> Self {
-        entry_and_hash.0
-    }
-}
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 pub struct MemberSignal {
@@ -43,21 +24,22 @@ impl MemberSignal {
 
 // called during `init` and so is not exposed as zome fn
 pub fn join_project_during_init() -> ExternResult<()> {
-    Path::from(MEMBER_PATH).ensure()?;
+    let path = Path::from(MEMBER_PATH).typed(LinkTypes::All)?;
+    path.ensure()?;
 
     // while joining, list me in the list of members
     // so that all peers can become aware of the new presence
-    let member_path_address = Path::from(MEMBER_PATH).path_entry_hash()?;
+    let member_path_address = path.path_entry_hash()?;
     let member = Member {
         agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey),
     };
-    create_entry(&member)?;
     let member_entry_hash = hash_entry(&member)?;
+    create_entry(EntryTypes::Member(member))?;
     create_link(
         member_path_address,
         member_entry_hash,
-        HdkLinkType::Any,
-        LinkTag::from(Vec::new()),
+        LinkTypes::All,
+        LinkTag::from(()),
     )?;
 
     Ok(())

@@ -8,4 +8,4 @@ pub mod outcome_comment;
 pub mod outcome_member;
 pub mod outcome_vote;
 pub mod project_meta;
-// pub mod validate;
+

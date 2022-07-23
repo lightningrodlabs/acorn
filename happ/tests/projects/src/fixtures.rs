@@ -10,7 +10,7 @@
 pub(crate) mod fixtures {
     use ::fixt::prelude::*;
     use hdk::prelude::*;
-    use holo_hash::{AgentPubKeyB64, HeaderHashB64};
+    use holo_hash::{AgentPubKeyB64, ActionHashB64};
     use projects::project::outcome::crud::{Outcome, Scope};
     use projects::project::outcome::small_scope::{SmallScope, SmallTask, AchievementStatus};
     use projects::project::outcome::uncertain_scope::{UncertainScope, SmallsEstimate, TimeFrame};
@@ -27,27 +27,27 @@ pub(crate) mod fixtures {
 
     fixturator!(
       Connection;
-        constructor fn new(HeaderHashB64, HeaderHashB64, i64, bool);
+        constructor fn new(ActionHashB64, ActionHashB64, i64, bool);
     );
 
     fixturator!(
       EntryPoint;
-        constructor fn new(String, AgentPubKeyB64, f64, HeaderHashB64, bool);
+        constructor fn new(String, AgentPubKeyB64, f64, ActionHashB64, bool);
     );
 
     fixturator!(
       OutcomeMember;
-        constructor fn new(HeaderHashB64, AgentPubKeyB64, AgentPubKeyB64, f64, bool);
+        constructor fn new(ActionHashB64, AgentPubKeyB64, AgentPubKeyB64, f64, bool);
     );
 
     fixturator!(
       OutcomeComment;
-        constructor fn new(HeaderHashB64, String, AgentPubKeyB64, f64, bool);
+        constructor fn new(ActionHashB64, String, AgentPubKeyB64, f64, bool);
     );
 
     fixturator!(
       OutcomeVote;
-        constructor fn new(HeaderHashB64, f64, f64, f64, f64, AgentPubKeyB64, f64, bool);
+        constructor fn new(ActionHashB64, f64, f64, f64, f64, AgentPubKeyB64, f64, bool);
     );
 
     fixturator!(
@@ -57,7 +57,7 @@ pub(crate) mod fixtures {
 
     fixturator!(
       ProjectMeta;
-        constructor fn new(AgentPubKeyB64, f64, String, OptionString, String, bool, PriorityMode, VecHeaderHashB64);
+        constructor fn new(AgentPubKeyB64, f64, String, OptionString, String, bool, PriorityMode, VecActionHashB64);
     );
 
     fixturator!(
@@ -65,7 +65,7 @@ pub(crate) mod fixtures {
         constructor fn new(String, String);
     );
 
-    type VecHeaderHashB64 = Vec<HeaderHashB64>;
+    type VecActionHashB64 = Vec<ActionHashB64>;
     type VecSmallTask = Vec<SmallTask>;
     type OptionAgentPubKeyB64 = Option<AgentPubKeyB64>;
     type OptionString = Option<String>;
@@ -123,15 +123,15 @@ pub(crate) mod fixtures {
     );
 
     fixturator!(
-      VecHeaderHashB64;
+      VecActionHashB64;
       curve Empty {
           Vec::new()
       };
       curve Unpredictable {
-        vec![HeaderHashB64Fixturator::new(Unpredictable).next().unwrap()]
+        vec![ActionHashB64Fixturator::new(Unpredictable).next().unwrap()]
       };
       curve Predictable {
-        vec![HeaderHashB64Fixturator::new(Predictable).next().unwrap()]
+        vec![ActionHashB64Fixturator::new(Predictable).next().unwrap()]
       };
     );
 
@@ -215,6 +215,6 @@ pub(crate) mod fixtures {
 
     fixturator!(
       Outcome;
-        constructor fn new(String, AgentPubKeyB64, OptionAgentPubKeyB64, f64, Optionf64, Scope, VecHeaderHashB64, String, bool, String);
+        constructor fn new(String, AgentPubKeyB64, OptionAgentPubKeyB64, f64, Optionf64, Scope, VecActionHashB64, String, bool, String);
     );
 }

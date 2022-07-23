@@ -19,8 +19,8 @@ pub fn validate_create_entry_outcome_comment(
         // element must have an entry that must deserialize correctly
         match OutcomeComment::try_from(&validate_data.element) {
             Ok(proposed_entry) => {
-                // parent outcome at outcome_header_hash must be determined to exist
-                must_get_header(proposed_entry.outcome_header_hash.into())?;
+                // parent outcome at outcome_action_hash must be determined to exist
+                must_get_header(proposed_entry.outcome_action_hash.into())?;
                 // an imported entry can have another listed as author, and an edit history
                 if proposed_entry.is_imported {
                     ValidateCallbackResult::Valid

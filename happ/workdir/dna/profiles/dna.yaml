@@ -1,9 +1,16 @@
 ---
 manifest_version: "1"
 name: profiles-dna
-origin_time: 1654092432130000
-uid: "0008"
-properties: ~
-zomes: 
-  - name: profiles
-    bundled: ../../../../target/wasm32-unknown-unknown/release/profiles.wasm
+integrity:
+  origin_time: 1654092432130000
+  uid: "0001"
+  properties: ~
+  zomes:
+    - name: profiles_integrity
+      bundled: ../../../../target/wasm32-unknown-unknown/release/profiles_integrity.wasm
+coordinator:
+  zomes:
+    - name: profiles
+      bundled: ../../../../target/wasm32-unknown-unknown/release/profiles.wasm
+      dependencies:
+        - name:  profiles_integrity

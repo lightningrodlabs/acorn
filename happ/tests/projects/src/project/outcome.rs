@@ -195,7 +195,7 @@ pub mod tests {
 
         // it is as if there is an Outcome at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the outcome_header_hash
+        // the must_get_header call for the outcome_action_hash
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
             mock_hdk_ref,

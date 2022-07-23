@@ -9,9 +9,10 @@ name = "projects"
 
 [dependencies]
 # hdk_crud = "0.5.5"
-hdk = "0.0.134"
-hdk_crud = {git = "https://github.com/lightningrodlabs/hdk_crud.git", branch = "update-to-hdk-134"}
-holo_hash = {version = "=0.0.26", features = ["encoding", "fixturators"]}
+projects_integrity = { path = "../projects_integrity" }
+hdk = "0.0.142"
+hdk_crud = {git = "https://github.com/lightningrodlabs/hdk_crud.git", rev = "bb7bd99", features = ["no_example"]}
+holo_hash = {version = "=0.0.30", features = ["encoding", "fixturators"]}
 paste = "*"
 # use whatever serde hdk uses
 chrono = "0.4.19"

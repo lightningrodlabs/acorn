@@ -67,10 +67,10 @@ pub fn validate_update_entry_outcome(
                                 // -> check the original header and make sure that
                                 // `creator_agent_pub_key` still matches that original author
                                 if let Header::Update(header) = validate_data.element.header() {
-                                    let original_header_hash =
+                                    let original_action_hash =
                                         header.original_header_address.clone();
                                     let original_outcome =
-                                        must_get_header_and_entry::<Outcome>(original_header_hash)?;
+                                        must_get_header_and_entry::<Outcome>(original_action_hash)?;
                                     // the final return value
                                     // if this passes, all have passed
 

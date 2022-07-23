@@ -1,0 +1,17 @@
+[package]
+edition = "2021"
+name = "profiles_integrity"
+version = "0.0.1"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "profiles_integrity"
+
+[dependencies]
+# hdk_crud = "0.5.5"
+chrono = "0.4.19"
+hdi = "0.0.14"
+hdk_crud = {git = "https://github.com/lightningrodlabs/hdk_crud.git", rev = "bb7bd99", features = ["no_example"]}
+holo_hash = {version = "=0.0.30", features = ["encoding", "fixturators"]}
+serde = "*"
+thiserror = "1"

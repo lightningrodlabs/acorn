@@ -49,8 +49,8 @@ pub mod tests {
             }),
             ChainTopOrdering::default(),
         );
-        let header_hash = fixt!(HeaderHash);
-        mock_create(mock_hdk, expected, Ok(header_hash.clone()));
+        let action_hash = fixt!(HeaderHash);
+        mock_create(mock_hdk, expected, Ok(action_hash.clone()));
     }
     fn setup_join_project_during_init_mock(mock_hdk: &mut MockHdkT) {
         let member_path = Path::from("member");
@@ -94,9 +94,9 @@ pub mod tests {
         let member = Member {
             agent_pub_key: AgentPubKeyB64::new(agent_info.agent_initial_pubkey),
         };
-        let header_hash = fixt!(HeaderHash);
+        let action_hash = fixt!(HeaderHash);
         let create_member_input = CreateInput::try_from(member.clone()).unwrap();
-        mock_create(mock_hdk, create_member_input, Ok(header_hash.clone()));
+        mock_create(mock_hdk, create_member_input, Ok(action_hash.clone()));
 
         let member_hash = fixt!(EntryHash);
         let member_entry = Entry::try_from(member.clone()).unwrap();
@@ -107,6 +107,6 @@ pub mod tests {
             LinkTag::from(()),
             ChainTopOrdering::default(),
         );
-        mock_create_link(mock_hdk, create_link_input, Ok(header_hash));
+        mock_create_link(mock_hdk, create_link_input, Ok(action_hash));
     }
 }

@@ -1,0 +1,15 @@
+[package]
+edition = "2021"
+name = "projects_integrity"
+version = "0.0.1"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "projects_integrity"
+
+[dependencies]
+chrono = "0.4.19"
+hdi = "0.0.14"
+holo_hash = {version = "=0.0.30", features = ["encoding"]}
+serde = "*"
+thiserror = "1"

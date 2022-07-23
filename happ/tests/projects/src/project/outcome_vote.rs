@@ -31,24 +31,24 @@ pub mod tests {
         // now, since validation is dependent on other entries, we begin
         // to have to mock `get` calls to the HDK
 
-        let outcome_wrapped_header_hash = fixt!(HeaderHashB64);
-        outcome_vote.outcome_header_hash = outcome_wrapped_header_hash.clone();
+        let outcome_wrapped_action_hash = fixt!(ActionHashB64);
+        outcome_vote.outcome_action_hash = outcome_wrapped_action_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome_vote.clone().try_into().unwrap());
 
         // make it pass UnresolvedDependencies
-        // by making it as if there is an Outcome at the outcome_header_hash
+        // by making it as if there is an Outcome at the outcome_action_hash
         let mut outcome_element_for_invalid = fixt!(Element);
         let create_header_for_invalid = fixt!(Create);
         *outcome_element_for_invalid.as_header_mut() =
             Header::Create(create_header_for_invalid.clone());
 
         let mut mock_hdk = MockHdkT::new();
-        // mock the must_get_header call for the outcome_header_hash
+        // mock the must_get_header call for the outcome_action_hash
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
             mock_hdk_ref,
-            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            MustGetHeaderInput::new(outcome_wrapped_action_hash.clone().into()),
             Ok(outcome_element_for_invalid.signed_header().clone()),
         );
         set_hdk(mock_hdk);
@@ -72,18 +72,18 @@ pub mod tests {
         // -> good to go
 
         // make it pass UnresolvedDependencies
-        // by making it as if there is an Outcome at the outcome_header_hash
+        // by making it as if there is an Outcome at the outcome_action_hash
         let mut outcome_element_for_valid = fixt!(Element);
         let create_header_for_valid = fixt!(Create);
         *outcome_element_for_valid.as_header_mut() =
             Header::Create(create_header_for_valid.clone());
 
         let mut mock_hdk = MockHdkT::new();
-        // mock the must_get_header call for the outcome_header_hash
+        // mock the must_get_header call for the outcome_action_hash
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
             mock_hdk_ref,
-            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            MustGetHeaderInput::new(outcome_wrapped_action_hash.clone().into()),
             Ok(outcome_element_for_valid.signed_header().clone()),
         );
         set_hdk(mock_hdk);
@@ -117,9 +117,9 @@ pub mod tests {
 
         // with an entry with a random
         // creator_agent_pub_key it will fail (not the agent committing)
-        let outcome_wrapped_header_hash = fixt!(HeaderHashB64);
+        let outcome_wrapped_action_hash = fixt!(ActionHashB64);
         let random_wrapped_agent_pub_key = fixt!(AgentPubKeyB64);
-        outcome_vote.outcome_header_hash = outcome_wrapped_header_hash.clone();
+        outcome_vote.outcome_action_hash = outcome_wrapped_action_hash.clone();
         outcome_vote.creator_agent_pub_key = random_wrapped_agent_pub_key.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome_vote.clone().try_into().unwrap());
@@ -161,7 +161,7 @@ pub mod tests {
 
         // it is as if there is an OutcomeComment at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the outcome_header_hash
+        // the must_get_header call for the outcome_action_hash
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
             mock_hdk_ref,
@@ -206,7 +206,7 @@ pub mod tests {
 
         // it is as if there is an OutcomeComment at the original address
         let mut mock_hdk = MockHdkT::new();
-        // the must_get_header call for the outcome_header_hash
+        // the must_get_header call for the outcome_action_hash
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
             mock_hdk_ref,

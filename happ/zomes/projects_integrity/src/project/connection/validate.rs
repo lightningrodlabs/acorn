@@ -17,13 +17,13 @@ pub fn validate_create_entry_connection(
 
     // avoid connections to/from self
     // parent and child can't be the same
-    if proposed_connection.child_header_hash == proposed_connection.parent_header_hash {
+    if proposed_connection.child_action_hash == proposed_connection.parent_action_hash {
         return Ok(Error::IdenticalParentChild.into());
     }
 
     // parent outcome, and child outcome, must be determined to exist to pass validation
-    must_get_header(proposed_connection.parent_header_hash.into())?;
-    must_get_header(proposed_connection.child_header_hash.into())?;
+    must_get_header(proposed_connection.parent_action_hash.into())?;
+    must_get_header(proposed_connection.child_action_hash.into())?;
     Ok(ValidateCallbackResult::Valid)
 }
 

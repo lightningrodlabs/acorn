@@ -4,7 +4,7 @@ pub mod tests {
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_unit_testing::mock_hdk::*;
-    use holo_hash::HeaderHashB64;
+    use holo_hash::ActionHashB64;
     use holochain_types::prelude::ValidateDataFixturator;
     use projects::project::connection::validate::*;
     use projects::project::error::Error;
@@ -39,11 +39,11 @@ pub mod tests {
             Error::DeserializationFailed.into(),
         );
 
-        // with an entry with identical hash for parent_header_hash and
-        // child_header_hash validation will fail
-        let outcome_wrapped_header_hash = fixt!(HeaderHashB64);
-        connection.parent_header_hash = outcome_wrapped_header_hash.clone();
-        connection.child_header_hash = outcome_wrapped_header_hash.clone();
+        // with an entry with identical hash for parent_action_hash and
+        // child_action_hash validation will fail
+        let outcome_wrapped_action_hash = fixt!(ActionHashB64);
+        connection.parent_action_hash = outcome_wrapped_action_hash.clone();
+        connection.child_action_hash = outcome_wrapped_action_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(connection.clone().try_into().unwrap());
         assert_eq!(
@@ -56,20 +56,20 @@ pub mod tests {
 
         // SUCCESS case
         // the element exists
-        // parent_header_hash and child_header_hash are not identical
+        // parent_action_hash and child_action_hash are not identical
         // the parent outcome is found/exists
         // the child outcome is found/exists
         // -> good to go
 
-        let parent_signed_header_hashed = fixt!(SignedHeaderHashed);
-        let outcome_parent_wrapped_header_hash =
-            HeaderHashB64::new(parent_signed_header_hashed.as_hash().clone());
-        let child_signed_header_hashed = fixt!(SignedHeaderHashed);
-        let outcome_child_wrapped_header_hash =
-            HeaderHashB64::new(child_signed_header_hashed.as_hash().clone());
+        let parent_signed_action_hashed = fixt!(SignedHeaderHashed);
+        let outcome_parent_wrapped_action_hash =
+            ActionHashB64::new(parent_signed_action_hashed.as_hash().clone());
+        let child_signed_action_hashed = fixt!(SignedHeaderHashed);
+        let outcome_child_wrapped_action_hash =
+            ActionHashB64::new(child_signed_action_hashed.as_hash().clone());
         // we assign different parent and child to pass that level of validation
-        connection.parent_header_hash = outcome_parent_wrapped_header_hash.clone();
-        connection.child_header_hash = outcome_child_wrapped_header_hash.clone();
+        connection.parent_action_hash = outcome_parent_wrapped_action_hash.clone();
+        connection.child_action_hash = outcome_child_wrapped_action_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(connection.clone().try_into().unwrap());
 
@@ -77,15 +77,15 @@ pub mod tests {
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
             mock_hdk_ref,
-            MustGetHeaderInput::new(outcome_parent_wrapped_header_hash.clone().into()),
-            Ok(parent_signed_header_hashed),
+            MustGetHeaderInput::new(outcome_parent_wrapped_action_hash.clone().into()),
+            Ok(parent_signed_action_hashed),
         );
 
         // the must_get_header call for the child outcome
         mock_must_get_header(
             mock_hdk_ref,
-            MustGetHeaderInput::new(outcome_child_wrapped_header_hash.clone().into()),
-            Ok(child_signed_header_hashed),
+            MustGetHeaderInput::new(outcome_child_wrapped_action_hash.clone().into()),
+            Ok(child_signed_action_hashed),
         );
 
         set_hdk(mock_hdk);
