@@ -31,24 +31,24 @@ pub mod tests {
         // to have to mock `get` calls to the HDK
 
         // make it pass EntryMissing by adding the Element
-        let outcome_wrapped_header_hash = fixt!(HeaderHashB64);
-        outcome_member.outcome_header_hash = outcome_wrapped_header_hash.clone();
+        let outcome_wrapped_action_hash = fixt!(ActionHashB64);
+        outcome_member.outcome_action_hash = outcome_wrapped_action_hash.clone();
         *validate_data.element.as_entry_mut() =
             ElementEntry::Present(outcome_member.clone().try_into().unwrap());
 
         // make it pass UnresolvedDependencies
-        // by making it as if there is an Outcome at the outcome_header_hash
+        // by making it as if there is an Outcome at the outcome_action_hash
         let mut outcome_element_for_invalid = fixt!(Element);
         let create_header_for_invalid = fixt!(Create);
         *outcome_element_for_invalid.as_header_mut() =
             Header::Create(create_header_for_invalid.clone());
 
         let mut mock_hdk = MockHdkT::new();
-        // mock the must_get_header call for the outcome_header_hash
+        // mock the must_get_header call for the outcome_action_hash
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
             mock_hdk_ref,
-            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            MustGetHeaderInput::new(outcome_wrapped_action_hash.clone().into()),
             Ok(outcome_element_for_invalid.signed_header().clone()),
         );
         set_hdk(mock_hdk);
@@ -72,18 +72,18 @@ pub mod tests {
         // -> good to go
 
         // make it pass UnresolvedDependencies
-        // by making it as if there is an Outcome at the outcome_header_hash
+        // by making it as if there is an Outcome at the outcome_action_hash
         let mut outcome_element_for_valid = fixt!(Element);
         let create_header_for_valid = fixt!(Create);
         *outcome_element_for_valid.as_header_mut() =
             Header::Create(create_header_for_valid.clone());
 
         let mut mock_hdk = MockHdkT::new();
-        // mock the must_get_header call for the outcome_header_hash
+        // mock the must_get_header call for the outcome_action_hash
         let mock_hdk_ref = &mut mock_hdk;
         mock_must_get_header(
             mock_hdk_ref,
-            MustGetHeaderInput::new(outcome_wrapped_header_hash.clone().into()),
+            MustGetHeaderInput::new(outcome_wrapped_action_hash.clone().into()),
             Ok(outcome_element_for_valid.signed_header().clone()),
         );
         set_hdk(mock_hdk);

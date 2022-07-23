@@ -8,8 +8,8 @@ goal
 - delete: allowed by anyone
 
 edge
-- create: `parent_header_hash` can't equal `child_header_hash`, no self-referential edges
-          `parent_header_hash` and `child_header_hash` depends on the `Goal`s at those addresses
+- create: `parent_action_hash` can't equal `child_action_hash`, no self-referential edges
+          `parent_action_hash` and `child_action_hash` depends on the `Goal`s at those addresses
 - update: not allowed
 - delete: allowed by anyone
 

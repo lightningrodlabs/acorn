@@ -1,5 +1,5 @@
 use hdk::prelude::*;
-use holo_hash::{AgentPubKeyB64, HeaderHashB64};
+use holo_hash::{ActionHashB64, AgentPubKeyB64};
 
 pub mod project;
 pub mod ui_enum;
@@ -9,15 +9,17 @@ use hdk_crud::{
     signals::{create_receive_signal_cap_grant, ActionSignal},
 };
 use project::{
-    tag::crud::Tag,
-    connection::crud::Connection,
-    entry_point::crud::EntryPoint,
-    member::entry::{join_project_during_init, Member, MemberSignal, MEMBER_PATH},
-    outcome::crud::{DeleteOutcomeFullySignal, Outcome, OutcomeWithConnectionSignal},
-    outcome_comment::crud::OutcomeComment,
-    outcome_member::crud::OutcomeMember,
-    outcome_vote::crud::OutcomeVote,
-    project_meta::crud::ProjectMeta,
+    member::entry::{join_project_during_init, MemberSignal, MEMBER_PATH},
+    outcome::crud::{DeleteOutcomeFullySignal, OutcomeWithConnectionSignal},
+};
+use projects_integrity::{
+    project::{
+        connection::entry::Connection, entry_point::entry::EntryPoint, member::entry::Member,
+        outcome::entry::Outcome, outcome_comment::entry::OutcomeComment,
+        outcome_member::entry::OutcomeMember, outcome_vote::entry::OutcomeVote,
+        project_meta::entry::ProjectMeta, tag::entry::Tag,
+    },
+    LinkTypes,
 };
 
 #[hdk_extern]
@@ -31,19 +33,6 @@ pub fn init(_: ()) -> ExternResult<InitCallbackResult> {
 
     Ok(InitCallbackResult::Pass)
 }
-
-entry_defs!(
-    PathEntry::entry_def(),
-    Tag::entry_def(),
-    Connection::entry_def(),
-    EntryPoint::entry_def(),
-    Outcome::entry_def(),
-    OutcomeComment::entry_def(),
-    OutcomeMember::entry_def(),
-    OutcomeVote::entry_def(),
-    Member::entry_def(),
-    ProjectMeta::entry_def()
-);
 
 /*
 SIGNALS
@@ -125,7 +114,7 @@ pub enum OutcomeField {
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 pub struct EditingOutcomeSignal {
     pub outcome_field: OutcomeField,
-    pub outcome_header_hash: HeaderHashB64,
+    pub outcome_action_hash: ActionHashB64,
     pub editing_agent_pub_key: AgentPubKeyB64,
     pub is_editing: bool,
 }
@@ -133,7 +122,7 @@ pub struct EditingOutcomeSignal {
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 pub struct EditingOutcomeInput {
     pub outcome_field: OutcomeField,
-    pub outcome_header_hash: HeaderHashB64,
+    pub outcome_action_hash: ActionHashB64,
     pub is_editing: bool,
 }
 
@@ -143,7 +132,7 @@ pub struct RealtimeInfoSignal {
     pub agent_pub_key: AgentPubKeyB64,
     pub project_id: String,
     pub outcome_being_edited: Option<EditingOutcomeDetails>,
-    pub outcome_expanded_view: Option<HeaderHashB64>,
+    pub outcome_expanded_view: Option<ActionHashB64>,
 }
 
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
@@ -151,12 +140,12 @@ pub struct RealtimeInfoSignal {
 pub struct RealtimeInfoInput {
     pub project_id: String,
     pub outcome_being_edited: Option<EditingOutcomeDetails>,
-    pub outcome_expanded_view: Option<HeaderHashB64>,
+    pub outcome_expanded_view: Option<ActionHashB64>,
 }
 #[derive(Debug, Serialize, Deserialize, SerializedBytes)]
 #[serde(rename_all = "camelCase")]
 pub struct EditingOutcomeDetails {
-    pub outcome_header_hash: HeaderHashB64,
+    pub outcome_action_hash: ActionHashB64,
     pub is_title: bool,
 }
 #[hdk_extern]
@@ -169,7 +158,7 @@ pub fn emit_realtime_info_signal(realtime_info: RealtimeInfoInput) -> ExternResu
     };
 
     let signal = SignalType::RealtimeInfo(realtime_info_signal);
-    let payload = ExternIO::encode(signal)?;
+    let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e.into()))?;
     let peers = get_peers_content()?;
     remote_signal(payload, peers)?;
     Ok(())
@@ -178,13 +167,13 @@ pub fn emit_realtime_info_signal(realtime_info: RealtimeInfoInput) -> ExternResu
 pub fn emit_editing_outcome_signal(editing_outcome_info: EditingOutcomeInput) -> ExternResult<()> {
     let editing_outcome_signal = EditingOutcomeSignal {
         outcome_field: editing_outcome_info.outcome_field,
-        outcome_header_hash: editing_outcome_info.outcome_header_hash,
+        outcome_action_hash: editing_outcome_info.outcome_action_hash,
         editing_agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey),
         is_editing: editing_outcome_info.is_editing,
     };
 
     let signal = SignalType::EditingOutcome(editing_outcome_signal);
-    let payload = ExternIO::encode(signal)?;
+    let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e.into()))?;
     let peers = get_peers_content()?;
     remote_signal(payload, peers)?;
     Ok(())
@@ -202,7 +191,14 @@ pub fn get_peers(get_options: GetOptions) -> ExternResult<Vec<AgentPubKey>> {
     let path_hash = Path::from(MEMBER_PATH).path_entry_hash()?;
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
-    let entries = fetch_links.fetch_links::<Member>(&get_latest, path_hash, get_options)?;
+    let link_type_filter = LinkTypeFilter::try_from(LinkTypes::All)?;
+    let entries = fetch_links.fetch_links::<Member>(
+        &get_latest,
+        path_hash,
+        link_type_filter,
+        None,
+        get_options,
+    )?;
     let self_agent_pub_key = AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey);
     Ok(entries
         .into_iter()
@@ -216,7 +212,7 @@ pub fn get_peers(get_options: GetOptions) -> ExternResult<Vec<AgentPubKey>> {
 // (forwards signals to the UI)
 #[hdk_extern]
 pub fn recv_remote_signal(signal: ExternIO) -> ExternResult<()> {
-    let sig: SignalType = signal.decode()?;
+    let sig: SignalType = signal.decode().map_err(|e| wasm_error!(e.into()))?;
     debug!("Received remote signal {:?}", sig);
     Ok(emit_signal(&signal)?)
 }

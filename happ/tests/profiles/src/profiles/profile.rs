@@ -5,10 +5,10 @@ pub mod tests {
     use ::fixt::prelude::*;
     use hdk::prelude::*;
     use hdk_crud::signals::ActionType;
-    use hdk_crud::wire_element::WireElement;
+    use hdk_crud::wire_record::WireRecord;
     use hdk_unit_testing::mock_hdk::*;
     use hdk_unit_testing::mock_hdk::*;
-    use holo_hash::{EntryHashB64, HeaderHashB64};
+    use holo_hash::{EntryHashB64, ActionHashB64};
     use profiles::profile::{
         agent_signal_entry_type, create_imported_profile, inner_create_whoami, inner_update_whoami,
         AgentSignal, Profile, SignalData,
@@ -19,17 +19,17 @@ pub mod tests {
         let mut mock_hdk = MockHdkT::new();
         let mock_hdk_ref = &mut mock_hdk;
 
-        let wire_element = generate_wire_element();
-        let profile = wire_element.clone().entry;
+        let wire_record = generate_wire_record();
+        let profile = wire_record.clone().entry;
         let profile_entry = CreateInput::try_from(profile.clone()).unwrap();
-        let profile_header_hash = wire_element.clone().header_hash;
+        let profile_action_hash = wire_record.clone().action_hash;
         mock_create(
             mock_hdk_ref,
             profile_entry,
-            Ok(profile_header_hash.clone().into()),
+            Ok(profile_action_hash.clone().into()),
         );
 
-        let profile_hash: EntryHash = wire_element.entry_hash.clone().into();
+        let profile_hash: EntryHash = wire_record.entry_hash.clone().into();
         mock_hash_entry(
             mock_hdk_ref,
             Entry::try_from(profile.clone()).unwrap(),
@@ -57,14 +57,14 @@ pub mod tests {
             LinkTag::from(()),
             ChainTopOrdering::default(),
         );
-        let link_header_hash = fixt!(HeaderHash);
+        let link_action_hash = fixt!(HeaderHash);
         mock_create_link(
             mock_hdk_ref,
             create_link_input,
-            Ok(link_header_hash.clone()),
+            Ok(link_action_hash.clone()),
         );
 
-        let time = wire_element.created_at.clone();
+        let time = wire_record.created_at.clone();
         mock_sys_time(mock_hdk_ref, Ok(time));
 
         let agent_info = fixt!(AgentInfo);
@@ -79,13 +79,13 @@ pub mod tests {
         mock_create_link(
             mock_hdk_ref,
             create_link_input,
-            Ok(link_header_hash.clone()),
+            Ok(link_action_hash.clone()),
         );
 
         let signal = AgentSignal {
             entry_type: agent_signal_entry_type(),
             action: ActionType::Create,
-            data: SignalData::Create(wire_element.clone()),
+            data: SignalData::Create(wire_record.clone()),
         };
 
         let payload = ExternIO::encode(signal).unwrap();
@@ -101,23 +101,23 @@ pub mod tests {
             Ok(vec![])
         }
         let result = inner_create_whoami(profile, get_peers);
-        assert_eq!(result, Ok(wire_element));
+        assert_eq!(result, Ok(wire_record));
     }
     #[test]
     fn test_create_imported_profile() {
         let mut mock_hdk = MockHdkT::new();
         let mock_hdk_ref = &mut mock_hdk;
 
-        let wire_element = generate_wire_element();
-        let profile = wire_element.clone().entry;
+        let wire_record = generate_wire_record();
+        let profile = wire_record.clone().entry;
         let profile_entry = CreateInput::try_from(profile.clone()).unwrap();
-        let profile_header_hash = wire_element.clone().header_hash;
-        let profile_entry_hash = wire_element.clone().entry_hash;
+        let profile_action_hash = wire_record.clone().action_hash;
+        let profile_entry_hash = wire_record.clone().entry_hash;
 
         mock_create(
             mock_hdk_ref,
             profile_entry,
-            Ok(profile_header_hash.clone().into()),
+            Ok(profile_action_hash.clone().into()),
         );
 
         mock_hash_entry(
@@ -147,32 +147,32 @@ pub mod tests {
             LinkTag::from(()),
             ChainTopOrdering::default(),
         );
-        let link_header_hash = fixt!(HeaderHash);
+        let link_action_hash = fixt!(HeaderHash);
         mock_create_link(
             mock_hdk_ref,
             create_link_input,
-            Ok(link_header_hash.clone()),
+            Ok(link_action_hash.clone()),
         );
-        let time = wire_element.created_at.clone();
+        let time = wire_record.created_at.clone();
         mock_sys_time(mock_hdk_ref, Ok(time));
         set_hdk(mock_hdk);
         let result = create_imported_profile(profile);
-        assert_eq!(result, Ok(wire_element));
+        assert_eq!(result, Ok(wire_record));
     }
     #[test]
     fn test_update_whoami() {
         let mut mock_hdk = MockHdkT::new();
         let mock_hdk_ref = &mut mock_hdk;
 
-        let mut wire_element = generate_wire_element();
-        let profile_address = wire_element.header_hash.clone();
-        let profile = wire_element.entry.clone();
+        let mut wire_record = generate_wire_record();
+        let profile_address = wire_record.action_hash.clone();
+        let profile = wire_record.entry.clone();
         let update_input = UpdateInput::new(
             profile_address.clone().into(),
             CreateInput::try_from(profile.clone()).unwrap(),
         );
-        let update_header_hash = fixt!(HeaderHash);
-        mock_update(mock_hdk_ref, update_input, Ok(update_header_hash));
+        let update_action_hash = fixt!(HeaderHash);
+        mock_update(mock_hdk_ref, update_input, Ok(update_action_hash));
 
         let update_entry_hash = fixt!(EntryHash);
         mock_hash_entry(
@@ -180,15 +180,15 @@ pub mod tests {
             CreateInput::try_from(profile.clone()).unwrap().entry,
             Ok(update_entry_hash.clone()),
         );
-        let time = wire_element.created_at.clone();
+        let time = wire_record.created_at.clone();
         mock_sys_time(mock_hdk_ref, Ok(time));
 
-        wire_element.entry_hash = EntryHashB64::new(update_entry_hash);
+        wire_record.entry_hash = EntryHashB64::new(update_entry_hash);
 
         let signal = AgentSignal {
             entry_type: agent_signal_entry_type(),
             action: ActionType::Update,
-            data: SignalData::Update(wire_element.clone()),
+            data: SignalData::Update(wire_record.clone()),
         };
 
         let payload = ExternIO::encode(signal).unwrap();
@@ -205,12 +205,12 @@ pub mod tests {
         }
         let result = inner_update_whoami(
             profiles::profile::UpdateInput {
-                header_hash: profile_address,
+                action_hash: profile_address,
                 entry: profile,
             },
             get_peers,
         );
-        assert_eq!(result, Ok(wire_element));
+        assert_eq!(result, Ok(wire_record));
     }
     // #[test]
     // fn test_whoami() {}
@@ -218,19 +218,19 @@ pub mod tests {
     // fn test_fetch_agents() {}
 
     /// generate an arbitrary `WireEntry` for unit testing
-    fn generate_wire_element() -> WireElement<Profile> {
+    fn generate_wire_record() -> WireRecord<Profile> {
         let profile = fixt!(Profile);
-        let profile_header_hash = fixt!(HeaderHash);
+        let profile_action_hash = fixt!(HeaderHash);
         let profile_entry_hash = fixt!(EntryHash);
         let date_time: chrono::DateTime<chrono::Utc> = chrono::offset::Utc::now();
         let time = Timestamp::from(date_time);
-        let wire_element = WireElement {
+        let wire_record = WireRecord {
             entry: profile,
-            header_hash: HeaderHashB64::new(profile_header_hash),
+            action_hash: ActionHashB64::new(profile_action_hash),
             entry_hash: EntryHashB64::new(profile_entry_hash),
             created_at: time,
             updated_at: time,
         };
-        wire_element
+        wire_record
     }
 }

@@ -1,21 +1,28 @@
-use super::entry::{Member, MemberSignal, MEMBER_PATH};
+use super::entry::{MemberSignal, MEMBER_PATH};
 use crate::get_peers_latest;
 use hdk::prelude::*;
 use hdk_crud::{
     retrieval::{fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry},
-    wire_element::WireElement,
+    wire_record::WireRecord,
 };
 use holo_hash::AgentPubKeyB64;
+use projects_integrity::{project::member::entry::Member, LinkTypes};
 
 // returns a list of the agent addresses of those who
 // are "members" of this project, as in, they have joined the project
 #[hdk_extern]
-pub fn fetch_members(_: ()) -> ExternResult<Vec<WireElement<Member>>> {
+pub fn fetch_members(_: ()) -> ExternResult<Vec<WireRecord<Member>>> {
     let path_hash = Path::from(MEMBER_PATH).path_entry_hash()?;
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
-    let entries =
-        fetch_links.fetch_links::<Member>(&get_latest, path_hash, GetOptions::content())?;
+    let link_type_filter = LinkTypeFilter::try_from(LinkTypes::All)?;
+    let entries = fetch_links.fetch_links::<Member>(
+        &get_latest,
+        path_hash,
+        link_type_filter,
+        None,
+        GetOptions::content(),
+    )?;
     Ok(entries)
 }
 
@@ -27,7 +34,7 @@ pub fn init_signal(_: ()) -> ExternResult<()> {
         agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey),
     };
     let signal = MemberSignal::new(member.clone());
-    let payload = ExternIO::encode(signal)?;
+    let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e.into()))?;
     let peers = get_peers_latest()?;
     remote_signal(payload, peers)?;
     Ok(())
