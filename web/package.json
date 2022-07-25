@@ -1,6 +1,6 @@
 {
   "name": "acorn-ui",
-  "version": "1.0.3-alpha",
+  "version": "1.0.4-alpha",
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "7.5.5",
