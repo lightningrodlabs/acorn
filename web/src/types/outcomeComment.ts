@@ -1,7 +1,7 @@
-import { AgentPubKeyB64, HeaderHashB64 } from "./shared";
+import { AgentPubKeyB64, ActionHashB64 } from "./shared";
 
 export interface OutcomeComment {
-    outcomeHeaderHash: HeaderHashB64,
+    outcomeActionHash: ActionHashB64,
     content: string,
     creatorAgentPubKey: AgentPubKeyB64,
     unixTimestamp: number, //f64,

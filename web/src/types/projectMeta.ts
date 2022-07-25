@@ -1,4 +1,4 @@
-import { AgentPubKeyB64, HeaderHashB64, Option } from './shared'
+import { AgentPubKeyB64, ActionHashB64, Option } from './shared'
 
 export interface ProjectMeta {
   creatorAgentPubKey: AgentPubKeyB64
@@ -8,7 +8,7 @@ export interface ProjectMeta {
   passphrase: string
   isImported: boolean
   priorityMode: PriorityMode
-  topPriorityOutcomes: Array<HeaderHashB64>
+  topPriorityOutcomes: Array<ActionHashB64>
 }
 
 export enum PriorityMode {

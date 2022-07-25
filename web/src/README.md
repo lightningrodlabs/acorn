@@ -132,7 +132,7 @@ The UI element that allows users to create a new Outcome
 
     outcomeForm: {
       editAddress: null,
-      parentHeaderHash: null,
+      parentActionHash: null,
       content: '',
       isOpen: false,
       leftConnectionXPosition: 0,

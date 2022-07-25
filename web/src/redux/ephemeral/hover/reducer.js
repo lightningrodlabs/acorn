@@ -15,7 +15,7 @@ export default function (state = defaultState, action) {
   switch (type) {
     case DELETE_OUTCOME_FULLY:
       // unhover if the deleted Outcome was hovered over
-      return state.hoveredOutcome === payload.outcomeHeaderHash
+      return state.hoveredOutcome === payload.outcomeActionHash
         ? {
             ...state,
             hoveredOutcome: null,
@@ -23,7 +23,7 @@ export default function (state = defaultState, action) {
         : { ...state }
     case DELETE_CONNECTION:
       // unhover if the deleted connection was hovered over
-      return state.hoveredConnection === payload.headerHash
+      return state.hoveredConnection === payload.actionHash
         ? {
             ...state,
             hoveredConnection: null,

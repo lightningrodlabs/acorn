@@ -14,11 +14,11 @@ import {
   RealtimeInfoInput,
   Tag,
 } from '../types'
-import { createCrudFunctions, WireElement } from './hdkCrud'
+import { createCrudFunctions, WireRecord } from './hdkCrud'
 import { AppWebsocket, CellId } from '@holochain/client'
 import { PROJECTS_ZOME_NAME } from '../holochainConfig'
 import callZome from './callZome'
-import { HeaderHashB64 } from '../types/shared'
+import { ActionHashB64 } from '../types/shared'
 
 const ENTRY_TYPE_NAMES = {
   OUTCOME: 'outcome',
@@ -60,7 +60,7 @@ const OutcomeApi = (appWebsocket: AppWebsocket) => {
         payload
       )
     },
-    deleteOutcomeFully: async (cellId: CellId, payload: HeaderHashB64): Promise<DeleteOutcomeFullyResponse> => {
+    deleteOutcomeFully: async (cellId: CellId, payload: ActionHashB64): Promise<DeleteOutcomeFullyResponse> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -126,7 +126,7 @@ const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
   )
   return {
     ...projectMetaCrud,
-    simpleCreateProjectMeta: async (cellId: CellId, payload: ProjectMeta): Promise<WireElement<ProjectMeta>> => {
+    simpleCreateProjectMeta: async (cellId: CellId, payload: ProjectMeta): Promise<WireRecord<ProjectMeta>> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -135,7 +135,7 @@ const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
         payload
       )
     },
-    fetchProjectMeta: async (cellId: CellId): Promise<WireElement<ProjectMeta>> => {
+    fetchProjectMeta: async (cellId: CellId): Promise<WireRecord<ProjectMeta>> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -172,7 +172,7 @@ const RealtimeInfoSignalApi = (appWebsocket: AppWebsocket) => {
 
 const MembersApi = (appWebsocket: AppWebsocket) => {
   return {
-    fetch: async (cellId: CellId): Promise<Array<WireElement<Member>>> => {
+    fetch: async (cellId: CellId): Promise<Array<WireRecord<Member>>> => {
       return callZome(
         appWebsocket,
         cellId,

@@ -3,11 +3,11 @@ import useOnClickOutside from 'use-onclickoutside'
 import './Header.scss'
 
 import { PriorityModeOptions } from '../../constants'
-import { WireElement } from '../../api/hdkCrud'
+import { WireRecord } from '../../api/hdkCrud'
 import {
   AgentPubKeyB64,
-  HeaderHashB64,
-  WithHeaderHash,
+  ActionHashB64,
+  WithActionHash,
   CellIdString,
 } from '../../types/shared'
 import { ProjectMeta, Profile, EntryPoint, Outcome } from '../../types'
@@ -18,12 +18,12 @@ import HeaderRightPanel from './HeaderRightPanel.connector'
 import HeaderMiddlePanel from './HeaderMiddlePanel'
 
 export type HeaderProps = {
-  whoami: WireElement<Profile>
+  whoami: WireRecord<Profile>
   activeEntryPoints: {
-    entryPoint: WithHeaderHash<EntryPoint>
-    outcome: WithHeaderHash<Outcome>
+    entryPoint: WithActionHash<EntryPoint>
+    outcome: WithActionHash<Outcome>
   }[]
-  project: WithHeaderHash<ProjectMeta>
+  project: WithActionHash<ProjectMeta>
   projectId: CellIdString
   members: Profile[]
   presentMembers: AgentPubKeyB64[]
@@ -31,7 +31,7 @@ export type HeaderProps = {
   setShowProjectSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
   setShowProfileEditForm: React.Dispatch<React.SetStateAction<boolean>>
   setShowPreferences: React.Dispatch<React.SetStateAction<boolean>>
-  goToOutcome: (outcomeHeaderHash: HeaderHashB64) => void
+  goToOutcome: (outcomeActionHash: ActionHashB64) => void
   // holochain
   updateStatus: (statusString: Profile['status']) => Promise<void>
 }

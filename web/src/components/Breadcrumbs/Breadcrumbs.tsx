@@ -1,12 +1,12 @@
 import React from 'react'
 import { ComputedOutcome } from '../../types'
-import { HeaderHashB64 } from '../../types/shared'
+import { ActionHashB64 } from '../../types/shared'
 import Typography from '../Typography/Typography'
 import './Breadcrumbs.scss'
 
 export type BreadcrumbsProps = {
   outcomeAndAncestors: ComputedOutcome[]
-  onClickItem?: (headerHash: HeaderHashB64) => void
+  onClickItem?: (actionHash: ActionHashB64) => void
 }
 
 const ANCESTOR_CUTOFF_LENGTH = 25
@@ -40,7 +40,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
               <>
                 <div
                   className="breadcrumbs-item"
-                  onClick={() => onClickItem(ancestorOutcome.headerHash)}
+                  onClick={() => onClickItem(ancestorOutcome.actionHash)}
                 >
                   <Typography style="breadcrumbs">
                     {textIsHidden

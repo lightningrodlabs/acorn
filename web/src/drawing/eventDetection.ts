@@ -4,7 +4,7 @@ import {
   calculateConnectionCoordsByOutcomeCoords,
   pathForConnection,
 } from './drawConnection'
-import { HeaderHashB64 } from '../types/shared'
+import { ActionHashB64 } from '../types/shared'
 import { ComputedOutcome } from '../types'
 import { RootState } from '../redux/reducer'
 
@@ -12,11 +12,11 @@ export function checkForConnectionAtCoordinates(
   ctx: CanvasRenderingContext2D,
   translate: { x: number; y: number },
   scale: number,
-  outcomeCoordinates: { [headerHash: HeaderHashB64]: { x: number; y: number } },
+  outcomeCoordinates: { [actionHash: ActionHashB64]: { x: number; y: number } },
   state: RootState,
   mouseX: number,
   mouseY: number,
-  outcomes: { [headerHash: HeaderHashB64]: ComputedOutcome }
+  outcomes: { [actionHash: ActionHashB64]: ComputedOutcome }
 ) {
   const {
     ui: { activeProject },
@@ -36,12 +36,12 @@ export function checkForConnectionAtCoordinates(
   // keep track of whether an connection intersects the mouse
   let overConnectionAddress: string
   Object.keys(connections)
-    .map((headerHash) => connections[headerHash])
+    .map((actionHash) => connections[actionHash])
     .forEach((connection) => {
       const parentOutcomeCoords =
-        outcomeCoordinates[connection.parentHeaderHash]
-      const childOutcomeCoords = outcomeCoordinates[connection.childHeaderHash]
-      const parentOutcome = outcomes[connection.parentHeaderHash]
+        outcomeCoordinates[connection.parentActionHash]
+      const childOutcomeCoords = outcomeCoordinates[connection.childActionHash]
+      const parentOutcome = outcomes[connection.parentActionHash]
 
       // do not proceed if we don't have coordinates
       // for the outcomes of this connection (yet)
@@ -75,8 +75,8 @@ export function checkForConnectionAtCoordinates(
       if (
         newCtx.isPointInStroke(connectionPath, convertedMouse.x, convertedMouse.y)
       ) {
-        // set the overConnectionAddress to this connection headerHash
-        overConnectionAddress = connection.headerHash
+        // set the overConnectionAddress to this connection actionHash
+        overConnectionAddress = connection.actionHash
       }
     })
   return overConnectionAddress
@@ -86,11 +86,11 @@ export function checkForOutcomeAtCoordinates(
   ctx: CanvasRenderingContext2D,
   translate: { x: number; y: number },
   scale: number,
-  outcomeCoordinates: { [headerHash: HeaderHashB64]: { x: number; y: number } },
+  outcomeCoordinates: { [actionHash: ActionHashB64]: { x: number; y: number } },
   state: RootState,
   clickX: number,
   clickY: number,
-  outcomes: { [headerHash: HeaderHashB64]: ComputedOutcome }
+  outcomes: { [actionHash: ActionHashB64]: ComputedOutcome }
 ) {
   const {
     ui: { activeProject },
@@ -109,10 +109,10 @@ export function checkForOutcomeAtCoordinates(
   // keep track of whether an Outcome was selected
   let clickedAddress: string
   Object.keys(outcomes)
-    .map((headerHash) => outcomes[headerHash])
+    .map((actionHash) => outcomes[actionHash])
     .forEach((outcome) => {
       // convert the topLeft and bottomRight points of the outcome to canvas
-      const coords = outcomeCoordinates[outcome.headerHash]
+      const coords = outcomeCoordinates[outcome.actionHash]
 
       // do not proceed if we don't have coordinates
       // for the outcome (yet)
@@ -138,14 +138,14 @@ export function checkForOutcomeAtCoordinates(
         convertedClick.y >= coords.y &&
         convertedClick.y <= bottomRight.y
       ) {
-        clickedAddress = outcome.headerHash
+        clickedAddress = outcome.actionHash
       }
     })
   return clickedAddress
 }
 
 export function checkForOutcomeAtCoordinatesInBox(
-  outcomeCoordinates: { [headerHash: HeaderHashB64]: { x: number; y: number } },
+  outcomeCoordinates: { [actionHash: ActionHashB64]: { x: number; y: number } },
   corner: { x: number; y: number },
   oppositeCorner: { x: number; y: number }
 ) {
@@ -153,10 +153,10 @@ export function checkForOutcomeAtCoordinatesInBox(
   // keep track of whether an Outcome was selected
   let clickedAddresses = {}
   Object.keys(outcomeCoordinates)
-    // .map((headerHash) => outcomes[headerHash])
-    .forEach((headerHash) => {
+    // .map((actionHash) => outcomes[actionHash])
+    .forEach((actionHash) => {
       // convert the topLeft and bottomRight points of the outcome to canvas
-      const coords = outcomeCoordinates[headerHash]
+      const coords = outcomeCoordinates[actionHash]
       // do not proceed if we don't have coordinates
       // for the outcome (yet)
       if (!coords) return
@@ -185,7 +185,7 @@ export function checkForOutcomeAtCoordinatesInBox(
           oppositeCorner.y > bottomRight.y &&
           coords.y > corner.y)
       ) {
-        clickedAddresses[headerHash] = 1
+        clickedAddresses[actionHash] = 1
       }
     })
   return Object.keys(clickedAddresses)

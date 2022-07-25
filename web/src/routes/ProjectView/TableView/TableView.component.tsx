@@ -4,18 +4,18 @@ import './TableView.scss'
 import { Profile } from '../../../types'
 import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
 import { Tag } from '../../../types'
-import { HeaderHashB64, WithHeaderHash } from '../../../types/shared'
+import { ActionHashB64, WithActionHash } from '../../../types/shared'
 import OutcomeTableWithFilters from '../../../components/OutcomeTableWithFilters/OutcomeTableWithFilters'
 
 export type TableViewConnectorStateProps = {
   whoAmI: Profile
   projectMemberProfiles: Profile[]
-  projectTags: WithHeaderHash<Tag>[]
+  projectTags: WithActionHash<Tag>[]
 }
 
 export type TableViewConnectorDispatchProps = {
-  openExpandedView: (headerHash: HeaderHashB64) => void
-  goToOutcome: (headerHash: HeaderHashB64) => void
+  openExpandedView: (actionHash: ActionHashB64) => void
+  goToOutcome: (actionHash: ActionHashB64) => void
 }
 
 export type TableViewProps = TableViewConnectorStateProps &

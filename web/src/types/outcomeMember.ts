@@ -1,7 +1,7 @@
-import { HeaderHashB64, AgentPubKeyB64 } from "./shared";
+import { ActionHashB64, AgentPubKeyB64 } from "./shared";
 
 export interface OutcomeMember {
-    outcomeHeaderHash: HeaderHashB64,
+    outcomeActionHash: ActionHashB64,
     // the "assignee"
     memberAgentPubKey: AgentPubKeyB64,
     // the person who authored this entry

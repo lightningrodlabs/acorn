@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react'
 import drawOutcome from '../../drawing/drawOutcome'
 import { ComputedOutcome, Tag } from '../../types'
-import { WithHeaderHash } from '../../types/shared'
+import { WithActionHash } from '../../types/shared'
 import './MapViewDevMode.scss'
 
 export type MapViewDevModeProps = {
-  projectTags: WithHeaderHash<Tag>[]
+  projectTags: WithActionHash<Tag>[]
   outcome: ComputedOutcome
   outcomeLeftX: number
   outcomeTopY: number

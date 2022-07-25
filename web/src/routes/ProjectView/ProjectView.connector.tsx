@@ -34,7 +34,7 @@ import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 import { RootState } from '../../redux/reducer'
-import { CellIdString, HeaderHashB64 } from '../../types/shared'
+import { CellIdString, ActionHashB64 } from '../../types/shared'
 import { Outcome } from '../../types'
 import ProjectViewInner, { ProjectViewInnerConnectorDispatchProps, ProjectViewInnerConnectorStateProps, ProjectViewInnerOwnProps } from './ProjectView.component'
 
@@ -42,9 +42,9 @@ function mapStateToProps(
   state: RootState
 ): ProjectViewInnerConnectorStateProps {
   // could be null
-  const expandedViewOutcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
+  const expandedViewOutcomeActionHash = state.ui.expandedView.outcomeActionHash
   return {
-    expandedViewOutcomeHeaderHash,
+    expandedViewOutcomeActionHash,
     activeAgentPubKey: state.agentAddress
   }
 }
@@ -58,8 +58,8 @@ function mapDispatchToProps(
   return {
     setActiveProject: (projectId: CellIdString) =>
       dispatch(setActiveProject(projectId)),
-    setActiveEntryPoints: (entryPointHeaderHashes: HeaderHashB64[]) =>
-      dispatch(setActiveEntryPoints(entryPointHeaderHashes)),
+    setActiveEntryPoints: (entryPointActionHashes: ActionHashB64[]) =>
+      dispatch(setActiveEntryPoints(entryPointActionHashes)),
     resetProjectView: () => {
       dispatch(closeExpandedView())
       // send this signal so peers know you left project
@@ -68,21 +68,21 @@ function mapDispatchToProps(
       dispatch(unselectAll())
       dispatch(resetTranslateAndScale())
     },
-    openExpandedView: (headerHash: HeaderHashB64) => dispatch(openExpandedView(headerHash)),
+    openExpandedView: (actionHash: ActionHashB64) => dispatch(openExpandedView(actionHash)),
     closeExpandedView: () => dispatch(closeExpandedView()),
-    goToOutcome: (outcomeHeaderHash: HeaderHashB64) =>
-      dispatch(animatePanAndZoom(outcomeHeaderHash)),
-    updateOutcome: async (outcome: Outcome, headerHash: HeaderHashB64) => {
+    goToOutcome: (outcomeActionHash: ActionHashB64) =>
+      dispatch(animatePanAndZoom(outcomeActionHash)),
+    updateOutcome: async (outcome: Outcome, actionHash: ActionHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const outcomeWireElement = await projectsZomeApi.outcome.update(
+      const outcomeWireRecord = await projectsZomeApi.outcome.update(
         cellId,
         {
           entry: outcome,
-          headerHash,
+          actionHash,
         }
       )
-      return dispatch(updateOutcome(cellIdString, outcomeWireElement))
+      return dispatch(updateOutcome(cellIdString, outcomeWireRecord))
     },
     fetchProjectMeta: async () => {
       const appWebsocket = await getAppWs()
@@ -165,17 +165,17 @@ const ProjectView = connect(
 function ProjectViewWrapper() {
   const { projectId } = useParams<{ projectId: CellIdString }>()
   const location = useLocation()
-  let entryPointHeaderHashesRaw = new URLSearchParams(location.search).get(
+  let entryPointActionHashesRaw = new URLSearchParams(location.search).get(
     ENTRY_POINTS
   )
-  let entryPointHeaderHashes = []
-  if (entryPointHeaderHashesRaw) {
-    entryPointHeaderHashes = entryPointHeaderHashesRaw.split(',')
+  let entryPointActionHashes = []
+  if (entryPointActionHashesRaw) {
+    entryPointActionHashes = entryPointActionHashesRaw.split(',')
   }
   return (
     <ProjectView
       projectId={projectId}
-      entryPointHeaderHashes={entryPointHeaderHashes}
+      entryPointActionHashes={entryPointActionHashes}
     />
   )
 }

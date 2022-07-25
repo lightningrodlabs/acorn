@@ -11,8 +11,8 @@ import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { createTag } from '../redux/persistent/projects/tags/actions'
 import { Outcome } from '../types'
-import { WireElement } from '../api/hdkCrud'
-import { HeaderHashB64 } from '../types/shared'
+import { WireRecord } from '../api/hdkCrud'
+import { ActionHashB64 } from '../types/shared'
 
 export default async function importAllProjectData(
   existingAgents,
@@ -52,21 +52,21 @@ export default async function importAllProjectData(
   }
 
   // OUTCOMES
-  const outcomeHeaderHashMap: { [oldHeaderHash: HeaderHashB64]: HeaderHashB64 } = {}
+  const outcomeActionHashMap: { [oldActionHash: ActionHashB64]: ActionHashB64 } = {}
   // do the outcomes second, since pretty much everything else
   // is sub-data to the outcomes
-  for (let outcomeHeaderHash of Object.keys(projectData.outcomes)) {
-    const oldOutcome = projectData.outcomes[outcomeHeaderHash]
+  for (let outcomeActionHash of Object.keys(projectData.outcomes)) {
+    const oldOutcome = projectData.outcomes[outcomeActionHash]
     const clone = {
       ...oldOutcome,
       isImported: true,
     }
     // v0.5.4-alpha
-    delete clone.headerHash
+    delete clone.actionHash
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    let newOutcome: WireElement<Outcome>
+    let newOutcome: WireRecord<Outcome>
     try {
       newOutcome = await projectsZomeApi.outcome.create(projectsCellId, clone)
       dispatch(
@@ -76,15 +76,15 @@ export default async function importAllProjectData(
       console.log('createOutcome error', e)
       throw e
     }
-    // add this new outcome address to the outcomeHeaderHashMap
+    // add this new outcome address to the outcomeActionHashMap
     // to keep of which new addresses map to which old addresses
-    let oldOutcomeHeaderHash: HeaderHashB64
+    let oldOutcomeActionHash: ActionHashB64
     // v0.5.4-alpha
-    if (oldOutcome.headerHash) oldOutcomeHeaderHash = oldOutcome.headerHash
+    if (oldOutcome.actionHash) oldOutcomeActionHash = oldOutcome.actionHash
     // pre v0.5.3-alpha and prior
-    else if (oldOutcome.address) oldOutcomeHeaderHash = oldOutcome.address
+    else if (oldOutcome.address) oldOutcomeActionHash = oldOutcome.address
 
-    outcomeHeaderHashMap[oldOutcomeHeaderHash] = newOutcome.headerHash
+    outcomeActionHashMap[oldOutcomeActionHash] = newOutcome.actionHash
   }
 
   // CONNECTIONS
@@ -93,19 +93,19 @@ export default async function importAllProjectData(
     console.log(old)
     const clone = {
       ...old,
-      parentHeaderHash: outcomeHeaderHashMap[old.parentHeaderHash],
-      childHeaderHash: outcomeHeaderHashMap[old.childHeaderHash],
+      parentActionHash: outcomeActionHashMap[old.parentActionHash],
+      childActionHash: outcomeActionHashMap[old.childActionHash],
       // randomizer used to be a float, but is now an int
       randomizer: Number(old.randomizer.toFixed()),
       isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
-    delete clone.headerHash
+    delete clone.actionHash
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.childHeaderHash || !clone.parentHeaderHash) {
+    if (!clone.childActionHash || !clone.parentActionHash) {
       console.log('weird, invalid connection:', clone)
       continue
     }
@@ -125,16 +125,16 @@ export default async function importAllProjectData(
     const old = projectData.outcomeMembers[address]
     const clone = {
       ...old,
-      outcomeHeaderHash: outcomeHeaderHashMap[old.outcomeHeaderHash],
+      outcomeActionHash: outcomeActionHashMap[old.outcomeActionHash],
       isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
-    delete clone.headerHash
+    delete clone.actionHash
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.outcomeHeaderHash) {
+    if (!clone.outcomeActionHash) {
       console.log('weird, invalid outcomeMember:', clone)
       continue
     }
@@ -154,16 +154,16 @@ export default async function importAllProjectData(
     const old = projectData.outcomeComments[address]
     const clone = {
       ...old,
-      outcomeHeaderHash: outcomeHeaderHashMap[old.outcomeHeaderHash],
+      outcomeActionHash: outcomeActionHashMap[old.outcomeActionHash],
       isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
-    delete clone.headerHash
+    delete clone.actionHash
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.outcomeHeaderHash) {
+    if (!clone.outcomeActionHash) {
       console.log('weird, invalid outcomeComment:', clone)
       continue
     }
@@ -183,16 +183,16 @@ export default async function importAllProjectData(
     const old = projectData.outcomeVotes[address]
     const clone = {
       ...old,
-      outcomeHeaderHash: outcomeHeaderHashMap[old.outcomeHeaderHash],
+      outcomeActionHash: outcomeActionHashMap[old.outcomeActionHash],
       isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
-    delete clone.headerHash
+    delete clone.actionHash
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.outcomeHeaderHash) {
+    if (!clone.outcomeActionHash) {
       console.log('weird, invalid outcomeVote:', clone)
       continue
     }
@@ -212,16 +212,16 @@ export default async function importAllProjectData(
     const old = projectData.entryPoints[address]
     const clone = {
       ...old,
-      outcomeHeaderHash: outcomeHeaderHashMap[old.outcomeHeaderHash],
+      outcomeActionHash: outcomeActionHashMap[old.outcomeActionHash],
       isImported: true,
     }
     // an assigned field
     // v0.5.4-alpha
-    delete clone.headerHash
+    delete clone.actionHash
     // pre v0.5.3-alpha and prior
     delete clone.address
 
-    if (!clone.outcomeHeaderHash) {
+    if (!clone.outcomeActionHash) {
       console.log('weird, invalid entryPoint:', clone)
       continue
     }
@@ -246,7 +246,7 @@ export default async function importAllProjectData(
       }
       // an assigned field
       // v1.0.0-alpha
-      delete clone.headerHash
+      delete clone.actionHash
 
       try {
         const createdTag = await projectsZomeApi.tag.create(projectsCellId, clone)
@@ -261,5 +261,5 @@ export default async function importAllProjectData(
   }
 
   // return the list of old addresses mapped to new addresses
-  return outcomeHeaderHashMap
+  return outcomeActionHashMap
 }

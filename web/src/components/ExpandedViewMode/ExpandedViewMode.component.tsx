@@ -4,7 +4,7 @@ import Icon from '../Icon/Icon'
 import EVMiddleColumn from './EVMiddleColumn/EVMiddleColumn'
 import EVLeftColumn from './EVLeftColumn/EVLeftColumn'
 import { ExpandedViewTab } from './NavEnum'
-import { CellIdString, HeaderHashB64 } from '../../types/shared'
+import { CellIdString, ActionHashB64 } from '../../types/shared'
 import { ComputedOutcome, ComputedScope } from '../../types'
 import './ExpandedViewMode.scss'
 import ButtonClose from '../ButtonClose/ButtonClose'
@@ -16,7 +16,7 @@ import OnClickOutside from '../OnClickOutside/OnClickOutside'
 export type ExpandedViewModeOwnProps = {
   projectId: CellIdString
   onClose: () => void
-  openExpandedView: (headerHash: HeaderHashB64) => void
+  openExpandedView: (actionHash: ActionHashB64) => void
   outcome: ComputedOutcome
   outcomeAndAncestors: ComputedOutcome[]
   details: React.ReactElement
@@ -28,7 +28,7 @@ export type ExpandedViewModeOwnProps = {
 
 // redux props
 export type ExpandedViewModeConnectorProps = {
-  outcomeHeaderHash: HeaderHashB64
+  outcomeActionHash: ActionHashB64
   commentCount: number
 }
 
@@ -38,7 +38,7 @@ export type ExpandedViewModeProps = ExpandedViewModeOwnProps &
 const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
   outcome,
   outcomeAndAncestors,
-  outcomeHeaderHash,
+  outcomeActionHash,
   openExpandedView,
   commentCount,
   details,
@@ -54,26 +54,26 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
 
   useEffect(() => {
     // reset
-    if (!outcomeHeaderHash) {
+    if (!outcomeActionHash) {
       setActiveTab(ExpandedViewTab.Details)
     }
 
-    if (showing && !outcomeHeaderHash) {
+    if (showing && !outcomeActionHash) {
       setShowing(false)
-    } else if (!showing && outcomeHeaderHash) {
+    } else if (!showing && outcomeActionHash) {
       setShowing(true)
     }
-  }, [outcomeHeaderHash])
+  }, [outcomeActionHash])
 
   useEffect(() => {
     // don't do anything if we're dealing with the ExpandedViewMode
     // closing itself
-    if (outcomeHeaderHash) {
+    if (outcomeActionHash) {
       setActiveTab(ExpandedViewTab.Details)
     }
-  }, [outcomeHeaderHash])
+  }, [outcomeActionHash])
 
-  const outcomeId = hashCodeId(outcomeHeaderHash)
+  const outcomeId = hashCodeId(outcomeActionHash)
 
   const childrenCount =
     outcome && outcome.children ? outcome.children.length : 0
@@ -97,8 +97,8 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
           <div className="expanded-view-breadcrumbs-wrapper">
             <Breadcrumbs
               outcomeAndAncestors={outcomeAndAncestors}
-              onClickItem={(headerHash) => {
-                openExpandedView(headerHash)
+              onClickItem={(actionHash) => {
+                openExpandedView(actionHash)
               }}
             />
           </div>

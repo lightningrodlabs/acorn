@@ -8,12 +8,12 @@ import {
 } from './actions'
 import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { Action, CellIdString, HeaderHashB64, WithHeaderHash } from '../../../../types/shared'
-import { WireElement } from '../../../../api/hdkCrud'
+import { Action, CellIdString, ActionHashB64, WithActionHash } from '../../../../types/shared'
+import { WireRecord } from '../../../../api/hdkCrud'
 import { DeleteOutcomeFullyResponse, OutcomeComment } from '../../../../types'
 
 export type ProjectOutcomeCommentsState = {
-  [headerHash: HeaderHashB64]: WithHeaderHash<OutcomeComment>
+  [actionHash: ActionHashB64]: WithActionHash<OutcomeComment>
 }
 
 export type OutcomeCommentsState = {
@@ -21,7 +21,7 @@ export type OutcomeCommentsState = {
 }
 const defaultState: OutcomeCommentsState = {}
 
-export default function (state: OutcomeCommentsState = defaultState, action: Action<WireElement<OutcomeComment>> | Action<DeleteOutcomeFullyResponse>): OutcomeCommentsState {
+export default function (state: OutcomeCommentsState = defaultState, action: Action<WireRecord<OutcomeComment>> | Action<DeleteOutcomeFullyResponse>): OutcomeCommentsState {
   const { payload, type } = action
 
   if (
@@ -33,7 +33,7 @@ export default function (state: OutcomeCommentsState = defaultState, action: Act
       DELETE_OUTCOME_COMMENT,
     )
   ) {
-    const crudAction = action as Action<WireElement<OutcomeComment>>
+    const crudAction = action as Action<WireRecord<OutcomeComment>>
     return crudReducer(
       state,
       crudAction,
@@ -52,7 +52,7 @@ export default function (state: OutcomeCommentsState = defaultState, action: Act
   switch (type) {
     // DELETE_OUTCOME
     case DELETE_OUTCOME_FULLY:
-      // filter out the OutcomeComments whose headerHashes are listed as having been
+      // filter out the OutcomeComments whose actionHashes are listed as having been
       // deleted on account of having deleted the Outcome it relates to
       const deleteFullyResponse = payload as DeleteOutcomeFullyResponse
       return {

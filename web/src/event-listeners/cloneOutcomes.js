@@ -21,7 +21,7 @@ export default async function cloneOutcomes(store) {
   outcomesToClone.forEach(async (value) => {
     let members = []
     Object.values(outcomeMembers).map(_value => {
-      _value.outcomeHeaderHash === value ? members.push(_value) : null
+      _value.outcomeActionHash === value ? members.push(_value) : null
     })
 
     const createdOutcome = await projectsZomeApi.outcome.create(cellId, {
@@ -33,11 +33,11 @@ export default async function cloneOutcomes(store) {
         createOutcome(activeProject, createdOutcome)
       )
       .then(value => {
-        let newOutcomeAddress = value.outcome.headerHash
-        store.dispatch(selectOutcome(value.outcome.headerHash))
+        let newOutcomeAddress = value.outcome.actionHash
+        store.dispatch(selectOutcome(value.outcome.actionHash))
         members.map(async member => {
           const createdOutcomeMember = await projectsZomeApi.outcomeMember.create(cellId, {
-                outcomeHeaderHash: newOutcomeAddress,
+                outcomeActionHash: newOutcomeAddress,
                 memberAgentPubKey: member.memberAgentPubKey,
                 creatorAgentPubKey: member.creatorAgentPubKey,
                 unixTimestamp: moment().unix(),

@@ -18,8 +18,8 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    goToOutcome: (outcomeHeaderHash) => {
-      return dispatch(animatePanAndZoom(outcomeHeaderHash))
+    goToOutcome: (outcomeActionHash) => {
+      return dispatch(animatePanAndZoom(outcomeActionHash))
     }
   }
 }

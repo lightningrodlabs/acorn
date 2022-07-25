@@ -1,6 +1,6 @@
 
 import _ from 'lodash'
-import { WireElement } from '../../../../api/hdkCrud'
+import { WireRecord } from '../../../../api/hdkCrud'
 import { Member } from '../../../../types'
 import { AgentPubKeyB64, CellIdString } from '../../../../types/shared'
 
@@ -23,8 +23,8 @@ export default function (state: MembersState = defaultState, action): MembersSta
     // FETCH_MEMBERS
     case FETCH_MEMBERS:
       cellIdString = action.meta.cellIdString
-      const members = payload as Array<WireElement<Member>>
-      const mapped = members.map((wireElement) => wireElement.entry)
+      const members = payload as Array<WireRecord<Member>>
+      const mapped = members.map((wireRecord) => wireRecord.entry)
       return {
         ...state,
         [cellIdString]: _.keyBy(mapped, 'agentPubKey'),

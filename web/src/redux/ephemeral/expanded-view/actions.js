@@ -1,11 +1,11 @@
 const OPEN_EXPANDED_VIEW = 'OPEN_EXPANDED_VIEW'
 const CLOSE_EXPANDED_VIEW = 'CLOSE_EXPANDED_VIEW'
 
-function openExpandedView(outcomeHeaderHash) {
+function openExpandedView(outcomeActionHash) {
   return {
     type: OPEN_EXPANDED_VIEW,
     payload: {
-      outcomeHeaderHash,
+      outcomeActionHash,
     },
   }
 }

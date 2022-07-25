@@ -64,7 +64,7 @@ import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { triggerUpdateLayout } from '../redux/ephemeral/layout/actions'
 import { deleteConnection } from '../redux/persistent/projects/connections/actions'
-import { HeaderHashB64 } from '../types/shared'
+import { ActionHashB64 } from '../types/shared'
 import { ComputedOutcome, RelationInput } from '../types'
 import { RootState } from '../redux/reducer'
 import { MouseEvent } from 'react'
@@ -81,9 +81,9 @@ function handleMouseUpForOutcomeForm({
   state: RootState
   event: MouseEvent
   store: any // redux store, for the sake of dispatch
-  fromAddress?: HeaderHashB64
+  fromAddress?: ActionHashB64
   relation?: RelationInput
-  existingParentConnectionAddress?: HeaderHashB64
+  existingParentConnectionAddress?: ActionHashB64
 }) {
   const calcedPoint = coordsPageToCanvas(
     {
@@ -106,11 +106,11 @@ function handleMouseUpForOutcomeForm({
   )
 }
 
-// outcomes is ComputedOutcomes in an object, keyed by their headerHash
+// outcomes is ComputedOutcomes in an object, keyed by their actionHash
 export default function setupEventListeners(
   store,
   canvas: HTMLCanvasElement,
-  outcomes: { [headerHash: HeaderHashB64]: ComputedOutcome }
+  outcomes: { [actionHash: ActionHashB64]: ComputedOutcome }
 ) {
   const ctx = canvas.getContext('2d')
 
@@ -245,7 +245,7 @@ export default function setupEventListeners(
 
   function canvasMousemove(event) {
     const state = store.getState()
-    let outcomeHeaderHashesToSelect
+    let outcomeActionHashesToSelect
     const {
       ui: {
         viewport: { translate, scale },
@@ -281,19 +281,19 @@ export default function setupEventListeners(
             h: convertedCurrentMouse.y - initialSelectY,
           })
         )
-        outcomeHeaderHashesToSelect = checkForOutcomeAtCoordinatesInBox(
+        outcomeActionHashesToSelect = checkForOutcomeAtCoordinatesInBox(
           outcomeCoordinates,
           convertedCurrentMouse,
           { x: initialSelectX, y: initialSelectY }
         )
-        store.dispatch(setOutcomes(outcomeHeaderHashesToSelect))
+        store.dispatch(setOutcomes(outcomeActionHashesToSelect))
       } else {
         store.dispatch(changeTranslate(event.movementX, event.movementY))
       }
       return
     }
 
-    const outcomeHeaderHash = checkForOutcomeAtCoordinates(
+    const outcomeActionHash = checkForOutcomeAtCoordinates(
       ctx,
       translate,
       scale,
@@ -318,27 +318,27 @@ export default function setupEventListeners(
       state.ui.hover.hoveredOutcome !== connectionAddress
     ) {
       store.dispatch(hoverConnection(connectionAddress))
-    } else if (!outcomeHeaderHash && state.ui.hover.hoveredConnection) {
+    } else if (!outcomeActionHash && state.ui.hover.hoveredConnection) {
       store.dispatch(unhoverConnection())
     }
 
     if (
-      outcomeHeaderHash &&
-      state.ui.hover.hoveredOutcome !== outcomeHeaderHash
+      outcomeActionHash &&
+      state.ui.hover.hoveredOutcome !== outcomeActionHash
     ) {
-      store.dispatch(hoverOutcome(outcomeHeaderHash))
+      store.dispatch(hoverOutcome(outcomeActionHash))
       // hook up if the connection connector to a new Outcome
       // if we are using the connection connector
       // and IMPORTANTLY if Outcome is in the list of `validToAddresses`
       if (
         state.ui.connectionConnector.fromAddress &&
         state.ui.connectionConnector.validToAddresses.includes(
-          outcomeHeaderHash
+          outcomeActionHash
         )
       ) {
-        store.dispatch(setConnectionConnectorTo(outcomeHeaderHash))
+        store.dispatch(setConnectionConnectorTo(outcomeActionHash))
       }
-    } else if (!outcomeHeaderHash && state.ui.hover.hoveredOutcome) {
+    } else if (!outcomeActionHash && state.ui.hover.hoveredOutcome) {
       store.dispatch(unhoverOutcome())
       store.dispatch(setConnectionConnectorTo(null))
     }
@@ -518,7 +518,7 @@ export default function setupEventListeners(
     } = state
     const outcomes = state.projects.outcomes[activeProject] || {}
     const outcomeCoordinates = state.ui.layout
-    const outcomeHeaderHash = checkForOutcomeAtCoordinates(
+    const outcomeActionHash = checkForOutcomeAtCoordinates(
       ctx,
       translate,
       scale,
@@ -536,8 +536,8 @@ export default function setupEventListeners(
       translate,
       scale
     )
-    if (outcomeHeaderHash) {
-      store.dispatch(openExpandedView(outcomeHeaderHash))
+    if (outcomeActionHash) {
+      store.dispatch(openExpandedView(outcomeActionHash))
     } else {
       store.dispatch(openOutcomeForm(calcedPoint.x, calcedPoint.y))
     }

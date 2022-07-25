@@ -31,7 +31,7 @@ export default function selectEntryPoints(state: RootState, projectId: CellIdStr
   const combinedEntryPoints = Object.keys(entryPoints)
     .map((key) => {
       const entryPoint = entryPoints[key]
-      const outcome = outcomes[entryPoint.outcomeHeaderHash]
+      const outcome = outcomes[entryPoint.outcomeActionHash]
       if (outcome) {
         return {
           entryPoint,

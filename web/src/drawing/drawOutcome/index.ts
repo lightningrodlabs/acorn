@@ -1,5 +1,5 @@
 import { ComputedOutcome, Tag } from '../../types'
-import { WithHeaderHash } from '../../types/shared'
+import { WithActionHash } from '../../types/shared'
 import draw from '../draw'
 import {
   argsForDrawBackgroundColor,
@@ -47,7 +47,7 @@ const drawOutcome = ({
   outcomeTopY: number
   outcomeHeight: number
   outcomeWidth: number
-  projectTags: WithHeaderHash<Tag>[]
+  projectTags: WithActionHash<Tag>[]
   // variants
   zoomLevel: number
   isTopPriority: boolean

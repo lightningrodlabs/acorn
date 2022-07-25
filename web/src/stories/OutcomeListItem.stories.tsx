@@ -23,7 +23,7 @@ Primary.storyName = 'OutcomeListItem'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 const args: OutcomeListItemProps = {
   outcome: {
-    headerHash: '12344',
+    actionHash: '12344',
     content:
       'New API in typescript definitions are written Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
     creatorAgentPubKey: 'creatoragentpubkey',

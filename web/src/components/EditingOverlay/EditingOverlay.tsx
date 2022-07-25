@@ -1,12 +1,12 @@
 import React from 'react'
 import { Profile } from '../../types'
-import { WithHeaderHash } from '../../types/shared'
+import { WithActionHash } from '../../types/shared'
 import Avatar from '../Avatar/Avatar'
 import './EditingOverlay.scss'
 
 export type EditingOverlayProps = {
   isBeingEditedByOther: boolean
-  personEditing: WithHeaderHash<Profile>
+  personEditing: WithActionHash<Profile>
 }
 
 const EditingOverlay: React.FC<EditingOverlayProps> = ({

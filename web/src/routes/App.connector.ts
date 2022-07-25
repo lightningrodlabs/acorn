@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import { HeaderHashB64 } from '../types/shared'
+import { ActionHashB64 } from '../types/shared'
 import { Profile } from '../types'
 
 import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
@@ -64,9 +64,9 @@ function mapStateToProps(state: RootState): AppStateProps {
     ? selectEntryPoints(state, activeProject)
     : []
   const activeEntryPointsObjects = activeEntryPoints
-    .map((headerHash: HeaderHashB64) => {
+    .map((actionHash: ActionHashB64) => {
       return allProjectEntryPoints.find(
-        (entryPoint) => entryPoint.entryPoint.headerHash === headerHash
+        (entryPoint) => entryPoint.entryPoint.actionHash === actionHash
       )
     })
     // cut out invalid ones
@@ -93,8 +93,8 @@ function mapDispatchToProps(dispatch): AppDispatchProps {
     setNavigationPreference: (preference) => {
       return dispatch(setNavigationPreference(preference))
     },
-    goToOutcome: (outcomeHeaderHash) => {
-      return dispatch(animatePanAndZoom(outcomeHeaderHash))
+    goToOutcome: (outcomeActionHash) => {
+      return dispatch(animatePanAndZoom(outcomeActionHash))
     },
     openInviteMembersModal: (passphrase) => {
       return dispatch(openInviteMembersModal(passphrase))
@@ -119,12 +119,12 @@ function mergeProps(
   return {
     ...stateProps,
     ...dispatchProps,
-    updateWhoami: async (entry: Profile, headerHash: string) => {
+    updateWhoami: async (entry: Profile, actionHash: string) => {
       const appWebsocket = await getAppWs()
       const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
       const updatedWhoami = await profilesZomeApi.profile.updateWhoami(cellId, {
         entry,
-        headerHash,
+        actionHash,
       })
       return dispatch(updateWhoami(profilesCellIdString, updatedWhoami))
     },

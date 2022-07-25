@@ -31,22 +31,22 @@ function NestedTreeOutcome({
 
   const searchParams = new URLSearchParams(location.search)
   const isUsingOutcomeAsContext =
-    searchParams.get('contextOutcome') === outcome.headerHash
+    searchParams.get('contextOutcome') === outcome.actionHash
   const showMakeTopPriorityOutcome =
     projectMeta &&
     projectMeta.priorityMode === PriorityModeOptions.Universal &&
     !projectMeta.topPriorityOutcomes.find(
-      (headerHash) => headerHash === outcome.headerHash
+      (actionHash) => actionHash === outcome.actionHash
     )
   const makeTopPriority = () => {
     const toPass = {
       ...projectMeta,
       topPriorityOutcomes: projectMeta.topPriorityOutcomes.concat([
-        outcome.headerHash,
+        outcome.actionHash,
       ]),
     }
-    delete toPass.headerHash
-    updateProjectMeta(toPass, projectMeta.headerHash)
+    delete toPass.actionHash
+    updateProjectMeta(toPass, projectMeta.actionHash)
   }
 
   return (
@@ -54,7 +54,7 @@ function NestedTreeOutcome({
       {match && (
         <div className="indented-view-outcome-item">
           <NavLink
-            to={`${location.pathname}?contextOutcome=${outcome.headerHash}`}
+            to={`${location.pathname}?contextOutcome=${outcome.actionHash}`}
             className="indented-view-outcome-content"
             isActive={(match) => match && isUsingOutcomeAsContext}
           >
@@ -123,7 +123,7 @@ function NestedTreeOutcome({
       {(filterText.length || expanded) && outcome.children
         ? outcome.children.map((childOutcome, index) => (
             <NestedTreeOutcome
-              key={childOutcome.headerHash}
+              key={childOutcome.actionHash}
               filterText={filterText}
               outcome={childOutcome}
               level={level + 1}

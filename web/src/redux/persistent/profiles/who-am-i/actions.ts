@@ -6,7 +6,7 @@
 */
 
 
-import { WireElement } from '../../../../api/hdkCrud'
+import { WireRecord } from '../../../../api/hdkCrud'
 import { PROFILES_ZOME_NAME } from '../../../../holochainConfig'
 import { Profile, WhoAmIOutput } from '../../../../types'
 import { Action, CellIdString } from '../../../../types/shared'
@@ -23,7 +23,7 @@ const whoami = (cellIdString: CellIdString, payload: WhoAmIOutput): Action<WhoAm
   }
 }
 
-const createWhoami = (cellIdString: CellIdString, payload: WireElement<Profile>): Action<WireElement<Profile>> => {
+const createWhoami = (cellIdString: CellIdString, payload: WireRecord<Profile>): Action<WireRecord<Profile>> => {
   return {
     type: CREATE_WHOAMI,
     payload,
@@ -31,7 +31,7 @@ const createWhoami = (cellIdString: CellIdString, payload: WireElement<Profile>)
   }
 }
 
-const updateWhoami = (cellIdString: CellIdString, payload: WireElement<Profile>): Action<WireElement<Profile>> => {
+const updateWhoami = (cellIdString: CellIdString, payload: WireRecord<Profile>): Action<WireRecord<Profile>> => {
   return {
     type: UPDATE_WHOAMI,
     payload,
@@ -40,4 +40,4 @@ const updateWhoami = (cellIdString: CellIdString, payload: WireElement<Profile>)
 }
 
 export { whoami, WHOAMI, createWhoami, CREATE_WHOAMI, updateWhoami, UPDATE_WHOAMI }
-export type WhoamiAction = Action<WhoAmIOutput> | Action<WireElement<Profile>>
+export type WhoamiAction = Action<WhoAmIOutput> | Action<WireRecord<Profile>>

@@ -4,8 +4,8 @@ import moment from 'moment'
 import {
   AgentPubKeyB64,
   CellIdString,
-  HeaderHashB64,
-  WithHeaderHash,
+  ActionHashB64,
+  WithActionHash,
 } from '../../../types/shared'
 import {
   AchievementStatus,
@@ -40,21 +40,21 @@ export type EvRightColumnOwnProps = {
 
 export type EvRightColumnConnectorStateProps = {
   activeAgentPubKey: AgentPubKeyB64
-  outcomeHeaderHash: HeaderHashB64
+  outcomeActionHash: ActionHashB64
   isEntryPoint: boolean
-  entryPointHeaderHash: HeaderHashB64
-  projectMeta: WithHeaderHash<ProjectMeta>
+  entryPointActionHash: ActionHashB64
+  projectMeta: WithActionHash<ProjectMeta>
 }
 
 export type EvRightColumnConnectorDispatchProps = {
-  updateOutcome: (outcome: Outcome, headerHash: HeaderHashB64) => Promise<void>
+  updateOutcome: (outcome: Outcome, actionHash: ActionHashB64) => Promise<void>
   updateProjectMeta: (
     projectMeta: ProjectMeta,
-    headerHash: HeaderHashB64
+    actionHash: ActionHashB64
   ) => Promise<void>
   createEntryPoint: (entryPoint: EntryPoint) => Promise<void>
-  deleteEntryPoint: (headerHash: HeaderHashB64) => Promise<void>
-  onDeleteClick: (outcomeHeaderHash: HeaderHashB64) => Promise<void>
+  deleteEntryPoint: (actionHash: ActionHashB64) => Promise<void>
+  onDeleteClick: (outcomeActionHash: ActionHashB64) => Promise<void>
 }
 
 export type EvRightColumnProps = EvRightColumnOwnProps &
@@ -82,8 +82,8 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
   outcome,
   // state props
   activeAgentPubKey,
-  outcomeHeaderHash,
-  entryPointHeaderHash,
+  outcomeActionHash,
+  entryPointActionHash,
   isEntryPoint,
   projectMeta,
   // dispatch props
@@ -147,7 +147,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
           },
         },
       },
-      outcomeHeaderHash
+      outcomeActionHash
     )
   }
 
@@ -173,7 +173,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
         timestampUpdated: moment().unix(),
         scope,
       },
-      outcomeHeaderHash
+      outcomeActionHash
     )
   }
 
@@ -196,7 +196,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
         timestampUpdated: moment().unix(),
         scope: { Uncertain: { inBreakdown, timeFrame, smallsEstimate } },
       },
-      outcomeHeaderHash
+      outcomeActionHash
     )
   }
 
@@ -205,39 +205,39 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
   // of high priority outcomes for the project
   const topPriorityOutcomes = projectMeta ? projectMeta.topPriorityOutcomes : []
   const isHighPriority = !!topPriorityOutcomes.find(
-    (headerHash) => headerHash === outcomeHeaderHash
+    (actionHash) => actionHash === outcomeActionHash
   )
   const setIsHighPriority = async (state: boolean) => {
     // clone the object from state for
     // modifying it to send over the api
-    const { headerHash, ...projectMetaDetails } = projectMeta
+    const { actionHash, ...projectMetaDetails } = projectMeta
     const newProjectMeta = {
       ...projectMetaDetails,
     }
     if (state) {
       newProjectMeta.topPriorityOutcomes = newProjectMeta.topPriorityOutcomes.concat(
-        [outcomeHeaderHash]
+        [outcomeActionHash]
       )
     } else {
       newProjectMeta.topPriorityOutcomes = newProjectMeta.topPriorityOutcomes.filter(
-        (headerHash) => headerHash !== outcomeHeaderHash
+        (actionHash) => actionHash !== outcomeActionHash
       )
     }
-    await updateProjectMeta(newProjectMeta, headerHash)
+    await updateProjectMeta(newProjectMeta, actionHash)
   }
 
   // EntryPoint related
   const turnIntoEntryPoint = () => {
     createEntryPoint({
-      color: pickColorForString(outcomeHeaderHash),
+      color: pickColorForString(outcomeActionHash),
       creatorAgentPubKey: activeAgentPubKey,
       createdAt: Date.now(),
-      outcomeHeaderHash: outcomeHeaderHash,
+      outcomeActionHash: outcomeActionHash,
       isImported: false,
     })
   }
   const unmakeAsEntryPoint = () => {
-    deleteEntryPoint(entryPointHeaderHash)
+    deleteEntryPoint(entryPointActionHash)
   }
   const entryPointClickAction = isEntryPoint
     ? unmakeAsEntryPoint
@@ -247,7 +247,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
 
   // Archive action
   const deleteAndClose = async () => {
-    await onDeleteClick(outcomeHeaderHash)
+    await onDeleteClick(outcomeActionHash)
     onClose()
   }
 

@@ -30,7 +30,7 @@ Primary.args = {
     isImported: false,
   },
   comment: {
-    outcomeHeaderHash: '389457985y498592847',
+    outcomeActionHash: '389457985y498592847',
     content:
       'can anyone here help me with several google analytics account setups? I need some training and have clients using square and wordpress. I used to just rely on monster insights plug-in but with GA4 I think things have changed. HALP!',
     creatorAgentPubKey: '389457985y498592847',

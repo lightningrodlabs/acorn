@@ -8,7 +8,7 @@ const cleanOutcome = (computedOutcome: ComputedOutcome): Outcome => {
   const {
     computedAchievementStatus,
     computedScope,
-    headerHash,
+    actionHash,
     children,
     members,
     comments,

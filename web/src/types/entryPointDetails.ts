@@ -1,8 +1,8 @@
-import { WireElement } from '../api/hdkCrud'
+import { WireRecord } from '../api/hdkCrud'
 import { EntryPoint } from './entryPoint'
 import { Outcome } from './outcome'
 
 export interface EntryPointDetails {
-    entryPoints: Array<WireElement<EntryPoint>>,
-    outcomes: Array<WireElement<Outcome>>,
+    entryPoints: Array<WireRecord<EntryPoint>>,
+    outcomes: Array<WireRecord<Outcome>>,
 }

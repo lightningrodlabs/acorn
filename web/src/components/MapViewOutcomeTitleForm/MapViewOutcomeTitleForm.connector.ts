@@ -12,7 +12,7 @@ import MapViewOutcomeTitleForm, { MapViewOutcomeTitleFormConnectorDispatchProps,
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
-import { HeaderHashB64, Option } from '../../types/shared'
+import { ActionHashB64, Option } from '../../types/shared'
 import { LinkedOutcomeDetails, Outcome } from '../../types'
 
 // https://react-redux.js.org/using-react-redux/connect-mapstate
@@ -68,7 +68,7 @@ function mapDispatchToProps(dispatch, ownProps: MapViewOutcomeTitleFormOwnProps)
     updateContent: (content: string) => {
       return dispatch(updateContent(content))
     },
-    deleteConnection: async (headerHash: HeaderHashB64) => {
+    deleteConnection: async (actionHash: ActionHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       // we will only be archiving
@@ -76,8 +76,8 @@ function mapDispatchToProps(dispatch, ownProps: MapViewOutcomeTitleFormOwnProps)
       // it with another during a createOutcomeWithConnection
       // thus we don't want a glitchy animation
       // so we DON'T call TRIGGER_UPDATE_LAYOUT
-      await projectsZomeApi.connection.delete(cellId, headerHash)
-      return dispatch(deleteConnection(cellIdString, headerHash))
+      await projectsZomeApi.connection.delete(cellId, actionHash)
+      return dispatch(deleteConnection(cellIdString, actionHash))
     },
     createOutcomeWithConnection: async (entry: Outcome, maybeLinkedOutcome: Option<LinkedOutcomeDetails>) => {
       const appWebsocket = await getAppWs()

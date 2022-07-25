@@ -226,7 +226,7 @@ function WeighIn({ values, onUpdate }) {
 }
 
 export default function PriorityPickerVote({
-  outcomeHeaderHash,
+  outcomeActionHash,
   createOutcomeVote,
   openToMyVote,
   whoami,
@@ -237,7 +237,7 @@ export default function PriorityPickerVote({
   const [openMyVote, setOpenMyVote] = useState(openToMyVote)
 
   const myVote = votes.find(value => {
-    return value.agentAddress === whoami.entry.headerHash
+    return value.agentAddress === whoami.entry.actionHash
   })
 
   const defaultValues = {
@@ -250,19 +250,19 @@ export default function PriorityPickerVote({
   const onUpdateVote = () => {
     const outcome_vote = {
       ...values,
-      outcomeHeaderHash: outcomeHeaderHash,
-      creatorAgentPubKey: whoami.entry.headerHash,
+      outcomeActionHash: outcomeActionHash,
+      creatorAgentPubKey: whoami.entry.actionHash,
       unixTimestamp: moment().unix(),
       isImported: false
     }
-    updateOutcomeVote(outcome_vote, myVote.headerHash)
+    updateOutcomeVote(outcome_vote, myVote.actionHash)
   }
 
   const createVote = async () => {
     await createOutcomeVote({
       ...values,
-      outcomeHeaderHash: outcomeHeaderHash,
-      creatorAgentPubKey: whoami.entry.headerHash,
+      outcomeActionHash: outcomeActionHash,
+      creatorAgentPubKey: whoami.entry.actionHash,
       unixTimestamp: moment().unix(),
       isImported: false
     })
@@ -284,11 +284,11 @@ export default function PriorityPickerVote({
   }
   const handleDelete = () => {
     const vote = votes.find(value => {
-      return value.agentAddress === whoami.entry.headerHash
+      return value.agentAddress === whoami.entry.actionHash
     })
     if (!vote) return
     setOpenMyVote(false)
-    deleteOutcomeVote(vote.headerHash)
+    deleteOutcomeVote(vote.actionHash)
     setValues(defaultValues)
   }
 

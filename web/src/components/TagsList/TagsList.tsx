@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
+import { ActionHashB64, WithActionHash } from '../../types/shared'
 import { Tag as TagType } from '../../types'
 import Tag from '../Tag/Tag'
 import TagPicker from '../TagPicker/TagPicker'
@@ -8,9 +8,9 @@ import Icon from '../Icon/Icon'
 import './TagsList.scss'
 
 export type TagsListProps = {
-  tags: WithHeaderHash<TagType>[]
-  selectedTags: HeaderHashB64[]
-  onChange?: (newSelectedTags: HeaderHashB64[]) => void
+  tags: WithActionHash<TagType>[]
+  selectedTags: ActionHashB64[]
+  onChange?: (newSelectedTags: ActionHashB64[]) => void
   onSaveTag?: (text: string, backgroundColor: string) => Promise<void>
   showAddTagButton: boolean
 }
@@ -27,13 +27,13 @@ const TagsList: React.FC<TagsListProps> = ({
   return (
     // TODO: make on click outside possible to close the popup
     <div className="tags-list-wrapper">
-      {selectedTags.map((tagHeaderHash) => {
-        const tag = tags.find((tag) => tag.headerHash === tagHeaderHash)
+      {selectedTags.map((tagActionHash) => {
+        const tag = tags.find((tag) => tag.actionHash === tagActionHash)
         if (!tag) {
           return
         }
         return (
-          <div key={tagHeaderHash} className="tags-list-item">
+          <div key={tagActionHash} className="tags-list-item">
             <Tag text={tag.text} backgroundColor={tag.backgroundColor} />
           </div>
         )

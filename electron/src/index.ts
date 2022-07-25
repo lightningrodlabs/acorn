@@ -4,7 +4,7 @@ import * as path from 'path'
 import initAgent, {
   StateSignal,
   STATUS_EVENT,
-} from 'electron-holochain'
+} from '@sprillow-connor/electron-holochain'
 
 import {
   devOptions,

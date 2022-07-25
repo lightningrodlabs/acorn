@@ -17,7 +17,7 @@ function mapStateToProps(state: RootState) {
   return {
     agentAddress: state.agentAddress,
     selectedOutcomes: state.ui.selection.selectedOutcomes.map(
-      (headerHash) => outcomes[headerHash]
+      (actionHash) => outcomes[actionHash]
     ),
   }
 }
@@ -29,11 +29,11 @@ function mapDispatchToProps(dispatch, ownProps) {
     cellId = cellIdFromString(cellIdString)
   }
   return {
-    updateOutcome: async (entry, headerHash) => {
+    updateOutcome: async (entry, actionHash) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedOutcome = await projectsZomeApi.outcome.update(cellId, {
-        headerHash,
+        actionHash,
         entry,
       })
       return dispatch(updateOutcome(cellIdString, updatedOutcome))

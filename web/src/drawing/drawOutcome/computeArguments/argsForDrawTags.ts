@@ -1,6 +1,6 @@
 import { TAGS_TAG_FONT_COLOR } from '../../../styles'
 import { ComputedOutcome, Tag } from '../../../types'
-import { WithHeaderHash } from '../../../types/shared'
+import { WithActionHash } from '../../../types/shared'
 import {
   DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT,
   outcomePaddingHorizontal,
@@ -30,14 +30,14 @@ export const argsForDrawTags = ({
   outcomeTopY: number
   outcomeWidth: number
   heightOfStatement: number
-  projectTags: WithHeaderHash<Tag>[]
+  projectTags: WithActionHash<Tag>[]
   ctx: CanvasRenderingContext2D
 }): Parameters<typeof drawTags>[0] => {
-  // turn the headerHash array of tags into
+  // turn the actionHash array of tags into
   // an array of actual Tag objects
-  const tags = outcome.tags.map((headerHash) => {
+  const tags = outcome.tags.map((actionHash) => {
     return projectTags.find(
-      (projectTag) => projectTag.headerHash === headerHash
+      (projectTag) => projectTag.actionHash === actionHash
     )
   })
   const xPosition = outcomeLeftX + outcomePaddingHorizontal

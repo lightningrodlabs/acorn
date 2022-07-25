@@ -11,8 +11,8 @@ import { cellIdFromString } from '../../utils'
 import ConnectionConnectorPicker from './ConnectionConnectorPicker.component'
 
 function mapStateToProps(state: RootState) {
-  const selectedOutcomes = state.ui.selection.selectedOutcomes.map((headerHash) => {
-    return state.projects.outcomes[state.ui.activeProject][headerHash]
+  const selectedOutcomes = state.ui.selection.selectedOutcomes.map((actionHash) => {
+    return state.projects.outcomes[state.ui.activeProject][actionHash]
   })
 
   const connections = Object.values(state.projects.connections[state.ui.activeProject])
@@ -26,29 +26,29 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    previewConnections: (parentHeaderHash, childrenAddresses, activeProject) => {
-      const connections = childrenAddresses.map((childHeaderHash) => ({
-        childHeaderHash,
-        parentHeaderHash,
+    previewConnections: (parentActionHash, childrenAddresses, activeProject) => {
+      const connections = childrenAddresses.map((childActionHash) => ({
+        childActionHash,
+        parentActionHash,
       }))
       return dispatch(previewConnections(activeProject, connections))
     },
     clearPreview: (activeProject) => {
       return dispatch(clearConnectionsPreview(activeProject))
     },
-    saveConnections: async (parentHeaderHash, childrenAddresses, cellIdString) => {
+    saveConnections: async (parentActionHash, childrenAddresses, cellIdString) => {
       // loop over childrenAddresses
       // use createConnection each time
       const cellId = cellIdFromString(cellIdString)
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       return Promise.all(
-        childrenAddresses.map(async (childHeaderHash) => {
+        childrenAddresses.map(async (childActionHash) => {
           const connection = await projectsZomeApi.connection.create(
             cellId,
             {
-              parentHeaderHash,
-              childHeaderHash,
+              parentActionHash,
+              childActionHash,
               randomizer: Date.now(),
               isImported: false,
             }

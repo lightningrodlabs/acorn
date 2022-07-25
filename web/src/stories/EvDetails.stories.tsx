@@ -26,7 +26,7 @@ Primary.storyName = 'EvDetails'
 
 const props: EvDetailsProps = {
   projectId: '1241241',
-  outcomeHeaderHash: '1243523',
+  outcomeActionHash: '1243523',
   activeAgentPubKey: '1245314',
   outcome: testBigAchievedOutcome,
   projectTags: [],
@@ -34,13 +34,13 @@ const props: EvDetailsProps = {
     {
       ...testProfile,
       isOutcomeMember: true,
-      outcomeMemberHeaderHash: '1241',
+      outcomeMemberActionHash: '1241',
     },
   ],
   profiles: {
     '389457985y498592847': testProfile,
   },
-  assignees: [{ profile: testProfile, outcomeMemberHeaderHash: '124' }],
+  assignees: [{ profile: testProfile, outcomeMemberActionHash: '124' }],
   editingPeers: [],
   onSaveTag: async () => {},
   updateOutcome: async () => {},

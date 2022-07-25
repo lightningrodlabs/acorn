@@ -2,11 +2,11 @@ import React, { useRef, useState } from 'react'
 import { NavLink, Route, useLocation, useRouteMatch } from 'react-router-dom'
 import useOnClickOutside from 'use-onclickoutside'
 
-import { WireElement } from '../../api/hdkCrud'
+import { WireRecord } from '../../api/hdkCrud'
 import {
   AgentPubKeyB64,
-  HeaderHashB64,
-  WithHeaderHash,
+  ActionHashB64,
+  WithActionHash,
   CellIdString,
 } from '../../types/shared'
 import { ProjectMeta, Profile, EntryPoint, Outcome } from '../../types'
@@ -28,7 +28,7 @@ function ActiveEntryPoint({
 }) {
   const location = useLocation()
   const entryPointsAbsentThisOne = activeEntryPointAddresses
-    .filter((headerHash) => headerHash !== entryPoint.headerHash)
+    .filter((actionHash) => actionHash !== entryPoint.actionHash)
     .join(',')
   return (
     <div className="active-entry-point">
@@ -37,7 +37,7 @@ function ActiveEntryPoint({
       <div
         className="active-entry-point-content"
         title={outcome.content}
-        onClick={() => goToOutcome(entryPoint.outcomeHeaderHash)}
+        onClick={() => goToOutcome(entryPoint.outcomeActionHash)}
       >
         {outcome.content}
       </div>
@@ -52,19 +52,19 @@ function ActiveEntryPoint({
 }
 
 export type HeaderLeftPanelProps = {
-  whoami: WireElement<Profile>
+  whoami: WireRecord<Profile>
   members: Profile[]
   presentMembers: AgentPubKeyB64[]
   projectName: string
   isExportOpen: boolean
   activeEntryPoints:  {
-    entryPoint: WithHeaderHash<EntryPoint>
-    outcome: WithHeaderHash<Outcome>
+    entryPoint: WithActionHash<EntryPoint>
+    outcome: WithActionHash<Outcome>
   }[]
   openInviteMembersModal: () => void
   setShowProjectSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
   onClickExport: () => void
-  goToOutcome: (outcomeHeaderHash: HeaderHashB64) => void
+  goToOutcome: (outcomeActionHash: ActionHashB64) => void
 }
 
 const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
@@ -80,7 +80,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   presentMembers,
 }) => {
   const activeEntryPointAddresses = activeEntryPoints.map(
-    ({ entryPoint }) => entryPoint.headerHash
+    ({ entryPoint }) => entryPoint.actionHash
   )
   // in this context, we'd want to display members on the project,
   // except your own self
@@ -246,7 +246,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
           <div className="header-left-panel second-row">
             {activeEntryPoints.map(({ entryPoint, outcome }) => (
               <ActiveEntryPoint
-                key={entryPoint.headerHash}
+                key={entryPoint.actionHash}
                 entryPoint={entryPoint}
                 outcome={outcome}
                 activeEntryPointAddresses={activeEntryPointAddresses}

@@ -9,12 +9,12 @@ import {
 } from './actions'
 import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { Action, CellIdString, HeaderHashB64, WithHeaderHash } from '../../../../types/shared'
-import { WireElement } from '../../../../api/hdkCrud'
+import { Action, CellIdString, ActionHashB64, WithActionHash } from '../../../../types/shared'
+import { WireRecord } from '../../../../api/hdkCrud'
 import { DeleteOutcomeFullyResponse, OutcomeVote } from '../../../../types'
 
 export type ProjectOutcomeVotesState = {
-  [headerHash: HeaderHashB64]: WithHeaderHash<OutcomeVote>
+  [actionHash: ActionHashB64]: WithActionHash<OutcomeVote>
 }
 
 export type OutcomeVotesState = {
@@ -22,7 +22,7 @@ export type OutcomeVotesState = {
 }
 const defaultState: OutcomeVotesState = {}
 
-export default function (state: OutcomeVotesState = defaultState, action: Action<WireElement<OutcomeVote>> | Action<DeleteOutcomeFullyResponse>): OutcomeVotesState {
+export default function (state: OutcomeVotesState = defaultState, action: Action<WireRecord<OutcomeVote>> | Action<DeleteOutcomeFullyResponse>): OutcomeVotesState {
   const { payload, type } = action
 
   if (
@@ -34,7 +34,7 @@ export default function (state: OutcomeVotesState = defaultState, action: Action
       DELETE_OUTCOME_VOTE
     )
   ) {
-    const crudAction = action as Action<WireElement<OutcomeVote>>
+    const crudAction = action as Action<WireRecord<OutcomeVote>>
     return crudReducer(
       state,
       crudAction,
@@ -54,7 +54,7 @@ export default function (state: OutcomeVotesState = defaultState, action: Action
     // DELETE_OUTCOME
     case DELETE_OUTCOME_FULLY:
       const deleteFullyResponse = payload as DeleteOutcomeFullyResponse
-      // filter out the OutcomeVotes whose headerHashes are listed as having been
+      // filter out the OutcomeVotes whose actionHashes are listed as having been
       // deleted on account of having deleted the Outcome it relates to
       return {
         ...state,

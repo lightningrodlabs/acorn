@@ -9,7 +9,7 @@ import {
 import { CREATE_WHOAMI, UPDATE_WHOAMI } from '../who-am-i/actions'
 import { AgentPubKeyB64 } from '../../../../types/shared'
 import { Profile } from '../../../../types'
-import { WireElement } from '../../../../api/hdkCrud'
+import { WireRecord } from '../../../../api/hdkCrud'
 
 export type AgentsState = {
   [agentPubKey: AgentPubKeyB64]: Profile
@@ -27,7 +27,7 @@ export default function (
       console.log(fetchedAgents)
       return _.keyBy(fetchedAgents, 'agentPubKey')
     case SET_AGENT:
-      const setAgent = payload as WireElement<Profile>
+      const setAgent = payload as WireRecord<Profile>
       return {
         ...state,
         [setAgent.entry.agentPubKey]: setAgent.entry,
@@ -35,7 +35,7 @@ export default function (
     case CREATE_IMPORTED_PROFILE:
     case CREATE_WHOAMI:
     case UPDATE_WHOAMI:
-      const agent = payload as WireElement<Profile>
+      const agent = payload as WireRecord<Profile>
       return {
         ...state,
         [agent.entry.agentPubKey]: agent.entry,

@@ -4,7 +4,7 @@ import outcomesAsTrees, {
   TreeData,
 } from '../redux/persistent/projects/outcomes/outcomesAsTrees'
 import { ComputedOutcome, Tag } from '../types'
-import { HeaderHashB64, WithHeaderHash } from '../types/shared'
+import { ActionHashB64, WithActionHash } from '../types/shared'
 
 const VERTICAL_SPACING = 160
 
@@ -12,12 +12,12 @@ function getBoundingRec(
   outcome: ComputedOutcome,
   zoomLevel: number,
   ctx: CanvasRenderingContext2D,
-  projectTags: WithHeaderHash<Tag>[],
+  projectTags: WithActionHash<Tag>[],
   allOutcomeCoordinates: {
-    [headerHash: HeaderHashB64]: { x: number; y: number }
+    [actionHash: ActionHashB64]: { x: number; y: number }
   }
 ) {
-  const origCoord = allOutcomeCoordinates[outcome.headerHash]
+  const origCoord = allOutcomeCoordinates[outcome.actionHash]
   if (!origCoord) {
     return
   }
@@ -27,7 +27,7 @@ function getBoundingRec(
   let boundLeft = origCoord.x
 
   function updateLimits(outcomeToCheck) {
-    const topLeftCoord = allOutcomeCoordinates[outcomeToCheck.headerHash]
+    const topLeftCoord = allOutcomeCoordinates[outcomeToCheck.actionHash]
     if (!topLeftCoord) {
       return
     }
@@ -66,7 +66,7 @@ function layoutForTree(
   ctx: CanvasRenderingContext2D,
   tree: ComputedOutcome,
   zoomLevel: number,
-  projectTags: WithHeaderHash<Tag>[]
+  projectTags: WithActionHash<Tag>[]
 ) {
   // create a graph
   const graph = new dagre.graphlib.Graph()
@@ -77,7 +77,7 @@ function layoutForTree(
 
   // use recursion to add each outcome as a node in the graph
   function addOutcome(outcome: ComputedOutcome) {
-    graph.setNode(outcome.headerHash, {
+    graph.setNode(outcome.actionHash, {
       width: outcomeWidth,
       height:
         getOutcomeHeight({
@@ -91,7 +91,7 @@ function layoutForTree(
     outcome.children.forEach((childOutcome) => {
       addOutcome(childOutcome)
       // add each connection as an connection in the graph
-      graph.setEdge(outcome.headerHash, childOutcome.headerHash)
+      graph.setEdge(outcome.actionHash, childOutcome.actionHash)
     })
   }
   // kick off the recursion
@@ -103,10 +103,10 @@ function layoutForTree(
   // create a coordinates object
   const coordinates = {}
   // update the coordinates object
-  graph.nodes().forEach((headerHash) => {
-    coordinates[headerHash] = {
-      x: graph.node(headerHash).x,
-      y: graph.node(headerHash).y,
+  graph.nodes().forEach((actionHash) => {
+    coordinates[actionHash] = {
+      x: graph.node(actionHash).x,
+      y: graph.node(actionHash).y,
     }
   })
   return coordinates
@@ -115,7 +115,7 @@ function layoutForTree(
 export default function layoutFormula(
   data: TreeData,
   zoomLevel: number,
-  projectTags: WithHeaderHash<Tag>[]
+  projectTags: WithActionHash<Tag>[]
 ) {
   const trees = outcomesAsTrees(data)
 

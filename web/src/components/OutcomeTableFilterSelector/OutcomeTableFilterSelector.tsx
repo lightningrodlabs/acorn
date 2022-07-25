@@ -5,7 +5,7 @@ import {
   Profile,
   Tag as TagType,
 } from '../../types'
-import { WithHeaderHash } from '../../types/shared'
+import { WithActionHash } from '../../types/shared'
 import Avatar from '../Avatar/Avatar'
 import FilterButton from '../FilterButton/FilterButton'
 import FilterDropdown from '../FilterDropdown/FilterDropdown'
@@ -22,7 +22,7 @@ export type OutcomeTableFilterSelectorProps = {
   onApplyOutcomeTableFilter: (filters: OutcomeTableFilter) => void
   filter: OutcomeTableFilter
   projectMemberProfiles: Profile[]
-  projectTags: WithHeaderHash<TagType>[]
+  projectTags: WithActionHash<TagType>[]
 }
 
 const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
@@ -101,7 +101,7 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
       innerListItem: (
         <Tag text={tag.text} backgroundColor={tag.backgroundColor} />
       ),
-      id: tag.headerHash,
+      id: tag.actionHash,
     }
   })
   function isOnlyMeAssigned(filter: OutcomeTableFilter) {

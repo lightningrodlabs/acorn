@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import hashCodeId from '../../api/clientSideIdHash'
 import { ComputedOutcome, ComputedScope, Tag } from '../../types'
-import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
+import { ActionHashB64, WithActionHash } from '../../types/shared'
 import AvatarsList from '../AvatarsList/AvatarsList'
 import ExpandChevron from '../ExpandChevron/ExpandChevron'
 import Icon from '../Icon/Icon'
@@ -13,14 +13,14 @@ import './OutcomeTableRow.scss'
 
 export type OutcomeTableRowProps = {
   columnWidthPercentages: [string, string, string, string, string]
-  projectTags: WithHeaderHash<Tag>[]
+  projectTags: WithActionHash<Tag>[]
   outcome: ComputedOutcome
   filter: OutcomeTableFilter
   parentExpanded: boolean
   indentationLevel: number
   expandByDefault?: boolean
-  openExpandedView: (headerHash: HeaderHashB64) => void
-  goToOutcome: (headerHash: HeaderHashB64) => void
+  openExpandedView: (actionHash: ActionHashB64) => void
+  goToOutcome: (actionHash: ActionHashB64) => void
 }
 
 const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
@@ -58,7 +58,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
               minWidth: columnWidthPercentages[0],
             }}
           >
-            {hashCodeId(outcome.headerHash)}
+            {hashCodeId(outcome.actionHash)}
           </div>
 
           {/* Outcome statement & progress indicator metadata */}
@@ -111,7 +111,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
             {/* Outcome statement text */}
             <div
               className="outcome-statement-text"
-              onClick={() => openExpandedView(outcome.headerHash)}
+              onClick={() => openExpandedView(outcome.actionHash)}
               title={outcome.content}
             >
               {outcome.content}
@@ -164,7 +164,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
           </div>
           <div
             className="outcome-table-row-hover-button"
-            onClick={() => goToOutcome(outcome.headerHash)}
+            onClick={() => goToOutcome(outcome.actionHash)}
           >
             <Icon name="map.svg" size="small" className="grey" />
           </div>
@@ -173,7 +173,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
       {outcome.children.length > 0 &&
         outcome.children.map((outcomeChild) => (
           <OutcomeTableRow
-            key={outcomeChild.headerHash}
+            key={outcomeChild.actionHash}
             columnWidthPercentages={columnWidthPercentages}
             projectTags={projectTags}
             outcome={outcomeChild}

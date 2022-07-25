@@ -5,7 +5,7 @@
   that can be taken within that feature.
 */
 
-import { WireElement } from '../../../../api/hdkCrud'
+import { WireRecord } from '../../../../api/hdkCrud'
 import { EntryPoint, EntryPointDetails } from '../../../../types'
 import { Action, CellIdString } from '../../../../types/shared'
 import { createCrudActionCreators } from '../../crudRedux'
@@ -46,4 +46,4 @@ export {
   fetchEntryPointDetails,
 }
 
-export type EntryPointsAction = Action<WireElement<EntryPoint>> | Action<EntryPointDetails>
+export type EntryPointsAction = Action<WireRecord<EntryPoint>> | Action<EntryPointDetails>

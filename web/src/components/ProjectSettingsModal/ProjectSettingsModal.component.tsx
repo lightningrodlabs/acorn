@@ -12,7 +12,7 @@ import { PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
 import Icon from '../Icon/Icon'
 import './ProjectSettingsModal.scss'
 import { ProjectMeta } from '../../types'
-import { WithHeaderHash } from '../../types/shared'
+import { WithActionHash } from '../../types/shared'
 
 function EditProjectForm({
   updatingProject,
@@ -149,7 +149,7 @@ export default function ProjectSettingsModal({
   onClose,
   updateProjectMeta,
   openInviteMembersModal,
-  project = {} as WithHeaderHash<ProjectMeta>,
+  project = {} as WithActionHash<ProjectMeta>,
   cellIdString,
 }) {
   const [updatingProject, setUpdatingProject] = useState(false)
@@ -169,7 +169,7 @@ export default function ProjectSettingsModal({
         isImported: project.isImported,
         topPriorityOutcomes: project.topPriorityOutcomes,
       },
-      project.headerHash,
+      project.actionHash,
       cellIdString,
     )
     setUpdatingProject(false)

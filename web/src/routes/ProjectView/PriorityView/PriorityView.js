@@ -28,8 +28,8 @@ function PriorityMode({ projectId, projectMeta, updateProjectMeta }) {
     default:
       main = null
   }
-  const wrappedUpdateProjectMeta = (entry, headerHash) => {
-    return updateProjectMeta(entry, headerHash, projectId)
+  const wrappedUpdateProjectMeta = (entry, actionHash) => {
+    return updateProjectMeta(entry, actionHash, projectId)
   }
   return (
     <>
@@ -53,11 +53,11 @@ function mapStateToProps(state) {
 }
 function mapDispatchToProps(dispatch) {
   return {
-    updateProjectMeta: async (entry, headerHash, cellIdString) => {
+    updateProjectMeta: async (entry, actionHash, cellIdString) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
-      const projectMeta = await projectsZomeApi.projectMeta.update(cellId, { entry, headerHash })
+      const projectMeta = await projectsZomeApi.projectMeta.update(cellId, { entry, actionHash })
       return dispatch(
         updateProjectMeta(cellIdString, projectMeta)
       )

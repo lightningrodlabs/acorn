@@ -30,7 +30,7 @@ export const BeingEdited = Template.bind({})
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 const args: EditingOverlayProps = {
   isBeingEditedByOther: true,
-  personEditing: { ...testProfile, headerHash: '1248124' },
+  personEditing: { ...testProfile, actionHash: '1248124' },
 }
 BeingEdited.args = args
 

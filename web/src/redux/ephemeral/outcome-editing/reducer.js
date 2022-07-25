@@ -5,12 +5,12 @@ export default function(state = defaultState, action) {
   switch (type) {
     case START_TITLE_EDIT:
       return {
-        outcomeHeaderHash: payload.outcomeHeaderHash,
+        outcomeActionHash: payload.outcomeActionHash,
         isTitle: true,
       }
     case START_DESCRIPTION_EDIT:
       return {
-        outcomeHeaderHash: payload.outcomeHeaderHash,
+        outcomeActionHash: payload.outcomeActionHash,
         isTitle: false,
       }
     case END_TITLE_EDIT:

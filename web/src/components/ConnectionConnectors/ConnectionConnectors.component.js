@@ -17,14 +17,14 @@ import handleConnectionConnectMouseUp from '../../redux/ephemeral/connection-con
 // e.g. we can walk straight up the tree to the top
 function isAncestor(descendantAddress, checkAddress, connections) {
   const connectionWithParent = connections.find(
-    (connection) => connection.childHeaderHash === descendantAddress
+    (connection) => connection.childActionHash === descendantAddress
   )
   if (connectionWithParent) {
-    if (connectionWithParent.parentHeaderHash === checkAddress) {
+    if (connectionWithParent.parentActionHash === checkAddress) {
       return true
     } else {
       return isAncestor(
-        connectionWithParent.parentHeaderHash,
+        connectionWithParent.parentActionHash,
         checkAddress,
         connections
       )
@@ -38,8 +38,8 @@ function isAncestor(descendantAddress, checkAddress, connections) {
 // as long as there are no cycles in the tree this will work wonderfully
 function allDescendants(ancestorAddress, connections, accumulator = []) {
   const children = connections
-    .filter((connection) => connection.parentHeaderHash === ancestorAddress)
-    .map((connection) => connection.childHeaderHash)
+    .filter((connection) => connection.parentActionHash === ancestorAddress)
+    .map((connection) => connection.childActionHash)
   return accumulator
     .concat(
       children.map((address) => allDescendants(address, connections, children))
@@ -53,14 +53,14 @@ relation as child, other node MUST
 - not be itself
 - not be a descendant of 'from' node, to prevent cycles in the tree
 */
-function calculateValidParents(fromAddress, connections, outcomeHeaderHashes) {
+function calculateValidParents(fromAddress, connections, outcomeActionHashes) {
   const descendants = allDescendants(fromAddress, connections)
-  return outcomeHeaderHashes.filter((outcomeHeaderHash) => {
+  return outcomeActionHashes.filter((outcomeActionHash) => {
     return (
       // filter out self-address in the process
-      outcomeHeaderHash !== fromAddress &&
+      outcomeActionHash !== fromAddress &&
       // filter out any descendants
-      !descendants.includes(outcomeHeaderHash)
+      !descendants.includes(outcomeActionHash)
     )
   })
 }
@@ -75,18 +75,18 @@ relation as parent, other node MUST
 export function calculateValidChildren(
   fromAddress,
   connections,
-  outcomeHeaderHashes
+  outcomeActionHashes
 ) {
-  return outcomeHeaderHashes.filter((outcomeHeaderHash) => {
+  return outcomeActionHashes.filter((outcomeActionHash) => {
     return (
       // filter out self-address in the process
-      outcomeHeaderHash !== fromAddress &&
+      outcomeActionHash !== fromAddress &&
       // find the Outcome objects without parent Outcomes
       // since they will sit at the top level
       !connections.find(
-        (connection) => connection.childHeaderHash === outcomeHeaderHash
+        (connection) => connection.childActionHash === outcomeActionHash
       ) &&
-      !isAncestor(fromAddress, outcomeHeaderHash, connections)
+      !isAncestor(fromAddress, outcomeActionHash, connections)
     )
   })
 }
@@ -131,7 +131,7 @@ const ConnectionConnector = ({
   setConnectionConnectorTo,
   setHoveredConnectionConnector,
   connections,
-  outcomeHeaderHashes,
+  outcomeActionHashes,
   zoomLevel,
   dispatch,
 }) => {
@@ -179,7 +179,7 @@ const ConnectionConnector = ({
       setConnectionConnectorFrom(
         address,
         direction,
-        validity(address, connections, outcomeHeaderHashes),
+        validity(address, connections, outcomeActionHashes),
         // we don't think about overriding the existing
         // parent when it comes to children, since it can have many
         // ASSUMPTION: one parent
@@ -257,7 +257,7 @@ const ConnectionConnectors = ({
   zoomLevel,
   outcomes,
   connections,
-  outcomeHeaderHashes,
+  outcomeActionHashes,
   coordinates,
   coordsCanvasToPage,
   fromAddress,
@@ -287,7 +287,7 @@ const ConnectionConnectors = ({
         // of this Outcome, so that it can be deleted
         // if it is to be changed and a new one added
         const hasParent = connections.find(
-          (connection) => connection.childHeaderHash === connectorAddress
+          (connection) => connection.childActionHash === connectorAddress
         )
         return (
           <Transition key={connectorAddress} timeout={300}>
@@ -298,12 +298,12 @@ const ConnectionConnectors = ({
                 projectTags={projectTags}
                 outcome={outcome}
                 connections={connections}
-                outcomeHeaderHashes={outcomeHeaderHashes}
+                outcomeActionHashes={outcomeActionHashes}
                 fromAddress={fromAddress}
                 relation={relation}
                 toAddress={toAddress}
                 ownExistingParentConnectionAddress={
-                  hasParent && hasParent.headerHash
+                  hasParent && hasParent.actionHash
                 }
                 presetExistingParentConnectionAddress={
                   existingParentConnectionAddress

@@ -15,8 +15,8 @@ import {
 import { updateOutcome } from '../../../../../redux/persistent/projects/outcomes/actions'
 import { createTag } from '../../../../../redux/persistent/projects/tags/actions'
 import { RootState } from '../../../../../redux/reducer'
-import { AssigneeWithHeaderHash, Outcome } from '../../../../../types'
-import { HeaderHashB64, AgentPubKeyB64 } from '../../../../../types/shared'
+import { AssigneeWithActionHash, Outcome } from '../../../../../types'
+import { ActionHashB64, AgentPubKeyB64 } from '../../../../../types/shared'
 import { cellIdFromString } from '../../../../../utils'
 import EvDetails, {
   EvDetailsConnectorDispatchProps,
@@ -29,23 +29,23 @@ function mapStateToProps(
   ownProps: EvDetailsOwnProps
 ): EvDetailsConnectorStateProps {
   const { projectId } = ownProps
-  const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
+  const outcomeActionHash = state.ui.expandedView.outcomeActionHash
   const outcomeMembers = state.projects.outcomeMembers[projectId] || {}
   const tags = state.projects.tags[projectId] || {}
   const projectTags = Object.values(tags)
 
   // assignees
-  let assignees: AssigneeWithHeaderHash[] = []
-  if (outcomeHeaderHash) {
+  let assignees: AssigneeWithActionHash[] = []
+  if (outcomeActionHash) {
     assignees = Object.keys(outcomeMembers)
-      .map((headerHash) => outcomeMembers[headerHash])
+      .map((actionHash) => outcomeMembers[actionHash])
       .filter(
-        (outcomeMember) => outcomeMember.outcomeHeaderHash === outcomeHeaderHash
+        (outcomeMember) => outcomeMember.outcomeActionHash === outcomeActionHash
       )
       .map((outcomeMember) => {
         const assignee = {
           profile: state.agents[outcomeMember.memberAgentPubKey],
-          outcomeMemberHeaderHash: outcomeMember.headerHash,
+          outcomeMemberActionHash: outcomeMember.actionHash,
         }
         return assignee
       })
@@ -59,7 +59,7 @@ function mapStateToProps(
   const membersOfOutcome = Object.keys(outcomeMembers)
     .map((address) => outcomeMembers[address])
     .filter(
-      (outcomeMember) => outcomeMember.outcomeHeaderHash === outcomeHeaderHash
+      (outcomeMember) => outcomeMember.outcomeActionHash === outcomeActionHash
     )
   const people = Object.keys(members)
     .map((address) => state.agents[address])
@@ -73,7 +73,7 @@ function mapStateToProps(
       return {
         ...agent, // address, name, avatarUrl
         isOutcomeMember: member ? true : false,
-        outcomeMemberHeaderHash: member ? member.headerHash : null,
+        outcomeMemberActionHash: member ? member.actionHash : null,
       }
     })
 
@@ -90,13 +90,13 @@ function mapStateToProps(
     .filter((agentInfo) => agentInfo.outcomeBeingEdited)
     .filter(
       (agentInfo) =>
-        agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcomeHeaderHash
+        agentInfo.outcomeBeingEdited.outcomeActionHash === outcomeActionHash
     )
     .map((agentInfo) => filterAndAddAgentInfo(agentInfo))
   // this should only ever by a maximum of two peers (one editing title, one editing description)
 
   return {
-    outcomeHeaderHash,
+    outcomeActionHash,
     projectTags,
     activeAgentPubKey: state.agentAddress,
     profiles: state.agents,
@@ -122,24 +122,24 @@ function mapDispatchToProps(
       })
       return dispatch(createTag(cellIdString, createdTag))
     },
-    updateOutcome: async (outcome: Outcome, headerHash: HeaderHashB64) => {
+    updateOutcome: async (outcome: Outcome, actionHash: ActionHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedOutcome = await projectsZomeApi.outcome.update(cellId, {
-        headerHash,
+        actionHash,
         entry: outcome,
       })
       return dispatch(updateOutcome(cellIdString, updatedOutcome))
     },
     createOutcomeMember: async (
-      outcomeHeaderHash: HeaderHashB64,
+      outcomeActionHash: ActionHashB64,
       memberAgentPubKey: AgentPubKeyB64,
       creatorAgentPubKey: AgentPubKeyB64
     ) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeMember = await projectsZomeApi.outcomeMember.create(cellId, {
-        outcomeHeaderHash,
+        outcomeActionHash,
         memberAgentPubKey: memberAgentPubKey,
         creatorAgentPubKey,
         unixTimestamp: moment().unix(),
@@ -147,23 +147,23 @@ function mapDispatchToProps(
       })
       return dispatch(createOutcomeMember(cellIdString, outcomeMember))
     },
-    deleteOutcomeMember: async (headerHash: HeaderHashB64) => {
+    deleteOutcomeMember: async (actionHash: ActionHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      await projectsZomeApi.outcomeMember.delete(cellId, headerHash)
-      return dispatch(deleteOutcomeMember(cellIdString, headerHash))
+      await projectsZomeApi.outcomeMember.delete(cellId, actionHash)
+      return dispatch(deleteOutcomeMember(cellIdString, actionHash))
     },
-    startTitleEdit: (outcomeHeaderHash: HeaderHashB64) => {
-      return dispatch(startTitleEdit(outcomeHeaderHash))
+    startTitleEdit: (outcomeActionHash: ActionHashB64) => {
+      return dispatch(startTitleEdit(outcomeActionHash))
     },
-    endTitleEdit: (outcomeHeaderHash: HeaderHashB64) => {
-      return dispatch(endTitleEdit(outcomeHeaderHash))
+    endTitleEdit: (outcomeActionHash: ActionHashB64) => {
+      return dispatch(endTitleEdit(outcomeActionHash))
     },
-    startDescriptionEdit: (outcomeHeaderHash: HeaderHashB64) => {
-      return dispatch(startDescriptionEdit(outcomeHeaderHash))
+    startDescriptionEdit: (outcomeActionHash: ActionHashB64) => {
+      return dispatch(startDescriptionEdit(outcomeActionHash))
     },
-    endDescriptionEdit: (outcomeHeaderHash: HeaderHashB64) => {
-      return dispatch(endDescriptionEdit(outcomeHeaderHash))
+    endDescriptionEdit: (outcomeActionHash: ActionHashB64) => {
+      return dispatch(endDescriptionEdit(outcomeActionHash))
     },
   }
 }

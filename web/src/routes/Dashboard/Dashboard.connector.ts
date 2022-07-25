@@ -183,7 +183,7 @@ async function importProject(
   }
   // these are not actuals field
   // v0.5.4-alpha
-  delete projectMeta.headerHash
+  delete projectMeta.actionHash
   // pre v0.5.3-alpha and prior
   delete projectMeta.address
 

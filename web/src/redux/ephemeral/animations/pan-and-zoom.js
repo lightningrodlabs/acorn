@@ -7,8 +7,8 @@ export default function panZoomToFrame(store, action, currentState) {
     ...currentState.ui.viewport
   }
 
-  const outcomeHeaderHash = action.payload
-  const outcomeCoordinates = currentState.ui.layout[outcomeHeaderHash]
+  const outcomeActionHash = action.payload
+  const outcomeCoordinates = currentState.ui.layout[outcomeActionHash]
   
   if (!outcomeCoordinates) {
     console.log('could not find coordinates for outcome to animate to')

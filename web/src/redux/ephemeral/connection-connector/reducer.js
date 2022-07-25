@@ -10,7 +10,7 @@ const defaultState = {
   relation: null,
   validToAddresses: [],
   toAddress: null,
-  // existingParentConnectionAddress is the headerHash of the connection that
+  // existingParentConnectionAddress is the actionHash of the connection that
   // we would delete in order to create a new one
   // ASSUMPTION: one parent
   existingParentConnectionAddress: null

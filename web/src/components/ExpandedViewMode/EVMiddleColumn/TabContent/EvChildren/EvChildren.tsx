@@ -1,6 +1,6 @@
 import React from 'react'
 import { ComputedOutcome } from '../../../../../types'
-import { HeaderHashB64 } from '../../../../../types/shared'
+import { ActionHashB64 } from '../../../../../types/shared'
 import EvReadOnlyHeading from '../../../../EvReadOnlyHeading/EvReadOnlyHeading'
 import Icon from '../../../../Icon/Icon'
 import OutcomeListItem from '../../../../OutcomeListItem/OutcomeListItem'
@@ -9,7 +9,7 @@ import './EvChildren.scss'
 export type EvChildrenProps = {
   outcomeContent: string
   directChildren: ComputedOutcome[]
-  openExpandedView: (headerHash: HeaderHashB64) => void
+  openExpandedView: (actionHash: ActionHashB64) => void
 }
 
 const EvChildren: React.FC<EvChildrenProps> = ({
@@ -31,7 +31,7 @@ const EvChildren: React.FC<EvChildrenProps> = ({
         {directChildren.map((outcome) => {
           return (
             <OutcomeListItem
-              key={outcome.headerHash}
+              key={outcome.actionHash}
               outcome={outcome}
               openExpandedView={openExpandedView}
             />

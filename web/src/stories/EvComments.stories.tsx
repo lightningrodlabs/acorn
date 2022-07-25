@@ -28,7 +28,7 @@ const props: EvCommentsProps = {
   projectId: '1241241',
   outcomeContent:
     'This is the title of an outcome that we are viewing the comments of',
-  outcomeHeaderHash: '1243523',
+  outcomeActionHash: '1243523',
   activeAgentPubKey: '1245314',
   profiles: {
     '389457985y498592847': testProfile,

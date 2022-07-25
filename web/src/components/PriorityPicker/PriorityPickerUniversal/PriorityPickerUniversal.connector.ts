@@ -6,16 +6,16 @@ import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
 import PriorityPickerUniversal from './PriorityPickerUniversal.component'
 import { ProjectMeta } from '../../../types'
-import { HeaderHashB64 } from '../../../types/shared'
+import { ActionHashB64 } from '../../../types/shared'
 
 function mapStateToProps(state: RootState, ownProps) {
-  const { projectId, outcomeHeaderHash } = ownProps
+  const { projectId, outcomeActionHash } = ownProps
   const projectMeta = state.projects.projectMeta[projectId]
   const topPriorityOutcomes = projectMeta ? projectMeta.topPriorityOutcomes : []
   // see if the outcome of interest is listed in the set
   // of high priority outcomes for the project
   const isTopPriorityOutcome = !!topPriorityOutcomes.find(
-    (headerHash) => headerHash === outcomeHeaderHash
+    (actionHash) => actionHash === outcomeActionHash
   )
   return {
     whoami: state.whoami,
@@ -30,13 +30,13 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     updateProjectMeta: async (
       projectMeta: ProjectMeta,
-      headerHash: HeaderHashB64
+      actionHash: ActionHashB64
     ) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedProjectMeta = await projectsZomeApi.projectMeta.update(
         cellId,
-        { entry: projectMeta, headerHash }
+        { entry: projectMeta, actionHash }
       )
       return dispatch(updateProjectMeta(cellIdString, updatedProjectMeta))
     },

@@ -31,23 +31,23 @@ export default function (state = defaultState, action) {
   switch (type) {
     case DELETE_OUTCOME_FULLY:
       // unselect if the deleted Outcome was selected
-      return state.selectedOutcomes.includes(payload.outcomeHeaderHash)
+      return state.selectedOutcomes.includes(payload.outcomeActionHash)
         ? {
             ...state,
             selectedOutcomes: arrayWithoutElement(
               state.selectedOutcomes,
-              payload.outcomeHeaderHash
+              payload.outcomeActionHash
             ),
           }
         : { ...state }
     case DELETE_CONNECTION:
       // unselect if the deleted Outcome was selected
-      return state.selectedConnections.includes(payload.headerHash)
+      return state.selectedConnections.includes(payload.actionHash)
         ? {
             ...state,
             selectedConnections: arrayWithoutElement(
               state.selectedConnections,
-              payload.headerHash
+              payload.actionHash
             ),
           }
         : { ...state }
@@ -63,7 +63,7 @@ export default function (state = defaultState, action) {
       return {
         ...state,
         selectedConnections: state.selectedConnections.filter(
-          headerHash => headerHash !== payload
+          actionHash => actionHash !== payload
         ),
       }
     case SELECT_OUTCOME:
@@ -78,7 +78,7 @@ export default function (state = defaultState, action) {
       return {
         ...state,
         selectedOutcomes: state.selectedOutcomes.filter(
-          headerHash => headerHash !== payload
+          actionHash => actionHash !== payload
         ),
       }
     case UNSELECT_ALL:

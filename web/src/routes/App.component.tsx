@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Redirect, HashRouter as Router, Switch, Route } from 'react-router-dom'
 
-import { WireElement } from '../api/hdkCrud'
+import { WireRecord } from '../api/hdkCrud'
 import {
-  HeaderHashB64,
+  ActionHashB64,
   AgentPubKeyB64,
   CellIdString,
-  WithHeaderHash,
+  WithActionHash,
 } from '../types/shared'
 import { ProjectMeta, Profile, EntryPoint, Outcome } from '../types'
 
@@ -33,13 +33,13 @@ export type AppStateProps = {
   members: Profile[]
   presentMembers: AgentPubKeyB64[]
   activeEntryPoints: {
-    entryPoint: WithHeaderHash<EntryPoint>
-    outcome: WithHeaderHash<Outcome>
+    entryPoint: WithActionHash<EntryPoint>
+    outcome: WithActionHash<Outcome>
   }[]
-  activeProjectMeta: WithHeaderHash<ProjectMeta>
+  activeProjectMeta: WithActionHash<ProjectMeta>
   projectId: CellIdString
   agentAddress: AgentPubKeyB64
-  whoami: WireElement<Profile>
+  whoami: WireRecord<Profile>
   hasFetchedForWhoami: boolean
   navigationPreference: 'mouse' | 'trackpad'
   inviteMembersModalShowing: null | string // will be the passphrase if defined
@@ -50,11 +50,11 @@ export type AppDispatchProps = {
   setNavigationPreference: (preference: 'mouse' | 'trackpad') => void
   hideInviteMembersModal: () => void
   openInviteMembersModal: (passphrase: string) => void
-  goToOutcome: (outcomeHeaderHash: HeaderHashB64) => void
+  goToOutcome: (outcomeActionHash: ActionHashB64) => void
 }
 
 export type AppMergeProps = {
-  updateWhoami: (entry: Profile, headerHash: HeaderHashB64) => Promise<void>
+  updateWhoami: (entry: Profile, actionHash: ActionHashB64) => Promise<void>
 }
 
 export type AppProps = AppStateProps & AppDispatchProps & AppMergeProps
@@ -81,7 +81,7 @@ const App: React.FC<AppProps> = ({
   const [showPreferences, setShowPreferences] = useState(false)
 
   const onProfileSubmit = async (profile) => {
-    await updateWhoami(profile, whoami.headerHash)
+    await updateWhoami(profile, whoami.actionHash)
     setShowProfileEditForm(false)
   }
   const updateStatus = async (statusString: Profile['status']) => {
@@ -90,7 +90,7 @@ const App: React.FC<AppProps> = ({
         ...whoami.entry,
         status: statusString,
       },
-      whoami.headerHash
+      whoami.actionHash
     )
   }
 

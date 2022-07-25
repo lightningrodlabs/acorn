@@ -1,7 +1,7 @@
-import { HeaderHashB64, AgentPubKeyB64 } from "./shared"
+import { ActionHashB64, AgentPubKeyB64 } from "./shared"
 
 export interface OutcomeVote {
-    outcomeHeaderHash: HeaderHashB64,
+    outcomeActionHash: ActionHashB64,
     urgency: number, //f64,
     importance: number, //f64,
     impact: number, //f64,

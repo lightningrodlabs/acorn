@@ -1,5 +1,5 @@
 import { ComputedOutcome, ComputedScope, Tag } from '../types'
-import { WithHeaderHash } from '../types/shared'
+import { WithActionHash } from '../types/shared'
 import {
   argsForDrawProgressBar,
   argsForDrawTags,
@@ -172,7 +172,7 @@ export function getOutcomeHeight({
 }: {
   ctx?: CanvasRenderingContext2D
   outcome: ComputedOutcome
-  projectTags: WithHeaderHash<Tag>[]
+  projectTags: WithActionHash<Tag>[]
   zoomLevel: number
   width: number
 }) {

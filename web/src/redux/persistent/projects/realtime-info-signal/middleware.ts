@@ -76,7 +76,7 @@ function getRealtimeInfo(state: RootState) {
   let payload = {
     projectId: state.ui.activeProject,
     outcomeBeingEdited: state.ui.outcomeEditing,
-    outcomeExpandedView: state.ui.expandedView.outcomeHeaderHash,
+    outcomeExpandedView: state.ui.expandedView.outcomeActionHash,
   }
   return { cellIdString, payload }
 }

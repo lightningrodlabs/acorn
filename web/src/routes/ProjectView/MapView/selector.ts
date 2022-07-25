@@ -6,7 +6,7 @@ import { CellIdString } from '../../../types/shared'
 export type InputType = {
   state: RootState
   computedOutcomesKeyed: {
-    [headerHash: string]: ComputedOutcome
+    [actionHash: string]: ComputedOutcome
   }
   activeProject: CellIdString
 }
@@ -61,9 +61,9 @@ const selectRenderProps = createSelector(
     connections,
     connectionConnectorFromAddress,
     connectionConnectorRelation,
-    outcomeFormFromHeaderHash,
+    outcomeFormFromActionHash,
     outcomeFormRelation,
-    hoveredConnectionHeaderHash,
+    hoveredConnectionActionHash,
     selectedConnections,
     selectedOutcomes,
     connectionConnectorToAddress,
@@ -91,9 +91,9 @@ const selectRenderProps = createSelector(
       connectionConnectorFromAddress,
       connectionConnectorRelation,
       outcomeFormIsOpen,
-      outcomeFormFromHeaderHash,
+      outcomeFormFromActionHash,
       outcomeFormRelation,
-      hoveredConnectionHeaderHash,
+      hoveredConnectionActionHash,
       selectedConnections,
       selectedOutcomes,
       connectionConnectorToAddress,
