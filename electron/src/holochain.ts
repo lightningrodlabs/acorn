@@ -4,8 +4,8 @@ import { ElectronHolochainOptions, StateSignal, PathOptions } from '@sprillow-co
 
 // see the DEVELOPERS.md about incrementing
 // these values
-const DATABASES_VERSION_NUMBER = '2'
-const KEYSTORE_VERSION_NUMBER = '2'
+const DATABASES_VERSION_NUMBER = '3'
+const KEYSTORE_VERSION_NUMBER = '3'
 
 // these messages get seen on the splash page
 export enum StateSignalText {
