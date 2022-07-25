@@ -23,7 +23,7 @@ const Template: ComponentStory<typeof EvChildrenComponent> = (args) => {
 }
 
 const outcome1: ComputedOutcome = {
-  headerHash: '12344',
+  actionHash: '12344',
   content: 'test content',
   creatorAgentPubKey: 'creatoragentpubkey',
   editorAgentPubKey: 'editoryagentpubkey',
@@ -45,7 +45,7 @@ const outcome1: ComputedOutcome = {
   children: [{}, {}],
 }
 const outcome2: ComputedOutcome = {
-  headerHash: '123412847074',
+  actionHash: '123412847074',
   content: 'This is another outcome',
   creatorAgentPubKey: 'creatoragentpubkey',
   editorAgentPubKey: 'editoryagentpubkey',

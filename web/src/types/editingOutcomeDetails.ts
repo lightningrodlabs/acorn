@@ -1,6 +1,6 @@
-import { HeaderHashB64 } from './shared'
+import { ActionHashB64 } from './shared'
 
 export interface EditingOutcomeDetails {
-    outcomeHeaderHash: HeaderHashB64,
+    outcomeActionHash: ActionHashB64,
     isTitle: boolean,
 }

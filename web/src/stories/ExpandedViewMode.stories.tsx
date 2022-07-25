@@ -31,42 +31,42 @@ const details = (
     projectId={projectId}
     outcome={testSmallAchievedOutcome}
     activeAgentPubKey={'124234134'}
-    outcomeHeaderHash={'1344151'}
+    outcomeActionHash={'1344151'}
     projectTags={testTags}
     people={[
       {
         ...testProfile,
         isOutcomeMember: true,
-        outcomeMemberHeaderHash: '1241',
+        outcomeMemberActionHash: '1241',
       },
     ]}
     profiles={{
       '389457985y498592847': testProfile,
     }}
-    assignees={[{ profile: testProfile, outcomeMemberHeaderHash: '124' }]}
+    assignees={[{ profile: testProfile, outcomeMemberActionHash: '124' }]}
     editingPeers={[]}
     updateOutcome={function (
       outcome: Outcome,
-      headerHash: string
+      actionHash: string
     ): Promise<void> {
       throw new Error('Function not implemented.')
     }}
-    createOutcomeMember={function (headerHash: string): Promise<void> {
+    createOutcomeMember={function (actionHash: string): Promise<void> {
       throw new Error('Function not implemented.')
     }}
-    deleteOutcomeMember={function (headerHash: string): Promise<void> {
+    deleteOutcomeMember={function (actionHash: string): Promise<void> {
       throw new Error('Function not implemented.')
     }}
-    startTitleEdit={function (outcomeHeaderHash: string): void {
+    startTitleEdit={function (outcomeActionHash: string): void {
       throw new Error('Function not implemented.')
     }}
-    endTitleEdit={function (outcomeHeaderHash: string): void {
+    endTitleEdit={function (outcomeActionHash: string): void {
       throw new Error('Function not implemented.')
     }}
-    startDescriptionEdit={function (outcomeHeaderHash: string): void {
+    startDescriptionEdit={function (outcomeActionHash: string): void {
       throw new Error('Function not implemented.')
     }}
-    endDescriptionEdit={function (outcomeHeaderHash: string): void {
+    endDescriptionEdit={function (outcomeActionHash: string): void {
       throw new Error('Function not implemented.')
     }}
     onSaveTag={function (text: string, backgroundColor: string): Promise<void> {
@@ -80,7 +80,7 @@ const comments = (
     projectId={projectId}
     outcomeContent="New API in typescript definitions are written 
     Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions."
-    outcomeHeaderHash={''}
+    outcomeActionHash={''}
     profiles={{
       '389457985y498592847': testProfile,
     }}
@@ -133,29 +133,29 @@ const rightColumn = (
     onClose={() => {}}
     outcome={testSmallAchievedOutcome}
     activeAgentPubKey={''}
-    outcomeHeaderHash={''}
+    outcomeActionHash={''}
     isEntryPoint={false}
-    entryPointHeaderHash={''}
+    entryPointActionHash={''}
     projectMeta={undefined}
     updateOutcome={function (
       outcome: Outcome,
-      headerHash: string
+      actionHash: string
     ): Promise<void> {
       throw new Error('Function not implemented.')
     }}
     updateProjectMeta={function (
       projectMeta: ProjectMeta,
-      headerHash: string
+      actionHash: string
     ): Promise<void> {
       throw new Error('Function not implemented.')
     }}
     createEntryPoint={function (entryPoint: EntryPoint): Promise<void> {
       throw new Error('Function not implemented.')
     }}
-    deleteEntryPoint={function (headerHash: string): Promise<void> {
+    deleteEntryPoint={function (actionHash: string): Promise<void> {
       throw new Error('Function not implemented.')
     }}
-    onDeleteClick={function (outcomeHeaderHash: string): Promise<void> {
+    onDeleteClick={function (outcomeActionHash: string): Promise<void> {
       throw new Error('Function not implemented.')
     }}
   />
@@ -167,29 +167,29 @@ const rightColumnUncertainNoChildren = (
     onClose={() => {}}
     outcome={testUncertainWithoutChildrenOutcome}
     activeAgentPubKey={''}
-    outcomeHeaderHash={''}
+    outcomeActionHash={''}
     isEntryPoint={false}
-    entryPointHeaderHash={''}
+    entryPointActionHash={''}
     projectMeta={undefined}
     updateOutcome={function (
       outcome: Outcome,
-      headerHash: string
+      actionHash: string
     ): Promise<void> {
       throw new Error('Function not implemented.')
     }}
     updateProjectMeta={function (
       projectMeta: ProjectMeta,
-      headerHash: string
+      actionHash: string
     ): Promise<void> {
       throw new Error('Function not implemented.')
     }}
     createEntryPoint={function (entryPoint: EntryPoint): Promise<void> {
       throw new Error('Function not implemented.')
     }}
-    deleteEntryPoint={function (headerHash: string): Promise<void> {
+    deleteEntryPoint={function (actionHash: string): Promise<void> {
       throw new Error('Function not implemented.')
     }}
-    onDeleteClick={function (outcomeHeaderHash: string): Promise<void> {
+    onDeleteClick={function (outcomeActionHash: string): Promise<void> {
       throw new Error('Function not implemented.')
     }}
   />
@@ -201,29 +201,29 @@ const rightColumnBig = (
     onClose={() => {}}
     outcome={testBigAchievedOutcome}
     activeAgentPubKey={''}
-    outcomeHeaderHash={''}
+    outcomeActionHash={''}
     isEntryPoint={false}
-    entryPointHeaderHash={''}
+    entryPointActionHash={''}
     projectMeta={undefined}
     updateOutcome={function (
       outcome: Outcome,
-      headerHash: string
+      actionHash: string
     ): Promise<void> {
       throw new Error('Function not implemented.')
     }}
     updateProjectMeta={function (
       projectMeta: ProjectMeta,
-      headerHash: string
+      actionHash: string
     ): Promise<void> {
       throw new Error('Function not implemented.')
     }}
     createEntryPoint={function (entryPoint: EntryPoint): Promise<void> {
       throw new Error('Function not implemented.')
     }}
-    deleteEntryPoint={function (headerHash: string): Promise<void> {
+    deleteEntryPoint={function (actionHash: string): Promise<void> {
       throw new Error('Function not implemented.')
     }}
-    onDeleteClick={function (outcomeHeaderHash: string): Promise<void> {
+    onDeleteClick={function (outcomeActionHash: string): Promise<void> {
       throw new Error('Function not implemented.')
     }}
   />
@@ -248,7 +248,7 @@ export const UncertainNoChildren = Template.bind({})
 const args: ExpandedViewModeProps = {
   projectId: '1234323',
   outcome: testUncertainWithoutChildrenOutcome,
-  outcomeHeaderHash: '112412343231',
+  outcomeActionHash: '112412343231',
   commentCount: 3,
   details: details,
   comments: comments,
@@ -269,7 +269,7 @@ export const SmallNoTasks = Template.bind({})
 const smallNoTasksArgs: ExpandedViewModeProps = {
   projectId: '1234323',
   outcome: testSmallAchievedOutcome,
-  outcomeHeaderHash: '112412343',
+  outcomeActionHash: '112412343',
   commentCount: 3,
   details: details,
   comments: comments,
@@ -290,7 +290,7 @@ export const Big = Template.bind({})
 const withChildrenArgs: ExpandedViewModeProps = {
   projectId: '1234323',
   outcome: testBigAchievedOutcome,
-  outcomeHeaderHash: '112412343',
+  outcomeActionHash: '112412343',
   commentCount: 3,
   details: details,
   comments: comments,

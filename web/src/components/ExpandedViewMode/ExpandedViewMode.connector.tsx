@@ -8,7 +8,7 @@ import ExpandedViewModeComponent, {
   ExpandedViewModeConnectorProps,
   ExpandedViewModeOwnProps,
 } from './ExpandedViewMode.component'
-import { AgentPubKeyB64, CellIdString, HeaderHashB64 } from '../../types/shared'
+import { AgentPubKeyB64, CellIdString, ActionHashB64 } from '../../types/shared'
 import {
   ComputedOutcome,
   Outcome,
@@ -25,20 +25,20 @@ function mapStateToProps(
   ownProps: ExpandedViewModeOwnProps
 ): ExpandedViewModeConnectorProps {
   const { projectId } = ownProps
-  const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
+  const outcomeActionHash = state.ui.expandedView.outcomeActionHash
   const outcomeComments = state.projects.outcomeComments[projectId] || {}
 
   let comments = []
-  if (outcomeHeaderHash) {
+  if (outcomeActionHash) {
     comments = Object.values(outcomeComments).filter(
       (outcomeComment) =>
-        outcomeComment.outcomeHeaderHash ===
-        state.ui.expandedView.outcomeHeaderHash
+        outcomeComment.outcomeActionHash ===
+        state.ui.expandedView.outcomeActionHash
     )
   }
 
   return {
-    outcomeHeaderHash,
+    outcomeActionHash,
     commentCount: comments.length,
   }
 }
@@ -52,12 +52,12 @@ const ExpandedViewMode = connect(mapStateToProps)(ExpandedViewModeComponent)
 
 export type ConnectedExpandedViewModeProps = {
   projectId: CellIdString
-  openExpandedView: (headerHash: HeaderHashB64) => void
+  openExpandedView: (actionHash: ActionHashB64) => void
   activeAgentPubKey: AgentPubKeyB64
   outcome: ComputedOutcome | null
   outcomeAndAncestors: ComputedOutcome[]
   onClose: () => void
-  updateOutcome: (outcome: Outcome, headerHash: string) => Promise<void>
+  updateOutcome: (outcome: Outcome, actionHash: string) => Promise<void>
 }
 
 const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
@@ -83,7 +83,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
           },
         },
       },
-      outcome.headerHash
+      outcome.actionHash
     )
   }
 

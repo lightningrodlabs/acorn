@@ -1,5 +1,5 @@
 import { RelationInput } from '../../../types'
-import { HeaderHashB64 } from '../../../types/shared'
+import { ActionHashB64 } from '../../../types/shared'
 
 const SET_CONNECTION_CONNECTOR_FROM = 'SET_CONNECTION_CONNECTOR_FROM'
 const SET_CONNECTION_CONNECTOR_TO = 'SET_CONNECTION_CONNECTOR_TO'
@@ -13,26 +13,26 @@ const RELATION_AS_CHILD = RelationInput.ExistingOutcomeAsChild
 // relation should be RELATION_AS_PARENT or RELATION_AS_CHILD
 // existingParentConnectionAddress is optional
 function setConnectionConnectorFrom(
-  headerHash: HeaderHashB64,
+  actionHash: ActionHashB64,
   relation: RelationInput,
-  validToHeaderHashes: Array<HeaderHashB64>,
-  existingParentConnectionHeaderHash: HeaderHashB64
+  validToActionHashes: Array<ActionHashB64>,
+  existingParentConnectionActionHash: ActionHashB64
 ) {
   return {
     type: SET_CONNECTION_CONNECTOR_FROM,
     payload: {
-      address: headerHash, // TODO: rename
+      address: actionHash, // TODO: rename
       relation,
-      validToAddresses: validToHeaderHashes,
-      existingParentConnectionAddress: existingParentConnectionHeaderHash,
+      validToAddresses: validToActionHashes,
+      existingParentConnectionAddress: existingParentConnectionActionHash,
     },
   }
 }
 
-function setConnectionConnectorTo(headerHash: HeaderHashB64) {
+function setConnectionConnectorTo(actionHash: ActionHashB64) {
   return {
     type: SET_CONNECTION_CONNECTOR_TO,
-    payload: headerHash,
+    payload: actionHash,
   }
 }
 

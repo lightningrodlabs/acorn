@@ -22,17 +22,17 @@ export default function performLayoutAnimation(store, action, currentState) {
   // from the position wherever the user was creating it
   // to its new resting place in the new layout
   if (action.type === CREATE_OUTCOME_WITH_CONNECTION) {
-    // at this point we have the headerHash of the new Outcome
+    // at this point we have the actionHash of the new Outcome
     // and we also have the coordinates where the "Outcome Form"
     // was open and being used
-    outcomeCreatedCoord[action.payload.outcome.headerHash] = {
+    outcomeCreatedCoord[action.payload.outcome.actionHash] = {
       x: currentState.ui.outcomeForm.leftConnectionXPosition,
       y: currentState.ui.outcomeForm.topConnectionYPosition,
     }
   }
 
   // this is expanding coordinates for Outcomes
-  // where the key is their headerHash
+  // where the key is their actionHash
   // and the value is an object with `x` and `y` values
   // (tween is going to directly modify this object)
   const currentLayoutTween = {

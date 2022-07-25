@@ -51,7 +51,7 @@ export default function MultiEditBar({
           timestampUpdated: moment().unix(),
           [key]: val,
         },
-        outcome.headerHash
+        outcome.actionHash
       )
     })
   }
@@ -62,7 +62,7 @@ export default function MultiEditBar({
     // for `delete` calls yet. TODO update this
     // when we can, to occur in parallel, like `updateOutcomes` above
     for (let outcome of selectedOutcomes) {
-      await deleteOutcomeFully(outcome.headerHash)
+      await deleteOutcomeFully(outcome.actionHash)
     }
   }
 
@@ -116,7 +116,7 @@ export default function MultiEditBar({
       You're about to delete the following {selectedOutcomes.length} card(s):
       <div className='modal-outcomes-list'>
         {selectedOutcomes.map(outcome => (
-          <div key={outcome.headerHash}>- {outcome.content}</div>
+          <div key={outcome.actionHash}>- {outcome.content}</div>
         ))}
       </div>
       You will be able to see these cards in the delete view mode in the

@@ -29,22 +29,22 @@ const args: TagsListProps = {
     {
       text: 'Release 0.6.2',
       backgroundColor: '#00A094',
-      headerHash: '123',
+      actionHash: '123',
     },
     {
       text: 'Code Refactor',
       backgroundColor: '#1C57C6',
-      headerHash: '456',
+      actionHash: '456',
     },
     {
       text: 'Rust Bug',
       backgroundColor: '#B45C11',
-      headerHash: '789',
+      actionHash: '789',
     },
     {
       text: 'UI Bug',
       backgroundColor: 'purple',
-      headerHash: '890',
+      actionHash: '890',
     },
   ],
   onChange: function (newSelectedTags: string[]): void {

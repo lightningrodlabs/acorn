@@ -1,10 +1,10 @@
 import _ from 'lodash'
-import { WireElement } from '../../api/hdkCrud'
+import { WireRecord } from '../../api/hdkCrud'
 import {
   Action,
   HcActionCreator,
   HdkCrudAction,
-  HeaderHashB64,
+  ActionHashB64,
 } from '../../types/shared'
 
 export function isCrud(
@@ -37,29 +37,29 @@ export function crudReducer<EntryType>(
     // CREATE AND UPDATE SHARE A RESPONSE TYPE
     case createAction:
     case updateAction:
-      let createOrUpdatePayload = payload as WireElement<EntryType>
+      let createOrUpdatePayload = payload as WireRecord<EntryType>
       return {
         ...state,
         [cellIdString]: {
           ...state[cellIdString],
-          [createOrUpdatePayload.headerHash]: {
+          [createOrUpdatePayload.actionHash]: {
             ...createOrUpdatePayload.entry,
-            headerHash: createOrUpdatePayload.headerHash,
+            actionHash: createOrUpdatePayload.actionHash,
           },
         },
       }
 
     // FETCH
     case fetchAction:
-      let fetchPayload = payload as Array<WireElement<EntryType>>
+      let fetchPayload = payload as Array<WireRecord<EntryType>>
       const mapped = fetchPayload.map((r) => {
         return {
           ...r.entry,
-          headerHash: r.headerHash,
+          actionHash: r.actionHash,
         }
       })
-      // mapped is [ { key: val, headerHash: 'QmAsdFg' }, ...]
-      const newVals = _.keyBy(mapped, 'headerHash')
+      // mapped is [ { key: val, actionHash: 'QmAsdFg' }, ...]
+      const newVals = _.keyBy(mapped, 'actionHash')
       // combines pre-existing values of the object with new values from
       // Holochain fetch
       return {
@@ -72,7 +72,7 @@ export function crudReducer<EntryType>(
 
     // DELETE
     case deleteAction:
-      let deletePayload = payload as HeaderHashB64
+      let deletePayload = payload as ActionHashB64
       return {
         ...state,
         [cellIdString]: _.pickBy(
@@ -91,13 +91,13 @@ export function createCrudActionCreators<EntryType>(
   string[],
   [
     // create
-    HcActionCreator<WireElement<EntryType>>,
+    HcActionCreator<WireRecord<EntryType>>,
     // fetch
-    HcActionCreator<WireElement<EntryType>[]>,
+    HcActionCreator<WireRecord<EntryType>[]>,
     // udpate
-    HcActionCreator<WireElement<EntryType>>,
+    HcActionCreator<WireRecord<EntryType>>,
     // delete
-    HcActionCreator<HeaderHashB64>
+    HcActionCreator<ActionHashB64>
   ]
 ] {
   const CREATE_ACTION = `CREATE_${model}`
@@ -105,7 +105,7 @@ export function createCrudActionCreators<EntryType>(
   const UPDATE_ACTION = `UPDATE_${model}`
   const DELETE_ACTION = `DELETE_${model}`
 
-  const createAction: HcActionCreator<WireElement<EntryType>> = (
+  const createAction: HcActionCreator<WireRecord<EntryType>> = (
     cellIdString,
     payload
   ) => {
@@ -115,7 +115,7 @@ export function createCrudActionCreators<EntryType>(
       meta: { cellIdString },
     }
   }
-  const fetchAction: HcActionCreator<Array<WireElement<EntryType>>> = (
+  const fetchAction: HcActionCreator<Array<WireRecord<EntryType>>> = (
     cellIdString,
     payload
   ) => {
@@ -125,7 +125,7 @@ export function createCrudActionCreators<EntryType>(
       meta: { cellIdString },
     }
   }
-  const updateAction: HcActionCreator<WireElement<EntryType>> = (
+  const updateAction: HcActionCreator<WireRecord<EntryType>> = (
     cellIdString,
     payload
   ) => {
@@ -135,7 +135,7 @@ export function createCrudActionCreators<EntryType>(
       meta: { cellIdString },
     }
   }
-  const deleteAction: HcActionCreator<HeaderHashB64> = (
+  const deleteAction: HcActionCreator<ActionHashB64> = (
     cellIdString,
     payload
   ) => {

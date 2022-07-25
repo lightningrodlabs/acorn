@@ -1,45 +1,19 @@
-use crate::{
-    get_peers_content,
-    project::outcome::crud::{fetch_outcomes, Outcome},
-    SignalType,
-};
+use crate::{get_peers_content, project::outcome::crud::fetch_outcomes, SignalType};
 use hdk::prelude::*;
-use hdk_crud::{crud, retrieval::inputs::FetchOptions, wire_element::WireElement};
-use holo_hash::{AgentPubKeyB64, EntryHashB64, HeaderHashB64};
+use hdk_crud::{crud, retrieval::inputs::FetchOptions, wire_record::WireRecord};
+use holo_hash::{ActionHashB64, AgentPubKeyB64, EntryHashB64};
 
-// The "Entry" in EntryPoint is not a reference to Holochain "Entries"
-// it is rather the concept of an Entrance, as in a doorway, to the tree
-#[hdk_entry(id = "entry_point")]
-#[serde(rename_all = "camelCase")]
-#[derive(Clone, PartialEq)]
-pub struct EntryPoint {
-    pub color: String,
-    pub creator_agent_pub_key: AgentPubKeyB64,
-    pub created_at: f64,
-    pub outcome_header_hash: HeaderHashB64,
-    pub is_imported: bool,
-}
-
-impl EntryPoint {
-    pub fn new(
-        color: String,
-        creator_agent_pub_key: AgentPubKeyB64,
-        created_at: f64,
-        outcome_header_hash: HeaderHashB64,
-        is_imported: bool,
-    ) -> Self {
-        Self {
-            color,
-            creator_agent_pub_key,
-            created_at,
-            outcome_header_hash,
-            is_imported,
-        }
-    }
-}
+use projects_integrity::{
+    project::{entry_point::entry::EntryPoint, outcome::entry::Outcome},
+    EntryTypes, LinkTypes,
+};
 
 crud!(
     EntryPoint,
+    EntryTypes,
+    EntryTypes::EntryPoint,
+    LinkTypes,
+    LinkTypes::All,
     entry_point,
     "entry_point",
     get_peers_content,
@@ -49,8 +23,8 @@ crud!(
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct EntryPointDetails {
-    pub entry_points: Vec<WireElement<EntryPoint>>,
-    pub outcomes: Vec<WireElement<Outcome>>,
+    pub entry_points: Vec<WireRecord<EntryPoint>>,
+    pub outcomes: Vec<WireRecord<Outcome>>,
 }
 
 #[hdk_extern]
@@ -64,20 +38,20 @@ pub fn fetch_entry_point_details(_: ()) -> ExternResult<EntryPointDetails> {
         .iter()
         .map(|e| {
             let element = get(
-                HeaderHash::from(e.entry.outcome_header_hash.clone()),
+                ActionHash::from(e.entry.outcome_action_hash.clone()),
                 GetOptions::content(),
             )?;
             match element {
-                Some(element) => match element.header().entry_hash() {
+                Some(element) => match element.action().entry_hash() {
                     Some(entry_hash) => Ok(EntryHashB64::new(entry_hash.clone())),
-                    None => Err(WasmError::Guest(
+                    None => Err(wasm_error!(WasmErrorInner::Guest(
                         "there was no entry_hash on a header for a Outcome specified as an entry_point"
                             .to_string(),
-                    )),
+                    ))),
                 },
-                None => Err(WasmError::Guest(
+                None => Err(wasm_error!(WasmErrorInner::Guest(
                         "there was no outcome at the address specified by an entry point".to_string(),
-                    ))
+                    )))
             }
         })
         .collect::<Vec<ExternResult<EntryHashB64>>>();

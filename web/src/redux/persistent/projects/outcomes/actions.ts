@@ -1,4 +1,4 @@
-import { WireElement } from "../../../../api/hdkCrud"
+import { WireRecord } from "../../../../api/hdkCrud"
 import { CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyResponse, Outcome } from "../../../../types"
 import { Action, CellIdString } from "../../../../types/shared"
 import { createCrudActionCreators } from "../../crudRedux"
@@ -49,4 +49,4 @@ const deleteOutcomeFully = (cellIdString: CellIdString, payload: DeleteOutcomeFu
     meta: { cellIdString },
   }
 }
-export type OutcomesAction = Action<WireElement<Outcome>> | Action<CreateOutcomeWithConnectionOutput>
+export type OutcomesAction = Action<WireRecord<Outcome>> | Action<CreateOutcomeWithConnectionOutput>

@@ -12,7 +12,7 @@ import {
 import { updateProjectMeta } from '../../../redux/persistent/projects/project-meta/actions'
 import { RootState } from '../../../redux/reducer'
 import { EntryPoint, Outcome, ProjectMeta } from '../../../types'
-import { HeaderHashB64 } from '../../../types/shared'
+import { ActionHashB64 } from '../../../types/shared'
 import { cellIdFromString } from '../../../utils'
 import EvRightColumn, {
   EvRightColumnConnectorDispatchProps,
@@ -29,19 +29,19 @@ function mapStateToProps(
   const activeAgentPubKey = state.agentAddress
   const entryPoints = state.projects.entryPoints[projectId] || {}
   const projectMeta = state.projects.projectMeta[projectId]
-  const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
+  const outcomeActionHash = state.ui.expandedView.outcomeActionHash
 
   const entryPoint = Object.values(entryPoints).find(
-    (entryPoint) => entryPoint.outcomeHeaderHash === outcomeHeaderHash
+    (entryPoint) => entryPoint.outcomeActionHash === outcomeActionHash
   )
   const isEntryPoint = entryPoint ? true : false
-  const entryPointHeaderHash = entryPoint ? entryPoint.headerHash : null
+  const entryPointActionHash = entryPoint ? entryPoint.actionHash : null
 
   return {
     isEntryPoint,
-    entryPointHeaderHash,
+    entryPointActionHash,
     activeAgentPubKey,
-    outcomeHeaderHash,
+    outcomeActionHash,
     projectMeta,
   }
 }
@@ -53,48 +53,48 @@ function mapDispatchToProps(
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
-    updateOutcome: async (outcome: Outcome, headerHash: HeaderHashB64) => {
+    updateOutcome: async (outcome: Outcome, actionHash: ActionHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedOutcome = await projectsZomeApi.outcome.update(cellId, {
-        headerHash,
+        actionHash,
         entry: outcome,
       })
       return dispatch(updateOutcome(cellIdString, updatedOutcome))
     },
     updateProjectMeta: async (
       projectMeta: ProjectMeta,
-      headerHash: HeaderHashB64
+      actionHash: ActionHashB64
     ) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedProjectMeta = await projectsZomeApi.projectMeta.update(
         cellId,
-        { entry: projectMeta, headerHash }
+        { entry: projectMeta, actionHash }
       )
       return dispatch(updateProjectMeta(cellIdString, updatedProjectMeta))
     },
     createEntryPoint: async (entryPoint: EntryPoint) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const wireElement = await projectsZomeApi.entryPoint.create(
+      const wireRecord = await projectsZomeApi.entryPoint.create(
         cellId,
         entryPoint
       )
-      return dispatch(createEntryPoint(cellIdString, wireElement))
+      return dispatch(createEntryPoint(cellIdString, wireRecord))
     },
-    deleteEntryPoint: async (headerHash: HeaderHashB64) => {
+    deleteEntryPoint: async (actionHash: ActionHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      await projectsZomeApi.entryPoint.delete(cellId, headerHash)
-      return dispatch(deleteEntryPoint(cellIdString, headerHash))
+      await projectsZomeApi.entryPoint.delete(cellId, actionHash)
+      return dispatch(deleteEntryPoint(cellIdString, actionHash))
     },
-    onDeleteClick: async (outcomeHeaderHash: HeaderHashB64) => {
+    onDeleteClick: async (outcomeActionHash: ActionHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(
         cellId,
-        outcomeHeaderHash
+        outcomeActionHash
       )
       return dispatch(deleteOutcomeFully(cellIdString, fullyDeletedOutcome))
     },

@@ -5,10 +5,10 @@ import {
   ComputedSimpleAchievementStatus,
   Outcome,
 } from '../../../../types'
-import { WithHeaderHash } from '../../../../types/shared'
+import { WithActionHash } from '../../../../types/shared'
 
 export function computeAchievementStatus(
-  self: WithHeaderHash<Outcome>,
+  self: WithActionHash<Outcome>,
   children: ComputedOutcome[]
 ): ComputedAchievementStatus {
   // calculate the number of descendants for the 3
@@ -86,7 +86,7 @@ export function computeAchievementStatus(
 }
 
 export function computeScope(
-  self: WithHeaderHash<Outcome>,
+  self: WithActionHash<Outcome>,
   children: ComputedOutcome[]
 ): ComputedScope {
   // if it has no children,

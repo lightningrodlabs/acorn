@@ -5,17 +5,17 @@ import {
 } from '../../types'
 import testProfile from './testProfile'
 import {
-  testTag1HeaderHash,
-  testTag2HeaderHash,
-  testTag3HeaderHash,
-  testTag4HeaderHash,
-  testTag5HeaderHash,
+  testTag1ActionHash,
+  testTag2ActionHash,
+  testTag3ActionHash,
+  testTag4ActionHash,
+  testTag5ActionHash,
 } from './testTags'
 
 /* Small, Not Achieved */
 
 const testSmallNotAchievedOutcome: ComputedOutcome = {
-  headerHash: 'test-small-not-achieved-header-hash',
+  actionHash: 'test-small-not-achieved-header-hash',
   content:
     'Small Not Achieved, New API in typescript definitions are written Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
   creatorAgentPubKey: 'creatoragentpubkey',
@@ -26,11 +26,11 @@ const testSmallNotAchievedOutcome: ComputedOutcome = {
     Small: { achievementStatus: 'NotAchieved', targetDate: null, taskList: [] },
   },
   tags: [
-    testTag1HeaderHash,
-    testTag2HeaderHash,
-    testTag3HeaderHash,
-    testTag4HeaderHash,
-    testTag5HeaderHash,
+    testTag1ActionHash,
+    testTag2ActionHash,
+    testTag3ActionHash,
+    testTag4ActionHash,
+    testTag5ActionHash,
   ],
   description:
     'Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
@@ -51,7 +51,7 @@ const testSmallNotAchievedOutcome: ComputedOutcome = {
 /* Small, Achieved */
 
 const testSmallAchievedOutcome: ComputedOutcome = {
-  headerHash: 'test-small-achieved-header-hash',
+  actionHash: 'test-small-achieved-header-hash',
   content:
     'New API in typescript definitions are written Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
   creatorAgentPubKey: 'creatoragentpubkey',
@@ -61,7 +61,7 @@ const testSmallAchievedOutcome: ComputedOutcome = {
   scope: {
     Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] },
   },
-  tags: [testTag1HeaderHash],
+  tags: [testTag1ActionHash],
   description:
     'Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
   githubLink: '',
@@ -79,7 +79,7 @@ const testSmallAchievedOutcome: ComputedOutcome = {
 }
 
 const testSmallAchievedOutcome2: ComputedOutcome = {
-  headerHash: 'test-small-achieved-header-hash2',
+  actionHash: 'test-small-achieved-header-hash2',
   content:
     'New API in typescript definitions are written Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
   creatorAgentPubKey: 'creatoragentpubkey',
@@ -89,7 +89,7 @@ const testSmallAchievedOutcome2: ComputedOutcome = {
   scope: {
     Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] },
   },
-  tags: [testTag1HeaderHash],
+  tags: [testTag1ActionHash],
   description:
     'Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
   githubLink: '',
@@ -109,7 +109,7 @@ const testSmallAchievedOutcome2: ComputedOutcome = {
 /* Big, Not Achieved */
 
 const testBigNotAchievedOutcome: ComputedOutcome = {
-  headerHash: 'test-big-not-achieved-header-hash',
+  actionHash: 'test-big-not-achieved-header-hash',
   content:
     'Big Not Achieved, Acorn no longer uses a legacy unmaintained library',
   creatorAgentPubKey: 'creatoragentpubkey',
@@ -140,7 +140,7 @@ const testBigNotAchievedOutcome: ComputedOutcome = {
 /* Big, Not Achieved */
 
 const testBigPartiallyAchievedOutcome: ComputedOutcome = {
-  headerHash: 'test-big-partially-achieved-header-hash',
+  actionHash: 'test-big-partially-achieved-header-hash',
   content:
     'Big Partially Achieved, Acorn no longer uses a legacy unmaintained library',
   creatorAgentPubKey: 'creatoragentpubkey',
@@ -171,7 +171,7 @@ const testBigPartiallyAchievedOutcome: ComputedOutcome = {
 /* Big, Achieved */
 
 const testBigAchievedOutcome: ComputedOutcome = {
-  headerHash: 'test-big-achieved-header-hash',
+  actionHash: 'test-big-achieved-header-hash',
   content: 'Big Achieved, Acorn no longer uses a legacy unmaintained library',
   creatorAgentPubKey: 'creatoragentpubkey',
   editorAgentPubKey: 'editoryagentpubkey',
@@ -201,7 +201,7 @@ const testBigAchievedOutcome: ComputedOutcome = {
 /* Uncertain, Without Children */
 
 const testUncertainWithoutChildrenOutcome: ComputedOutcome = {
-  headerHash: 'test-uncertain-without-children-header-hash',
+  actionHash: 'test-uncertain-without-children-header-hash',
   content:
     'Uncertain Without Children, Acorn no longer uses a legacy unmaintained library',
   creatorAgentPubKey: 'creatoragentpubkey',
@@ -231,7 +231,7 @@ const testUncertainWithoutChildrenOutcome: ComputedOutcome = {
 /* Uncertain, With Children */
 
 const testUncertainWithChildrenOutcome: ComputedOutcome = {
-  headerHash: 'test-uncertain-with-children-header-hash',
+  actionHash: 'test-uncertain-with-children-header-hash',
   content:
     'Uncertain With Children, Acorn no longer uses a legacy unmaintained library',
   creatorAgentPubKey: 'creatoragentpubkey',

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { ProjectComputedOutcomes } from '../../../../context/ComputedOutcomeContext'
 import { ComputedOutcome, OptionalOutcomeData } from '../../../../types'
-import { HeaderHashB64 } from '../../../../types/shared'
+import { ActionHashB64 } from '../../../../types/shared'
 import { AgentsState } from '../../profiles/agents/reducer'
 import { ProjectConnectionsState } from '../connections/reducer'
 import { ProjectOutcomeCommentsState } from '../outcome-comments/reducer'
@@ -39,17 +39,17 @@ export default function outcomesAsTrees(
       let extensions: OptionalOutcomeData = {}
       if (withMembers) {
         extensions.members = Object.values(outcomeMembers)
-          .filter((om) => om.outcomeHeaderHash === outcome.headerHash)
+          .filter((om) => om.outcomeActionHash === outcome.actionHash)
           .map((om) => agents[om.memberAgentPubKey])
       }
       if (withComments) {
         extensions.comments = Object.values(outcomeComments).filter(
-          (oc) => oc.outcomeHeaderHash === outcome.headerHash
+          (oc) => oc.outcomeActionHash === outcome.actionHash
         )
       }
       if (withVotes) {
         extensions.votes = Object.values(outcomeVotes).filter(
-          (ov) => ov.outcomeHeaderHash === outcome.headerHash
+          (ov) => ov.outcomeActionHash === outcome.actionHash
         )
       }
       return {
@@ -57,36 +57,36 @@ export default function outcomesAsTrees(
         ...extensions,
       }
     })
-    allOutcomes = _.keyBy(allOutcomesArray, 'headerHash')
+    allOutcomes = _.keyBy(allOutcomesArray, 'actionHash')
   }
 
   // CONSTRUCT TREES FOR THE INDENTED NAV TREE VIEW
   const connectionsAsArray = Object.values(connections)
   const allOutcomeAddresses = Object.values(outcomes).map(
-    (outcome) => outcome.headerHash
+    (outcome) => outcome.actionHash
   )
   // find the Outcome objects without parent Outcomes
   // since they will sit at the top level
-  const noParentsAddresses = allOutcomeAddresses.filter((outcomeHeaderHash) => {
+  const noParentsAddresses = allOutcomeAddresses.filter((outcomeActionHash) => {
     return !connectionsAsArray.find(
-      (connection) => connection.childHeaderHash === outcomeHeaderHash
+      (connection) => connection.childActionHash === outcomeActionHash
     )
   })
 
   const computedOutcomesKeyed: ProjectComputedOutcomes['computedOutcomesKeyed'] = {}
   // recursively calls itself
   // so that it constructs the full sub-tree for each root Outcome
-  function getOutcome(outcomeHeaderHash: HeaderHashB64): ComputedOutcome {
-    const self = allOutcomes[outcomeHeaderHash]
+  function getOutcome(outcomeActionHash: ActionHashB64): ComputedOutcome {
+    const self = allOutcomes[outcomeActionHash]
     if (!self) {
       // defensive coding, during loading
       return undefined
     }
     const children = connectionsAsArray
       // find the connections indicating the children of this outcome
-      .filter((connection) => connection.parentHeaderHash === outcomeHeaderHash)
+      .filter((connection) => connection.parentActionHash === outcomeActionHash)
       // actually nest the children Outcomes, recurse
-      .map((connection) => getOutcome(connection.childHeaderHash))
+      .map((connection) => getOutcome(connection.childActionHash))
       .filter((maybeOutcome) => !!maybeOutcome)
 
     const computedOutcome = {
@@ -98,7 +98,7 @@ export default function outcomesAsTrees(
     // add it to our 'tracking' object as well
     // which will be used for quicker access to specific
     // outcomes
-    computedOutcomesKeyed[self.headerHash] = computedOutcome
+    computedOutcomesKeyed[self.actionHash] = computedOutcome
     return computedOutcome
   }
   // start with the root Outcomes, and recurse down to their children

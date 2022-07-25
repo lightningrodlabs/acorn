@@ -11,12 +11,12 @@ const defaultState = {
   leftConnectionXPosition: 0,
   topConnectionYPosition: 0,
   // these three go together
-  // where the fromAddress is the headerHash of the 
+  // where the fromAddress is the actionHash of the 
   // Outcome that is the 'origin' of the connection
   // and relation indicates the 'port' in a sense, to be parent or child
   fromAddress: null,
   relation: null, // RELATION_AS_CHILD or RELATION_AS_PARENT
-  // existingParentConnectionAddress is the headerHash of the connection that
+  // existingParentConnectionAddress is the actionHash of the connection that
   // we would delete in order to create a new one
   // ASSUMPTION: one parent
   existingParentConnectionAddress: null, // this is optional though

@@ -4,14 +4,14 @@ import { CREATE_TAG, FETCH_TAGS, UPDATE_TAG, DELETE_TAG } from './actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 import {
   CellIdString,
-  HeaderHashB64,
-  WithHeaderHash,
+  ActionHashB64,
+  WithActionHash,
 } from '../../../../types/shared'
 import { Tag } from '../../../../types'
 
 type TagState = {
   [cellId: CellIdString]: {
-    [headerHash: HeaderHashB64]: WithHeaderHash<Tag>
+    [actionHash: ActionHashB64]: WithActionHash<Tag>
   }
 }
 const defaultState: TagState = {}

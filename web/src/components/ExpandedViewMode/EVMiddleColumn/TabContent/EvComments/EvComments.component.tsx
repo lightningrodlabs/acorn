@@ -4,8 +4,8 @@ import moment from 'moment'
 import {
   AgentPubKeyB64,
   CellIdString,
-  HeaderHashB64,
-  WithHeaderHash,
+  ActionHashB64,
+  WithActionHash,
 } from '../../../../../types/shared'
 import { OutcomeComment, Profile } from '../../../../../types'
 import CommentInput from '../../../../CommentInput/CommentInput'
@@ -20,9 +20,9 @@ export type EvCommentsOwnProps = {
 }
 
 export type EvCommentsConnectorStateProps = {
-  outcomeHeaderHash: HeaderHashB64
+  outcomeActionHash: ActionHashB64
   profiles: { [agentPubKey: AgentPubKeyB64]: Profile }
-  comments: WithHeaderHash<OutcomeComment>[]
+  comments: WithActionHash<OutcomeComment>[]
   activeAgentPubKey: AgentPubKeyB64
 }
 
@@ -35,7 +35,7 @@ export type EvCommentsProps = EvCommentsOwnProps &
   EvCommentsConnectorDispatchProps
 
 const EvComments: React.FC<EvCommentsProps> = ({
-  outcomeHeaderHash,
+  outcomeActionHash,
   outcomeContent,
   profiles,
   comments,
@@ -66,7 +66,7 @@ const EvComments: React.FC<EvCommentsProps> = ({
     try {
       // when new comment created
       await createOutcomeComment({
-        outcomeHeaderHash: outcomeHeaderHash,
+        outcomeActionHash: outcomeActionHash,
         content: value,
         creatorAgentPubKey: activeAgentPubKey,
         unixTimestamp: moment().unix(),
@@ -112,7 +112,7 @@ const EvComments: React.FC<EvCommentsProps> = ({
           .sort((a, b) => (a.unixTimestamp < b.unixTimestamp ? -1 : 1))
           .map((comment) => {
             return (
-              <div key={comment.headerHash} className="comments-posted-list-item">
+              <div key={comment.actionHash} className="comments-posted-list-item">
                 <CommentPosted
                   comment={comment}
                   creator={profiles[comment.creatorAgentPubKey]}

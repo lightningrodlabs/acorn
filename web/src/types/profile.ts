@@ -1,4 +1,4 @@
-import { AgentPubKeyB64, HeaderHashB64 } from './shared'
+import { AgentPubKeyB64, ActionHashB64 } from './shared'
 
 type Status = "Online" | "Offline" | "Away"
 
@@ -12,7 +12,7 @@ export interface Profile {
     isImported: boolean,
 }
 
-export type AssigneeWithHeaderHash = {
+export type AssigneeWithActionHash = {
   profile: Profile
-  outcomeMemberHeaderHash: HeaderHashB64
+  outcomeMemberActionHash: ActionHashB64
 }

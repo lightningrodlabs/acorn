@@ -6,7 +6,7 @@
 _Prerequisites_
 
 - Have rust language (stable) installed on your system
-- Have nodejs version 14 installed on your system
+- Have nodejs version 16 installed on your system
 
 Then run
 
@@ -96,14 +96,13 @@ KEYSTORE_VERSION_NUMBER should be incremented if the version of lair-keystore ch
 
 This project is currently using:
 
-> Holochain Revision: [v0.0.141  May 24, 2022](https://github.com/holochain/holochain/releases/tag/holochain-0.0.141)
+> Holochain Revision: [v0.0.150  July 10, 2022](https://github.com/holochain/holochain/releases/tag/holochain-0.0.150)
 > 
-> Lair Keystore Revision: [v0.0.10 Apr 25, 2022](https://github.com/holochain/lair/releases/tag/v0.0.10)
+> Lair Keystore Revision: [v0.2.0 June 20, 2022](https://github.com/holochain/lair/releases/tag/lair_keystore-v0.2.0)
 >
-> HDK [v0.0.134](https://docs.rs/hdk/0.0.134/hdk/index.html)
-> https://docs.rs/hdk/0.0.122/hdk/index.html
+> Expects an HAPP built with HDK [v0.0.142](https://docs.rs/hdk/0.0.142/hdk/index.html) and HDI [v0.0.14](https://docs.rs/hdi/0.0.14/hdi/index.html)
 > 
-> https://github.com/Sprillow/holochain-runner/releases/tag/v0.0.38
+> https://github.com/Sprillow/holochain-runner/releases/tag/v0.0.40
 
 and electron version 12 [https://www.electronjs.org/](https://www.electronjs.org/)
 

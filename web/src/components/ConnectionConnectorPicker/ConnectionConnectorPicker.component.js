@@ -18,7 +18,7 @@ export default function ConnectionConnectorPicker({
   const isOpen = true
 
   // single select
-  const [parentHeaderHash, toggleParent, resetParent] = useSelect()
+  const [parentActionHash, toggleParent, resetParent] = useSelect()
   // multi select
   const [childrenAddresses, toggleChild, resetChildren] = useSelect(true)
 
@@ -32,29 +32,29 @@ export default function ConnectionConnectorPicker({
   useEffect(() => {
     resetChildren()
     clearPreview(activeProject)
-  }, [parentHeaderHash])
+  }, [parentActionHash])
 
   useEffect(() => {
     clearPreview(activeProject)
   }, [JSON.stringify(childrenAddresses)])
 
-  const validChildrenAddresses = parentHeaderHash
+  const validChildrenAddresses = parentActionHash
     ? calculateValidChildren(
-      parentHeaderHash,
+      parentActionHash,
       connections,
-      selectedOutcomes.map(g => g.headerHash)
+      selectedOutcomes.map(g => g.actionHash)
     )
     : []
 
   const preview = () => {
-    if (!parentHeaderHash || !childrenAddresses.length) return
-    previewConnections(parentHeaderHash, childrenAddresses, activeProject)
+    if (!parentActionHash || !childrenAddresses.length) return
+    previewConnections(parentActionHash, childrenAddresses, activeProject)
   }
 
   const save = async () => {
-    if (!parentHeaderHash || !childrenAddresses.length) return
+    if (!parentActionHash || !childrenAddresses.length) return
     try {
-      await saveConnections(parentHeaderHash, childrenAddresses, activeProject)
+      await saveConnections(parentActionHash, childrenAddresses, activeProject)
       onClose()
     } catch (e) {
       console.log(e)
@@ -80,17 +80,17 @@ export default function ConnectionConnectorPicker({
             <Select
               toggleSelectOption={toggleParent}
               toggleLabel={
-                parentHeaderHash &&
-                  selectedOutcomes.find(s => s.headerHash === parentHeaderHash)
-                  ? selectedOutcomes.find(s => s.headerHash === parentHeaderHash).content
+                parentActionHash &&
+                  selectedOutcomes.find(s => s.actionHash === parentActionHash)
+                  ? selectedOutcomes.find(s => s.actionHash === parentActionHash).content
                   : 'Pick one'
               }>
               {selectedOutcomes.map(selectedOutcome => (
                 <Option
-                  key={selectedOutcome.headerHash}
-                  value={selectedOutcome.headerHash}
+                  key={selectedOutcome.actionHash}
+                  value={selectedOutcome.actionHash}
                   label={selectedOutcome.content}
-                  selected={parentHeaderHash === selectedOutcome.headerHash}
+                  selected={parentActionHash === selectedOutcome.actionHash}
                 />
               ))}
             </Select>
@@ -105,13 +105,13 @@ export default function ConnectionConnectorPicker({
               toggleLabel={`${childrenAddresses.length} card${childrenAddresses.length === 1 ? '' : 's'
                 }`}>
               {selectedOutcomes
-                .filter(g => validChildrenAddresses.includes(g.headerHash))
+                .filter(g => validChildrenAddresses.includes(g.actionHash))
                 .map(selectedOutcome => (
                   <Option
-                    key={selectedOutcome.headerHash}
-                    value={selectedOutcome.headerHash}
+                    key={selectedOutcome.actionHash}
+                    value={selectedOutcome.actionHash}
                     label={selectedOutcome.content}
-                    selected={childrenAddresses.includes(selectedOutcome.headerHash)}
+                    selected={childrenAddresses.includes(selectedOutcome.actionHash)}
                   />
                 ))}
             </Select>

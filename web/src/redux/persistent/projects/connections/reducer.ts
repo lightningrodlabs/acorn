@@ -10,12 +10,12 @@ import {
 } from './actions'
 import { CREATE_OUTCOME_WITH_CONNECTION, DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { CellIdString, HeaderHashB64 } from '../../../../types/shared'
+import { CellIdString, ActionHashB64 } from '../../../../types/shared'
 import { Connection, CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyResponse } from '../../../../types'
 
 export type ProjectConnectionsState = {
-  [headerHashOrPreviewId: string]: Connection & {
-    headerHash?: HeaderHashB64 
+  [actionHashOrPreviewId: string]: Connection & {
+    actionHash?: ActionHashB64 
   }
 }
 
@@ -76,9 +76,9 @@ export default function (state: ConnectionsState = defaultState, action): Connec
           ...state,
           [cellId]: {
             ...state[cellId],
-            [createOutcomeWithConnection.maybeConnection.headerHash]: {
+            [createOutcomeWithConnection.maybeConnection.actionHash]: {
               ...createOutcomeWithConnection.maybeConnection.entry,
-              headerHash: createOutcomeWithConnection.maybeConnection.headerHash,
+              actionHash: createOutcomeWithConnection.maybeConnection.actionHash,
             },
           },
         }
@@ -88,7 +88,7 @@ export default function (state: ConnectionsState = defaultState, action): Connec
     // DELETE OUTCOME
     case DELETE_OUTCOME_FULLY:
       cellId = action.meta.cellIdString
-      // filter out the Connections whose headerHashes are listed as having been
+      // filter out the Connections whose actionHashes are listed as having been
       // deleted on account of having deleted one of the Outcomes it links
       const deleteOutcomeFullyResponse = payload as DeleteOutcomeFullyResponse
       return {

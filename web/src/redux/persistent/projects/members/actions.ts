@@ -5,7 +5,7 @@
   that can be taken within that feature.
 */
 
-import { WireElement } from "../../../../api/hdkCrud"
+import { WireRecord } from "../../../../api/hdkCrud"
 import { Member } from "../../../../types"
 import { Action, CellIdString } from "../../../../types/shared"
 
@@ -26,7 +26,7 @@ const setMember = (cellIdString: CellIdString, member: Member): Action<{cellIdSt
   }
 }
 
-const fetchMembers = (cellIdString: CellIdString, payload: Array<WireElement<Member>>): Action<Array<WireElement<Member>>> => {
+const fetchMembers = (cellIdString: CellIdString, payload: Array<WireRecord<Member>>): Action<Array<WireRecord<Member>>> => {
   return {
     type: FETCH_MEMBERS,
     payload,

@@ -3,7 +3,7 @@ import './PeoplePicker.scss'
 import Icon from '../Icon/Icon'
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import Avatar from '../Avatar/Avatar'
-import { AgentPubKeyB64, CellIdString, HeaderHashB64 } from '../../types/shared'
+import { AgentPubKeyB64, CellIdString, ActionHashB64 } from '../../types/shared'
 import { Profile } from '../../types'
 import Checkbox from '../Checkbox/Checkbox'
 
@@ -13,21 +13,21 @@ export type PeoplePickerProps = {
   activeAgentPubKey: AgentPubKeyB64
   people: (Profile & {
     isOutcomeMember: boolean
-    outcomeMemberHeaderHash: HeaderHashB64
+    outcomeMemberActionHash: ActionHashB64
   })[]
-  outcomeHeaderHash: HeaderHashB64
+  outcomeActionHash: ActionHashB64
   createOutcomeMember: (
-    outcomeHeaderHash: HeaderHashB64,
+    outcomeActionHash: ActionHashB64,
     memberAgentPubKey: AgentPubKeyB64,
     creatorAgentPubKey: AgentPubKeyB64
   ) => Promise<void>
-  deleteOutcomeMember: (headerHash: HeaderHashB64) => Promise<void>
+  deleteOutcomeMember: (actionHash: ActionHashB64) => Promise<void>
 }
 
 const PeoplePicker: React.FC<PeoplePickerProps> = ({
   activeAgentPubKey,
   people,
-  outcomeHeaderHash,
+  outcomeActionHash,
   createOutcomeMember,
   deleteOutcomeMember,
   onClose,
@@ -87,10 +87,10 @@ const PeoplePicker: React.FC<PeoplePickerProps> = ({
           .map((person, index) => {
             const onClick = () => {
               if (person.isOutcomeMember)
-                deleteOutcomeMember(person.outcomeMemberHeaderHash)
+                deleteOutcomeMember(person.outcomeMemberActionHash)
               else
                 createOutcomeMember(
-                  outcomeHeaderHash,
+                  outcomeActionHash,
                   person.agentPubKey,
                   activeAgentPubKey
                 )

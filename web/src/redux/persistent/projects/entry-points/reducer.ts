@@ -11,20 +11,20 @@ import {
 } from './actions'
 import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { Action, CellIdString, HeaderHashB64, WithHeaderHash } from '../../../../types/shared'
+import { Action, CellIdString, ActionHashB64, WithActionHash } from '../../../../types/shared'
 import { DeleteOutcomeFullyResponse, EntryPoint, EntryPointDetails } from '../../../../types'
-import { WireElement } from '../../../../api/hdkCrud'
+import { WireRecord } from '../../../../api/hdkCrud'
 
 // state is at the highest level an object with cellIds
 // which are like Projects... EntryPoints exist within Projects
 // so they are contained per project in the top level state
 export type ProjectEntryPointsState = {
-  [headerHash: HeaderHashB64]: WithHeaderHash<EntryPoint>
+  [actionHash: ActionHashB64]: WithActionHash<EntryPoint>
 }
 
-// state is an object where the keys are the entry headerHashes of "EntryPoints"
+// state is an object where the keys are the entry actionHashes of "EntryPoints"
 // and the values are modified versions of the EntryPoint data structures that
-// also contain their headerHash on those objects
+// also contain their actionHash on those objects
 type EntryPointsState = {
   [cellId: CellIdString]: ProjectEntryPointsState
 }
@@ -40,7 +40,7 @@ export default function (state: EntryPointsState = defaultState, action: EntryPo
       DELETE_ENTRY_POINT
     )
   ) {
-    const crudAction = action as Action<WireElement<EntryPoint>>
+    const crudAction = action as Action<WireRecord<EntryPoint>>
     return crudReducer(
       state,
       crudAction,
@@ -60,11 +60,11 @@ export default function (state: EntryPointsState = defaultState, action: EntryPo
       const mapped = entryPointDetails.entryPoints.map(r => {
         return {
           ...r.entry,
-          headerHash: r.headerHash,
+          actionHash: r.actionHash,
         }
       })
-      // mapped is [ { key: val, headerHash: 'QmAsdFg' }, ...]
-      const newVals = _.keyBy(mapped, 'headerHash')
+      // mapped is [ { key: val, actionHash: 'QmAsdFg' }, ...]
+      const newVals = _.keyBy(mapped, 'actionHash')
       // combines pre-existing values of the object with new values from
       // Holochain fetch
       return {
@@ -77,7 +77,7 @@ export default function (state: EntryPointsState = defaultState, action: EntryPo
     case DELETE_OUTCOME_FULLY:
       cellIdString = action.meta.cellIdString
       const deleteOutcomeResponse = payload as DeleteOutcomeFullyResponse
-      // filter out the entry points whose headerHashes are listed as having been
+      // filter out the entry points whose actionHashes are listed as having been
       // deleted on account of having deleted its associated Outcome
       return {
         ...state,

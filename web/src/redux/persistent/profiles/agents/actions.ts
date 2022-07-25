@@ -6,7 +6,7 @@
 */
 
 
-import { WireElement } from '../../../../api/hdkCrud'
+import { WireRecord } from '../../../../api/hdkCrud'
 import { PROFILES_ZOME_NAME } from '../../../../holochainConfig'
 import { Profile } from '../../../../types'
 import { Action, CellIdString } from '../../../../types/shared'
@@ -19,14 +19,14 @@ const FETCH_AGENTS = 'FETCH_AGENTS'
 /* action creator functions */
 
 // what type is agent here?
-const setAgent = (agent: WireElement<Profile>): Action<WireElement<Profile>> => {
+const setAgent = (agent: WireRecord<Profile>): Action<WireRecord<Profile>> => {
   return {
     type: SET_AGENT,
     payload: agent,
   }
 }
 
-const createImportedProfile = (cellIdString: CellIdString, payload: WireElement<Profile>): Action<WireElement<Profile>> => {
+const createImportedProfile = (cellIdString: CellIdString, payload: WireRecord<Profile>): Action<WireRecord<Profile>> => {
   return {
     type: CREATE_IMPORTED_PROFILE,
     payload,
@@ -42,4 +42,4 @@ const fetchAgents = (cellIdString: CellIdString, payload: Array<Profile>): Actio
 }
 
 export { SET_AGENT, setAgent, createImportedProfile, CREATE_IMPORTED_PROFILE, fetchAgents, FETCH_AGENTS }
-export type AgentsAction = Action<WireElement<Profile>> | Action<Array<Profile>>
+export type AgentsAction = Action<WireRecord<Profile>> | Action<Array<Profile>>

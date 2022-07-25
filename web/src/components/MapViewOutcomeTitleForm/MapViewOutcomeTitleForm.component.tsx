@@ -15,7 +15,7 @@ import './MapViewOutcomeTitleForm.scss'
 import {
   AgentPubKeyB64,
   CellIdString,
-  HeaderHashB64,
+  ActionHashB64,
   Option,
 } from '../../types/shared'
 import { LinkedOutcomeDetails, Outcome, RelationInput } from '../../types'
@@ -34,20 +34,20 @@ export type MapViewOutcomeTitleFormConnectorStateProps = {
   topConnectionYPosition: number
   // (optional) the address of an Outcome to connect this Outcome to
   // in the case of creating an Outcome
-  fromAddress: HeaderHashB64
+  fromAddress: ActionHashB64
   // (optional) the relation (relation_as_{child|parent}) between the two
   // in the case of creating an Outcome
   relation: RelationInput
   // (optional) the address of an existing connection that
   // indicates this Outcome as the child of another (a.k.a has a parent)
   // ASSUMPTION: one parent
-  existingParentConnectionAddress: HeaderHashB64
+  existingParentConnectionAddress: ActionHashB64
 }
 
 export type MapViewOutcomeTitleFormConnectorDispatchProps = {
   // callbacks
   updateContent: (content: string) => void
-  deleteConnection: (headerHash: HeaderHashB64) => Promise<void>
+  deleteConnection: (actionHash: ActionHashB64) => Promise<void>
   createOutcomeWithConnection: (
     entry: Outcome,
     maybeLinkedOutcome: Option<LinkedOutcomeDetails>
@@ -147,7 +147,7 @@ const MapViewOutcomeTitleForm: React.FC<MapViewOutcomeTitleFormProps> = ({
         isImported: false,
         githubLink: '',
       },
-      fromAddress ? { outcomeHeaderHash: fromAddress, relation } : null
+      fromAddress ? { outcomeActionHash: fromAddress, relation } : null
     )
   }
 

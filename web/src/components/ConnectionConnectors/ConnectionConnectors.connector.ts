@@ -54,7 +54,7 @@ function mapStateToProps(state: RootState) {
     },
     outcomes,
     connections: Object.values(connections), // convert from object to array
-    outcomeHeaderHashes: Object.keys(outcomes), // convert from object to array
+    outcomeActionHashes: Object.keys(outcomes), // convert from object to array
     fromAddress,
     relation,
     toAddress,

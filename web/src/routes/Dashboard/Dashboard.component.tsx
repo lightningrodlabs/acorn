@@ -21,7 +21,7 @@ import Typography from '../../components/Typography/Typography'
 import {
   AgentPubKeyB64,
   CellIdString,
-  WithHeaderHash,
+  WithActionHash,
 } from '../../types/shared'
 import { EntryPoint, Outcome, Profile, ProjectMeta } from '../../types'
 import { AgentsState } from '../../redux/persistent/profiles/agents/reducer'
@@ -32,12 +32,12 @@ export type DashboardStateProps = {
   profilesCellIdString: CellIdString
   cells: CellIdString[]
   projects: Array<
-    WithHeaderHash<ProjectMeta> & {
+    WithActionHash<ProjectMeta> & {
       cellId: CellIdString
       members: Profile[]
       entryPoints: {
-        entryPoint: WithHeaderHash<EntryPoint>
-        outcome: WithHeaderHash<Outcome>
+        entryPoint: WithActionHash<EntryPoint>
+        outcome: WithActionHash<Outcome>
       }[]
     }
   >

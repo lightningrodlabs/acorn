@@ -11,14 +11,14 @@ import { isCrud, crudReducer } from '../../crudRedux'
 import {
   Action,
   CellIdString,
-  HeaderHashB64,
-  WithHeaderHash,
+  ActionHashB64,
+  WithActionHash,
 } from '../../../../types/shared'
-import { WireElement } from '../../../../api/hdkCrud'
+import { WireRecord } from '../../../../api/hdkCrud'
 import { DeleteOutcomeFullyResponse, OutcomeMember } from '../../../../types'
 
 export type ProjectOutcomeMembersState = {
-  [headerHash: HeaderHashB64]: WithHeaderHash<OutcomeMember>
+  [actionHash: ActionHashB64]: WithActionHash<OutcomeMember>
 }
 
 export type OutcomeMembersState = {
@@ -29,7 +29,7 @@ const defaultState: OutcomeMembersState = {}
 export default function (
   state: OutcomeMembersState = defaultState,
   action:
-    | Action<WireElement<OutcomeMember>>
+    | Action<WireRecord<OutcomeMember>>
     | Action<DeleteOutcomeFullyResponse>
 ): OutcomeMembersState {
   const { payload, type } = action
@@ -43,7 +43,7 @@ export default function (
       DELETE_OUTCOME_MEMBER
     )
   ) {
-    const crudAction = action as Action<WireElement<OutcomeMember>>
+    const crudAction = action as Action<WireRecord<OutcomeMember>>
     return crudReducer(
       state,
       crudAction,
@@ -63,7 +63,7 @@ export default function (
     // DELETE_OUTCOME
     case DELETE_OUTCOME_FULLY:
       const deleteFullyResponse = payload as DeleteOutcomeFullyResponse
-      // filter out the OutcomeMembers whose headerHashes are listed as having been
+      // filter out the OutcomeMembers whose actionHashes are listed as having been
       // deleted on account of having deleted the Outcome it relates to
       return {
         ...state,

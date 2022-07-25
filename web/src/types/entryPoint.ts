@@ -1,9 +1,9 @@
-import { AgentPubKeyB64, HeaderHashB64 } from "./shared";
+import { AgentPubKeyB64, ActionHashB64 } from "./shared";
 
 export interface EntryPoint {
     color: String,
     creatorAgentPubKey: AgentPubKeyB64,
     createdAt: number, //f64,
-    outcomeHeaderHash: HeaderHashB64,
+    outcomeActionHash: ActionHashB64,
     isImported: boolean,
 }

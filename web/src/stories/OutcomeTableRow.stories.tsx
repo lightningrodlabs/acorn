@@ -30,7 +30,7 @@ const args: OutcomeTableRowProps = {
   filter: {},
   parentExpanded: true,
   indentationLevel: 0,
-  openExpandedView: function (headerHash: string): void {
+  openExpandedView: function (actionHash: string): void {
     throw new Error('Function not implemented.')
   },
 }

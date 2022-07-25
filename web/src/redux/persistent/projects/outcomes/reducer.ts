@@ -11,12 +11,12 @@ import {
 } from './actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 import { FETCH_ENTRY_POINT_DETAILS } from '../entry-points/actions'
-import { Action, CellIdString, HeaderHashB64, Option, WithHeaderHash } from '../../../../types/shared'
+import { Action, CellIdString, ActionHashB64, Option, WithActionHash } from '../../../../types/shared'
 import { CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyResponse, EntryPointDetails, Outcome, Scope, TimeFrame } from '../../../../types'
-import { WireElement } from '../../../../api/hdkCrud'
+import { WireRecord } from '../../../../api/hdkCrud'
 
 export type ProjectOutcomesState = {
-  [headerHash: HeaderHashB64]: WithHeaderHash<Outcome>
+  [actionHash: ActionHashB64]: WithActionHash<Outcome>
 }
 export type OutcomesState = {
   [cellId: CellIdString]: ProjectOutcomesState
@@ -25,7 +25,7 @@ const defaultState: OutcomesState = {}
 
 export default function (state: OutcomesState = defaultState, action: OutcomesAction | Action<EntryPointDetails> | Action<DeleteOutcomeFullyResponse>): OutcomesState {
   if (isCrud(action, CREATE_OUTCOME, FETCH_OUTCOMES, UPDATE_OUTCOME, DELETE_OUTCOME)) {
-    const crudAction = action as Action<WireElement<Outcome>>
+    const crudAction = action as Action<WireRecord<Outcome>>
     return crudReducer(
       state,
       crudAction,
@@ -47,9 +47,9 @@ export default function (state: OutcomesState = defaultState, action: OutcomesAc
         ...state,
         [cellIdString]: {
           ...state[cellIdString],
-          [outcomeWithConnection.outcome.headerHash]: {
+          [outcomeWithConnection.outcome.actionHash]: {
             ...outcomeWithConnection.outcome.entry,
-            headerHash: outcomeWithConnection.outcome.headerHash,
+            actionHash: outcomeWithConnection.outcome.actionHash,
           },
         },
       }
@@ -59,11 +59,11 @@ export default function (state: OutcomesState = defaultState, action: OutcomesAc
       const mapped = entryPointDetails.outcomes.map((r) => {
         return {
           ...r.entry,
-          headerHash: r.headerHash,
+          actionHash: r.actionHash,
         }
       })
-      // mapped is [ { key: val, headerHash: 'QmAsdFg' }, ...]
-      const newVals = _.keyBy(mapped, 'headerHash')
+      // mapped is [ { key: val, actionHash: 'QmAsdFg' }, ...]
+      const newVals = _.keyBy(mapped, 'actionHash')
       // combines pre-existing values of the object with new values from
       // Holochain fetch
       return {
@@ -80,7 +80,7 @@ export default function (state: OutcomesState = defaultState, action: OutcomesAc
         ...state,
         [cellIdString]: _.pickBy(
           state[cellIdString],
-          (_value, key) => key !== deleteFullyResponse.outcomeHeaderHash
+          (_value, key) => key !== deleteFullyResponse.outcomeActionHash
         ),
       }
     default:

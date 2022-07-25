@@ -31,7 +31,7 @@ import {
   RelationInput,
   Tag,
 } from '../types'
-import { HeaderHashB64, WithHeaderHash } from '../types/shared'
+import { ActionHashB64, WithActionHash } from '../types/shared'
 import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
 import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
 import { ProjectOutcomeMembersState } from '../redux/persistent/projects/outcome-members/reducer'
@@ -50,7 +50,7 @@ function setupCanvas(canvas) {
 }
 
 export type renderProps = {
-  projectTags: WithHeaderHash<Tag>[]
+  projectTags: WithActionHash<Tag>[]
   screenWidth: number
   screenHeight: number
   zoomLevel: number
@@ -58,20 +58,20 @@ export type renderProps = {
     x: number
     y: number
   }
-  activeEntryPoints: HeaderHashB64[]
-  projectMeta: WithHeaderHash<ProjectMeta>
+  activeEntryPoints: ActionHashB64[]
+  projectMeta: WithActionHash<ProjectMeta>
   entryPoints: ProjectEntryPointsState
   outcomeMembers: ProjectOutcomeMembersState
   connections: ProjectConnectionsState
-  connectionConnectorFromAddress: HeaderHashB64
+  connectionConnectorFromAddress: ActionHashB64
   connectionConnectorRelation: RelationInput
   outcomeFormIsOpen: boolean
-  outcomeFormFromHeaderHash: HeaderHashB64
+  outcomeFormFromActionHash: ActionHashB64
   outcomeFormRelation: RelationInput
-  hoveredConnectionHeaderHash: HeaderHashB64
-  selectedConnections: HeaderHashB64[]
-  selectedOutcomes: HeaderHashB64[]
-  connectionConnectorToAddress: HeaderHashB64
+  hoveredConnectionActionHash: ActionHashB64
+  selectedConnections: ActionHashB64[]
+  selectedOutcomes: ActionHashB64[]
+  connectionConnectorToAddress: ActionHashB64
   mouseLiveCoordinate: {
     x: number
     y: number
@@ -89,13 +89,13 @@ export type renderProps = {
     h: number
   }
   coordinates: {
-    [outcomeHeaderHash: HeaderHashB64]: {
+    [outcomeActionHash: ActionHashB64]: {
       x: number
       y: number
     }
   }
   computedOutcomesKeyed: {
-    [headerHash: string]: ComputedOutcome
+    [actionHash: string]: ComputedOutcome
   }
 }
 
@@ -121,9 +121,9 @@ function render(
     connectionConnectorFromAddress,
     connectionConnectorRelation,
     outcomeFormIsOpen,
-    outcomeFormFromHeaderHash,
+    outcomeFormFromActionHash,
     outcomeFormRelation,
-    hoveredConnectionHeaderHash,
+    hoveredConnectionActionHash,
     selectedConnections,
     selectedOutcomes,
     connectionConnectorToAddress,
@@ -164,11 +164,11 @@ function render(
     const topPriorityOutcomes = projectMeta.topPriorityOutcomes
     // converts the outcomes object to an array
     const outcomesAsArray = Object.keys(outcomes).map(
-      (headerHash) => outcomes[headerHash]
+      (actionHash) => outcomes[actionHash]
     )
     // convert the connections object to an array
     const connectionsAsArray = Object.keys(connections).map(
-      (headerHash) => connections[headerHash]
+      (actionHash) => connections[actionHash]
     )
 
     /*
@@ -196,17 +196,17 @@ function render(
       // temporarily omit/hide the existing connection from view
       // ASSUMPTION: one parent
       const pendingReParent =
-        (connectionConnectorFromAddress === connection.childHeaderHash &&
+        (connectionConnectorFromAddress === connection.childActionHash &&
           connectionConnectorRelation === RELATION_AS_CHILD) ||
         (outcomeFormIsOpen &&
-          outcomeFormFromHeaderHash === connection.childHeaderHash &&
+          outcomeFormFromActionHash === connection.childActionHash &&
           outcomeFormRelation === RELATION_AS_CHILD)
       if (pendingReParent) return
 
-      const childCoords = coordinates[connection.childHeaderHash]
-      const parentCoords = coordinates[connection.parentHeaderHash]
-      const childOutcome = outcomes[connection.childHeaderHash]
-      const parentOutcome = outcomes[connection.parentHeaderHash]
+      const childCoords = coordinates[connection.childActionHash]
+      const parentCoords = coordinates[connection.parentActionHash]
+      const childOutcome = outcomes[connection.childActionHash]
+      const parentOutcome = outcomes[connection.parentActionHash]
       // we can only render this connection
       // if we know the coordinates of the Outcomes it connects
       if (childCoords && parentCoords && parentOutcome && childOutcome) {
@@ -221,8 +221,8 @@ function render(
           zoomLevel,
           ctx
         )
-        const isHovered = hoveredConnectionHeaderHash === connection.headerHash
-        const isSelected = selectedConnections.includes(connection.headerHash)
+        const isHovered = hoveredConnectionActionHash === connection.actionHash
+        const isSelected = selectedConnections.includes(connection.actionHash)
         drawConnection({
           connection1port,
           connection2port,
@@ -241,10 +241,10 @@ function render(
     */
     // in order to create layers behind and in front of the editing highlight overlay
     const unselectedOutcomes = outcomesAsArray.filter((outcome) => {
-      return selectedOutcomes.indexOf(outcome.headerHash) === -1
+      return selectedOutcomes.indexOf(outcome.actionHash) === -1
     })
     const selectedOutcomesActual = outcomesAsArray.filter((outcome) => {
-      return selectedOutcomes.indexOf(outcome.headerHash) > -1
+      return selectedOutcomes.indexOf(outcome.actionHash) > -1
     })
 
     /*
@@ -255,12 +255,12 @@ function render(
       // use the set of coordinates at the same index
       // in the coordinates array
       const isSelected = false
-      // const isHovered = state.ui.hover.hoveredOutcome === outcome.headerHash
+      // const isHovered = state.ui.hover.hoveredOutcome === outcome.actionHash
       // const isEditing = false
       // let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(
       //   (agentInfo) =>
       //     agentInfo.outcomeBeingEdited !== null &&
-      //     agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash
+      //     agentInfo.outcomeBeingEdited.outcomeActionHash === outcome.actionHash
       // )
       // const isBeingEdited = editInfoObjects.length > 0
       // const isBeingEditedBy =
@@ -273,28 +273,28 @@ function render(
       // const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
       //   .filter(
       //     (agentInfo) =>
-      //       agentInfo.outcomeExpandedView === outcome.headerHash ||
+      //       agentInfo.outcomeExpandedView === outcome.actionHash ||
       //       (agentInfo.outcomeBeingEdited !== null &&
-      //         agentInfo.outcomeBeingEdited.outcomeHeaderHash ===
-      //           outcome.headerHash)
+      //         agentInfo.outcomeBeingEdited.outcomeActionHash ===
+      //           outcome.actionHash)
       //   )
       //   .map(
       //     (realtimeInfoObject) => state.agents[realtimeInfoObject.agentPubKey]
       //   )
 
       // const membersOfOutcome = Object.keys(outcomeMembers)
-      //   .map(headerHash => outcomeMembers[headerHash])
-      //   .filter(outcomeMember => outcomeMember.outcomeHeaderHash === outcome.headerHash)
+      //   .map(actionHash => outcomeMembers[actionHash])
+      //   .filter(outcomeMember => outcomeMember.outcomeActionHash === outcome.actionHash)
       //   .map(outcomeMember => state.agents[outcomeMember.memberAgentPubKey])
       const isTopPriorityOutcome = !!topPriorityOutcomes.find(
-        (headerHash) => headerHash === outcome.headerHash
+        (actionHash) => actionHash === outcome.actionHash
       )
-      if (coordinates[outcome.headerHash]) {
+      if (coordinates[outcome.actionHash]) {
         drawOutcomeCard({
           zoomLevel: zoomLevel,
           outcome: outcome,
-          outcomeLeftX: coordinates[outcome.headerHash].x,
-          outcomeTopY: coordinates[outcome.headerHash].y,
+          outcomeLeftX: coordinates[outcome.actionHash].x,
+          outcomeTopY: coordinates[outcome.actionHash].y,
           isSelected: isSelected,
           ctx: ctx,
           isTopPriority: isTopPriorityOutcome,
@@ -352,12 +352,12 @@ function render(
       // use the set of coordinates at the same index
       // in the coordinates array
       const isSelected = true
-      // const isHovered = state.ui.hover.hoveredOutcome === outcome.headerHash
+      // const isHovered = state.ui.hover.hoveredOutcome === outcome.actionHash
       // const isEditing = false
       // let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(
       //   (agentInfo) =>
       //     agentInfo.outcomeBeingEdited !== null &&
-      //     agentInfo.outcomeBeingEdited.outcomeHeaderHash === outcome.headerHash
+      //     agentInfo.outcomeBeingEdited.outcomeActionHash === outcome.actionHash
       // )
       // const isBeingEdited = editInfoObjects.length > 0
       // const isBeingEditedBy =
@@ -370,30 +370,30 @@ function render(
       // const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
       //   .filter(
       //     (agentInfo) =>
-      //       agentInfo.outcomeExpandedView === outcome.headerHash ||
+      //       agentInfo.outcomeExpandedView === outcome.actionHash ||
       //       (agentInfo.outcomeBeingEdited !== null &&
-      //         agentInfo.outcomeBeingEdited.outcomeHeaderHash ===
-      //           outcome.headerHash)
+      //         agentInfo.outcomeBeingEdited.outcomeActionHash ===
+      //           outcome.actionHash)
       //   )
       //   .map(
       //     (realtimeInfoObject) => state.agents[realtimeInfoObject.agentPubKey]
       //   )
       // const membersOfOutcome = Object.keys(outcomeMembers)
-      //   .map((headerHash) => outcomeMembers[headerHash])
+      //   .map((actionHash) => outcomeMembers[actionHash])
       //   .filter(
       //     (outcomeMember) =>
-      //       outcomeMember.outcomeHeaderHash === outcome.headerHash
+      //       outcomeMember.outcomeActionHash === outcome.actionHash
       //   )
       //   .map((outcomeMember) => state.agents[outcomeMember.memberAgentPubKey])
       const isTopPriorityOutcome = !!topPriorityOutcomes.find(
-        (headerHash) => headerHash === outcome.headerHash
+        (actionHash) => actionHash === outcome.actionHash
       )
-      if (coordinates[outcome.headerHash]) {
+      if (coordinates[outcome.actionHash]) {
         drawOutcomeCard({
           zoomLevel: zoomLevel,
           outcome: outcome,
-          outcomeLeftX: coordinates[outcome.headerHash].x,
-          outcomeTopY: coordinates[outcome.headerHash].y,
+          outcomeLeftX: coordinates[outcome.actionHash].x,
+          outcomeTopY: coordinates[outcome.actionHash].y,
           isSelected: isSelected,
           ctx: ctx,
           isTopPriority: isTopPriorityOutcome,
@@ -421,13 +421,13 @@ function render(
       DRAW PENDING CONNECTION FOR OUTCOME FORM
     */
     // render the connection that is pending to be created to the open outcome form
-    if (outcomeFormIsOpen && outcomeFormFromHeaderHash) {
-      const fromOutcomeCoords = coordinates[outcomeFormFromHeaderHash]
+    if (outcomeFormIsOpen && outcomeFormFromActionHash) {
+      const fromOutcomeCoords = coordinates[outcomeFormFromActionHash]
       const newOutcomeCoords = {
         x: outcomeFormLeftConnectionX,
         y: outcomeFormTopConnectionY,
       }
-      const fromOutcome = outcomes[outcomeFormFromHeaderHash]
+      const fromOutcome = outcomes[outcomeFormFromActionHash]
       let childCoords, parentCoords
       if (outcomeFormRelation === RELATION_AS_CHILD) {
         childCoords = fromOutcomeCoords
@@ -549,7 +549,7 @@ function render(
     drawOutcomeCard({
       zoomLevel: zoomLevel,
       outcome: {
-        headerHash: '',
+        actionHash: '',
         content: '',
         creatorAgentPubKey: '',
         editorAgentPubKey: '',

@@ -1,7 +1,7 @@
 import { OutcomeComment } from './outcomeComment'
 import { OutcomeVote } from './outcomeVote'
 import { Profile } from './profile'
-import { AgentPubKeyB64, Option, WithHeaderHash } from './shared'
+import { AgentPubKeyB64, Option, WithActionHash } from './shared'
 
 export interface Outcome {
   content: string
@@ -93,7 +93,7 @@ export type OptionalOutcomeData = {
 
 // These are the things which are computed and stored within ProjectView
 // for accessing across the multiple views, with pre-computed data
-export type ComputedOutcome = WithHeaderHash<Outcome> & {
+export type ComputedOutcome = WithActionHash<Outcome> & {
   computedScope: ComputedScope
   computedAchievementStatus: ComputedAchievementStatus
 } & OptionalOutcomeData

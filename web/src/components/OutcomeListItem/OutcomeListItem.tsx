@@ -1,7 +1,7 @@
 import React from 'react'
 import hashCodeId from '../../api/clientSideIdHash'
 import { ComputedOutcome, ComputedScope, ComputedSimpleAchievementStatus } from '../../types'
-import { HeaderHashB64 } from '../../types/shared'
+import { ActionHashB64 } from '../../types/shared'
 import Icon from '../Icon/Icon'
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
 import Typography from '../Typography/Typography'
@@ -9,7 +9,7 @@ import './OutcomeListItem.scss'
 
 export type OutcomeListItemProps = {
   outcome: ComputedOutcome
-  openExpandedView: (headerHash: HeaderHashB64) => void
+  openExpandedView: (actionHash: ActionHashB64) => void
 }
 
 const OutcomeListItem: React.FC<OutcomeListItemProps> = ({
@@ -52,7 +52,7 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({
       {/* ID */}
       <div className="outcome-list-item-id">
         <Typography style="caption3">
-          {hashCodeId(outcome.headerHash)}
+          {hashCodeId(outcome.actionHash)}
         </Typography>
       </div>
 
@@ -79,7 +79,7 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({
       <div
         className="outcome-list-item-switch-button"
         onClick={() => {
-          openExpandedView(outcome.headerHash)
+          openExpandedView(outcome.actionHash)
         }}
       >
         <Icon name="enter.svg" size="small" className="light-grey" />

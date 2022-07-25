@@ -27,20 +27,20 @@ function EntryPointPickerItem({
   const pathWithEntryPoint = `${
     location.pathname
   }?${ENTRY_POINTS}=${activeEntryPoints
-    .concat([entryPoint.headerHash])
+    .concat([entryPoint.actionHash])
     .join(',')}`
 
   const pathWithoutEntryPoint = `${
     location.pathname
   }?${ENTRY_POINTS}=${activeEntryPoints
-    .filter((headerHash) => headerHash !== entryPoint.headerHash)
+    .filter((actionHash) => actionHash !== entryPoint.actionHash)
     .join(',')}`
 
   const onClickArrow = (event) => {
     // prevent the navigation (NavLink)
     // event that would be triggered
     event.preventDefault()
-    goToOutcome(entryPoint.outcomeHeaderHash)
+    goToOutcome(entryPoint.outcomeActionHash)
   }
   return (
     <li>
@@ -79,9 +79,9 @@ export default function EntryPointPicker({
     )
   })
 
-  const goToOutcomeWrapped = (outcomeHeaderHash) => {
+  const goToOutcomeWrapped = (outcomeActionHash) => {
     onClose()
-    goToOutcome(outcomeHeaderHash)
+    goToOutcome(outcomeActionHash)
   }
 
   return (
@@ -126,11 +126,11 @@ export default function EntryPointPicker({
         <ul className="entry-point-picker-list">
           {filteredEntryPoints.map(({ entryPoint, outcome }) => (
             <EntryPointPickerItem
-              key={entryPoint.headerHash}
+              key={entryPoint.actionHash}
               entryPoint={entryPoint}
               outcome={outcome}
               isActive={activeEntryPoints.some(
-                (headerHash) => headerHash === entryPoint.headerHash
+                (actionHash) => actionHash === entryPoint.actionHash
               )}
               activeEntryPoints={activeEntryPoints}
               goToOutcome={goToOutcomeWrapped}

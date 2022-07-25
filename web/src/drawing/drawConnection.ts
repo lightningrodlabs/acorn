@@ -5,14 +5,14 @@ import {
   SELECTED_COLOR,
 } from '../styles'
 import draw from './draw'
-import { WithHeaderHash } from '../types/shared'
+import { WithActionHash } from '../types/shared'
 import { ComputedOutcome, Tag } from '../types'
 
 export function calculateConnectionCoordsByOutcomeCoords(
   childCoords: { x: number; y: number },
   parentCoords: { x: number; y: number },
   outcome: ComputedOutcome,
-  projectTags: WithHeaderHash<Tag>[],
+  projectTags: WithActionHash<Tag>[],
   zoomLevel: number,
   ctx: CanvasRenderingContext2D
 ) {

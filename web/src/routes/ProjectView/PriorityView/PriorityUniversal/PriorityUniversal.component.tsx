@@ -11,7 +11,7 @@ import './PriorityUniversal.scss'
 import ProgressIndicatorCalculated from '../../../../components/ProgressIndicatorCalculated/ProgressIndicatorCalculated'
 import { ComputedScope } from '../../../../types'
 import ComputedOutcomeContext from '../../../../context/ComputedOutcomeContext'
-import { HeaderHashB64 } from '../../../../types/shared'
+import { ActionHashB64 } from '../../../../types/shared'
 import Typography from '../../../../components/Typography/Typography'
 import AvatarsList from '../../../../components/AvatarsList/AvatarsList'
 
@@ -75,7 +75,7 @@ function UniversalOutcome({
         <div className="universal-priority-outcome-item-buttons">
           <div
             className="universal-priority-outcome-item-button outcome-item-button-expand"
-            onClick={() => openExpandedView(outcome.headerHash)}
+            onClick={() => openExpandedView(outcome.actionHash)}
           >
             <Icon
               name="expand.svg"
@@ -87,7 +87,7 @@ function UniversalOutcome({
           </div>
           <div
             className="universal-priority-outcome-item-button outcome-item-button-map"
-            onClick={() => goToOutcome(outcome.headerHash)}
+            onClick={() => goToOutcome(outcome.actionHash)}
           >
             <Icon
               name="map.svg"
@@ -150,8 +150,8 @@ function PriorityUniversalDraggableOutcome({
   }
   return (
     <Draggable
-      key={outcome.headerHash}
-      draggableId={outcome.headerHash}
+      key={outcome.actionHash}
+      draggableId={outcome.actionHash}
       index={index}
     >
       {(provided, snapshot) => {
@@ -196,7 +196,7 @@ function PriorityUniversalDroppable({
         >
           {outcomes.map((outcome, index) => (
             <PriorityUniversalDraggableOutcome
-              key={outcome.headerHash}
+              key={outcome.actionHash}
               outcome={outcome}
               index={index}
               whileDraggingIndexes={whileDraggingIndexes}
@@ -221,9 +221,9 @@ function PriorityUniversal({
 }) {
   const history = useHistory()
   const location = useLocation()
-  const navAndGoToOutcome = (headerHash) => {
+  const navAndGoToOutcome = (actionHash) => {
     history.push(location.pathname.replace('priority', 'map'))
-    goToOutcome(headerHash)
+    goToOutcome(actionHash)
   }
 
   const { computedOutcomesKeyed } = useContext(ComputedOutcomeContext)
@@ -272,8 +272,8 @@ function PriorityUniversal({
       // assign new ordering
       topPriorityOutcomes: reordered,
     }
-    const projectMetaAddress = toPass.headerHash
-    delete toPass.headerHash
+    const projectMetaAddress = toPass.actionHash
+    delete toPass.actionHash
     try {
       await updateProjectMeta(toPass, projectMetaAddress, projectId)
     } catch (e) {
@@ -284,25 +284,25 @@ function PriorityUniversal({
     setPendingList([])
   }
 
-  let topPriorityOutcomeAddresses: HeaderHashB64[] = []
+  let topPriorityOutcomeAddresses: ActionHashB64[] = []
   if (pending) {
     // make sure we only try to pick
     // and render outcomes that exist or are
     // known about
     topPriorityOutcomeAddresses = pendingList.filter(
-      (outcomeHeaderHash) => computedOutcomesKeyed[outcomeHeaderHash]
+      (outcomeActionHash) => computedOutcomesKeyed[outcomeActionHash]
     )
   } else if (projectMeta) {
     // make sure we only try to pick
     // and render outcomes that exist or are
     // known about
     topPriorityOutcomeAddresses = projectMeta.topPriorityOutcomes.filter(
-      (outcomeHeaderHash: HeaderHashB64) =>
-        computedOutcomesKeyed[outcomeHeaderHash]
+      (outcomeActionHash: ActionHashB64) =>
+        computedOutcomesKeyed[outcomeActionHash]
     )
   }
   const topPriorityOutcomes = topPriorityOutcomeAddresses.map(
-    (outcomeHeaderHash) => computedOutcomesKeyed[outcomeHeaderHash]
+    (outcomeActionHash) => computedOutcomesKeyed[outcomeActionHash]
   )
 
   return (

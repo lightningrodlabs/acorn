@@ -9,7 +9,7 @@ import { getAppWs } from '../../../../hcWebsockets'
 import { cellIdFromString } from '../../../../utils'
 import PriorityUniversal from './PriorityUniversal.component'
 import { RootState } from '../../../../redux/reducer'
-import { CellIdString, HeaderHashB64 } from '../../../../types/shared'
+import { CellIdString, ActionHashB64 } from '../../../../types/shared'
 import { ProjectMeta } from '../../../../types'
 
 function mapStateToProps(state: RootState) {
@@ -24,15 +24,15 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    openExpandedView: (outcomeHeaderHash: HeaderHashB64) => {
-      return dispatch(openExpandedView(outcomeHeaderHash))
+    openExpandedView: (outcomeActionHash: ActionHashB64) => {
+      return dispatch(openExpandedView(outcomeActionHash))
     },
-    goToOutcome: (outcomeHeaderHash: HeaderHashB64) => {
-      return dispatch(animatePanAndZoom(outcomeHeaderHash))
+    goToOutcome: (outcomeActionHash: ActionHashB64) => {
+      return dispatch(animatePanAndZoom(outcomeActionHash))
     },
     updateProjectMeta: async (
       projectMeta: ProjectMeta,
-      headerHash: HeaderHashB64,
+      actionHash: ActionHashB64,
       cellIdString: CellIdString
     ) => {
       const appWebsocket = await getAppWs()
@@ -42,7 +42,7 @@ function mapDispatchToProps(dispatch) {
         cellId,
         {
           entry: projectMeta,
-          headerHash,
+          actionHash,
         }
       )
       return dispatch(updateProjectMeta(cellIdString, updatedProjectMeta))

@@ -8,7 +8,7 @@ import ProjectsZomeApi from '../../../../../api/projectsApi'
 import { getAppWs } from '../../../../../hcWebsockets'
 import { cellIdFromString } from '../../../../../utils'
 import { RootState } from '../../../../../redux/reducer'
-import { HeaderHashB64 } from '../../../../../types/shared'
+import { ActionHashB64 } from '../../../../../types/shared'
 import { OutcomeComment } from '../../../../../types'
 import EvComments, {
   EvCommentsConnectorStateProps,
@@ -20,20 +20,20 @@ function mapStateToProps(
   ownProps: EvCommentsOwnProps
 ): EvCommentsConnectorStateProps {
   const { projectId } = ownProps
-  const outcomeHeaderHash = state.ui.expandedView.outcomeHeaderHash
+  const outcomeActionHash = state.ui.expandedView.outcomeActionHash
   const outcomeComments = state.projects.outcomeComments[projectId] || {}
 
   let comments = []
-  if (outcomeHeaderHash) {
+  if (outcomeActionHash) {
     comments = Object.values(outcomeComments).filter(
       (outcomeComment) =>
-        outcomeComment.outcomeHeaderHash ===
-        state.ui.expandedView.outcomeHeaderHash
+        outcomeComment.outcomeActionHash ===
+        state.ui.expandedView.outcomeActionHash
     )
   }
 
   return {
-    outcomeHeaderHash,
+    outcomeActionHash,
     activeAgentPubKey: state.agentAddress,
     profiles: state.agents,
     comments,
@@ -55,21 +55,21 @@ function mapDispatchToProps(dispatch, ownProps) {
     },
     updateOutcomeComment: async (
       entry: OutcomeComment,
-      headerHash: HeaderHashB64
+      actionHash: ActionHashB64
     ) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeComment = await projectsZomeApi.outcomeComment.update(
         cellId,
-        { headerHash, entry }
+        { actionHash, entry }
       )
       return dispatch(updateOutcomeComment(cellIdString, outcomeComment))
     },
-    deleteOutcomeComment: async (headerHash: HeaderHashB64) => {
+    deleteOutcomeComment: async (actionHash: ActionHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      await projectsZomeApi.outcomeComment.delete(cellId, headerHash)
-      return dispatch(deleteOutcomeComment(cellIdString, headerHash))
+      await projectsZomeApi.outcomeComment.delete(cellId, actionHash)
+      return dispatch(deleteOutcomeComment(cellIdString, actionHash))
     },
   }
 }

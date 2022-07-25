@@ -21,10 +21,10 @@ function resetTranslateAndScale() {
 }
 
 // TODO: this could accept a "Field of View" instead?
-function animatePanAndZoom(outcomeHeaderHash) {
+function animatePanAndZoom(outcomeActionHash) {
   return {
     type: ANIMATE_PAN_AND_ZOOM,
-    payload: outcomeHeaderHash
+    payload: outcomeActionHash
   }
 }
 

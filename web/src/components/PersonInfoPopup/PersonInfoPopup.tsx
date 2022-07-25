@@ -1,13 +1,13 @@
 import React, { useRef } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
-import { AssigneeWithHeaderHash } from '../../types'
-import { HeaderHashB64 } from '../../types/shared'
+import { AssigneeWithActionHash } from '../../types'
+import { ActionHashB64 } from '../../types/shared'
 import './PersonInfoPopup.scss'
 
 export type PersonInfoPopupProps = {
-  person: AssigneeWithHeaderHash
+  person: AssigneeWithActionHash
   onClose: () => void
-  deleteOutcomeMember: (headerHash: HeaderHashB64) => Promise<void>
+  deleteOutcomeMember: (actionHash: ActionHashB64) => Promise<void>
 }
 
 const PersonInfoPopup: React.FC<PersonInfoPopupProps> = ({
@@ -33,7 +33,7 @@ const PersonInfoPopup: React.FC<PersonInfoPopupProps> = ({
         className="remove-person-btn"
         onClick={() => {
           onClose()
-          deleteOutcomeMember(person.outcomeMemberHeaderHash)
+          deleteOutcomeMember(person.outcomeMemberActionHash)
         }}
       >
         Remove from outcome

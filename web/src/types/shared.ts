@@ -1,9 +1,9 @@
 // TODO: replace the possible types with the imported ones from @holochain/client
 
-import { WireElement } from '../api/hdkCrud'
+import { WireRecord } from '../api/hdkCrud'
 
 export type AgentPubKeyB64 = string
-export type HeaderHashB64 = string
+export type ActionHashB64 = string
 export type EntryHashB64 = string
 export type Timestamp = number
 
@@ -12,12 +12,12 @@ export type CellIdString = string
 export type Option<Inner> = Inner | null
 
 export type HdkCrudAction<EntryType> =
-  | Action<WireElement<EntryType>> // create and update
-  | Action<Array<WireElement<EntryType>>> // fetch
-  | Action<HeaderHashB64> // delete
+  | Action<WireRecord<EntryType>> // create and update
+  | Action<Array<WireRecord<EntryType>>> // fetch
+  | Action<ActionHashB64> // delete
 
 export interface UpdateInput<CommittedType> {
-  headerHash: HeaderHashB64
+  actionHash: ActionHashB64
   entry: CommittedType
 }
 
@@ -42,4 +42,4 @@ export type Action<Payload> = {
   }
 }
 
-export type WithHeaderHash<EntryType> = EntryType & { headerHash: HeaderHashB64 }
+export type WithActionHash<EntryType> = EntryType & { actionHash: ActionHashB64 }

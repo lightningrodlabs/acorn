@@ -15,31 +15,31 @@ import TableView from './TableView/TableView.connector'
 import ConnectedExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode.connector'
 
 import ComputedOutcomeContext from '../../context/ComputedOutcomeContext'
-import { AgentPubKeyB64, CellIdString, HeaderHashB64 } from '../../types/shared'
+import { AgentPubKeyB64, CellIdString, ActionHashB64 } from '../../types/shared'
 import { ComputedOutcome, Outcome } from '../../types'
 import selectAndComputeOutcomes from '../../selectors/computeOutcomes'
 import selectOutcomeAndAncestors from '../../selectors/outcomeAndAncestors'
 
 export type ProjectViewInnerOwnProps = {
   projectId: CellIdString
-  entryPointHeaderHashes: HeaderHashB64[]
+  entryPointActionHashes: ActionHashB64[]
 }
 
 export type ProjectViewInnerConnectorStateProps = {
-  expandedViewOutcomeHeaderHash: HeaderHashB64
+  expandedViewOutcomeActionHash: ActionHashB64
   activeAgentPubKey: AgentPubKeyB64
 }
 
 export type ProjectViewInnerConnectorDispatchProps = {
   // local only
-  openExpandedView: (headerHash: HeaderHashB64) => void
+  openExpandedView: (actionHash: ActionHashB64) => void
   closeExpandedView: () => void
   resetProjectView: () => void
   setActiveProject: (projectId: CellIdString) => void
-  setActiveEntryPoints: (entryPointHeaderHashes: HeaderHashB64[]) => void
-  goToOutcome: (outcomeHeaderHash: HeaderHashB64) => void
+  setActiveEntryPoints: (entryPointActionHashes: ActionHashB64[]) => void
+  goToOutcome: (outcomeActionHash: ActionHashB64) => void
   // remote / holochain calls
-  updateOutcome: (outcome: Outcome, headerHash: HeaderHashB64) => Promise<void>
+  updateOutcome: (outcome: Outcome, actionHash: ActionHashB64) => Promise<void>
   fetchProjectMeta: () => Promise<void>
   fetchEntryPoints: () => Promise<void>
   fetchMembers: () => Promise<void>
@@ -59,10 +59,10 @@ export type ProjectViewInnerProps = ProjectViewInnerOwnProps &
 const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   projectId,
   activeAgentPubKey,
-  expandedViewOutcomeHeaderHash,
+  expandedViewOutcomeActionHash,
   openExpandedView,
   closeExpandedView,
-  entryPointHeaderHashes,
+  entryPointActionHashes,
   resetProjectView,
   setActiveProject,
   setActiveEntryPoints,
@@ -81,7 +81,7 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
 }) => {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
-  const goToOutcomeHeaderHash = searchParams.get(GO_TO_OUTCOME)
+  const goToOutcomeActionHash = searchParams.get(GO_TO_OUTCOME)
   const sendRealtimeInfoFrequency = 10000
   const instance = useRef<NodeJS.Timeout>()
 
@@ -89,23 +89,23 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   // to prevent inefficient CPU expensive calls to outcomesAsTrees
   // which is responsible for calculating the 'shape of the tree'
   const computedOutcomes = useSelector(selectAndComputeOutcomes)
-  const outcomeAndAncestorHeaderHashes = useSelector(selectOutcomeAndAncestors)
+  const outcomeAndAncestorActionHashes = useSelector(selectOutcomeAndAncestors)
 
   let expandedViewOutcome: ComputedOutcome
   let expandedViewOutcomeAndAncestors: ComputedOutcome[] = []
-  if (expandedViewOutcomeHeaderHash) {
+  if (expandedViewOutcomeActionHash) {
     expandedViewOutcome =
-      computedOutcomes.computedOutcomesKeyed[expandedViewOutcomeHeaderHash]
+      computedOutcomes.computedOutcomesKeyed[expandedViewOutcomeActionHash]
 
     // for breadcrumbs
-    expandedViewOutcomeAndAncestors = outcomeAndAncestorHeaderHashes.map(
-      (headerHash) => {
-        return computedOutcomes.computedOutcomesKeyed[headerHash]
+    expandedViewOutcomeAndAncestors = outcomeAndAncestorActionHashes.map(
+      (actionHash) => {
+        return computedOutcomes.computedOutcomesKeyed[actionHash]
       }
     )
   }
 
-  function ifMapGoToOutcome(outcomeHeaderHash: HeaderHashB64) {
+  function ifMapGoToOutcome(outcomeActionHash: ActionHashB64) {
     // TODO
     // HACK
     // we wait 100 ms because we wait for
@@ -114,8 +114,8 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
     // `performLayoutAnimation`
     if (location.pathname.includes('map')) {
       setTimeout(() => {
-        if (outcomeHeaderHash) {
-          goToOutcome(outcomeHeaderHash)
+        if (outcomeActionHash) {
+          goToOutcome(outcomeActionHash)
         }
       }, 100)
     }
@@ -134,8 +134,8 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   }, [])
 
   useEffect(() => {
-    ifMapGoToOutcome(goToOutcomeHeaderHash)
-  }, [goToOutcomeHeaderHash])
+    ifMapGoToOutcome(goToOutcomeActionHash)
+  }, [goToOutcomeActionHash])
 
   useEffect(() => {
     // pushes this new projectId into the store/state
@@ -151,7 +151,7 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
     // we then animate to a specific outcome if it was set in the path
     // as a search query param
     Promise.all([fetchOutcomes(), fetchConnections()]).then(() => {
-      ifMapGoToOutcome(goToOutcomeHeaderHash)
+      ifMapGoToOutcome(goToOutcomeActionHash)
     })
     fetchOutcomeMembers()
     fetchOutcomeVotes()
@@ -161,8 +161,8 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   }, [projectId])
 
   useEffect(() => {
-    setActiveEntryPoints(entryPointHeaderHashes)
-  }, [JSON.stringify(entryPointHeaderHashes)])
+    setActiveEntryPoints(entryPointActionHashes)
+  }, [JSON.stringify(entryPointActionHashes)])
 
   return (
     <>

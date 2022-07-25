@@ -1,7 +1,7 @@
 import React from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
 import { Profile } from '../../types'
-import { WithHeaderHash } from '../../types/shared'
+import { WithActionHash } from '../../types/shared'
 
 import EditingOverlay from '../EditingOverlay/EditingOverlay'
 import MetadataWithLabel from '../MetadataWithLabel/MetadataWithLabel'
@@ -9,7 +9,7 @@ import './MarkdownDescription.scss'
 
 export type MarkdownDescriptionProps = {
   isBeingEditedByOther: boolean
-  personEditing: WithHeaderHash<Profile>
+  personEditing: WithActionHash<Profile>
   onBlur: React.FocusEventHandler<HTMLTextAreaElement>
   onFocus: React.FocusEventHandler<HTMLTextAreaElement>
   onChange: (value: string) => void

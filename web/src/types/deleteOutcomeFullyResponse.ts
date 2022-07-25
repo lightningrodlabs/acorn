@@ -1,10 +1,10 @@
-import { HeaderHashB64 } from "./shared";
+import { ActionHashB64 } from "./shared";
 
 export interface DeleteOutcomeFullyResponse {
-    outcomeHeaderHash: HeaderHashB64,
-    deletedConnections: Array<HeaderHashB64>,
-    deletedOutcomeMembers: Array<HeaderHashB64>,
-    deletedOutcomeVotes: Array<HeaderHashB64>,
-    deletedOutcomeComments: Array<HeaderHashB64>,
-    deletedEntryPoints: Array<HeaderHashB64>,
+    outcomeActionHash: ActionHashB64,
+    deletedConnections: Array<ActionHashB64>,
+    deletedOutcomeMembers: Array<ActionHashB64>,
+    deletedOutcomeVotes: Array<ActionHashB64>,
+    deletedOutcomeComments: Array<ActionHashB64>,
+    deletedEntryPoints: Array<ActionHashB64>,
 }

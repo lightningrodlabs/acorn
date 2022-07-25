@@ -7,7 +7,7 @@ import './PriorityPicker.scss'
 
 export default function PriorityPicker({
   projectId,
-  outcomeHeaderHash,
+  outcomeActionHash,
   priorityMode,
   onClose,
 }) {
@@ -18,8 +18,8 @@ export default function PriorityPicker({
       heading='Priority'
       onClose={onClose}>
       {isUniversal
-        ? <PriorityPickerUniversal projectId={projectId} outcomeHeaderHash={outcomeHeaderHash} />
-        : <PriorityPickerVote projectId={projectId} outcomeHeaderHash={outcomeHeaderHash} />}
+        ? <PriorityPickerUniversal projectId={projectId} outcomeActionHash={outcomeActionHash} />
+        : <PriorityPickerVote projectId={projectId} outcomeActionHash={outcomeActionHash} />}
     </PickerTemplate>
   )
 }

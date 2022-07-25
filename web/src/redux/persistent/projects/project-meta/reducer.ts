@@ -1,7 +1,7 @@
 import _ from 'lodash'
-import { WireElement } from '../../../../api/hdkCrud'
+import { WireRecord } from '../../../../api/hdkCrud'
 import { ProjectMeta } from '../../../../types'
-import { Action, CellIdString, WithHeaderHash } from '../../../../types/shared'
+import { Action, CellIdString, WithActionHash } from '../../../../types/shared'
 import {
   SIMPLE_CREATE_PROJECT_META,
   FETCH_PROJECT_META,
@@ -9,11 +9,11 @@ import {
 } from './actions'
 
 export type ProjectMetaState = {
-  [cellId: CellIdString]: WithHeaderHash<ProjectMeta>
+  [cellId: CellIdString]: WithActionHash<ProjectMeta>
 }
 const defaultState: ProjectMetaState = {}
 
-export default function (state: ProjectMetaState = defaultState, action: Action<WireElement<ProjectMeta>>): ProjectMetaState {
+export default function (state: ProjectMetaState = defaultState, action: Action<WireRecord<ProjectMeta>>): ProjectMetaState {
   const { payload, type } = action
   switch (type) {
     case SIMPLE_CREATE_PROJECT_META:
@@ -23,7 +23,7 @@ export default function (state: ProjectMetaState = defaultState, action: Action<
         ...state,
         [action.meta.cellIdString]: {
           ...payload.entry,
-          headerHash: payload.headerHash,
+          actionHash: payload.actionHash,
         },
       }
     default:

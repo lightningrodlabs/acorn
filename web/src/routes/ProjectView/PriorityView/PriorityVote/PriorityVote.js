@@ -70,7 +70,7 @@ function getSubsetOfOutcomesBasedOnContext(outcomeTrees, contextOutcomeAddress) 
   // use recursion to find the outcome down in the tree
   function checkForOutcomeInChildren(outcome) {
     const foundInChildren = outcome.children.find(
-      g => g.headerHash === contextOutcomeAddress
+      g => g.actionHash === contextOutcomeAddress
     )
     if (foundInChildren) {
       return foundInChildren
@@ -204,7 +204,7 @@ function Uncategorized({
   const outcomes = getSubsetOfOutcomesBasedOnContext(outcomeTrees, contextOutcomeAddress)
   const outcomeList = outcomes.filter(outcome => {
     // if there are no Votes, this Outcome is "uncategorized"
-    return !outcomeVotes.find(gv => gv.outcomeHeaderHash === outcome.headerHash)
+    return !outcomeVotes.find(gv => gv.outcomeActionHash === outcome.actionHash)
   })
   return (
     <div className='priority-wrapper-full-height'>
@@ -279,7 +279,7 @@ function PriorityVote({ projectId, outcomeTrees, outcomeVotes }) {
             <PriorityPicker
               projectId={projectId}
               openToMyVote
-              outcomeHeaderHash={priorityPickerAddress}
+              outcomeActionHash={priorityPickerAddress}
               onClose={() => setPriorityPickerOpen(false)}
             />
           </div>
@@ -304,7 +304,7 @@ function getSortedAveragesOutcomeLists(
   // first calculate averages
   const outcomesWithPriorityAverages = allOutcomes
     .map(outcome => {
-      const votes = outcomeVotes.filter(gv => gv.outcomeHeaderHash === outcome.headerHash)
+      const votes = outcomeVotes.filter(gv => gv.outcomeActionHash === outcome.actionHash)
       let averageValues = NO_VOTES
       let averageAverage
       if (votes.length > 0) {

@@ -1,9 +1,9 @@
-import { EntryHashB64, FetchInput, HeaderHashB64, UpdateInput } from '../types/shared'
+import { EntryHashB64, FetchInput, ActionHashB64, UpdateInput } from '../types/shared'
 import { AppWebsocket, CellId } from '@holochain/client'
 import callZome from './callZome'
 
-export interface WireElement<EntryType> {
-  headerHash: HeaderHashB64
+export interface WireRecord<EntryType> {
+  actionHash: ActionHashB64
   entryHash: EntryHashB64
   entry: EntryType
   createdAt: number // nanoseconds
@@ -20,7 +20,7 @@ export interface EntryTypeApi<ToCommitType, CommittedType> {
     cellId: CellId,
     updateInput: UpdateInput<ToCommitType>
   ) => Promise<CommittedType>
-  delete: (cellId: CellId, headerHash: HeaderHashB64) => Promise<void>
+  delete: (cellId: CellId, actionHash: ActionHashB64) => Promise<void>
 }
 
 export function createEntryName(entryType: string) {
@@ -40,7 +40,7 @@ export function createCrudFunctions<EntryType>(
   appWebsocket: AppWebsocket,
   zomeName: string,
   entryType: string
-): EntryTypeApi<EntryType, WireElement<EntryType>> {
+): EntryTypeApi<EntryType, WireRecord<EntryType>> {
   return {
     create: async (cellId, payload) => {
       return callZome(

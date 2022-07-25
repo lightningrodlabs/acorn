@@ -4,7 +4,7 @@ import TextareaAutosize from 'react-textarea-autosize'
 
 import PeoplePicker from '../../../../PeoplePicker/PeoplePicker'
 import {
-  AssigneeWithHeaderHash,
+  AssigneeWithActionHash,
   ComputedOutcome,
   ComputedScope,
   Outcome,
@@ -14,8 +14,8 @@ import {
 import {
   AgentPubKeyB64,
   CellIdString,
-  HeaderHashB64,
-  WithHeaderHash,
+  ActionHashB64,
+  WithActionHash,
 } from '../../../../../types/shared'
 
 import './EvDetails.scss'
@@ -38,17 +38,17 @@ export type EvDetailsOwnProps = {
 
 export type EvDetailsConnectorStateProps = {
   activeAgentPubKey: AgentPubKeyB64
-  outcomeHeaderHash: HeaderHashB64
-  projectTags: WithHeaderHash<Tag>[]
+  outcomeActionHash: ActionHashB64
+  projectTags: WithActionHash<Tag>[]
   // a list of specifically the assignees
-  assignees: AssigneeWithHeaderHash[]
+  assignees: AssigneeWithActionHash[]
   // an object with ALL profiles
   profiles: { [agentPubKey: AgentPubKeyB64]: Profile }
   // a list of all profiles, with data about
   // whether the person is an assignee on each object
   people: (Profile & {
     isOutcomeMember: boolean
-    outcomeMemberHeaderHash: HeaderHashB64
+    outcomeMemberActionHash: ActionHashB64
   })[]
   // TODO: fix this type
   editingPeers: {}[]
@@ -56,17 +56,17 @@ export type EvDetailsConnectorStateProps = {
 
 export type EvDetailsConnectorDispatchProps = {
   onSaveTag: (text: string, backgroundColor: string) => Promise<void>
-  updateOutcome: (outcome: Outcome, headerHash: HeaderHashB64) => Promise<void>
+  updateOutcome: (outcome: Outcome, actionHash: ActionHashB64) => Promise<void>
   createOutcomeMember: (
-    outcomeHeaderHash: HeaderHashB64,
+    outcomeActionHash: ActionHashB64,
     memberAgentPubKey: AgentPubKeyB64,
     creatorAgentPubKey: AgentPubKeyB64
   ) => Promise<void>
-  deleteOutcomeMember: (headerHash: HeaderHashB64) => Promise<void>
-  startTitleEdit: (outcomeHeaderHash: HeaderHashB64) => void
-  endTitleEdit: (outcomeHeaderHash: HeaderHashB64) => void
-  startDescriptionEdit: (outcomeHeaderHash: HeaderHashB64) => void
-  endDescriptionEdit: (outcomeHeaderHash: HeaderHashB64) => void
+  deleteOutcomeMember: (actionHash: ActionHashB64) => Promise<void>
+  startTitleEdit: (outcomeActionHash: ActionHashB64) => void
+  endTitleEdit: (outcomeActionHash: ActionHashB64) => void
+  startDescriptionEdit: (outcomeActionHash: ActionHashB64) => void
+  endDescriptionEdit: (outcomeActionHash: ActionHashB64) => void
 }
 
 export type EvDetailsProps = EvDetailsOwnProps &
@@ -80,7 +80,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   // state props
   activeAgentPubKey,
   projectTags,
-  outcomeHeaderHash,
+  outcomeActionHash,
   assignees,
   people,
   profiles,
@@ -97,11 +97,11 @@ const EvDetails: React.FC<EvDetailsProps> = ({
 }) => {
   // reset
   useEffect(() => {
-    if (!outcomeHeaderHash) {
+    if (!outcomeActionHash) {
       setEditAssignees(false)
       // setEditTimeframe(false)
     }
-  }, [outcomeHeaderHash])
+  }, [outcomeActionHash])
 
   const cleanOutcome = (): Outcome => {
     return {
@@ -114,7 +114,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
     }
   }
   const updateOutcomeWithLatest = async () => {
-    await updateOutcome(cleanOutcome(), outcomeHeaderHash)
+    await updateOutcome(cleanOutcome(), outcomeActionHash)
   }
 
   /*
@@ -129,10 +129,10 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   }, [outcomeContent])
   const onTitleBlur = () => {
     updateOutcomeWithLatest()
-    endTitleEdit(outcomeHeaderHash)
+    endTitleEdit(outcomeActionHash)
   }
   const onTitleFocus = () => {
-    startTitleEdit(outcomeHeaderHash)
+    startTitleEdit(outcomeActionHash)
   }
   const handleOnChangeTitle = ({ target }) => {
     setContent(target.value)
@@ -195,7 +195,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
             timeFrame: { fromDate, toDate }
           }
         }
-        await updateOutcome(cleaned, outcomeHeaderHash)
+        await updateOutcome(cleaned, outcomeActionHash)
       }
     } else if (outcome.computedScope === ComputedScope.Small) {
       // Small
@@ -212,7 +212,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
             targetDate
           }
         }
-        await updateOutcome(cleaned, outcomeHeaderHash)
+        await updateOutcome(cleaned, outcomeActionHash)
         setEditingTimeframe(false)
       }
     } else if (outcome.computedScope === ComputedScope.Big) {
@@ -226,10 +226,10 @@ const EvDetails: React.FC<EvDetailsProps> = ({
     TAGS
   */
   const selectedTags = outcome ? outcome.tags : []
-  const onSelectNewTags = async (newSelectedTags: HeaderHashB64[]) => {
+  const onSelectNewTags = async (newSelectedTags: ActionHashB64[]) => {
     const newOutcome = cleanOutcome()
     newOutcome.tags = newSelectedTags
-    updateOutcome(newOutcome, outcomeHeaderHash)
+    updateOutcome(newOutcome, outcomeActionHash)
   }
 
   /* 
@@ -250,10 +250,10 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   // use to feed into avatar
   const onDescriptionBlur = () => {
     updateOutcomeWithLatest()
-    endDescriptionEdit(outcomeHeaderHash)
+    endDescriptionEdit(outcomeActionHash)
   }
   const onDescriptionFocus = () => {
-    startDescriptionEdit(outcomeHeaderHash)
+    startDescriptionEdit(outcomeActionHash)
   }
   const handleOnChangeDescription = (value: string) => {
     setDescription(value)
@@ -341,7 +341,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                       onClose={() => setEditAssignees(false)}
                       activeAgentPubKey={activeAgentPubKey}
                       people={people}
-                      outcomeHeaderHash={outcomeHeaderHash}
+                      outcomeActionHash={outcomeActionHash}
                       createOutcomeMember={createOutcomeMember}
                       deleteOutcomeMember={deleteOutcomeMember}
                     />

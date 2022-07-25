@@ -4,7 +4,7 @@ import './PriorityPickerUniversal.scss'
 
 export default function PriorityPickerUniversal({
   projectMeta,
-  outcomeHeaderHash,
+  outcomeActionHash,
   isTopPriorityOutcome,
   updateProjectMeta,
 }) {
@@ -19,15 +19,15 @@ export default function PriorityPickerUniversal({
     const toPass = {
       ...projectMeta
     }
-    let projectMetaAddress = toPass.headerHash
-    delete toPass.headerHash
+    let projectMetaAddress = toPass.actionHash
+    delete toPass.actionHash
     if (e.target.checked) {
       setPendingState(true)
-      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.concat([outcomeHeaderHash])
+      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.concat([outcomeActionHash])
       await updateProjectMeta(toPass, projectMetaAddress)
     } else {
       setPendingState(false)
-      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.filter(headerHash => headerHash !== outcomeHeaderHash)
+      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.filter(actionHash => actionHash !== outcomeActionHash)
       await updateProjectMeta(toPass, projectMetaAddress)
     }
     setPending(false)

@@ -1,36 +1,36 @@
 import { createSelector } from 'reselect'
 import { RootState } from '../redux/reducer'
-import { HeaderHashB64 } from '../types/shared'
+import { ActionHashB64 } from '../types/shared'
 
 const selectOutcomeAndAncestors = createSelector(
-  (state: RootState) => state.ui.expandedView.outcomeHeaderHash,
+  (state: RootState) => state.ui.expandedView.outcomeActionHash,
   (state: RootState) =>
     state.projects.connections[state.ui.activeProject] || {},
-  (outcomeHeaderHash, connections) => {
-    const outcomeAndAncestorsHeaderHashes = []
+  (outcomeActionHash, connections) => {
+    const outcomeAndAncestorsActionHashes = []
     // find any parent recursively, and prepend it
     const connectionsArray = Object.keys(connections).map(
-      (headerHash) => connections[headerHash]
+      (actionHash) => connections[actionHash]
     )
-    function findParentAndPrepend(childHeaderHash: HeaderHashB64) {
+    function findParentAndPrepend(childActionHash: ActionHashB64) {
       const parentConnection = connectionsArray.find(
-        (connection) => connection.childHeaderHash === childHeaderHash
+        (connection) => connection.childActionHash === childActionHash
       )
       if (parentConnection) {
-        outcomeAndAncestorsHeaderHashes.unshift(
-          parentConnection.parentHeaderHash
+        outcomeAndAncestorsActionHashes.unshift(
+          parentConnection.parentActionHash
         )
         // recurse
-        findParentAndPrepend(parentConnection.parentHeaderHash)
+        findParentAndPrepend(parentConnection.parentActionHash)
       }
     }
 
-    if (outcomeHeaderHash) {
+    if (outcomeActionHash) {
       // add itself, it should end up at the end (last) in the list
-      outcomeAndAncestorsHeaderHashes.push(outcomeHeaderHash)
-      findParentAndPrepend(outcomeHeaderHash)
+      outcomeAndAncestorsActionHashes.push(outcomeActionHash)
+      findParentAndPrepend(outcomeActionHash)
     }
-    return outcomeAndAncestorsHeaderHashes
+    return outcomeAndAncestorsActionHashes
   }
 )
 

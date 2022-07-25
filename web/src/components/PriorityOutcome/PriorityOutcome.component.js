@@ -22,7 +22,7 @@ export default function PriorityOutcome({ whoami, outcome, votes, setPriorityPic
   const myVote =
     whoami &&
     votes.find((value) => {
-      return value.agentAddress === whoami.entry.headerHash
+      return value.agentAddress === whoami.entry.actionHash
     })
 
   return (
@@ -72,7 +72,7 @@ export default function PriorityOutcome({ whoami, outcome, votes, setPriorityPic
               size="small"
               color="purple"
               text={myVote ? 'See My Vote' : 'Weigh In'}
-              onClick={() => setPriorityPickerAddress(outcome.headerHash)}
+              onClick={() => setPriorityPickerAddress(outcome.actionHash)}
             />
           </div>
 

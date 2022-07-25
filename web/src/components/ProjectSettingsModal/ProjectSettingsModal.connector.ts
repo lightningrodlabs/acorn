@@ -5,7 +5,7 @@ import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 import ProjectSettingsModal from './ProjectSettingsModal.component'
 import { RootState } from '../../redux/reducer'
-import { CellIdString, HeaderHashB64 } from '../../types/shared'
+import { CellIdString, ActionHashB64 } from '../../types/shared'
 import { ProjectMeta } from '../../types'
 
 function mapStateToProps(_state: RootState) {
@@ -18,7 +18,7 @@ function mapDispatchToProps(dispatch) {
   return {
     updateProjectMeta: async (
       projectMeta: ProjectMeta,
-      headerHash: HeaderHashB64,
+      actionHash: ActionHashB64,
       cellIdString: CellIdString
     ) => {
       const appWebsocket = await getAppWs()
@@ -26,7 +26,7 @@ function mapDispatchToProps(dispatch) {
       const cellId = cellIdFromString(cellIdString)
       const updatedProjectMeta = await projectsZomeApi.projectMeta.update(
         cellId,
-        { entry: projectMeta, headerHash }
+        { entry: projectMeta, actionHash }
       )
       return dispatch(updateProjectMeta(cellIdString, updatedProjectMeta))
     },

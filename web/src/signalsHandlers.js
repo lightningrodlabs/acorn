@@ -171,7 +171,7 @@ export default (store) =>
           // TODO: re-enable this when there's a straightforward way to have the CellId
           // for the Profiles Cell here, not the Projects CellId which it currently has access to. 
           // This was the source of a breaking bug
-          // if (!stateCheck.agents[payload.data.headerHash]) {
+          // if (!stateCheck.agents[payload.data.actionHash]) {
           //   store.dispatch(
           //     fetchAgents.create({
           //       cellIdString: cellIdToString(cellId),
@@ -181,7 +181,7 @@ export default (store) =>
           // }
           // this one is different than the rest on purpose
           // there's no "local action" equivalent
-          store.dispatch(setMember(cellIdToString(cellId), payload.data.data)) //payload.data.data is type Member, not WireElement<Member>
+          store.dispatch(setMember(cellIdToString(cellId), payload.data.data)) //payload.data.data is type Member, not WireRecord<Member>
           break
         case SignalType.OutcomeWithConnection:
           console.log('check!')

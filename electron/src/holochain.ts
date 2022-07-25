@@ -1,6 +1,6 @@
 import * as path from 'path'
 import { app } from 'electron'
-import { HolochainRunnerOptions, StateSignal, PathOptions } from 'electron-holochain'
+import { ElectronHolochainOptions, StateSignal, PathOptions } from '@sprillow-connor/electron-holochain'
 
 // see the DEVELOPERS.md about incrementing
 // these values
@@ -66,7 +66,7 @@ const MAIN_APP_ID = 'main-app'
 const COMMUNITY_PROXY_URL =
   'kitsune-proxy://SYVd4CF3BdJ4DS7KwLLgeU3_DbHoZ34Y-qroZ79DOs8/kitsune-quic/h/165.22.32.11/p/5779/--'
 
-const devOptions: HolochainRunnerOptions = {
+const devOptions: ElectronHolochainOptions = {
   happPath: profilesHappPath, // preload
   datastorePath: process.env.ACORN_TEST_USER_2
     ? '../user2-data/databases'
@@ -77,15 +77,17 @@ const devOptions: HolochainRunnerOptions = {
   keystorePath: process.env.ACORN_TEST_USER_2
     ? '../user2-data/keystore'
     : path.join(__dirname, '../../user-data/keystore'),
+  passphrase: 'test-passphrase',
   proxyUrl: COMMUNITY_PROXY_URL,
 }
-const prodOptions: HolochainRunnerOptions = {
+const prodOptions: ElectronHolochainOptions = {
   happPath: profilesHappPath, // preload
   datastorePath: path.join(app.getPath('userData'), `databases-${DATABASES_VERSION_NUMBER}`),
   appId: MAIN_APP_ID,
   appWsPort: 8889,
   adminWsPort: 1235,
   keystorePath: path.join(app.getPath('userData'), `keystore-${KEYSTORE_VERSION_NUMBER}`),
+  passphrase: 'test-passphrase',
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 

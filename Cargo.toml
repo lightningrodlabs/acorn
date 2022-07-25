@@ -3,7 +3,9 @@ members = [
   # "happ/tests/projects",
   # "happ/tests/profiles",
   "happ/zomes/profiles",
+  "happ/zomes/profiles_integrity",
   "happ/zomes/projects",
+  "happ/zomes/projects_integrity",
 ]
 
 [profile.dev]

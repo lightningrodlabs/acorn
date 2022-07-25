@@ -1,5 +1,5 @@
 import { Outcome } from './outcome'
-import { Option, HeaderHashB64 } from './shared'
+import { Option, ActionHashB64 } from './shared'
 
 export interface CreateOutcomeWithConnectionInput {
   entry: Outcome
@@ -7,7 +7,7 @@ export interface CreateOutcomeWithConnectionInput {
 }
 
 export interface LinkedOutcomeDetails {
-  outcomeHeaderHash: HeaderHashB64
+  outcomeActionHash: ActionHashB64
   relation: RelationInput
 }
 

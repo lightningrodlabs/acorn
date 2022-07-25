@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { ComputedOutcome, Tag } from '../../types'
-import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
+import { ActionHashB64, WithActionHash } from '../../types/shared'
 import { OutcomeTableFilter } from '../OutcomeTableRow/filterMatch'
 import OutcomeTableRow from '../OutcomeTableRow/OutcomeTableRow'
 import './OutcomeTable.scss'
 
 export type OutcomeTableProps = {
-  projectTags: WithHeaderHash<Tag>[]
+  projectTags: WithActionHash<Tag>[]
   outcomeTrees: ComputedOutcome[]
   filter: OutcomeTableFilter
-  openExpandedView: (headerHash: HeaderHashB64) => void
-  goToOutcome: (headerHash: HeaderHashB64) => void
+  openExpandedView: (actionHash: ActionHashB64) => void
+  goToOutcome: (actionHash: ActionHashB64) => void
 }
 
 const OutcomeTable: React.FC<OutcomeTableProps> = ({
@@ -33,9 +33,9 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
   // need to navigate back to the Map View
   const history = useHistory()
   const location = useLocation()
-  const navAndGoToOutcome = (headerHash: HeaderHashB64) => {
+  const navAndGoToOutcome = (actionHash: ActionHashB64) => {
     history.push(location.pathname.replace('table', 'map'))
-    goToOutcome(headerHash)
+    goToOutcome(actionHash)
   }
 
   return (
@@ -97,7 +97,7 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
         <div>
           {outcomeTrees.map((outcome) => (
             <OutcomeTableRow
-              key={outcome.headerHash}
+              key={outcome.actionHash}
               columnWidthPercentages={columnWidthPercentages}
               projectTags={projectTags}
               outcome={outcome}

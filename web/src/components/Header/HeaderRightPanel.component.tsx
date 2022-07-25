@@ -40,7 +40,7 @@ function SearchResultItem({
   name,
   onExpandClick,
   panAndZoom,
-  outcomeHeaderHash,
+  outcomeActionHash,
 }) {
   return (
     <div className="search-result-item-wrapper">
@@ -52,11 +52,11 @@ function SearchResultItem({
         </div>
       </div>
       <div className="search-result-item-buttons">
-        <div onClick={() => panAndZoom(outcomeHeaderHash)}>
+        <div onClick={() => panAndZoom(outcomeActionHash)}>
           {/* @ts-ignore */}
           <Icon name="enter.svg" size="small" className="light-grey" />
         </div>
-        <div onClick={() => onExpandClick(outcomeHeaderHash)}>
+        <div onClick={() => onExpandClick(outcomeActionHash)}>
           {/* @ts-ignore */}
           <Icon name="expand.svg" size="small" className="light-grey" />
         </div>
@@ -209,7 +209,7 @@ export default function HeaderRightPanel({
                         name="title.svg"
                         onExpandClick={openExpandedView}
                         panAndZoom={animatePanAndZoom}
-                        outcomeHeaderHash={outcome.headerHash}
+                        outcomeActionHash={outcome.actionHash}
                       />
                     ))}
                 {(!noFilters || isDescriptionFilter) &&
@@ -223,7 +223,7 @@ export default function HeaderRightPanel({
                         name="text-align-left.svg"
                         onExpandClick={openExpandedView}
                         panAndZoom={animatePanAndZoom}
-                        outcomeHeaderHash={outcome.headerHash}
+                        outcomeActionHash={outcome.actionHash}
                       />
                     ))}
                 {(!noFilters || isCommentFilter) &&
@@ -237,7 +237,7 @@ export default function HeaderRightPanel({
                         name="comment.svg"
                         onExpandClick={openExpandedView}
                         panAndZoom={animatePanAndZoom}
-                        outcomeHeaderHash={comment.outcomeHeaderHash}
+                        outcomeActionHash={comment.outcomeActionHash}
                       />
                     ))}
               </div>

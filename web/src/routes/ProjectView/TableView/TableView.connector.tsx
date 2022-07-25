@@ -1,20 +1,20 @@
 import { connect } from 'react-redux'
 import { RootState } from '../../../redux/reducer'
 import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions'
-import { HeaderHashB64 } from '../../../types/shared'
+import { ActionHashB64 } from '../../../types/shared'
 import TableView, {
   TableViewConnectorDispatchProps,
   TableViewConnectorStateProps,
 } from './TableView.component'
-import { WireElement } from '../../../api/hdkCrud'
+import { WireRecord } from '../../../api/hdkCrud'
 import { Profile } from '../../../types'
 import { animatePanAndZoom } from '../../../redux/ephemeral/viewport/actions'
 
 function mapStateToProps(state: RootState): TableViewConnectorStateProps {
   const projectId = state.ui.activeProject
-  const whoAmIWireElement = state.whoami || ({} as WireElement<Profile>)
+  const whoAmIWireRecord = state.whoami || ({} as WireRecord<Profile>)
   // can be undefined, based on line above, intentionally
-  const whoAmI = whoAmIWireElement.entry
+  const whoAmI = whoAmIWireRecord.entry
   const projectTagsObject = state.projects.tags[projectId] || {}
   const projectMembers = state.projects.members[projectId] || {}
   const projectMemberProfiles = Object.keys(projectMembers)
@@ -30,11 +30,11 @@ function mapStateToProps(state: RootState): TableViewConnectorStateProps {
 }
 function mapDispatchToProps(dispatch): TableViewConnectorDispatchProps {
   return {
-    openExpandedView: (headerHash: HeaderHashB64) => {
-      return dispatch(openExpandedView(headerHash))
+    openExpandedView: (actionHash: ActionHashB64) => {
+      return dispatch(openExpandedView(actionHash))
     },
-    goToOutcome: (headerHash: HeaderHashB64) => {
-      return dispatch(animatePanAndZoom(headerHash))
+    goToOutcome: (actionHash: ActionHashB64) => {
+      return dispatch(animatePanAndZoom(actionHash))
     },
   }
 }

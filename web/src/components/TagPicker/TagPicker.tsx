@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { HeaderHashB64, WithHeaderHash } from '../../types/shared'
+import { ActionHashB64, WithActionHash } from '../../types/shared'
 import { Tag as TagType } from '../../types'
 import Button from '../Button/Button'
 import Checkbox from '../Checkbox/Checkbox'
@@ -14,9 +14,9 @@ import PopupTriangleWhite from '../../images/popup-triangle-white.svg'
 import OnClickOutside from '../OnClickOutside/OnClickOutside'
 
 export type TagPickerDisplayTagsProps = {
-  tags: WithHeaderHash<TagType>[]
-  selectedTags: HeaderHashB64[]
-  onChange: (newSelectedTags: HeaderHashB64[]) => void
+  tags: WithActionHash<TagType>[]
+  selectedTags: ActionHashB64[]
+  onChange: (newSelectedTags: ActionHashB64[]) => void
   filterText: string
   setFilterText: (text: string) => void
   setIsCreateTagOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -73,23 +73,23 @@ const TagPickerDisplayTags: React.FC<TagPickerDisplayTagsProps> = ({
               : true
           })
           .map((tag) => {
-            const isChecked = selectedTags.includes(tag.headerHash)
+            const isChecked = selectedTags.includes(tag.actionHash)
             const onSelectOption = (isChecked: boolean) => {
-              if (isChecked && !selectedTags.includes(tag.headerHash)) {
+              if (isChecked && !selectedTags.includes(tag.actionHash)) {
                 // add it, since its not there
-                onChange([...selectedTags, tag.headerHash])
-              } else if (!isChecked && selectedTags.includes(tag.headerHash)) {
+                onChange([...selectedTags, tag.actionHash])
+              } else if (!isChecked && selectedTags.includes(tag.actionHash)) {
                 // remove it, since its there and shouldn't be
                 onChange(
                   selectedTags.filter(
-                    (headerHash) => headerHash !== tag.headerHash
+                    (actionHash) => actionHash !== tag.actionHash
                   )
                 )
               }
             }
             return (
               <div
-                key={tag.headerHash}
+                key={tag.actionHash}
                 className="tag-picker-tag-option"
                 onClick={() => onSelectOption(!isChecked)}
               >
@@ -275,9 +275,9 @@ TagPicker default export Component
 */
 
 export type TagPickerProps = {
-  tags: WithHeaderHash<TagType>[]
-  selectedTags: HeaderHashB64[]
-  onChange: (newSelectedTags: HeaderHashB64[]) => void
+  tags: WithActionHash<TagType>[]
+  selectedTags: ActionHashB64[]
+  onChange: (newSelectedTags: ActionHashB64[]) => void
   filterText: string
   setFilterText: (text: string) => void
   onSaveTag: (text: string, backgroundColor: string) => Promise<void>
