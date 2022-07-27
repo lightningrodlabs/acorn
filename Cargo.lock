@@ -694,8 +694,9 @@ dependencies = [
 
 [[package]]
 name = "hdk_crud"
-version = "0.5.5"
-source = "git+https://github.com/lightningrodlabs/hdk_crud.git?rev=bb7bd99#bb7bd99b3fe7ef37acfe0de6dc12a35c31a64fcf"
+version = "0.5.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bb8065afe89357793e74c23b7a45e612668b8e9307bb91ae9cc011eb1cccbb7d"
 dependencies = [
  "assert_matches",
  "chrono",
@@ -1307,12 +1308,9 @@ dependencies = [
 name = "profiles_integrity"
 version = "0.0.1"
 dependencies = [
- "chrono",
  "hdi",
- "hdk_crud",
  "holo_hash",
  "serde",
- "thiserror",
 ]
 
 [[package]]
@@ -1333,7 +1331,6 @@ dependencies = [
 name = "projects_integrity"
 version = "0.0.1"
 dependencies = [
- "chrono",
  "hdi",
  "holo_hash",
  "serde",

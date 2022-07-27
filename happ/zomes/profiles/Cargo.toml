@@ -8,10 +8,9 @@ crate-type = ["cdylib", "rlib"]
 name = "profiles"
 
 [dependencies]
-# hdk_crud = "0.5.5"
+hdk_crud = { version = "0.5.6", features = ["no_example"] }
 chrono = "0.4.19"
 hdk = "0.0.142"
-hdk_crud = {git = "https://github.com/lightningrodlabs/hdk_crud.git", rev = "bb7bd99"}
 holo_hash = {version = "=0.0.30", features = ["encoding", "fixturators"]}
 profiles_integrity = { path = "../profiles_integrity" }
 paste = "*"

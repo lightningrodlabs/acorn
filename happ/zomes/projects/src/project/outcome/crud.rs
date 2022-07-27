@@ -19,7 +19,7 @@ use hdk_crud::{
         fetch_entries::FetchEntries, fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry,
     },
 }; //may want to do the mock thing
-use holo_hash::{ActionHashB64, AgentPubKeyB64};
+use holo_hash::{ActionHashB64};
 use projects_integrity::{
     project::{
         connection::entry::Connection, entry_point::entry::EntryPoint, outcome::entry::Outcome,

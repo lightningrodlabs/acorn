@@ -1,7 +1,7 @@
 use crate::{get_peers_content, project::outcome::crud::fetch_outcomes, SignalType};
 use hdk::prelude::*;
 use hdk_crud::{crud, retrieval::inputs::FetchOptions, wire_record::WireRecord};
-use holo_hash::{ActionHashB64, AgentPubKeyB64, EntryHashB64};
+use holo_hash::{EntryHashB64};
 
 use projects_integrity::{
     project::{entry_point::entry::EntryPoint, outcome::entry::Outcome},

@@ -9,7 +9,7 @@ use hdk_crud::{
     },
     wire_record::WireRecord,
 };
-use holo_hash::{ActionHashB64, AgentPubKeyB64, EntryHashB64};
+use holo_hash::{ActionHashB64, EntryHashB64};
 use std::*;
 
 use projects_integrity::{project::project_meta::entry::ProjectMeta, EntryTypes, LinkTypes};

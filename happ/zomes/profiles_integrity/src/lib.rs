@@ -1,5 +1,4 @@
 use hdi::prelude::*;
-use hdk_crud::retrieval::utils::EntryAndHash;
 use holo_hash::AgentPubKeyB64;
 
 #[hdk_entry_defs]
@@ -51,12 +50,6 @@ impl Profile {
 impl From<Profile> for AgentPubKey {
     fn from(profile: Profile) -> Self {
         profile.agent_pub_key.into()
-    }
-}
-
-impl From<EntryAndHash<Profile>> for Profile {
-    fn from(entry_and_hash: EntryAndHash<Profile>) -> Self {
-        entry_and_hash.0
     }
 }
 

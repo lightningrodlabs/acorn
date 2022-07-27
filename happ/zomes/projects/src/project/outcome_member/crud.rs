@@ -8,7 +8,7 @@ use hdk_crud::{
         inputs::FetchOptions,
     },
 };
-use holo_hash::{ActionHashB64, AgentPubKeyB64};
+use holo_hash::ActionHashB64;
 use projects_integrity::{project::outcome_member::entry::OutcomeMember, EntryTypes, LinkTypes};
 
 crud!(
