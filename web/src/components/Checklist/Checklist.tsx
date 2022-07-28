@@ -30,7 +30,7 @@ const Checklist: React.FC<ChecklistProps> = ({
   // internal state is just
   // to track the keyboard input for the 'new checklist item'
   const [typingText, setTypingText] = useState('')
-
+  console.log('typingText', typingText.length)
   return (
     <div className="checklist-wrapper">
       {listItems.map((listItem, index) => (
@@ -74,7 +74,7 @@ const Checklist: React.FC<ChecklistProps> = ({
           onChange={(keyboardEvent) => {
             setTypingText(keyboardEvent.target.value)
           }}
-          onKeyDown={(keyboardEvent) => {
+          onKeyUp={(keyboardEvent) => {
             // check if this is Enter button
             // if enter button, then call onAdd
             // also validate that there is some text written
