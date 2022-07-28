@@ -3,6 +3,7 @@ import { RootState } from '../../redux/reducer'
 import { openExpandedView } from '../../redux/ephemeral/expanded-view/actions'
 import { animatePanAndZoom } from '../../redux/ephemeral/viewport/actions'
 import HeaderRightPanel from './HeaderRightPanel.component'
+import { unselectAll } from '../../redux/ephemeral/selection/actions'
 
 function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject
@@ -19,6 +20,9 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    unselectAll: () => {
+      dispatch(unselectAll())
+    },
     animatePanAndZoom: (address) => {
       return dispatch(animatePanAndZoom(address))
     },

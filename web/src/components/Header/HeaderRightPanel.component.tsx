@@ -88,6 +88,7 @@ export default function HeaderRightPanel({
   commentList,
   openExpandedView,
   animatePanAndZoom,
+  unselectAll,
   projectId,
 }) {
   const ref = useRef()
@@ -156,6 +157,9 @@ export default function HeaderRightPanel({
                 classNames="search-input-wrapper"
               >
                 <input
+                  onFocus={() => {
+                    unselectAll()
+                  }}
                   type="text"
                   onChange={(e) => setFilterText(e.target.value.toLowerCase())}
                   value={filterText}
