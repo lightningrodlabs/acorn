@@ -143,7 +143,7 @@ export default function setupEventListeners(
           store.dispatch(setGKeyDown())
         }
         break
-      case 'e':
+      case 'Enter':
         if (
           state.ui.selection.selectedOutcomes.length === 1 &&
           !state.ui.outcomeForm.isOpen &&
