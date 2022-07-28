@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Icon from '../Icon/Icon'
+import OnClickOutside from '../OnClickOutside/OnClickOutside'
 
 import './SelectDropdown.scss'
 
@@ -49,23 +50,25 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
       </div>
       {/* The dropdown part of the dropdown menu */}
       {isOpenDropdownMenu && (
-        <div className="select-dropdown-menu">
-          {options.map((option) => (
-            <div
-              onClick={() => onClickOption(option.id)}
-              className={`select-dropdown-menu-option ${
-                size === 'small' ? 'small' : size === 'large' ? 'large' : ''
-              }`}
-            >
-              <div className="select-dropdown-menu-option-icon">
-                {option.icon}
+        <OnClickOutside onClickOutside={() => setIsOpenDropdownMenu(false)}>
+          <div className="select-dropdown-menu">
+            {options.map((option) => (
+              <div
+                onClick={() => onClickOption(option.id)}
+                className={`select-dropdown-menu-option ${
+                  size === 'small' ? 'small' : size === 'large' ? 'large' : ''
+                }`}
+              >
+                <div className="select-dropdown-menu-option-icon">
+                  {option.icon}
+                </div>
+                <div className="select-dropdown-menu-option-text">
+                  {option.text}
+                </div>
               </div>
-              <div className="select-dropdown-menu-option-text">
-                {option.text}
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </OnClickOutside>
       )}
     </div>
   )
