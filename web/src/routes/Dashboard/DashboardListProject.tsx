@@ -109,8 +109,8 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
         <div className="dashboard-list-project-members-settings">
           <div className="dashboard-list-project-members">
             <AvatarsList
-              showPresence
-              profilesPresent={project.presentMembers}
+              // showPresence
+              // profilesPresent={project.presentMembers}
               size="small-medium"
               profiles={project.members}
               showInviteButton

@@ -69,7 +69,7 @@ function UniversalOutcome({
             profilesPresent={presentMembers}
             size="small"
             profiles={outcome.members}
-            withStatus
+            withStatus={false}
           />
 
           {/* TODO: fix and add time metadata display */}
