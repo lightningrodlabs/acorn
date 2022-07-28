@@ -3,11 +3,10 @@ import _ from 'lodash'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { useHistory, useLocation } from 'react-router-dom'
 
-import Avatar from '../../../../components/Avatar/Avatar'
+import './PriorityUniversal.scss'
+
 import Icon from '../../../../components/Icon/Icon'
 import TimeframeFormat from '../../../../components/TimeframeFormat'
-
-import './PriorityUniversal.scss'
 import ProgressIndicatorCalculated from '../../../../components/ProgressIndicatorCalculated/ProgressIndicatorCalculated'
 import { ComputedScope } from '../../../../types'
 import ComputedOutcomeContext from '../../../../context/ComputedOutcomeContext'
@@ -19,6 +18,7 @@ import AvatarsList from '../../../../components/AvatarsList/AvatarsList'
 function UniversalOutcome({
   liveIndex,
   outcome,
+  presentMembers,
   openExpandedView,
   goToOutcome,
 }) {
@@ -64,7 +64,13 @@ function UniversalOutcome({
           </div>
         </div>
         <div className="universal-priority-outcome-item-metadata">
-          <AvatarsList size="small" profiles={outcome.members} withStatus />
+          <AvatarsList
+            showPresence
+            profilesPresent={presentMembers}
+            size="small"
+            profiles={outcome.members}
+            withStatus
+          />
 
           {/* TODO: fix and add time metadata display */}
           {/* Hiding time component here is a temp solution */}
@@ -117,6 +123,7 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 function PriorityUniversalDraggableOutcome({
   outcome,
   index,
+  presentMembers,
   whileDraggingIndexes,
   openExpandedView,
   goToOutcome,
@@ -166,6 +173,7 @@ function PriorityUniversalDraggableOutcome({
             )}
           >
             <UniversalOutcome
+              presentMembers={presentMembers}
               outcome={outcome}
               liveIndex={liveIndex}
               openExpandedView={openExpandedView}
@@ -181,6 +189,7 @@ function PriorityUniversalDraggableOutcome({
 // the area within which outcomes are droppable
 function PriorityUniversalDroppable({
   outcomes,
+  presentMembers,
   whileDraggingIndexes,
   openExpandedView,
   goToOutcome,
@@ -199,6 +208,7 @@ function PriorityUniversalDroppable({
               key={outcome.actionHash}
               outcome={outcome}
               index={index}
+              presentMembers={presentMembers}
               whileDraggingIndexes={whileDraggingIndexes}
               openExpandedView={openExpandedView}
               goToOutcome={goToOutcome}
@@ -215,6 +225,7 @@ function PriorityUniversalDroppable({
 function PriorityUniversal({
   projectMeta,
   projectId,
+  presentMembers,
   updateProjectMeta,
   openExpandedView,
   goToOutcome,
@@ -341,8 +352,13 @@ function PriorityUniversal({
           </div>
         )}
         {topPriorityOutcomes.length !== 0 && (
-          <DragDropContext onDragEnd={onDragEnd} onDragUpdate={onDragUpdate} style={{overflow:'auto'}} >
+          <DragDropContext
+            onDragEnd={onDragEnd}
+            onDragUpdate={onDragUpdate}
+            style={{ overflow: 'auto' }}
+          >
             <PriorityUniversalDroppable
+              presentMembers={presentMembers}
               outcomes={topPriorityOutcomes}
               whileDraggingIndexes={whileDraggingIndexes}
               openExpandedView={openExpandedView}

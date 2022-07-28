@@ -22,6 +22,7 @@ const MembersIndicator: React.FC<MembersIndicatorProps> = ({
       <AvatarsList
         size="small-medium"
         profiles={members}
+        showPresence
         profilesPresent={presentMembers}
         showInviteButton
         onClickButton={onClickInviteMember}

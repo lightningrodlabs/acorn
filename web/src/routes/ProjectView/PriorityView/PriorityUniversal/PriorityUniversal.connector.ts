@@ -2,6 +2,7 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 
 import { openExpandedView } from '../../../../redux/ephemeral/expanded-view/actions'
+import selectProjectMembersPresent from '../../../../redux/persistent/projects/realtime-info-signal/select'
 import { updateProjectMeta } from '../../../../redux/persistent/projects/project-meta/actions'
 import { animatePanAndZoom } from '../../../../redux/ephemeral/viewport/actions'
 import ProjectsZomeApi from '../../../../api/projectsApi'
@@ -16,9 +17,14 @@ function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject
   const projectMeta = state.projects.projectMeta[projectId]
 
+  const presentMembers = projectId
+    ? selectProjectMembersPresent(state, projectId)
+    : []
+
   return {
     projectId,
     projectMeta,
+    presentMembers,
   }
 }
 

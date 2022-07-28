@@ -23,6 +23,7 @@ import App, {
   AppDispatchProps,
   AppMergeProps,
 } from './App.component'
+import selectProjectMembersPresent from '../redux/persistent/projects/realtime-info-signal/select'
 
 function mapStateToProps(state: RootState): AppStateProps {
   const {
@@ -44,21 +45,9 @@ function mapStateToProps(state: RootState): AppStateProps {
     ? selectActiveProjectMembers(state, activeProject)
     : []
 
-  function getDnaHashFromProjectId(activeProject) {
-    return activeProject
-      ? activeProject.split('[:cell_id_divider:]')[0]
-      : activeProject
-  }
-  const presentMembers = Object.values(state.ui.realtimeInfo)
-    .filter(
-      (agentInfo) =>
-        getDnaHashFromProjectId(agentInfo.projectId) ===
-        getDnaHashFromProjectId(activeProject)
-    )
-    .map((agentInfo) => agentInfo.agentPubKey)
-    .filter((agentPubKey) =>
-      members.find((member) => member.agentPubKey === agentPubKey)
-    )
+  const presentMembers = activeProject
+    ? selectProjectMembersPresent(state, activeProject)
+    : []
 
   const allProjectEntryPoints = activeProject
     ? selectEntryPoints(state, activeProject)

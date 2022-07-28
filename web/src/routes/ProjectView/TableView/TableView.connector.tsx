@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
 import { RootState } from '../../../redux/reducer'
 import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions'
+import selectProjectMembersPresent from '../../../redux/persistent/projects/realtime-info-signal/select'
 import { ActionHashB64 } from '../../../types/shared'
 import TableView, {
   TableViewConnectorDispatchProps,
@@ -21,9 +22,14 @@ function mapStateToProps(state: RootState): TableViewConnectorStateProps {
     .map((address) => state.agents[address])
     .filter((agent) => agent)
 
+  const presentMembers = projectId
+    ? selectProjectMembersPresent(state, projectId)
+    : []
+
   const projectTags = Object.values(projectTagsObject)
   return {
     whoAmI,
+    presentMembers,
     projectMemberProfiles,
     projectTags,
   }

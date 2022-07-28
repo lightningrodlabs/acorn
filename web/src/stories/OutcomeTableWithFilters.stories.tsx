@@ -5,7 +5,6 @@ import '../variables.scss'
 import OutcomeTableWithFiltersComponent, {
   OutcomeTableWithFiltersProps,
 } from '../components/OutcomeTableWithFilters/OutcomeTableWithFilters'
-import { ComputedOutcome, ComputedScope, ComputedSimpleAchievementStatus, Profile } from '../types'
 import testProfile from './testData/testProfile'
 import { testBigAchievedOutcome, testBigPartiallyAchievedOutcome } from './testData/testOutcomes'
 import testTags from './testData/testTags'
@@ -38,6 +37,10 @@ const args: OutcomeTableWithFiltersProps = {
   openExpandedView: function (actionHash: string): void {
     throw new Error('Function not implemented.')
   },
-  projectTags: testTags
+  projectTags: testTags,
+  presentMembers: [],
+  goToOutcome: function (actionHash: string): void {
+    throw new Error('Function not implemented.')
+  }
 }
 OutcomeTableWithFilters.args = args

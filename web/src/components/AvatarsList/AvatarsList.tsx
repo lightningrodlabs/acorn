@@ -65,7 +65,7 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
             selfAssignedStatus={profile.status}
             size={size}
             withWhiteBorder
-            disconnected={!isProfilePresent}
+            disconnected={showPresence && !isProfilePresent}
             withStatus={withStatus && isProfilePresent}
             clickable
             withTooltip

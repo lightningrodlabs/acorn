@@ -40,10 +40,12 @@ export type EvDetailsConnectorStateProps = {
   activeAgentPubKey: AgentPubKeyB64
   outcomeActionHash: ActionHashB64
   projectTags: WithActionHash<Tag>[]
+  // a list of project members who are
+  // literally active on the project RIGHT NOW
+  // concurrently
+  presentMembers: AgentPubKeyB64[]
   // a list of specifically the assignees
   assignees: AssigneeWithActionHash[]
-  // an object with ALL profiles
-  profiles: { [agentPubKey: AgentPubKeyB64]: Profile }
   // a list of all profiles, with data about
   // whether the person is an assignee on each object
   people: (Profile & {
@@ -83,7 +85,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   outcomeActionHash,
   assignees,
   people,
-  profiles,
+  presentMembers,
   // dispatch props
   onSaveTag,
   updateOutcome,
@@ -329,6 +331,8 @@ const EvDetails: React.FC<EvDetailsProps> = ({
             <div className="ev-assignees-wrapper">
               <MetadataWithLabel label="Assignees">
                 <AvatarsList
+                  showPresence
+                  profilesPresent={presentMembers}
                   size="small-medium"
                   profiles={assignees.map((assignee) => assignee.profile)}
                   showAddButton

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
-import Avatar from '../../components/Avatar/Avatar'
 import Icon from '../../components/Icon/Icon'
 
 import './DashboardListProject.scss'
@@ -11,6 +10,12 @@ import { pickColorForString } from '../../styles'
 import ProjectSettingsModal from '../../components/ProjectSettingsModal/ProjectSettingsModal.connector'
 import { ENTRY_POINTS, GO_TO_OUTCOME } from '../../searchParams'
 import AvatarsList from '../../components/AvatarsList/AvatarsList'
+import {
+  AgentPubKeyB64,
+  CellIdString,
+  WithActionHash,
+} from '../../types/shared'
+import { ProjectMeta, Profile, EntryPoint, Outcome, ProjectAggregated } from '../../types'
 
 function DashboardListProjectLoading() {
   return (
@@ -40,7 +45,7 @@ function DashboardListProjectLoading() {
 }
 
 export type DashboardListProjectProps = {
-  project
+  project: ProjectAggregated
   setShowInviteMembersModal: (passphrase: string) => void
 }
 
@@ -73,10 +78,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
     <div className="dashboard-list-project-wrapper">
       {updateIsAvailable && (
         <>
-          <div
-            className="update-required-button"
-            onClick={() => {}}
-          >
+          <div className="update-required-button" onClick={() => {}}>
             Update required to access
           </div>
           <div className="unavailable-layer"></div>
@@ -107,6 +109,8 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
         <div className="dashboard-list-project-members-settings">
           <div className="dashboard-list-project-members">
             <AvatarsList
+              showPresence
+              profilesPresent={project.presentMembers}
               size="small-medium"
               profiles={project.members}
               showInviteButton

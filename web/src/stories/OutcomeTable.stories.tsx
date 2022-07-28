@@ -27,9 +27,13 @@ OutcomeTable.storyName = 'OutcomeTable'
 const args: OutcomeTableProps = {
   projectTags: testTags,
   outcomeTrees: [testBigAchievedOutcome],
+  presentMembers: [],
   filter: {},
   openExpandedView: function (actionHash: string): void {
     throw new Error('Function not implemented.')
   },
+  goToOutcome: function (actionHash: string): void {
+    throw new Error('Function not implemented.')
+  }
 }
 OutcomeTable.args = args

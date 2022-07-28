@@ -27,10 +27,15 @@ OutcomeTableRow.storyName = 'OutcomeTableRow'
 const args: OutcomeTableRowProps = {
   projectTags: testTags,
   outcome: testBigAchievedOutcome,
+  presentMembers: [],
   filter: {},
   parentExpanded: true,
   indentationLevel: 0,
   openExpandedView: function (actionHash: string): void {
+    throw new Error('Function not implemented.')
+  },
+  columnWidthPercentages: ['5rem', '45rem', '50%', '50%', '0'],
+  goToOutcome: function (actionHash: string): void {
     throw new Error('Function not implemented.')
   },
 }

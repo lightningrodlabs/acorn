@@ -15,6 +15,7 @@ import {
 import selectEntryPoints from '../../redux/persistent/projects/entry-points/select'
 import { PriorityModeOptions } from '../../constants'
 
+import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
 import {
   joinProjectCellId,
   removeProjectCellId,
@@ -31,6 +32,7 @@ import Dashboard, {
   DashboardStateProps,
 } from './Dashboard.component'
 import { ProjectMeta, PriorityMode } from '../../types'
+import selectProjectMembersPresent from '../../redux/persistent/projects/realtime-info-signal/select'
 
 async function installProjectApp(
   passphrase: string
@@ -222,9 +224,11 @@ function mapStateToProps(state: RootState): DashboardStateProps {
       (agentAddress) => state.agents[agentAddress]
     )
     const entryPoints = selectEntryPoints(state, cellId)
+    const presentMembers = selectProjectMembersPresent(state, cellId)
     return {
       ...project,
       cellId,
+      presentMembers,
       members: memberProfiles,
       entryPoints,
     }
@@ -240,6 +244,8 @@ function mapStateToProps(state: RootState): DashboardStateProps {
 
 function mapDispatchToProps(dispatch): DashboardDispatchProps {
   return {
+    setActiveProject: (projectId: CellIdString) =>
+      dispatch(setActiveProject(projectId)),
     setShowInviteMembersModal: (passphrase: string) => {
       return dispatch(openInviteMembersModal(passphrase))
     },

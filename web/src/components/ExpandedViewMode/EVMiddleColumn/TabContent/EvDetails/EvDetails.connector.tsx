@@ -14,6 +14,7 @@ import {
 } from '../../../../../redux/persistent/projects/outcome-members/actions'
 import { updateOutcome } from '../../../../../redux/persistent/projects/outcomes/actions'
 import { createTag } from '../../../../../redux/persistent/projects/tags/actions'
+import selectProjectMembersPresent from '../../../../../redux/persistent/projects/realtime-info-signal/select'
 import { RootState } from '../../../../../redux/reducer'
 import { AssigneeWithActionHash, Outcome } from '../../../../../types'
 import { ActionHashB64, AgentPubKeyB64 } from '../../../../../types/shared'
@@ -33,6 +34,10 @@ function mapStateToProps(
   const outcomeMembers = state.projects.outcomeMembers[projectId] || {}
   const tags = state.projects.tags[projectId] || {}
   const projectTags = Object.values(tags)
+
+  const presentMembers = projectId
+    ? selectProjectMembersPresent(state, projectId)
+    : []
 
   // assignees
   let assignees: AssigneeWithActionHash[] = []
@@ -77,14 +82,11 @@ function mapStateToProps(
       }
     })
 
-  // TODO: fix this fn
-  // it shouldn't use `delete`
-  // editingPeers
   function filterAndAddAgentInfo(agentInfo) {
-    delete agentInfo.projectId
-    delete agentInfo.outcomeExpandedView
-    agentInfo.profileInfo = state.agents[agentInfo.agentPubKey]
-    return agentInfo
+    return {
+      ...agentInfo,
+      profileInfo: state.agents[agentInfo.agentPubKey]
+    }
   }
   const editingPeers = Object.values(state.ui.realtimeInfo)
     .filter((agentInfo) => agentInfo.outcomeBeingEdited)
@@ -99,7 +101,7 @@ function mapStateToProps(
     outcomeActionHash,
     projectTags,
     activeAgentPubKey: state.agentAddress,
-    profiles: state.agents,
+    presentMembers,
     editingPeers,
     assignees,
     people,

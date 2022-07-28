@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import hashCodeId from '../../api/clientSideIdHash'
 import { ComputedOutcome, ComputedScope, Tag } from '../../types'
-import { ActionHashB64, WithActionHash } from '../../types/shared'
+import { ActionHashB64, AgentPubKeyB64, WithActionHash } from '../../types/shared'
 import AvatarsList from '../AvatarsList/AvatarsList'
 import ExpandChevron from '../ExpandChevron/ExpandChevron'
 import Icon from '../Icon/Icon'
@@ -16,6 +16,7 @@ export type OutcomeTableRowProps = {
   projectTags: WithActionHash<Tag>[]
   outcome: ComputedOutcome
   filter: OutcomeTableFilter
+  presentMembers: AgentPubKeyB64[]
   parentExpanded: boolean
   indentationLevel: number
   expandByDefault?: boolean
@@ -27,6 +28,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   columnWidthPercentages,
   projectTags,
   outcome,
+  presentMembers,
   filter,
   parentExpanded,
   indentationLevel,
@@ -129,6 +131,8 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
             >
               <AvatarsList
                 withStatus={false}
+                showPresence
+                profilesPresent={presentMembers}
                 size="small"
                 profiles={outcome.members || []}
               />
@@ -177,6 +181,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
             columnWidthPercentages={columnWidthPercentages}
             projectTags={projectTags}
             outcome={outcomeChild}
+            presentMembers={presentMembers}
             filter={filter}
             parentExpanded={expanded && parentExpanded}
             indentationLevel={indentationLevel + 1}

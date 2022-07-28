@@ -21,9 +21,10 @@ import Typography from '../../components/Typography/Typography'
 import {
   AgentPubKeyB64,
   CellIdString,
-  WithActionHash,
 } from '../../types/shared'
-import { EntryPoint, Outcome, Profile, ProjectMeta } from '../../types'
+import {
+  ProjectAggregated,
+} from '../../types'
 import { AgentsState } from '../../redux/persistent/profiles/agents/reducer'
 
 export type DashboardStateProps = {
@@ -31,19 +32,11 @@ export type DashboardStateProps = {
   agentAddress: AgentPubKeyB64
   profilesCellIdString: CellIdString
   cells: CellIdString[]
-  projects: Array<
-    WithActionHash<ProjectMeta> & {
-      cellId: CellIdString
-      members: Profile[]
-      entryPoints: {
-        entryPoint: WithActionHash<EntryPoint>
-        outcome: WithActionHash<Outcome>
-      }[]
-    }
-  >
+  projects: Array<ProjectAggregated>
 }
 
 export type DashboardDispatchProps = {
+  setActiveProject: (projectId: CellIdString) => void
   createProject: (
     agentAddress: AgentPubKeyB64,
     project: { name: string; image: string },
@@ -67,6 +60,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   profilesCellIdString,
   cells,
   projects,
+  setActiveProject,
   fetchEntryPointDetails,
   fetchMembers,
   fetchProjectMeta,
@@ -84,6 +78,15 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [showImportModal, setShowImportModal] = useState(false)
 
   // add new modal state managers here
+  
+  useEffect(() => {
+    // HACK, race conditions could occur here
+    // but I want this to reset to null AFTER
+    // 'resetProjectView' actions have been all called
+    setTimeout(() => {
+      setActiveProject(null)
+    }, 1000)
+  }, [])
 
   // cells is an array of cellId strings
   useEffect(() => {
@@ -127,7 +130,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     setShowSortPicker(false)
   }
 
-  let sortedProjects
+  let sortedProjects: Array<ProjectAggregated>
   if (selectedSort === 'createdAt') {
     // sort most recent first, oldest last
     sortedProjects = projects.sort((a, b) => b.createdAt - a.createdAt)

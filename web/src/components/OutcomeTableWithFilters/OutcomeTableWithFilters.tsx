@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { ComputedOutcome, Profile, Tag } from '../../types'
-import { ActionHashB64, WithActionHash } from '../../types/shared'
+import { ActionHashB64, AgentPubKeyB64, WithActionHash } from '../../types/shared'
 import OutcomeTable from '../OutcomeTable/OutcomeTable'
 import OutcomeTableFilterSelector from '../OutcomeTableFilterSelector/OutcomeTableFilterSelector'
 import { OutcomeTableFilter } from '../OutcomeTableRow/filterMatch'
@@ -9,6 +9,7 @@ import './OutcomeTableWithFilters.scss'
 export type OutcomeTableWithFiltersProps = {
   projectTags: WithActionHash<Tag>[]
   whoAmI: Profile
+  presentMembers: AgentPubKeyB64[]
   projectMemberProfiles: Profile[]
   computedOutcomesAsTree: ComputedOutcome[]
   openExpandedView: (actionHash: ActionHashB64) => void
@@ -18,6 +19,7 @@ export type OutcomeTableWithFiltersProps = {
 const OutcomeTableWithFilters: React.FC<OutcomeTableWithFiltersProps> = ({
   projectTags,
   whoAmI,
+  presentMembers,
   projectMemberProfiles,
   computedOutcomesAsTree,
   openExpandedView,
@@ -36,6 +38,7 @@ const OutcomeTableWithFilters: React.FC<OutcomeTableWithFiltersProps> = ({
       <OutcomeTable
         projectTags={projectTags}
         outcomeTrees={computedOutcomesAsTree}
+        presentMembers={presentMembers}
         filter={filter}
         openExpandedView={openExpandedView}
         goToOutcome={goToOutcome}

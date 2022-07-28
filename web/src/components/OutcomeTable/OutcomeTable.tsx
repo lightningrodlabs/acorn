@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { ComputedOutcome, Tag } from '../../types'
-import { ActionHashB64, WithActionHash } from '../../types/shared'
+import { ActionHashB64, AgentPubKeyB64, WithActionHash } from '../../types/shared'
 import { OutcomeTableFilter } from '../OutcomeTableRow/filterMatch'
 import OutcomeTableRow from '../OutcomeTableRow/OutcomeTableRow'
 import './OutcomeTable.scss'
@@ -9,6 +9,7 @@ import './OutcomeTable.scss'
 export type OutcomeTableProps = {
   projectTags: WithActionHash<Tag>[]
   outcomeTrees: ComputedOutcome[]
+  presentMembers: AgentPubKeyB64[]
   filter: OutcomeTableFilter
   openExpandedView: (actionHash: ActionHashB64) => void
   goToOutcome: (actionHash: ActionHashB64) => void
@@ -17,6 +18,7 @@ export type OutcomeTableProps = {
 const OutcomeTable: React.FC<OutcomeTableProps> = ({
   projectTags,
   outcomeTrees,
+  presentMembers,
   filter,
   openExpandedView,
   goToOutcome,
@@ -101,6 +103,7 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
               columnWidthPercentages={columnWidthPercentages}
               projectTags={projectTags}
               outcome={outcome}
+              presentMembers={presentMembers}
               filter={filter}
               parentExpanded={true}
               indentationLevel={0}
