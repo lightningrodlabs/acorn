@@ -39,6 +39,7 @@ const isProjectExitAction = (action) => {
 const realtimeInfoWatcher = (store) => {
   // return the action handler middleware
   return (next) => async (action) => {
+    // console.log(store.getState())
     if (isOneOfRealtimeInfoAffectingActions(action)) {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)

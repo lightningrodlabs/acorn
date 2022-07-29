@@ -3,7 +3,7 @@ manifest_version: "1"
 name: profiles-dna
 integrity:
   origin_time: 1654092432130000
-  uid: "0001"
+  uid: "0002"
   properties: ~
   zomes:
     - name: profiles_integrity
