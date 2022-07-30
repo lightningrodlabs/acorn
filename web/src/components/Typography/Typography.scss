@@ -41,7 +41,14 @@
   &.body1 {
     font: 1rem var(--font-family-primary-medium);
     color: var(--text-color-secondary);
-    line-height: 1.45;
+    line-height: 1.5;
+
+    a {
+      color: var(--text-color-link);
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
   &.body2 {
     font: 0.875rem var(--font-family-primary-medium);
@@ -85,7 +92,7 @@
     color: var(--text-color-caption);
     line-height: 1.45;
   }
-   // breadcrumbs
+  // breadcrumbs
   &.breadcrumbs {
     font: 0.875rem var(--font-family-primary-medium);
     color: var(--text-color-secondary);

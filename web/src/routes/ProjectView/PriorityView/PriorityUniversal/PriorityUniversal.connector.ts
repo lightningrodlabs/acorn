@@ -16,14 +16,17 @@ import { ProjectMeta } from '../../../../types'
 function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject
   const projectMeta = state.projects.projectMeta[projectId]
-
+  const projectTagsObject = state.projects.tags[projectId] || {}
   const presentMembers = projectId
     ? selectProjectMembersPresent(state, projectId)
     : []
 
+  const projectTags = Object.values(projectTagsObject)
+
   return {
     projectId,
     projectMeta,
+    projectTags,
     presentMembers,
   }
 }

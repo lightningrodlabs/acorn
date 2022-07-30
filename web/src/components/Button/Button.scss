@@ -106,6 +106,6 @@
   color: #00beb0;
 
   &:hover {
-    color: #5f65ff;
+    color: var(--text-color-link);
   }
 }

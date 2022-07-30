@@ -9,7 +9,7 @@
   flex-direction: column;
 
   .tag-picker-display-tags-wrapper {
-    // margin-top: 0.3rem;
+    position: absolute;
     display: flex;
     flex-direction: column;
     justify-content: space-between;

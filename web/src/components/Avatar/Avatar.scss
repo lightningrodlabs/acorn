@@ -173,7 +173,7 @@
     }
 
     &.highlighted {
-      box-shadow: 0 0 0 0.25rem #5f65ff;
+      box-shadow: 0 0 0 0.25rem var(--text-color-link);
     }
 
     // avatar with tooltip
@@ -209,7 +209,7 @@
 
 .avatar.highlighted ~ .avatar-wrapper.with-border.white,
 .initials-avatar.highlighted ~ .avatar-wrapper.with-border.white {
-  border: 0.125rem solid #5f65ff;
+  border: 0.125rem solid var(--text-color-link);
 }
 
 // avatar's prefered set status circle

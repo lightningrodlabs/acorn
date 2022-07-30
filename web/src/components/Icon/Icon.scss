@@ -25,7 +25,7 @@
 }
 
 .icon:not(.not-hoverable):hover .inner-icon {
-  background-color: #5f65ff;
+  background-color: var(--text-color-link);
 }
 
 .icon.not-hoverable {
@@ -45,7 +45,7 @@
 }
 
 .icon.purple .inner-icon {
-  background-color: #5f65ff;
+  background-color: var(--text-color-link);
 }
 
 .icon.white .inner-icon {
@@ -209,7 +209,7 @@
 }
 
 .tooltip-text-wrapper {
-  background-color: #5f65ff;
+  background-color: var(--text-color-link);
   padding: 7px 8px;
   border-radius: 4px;
 }

@@ -1,4 +1,4 @@
-function SelectBox (ctx, x, y, w, h, radius, color, stroke, strokeWidth) {
+function SelectBox(ctx, x, y, w, h, radius, color, stroke, strokeWidth) {
   const r = x + w
   const b = y + h
 
@@ -26,7 +26,7 @@ function SelectBox (ctx, x, y, w, h, radius, color, stroke, strokeWidth) {
 }
 
 // render an Outcome card
-export default function render ({ x, y }, { w, h }, ctx) {
+export default function render({ x, y }, { w, h }, ctx) {
   if (w < 0) {
     x += w
     w *= -1
@@ -36,6 +36,6 @@ export default function render ({ x, y }, { w, h }, ctx) {
     h *= -1
   }
 
-  SelectBox(ctx, x, y, w, h, 10, '#5F65FF', true, 3)
-  SelectBox(ctx, x + 2, y + 2, w - 2, h - 2, 7, '#5F65FF31', false, 4)
+  SelectBox(ctx, x, y, w, h, 10, '#344cff', true, 3)
+  SelectBox(ctx, x + 2, y + 2, w - 2, h - 2, 7, '#344cff31', false, 4)
 }

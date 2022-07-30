@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { CSSTransition } from 'react-transition-group'
-import Icon from '../Icon/Icon'
 import EVMiddleColumn from './EVMiddleColumn/EVMiddleColumn'
 import EVLeftColumn from './EVLeftColumn/EVLeftColumn'
 import { ExpandedViewTab } from './NavEnum'
@@ -93,7 +92,7 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
         unmountOnExit
         classNames="expanded-view-overlay"
       >
-        <div className="expanded-view-overlay">
+        <div className="expanded-view-overlay" >
           <div className="expanded-view-breadcrumbs-wrapper">
             <Breadcrumbs
               outcomeAndAncestors={outcomeAndAncestors}
@@ -135,7 +134,6 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
             {activeTab === ExpandedViewTab.Details && rightColumn}
           </div>
         </div>
-
       </CSSTransition>
     </>
   )

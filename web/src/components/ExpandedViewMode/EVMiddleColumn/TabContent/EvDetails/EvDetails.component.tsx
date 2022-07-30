@@ -176,43 +176,54 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   let fromDate: moment.Moment, toDate: moment.Moment
   let timeFieldLabel: string
   let durationEstimate: string
-  let onSetDate = async (fromDate: number, toDate: number) => { }
+  let onSetDate = async (fromDate: number, toDate: number) => {}
 
   if (outcome) {
     // Uncertain
     if (outcome.computedScope === ComputedScope.Uncertain) {
       timeFieldLabel = 'Breakdown Time Est.'
-      fromDate = 'Uncertain' in outcome.scope && outcome.scope.Uncertain.timeFrame && outcome.scope.Uncertain.timeFrame.fromDate
-        ? moment.unix(outcome.scope.Uncertain.timeFrame.fromDate)
-        : null
-      toDate = 'Uncertain' in outcome.scope && outcome.scope.Uncertain.timeFrame && outcome.scope.Uncertain.timeFrame.toDate
-        ? moment.unix(outcome.scope.Uncertain.timeFrame.toDate)
-        : null
+      fromDate =
+        'Uncertain' in outcome.scope &&
+        outcome.scope.Uncertain.timeFrame &&
+        outcome.scope.Uncertain.timeFrame.fromDate
+          ? moment.unix(outcome.scope.Uncertain.timeFrame.fromDate)
+          : null
+      toDate =
+        'Uncertain' in outcome.scope &&
+        outcome.scope.Uncertain.timeFrame &&
+        outcome.scope.Uncertain.timeFrame.toDate
+          ? moment.unix(outcome.scope.Uncertain.timeFrame.toDate)
+          : null
       onSetDate = async (fromDate: number, toDate: number) => {
         if (!(fromDate && toDate)) return
         let cleaned = cleanOutcome()
         cleaned.scope = {
           Uncertain: {
-            ...('Uncertain' in outcome.scope ? outcome.scope.Uncertain : { inBreakdown: true, smallsEstimate: null }),
-            timeFrame: { fromDate, toDate }
-          }
+            ...('Uncertain' in outcome.scope
+              ? outcome.scope.Uncertain
+              : { inBreakdown: true, smallsEstimate: null }),
+            timeFrame: { fromDate, toDate },
+          },
         }
         await updateOutcome(cleaned, outcomeActionHash)
       }
     } else if (outcome.computedScope === ComputedScope.Small) {
       // Small
       timeFieldLabel = 'Target Date'
-      toDate = 'Small' in outcome.scope && outcome.scope.Small.targetDate
-        ? moment.unix(outcome.scope.Small.targetDate)
-        : null
+      toDate =
+        'Small' in outcome.scope && outcome.scope.Small.targetDate
+          ? moment.unix(outcome.scope.Small.targetDate)
+          : null
       onSetDate = async (targetDate: number) => {
         if (!targetDate) return
         let cleaned = cleanOutcome()
         cleaned.scope = {
           Small: {
-            ...('Small' in outcome.scope ? outcome.scope.Small : { achievementStatus: 'NotAchieved', taskList: [] }),
-            targetDate
-          }
+            ...('Small' in outcome.scope
+              ? outcome.scope.Small
+              : { achievementStatus: 'NotAchieved', taskList: [] }),
+            targetDate,
+          },
         }
         await updateOutcome(cleaned, outcomeActionHash)
         setEditingTimeframe(false)
@@ -268,7 +279,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   )
   const descriptionEditor = editingDescriptionPeer
     ? // @ts-ignore
-    editingDescriptionPeer.profileInfo
+      editingDescriptionPeer.profileInfo
     : {}
 
   /*
@@ -362,39 +373,81 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                 {/* For Uncertain and Small, it is an editable field */}
                 <div
                   className="ev-time-display"
-                  onClick={() => outcome.computedScope !== ComputedScope.Big && setEditingTimeframe(!editingTimeframe)}
+                  onClick={() =>
+                    outcome.computedScope !== ComputedScope.Big &&
+                    setEditingTimeframe(!editingTimeframe)
+                  }
                 >
                   {/* Big - Achievement Time Est.*/}
-                  {outcome && outcome.computedScope === ComputedScope.Big && <>
-                    <div className='big-scope-time-estimate-wrapper'>
-                      <Icon name="calculator-grey.svg" className="grey not-hoverable" />
-                      <Typography style="h7">{durationEstimate}</Typography>
-                      <div className="more-info-wrapper">
-                        <a href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/time" target="_blank">
-                          <Icon name="info.svg" className="light-grey" size="small" />
-                        </a>
+                  {outcome && outcome.computedScope === ComputedScope.Big && (
+                    <>
+                      <div className="big-scope-time-estimate-wrapper">
+                        <Icon
+                          name="calculator-grey.svg"
+                          className="grey not-hoverable"
+                        />
+                        <Typography style="h7">{durationEstimate}</Typography>
+                        <div className="more-info-wrapper">
+                          <a
+                            href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/time"
+                            target="_blank"
+                          >
+                            <Icon
+                              name="info.svg"
+                              className="light-grey"
+                              size="small"
+                            />
+                          </a>
+                        </div>
                       </div>
-                    </div>
-                  </>}
+                    </>
+                  )}
                   {/* Uncertain */}
-                  {outcome && outcome.computedScope === ComputedScope.Uncertain && <>
-                    <Typography style="body1">
-                      {fromDate && fromDate.format('MMM D, YYYY')}
-                      {toDate && ' - '}
-                      {toDate && toDate.format('MMM D, YYYY')}
-                    </Typography>
-                    {!fromDate && !toDate && <>Click to set time</>}
-                  </>}
+                  {outcome &&
+                    outcome.computedScope === ComputedScope.Uncertain && (
+                      <>
+                        <Typography style="body1">
+                          {fromDate && fromDate.format('MMM D, YYYY')}
+                          {toDate && fromDate !== toDate && ' - '}
+
+                          {toDate && toDate.format('MMM D, YYYY')}
+                        </Typography>
+                        {!fromDate && !toDate && <>Click to set time</>}
+                      </>
+                    )}
                   {/* Small */}
-                  {outcome && outcome.computedScope === ComputedScope.Small && <>
-                    {toDate && <Typography style="body1">{toDate.format('MMM D, YYYY')}</Typography>}
-                    {!toDate && <>Click to set time</>}
-                  </>}
+                  {outcome && outcome.computedScope === ComputedScope.Small && (
+                    <>
+                      {toDate && (
+                        <Typography style="body1">
+                          {toDate.format('MMM D, YYYY')}
+                        </Typography>
+                      )}
+                      {!toDate && <>Click to set time</>}
+                    </>
+                  )}
                 </div>
               </MetadataWithLabel>
 
-              {editingTimeframe && outcome && outcome.computedScope === ComputedScope.Small && <DatePicker date={fromDate} onClose={() => setEditingTimeframe(false)} onSet={onSetDate} />}
-              {editingTimeframe && outcome && outcome.computedScope === ComputedScope.Uncertain && <DateRangePicker fromDate={fromDate} toDate={toDate} onClose={() => setEditingTimeframe(false)} onSet={onSetDate} />}
+              {editingTimeframe &&
+                outcome &&
+                outcome.computedScope === ComputedScope.Small && (
+                  <DatePicker
+                    date={fromDate}
+                    onClose={() => setEditingTimeframe(false)}
+                    onSet={onSetDate}
+                  />
+                )}
+              {editingTimeframe &&
+                outcome &&
+                outcome.computedScope === ComputedScope.Uncertain && (
+                  <DateRangePicker
+                    fromDate={fromDate}
+                    toDate={toDate}
+                    onClose={() => setEditingTimeframe(false)}
+                    onSet={onSetDate}
+                  />
+                )}
             </div>
           </div>
 

@@ -48,7 +48,7 @@ import {
   changeTranslate,
   changeScale,
 } from '../redux/ephemeral/viewport/actions'
-import { openExpandedView } from '../redux/ephemeral/expanded-view/actions'
+import { closeExpandedView, openExpandedView } from '../redux/ephemeral/expanded-view/actions'
 import { MOUSE, TRACKPAD } from '../redux/ephemeral/local-preferences/reducer'
 
 import { setOutcomeClone } from '../redux/ephemeral/outcome-clone/actions'
@@ -158,6 +158,8 @@ export default function setupEventListeners(
         store.dispatch(setShiftKeyDown())
         break
       case 'Escape':
+        // closeExpandedView
+        store.dispatch(closeExpandedView())
         store.dispatch(closeOutcomeForm())
         store.dispatch(unselectAll())
         store.dispatch(resetConnectionConnector())

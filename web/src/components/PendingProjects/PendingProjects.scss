@@ -41,7 +41,7 @@
 
 .pending-projects-for-sync-button:hover, 
 .pending-project-cancel-queue-button:hover {
-  color: #5f65ff;
+  color: var(--text-color-link);
 }
 
 .pending-projects-for-sync-message-icon .icon {

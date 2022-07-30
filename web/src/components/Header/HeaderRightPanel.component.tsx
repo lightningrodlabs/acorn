@@ -47,15 +47,20 @@ function SearchResultItem({
       <div className="search-result-item-text-icon">
         {/* @ts-ignore */}
         <Icon name={name} size="small" className="light-grey not-hoverable" />
-        <div className="search-result-item-text" title={text}>
+        <div
+          className="search-result-item-text"
+          title={text}
+          onClick={() => panAndZoom(outcomeActionHash)}
+        >
           {text}
         </div>
       </div>
+         {/* @ts-ignore */}
       <div className="search-result-item-buttons">
-        <div onClick={() => panAndZoom(outcomeActionHash)}>
-          {/* @ts-ignore */}
+        {/* <div onClick={() => panAndZoom(outcomeActionHash)}>
+       
           <Icon name="enter.svg" size="small" className="light-grey" />
-        </div>
+        </div> */}
         <div onClick={() => onExpandClick(outcomeActionHash)}>
           {/* @ts-ignore */}
           <Icon name="expand.svg" size="small" className="light-grey" />

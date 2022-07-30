@@ -23,8 +23,7 @@
 }
 
 .priority-tab.active {
-  color: #5f65ff;
-  /* border-bottom: 3px solid #5f65ff; */
+  color: var(--text-color-link);
 }
 
 .priority-tab.active>.icon.very-small.enter-icon {

@@ -115,7 +115,7 @@
 }
 
 .dashboard-list-project-name:hover {
-  color: #5f65ff;
+  color: var(--text-color-link);
 }
 
 .dashboard-list-project-member-count {
@@ -171,11 +171,11 @@
 }
 
 .dashboard-list-project-entry-point-button:hover {
-  color: #5f65ff;
+  color: var(--text-color-link)f;
 }
 
 .dashboard-list-project-entry-point-button:hover .inner-icon {
-  background-color: #5f65ff;
+  background-color: var(--text-color-link);
 }
 
 .dashboard-list-project-entry-point-button .icon.active {

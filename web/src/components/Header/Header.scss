@@ -115,7 +115,7 @@
     box-sizing: border-box;
   }
 
-  .button-close-wrapper .icon{
+  .button-close-wrapper .icon {
     width: 1.75rem;
     height: 1.75rem;
     margin-right: 0;
@@ -185,7 +185,7 @@
 
 .export-list-wrapper a:hover {
   background: #f4f4f4 none repeat scroll 0% 0%;
-  color: #5f65ff;
+  color: var(--text-color-link);
 }
 
 /* Current Entry Points Tab */
@@ -222,7 +222,7 @@
 }
 
 .active-entry-point-content:hover {
-  color: #5f65ff;
+  color: var(--text-color-link);
 }
 
 .active-entry-point img {
@@ -272,12 +272,12 @@
 }
 
 .priority-menu-item:hover {
-  color: #5f65ff;
+  color: var(--text-color-link);
 }
 
 .priority-menu-item.active {
-  border-bottom: 3px solid #5f65ff;
-  color: #5f65ff;
+  border-bottom: 3px solid var(--text-color-link);
+  color: var(--text-color-link);
   margin-bottom: -3px;
 }
 
@@ -579,7 +579,7 @@
 .profile-wrapper button:hover,
 .profile-wrapper button.active {
   background: #f4f4f4;
-  color: #5f65ff;
+  color: var(--text-color-link);
 }
 
 .profile-wrapper button p {
@@ -645,7 +645,7 @@ button.status-offline .icon {
 
 .user-status-wrapper button:hover {
   background: #f4f4f4 none repeat scroll 0% 0%;
-  color: #5f65ff;
+  color: var(--text-color-link);
 }
 
 .view-mode-active .icon .inner-icon {

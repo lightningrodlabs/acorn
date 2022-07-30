@@ -8,20 +8,38 @@ import './PriorityUniversal.scss'
 import Icon from '../../../../components/Icon/Icon'
 import TimeframeFormat from '../../../../components/TimeframeFormat'
 import ProgressIndicatorCalculated from '../../../../components/ProgressIndicatorCalculated/ProgressIndicatorCalculated'
-import { ComputedScope } from '../../../../types'
+import { ComputedOutcome, ComputedScope, ProjectMeta } from '../../../../types'
 import ComputedOutcomeContext from '../../../../context/ComputedOutcomeContext'
-import { ActionHashB64 } from '../../../../types/shared'
+import {
+  ActionHashB64,
+  AgentPubKeyB64,
+  CellIdString,
+  WithActionHash,
+} from '../../../../types/shared'
 import Typography from '../../../../components/Typography/Typography'
 import AvatarsList from '../../../../components/AvatarsList/AvatarsList'
+import TagsList from '../../../../components/TagsList/TagsList'
+
+import { Tag } from '../../../../types'
+
+export type UniversalOutcomeProps = {
+  projectTags: WithActionHash<Tag>[]
+  presentMembers: AgentPubKeyB64[]
+  outcome: ComputedOutcome
+  liveIndex
+  openExpandedView: (outcomeActionHash: ActionHashB64) => void
+  goToOutcome: (outcomeActionHash: ActionHashB64) => void
+}
 
 // an individual list item
-function UniversalOutcome({
+const UniversalOutcome: React.FC<UniversalOutcomeProps> = ({
   liveIndex,
   outcome,
   presentMembers,
   openExpandedView,
   goToOutcome,
-}) {
+  projectTags,
+}) => {
   return (
     <div className="universal-priority-outcomes-list-row">
       <div className="universal-priority-outcome-item-wrapper">
@@ -57,9 +75,20 @@ function UniversalOutcome({
                   </div>
                 )}
             </div>
-
-            <div className="universal-priority-outcome-item-statement">
-              {outcome.content}
+            <div className='outcome-item-statement-tags'>
+              {' '}
+              {/* Outcome statement */}
+              <div className="universal-priority-outcome-item-statement">
+                {outcome.content}
+              </div>
+              {/* Outcome tags */}
+              <div className="universal-priority-outcome-item-tags">
+                <TagsList
+                  tags={projectTags}
+                  selectedTags={outcome.tags}
+                  showAddTagButton={false}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -119,15 +148,27 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   // styles we need to apply on draggables
   ...draggableStyle,
 })
+
+export type PriorityUniversalDraggableOutcomeProps = {
+  projectTags: WithActionHash<Tag>[]
+  presentMembers: AgentPubKeyB64[]
+  outcome: ComputedOutcome
+  openExpandedView: (outcomeActionHash: ActionHashB64) => void
+  goToOutcome: (outcomeActionHash: ActionHashB64) => void
+  index
+  whileDraggingIndexes
+}
+
 // wraps an individual list item in a draggable wrapper
-function PriorityUniversalDraggableOutcome({
+const PriorityUniversalDraggableOutcome: React.FC<PriorityUniversalDraggableOutcomeProps> = ({
   outcome,
   index,
   presentMembers,
   whileDraggingIndexes,
   openExpandedView,
   goToOutcome,
-}) {
+  projectTags,
+}) => {
   let liveIndex
   if (!whileDraggingIndexes) {
     // no dragging happening
@@ -178,6 +219,7 @@ function PriorityUniversalDraggableOutcome({
               liveIndex={liveIndex}
               openExpandedView={openExpandedView}
               goToOutcome={goToOutcome}
+              projectTags={projectTags}
             />
           </div>
         )
@@ -187,13 +229,22 @@ function PriorityUniversalDraggableOutcome({
 }
 
 // the area within which outcomes are droppable
-function PriorityUniversalDroppable({
+export type PriorityUniversalDroppableProps = {
+  projectTags: WithActionHash<Tag>[]
+  presentMembers: AgentPubKeyB64[]
+  outcomes: ComputedOutcome[]
+  openExpandedView: (outcomeActionHash: ActionHashB64) => void
+  goToOutcome: (outcomeActionHash: ActionHashB64) => void
+  whileDraggingIndexes
+}
+const PriorityUniversalDroppable: React.FC<PriorityUniversalDroppableProps> = ({
   outcomes,
   presentMembers,
+  projectTags,
   whileDraggingIndexes,
   openExpandedView,
   goToOutcome,
-}) {
+}) => {
   return (
     <Droppable droppableId="droppable">
       {(provided, _snapshot) => (
@@ -212,6 +263,7 @@ function PriorityUniversalDroppable({
               whileDraggingIndexes={whileDraggingIndexes}
               openExpandedView={openExpandedView}
               goToOutcome={goToOutcome}
+              projectTags={projectTags}
             />
           ))}
           {provided.placeholder}
@@ -222,14 +274,29 @@ function PriorityUniversalDroppable({
 }
 
 // the default export, and main high level component here
-function PriorityUniversal({
+export type PriorityUniversalProps = {
+  projectId: CellIdString
+  projectMeta: WithActionHash<ProjectMeta>
+  projectTags: WithActionHash<Tag>[]
+  presentMembers: AgentPubKeyB64[]
+  outcomes: ComputedOutcome[]
+  updateProjectMeta: (
+    projectMeta: ProjectMeta,
+    actionHash: ActionHashB64,
+    cellIdString: CellIdString
+  ) => Promise<void>
+  openExpandedView: (outcomeActionHash: ActionHashB64) => void
+  goToOutcome: (outcomeActionHash: ActionHashB64) => void
+}
+const PriorityUniversal: React.FC<PriorityUniversalProps> = ({
   projectMeta,
   projectId,
   presentMembers,
   updateProjectMeta,
   openExpandedView,
   goToOutcome,
-}) {
+  projectTags,
+}) => {
   const history = useHistory()
   const location = useLocation()
   const navAndGoToOutcome = (actionHash) => {
@@ -363,6 +430,7 @@ function PriorityUniversal({
               whileDraggingIndexes={whileDraggingIndexes}
               openExpandedView={openExpandedView}
               goToOutcome={navAndGoToOutcome}
+              projectTags={projectTags}
             />
           </DragDropContext>
         )}
