@@ -47,8 +47,12 @@ import { setScreenDimensions } from '../redux/ephemeral/screensize/actions'
 import {
   changeTranslate,
   changeScale,
+  animatePanAndZoom,
 } from '../redux/ephemeral/viewport/actions'
-import { closeExpandedView, openExpandedView } from '../redux/ephemeral/expanded-view/actions'
+import {
+  closeExpandedView,
+  openExpandedView,
+} from '../redux/ephemeral/expanded-view/actions'
 import { MOUSE, TRACKPAD } from '../redux/ephemeral/local-preferences/reducer'
 
 import { setOutcomeClone } from '../redux/ephemeral/outcome-clone/actions'
@@ -68,6 +72,12 @@ import { ActionHashB64 } from '../types/shared'
 import { ComputedOutcome, RelationInput } from '../types'
 import { RootState } from '../redux/reducer'
 import { MouseEvent } from 'react'
+import {
+  findFirstChildActionHash,
+  findParentActionHash,
+  findSiblingActionHash,
+  RightOrLeft,
+} from '../tree-logic'
 
 // ASSUMPTION: one parent (existingParentConnectionAddress)
 function handleMouseUpForOutcomeForm({
@@ -143,6 +153,7 @@ export default function setupEventListeners(
           store.dispatch(setGKeyDown())
         }
         break
+
       case 'Enter':
         if (
           state.ui.selection.selectedOutcomes.length === 1 &&
@@ -154,6 +165,95 @@ export default function setupEventListeners(
           )
         }
         break
+
+      // Used for navigating to a child
+      case 'ArrowDown':
+        if (
+          state.ui.selection.selectedOutcomes.length === 1 &&
+          !state.ui.outcomeForm.isOpen &&
+          !state.ui.expandedView.isOpen
+        ) {
+          const selectedOutcome = state.ui.selection.selectedOutcomes[0]
+          const childActionHash = findFirstChildActionHash(
+            selectedOutcome,
+            state
+          )
+          if (childActionHash) {
+            // select and pan and zoom to
+            // the parent
+            store.dispatch(animatePanAndZoom(childActionHash))
+            store.dispatch(unselectAll())
+            store.dispatch(selectOutcome(childActionHash))
+          }
+        }
+        break
+
+      // Used for navigating to a parent
+      case 'ArrowUp':
+        if (
+          state.ui.selection.selectedOutcomes.length === 1 &&
+          !state.ui.outcomeForm.isOpen &&
+          !state.ui.expandedView.isOpen
+        ) {
+          const selectedOutcome = state.ui.selection.selectedOutcomes[0]
+          const parentActionHash = findParentActionHash(selectedOutcome, state)
+          if (parentActionHash) {
+            // select and pan and zoom to
+            // the parent
+            store.dispatch(animatePanAndZoom(parentActionHash))
+            store.dispatch(unselectAll())
+            store.dispatch(selectOutcome(parentActionHash))
+          }
+        }
+        break
+
+      // Used for navigating to the left sibling
+      case 'ArrowLeft':
+        if (
+          state.ui.selection.selectedOutcomes.length === 1 &&
+          !state.ui.outcomeForm.isOpen &&
+          !state.ui.expandedView.isOpen
+        ) {
+          const selectedOutcome = state.ui.selection.selectedOutcomes[0]
+          const targetActionHash = findSiblingActionHash(
+            selectedOutcome,
+            state,
+            RightOrLeft.Left
+          )
+          if (targetActionHash) {
+            // select and pan and zoom to
+            // the parent
+            store.dispatch(animatePanAndZoom(targetActionHash))
+            store.dispatch(unselectAll())
+            store.dispatch(selectOutcome(targetActionHash))
+          }
+        }
+        break
+
+      // Used for navigating to the right sibling
+      case 'ArrowRight':
+        if (
+          state.ui.selection.selectedOutcomes.length === 1 &&
+          !state.ui.outcomeForm.isOpen &&
+          !state.ui.expandedView.isOpen
+        ) {
+          const selectedOutcome = state.ui.selection.selectedOutcomes[0]
+          const targetActionHash = findSiblingActionHash(
+            selectedOutcome,
+            state,
+            RightOrLeft.Right
+          )
+          if (targetActionHash) {
+            // select and pan and zoom to
+            // the parent
+            store.dispatch(animatePanAndZoom(targetActionHash))
+            store.dispatch(unselectAll())
+            store.dispatch(selectOutcome(targetActionHash))
+          }
+        }
+        break
+
+      // Used in multi selecting Outcomes
       case 'Shift':
         store.dispatch(setShiftKeyDown())
         break
@@ -445,7 +545,7 @@ export default function setupEventListeners(
         if (
           event.shiftKey &&
           state.ui.selection.selectedOutcomes.indexOf(clickedOutcomeAddress) >
-          -1
+            -1
         ) {
           store.dispatch(unselectOutcome(clickedOutcomeAddress))
         } else {

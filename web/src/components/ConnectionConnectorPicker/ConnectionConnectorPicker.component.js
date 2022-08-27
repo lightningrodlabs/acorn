@@ -3,8 +3,8 @@ import { CSSTransition } from 'react-transition-group'
 import './ConnectionConnectorPicker.scss'
 import PickerTemplate from '../PickerTemplate/PickerTemplate'
 import { Select, Option, useSelect } from '../Select/Select'
-import { calculateValidChildren } from '../ConnectionConnectors/ConnectionConnectors.component'
 import Button from '../Button/Button'
+import { calculateValidChildren } from '../../tree-logic'
 
 export default function ConnectionConnectorPicker({
   onClose,

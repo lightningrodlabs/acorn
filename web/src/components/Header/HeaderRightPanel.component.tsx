@@ -191,17 +191,17 @@ export default function HeaderRightPanel({
             <div className="search-results-dropdown">
               <div className="search-results-filters">
                 <SearchResultsFilter
-                  name="Titles"
+                  name="Statement"
                   filterActive={isTextFilter}
                   setFilter={setIsTextFilter}
                 />
                 <SearchResultsFilter
-                  name="Descriptions"
+                  name="Description"
                   filterActive={isDescriptionFilter}
                   setFilter={setIsDescriptionFilter}
                 />
                 <SearchResultsFilter
-                  name="Comments"
+                  name="Comment"
                   filterActive={isCommentFilter}
                   setFilter={setIsCommentFilter}
                 />
