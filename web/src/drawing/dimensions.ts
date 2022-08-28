@@ -13,10 +13,10 @@ export const outcomeMetaPadding = 12
 
 export const CONNECTOR_VERTICAL_SPACING = 20
 
+export const OUTCOME_VERTICAL_HOVER_ALLOWANCE = 60
+
 // DELETE THESE
 export const avatarSpace = -4
-export const avatarWidth = 26
-export const avatarHeight = 26
 export const avatarRadius = 13
 
 export const outcomeWidth = 400

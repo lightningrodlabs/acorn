@@ -1,5 +1,3 @@
-
-
 import {
   SELECT_CONNECTION,
   UNSELECT_CONNECTION,
@@ -7,10 +5,16 @@ import {
   UNSELECT_OUTCOME,
   UNSELECT_ALL,
 } from './actions'
-import { deleteOutcomeFully, DELETE_OUTCOME_FULLY } from '../../persistent/projects/outcomes/actions'
-import { deleteConnection, DELETE_CONNECTION } from '../../persistent/projects/connections/actions'
+import { DELETE_OUTCOME_FULLY } from '../../persistent/projects/outcomes/actions'
+import { DELETE_CONNECTION } from '../../persistent/projects/connections/actions'
+import { ActionHashB64 } from '../../../types/shared'
 
-const defaultState = {
+export interface SelectionState {
+  selectedOutcomes: ActionHashB64[]
+  selectedConnections: ActionHashB64[]
+}
+
+const defaultState: SelectionState = {
   selectedOutcomes: [],
   selectedConnections: [],
 }
@@ -25,7 +29,7 @@ function arrayWithoutElement(array, elem) {
   return newArray
 }
 
-export default function (state = defaultState, action) {
+export default function (state = defaultState, action: any): SelectionState {
   const { payload, type } = action
 
   switch (type) {
@@ -63,7 +67,7 @@ export default function (state = defaultState, action) {
       return {
         ...state,
         selectedConnections: state.selectedConnections.filter(
-          actionHash => actionHash !== payload
+          (actionHash) => actionHash !== payload
         ),
       }
     case SELECT_OUTCOME:
@@ -78,7 +82,7 @@ export default function (state = defaultState, action) {
       return {
         ...state,
         selectedOutcomes: state.selectedOutcomes.filter(
-          actionHash => actionHash !== payload
+          (actionHash) => actionHash !== payload
         ),
       }
     case UNSELECT_ALL:

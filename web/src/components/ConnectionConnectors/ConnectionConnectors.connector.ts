@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import { RootState } from '../../redux/reducer'
-import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import {
   setConnectionConnectorFrom,
   setConnectionConnectorTo,
 } from '../../redux/ephemeral/connection-connector/actions'
 import ConnectionConnectors from './ConnectionConnectors.component'
+import { ActionHashB64 } from '../../types/shared'
 
 function mapStateToProps(state: RootState) {
   const {
@@ -18,7 +18,6 @@ function mapStateToProps(state: RootState) {
   const connections = state.projects.connections[activeProject] || {}
   const projectTags = Object.values(state.projects.tags[activeProject] || {})
   const coordinates = state.ui.layout
-  const selectedOutcomeAddresses = state.ui.selection.selectedOutcomes
   const hoveredOutcomeAddress = state.ui.hover.hoveredOutcome
   const {
     fromAddress,
@@ -26,7 +25,7 @@ function mapStateToProps(state: RootState) {
     toAddress,
     existingParentConnectionAddress,
   } = state.ui.connectionConnector
-  let connectorAddresses
+  let connectorAddresses: ActionHashB64[] = []
   // only set validToAddresses if we are actually utilizing the connection connector right now
   if (fromAddress) {
     // connector addresses includes the outcome we are connecting from
@@ -35,23 +34,15 @@ function mapStateToProps(state: RootState) {
       state.ui.connectionConnector.validToAddresses
     )
   } else if (hoveredOutcomeAddress) {
-    connectorAddresses = selectedOutcomeAddresses
-      .concat([hoveredOutcomeAddress])
-      // deduplicate
-      .filter((v, i, a) => a.indexOf(v) === i)
-  } else {
-    // fall back is to show the dots on any currently selected outcomes
-    connectorAddresses = selectedOutcomeAddresses
+    connectorAddresses = [hoveredOutcomeAddress]
   }
 
   return {
     activeProject,
     projectTags,
-    zoomLevel: state.ui.viewport.scale,
+    translate,
+    zoomLevel: scale,
     coordinates,
-    coordsCanvasToPage: (coordinate) => {
-      return coordsCanvasToPage(coordinate, translate, scale)
-    },
     outcomes,
     connections: Object.values(connections), // convert from object to array
     outcomeActionHashes: Object.keys(outcomes), // convert from object to array

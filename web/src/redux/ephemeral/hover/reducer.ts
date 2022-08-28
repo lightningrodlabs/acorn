@@ -1,18 +1,40 @@
-
-
-import { HOVER_CONNECTION, UNHOVER_CONNECTION, HOVER_OUTCOME, UNHOVER_OUTCOME } from './actions'
+import { ActionHashB64 } from '../../../types/shared'
+import {
+  HOVER_CONNECTION,
+  UNHOVER_CONNECTION,
+  HOVER_OUTCOME,
+  UNHOVER_OUTCOME,
+} from './actions'
 import { DELETE_OUTCOME_FULLY } from '../../persistent/projects/outcomes/actions'
 import { DELETE_CONNECTION } from '../../persistent/projects/connections/actions'
+import { CHANGE_ALL_DIRECT } from '../viewport/actions'
 
-const defaultState = {
+export interface HoverState {
+  hoveredOutcome: ActionHashB64
+  hoveredConnection: ActionHashB64
+}
+
+const defaultState: HoverState = {
   hoveredOutcome: null,
   hoveredConnection: null,
 }
 
-export default function (state = defaultState, action) {
+export default function (
+  state: HoverState = defaultState,
+  action: any
+): HoverState {
   const { payload, type } = action
 
   switch (type) {
+    case CHANGE_ALL_DIRECT:
+      // in the case of running an animation,
+      // which is when CHANGE_ALL_DIRECT is being fired
+      // we want to act as if there is nothing being hovered
+      return {
+        ...state,
+        hoveredConnection: null,
+        hoveredOutcome: null,
+      }
     case DELETE_OUTCOME_FULLY:
       // unhover if the deleted Outcome was hovered over
       return state.hoveredOutcome === payload.outcomeActionHash

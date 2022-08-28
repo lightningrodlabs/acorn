@@ -1,5 +1,9 @@
 // this was helpful: https://stackoverflow.com/questions/48343436/how-to-convert-svg-element-coordinates-to-screen-coordinates
-export function coordsPageToCanvas(pageCoords, translate, scale) {
+export function coordsPageToCanvas(
+  pageCoords: { x: number; y: number },
+  translate: { x: number; y: number },
+  scale: number
+) {
   // an array representing the canvas transformation matrix
   // scale x, skew x, skew y, scale y, translate x, and translate y
   let matrix = new DOMMatrix([scale, 0, 0, scale, translate.x, translate.y])
@@ -10,7 +14,11 @@ export function coordsPageToCanvas(pageCoords, translate, scale) {
   }
 }
 
-export function coordsCanvasToPage(canvasCoords, translate, scale) {
+export function coordsCanvasToPage(
+  canvasCoords: { x: number; y: number },
+  translate: { x: number; y: number },
+  scale: number
+) {
   // an array representing the canvas transformation matrix
   // scale x, skew x, skew y, scale y, translate x, and translate y
   let matrix = new DOMMatrix([scale, 0, 0, scale, translate.x, translate.y])

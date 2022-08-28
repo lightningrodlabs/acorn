@@ -5,6 +5,8 @@
   that can be taken within that feature.
 */
 
+import { ActionHashB64 } from "../../../types/shared"
+
 /* constants */
 const SELECT_CONNECTION = 'SELECT_CONNECTION'
 const UNSELECT_CONNECTION = 'UNSELECT_CONNECTION'
@@ -14,28 +16,28 @@ const UNSELECT_ALL = 'UNSELECT_ALL'
 
 /* action creator functions */
 
-function selectConnection(address) {
+function selectConnection(address: ActionHashB64) {
   return {
     type: SELECT_CONNECTION,
     payload: address,
   }
 }
 
-function unselectConnection(address) {
+function unselectConnection(address: ActionHashB64) {
   return {
     type: UNSELECT_CONNECTION,
     payload: address,
   }
 }
 
-function selectOutcome(address) {
+function selectOutcome(address: ActionHashB64) {
   return {
     type: SELECT_OUTCOME,
     payload: address,
   }
 }
 
-function unselectOutcome(address) {
+function unselectOutcome(address: ActionHashB64) {
   return {
     type: UNSELECT_OUTCOME,
     payload: address,

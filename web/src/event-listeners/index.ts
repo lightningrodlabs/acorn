@@ -78,6 +78,7 @@ import {
   findSiblingActionHash,
   RightOrLeft,
 } from '../tree-logic'
+import { OUTCOME_VERTICAL_HOVER_ALLOWANCE } from '../drawing/dimensions'
 
 // ASSUMPTION: one parent (existingParentConnectionAddress)
 function handleMouseUpForOutcomeForm({
@@ -261,7 +262,7 @@ export default function setupEventListeners(
         // closeExpandedView
         store.dispatch(closeExpandedView())
         store.dispatch(closeOutcomeForm())
-        store.dispatch(unselectAll())
+        // store.dispatch(unselectAll())
         store.dispatch(resetConnectionConnector())
         break
       case 'Backspace':
@@ -355,7 +356,6 @@ export default function setupEventListeners(
           coordinate: { x: initialSelectX, y: initialSelectY },
           outcomesAddresses,
         },
-        screensize: { width },
       },
     } = state
     const outcomeCoordinates = state.ui.layout
@@ -395,6 +395,9 @@ export default function setupEventListeners(
       return
     }
 
+    // for hover, we use OUTCOME_VERTICAL_HOVER_ALLOWANCE
+    // to make it so that the ConnectionConnector can display
+    // without glitchiness
     const outcomeActionHash = checkForOutcomeAtCoordinates(
       ctx,
       translate,
@@ -403,7 +406,8 @@ export default function setupEventListeners(
       state,
       event.clientX,
       event.clientY,
-      outcomes
+      outcomes,
+      OUTCOME_VERTICAL_HOVER_ALLOWANCE
     )
     const connectionAddress = checkForConnectionAtCoordinates(
       ctx,
