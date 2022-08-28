@@ -347,8 +347,7 @@ export default function setupEventListeners(
   }
 
   function canvasMousemove(event) {
-    const state = store.getState()
-    let outcomeActionHashesToSelect
+    const state: RootState = store.getState()
     const {
       ui: {
         viewport: { translate, scale },
@@ -356,9 +355,10 @@ export default function setupEventListeners(
           coordinate: { x: initialSelectX, y: initialSelectY },
           outcomesAddresses,
         },
+        layout: outcomeCoordinates,
+        selection: { selectedOutcomes },
       },
     } = state
-    const outcomeCoordinates = state.ui.layout
     const convertedCurrentMouse = coordsPageToCanvas(
       {
         x: event.clientX,
@@ -383,7 +383,7 @@ export default function setupEventListeners(
             h: convertedCurrentMouse.y - initialSelectY,
           })
         )
-        outcomeActionHashesToSelect = checkForOutcomeAtCoordinatesInBox(
+        const outcomeActionHashesToSelect = checkForOutcomeAtCoordinatesInBox(
           outcomeCoordinates,
           convertedCurrentMouse,
           { x: initialSelectX, y: initialSelectY }
@@ -421,10 +421,10 @@ export default function setupEventListeners(
     )
     if (
       connectionAddress &&
-      state.ui.hover.hoveredOutcome !== connectionAddress
+      state.ui.hover.hoveredConnection !== connectionAddress
     ) {
       store.dispatch(hoverConnection(connectionAddress))
-    } else if (!outcomeActionHash && state.ui.hover.hoveredConnection) {
+    } else if (!connectionAddress && state.ui.hover.hoveredConnection) {
       store.dispatch(unhoverConnection())
     }
 

@@ -12,28 +12,31 @@ function mapStateToProps(state: RootState) {
     ui: {
       activeProject,
       viewport: { translate, scale },
+      layout: coordinates,
+      hover: { hoveredOutcome: hoveredOutcomeAddress },
+      connectionConnector: {
+        fromAddress,
+        relation,
+        toAddress,
+        existingParentConnectionAddress,
+        validToAddresses,
+      },
+      selection: { selectedOutcomes },
     },
   } = state
   const outcomes = state.projects.outcomes[activeProject] || {}
   const connections = state.projects.connections[activeProject] || {}
   const projectTags = Object.values(state.projects.tags[activeProject] || {})
-  const coordinates = state.ui.layout
-  const hoveredOutcomeAddress = state.ui.hover.hoveredOutcome
-  const {
-    fromAddress,
-    relation,
-    toAddress,
-    existingParentConnectionAddress,
-  } = state.ui.connectionConnector
   let connectorAddresses: ActionHashB64[] = []
   // only set validToAddresses if we are actually utilizing the connection connector right now
   if (fromAddress) {
     // connector addresses includes the outcome we are connecting from
     // to all the possible outcomes we can connect to validly
-    connectorAddresses = [fromAddress].concat(
-      state.ui.connectionConnector.validToAddresses
-    )
-  } else if (hoveredOutcomeAddress) {
+    connectorAddresses = [fromAddress].concat(validToAddresses)
+  }
+  // don't allow the connection connectors when we have multiple outcomes selected
+  // as it doesn't blend well with the user interface, or make sense at that point
+  else if (hoveredOutcomeAddress && selectedOutcomes.length <= 1) {
     connectorAddresses = [hoveredOutcomeAddress]
   }
 
