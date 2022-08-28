@@ -95,7 +95,7 @@ function PendingProjects({
           <div className="pending-projects-for-sync-message-icon">
             {/* @ts-ignore */}
             <Icon
-              name="acorn-logo-stroked.svg"
+              name="acorn-logo.svg"
               className="not-hoverable very-small grey"
             />
             <div className="pending-projects-for-sync-message">

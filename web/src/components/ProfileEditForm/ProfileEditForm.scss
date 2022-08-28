@@ -1,7 +1,12 @@
 .profile_edit_form {
-  /* width: 510px; */
   text-align: center;
   margin: 0 auto;
+  overflow-y: scroll;
+  height: 100%;
+
+  .button {
+    margin-bottom: 1.5rem;
+  }
 }
 
 .profile_edit_form .small-close {
@@ -12,7 +17,7 @@
 }
 
 .profile_edit_form_title {
-  margin-bottom: 64px;
+  margin-bottom: 4rem;
 }
 
 .help_text {
@@ -35,8 +40,8 @@
 }
 
 .profile_edit_form .profile_edit_form_avatar {
-  margin-top: 2.125rem;
-  margin-left: 6px;
+  margin-top: 1.925rem;
+  margin-left: 0.5rem;
 }
 
 .profile_edit_form button {
@@ -53,11 +58,7 @@
   }
 }
 
-// new styles
-
 .profile-edit-form-title-wrapper {
-  margin-bottom: 1rem;
-}
-
-.profile-edit-form-subtitle-wrapper {
+  margin-top: 5rem;
+  margin-bottom: 0.5rem;
 }

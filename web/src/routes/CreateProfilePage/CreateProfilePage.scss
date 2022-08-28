@@ -10,11 +10,23 @@
   height: 100%;
   width: 60%;
   min-width: 556px;
+  box-sizing: border-box;
+  overflow-y: hidden;
   display: flex;
   align-items: center;
-  padding: 20px 4rem;
-  box-sizing: border-box;
-  overflow-y: scroll;
+  justify-content: center;
+
+  .profile_edit_form {
+    margin: 3rem 5rem;
+    width: 100%;
+    min-height: 100%;
+    max-width: 38rem;
+    overflow-y: scroll;
+
+    @media (max-width: 62rem) {
+      margin: 3rem 2rem;
+    }
+  }
 }
 
 .create_profile_splash_image {

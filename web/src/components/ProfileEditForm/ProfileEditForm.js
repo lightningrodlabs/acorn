@@ -125,7 +125,7 @@ function ProfileEditForm({
     <div className='profile_edit_form'>
       <div className='profile_edit_form_title'>
         <div className='profile-edit-form-title-wrapper'>
-          <Typography style='h3'>{titleText}</Typography>
+          <Typography style='h2'>{titleText}</Typography>
         </div>
         <div className='profile-edit-form-subtitle-wrapper'>
           <Typography style='subtitle3'>{subText}</Typography>

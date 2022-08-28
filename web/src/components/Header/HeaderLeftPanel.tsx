@@ -57,7 +57,7 @@ export type HeaderLeftPanelProps = {
   presentMembers: AgentPubKeyB64[]
   projectName: string
   isExportOpen: boolean
-  activeEntryPoints:  {
+  activeEntryPoints: {
     entryPoint: WithActionHash<EntryPoint>
     outcome: WithActionHash<Outcome>
   }[]
@@ -109,11 +109,20 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   return (
     <>
       <div className="header-left-panel">
-        {/* Acorn Logo */}
-        <NavLink to="/" className="home-link logo">
-          <p className="logo-name">acorn</p>
-          <div className="logo-name-tag">alpha</div>
-        </NavLink>
+        {/* Acorn Logo - non link */}
+
+        {!whoami && (
+          <div className="logo non-link">
+            <img src="images/acorn-alpha-logo.png" className="logo-image" />
+          </div>
+        )}
+
+        {/* Acorn Logo - linked */}
+        {whoami && (
+          <NavLink to="/" className="logo">
+            <img src="images/acorn-alpha-logo.png" className="logo-image" />
+          </NavLink>
+        )}
 
         {whoami && (
           <Route path="/project">

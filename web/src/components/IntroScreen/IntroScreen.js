@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
@@ -6,34 +6,35 @@ import './IntroScreen.scss'
 
 import Button from '../Button/Button'
 import Icon from '../Icon/Icon'
+import Typography from '../Typography/Typography'
 
 export default function IntroScreen() {
   const history = useHistory()
 
   const introScreensContents = [
     {
-      image: 'img/intro-screen-image-1.svg',
-      title: 'Welcome to Acorn',
+      image: 'images/intro-vis-1.png',
+      title: 'Truly peer-to-peer project management software',
       description:
-        'Collaborate with your team to accomplish your complex project by visualizing and managing your dreams, outcomes, and tasks',
+        'Acorn is designed and built as a scrum-alternative, Agile Development Pattern for distributed software development teams. Powered by Holochain, it runs on decentralized peer-to-peer computing and can be used without server infrastructure or a hosting service.',
     },
     {
-      image: 'img/intro-screen-image-2.svg',
-      title: 'Help your team feel accomplished & aligned',
+      image: 'images/intro-vis-2.png',
+      title: 'Intended Outcomes, not goals',
       description:
-        "You and your team are able to see the complex project you're working on from multiple view modes and visually connect the small units of work that need to be done to the broader context of the greater outcomes. Everyone can see the progress being made, feel accomplished, and know clearly where they are headed.",
+        "In Acorn's ontology projects are managed through the lens of Intended Outcomes, their dependencies, Scope, and Achievement Status in a Plan-Do-Check-Act Cycle process. This helps you and your distributed team stay on track while working on a complex project.",
     },
     {
-      image: 'img/intro-screen-image-3.svg',
-      title: 'Make collaboration happen, peer-to-peer',
+      image: 'images/intro-vis-3.png',
+      title: 'More intelligent project management',
       description:
-        'Help your distributed team to stay on track of changes and updates, communicate easily, avoid double-work, and help each other accomplish your outcomes. Acorn is even built on peer-to-peer technology called Holochain.',
+        'Acorn provides the sweet-spot combination of annotated and computed metadata to help you and your team make sense of the complexity of your project, make measurable estimations of Outcome achievement durations, and to see the progress status of the project as a whole.',
     },
     {
-      image: 'img/intro-screen-image-4.svg',
-      title: 'None of us is as intelligent as all of us',
+      image: 'images/intro-vis-4.png',
+      title: 'Multiple lenses for your project',
       description:
-        'Completed an Outcome, now wondering what makes sense to focus on next? You and your team members can weigh in and vote on different metrics that inform the priority of outcomes to ease the challenge of decision making.',
+        'Each project view in Acorn helps you and your team members when you have a different kind of focus. There is Map View to offer a high-level overview, Table View which is task-oriented, and Priority View for aligning your team.',
     },
   ]
 
@@ -46,6 +47,24 @@ export default function IntroScreen() {
   const goForward = () => {
     if (screenContent !== 3) setScreenContent(screenContent + 1)
   }
+
+  // navigating intro screens with keyboard arrow keys
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (event.key === 'ArrowRight') {
+        goForward()
+      } else if (event.key === 'ArrowLeft') {
+        goBack()
+      }
+    }
+    document.body.addEventListener('keydown', onKeyDown)
+    // for teardown, unbind event listeners
+    return () => {
+      document.body.removeEventListener('keydown', onKeyDown)
+    }
+  }, [screenContent])
+
+
 
   const goToRegister = () => {
     // redirect
@@ -66,15 +85,16 @@ export default function IntroScreen() {
                 key={index}
                 className={`screen screen-${index} ${index === screenContent ? 'active-screen' : ''
                   }`}>
-                <div className='intro-screen-image'>
 
-                  {/* <img src={screen.image} /> */}
-                </div>
+                {/* Intro Screen Text */}
                 <div className='intro-screen-text'>
-                  <div className='intro-screen-title'>{screen.title}</div>
-                  <div className='intro-screen-description'>
-                    {screen.description}
-                  </div>
+                  <Typography style='h1'>{screen.title}</Typography>
+                  <Typography style='p'>{screen.description}</Typography>
+                </div>
+
+                {/* Intro Screen Image */}
+                <div className='intro-screen-image'>
+                  <img src={screen.image} />
                 </div>
               </div>
             )
@@ -118,7 +138,7 @@ export default function IntroScreen() {
           })}
         </div>
         <div className='sign-up-button'>
-          <Button onClick={goToRegister} text={'Sign me up'} />
+          <Button onClick={goToRegister} text={'Get started'} />
         </div>
       </div>
     </div>

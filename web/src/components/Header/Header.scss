@@ -28,34 +28,43 @@
 }
 
 .logo {
-  padding-right: 12px;
-  padding-left: 12px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 10px;
+  padding-right: 0.75rem;
+  padding-left: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 0.625rem;
   display: flex;
   align-items: center;
   margin-right: 5px;
   height: 3rem;
+
+  &.non-link {
+    background-color: unset;
+  }
+
+  .logo-image {
+    height: 1.125rem;
+  }
 }
 
-.logo-name {
-  font-size: 22px;
-  font-family: 'gilroyextrabold', sans-serif;
-}
+// .logo-name {
+//   font-size: 1.5rem;
+//   font-family: var(--font-family-secondary);
+// }
 
-.logo-name-tag {
-  margin-left: 4px;
-  color: #7e7e7e;
-  font-size: 10px;
-  padding: 2px 4px;
-  background: #f3f2f2;
-  border-radius: 4px;
-  font-family: 'gilroyextrabold', sans-serif;
-}
+// .logo-name-tag {
+//   margin-left: 0.25rem;
+//   color: #7e7e7e;
+//   font-size: 0.5rem;
+//   padding: 0.125rem 0.25rem;
+//   background: #f3f2f2;
+//   border-radius: 0.25rem;
+//   font-family: var(--font-family-primary-medium);
+// }
 
 .current-project-wrapper {
   background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
   border-radius: 10px;
+  display: flex;
   display: -webkit-flex;
   -webkit-align-items: center;
   align-items: center;
@@ -71,23 +80,23 @@
 
 .current-project-name {
   margin: 0 12px 2px 0px;
-  font-family: 'PlusJakartaSans-extrabold', Helvetica, Sans-Serif;
+  font-family: "PlusJakartaSans-extrabold", Helvetica, Sans-Serif;
   font-weight: normal;
   font-size: 14px;
   color: #4d4d4d;
 }
 
-.home-link {
-  text-decoration: none;
-  cursor: pointer;
-}
+// .home-link {
+//   text-decoration: none;
+//   cursor: pointer;
+// }
 
-.logo p {
-  letter-spacing: 0.2px;
-  color: #2b2b2b;
-  font-family: 'gilroyextrabold', sans-serif;
-  margin: 0 0 1.5px 0;
-}
+// .logo p {
+//   letter-spacing: 0.2px;
+//   color: #2b2b2b;
+//   font-family: 'gilroyextrabold', sans-serif;
+//   margin: 0 0 1.5px 0;
+// }
 
 .logo:hover .icon .inner-icon {
   cursor: pointer;
@@ -171,7 +180,7 @@
   padding: 12px 25px;
   color: black;
   outline: none;
-  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
+  font-family: "PlusJakartaSans-medium", Helvetica, sans-serif;
   font-weight: normal;
   font-size: 14px;
   background: none;
@@ -246,7 +255,7 @@
 
 .header-middle-panel {
   flex: 1;
-  max-height: 46px;
+  max-height: 3rem;
 }
 
 .priority-menu-wrapper {
@@ -263,7 +272,7 @@
 .priority-menu-item {
   padding: 12px 2px;
   margin-right: 16px;
-  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
+  font-family: "PlusJakartaSans-bold", Helvetica, sans-serif;
   font-weight: normal;
   font-size: 13px;
   text-decoration: none;
@@ -383,8 +392,7 @@
   justify-content: left;
 }
 
-.search-button-wrapper.search-is-open.results-dropdown-is-open
-  .search-icon-input {
+.search-button-wrapper.search-is-open.results-dropdown-is-open .search-icon-input {
   padding: 11px 12px;
   width: 100%;
   box-sizing: border-box;
@@ -460,7 +468,7 @@
   padding: 3px 16px 5px 16px;
   border-radius: 10px;
   margin-right: 8px;
-  font-family: 'PlusJakartaSans-bold', sans-serif;
+  font-family: "PlusJakartaSans-bold", sans-serif;
   font-size: 12px;
   cursor: pointer;
 }
@@ -513,7 +521,7 @@
 
 .search-result-item-wrapper .search-result-item-text {
   margin-left: 8px;
-  font-family: 'PlusJakartaSans-bold', sans-serif;
+  font-family: "PlusJakartaSans-bold", sans-serif;
   color: #222222;
   font-size: 0.875rem;
   white-space: nowrap;
@@ -583,7 +591,7 @@
 }
 
 .profile-wrapper button p {
-  font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
+  font-family: "PlusJakartaSans-medium", Helvetica, Sans-Serif;
   font-size: 14px;
 }
 
@@ -638,7 +646,7 @@ button.status-offline .icon {
 }
 
 .user-status-wrapper button p {
-  font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
+  font-family: "PlusJakartaSans-medium", Helvetica, Sans-Serif;
   font-size: 14px;
   padding-left: 10px;
 }
