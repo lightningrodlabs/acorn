@@ -5,7 +5,6 @@ import {
     DELETE_OUTCOME_FULLY
 } from '../../persistent/projects/outcomes/actions'
 import {
-    AFFECT_LAYOUT_DELETE_CONNECTION,
     PREVIEW_CONNECTIONS,
     CLEAR_CONNECTIONS_PREVIEW,
     CREATE_CONNECTION,
@@ -58,7 +57,7 @@ const layoutWatcher = store => {
   }
 
   // return the action handler middleware
-  return next => async action => {
+  return next => action => {
 
       // in many cases, we just skip right over this middleware, 
       // and it has no effect. it is only during 'layout affecting actions'

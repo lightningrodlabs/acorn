@@ -73,7 +73,11 @@ export function checkForConnectionAtCoordinates(
       // and allow buffer on both sides
       newCtx.lineWidth = 30
       if (
-        newCtx.isPointInStroke(connectionPath, convertedMouse.x, convertedMouse.y)
+        newCtx.isPointInStroke(
+          connectionPath,
+          convertedMouse.x,
+          convertedMouse.y
+        )
       ) {
         // set the overConnectionAddress to this connection actionHash
         overConnectionAddress = connection.actionHash
@@ -88,60 +92,60 @@ export function checkForOutcomeAtCoordinates(
   scale: number,
   outcomeCoordinates: { [actionHash: ActionHashB64]: { x: number; y: number } },
   state: RootState,
-  clickX: number,
-  clickY: number,
-  outcomes: { [actionHash: ActionHashB64]: ComputedOutcome }
+  mouseX: number,
+  mouseY: number,
+  outcomes: { [actionHash: ActionHashB64]: ComputedOutcome },
+  extraVerticalPadding: number = 0 // used to make detecting 'hovering' more generous/forgiving
 ) {
   const {
     ui: { activeProject },
   } = state
   const projectTags = Object.values(state.projects.tags[activeProject] || {})
-  // convert the coordinates of the click to canvas space
-  const convertedClick = coordsPageToCanvas(
+  // convert the coordinates of the mouse to canvas space
+  const convertedMouse = coordsPageToCanvas(
     {
-      x: clickX,
-      y: clickY,
+      x: mouseX,
+      y: mouseY,
     },
     translate,
     scale
   )
 
   // keep track of whether an Outcome was selected
-  let clickedAddress: string
-  Object.keys(outcomes)
-    .map((actionHash) => outcomes[actionHash])
-    .forEach((outcome) => {
-      // convert the topLeft and bottomRight points of the outcome to canvas
-      const coords = outcomeCoordinates[outcome.actionHash]
+  return Object.keys(outcomes).find((actionHash) => {
+    const outcome = outcomes[actionHash]
+    // convert the topLeft and bottomRight points of the outcome to canvas
+    const topLeft = {
+      x: outcomeCoordinates[outcome.actionHash].x,
+      y: outcomeCoordinates[outcome.actionHash].y - extraVerticalPadding,
+    }
 
-      // do not proceed if we don't have coordinates
-      // for the outcome (yet)
-      if (!coords) return
+    // do not proceed if we don't have coordinates
+    // for the outcome (yet)
+    if (!topLeft) return false
 
-      const bottomRight = {
-        x: coords.x + outcomeWidth,
-        y:
-          coords.y +
-          getOutcomeHeight({
-            ctx,
-            outcome,
-            projectTags,
-            width: outcomeWidth,
-            zoomLevel: scale,
-          }),
-      }
+    const bottomRight = {
+      x: topLeft.x + outcomeWidth,
+      y:
+        outcomeCoordinates[outcome.actionHash].y +
+        getOutcomeHeight({
+          ctx,
+          outcome,
+          projectTags,
+          width: outcomeWidth,
+          zoomLevel: scale,
+        }) +
+        extraVerticalPadding,
+    }
 
-      // if click occurred within the box of an Outcome
-      if (
-        convertedClick.x >= coords.x &&
-        convertedClick.x <= bottomRight.x &&
-        convertedClick.y >= coords.y &&
-        convertedClick.y <= bottomRight.y
-      ) {
-        clickedAddress = outcome.actionHash
-      }
-    })
-  return clickedAddress
+    // is mouse within the box of an Outcome
+    return (
+      convertedMouse.x >= topLeft.x &&
+      convertedMouse.x <= bottomRight.x &&
+      convertedMouse.y >= topLeft.y &&
+      convertedMouse.y <= bottomRight.y
+    )
+  })
 }
 
 export function checkForOutcomeAtCoordinatesInBox(

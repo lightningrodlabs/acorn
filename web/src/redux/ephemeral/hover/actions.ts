@@ -5,6 +5,8 @@
   that can be taken within that feature.
 */
 
+import { ActionHashB64 } from '../../../types/shared'
+
 /* constants */
 const HOVER_CONNECTION = 'HOVER_CONNECTION'
 const UNHOVER_CONNECTION = 'UNHOVER_CONNECTION'
@@ -13,7 +15,7 @@ const UNHOVER_OUTCOME = 'UNHOVER_OUTCOME'
 
 /* action creator functions */
 
-function hoverConnection(address) {
+function hoverConnection(address: ActionHashB64) {
   return {
     type: HOVER_CONNECTION,
     payload: address,
@@ -26,7 +28,7 @@ function unhoverConnection() {
   }
 }
 
-function hoverOutcome(address) {
+function hoverOutcome(address: ActionHashB64) {
   return {
     type: HOVER_OUTCOME,
     payload: address,

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import './ConnectionConnectors.scss'
-import { Transition, TransitionGroup } from 'react-transition-group'
 import {
   outcomeWidth,
   getOutcomeHeight,
@@ -10,6 +9,7 @@ import {
   RELATION_AS_CHILD,
   RELATION_AS_PARENT,
 } from '../../redux/ephemeral/connection-connector/actions'
+import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import handleConnectionConnectMouseUp from '../../redux/ephemeral/connection-connector/handler'
 import { calculateValidChildren, calculateValidParents } from '../../tree-logic'
 
@@ -47,13 +47,12 @@ const ConnectionConnector = ({
   toAddress,
   address,
   outcomeCoordinates,
-  coordsCanvasToPage,
   canvas,
   setConnectionConnectorFrom,
   setConnectionConnectorTo,
-  setHoveredConnectionConnector,
   connections,
   outcomeActionHashes,
+  translate,
   zoomLevel,
   dispatch,
 }) => {
@@ -68,14 +67,22 @@ const ConnectionConnector = ({
 
   // calculate the coordinates on the page, based
   // on what the coordinates on the canvas would be
-  const { x: topConnectorLeft, y: topConnectorTop } = coordsCanvasToPage({
-    x: outcomeCoordinates.x + outcomeWidth / 2,
-    y: outcomeCoordinates.y - CONNECTOR_VERTICAL_SPACING,
-  })
-  const { x: bottomConnectorLeft, y: bottomConnectorTop } = coordsCanvasToPage({
-    x: outcomeCoordinates.x + outcomeWidth / 2,
-    y: outcomeCoordinates.y + outcomeHeight + CONNECTOR_VERTICAL_SPACING,
-  })
+  const { x: topConnectorLeft, y: topConnectorTop } = coordsCanvasToPage(
+    {
+      x: outcomeCoordinates.x + outcomeWidth / 2,
+      y: outcomeCoordinates.y - CONNECTOR_VERTICAL_SPACING,
+    },
+    translate,
+    zoomLevel
+  )
+  const { x: bottomConnectorLeft, y: bottomConnectorTop } = coordsCanvasToPage(
+    {
+      x: outcomeCoordinates.x + outcomeWidth / 2,
+      y: outcomeCoordinates.y + outcomeHeight + CONNECTOR_VERTICAL_SPACING,
+    },
+    translate,
+    zoomLevel
+  )
 
   const topConnectorActive =
     (address === fromAddress && relation === RELATION_AS_CHILD) ||
@@ -132,13 +139,11 @@ const ConnectionConnector = ({
   )
 
   const connectorOnMouseOver = () => {
-    setHoveredConnectionConnector(address)
     // cannot set 'to' the very same Outcome
     if (fromAddress && address !== fromAddress)
       setConnectionConnectorTo(address)
   }
   const connectorOnMouseOut = () => {
-    setHoveredConnectionConnector(null)
     setConnectionConnectorTo(null)
   }
 
@@ -176,12 +181,12 @@ const ConnectionConnector = ({
 const ConnectionConnectors = ({
   activeProject,
   projectTags,
+  translate,
   zoomLevel,
   outcomes,
   connections,
   outcomeActionHashes,
   coordinates,
-  coordsCanvasToPage,
   fromAddress,
   relation,
   toAddress,
@@ -192,59 +197,38 @@ const ConnectionConnectors = ({
   setConnectionConnectorTo,
   dispatch,
 }) => {
-  const [hoveredConnectionConnector, setHoveredConnectionConnector] = useState(
-    null
-  )
-  // work in the one currently being hovered over, if there is one
-  // to the list of connection connectors that are eligible to stay
-  connectorAddresses = connectorAddresses.concat(
-    hoveredConnectionConnector ? [hoveredConnectionConnector] : []
-  )
-  return (
-    <TransitionGroup>
-      {connectorAddresses.map((connectorAddress) => {
-        const outcomeCoordinates = coordinates[connectorAddress]
-        const outcome = outcomes[connectorAddress]
-        // look for an existing connection that defines a parent
-        // of this Outcome, so that it can be deleted
-        // if it is to be changed and a new one added
-        const hasParent = connections.find(
-          (connection) => connection.childActionHash === connectorAddress
-        )
-        return (
-          <Transition key={connectorAddress} timeout={300}>
-            {(state) => (
-              <ConnectionConnector
-                // state={state}
-                activeProject={activeProject}
-                projectTags={projectTags}
-                outcome={outcome}
-                connections={connections}
-                outcomeActionHashes={outcomeActionHashes}
-                fromAddress={fromAddress}
-                relation={relation}
-                toAddress={toAddress}
-                ownExistingParentConnectionAddress={
-                  hasParent && hasParent.actionHash
-                }
-                presetExistingParentConnectionAddress={
-                  existingParentConnectionAddress
-                }
-                address={connectorAddress}
-                setConnectionConnectorFrom={setConnectionConnectorFrom}
-                setConnectionConnectorTo={setConnectionConnectorTo}
-                setHoveredConnectionConnector={setHoveredConnectionConnector}
-                outcomeCoordinates={outcomeCoordinates}
-                coordsCanvasToPage={coordsCanvasToPage}
-                canvas={canvas}
-                dispatch={dispatch}
-                zoomLevel={zoomLevel}
-              />
-            )}
-          </Transition>
-        )
-      })}
-    </TransitionGroup>
-  )
+  return connectorAddresses.map((connectorAddress) => {
+    const outcomeCoordinates = coordinates[connectorAddress]
+    const outcome = outcomes[connectorAddress]
+    // look for an existing connection that defines a parent
+    // of this Outcome, so that it can be deleted
+    // if it is to be changed and a new one added
+    const hasParent = connections.find(
+      (connection) => connection.childActionHash === connectorAddress
+    )
+    return (
+      <ConnectionConnector
+        key={connectorAddress}
+        activeProject={activeProject}
+        projectTags={projectTags}
+        outcome={outcome}
+        connections={connections}
+        outcomeActionHashes={outcomeActionHashes}
+        fromAddress={fromAddress}
+        relation={relation}
+        toAddress={toAddress}
+        ownExistingParentConnectionAddress={hasParent && hasParent.actionHash}
+        presetExistingParentConnectionAddress={existingParentConnectionAddress}
+        address={connectorAddress}
+        setConnectionConnectorFrom={setConnectionConnectorFrom}
+        setConnectionConnectorTo={setConnectionConnectorTo}
+        outcomeCoordinates={outcomeCoordinates}
+        canvas={canvas}
+        dispatch={dispatch}
+        translate={translate}
+        zoomLevel={zoomLevel}
+      />
+    )
+  })
 }
 export default ConnectionConnectors

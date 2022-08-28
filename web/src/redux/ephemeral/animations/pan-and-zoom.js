@@ -16,11 +16,16 @@ export default function panZoomToFrame(store, action, currentState) {
   }
   const {width, height } = currentState.ui.screensize
   const dpr = window.devicePixelRatio || 1
+  const halfScreenWidth = width / (2 * dpr)
+  const halfScreenHeight = height / (2 * dpr)
+  // Destination viewport
+  // is to center the outcome
+  // and to be at zoom level "1" a.k.a no zoom
   const newLayout = {
     scale: 1,
     translate: {
-      x: -1 * outcomeCoordinates.x + width / (2 * dpr) - outcomeWidth / 2,
-      y: -1 * outcomeCoordinates.y + height / (2 * dpr) - outcomeHeight / 2
+      x: -1 * outcomeCoordinates.x + halfScreenWidth - outcomeWidth / 2,
+      y: -1 * outcomeCoordinates.y + halfScreenHeight - outcomeHeight / 2
     }
   }
 
