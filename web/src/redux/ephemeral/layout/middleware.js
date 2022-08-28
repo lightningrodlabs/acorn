@@ -2,7 +2,8 @@ import TWEEN from '@tweenjs/tween.js'
 import {
     CREATE_OUTCOME_WITH_CONNECTION,
     FETCH_OUTCOMES,
-    DELETE_OUTCOME_FULLY
+    DELETE_OUTCOME_FULLY,
+    CREATE_OUTCOME
 } from '../../persistent/projects/outcomes/actions'
 import {
     PREVIEW_CONNECTIONS,
@@ -29,6 +30,7 @@ const isOneOfLayoutAffectingActions = (action) => {
     return type === TRIGGER_UPDATE_LAYOUT
         || type === PREVIEW_CONNECTIONS
         || type === CLEAR_CONNECTIONS_PREVIEW
+        || type === CREATE_OUTCOME
         || type === CREATE_OUTCOME_WITH_CONNECTION
         || type === FETCH_OUTCOMES
         || type === DELETE_OUTCOME_FULLY

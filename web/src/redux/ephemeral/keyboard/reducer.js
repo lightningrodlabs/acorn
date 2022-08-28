@@ -5,14 +5,11 @@ import {
   UNSET_G_KEYDOWN,
   SET_SHIFT_KEYDOWN,
   UNSET_SHIFT_KEYDOWN,
-  SET_CTRL_KEYDOWN,
-  UNSET_CTRL_KEYDOWN,
 } from './actions'
 
 const defaultState = {
   shiftKeyDown: false,
   gKeyDown: false,
-  ctrlKeyDown: false,
 }
 
 export default function(state = defaultState, action) {
@@ -37,16 +34,6 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         shiftKeyDown: false,
-      }
-    case SET_CTRL_KEYDOWN:
-      return {
-        ...state,
-        ctrlKeyDown: true,
-      }
-    case UNSET_CTRL_KEYDOWN:
-      return {
-        ...state,
-        ctrlKeyDown: false,
       }
     default:
       return state

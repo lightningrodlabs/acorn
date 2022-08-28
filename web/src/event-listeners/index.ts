@@ -23,8 +23,6 @@ import {
   unsetGKeyDown,
   setShiftKeyDown,
   unsetShiftKeyDown,
-  setCtrlKeyDown,
-  unsetCtrlKeyDown,
 } from '../redux/ephemeral/keyboard/actions'
 import {
   setMousedown,
@@ -40,7 +38,6 @@ import {
 import {
   openOutcomeForm,
   closeOutcomeForm,
-  updateContent,
 } from '../redux/ephemeral/outcome-form/actions'
 import { deleteOutcomeFully } from '../redux/persistent/projects/outcomes/actions'
 import { setScreenDimensions } from '../redux/ephemeral/screensize/actions'
@@ -79,6 +76,17 @@ import {
   RightOrLeft,
 } from '../tree-logic'
 import { OUTCOME_VERTICAL_HOVER_ALLOWANCE } from '../drawing/dimensions'
+
+// The "modifier" key is different on Mac and non-Mac
+// Pattern borrowed from TinyKeys library.
+// --
+// https://github.com/jamiebuilds/tinykeys/blob/e0d23b4f248af59ffbbe52411505c3d681c73045/src/tinykeys.ts#L50-L54
+var macOsPattern = /Mac|macOS|iPod|iPhone|iPad/
+let platform =
+  // @ts-ignore
+  navigator?.userAgentData?.platform || navigator?.platform || 'unknown'
+const isMacish = macOsPattern.test(platform)
+const operatingSystemModifier = isMacish ? 'metaKey' : 'ctrlKey'
 
 // ASSUMPTION: one parent (existingParentConnectionAddress)
 function handleMouseUpForOutcomeForm({
@@ -302,11 +310,8 @@ export default function setupEventListeners(
           event.preventDefault()
         }
         break
-      case 'Control':
-        store.dispatch(setCtrlKeyDown())
-        break
       case 'c':
-        if (state.ui.keyboard.ctrlKeyDown) {
+        if (event[operatingSystemModifier]) {
           if (state.ui.selection.selectedOutcomes.length) {
             // use first
             store.dispatch(setOutcomeClone(state.ui.selection.selectedOutcomes))
@@ -314,7 +319,7 @@ export default function setupEventListeners(
         }
         break
       case 'v':
-        if (state.ui.keyboard.ctrlKeyDown) {
+        if (event[operatingSystemModifier]) {
           if (state.ui.outcomeClone.outcomes.length) {
             cloneOutcomes(store)
           }
@@ -336,9 +341,6 @@ export default function setupEventListeners(
         break
       case 'Shift':
         store.dispatch(unsetShiftKeyDown())
-        break
-      case 'Control':
-        store.dispatch(unsetCtrlKeyDown())
         break
       default:
         // console.log(event)
@@ -388,6 +390,7 @@ export default function setupEventListeners(
           convertedCurrentMouse,
           { x: initialSelectX, y: initialSelectY }
         )
+        console.log(outcomeActionHashesToSelect)
         store.dispatch(setOutcomes(outcomeActionHashesToSelect))
       } else {
         store.dispatch(changeTranslate(event.movementX, event.movementY))

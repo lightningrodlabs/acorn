@@ -17,7 +17,10 @@ function mapStateToProps(state: RootState) {
   return {
     agentAddress: state.agentAddress,
     selectedOutcomes: state.ui.selection.selectedOutcomes.map(
-      (actionHash) => outcomes[actionHash]
+      (actionHash) => {
+        const outcome = outcomes[actionHash]
+        return outcome
+      }
     ),
   }
 }

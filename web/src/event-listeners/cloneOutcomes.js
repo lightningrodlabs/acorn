@@ -18,9 +18,12 @@ export default async function cloneOutcomes(store) {
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   const cellId = cellIdFromString(activeProject)
 
-  outcomesToClone.forEach(async (value) => {
+  // loop only one at a time (for now)
+  // so as not to trigger the Head Moved error coming from the holochain
+  // zomes
+  for await (const value of outcomesToClone) {
     let members = []
-    Object.values(outcomeMembers).map(_value => {
+    Object.values(outcomeMembers).map((_value) => {
       _value.outcomeActionHash === value ? members.push(_value) : null
     })
 
@@ -29,24 +32,25 @@ export default async function cloneOutcomes(store) {
       timestampCreated: moment().unix(),
     })
     store
-      .dispatch(
-        createOutcome(activeProject, createdOutcome)
-      )
-      .then(value => {
-        let newOutcomeAddress = value.outcome.actionHash
-        store.dispatch(selectOutcome(value.outcome.actionHash))
-        members.map(async member => {
-          const createdOutcomeMember = await projectsZomeApi.outcomeMember.create(cellId, {
-                outcomeActionHash: newOutcomeAddress,
-                memberAgentPubKey: member.memberAgentPubKey,
-                creatorAgentPubKey: member.creatorAgentPubKey,
-                unixTimestamp: moment().unix(),
-                isImported: false
-              })
+      .dispatch(createOutcome(activeProject, createdOutcome))
+      .then((value) => {
+        const newOutcomeAddress = value.payload.actionHash
+        store.dispatch(selectOutcome(newOutcomeAddress))
+        members.map(async (member) => {
+          const createdOutcomeMember = await projectsZomeApi.outcomeMember.create(
+            cellId,
+            {
+              outcomeActionHash: newOutcomeAddress,
+              memberAgentPubKey: member.memberAgentPubKey,
+              creatorAgentPubKey: member.creatorAgentPubKey,
+              unixTimestamp: moment().unix(),
+              isImported: false,
+            }
+          )
           store.dispatch(
             createOutcomeMember(activeProject, createdOutcomeMember)
           )
         })
       })
-  })
+  }
 }
