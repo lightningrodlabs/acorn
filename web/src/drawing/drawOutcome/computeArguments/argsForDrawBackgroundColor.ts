@@ -29,11 +29,11 @@ export const argsForDrawBackgroundColor = ({
   outcomeHeight: number
   ctx: CanvasRenderingContext2D
 }): Parameters<typeof drawBackgroundColor>[0] => {
-  const twiceBorder = borderWidth * 2
-  const xPosition = outcomeLeftX + borderWidth
-  const yPosition = outcomeTopY + borderWidth
-  const width = outcomeWidth - twiceBorder
-  const height = outcomeHeight - twiceBorder
+  const halfBorder = borderWidth / 2
+  const xPosition = outcomeLeftX + halfBorder
+  const yPosition = outcomeTopY + halfBorder
+  const width = outcomeWidth - borderWidth
+  const height = outcomeHeight - borderWidth
   const backgroundCornerRadius = cornerRadius - 1
   let backgroundColor: string
   if (

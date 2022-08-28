@@ -21,8 +21,8 @@ export const avatarRadius = 13
 
 export const outcomeWidth = 400
 export const outcomeHeight = 228
-export const cornerRadius = 16 // for outcome, main card
-export const cornerRadiusBorder = 20 // for the border
+export const cornerRadius = 16 // for outcome, main card background color
+export const cornerRadiusBorder = 16 // for the border
 export const borderWidth = 7
 export const dashedBorderWidth = 5
 

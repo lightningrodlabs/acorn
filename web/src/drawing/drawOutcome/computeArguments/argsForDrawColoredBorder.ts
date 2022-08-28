@@ -29,6 +29,7 @@ export const argsForDrawColoredBorder = ({
   ctx: CanvasRenderingContext2D
 }): Parameters<typeof drawColoredBorder>[0] => {
   const halfBorder = borderWidth / 2
+
   const xPosition = outcomeLeftX + halfBorder
   const yPosition = outcomeTopY + halfBorder
   const width = outcomeWidth - borderWidth
