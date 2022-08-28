@@ -115,14 +115,16 @@ export function checkForOutcomeAtCoordinates(
   return Object.keys(outcomes).find((actionHash) => {
     const outcome = outcomes[actionHash]
     // convert the topLeft and bottomRight points of the outcome to canvas
-    const topLeft = {
-      x: outcomeCoordinates[outcome.actionHash].x,
-      y: outcomeCoordinates[outcome.actionHash].y - extraVerticalPadding,
-    }
-
+    const outcomeCoordinate = outcomeCoordinates[outcome.actionHash]
     // do not proceed if we don't have coordinates
     // for the outcome (yet)
-    if (!topLeft) return false
+    if (!outcomeCoordinate) return false
+
+    const topLeft = {
+      x: outcomeCoordinate.x,
+      y: outcomeCoordinate.y - extraVerticalPadding,
+    }
+
 
     const bottomRight = {
       x: topLeft.x + outcomeWidth,
