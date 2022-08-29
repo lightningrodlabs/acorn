@@ -207,27 +207,35 @@ const ConnectionConnectors = ({
       (connection) => connection.childActionHash === connectorAddress
     )
     return (
-      <ConnectionConnector
-        key={connectorAddress}
-        activeProject={activeProject}
-        projectTags={projectTags}
-        outcome={outcome}
-        connections={connections}
-        outcomeActionHashes={outcomeActionHashes}
-        fromAddress={fromAddress}
-        relation={relation}
-        toAddress={toAddress}
-        ownExistingParentConnectionAddress={hasParent && hasParent.actionHash}
-        presetExistingParentConnectionAddress={existingParentConnectionAddress}
-        address={connectorAddress}
-        setConnectionConnectorFrom={setConnectionConnectorFrom}
-        setConnectionConnectorTo={setConnectionConnectorTo}
-        outcomeCoordinates={outcomeCoordinates}
-        canvas={canvas}
-        dispatch={dispatch}
-        translate={translate}
-        zoomLevel={zoomLevel}
-      />
+      <>
+        {outcomeCoordinates && (
+          <ConnectionConnector
+            key={connectorAddress}
+            activeProject={activeProject}
+            projectTags={projectTags}
+            outcome={outcome}
+            connections={connections}
+            outcomeActionHashes={outcomeActionHashes}
+            fromAddress={fromAddress}
+            relation={relation}
+            toAddress={toAddress}
+            ownExistingParentConnectionAddress={
+              hasParent && hasParent.actionHash
+            }
+            presetExistingParentConnectionAddress={
+              existingParentConnectionAddress
+            }
+            address={connectorAddress}
+            setConnectionConnectorFrom={setConnectionConnectorFrom}
+            setConnectionConnectorTo={setConnectionConnectorTo}
+            outcomeCoordinates={outcomeCoordinates}
+            canvas={canvas}
+            dispatch={dispatch}
+            translate={translate}
+            zoomLevel={zoomLevel}
+          />
+        )}
+      </>
     )
   })
 }
