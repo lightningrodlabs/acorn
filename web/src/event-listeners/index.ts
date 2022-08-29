@@ -274,40 +274,43 @@ export default function setupEventListeners(
         store.dispatch(resetConnectionConnector())
         break
       case 'Backspace':
-        // deletes one outcome for now FIXME: should be able to delete many outcomes
         let selection = state.ui.selection
-        // only dispatch if something's selected and the createOutcome window is
+        // only dispatch if something's selected and the OutcomeForm and ExpandedView are
         // not open
         if (
           selection.selectedConnections.length > 0 &&
           !state.ui.outcomeForm.isOpen &&
           !state.ui.expandedView.isOpen
         ) {
-          let firstOfSelection = selection.selectedConnections[0]
-          await projectsZomeApi.connection.delete(cellId, firstOfSelection)
-          store.dispatch(deleteConnection(activeProject, firstOfSelection))
-          // this action will trigger a recalc
-          // and layout animation update, which is natural in this context.
-          // we have to trigger it manually because there is a scenario where
-          // deleteConnection should NOT trigger a layout recalc
-          store.dispatch(triggerUpdateLayout())
           // if on firefox, and matched this case
           // prevent the browser from navigating back to the last page
           event.preventDefault()
+          for await (const connection of selection.selectedConnections) {
+            await projectsZomeApi.connection.delete(cellId, connection)
+            store.dispatch(deleteConnection(activeProject, connection))
+            // this action will trigger a recalc
+            // and layout animation update, which is natural in this context.
+            // we have to trigger it manually because there is a scenario where
+            // deleteConnection should NOT trigger a layout recalc
+            store.dispatch(triggerUpdateLayout())
+          }
         } else if (
           selection.selectedOutcomes.length > 0 &&
           !state.ui.outcomeForm.isOpen &&
           !state.ui.expandedView.isOpen
         ) {
-          let firstOfSelection = selection.selectedOutcomes[0]
-          const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(
-            cellId,
-            firstOfSelection
-          )
-          store.dispatch(deleteOutcomeFully(activeProject, fullyDeletedOutcome))
           // if on firefox, and matched this case
           // prevent the browser from navigating back to the last page
           event.preventDefault()
+          for await (const outcome of selection.selectedOutcomes) {
+            const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(
+              cellId,
+              outcome
+            )
+            store.dispatch(
+              deleteOutcomeFully(activeProject, fullyDeletedOutcome)
+            )
+          }
         }
         break
       case 'c':
