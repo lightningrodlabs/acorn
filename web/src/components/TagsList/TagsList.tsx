@@ -6,6 +6,7 @@ import TagPicker from '../TagPicker/TagPicker'
 import Icon from '../Icon/Icon'
 
 import './TagsList.scss'
+import OnClickOutside from '../OnClickOutside/OnClickOutside'
 
 export type TagsListProps = {
   tags: WithActionHash<TagType>[]
@@ -24,9 +25,47 @@ const TagsList: React.FC<TagsListProps> = ({
 }) => {
   const [isOpenTagPicker, setIsOpenTagPicker] = useState(false)
   const [filterText, setFilterText] = useState('')
+  const onClose = () => {
+    setIsOpenTagPicker(false)
+    setFilterText('')
+  }
   return (
-    // TODO: make on click outside possible to close the popup
     <div className="tags-list-wrapper">
+      {/* Add/Edit Tags Button */}
+      <OnClickOutside onClickOutside={onClose}>
+        {showAddTagButton && (
+          <div className="add-tag-button-with-tag-picker">
+            <div
+              className={`add-tag-button ${isOpenTagPicker ? 'active' : ''}`}
+              onClick={() => {
+                setIsOpenTagPicker(!isOpenTagPicker)
+                setFilterText('')
+              }}
+            >
+              <div className="add-tag-button-icons">
+                {/* @ts-ignore */}
+                <Icon name="plus.svg" className="grey not-hoverable" />
+                {/* @ts-ignore */}
+                <Icon name="tag.svg" className="grey not-hoverable" />
+              </div>
+              {selectedTags.length === 0 && <span>Add a tag</span>}
+              {selectedTags.length > 0 && <span></span>}
+            </div>
+            {isOpenTagPicker && (
+              <TagPicker
+                tags={tags}
+                selectedTags={selectedTags}
+                onChange={onChange}
+                onSaveTag={onSaveTag}
+                filterText={filterText}
+                setFilterText={setFilterText}
+                onClose={onClose}
+              />
+            )}
+          </div>
+        )}
+      </OnClickOutside>
+      {/* Selected Tags */}
       {selectedTags.map((tagActionHash) => {
         const tag = tags.find((tag) => tag.actionHash === tagActionHash)
         if (!tag) {
@@ -38,40 +77,6 @@ const TagsList: React.FC<TagsListProps> = ({
           </div>
         )
       })}
-      {showAddTagButton && (
-        <div className="add-tag-button-with-tag-picker">
-          <div
-            className={`add-tag-button ${isOpenTagPicker ? 'active' : ''}`}
-            onClick={() => {
-              setIsOpenTagPicker(!isOpenTagPicker)
-              setFilterText('')
-            }}
-          >
-            <div className="add-tag-button-icons">
-              {/* @ts-ignore */}
-              <Icon name="plus.svg" className="grey not-hoverable" />
-              {/* @ts-ignore */}
-              <Icon name="tag.svg" className="grey not-hoverable" />
-            </div>
-            {tags.length === 0 && <span>Add a tag</span>}
-            {tags.length > 0 && <span>Add/edit tags</span>}
-          </div>
-          {isOpenTagPicker && (
-            <TagPicker
-              tags={tags}
-              selectedTags={selectedTags}
-              onChange={onChange}
-              onSaveTag={onSaveTag}
-              filterText={filterText}
-              setFilterText={setFilterText}
-              onClose={() => {
-                setIsOpenTagPicker(false)
-                setFilterText('')
-              }}
-            />
-          )}
-        </div>
-      )}
     </div>
   )
 }

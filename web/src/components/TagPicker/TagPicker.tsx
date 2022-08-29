@@ -301,7 +301,7 @@ const TagPicker: React.FC<TagPickerProps> = ({
     setIsCreateTagOpen(false)
   }
   return (
-    <OnClickOutside onClickOutside={onClose}>
+
       <div className="tag-picker-wrapper">
         {!isCreateTagOpen && (
           <TagPickerDisplayTags
@@ -326,7 +326,6 @@ const TagPicker: React.FC<TagPickerProps> = ({
           />
         )}
       </div>
-    </OnClickOutside>
   )
 }
 

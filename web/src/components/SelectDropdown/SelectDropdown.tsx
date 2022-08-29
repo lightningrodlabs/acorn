@@ -30,27 +30,27 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
   return (
     <div className="select-dropdown-wrapper">
       {/* Main dropdown button */}
-      <div
-        onClick={() => setIsOpenDropdownMenu(!isOpenDropdownMenu)}
-        className={`select-dropdown-button 
+      <OnClickOutside onClickOutside={() => setIsOpenDropdownMenu(false)}>
+        <div
+          onClick={() => setIsOpenDropdownMenu(!isOpenDropdownMenu)}
+          className={`select-dropdown-button 
         ${isOpenDropdownMenu ? 'focused' : ''}  
         ${size === 'small' ? 'small' : size === 'large' ? 'large' : ''}`}
-      >
-        <div className="select-dropdown-selected-option">
-          <div className="select-dropdown-icon">{selectedIcon}</div>
-          <div className="select-dropdown-text">{selectedText}</div>
+        >
+          <div className="select-dropdown-selected-option">
+            <div className="select-dropdown-icon">{selectedIcon}</div>
+            <div className="select-dropdown-text">{selectedText}</div>
+          </div>
+          <div className="select-dropdown-chevron">
+            <Icon
+              name={isOpenDropdownMenu ? 'chevron-up.svg' : 'chevron-down.svg'}
+              size="small"
+              className="light-grey not-hoverable"
+            />
+          </div>
         </div>
-        <div className="select-dropdown-chevron">
-          <Icon
-            name={isOpenDropdownMenu ? 'chevron-up.svg' : 'chevron-down.svg'}
-            size="small"
-            className="light-grey not-hoverable"
-          />
-        </div>
-      </div>
-      {/* The dropdown part of the dropdown menu */}
-      {isOpenDropdownMenu && (
-        <OnClickOutside onClickOutside={() => setIsOpenDropdownMenu(false)}>
+        {/* The dropdown part of the dropdown menu */}
+        {isOpenDropdownMenu && (
           <div className="select-dropdown-menu">
             {options.map((option) => (
               <div
@@ -69,8 +69,8 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
               </div>
             ))}
           </div>
-        </OnClickOutside>
-      )}
+        )}
+      </OnClickOutside>
     </div>
   )
 }

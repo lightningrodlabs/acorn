@@ -372,7 +372,11 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                 {/* For Big, it is a read-only field */}
                 {/* For Uncertain and Small, it is an editable field */}
                 <div
-                  className="ev-time-display"
+                  className={`ev-time-display ${
+                    outcome && outcome.computedScope === ComputedScope.Big
+                      ? 'computed'
+                      : ''
+                  }`}
                   onClick={() =>
                     outcome.computedScope !== ComputedScope.Big &&
                     setEditingTimeframe(!editingTimeframe)

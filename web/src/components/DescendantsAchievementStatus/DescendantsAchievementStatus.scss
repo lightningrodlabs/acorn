@@ -63,11 +63,15 @@
 }
 
 .more-info-wrapper {
-  .icon .inner-icon {
-    background-color: var(--icon-color-light-grey);
+  .icon {
+    cursor: pointer;
 
-    &:hover {
-      background-color: var(--text-color-primary);
+    .inner-icon {
+      background-color: var(--icon-color-light-grey);
+
+      &:hover {
+        background-color: var(--text-color-primary);
+      }
     }
   }
 }

@@ -64,7 +64,7 @@
         position: relative;
 
         .picker-popup {
-          top: 5.25rem;
+          top: 5rem;
           left: 0;
         }
       }
@@ -96,6 +96,10 @@
 
           .more-info-wrapper {
             margin-left: 0.75rem;
+
+            .icon {
+              cursor: pointer;
+            }
           }
         }
 
@@ -103,9 +107,13 @@
           font: 1rem var(--font-family-primary-medium);
           color: var(-text-color-primary);
           color: var(--text-color-placeholder);
-          cursor: pointer;
           transition: 0.2s all ease;
           padding: 0.25rem 0;
+          cursor: pointer;
+
+          &.computed {
+            cursor: default;
+          }
         }
 
         .picker-popup {
