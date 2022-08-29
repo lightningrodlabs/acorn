@@ -314,18 +314,23 @@ export default function setupEventListeners(
         }
         break
       case 'c':
-        if (event[operatingSystemModifier]) {
-          if (state.ui.selection.selectedOutcomes.length) {
-            // use first
-            store.dispatch(setOutcomeClone(state.ui.selection.selectedOutcomes))
-          }
+        if (
+          event[operatingSystemModifier] &&
+          state.ui.selection.selectedOutcomes.length &&
+          !state.ui.outcomeForm.isOpen &&
+          !state.ui.expandedView.isOpen
+        ) {
+          store.dispatch(setOutcomeClone(state.ui.selection.selectedOutcomes))
         }
         break
       case 'v':
-        if (event[operatingSystemModifier]) {
-          if (state.ui.outcomeClone.outcomes.length) {
-            cloneOutcomes(store)
-          }
+        if (
+          event[operatingSystemModifier] &&
+          state.ui.outcomeClone.outcomes.length &&
+          !state.ui.outcomeForm.isOpen &&
+          !state.ui.expandedView.isOpen
+        ) {
+          cloneOutcomes(store)
         }
         break
       default:
