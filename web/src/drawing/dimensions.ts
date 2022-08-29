@@ -116,19 +116,27 @@ export function getLinesForParagraphs({
   statement,
   zoomLevel,
   maxWidth,
+  useLineLimit = true
 }: {
   ctx: CanvasRenderingContext2D
   statement: string
   zoomLevel: number
   maxWidth: number
+  useLineLimit: boolean
 }) {
   // for space reasons
-  // we limit the number of visible lines of the Outcome statement to 2 or 3,
+  // we limit the number of visible lines of the Outcome statement to 4 or 3,
   // and provide an ellipsis if there are more lines than that
-  let lineLimit = 4
-  // for extra large text, reduce to only two lines
-  if (zoomLevel < secondZoomThreshold) {
-    lineLimit = 3
+  let lineLimit: number
+  if (useLineLimit) {
+    // for extra large text, reduce to only 3 lines
+    if (zoomLevel < secondZoomThreshold) {
+      lineLimit = 3
+    } else {
+      lineLimit = 4
+    }
+  } else {
+    lineLimit = Infinity
   }
 
   // set so that measurements are proper
@@ -152,7 +160,7 @@ export function getLinesForParagraphs({
 
   // limited line counts
   // replace overflow of last line with an ellipsis
-  const linesToRender = lines.slice(0, lineLimit)
+  const linesToRender = lineLimit === Infinity ? lines : lines.slice(0, lineLimit)
   if (lines.length > lineLimit) {
     const line = linesToRender[linesToRender.length - 1]
     linesToRender[linesToRender.length - 1] = `${line.slice(
@@ -169,12 +177,14 @@ export function getOutcomeHeight({
   projectTags,
   zoomLevel,
   width,
+  useLineLimit = true,
 }: {
   ctx?: CanvasRenderingContext2D
   outcome: ComputedOutcome
   projectTags: WithActionHash<Tag>[]
   zoomLevel: number
   width: number
+  useLineLimit?: boolean
 }) {
   if (!ctx) {
     ctx = document.createElement('canvas').getContext('2d')
@@ -187,6 +197,7 @@ export function getOutcomeHeight({
     statement: outcome.content,
     zoomLevel,
     maxWidth: width - 2 * outcomePaddingHorizontal,
+    useLineLimit
   })
 
   // adjust font size based on scale (zoom factor)

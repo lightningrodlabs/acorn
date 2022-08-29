@@ -64,21 +64,22 @@ export type renderProps = {
   outcomeMembers: ProjectOutcomeMembersState
   connections: ProjectConnectionsState
   connectionConnectorFromAddress: ActionHashB64
+  connectionConnectorToAddress: ActionHashB64
   connectionConnectorRelation: RelationInput
   outcomeFormIsOpen: boolean
   outcomeFormFromActionHash: ActionHashB64
+  outcomeFormContent: string
   outcomeFormRelation: RelationInput
+  outcomeFormLeftConnectionX: number
+  outcomeFormTopConnectionY: number
   hoveredConnectionActionHash: ActionHashB64
   selectedConnections: ActionHashB64[]
   selectedOutcomes: ActionHashB64[]
-  connectionConnectorToAddress: ActionHashB64
   mouseLiveCoordinate: {
     x: number
     y: number
   }
   shiftKeyDown: boolean
-  outcomeFormLeftConnectionX: number
-  outcomeFormTopConnectionY: number
   startedSelection: boolean
   startedSelectionCoordinate: {
     x: number
@@ -119,18 +120,19 @@ function render(
     entryPoints,
     projectMeta,
     connectionConnectorFromAddress,
+    connectionConnectorToAddress,
     connectionConnectorRelation,
     outcomeFormIsOpen,
     outcomeFormFromActionHash,
     outcomeFormRelation,
+    outcomeFormContent,
+    outcomeFormLeftConnectionX,
+    outcomeFormTopConnectionY,
     hoveredConnectionActionHash,
     selectedConnections,
     selectedOutcomes,
-    connectionConnectorToAddress,
     mouseLiveCoordinate,
     shiftKeyDown,
-    outcomeFormLeftConnectionX,
-    outcomeFormTopConnectionY,
     startedSelection,
     startedSelectionCoordinate,
   }: renderProps,
@@ -545,34 +547,45 @@ function render(
     const isSelected = false
     const isEditing = true
     const isTopPriorityOutcome = false
+    const placeholderOutcome: ComputedOutcome = {
+      actionHash: '',
+      content: '',
+      creatorAgentPubKey: '',
+      editorAgentPubKey: '',
+      timestampCreated: Date.now(),
+      timestampUpdated: Date.now(),
+      scope: {
+        Uncertain: { smallsEstimate: 0, timeFrame: null, inBreakdown: false },
+      },
+      tags: [],
+      description: '',
+      isImported: false,
+      githubLink: '',
+      computedScope: ComputedScope.Uncertain,
+      computedAchievementStatus: {
+        simple: ComputedSimpleAchievementStatus.NotAchieved,
+        smallsAchieved: 0,
+        smallsTotal: 0,
+        tasksAchieved: 0,
+        tasksTotal: 0,
+        uncertains: 0,
+      },
+      children: [],
+    }
     drawOutcomeCard({
       zoomLevel: zoomLevel,
-      outcome: {
-        actionHash: '',
-        content: '',
-        creatorAgentPubKey: '',
-        editorAgentPubKey: '',
-        timestampCreated: Date.now(),
-        timestampUpdated: Date.now(),
-        scope: {
-          Uncertain: { smallsEstimate: 0, timeFrame: null, inBreakdown: false },
+      outcome: placeholderOutcome,
+      outcomeHeight: getOutcomeHeight({
+        ctx,
+        outcome: {
+          ...placeholderOutcome,
+          content: outcomeFormContent
         },
-        tags: [],
-        description: '',
-        isImported: false,
-        githubLink: '',
-        computedScope: ComputedScope.Uncertain,
-        computedAchievementStatus: {
-          simple: ComputedSimpleAchievementStatus.NotAchieved,
-          smallsAchieved: 0,
-          smallsTotal: 0,
-          tasksAchieved: 0,
-          tasksTotal: 0,
-          uncertains: 0,
-        },
-        children: [],
-      },
-      outcomeHeight: outcomeHeight,
+        projectTags,
+        width: outcomeWidth,
+        zoomLevel,
+        useLineLimit: false
+      }),
       outcomeWidth,
       projectTags,
       outcomeLeftX: outcomeFormLeftConnectionX,
