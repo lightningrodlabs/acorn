@@ -17,11 +17,11 @@ function NestedTreeOutcome({
   filterText,
   projectMeta,
   updateProjectMeta,
+  expandByDefault,
 }) {
-  level = level || 1
   // set expanded open by default only if
   // at the first or second level
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(expandByDefault)
 
   const location = useLocation()
 
@@ -129,6 +129,7 @@ function NestedTreeOutcome({
               level={level + 1}
               projectMeta={projectMeta}
               updateProjectMeta={updateProjectMeta}
+              expandByDefault={false}
             />
           ))
         : null}
@@ -170,8 +171,6 @@ export default function IndentedTreeView({
   const [isResizing, setIsResizing] = useState(false)
   const [width, setWidth] = useState(DEFAULT_WIDTH)
   const [lastMouseXPosition, setLastMouseXPosition] = useState()
-
-  const location = useLocation()
 
   useEffect(() => {
     const isNotResizing = () => setIsResizing(false)
@@ -261,11 +260,13 @@ export default function IndentedTreeView({
         ))} */}
         {outcomeTrees.map((outcome, index) => (
           <NestedTreeOutcome
+            level={1}
             filterText={filterText}
             outcome={outcome}
             key={index}
             projectMeta={projectMeta}
             updateProjectMeta={updateProjectMeta}
+            expandByDefault={outcomeTrees.length <= 10}
           />
         ))}
       </div>
