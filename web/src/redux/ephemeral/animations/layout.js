@@ -44,10 +44,20 @@ export default function performLayoutAnimation(store, action, currentState) {
     // and make its original position equal to the position
     // of the Outcome Form when it was open
     ...outcomeCreatedCoord,
+  }
+  // we do NOT want to keep original layouts for Outcomes
+  // that are no longer in the project, so those are automatically
+  // ignored during this loop
+  for (const outcome in newLayout) {
     // do this to override any new ones with existing ones
     // to begin with
-    ...currentState.ui.layout,
+    if (currentState.ui.layout[outcome]) {
+      currentLayoutTween[outcome] = {
+        ...currentState.ui.layout[outcome],
+      }
+    }
   }
+  console.log(newLayout, currentLayoutTween)
   // transition currentLayoutTween object
   // into newLayout object
   new TWEEN.Tween(currentLayoutTween)
@@ -61,6 +71,8 @@ export default function performLayoutAnimation(store, action, currentState) {
       // dispatch an update to the layout
       // which will trigger a repaint on the canvas
       // every time the animation loop fires an update
-      store.dispatch(updateLayout(updatedLayout))
+      store.dispatch(updateLayout({
+        ...updatedLayout
+      }))
     })
 }

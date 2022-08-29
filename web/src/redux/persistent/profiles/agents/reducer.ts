@@ -24,7 +24,6 @@ export default function (
   switch (type) {
     case FETCH_AGENTS:
       const fetchedAgents = payload as Array<Profile>
-      console.log(fetchedAgents)
       return _.keyBy(fetchedAgents, 'agentPubKey')
     case SET_AGENT:
       const setAgent = payload as WireRecord<Profile>

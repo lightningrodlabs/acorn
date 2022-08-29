@@ -207,10 +207,9 @@ const ConnectionConnectors = ({
       (connection) => connection.childActionHash === connectorAddress
     )
     return (
-      <>
+      <div key={connectorAddress}>
         {outcomeCoordinates && (
           <ConnectionConnector
-            key={connectorAddress}
             activeProject={activeProject}
             projectTags={projectTags}
             outcome={outcome}
@@ -235,7 +234,7 @@ const ConnectionConnectors = ({
             zoomLevel={zoomLevel}
           />
         )}
-      </>
+      </div>
     )
   })
 }
