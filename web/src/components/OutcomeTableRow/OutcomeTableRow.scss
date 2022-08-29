@@ -112,6 +112,11 @@
 
       .tags-list-item {
         margin-bottom: 0.125rem;
+
+        .tag-wrapper {
+          padding: 0.125rem 0.625rem 0.15rem 0.625rem;
+          font-size: 0.7rem;
+        }
       }
     }
   }

@@ -42,7 +42,7 @@
   }
 
   .logo-image {
-    height: 1.125rem;
+    height: 1.05rem;
   }
 }
 
@@ -79,11 +79,12 @@
 }
 
 .current-project-name {
-  margin: 0 12px 2px 0px;
-  font-family: "PlusJakartaSans-extrabold", Helvetica, Sans-Serif;
-  font-weight: normal;
-  font-size: 14px;
-  color: #4d4d4d;
+  margin: 0 0.825rem 0.25rem 0;
+  font-family: var(--font-family-primary-bold);
+  font-size: 0.875rem;
+  color: var(--text-color-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 // .home-link {
@@ -98,14 +99,14 @@
 //   margin: 0 0 1.5px 0;
 // }
 
-.logo:hover .icon .inner-icon {
-  cursor: pointer;
-}
+// .logo:hover .icon .inner-icon {
+//   cursor: pointer;
+// }
 
 .divider-line {
-  border-right: 1px solid #d9d9d9;
-  height: 24px;
-  margin-right: 10px;
+  border-right: 0.125rem solid var(--border-color-timberwolf);
+  height: 1.5rem;
+  margin-right: 0.825rem;
 }
 
 .current-project-tools {

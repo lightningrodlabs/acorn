@@ -86,11 +86,12 @@
   transition: background-color 0.1s ease-in, color 0.1s ease-in;
   text-decoration: none;
   color: var(--text-color-secondary);
+  font-family: var(--font-family-primary-semibold);
 
   &:hover {
     background: #f2f2f2;
     color: var(--text-color-primary);
-    font-family: var(--font-family-primary-bold);
+    
 
     > .entry-point-picker-switch {
       visibility: visible;

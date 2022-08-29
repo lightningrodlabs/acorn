@@ -267,10 +267,13 @@ export default function setupEventListeners(
         store.dispatch(setShiftKeyDown())
         break
       case 'Escape':
-        // closeExpandedView
+        // Only unselect all Outcomes if the expanded view
+        // is not open
+        if (!state.ui.expandedView.isOpen) {
+          store.dispatch(unselectAll())
+        }
         store.dispatch(closeExpandedView())
         store.dispatch(closeOutcomeForm())
-        // store.dispatch(unselectAll())
         store.dispatch(resetConnectionConnector())
         break
       case 'Backspace':

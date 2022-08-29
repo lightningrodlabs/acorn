@@ -1,5 +1,5 @@
 .dashboard-background {
-  background-color: #fbf9f7;
+  background-color: var(--bg-color-primary);
   display: flex;
   flex-direction: row;
   height: calc(100vh - 70px);

@@ -92,15 +92,21 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
         unmountOnExit
         classNames="expanded-view-overlay"
       >
-        <div className="expanded-view-overlay" >
-          <div className="expanded-view-breadcrumbs-wrapper">
-            <Breadcrumbs
-              outcomeAndAncestors={outcomeAndAncestors}
-              onClickItem={(actionHash) => {
-                openExpandedView(actionHash)
-              }}
-            />
-          </div>
+        <div className="expanded-view-overlay" onClick={onClose}></div>
+      </CSSTransition>
+      <CSSTransition
+        in={showing}
+        timeout={100}
+        unmountOnExit
+        classNames="breadcrumbs-overlay"
+      >
+        <div className="breadcrumbs-overlay">
+          <Breadcrumbs
+            outcomeAndAncestors={outcomeAndAncestors}
+            onClickItem={(actionHash) => {
+              openExpandedView(actionHash)
+            }}
+          />
         </div>
       </CSSTransition>
       <CSSTransition

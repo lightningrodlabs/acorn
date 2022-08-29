@@ -23,7 +23,7 @@ process.on('uncaughtException', (e) => {
   console.error('an unhandled error occurred:', e)
 })
 
-const BACKGROUND_COLOR = '#fbf9f7'
+const BACKGROUND_COLOR = '#f7f5f3'
 
 
 

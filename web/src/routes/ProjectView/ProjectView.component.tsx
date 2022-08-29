@@ -164,6 +164,22 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
     setActiveEntryPoints(entryPointActionHashes)
   }, [JSON.stringify(entryPointActionHashes)])
 
+  // close Expanded view after hitting Esc key:
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      // if we are on Map View
+      // we should let Map View handle the Escape key
+      if (!location.pathname.includes('map') && event.key === 'Escape') {
+        closeExpandedView()
+      }
+    }
+    document.body.addEventListener('keydown', onKeyDown)
+    // for teardown, unbind event listeners
+    return () => {
+      document.body.removeEventListener('keydown', onKeyDown)
+    }
+  }, [location])
+
   return (
     <>
       <ComputedOutcomeContext.Provider value={computedOutcomes}>

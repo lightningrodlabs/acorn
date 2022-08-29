@@ -1,4 +1,4 @@
-@import './fonts.scss';
+@import "./fonts.scss";
 
 :root {
   // color names from https://www.color-name.com
@@ -27,6 +27,7 @@
   --bg-color-hover: #f4f1ed; //Isabelline
   --bg-color-canvas: #f4f2f0; //Isabelline 2
   --bg-color-popup: #ebeae7eb; //Cararra (90% opacity)
+  --bg-color-achieved: #e9efe7;
 
   // border
   --border-color-primary: #222222; //Raisin Black
@@ -44,12 +45,12 @@
   --shadow-color-high-priority: #334cf8; //
 
   // typography
-  --font-family-primary-extrabold: 'PlusJakartaSans-extrabold', sans-serif;
-  --font-family-primary-bold: 'PlusJakartaSans-bold', sans-serif;
-  --font-family-primary-semibold: 'PlusJakartaSans-semibold', sans-serif;
-  --font-family-primary-medium: 'PlusJakartaSans-medium', sans-serif;
-  --font-family-primary-regular: 'PlusJakartaSans-regular', sans-serif;
-  --font-family-secondary-extrabold: 'gilroyextrabold', sans-serif;
+  --font-family-primary-extrabold: "PlusJakartaSans-extrabold", sans-serif;
+  --font-family-primary-bold: "PlusJakartaSans-bold", sans-serif;
+  --font-family-primary-semibold: "PlusJakartaSans-semibold", sans-serif;
+  --font-family-primary-medium: "PlusJakartaSans-medium", sans-serif;
+  --font-family-primary-regular: "PlusJakartaSans-regular", sans-serif;
+  --font-family-secondary-extrabold: "gilroyextrabold", sans-serif;
 
   // text
   --text-color-primary: #222222; //Raisin Black

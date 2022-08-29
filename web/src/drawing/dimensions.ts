@@ -20,7 +20,7 @@ export const avatarSpace = -4
 export const avatarRadius = 13
 
 export const outcomeWidth = 400
-export const outcomeHeight = 228
+export const outcomeHeight = 250
 export const cornerRadius = 16 // for outcome, main card background color
 export const cornerRadiusBorder = 16 // for the border
 export const borderWidth = 7
@@ -254,6 +254,8 @@ export function getOutcomeHeight({
     (outcomeTimeAndAssigneesHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0) +
     // if progress bar existed, then we need another spacer
     (progressBarHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0)
+    // if progress bar existed, but no assignee, then we need another spacer
+    // (progressBarHeight > 0 && outcomeTimeAndAssigneesHeight === 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0)
 
   const detectedOutcomeHeight =
     DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT +

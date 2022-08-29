@@ -31,15 +31,36 @@
   position: fixed;
   top: 0;
   z-index: 1;
-
-  .expanded-view-breadcrumbs-wrapper {
-    position: absolute;
-    top: 0.5rem;
-    left: 1rem;
-  }
 }
 
-// css transitions (animation)
+.breadcrumbs-overlay {
+  position: fixed;
+  top: 0.5rem;
+  left: 1rem;
+  z-index: 2;
+}
+
+// breadcrumbs css transitions (animation)
+
+.breadcrumbs-overlay-enter {
+  opacity: 0;
+}
+
+.breadcrumbs-overlay-enter-active {
+  opacity: 1;
+  transition: opacity 0.25s 0s;
+}
+
+.breadcrumbs-overlay-exit {
+  opacity: 1;
+  transition: opacity 0.25s 0s;
+}
+
+.breadcrumbs-overlay-exit-active {
+  opacity: 0;
+}
+
+// expanded view overlay css transitions (animation)
 
 .expanded-view-overlay-enter {
   opacity: 0;
@@ -58,6 +79,8 @@
 .expanded-view-overlay-exit-active {
   opacity: 0;
 }
+
+// expanded view wrapper css transitions (animation)
 
 .expanded-view-wrapper-enter {
   -ms-transform: translate(-50%, -50%) scale(0.9);
@@ -119,7 +142,7 @@
   height: 70px;
   resize: none;
   color: #4d4d4d;
-  font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
+  font-family: "PlusJakartaSans-medium", Helvetica, Sans-Serif;
   font-size: 20px;
   line-height: 24px;
 }
