@@ -10,7 +10,11 @@ import {
   ComputedScope,
   ComputedSimpleAchievementStatus,
 } from '../../../types'
-import { borderWidth, cornerRadiusBorder, dashedBorderWidth } from '../../dimensions'
+import {
+  borderWidth,
+  cornerRadiusBorder,
+  dashedBorderWidth,
+} from '../../dimensions'
 import drawColoredBorder from '../drawColoredBorder'
 
 export const argsForDrawColoredBorder = ({
@@ -36,9 +40,11 @@ export const argsForDrawColoredBorder = ({
   const height = outcomeHeight - borderWidth
   let strokeWidth = borderWidth
   // logic for In Breakdown Mode presentation for an Uncertain Outcome
-  const useDashedStroke = 'Uncertain' in outcome.scope
-    ? outcome.scope.Uncertain.inBreakdown
-    : false
+  const useDashedStroke =
+    outcome.computedScope === ComputedScope.Uncertain &&
+    'Uncertain' in outcome.scope
+      ? outcome.scope.Uncertain.inBreakdown
+      : false
   if (useDashedStroke) {
     strokeWidth = dashedBorderWidth
   }
@@ -51,19 +57,19 @@ export const argsForDrawColoredBorder = ({
   if (
     outcome.computedScope === ComputedScope.Small &&
     outcome.computedAchievementStatus.simple ===
-    ComputedSimpleAchievementStatus.Achieved
+      ComputedSimpleAchievementStatus.Achieved
   ) {
     borderColor = ACHIEVED_BORDER_COLOR
   } else if (
     outcome.computedScope === ComputedScope.Small &&
     outcome.computedAchievementStatus.simple !==
-    ComputedSimpleAchievementStatus.Achieved
+      ComputedSimpleAchievementStatus.Achieved
   ) {
     borderColor = NOT_ACHIEVED_BORDER_COLOR
   } else if (
     outcome.computedScope === ComputedScope.Big &&
     outcome.computedAchievementStatus.simple ===
-    ComputedSimpleAchievementStatus.Achieved
+      ComputedSimpleAchievementStatus.Achieved
   ) {
     // it is supposed to look borderless, and so
     // it has to match the background color of

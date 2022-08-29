@@ -54,6 +54,7 @@ const SelectDropdown: React.FC<SelectDropdownProps> = ({
           <div className="select-dropdown-menu">
             {options.map((option) => (
               <div
+                key={option.id}
                 onClick={() => onClickOption(option.id)}
                 className={`select-dropdown-menu-option ${
                   size === 'small' ? 'small' : size === 'large' ? 'large' : ''
