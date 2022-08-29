@@ -37,11 +37,8 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
             // but also not the direct ancestor, hide that text
             const textIsHidden = index > firstAncestor && index < lastAncestor
             return (
-              <>
-                <div
-                  className="breadcrumbs-item"
-                  onClick={() => onClickItem(ancestorOutcome.actionHash)}
-                >
+              <div className="breadcrumbs-item-wrapper" key={ancestorOutcome.actionHash}>
+                <div className="breadcrumbs-item" onClick={() => onClickItem(ancestorOutcome.actionHash)}>
                   <Typography style="breadcrumbs">
                     {textIsHidden
                       ? ''
@@ -56,7 +53,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
                   </Typography>
                 </div>
                 <Typography style="breadcrumbs">/</Typography>
-              </>
+              </div>
             )
           })}
         </div>

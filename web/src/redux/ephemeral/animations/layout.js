@@ -57,7 +57,6 @@ export default function performLayoutAnimation(store, action, currentState) {
       }
     }
   }
-  console.log(newLayout, currentLayoutTween)
   // transition currentLayoutTween object
   // into newLayout object
   new TWEEN.Tween(currentLayoutTween)

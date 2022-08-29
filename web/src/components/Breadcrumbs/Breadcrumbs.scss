@@ -16,11 +16,17 @@
     text-overflow: ellipsis;
     cursor: pointer;
 
-    .breadcrumbs-item {
-      &:hover {
-        text-decoration: underline;
+    .breadcrumbs-item-wrapper {
+      display: flex;
+      flex-direction: row;
+
+      .breadcrumbs-item {
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
+
   }
 
   .breadcrumbs-current-outcome {
