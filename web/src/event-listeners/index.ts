@@ -382,12 +382,6 @@ export default function setupEventListeners(
         if (!outcomesAddresses) {
           store.dispatch(setCoordinate(convertedCurrentMouse))
         }
-        store.dispatch(
-          setSize({
-            w: convertedCurrentMouse.x - initialSelectX,
-            h: convertedCurrentMouse.y - initialSelectY,
-          })
-        )
         const outcomeActionHashesToSelect = checkForOutcomeAtCoordinatesInBox(
           outcomeCoordinates,
           convertedCurrentMouse,

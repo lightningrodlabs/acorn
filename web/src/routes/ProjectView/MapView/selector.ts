@@ -44,7 +44,6 @@ const selectRenderProps = createSelector(
   ({ state }: InputType) => state.ui.outcomeForm.topConnectionYPosition,
   ({ state }: InputType) => state.ui.mouse.mousedown,
   ({ state }: InputType) => state.ui.mouse.coordinate,
-  ({ state }: InputType) => state.ui.mouse.size,
   (
     activeEntryPoints,
     zoomLevel,
@@ -73,7 +72,6 @@ const selectRenderProps = createSelector(
     outcomeFormTopConnectionY,
     startedSelection,
     startedSelectionCoordinate,
-    currentSelectionBoxSize
   ) => {
     return {
       activeEntryPoints,
@@ -103,7 +101,6 @@ const selectRenderProps = createSelector(
       outcomeFormTopConnectionY,
       startedSelection,
       startedSelectionCoordinate,
-      currentSelectionBoxSize,
     }
   }
 )

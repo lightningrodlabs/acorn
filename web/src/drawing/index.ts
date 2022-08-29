@@ -133,7 +133,6 @@ function render(
     outcomeFormTopConnectionY,
     startedSelection,
     startedSelectionCoordinate,
-    currentSelectionBoxSize,
   }: renderProps,
   canvas: HTMLCanvasElement
 ) {
@@ -328,7 +327,7 @@ function render(
     ) {
       drawSelectBox(
         startedSelectionCoordinate,
-        currentSelectionBoxSize,
+        mouseLiveCoordinate,
         canvas.getContext('2d')
       )
     }
