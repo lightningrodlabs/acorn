@@ -173,7 +173,9 @@ const EvDetails: React.FC<EvDetailsProps> = ({
     Times
   */
   const [editingTimeframe, setEditingTimeframe] = useState(false)
-  let fromDate: moment.Moment, toDate: moment.Moment
+
+  let fromDate: moment.Moment, toDate: moment.Moment // for Uncertain
+  let targetDate: moment.Moment // for Small
   let timeFieldLabel: string
   let durationEstimate: string
   let onSetDate = async (fromDate: number, toDate: number) => {}
@@ -195,14 +197,14 @@ const EvDetails: React.FC<EvDetailsProps> = ({
           ? moment.unix(outcome.scope.Uncertain.timeFrame.toDate)
           : null
       onSetDate = async (fromDate: number, toDate: number) => {
-        if (!(fromDate && toDate)) return
         let cleaned = cleanOutcome()
+        let timeFrame = fromDate && toDate ? { fromDate, toDate } : null
         cleaned.scope = {
           Uncertain: {
             ...('Uncertain' in outcome.scope
               ? outcome.scope.Uncertain
               : { inBreakdown: true, smallsEstimate: null }),
-            timeFrame: { fromDate, toDate },
+            timeFrame,
           },
         }
         await updateOutcome(cleaned, outcomeActionHash)
@@ -210,12 +212,11 @@ const EvDetails: React.FC<EvDetailsProps> = ({
     } else if (outcome.computedScope === ComputedScope.Small) {
       // Small
       timeFieldLabel = 'Target Date'
-      toDate =
+      targetDate =
         'Small' in outcome.scope && outcome.scope.Small.targetDate
           ? moment.unix(outcome.scope.Small.targetDate)
           : null
       onSetDate = async (targetDate: number) => {
-        if (!targetDate) return
         let cleaned = cleanOutcome()
         cleaned.scope = {
           Small: {
@@ -422,12 +423,12 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                   {/* Small */}
                   {outcome && outcome.computedScope === ComputedScope.Small && (
                     <>
-                      {toDate && (
+                      {targetDate && (
                         <Typography style="body1">
-                          {toDate.format('MMM D, YYYY')}
+                          {targetDate.format('MMM D, YYYY')}
                         </Typography>
                       )}
-                      {!toDate && <>Click to set time</>}
+                      {!targetDate && <>Click to set time</>}
                     </>
                   )}
                 </div>
@@ -437,7 +438,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                 outcome &&
                 outcome.computedScope === ComputedScope.Small && (
                   <DatePicker
-                    date={fromDate}
+                    date={targetDate}
                     onClose={() => setEditingTimeframe(false)}
                     onSet={onSetDate}
                   />

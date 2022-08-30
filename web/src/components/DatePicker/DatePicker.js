@@ -11,22 +11,14 @@ import 'react-dates/initialize'
 import './DatePicker.scss'
 
 function DatePicker({ date, onClose, onSet }) {
-  const [internalDate, setInternalDate] = useState(date)
+  // const [internalDate, setInternalDate] = useState(date)
 
-  useEffect(() => {
-    onSet(
-      internalDate ? internalDate.unix() : null,
-    )
-  }, [internalDate])
-
-  console.log(internalDate)
   return (
     <PickerTemplate
       heading='Target Date'
       className='date_picker_wrapper'
       onClose={onClose}>
       <div className='date_picker_content'>
-        {/* TODO: Fix Signle Date Picker Logic */}
         <SingleDatePicker
           // enable selecting dates in the past as well
           isOutsideRange={() => false}
@@ -34,17 +26,19 @@ function DatePicker({ date, onClose, onSet }) {
           isDayHighlighted={(date) => {
             return date.isSame(moment(), 'date')
           }}
-          showClearDate={true}
+          keepOpenOnDateSelect
+          showClearDate
           customCloseIcon={<button className='clear-button'>clear all</button>}
           numberOfMonths={1}
           onClose={() => { }}
           focused={true}
           onFocusChange={({ focused }) => { }}
-          date={internalDate} // momentPropTypes.momentObj or null,
+          date={date} // momentPropTypes.momentObj or null,
           startDateId='your_unique_id'
           onDateChange={(newDate) => {
-            console.log('setting newDate', newDate)
-            setInternalDate(newDate)
+            onSet(
+              newDate ? newDate.unix() : null,
+            )
           }
           }
         />
@@ -95,9 +89,9 @@ function CustomDateRangePicker({ fromDate, toDate, onClose, onSet }) {
           startDateId='your_unique_start_date_id'
           endDate={dates.toDate} // momentPropTypes.momentObj or null,
           endDateId='your_unique_end_date_id'
-          onDatesChange={({ startDate, endDate }) =>
+          onDatesChange={({ startDate, endDate }) => {
             setDates({ fromDate: startDate, toDate: endDate })
-          }
+          }}
           focusedInput={focusedInput}
           onFocusChange={focusedInput => {
             // doesn't update the focusedInput if it is trying to close the DRP
