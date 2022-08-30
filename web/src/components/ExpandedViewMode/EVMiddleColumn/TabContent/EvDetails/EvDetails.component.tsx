@@ -227,7 +227,6 @@ const EvDetails: React.FC<EvDetailsProps> = ({
           },
         }
         await updateOutcome(cleaned, outcomeActionHash)
-        setEditingTimeframe(false)
       }
     } else if (outcome.computedScope === ComputedScope.Big) {
       // Big
@@ -439,7 +438,9 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                 outcome.computedScope === ComputedScope.Small && (
                   <DatePicker
                     date={targetDate}
-                    onClose={() => setEditingTimeframe(false)}
+                    onClose={() => {
+                      setEditingTimeframe(false)
+                    }}
                     onSet={onSetDate}
                   />
                 )}
