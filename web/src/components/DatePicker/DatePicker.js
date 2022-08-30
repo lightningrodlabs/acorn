@@ -19,21 +19,33 @@ function DatePicker({ date, onClose, onSet }) {
     )
   }, [internalDate])
 
+  console.log(internalDate)
   return (
     <PickerTemplate
       heading='Target Date'
       className='date_picker_wrapper'
       onClose={onClose}>
       <div className='date_picker_content'>
+        {/* TODO: Fix Signle Date Picker Logic */}
         <SingleDatePicker
+          // enable selecting dates in the past as well
+          isOutsideRange={() => false}
+          // highlight the current date, just for usability
+          isDayHighlighted={(date) => {
+            return date.isSame(moment(), 'date')
+          }}
+          showClearDate={true}
+          customCloseIcon={<button className='clear-button'>clear all</button>}
           numberOfMonths={1}
           onClose={() => { }}
           focused={true}
           onFocusChange={({ focused }) => { }}
           date={internalDate} // momentPropTypes.momentObj or null,
           startDateId='your_unique_id'
-          onDateChange={(newDate) =>
+          onDateChange={(newDate) => {
+            console.log('setting newDate', newDate)
             setInternalDate(newDate)
+          }
           }
         />
       </div>
