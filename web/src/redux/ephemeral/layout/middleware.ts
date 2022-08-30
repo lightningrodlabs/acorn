@@ -17,9 +17,10 @@ import {
 import panZoomToFrame from '../animations/pan-and-zoom'
 import { ANIMATE_PAN_AND_ZOOM } from '../viewport/actions'
 import performLayoutAnimation from '../animations/layout'
+import { RootState } from '../../reducer'
 
 
-const isOneOfLayoutAffectingActions = (action) => {
+const isOneOfLayoutAffectingActions = (action: { type: string }) => {
     const { type } = action
     // DELETE_EDGE should be here
     // except that there is an instance where we
@@ -38,7 +39,7 @@ const isOneOfLayoutAffectingActions = (action) => {
         || type === FETCH_CONNECTIONS
 }
 
-const isOneOfViewportAffectingActions = (action) => {
+const isOneOfViewportAffectingActions = (action: { type: string }) => {
   const { type } = action
   return type === ANIMATE_PAN_AND_ZOOM
 }
@@ -67,7 +68,7 @@ const layoutWatcher = store => {
       // pass to dagre to generate a layout) that this kicks in, and handles the creation of an animation
       // from the current layout to the new layout, by using the TWEENJS library
 
-      let currentState
+      let currentState: RootState
       const shouldReLayout = isOneOfLayoutAffectingActions(action)
       const shouldAnimateViewport = isOneOfViewportAffectingActions(action)
       // don't call and getState if we don't have to

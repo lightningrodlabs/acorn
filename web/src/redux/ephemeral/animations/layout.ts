@@ -2,11 +2,13 @@ import TWEEN from '@tweenjs/tween.js'
 import { CREATE_OUTCOME_WITH_CONNECTION } from '../../persistent/projects/outcomes/actions'
 import { updateLayout } from '../layout/actions'
 import layoutFormula from '../../../drawing/layoutFormula'
+import { RootState } from '../../reducer'
+import { LAYOUT_ANIMATION_DURATION_MS } from '../../../constants'
 
 export default function performLayoutAnimation(store, action, currentState) {
   // called nextState because by now the
   // initial action has been integrated
-  const nextState = store.getState()
+  const nextState: RootState = store.getState()
   const projectId = nextState.ui.activeProject
   const graphData = {
     outcomes: nextState.projects.outcomes[projectId] || {},
@@ -63,7 +65,7 @@ export default function performLayoutAnimation(store, action, currentState) {
     .to(newLayout)
     // use this easing, adjust me to tune, see TWEEN.Easing for options
     .easing(TWEEN.Easing.Quadratic.InOut)
-    .duration(60) // last 60 milliseconds, adjust me to tune
+    .duration(LAYOUT_ANIMATION_DURATION_MS) 
     .start()
     // updatedLayout is the transitionary state between currentLayoutTween and newLayout
     .onUpdate((updatedLayout) => {

@@ -1,3 +1,5 @@
+import { LayoutState } from './state-type'
+
 const TRIGGER_UPDATE_LAYOUT = 'trigger_update_layout'
 const UPDATE_LAYOUT = 'update_layout'
 
@@ -6,14 +8,14 @@ const UPDATE_LAYOUT = 'update_layout'
 // of the layout
 function triggerUpdateLayout() {
   return {
-    type: TRIGGER_UPDATE_LAYOUT
+    type: TRIGGER_UPDATE_LAYOUT,
   }
 }
 
-function updateLayout(payload) {
+function updateLayout(payload: LayoutState) {
   return {
     type: UPDATE_LAYOUT,
-    payload
+    payload,
   }
 }
 

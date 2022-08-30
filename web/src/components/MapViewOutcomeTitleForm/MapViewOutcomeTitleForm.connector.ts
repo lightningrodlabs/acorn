@@ -14,6 +14,9 @@ import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 import { ActionHashB64, Option } from '../../types/shared'
 import { LinkedOutcomeDetails, Outcome } from '../../types'
+import { selectOutcome, unselectAll } from '../../redux/ephemeral/selection/actions'
+import { animatePanAndZoom } from '../../redux/ephemeral/viewport/actions'
+import { LAYOUT_ANIMATION_DURATION_MS } from '../../constants'
 
 // https://react-redux.js.org/using-react-redux/connect-mapstate
 // Designed to grab selective data off of a redux state tree in order
@@ -89,9 +92,19 @@ function mapDispatchToProps(dispatch, ownProps: MapViewOutcomeTitleFormOwnProps)
           maybeLinkedOutcome,
         }
       )
-      return dispatch(
+      dispatch(
         createOutcomeWithConnection(cellIdString, outcomeWithConnection)
       )
+      // Re. the timeout...
+      // it is necessary because an animation
+      // runs in layout.ts that initially moves the position
+      // of the Outcome itself. Before animating to the 
+      const ADDITIONAL_WAIT_BUFFER_MS = 40
+      setTimeout(() => {
+        dispatch(unselectAll())
+        dispatch(selectOutcome(outcomeWithConnection.outcome.actionHash))
+        dispatch(animatePanAndZoom(outcomeWithConnection.outcome.actionHash))
+      }, LAYOUT_ANIMATION_DURATION_MS + ADDITIONAL_WAIT_BUFFER_MS)
     },
     closeOutcomeForm: () => {
       return dispatch(closeOutcomeForm())
