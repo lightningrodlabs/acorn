@@ -78,15 +78,6 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [showImportModal, setShowImportModal] = useState(false)
 
   // add new modal state managers here
-  
-  useEffect(() => {
-    // HACK, race conditions could occur here
-    // but I want this to reset to null AFTER
-    // 'resetProjectView' actions have been all called
-    setTimeout(() => {
-      setActiveProject(null)
-    }, 1000)
-  }, [])
 
   // cells is an array of cellId strings
   useEffect(() => {

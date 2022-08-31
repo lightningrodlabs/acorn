@@ -31,7 +31,7 @@ const MAIN_FILE = path.join(__dirname, '../web/index.html')
 const SPLASH_FILE = path.join(__dirname, '../web/splashscreen.html')
 const LINUX_ICON_FILE = path.join(
   __dirname,
-  '../web/logo/acorn-logo-desktop-512px.png'
+  '../web/logo/acorn-app-icon-aug2022-512px.png'
 )
 
 const DEVELOPMENT_UI_URL = process.env.ACORN_TEST_USER_2

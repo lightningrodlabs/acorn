@@ -16,6 +16,14 @@ function mapStateToProps(state: RootState): MapViewProps {
       Object.values(state.projects.outcomes[projectId]).length === 0) ||
       // project is loading
       !state.projects.outcomes[projectId])
+
+  // console.log(projectId)
+  // console.log(!!state.agentAddress)
+  // console.log(
+  //   state.projects.outcomes[projectId] &&
+  //     Object.values(state.projects.outcomes[projectId]).length === 0
+  // )
+  // console.log(!state.projects.outcomes[projectId])
   return {
     projectId,
     translate: state.ui.viewport.translate,
