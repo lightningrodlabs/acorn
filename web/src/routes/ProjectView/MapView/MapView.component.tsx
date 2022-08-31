@@ -107,7 +107,7 @@ const MapView: React.FC<MapViewProps> = ({
       <div className="outcome-form-position-container">
         {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
         {refCanvas.current && (
-          <ConnectionConnectors canvas={refCanvas.current} />
+          <ConnectionConnectors canvas={refCanvas.current} outcomes={computedOutcomesKeyed} />
         )}
       </div>
 

@@ -24,7 +24,6 @@ function mapStateToProps(state: RootState) {
       selection: { selectedOutcomes },
     },
   } = state
-  const outcomes = state.projects.outcomes[activeProject] || {}
   const connections = state.projects.connections[activeProject] || {}
   const projectTags = Object.values(state.projects.tags[activeProject] || {})
   let connectorAddresses: ActionHashB64[] = []
@@ -46,9 +45,7 @@ function mapStateToProps(state: RootState) {
     translate,
     zoomLevel: scale,
     coordinates,
-    outcomes,
     connections: Object.values(connections), // convert from object to array
-    outcomeActionHashes: Object.keys(outcomes), // convert from object to array
     fromAddress,
     relation,
     toAddress,

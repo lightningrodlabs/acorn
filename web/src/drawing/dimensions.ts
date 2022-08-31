@@ -276,6 +276,7 @@ export function getOutcomeHeight({
   console.log('outcomeTagsHeight', outcomeTagsHeight)
   console.log('outcomeTimeAndAssigneesHeight', outcomeTimeAndAssigneesHeight)
   console.log('verticalSpacing', verticalSpacing)
+  console.log('\n\n')
 
   return detectedOutcomeHeight
   // create a minimum height equal to the outcomeHeight

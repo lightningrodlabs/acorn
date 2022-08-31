@@ -179,13 +179,12 @@ const ConnectionConnector = ({
 }
 
 const ConnectionConnectors = ({
+  outcomes,
   activeProject,
   projectTags,
   translate,
   zoomLevel,
-  outcomes,
   connections,
-  outcomeActionHashes,
   coordinates,
   fromAddress,
   relation,
@@ -197,6 +196,8 @@ const ConnectionConnectors = ({
   setConnectionConnectorTo,
   dispatch,
 }) => {
+   // convert from object to array
+  const outcomeActionHashes = Object.keys(outcomes)
   return connectorAddresses.map((connectorAddress) => {
     const outcomeCoordinates = coordinates[connectorAddress]
     const outcome = outcomes[connectorAddress]
