@@ -89,7 +89,7 @@ const drawStatement = ({
         dynamicTotalOutcomeStatementHeight
       )
     } else if (lines.length >= 4 && !isRenderingOtherMetadata) {
-      height = dynamicTotalOutcomeStatementHeight + 20
+      height = dynamicTotalOutcomeStatementHeight + 40
     } else if (lines.length >= 4) {
       height = dynamicTotalOutcomeStatementHeight
     }

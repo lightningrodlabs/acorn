@@ -7,6 +7,8 @@ import {
 import {
   AVATAR_SIZE,
   AVATAR_SPACE,
+  AVATAR_FONT_SIZE_REM,
+  AVATAR_FONT_FAMILY,
   DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT,
   outcomePaddingHorizontal,
   OUTCOME_VERTICAL_SPACE_BETWEEN,
@@ -63,6 +65,8 @@ export const argsForDrawTimeAndAssignees = ({
     yPosition,
     avatarSize: AVATAR_SIZE,
     avatarSpace: AVATAR_SPACE,
+    avatarFontSizeRem: AVATAR_FONT_SIZE_REM,
+    avatarFontFamily: AVATAR_FONT_FAMILY,
     timeEstimate,
     fromDate,
     toDate,

@@ -65,8 +65,8 @@ const drawAvatar = ({
           ctx.globalAlpha = 0.5
         }
         ctx.fillStyle = textColor
-        ctx.font = '11px PlusJakartaSans-bold'
-        ctx.fillText(initials, xPosition + 5, yPosition + 7)
+        ctx.font = '12px PlusJakartaSans-extrabold'
+        ctx.fillText(initials, xPosition + 6, yPosition + 18)
       })
     } else {
       /*

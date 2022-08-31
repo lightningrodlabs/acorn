@@ -16,6 +16,8 @@ const drawAssignees = ({
   avatarStrokeColor,
   avatarSize,
   avatarSpace,
+  avatarFontFamily,
+  avatarFontSizeRem,
   ctx,
 }: {
   onlyMeasure: boolean
@@ -26,6 +28,8 @@ const drawAssignees = ({
   avatarStrokeColor: string
   avatarSize: number
   avatarSpace: number
+  avatarFontSizeRem: number
+  avatarFontFamily: string
   ctx: CanvasRenderingContext2D
 }) => {
   if (members.length === 0) {
@@ -45,6 +49,9 @@ const drawAssignees = ({
         // since there can be many
         const xPosition =
           xRightPosition - (index + 1) * avatarSize - index * avatarSpace
+
+        // TODO: pass these values IN to drawAvatar
+        // ctx.font = `${avatarFontSizeRem}rem ${avatarFontFamily}`
         drawAvatar({
           width: avatarSize,
           height: avatarSize,
@@ -143,6 +150,8 @@ const drawTimeAndAssignees = ({
   avatarSpace,
   avatarInitialsTextColor,
   avatarStrokeColor,
+  avatarFontSizeRem,
+  avatarFontFamily,
   // time
   timeXLeftPosition,
   timeEstimate,
@@ -162,6 +171,8 @@ const drawTimeAndAssignees = ({
   avatarSpace: number
   avatarInitialsTextColor: string
   avatarStrokeColor: string
+  avatarFontSizeRem: number
+  avatarFontFamily: string
   // time
   timeXLeftPosition: number
   timeEstimate?: number
@@ -183,6 +194,8 @@ const drawTimeAndAssignees = ({
       yPosition,
       avatarSize,
       avatarSpace,
+      avatarFontSizeRem,
+      avatarFontFamily,
       avatarInitialsTextColor,
       avatarStrokeColor,
     })

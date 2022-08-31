@@ -17,18 +17,14 @@ export const CONNECTOR_VERTICAL_SPACING = 20
 
 export const OUTCOME_VERTICAL_HOVER_ALLOWANCE = 60
 
-// DELETE THESE
-export const avatarSpace = -4
-export const avatarRadius = 13
-
 // outcome width = outcome statement width + ( 2 * width padding)
-export const outcomeWidth = 520 // 520 = 392 + ( 2 * 64 ) 
-export const outcomePaddingHorizontal = 64 
+export const outcomeWidth = 520 // 520 = 392 + ( 2 * 64 )
+export const outcomePaddingHorizontal = 64
 
 export const outcomeHeight = 250
 export const cornerRadius = 18 // for outcome, main card background color
 export const cornerRadiusBorder = 18 // for the border
-export const borderWidth = 7
+export const borderWidth = 8
 export const dashedBorderWidth = 5
 
 export const outcomeStatementMinHeightWithoutMeta = 130
@@ -39,13 +35,15 @@ export const OUTCOME_VERTICAL_SPACE_BETWEEN = 32
 export const selectedOutlineMargin = 4
 export const selectedOutlineWidth = 3
 
+// DESCENDANTS ACHIVEMENT STATUS
 // these two values need to match with each other
 // as the system is dumb about the font height
 export const DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT = 16
 export const DESCENDANTS_ACHIEVEMENT_STATUS_FONT_SIZE_REM = 1
 export const DESCENDANTS_ACHIEVEMENT_STATUS_FONT_FAMILY =
-  'PlusJakartaSans-medium'
+  'PlusJakartaSans-semibold'
 
+// TAGS
 export const TAGS_SPACE_BETWEEN = 6
 export const TAGS_TAG_CORNER_RADIUS = 6
 export const TAGS_TAG_HORIZONTAL_PADDING = 8.5
@@ -53,40 +51,47 @@ export const TAGS_TAG_VERTICAL_PADDING = 5
 export const TAGS_TAG_FONT_SIZE_REM = 0.75
 export const TAGS_TAG_FONT_FAMILY = 'PlusJakartaSans-bold'
 
+// ASSIGNEES (AVATARS)
 export const AVATAR_SPACE = -4
-export const AVATAR_SIZE = 26
+export const AVATAR_SIZE = 28
+export const AVATAR_FONT_SIZE_REM = 1
+export const AVATAR_FONT_FAMILY = 'PlusJakartaSans-bold'
+
+
+// TIME
 export const TIME_FONT_SIZE_REM = 0.875
 export const TIME_FONT_FAMILY = 'PlusJakartaSans-bold'
 
+// PROGRESS BAR
 export const PROGRESS_BAR_HEIGHT = 10
 
 export const firstZoomThreshold = 0.6
 export const secondZoomThreshold = 0.4
 
+// OUTCOME STATEMENT
+export const fontFamily = 'PlusJakartaSans-bold'
 export const lineHeightMultiplier = 1.2
 // this is the regular font size, for
 // a regular level of zoom
 // and this is for the Outcome Titles
 // on the canvas
 // these two values fontSize and fontSizeInt should match
-export const fontSize = '20px'
-export const fontSizeInt = 20
-export const lineSpacing = 6
+export const fontSize = '24px'
+export const fontSizeInt = 24
+export const lineSpacing = 10
 export const letterSpacing = 0.1
 
 // this is the "zoomed out" font size
 // for creating still readable text
 export const fontSizeLarge = '30px'
 export const fontSizeLargeInt = 30
-export const lineSpacingLarge = 2
+export const lineSpacingLarge = 6
 
 // this is the "extra zoomed out" font size
 // for creating still readable text
 export const fontSizeExtraLarge = '40px'
 export const fontSizeExtraLargeInt = 40
-export const lineSpacingExtraLarge = 2
-
-export const fontFamily = 'PlusJakartaSans-bold'
+export const lineSpacingExtraLarge = 4
 
 // line wrapping code from https://stackoverflow.com/questions/2936112/
 function getLines({
@@ -250,10 +255,12 @@ export function getOutcomeHeight({
     (outcomeTagsHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0) +
     // if time or assignees existed, then we need another spacer
     (outcomeTimeAndAssigneesHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0) +
+    // if progress bar existed, but no assignee, then we need another spacer
+    (outcomeTimeAndAssigneesHeight > 0 && progressBarHeight == 0
+      ? 12
+      : 0) +
     // if progress bar existed, then we need another spacer
-    (progressBarHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0)
-  // if progress bar existed, but no assignee, then we need another spacer
-  // (progressBarHeight > 0 && outcomeTimeAndAssigneesHeight === 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0)
+    (progressBarHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN + 12 : 0)
 
   const detectedOutcomeHeight =
     DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT +
