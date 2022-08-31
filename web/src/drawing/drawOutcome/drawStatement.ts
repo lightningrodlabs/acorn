@@ -7,11 +7,14 @@ import {
   lineSpacing,
   lineSpacingExtraLarge,
   lineSpacingLarge,
+  outcomeStatementMinHeightWithoutMeta,
   secondZoomThreshold,
 } from '../dimensions'
 import draw from '../draw'
 
 const drawStatement = ({
+  isRenderingOtherMetadata,
+  onlyMeasure,
   xPosition,
   yPosition,
   zoomLevel,
@@ -20,6 +23,8 @@ const drawStatement = ({
   color,
   ctx,
 }: {
+  isRenderingOtherMetadata: boolean
+  onlyMeasure: boolean
   xPosition: number
   yPosition: number
   zoomLevel: number
@@ -37,6 +42,7 @@ const drawStatement = ({
       statement,
       zoomLevel,
       maxWidth: width,
+      useLineLimit: true,
     })
 
     let lineSpacingToUse = lineSpacing // the default
@@ -60,14 +66,33 @@ const drawStatement = ({
       //   // to indicate that there's more that's hidden
       //   lineText = `${line.slice(0, line.length - 3)}...`
       // }
-      ctx.fillText(line, textBoxLeft, textBoxTop + linePosition)
+      // If calling the function is not for measuring only
+      if (!onlyMeasure) {
+        ctx.fillText(line, textBoxLeft, textBoxTop + linePosition)
+      }
     })
     let measurements = ctx.measureText(lines[0])
     // help from https://stackoverflow.com/questions/1134586/how-can-you-find-the-height-of-text-on-an-html-canvas
     let fontHeight =
       measurements.actualBoundingBoxAscent +
       measurements.actualBoundingBoxDescent
-    height = fontHeight * lines.length + lineSpacingToUse * lines.length
+    // make the height of Outcome Statament
+    //  dependant on the number of lines it has
+    // which will determine the height of the card
+    // and the space between the statement and
+    // the bottom of the card
+    const dynamicTotalOutcomeStatementHeight =
+      fontHeight * lines.length + lineSpacingToUse * lines.length
+    if (lines.length < 4) {
+      height = Math.max(
+        outcomeStatementMinHeightWithoutMeta,
+        dynamicTotalOutcomeStatementHeight
+      )
+    } else if (lines.length >= 4 && !isRenderingOtherMetadata) {
+      height = dynamicTotalOutcomeStatementHeight + 20
+    } else if (lines.length >= 4) {
+      height = dynamicTotalOutcomeStatementHeight
+    }
   })
   return height
 }

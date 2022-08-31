@@ -1,5 +1,8 @@
 import { STATEMENT_FONT_COLOR } from '../../../styles'
-import { ComputedOutcome } from '../../../types'
+import {
+  ComputedOutcome,
+  ComputedSimpleAchievementStatus,
+} from '../../../types'
 import {
   DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT,
   outcomePaddingHorizontal,
@@ -8,6 +11,7 @@ import {
 import drawStatement from '../drawStatement'
 
 export const argsForDrawStatement = ({
+  onlyMeasure,
   outcome,
   outcomeLeftX,
   outcomeTopY,
@@ -15,6 +19,7 @@ export const argsForDrawStatement = ({
   zoomLevel,
   ctx,
 }: {
+  onlyMeasure: boolean
   outcome: ComputedOutcome
   outcomeLeftX: number
   outcomeTopY: number
@@ -27,8 +32,19 @@ export const argsForDrawStatement = ({
     outcomeTopY +
     OUTCOME_VERTICAL_SPACE_BETWEEN * 2 +
     DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT
+
   const width = outcomeWidth - 2 * outcomePaddingHorizontal
+
+  // if the card is rendering either assignees, tags, or progress bar:
+  const isRenderingOtherMetadata =
+    outcome.members?.length > 0 ||
+    outcome.tags?.length > 0 ||
+    outcome.computedAchievementStatus?.simple ===
+      ComputedSimpleAchievementStatus.PartiallyAchieved
+
   const args: Parameters<typeof drawStatement>[0] = {
+    isRenderingOtherMetadata,
+    onlyMeasure,
     xPosition,
     yPosition,
     zoomLevel,

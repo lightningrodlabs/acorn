@@ -2,10 +2,12 @@ import { ComputedOutcome, ComputedScope, Tag } from '../types'
 import { WithActionHash } from '../types/shared'
 import {
   argsForDrawProgressBar,
+  argsForDrawStatement,
   argsForDrawTags,
   argsForDrawTimeAndAssignees,
 } from './drawOutcome/computeArguments'
 import drawProgressBar from './drawOutcome/drawProgressBar'
+import drawStatement from './drawOutcome/drawStatement'
 import drawTags from './drawOutcome/drawTags'
 import drawTimeAndAssignees from './drawOutcome/drawTimeAndAssignees'
 
@@ -19,17 +21,20 @@ export const OUTCOME_VERTICAL_HOVER_ALLOWANCE = 60
 export const avatarSpace = -4
 export const avatarRadius = 13
 
-export const outcomeWidth = 400
+// outcome width = outcome statement width + ( 2 * width padding)
+export const outcomeWidth = 520 // 520 = 392 + ( 2 * 64 ) 
+export const outcomePaddingHorizontal = 64 
+
 export const outcomeHeight = 250
-export const cornerRadius = 16 // for outcome, main card background color
-export const cornerRadiusBorder = 16 // for the border
+export const cornerRadius = 18 // for outcome, main card background color
+export const cornerRadiusBorder = 18 // for the border
 export const borderWidth = 7
 export const dashedBorderWidth = 5
 
-export const outcomePaddingHorizontal = 40
+export const outcomeStatementMinHeightWithoutMeta = 130
 // affects not only the top and bottom padding,
 // but also the space in between items in the vertical layout
-export const OUTCOME_VERTICAL_SPACE_BETWEEN = 30
+export const OUTCOME_VERTICAL_SPACE_BETWEEN = 32
 
 export const selectedOutlineMargin = 4
 export const selectedOutlineWidth = 3
@@ -41,7 +46,7 @@ export const DESCENDANTS_ACHIEVEMENT_STATUS_FONT_SIZE_REM = 1
 export const DESCENDANTS_ACHIEVEMENT_STATUS_FONT_FAMILY =
   'PlusJakartaSans-medium'
 
-export const TAGS_SPACE_BETWEEN = 10
+export const TAGS_SPACE_BETWEEN = 6
 export const TAGS_TAG_CORNER_RADIUS = 6
 export const TAGS_TAG_HORIZONTAL_PADDING = 8.5
 export const TAGS_TAG_VERTICAL_PADDING = 5
@@ -191,26 +196,16 @@ export function getOutcomeHeight({
     ctx = document.createElement('canvas').getContext('2d')
   }
 
-  // get lines after font and font size are set up, since ctx.measureText()
-  // takes font and font size into account
-  const lines = getLinesForParagraphs({
-    ctx,
-    statement: outcome.content,
-    zoomLevel,
-    maxWidth: width - 2 * outcomePaddingHorizontal,
-    useLineLimit,
-  })
-
-  // adjust font size based on scale (zoom factor)
-  let fontSizeToUse = fontSizeInt // default
-  if (zoomLevel < secondZoomThreshold) {
-    fontSizeToUse = fontSizeExtraLargeInt
-  } else if (zoomLevel < firstZoomThreshold) {
-    fontSizeToUse = fontSizeLargeInt
-  }
-  const outcomeStatementHeight = Math.max(
-    130,
-    lines.length * (fontSizeToUse * lineHeightMultiplier)
+  const outcomeStatementHeight = drawStatement(
+    argsForDrawStatement({
+      onlyMeasure: true, // we don't want it actually drawn on the canvas
+      outcome,
+      outcomeLeftX: 0, // this number doesn't matter for measuring
+      outcomeTopY: 0, // this number doesn't matter for measuring
+      outcomeWidth,
+      zoomLevel,
+      ctx,
+    })
   )
 
   const outcomeTagsHeight = drawTags(
@@ -274,7 +269,6 @@ export function getOutcomeHeight({
   console.log('outcomeTagsHeight', outcomeTagsHeight)
   console.log('outcomeTimeAndAssigneesHeight', outcomeTimeAndAssigneesHeight)
   console.log('verticalSpacing', verticalSpacing)
-
 
   return detectedOutcomeHeight
   // create a minimum height equal to the outcomeHeight
