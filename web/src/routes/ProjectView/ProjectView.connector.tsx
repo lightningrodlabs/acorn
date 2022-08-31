@@ -62,7 +62,7 @@ function mapDispatchToProps(
       dispatch(setActiveEntryPoints(entryPointActionHashes)),
     resetProjectView: () => {
       // send this signal so peers know you left project
-      dispatch(sendExitProjectSignal())
+      dispatch(sendExitProjectSignal(cellIdString))
       dispatch(closeExpandedView())
       dispatch(closeOutcomeForm())
       dispatch(unselectAll())

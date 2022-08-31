@@ -37,11 +37,13 @@ export const argsForDrawStatement = ({
 
   const width = outcomeWidth - 2 * outcomePaddingHorizontal
 
+  const statement = outcome ? outcome.content : ''
+
   // if the card is rendering either assignees, tags, or progress bar:
   const isRenderingOtherMetadata =
-    outcome.members?.length > 0 ||
-    outcome.tags?.length > 0 ||
-    outcome.computedAchievementStatus?.simple ===
+    outcome?.members?.length > 0 ||
+    outcome?.tags?.length > 0 ||
+    outcome?.computedAchievementStatus?.simple ===
       ComputedSimpleAchievementStatus.PartiallyAchieved
 
   const args: Parameters<typeof drawStatement>[0] = {
@@ -52,7 +54,7 @@ export const argsForDrawStatement = ({
     yPosition,
     zoomLevel,
     width,
-    statement: outcome.content,
+    statement,
     color: STATEMENT_FONT_COLOR,
     ctx,
   }

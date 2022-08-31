@@ -16,6 +16,7 @@ import ProjectsZomeApi from '../../../../api/projectsApi'
 import { getAppWs } from '../../../../hcWebsockets'
 import { cellIdFromString } from '../../../../utils'
 import { RootState } from '../../../reducer'
+import { CellIdString } from '../../../../types/shared'
 
 const isOneOfRealtimeInfoAffectingActions = (action) => {
   const { type } = action
@@ -30,7 +31,7 @@ const isOneOfRealtimeInfoAffectingActions = (action) => {
   )
 }
 
-const isProjectExitAction = (action) => {
+const isProjectExitAction = (action: { type: string }) => {
   const { type } = action
   return type === SEND_EXIT_PROJECT_SIGNAL
 }
@@ -39,7 +40,6 @@ const isProjectExitAction = (action) => {
 const realtimeInfoWatcher = (store) => {
   // return the action handler middleware
   return (next) => async (action) => {
-    // console.log(store.getState())
     if (isOneOfRealtimeInfoAffectingActions(action)) {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
@@ -47,20 +47,23 @@ const realtimeInfoWatcher = (store) => {
       if (appWebsocket.client.socket.readyState === appWebsocket.client.socket.OPEN) {
         let state: RootState = store.getState()
         const payload = getRealtimeInfo(state)
-        const cellId = cellIdFromString(payload.projectId)
-        await projectsZomeApi.realtimeInfoSignal.send(cellId, payload)
+        // there is a chance that the project has been exited
+        // and thus this need not be fired
+        if (payload.projectId) {
+          const cellId = cellIdFromString(payload.projectId)
+          await projectsZomeApi.realtimeInfoSignal.send(cellId, payload)
+        }
       }
       return result
     } else if (isProjectExitAction(action)) {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      let state: RootState = store.getState()
-      const cellIdString = state.ui.activeProject
       const payload = {
         projectId: '',
         outcomeBeingEdited: null,
         outcomeExpandedView: null,
       }
+      const cellIdString: CellIdString = action.payload
       const cellId = cellIdFromString(cellIdString)
       // TODO: catch and log error, but don't
       // await this call

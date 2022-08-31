@@ -1,3 +1,5 @@
+import { CellIdString } from "../../../../types/shared"
+
 const SEND_REALTIME_INFO = 'SEND_REALTIME_INFO'
 const SEND_EXIT_PROJECT_SIGNAL = 'SEND_EXIT_PROJECT_SIGNAL'
 
@@ -8,10 +10,10 @@ function triggerRealtimeInfoSignal() {
   }
 }
 
-function sendExitProjectSignal() {
+function sendExitProjectSignal(projectId: CellIdString) {
   return {
     type: SEND_EXIT_PROJECT_SIGNAL,
-    payload: {},
+    payload: projectId,
   }
 }
 
