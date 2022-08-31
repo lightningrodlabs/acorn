@@ -4,15 +4,18 @@ import { updateLayout } from '../layout/actions'
 import layoutFormula from '../../../drawing/layoutFormula'
 import { RootState } from '../../reducer'
 import { LAYOUT_ANIMATION_DURATION_MS } from '../../../constants'
+import { TreeData } from '../../persistent/projects/outcomes/outcomesAsTrees'
 
 export default function performLayoutAnimation(store, action, currentState) {
   // called nextState because by now the
   // initial action has been integrated
   const nextState: RootState = store.getState()
   const projectId = nextState.ui.activeProject
-  const graphData = {
+  const graphData: TreeData = {
     outcomes: nextState.projects.outcomes[projectId] || {},
     connections: nextState.projects.connections[projectId] || {},
+    outcomeMembers: nextState.projects.outcomeMembers[projectId] || {},
+    agents: nextState.agents
   }
   const zoomLevel = nextState.ui.viewport.scale
   const projectTags = Object.values(nextState.projects.tags[projectId] || {})

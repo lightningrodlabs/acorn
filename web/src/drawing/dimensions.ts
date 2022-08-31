@@ -57,7 +57,6 @@ export const AVATAR_SIZE = 28
 export const AVATAR_FONT_SIZE_REM = 1
 export const AVATAR_FONT_FAMILY = 'PlusJakartaSans-bold'
 
-
 // TIME
 export const TIME_FONT_SIZE_REM = 0.875
 export const TIME_FONT_FAMILY = 'PlusJakartaSans-bold'
@@ -70,7 +69,7 @@ export const secondZoomThreshold = 0.4
 
 // OUTCOME STATEMENT
 export const fontFamily = 'PlusJakartaSans-bold'
-export const lineHeightMultiplier = 1.2
+export const lineHeightMultiplier = 1.4
 // this is the regular font size, for
 // a regular level of zoom
 // and this is for the Outcome Titles
@@ -78,20 +77,22 @@ export const lineHeightMultiplier = 1.2
 // these two values fontSize and fontSizeInt should match
 export const fontSize = '24px'
 export const fontSizeInt = 24
-export const lineSpacing = 10
+export const lineSpacing = fontSizeInt * lineHeightMultiplier - fontSizeInt
 export const letterSpacing = 0.1
 
 // this is the "zoomed out" font size
 // for creating still readable text
 export const fontSizeLarge = '30px'
 export const fontSizeLargeInt = 30
-export const lineSpacingLarge = 6
+export const lineSpacingLarge =
+  fontSizeLargeInt * lineHeightMultiplier - fontSizeLargeInt
 
 // this is the "extra zoomed out" font size
 // for creating still readable text
 export const fontSizeExtraLarge = '40px'
 export const fontSizeExtraLargeInt = 40
-export const lineSpacingExtraLarge = 4
+export const lineSpacingExtraLarge =
+  fontSizeExtraLargeInt * lineHeightMultiplier - fontSizeExtraLargeInt
 
 // line wrapping code from https://stackoverflow.com/questions/2936112/
 function getLines({
@@ -105,14 +106,57 @@ function getLines({
 }) {
   const words = statement.split(' ')
   let lines = []
-  let currentLine = words[0]
+  let currentLine = ''
 
-  for (let i = 1; i < words.length; i++) {
-    let word = words[i]
-    let width = ctx.measureText(currentLine + ' ' + word).width
-    if (width < maxWidth) {
-      currentLine += ' ' + word
+  function splitWordFit(word: string) {
+    const currentLineWithLeadingSpace =
+      currentLine + (currentLine.length ? ' ' : '')
+    let foundThreshold = false
+    let wordMustBeBrokenAtIndex: number
+    for (let v = 1; v <= word.length && !foundThreshold; v++) {
+      let sliceOfWord = word.slice(0, v)
+      let width = ctx.measureText(currentLineWithLeadingSpace + sliceOfWord)
+        .width
+      if (width > maxWidth) {
+        foundThreshold = true
+        wordMustBeBrokenAtIndex = v - 1
+      }
+    }
+    lines.push(
+      currentLineWithLeadingSpace + word.slice(0, wordMustBeBrokenAtIndex)
+    )
+    const endofSplitWord = word.slice(wordMustBeBrokenAtIndex)
+    // if its still too big, recurse, split again
+    if (ctx.measureText(endofSplitWord).width > maxWidth) {
+      currentLine = ''
+      splitWordFit(endofSplitWord)
     } else {
+      currentLine = endofSplitWord
+    }
+  }
+
+  for (let i = 0; i < words.length; i++) {
+    let word = words[i]
+    const currentLineWithLeadingSpace =
+      currentLine + (currentLine.length ? ' ' : '')
+    // the single word exceeds the available space
+    // then break the word
+    if (ctx.measureText(word).width > maxWidth) {
+      if (currentLine.length) {
+        lines.push(currentLine)
+        currentLine = ''
+      }
+      splitWordFit(word)
+    }
+    // if adding this word fits, put it on this line
+    else if (
+      ctx.measureText(currentLineWithLeadingSpace + word).width < maxWidth
+    ) {
+      currentLine = currentLineWithLeadingSpace + word
+    } else {
+      // if adding this word doesn't fit, but the word
+      // overall will fit on one line, then just start the new line with
+      // that word
       lines.push(currentLine)
       currentLine = word
     }
@@ -203,6 +247,7 @@ export function getOutcomeHeight({
 
   const outcomeStatementHeight = drawStatement(
     argsForDrawStatement({
+      useLineLimit,
       onlyMeasure: true, // we don't want it actually drawn on the canvas
       outcome,
       outcomeLeftX: 0, // this number doesn't matter for measuring
@@ -256,9 +301,7 @@ export function getOutcomeHeight({
     // if time or assignees existed, then we need another spacer
     (outcomeTimeAndAssigneesHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0) +
     // if progress bar existed, but no assignee, then we need another spacer
-    (outcomeTimeAndAssigneesHeight > 0 && progressBarHeight == 0
-      ? 12
-      : 0) +
+    (outcomeTimeAndAssigneesHeight > 0 && progressBarHeight == 0 ? 12 : 0) +
     // if progress bar existed, then we need another spacer
     (progressBarHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN + 12 : 0)
 
@@ -268,17 +311,15 @@ export function getOutcomeHeight({
     outcomeTagsHeight +
     outcomeTimeAndAssigneesHeight +
     verticalSpacing
-  console.log(
-    'DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT',
-    DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT
-  )
-  console.log('outcomeStatementHeight', outcomeStatementHeight)
-  console.log('outcomeTagsHeight', outcomeTagsHeight)
-  console.log('outcomeTimeAndAssigneesHeight', outcomeTimeAndAssigneesHeight)
-  console.log('verticalSpacing', verticalSpacing)
-  console.log('\n\n')
+  // console.log(
+  //   'DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT',
+  //   DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT
+  // )
+  // console.log('outcomeStatementHeight', outcomeStatementHeight)
+  // console.log('outcomeTagsHeight', outcomeTagsHeight)
+  // console.log('outcomeTimeAndAssigneesHeight', outcomeTimeAndAssigneesHeight)
+  // console.log('verticalSpacing', verticalSpacing)
+  // console.log('\n\n')
 
   return detectedOutcomeHeight
-  // create a minimum height equal to the outcomeHeight
-  // return Math.max(detectedOutcomeHeight, outcomeHeight)
 }

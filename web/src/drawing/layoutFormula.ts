@@ -62,12 +62,19 @@ function getBoundingRec(
 
 export { getBoundingRec }
 
+export interface Layout {
+  [outcomeActionHash: ActionHashB64]: {
+    x: number
+    y: number
+  }
+}
+
 function layoutForTree(
   ctx: CanvasRenderingContext2D,
   tree: ComputedOutcome,
   zoomLevel: number,
   projectTags: WithActionHash<Tag>[]
-) {
+): Layout {
   // create a graph
   const graph = new dagre.graphlib.Graph()
     .setGraph({})
@@ -116,8 +123,8 @@ export default function layoutFormula(
   data: TreeData,
   zoomLevel: number,
   projectTags: WithActionHash<Tag>[]
-) {
-  const trees = outcomesAsTrees(data)
+): Layout {
+  const trees = outcomesAsTrees(data, { withMembers: true })
 
   let coordinates = {}
   // just do this for efficiency, it's not going to
@@ -132,7 +139,17 @@ export default function layoutFormula(
   layouts.forEach((tree, index) => {
     // in the case of the first one, let it stay where it is
     if (index === 0) {
-      coordinates = tree.layout
+      const adjusted: Layout = {}
+      const offsetFromZero = tree.layout[tree.outcome.actionHash].y
+      Object.keys(tree.layout).forEach((coordKey) => {
+        adjusted[coordKey] = {
+          x: tree.layout[coordKey].x,
+          y: tree.layout[coordKey].y - offsetFromZero,
+        }
+      })
+      coordinates = {
+        ...adjusted,
+      }
     } else {
       // in the case of all the rest, push it right, according to wherever the last one was positioned + spacing
       const lastTree = layouts[index - 1].outcome
@@ -143,11 +160,12 @@ export default function layoutFormula(
         projectTags,
         coordinates
       )
-      const adjusted = {}
+      const adjusted: Layout = {}
+      const offsetFromZero = tree.layout[tree.outcome.actionHash].y
       Object.keys(tree.layout).forEach((coordKey) => {
         adjusted[coordKey] = {
           x: tree.layout[coordKey].x + right + HORIZONTAL_TREE_SPACING,
-          y: tree.layout[coordKey].y,
+          y: tree.layout[coordKey].y - offsetFromZero,
         }
       })
       coordinates = {

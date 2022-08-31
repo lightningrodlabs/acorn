@@ -44,6 +44,7 @@ const MapViewDevMode: React.FC<MapViewDevModeProps> = ({
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
     const args: Parameters<typeof drawOutcome>[0] = {
+      useLineLimit: true,
       projectTags,
       outcome,
       outcomeLeftX,

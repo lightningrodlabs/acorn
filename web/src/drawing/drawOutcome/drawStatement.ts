@@ -13,6 +13,7 @@ import {
 import draw from '../draw'
 
 const drawStatement = ({
+  useLineLimit,
   isRenderingOtherMetadata,
   onlyMeasure,
   xPosition,
@@ -23,6 +24,7 @@ const drawStatement = ({
   color,
   ctx,
 }: {
+  useLineLimit: boolean
   isRenderingOtherMetadata: boolean
   onlyMeasure: boolean
   xPosition: number
@@ -42,7 +44,7 @@ const drawStatement = ({
       statement,
       zoomLevel,
       maxWidth: width,
-      useLineLimit: true,
+      useLineLimit,
     })
 
     let lineSpacingToUse = lineSpacing // the default
@@ -57,32 +59,26 @@ const drawStatement = ({
     ctx.fillStyle = color
 
     lines.forEach((line, index) => {
-      // lines.forEach((line, index) => {
       let linePosition = index * (fontSizeToUse + lineSpacingToUse)
-      // let lineText = line
-      // if we're on the last line and there's more than the visible number of lines
-      // if (lines.length > lineLimit && index === lineLimit - 1) {
-      //   // then replace the last characters with an ellipsis
-      //   // to indicate that there's more that's hidden
-      //   lineText = `${line.slice(0, line.length - 3)}...`
-      // }
       // If calling the function is not for measuring only
       if (!onlyMeasure) {
         ctx.fillText(line, textBoxLeft, textBoxTop + linePosition)
       }
     })
-    let measurements = ctx.measureText(lines[0])
+
+    // let measurements = ctx.measureText(lines[0])
     // help from https://stackoverflow.com/questions/1134586/how-can-you-find-the-height-of-text-on-an-html-canvas
-    let fontHeight =
-      measurements.actualBoundingBoxAscent +
-      measurements.actualBoundingBoxDescent
+    // let fontHeight =
+    //   measurements.fontBoundingBoxAscent + measurements.fontBoundingBoxDescent
+
     // make the height of Outcome Statament
-    //  dependant on the number of lines it has
+    // dependent on the number of lines it has
     // which will determine the height of the card
     // and the space between the statement and
     // the bottom of the card
     const dynamicTotalOutcomeStatementHeight =
-      fontHeight * lines.length + lineSpacingToUse * lines.length
+      fontSizeToUse * lines.length + lineSpacingToUse * lines.length
+
     if (lines.length < 4) {
       height = Math.max(
         outcomeStatementMinHeightWithoutMeta,

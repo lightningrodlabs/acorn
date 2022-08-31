@@ -288,6 +288,7 @@ function render(
       )
       if (coordinates[outcome.actionHash]) {
         drawOutcomeCard({
+          useLineLimit: true,
           zoomLevel: zoomLevel,
           outcome: outcome,
           outcomeLeftX: coordinates[outcome.actionHash].x,
@@ -301,6 +302,7 @@ function render(
             projectTags,
             zoomLevel: zoomLevel,
             width: outcomeWidth,
+            useLineLimit: true,
           }),
           outcomeWidth: outcomeWidth,
           projectTags,
@@ -387,6 +389,7 @@ function render(
       )
       if (coordinates[outcome.actionHash]) {
         drawOutcomeCard({
+          useLineLimit: true,
           zoomLevel: zoomLevel,
           outcome: outcome,
           outcomeLeftX: coordinates[outcome.actionHash].x,
@@ -400,6 +403,7 @@ function render(
             projectTags,
             zoomLevel: zoomLevel,
             width: outcomeWidth,
+            useLineLimit: true,
           }),
           outcomeWidth,
           projectTags,
@@ -545,6 +549,7 @@ function render(
     const isTopPriorityOutcome = false
     const placeholderOutcome: ComputedOutcome = {
       actionHash: '',
+      // don't display the text this way, it will be displayed in the overlayed form
       content: '',
       creatorAgentPubKey: '',
       editorAgentPubKey: '',
@@ -569,18 +574,22 @@ function render(
       children: [],
     }
     drawOutcomeCard({
+      useLineLimit: false,
       zoomLevel: zoomLevel,
+      // draw the Outcome with empty text
+      // since the text is presented in the
+      // MapViewOutcomeTitleForm
       outcome: placeholderOutcome,
       outcomeHeight: getOutcomeHeight({
         ctx,
         outcome: {
           ...placeholderOutcome,
-          content: outcomeFormContent
+          content: outcomeFormContent,
         },
         projectTags,
         width: outcomeWidth,
         zoomLevel,
-        useLineLimit: false
+        useLineLimit: false,
       }),
       outcomeWidth,
       projectTags,

@@ -11,6 +11,7 @@ import {
 import drawStatement from '../drawStatement'
 
 export const argsForDrawStatement = ({
+  useLineLimit,
   onlyMeasure,
   outcome,
   outcomeLeftX,
@@ -19,7 +20,8 @@ export const argsForDrawStatement = ({
   zoomLevel,
   ctx,
 }: {
-  onlyMeasure: boolean
+  useLineLimit: boolean
+  onlyMeasure?: boolean
   outcome: ComputedOutcome
   outcomeLeftX: number
   outcomeTopY: number
@@ -43,6 +45,7 @@ export const argsForDrawStatement = ({
       ComputedSimpleAchievementStatus.PartiallyAchieved
 
   const args: Parameters<typeof drawStatement>[0] = {
+    useLineLimit,
     isRenderingOtherMetadata,
     onlyMeasure,
     xPosition,

@@ -11,15 +11,13 @@
   background-color: transparent;
   border: 0;
   outline: none;
+  padding: 0;
   margin: 4.65rem 4rem 1.5rem 4rem;
-  width: 25rem;
+  width: 24.5rem;
   height: 4.3rem;
   resize: none;
   color: var(--text-color-primary);
-  font-family: var(--font-family-primary-semibold);
-  font-size: 1.5rem;
-  line-height: 1.45;
-  letter-spacing: 0.01rem;
+  font-family: var(--font-family-primary-bold);
 }
 
 .map-view-outcome-title-form-form ::selection {
