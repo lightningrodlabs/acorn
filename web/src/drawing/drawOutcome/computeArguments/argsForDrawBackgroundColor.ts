@@ -37,7 +37,6 @@ export const argsForDrawBackgroundColor = ({
   const backgroundCornerRadius = cornerRadius - 1
   let backgroundColor: string
   if (
-    outcome.computedScope === ComputedScope.Small &&
     outcome.computedAchievementStatus.simple ===
     ComputedSimpleAchievementStatus.Achieved
   ) {

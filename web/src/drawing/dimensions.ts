@@ -29,7 +29,7 @@ export const dashedBorderWidth = 5
 export const outcomePaddingHorizontal = 40
 // affects not only the top and bottom padding,
 // but also the space in between items in the vertical layout
-export const OUTCOME_VERTICAL_SPACE_BETWEEN = 32
+export const OUTCOME_VERTICAL_SPACE_BETWEEN = 30
 
 export const selectedOutlineMargin = 4
 export const selectedOutlineWidth = 3
@@ -116,7 +116,7 @@ export function getLinesForParagraphs({
   statement,
   zoomLevel,
   maxWidth,
-  useLineLimit = true
+  useLineLimit = true,
 }: {
   ctx: CanvasRenderingContext2D
   statement: string
@@ -160,7 +160,8 @@ export function getLinesForParagraphs({
 
   // limited line counts
   // replace overflow of last line with an ellipsis
-  const linesToRender = lineLimit === Infinity ? lines : lines.slice(0, lineLimit)
+  const linesToRender =
+    lineLimit === Infinity ? lines : lines.slice(0, lineLimit)
   if (lines.length > lineLimit) {
     const line = linesToRender[linesToRender.length - 1]
     linesToRender[linesToRender.length - 1] = `${line.slice(
@@ -197,7 +198,7 @@ export function getOutcomeHeight({
     statement: outcome.content,
     zoomLevel,
     maxWidth: width - 2 * outcomePaddingHorizontal,
-    useLineLimit
+    useLineLimit,
   })
 
   // adjust font size based on scale (zoom factor)
@@ -207,8 +208,10 @@ export function getOutcomeHeight({
   } else if (zoomLevel < firstZoomThreshold) {
     fontSizeToUse = fontSizeLargeInt
   }
-  const outcomeStatementHeight =
+  const outcomeStatementHeight = Math.max(
+    130,
     lines.length * (fontSizeToUse * lineHeightMultiplier)
+  )
 
   const outcomeTagsHeight = drawTags(
     argsForDrawTags({
@@ -254,8 +257,8 @@ export function getOutcomeHeight({
     (outcomeTimeAndAssigneesHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0) +
     // if progress bar existed, then we need another spacer
     (progressBarHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0)
-    // if progress bar existed, but no assignee, then we need another spacer
-    // (progressBarHeight > 0 && outcomeTimeAndAssigneesHeight === 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0)
+  // if progress bar existed, but no assignee, then we need another spacer
+  // (progressBarHeight > 0 && outcomeTimeAndAssigneesHeight === 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0)
 
   const detectedOutcomeHeight =
     DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT +
@@ -263,7 +266,17 @@ export function getOutcomeHeight({
     outcomeTagsHeight +
     outcomeTimeAndAssigneesHeight +
     verticalSpacing
+  console.log(
+    'DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT',
+    DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT
+  )
+  console.log('outcomeStatementHeight', outcomeStatementHeight)
+  console.log('outcomeTagsHeight', outcomeTagsHeight)
+  console.log('outcomeTimeAndAssigneesHeight', outcomeTimeAndAssigneesHeight)
+  console.log('verticalSpacing', verticalSpacing)
 
+
+  return detectedOutcomeHeight
   // create a minimum height equal to the outcomeHeight
-  return Math.max(detectedOutcomeHeight, outcomeHeight)
+  // return Math.max(detectedOutcomeHeight, outcomeHeight)
 }

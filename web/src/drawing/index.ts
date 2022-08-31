@@ -85,10 +85,6 @@ export type renderProps = {
     x: number
     y: number
   }
-  currentSelectionBoxSize: {
-    w: number
-    h: number
-  }
   coordinates: {
     [outcomeActionHash: ActionHashB64]: {
       x: number

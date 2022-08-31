@@ -31,8 +31,8 @@ const Template: ComponentStory<typeof MapViewDevModeComponent> = (args) => {
 
 const sharedArgs = {
   projectTags: testTags,
-  outcomeLeftX: 200,
-  outcomeTopY: 200,
+  outcomeLeftX: 100,
+  outcomeTopY: 100,
   outcomeHeight: 500,
   outcomeWidth: 300,
   // variants

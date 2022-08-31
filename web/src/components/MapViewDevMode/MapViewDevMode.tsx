@@ -32,18 +32,16 @@ const MapViewDevMode: React.FC<MapViewDevModeProps> = ({
   const refCanvas = useRef<HTMLCanvasElement>()
   useEffect(() => {
     const canvas = refCanvas.current
-    // canvas.width = document.body.clientWidth
-    // canvas.height = document.body.clientHeight
-
     // Get the device pixel ratio, falling back to 1.
     const dpr = window.devicePixelRatio || 1
-
     // Get the size of the canvas in CSS pixels.
     const rect = canvas.getBoundingClientRect()
     // Give the canvas pixel dimensions of their CSS
     // size * the device pixel ratio.
     canvas.width = rect.width * dpr
     canvas.height = rect.height * dpr
+    const ctx = canvas.getContext('2d')
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
     const args: Parameters<typeof drawOutcome>[0] = {
       projectTags,

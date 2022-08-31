@@ -51,25 +51,29 @@ export function computeAchievementStatus(
   const tasksTotal =
     'Small' in self.scope ? self.scope.Small.taskList.length : 0
   let simple: ComputedSimpleAchievementStatus
+
   const needsProgressHasProgress =
     uncertains === 0 &&
     ((smallsTotal > 0 && smallsAchieved > 0 && smallsTotal > smallsAchieved) ||
       (tasksTotal > 0 && tasksAchieved > 0 && tasksTotal > tasksAchieved))
+
   const needsProgressHasNone =
-    uncertains > 0 ||
-    (smallsTotal > 0 && smallsAchieved === 0) ||
-    (tasksTotal > 0 && tasksAchieved === 0)
+    // manual marking of Achieved overrides computed status
+    !(
+      uncertains === 0 &&
+      'Small' in self.scope &&
+      self.scope.Small.achievementStatus === 'Achieved'
+    ) &&
+    (uncertains > 0 ||
+      (smallsTotal > 0 && smallsAchieved === 0) ||
+      (tasksTotal > 0 && tasksAchieved === 0) ||
+      uncertains === 0)
+
   if (needsProgressHasProgress) {
     // represents a 'known' as opposed to 'uncertain'
     // amount of progress
     simple = ComputedSimpleAchievementStatus.PartiallyAchieved
-  } else if (
-    needsProgressHasNone &&
-    // manual marking of Achieved overrides computed status
-    !(
-      'Small' in self.scope && self.scope.Small.achievementStatus === 'Achieved'
-    )
-  ) {
+  } else if (needsProgressHasNone) {
     simple = ComputedSimpleAchievementStatus.NotAchieved
   } else {
     simple = ComputedSimpleAchievementStatus.Achieved
