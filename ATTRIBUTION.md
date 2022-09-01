@@ -1,4 +1,4 @@
-# Attributions List
+# Attributions
 
 ## Icons
 
