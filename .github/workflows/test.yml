@@ -1,23 +1,24 @@
+# Disabled for now, to not waste CI resources
 
-name: Cargo tests
+# name: Cargo tests
 
-on: [ push, pull_request ]
+# on: [ push, pull_request ]
 
-jobs:
-  cargo_test:
-    runs-on: ubuntu-latest
+# jobs:
+#   cargo_test:
+#     runs-on: ubuntu-latest
 
-    steps:
-     - uses: actions/checkout@v2
-     - uses: actions-rs/toolchain@v1
-       with:
-         toolchain: 1.58
-         target: wasm32-unknown-unknown
+#     steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions-rs/toolchain@v1
+#        with:
+#          toolchain: 1.58
+#          target: wasm32-unknown-unknown
 
-     - run: rustup update stable
-     - run: rustc --version
-     - run: cargo --version
-     - run: rustup component list --installed
-     - run: rustup show
+#      - run: rustup update stable
+#      - run: rustc --version
+#      - run: cargo --version
+#      - run: rustup component list --installed
+#      - run: rustup show
 
-     - run: ./scripts/happ-test.sh
+#      - run: ./scripts/happ-test.sh
