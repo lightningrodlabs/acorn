@@ -1,3 +1,4 @@
+import { computeProgress } from '../redux/persistent/projects/outcomes/computedState'
 import { ComputedOutcome, ComputedScope, Tag } from '../types'
 import { WithActionHash } from '../types/shared'
 import {
@@ -282,13 +283,8 @@ export function getOutcomeHeight({
       ctx,
     })
   )
-  // if its not a Big, we don't render a progress bar
-  const progress =
-    outcome.computedScope === ComputedScope.Big
-      ? (outcome.computedAchievementStatus.smallsAchieved /
-          outcome.computedAchievementStatus.smallsTotal) *
-        100
-      : 0
+
+  const progress = computeProgress(outcome)
   const progressBarHeight =
     progress === 0 || progress === 100 ? 0 : PROGRESS_BAR_HEIGHT
   // calculate the outcomeHeight

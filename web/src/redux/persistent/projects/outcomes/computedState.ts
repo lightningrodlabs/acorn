@@ -7,6 +7,23 @@ import {
 } from '../../../../types'
 import { WithActionHash } from '../../../../types/shared'
 
+export function computeProgress(computedOutcome: ComputedOutcome): number {
+  return computedOutcome.computedScope === ComputedScope.Big
+    ? Math.round(
+        (computedOutcome.computedAchievementStatus.smallsAchieved /
+          computedOutcome.computedAchievementStatus.smallsTotal) *
+          100
+      )
+    : computedOutcome.computedScope === ComputedScope.Small &&
+      computedOutcome.computedAchievementStatus.tasksTotal > 0
+    ? Math.round(
+        (computedOutcome.computedAchievementStatus.tasksAchieved /
+          computedOutcome.computedAchievementStatus.tasksTotal) *
+          100
+      )
+    : 0
+}
+
 export function computeAchievementStatus(
   self: WithActionHash<Outcome>,
   children: ComputedOutcome[]

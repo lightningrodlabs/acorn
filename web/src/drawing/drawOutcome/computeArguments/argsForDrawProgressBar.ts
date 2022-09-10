@@ -1,3 +1,4 @@
+import { computeProgress } from '../../../redux/persistent/projects/outcomes/computedState'
 import {
   PROGRESS_BAR_FOREGROUND_COLOR,
   PROGRESS_BAR_BACKGROUND_COLOR,
@@ -48,21 +49,8 @@ export const argsForDrawProgressBar = ({
     outcomeTimeAndAssigneesHeight +
     verticalSpacing
 
-  const progress =
-    outcome.computedScope === ComputedScope.Big
-      ? Math.round(
-          (outcome.computedAchievementStatus.smallsAchieved /
-            outcome.computedAchievementStatus.smallsTotal) *
-            100
-        )
-      : outcome.computedScope === ComputedScope.Small &&
-        outcome.computedAchievementStatus.tasksTotal > 0
-      ? Math.round(
-          (outcome.computedAchievementStatus.tasksAchieved /
-            outcome.computedAchievementStatus.tasksTotal) *
-            100
-        )
-      : 0
+  const progress = computeProgress(outcome)
+
   const args: Parameters<typeof drawProgressBar>[0] = {
     ctx,
     xPosition,
