@@ -1,0 +1,88 @@
+name: Release
+
+on: [ push, pull_request ]
+
+jobs:
+  # the create-release would be used once we want to create a specific release based on if the commit has a tag
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        env:
+          # (required)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  # build-happ:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     # install hc tool
+  #     - name: Install hc tool and wasm target
+  #       shell: bash # important because this runs shell scripts
+  #       run: |
+  #         npm run happ-install
+  #     # build hApp
+  #     - name: Build hApp
+  #       run: |
+  #         npm run happ-pack
+  #     # "upload" dna as build artifact
+  #     - uses: actions/upload-artifact@master
+  #       with:
+  #         name: profiles-artifact
+  #         path: happ/workdir/profiles.happ
+  #     - uses: actions/upload-artifact@master
+  #       with:
+  #         name: projects-artifact
+  #         path: happ/workdir/projects.dna
+
+  # upload the app package for each target os
+  upload-assets:
+    # needs: build-happ
+    strategy:
+      matrix:
+        os:
+          - ubuntu-18.04
+          - macos-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      # rm the dna files from repository
+      # - name: clearing precompiled files
+      #   run: |
+      #     rm happ/workdir/*.dna
+      #     rm happ/workdir/*.happ
+      # - uses: actions/download-artifact@master
+      #   with:
+      #     name: profiles-artifact
+      #     path: happ/workdir
+      # - uses: actions/download-artifact@master
+      #   with:
+      #     name: projects-artifact
+      #     path: happ/workdir
+      # - name: list downloads
+      #   run: ls -R
+      #   working-directory: happ/workdir
+      # depending on the windows command (when we are ready to build for it), may have to check which os currently on
+      - name: Install nodejs dependencies
+        run: |
+          npm install
+          npm run web-install
+          npm run electron-install
+        # if: ${{ runner.os == 'Windows' }}
+        # shell: bash
+      - name: setup for codesigning (macos only)
+        if: ${{ runner.os == 'macOs' }}
+        uses:  figleafteam/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.HBE_APPLE_CERTIFICATE_BASE64 }}
+          p12-password: ${{ secrets.HBE_APPLE_CERTIFICATE_PASS }}
+      - name: build acorn (and notarize it- macos only)
+        env:
+          APPLE_DEV_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
+          APPLE_ID_EMAIL: ${{ secrets.APPLE_ID_EMAIL }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          DEBUG: electron-osx-sign*,electron-notarize*
+        run: |    
+          npm run build
+        shell: bash
