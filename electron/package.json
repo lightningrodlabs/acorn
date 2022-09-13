@@ -1,7 +1,7 @@
 {
   "name": "acorn",
   "version": "1.1.1-alpha",
-  "description": "Create the future",
+  "description": "Open source peer-to-peer project management for software teams",
   "main": "dist/index.js",
   "scripts": {
     "start": "tsc && electron .",
@@ -18,8 +18,8 @@
   "build": {
     "productName": "Acorn",
     "afterSign": "./afterSignHook.js",
-    "appId": "com.harris-braun.acorn",
-    "copyright": "© 2020-2021 Harris-Braun Enterprises, LLC",
+    "appId": "org.lightningrodlabs.acorn",
+    "copyright": "© 2020-2022 Harris-Braun Enterprises, LLC",
     "asarUnpack": "binaries/**/*",
     "files": [
       "dist/**/*",

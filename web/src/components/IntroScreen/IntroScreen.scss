@@ -79,7 +79,11 @@
         padding: 0 6rem;
         box-sizing: border-box;
 
-        @media (min-width: 76rem) {
+        @media (min-width: 90rem) {
+          padding: 0 5%;
+        }
+
+        @media (min-width: 76rem) and (max-width: 89.9rem) {
           padding: 0 4%;
         }
 
@@ -95,6 +99,14 @@
           img {
             width: 22rem;
             flex: 1;
+
+            @media (min-width: 120rem) {
+              width: 34rem;
+            }
+
+            @media (min-width: 90rem) and (max-width: 119.9rem) {
+              width: 28rem;
+            }
 
             @media (max-width: 60rem) {
               width: 16rem;

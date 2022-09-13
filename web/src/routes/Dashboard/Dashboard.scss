@@ -65,15 +65,18 @@
 
 .my-projects-heading {
   margin-bottom: 1.25rem;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 .my-projects-header {
-  border-bottom: 2px solid #d3d3d3;
+  border-bottom: 0.125rem solid var(--border-color-timberwolf);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding-bottom: 6px;
+  margin: 0 1rem;
 }
 
 .my-projects-header-buttons {
@@ -215,4 +218,6 @@
   overflow-y: scroll;
   flex: 1;
   scrollbar-width: none;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
