@@ -7,6 +7,23 @@ import {
 } from '../../../../types'
 import { WithActionHash } from '../../../../types/shared'
 
+export function computeProgress(computedOutcome: ComputedOutcome): number {
+  return computedOutcome.computedScope === ComputedScope.Big
+    ? Math.round(
+        (computedOutcome.computedAchievementStatus.smallsAchieved /
+          computedOutcome.computedAchievementStatus.smallsTotal) *
+          100
+      )
+    : computedOutcome.computedScope === ComputedScope.Small &&
+      computedOutcome.computedAchievementStatus.tasksTotal > 0
+    ? Math.round(
+        (computedOutcome.computedAchievementStatus.tasksAchieved /
+          computedOutcome.computedAchievementStatus.tasksTotal) *
+          100
+      )
+    : 0
+}
+
 export function computeAchievementStatus(
   self: WithActionHash<Outcome>,
   children: ComputedOutcome[]
@@ -54,20 +71,23 @@ export function computeAchievementStatus(
 
   const needsProgressHasProgress =
     uncertains === 0 &&
-    ((smallsTotal > 0 && smallsAchieved > 0 && smallsTotal > smallsAchieved) ||
-      (tasksTotal > 0 && tasksAchieved > 0 && tasksTotal > tasksAchieved))
+    ((smallsTotal > 0 && smallsAchieved > 0 && smallsAchieved < smallsTotal) ||
+      (tasksTotal > 0 && tasksAchieved > 0 && tasksAchieved < tasksTotal))
 
   const needsProgressHasNone =
-    // manual marking of Achieved overrides computed status
     !(
-      uncertains === 0 &&
-      'Small' in self.scope &&
-      self.scope.Small.achievementStatus === 'Achieved'
+      // manual marking of Achieved overrides computed status
+      // when there are no children
+      (
+        uncertains === 0 &&
+        smallsTotal === 0 &&
+        'Small' in self.scope &&
+        self.scope.Small.achievementStatus === 'Achieved'
+      )
     ) &&
     (uncertains > 0 ||
       (smallsTotal > 0 && smallsAchieved === 0) ||
-      (tasksTotal > 0 && tasksAchieved === 0) ||
-      uncertains === 0)
+      (tasksTotal > 0 && tasksAchieved === 0))
 
   if (needsProgressHasProgress) {
     // represents a 'known' as opposed to 'uncertain'

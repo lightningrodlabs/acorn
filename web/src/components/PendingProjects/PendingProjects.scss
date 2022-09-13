@@ -1,19 +1,20 @@
 .pending-projects-for-sync-wrapper {
   display: flex;
   flex-direction: column;
-  background: #f5f2ef;
-  border-radius: 8px;
-  margin-top: 6px;
+  background-color: var(--bg-color-tertiary);
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
   position: relative;
-  z-index: 2;
+  z-index: 1;
+  box-shadow: 0 0 1rem var(--shadow-color);
 }
 
 .pending-projects-for-sync {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 10px 12px;
-  background: #f5f2ef;
+  padding: 0.75rem 1rem;
+  background: var(--bg-color-tertiary);
   line-height: 1.6;
   border-radius: 8px;
 }
@@ -22,78 +23,82 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+
+  .pending-projects-syncing-icon {
+    .icon {
+      cursor: auto;
+      -webkit-animation: pending-projects-spin 3s linear infinite;
+      -moz-animation: pending-projects-spin 3s linear infinite;
+      animation: pending-projects-spin 3s linear infinite;
+
+      @-webkit-keyframes pending-projects-spin {
+        100% {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+
+      @keyframes pending-projects-spin {
+        100% {
+          -webkit-transform: rotate(360deg);
+          transform: rotate(360deg);
+        }
+      }
+    }
+  }
 }
 
 .pending-projects-for-sync-message {
-  padding-left: 6px;
-  padding-bottom: 3px;
-  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
-  font-size: 14px;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+  padding-bottom: 0.25rem;
+  font-family: var(--font-family-primary-bold);
+  font-size: 0.875rem;
+  line-height: 1.75;
 }
 
 .pending-projects-for-sync-button {
-  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
-  font-size: 13px;
+  font-family: var(--font-family-primary-medium);
+  font-size: 0.825rem;
   text-decoration: underline;
   cursor: pointer;
-  color: #535353;
-}
-
-.pending-projects-for-sync-button:hover, 
-.pending-project-cancel-queue-button:hover {
-  color: var(--text-color-link);
-}
-
-.pending-projects-for-sync-message-icon .icon {
-  -webkit-animation: pending-projects-spin 3s linear infinite;
-  -moz-animation: pending-projects-spin 3s linear infinite;
-  animation: pending-projects-spin 3s linear infinite;
-}
-
-@-webkit-keyframes pending-projects-spin {
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
-@keyframes pending-projects-spin {
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
-  }
-}
-
-.pending-projects-expanded.pending-projects-expanded > .pending-projects-details-wrapper {
-  padding-bottom: 10px;
+  color: var(--text-color-tertiary);
+  line-height: 1.75;
 }
 
 .pending-projects-details-wrapper {
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .pending-projects-details-item {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 8px 12px 10px 34px;
-  height: 20px;
-}
+  padding: 0.625rem 1rem 0.625rem 3.25rem;
 
-.pending-projects-details-item .pending-project-cancel-queue-button  {
-display: none;
-}
-
-.pending-projects-details-item:hover .pending-project-cancel-queue-button  {
-  display: initial;
+  &:last-child {
+    margin-bottom: 0.5rem;
   }
 
-.pending-projects-details-item:hover {
-  background-color: #f1ede9;
-}
+  .pending-project-cancel-queue-button {
+    display: none;
+  }
 
-.pending-project-cancel-queue-button {
-  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
-  font-size: 13px;
-  cursor: pointer;
-  color: #535353;
+  &:hover {
+    background-color: var(--bg-color-hover);
+    .pending-project-cancel-queue-button {
+      display: initial;
+    }
+
+    .pending-project-cancel-queue-button {
+      font-family: var(--font-family-primary-bold);
+      font-size: 0.825rem;
+      cursor: pointer;
+      color: var(--text-color-secondary);
+      transition: all 0.1s ease;
+
+      &:hover {
+        color: var(--text-color-link);
+      }
+    }
+  }
 }

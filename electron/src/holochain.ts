@@ -1,6 +1,6 @@
 import * as path from 'path'
 import { app } from 'electron'
-import { ElectronHolochainOptions, StateSignal, PathOptions } from '@sprillow-connor/electron-holochain'
+import { ElectronHolochainOptions, StateSignal, PathOptions } from '@lightningrodlabs/electron-holochain'
 
 // see the DEVELOPERS.md about incrementing
 // these values

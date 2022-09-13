@@ -403,7 +403,7 @@ const PriorityUniversal: React.FC<PriorityUniversalProps> = ({
         {topPriorityOutcomes.length === 0 && (
           <div className="top-priority-empty-state-wrapper">
             <img
-              src="images/intro-screen-image-4.svg"
+              src="images/priority-view-empty-state.svg"
               className="top-priority-empty-state-image"
             />
             <Typography style="body1">

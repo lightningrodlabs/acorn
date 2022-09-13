@@ -4,51 +4,51 @@
   overflow-y: scroll;
   height: 100%;
 
-  .button {
-    margin-bottom: 1.5rem;
+  .small-close {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    cursor: pointer;
   }
-}
 
-.profile_edit_form .small-close {
-  position: absolute;
-  top: 30px;
-  right: 30px;
-  cursor: pointer;
-}
+  .profile_edit_form_title {
+    margin-bottom: 4rem;
+  }
 
-.profile_edit_form_title {
-  margin-bottom: 4rem;
+  form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 26px;
+  }
+
+  .row {
+    flex: 1;
+    display: flex;
+
+    &.halfSize {
+      width: 50%;
+    }
+  }
+
+  .profile_edit_form_avatar {
+    margin-top: 1.925rem;
+    margin-left: 0.5rem;
+  }
+
+  button {
+    margin: 0 auto;
+  }
+
+  .button {
+    margin-bottom: 2rem;
+  }
 }
 
 .help_text {
   flex: 1;
 }
 
-.profile_edit_form form {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 26px;
-}
-
-.profile_edit_form .row {
-  flex: 1;
-  display: flex;
-}
-
-.profile_edit_form .row.halfSize {
-  width: 50%;
-}
-
-.profile_edit_form .profile_edit_form_avatar {
-  margin-top: 1.925rem;
-  margin-left: 0.5rem;
-}
-
-.profile_edit_form button {
-  margin: 0 auto;
-}
-
-@media only screen and (max-height: 800px) {
+@media (max-height: 50rem) {
   .profile_edit_form {
     text-align: center;
     margin: 0 auto;
@@ -59,6 +59,9 @@
 }
 
 .profile-edit-form-title-wrapper {
-  margin-top: 5rem;
   margin-bottom: 0.5rem;
+
+  @media (max-height: 50rem) {
+    margin-top: 5rem;
+  }
 }

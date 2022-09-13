@@ -35,11 +35,14 @@ export const argsForDrawTags = ({
 }): Parameters<typeof drawTags>[0] => {
   // turn the actionHash array of tags into
   // an array of actual Tag objects
-  const tags = outcome.tags.map((actionHash) => {
-    return projectTags.find(
-      (projectTag) => projectTag.actionHash === actionHash
-    )
-  })
+  const tags = outcome.tags
+    .map((actionHash) => {
+      return projectTags.find(
+        (projectTag) => projectTag.actionHash === actionHash
+      )
+    })
+    // filter out tags which have not yet loaded, or are otherwise missing
+    .filter((t) => t)
   const xPosition = outcomeLeftX + outcomePaddingHorizontal
   const yPosition =
     outcomeTopY +
