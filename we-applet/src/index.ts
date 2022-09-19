@@ -10,9 +10,11 @@ import {
   WeServices,
   InstalledAppletInfo,
 } from "@lightningrodlabs/we-applet";
-import ReactDOM from 'react-dom'
-
-import { AcornAppletApplet } from "./acorn_applet-applet";
+import React from 'react'
+import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client"
+// @ts-ignore
+import AppProvided from '../../web/dist/weApplet'
 
 const acorn_appletApplet: WeApplet = {
   async appletRenderers(
@@ -23,19 +25,8 @@ const acorn_appletApplet: WeApplet = {
   ): Promise<AppletRenderers> {
     return {
       full(element: HTMLElement, registry: CustomElementRegistry) {
-        registry.define("acorn_applet-applet", AcornAppletApplet);
-        element.innerHTML = `<acorn_applet-applet></acorn_applet-applet>`;
-        const appletElement = element.querySelector("acorn_applet-applet") as any;
-
-        appletElement.appWebsocket =  appWebsocket;
-        appletElement.profilesStore = weServices.profilesStore;
-        appletElement.appletAppInfo = appletAppInfo;
-        const root = ReactDOM.createRoot(appletElement);
-        // set up store inside <Acorn
-        // store contains callback and signalling setup
-        // create store
-        //call other functions to put config info in store, then pass into react component
-        root.render(<Acorn store={}/>);
+        const root = createRoot(element);
+        root.render(React.createElement(AppProvided, {appWs: appWebsocket, adminWs: adminWebsocket}, null));
       },
       blocks: [],
     };
