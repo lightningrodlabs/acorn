@@ -17,7 +17,7 @@ import selectRenderProps from './selector'
 
 export type MapViewProps = {
   projectId: CellIdString
-  hasSelection: boolean
+  hasMultiSelection: boolean
   outcomeFormIsOpen: boolean
   translate: {
     x: number
@@ -33,7 +33,7 @@ const MapView: React.FC<MapViewProps> = ({
   zoomLevel,
   translate,
   outcomeFormIsOpen,
-  hasSelection,
+  hasMultiSelection,
 }) => {
   const store = useStore()
   const refCanvas = useRef<HTMLCanvasElement>()
@@ -111,7 +111,7 @@ const MapView: React.FC<MapViewProps> = ({
         )}
       </div>
 
-      <MultiEditBar projectId={projectId} hasSelection={hasSelection} />
+      <MultiEditBar projectId={projectId} hasMultiSelection={hasMultiSelection} />
     </>
   )
 }

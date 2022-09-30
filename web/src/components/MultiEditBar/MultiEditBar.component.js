@@ -11,7 +11,7 @@ export default function MultiEditBar({
   agentAddress,
   selectedOutcomes = [],
   updateOutcome,
-  hasSelection,
+  hasMultiSelection,
   deleteOutcomeFully,
 }) {
   const defaultViews = {
@@ -37,10 +37,10 @@ export default function MultiEditBar({
 
   // close any popups if you deselect
   useEffect(() => {
-    if (!hasSelection) {
+    if (!hasMultiSelection) {
       setViews({ ...defaultViews })
     }
-  }, [hasSelection])
+  }, [hasMultiSelection])
 
   const updateOutcomes = key => val => {
     selectedOutcomes.forEach(outcome => {
@@ -162,17 +162,11 @@ export default function MultiEditBar({
     modalHeading = 'Setting Timeframe for Multiple Cards'
     modalContent = timeframeAlertContent
     modalIcon = 'calendar.svg'
-  } else if (popup && viewsOpen.hierarchy) {
-    showModal = true
-    modalClassname = 'hierarchy-popup'
-    modalHeading = 'Setting Hierarchy for Multiple Cards'
-    modalContent = hierarchyAlertContent
-    modalIcon = 'leaf.svg'
   }
 
   return (
     <>
-      <div className={`multi-edit-bar ${hasSelection ? 'has-selection' : ''}`}>
+      <div className={`multi-edit-bar ${hasMultiSelection ? 'has-selection' : ''}`}>
         {/* connection connector */}
         <Icon
           name='connection-connector.svg'
