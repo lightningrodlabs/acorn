@@ -8,7 +8,7 @@ crate-type = ["cdylib", "rlib"]
 name = "projects_integrity"
 
 [dependencies]
-hdi = "0.1.2"
+hdi = "=0.1.2"
 holo_hash = {version = "=0.0.32", features = ["encoding"]}
 serde = "*"
 thiserror = "1"

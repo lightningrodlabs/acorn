@@ -9,7 +9,7 @@ name = "profiles"
 
 [dependencies]
 # hdk_crud = { version = "0.5.6", features = ["no_example"] }
-hdk_crud = { git = "https://github.com/lightningrodlabs/hdk_crud", branch = "holochain-0.0.162-bump" }
+hdk_crud = { git = "https://github.com/lightningrodlabs/hdk_crud", branch = "holochain-0.0.162-bump", features = ["no_example"]  }
 chrono = "0.4.19"
 hdk = "0.0.152"
 holo_hash = {version = "=0.0.32", features = ["encoding", "fixturators"]}

@@ -56,7 +56,10 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        exclude: {
+          and: [/node_modules/],
+          not: [/@holochain\/client/],
+        },
         use: {
           loader: 'babel-loader',
           options: {
