@@ -314,6 +314,25 @@ const PriorityUniversal: React.FC<PriorityUniversalProps> = ({
   // an updateProjectMeta call, it will temporarily render from this during
   // pending->true status
   const [pendingList, setPendingList] = useState([])
+
+  let topPriorityOutcomeAddresses: ActionHashB64[] = []
+  if (pending) {
+    // make sure we only try to pick
+    // and render outcomes that exist or are
+    // known about
+    topPriorityOutcomeAddresses = pendingList.filter(
+      (outcomeActionHash) => computedOutcomesKeyed[outcomeActionHash]
+    )
+  } else if (projectMeta) {
+    // make sure we only try to pick
+    // and render outcomes that exist or are
+    // known about
+    topPriorityOutcomeAddresses = projectMeta.topPriorityOutcomes.filter(
+      (outcomeActionHash: ActionHashB64) =>
+        computedOutcomesKeyed[outcomeActionHash]
+    )
+  }
+
   // a little function to help us with reordering the result
   const reorder = (list: ActionHashB64[], startIndex: number, endIndex: number) => {
     const result = Array.from(list)
@@ -336,7 +355,7 @@ const PriorityUniversal: React.FC<PriorityUniversalProps> = ({
     }
     setPending(true)
     const reordered = reorder(
-      projectMeta.topPriorityOutcomes,
+      topPriorityOutcomeAddresses,
       result.source.index,
       result.destination.index
     )
@@ -362,23 +381,6 @@ const PriorityUniversal: React.FC<PriorityUniversalProps> = ({
     setPendingList([])
   }
 
-  let topPriorityOutcomeAddresses: ActionHashB64[] = []
-  if (pending) {
-    // make sure we only try to pick
-    // and render outcomes that exist or are
-    // known about
-    topPriorityOutcomeAddresses = pendingList.filter(
-      (outcomeActionHash) => computedOutcomesKeyed[outcomeActionHash]
-    )
-  } else if (projectMeta) {
-    // make sure we only try to pick
-    // and render outcomes that exist or are
-    // known about
-    topPriorityOutcomeAddresses = projectMeta.topPriorityOutcomes.filter(
-      (outcomeActionHash: ActionHashB64) =>
-        computedOutcomesKeyed[outcomeActionHash]
-    )
-  }
   const topPriorityOutcomes = topPriorityOutcomeAddresses.map(
     (outcomeActionHash) => computedOutcomesKeyed[outcomeActionHash]
   )
