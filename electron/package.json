@@ -48,6 +48,7 @@
   },
   "dependencies": {
     "@lightningrodlabs/electron-holochain": "0.0.41",
+    "electron-context-menu": "^3.5.0",
     "electron-log": "^4.3.5",
     "electron-notarize": "^1.0.0",
     "split": "^1.0.1"
