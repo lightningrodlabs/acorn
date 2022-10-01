@@ -15,7 +15,7 @@ import drawEntryPoints from './drawEntryPoints'
 import {
   RELATION_AS_PARENT,
   RELATION_AS_CHILD,
-} from '../redux/ephemeral/connection-connector/actions'
+} from '../redux/ephemeral/outcome-connector/actions'
 import {
   CONNECTOR_VERTICAL_SPACING,
   firstZoomThreshold,
@@ -63,9 +63,9 @@ export type renderProps = {
   entryPoints: ProjectEntryPointsState
   outcomeMembers: ProjectOutcomeMembersState
   connections: ProjectConnectionsState
-  connectionConnectorFromAddress: ActionHashB64
-  connectionConnectorToAddress: ActionHashB64
-  connectionConnectorRelation: RelationInput
+  outcomeConnectorFromAddress: ActionHashB64
+  outcomeConnectorToAddress: ActionHashB64
+  outcomeConnectorRelation: RelationInput
   outcomeFormIsOpen: boolean
   outcomeFormFromActionHash: ActionHashB64
   outcomeFormContent: string
@@ -115,9 +115,9 @@ function render(
     outcomeMembers,
     entryPoints,
     projectMeta,
-    connectionConnectorFromAddress,
-    connectionConnectorToAddress,
-    connectionConnectorRelation,
+    outcomeConnectorFromAddress,
+    outcomeConnectorToAddress,
+    outcomeConnectorRelation,
     outcomeFormIsOpen,
     outcomeFormFromActionHash,
     outcomeFormRelation,
@@ -193,8 +193,8 @@ function render(
       // temporarily omit/hide the existing connection from view
       // ASSUMPTION: one parent
       const pendingReParent =
-        (connectionConnectorFromAddress === connection.childActionHash &&
-          connectionConnectorRelation === RELATION_AS_CHILD) ||
+        (outcomeConnectorFromAddress === connection.childActionHash &&
+          outcomeConnectorRelation === RELATION_AS_CHILD) ||
         (outcomeFormIsOpen &&
           outcomeFormFromActionHash === connection.childActionHash &&
           outcomeFormRelation === RELATION_AS_CHILD)
@@ -464,9 +464,9 @@ function render(
       DRAW PENDING CONNECTION FOR "CONNECTION CONNECTOR"
     */
     // render the connection that is pending to be created between existing Outcomes
-    if (connectionConnectorFromAddress) {
-      const fromCoords = coordinates[connectionConnectorFromAddress]
-      const fromOutcome = outcomes[connectionConnectorFromAddress]
+    if (outcomeConnectorFromAddress) {
+      const fromCoords = coordinates[outcomeConnectorFromAddress]
+      const fromOutcome = outcomes[outcomeConnectorFromAddress]
       const [
         fromAsChildCoord,
         fromAsParentCoord,
@@ -483,9 +483,9 @@ function render(
       // upper or lower port
       // the opposite of whichever the "from" port is connected to
       let toCoords, toOutcome, toAsChildCoord, toAsParentCoord
-      if (connectionConnectorToAddress) {
-        toCoords = coordinates[connectionConnectorToAddress]
-        toOutcome = outcomes[connectionConnectorToAddress]
+      if (outcomeConnectorToAddress) {
+        toCoords = coordinates[outcomeConnectorToAddress]
+        toOutcome = outcomes[outcomeConnectorToAddress]
         ;[
           toAsChildCoord,
           toAsParentCoord,
@@ -501,30 +501,30 @@ function render(
       // in drawConnection, it draws at exactly the two coordinates given,
       // so we could pass them in either order/position
       const fromConnectionCoord =
-        connectionConnectorRelation === RELATION_AS_PARENT
+        outcomeConnectorRelation === RELATION_AS_PARENT
           ? fromAsParentCoord
           : fromAsChildCoord
       // use the current mouse coordinate position, liveCoordinate, by default
       let toConnectionCoord = mouseLiveCoordinate
       // use the coordinates relating to an Outcome which it is pending that
       // this connection will connect the "from" Outcome "to"
-      if (connectionConnectorToAddress) {
+      if (outcomeConnectorToAddress) {
         toConnectionCoord =
-          connectionConnectorRelation === RELATION_AS_PARENT
+          outcomeConnectorRelation === RELATION_AS_PARENT
             ? toAsChildCoord
             : toAsParentCoord
       }
-      if (connectionConnectorRelation === RELATION_AS_CHILD) {
+      if (outcomeConnectorRelation === RELATION_AS_CHILD) {
         fromConnectionCoord.y =
           fromConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
         // only modify if we're dealing with an actual outcome being connected to
-        if (connectionConnectorToAddress)
+        if (outcomeConnectorToAddress)
           toConnectionCoord.y = toConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
-      } else if (connectionConnectorRelation === RELATION_AS_PARENT) {
+      } else if (outcomeConnectorRelation === RELATION_AS_PARENT) {
         fromConnectionCoord.y =
           fromConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
         // only modify if we're dealing with an actual outcome being connected to
-        if (connectionConnectorToAddress)
+        if (outcomeConnectorToAddress)
           toConnectionCoord.y = toConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
       }
       drawConnection({

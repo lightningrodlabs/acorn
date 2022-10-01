@@ -1,4 +1,4 @@
-.connection-connector {
+.outcome-connector {
   position: absolute;
   width: 30px;
   height: 30px;
@@ -7,7 +7,7 @@
   border-radius: 10px;
 }
 
-.connection-connector-blue-dot {
+.outcome-connector-blue-dot {
   background-color: #b1b9ff;
   width: 10px;
   height: 10px;
@@ -15,7 +15,7 @@
   margin: 10px;
 }
 
-.connection-connector:hover .connection-connector-blue-dot,
-.connection-connector.active .connection-connector-blue-dot {
+.outcome-connector:hover .outcome-connector-blue-dot,
+.outcome-connector.active .outcome-connector-blue-dot {
   background-color: #6772ff;
 }

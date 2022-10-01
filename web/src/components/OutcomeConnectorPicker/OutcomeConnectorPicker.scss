@@ -1,0 +1,30 @@
+.outcome-connector-modal-subheading {
+  margin-bottom: 1.25rem;
+}
+
+.outcome-connector-content {
+  flex: 1;
+  width: 100%;
+}
+
+.outcome-connector-dropdown-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+
+  &:first-child {
+    margin-bottom: 2rem;
+  }
+
+  &:last-child {
+    margin-bottom: 1rem;
+  }
+
+  label {
+    font-family: var(--font-family-primary-bold);
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+  }
+}
+

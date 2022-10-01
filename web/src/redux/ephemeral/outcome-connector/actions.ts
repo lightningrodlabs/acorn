@@ -12,7 +12,7 @@ const RELATION_AS_CHILD = RelationInput.ExistingOutcomeAsChild
 
 // relation should be RELATION_AS_PARENT or RELATION_AS_CHILD
 // existingParentConnectionAddress is optional
-function setConnectionConnectorFrom(
+function setOutcomeConnectorFrom(
   actionHash: ActionHashB64,
   relation: RelationInput,
   validToActionHashes: Array<ActionHashB64>,
@@ -29,14 +29,14 @@ function setConnectionConnectorFrom(
   }
 }
 
-function setConnectionConnectorTo(actionHash: ActionHashB64) {
+function setOutcomeConnectorTo(actionHash: ActionHashB64) {
   return {
     type: SET_CONNECTION_CONNECTOR_TO,
     payload: actionHash,
   }
 }
 
-function resetConnectionConnector() {
+function resetOutcomeConnector() {
   return {
     type: RESET_CONNECTION_CONNECTOR,
   }
@@ -48,7 +48,7 @@ export {
   SET_CONNECTION_CONNECTOR_FROM,
   SET_CONNECTION_CONNECTOR_TO,
   RESET_CONNECTION_CONNECTOR,
-  setConnectionConnectorFrom,
-  setConnectionConnectorTo,
-  resetConnectionConnector,
+  setOutcomeConnectorFrom,
+  setOutcomeConnectorTo,
+  resetOutcomeConnector,
 }

@@ -56,10 +56,10 @@ import { setOutcomeClone } from '../redux/ephemeral/outcome-clone/actions'
 
 import cloneOutcomes from './cloneOutcomes'
 import {
-  resetConnectionConnector,
-  setConnectionConnectorTo,
-} from '../redux/ephemeral/connection-connector/actions'
-import handleConnectionConnectMouseUp from '../redux/ephemeral/connection-connector/handler'
+  resetOutcomeConnector,
+  setOutcomeConnectorTo,
+} from '../redux/ephemeral/outcome-connector/actions'
+import handleConnectionConnectMouseUp from '../redux/ephemeral/outcome-connector/handler'
 import ProjectsZomeApi from '../api/projectsApi'
 import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
@@ -274,7 +274,7 @@ export default function setupEventListeners(
         }
         store.dispatch(closeExpandedView())
         store.dispatch(closeOutcomeForm())
-        store.dispatch(resetConnectionConnector())
+        store.dispatch(resetOutcomeConnector())
         break
       case 'Backspace':
         let selection = state.ui.selection
@@ -383,7 +383,7 @@ export default function setupEventListeners(
     store.dispatch(setLiveCoordinate(convertedCurrentMouse))
 
     // this only is true if the CANVAS was clicked
-    // meaning it is not true if e.g. an ConnectionConnector html element
+    // meaning it is not true if e.g. an OutcomeConnector html element
     // was clicked
     if (state.ui.mouse.mousedown) {
       if (event.shiftKey) {
@@ -403,7 +403,7 @@ export default function setupEventListeners(
     }
 
     // for hover, we use OUTCOME_VERTICAL_HOVER_ALLOWANCE
-    // to make it so that the ConnectionConnector can display
+    // to make it so that the OutcomeConnector can display
     // without glitchiness
     const outcomeActionHash = checkForOutcomeAtCoordinates(
       ctx,
@@ -444,16 +444,16 @@ export default function setupEventListeners(
       // if we are using the connection connector
       // and IMPORTANTLY if Outcome is in the list of `validToAddresses`
       if (
-        state.ui.connectionConnector.fromAddress &&
-        state.ui.connectionConnector.validToAddresses.includes(
+        state.ui.outcomeConnector.fromAddress &&
+        state.ui.outcomeConnector.validToAddresses.includes(
           outcomeActionHash
         )
       ) {
-        store.dispatch(setConnectionConnectorTo(outcomeActionHash))
+        store.dispatch(setOutcomeConnectorTo(outcomeActionHash))
       }
     } else if (!outcomeActionHash && state.ui.hover.hoveredOutcome) {
       store.dispatch(unhoverOutcome())
-      store.dispatch(setConnectionConnectorTo(null))
+      store.dispatch(setOutcomeConnectorTo(null))
     }
   }
 
@@ -587,7 +587,7 @@ export default function setupEventListeners(
       relation,
       toAddress,
       existingParentConnectionAddress,
-    } = state.ui.connectionConnector
+    } = state.ui.outcomeConnector
     const { activeProject } = state.ui
     if (fromAddress) {
       // covers the case where we are hovered over an Outcome

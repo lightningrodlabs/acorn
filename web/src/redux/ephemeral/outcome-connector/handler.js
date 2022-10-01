@@ -1,4 +1,4 @@
-import { RELATION_AS_PARENT, resetConnectionConnector } from './actions'
+import { RELATION_AS_PARENT, resetOutcomeConnector } from './actions'
 import { createConnection, deleteConnection } from '../../persistent/projects/connections/actions'
 import ProjectsZomeApi from '../../../api/projectsApi'
 import { getAppWs } from '../../../hcWebsockets'
@@ -39,5 +39,5 @@ export default async function handleConnectionConnectMouseUp(
     const createConnectionAction = createConnection(activeProject, createdConnection)
     dispatch(createConnectionAction)
   }
-  dispatch(resetConnectionConnector())
+  dispatch(resetOutcomeConnector())
 }
