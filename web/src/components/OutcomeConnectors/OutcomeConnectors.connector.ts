@@ -1,10 +1,10 @@
 import { connect } from 'react-redux'
 import { RootState } from '../../redux/reducer'
 import {
-  setConnectionConnectorFrom,
-  setConnectionConnectorTo,
-} from '../../redux/ephemeral/connection-connector/actions'
-import ConnectionConnectors from './ConnectionConnectors.component'
+  setOutcomeConnectorFrom,
+  setOutcomeConnectorTo,
+} from '../../redux/ephemeral/outcome-connector/actions'
+import OutcomeConnectors from './OutcomeConnectors.component'
 import { ActionHashB64 } from '../../types/shared'
 
 function mapStateToProps(state: RootState) {
@@ -14,7 +14,7 @@ function mapStateToProps(state: RootState) {
       viewport: { translate, scale },
       layout: coordinates,
       hover: { hoveredOutcome: hoveredOutcomeAddress },
-      connectionConnector: {
+      outcomeConnector: {
         fromAddress,
         relation,
         toAddress,
@@ -56,14 +56,14 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    setConnectionConnectorFrom: (
+    setOutcomeConnectorFrom: (
       address,
       relation,
       validToAddresses,
       existingParentConnectionAddress
     ) => {
       return dispatch(
-        setConnectionConnectorFrom(
+        setOutcomeConnectorFrom(
           address,
           relation,
           validToAddresses,
@@ -71,8 +71,8 @@ function mapDispatchToProps(dispatch) {
         )
       )
     },
-    setConnectionConnectorTo: (address) => {
-      return dispatch(setConnectionConnectorTo(address))
+    setOutcomeConnectorTo: (address) => {
+      return dispatch(setOutcomeConnectorTo(address))
     },
     dispatch,
   }
@@ -81,4 +81,4 @@ function mapDispatchToProps(dispatch) {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ConnectionConnectors)
+)(OutcomeConnectors)

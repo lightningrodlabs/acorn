@@ -1,6 +1,7 @@
 .ev-children-view-wrapper {
   display: flex;
   flex-direction: column;
+  overflow-y: hidden;
 
   .ev-children-view-outcome-list {
     display: flex;
