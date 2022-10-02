@@ -58,19 +58,34 @@ module.exports = {
         test: /\.js$/,
         exclude: {
           and: [/node_modules/],
-          not: [/@holochain\/client/],
+          not: [/\@holochain\/client/]
         },
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-react'],
+            sourceMaps: true,
+            presets: ['@babel/preset-react', '@babel/preset-env'],
             plugins: [
               // ... other plugins
               require.resolve('react-refresh/babel'),
+              "transform-class-properties",
             ],
           },
         },
       },
+      // transform for @holochain/client
+      // {
+      //   test: /@holochain\/client\/\.js$/,
+      //   use: {
+      //     loader: 'babel-loader',
+      //     options: {
+      //       presets: [],
+      //       plugins: [
+      //         ,
+      //       ]
+      //     },
+      //   },
+      // },
       {
         test: /\.(ts|tsx)$/,
         exclude: [/node_modules/, /stories/],

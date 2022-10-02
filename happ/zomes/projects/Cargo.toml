@@ -8,14 +8,13 @@ crate-type = ["cdylib", "rlib"]
 name = "projects"
 
 [dependencies]
-# hdk_crud = { version = "0.5.6", features = ["no_example"] }
-hdk_crud = { git = "https://github.com/lightningrodlabs/hdk_crud", branch = "holochain-0.0.162-bump", features = ["no_example"]  }
+hdk_crud = { version = "0.7.0", features = ["no_example"] }
+hdk = "0.0.154"
+holo_hash = {version = "=0.0.33", features = ["encoding"]}
 projects_integrity = { path = "../projects_integrity" }
-hdk = "0.0.152"
-holo_hash = {version = "=0.0.32", features = ["encoding"]}
 paste = "*"
 # use whatever serde hdk uses
-chrono = "0.4.19"
+chrono = { version = "=0.4.22", default-features = false, features = ["clock", "std", "oldtime", "serde"] }
 serde = "*"
 thiserror = "1"
 
