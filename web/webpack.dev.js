@@ -73,19 +73,6 @@ module.exports = {
           },
         },
       },
-      // transform for @holochain/client
-      // {
-      //   test: /@holochain\/client\/\.js$/,
-      //   use: {
-      //     loader: 'babel-loader',
-      //     options: {
-      //       presets: [],
-      //       plugins: [
-      //         ,
-      //       ]
-      //     },
-      //   },
-      // },
       {
         test: /\.(ts|tsx)$/,
         exclude: [/node_modules/, /stories/],
