@@ -8,7 +8,7 @@ crate-type = ["cdylib", "rlib"]
 name = "profiles"
 
 [dependencies]
-hdk_crud = { version = "0.7.0", features = ["no_example"] }
+hdk_crud = { version = "0.7.1", features = ["no_example"] }
 hdk = "0.0.154"
 holo_hash = {version = "=0.0.33", features = ["encoding", "fixturators"]}
 profiles_integrity = { path = "../profiles_integrity" }

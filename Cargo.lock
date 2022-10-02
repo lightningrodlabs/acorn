@@ -181,12 +181,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bfd4d1b31faaa3a89d7934dbded3111da0d2ef28e3ebccdb4f0179f5929d1ef1"
 dependencies = [
  "iana-time-zone",
- "js-sys",
  "num-integer",
  "num-traits",
  "serde",
  "time",
- "wasm-bindgen",
  "winapi",
 ]
 
@@ -709,9 +707,9 @@ dependencies = [
 
 [[package]]
 name = "hdk_crud"
-version = "0.7.0"
+version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7c950e5b97265dc26c4ced5c67d3a5ff5ca3cfa106859b3bdafd6762eb8b59b"
+checksum = "6958df24a62ee0acfbaf981bb3425c44175ac1eae30040222a0a2fb8849f935e"
 dependencies = [
  "assert_matches",
  "chrono",

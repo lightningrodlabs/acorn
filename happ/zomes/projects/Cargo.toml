@@ -8,13 +8,13 @@ crate-type = ["cdylib", "rlib"]
 name = "projects"
 
 [dependencies]
-hdk_crud = { version = "0.7.0", features = ["no_example"] }
+hdk_crud = { version = "0.7.1", features = ["no_example"] }
 hdk = "0.0.154"
 holo_hash = {version = "=0.0.33", features = ["encoding"]}
 projects_integrity = { path = "../projects_integrity" }
 paste = "*"
-# use whatever serde hdk uses
 chrono = { version = "=0.4.22", default-features = false, features = ["clock", "std", "oldtime", "serde"] }
+# use whatever serde hdk uses
 serde = "*"
 thiserror = "1"
 
