@@ -4,7 +4,7 @@ import { ElectronHolochainOptions, StateSignal, PathOptions } from '@lightningro
 
 // see the DEVELOPERS.md about incrementing
 // these values
-const DATABASES_VERSION_NUMBER = '3'
+const DATABASES_VERSION_NUMBER = '4'
 const KEYSTORE_VERSION_NUMBER = '3'
 
 // these messages get seen on the splash page
