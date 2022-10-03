@@ -193,7 +193,8 @@ pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
         )?
         .into_iter()
         // TODO: this should deduplicate results where the .agent_pub_key
-        // is the same
+        // is the same. It should be specific and pick/prefer one where
+        // profile.is_imported is `false`.
         .map(|wire_record| wire_record.entry)
         .collect();
     Ok(entries)
