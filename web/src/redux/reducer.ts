@@ -27,7 +27,7 @@ import outcomeClone from './ephemeral/outcome-clone/reducer'
 import activeProject from './ephemeral/active-project/reducer'
 import activeEntryPoints from './ephemeral/active-entry-points/reducer'
 import localPreferences from './ephemeral/local-preferences/reducer'
-import connectionConnector from './ephemeral/connection-connector/reducer'
+import outcomeConnector from './ephemeral/outcome-connector/reducer'
 import outcomeEditing from './ephemeral/outcome-editing/reducer'
 import realtimeInfo from './ephemeral/realtime-info/reducer'
 // import anotherone from './another/path'
@@ -43,7 +43,7 @@ const rootReducer = combineReducers({
     layout,
     inviteMembersModal,
     hasFetchedForWhoami,
-    connectionConnector,
+    outcomeConnector,
     localPreferences,
     outcomeForm,
     selection,

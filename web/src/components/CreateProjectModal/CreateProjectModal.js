@@ -110,7 +110,7 @@ function CreateProjectForm({
             <ValidatingFormInput
               value={projectCoverUrl}
               onChange={setProjectCoverUrl}
-              label="Project Cover Image"
+              label="Project Cover Image (optional)"
               placeholder="Paste in your project image URL here"
               invalidInput={
                 projectCoverUrl.length > 0 && !isValidProjectCoverUrl

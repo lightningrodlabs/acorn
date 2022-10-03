@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './ConnectionConnectors.scss'
+import './OutcomeConnectors.scss'
 import {
   outcomeWidth,
   getOutcomeHeight,
@@ -8,12 +8,12 @@ import {
 import {
   RELATION_AS_CHILD,
   RELATION_AS_PARENT,
-} from '../../redux/ephemeral/connection-connector/actions'
+} from '../../redux/ephemeral/outcome-connector/actions'
 import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
-import handleConnectionConnectMouseUp from '../../redux/ephemeral/connection-connector/handler'
+import handleConnectionConnectMouseUp from '../../redux/ephemeral/outcome-connector/handler'
 import { calculateValidChildren, calculateValidParents } from '../../tree-logic'
 
-const ConnectionConnectorHtml = ({
+const OutcomeConnectorHtml = ({
   active,
   pixelTop,
   pixelLeft,
@@ -24,19 +24,19 @@ const ConnectionConnectorHtml = ({
 }) => {
   return (
     <div
-      className={`connection-connector ${active ? 'active' : ''}`}
+      className={`outcome-connector ${active ? 'active' : ''}`}
       style={{ top: `${pixelTop}px`, left: `${pixelLeft}px` }}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
       onMouseOver={onMouseOver}
       onMouseOut={onMouseOut}
     >
-      <div className="connection-connector-blue-dot" />
+      <div className="outcome-connector-blue-dot" />
     </div>
   )
 }
 
-const ConnectionConnector = ({
+const OutcomeConnector = ({
   activeProject,
   projectTags,
   outcome,
@@ -48,8 +48,8 @@ const ConnectionConnector = ({
   address,
   outcomeCoordinates,
   canvas,
-  setConnectionConnectorFrom,
-  setConnectionConnectorTo,
+  setOutcomeConnectorFrom,
+  setOutcomeConnectorTo,
   connections,
   outcomeActionHashes,
   translate,
@@ -105,7 +105,7 @@ const ConnectionConnector = ({
   // shared code for mouse event handlers
   const connectionConnectMouseDown = (direction, validity) => () => {
     if (!fromAddress) {
-      setConnectionConnectorFrom(
+      setOutcomeConnectorFrom(
         address,
         direction,
         validity(address, connections, outcomeActionHashes),
@@ -141,17 +141,17 @@ const ConnectionConnector = ({
   const connectorOnMouseOver = () => {
     // cannot set 'to' the very same Outcome
     if (fromAddress && address !== fromAddress)
-      setConnectionConnectorTo(address)
+      setOutcomeConnectorTo(address)
   }
   const connectorOnMouseOut = () => {
-    setConnectionConnectorTo(null)
+    setOutcomeConnectorTo(null)
   }
 
   return (
     <>
       {/* top connector */}
       {(canShowTopConnector || topConnectorActive) && (
-        <ConnectionConnectorHtml
+        <OutcomeConnectorHtml
           active={topConnectorActive}
           pixelTop={topConnectorTop}
           pixelLeft={topConnectorLeft}
@@ -164,7 +164,7 @@ const ConnectionConnector = ({
 
       {/* bottom connector */}
       {(canShowBottomConnector || bottomConnectorActive) && (
-        <ConnectionConnectorHtml
+        <OutcomeConnectorHtml
           active={bottomConnectorActive}
           pixelTop={bottomConnectorTop}
           pixelLeft={bottomConnectorLeft}
@@ -178,7 +178,7 @@ const ConnectionConnector = ({
   )
 }
 
-const ConnectionConnectors = ({
+const OutcomeConnectors = ({
   outcomes,
   activeProject,
   projectTags,
@@ -192,8 +192,8 @@ const ConnectionConnectors = ({
   existingParentConnectionAddress,
   connectorAddresses,
   canvas,
-  setConnectionConnectorFrom,
-  setConnectionConnectorTo,
+  setOutcomeConnectorFrom,
+  setOutcomeConnectorTo,
   dispatch,
 }) => {
    // convert from object to array
@@ -210,7 +210,7 @@ const ConnectionConnectors = ({
     return (
       <div key={connectorAddress}>
         {outcomeCoordinates && (
-          <ConnectionConnector
+          <OutcomeConnector
             activeProject={activeProject}
             projectTags={projectTags}
             outcome={outcome}
@@ -226,8 +226,8 @@ const ConnectionConnectors = ({
               existingParentConnectionAddress
             }
             address={connectorAddress}
-            setConnectionConnectorFrom={setConnectionConnectorFrom}
-            setConnectionConnectorTo={setConnectionConnectorTo}
+            setOutcomeConnectorFrom={setOutcomeConnectorFrom}
+            setOutcomeConnectorTo={setOutcomeConnectorTo}
             outcomeCoordinates={outcomeCoordinates}
             canvas={canvas}
             dispatch={dispatch}
@@ -239,4 +239,4 @@ const ConnectionConnectors = ({
     )
   })
 }
-export default ConnectionConnectors
+export default OutcomeConnectors

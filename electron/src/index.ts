@@ -1,10 +1,12 @@
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
+import * as contextMenu from 'electron-context-menu'
 import * as path from 'path'
 // import log from 'electron-log'
 import initAgent, {
   StateSignal,
   STATUS_EVENT,
 } from '@lightningrodlabs/electron-holochain'
+
 
 import {
   devOptions,
@@ -13,6 +15,11 @@ import {
   stateSignalToText,
   BINARY_PATHS,
 } from './holochain'
+
+// add the right-click "context" menu
+contextMenu({
+  showSaveImageAs: true
+})
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // if (require('electron-squirrel-startup')) {

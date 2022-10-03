@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import Icon from '../Icon/Icon'
 import DatePicker from '../DatePicker/DatePicker'
-import ConnectionConnectorPicker from '../ConnectionConnectorPicker/ConnectionConnectorPicker.connector'
+import OutcomeConnectorPicker from '../OutcomeConnectorPicker/OutcomeConnectorPicker.connector'
 import Modal, { ModalContent } from '../Modal/Modal'
 
 import './MultiEditBar.scss'
@@ -11,7 +11,7 @@ export default function MultiEditBar({
   agentAddress,
   selectedOutcomes = [],
   updateOutcome,
-  hasSelection,
+  hasMultiSelection,
   deleteOutcomeFully,
 }) {
   const defaultViews = {
@@ -19,31 +19,21 @@ export default function MultiEditBar({
     squirrels: false,
     timeframe: false,
     hierarchy: false,
-    connectionConnector: false,
+    outcomeConnector: false,
     delete: false,
   }
   const [popup, setPopup] = useState(false)
   const [viewsOpen, setViews] = useState(defaultViews)
 
-  const [statusColor, setStatusColor] = useState(
-    selectedOutcomes.length ? selectedOutcomes[0].status : 'Uncertain'
-  )
-
-  useEffect(() => {
-    if (selectedOutcomes.length) {
-      setStatusColor(selectedOutcomes[0].status)
-    }
-  }, [selectedOutcomes])
-
   // close any popups if you deselect
   useEffect(() => {
-    if (!hasSelection) {
+    if (!hasMultiSelection) {
       setViews({ ...defaultViews })
     }
-  }, [hasSelection])
+  }, [hasMultiSelection])
 
-  const updateOutcomes = key => val => {
-    selectedOutcomes.forEach(outcome => {
+  const updateOutcomes = (key) => (val) => {
+    selectedOutcomes.forEach((outcome) => {
       updateOutcome(
         {
           ...outcome,
@@ -69,10 +59,12 @@ export default function MultiEditBar({
   const multiEditBarSquirrelsClass = viewsOpen.squirrels ? 'active' : ''
   const multiEditBarHierarchyClass = viewsOpen.hierarchy ? 'active' : ''
   const multiEditBarTimeframeClass = viewsOpen.timeframe ? 'active' : ''
-  const multiEditBarConnectionConnectorClass = viewsOpen.connectionConnector ? 'active' : ''
+  const multiEditBarOutcomeConnectorClass = viewsOpen.outcomeConnector
+    ? 'active'
+    : ''
   const multiEditBarDeleteClass = viewsOpen.delete ? 'active' : ''
 
-  const toggleView = key => {
+  const toggleView = (key) => {
     if (!viewsOpen[key]) {
       setPopup(true)
     }
@@ -84,12 +76,14 @@ export default function MultiEditBar({
     setViews({ ...defaultViews })
   }
 
+  // currently not functional / needing updaing
   const statusAlertContent = (
     <div>
       This function will override the statuses on all selected cards. Proceed?
     </div>
   )
 
+  // currently not functional / needing updaing
   const squirrelsAlertContent = (
     <div>
       This function will override the existing associated members on all
@@ -97,6 +91,7 @@ export default function MultiEditBar({
     </div>
   )
 
+  // currently not functional / needing updaing
   const timeframeAlertContent = (
     <div>
       This function will override the existing timeframes set on all selected
@@ -104,23 +99,22 @@ export default function MultiEditBar({
     </div>
   )
 
-  const hierarchyAlertContent = (
+  // Content for multi edit archive modal
+  const archiveContent = (
     <div>
-      This function will override the existing hierarchy levels on all selected
-      cards. Proceed?
-    </div>
-  )
-
-  const deleteContent = (
-    <div>
-      You're about to delete the following {selectedOutcomes.length} card(s):
-      <div className='modal-outcomes-list'>
-        {selectedOutcomes.map(outcome => (
-          <div key={outcome.actionHash}>- {outcome.content}</div>
+      You're about to archive the following{' '}
+      {selectedOutcomes.length > 1 && <b>{selectedOutcomes.length}</b>} Outcome
+      {selectedOutcomes.length > 1 ? 's' : ''}:
+      <div className="modal-outcomes-list">
+        {selectedOutcomes.map((outcome) => (
+          <ul>
+            <div key={outcome.actionHash}>
+              <li>{outcome.content}</li>
+            </div>
+          </ul>
         ))}
       </div>
-      You will be able to see these cards in the delete view mode in the
-      future. Proceed?
+      You will no longer have access to archived Outcomes. Proceed?
     </div>
   )
 
@@ -162,64 +156,69 @@ export default function MultiEditBar({
     modalHeading = 'Setting Timeframe for Multiple Cards'
     modalContent = timeframeAlertContent
     modalIcon = 'calendar.svg'
-  } else if (popup && viewsOpen.hierarchy) {
-    showModal = true
-    modalClassname = 'hierarchy-popup'
-    modalHeading = 'Setting Hierarchy for Multiple Cards'
-    modalContent = hierarchyAlertContent
-    modalIcon = 'leaf.svg'
   }
 
   return (
     <>
-      <div className={`multi-edit-bar ${hasSelection ? 'has-selection' : ''}`}>
-        {/* connection connector */}
+      <div
+        className={`multi-edit-bar ${hasMultiSelection ? 'has-selection' : ''}`}
+      >
+        {/* outcome connector button */}
         <Icon
-          name='connection-connector.svg'
-          size='medium-MultiEditBar'
-          className={multiEditBarConnectionConnectorClass}
-          key='connectionConnector'
-          onClick={() => toggleView('connectionConnector')}
+          name="hierarchy.svg"
+          size="medium-MultiEditBar"
+          className={multiEditBarOutcomeConnectorClass}
+          key="outcomeConnector"
+          onClick={() => toggleView('outcomeConnector')}
+          withTooltipTop
+          tooltipText="Outcome Connector"
         />
-        {viewsOpen.connectionConnector && (
-          <ConnectionConnectorPicker onClose={() => setViews({ ...defaultViews })} />
-        )}
-        {/* delete */}
+
+        {/* archive selected outcomes */}
         <Icon
-          name='archive.svg'
-          key='delete'
+          name="archive.svg"
+          key="delete"
           className={multiEditBarDeleteClass}
           onClick={() => toggleView('delete')}
+          withTooltipTop
+          tooltipText="Archive"
         />
       </div>
+
+      {/* open modal for outcome connector */}
+      <OutcomeConnectorPicker
+        active={viewsOpen.outcomeConnector}
+        onClose={() => setViews({ ...defaultViews })}
+      />
+   
+
+      {/* open modal for archiving selected outcomes */}
+      <Modal onClose={reset} className="multi-edit-modal" active={viewsOpen.delete}>
+        <ModalContent
+          heading="Archiving"
+          content={archiveContent}
+          icon="archive.svg"
+          primaryButton="Yes, Archive"
+          altButton="Nevermind"
+          primaryButtonAction={deleteOutcomes}
+          altButtonAction={reset}
+        />
+      </Modal>
+
+      {/* Currently not functional, needs updating */}
       {selectedOutcomes.length > 1 && (
         <Modal onClose={reset} className={modalClassname} active={showModal}>
           <ModalContent
             heading={modalHeading}
             content={modalContent}
             icon={modalIcon}
-            primaryButton='Yes, Proceed'
-            altButton='Nevermind'
+            primaryButton="Yes, Proceed"
+            altButton="Nevermind"
             primaryButtonAction={() => setPopup(false)}
             altButtonAction={reset}
           />
         </Modal>
       )}
-      <Modal
-        onClose={reset}
-        className='delete-popup'
-        active={viewsOpen.delete}>
-        <ModalContent
-          heading='Archiving'
-          content={deleteContent}
-          icon='archive.svg'
-          primaryButton='Yes, Delete'
-          altButton='Nevermind'
-          primaryButtonAction={deleteOutcomes}
-          altButtonAction={reset}
-        />
-      </Modal>
     </>
   )
 }
-

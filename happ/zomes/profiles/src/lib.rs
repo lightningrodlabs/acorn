@@ -75,15 +75,6 @@ pub fn inner_create_whoami(
     Ok(wire_record)
 }
 
-/*
-// LATER, to link from an imported profile to claim as your own
-// user profile
-// list me so I can specifically and quickly look up my profile
-    let agent_pubkey = agent_info()?.agent_initial_pubkey;
-    let agent_entry_hash = EntryHash::from(agent_pubkey);
-    create_link(agent_entry_hash, entry_hash, ())?;
-*/
-
 #[hdk_extern]
 pub fn create_imported_profile(entry: Profile) -> ExternResult<WireRecord<Profile>> {
     let entry_hash = hash_entry(&entry)?;
@@ -96,6 +87,15 @@ pub fn create_imported_profile(entry: Profile) -> ExternResult<WireRecord<Profil
         entry_hash.clone(),
         LinkTypes::Profile,
         LinkTag::from(Vec::new()),
+    )?;
+    // list profile so the owner can quickly look it up
+    let agent_pubkey = AgentPubKey::from(entry.clone().agent_pub_key);
+    let agent_entry_hash = EntryHash::from(agent_pubkey);
+    create_link(
+        agent_entry_hash,
+        entry_hash.clone(),
+        LinkTypes::Profile,
+        LinkTag::from(()),
     )?;
     let time = sys_time()?;
     Ok(WireRecord {
@@ -154,6 +154,8 @@ pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
     let agent_entry_hash = EntryHash::from(agent_pubkey);
 
     let all_profiles = get_links(agent_entry_hash, LinkTypes::Profile, None)?;
+    // TODO: this should not just randomly pick the 'last'. If there are multiple
+    // it should select the first one for which profile.is_imported is false.
     let maybe_profile_link = all_profiles.last();
     let get_latest = GetLatestEntry {};
     // // do it this way so that we always keep the original profile entry address
@@ -190,6 +192,9 @@ pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
             GetOptions::content(),
         )?
         .into_iter()
+        // TODO: this should deduplicate results where the .agent_pub_key
+        // is the same. It should be specific and pick/prefer one where
+        // profile.is_imported is `false`.
         .map(|wire_record| wire_record.entry)
         .collect();
     Ok(entries)
@@ -198,7 +203,7 @@ pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
 #[hdk_extern]
 fn fetch_agent_address(_: ()) -> ExternResult<AgentPubKeyB64> {
     let agent_info = agent_info()?;
-    Ok(AgentPubKeyB64::new(agent_info.agent_latest_pubkey))
+    Ok(AgentPubKeyB64::new(agent_info.agent_initial_pubkey))
 }
 
 /*
@@ -229,7 +234,7 @@ fn get_peers() -> ExternResult<Vec<AgentPubKey>> {
         None,
         GetOptions::latest(),
     )?;
-    let self_agent_pub_key = AgentPubKeyB64::from(agent_info()?.agent_latest_pubkey);
+    let self_agent_pub_key = AgentPubKeyB64::from(agent_info()?.agent_initial_pubkey);
     Ok(entries
         .into_iter()
         // eliminate yourself as a peer, along with imports

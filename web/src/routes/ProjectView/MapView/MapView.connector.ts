@@ -29,7 +29,9 @@ function mapStateToProps(state: RootState): MapViewProps {
     translate: state.ui.viewport.translate,
     zoomLevel: state.ui.viewport.scale,
     // map from an array type (the selectedOutcomes) to a simple boolean type
-    hasSelection: state.ui.selection.selectedOutcomes.length > 0,
+    // only if more than 1 (2+) outcome cards are selected
+    // then show the Multi Edit Bar
+    hasMultiSelection: state.ui.selection.selectedOutcomes.length > 1,
     showEmptyState,
     outcomeFormIsOpen: state.ui.outcomeForm.isOpen,
   }

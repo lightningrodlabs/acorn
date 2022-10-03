@@ -8,14 +8,15 @@ import {
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
-import ConnectionConnectorPicker from './ConnectionConnectorPicker.component'
+import OutcomeConnectorPicker from './OutcomeConnectorPicker.component'
 
 function mapStateToProps(state: RootState) {
   const selectedOutcomes = state.ui.selection.selectedOutcomes.map((actionHash) => {
     return state.projects.outcomes[state.ui.activeProject][actionHash]
   })
 
-  const connections = Object.values(state.projects.connections[state.ui.activeProject])
+  // use a bit of defensive coding ( || {} ) during loading
+  const connections = Object.values(state.projects.connections[state.ui.activeProject] || {})
 
   return {
     selectedOutcomes,
@@ -60,4 +61,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ConnectionConnectorPicker)
+export default connect(mapStateToProps, mapDispatchToProps)(OutcomeConnectorPicker)

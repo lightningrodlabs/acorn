@@ -56,7 +56,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
               />
               {/* number of achieved and total tasks */}
               {computedAchievementStatus.tasksAchieved.toString()}/
-              {computedAchievementStatus.tasksTotal.toString()} tasks
+              {computedAchievementStatus.tasksTotal.toString()} task{computedAchievementStatus.tasksTotal !== 1 ? 's' : ''}
               {/* achievement progress percentage */}
               <div className="descendants-progress-percentage">
                 (
