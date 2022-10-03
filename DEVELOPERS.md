@@ -83,7 +83,7 @@ It is then in a specific sub-folder that relates to one of two types of data:
 - source chain and DHT -> `databases-${DATABASES_VERSION_NUMBER}`
 - private keys -> `keystore-${KEYSTORE_VERSION_NUMBER}`
 
-DATABASES_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER are defined in `frontend/electron/src/holochain.ts` and can be modified as needed in order to jump to new versions of holochain, or a new app DNA.
+DATABASES_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER are defined in `electron/src/holochain.ts` and can be modified as needed in order to jump to new versions of holochain, or a new app DNA.
 
 You can tweak DATABASES_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER independently. 
 
