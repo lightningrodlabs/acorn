@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use hdk::prelude::*;
 use hdk_crud::{
     retrieval::{fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry},
@@ -187,7 +189,8 @@ pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
     let link_type_filter = LinkTypeFilter::try_from(LinkTypes::Profile)?;
-    let entries = fetch_links
+
+    let entries: Vec<Profile> = fetch_links
         .fetch_links::<Profile>(
             &get_latest,
             path_hash,
@@ -196,12 +199,24 @@ pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
             GetOptions::content(),
         )?
         .into_iter()
-        // TODO: this should deduplicate results where the .agent_pub_key
-        // is the same. It should be specific and pick/prefer one where
-        // profile.is_imported is `false`.
         .map(|wire_record| wire_record.entry)
         .collect();
-    Ok(entries)
+    
+    let mut unique_profiles: BTreeMap<AgentPubKeyB64, Profile> = BTreeMap::new();
+    let _ = entries.into_iter()
+        .map(|profile| {
+        if unique_profiles.contains_key(&profile.agent_pub_key) {
+            if !profile.is_imported {
+                unique_profiles.insert(profile.clone().agent_pub_key, profile);
+            }
+        }
+        else {
+            unique_profiles.insert(profile.clone().agent_pub_key, profile);
+        }
+        });
+    Ok(unique_profiles.values().map(|profile|{
+        profile.clone()
+    }).collect::<Vec<Profile>>())
 }
 
 #[hdk_extern]
