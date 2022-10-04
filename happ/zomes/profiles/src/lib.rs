@@ -154,27 +154,31 @@ pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
     let agent_entry_hash = EntryHash::from(agent_pubkey);
 
     let all_profiles = get_links(agent_entry_hash, LinkTypes::Profile, None)?;
-    // TODO: this should not just randomly pick the 'last'. If there are multiple
-    // it should select the first one for which profile.is_imported is false.
-    let maybe_profile_link = all_profiles.last();
-    let get_latest = GetLatestEntry {};
-    // // do it this way so that we always keep the original profile entry address
-    // // from the UI perspective
-    match maybe_profile_link {
-        Some(profile_link) => {
-            match get_latest.get_latest_for_entry::<Profile>(
-                profile_link.target.clone().into(),
+    
+    let all_fetched_maybe_profiles = all_profiles.into_iter()
+        .map(|link|{
+            let get_latest = GetLatestEntry {};
+            get_latest.get_latest_for_entry::<Profile>(
+                link.target.clone().into(),
                 GetOptions::content(),
-            )? {
-                Some(entry_and_hash) => {
-                    let wire_record: WireRecord<Profile> = WireRecord::from(entry_and_hash);
-                    Ok(WhoAmIOutput(Some(wire_record)))
-                }
+            )
+        })
+        .collect::<ExternResult<Vec<Option<WireRecord<Profile>>>>>()?;
+
+    let all_fetched_profiles = all_fetched_maybe_profiles.into_iter()
+        .filter_map(|maybe_profile| {
+            maybe_profile
+        })
+        .collect::<Vec<WireRecord<Profile>>>();
+    let copied_all_profiles = all_fetched_profiles.clone();
+    match all_fetched_profiles.into_iter()    
+        .find(|wire_record| !wire_record.entry.is_imported) {
+            Some(profile) => Ok(WhoAmIOutput(Some(profile))),
+            None => match copied_all_profiles.last() {
+                Some(last_profile) => Ok(WhoAmIOutput(Some(last_profile.clone()))),
                 None => Ok(WhoAmIOutput(None)),
             }
         }
-        None => Ok(WhoAmIOutput(None)),
-    }
 }
 
 #[hdk_extern]
