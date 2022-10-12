@@ -38,18 +38,18 @@ module.exports = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
+    fallback: {
+      fs: false
+    }
   },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
   },
-  node: {
-    fs: 'empty',
-  },
   devServer: {
     host: 'localhost',
-    disableHostCheck: true,
-    contentBase: './dist',
+    allowedHosts: 'all',
+    static: './dist',
     hot: true, // hot module reloading
   },
   module: {
