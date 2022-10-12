@@ -61,7 +61,9 @@ async function installProjectApp(
     : './happ/workdir/projects.dna'
   const hash = await adminWs.registerDna({
     path: dnaPath,
-    uid,
+    modifiers: {
+      network_seed: uid,
+    }
   })
   // INSTALL
   const installedApp = await adminWs.installApp({
