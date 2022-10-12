@@ -78,10 +78,7 @@ async function installProjectApp(
   })
   const cellId = installedApp.cell_data[0].cell_id
   const cellIdString = cellIdToString(cellId)
-  // ACTIVATE
-  // TODO !!! Update to EnableApp when updating
-  // conductor-api version
-  await adminWs.activateApp({ installed_app_id })
+  await adminWs.enableApp({ installed_app_id })
   return [cellIdString, cellId, installed_app_id]
 }
 
@@ -210,7 +207,7 @@ async function importProject(
 
 async function deactivateApp(appId, cellId, dispatch) {
   const adminWs = await getAdminWs()
-  await adminWs.deactivateApp({
+  await adminWs.disableApp({
     installed_app_id: appId,
   })
   await dispatch(removeProjectCellId(cellId))
