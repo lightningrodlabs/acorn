@@ -14,7 +14,6 @@ module.exports = {
   mode: 'development',
   devtool: 'inline-source-map',
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new ReactRefreshWebpackPlugin(),
     new webpack.DefinePlugin({
       __MAIN_APP_ID__: JSON.stringify(mainAppId),
