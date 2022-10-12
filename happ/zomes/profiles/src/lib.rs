@@ -210,8 +210,7 @@ pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
     
     // use a BTreeMap to associate a profile struct to an agent pub key, used to dedup profiles for the same agent
     let mut unique_profiles: BTreeMap<AgentPubKeyB64, Profile> = BTreeMap::new();
-    let _ = entries.into_iter()
-        .map(|profile| {
+    for profile in entries {
         // check if a profile with a specific pub key has already been added to the BTreeMap
         if unique_profiles.contains_key(&profile.agent_pub_key) {
             // if the profile is not imported, replace the existing value for the associated key to ensure the non-imported profile is returned.
@@ -223,7 +222,7 @@ pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
         else {
             unique_profiles.insert(profile.clone().agent_pub_key, profile);
         }
-        });
+    }
     
     // map the values of the BTreeMap into a vector
     Ok(unique_profiles.values().map(|profile|{
