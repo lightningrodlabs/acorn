@@ -101,6 +101,7 @@ module.exports = {
             outputPath: 'fonts/',
           },
         },
+        type: 'javascript/auto'
       },
       // .png, .jpg, .svg images
       {
@@ -112,6 +113,7 @@ module.exports = {
             outputPath: 'images/',
           },
         },
+        type: 'javascript/auto'
       },
       // scss
       {
