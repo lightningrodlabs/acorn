@@ -14,7 +14,6 @@ module.exports = {
   mode: 'development',
   devtool: 'inline-source-map',
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new ReactRefreshWebpackPlugin(),
     new webpack.DefinePlugin({
       __MAIN_APP_ID__: JSON.stringify(mainAppId),
@@ -38,18 +37,18 @@ module.exports = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
+    fallback: {
+      fs: false
+    }
   },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
   },
-  node: {
-    fs: 'empty',
-  },
   devServer: {
     host: 'localhost',
-    disableHostCheck: true,
-    contentBase: './dist',
+    allowedHosts: 'all',
+    static: './dist',
     hot: true, // hot module reloading
   },
   module: {
@@ -102,6 +101,7 @@ module.exports = {
             outputPath: 'fonts/',
           },
         },
+        type: 'javascript/auto'
       },
       // .png, .jpg, .svg images
       {
@@ -113,6 +113,7 @@ module.exports = {
             outputPath: 'images/',
           },
         },
+        type: 'javascript/auto'
       },
       // scss
       {
