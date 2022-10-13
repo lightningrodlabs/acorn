@@ -1,4 +1,6 @@
 import { HoloHash, CellId } from '@holochain/client'
+import BufferAll from 'buffer/'
+const Buffer = BufferAll.Buffer
 
 export function hashToString(hash: HoloHash) {
   // nodejs
@@ -19,7 +21,6 @@ export function hashFromString(str: string): HoloHash {
   }
   // browser
   else {
-    // @ts-ignore
     return Buffer.from(str.split(','))
   }
 }

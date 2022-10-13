@@ -9,6 +9,11 @@ const mainAppId = fs.readFileSync(
 
 module.exports = {
   mode: 'production',
+  // TODO: figure out how to re-enable this
+  // or otherwise optimize the size issues.
+  optimization: {
+    minimize: false
+  },
   output: {
     publicPath: './',
     filename: '[name].js',
@@ -50,12 +55,18 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        exclude: {
+          and: [/node_modules/],
+          not: [/\@holochain\/client/]
+        },
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-react'],
-            plugins: [],
+            sourceMaps: true,
+            presets: ['@babel/preset-react', '@babel/preset-env'],
+            plugins: [
+              "transform-class-properties",
+            ],
           },
         },
       },
