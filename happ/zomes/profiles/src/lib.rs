@@ -1,3 +1,5 @@
+use std::collections::BTreeMap;
+
 use hdk::prelude::*;
 use hdk_crud::{
     retrieval::{fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry},
@@ -148,42 +150,53 @@ pub fn inner_update_whoami(
     Ok(wire_record)
 }
 
+/// Get all profiles that are linked to this agent's pubkey. If a non-imported profile exists, return the first one of these found, otherwise return the last profile.
 #[hdk_extern]
 pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
     let agent_pubkey = agent_info()?.agent_initial_pubkey;
     let agent_entry_hash = EntryHash::from(agent_pubkey);
 
     let all_profiles = get_links(agent_entry_hash, LinkTypes::Profile, None)?;
-    // TODO: this should not just randomly pick the 'last'. If there are multiple
-    // it should select the first one for which profile.is_imported is false.
-    let maybe_profile_link = all_profiles.last();
-    let get_latest = GetLatestEntry {};
-    // // do it this way so that we always keep the original profile entry address
-    // // from the UI perspective
-    match maybe_profile_link {
-        Some(profile_link) => {
-            match get_latest.get_latest_for_entry::<Profile>(
-                profile_link.target.clone().into(),
+    
+    // fetch all profile entries from the link targets
+    let all_fetched_maybe_profiles = all_profiles.into_iter()
+        .map(|link|{
+            let get_latest = GetLatestEntry {};
+            get_latest.get_latest_for_entry::<Profile>(
+                link.target.clone().into(),
                 GetOptions::content(),
-            )? {
-                Some(entry_and_hash) => {
-                    let wire_record: WireRecord<Profile> = WireRecord::from(entry_and_hash);
-                    Ok(WhoAmIOutput(Some(wire_record)))
-                }
+            )
+        })
+        .collect::<ExternResult<Vec<Option<WireRecord<Profile>>>>>()?;
+
+    // filter out any `None` variants from the vec
+    let all_fetched_profiles = all_fetched_maybe_profiles.into_iter()
+        .filter_map(|maybe_profile| {
+            maybe_profile
+        })
+        .collect::<Vec<WireRecord<Profile>>>();
+    let copied_all_profiles = all_fetched_profiles.clone();
+    
+    // return the first profile which is not imported if it exists, otherwise return the last profile in the vec
+    match all_fetched_profiles.into_iter()    
+        .find(|wire_record| !wire_record.entry.is_imported) {
+            Some(profile) => Ok(WhoAmIOutput(Some(profile))),
+            None => match copied_all_profiles.last() {
+                Some(last_profile) => Ok(WhoAmIOutput(Some(last_profile.clone()))),
                 None => Ok(WhoAmIOutput(None)),
             }
         }
-        None => Ok(WhoAmIOutput(None)),
-    }
 }
 
+/// Fetch a list of all agent profiles, returning only one profile per agent pub key. If a non-imported profile exists, return that one, otherwise return the imported profile.
 #[hdk_extern]
 pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
     let path_hash = Path::from(AGENTS_PATH).path_entry_hash()?;
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
     let link_type_filter = LinkTypeFilter::try_from(LinkTypes::Profile)?;
-    let entries = fetch_links
+
+    let entries: Vec<Profile> = fetch_links
         .fetch_links::<Profile>(
             &get_latest,
             path_hash,
@@ -192,12 +205,29 @@ pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
             GetOptions::content(),
         )?
         .into_iter()
-        // TODO: this should deduplicate results where the .agent_pub_key
-        // is the same. It should be specific and pick/prefer one where
-        // profile.is_imported is `false`.
         .map(|wire_record| wire_record.entry)
         .collect();
-    Ok(entries)
+    
+    // use a BTreeMap to associate a profile struct to an agent pub key, used to dedup profiles for the same agent
+    let mut unique_profiles: BTreeMap<AgentPubKeyB64, Profile> = BTreeMap::new();
+    for profile in entries {
+        // check if a profile with a specific pub key has already been added to the BTreeMap
+        if unique_profiles.contains_key(&profile.agent_pub_key) {
+            // if the profile is not imported, replace the existing value for the associated key to ensure the non-imported profile is returned.
+            if !profile.is_imported {
+                unique_profiles.insert(profile.clone().agent_pub_key, profile);
+            }
+        }
+        // if a profile with a specific agent pub key hasn't been added yet to the BTreeMap, add the first one found so even if a non-imported one isn't found, a profile is still returned.
+        else {
+            unique_profiles.insert(profile.clone().agent_pub_key, profile);
+        }
+    }
+    
+    // map the values of the BTreeMap into a vector
+    Ok(unique_profiles.values().map(|profile|{
+        profile.clone()
+    }).collect::<Vec<Profile>>())
 }
 
 #[hdk_extern]

@@ -39,13 +39,13 @@ module.exports = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
-  },
-  node: {
-    fs: 'empty',
+    fallback: {
+      fs: false
+    }
   },
   devServer: {
     host: 'localhost',
-    disableHostCheck: true,
+    allowedHosts: 'all',
   },
   module: {
     rules: [
@@ -77,6 +77,7 @@ module.exports = {
             outputPath: 'fonts/',
           },
         },
+        type: 'javascript/auto'
       },
       // .png, .jpg, .svg images
       {
@@ -88,6 +89,7 @@ module.exports = {
             outputPath: 'images/',
           },
         },
+        type: 'javascript/auto'
       },
       // scss
       {
