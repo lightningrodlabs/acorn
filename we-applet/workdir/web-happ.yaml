@@ -1,7 +1,0 @@
----
-manifest_version: "1"
-name: acorn_applet-applet
-ui:
-  bundled: "../ui.zip"
-happ_manifest:
-  bundled: "./acorn_applet-applet.happ"
