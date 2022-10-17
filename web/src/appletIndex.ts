@@ -14,7 +14,7 @@ import React from 'react'
 import { createRoot } from "react-dom/client"
 import AppProvided from './app-provided'
 
-const acorn_appletApplet: WeApplet = {
+const acornApplet: WeApplet = {
   async appletRenderers(
     appWebsocket: AppWebsocket,
     adminWebsocket: AdminWebsocket,
@@ -31,4 +31,4 @@ const acorn_appletApplet: WeApplet = {
   },
 };
 
-export default acorn_appletApplet;
+export default acornApplet;
