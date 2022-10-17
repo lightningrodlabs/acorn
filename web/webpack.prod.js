@@ -35,7 +35,6 @@ module.exports = {
   entry: {
     app: './src/index.js',
     splash: './src/splashscreen.scss',
-    weApplet: './src/app-provided.tsx',
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
