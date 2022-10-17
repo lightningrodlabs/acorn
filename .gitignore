@@ -10,6 +10,11 @@ web/dist/images
 web/dist/*.js
 web/dist/*.js.map
 
+web/applet-dist/fonts
+web/applet-dist/images
+web/applet-dist/*.js
+web/applet-dist/*.js.map
+
 target/
 back/.cargo/
 back/2-conductor-config.yml
