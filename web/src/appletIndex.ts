@@ -11,7 +11,7 @@ import {
   InstalledAppletInfo,
 } from "@lightningrodlabs/we-applet";
 import React from 'react'
-import { createRoot } from "react-dom/client"
+import ReactDOM from "react-dom"
 import AppProvided from './app-provided'
 
 const acornApplet: WeApplet = {
@@ -23,8 +23,10 @@ const acornApplet: WeApplet = {
   ): Promise<AppletRenderers> {
     return {
       full(element: HTMLElement, registry: CustomElementRegistry) {
-        const root = createRoot(element);
-        root.render(React.createElement(AppProvided, {appWs: appWebsocket, adminWs: adminWebsocket}, null));
+        ReactDOM.render(
+          React.createElement(AppProvided, {appWs: appWebsocket, adminWs: adminWebsocket}, null),
+          element
+        );
       },
       blocks: [],
     };
