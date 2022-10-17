@@ -2,6 +2,6 @@
 manifest_version: "1"
 name: acorn-applet
 ui:
-  bundled: "../../web/applet-ui.zip"
+  bundled: "../../web/ui.zip"
 happ_manifest:
   bundled: "./acorn_applet.happ"
