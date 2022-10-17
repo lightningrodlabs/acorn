@@ -29,7 +29,7 @@ module.exports = {
     }),
   ],
   entry: {
-    applet: './src/appletIndex.ts',
+    index: './src/appletIndex.ts',
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
