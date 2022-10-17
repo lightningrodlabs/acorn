@@ -19,7 +19,7 @@
     "web2": "cd web && ADMIN_WS_PORT=1236 APP_WS_PORT=8899 npx webpack-dev-server --config webpack.dev.js",
     "web-build": "cd web && npx webpack --config webpack.prod.js",
     "applet-build": "cd web && npx webpack --config webpack.applet.js",
-    "package-applet-ui": "rimraf applet-ui.zip && npm run applet-build && cd applet-dist && bestzip ../applet-ui.zip applet.js",
+    "package-applet-ui": "rimraf ui.zip && npm run applet-build && cd web/applet-dist && bestzip ../ui.zip index.js",
     "package-applet": "npm run package-applet-ui && hc web-app pack ./happ/workdir",
     "electron-install": "cd electron && npm install",
     "electron": "cd electron && npm run start",
@@ -32,5 +32,8 @@
   "license": "CAL-1.0",
   "dependencies": {
     "pm2": "^5.1.1"
+  },
+  "devDependencies": {
+    "rimraf": "^3.0.2"
   }
 }
