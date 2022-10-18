@@ -20,7 +20,7 @@
     "web-build": "cd web && npx webpack --config webpack.prod.js",
     "applet-build": "cd web && npx webpack --config webpack.applet.js",
     "package-applet-ui": "rimraf ui.zip && npm run applet-build && cd web/applet-dist && bestzip ../ui.zip index.js",
-    "package-applet": "npm run package-applet-ui && hc web-app pack ./happ/workdir",
+    "package-applet": "rimraf ./happ/workdir/acorn-applet.webhapp && npm run package-applet-ui && hc web-app pack ./happ/workdir",
     "electron-install": "cd electron && npm install",
     "electron": "cd electron && npm run start",
     "electron2": "cd electron && ACORN_TEST_USER_2=1 npm run start",
@@ -34,6 +34,7 @@
     "pm2": "^5.1.1"
   },
   "devDependencies": {
+    "bestzip": "^2.2.1",
     "rimraf": "^3.0.2"
   }
 }
