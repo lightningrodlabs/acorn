@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const mainAppId = fs.readFileSync(
   path.join(__dirname, '../config-main-app-id'),
   'utf-8'
@@ -27,9 +28,13 @@ module.exports = {
       __ADMIN_PORT__: 1235,
       __APP_PORT__: 8889,
     }),
+    new MiniCssExtractPlugin({
+      filename: 'cssBundle.css'
+    }),
   ],
   entry: {
     index: './src/appletIndex.ts',
+    // css: './src/index.scss'
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
@@ -90,8 +95,9 @@ module.exports = {
         test: /\.scss$/i,
         use: [
           // Creates `style` nodes from JS strings
-          'style-loader',
+          // 'style-loader',
           // Translates CSS into CommonJS
+          MiniCssExtractPlugin.loader,
           'css-loader',
           'resolve-url-loader', // useful for font loading
           // Compiles Sass to CSS
@@ -101,7 +107,7 @@ module.exports = {
       // css
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: ['css-loader'],
       },
     ],
   },

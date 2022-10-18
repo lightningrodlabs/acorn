@@ -16,7 +16,9 @@ import AppProvided from './app-provided'
 // import './variables.scss'
 // import * as thing from './global.scss'
 // import style from '!!raw-loader!./global.scss'
-import style from '!!raw-loader!./styles.css'
+// import style from '!!raw-loader!./styles.scss'
+// import style from '!!raw-loader!./routes/Dashboard/Dashboard.scss'
+import style from '!!raw-loader!../applet-dist/cssBundle.css'
 
 
 const acornApplet: WeApplet = {
