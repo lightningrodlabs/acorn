@@ -9,7 +9,7 @@ import { CellIdString, ActionHashB64 } from '../../types/shared'
 import { ProjectMeta } from '../../types'
 
 function mapStateToProps(_state: RootState) {
-  // props for the componen
+  // props for the component
   return {}
 }
 

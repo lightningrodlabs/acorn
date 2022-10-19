@@ -279,7 +279,6 @@ export type PriorityUniversalProps = {
   projectMeta: WithActionHash<ProjectMeta>
   projectTags: WithActionHash<Tag>[]
   presentMembers: AgentPubKeyB64[]
-  outcomes: ComputedOutcome[]
   updateProjectMeta: (
     projectMeta: ProjectMeta,
     actionHash: ActionHashB64,
