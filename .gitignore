@@ -10,10 +10,9 @@ web/dist/images
 web/dist/*.js
 web/dist/*.js.map
 
-web/applet-dist/fonts
-web/applet-dist/images
-web/applet-dist/*.js
-web/applet-dist/*.js.map
+web/applet-dist/
+happ/workdir/acorn_applet.happ
+happ/workdir/acorn-applet.webhapp
 
 target/
 back/.cargo/
