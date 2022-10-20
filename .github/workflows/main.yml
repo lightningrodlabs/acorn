@@ -1,0 +1,18 @@
+name: Publish Storybook to Github Pages
+
+on:
+  push:
+    branches: main
+
+jobs:
+  build-storybook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install web dependencies
+        run: npm run web-install
+      - name: Run storybook build
+        run: |
+          cd web
+          npm run build-storybook
+          
