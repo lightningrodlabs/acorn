@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[12],{"./src/images/acorn-alpha-logo.png":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/acorn-alpha-logo.7611e6e9.png"}}]);

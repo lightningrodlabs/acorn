@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[17],{"./src/images/assignees.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/assignees.efa33941.svg"}}]);

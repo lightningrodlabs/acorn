@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <g id="equalizer" transform="translate(-2 -2)">
+    <path id="Path_830" data-name="Path 830" d="M9,7A2,2,0,1,0,7,5,2,2,0,0,0,9,7Z" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+    <path id="Path_831" data-name="Path 831" d="M15,14a2,2,0,1,0-2-2A2,2,0,0,0,15,14Z" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+    <path id="Path_832" data-name="Path 832" d="M9,21a2,2,0,1,0-2-2A2,2,0,0,0,9,21Z" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+    <path id="Path_833" data-name="Path 833" d="M7,5H3" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+    <path id="Path_834" data-name="Path 834" d="M21,12H17" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+    <path id="Path_835" data-name="Path 835" d="M7,19H3" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+    <path id="Path_836" data-name="Path 836" d="M11,5H21" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+    <path id="Path_837" data-name="Path 837" d="M3,12H13" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+    <path id="Path_838" data-name="Path 838" d="M11,19H21" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+  </g>
+</svg>

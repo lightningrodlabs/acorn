@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[42],{"./src/images/dots-vertical.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/dots-vertical.7201a195.svg"}}]);

@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[96],{"./src/images/squares-check.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/squares-check.be09aa08.svg"}}]);

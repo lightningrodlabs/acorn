@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[86],{"./src/images/quick-edit.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/quick-edit.2c0a1d31.svg"}}]);
