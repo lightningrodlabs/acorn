@@ -3,12 +3,24 @@ import { CSSTransition } from 'react-transition-group'
 
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
-
-import './Modal.scss'
-import OnClickOutside from '../OnClickOutside/OnClickOutside'
 import Typography from '../Typography/Typography'
 
-function ModalContent({
+import './Modal.scss'
+
+/* Named Export */
+
+export type ModalContentProps = {
+  content: string,
+  secondaryContent?: string,
+  heading: string,
+  icon?: string,
+  primaryButton: string,
+  primaryButtonAction: () => void,
+  altButton?: string,
+  altButtonAction?: () => void,
+}
+
+const ModalContent: React.FC<ModalContentProps> = ({
   content,
   secondaryContent,
   heading,
@@ -17,7 +29,7 @@ function ModalContent({
   primaryButtonAction,
   altButton,
   altButtonAction,
-}) {
+}) => {
   return (
     <>
       <div className="modal-header">
@@ -32,7 +44,7 @@ function ModalContent({
       </div>
       <div className="modal-content-wrapper">
         <div className="modal-content">
-          <Typography style="p">{content}</Typography>
+          <Typography style="body1">{content}</Typography>
         </div>
         {secondaryContent ? secondaryContent : null}
       </div>
@@ -67,7 +79,17 @@ function ModalContent({
 
 export { ModalContent }
 
-export default function Modal({ white, active, className, onClose, children }) {
+
+/* Default Export */
+
+export type ModalProps = {
+  white: boolean,
+  active: boolean,
+  className?: string,
+  onClose: () => void,
+}
+
+const Modal: React.FC<ModalProps> = ({ white, active, className, onClose, children }) => {
   return (
     <CSSTransition in={active} timeout={100} unmountOnExit classNames="modal">
       <div className={`modal ${white ? 'modal-white' : ''}`}>
@@ -91,3 +113,5 @@ export default function Modal({ white, active, className, onClose, children }) {
     </CSSTransition>
   )
 }
+
+export default Modal
