@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import ProfileEditForm from '../../components/ProfileEditForm/ProfileEditForm'
+import { Profile } from '../../types'
 import { AgentPubKeyB64 } from '../../types/shared'
 import './CreateProfilePage.scss'
 
-export type Props = {
+export type CreateProfilePageProps = {
   agentAddress: AgentPubKeyB64
-  createWhoami: 
+  createWhoami: (profile: Profile) => Promise<void>
 }
 
-const CreateProfilePage: React.FC<Props> = ({ agentAddress, createWhoami }) => {
+const CreateProfilePage: React.FC<CreateProfilePageProps> = ({ agentAddress, createWhoami }) => {
   const titleText = "First, let's set up your profile on Acorn."
   const subText = "You'll be able to edit them later in your Profile Settings."
   const pendingText = 'Setting you up...'
@@ -48,3 +49,5 @@ const CreateProfilePage: React.FC<Props> = ({ agentAddress, createWhoami }) => {
     </div>
   )
 }
+
+export default CreateProfilePage
