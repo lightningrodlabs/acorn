@@ -5,10 +5,11 @@ import '../variables.scss'
 import ProgressIndicatorCalculatedComponent, {
   ProgressIndicatorCalculatedProps,
 } from '../components/ProgressIndicatorCalculated/ProgressIndicatorCalculated'
+import { testBigAchievedOutcome } from './testData/testOutcomes'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/ProgressIndicatorCalculated',
+  title: 'Progress/ProgressIndicatorCalculated',
   component: ProgressIndicatorCalculatedComponent,
 } as ComponentMeta<typeof ProgressIndicatorCalculatedComponent>
 
@@ -23,6 +24,7 @@ export const ProgressIndicatorCalculated = Template.bind({})
 ProgressIndicatorCalculated.storyName = 'ProgressIndicatorCalculated'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 const args: ProgressIndicatorCalculatedProps = {
-  // assign props here
+  outcome: testBigAchievedOutcome,
+  size: 'medium'
 }
 ProgressIndicatorCalculated.args = args

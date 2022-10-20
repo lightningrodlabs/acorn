@@ -1,22 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
-import Checkbox from '../components/Checkbox/Checkbox'
+import Checkbox, { CheckboxProps} from '../components/Checkbox/Checkbox'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'Checkbox & Checklist/Checkbox',
   component: Checkbox,
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
+
 } as ComponentMeta<typeof Checkbox>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof Checkbox> = (args) => {
-  const [selectedState, setSelectedState] = useState(false)
+  const [selectedState, setSelectedState] = useState(args.isChecked)
+  useEffect(() => {
+    setSelectedState(args.isChecked)
+  }, [args.isChecked])
   return (
     <Checkbox
       {...args}
@@ -31,4 +31,5 @@ Primary.storyName = 'Checkbox'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   size: 'medium',
-}
+  isChecked: false
+} as CheckboxProps

@@ -8,10 +8,7 @@ import Checklist, { ChecklistItemType } from '../components/Checklist/Checklist'
 export default {
   title: 'Checkbox & Checklist/Checklist',
   component: Checklist,
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
+
 } as ComponentMeta<typeof Checklist>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args

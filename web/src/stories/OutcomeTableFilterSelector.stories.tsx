@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
@@ -16,8 +16,17 @@ export default {
 } as ComponentMeta<typeof OutcomeTableFilterSelectorComponent>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof OutcomeTableFilterSelectorComponent> = (args) => {
-  return <OutcomeTableFilterSelectorComponent {...args} />
+const Template: ComponentStory<typeof OutcomeTableFilterSelectorComponent> = (
+  args
+) => {
+  const [filter, setFilter] = useState(args.filter)
+  return (
+    <OutcomeTableFilterSelectorComponent
+      {...args}
+      filter={filter}
+      onApplyOutcomeTableFilter={(filter) => setFilter(filter)}
+    />
+  )
 }
 
 export const OutcomeTableFilterSelector = Template.bind({})
@@ -27,11 +36,11 @@ OutcomeTableFilterSelector.storyName = 'OutcomeTableFilterSelector'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 const args: OutcomeTableFilterSelectorProps = {
   whoAmI: testProfile,
+  filter: {},
+  projectMemberProfiles: [testProfile],
+  projectTags: testTags,
   onApplyOutcomeTableFilter: function (filters: OutcomeTableFilter): void {
     throw new Error('Function not implemented.')
   },
-  filter: {},
-  projectMemberProfiles: [],
-  projectTags: testTags
 }
 OutcomeTableFilterSelector.args = args

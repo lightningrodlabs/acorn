@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
@@ -14,11 +14,20 @@ export default {
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof TagPickerComponent> = (args) => {
-  const [filterText, setFilterText] = useState('')
+  const [filterText, setFilterText] = useState(args.filterText)
+  const [selectedTags, setSelectedTags] = useState(args.selectedTags)
+  useEffect(() => {
+    setFilterText(args.filterText)
+  }, [args.filterText])
+  useEffect(() => {
+    setSelectedTags(args.selectedTags)
+  }, [args.selectedTags])
   return (
     <TagPickerComponent
       {...args}
       filterText={filterText}
+      selectedTags={selectedTags}
+      onChange={(newSelectedTags) => setSelectedTags(newSelectedTags)}
       setFilterText={setFilterText}
     />
   )
@@ -75,6 +84,9 @@ const args: TagPickerProps = {
     throw new Error('Function not implemented.')
   },
   onSaveTag: function (text: string, backgroundColor: string): Promise<void> {
+    throw new Error('Function not implemented.')
+  },
+  onClose: function (): void {
     throw new Error('Function not implemented.')
   },
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
@@ -9,15 +9,14 @@ import Icon from '../components/Icon/Icon'
 export default {
   title: 'Buttons/ButtonCheckbox',
   component: ButtonCheckbox,
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
 } as ComponentMeta<typeof ButtonCheckbox>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof ButtonCheckbox> = (args) => {
-  const [selectedState, setSelectedState] = useState(false)
+  const [selectedState, setSelectedState] = useState(args.isChecked)
+  useEffect(() => {
+    setSelectedState(args.isChecked)
+  }, [args.isChecked])
   return (
     <ButtonCheckbox
       {...args}
@@ -32,6 +31,7 @@ Primary.storyName = 'ButtonCheckbox'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   size: 'medium',
+  isChecked: false,
   icon: <Icon name="leaf.svg" size="small not-hoverable" />,
   text: 'Checkbox',
 }
