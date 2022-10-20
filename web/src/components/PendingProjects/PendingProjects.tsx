@@ -109,7 +109,7 @@ function PendingProjects({
             <div className="more-info-wrapper">
               <div>
                 <a
-                  href="https://sprillow.gitbook.io/acorn-knowledge-base/projects/join-a-project"
+                  href="https://docs.acorn.software/projects/join-a-project"
                   target="_blank"
                 >
                   {/* @ts-ignore */}

@@ -393,7 +393,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                         <Typography style="h7">{durationEstimate}</Typography>
                         <div className="more-info-wrapper">
                           <a
-                            href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/time"
+                            href="https://docs.acorn.software/outcomes/time"
                             target="_blank"
                           >
                             <Icon

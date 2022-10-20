@@ -412,7 +412,7 @@ const PriorityUniversal: React.FC<PriorityUniversalProps> = ({
               You haven't marked any Outcomes as High Priority.
               <br />
               <a
-                href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/high-priority-outcomes"
+                href="https://docs.acorn.software/outcomes/high-priority-outcomes"
                 target="_blank"
               >
                 Learn how to start prioritizing.
