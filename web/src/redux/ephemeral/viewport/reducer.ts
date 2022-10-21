@@ -1,12 +1,12 @@
-
 import {
   RESET_TRANSLATE_AND_SCALE,
   CHANGE_TRANSLATE,
   CHANGE_SCALE,
   CHANGE_ALL_DIRECT,
 } from './actions'
+import { ViewportState } from './state-type'
 
-const defaultState = {
+const defaultState: ViewportState = {
   translate: {
     x: 0,
     y: 0,
@@ -14,7 +14,7 @@ const defaultState = {
   scale: 1,
 }
 
-export default function(state = defaultState, action) {
+export default function (state = defaultState, action: any): ViewportState {
   const { payload, type } = action
   switch (type) {
     case CHANGE_TRANSLATE:

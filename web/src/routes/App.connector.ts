@@ -83,7 +83,7 @@ function mapDispatchToProps(dispatch): AppDispatchProps {
       return dispatch(setNavigationPreference(preference))
     },
     goToOutcome: (outcomeActionHash) => {
-      return dispatch(animatePanAndZoom(outcomeActionHash))
+      return dispatch(animatePanAndZoom(outcomeActionHash, true))
     },
     openInviteMembersModal: (passphrase) => {
       return dispatch(openInviteMembersModal(passphrase))

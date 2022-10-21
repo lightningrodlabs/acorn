@@ -40,7 +40,7 @@ function mapDispatchToProps(dispatch): TableViewConnectorDispatchProps {
       return dispatch(openExpandedView(actionHash))
     },
     goToOutcome: (actionHash: ActionHashB64) => {
-      return dispatch(animatePanAndZoom(actionHash))
+      return dispatch(animatePanAndZoom(actionHash, true))
     },
   }
 }

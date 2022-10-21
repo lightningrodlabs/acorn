@@ -37,7 +37,7 @@ function mapDispatchToProps(dispatch) {
       return dispatch(openExpandedView(outcomeActionHash))
     },
     goToOutcome: (outcomeActionHash: ActionHashB64) => {
-      return dispatch(animatePanAndZoom(outcomeActionHash))
+      return dispatch(animatePanAndZoom(outcomeActionHash, true))
     },
     updateProjectMeta: async (
       projectMeta: ProjectMeta,
