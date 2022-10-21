@@ -3,11 +3,24 @@ import { CSSTransition } from 'react-transition-group'
 
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
+import Typography from '../Typography/Typography'
 
 import './Modal.scss'
-import OnClickOutside from '../OnClickOutside/OnClickOutside'
 
-function ModalContent({
+/* Named Export */
+
+export type ModalContentProps = {
+  content: string,
+  secondaryContent?: string,
+  heading: string,
+  icon?: string,
+  primaryButton: string,
+  primaryButtonAction: () => void,
+  altButton?: string,
+  altButtonAction?: () => void,
+}
+
+const ModalContent: React.FC<ModalContentProps> = ({
   content,
   secondaryContent,
   heading,
@@ -16,7 +29,7 @@ function ModalContent({
   primaryButtonAction,
   altButton,
   altButtonAction,
-}) {
+}) => {
   return (
     <>
       <div className="modal-header">
@@ -25,10 +38,14 @@ function ModalContent({
             <Icon name={icon} className="not-hoverable" />
           </span>
         )}
-        <div className="modal-heading">{heading}</div>
+        <div className="modal-heading">
+          <Typography style="h2">{heading}</Typography>
+        </div>
       </div>
       <div className="modal-content-wrapper">
-        <div className="modal-content">{content}</div>
+        <div className="modal-content">
+          <Typography style="body1">{content}</Typography>
+        </div>
         {secondaryContent ? secondaryContent : null}
       </div>
       <div className="modal-footer">
@@ -38,21 +55,20 @@ function ModalContent({
             <label htmlFor='checkbox-dont-show-again'>Don't show me again</label>
           </div> */}
         <div className="buttons-wrapper">
-          <div className="btn-stroked">
+          <div>
             {altButton && (
               <Button
                 text={altButton}
                 onClick={altButtonAction}
-                stroke
-                size="large"
+                size="medium"
               />
             )}
           </div>
-          <div className="btn-filled">
+          <div>
             <Button
               text={primaryButton}
               onClick={primaryButtonAction}
-              size="large"
+              size="medium"
             />
           </div>
         </div>
@@ -63,7 +79,17 @@ function ModalContent({
 
 export { ModalContent }
 
-export default function Modal({ white, active, className, onClose, children }) {
+
+/* Default Export */
+
+export type ModalProps = {
+  white: boolean,
+  active: boolean,
+  className?: string,
+  onClose: () => void,
+}
+
+const Modal: React.FC<ModalProps> = ({ white, active, className, onClose, children }) => {
   return (
     <CSSTransition in={active} timeout={100} unmountOnExit classNames="modal">
       <div className={`modal ${white ? 'modal-white' : ''}`}>
@@ -71,19 +97,21 @@ export default function Modal({ white, active, className, onClose, children }) {
         {/* without imapcting the styling for the modal */}
         {/* problem seen on Profile Setting after implementation */}
         {/* <OnClickOutside onClickOutside={onClose}> */}
-          <div className={`${className} modal-wrapper`}>
-            {onClose && (
-              <Icon
-                name="x.svg"
-                size="small-close"
-                className="light-grey"
-                onClick={() => onClose()}
-              />
-            )}
-            {children}
-          </div>
+        <div className={`${className} modal-wrapper`}>
+          {onClose && (
+            <Icon
+              name="x.svg"
+              size="small-close"
+              className="light-grey"
+              onClick={() => onClose()}
+            />
+          )}
+          {children}
+        </div>
         {/* </OnClickOutside> */}
       </div>
     </CSSTransition>
   )
 }
+
+export default Modal

@@ -84,16 +84,17 @@ function layoutForTree(
 
   // use recursion to add each outcome as a node in the graph
   function addOutcome(outcome: ComputedOutcome) {
-    graph.setNode(outcome.actionHash, {
+    const width = outcomeWidth
+    const height = getOutcomeHeight({
+      ctx,
+      outcome,
+      zoomLevel,
       width: outcomeWidth,
-      height:
-        getOutcomeHeight({
-          ctx,
-          outcome,
-          zoomLevel,
-          width: outcomeWidth,
-          projectTags,
-        }) + VERTICAL_SPACING,
+      projectTags,
+    }) + VERTICAL_SPACING
+    graph.setNode(outcome.actionHash, {
+      width,
+      height,
     })
     outcome.children.forEach((childOutcome) => {
       addOutcome(childOutcome)

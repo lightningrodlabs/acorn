@@ -1,0 +1,21 @@
+name: Publish Storybook to Github Pages
+
+on:
+  push:
+    branches: main
+
+jobs:
+  build-storybook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install web dependencies
+        run: npm run web-install
+      - name: Storybook static build
+        run: |
+          cd web
+          npm run build-storybook
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: web/storybook-static # The folder the action should deploy.

@@ -77,13 +77,13 @@ In order to get cross-platform builds, just tag your repository like `v0.0.1` an
 
 Each version of the app will either change, or not change, the paths to the user data folders in use by the application. 
 
-The user data will be located under `mova` in the platform specific appData folder, as specified by `appData` here: https://www.electronjs.org/docs/latest/api/app#appgetpathname
+The user data will be located under `acorn` in the platform specific appData folder, as specified by `appData` here: https://www.electronjs.org/docs/latest/api/app#appgetpathname
 
 It is then in a specific sub-folder that relates to one of two types of data: 
 - source chain and DHT -> `databases-${DATABASES_VERSION_NUMBER}`
 - private keys -> `keystore-${KEYSTORE_VERSION_NUMBER}`
 
-DATABASES_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER are defined in `frontend/electron/src/holochain.ts` and can be modified as needed in order to jump to new versions of holochain, or a new app DNA.
+DATABASES_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER are defined in `electron/src/holochain.ts` and can be modified as needed in order to jump to new versions of holochain, or a new app DNA.
 
 You can tweak DATABASES_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER independently. 
 
@@ -96,15 +96,15 @@ KEYSTORE_VERSION_NUMBER should be incremented if the version of lair-keystore ch
 
 This project is currently using:
 
-> Holochain Revision: [v0.0.150  July 10, 2022](https://github.com/holochain/holochain/releases/tag/holochain-0.0.150)
-> 
-> Lair Keystore Revision: [v0.2.0 June 20, 2022](https://github.com/holochain/lair/releases/tag/lair_keystore-v0.2.0)
->
-> Expects an HAPP built with HDK [v0.0.142](https://docs.rs/hdk/0.0.142/hdk/index.html) and HDI [v0.0.14](https://docs.rs/hdi/0.0.14/hdi/index.html)
-> 
-> https://github.com/Sprillow/holochain-runner/releases/tag/v0.0.40
+holochain-runner [v0.3.0](https://github.com/Sprillow/holochain-runner/releases/tag/v0.3.0)
 
-and electron version 12 [https://www.electronjs.org/](https://www.electronjs.org/)
+which has an underlying `holochain` version of [0.0.165](https://github.com/holochain/holochain/releases/tag/holochain-0.0.165)
+
+expects an HAPP built with
+- HDK [v0.0.154](https://docs.rs/hdk/0.0.154/hdk/index.html)
+- HDI [v0.1.3](https://docs.rs/hdi/0.1.3/hdi/index.html)
+
+and [electron 20](https://www.electronjs.org/docs/latest/api/app)
 
 ## Technical Overview
 

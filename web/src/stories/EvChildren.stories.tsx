@@ -39,6 +39,8 @@ const outcome1: ComputedOutcome = {
     uncertains: 2,
     smallsAchieved: 0,
     smallsTotal: 0,
+    tasksAchieved: 0,
+    tasksTotal: 0,
     simple: ComputedSimpleAchievementStatus.NotAchieved,
   },
   // @ts-ignore
@@ -61,6 +63,8 @@ const outcome2: ComputedOutcome = {
     uncertains: 2,
     smallsAchieved: 0,
     smallsTotal: 0,
+    tasksAchieved: 0,
+    tasksTotal: 0,
     simple: ComputedSimpleAchievementStatus.NotAchieved,
   },
   // @ts-ignore

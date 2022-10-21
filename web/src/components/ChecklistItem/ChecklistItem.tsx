@@ -8,8 +8,8 @@ export type ChecklistItemProps = {
   task: string
   complete: boolean
   onChangeComplete: (complete: boolean) => void
-  onChangeTask: (task: string) => void
-  textEditable?: boolean
+  // onChangeTask: (task: string) => void
+  // textEditable?: boolean
   withStrikethrough?: boolean
 }
 
@@ -18,8 +18,8 @@ const ChecklistItem: React.FC<ChecklistItemProps> = ({
   task,
   complete,
   onChangeComplete,
-  onChangeTask,
-  textEditable,
+  // onChangeTask,
+  // textEditable,
   withStrikethrough,
 }) => {
   return (

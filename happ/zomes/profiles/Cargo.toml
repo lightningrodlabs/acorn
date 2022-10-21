@@ -8,11 +8,11 @@ crate-type = ["cdylib", "rlib"]
 name = "profiles"
 
 [dependencies]
-hdk_crud = { version = "0.5.6", features = ["no_example"] }
-chrono = "0.4.19"
-hdk = "0.0.142"
-holo_hash = {version = "=0.0.30", features = ["encoding", "fixturators"]}
+hdk_crud = { version = "0.7.1", features = ["no_example"] }
+hdk = "0.0.154"
+holo_hash = {version = "=0.0.33", features = ["encoding", "fixturators"]}
 profiles_integrity = { path = "../profiles_integrity" }
+chrono = { version = "=0.4.22", default-features = false, features = ["clock", "std", "oldtime", "serde"] }
 paste = "*"
 serde = "*"
 thiserror = "1"

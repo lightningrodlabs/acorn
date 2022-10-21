@@ -104,7 +104,7 @@ const EvComments: React.FC<EvCommentsProps> = ({
         overviewIcon={
           <Icon name="chats-circle.svg" className="not-hoverable" />
         }
-        overviewText={`${comments.length} comments`}
+        overviewText={`${comments.length} comment${comments.length !== 1 ? 's' : ''}`}
       />
       <div className="comments-posted-wrapper" ref={commentHistoryRef}>
         {comments

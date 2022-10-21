@@ -19,7 +19,7 @@ const colorPalette = [
   '#6F1E51', // magenta purple
 ]
 
-function sumChars(str) {
+function sumChars(str: string) {
   let sum = 0
   for (let i = 0; i < str.length; i++) {
     sum += str.charCodeAt(i)
@@ -28,7 +28,7 @@ function sumChars(str) {
   return sum
 }
 
-const pickColorForString = (string) => {
+const pickColorForString = (string: string) => {
   // pick a deterministic color from the list
   let index = sumChars(string) % colorPalette.length
   return colorPalette[index]

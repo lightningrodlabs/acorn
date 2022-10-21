@@ -10,7 +10,7 @@ function useSelect(multiple, preSelected = multiple ? [] : null) {
   // set a default from the options, if one is tagged as default in its props
   const [selected, setSelected] = useState(preSelected)
 
-  const toggleSelectOption = value => {
+  const toggleSelectOption = (value) => {
     // in the case of single select
     if (!multiple) {
       setSelected(value)
@@ -20,7 +20,7 @@ function useSelect(multiple, preSelected = multiple ? [] : null) {
     // if value is selected
     if (selected.includes(value)) {
       // unselect it
-      setSelected(selected.filter(actionHash => actionHash !== value))
+      setSelected(selected.filter((actionHash) => actionHash !== value))
     } else {
       // if value is not selected, add it
       setSelected(selected.concat([value]))
@@ -34,13 +34,13 @@ function useSelect(multiple, preSelected = multiple ? [] : null) {
   return [selected, toggleSelectOption, reset]
 }
 
-function Select({ toggleSelectOption, multiple, children, toggleLabel }) {
+function Select({ toggleSelectOption, multiple, children, toggleLabel, hasSelection }) {
   const [selectOpen, setSelectOpen] = useState(false)
 
   const ref = useRef()
   useOnClickOutside(ref, () => setSelectOpen(false))
 
-  const handleOptionClick = value => {
+  const handleOptionClick = (value) => {
     return () => {
       toggleSelectOption(value)
 
@@ -52,14 +52,17 @@ function Select({ toggleSelectOption, multiple, children, toggleLabel }) {
   }
 
   return (
-    <div className='select-wrapper' ref={ref}>
+    <div className="select-wrapper" ref={ref}>
       <div
-        className={`select-toggle-wrapper ${selectOpen ? 'active' : ''}`}
-        onClick={() => setSelectOpen(!selectOpen)}>
-        <div className='select-toggle-label-text'>{toggleLabel}</div>
+        className={`select-toggle-wrapper ${selectOpen ? 'active' : ''} ${
+          hasSelection ? 'has-selection' : ''
+        }`}
+        onClick={() => setSelectOpen(!selectOpen)}
+      >
+        <div className="select-toggle-label-text">{toggleLabel}</div>
         <Icon
-          name='chevron-down.svg'
-          size='very-small'
+          name="chevron-down.svg"
+          size="very-small"
           className={`grey ${selectOpen ? 'active' : ''}`}
         />
       </div>
@@ -67,16 +70,20 @@ function Select({ toggleSelectOption, multiple, children, toggleLabel }) {
         in={selectOpen}
         timeout={200}
         unmountOnExit
-        classNames='select-options'>
-        <div className='select-options-wrapper'>
-          {children.map(option => {
+        classNames="select-options"
+      >
+        <div className="select-options-wrapper">
+          {children.map((option) => {
             return (
               <div
+                title={option}
                 key={option.props.value}
-                className={`select-option-item-wrapper ${option.props.selected ? 'active' : ''
-                  }`}
+                className={`select-option-item-wrapper ${
+                  option.props.selected ? 'active' : ''
+                }`}
                 title={option.props.label}
-                onClick={handleOptionClick(option.props.value)}>
+                onClick={handleOptionClick(option.props.value)}
+              >
                 {option}
               </div>
             )
@@ -88,7 +95,7 @@ function Select({ toggleSelectOption, multiple, children, toggleLabel }) {
 }
 
 function Option({ selected, value, label }) {
-  return <div className='select-option-item'>{label}</div>
+  return <div className="select-option-item">{label}</div>
 }
 
 export { useSelect, Select, Option }

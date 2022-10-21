@@ -1,7 +1,7 @@
 {
   "name": "acorn",
-  "version": "1.1.0-alpha",
-  "description": "Create the future",
+  "version": "2.0.0-alpha",
+  "description": "Open source peer-to-peer project management for software teams",
   "main": "dist/index.js",
   "scripts": {
     "start": "tsc && electron .",
@@ -18,9 +18,9 @@
   "build": {
     "productName": "Acorn",
     "afterSign": "./afterSignHook.js",
-    "appId": "com.harris-braun.acorn",
-    "copyright": "© 2020-2021 Harris-Braun Enterprises, LLC",
-    "asarUnpack": "binaries/**/*",
+    "appId": "org.lightningrodlabs.acorn",
+    "copyright": "© 2020-2022 Harris-Braun Enterprises, LLC",
+    "asarUnpack": ["binaries/**/*", "web/**/*"],
     "files": [
       "dist/**/*",
       "web/**/*",
@@ -40,14 +40,15 @@
   "devDependencies": {
     "@types/node": "14.10.1",
     "@types/split": "^1.0.0",
-    "electron": "^12.2.3",
-    "electron-builder": "^23.0.2",
+    "electron": "^20.1.3",
+    "electron-builder": "^23.3.3",
     "eslint": "^7.25.0",
     "eslint-plugin-import": "^2.22.1",
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@sprillow-connor/electron-holochain": "0.0.40",
+    "@lightningrodlabs/electron-holochain": "0.3.0",
+    "electron-context-menu": "^3.5.0",
     "electron-log": "^4.3.5",
     "electron-notarize": "^1.0.0",
     "split": "^1.0.1"

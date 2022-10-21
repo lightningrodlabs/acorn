@@ -10,7 +10,7 @@ module.exports = async function (params) {
 
   console.log('afterSign hook triggered', params)
 
-  const appId = 'com.harris-braun-enterprises.acorn'
+  const appId = 'org.lightningrodlabs.acorn'
 
   const appPath = path.join(
     params.appOutDir,

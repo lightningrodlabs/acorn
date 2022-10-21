@@ -8,7 +8,7 @@ import OnClickOutsideComponent, {
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/OnClickOutside',
+  title: 'Assorted/OnClickOutside',
   component: OnClickOutsideComponent,
 } as ComponentMeta<typeof OnClickOutsideComponent>
 
@@ -23,6 +23,8 @@ export const OnClickOutside = Template.bind({})
 OnClickOutside.storyName = 'OnClickOutside'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 const args: OnClickOutsideProps = {
-  // assign props here
+  onClickOutside: function (): void {
+    throw new Error('Function not implemented.')
+  }
 }
 OnClickOutside.args = args

@@ -1,10 +1,10 @@
 import * as path from 'path'
 import { app } from 'electron'
-import { ElectronHolochainOptions, StateSignal, PathOptions } from '@sprillow-connor/electron-holochain'
+import { ElectronHolochainOptions, StateSignal, PathOptions } from '@lightningrodlabs/electron-holochain'
 
 // see the DEVELOPERS.md about incrementing
 // these values
-const DATABASES_VERSION_NUMBER = '3'
+const DATABASES_VERSION_NUMBER = '4'
 const KEYSTORE_VERSION_NUMBER = '3'
 
 // these messages get seen on the splash page
@@ -54,10 +54,6 @@ const BINARY_PATHS: PathOptions | undefined = app.isPackaged
       holochainRunnerBinaryPath: path.join(
         __dirname,
         `../../app.asar.unpacked/binaries/holochain-runner${process.platform === 'win32' ? '.exe' : ''}`
-      ),
-      lairKeystoreBinaryPath: path.join(
-        __dirname,
-        `../../app.asar.unpacked/binaries/lair-keystore${process.platform === 'win32' ? '.exe' : ''}`,
       ),
     }
   : undefined

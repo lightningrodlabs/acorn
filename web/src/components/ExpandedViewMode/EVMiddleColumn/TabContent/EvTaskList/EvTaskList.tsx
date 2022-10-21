@@ -27,7 +27,7 @@ const EvTaskList: React.FC<EvTaskListProps> = ({
         overviewIcon={
           <Icon name="squares-check.svg" className="not-hoverable" />
         }
-        overviewText={`${tasks.length} tasks`}
+        overviewText={`${tasks.length} task${tasks.length !== 1 ? 's' : ''}`}
       />
       <div className="ev-tasks-view-list">
         <Checklist

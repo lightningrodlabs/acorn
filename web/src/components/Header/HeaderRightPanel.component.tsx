@@ -260,7 +260,7 @@ export default function HeaderRightPanel({
         {/* Help button */}
         <a
           className="help-button-external"
-          href="https://sprillow.gitbook.io/acorn-knowledge-base/"
+          href="https://docs.acorn.software/about-acorn/what-is-acorn"
           target="_blank"
         >
           <Typography style="h8">Help</Typography>

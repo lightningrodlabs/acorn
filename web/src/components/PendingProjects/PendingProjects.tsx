@@ -94,14 +94,28 @@ function PendingProjects({
         <div className="pending-projects-for-sync">
           <div className="pending-projects-for-sync-message-icon">
             {/* @ts-ignore */}
-            <Icon
-              name="acorn-logo.svg"
-              className="not-hoverable very-small grey"
-            />
+            <div className="pending-projects-syncing-icon">
+              <Icon
+                name="acorn-logo.svg"
+                className="not-hoverable small"
+              />
+            </div>
             <div className="pending-projects-for-sync-message">
               {pendingProjects.length}{' '}
               {pendingProjects.length === 1 ? 'project' : 'projects'} queued for
               sync...
+            </div>
+            {/* More info icon */}
+            <div className="more-info-wrapper">
+              <div>
+                <a
+                  href="https://docs.acorn.software/projects/join-a-project"
+                  target="_blank"
+                >
+                  {/* @ts-ignore */}
+                  <Icon name="info.svg" className="light-grey" size="small" />
+                </a>
+              </div>
             </div>
           </div>
           <div
@@ -138,9 +152,13 @@ function PendingProjects({
                     </div>
                   )
                 })}
-              <a href="https://sprillow.gitbook.io/acorn-knowledge-base/projects/join-a-project" target="_blank">
+
+              {/* <a
+                href="https://sprillow.gitbook.io/acorn-knowledge-base/projects/join-a-project"
+                target="_blank"
+              >
                 Having issues? Learn more about joining a project.
-              </a>
+              </a> */}
             </div>
           )}
         </div>

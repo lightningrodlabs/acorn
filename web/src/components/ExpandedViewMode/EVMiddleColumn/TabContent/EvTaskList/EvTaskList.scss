@@ -1,6 +1,7 @@
 .ev-tasks-view-wrapper {
   display: flex;
   flex-direction: column;
+  overflow-y: hidden;
 
   .ev-tasks-view-list {
     display: flex;

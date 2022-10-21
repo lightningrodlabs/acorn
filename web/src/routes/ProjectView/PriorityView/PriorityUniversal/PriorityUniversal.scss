@@ -30,8 +30,8 @@
   margin: 0 1.25rem;
   display: flex;
   flex-direction: row;
-  height: 100%;
-  overflow-y: scroll;
+  overflow: hidden;
+  flex: 1;
 }
 
 .universal-priority-outcomes-list-row {

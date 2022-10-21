@@ -7,7 +7,7 @@ import { setScreenDimensions } from '../../../redux/ephemeral/screensize/actions
 
 import ProjectEmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
 import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar.connector'
-import ConnectionConnectors from '../../../components/ConnectionConnectors/ConnectionConnectors.connector'
+import OutcomeConnectors from '../../../components/OutcomeConnectors/OutcomeConnectors.connector'
 import MapViewOutcomeTitleForm from '../../../components/MapViewOutcomeTitleForm/MapViewOutcomeTitleForm.connector'
 import './MapView.scss'
 import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
@@ -17,7 +17,7 @@ import selectRenderProps from './selector'
 
 export type MapViewProps = {
   projectId: CellIdString
-  hasSelection: boolean
+  hasMultiSelection: boolean
   outcomeFormIsOpen: boolean
   translate: {
     x: number
@@ -33,7 +33,7 @@ const MapView: React.FC<MapViewProps> = ({
   zoomLevel,
   translate,
   outcomeFormIsOpen,
-  hasSelection,
+  hasMultiSelection,
 }) => {
   const store = useStore()
   const refCanvas = useRef<HTMLCanvasElement>()
@@ -107,11 +107,11 @@ const MapView: React.FC<MapViewProps> = ({
       <div className="outcome-form-position-container">
         {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
         {refCanvas.current && (
-          <ConnectionConnectors canvas={refCanvas.current} outcomes={computedOutcomesKeyed} />
+          <OutcomeConnectors canvas={refCanvas.current} outcomes={computedOutcomesKeyed} />
         )}
       </div>
 
-      <MultiEditBar projectId={projectId} hasSelection={hasSelection} />
+      <MultiEditBar projectId={projectId} hasMultiSelection={hasMultiSelection} />
     </>
   )
 }

@@ -8,7 +8,7 @@ Except for the speficed icons below, all other icons used are from the open sour
 | Image                | Source                                         | Licence                                                          |
 | -------------------- | ---------------------------------------------- | ---------------------------------------------------------------- |
 | acorn-logo.svg (app icon)          | in-house modifications of an original icon from [svgrepo.com](https://www.svgrepo.com)                    | open source; original file license is Public Domain (CC0 1.0 Universal PD Dedication)      |                      
-| connection-connector.svg     | created in-house                               | open source                                                      |
+| outcome-connector.svg     | created in-house                               | open source                                                      |
 
 ---
 
