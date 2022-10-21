@@ -9,6 +9,7 @@ web/dist/fonts
 web/dist/images
 web/dist/*.js
 web/dist/*.js.map
+web/storybook-static
 
 target/
 back/.cargo/
