@@ -40,7 +40,7 @@ function Avatar({
   // tooltipText,
 }: AvatarProps) {
   let classes = []
-  // Avatar optional properties
+  // Avatar optional properties   
   if (highlighted) classes.push('highlighted')
   if (clickable) classes.push('clickable')
   if (imported) classes.push('imported')
@@ -60,6 +60,7 @@ function Avatar({
     return (
       <div
         className={`avatar-wrapper 
+        ${imported ? 'imported' : ''} 
         ${withWhiteBorder ? 'with-border white' : ''} 
         ${
           withStatusBorder
@@ -102,6 +103,7 @@ function Avatar({
   return (
     <div
       className={`avatar-wrapper 
+      ${imported ? 'imported' : ''} 
       ${withWhiteBorder ? 'with-border white' : ''} 
       ${
         withStatusBorder
