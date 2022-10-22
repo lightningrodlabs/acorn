@@ -71,11 +71,13 @@ const PeoplePicker: React.FC<PeoplePickerProps> = ({
         {people
           // filter people out if there's filter text defined, and don't bother case matching
           // also match anywhere in the string, not just the start
+          // also filter out imported users (ghost members) who aren't assigned
           .filter((person) => {
             const name = `${person.firstName} ${person.lastName}`
             return (
-              !filterText ||
-              name.toLowerCase().indexOf(filterText.toLowerCase()) > -1
+              (!filterText ||
+              name.toLowerCase().indexOf(filterText.toLowerCase()) > -1) &&
+              (person.isImported ? person.isOutcomeMember : true)
             )
           })
           // sort members (people attached to Outcome) to the top of the list

@@ -1,9 +1,9 @@
 import { Profile } from '../../types'
 
 const testProfile: Profile = {
-  firstName: 'Pegah',
-  lastName: 'Vaezi',
-  handle: 'pegah',
+  firstName: 'Kate',
+  lastName: 'Johnson',
+  handle: 'kate',
   status: 'Online',
   avatarUrl:
     'https://i.pinimg.com/550x/c0/3d/3f/c03d3f965a8091206f4a0e742bb97c9f.jpg',
@@ -12,9 +12,9 @@ const testProfile: Profile = {
 }
 
 const testProfileIsImported: Profile = {
-  firstName: 'Pegah',
-  lastName: 'Vaezi',
-  handle: 'pegah',
+  firstName: 'Robert',
+  lastName: 'Smith',
+  handle: 'robertsmith',
   status: 'Online',
   avatarUrl:
     'https://i.pinimg.com/550x/c0/3d/3f/c03d3f965a8091206f4a0e742bb97c9f.jpg',
@@ -23,9 +23,9 @@ const testProfileIsImported: Profile = {
 }
 
 const testProfileIsOffline: Profile = {
-  firstName: 'Pegah',
-  lastName: 'Vaezi',
-  handle: 'pegah',
+  firstName: 'Hope',
+  lastName: 'Velasquez',
+  handle: 'hopevel',
   status: 'Offline',
   avatarUrl:
     'https://i.pinimg.com/550x/c0/3d/3f/c03d3f965a8091206f4a0e742bb97c9f.jpg',

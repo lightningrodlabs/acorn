@@ -31,7 +31,7 @@ const args: PeoplePickerProps = {
     { ...testProfile, isOutcomeMember: true, outcomeMemberActionHash: '' },
     {
       ...testProfileIsImported,
-      isOutcomeMember: false,
+      isOutcomeMember: true,
       outcomeMemberActionHash: '',
     },
     {
