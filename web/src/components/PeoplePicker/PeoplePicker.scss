@@ -84,6 +84,15 @@ ul.people-picker-list {
         font-size: 0.825rem;
         color: var(--text-color-quaternary);
         font-family: var(--font-family-primary-medium);
+
+        &.ghost {
+          color: var(--text-color-dark-bg);
+          font-size: 0.625rem;
+          background-color: var(--shadow-color-dark);
+          width:fit-content;
+          border-radius: 0.25rem;
+          padding: 0rem 0.25rem;
+        }
       }
     }
 

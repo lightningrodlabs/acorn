@@ -37,10 +37,10 @@ function Avatar({
   withStatusBorder,
   selfAssignedStatus,
   withTooltip,
-  // tooltipText,
-}: AvatarProps) {
+}: // tooltipText,
+AvatarProps) {
   let classes = []
-  // Avatar optional properties   
+  // Avatar optional properties
   if (highlighted) classes.push('highlighted')
   if (clickable) classes.push('clickable')
   if (imported) classes.push('imported')
@@ -93,7 +93,13 @@ function Avatar({
             ></div>
           </div>
         )}
-        {withTooltip && <Tooltip text={`${firstName} ${lastName}`} />}
+        {withTooltip && (
+          <Tooltip
+            text={`${firstName} ${lastName} ${
+              imported ? '[ghost member]' : ''
+            }`}
+          />
+        )}
       </div>
     )
   }
@@ -133,7 +139,11 @@ function Avatar({
           ></div>
         </div>
       )}
-      {withTooltip && <Tooltip text={`${firstName} ${lastName}`} />}
+      {withTooltip && (
+        <Tooltip
+          text={`${firstName} ${lastName} ${imported ? '[ghost member]' : ''}`}
+        />
+      )}
     </div>
   )
 }
