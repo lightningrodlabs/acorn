@@ -71,7 +71,7 @@ function mapDispatchToProps(
     openExpandedView: (actionHash: ActionHashB64) => dispatch(openExpandedView(actionHash)),
     closeExpandedView: () => dispatch(closeExpandedView()),
     goToOutcome: (outcomeActionHash: ActionHashB64) =>
-      dispatch(animatePanAndZoom(outcomeActionHash)),
+      dispatch(animatePanAndZoom(outcomeActionHash, true)),
     updateOutcome: async (outcome: Outcome, actionHash: ActionHashB64) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)

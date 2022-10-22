@@ -190,7 +190,7 @@ export default function setupEventListeners(
           if (childActionHash) {
             // select and pan and zoom to
             // the parent
-            store.dispatch(animatePanAndZoom(childActionHash))
+            store.dispatch(animatePanAndZoom(childActionHash, false))
             store.dispatch(unselectAll())
             store.dispatch(selectOutcome(childActionHash))
           }
@@ -209,7 +209,7 @@ export default function setupEventListeners(
           if (parentActionHash) {
             // select and pan and zoom to
             // the parent
-            store.dispatch(animatePanAndZoom(parentActionHash))
+            store.dispatch(animatePanAndZoom(parentActionHash, false))
             store.dispatch(unselectAll())
             store.dispatch(selectOutcome(parentActionHash))
           }
@@ -232,7 +232,7 @@ export default function setupEventListeners(
           if (targetActionHash) {
             // select and pan and zoom to
             // the parent
-            store.dispatch(animatePanAndZoom(targetActionHash))
+            store.dispatch(animatePanAndZoom(targetActionHash, false))
             store.dispatch(unselectAll())
             store.dispatch(selectOutcome(targetActionHash))
           }
@@ -255,7 +255,7 @@ export default function setupEventListeners(
           if (targetActionHash) {
             // select and pan and zoom to
             // the parent
-            store.dispatch(animatePanAndZoom(targetActionHash))
+            store.dispatch(animatePanAndZoom(targetActionHash, false))
             store.dispatch(unselectAll())
             store.dispatch(selectOutcome(targetActionHash))
           }

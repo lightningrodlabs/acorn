@@ -3,6 +3,7 @@ import { RootState } from '../../redux/reducer'
 import selectEntryPoints from '../../redux/persistent/projects/entry-points/select'
 import { animatePanAndZoom } from '../../redux/ephemeral/viewport/actions'
 import EntryPointPicker from './EntryPointPicker.component'
+import { ActionHashB64 } from '../../types/shared'
 
 function mapStateToProps(state: RootState) {
   const {
@@ -18,8 +19,8 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    goToOutcome: (outcomeActionHash) => {
-      return dispatch(animatePanAndZoom(outcomeActionHash))
+    goToOutcome: (outcomeActionHash: ActionHashB64) => {
+      return dispatch(animatePanAndZoom(outcomeActionHash, true))
     }
   }
 }

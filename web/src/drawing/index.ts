@@ -18,9 +18,7 @@ import {
 } from '../redux/ephemeral/outcome-connector/actions'
 import {
   CONNECTOR_VERTICAL_SPACING,
-  firstZoomThreshold,
   getOutcomeHeight,
-  outcomeHeight,
   outcomeWidth,
 } from './dimensions'
 import {

@@ -103,7 +103,8 @@ function mapDispatchToProps(dispatch, ownProps: MapViewOutcomeTitleFormOwnProps)
       setTimeout(() => {
         dispatch(unselectAll())
         dispatch(selectOutcome(outcomeWithConnection.outcome.actionHash))
-        dispatch(animatePanAndZoom(outcomeWithConnection.outcome.actionHash))
+        // `false` here means DONT change the scale, only the translate
+        dispatch(animatePanAndZoom(outcomeWithConnection.outcome.actionHash, false))
       }, LAYOUT_ANIMATION_DURATION_MS + ADDITIONAL_WAIT_BUFFER_MS)
     },
     closeOutcomeForm: () => {
