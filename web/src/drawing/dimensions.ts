@@ -22,7 +22,6 @@ export const OUTCOME_VERTICAL_HOVER_ALLOWANCE = 60
 export const outcomeWidth = 520 // 520 = 392 + ( 2 * 64 )
 export const outcomePaddingHorizontal = 64
 
-export const outcomeHeight = 250
 export const cornerRadius = 18 // for outcome, main card background color
 export const cornerRadiusBorder = 18 // for the border
 export const borderWidth = 8

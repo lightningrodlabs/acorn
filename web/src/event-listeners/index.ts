@@ -363,15 +363,18 @@ export default function setupEventListeners(
     const state: RootState = store.getState()
     const {
       ui: {
+        activeProject,
         viewport: { translate, scale },
         mouse: {
           coordinate: { x: initialSelectX, y: initialSelectY },
           outcomesAddresses,
         },
         layout: outcomeCoordinates,
-        selection: { selectedOutcomes },
       },
     } = state
+    const connections = state.projects.connections[activeProject] || {}
+    const projectTags = Object.values(state.projects.tags[activeProject] || {})
+
     const convertedCurrentMouse = coordsPageToCanvas(
       {
         x: event.clientX,
@@ -391,7 +394,11 @@ export default function setupEventListeners(
           store.dispatch(setCoordinate(convertedCurrentMouse))
         }
         const outcomeActionHashesToSelect = checkForOutcomeAtCoordinatesInBox(
+          ctx,
           outcomeCoordinates,
+          scale,
+          projectTags,
+          outcomes,
           convertedCurrentMouse,
           { x: initialSelectX, y: initialSelectY }
         )
@@ -410,7 +417,7 @@ export default function setupEventListeners(
       translate,
       scale,
       outcomeCoordinates,
-      state,
+      projectTags,
       event.clientX,
       event.clientY,
       outcomes,
@@ -421,7 +428,8 @@ export default function setupEventListeners(
       translate,
       scale,
       outcomeCoordinates,
-      state,
+      projectTags,
+      connections,
       event.clientX,
       event.clientY,
       outcomes
@@ -518,17 +526,21 @@ export default function setupEventListeners(
       // select it if so
       const {
         ui: {
+          activeProject,
           viewport: { translate, scale },
         },
       } = state
       const outcomeCoordinates = state.ui.layout
+      const connections = state.projects.connections[activeProject] || {}
+      const projectTags = Object.values(state.projects.tags[activeProject] || {})
 
       const clickedConnectionAddress = checkForConnectionAtCoordinates(
         ctx,
         translate,
         scale,
         outcomeCoordinates,
-        state,
+        projectTags,
+        connections,
         event.clientX,
         event.clientY,
         outcomes
@@ -538,7 +550,7 @@ export default function setupEventListeners(
         translate,
         scale,
         outcomeCoordinates,
-        state,
+        projectTags,
         event.clientX,
         event.clientY,
         outcomes

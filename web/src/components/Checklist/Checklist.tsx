@@ -43,14 +43,12 @@ const Checklist: React.FC<ChecklistProps> = ({
             onChangeComplete={(isChecked) =>
               onChange(index, listItem.task, isChecked)
             }
-            onChangeTask={(text) => onChange(index, text, listItem.complete)}
           />
           {/* Remove button */}
           <div
             className="checklist-remove-button-wrapper"
             onClick={() => onRemove(index)}
           >
-            {/* @ts-ignore */}
             <Icon
               name="delete-bin.svg"
               size="small"
