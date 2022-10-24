@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './OutcomeConnectors.scss'
 import {
-  outcomeWidth,
+  getOutcomeWidth,
   getOutcomeHeight,
   CONNECTOR_VERTICAL_SPACING,
 } from '../../drawing/dimensions'
@@ -62,14 +62,14 @@ const OutcomeConnector = ({
     outcome,
     projectTags,
     zoomLevel,
-    width: outcomeWidth,
+    width: getOutcomeWidth(),
   })
 
   // calculate the coordinates on the page, based
   // on what the coordinates on the canvas would be
   const { x: topConnectorLeft, y: topConnectorTop } = coordsCanvasToPage(
     {
-      x: outcomeCoordinates.x + outcomeWidth / 2,
+      x: outcomeCoordinates.x + getOutcomeWidth() / 2,
       y: outcomeCoordinates.y - CONNECTOR_VERTICAL_SPACING,
     },
     translate,
@@ -77,7 +77,7 @@ const OutcomeConnector = ({
   )
   const { x: bottomConnectorLeft, y: bottomConnectorTop } = coordsCanvasToPage(
     {
-      x: outcomeCoordinates.x + outcomeWidth / 2,
+      x: outcomeCoordinates.x + getOutcomeWidth() / 2,
       y: outcomeCoordinates.y + outcomeHeight + CONNECTOR_VERTICAL_SPACING,
     },
     translate,

@@ -1,5 +1,5 @@
 import TWEEN from '@tweenjs/tween.js'
-import { getOutcomeHeight, outcomeWidth } from '../../../drawing/dimensions'
+import { getOutcomeHeight, getOutcomeWidth } from '../../../drawing/dimensions'
 import { ActionHashB64 } from '../../../types/shared'
 import outcomesAsTrees from '../../persistent/projects/outcomes/outcomesAsTrees'
 import { RootState } from '../../reducer'
@@ -64,7 +64,7 @@ export default function panZoomToFrame(
       x:
         -1 * (outcomeCoordinates.x * scale) +
         halfScreenWidth -
-        (outcomeWidth / 2) * scale,
+        (getOutcomeWidth() / 2) * scale,
       y:
         -1 * (outcomeCoordinates.y * scale) +
         halfScreenHeight -

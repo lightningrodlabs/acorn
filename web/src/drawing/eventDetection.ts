@@ -1,4 +1,4 @@
-import { outcomeWidth, getOutcomeHeight } from './dimensions'
+import { getOutcomeWidth, getOutcomeHeight } from './dimensions'
 import { coordsPageToCanvas } from './coordinateSystems'
 import {
   calculateConnectionCoordsByOutcomeCoords,
@@ -115,18 +115,19 @@ export function checkForOutcomeAtCoordinates(
       y: outcomeCoordinate.y - extraVerticalPadding,
     }
 
-
+    const outcomeWidth = getOutcomeWidth()
+    const outcomeHeight = getOutcomeHeight({
+      ctx,
+      outcome,
+      projectTags,
+      width: outcomeWidth,
+      zoomLevel: scale,
+    })
     const bottomRight = {
       x: topLeft.x + outcomeWidth,
       y:
         outcomeCoordinates[outcome.actionHash].y +
-        getOutcomeHeight({
-          ctx,
-          outcome,
-          projectTags,
-          width: outcomeWidth,
-          zoomLevel: scale,
-        }) +
+        outcomeHeight +
         extraVerticalPadding,
     }
 
@@ -151,46 +152,47 @@ export function checkForOutcomeAtCoordinatesInBox(
 ) {
   // keep track of whether an Outcome was selected
   let clickedAddresses = {}
-  Object.keys(outcomes)
-    .forEach((actionHash) => {
-      const outcome = outcomes[actionHash]
-      const outcomeCoordinate = outcomeCoordinates[outcome.actionHash]
-      // do not proceed if we don't have coordinates
-      // for the outcome (yet)
-      if (!outcomeCoordinate) return false
+  Object.keys(outcomes).forEach((actionHash) => {
+    const outcome = outcomes[actionHash]
+    const outcomeCoordinate = outcomeCoordinates[outcome.actionHash]
+    // do not proceed if we don't have coordinates
+    // for the outcome (yet)
+    if (!outcomeCoordinate) return false
 
-      const bottomRight = {
-        x: outcomeCoordinate.x + outcomeWidth,
-        y: outcomeCoordinate.y + getOutcomeHeight({
-          ctx,
-          outcome,
-          projectTags,
-          width: outcomeWidth,
-          zoomLevel: scale,
-        }),
-      }
-
-      // if box fully encapsulates an Outcome
-      if (
-        (oppositeCorner.x < outcomeCoordinate.x &&
-          bottomRight.x < corner.x &&
-          oppositeCorner.y < outcomeCoordinate.y &&
-          bottomRight.y < corner.y) ||
-        (oppositeCorner.x > bottomRight.x &&
-          outcomeCoordinate.x > corner.x &&
-          oppositeCorner.y > bottomRight.y &&
-          outcomeCoordinate.y > corner.y) ||
-        (oppositeCorner.x > bottomRight.x &&
-          outcomeCoordinate.x > corner.x &&
-          oppositeCorner.y < outcomeCoordinate.y &&
-          bottomRight.y < corner.y) ||
-        (oppositeCorner.x < outcomeCoordinate.x &&
-          bottomRight.x < corner.x &&
-          oppositeCorner.y > bottomRight.y &&
-          outcomeCoordinate.y > corner.y)
-      ) {
-        clickedAddresses[actionHash] = 1
-      }
+    const outcomeWidth = getOutcomeWidth()
+    const outcomeHeight = getOutcomeHeight({
+      ctx,
+      outcome,
+      projectTags,
+      width: outcomeWidth,
+      zoomLevel: scale,
     })
+    const bottomRight = {
+      x: outcomeCoordinate.x + outcomeWidth,
+      y: outcomeCoordinate.y + outcomeHeight,
+    }
+
+    // if box fully encapsulates an Outcome
+    if (
+      (oppositeCorner.x < outcomeCoordinate.x &&
+        bottomRight.x < corner.x &&
+        oppositeCorner.y < outcomeCoordinate.y &&
+        bottomRight.y < corner.y) ||
+      (oppositeCorner.x > bottomRight.x &&
+        outcomeCoordinate.x > corner.x &&
+        oppositeCorner.y > bottomRight.y &&
+        outcomeCoordinate.y > corner.y) ||
+      (oppositeCorner.x > bottomRight.x &&
+        outcomeCoordinate.x > corner.x &&
+        oppositeCorner.y < outcomeCoordinate.y &&
+        bottomRight.y < corner.y) ||
+      (oppositeCorner.x < outcomeCoordinate.x &&
+        bottomRight.x < corner.x &&
+        oppositeCorner.y > bottomRight.y &&
+        outcomeCoordinate.y > corner.y)
+    ) {
+      clickedAddresses[actionHash] = 1
+    }
+  })
   return Object.keys(clickedAddresses)
 }

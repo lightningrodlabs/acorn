@@ -1,4 +1,4 @@
-import { outcomeWidth, getOutcomeHeight } from './dimensions'
+import { getOutcomeWidth, getOutcomeHeight } from './dimensions'
 import {
   CONNECTION_ACHIEVED_COLOR,
   CONNECTION_NOT_ACHIEVED_COLOR,
@@ -16,20 +16,20 @@ export function calculateConnectionCoordsByOutcomeCoords(
   zoomLevel: number,
   ctx: CanvasRenderingContext2D
 ) {
-  const parentOutcomeHeight = getOutcomeHeight({
+  const outcomeHeight = getOutcomeHeight({
     ctx,
     outcome,
     projectTags,
-    width: outcomeWidth,
+    width: getOutcomeWidth(),
     zoomLevel,
   })
   const childConnectionCoords = {
-    x: childCoords.x + outcomeWidth / 2,
+    x: childCoords.x + getOutcomeWidth() / 2,
     y: childCoords.y,
   }
   const parentConnectionCoords = {
-    x: parentCoords.x + outcomeWidth / 2,
-    y: parentCoords.y + parentOutcomeHeight,
+    x: parentCoords.x + getOutcomeWidth() / 2,
+    y: parentCoords.y + outcomeHeight,
   }
   return [childConnectionCoords, parentConnectionCoords]
 }

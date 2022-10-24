@@ -1,5 +1,5 @@
 import dagre from 'dagre'
-import { outcomeWidth, getOutcomeHeight } from './dimensions'
+import { getOutcomeWidth, getOutcomeHeight } from './dimensions'
 import outcomesAsTrees, {
   TreeData,
 } from '../redux/persistent/projects/outcomes/outcomesAsTrees'
@@ -31,13 +31,13 @@ function getBoundingRec(
     if (!topLeftCoord) {
       return
     }
-    const width = outcomeWidth
+    const width = getOutcomeWidth()
     const height = getOutcomeHeight({
       ctx,
       outcome: outcomeToCheck,
       projectTags,
       zoomLevel,
-      width: outcomeWidth,
+      width,
     })
     const top = topLeftCoord.y
     const left = topLeftCoord.x
@@ -84,12 +84,12 @@ function layoutForTree(
 
   // use recursion to add each outcome as a node in the graph
   function addOutcome(outcome: ComputedOutcome) {
-    const width = outcomeWidth
+    const width = getOutcomeWidth()
     const height = getOutcomeHeight({
       ctx,
       outcome,
       zoomLevel,
-      width: outcomeWidth,
+      width,
       projectTags,
     }) + VERTICAL_SPACING
     graph.setNode(outcome.actionHash, {

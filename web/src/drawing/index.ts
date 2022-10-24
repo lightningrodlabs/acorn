@@ -19,7 +19,7 @@ import {
 import {
   CONNECTOR_VERTICAL_SPACING,
   getOutcomeHeight,
-  outcomeWidth,
+  getOutcomeWidth,
 } from './dimensions'
 import {
   ComputedOutcome,
@@ -285,6 +285,15 @@ function render(
         (actionHash) => actionHash === outcome.actionHash
       )
       if (coordinates[outcome.actionHash]) {
+        const outcomeWidth = getOutcomeWidth()
+        const outcomeHeight = getOutcomeHeight({
+          ctx,
+          outcome,
+          projectTags,
+          zoomLevel: zoomLevel,
+          width: outcomeWidth,
+          useLineLimit: true,
+        })
         drawOutcomeCard({
           useLineLimit: true,
           zoomLevel: zoomLevel,
@@ -294,15 +303,8 @@ function render(
           isSelected: isSelected,
           ctx: ctx,
           isTopPriority: isTopPriorityOutcome,
-          outcomeHeight: getOutcomeHeight({
-            ctx,
-            outcome,
-            projectTags,
-            zoomLevel: zoomLevel,
-            width: outcomeWidth,
-            useLineLimit: true,
-          }),
-          outcomeWidth: outcomeWidth,
+          outcomeHeight,
+          outcomeWidth,
           projectTags,
           // members: membersOfOutcome,
           // isEditing: isEditing, // self
@@ -386,6 +388,7 @@ function render(
         (actionHash) => actionHash === outcome.actionHash
       )
       if (coordinates[outcome.actionHash]) {
+        const outcomeWidth = getOutcomeWidth()
         drawOutcomeCard({
           useLineLimit: true,
           zoomLevel: zoomLevel,
@@ -571,6 +574,18 @@ function render(
       },
       children: [],
     }
+    const outcomeWidth = getOutcomeWidth()
+    const outcomeHeight = getOutcomeHeight({
+      ctx,
+      outcome: {
+        ...placeholderOutcome,
+        content: outcomeFormContent,
+      },
+      projectTags,
+      width: outcomeWidth,
+      zoomLevel,
+      useLineLimit: false,
+    })
     drawOutcomeCard({
       useLineLimit: false,
       zoomLevel: zoomLevel,
@@ -578,17 +593,7 @@ function render(
       // since the text is presented in the
       // MapViewOutcomeTitleForm
       outcome: placeholderOutcome,
-      outcomeHeight: getOutcomeHeight({
-        ctx,
-        outcome: {
-          ...placeholderOutcome,
-          content: outcomeFormContent,
-        },
-        projectTags,
-        width: outcomeWidth,
-        zoomLevel,
-        useLineLimit: false,
-      }),
+      outcomeHeight,
       outcomeWidth,
       projectTags,
       outcomeLeftX: outcomeFormLeftConnectionX,

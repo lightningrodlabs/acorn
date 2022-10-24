@@ -1,13 +1,11 @@
 import { computeProgress } from '../redux/persistent/projects/outcomes/computedState'
-import { ComputedOutcome, ComputedScope, Tag } from '../types'
+import { ComputedOutcome, Tag } from '../types'
 import { WithActionHash } from '../types/shared'
 import {
-  argsForDrawProgressBar,
   argsForDrawStatement,
   argsForDrawTags,
   argsForDrawTimeAndAssignees,
 } from './drawOutcome/computeArguments'
-import drawProgressBar from './drawOutcome/drawProgressBar'
 import drawStatement from './drawOutcome/drawStatement'
 import drawTags from './drawOutcome/drawTags'
 import drawTimeAndAssignees from './drawOutcome/drawTimeAndAssignees'
@@ -18,8 +16,6 @@ export const CONNECTOR_VERTICAL_SPACING = 20
 
 export const OUTCOME_VERTICAL_HOVER_ALLOWANCE = 60
 
-// outcome width = outcome statement width + ( 2 * width padding)
-export const outcomeWidth = 520 // 520 = 392 + ( 2 * 64 )
 export const outcomePaddingHorizontal = 64
 
 export const cornerRadius = 18 // for outcome, main card background color
@@ -226,6 +222,58 @@ export function getLinesForParagraphs({
   return linesToRender
 }
 
+export interface OutcomeDimensions {
+  width: number
+  height: number
+}
+
+export function getOutcomeDimensions({
+  ctx,
+  outcome,
+  projectTags,
+  zoomLevel,
+  useLineLimit,
+}: {
+  ctx?: CanvasRenderingContext2D
+  outcome: ComputedOutcome
+  projectTags: WithActionHash<Tag>[]
+  zoomLevel: number
+  useLineLimit?: boolean
+}): OutcomeDimensions {
+  const width = getOutcomeWidth({
+    ctx,
+    outcome,
+    zoomLevel,
+  })
+  const height = getOutcomeHeight({
+    ctx,
+    outcome,
+    zoomLevel,
+    projectTags,
+    width,
+    useLineLimit,
+  })
+  return {
+    width,
+    height,
+  }
+}
+
+// outcome width = outcome statement width + ( 2 * width padding)
+export function getOutcomeWidth({
+  ctx,
+  outcome,
+  zoomLevel,
+}: {
+  ctx?: CanvasRenderingContext2D
+  outcome?: ComputedOutcome
+  zoomLevel?: number
+} = {}) {
+  // TODO: next, make this dynamic
+  return 520 // 520 = 392 + ( 2 * 64 )
+}
+
+// height is a function of width
 export function getOutcomeHeight({
   ctx,
   outcome,
@@ -252,7 +300,7 @@ export function getOutcomeHeight({
       outcome,
       outcomeLeftX: 0, // this number doesn't matter for measuring
       outcomeTopY: 0, // this number doesn't matter for measuring
-      outcomeWidth,
+      outcomeWidth: width,
       zoomLevel,
       ctx,
     })
@@ -305,16 +353,8 @@ export function getOutcomeHeight({
     outcomeStatementHeight +
     outcomeTagsHeight +
     outcomeTimeAndAssigneesHeight +
+    // TODO: should progressBarHeight be here?
     verticalSpacing
-  // console.log(
-  //   'DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT',
-  //   DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT
-  // )
-  // console.log('outcomeStatementHeight', outcomeStatementHeight)
-  // console.log('outcomeTagsHeight', outcomeTagsHeight)
-  // console.log('outcomeTimeAndAssigneesHeight', outcomeTimeAndAssigneesHeight)
-  // console.log('verticalSpacing', verticalSpacing)
-  // console.log('\n\n')
 
   return detectedOutcomeHeight
 }
