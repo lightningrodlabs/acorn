@@ -111,7 +111,8 @@ function getLines({
   let lines = []
   let currentLine = ''
 
-  function splitWordFit(word: string) {
+  const RECURSE_MAX = 8
+  function splitWordFit(word: string, recursions: number) {
     const currentLineWithLeadingSpace =
       currentLine + (currentLine.length ? ' ' : '')
     let foundThreshold = false
@@ -130,9 +131,10 @@ function getLines({
     )
     const endofSplitWord = word.slice(wordMustBeBrokenAtIndex)
     // if its still too big, recurse, split again
-    if (ctx.measureText(endofSplitWord).width > maxWidth) {
+    // as long as its not recursing too deep
+    if (ctx.measureText(endofSplitWord).width > maxWidth && recursions < RECURSE_MAX) {
       currentLine = ''
-      splitWordFit(endofSplitWord)
+      splitWordFit(endofSplitWord, recursions + 1)
     } else {
       currentLine = endofSplitWord
     }
@@ -149,7 +151,7 @@ function getLines({
         lines.push(currentLine)
         currentLine = ''
       }
-      splitWordFit(word)
+      splitWordFit(word, 0)
     }
     // if adding this word fits, put it on this line
     else if (

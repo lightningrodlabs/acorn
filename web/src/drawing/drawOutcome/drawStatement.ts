@@ -101,12 +101,12 @@ const drawStatement = ({
     const dynamicTotalOutcomeStatementHeight =
       fontSizeToUse * lines.length + lineSpacingToUse * lines.length
 
-    if (lines.length < 4) {
+    if (lines.length < 4 && !statementPlaceholder) {
       height = Math.max(
         outcomeStatementMinHeightWithoutMeta,
         dynamicTotalOutcomeStatementHeight
       )
-    } else if (lines.length >= 4) {
+    } else {
       height = dynamicTotalOutcomeStatementHeight
     }
   })
