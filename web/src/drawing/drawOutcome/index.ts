@@ -42,6 +42,10 @@ const drawOutcome = ({
   isSelected,
   // canvas context
   ctx,
+  // placeholders
+  statementPlaceholder,
+  tagPlaceholder,
+  timeAndAssigneesPlaceholder
 }: {
   outcome: ComputedOutcome
   outcomeLeftX: number
@@ -54,7 +58,12 @@ const drawOutcome = ({
   zoomLevel: number
   isTopPriority: boolean
   isSelected: boolean
+  // canvas context
   ctx: CanvasRenderingContext2D
+  // placeholders
+  statementPlaceholder: boolean
+  tagPlaceholder: boolean
+  timeAndAssigneesPlaceholder: boolean
 }) =>
   draw(ctx, () => {
     drawSelectedBorder(
@@ -123,6 +132,7 @@ const drawOutcome = ({
         outcomeWidth,
         zoomLevel,
         ctx,
+        statementPlaceholder,
       })
     )
     const heightOfTags = drawTags(
@@ -134,6 +144,7 @@ const drawOutcome = ({
         heightOfStatement,
         projectTags,
         ctx,
+        tagPlaceholder
       })
     )
     const heightOfTimeAndAssignees = drawTimeAndAssignees(
@@ -145,6 +156,7 @@ const drawOutcome = ({
         outcomeStatementHeight: heightOfStatement,
         outcomeTagsHeight: heightOfTags,
         ctx,
+        timeAndAssigneesPlaceholder
       })
     )
     drawProgressBar(

@@ -39,6 +39,10 @@ const sharedArgs = {
   zoomLevel: 1,
   isSelected: false,
   isTopPriority: false,
+  // placeholders
+  statementPlaceholder: false,
+  tagPlaceholder: false,
+  timeAndAssigneesPlaceholder: false,
 }
 
 export const SmallNotAchieved = Template.bind({})
@@ -89,3 +93,16 @@ const args7: MapViewDevModeProps = {
   outcome: testUncertainWithChildrenOutcome,
 }
 UncertainWithChildren.args = args7
+
+export const SmallAchievedWithPlaceholders = Template.bind({})
+const args8: MapViewDevModeProps = {
+  ...sharedArgs,
+  outcome: testSmallAchievedOutcome,
+  statementPlaceholder: true,
+  tagPlaceholder: true,
+  timeAndAssigneesPlaceholder: true,
+  outcomeWidth: 450,
+  outcomeHeight: 420,
+  
+}
+SmallAchievedWithPlaceholders.args = args8
