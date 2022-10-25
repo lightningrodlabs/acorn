@@ -57,19 +57,20 @@ const OutcomeConnector = ({
   dispatch,
 }) => {
   const ctx = canvas.getContext('2d')
+  const outcomeWidth = getOutcomeWidth({ outcome })
   const outcomeHeight = getOutcomeHeight({
     ctx,
     outcome,
     projectTags,
     zoomLevel,
-    width: getOutcomeWidth(),
+    width: outcomeWidth,
   })
 
   // calculate the coordinates on the page, based
   // on what the coordinates on the canvas would be
   const { x: topConnectorLeft, y: topConnectorTop } = coordsCanvasToPage(
     {
-      x: outcomeCoordinates.x + getOutcomeWidth() / 2,
+      x: outcomeCoordinates.x + outcomeWidth / 2,
       y: outcomeCoordinates.y - CONNECTOR_VERTICAL_SPACING,
     },
     translate,
@@ -77,7 +78,7 @@ const OutcomeConnector = ({
   )
   const { x: bottomConnectorLeft, y: bottomConnectorTop } = coordsCanvasToPage(
     {
-      x: outcomeCoordinates.x + getOutcomeWidth() / 2,
+      x: outcomeCoordinates.x + outcomeWidth / 2,
       y: outcomeCoordinates.y + outcomeHeight + CONNECTOR_VERTICAL_SPACING,
     },
     translate,

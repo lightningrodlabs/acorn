@@ -51,6 +51,9 @@ export default function panZoomToFrame(
   // we can also adjust the scale back to 1, or not,
   // depending on the 'action.adjustScale' value
   const scale = adjustScale ? 1 : currentState.ui.viewport.scale
+  const outcomeWidth = getOutcomeWidth({
+    outcome,
+  })
   const outcomeHeight = getOutcomeHeight({
     outcome,
     projectTags,
@@ -64,7 +67,7 @@ export default function panZoomToFrame(
       x:
         -1 * (outcomeCoordinates.x * scale) +
         halfScreenWidth -
-        (getOutcomeWidth() / 2) * scale,
+        (outcomeWidth / 2) * scale,
       y:
         -1 * (outcomeCoordinates.y * scale) +
         halfScreenHeight -

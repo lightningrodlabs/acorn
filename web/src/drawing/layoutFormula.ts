@@ -31,7 +31,7 @@ function getBoundingRec(
     if (!topLeftCoord) {
       return
     }
-    const width = getOutcomeWidth()
+    const width = getOutcomeWidth({ outcome: outcomeToCheck })
     const height = getOutcomeHeight({
       ctx,
       outcome: outcomeToCheck,
@@ -84,7 +84,7 @@ function layoutForTree(
 
   // use recursion to add each outcome as a node in the graph
   function addOutcome(outcome: ComputedOutcome) {
-    const width = getOutcomeWidth()
+    const width = getOutcomeWidth({ outcome })
     const height = getOutcomeHeight({
       ctx,
       outcome,

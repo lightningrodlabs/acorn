@@ -216,6 +216,9 @@ function render(
           zoomLevel,
           ctx
         )
+        if (connection.childActionHash === 'uhCkkfDJm_qsRWfZ2psXqfhIxwClZ3BsTDMl-tfgFjX0a2eDSIS2n') {
+          console.log('childConnectionCoords', connection1port)
+        }
         const isHovered = hoveredConnectionActionHash === connection.actionHash
         const isSelected = selectedConnections.includes(connection.actionHash)
         drawConnection({
@@ -285,7 +288,7 @@ function render(
         (actionHash) => actionHash === outcome.actionHash
       )
       if (coordinates[outcome.actionHash]) {
-        const outcomeWidth = getOutcomeWidth()
+        const outcomeWidth = getOutcomeWidth({ outcome })
         const outcomeHeight = getOutcomeHeight({
           ctx,
           outcome,
@@ -388,7 +391,21 @@ function render(
         (actionHash) => actionHash === outcome.actionHash
       )
       if (coordinates[outcome.actionHash]) {
-        const outcomeWidth = getOutcomeWidth()
+        const outcomeWidth = getOutcomeWidth({ outcome })
+        const outcomeHeight = getOutcomeHeight({
+          ctx,
+          outcome,
+          projectTags,
+          zoomLevel: zoomLevel,
+          width: outcomeWidth,
+          useLineLimit: true,
+        })
+
+
+        console.log('outcome.actionHash', outcome.actionHash)
+        console.log('coordinates[outcome.actionHash].x', coordinates[outcome.actionHash].x)
+        console.log('coordinates[outcome.actionHash].y', coordinates[outcome.actionHash].y)
+
         drawOutcomeCard({
           useLineLimit: true,
           zoomLevel: zoomLevel,
@@ -398,15 +415,8 @@ function render(
           isSelected: isSelected,
           ctx: ctx,
           isTopPriority: isTopPriorityOutcome,
-          outcomeHeight: getOutcomeHeight({
-            ctx,
-            outcome,
-            projectTags,
-            zoomLevel: zoomLevel,
-            width: outcomeWidth,
-            useLineLimit: true,
-          }),
           outcomeWidth,
+          outcomeHeight,
           projectTags,
           // members: membersOfOutcome,
           // isEditing: isEditing,
@@ -548,7 +558,7 @@ function render(
     const isSelected = false
     const isEditing = true
     const isTopPriorityOutcome = false
-    const placeholderOutcome: ComputedOutcome = {
+    const placeholderOutcomeWithoutText: ComputedOutcome = {
       actionHash: '',
       // don't display the text this way, it will be displayed in the overlayed form
       content: '',
@@ -574,13 +584,14 @@ function render(
       },
       children: [],
     }
-    const outcomeWidth = getOutcomeWidth()
+    const placeholderOutcomeWithText = {
+      ...placeholderOutcomeWithoutText,
+      content: outcomeFormContent,
+    }
+    const outcomeWidth = getOutcomeWidth({ outcome: placeholderOutcomeWithText })
     const outcomeHeight = getOutcomeHeight({
       ctx,
-      outcome: {
-        ...placeholderOutcome,
-        content: outcomeFormContent,
-      },
+      outcome: placeholderOutcomeWithText,
       projectTags,
       width: outcomeWidth,
       zoomLevel,
@@ -592,7 +603,7 @@ function render(
       // draw the Outcome with empty text
       // since the text is presented in the
       // MapViewOutcomeTitleForm
-      outcome: placeholderOutcome,
+      outcome: placeholderOutcomeWithoutText,
       outcomeHeight,
       outcomeWidth,
       projectTags,

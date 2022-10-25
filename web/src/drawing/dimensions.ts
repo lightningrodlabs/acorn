@@ -1,5 +1,5 @@
 import { computeProgress } from '../redux/persistent/projects/outcomes/computedState'
-import { ComputedOutcome, Tag } from '../types'
+import { ComputedOutcome, ComputedScope, Tag } from '../types'
 import { WithActionHash } from '../types/shared'
 import {
   argsForDrawStatement,
@@ -262,12 +262,21 @@ export function getOutcomeWidth({
   outcome,
   zoomLevel,
 }: {
-  outcome?: ComputedOutcome
+  outcome: ComputedOutcome
   zoomLevel?: number
-} = {}) {
+}) {
   // outcome width = outcome statement width + ( 2 * width padding)
-  // TODO: next, make this dynamic
-  return 520 // 520 = 392 + ( 2 * 64 )
+  const defaultWidth = 520 // 520 = 392 + ( 2 * 64 )
+
+  if (outcome.computedScope === ComputedScope.Small) {
+    console.log('outcome.statement', outcome.content)
+    console.log('width', defaultWidth / 3)
+    return defaultWidth / 3
+  } else {
+    console.log('outcome.statement', outcome.content)
+    console.log('width', defaultWidth)
+    return defaultWidth
+  }
 }
 
 // height is a function of width

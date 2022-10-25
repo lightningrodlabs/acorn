@@ -642,13 +642,14 @@ export default function setupEventListeners(
       },
     } = state
     const outcomes = state.projects.outcomes[activeProject] || {}
+    const projectTags = Object.values(state.projects.tags[activeProject] || {})
     const outcomeCoordinates = state.ui.layout
     const outcomeActionHash = checkForOutcomeAtCoordinates(
       ctx,
       translate,
       scale,
       outcomeCoordinates,
-      state,
+      projectTags,
       event.clientX,
       event.clientY,
       outcomes

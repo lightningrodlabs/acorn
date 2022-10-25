@@ -115,7 +115,7 @@ export function checkForOutcomeAtCoordinates(
       y: outcomeCoordinate.y - extraVerticalPadding,
     }
 
-    const outcomeWidth = getOutcomeWidth()
+    const outcomeWidth = getOutcomeWidth({ outcome })
     const outcomeHeight = getOutcomeHeight({
       ctx,
       outcome,
@@ -159,7 +159,7 @@ export function checkForOutcomeAtCoordinatesInBox(
     // for the outcome (yet)
     if (!outcomeCoordinate) return false
 
-    const outcomeWidth = getOutcomeWidth()
+    const outcomeWidth = getOutcomeWidth({ outcome })
     const outcomeHeight = getOutcomeHeight({
       ctx,
       outcome,
