@@ -15,7 +15,7 @@ import {
   TRIGGER_UPDATE_LAYOUT,
 } from './actions'
 import panZoomToFrame from '../animations/pan-and-zoom'
-import { ANIMATE_PAN_AND_ZOOM } from '../viewport/actions'
+import { ANIMATE_PAN_AND_ZOOM, CHANGE_SCALE } from '../viewport/actions'
 import performLayoutAnimation from '../animations/layout'
 import { RootState } from '../../reducer'
 
@@ -37,6 +37,7 @@ const isOneOfLayoutAffectingActions = (action: { type: string }) => {
         || type === DELETE_OUTCOME_FULLY
         || type === CREATE_CONNECTION
         || type === FETCH_CONNECTIONS
+        || type === CHANGE_SCALE
 }
 
 const isOneOfViewportAffectingActions = (action: { type: string }) => {

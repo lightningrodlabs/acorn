@@ -637,7 +637,6 @@ export default function setupEventListeners(
         viewport: { translate, scale },
       },
     } = state
-    const outcomes = state.projects.outcomes[activeProject] || {}
     const projectTags = Object.values(state.projects.tags[activeProject] || {})
     const outcomeCoordinates = state.ui.layout
     const outcomeActionHash = checkForOutcomeAtCoordinates(

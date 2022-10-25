@@ -33,6 +33,7 @@ import { ActionHashB64, WithActionHash } from '../types/shared'
 import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
 import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
 import { ProjectOutcomeMembersState } from '../redux/persistent/projects/outcome-members/reducer'
+import { getPlaceholderOutcome } from './drawOutcome/placeholderOutcome'
 
 function setupCanvas(canvas) {
   // Get the device pixel ratio, falling back to 1.
@@ -457,6 +458,7 @@ function render(
         childCoords = newOutcomeCoords
         parentCoords = fromOutcomeCoords
       }
+      const placeholderOutcomeWithoutText = getPlaceholderOutcome()
       if (childCoords && parentCoords && fromOutcome) {
         const [
           connection1port,
@@ -464,7 +466,7 @@ function render(
         ] = calculateConnectionCoordsByOutcomeCoords(
           childCoords,
           parentCoords,
-          0,
+          getOutcomeWidth({ outcome: placeholderOutcomeWithoutText, zoomLevel }),
           fromOutcome,
           projectTags,
           zoomLevel,
@@ -570,36 +572,8 @@ function render(
     const isSelected = false
     const isEditing = true
     const isTopPriorityOutcome = false
-    const placeholderOutcomeWithoutText: ComputedOutcome = {
-      actionHash: '',
-      // don't display the text this way, it will be displayed in the overlayed form
-      content: '',
-      creatorAgentPubKey: '',
-      editorAgentPubKey: '',
-      timestampCreated: Date.now(),
-      timestampUpdated: Date.now(),
-      scope: {
-        Uncertain: { smallsEstimate: 0, timeFrame: null, inBreakdown: false },
-      },
-      tags: [],
-      description: '',
-      isImported: false,
-      githubLink: '',
-      computedScope: ComputedScope.Uncertain,
-      computedAchievementStatus: {
-        simple: ComputedSimpleAchievementStatus.NotAchieved,
-        smallsAchieved: 0,
-        smallsTotal: 0,
-        tasksAchieved: 0,
-        tasksTotal: 0,
-        uncertains: 0,
-      },
-      children: [],
-    }
-    const placeholderOutcomeWithText = {
-      ...placeholderOutcomeWithoutText,
-      content: outcomeFormContent,
-    }
+    const placeholderOutcomeWithoutText = getPlaceholderOutcome()
+    const placeholderOutcomeWithText = getPlaceholderOutcome(outcomeFormContent)
     const outcomeWidth = getOutcomeWidth({
       outcome: placeholderOutcomeWithText,
       zoomLevel
