@@ -54,8 +54,13 @@ export const argsForDrawTimeAndAssignees = ({
     ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5
     : false
 
+  const skipRender = outcome
+    ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.3
+    : false
+
   const args: Parameters<typeof drawTimeAndAssignees>[0] = {
     onlyMeasure,
+    skipRender,
     members,
     timeXLeftPosition,
     assigneesXRightPosition,

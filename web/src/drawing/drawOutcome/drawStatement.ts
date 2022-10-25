@@ -43,6 +43,7 @@ const drawStatement = ({
   let height: number = 0
   // early exit with no rendering, in the case of skipRender
   if (skipRender) return height
+
   draw(ctx, () => {
     const textBoxLeft = xPosition
     const textBoxTop = yPosition

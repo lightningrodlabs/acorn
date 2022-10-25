@@ -51,8 +51,13 @@ export const argsForDrawTags = ({
     ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5
     : false
 
+  const skipRender = outcome
+    ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.3
+    : false
+
   const args: Parameters<typeof drawTags>[0] = {
     onlyMeasure,
+    skipRender,
     ctx,
     tagVerticalSpaceBetween: TAGS_SPACE_BETWEEN,
     tagHorizontalSpaceBetween: TAGS_SPACE_BETWEEN,

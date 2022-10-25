@@ -72,7 +72,12 @@ const drawAssignees = ({
     })
   } else if (assigneesPlaceholder && !onlyMeasure) {
     ctx.fillStyle = placeholderColor
-    ctx.fillRect(xRightPosition - placeholderWidth, yPosition, placeholderWidth, avatarSize)
+    ctx.fillRect(
+      xRightPosition - placeholderWidth,
+      yPosition,
+      placeholderWidth,
+      avatarSize
+    )
   }
   return avatarSize
 }
@@ -158,6 +163,7 @@ const drawTime = ({
 
 const drawTimeAndAssignees = ({
   onlyMeasure,
+  skipRender,
   // assignees
   members,
   assigneesXRightPosition,
@@ -182,6 +188,7 @@ const drawTimeAndAssignees = ({
   ctx,
 }: {
   onlyMeasure: boolean
+  skipRender: boolean
   // assignees
   members: Profile[]
   assigneesXRightPosition: number
@@ -205,6 +212,9 @@ const drawTimeAndAssignees = ({
   maxWidth: number
   ctx: CanvasRenderingContext2D
 }): number => {
+  // early exit with no rendering, in the case of skipRender
+  if (skipRender) return 0
+
   let assigneesHeight: number = 0
   let timeHeight: number = 0
   draw(ctx, () => {
