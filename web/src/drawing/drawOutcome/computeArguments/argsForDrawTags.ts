@@ -47,8 +47,9 @@ export const argsForDrawTags = ({
   const yPosition = outcomeTopY + topOffsetY
   const maxWidth = outcomeWidth - 2 * outcomePaddingHorizontal
 
+  // text size becomes unreadable around this zoom level
   const tagPlaceholder = outcome
-    ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5
+    ? zoomLevel < 0.5
     : false
 
   const skipRender = outcome

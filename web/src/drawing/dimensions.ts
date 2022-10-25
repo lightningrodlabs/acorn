@@ -31,6 +31,13 @@ export const borderWidth = 8
 export const dashedBorderWidth = 5
 
 export const outcomeStatementMinHeightWithoutMeta = 130
+
+export const OUTCOME_STATEMENT_PLACEHOLDER_LINE_HEIGHT_SMALL = 14
+export const OUTCOME_STATEMENT_PLACEHOLDER_LINE_SPACE_SMALL = 8
+
+export const OUTCOME_STATEMENT_PLACEHOLDER_LINE_HEIGHT_NOT_SMALL = 20
+export const OUTCOME_STATEMENT_PLACEHOLDER_LINE_SPACE_NOT_SMALL = 14
+
 // affects not only the top and bottom padding,
 // but also the space in between items in the vertical layout
 export const OUTCOME_VERTICAL_SPACE_BETWEEN = 32
@@ -278,10 +285,10 @@ export function getOutcomeWidth({
   const defaultWidth = 520 // 520 = 392 + ( 2 * 64 )
 
   if (outcome.computedScope === ComputedScope.Small) {
-    // 0.1 < zoomLevel < 2.5
+    // 0.02 < zoomLevel < 2.5
     if (zoomLevel < 1) {
-      // 0.1 < zoomLevel < 1
-      return defaultWidth * zoomLevel
+      // 0.02 < zoomLevel < 1
+      return defaultWidth * Math.min(zoomLevel * 1.4, 1)
     } else return defaultWidth
   } else {
     return defaultWidth

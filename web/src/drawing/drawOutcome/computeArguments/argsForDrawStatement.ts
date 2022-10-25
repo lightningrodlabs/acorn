@@ -2,15 +2,13 @@ import {
   STATEMENT_FONT_COLOR,
   STATEMENT_PLACEHOLDER_COLOR,
 } from '../../../styles'
+import { ComputedOutcome, ComputedScope } from '../../../types'
 import {
-  ComputedOutcome,
-  ComputedScope,
-  ComputedSimpleAchievementStatus,
-} from '../../../types'
-import {
-  DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT,
   outcomePaddingHorizontal,
-  OUTCOME_VERTICAL_SPACE_BETWEEN,
+  OUTCOME_STATEMENT_PLACEHOLDER_LINE_HEIGHT_NOT_SMALL,
+  OUTCOME_STATEMENT_PLACEHOLDER_LINE_HEIGHT_SMALL,
+  OUTCOME_STATEMENT_PLACEHOLDER_LINE_SPACE_NOT_SMALL,
+  OUTCOME_STATEMENT_PLACEHOLDER_LINE_SPACE_SMALL,
 } from '../../dimensions'
 import drawStatement from '../drawStatement'
 
@@ -43,12 +41,27 @@ export const argsForDrawStatement = ({
   const statement = outcome ? outcome.content : ''
 
   const statementPlaceholder = outcome
-    ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5
+    ? (outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5) ||
+      (outcome.computedScope !== ComputedScope.Small && zoomLevel <= 0.25)
     : false
 
   const skipRender = outcome
     ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.3
     : false
+
+  // statement placeholder line heights depending on outcome scope
+  const statementPlaceholderHeight = outcome
+    ? outcome.computedScope === ComputedScope.Small
+      ? OUTCOME_STATEMENT_PLACEHOLDER_LINE_HEIGHT_SMALL
+      : OUTCOME_STATEMENT_PLACEHOLDER_LINE_HEIGHT_NOT_SMALL
+    : OUTCOME_STATEMENT_PLACEHOLDER_LINE_HEIGHT_NOT_SMALL
+
+  // statement placeholder line spaces depending on outcome scope
+  const statementPlaceholderLineSpace = outcome
+    ? outcome.computedScope === ComputedScope.Small
+      ? OUTCOME_STATEMENT_PLACEHOLDER_LINE_SPACE_SMALL
+      : OUTCOME_STATEMENT_PLACEHOLDER_LINE_SPACE_NOT_SMALL
+    : OUTCOME_STATEMENT_PLACEHOLDER_LINE_SPACE_NOT_SMALL
 
   const args: Parameters<typeof drawStatement>[0] = {
     skipRender,
@@ -62,6 +75,8 @@ export const argsForDrawStatement = ({
     color: STATEMENT_FONT_COLOR,
     ctx,
     statementPlaceholder,
+    statementPlaceholderHeight,
+    statementPlaceholderLineSpace,
     statementPlaceholderColor: STATEMENT_PLACEHOLDER_COLOR,
   }
   return args

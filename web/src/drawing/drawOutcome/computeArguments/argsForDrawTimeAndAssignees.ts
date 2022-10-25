@@ -51,7 +51,8 @@ export const argsForDrawTimeAndAssignees = ({
   const maxWidth = outcomeWidth - 2 * outcomePaddingHorizontal
 
   const timeAndAssigneesPlaceholder = outcome
-    ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5
+    ? (outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5) ||
+      (outcome.computedScope !== ComputedScope.Small && zoomLevel < 0.3)
     : false
 
   const skipRender = outcome

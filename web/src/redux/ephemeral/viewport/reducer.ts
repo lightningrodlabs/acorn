@@ -14,6 +14,9 @@ const defaultState: ViewportState = {
   scale: 1,
 }
 
+const LOWEST_ZOOM_THRESHOLD = 0.02
+const HIGHEST_ZOOM_THRESHOLD = 2.5
+
 export default function (state = defaultState, action: any): ViewportState {
   const { payload, type } = action
   switch (type) {
@@ -29,7 +32,7 @@ export default function (state = defaultState, action: any): ViewportState {
       return payload
     case CHANGE_SCALE:
       const { zoom, mouseX, mouseY } = payload
-      if (state.scale * zoom < 0.1 || state.scale * zoom > 2.5) {
+      if (state.scale * zoom < LOWEST_ZOOM_THRESHOLD || state.scale * zoom > HIGHEST_ZOOM_THRESHOLD) {
         return state
       }
       // https://stackoverflow.com/a/20821545/2132755 helped
