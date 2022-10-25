@@ -1,6 +1,10 @@
-import { STATEMENT_FONT_COLOR, STATEMENT_PLACEHOLDER_COLOR } from '../../../styles'
+import {
+  STATEMENT_FONT_COLOR,
+  STATEMENT_PLACEHOLDER_COLOR,
+} from '../../../styles'
 import {
   ComputedOutcome,
+  ComputedScope,
   ComputedSimpleAchievementStatus,
 } from '../../../types'
 import {
@@ -17,9 +21,9 @@ export const argsForDrawStatement = ({
   outcomeLeftX,
   outcomeTopY,
   outcomeWidth,
+  topOffsetY,
   zoomLevel,
   ctx,
-  statementPlaceholder
 }: {
   useLineLimit: boolean
   onlyMeasure?: boolean
@@ -27,30 +31,28 @@ export const argsForDrawStatement = ({
   outcomeLeftX: number
   outcomeTopY: number
   outcomeWidth: number
+  topOffsetY: number
   zoomLevel: number
   ctx: CanvasRenderingContext2D
-  statementPlaceholder: boolean
 }): Parameters<typeof drawStatement>[0] => {
   const xPosition = outcomeLeftX + outcomePaddingHorizontal
-  const yPosition =
-    outcomeTopY +
-    OUTCOME_VERTICAL_SPACE_BETWEEN * 2 +
-    DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT
+  const yPosition = outcomeTopY + topOffsetY
 
   const width = outcomeWidth - 2 * outcomePaddingHorizontal
 
   const statement = outcome ? outcome.content : ''
 
-  // if the card is rendering either assignees, tags, or progress bar:
-  const isRenderingOtherMetadata =
-    outcome?.members?.length > 0 ||
-    outcome?.tags?.length > 0 ||
-    outcome?.computedAchievementStatus?.simple ===
-      ComputedSimpleAchievementStatus.PartiallyAchieved
+  const statementPlaceholder = outcome
+    ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5
+    : false
+
+  const skipRender = outcome
+    ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.3
+    : false
 
   const args: Parameters<typeof drawStatement>[0] = {
+    skipRender,
     useLineLimit,
-    isRenderingOtherMetadata,
     onlyMeasure,
     xPosition,
     yPosition,
@@ -60,7 +62,7 @@ export const argsForDrawStatement = ({
     color: STATEMENT_FONT_COLOR,
     ctx,
     statementPlaceholder,
-    statementPlaceholderColor: STATEMENT_PLACEHOLDER_COLOR
+    statementPlaceholderColor: STATEMENT_PLACEHOLDER_COLOR,
   }
   return args
 }

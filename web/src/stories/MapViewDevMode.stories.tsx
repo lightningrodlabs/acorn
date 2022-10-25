@@ -98,11 +98,7 @@ export const SmallAchievedWithPlaceholders = Template.bind({})
 const args8: MapViewDevModeProps = {
   ...sharedArgs,
   outcome: testSmallAchievedOutcome,
-  statementPlaceholder: true,
-  tagPlaceholder: true,
-  timeAndAssigneesPlaceholder: true,
   outcomeWidth: 450,
   outcomeHeight: 420,
-  
 }
 SmallAchievedWithPlaceholders.args = args8

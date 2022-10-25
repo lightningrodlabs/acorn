@@ -15,6 +15,7 @@ import {
   argsForDrawTags,
   argsForDrawTimeAndAssignees,
 } from './computeArguments'
+import { computeHeightsWithSpacing } from './computeArguments/computeHeightsWithSpacing'
 import drawBackgroundColor from './drawBackgroundColor'
 import drawBeingEdited from './drawBeingEdited'
 import drawColoredBorder from './drawColoredBorder'
@@ -42,10 +43,6 @@ const drawOutcome = ({
   isSelected,
   // canvas context
   ctx,
-  // placeholders
-  statementPlaceholder,
-  tagPlaceholder,
-  timeAndAssigneesPlaceholder
 }: {
   outcome: ComputedOutcome
   outcomeLeftX: number
@@ -60,12 +57,11 @@ const drawOutcome = ({
   isSelected: boolean
   // canvas context
   ctx: CanvasRenderingContext2D
-  // placeholders
-  statementPlaceholder: boolean
-  tagPlaceholder: boolean
-  timeAndAssigneesPlaceholder: boolean
 }) =>
   draw(ctx, () => {
+    /*
+      Backgrounds and borders of the card
+    */
     drawSelectedBorder(
       argsForDrawSelectedBorder({
         ctx,
@@ -115,11 +111,17 @@ const drawOutcome = ({
         ctx,
       })
     )
-    drawDescendantsAchievementStatus(
+
+    /*
+     Contents of the Card
+    */
+    const heightOfDescendantsAchievementStatus = drawDescendantsAchievementStatus(
       argsForDrawDescendantsAchievementStatus({
         outcome,
         outcomeLeftX,
         outcomeTopY,
+        topOffsetY: computeHeightsWithSpacing([]), // no prior elements
+        zoomLevel,
         ctx,
       })
     )
@@ -130,9 +132,11 @@ const drawOutcome = ({
         outcomeLeftX,
         outcomeTopY,
         outcomeWidth,
+        topOffsetY: computeHeightsWithSpacing([
+          heightOfDescendantsAchievementStatus,
+        ]),
         zoomLevel,
         ctx,
-        statementPlaceholder,
       })
     )
     const heightOfTags = drawTags(
@@ -141,10 +145,13 @@ const drawOutcome = ({
         outcomeLeftX,
         outcomeTopY,
         outcomeWidth,
-        heightOfStatement,
+        topOffsetY: computeHeightsWithSpacing([
+          heightOfDescendantsAchievementStatus,
+          heightOfStatement,
+        ]),
         projectTags,
+        zoomLevel,
         ctx,
-        tagPlaceholder
       })
     )
     const heightOfTimeAndAssignees = drawTimeAndAssignees(
@@ -153,21 +160,28 @@ const drawOutcome = ({
         outcomeLeftX,
         outcomeTopY,
         outcomeWidth,
-        outcomeStatementHeight: heightOfStatement,
-        outcomeTagsHeight: heightOfTags,
+        topOffsetY: computeHeightsWithSpacing([
+          heightOfDescendantsAchievementStatus,
+          heightOfStatement,
+          heightOfTags,
+        ]),
         ctx,
-        timeAndAssigneesPlaceholder
+        zoomLevel,
       })
     )
-    drawProgressBar(
+    const heightOfProgressBar = drawProgressBar(
       argsForDrawProgressBar({
         outcome,
         outcomeLeftX,
         outcomeTopY,
         outcomeWidth,
-        outcomeStatementHeight: heightOfStatement,
-        outcomeTagsHeight: heightOfTags,
-        outcomeTimeAndAssigneesHeight: heightOfTimeAndAssignees,
+        topOffsetY: computeHeightsWithSpacing([
+          heightOfDescendantsAchievementStatus,
+          heightOfStatement,
+          heightOfTags,
+          heightOfTimeAndAssignees,
+        ]),
+        zoomLevel,
         ctx,
       })
     )

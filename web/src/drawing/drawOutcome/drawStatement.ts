@@ -14,8 +14,8 @@ import {
 import draw from '../draw'
 
 const drawStatement = ({
+  skipRender,
   useLineLimit,
-  isRenderingOtherMetadata,
   onlyMeasure,
   xPosition,
   yPosition,
@@ -27,8 +27,8 @@ const drawStatement = ({
   statementPlaceholder,
   statementPlaceholderColor,
 }: {
+  skipRender: boolean
   useLineLimit: boolean
-  isRenderingOtherMetadata: boolean
   onlyMeasure: boolean
   xPosition: number
   yPosition: number
@@ -40,7 +40,9 @@ const drawStatement = ({
   statementPlaceholder: boolean
   statementPlaceholderColor: string
 }): number => {
-  let height: number
+  let height: number = 0
+  // early exit with no rendering, in the case of skipRender
+  if (skipRender) return height
   draw(ctx, () => {
     const textBoxLeft = xPosition
     const textBoxTop = yPosition
@@ -76,7 +78,12 @@ const drawStatement = ({
       ctx.fillStyle = statementPlaceholderColor
       lines.forEach((line, index) => {
         let linePosition = index * (fontSizeToUse + lineSpacingToUse)
-        ctx.fillRect(textBoxLeft, textBoxTop + linePosition, width, fontSizeToUse)
+        ctx.fillRect(
+          textBoxLeft,
+          textBoxTop + linePosition,
+          width,
+          fontSizeToUse
+        )
       })
     }
 
@@ -98,8 +105,6 @@ const drawStatement = ({
         outcomeStatementMinHeightWithoutMeta,
         dynamicTotalOutcomeStatementHeight
       )
-    } else if (lines.length >= 4 && !isRenderingOtherMetadata) {
-      height = dynamicTotalOutcomeStatementHeight + 40
     } else if (lines.length >= 4) {
       height = dynamicTotalOutcomeStatementHeight
     }

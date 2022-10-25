@@ -2,31 +2,44 @@ import {
   DESCENDANTS_ACHIEVEMENT_STATUS_ACHIEVED_FONT_COLOR,
   DESCENDANTS_ACHIEVEMENT_STATUS_DEFAULT_FONT_COLOR,
 } from '../../../styles'
-import { ComputedOutcome } from '../../../types'
+import { ComputedOutcome, ComputedScope } from '../../../types'
 import {
   DESCENDANTS_ACHIEVEMENT_STATUS_FONT_FAMILY,
   DESCENDANTS_ACHIEVEMENT_STATUS_FONT_SIZE_REM,
+  DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT,
   outcomePaddingHorizontal,
-  OUTCOME_VERTICAL_SPACE_BETWEEN,
 } from '../../dimensions'
 import drawDescendantsAchievementStatus from '../drawDescendantsAchievementStatus'
 
 export const argsForDrawDescendantsAchievementStatus = ({
+  onlyMeasure,
   outcome,
   outcomeLeftX,
   outcomeTopY,
+  topOffsetY,
+  zoomLevel,
   ctx,
 }: {
+  onlyMeasure?: boolean
   outcome: ComputedOutcome
+  zoomLevel: number
   outcomeLeftX: number
   outcomeTopY: number
+  topOffsetY: number
   ctx: CanvasRenderingContext2D
 }): Parameters<typeof drawDescendantsAchievementStatus>[0] => {
   const xPosition = outcomeLeftX + outcomePaddingHorizontal
-  const yPosition = outcomeTopY + OUTCOME_VERTICAL_SPACE_BETWEEN
+  const yPosition = outcomeTopY + topOffsetY
+
+  const skipRender = outcome
+    ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5
+    : false
 
   const args: Parameters<typeof drawDescendantsAchievementStatus>[0] = {
+    skipRender,
+    onlyMeasure,
     ctx,
+    imageSize: DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT,
     fontSize: DESCENDANTS_ACHIEVEMENT_STATUS_FONT_SIZE_REM,
     fontFamily: DESCENDANTS_ACHIEVEMENT_STATUS_FONT_FAMILY,
     defaultTextColor: DESCENDANTS_ACHIEVEMENT_STATUS_DEFAULT_FONT_COLOR,

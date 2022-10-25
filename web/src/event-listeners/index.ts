@@ -466,7 +466,7 @@ export default function setupEventListeners(
   }
 
   // don't allow this function to be called more than every 200 milliseconds
-  const debouncedWheelHandler = _.debounce(
+  const debouncedWheelHandler = // _.debounce(
     (event) => {
       const state = store.getState()
       const {
@@ -483,7 +483,7 @@ export default function setupEventListeners(
         ) {
           // Normalize wheel to +1 or -1.
           const wheel = event.deltaY < 0 ? 1 : -1
-          const zoomIntensity = 0.05
+          const zoomIntensity = 0.07 // 0.05
           // Compute zoom factor.
           const zoom = Math.exp(wheel * zoomIntensity)
           const mouseX = event.clientX
@@ -495,10 +495,10 @@ export default function setupEventListeners(
           store.dispatch(changeTranslate(-1 * event.deltaX, -1 * event.deltaY))
         }
       }
-    },
-    2,
-    { leading: true }
-  )
+    }// ,
+    // 2,
+    // { leading: true }
+  // )
 
   function canvasWheel(event) {
     debouncedWheelHandler(event)

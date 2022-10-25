@@ -2,13 +2,20 @@ import { computeProgress } from '../redux/persistent/projects/outcomes/computedS
 import { ComputedOutcome, ComputedScope, Tag } from '../types'
 import { WithActionHash } from '../types/shared'
 import {
+  argsForDrawDescendantsAchievementStatus,
+  argsForDrawProgressBar,
   argsForDrawStatement,
   argsForDrawTags,
   argsForDrawTimeAndAssignees,
 } from './drawOutcome/computeArguments'
+import { computeHeightsWithSpacing } from './drawOutcome/computeArguments/computeHeightsWithSpacing'
+import drawDescendantsAchievementStatus from './drawOutcome/drawDescendantsAchievementStatus'
+import drawProgressBar from './drawOutcome/drawProgressBar'
 import drawStatement from './drawOutcome/drawStatement'
 import drawTags from './drawOutcome/drawTags'
 import drawTimeAndAssignees from './drawOutcome/drawTimeAndAssignees'
+
+export const DEFAULT_OUTCOME_ASPECT_WIDTH_TO_HEIGHT_RATIO = 0.75 // 4:3 width:height
 
 export const outcomeMetaPadding = 12
 
@@ -258,10 +265,6 @@ export function getOutcomeDimensions({
   }
 }
 
-
-// outcome width = outcome statement width + ( 2 * width padding)
-const defaultWidth = 520 // 520 = 392 + ( 2 * 64 )
-const smaller = 130
 export function getOutcomeWidth({
   outcome,
   zoomLevel,
@@ -269,18 +272,16 @@ export function getOutcomeWidth({
   outcome: ComputedOutcome
   zoomLevel: number
 }) {
+  // outcome width = outcome statement width + ( 2 * width padding)
+  const defaultWidth = 520 // 520 = 392 + ( 2 * 64 )
 
   if (outcome.computedScope === ComputedScope.Small) {
-    // console.log('outcome.statement', outcome.content)
-    // console.log('width', defaultWidth / 3)
     // 0.1 < zoomLevel < 2.5
     if (zoomLevel < 1) {
       // 0.1 < zoomLevel < 1
       return defaultWidth * zoomLevel
     } else return defaultWidth
   } else {
-    // console.log('outcome.statement', outcome.content)
-    // console.log('width', defaultWidth)
     return defaultWidth
   }
 }
@@ -305,71 +306,101 @@ export function getOutcomeHeight({
     ctx = document.createElement('canvas').getContext('2d')
   }
 
-  const outcomeStatementHeight = drawStatement(
+  const heightOfDescendantsAchievementStatus = drawDescendantsAchievementStatus(
+    argsForDrawDescendantsAchievementStatus({
+      onlyMeasure: true, // we don't want it actually drawn on the canvas
+      outcome,
+      outcomeLeftX: 0, // this number doesn't matter for measuring
+      outcomeTopY: 0, // this number doesn't matter for measuring
+      topOffsetY: computeHeightsWithSpacing([]), // no prior elements
+      zoomLevel,
+      ctx,
+    })
+  )
+
+  const heightOfStatement = drawStatement(
     argsForDrawStatement({
       useLineLimit,
       onlyMeasure: true, // we don't want it actually drawn on the canvas
       outcome,
       outcomeLeftX: 0, // this number doesn't matter for measuring
       outcomeTopY: 0, // this number doesn't matter for measuring
+      topOffsetY: computeHeightsWithSpacing([
+        heightOfDescendantsAchievementStatus,
+      ]),
       outcomeWidth: width,
       zoomLevel,
       ctx,
-      statementPlaceholder: false,
     })
   )
 
-  const outcomeTagsHeight = drawTags(
+  const heightOfTags = drawTags(
     argsForDrawTags({
       onlyMeasure: true,
       outcome,
       outcomeLeftX: 0, // this number doesn't matter for measuring
       outcomeTopY: 0, // this number doesn't matter for measuring
       outcomeWidth: width,
-      heightOfStatement: outcomeStatementHeight,
+      topOffsetY: computeHeightsWithSpacing([
+        heightOfDescendantsAchievementStatus,
+        heightOfStatement,
+      ]),
       projectTags,
       ctx,
-      tagPlaceholder: false,
+      zoomLevel,
     })
   )
-  const outcomeTimeAndAssigneesHeight = drawTimeAndAssignees(
+  const heightOfTimeAndAssignees = drawTimeAndAssignees(
     argsForDrawTimeAndAssignees({
       onlyMeasure: true, // we don't want it actually drawn on the canvas
       outcome: outcome,
       outcomeLeftX: 0, // this number doesn't matter for measuring
       outcomeTopY: 0, // this number doesn't matter for measuring
       outcomeWidth: width,
-      outcomeStatementHeight,
-      outcomeTagsHeight: 0,
+      topOffsetY: computeHeightsWithSpacing([
+        heightOfDescendantsAchievementStatus,
+        heightOfStatement,
+        heightOfTags,
+      ]),
+      zoomLevel,
       ctx,
-      timeAndAssigneesPlaceholder: false,
     })
   )
 
-  const progress = computeProgress(outcome)
-  const progressBarHeight =
-    progress === 0 || progress === 100 ? 0 : PROGRESS_BAR_HEIGHT
-  // calculate the outcomeHeight
-  // from the top and bottom margins + the height
-  // of the lines of text
-  const verticalSpacing =
-    OUTCOME_VERTICAL_SPACE_BETWEEN * 3 +
-    // if tags existed, then we need another spacer
-    (outcomeTagsHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0) +
-    // if time or assignees existed, then we need another spacer
-    (outcomeTimeAndAssigneesHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0) +
-    // if progress bar existed, but no assignee, then we need another spacer
-    (outcomeTimeAndAssigneesHeight > 0 && progressBarHeight == 0 ? 12 : 0) +
-    // if progress bar existed, then we need another spacer
-    (progressBarHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN + 12 : 0)
+  const heightOfProgressBar = drawProgressBar(
+    argsForDrawProgressBar({
+      onlyMeasure: true, // we don't want it actually drawn on the canvas
+      outcome,
+      outcomeLeftX: 0, // this number doesn't matter for measuring
+      outcomeTopY: 0, // this number doesn't matter for measuring
+      outcomeWidth: width,
+      topOffsetY: computeHeightsWithSpacing([
+        heightOfDescendantsAchievementStatus,
+        heightOfStatement,
+        heightOfTags,
+        heightOfTimeAndAssignees,
+      ]),
+      zoomLevel,
+      ctx,
+    })
+  )
 
-  const detectedOutcomeHeight =
-    DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT +
-    outcomeStatementHeight +
-    outcomeTagsHeight +
-    outcomeTimeAndAssigneesHeight +
-    // TODO: should progressBarHeight be here?
-    verticalSpacing
+  const detectedOutcomeHeight = computeHeightsWithSpacing([
+    heightOfDescendantsAchievementStatus,
+    heightOfStatement,
+    heightOfTags,
+    heightOfTimeAndAssignees,
+    heightOfProgressBar,
+  ])
 
-  return detectedOutcomeHeight
+  if (outcome && outcome.computedScope === ComputedScope.Small) {
+    // for a Small, use a minimum height which is even to default
+    // aspect ratio for Outcome cards width:height
+    return Math.max(
+      detectedOutcomeHeight,
+      width * DEFAULT_OUTCOME_ASPECT_WIDTH_TO_HEIGHT_RATIO
+    )
+  } else {
+    return detectedOutcomeHeight
+  }
 }
