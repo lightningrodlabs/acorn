@@ -241,7 +241,6 @@ export function getOutcomeDimensions({
   useLineLimit?: boolean
 }): OutcomeDimensions {
   const width = getOutcomeWidth({
-    ctx,
     outcome,
     zoomLevel,
   })
@@ -259,16 +258,14 @@ export function getOutcomeDimensions({
   }
 }
 
-// outcome width = outcome statement width + ( 2 * width padding)
 export function getOutcomeWidth({
-  ctx,
   outcome,
   zoomLevel,
 }: {
-  ctx?: CanvasRenderingContext2D
   outcome?: ComputedOutcome
   zoomLevel?: number
 } = {}) {
+  // outcome width = outcome statement width + ( 2 * width padding)
   // TODO: next, make this dynamic
   return 520 // 520 = 392 + ( 2 * 64 )
 }

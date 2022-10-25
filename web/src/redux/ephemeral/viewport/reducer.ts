@@ -29,7 +29,7 @@ export default function (state = defaultState, action: any): ViewportState {
       return payload
     case CHANGE_SCALE:
       const { zoom, mouseX, mouseY } = payload
-      if (state.scale * zoom < 0.3 || state.scale * zoom > 2.5) {
+      if (state.scale * zoom < 0.1 || state.scale * zoom > 2.5) {
         return state
       }
       // https://stackoverflow.com/a/20821545/2132755 helped
