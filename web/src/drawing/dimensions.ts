@@ -258,23 +258,29 @@ export function getOutcomeDimensions({
   }
 }
 
+
+// outcome width = outcome statement width + ( 2 * width padding)
+const defaultWidth = 520 // 520 = 392 + ( 2 * 64 )
+const smaller = 130
 export function getOutcomeWidth({
   outcome,
   zoomLevel,
 }: {
   outcome: ComputedOutcome
-  zoomLevel?: number
+  zoomLevel: number
 }) {
-  // outcome width = outcome statement width + ( 2 * width padding)
-  const defaultWidth = 520 // 520 = 392 + ( 2 * 64 )
 
   if (outcome.computedScope === ComputedScope.Small) {
-    console.log('outcome.statement', outcome.content)
-    console.log('width', defaultWidth / 3)
-    return defaultWidth / 3
+    // console.log('outcome.statement', outcome.content)
+    // console.log('width', defaultWidth / 3)
+    // 0.1 < zoomLevel < 2.5
+    if (zoomLevel < 1) {
+      // 0.1 < zoomLevel < 1
+      return defaultWidth * zoomLevel
+    } else return defaultWidth
   } else {
-    console.log('outcome.statement', outcome.content)
-    console.log('width', defaultWidth)
+    // console.log('outcome.statement', outcome.content)
+    // console.log('width', defaultWidth)
     return defaultWidth
   }
 }

@@ -216,12 +216,6 @@ function render(
           zoomLevel,
           ctx
         )
-        if (
-          connection.childActionHash ===
-          'uhCkkfDJm_qsRWfZ2psXqfhIxwClZ3BsTDMl-tfgFjX0a2eDSIS2n'
-        ) {
-          console.log('childConnectionCoords', connection1port)
-        }
         const isHovered = hoveredConnectionActionHash === connection.actionHash
         const isSelected = selectedConnections.includes(connection.actionHash)
         drawConnection({
@@ -291,7 +285,7 @@ function render(
         (actionHash) => actionHash === outcome.actionHash
       )
       if (coordinates[outcome.actionHash]) {
-        const outcomeWidth = getOutcomeWidth({ outcome })
+        const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel })
         const outcomeHeight = getOutcomeHeight({
           ctx,
           outcome,
@@ -397,7 +391,7 @@ function render(
         (actionHash) => actionHash === outcome.actionHash
       )
       if (coordinates[outcome.actionHash]) {
-        const outcomeWidth = getOutcomeWidth({ outcome })
+        const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel })
         const outcomeHeight = getOutcomeHeight({
           ctx,
           outcome,
@@ -604,6 +598,7 @@ function render(
     }
     const outcomeWidth = getOutcomeWidth({
       outcome: placeholderOutcomeWithText,
+      zoomLevel
     })
     const outcomeHeight = getOutcomeHeight({
       ctx,

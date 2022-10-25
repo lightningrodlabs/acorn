@@ -16,7 +16,7 @@ export function calculateConnectionCoordsByOutcomeCoords(
   zoomLevel: number,
   ctx: CanvasRenderingContext2D
 ) {
-  const outcomeWidth = getOutcomeWidth({ outcome })
+  const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel })
   const outcomeHeight = getOutcomeHeight({
     ctx,
     outcome,
