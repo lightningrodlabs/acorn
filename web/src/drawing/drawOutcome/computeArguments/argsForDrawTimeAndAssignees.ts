@@ -47,6 +47,9 @@ export const argsForDrawTimeAndAssignees = ({
   const fromDate = null
   const toDate = null
 
+  // the same as statement and the other content
+  const maxWidth = outcomeWidth - 2 * outcomePaddingHorizontal
+
   const timeAndAssigneesPlaceholder = outcome
     ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5
     : false
@@ -69,9 +72,10 @@ export const argsForDrawTimeAndAssignees = ({
     avatarStrokeColor: AVATAR_STROKE_COLOR,
     timeFontSizeRem: TIME_FONT_SIZE_REM,
     timeFontFamily: TIME_FONT_FAMILY,
-    ctx,
     timeAndAssigneesPlaceholder,
     timeAndAssigneesPlaceholderColor: TIME_ASSIGNEES_PLACEHOLDER_COLOR,
+    maxWidth,
+    ctx,
   }
   return args
 }
