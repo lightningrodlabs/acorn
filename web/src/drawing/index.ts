@@ -216,7 +216,10 @@ function render(
           zoomLevel,
           ctx
         )
-        if (connection.childActionHash === 'uhCkkfDJm_qsRWfZ2psXqfhIxwClZ3BsTDMl-tfgFjX0a2eDSIS2n') {
+        if (
+          connection.childActionHash ===
+          'uhCkkfDJm_qsRWfZ2psXqfhIxwClZ3BsTDMl-tfgFjX0a2eDSIS2n'
+        ) {
           console.log('childConnectionCoords', connection1port)
         }
         const isHovered = hoveredConnectionActionHash === connection.actionHash
@@ -309,6 +312,9 @@ function render(
           outcomeHeight,
           outcomeWidth,
           projectTags,
+          statementPlaceholder: false,
+          tagPlaceholder: false,
+          timeAndAssigneesPlaceholder: false,
           // members: membersOfOutcome,
           // isEditing: isEditing, // self
           // editText: '',
@@ -401,10 +407,15 @@ function render(
           useLineLimit: true,
         })
 
-
         console.log('outcome.actionHash', outcome.actionHash)
-        console.log('coordinates[outcome.actionHash].x', coordinates[outcome.actionHash].x)
-        console.log('coordinates[outcome.actionHash].y', coordinates[outcome.actionHash].y)
+        console.log(
+          'coordinates[outcome.actionHash].x',
+          coordinates[outcome.actionHash].x
+        )
+        console.log(
+          'coordinates[outcome.actionHash].y',
+          coordinates[outcome.actionHash].y
+        )
 
         drawOutcomeCard({
           useLineLimit: true,
@@ -418,6 +429,9 @@ function render(
           outcomeWidth,
           outcomeHeight,
           projectTags,
+          statementPlaceholder: false,
+          tagPlaceholder: false,
+          timeAndAssigneesPlaceholder: false,
           // members: membersOfOutcome,
           // isEditing: isEditing,
           // editText: '',
@@ -588,7 +602,9 @@ function render(
       ...placeholderOutcomeWithoutText,
       content: outcomeFormContent,
     }
-    const outcomeWidth = getOutcomeWidth({ outcome: placeholderOutcomeWithText })
+    const outcomeWidth = getOutcomeWidth({
+      outcome: placeholderOutcomeWithText,
+    })
     const outcomeHeight = getOutcomeHeight({
       ctx,
       outcome: placeholderOutcomeWithText,
@@ -612,6 +628,9 @@ function render(
       isSelected: isSelected,
       ctx: ctx,
       isTopPriority: isTopPriorityOutcome,
+      statementPlaceholder: false,
+      tagPlaceholder: false,
+      timeAndAssigneesPlaceholder: false,
       // members: [],
       // isEditing: isEditing,
       // editText: state.ui.outcomeForm.content,
