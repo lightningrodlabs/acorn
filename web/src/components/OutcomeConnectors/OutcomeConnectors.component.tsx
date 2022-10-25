@@ -57,7 +57,7 @@ const OutcomeConnector = ({
   dispatch,
 }) => {
   const ctx = canvas.getContext('2d')
-  const outcomeWidth = getOutcomeWidth({ outcome })
+  const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel })
   const outcomeHeight = getOutcomeHeight({
     ctx,
     outcome,

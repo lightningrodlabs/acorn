@@ -630,7 +630,7 @@ export default function setupEventListeners(
   }
 
   function canvasDoubleclick(event) {
-    const state = store.getState()
+    const state: RootState = store.getState()
     const {
       ui: {
         activeProject,

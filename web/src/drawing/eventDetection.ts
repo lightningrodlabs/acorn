@@ -37,11 +37,12 @@ export function checkForConnectionAtCoordinates(
       const parentOutcomeCoords =
         outcomeCoordinates[connection.parentActionHash]
       const childOutcomeCoords = outcomeCoordinates[connection.childActionHash]
+      const childOutcome = outcomes[connection.childActionHash]
       const parentOutcome = outcomes[connection.parentActionHash]
 
       // do not proceed if we don't have coordinates
       // for the outcomes of this connection (yet)
-      if (!parentOutcomeCoords || !childOutcomeCoords || !parentOutcome) {
+      if (!parentOutcomeCoords || !childOutcomeCoords || !childOutcome || !parentOutcome) {
         return
       }
 
@@ -52,6 +53,7 @@ export function checkForConnectionAtCoordinates(
       ] = calculateConnectionCoordsByOutcomeCoords(
         childOutcomeCoords,
         parentOutcomeCoords,
+        getOutcomeWidth({ outcome: childOutcome, zoomLevel: scale }),
         parentOutcome,
         projectTags,
         scale,
@@ -115,7 +117,7 @@ export function checkForOutcomeAtCoordinates(
       y: outcomeCoordinate.y - extraVerticalPadding,
     }
 
-    const outcomeWidth = getOutcomeWidth({ outcome })
+    const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel: scale })
     const outcomeHeight = getOutcomeHeight({
       ctx,
       outcome,
@@ -159,7 +161,7 @@ export function checkForOutcomeAtCoordinatesInBox(
     // for the outcome (yet)
     if (!outcomeCoordinate) return false
 
-    const outcomeWidth = getOutcomeWidth({ outcome })
+    const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel: scale })
     const outcomeHeight = getOutcomeHeight({
       ctx,
       outcome,

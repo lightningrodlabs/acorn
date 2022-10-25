@@ -315,6 +315,7 @@ export function getOutcomeHeight({
       outcomeWidth: width,
       zoomLevel,
       ctx,
+      statementPlaceholder: false,
     })
   )
 
@@ -328,6 +329,7 @@ export function getOutcomeHeight({
       heightOfStatement: outcomeStatementHeight,
       projectTags,
       ctx,
+      tagPlaceholder: false,
     })
   )
   const outcomeTimeAndAssigneesHeight = drawTimeAndAssignees(
@@ -340,6 +342,7 @@ export function getOutcomeHeight({
       outcomeStatementHeight,
       outcomeTagsHeight: 0,
       ctx,
+      timeAndAssigneesPlaceholder: false,
     })
   )
 

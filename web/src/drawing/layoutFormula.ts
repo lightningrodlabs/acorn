@@ -7,6 +7,7 @@ import { ComputedOutcome, Tag } from '../types'
 import { ActionHashB64, WithActionHash } from '../types/shared'
 
 const VERTICAL_SPACING = 160
+const HORIZONTAL_SPACING = 160
 
 function getBoundingRec(
   outcome: ComputedOutcome,
@@ -84,7 +85,7 @@ function layoutForTree(
 
   // use recursion to add each outcome as a node in the graph
   function addOutcome(outcome: ComputedOutcome) {
-    const width = getOutcomeWidth({ outcome, zoomLevel })
+    const width = getOutcomeWidth({ outcome, zoomLevel }) + HORIZONTAL_SPACING
     const height = getOutcomeHeight({
       ctx,
       outcome,

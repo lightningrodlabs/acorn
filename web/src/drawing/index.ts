@@ -211,6 +211,7 @@ function render(
         ] = calculateConnectionCoordsByOutcomeCoords(
           childCoords,
           parentCoords,
+          getOutcomeWidth({ outcome: childOutcome, zoomLevel }),
           parentOutcome,
           projectTags,
           zoomLevel,
@@ -401,15 +402,15 @@ function render(
           useLineLimit: true,
         })
 
-        console.log('outcome.actionHash', outcome.actionHash)
-        console.log(
-          'coordinates[outcome.actionHash].x',
-          coordinates[outcome.actionHash].x
-        )
-        console.log(
-          'coordinates[outcome.actionHash].y',
-          coordinates[outcome.actionHash].y
-        )
+        // console.log('outcome.actionHash', outcome.actionHash)
+        // console.log(
+        //   'coordinates[outcome.actionHash].x',
+        //   coordinates[outcome.actionHash].x
+        // )
+        // console.log(
+        //   'coordinates[outcome.actionHash].y',
+        //   coordinates[outcome.actionHash].y
+        // )
 
         drawOutcomeCard({
           useLineLimit: true,
@@ -463,6 +464,7 @@ function render(
         ] = calculateConnectionCoordsByOutcomeCoords(
           childCoords,
           parentCoords,
+          0,
           fromOutcome,
           projectTags,
           zoomLevel,
@@ -492,6 +494,7 @@ function render(
       ] = calculateConnectionCoordsByOutcomeCoords(
         fromCoords,
         fromCoords,
+        0,
         fromOutcome,
         projectTags,
         zoomLevel,
@@ -511,6 +514,7 @@ function render(
         ] = calculateConnectionCoordsByOutcomeCoords(
           toCoords,
           toCoords,
+          getOutcomeWidth({ outcome: fromOutcome, zoomLevel }),
           toOutcome,
           projectTags,
           zoomLevel,

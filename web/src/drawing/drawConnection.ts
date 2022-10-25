@@ -11,26 +11,27 @@ import { ComputedOutcome, Tag } from '../types'
 export function calculateConnectionCoordsByOutcomeCoords(
   childCoords: { x: number; y: number },
   parentCoords: { x: number; y: number },
-  outcome: ComputedOutcome,
+  childOutcomeWidth: number,
+  parentOutcome: ComputedOutcome,
   projectTags: WithActionHash<Tag>[],
   zoomLevel: number,
   ctx: CanvasRenderingContext2D
 ) {
-  const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel })
-  const outcomeHeight = getOutcomeHeight({
+  const parentOutcomeWidth = getOutcomeWidth({ outcome: parentOutcome, zoomLevel })
+  const parentOutcomeHeight = getOutcomeHeight({
     ctx,
-    outcome,
+    outcome: parentOutcome,
     projectTags,
-    width: outcomeWidth,
+    width: parentOutcomeWidth,
     zoomLevel,
   })
   const childConnectionCoords = {
-    x: childCoords.x + outcomeWidth / 2,
+    x: childCoords.x + childOutcomeWidth / 2,
     y: childCoords.y,
   }
   const parentConnectionCoords = {
-    x: parentCoords.x + outcomeWidth / 2,
-    y: parentCoords.y + outcomeHeight,
+    x: parentCoords.x + parentOutcomeWidth / 2,
+    y: parentCoords.y + parentOutcomeHeight,
   }
   return [childConnectionCoords, parentConnectionCoords]
 }
