@@ -1,3 +1,4 @@
+import { STATEMENT_PLACEHOLDER_COLOR } from '../../styles'
 import {
   firstZoomThreshold,
   fontSizeExtraLargeInt,
@@ -23,6 +24,8 @@ const drawStatement = ({
   width,
   color,
   ctx,
+  statementPlaceholder,
+  statementPlaceholderColor,
 }: {
   useLineLimit: boolean
   isRenderingOtherMetadata: boolean
@@ -34,6 +37,8 @@ const drawStatement = ({
   width: number
   color: string
   ctx: CanvasRenderingContext2D
+  statementPlaceholder: boolean
+  statementPlaceholderColor: string
 }): number => {
   let height: number
   draw(ctx, () => {
@@ -56,15 +61,24 @@ const drawStatement = ({
       lineSpacingToUse = lineSpacingLarge
       fontSizeToUse = fontSizeLargeInt
     }
-    ctx.fillStyle = color
 
-    lines.forEach((line, index) => {
-      let linePosition = index * (fontSizeToUse + lineSpacingToUse)
-      // If calling the function is not for measuring only
-      if (!onlyMeasure) {
+    // If calling the function is not showing statement placeholder and not for measuring only
+    if (!statementPlaceholder && !onlyMeasure) {
+      // statement font color
+      ctx.fillStyle = color
+      // Render each line of the Statement text
+      lines.forEach((line, index) => {
+        let linePosition = index * (fontSizeToUse + lineSpacingToUse)
         ctx.fillText(line, textBoxLeft, textBoxTop + linePosition)
-      }
-    })
+      })
+      // If showing the statement placeholder
+    } else if (statementPlaceholder && !onlyMeasure) {
+      ctx.fillStyle = statementPlaceholderColor
+      lines.forEach((line, index) => {
+        let linePosition = index * (fontSizeToUse + lineSpacingToUse)
+        ctx.fillRect(textBoxLeft, textBoxTop + linePosition, width, fontSizeToUse)
+      })
+    }
 
     // let measurements = ctx.measureText(lines[0])
     // help from https://stackoverflow.com/questions/1134586/how-can-you-find-the-height-of-text-on-an-html-canvas

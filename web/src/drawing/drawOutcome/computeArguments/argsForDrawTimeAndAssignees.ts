@@ -2,6 +2,7 @@ import { ComputedOutcome, Profile } from '../../../types'
 import {
   AVATAR_INITIALS_TEXT_COLOR,
   AVATAR_STROKE_COLOR,
+  TIME_ASSIGNEES_PLACEHOLDER_COLOR,
   TIME_TEXT_COLOR,
 } from '../../../styles'
 import {
@@ -26,6 +27,7 @@ export const argsForDrawTimeAndAssignees = ({
   outcomeStatementHeight,
   outcomeTagsHeight,
   ctx,
+  timeAndAssigneesPlaceholder
 }: {
   onlyMeasure?: boolean
   outcome: ComputedOutcome
@@ -35,6 +37,7 @@ export const argsForDrawTimeAndAssignees = ({
   outcomeStatementHeight: number
   outcomeTagsHeight: number
   ctx: CanvasRenderingContext2D
+  timeAndAssigneesPlaceholder: boolean
 }): Parameters<typeof drawTimeAndAssignees>[0] => {
   const timeXLeftPosition = outcomeLeftX + outcomePaddingHorizontal
 
@@ -76,6 +79,8 @@ export const argsForDrawTimeAndAssignees = ({
     timeFontSizeRem: TIME_FONT_SIZE_REM,
     timeFontFamily: TIME_FONT_FAMILY,
     ctx,
+    timeAndAssigneesPlaceholder,
+    timeAndAssigneesPlaceholderColor: TIME_ASSIGNEES_PLACEHOLDER_COLOR
   }
   return args
 }

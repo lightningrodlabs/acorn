@@ -23,6 +23,7 @@ export const argsForDrawTags = ({
   heightOfStatement,
   projectTags,
   ctx,
+  tagPlaceholder
 }: {
   onlyMeasure?: boolean
   outcome: ComputedOutcome
@@ -32,6 +33,7 @@ export const argsForDrawTags = ({
   heightOfStatement: number
   projectTags: WithActionHash<Tag>[]
   ctx: CanvasRenderingContext2D
+  tagPlaceholder: boolean
 }): Parameters<typeof drawTags>[0] => {
   // turn the actionHash array of tags into
   // an array of actual Tag objects
@@ -66,6 +68,7 @@ export const argsForDrawTags = ({
     xPosition,
     yPosition,
     maxWidth,
+    tagPlaceholder
   }
   return args
 }

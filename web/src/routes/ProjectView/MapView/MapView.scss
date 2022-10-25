@@ -7,7 +7,7 @@
   top: 68px;
   right: 80px;
   position: fixed;
-  font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
+  font-family: "PlusJakartaSans-medium", Helvetica, Sans-Serif;
   font-weight: normal;
   color: #717171;
   font-size: 14px;
@@ -23,6 +23,10 @@
 
 canvas {
   position: absolute;
+
+  &.grabbing {
+    cursor: grabbing;
+  }
 }
 
 /* transform */

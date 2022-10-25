@@ -17,6 +17,7 @@ const drawTags = ({
   yPosition,
   maxWidth,
   ctx,
+  tagPlaceholder,
 }: {
   onlyMeasure: boolean
   tagVerticalSpaceBetween: number
@@ -32,6 +33,7 @@ const drawTags = ({
   yPosition: number
   maxWidth: number
   ctx: CanvasRenderingContext2D
+  tagPlaceholder: boolean
 }): number => {
   // because the height of this is dynamic
   // we equip it to return the height to the caller
@@ -94,11 +96,13 @@ const drawTags = ({
           useBoxShadow: false,
           useGlow: false,
         })
-        ctx.fillText(
-          tag.text,
-          currentX + tagHorizontalPadding,
-          currentY + tagVerticalPadding
-        )
+        if (!tagPlaceholder) {
+          ctx.fillText(
+            tag.text,
+            currentX + tagHorizontalPadding,
+            currentY + tagVerticalPadding
+          )
+        }
       }
       currentX += widthPlusHorizontalSpace
     })

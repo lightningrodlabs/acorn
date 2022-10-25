@@ -1,4 +1,4 @@
-import { STATEMENT_FONT_COLOR } from '../../../styles'
+import { STATEMENT_FONT_COLOR, STATEMENT_PLACEHOLDER_COLOR } from '../../../styles'
 import {
   ComputedOutcome,
   ComputedSimpleAchievementStatus,
@@ -19,6 +19,7 @@ export const argsForDrawStatement = ({
   outcomeWidth,
   zoomLevel,
   ctx,
+  statementPlaceholder
 }: {
   useLineLimit: boolean
   onlyMeasure?: boolean
@@ -28,6 +29,7 @@ export const argsForDrawStatement = ({
   outcomeWidth: number
   zoomLevel: number
   ctx: CanvasRenderingContext2D
+  statementPlaceholder: boolean
 }): Parameters<typeof drawStatement>[0] => {
   const xPosition = outcomeLeftX + outcomePaddingHorizontal
   const yPosition =
@@ -57,6 +59,8 @@ export const argsForDrawStatement = ({
     statement,
     color: STATEMENT_FONT_COLOR,
     ctx,
+    statementPlaceholder,
+    statementPlaceholderColor: STATEMENT_PLACEHOLDER_COLOR
   }
   return args
 }

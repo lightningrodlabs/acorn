@@ -514,11 +514,7 @@ export default function setupEventListeners(
       },
     } = state
 
-    if (state.ui.keyboard.gKeyDown) {
-      // opening the OutcomeForm is dependent on
-      // holding down the `g` keyboard key modifier
-      handleMouseUpForOutcomeForm({ state, event, store })
-    } else if (outcomesAddresses) {
+    if (outcomesAddresses) {
       // finishing a drag box selection action
       outcomesAddresses.forEach((value) => store.dispatch(selectOutcome(value)))
     } else {
