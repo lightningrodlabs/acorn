@@ -53,12 +53,13 @@ export default function panZoomToFrame(
   const scale = adjustScale ? 1 : currentState.ui.viewport.scale
   const outcomeWidth = getOutcomeWidth({
     outcome,
+    zoomLevel: scale // use the target scale
   })
   const outcomeHeight = getOutcomeHeight({
     outcome,
     projectTags,
     zoomLevel: scale, // use the target scale
-    width,
+    width: outcomeWidth,
     useLineLimit: true,
   })
   const newLayout = {
