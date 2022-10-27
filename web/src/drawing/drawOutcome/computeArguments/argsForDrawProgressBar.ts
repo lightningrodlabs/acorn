@@ -37,12 +37,18 @@ export const argsForDrawProgressBar = ({
     ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5
     : false
 
+  const height = outcome
+    ? outcome.computedScope !== ComputedScope.Small && zoomLevel < 0.3
+      ? PROGRESS_BAR_HEIGHT + 10 // adjust per taste
+      : PROGRESS_BAR_HEIGHT
+    : PROGRESS_BAR_HEIGHT
+
   const args: Parameters<typeof drawProgressBar>[0] = {
     ctx,
     xPosition,
     yPosition,
     width,
-    height: PROGRESS_BAR_HEIGHT,
+    height,
     progress,
     backgroundColor: PROGRESS_BAR_BACKGROUND_COLOR,
     foregroundColor: PROGRESS_BAR_FOREGROUND_COLOR,

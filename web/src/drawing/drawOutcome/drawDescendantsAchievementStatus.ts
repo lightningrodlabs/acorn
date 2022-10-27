@@ -17,6 +17,7 @@ import uncertainSvg from '../../images/uncertain.svg'
 const drawDescendantsAchievementStatus = ({
   skipRender,
   onlyMeasure,
+  skipUncertainText,
   fontSize,
   fontFamily,
   imageSize,
@@ -31,6 +32,7 @@ const drawDescendantsAchievementStatus = ({
 }: {
   skipRender: boolean
   onlyMeasure: boolean
+  skipUncertainText: boolean
   fontSize: number
   fontFamily: string
   imageSize: number
@@ -145,11 +147,13 @@ const drawDescendantsAchievementStatus = ({
           imageSize
         )
       }
-      ctx.fillText(
-        'Uncertain Scope',
-        xPosition + imageSize + spaceBetweenIconAndText,
-        yPosition
-      )
+      if (!skipUncertainText) {
+        ctx.fillText(
+          'Uncertain Scope',
+          xPosition + imageSize + spaceBetweenIconAndText,
+          yPosition
+        )
+      }
     } else {
       // Small
       const tasksImgGreen = getOrSetImageForUrl(

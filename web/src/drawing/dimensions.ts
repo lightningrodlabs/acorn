@@ -1,4 +1,3 @@
-import { computeProgress } from '../redux/persistent/projects/outcomes/computedState'
 import { ComputedOutcome, ComputedScope, Tag } from '../types'
 import { WithActionHash } from '../types/shared'
 import {
@@ -30,11 +29,14 @@ export const cornerRadiusBorder = 18 // for the border
 export const borderWidth = 8
 export const dashedBorderWidth = 5
 
+// canvas outcome statement
 export const outcomeStatementMinHeightWithoutMeta = 130
 
-export const OUTCOME_STATEMENT_PLACEHOLDER_LINE_HEIGHT_SMALL = 14
+// statement placeholder for small outcomes
+export const OUTCOME_STATEMENT_PLACEHOLDER_LINE_HEIGHT_SMALL = 12
 export const OUTCOME_STATEMENT_PLACEHOLDER_LINE_SPACE_SMALL = 8
 
+// statement placeholder for not small outcomes
 export const OUTCOME_STATEMENT_PLACEHOLDER_LINE_HEIGHT_NOT_SMALL = 20
 export const OUTCOME_STATEMENT_PLACEHOLDER_LINE_SPACE_NOT_SMALL = 14
 
@@ -43,12 +45,12 @@ export const OUTCOME_STATEMENT_PLACEHOLDER_LINE_SPACE_NOT_SMALL = 14
 export const OUTCOME_VERTICAL_SPACE_BETWEEN = 32
 
 export const selectedOutlineMargin = 4
-export const selectedOutlineWidth = 3
+export const SELECTED_OUTLINE_WIDTH = 3.5
 
 // DESCENDANTS ACHIVEMENT STATUS
 // these two values need to match with each other
 // as the system is dumb about the font height
-export const DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT = 16
+export const DESCENDANTS_ACHIEVEMENT_STATUS_IMAGE_SIZE = 16
 export const DESCENDANTS_ACHIEVEMENT_STATUS_FONT_SIZE_REM = 1
 export const DESCENDANTS_ACHIEVEMENT_STATUS_FONT_FAMILY =
   'PlusJakartaSans-semibold'

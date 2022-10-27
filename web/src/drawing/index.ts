@@ -229,6 +229,7 @@ function render(
             ComputedSimpleAchievementStatus.Achieved,
           isHovered,
           isSelected,
+          zoomLevel,
         })
       }
     })
@@ -308,9 +309,6 @@ function render(
           outcomeHeight,
           outcomeWidth,
           projectTags,
-          statementPlaceholder: false,
-          tagPlaceholder: false,
-          timeAndAssigneesPlaceholder: false,
           // members: membersOfOutcome,
           // isEditing: isEditing, // self
           // editText: '',
@@ -425,9 +423,6 @@ function render(
           outcomeWidth,
           outcomeHeight,
           projectTags,
-          statementPlaceholder: false,
-          tagPlaceholder: false,
-          timeAndAssigneesPlaceholder: false,
           // members: membersOfOutcome,
           // isEditing: isEditing,
           // editText: '',
@@ -479,6 +474,7 @@ function render(
           isAchieved: false,
           isSelected: false,
           isHovered: false,
+          zoomLevel,
         })
       }
     }
@@ -559,6 +555,7 @@ function render(
         isAchieved: false,
         isHovered: false,
         isSelected: false,
+        zoomLevel,
       })
     }
   }
@@ -601,9 +598,6 @@ function render(
       isSelected: isSelected,
       ctx: ctx,
       isTopPriority: isTopPriorityOutcome,
-      statementPlaceholder: false,
-      tagPlaceholder: false,
-      timeAndAssigneesPlaceholder: false,
       // members: [],
       // isEditing: isEditing,
       // editText: state.ui.outcomeForm.content,

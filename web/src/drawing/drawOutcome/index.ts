@@ -64,12 +64,13 @@ const drawOutcome = ({
     */
     drawSelectedBorder(
       argsForDrawSelectedBorder({
-        ctx,
         outcomeLeftX,
         outcomeTopY,
         outcomeHeight,
         outcomeWidth,
         isSelected,
+        zoomLevel,
+        ctx,
       })
     )
     drawGlow(
@@ -78,8 +79,9 @@ const drawOutcome = ({
         outcomeTopY,
         outcomeWidth,
         outcomeHeight,
-        ctx,
         useGlow: isTopPriority,
+        zoomLevel,
+        ctx,
       })
     )
     drawBackgroundColor(
@@ -108,6 +110,7 @@ const drawOutcome = ({
         outcomeLeftX,
         outcomeTopY,
         outcomeWidth,
+        zoomLevel,
         ctx,
       })
     )

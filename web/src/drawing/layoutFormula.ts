@@ -85,7 +85,7 @@ function layoutForTree(
 
   // use recursion to add each outcome as a node in the graph
   function addOutcome(outcome: ComputedOutcome) {
-    const width = getOutcomeWidth({ outcome, zoomLevel }) + HORIZONTAL_SPACING
+    const width = getOutcomeWidth({ outcome, zoomLevel }) // + HORIZONTAL_SPACING
     const height = getOutcomeHeight({
       ctx,
       outcome,

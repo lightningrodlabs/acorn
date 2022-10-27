@@ -17,7 +17,10 @@ export function calculateConnectionCoordsByOutcomeCoords(
   zoomLevel: number,
   ctx: CanvasRenderingContext2D
 ) {
-  const parentOutcomeWidth = getOutcomeWidth({ outcome: parentOutcome, zoomLevel })
+  const parentOutcomeWidth = getOutcomeWidth({
+    outcome: parentOutcome,
+    zoomLevel,
+  })
   const parentOutcomeHeight = getOutcomeHeight({
     ctx,
     outcome: parentOutcome,
@@ -66,6 +69,7 @@ export default function render({
   isAchieved,
   isHovered,
   isSelected,
+  zoomLevel,
 }: {
   connection1port: { x: number; y: number }
   connection2port: { x: number; y: number }
@@ -73,10 +77,19 @@ export default function render({
   isAchieved: boolean
   isHovered: boolean
   isSelected: boolean
+  zoomLevel: number
 }) {
   draw(ctx, () => {
     ctx.lineCap = 'round'
-    ctx.lineWidth = isHovered ? 5 : isSelected ? 4 : 3
+
+    const DEFAULT_WIDTH = 3 // (at 100 %)
+    // 0.02 < zoomLevel < 2.5
+    // dont go lower than the DEFAULT_WIDTH, but go higher as the
+    // zoomLevel drops
+    let lineWidth = Math.max(DEFAULT_WIDTH, (DEFAULT_WIDTH / zoomLevel) * 0.4)
+    // isHovered adjust
+    // isSelected adjust
+    ctx.lineWidth = lineWidth
     ctx.strokeStyle = isSelected
       ? SELECTED_COLOR
       : isAchieved
