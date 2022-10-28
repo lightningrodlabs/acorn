@@ -37,7 +37,7 @@ const isOneOfLayoutAffectingActions = (action: { type: string }) => {
         || type === DELETE_OUTCOME_FULLY
         || type === CREATE_CONNECTION
         || type === FETCH_CONNECTIONS
-        // || type === CHANGE_SCALE
+        || type === CHANGE_SCALE
 }
 
 const isOneOfViewportAffectingActions = (action: { type: string }) => {

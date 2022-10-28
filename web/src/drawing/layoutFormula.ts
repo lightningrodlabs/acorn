@@ -1,21 +1,22 @@
-import dagre from 'dagre'
+import * as flextree from 'd3-flextree'
 import { getOutcomeWidth, getOutcomeHeight } from './dimensions'
 import outcomesAsTrees, {
   TreeData,
 } from '../redux/persistent/projects/outcomes/outcomesAsTrees'
-import { ComputedOutcome, Tag } from '../types'
+import { ComputedOutcome, ComputedScope, Tag } from '../types'
 import { ActionHashB64, WithActionHash } from '../types/shared'
 
+const fl = flextree.flextree
+
 const VERTICAL_SPACING = 160
-const HORIZONTAL_SPACING = 160
 
 function getBoundingRec(
   outcome: ComputedOutcome,
-  zoomLevel: number,
-  ctx: CanvasRenderingContext2D,
-  projectTags: WithActionHash<Tag>[],
   allOutcomeCoordinates: {
     [actionHash: ActionHashB64]: { x: number; y: number }
+  },
+  allOutcomeDimensions: {
+    [actionHash: ActionHashB64]: { width: number; height: number }
   }
 ) {
   const origCoord = allOutcomeCoordinates[outcome.actionHash]
@@ -32,14 +33,8 @@ function getBoundingRec(
     if (!topLeftCoord) {
       return
     }
-    const width = getOutcomeWidth({ outcome: outcomeToCheck, zoomLevel })
-    const height = getOutcomeHeight({
-      ctx,
-      outcome: outcomeToCheck,
-      projectTags,
-      zoomLevel,
-      width,
-    })
+    const width = allOutcomeDimensions[outcome.actionHash].width
+    const height = allOutcomeDimensions[outcome.actionHash].height
     const top = topLeftCoord.y
     const left = topLeftCoord.x
     const right = left + width
@@ -71,51 +66,45 @@ export interface Layout {
 }
 
 function layoutForTree(
-  ctx: CanvasRenderingContext2D,
   tree: ComputedOutcome,
-  zoomLevel: number,
-  projectTags: WithActionHash<Tag>[]
+  allOutcomeDimensions: {
+    [actionHash: ActionHashB64]: { width: number; height: number }
+  }
 ): Layout {
   // create a graph
-  const graph = new dagre.graphlib.Graph()
-    .setGraph({})
-    .setDefaultEdgeLabel(function () {
-      return {}
-    })
+  const layout = fl()
 
+  const layoutTree = {}
   // use recursion to add each outcome as a node in the graph
-  function addOutcome(outcome: ComputedOutcome) {
-    const width = getOutcomeWidth({ outcome, zoomLevel }) // + HORIZONTAL_SPACING
-    const height = getOutcomeHeight({
-      ctx,
-      outcome,
-      zoomLevel,
-      width,
-      projectTags,
-    }) + VERTICAL_SPACING
-    graph.setNode(outcome.actionHash, {
-      width,
-      height,
-    })
+  function addOutcome(outcome: ComputedOutcome, node: any, level: number) {
+    const width = allOutcomeDimensions[outcome.actionHash].width
+    const height = allOutcomeDimensions[outcome.actionHash].height // + VERTICAL_SPACING
+    node.actionHash = outcome.actionHash
+    node.size = [width, height + VERTICAL_SPACING]
+    node.children = []
     outcome.children.forEach((childOutcome) => {
-      addOutcome(childOutcome)
-      // add each connection as an connection in the graph
-      graph.setEdge(outcome.actionHash, childOutcome.actionHash)
+      const childNode = {}
+      addOutcome(childOutcome, childNode, level + 1)
+      node.children.push(childNode)
     })
   }
   // kick off the recursion
-  addOutcome(tree)
+  addOutcome(tree, layoutTree, 1)
 
+  const flTree = layout.hierarchy(layoutTree)
   // run the layout algorithm, which will set an x and y property onto
   // each node
-  dagre.layout(graph)
+  layout(flTree)
+  console.log(flTree)
   // create a coordinates object
   const coordinates = {}
   // update the coordinates object
-  graph.nodes().forEach((actionHash) => {
-    coordinates[actionHash] = {
-      x: graph.node(actionHash).x,
-      y: graph.node(actionHash).y,
+  flTree.each((node) => {
+    // coordinates will represent the top left,
+    // but as-is they represent the center, so re-adjust them for that
+    coordinates[node.data.actionHash] = {
+      x: node.x - (node.size[0] / 2),
+      y: node.y - (node.size[1] / 2),
     }
   })
   return coordinates
@@ -132,9 +121,32 @@ export default function layoutFormula(
   // just do this for efficiency, it's not going to
   // get displayed or rendered anywhere
   const ctx = document.createElement('canvas').getContext('2d')
+
+  // determine what the dimensions of each outcome will be
+  let allOutcomeDimensions: {
+    [actionHash: ActionHashB64]: { width: number; height: number }
+  } = {}
+  Object.keys(trees.computedOutcomesKeyed).forEach((outcomeActionHash) => {
+    const outcome = trees.computedOutcomesKeyed[outcomeActionHash]
+    const width = getOutcomeWidth({ outcome, zoomLevel })
+    const height = getOutcomeHeight({
+      ctx,
+      outcome,
+      zoomLevel,
+      width,
+      projectTags,
+    })
+    allOutcomeDimensions[outcomeActionHash] = {
+      width,
+      height,
+    }
+  })
+
+  // based on the dimensions, determine what the layout of each
+  // distinct tree will be
   const layouts = trees.computedOutcomesAsTree.map((tree) => ({
     outcome: tree,
-    layout: layoutForTree(ctx, tree, zoomLevel, projectTags),
+    layout: layoutForTree(tree, allOutcomeDimensions),
   }))
   const HORIZONTAL_TREE_SPACING = 15
   // coordinates will be adjusted each time through this iteration
@@ -157,10 +169,8 @@ export default function layoutFormula(
       const lastTree = layouts[index - 1].outcome
       const [top, right, bottom, left] = getBoundingRec(
         lastTree,
-        zoomLevel,
-        ctx,
-        projectTags,
-        coordinates
+        coordinates,
+        allOutcomeDimensions
       )
       const adjusted: Layout = {}
       const offsetFromZero = tree.layout[tree.outcome.actionHash].y
