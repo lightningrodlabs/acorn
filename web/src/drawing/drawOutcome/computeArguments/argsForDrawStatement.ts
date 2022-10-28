@@ -14,6 +14,8 @@ import drawStatement from '../drawStatement'
 
 export const argsForDrawStatement = ({
   useLineLimit,
+  noStatementPlaceholder,
+  skipRender,
   onlyMeasure,
   outcome,
   outcomeLeftX,
@@ -24,6 +26,8 @@ export const argsForDrawStatement = ({
   ctx,
 }: {
   useLineLimit: boolean
+  noStatementPlaceholder?: boolean
+  skipRender?: boolean
   onlyMeasure?: boolean
   outcome: ComputedOutcome
   outcomeLeftX: number
@@ -40,14 +44,20 @@ export const argsForDrawStatement = ({
 
   const statement = outcome ? outcome.content : ''
 
-  const statementPlaceholder = outcome
+  // if noStatementPlaceholder then definitely
+  // don't set a placeholder
+  const statementPlaceholder = noStatementPlaceholder
+    ? false
+    : outcome
     ? (outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5) ||
       (outcome.computedScope !== ComputedScope.Small && zoomLevel <= 0.25)
     : false
 
-  const skipRender = outcome
-    ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.3
-    : false
+  skipRender =
+    skipRender ||
+    (outcome
+      ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.3
+      : false)
 
   // statement placeholder line heights depending on outcome scope
   const statementPlaceholderHeight = outcome

@@ -304,6 +304,7 @@ export function getOutcomeHeight({
   projectTags,
   zoomLevel,
   width,
+  noStatementPlaceholder,
   useLineLimit = true,
 }: {
   ctx?: CanvasRenderingContext2D
@@ -311,6 +312,7 @@ export function getOutcomeHeight({
   projectTags: WithActionHash<Tag>[]
   zoomLevel: number
   width: number
+  noStatementPlaceholder?: boolean
   useLineLimit?: boolean
 }) {
   if (!ctx) {
@@ -332,6 +334,7 @@ export function getOutcomeHeight({
   const heightOfStatement = drawStatement(
     argsForDrawStatement({
       useLineLimit,
+      noStatementPlaceholder,
       onlyMeasure: true, // we don't want it actually drawn on the canvas
       outcome,
       outcomeLeftX: 0, // this number doesn't matter for measuring

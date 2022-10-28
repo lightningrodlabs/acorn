@@ -461,7 +461,10 @@ function render(
         ] = calculateConnectionCoordsByOutcomeCoords(
           childCoords,
           parentCoords,
-          getOutcomeWidth({ outcome: placeholderOutcomeWithoutText, zoomLevel }),
+          getOutcomeWidth({
+            outcome: placeholderOutcomeWithoutText,
+            zoomLevel,
+          }),
           fromOutcome,
           projectTags,
           zoomLevel,
@@ -569,11 +572,10 @@ function render(
     const isSelected = false
     const isEditing = true
     const isTopPriorityOutcome = false
-    const placeholderOutcomeWithoutText = getPlaceholderOutcome()
     const placeholderOutcomeWithText = getPlaceholderOutcome(outcomeFormContent)
     const outcomeWidth = getOutcomeWidth({
       outcome: placeholderOutcomeWithText,
-      zoomLevel
+      zoomLevel,
     })
     const outcomeHeight = getOutcomeHeight({
       ctx,
@@ -581,15 +583,19 @@ function render(
       projectTags,
       width: outcomeWidth,
       zoomLevel,
+      // we set this because in the case of creating a new outcome
+      // it should use the full text at the proper text scaling
+      noStatementPlaceholder: true,
       useLineLimit: false,
     })
     drawOutcomeCard({
+      skipStatementRender: true,
       useLineLimit: false,
       zoomLevel: zoomLevel,
       // draw the Outcome with empty text
       // since the text is presented in the
       // MapViewOutcomeTitleForm
-      outcome: placeholderOutcomeWithoutText,
+      outcome: placeholderOutcomeWithText,
       outcomeHeight,
       outcomeWidth,
       projectTags,

@@ -37,6 +37,7 @@ const drawOutcome = ({
   outcomeWidth,
   projectTags,
   // variants
+  skipStatementRender,
   useLineLimit,
   zoomLevel,
   isTopPriority,
@@ -51,6 +52,7 @@ const drawOutcome = ({
   outcomeWidth: number
   projectTags: WithActionHash<Tag>[]
   // variants
+  skipStatementRender?: boolean
   useLineLimit: boolean
   zoomLevel: number
   isTopPriority: boolean
@@ -130,6 +132,7 @@ const drawOutcome = ({
     )
     const heightOfStatement = drawStatement(
       argsForDrawStatement({
+        skipRender: skipStatementRender,
         useLineLimit,
         outcome,
         outcomeLeftX,
