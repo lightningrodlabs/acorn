@@ -62,9 +62,6 @@ const drawOutcome = ({
 }) =>
   draw(ctx, () => {
 
-    // ctx.fillStyle = 'blue'
-    // ctx.fillRect(outcomeLeftX, outcomeTopY, 10, 10)
-
     /*
       Backgrounds and borders of the card
     */

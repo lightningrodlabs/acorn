@@ -74,8 +74,6 @@ function layoutForTree(
 ): Layout {
   // create a graph
   const layout = fl().spacing((nodeA, nodeB) => {
-    // console.log('comparing', nodeA, nodeB)
-    // console.log(nodeA.path(nodeB).length)
     return nodeA.path(nodeB).length * 40
   })
 
@@ -184,22 +182,24 @@ export default function layoutFormula(
       }
     } else {
       // in the case of all the rest, push it right, according to wherever the last one was positioned + spacing
-      const [lastTreeTop, lastTreeTopRight, lastTreeTopBottom, lastTreeTopLeft] = getBoundingRec(
+      const [_ltop, lastTreeRight, _lbottom, _lleft] = getBoundingRec(
         layouts[index - 1].outcome,
         coordinates,
         allOutcomeDimensions
       )
-      const [top, right, bottom, left] = getBoundingRec(
+      const [_ttop, _tright, _tbottom, thisTreeLeft] = getBoundingRec(
         tree.outcome,
         tree.layout,
         allOutcomeDimensions
       )
       const adjusted: Layout = {}
-      const offsetFromZero = tree.layout[tree.outcome.actionHash].y
+      const yOffset = -1 * tree.layout[tree.outcome.actionHash].y
+      const xOffset = lastTreeRight - thisTreeLeft + HORIZONTAL_TREE_SPACING
       Object.keys(tree.layout).forEach((coordKey) => {
+        // adjust the coordinate by the xOffset and the yOffset
         adjusted[coordKey] = {
-          x: tree.layout[coordKey].x + lastTreeTopRight - left + HORIZONTAL_TREE_SPACING,
-          y: tree.layout[coordKey].y - offsetFromZero,
+          x: xOffset + tree.layout[coordKey].x,
+          y: yOffset + tree.layout[coordKey].y,
         }
       })
       coordinates = {
