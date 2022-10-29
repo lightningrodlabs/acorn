@@ -1,18 +1,25 @@
+import { ComputedOutcome, Connection, EntryPoint } from '../types'
+import { ActionHashB64, WithActionHash } from '../types/shared'
 import drawRoundCornerRectangle from './drawRoundCornerRectangle'
 import { getBoundingRec } from './layoutFormula'
 
 export default function drawEntryPoints(
-  ctx,
-  activeEntryPoints,
-  outcomes,
-  connectionsAsArray,
-  coordinates,
-  zoomLevel,
-  projectTags
+  ctx: CanvasRenderingContext2D,
+  activeEntryPoints: WithActionHash<EntryPoint>[],
+  outcomes: {
+    [outcomeActionHash: string]: ComputedOutcome
+  },
+  connectionsAsArray: WithActionHash<Connection>[],
+  allOutcomeCoordinates: {
+    [actionHash: ActionHashB64]: { x: number; y: number }
+  },
+  allOutcomeDimensions: {
+    [actionHash: ActionHashB64]: { width: number; height: number }
+  }
 ) {
   // recursively calls itself
   // so that it constructs the full sub-tree for each root Outcome
-  function getOutcome(outcomeActionHash) {
+  function getOutcome(outcomeActionHash: ActionHashB64) {
     return {
       ...outcomes[outcomeActionHash],
       children: connectionsAsArray
@@ -33,10 +40,8 @@ export default function drawEntryPoints(
     // by checking the coordinates recursively for it and all its children
     const boundingRec = getBoundingRec(
       outcome,
-      zoomLevel,
-      ctx,
-      projectTags,
-      coordinates
+      allOutcomeCoordinates,
+      allOutcomeDimensions
     )
     if (!boundingRec) {
       return
@@ -44,8 +49,6 @@ export default function drawEntryPoints(
     const [top, right, bottom, left] = boundingRec
 
     ctx.save()
-    ctx.setLineDash([10, 7]) /*dashes are 10px and spaces are 7px*/
-    ctx.lineCap = "round"
     const width = right - left
     const height = bottom - top
     drawRoundCornerRectangle({
@@ -60,6 +63,7 @@ export default function drawEntryPoints(
       strokeWidth: 5,
       useBoxShadow: false,
       useGlow: false,
+      useDashedStroke: true,
     })
     ctx.fillStyle = entryPoint.color
     ctx.font = '25px ' + 'PlusJakartaSans-bold'

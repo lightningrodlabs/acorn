@@ -1,8 +1,6 @@
 import { connect } from 'react-redux'
 import { RootState } from '../../redux/reducer'
 import {
-  previewConnections,
-  clearConnectionsPreview,
   createConnection,
 } from '../../redux/persistent/projects/connections/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
@@ -27,16 +25,6 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    previewConnections: (parentActionHash, childrenAddresses, activeProject) => {
-      const connections = childrenAddresses.map((childActionHash) => ({
-        childActionHash,
-        parentActionHash,
-      }))
-      return dispatch(previewConnections(activeProject, connections))
-    },
-    clearPreview: (activeProject) => {
-      return dispatch(clearConnectionsPreview(activeProject))
-    },
     saveConnections: async (parentActionHash, childrenAddresses, cellIdString) => {
       // loop over childrenAddresses
       // use createConnection each time

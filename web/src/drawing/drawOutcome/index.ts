@@ -61,6 +61,7 @@ const drawOutcome = ({
   ctx: CanvasRenderingContext2D
 }) =>
   draw(ctx, () => {
+
     /*
       Backgrounds and borders of the card
     */
