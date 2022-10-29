@@ -195,9 +195,10 @@ function render(
   /*
       DRAW ENTRY POINTS
     */
-  const activeEntryPointsObjects = activeEntryPoints.map(
-    (entryPointAddress) => entryPoints[entryPointAddress]
-  )
+  const activeEntryPointsObjects = activeEntryPoints
+    .map((entryPointAddress) => entryPoints[entryPointAddress])
+    // drop ones that may be undefined
+    .filter((activeEntryPoint) => activeEntryPoint)
   drawEntryPoints(
     ctx,
     activeEntryPointsObjects,

@@ -210,7 +210,7 @@ const OutcomeConnectors = ({
     )
     return (
       <div key={connectorAddress}>
-        {outcomeCoordinates && (
+        {outcome && outcomeCoordinates && (
           <OutcomeConnector
             activeProject={activeProject}
             projectTags={projectTags}
