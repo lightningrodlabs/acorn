@@ -1,40 +1,51 @@
-import { getOutcomeWidth, getOutcomeHeight } from './dimensions'
 import {
   CONNECTION_ACHIEVED_COLOR,
   CONNECTION_NOT_ACHIEVED_COLOR,
   SELECTED_COLOR,
 } from '../styles'
 import draw from './draw'
-import { WithActionHash } from '../types/shared'
-import { ComputedOutcome, Tag } from '../types'
+import {
+  RELATION_AS_PARENT,
+  RELATION_AS_CHILD,
+} from '../redux/ephemeral/outcome-connector/actions'
+import { RelationInput } from '../types'
 
 export function calculateConnectionCoordsByOutcomeCoords(
-  childCoords: { x: number; y: number },
-  parentCoords: { x: number; y: number },
-  childOutcomeWidth: number,
-  parentOutcome: ComputedOutcome,
-  projectTags: WithActionHash<Tag>[],
-  zoomLevel: number,
-  ctx: CanvasRenderingContext2D
+  fromCoords: { x: number; y: number },
+  fromDimensions: { width: number; height: number },
+  toCoords: { x: number; y: number },
+  toDimensions: { width: number; height: number },
+  relationAs: RelationInput
 ) {
-  const parentOutcomeWidth = getOutcomeWidth({
-    outcome: parentOutcome,
-    zoomLevel,
-  })
-  const parentOutcomeHeight = getOutcomeHeight({
-    ctx,
-    outcome: parentOutcome,
-    projectTags,
-    width: parentOutcomeWidth,
-    zoomLevel,
-  })
-  const childConnectionCoords = {
-    x: childCoords.x + childOutcomeWidth / 2,
-    y: childCoords.y,
+  let childOutcomeWidth: number,
+    parentOutcomeWidth: number,
+    parentOutcomeHeight: number,
+    parentCoords: { x: number; y: number },
+    childCoords: { x: number; y: number }
+
+  if (relationAs === RELATION_AS_CHILD) {
+    childCoords = fromCoords
+    childOutcomeWidth = fromDimensions.width
+    parentCoords = toCoords
+    parentOutcomeWidth = toDimensions.width
+    parentOutcomeHeight = toDimensions.height
+  } else if (relationAs === RELATION_AS_PARENT) {
+    childCoords = toCoords
+    childOutcomeWidth = toDimensions.width
+    parentCoords = fromCoords
+    parentOutcomeWidth = fromDimensions.width
+    parentOutcomeHeight = fromDimensions.height
   }
+
+  // from the bottom of the parent
   const parentConnectionCoords = {
     x: parentCoords.x + parentOutcomeWidth / 2,
     y: parentCoords.y + parentOutcomeHeight,
+  }
+  // to the top of the child
+  const childConnectionCoords = {
+    x: childCoords.x + childOutcomeWidth / 2,
+    y: childCoords.y,
   }
   return [childConnectionCoords, parentConnectionCoords]
 }

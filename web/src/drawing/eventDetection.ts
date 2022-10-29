@@ -7,6 +7,7 @@ import {
 import { ActionHashB64, WithActionHash } from '../types/shared'
 import { ComputedOutcome, Tag } from '../types'
 import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
+import { RELATION_AS_CHILD } from '../redux/ephemeral/outcome-connector/actions'
 
 export function checkForConnectionAtCoordinates(
   ctx: CanvasRenderingContext2D,
@@ -42,8 +43,47 @@ export function checkForConnectionAtCoordinates(
 
       // do not proceed if we don't have coordinates
       // for the outcomes of this connection (yet)
-      if (!parentOutcomeCoords || !childOutcomeCoords || !childOutcome || !parentOutcome) {
+      if (
+        !parentOutcomeCoords ||
+        !childOutcomeCoords ||
+        !childOutcome ||
+        !parentOutcome
+      ) {
         return
+      }
+
+      // get the dimensions of the parent and child
+      // in preparation for getting the connection end points
+      const childOutcomeWidth = getOutcomeWidth({
+        outcome: childOutcome,
+        zoomLevel: scale,
+      })
+      const childOutcomeHeight = getOutcomeHeight({
+        outcome: childOutcome,
+        zoomLevel: scale,
+        width: childOutcomeWidth,
+        projectTags,
+        ctx,
+      })
+      const childDimensions = {
+        width: childOutcomeWidth,
+        height: childOutcomeHeight,
+      }
+
+      const parentOutcomeWidth = getOutcomeWidth({
+        outcome: parentOutcome,
+        zoomLevel: scale,
+      })
+      const parentOutcomeHeight = getOutcomeHeight({
+        outcome: parentOutcome,
+        zoomLevel: scale,
+        width: parentOutcomeWidth,
+        projectTags,
+        ctx,
+      })
+      const parentDimensions = {
+        width: parentOutcomeWidth,
+        height: parentOutcomeHeight,
       }
 
       // get the coordinates for the connection end points
@@ -52,12 +92,10 @@ export function checkForConnectionAtCoordinates(
         parentConnectionCoords,
       ] = calculateConnectionCoordsByOutcomeCoords(
         childOutcomeCoords,
+        childDimensions,
         parentOutcomeCoords,
-        getOutcomeWidth({ outcome: childOutcome, zoomLevel: scale }),
-        parentOutcome,
-        projectTags,
-        scale,
-        ctx
+        parentDimensions,
+        RELATION_AS_CHILD
       )
       const connectionPath = pathForConnection({
         fromPoint: childConnectionCoords,

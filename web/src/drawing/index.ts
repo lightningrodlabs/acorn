@@ -236,12 +236,10 @@ function render(
         connection2port,
       ] = calculateConnectionCoordsByOutcomeCoords(
         childCoords,
+        allOutcomeDimensions[connection.childActionHash],
         parentCoords,
-        getOutcomeWidth({ outcome: childOutcome, zoomLevel }),
-        parentOutcome,
-        projectTags,
-        zoomLevel,
-        ctx
+        allOutcomeDimensions[connection.parentActionHash],
+        RELATION_AS_CHILD
       )
       const isHovered = hoveredConnectionActionHash === connection.actionHash
       const isSelected = selectedConnections.includes(connection.actionHash)
@@ -423,123 +421,86 @@ function render(
   })
 
   /*
+  establish width and height for the card for a 
+  new Outcome in the process of being created
+  */
+  const placeholderOutcomeWithText = getPlaceholderOutcome(outcomeFormContent)
+  const newOutcomeWidth = getOutcomeWidth({
+    outcome: placeholderOutcomeWithText,
+    zoomLevel,
+  })
+  const newOutcomeHeight = getOutcomeHeight({
+    ctx,
+    outcome: placeholderOutcomeWithText,
+    projectTags,
+    width: newOutcomeWidth,
+    zoomLevel,
+    // we set this because in the case of creating a new outcome
+    // it should use the full text at the proper text scaling
+    noStatementPlaceholder: true,
+    useLineLimit: false,
+  })
+
+  /*
       DRAW PENDING CONNECTION FOR OUTCOME FORM
     */
   // render the connection that is pending to be created to the open outcome form
+
   if (outcomeFormIsOpen && outcomeFormFromActionHash) {
-    const fromOutcomeCoords = coordinates[outcomeFormFromActionHash]
-    const newOutcomeCoords = {
-      x: outcomeFormLeftConnectionX,
-      y: outcomeFormTopConnectionY,
-    }
-    const fromOutcome = outcomes[outcomeFormFromActionHash]
-    let childCoords, parentCoords
-    if (outcomeFormRelation === RELATION_AS_CHILD) {
-      childCoords = fromOutcomeCoords
-      parentCoords = newOutcomeCoords
-    } else if (outcomeFormRelation === RELATION_AS_PARENT) {
-      childCoords = newOutcomeCoords
-      parentCoords = fromOutcomeCoords
-    }
-    const placeholderOutcomeWithoutText = getPlaceholderOutcome()
-    if (childCoords && parentCoords && fromOutcome) {
-      const [
-        connection1port,
-        connection2port,
-      ] = calculateConnectionCoordsByOutcomeCoords(
-        childCoords,
-        parentCoords,
-        getOutcomeWidth({
-          outcome: placeholderOutcomeWithoutText,
-          zoomLevel,
-        }),
-        fromOutcome,
-        projectTags,
-        zoomLevel,
-        ctx
-      )
-      drawConnection({
-        connection1port,
-        connection2port,
-        ctx,
-        isAchieved: false,
-        isSelected: false,
-        isHovered: false,
-        zoomLevel,
-      })
-    }
+    const [
+      connection1port,
+      connection2port,
+    ] = calculateConnectionCoordsByOutcomeCoords(
+      coordinates[outcomeFormFromActionHash],
+      allOutcomeDimensions[outcomeFormFromActionHash],
+      {
+        x: outcomeFormLeftConnectionX,
+        y: outcomeFormTopConnectionY,
+      },
+      { width: newOutcomeWidth, height: newOutcomeHeight },
+      outcomeFormRelation
+    )
+    drawConnection({
+      connection1port,
+      connection2port,
+      ctx,
+      isAchieved: false,
+      isSelected: false,
+      isHovered: false,
+      zoomLevel,
+    })
   }
 
   /*
       DRAW PENDING CONNECTION FOR "CONNECTION CONNECTOR"
     */
   // render the connection that is pending to be created between existing Outcomes
+  // if there's an Outcome this is pending
+  // as being "to", then we will be drawing the connection to its correct
+  // upper or lower port
+  // the opposite of whichever the "from" port is connected to
   if (outcomeConnectorFromAddress) {
     const fromCoords = coordinates[outcomeConnectorFromAddress]
-    const fromOutcome = outcomes[outcomeConnectorFromAddress]
     const [
-      fromAsChildCoord,
-      fromAsParentCoord,
+      childCoords,
+      parentCoords,
     ] = calculateConnectionCoordsByOutcomeCoords(
       fromCoords,
-      fromCoords,
-      0,
-      fromOutcome,
-      projectTags,
-      zoomLevel,
-      ctx
+      allOutcomeDimensions[outcomeConnectorFromAddress],
+      // use the current mouse coordinate position, liveCoordinate, by default
+      outcomeConnectorToAddress
+        ? coordinates[outcomeConnectorToAddress]
+        : mouseLiveCoordinate,
+      outcomeConnectorToAddress
+        ? allOutcomeDimensions[outcomeConnectorToAddress]
+        : { width: 0, height: 0 },
+      outcomeConnectorRelation
     )
-    // if there's an Outcome this is pending
-    // as being "to", then we will be drawing the connection to its correct
-    // upper or lower port
-    // the opposite of whichever the "from" port is connected to
-    let toCoords, toOutcome, toAsChildCoord, toAsParentCoord
-    if (outcomeConnectorToAddress) {
-      toCoords = coordinates[outcomeConnectorToAddress]
-      toOutcome = outcomes[outcomeConnectorToAddress]
-      ;[
-        toAsChildCoord,
-        toAsParentCoord,
-      ] = calculateConnectionCoordsByOutcomeCoords(
-        toCoords,
-        toCoords,
-        getOutcomeWidth({ outcome: fromOutcome, zoomLevel }),
-        toOutcome,
-        projectTags,
-        zoomLevel,
-        ctx
-      )
-    }
     // in drawConnection, it draws at exactly the two coordinates given,
     // so we could pass them in either order/position
-    const fromConnectionCoord =
-      outcomeConnectorRelation === RELATION_AS_PARENT
-        ? fromAsParentCoord
-        : fromAsChildCoord
-    // use the current mouse coordinate position, liveCoordinate, by default
-    let toConnectionCoord = mouseLiveCoordinate
-    // use the coordinates relating to an Outcome which it is pending that
-    // this connection will connect the "from" Outcome "to"
-    if (outcomeConnectorToAddress) {
-      toConnectionCoord =
-        outcomeConnectorRelation === RELATION_AS_PARENT
-          ? toAsChildCoord
-          : toAsParentCoord
-    }
-    if (outcomeConnectorRelation === RELATION_AS_CHILD) {
-      fromConnectionCoord.y = fromConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
-      // only modify if we're dealing with an actual outcome being connected to
-      if (outcomeConnectorToAddress)
-        toConnectionCoord.y = toConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
-    } else if (outcomeConnectorRelation === RELATION_AS_PARENT) {
-      fromConnectionCoord.y = fromConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
-      // only modify if we're dealing with an actual outcome being connected to
-      if (outcomeConnectorToAddress)
-        toConnectionCoord.y = toConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
-    }
     drawConnection({
-      connection1port: fromConnectionCoord,
-      connection2port: toConnectionCoord,
+      connection1port: childCoords,
+      connection2port: parentCoords,
       ctx,
       isAchieved: false,
       isHovered: false,
@@ -558,21 +519,6 @@ function render(
     const isEditing = true
     const isTopPriorityOutcome = false
     const placeholderOutcomeWithText = getPlaceholderOutcome(outcomeFormContent)
-    const outcomeWidth = getOutcomeWidth({
-      outcome: placeholderOutcomeWithText,
-      zoomLevel,
-    })
-    const outcomeHeight = getOutcomeHeight({
-      ctx,
-      outcome: placeholderOutcomeWithText,
-      projectTags,
-      width: outcomeWidth,
-      zoomLevel,
-      // we set this because in the case of creating a new outcome
-      // it should use the full text at the proper text scaling
-      noStatementPlaceholder: true,
-      useLineLimit: false,
-    })
     drawOutcomeCard({
       // draw the Outcome with empty text
       // since the text is presented in the
@@ -581,8 +527,8 @@ function render(
       useLineLimit: false,
       zoomLevel: zoomLevel,
       outcome: placeholderOutcomeWithText,
-      outcomeHeight,
-      outcomeWidth,
+      outcomeHeight: newOutcomeHeight,
+      outcomeWidth: newOutcomeWidth,
       projectTags,
       outcomeLeftX: outcomeFormLeftConnectionX,
       outcomeTopY: outcomeFormTopConnectionY,
