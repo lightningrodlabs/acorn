@@ -62,7 +62,7 @@ const layoutWatcher = store => {
       // in many cases, we just skip right over this middleware, 
       // and it has no effect. it is only during 'layout affecting actions'
       // (anything that deletes or adds Outcomes or Connections which form the graph we
-      // pass to dagre to generate a layout) that this kicks in, and handles the creation of an animation
+      // pass to d3-flextree to generate a layout) that this kicks in, and handles the creation of an animation
       // from the current layout to the new layout, by using the TWEENJS library
 
       let currentState: RootState

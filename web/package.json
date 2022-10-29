@@ -44,7 +44,6 @@
     "buffer": "^6.0.3",
     "core-js": "^3.6.5",
     "d3-flextree": "^2.1.2",
-    "dagre": "^0.8.5",
     "diceware-word": "^1.0.0",
     "electron": "^11.2.1",
     "file-loader": "^6.2.0",
