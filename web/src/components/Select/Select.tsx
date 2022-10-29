@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
 import { CSSTransition } from 'react-transition-group'
 
@@ -6,16 +6,13 @@ import './Select.scss'
 
 import Icon from '../Icon/Icon'
 
-function useSelect(multiple, preSelected = multiple ? [] : null) {
+function useMultiSelect<T>(
+  preSelected: T[] = []
+): [T[], React.Dispatch<React.SetStateAction<T[]>>, () => void] {
   // set a default from the options, if one is tagged as default in its props
   const [selected, setSelected] = useState(preSelected)
 
-  const toggleSelectOption = (value) => {
-    // in the case of single select
-    if (!multiple) {
-      setSelected(value)
-      return
-    }
+  const toggleSelectOption = (value: any) => {
     // in the case of 'multiple' multi-select
     // if value is selected
     if (selected.includes(value)) {
@@ -28,13 +25,38 @@ function useSelect(multiple, preSelected = multiple ? [] : null) {
   }
 
   const reset = () => {
-    setSelected(multiple ? [] : null)
+    setSelected([])
   }
 
   return [selected, toggleSelectOption, reset]
 }
 
-function Select({ toggleSelectOption, multiple, children, toggleLabel, hasSelection }) {
+function useSingleSelect<T>(
+  preSelected: T = null
+): [T, React.Dispatch<React.SetStateAction<T>>, () => void] {
+  // set a default from the options, if one is tagged as default in its props
+  const [selected, setSelected] = useState(preSelected)
+  const reset = () => {
+    setSelected(null)
+  }
+  return [selected, setSelected, reset]
+}
+
+export type SelectProps = {
+  toggleSelectOption
+  multiple?: boolean
+  children
+  toggleLabel
+  hasSelection
+}
+
+const Select: React.FC<SelectProps> = ({
+  toggleSelectOption,
+  multiple,
+  children,
+  toggleLabel,
+  hasSelection,
+}) => {
   const [selectOpen, setSelectOpen] = useState(false)
 
   const ref = useRef()
@@ -76,7 +98,6 @@ function Select({ toggleSelectOption, multiple, children, toggleLabel, hasSelect
           {children.map((option) => {
             return (
               <div
-                title={option}
                 key={option.props.value}
                 className={`select-option-item-wrapper ${
                   option.props.selected ? 'active' : ''
@@ -98,4 +119,4 @@ function Option({ selected, value, label }) {
   return <div className="select-option-item">{label}</div>
 }
 
-export { useSelect, Select, Option }
+export { useMultiSelect, useSingleSelect, Select, Option }

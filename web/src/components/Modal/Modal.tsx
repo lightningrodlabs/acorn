@@ -10,7 +10,7 @@ import './Modal.scss'
 /* Named Export */
 
 export type ModalContentProps = {
-  content: string,
+  content: string | JSX.Element,
   secondaryContent?: string,
   heading: string,
   icon?: string,
@@ -83,7 +83,7 @@ export { ModalContent }
 /* Default Export */
 
 export type ModalProps = {
-  white: boolean,
+  white?: boolean,
   active: boolean,
   className?: string,
   onClose: () => void,

@@ -6,8 +6,6 @@ import {
     CREATE_OUTCOME
 } from '../../persistent/projects/outcomes/actions'
 import {
-    PREVIEW_CONNECTIONS,
-    CLEAR_CONNECTIONS_PREVIEW,
     CREATE_CONNECTION,
     FETCH_CONNECTIONS,
 } from '../../persistent/projects/connections/actions'
@@ -29,8 +27,6 @@ const isOneOfLayoutAffectingActions = (action: { type: string }) => {
     // in that case (via a separate TRIGGER_UPDATE_LAYOUT action)
     // whether or not to perform the layout update
     return type === TRIGGER_UPDATE_LAYOUT
-        || type === PREVIEW_CONNECTIONS
-        || type === CLEAR_CONNECTIONS_PREVIEW
         || type === CREATE_OUTCOME
         || type === CREATE_OUTCOME_WITH_CONNECTION
         || type === FETCH_OUTCOMES

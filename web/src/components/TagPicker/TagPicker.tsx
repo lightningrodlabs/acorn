@@ -11,7 +11,6 @@ import './TagPicker.scss'
 
 // @ts-ignore
 import PopupTriangleWhite from '../../images/popup-triangle-white.svg'
-import OnClickOutside from '../OnClickOutside/OnClickOutside'
 
 export type TagPickerDisplayTagsProps = {
   tags: WithActionHash<TagType>[]

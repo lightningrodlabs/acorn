@@ -3,12 +3,12 @@ import { getOutcomeWidth, getOutcomeHeight } from './dimensions'
 import outcomesAsTrees, {
   TreeData,
 } from '../redux/persistent/projects/outcomes/outcomesAsTrees'
-import { ComputedOutcome, ComputedScope, Tag } from '../types'
+import { ComputedOutcome, Tag } from '../types'
 import { ActionHashB64, WithActionHash } from '../types/shared'
 
 const fl = flextree.flextree
 
-const VERTICAL_SPACING = 160
+const VERTICAL_SPACING = 100
 
 function getBoundingRec(
   outcome: ComputedOutcome,
@@ -23,18 +23,19 @@ function getBoundingRec(
   if (!origCoord) {
     return
   }
-  let boundTop = origCoord.y
-  let boundRight = origCoord.x
-  let boundBottom = origCoord.y
   let boundLeft = origCoord.x
+  let boundTop = origCoord.y
+  let boundRight = origCoord.x + allOutcomeDimensions[outcome.actionHash].width
+  let boundBottom =
+    origCoord.y + allOutcomeDimensions[outcome.actionHash].height
 
-  function updateLimits(outcomeToCheck) {
+  function updateLimits(outcomeToCheck: ComputedOutcome) {
     const topLeftCoord = allOutcomeCoordinates[outcomeToCheck.actionHash]
     if (!topLeftCoord) {
       return
     }
-    const width = allOutcomeDimensions[outcome.actionHash].width
-    const height = allOutcomeDimensions[outcome.actionHash].height
+    const width = allOutcomeDimensions[outcomeToCheck.actionHash].width
+    const height = allOutcomeDimensions[outcomeToCheck.actionHash].height
     const top = topLeftCoord.y
     const left = topLeftCoord.x
     const right = left + width
@@ -72,21 +73,38 @@ function layoutForTree(
   }
 ): Layout {
   // create a graph
-  const layout = fl()
+  const layout = fl().spacing((nodeA, nodeB) => {
+    // console.log('comparing', nodeA, nodeB)
+    // console.log(nodeA.path(nodeB).length)
+    return nodeA.path(nodeB).length * 40
+  })
 
   const layoutTree = {}
   // use recursion to add each outcome as a node in the graph
   function addOutcome(outcome: ComputedOutcome, node: any, level: number) {
-    const width = allOutcomeDimensions[outcome.actionHash].width
-    const height = allOutcomeDimensions[outcome.actionHash].height // + VERTICAL_SPACING
-    node.actionHash = outcome.actionHash
-    node.size = [width, height + VERTICAL_SPACING]
+    let numDescendants = 0
     node.children = []
     outcome.children.forEach((childOutcome) => {
       const childNode = {}
-      addOutcome(childOutcome, childNode, level + 1)
+      const descendantCount = addOutcome(childOutcome, childNode, level + 1)
       node.children.push(childNode)
+      numDescendants += descendantCount + 1
     })
+
+    const width = allOutcomeDimensions[outcome.actionHash].width
+    // to create the dynamic vertical height, we apply
+    // a power law to the number of descendants, with a heightened baseline
+    // because the number of descendants is a good measure of how wide this tree
+    // might be
+    const height =
+      allOutcomeDimensions[outcome.actionHash].height +
+      (numDescendants > 0 ? Math.pow(numDescendants + 25, 1.5) : 60) +
+      VERTICAL_SPACING
+
+    node.actionHash = outcome.actionHash
+    node.size = [width, height]
+
+    return numDescendants
   }
   // kick off the recursion
   addOutcome(tree, layoutTree, 1)
@@ -95,16 +113,16 @@ function layoutForTree(
   // run the layout algorithm, which will set an x and y property onto
   // each node
   layout(flTree)
-  console.log(flTree)
   // create a coordinates object
   const coordinates = {}
   // update the coordinates object
   flTree.each((node) => {
     // coordinates will represent the top left,
-    // but as-is they represent the center, so re-adjust them for that
+    // but as-is they represent the center, so re-adjust them by half
+    // the width of the outcome
     coordinates[node.data.actionHash] = {
-      x: node.x - (node.size[0] / 2),
-      y: node.y - (node.size[1] / 2),
+      x: node.x - node.size[0] / 2,
+      y: node.y,
     }
   })
   return coordinates
@@ -123,7 +141,7 @@ export default function layoutFormula(
   const ctx = document.createElement('canvas').getContext('2d')
 
   // determine what the dimensions of each outcome will be
-  let allOutcomeDimensions: {
+  const allOutcomeDimensions: {
     [actionHash: ActionHashB64]: { width: number; height: number }
   } = {}
   Object.keys(trees.computedOutcomesKeyed).forEach((outcomeActionHash) => {
@@ -148,7 +166,7 @@ export default function layoutFormula(
     outcome: tree,
     layout: layoutForTree(tree, allOutcomeDimensions),
   }))
-  const HORIZONTAL_TREE_SPACING = 15
+  const HORIZONTAL_TREE_SPACING = 100
   // coordinates will be adjusted each time through this iteration
   layouts.forEach((tree, index) => {
     // in the case of the first one, let it stay where it is
@@ -166,17 +184,21 @@ export default function layoutFormula(
       }
     } else {
       // in the case of all the rest, push it right, according to wherever the last one was positioned + spacing
-      const lastTree = layouts[index - 1].outcome
-      const [top, right, bottom, left] = getBoundingRec(
-        lastTree,
+      const [lastTreeTop, lastTreeTopRight, lastTreeTopBottom, lastTreeTopLeft] = getBoundingRec(
+        layouts[index - 1].outcome,
         coordinates,
+        allOutcomeDimensions
+      )
+      const [top, right, bottom, left] = getBoundingRec(
+        tree.outcome,
+        tree.layout,
         allOutcomeDimensions
       )
       const adjusted: Layout = {}
       const offsetFromZero = tree.layout[tree.outcome.actionHash].y
       Object.keys(tree.layout).forEach((coordKey) => {
         adjusted[coordKey] = {
-          x: tree.layout[coordKey].x + right + HORIZONTAL_TREE_SPACING,
+          x: tree.layout[coordKey].x + lastTreeTopRight - left + HORIZONTAL_TREE_SPACING,
           y: tree.layout[coordKey].y - offsetFromZero,
         }
       })
