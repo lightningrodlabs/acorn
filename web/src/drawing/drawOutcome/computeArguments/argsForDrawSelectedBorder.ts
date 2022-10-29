@@ -2,7 +2,7 @@ import { SELECTED_COLOR } from '../../../styles'
 import {
   borderWidth,
   selectedOutlineMargin,
-  selectedOutlineWidth,
+  SELECTED_OUTLINE_WIDTH,
   cornerRadius,
 } from '../../dimensions'
 import drawSelectedBorder from '../drawSelectedBorder'
@@ -16,6 +16,7 @@ export const argsForDrawSelectedBorder = ({
   outcomeWidth,
   outcomeHeight,
   isSelected,
+  zoomLevel,
   ctx,
 }: {
   outcomeLeftX: number
@@ -23,9 +24,21 @@ export const argsForDrawSelectedBorder = ({
   outcomeWidth: number
   outcomeHeight: number
   isSelected: boolean
+  zoomLevel: number
   ctx: CanvasRenderingContext2D
 }): Parameters<typeof drawSelectedBorder>[0] => {
   const halfBorder = borderWidth / 2 // for use with 'stroke' of the border
+
+  let selectedOutlineWidth = SELECTED_OUTLINE_WIDTH
+
+  if (zoomLevel < 0.15) {
+    selectedOutlineWidth += 10
+  } else if (zoomLevel < 0.3) {
+    selectedOutlineWidth += 7
+  } else if (zoomLevel < 0.45) {
+    selectedOutlineWidth += 3.5
+  } 
+
 
   let xPosition =
     outcomeLeftX -

@@ -15,10 +15,6 @@ export type MapViewDevModeProps = {
   zoomLevel: number
   isTopPriority: boolean
   isSelected: boolean
-  // placeholders
-  statementPlaceholder: boolean
-  tagPlaceholder: boolean
-  timeAndAssigneesPlaceholder: boolean
 }
 
 const MapViewDevMode: React.FC<MapViewDevModeProps> = ({
@@ -32,10 +28,6 @@ const MapViewDevMode: React.FC<MapViewDevModeProps> = ({
   zoomLevel,
   isTopPriority,
   isSelected,
-  // placeholders
-  statementPlaceholder,
-  tagPlaceholder,
-  timeAndAssigneesPlaceholder,
 }) => {
   const refCanvas = useRef<HTMLCanvasElement>()
   useEffect(() => {
@@ -62,9 +54,6 @@ const MapViewDevMode: React.FC<MapViewDevModeProps> = ({
       zoomLevel,
       isSelected,
       isTopPriority,
-      statementPlaceholder,
-      tagPlaceholder,
-      timeAndAssigneesPlaceholder,
       ctx: canvas.getContext('2d'),
     }
     drawOutcome(args)

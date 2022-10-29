@@ -20,6 +20,7 @@ const drawAssignees = ({
   avatarFontSizeRem,
   ctx,
   assigneesPlaceholder,
+  placeholderWidth,
   placeholderColor,
 }: {
   onlyMeasure: boolean
@@ -32,9 +33,10 @@ const drawAssignees = ({
   avatarSpace: number
   avatarFontSizeRem: number
   avatarFontFamily: string
-  ctx: CanvasRenderingContext2D
   assigneesPlaceholder: boolean
+  placeholderWidth: number
   placeholderColor: string
+  ctx: CanvasRenderingContext2D
 }) => {
   if (members.length === 0) {
     return 0 // height
@@ -70,7 +72,12 @@ const drawAssignees = ({
     })
   } else if (assigneesPlaceholder && !onlyMeasure) {
     ctx.fillStyle = placeholderColor
-    ctx.fillRect(xRightPosition - 100, yPosition, 100, 12)
+    ctx.fillRect(
+      xRightPosition - placeholderWidth,
+      yPosition,
+      placeholderWidth,
+      avatarSize
+    )
   }
   return avatarSize
 }
@@ -89,9 +96,9 @@ const drawTime = ({
   color,
   fontSizeRem,
   fontFamily,
-  ctx,
   timePlaceholder,
   placeholderColor,
+  ctx,
 }: {
   onlyMeasure: boolean
   xPosition: number
@@ -102,9 +109,9 @@ const drawTime = ({
   color: string
   fontSizeRem: number
   fontFamily: string
-  ctx: CanvasRenderingContext2D
   timePlaceholder: boolean
   placeholderColor: string
+  ctx: CanvasRenderingContext2D
 }) => {
   let height: number = 0
   if (toDate) {
@@ -156,6 +163,7 @@ const drawTime = ({
 
 const drawTimeAndAssignees = ({
   onlyMeasure,
+  skipRender,
   // assignees
   members,
   assigneesXRightPosition,
@@ -174,11 +182,13 @@ const drawTimeAndAssignees = ({
   timeTextColor,
   timeFontSizeRem,
   timeFontFamily,
-  ctx,
   timeAndAssigneesPlaceholder,
   timeAndAssigneesPlaceholderColor,
+  maxWidth,
+  ctx,
 }: {
   onlyMeasure: boolean
+  skipRender: boolean
   // assignees
   members: Profile[]
   assigneesXRightPosition: number
@@ -197,10 +207,14 @@ const drawTimeAndAssignees = ({
   timeTextColor: string
   timeFontSizeRem: number
   timeFontFamily: string
-  ctx: CanvasRenderingContext2D
   timeAndAssigneesPlaceholder: boolean
   timeAndAssigneesPlaceholderColor: string
+  maxWidth: number
+  ctx: CanvasRenderingContext2D
 }): number => {
+  // early exit with no rendering, in the case of skipRender
+  if (skipRender) return 0
+
   let assigneesHeight: number = 0
   let timeHeight: number = 0
   draw(ctx, () => {
@@ -217,6 +231,7 @@ const drawTimeAndAssignees = ({
       avatarInitialsTextColor,
       avatarStrokeColor,
       assigneesPlaceholder: timeAndAssigneesPlaceholder,
+      placeholderWidth: maxWidth / 4,
       placeholderColor: timeAndAssigneesPlaceholderColor,
     })
     timeHeight = drawTime({

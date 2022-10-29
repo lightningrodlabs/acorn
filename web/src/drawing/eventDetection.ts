@@ -1,28 +1,24 @@
-import { outcomeWidth, getOutcomeHeight, outcomeHeight } from './dimensions'
+import { getOutcomeWidth, getOutcomeHeight } from './dimensions'
 import { coordsPageToCanvas } from './coordinateSystems'
 import {
   calculateConnectionCoordsByOutcomeCoords,
   pathForConnection,
 } from './drawConnection'
-import { ActionHashB64 } from '../types/shared'
-import { ComputedOutcome } from '../types'
-import { RootState } from '../redux/reducer'
+import { ActionHashB64, WithActionHash } from '../types/shared'
+import { ComputedOutcome, Tag } from '../types'
+import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
 
 export function checkForConnectionAtCoordinates(
   ctx: CanvasRenderingContext2D,
   translate: { x: number; y: number },
   scale: number,
   outcomeCoordinates: { [actionHash: ActionHashB64]: { x: number; y: number } },
-  state: RootState,
+  projectTags: WithActionHash<Tag>[],
+  connections: ProjectConnectionsState,
   mouseX: number,
   mouseY: number,
   outcomes: { [actionHash: ActionHashB64]: ComputedOutcome }
 ) {
-  const {
-    ui: { activeProject },
-  } = state
-  const connections = state.projects.connections[activeProject] || {}
-  const projectTags = Object.values(state.projects.tags[activeProject] || {})
   // convert the coordinates of the click to canvas space
   const convertedMouse = coordsPageToCanvas(
     {
@@ -41,11 +37,12 @@ export function checkForConnectionAtCoordinates(
       const parentOutcomeCoords =
         outcomeCoordinates[connection.parentActionHash]
       const childOutcomeCoords = outcomeCoordinates[connection.childActionHash]
+      const childOutcome = outcomes[connection.childActionHash]
       const parentOutcome = outcomes[connection.parentActionHash]
 
       // do not proceed if we don't have coordinates
       // for the outcomes of this connection (yet)
-      if (!parentOutcomeCoords || !childOutcomeCoords || !parentOutcome) {
+      if (!parentOutcomeCoords || !childOutcomeCoords || !childOutcome || !parentOutcome) {
         return
       }
 
@@ -56,6 +53,7 @@ export function checkForConnectionAtCoordinates(
       ] = calculateConnectionCoordsByOutcomeCoords(
         childOutcomeCoords,
         parentOutcomeCoords,
+        getOutcomeWidth({ outcome: childOutcome, zoomLevel: scale }),
         parentOutcome,
         projectTags,
         scale,
@@ -91,16 +89,12 @@ export function checkForOutcomeAtCoordinates(
   translate: { x: number; y: number },
   scale: number,
   outcomeCoordinates: { [actionHash: ActionHashB64]: { x: number; y: number } },
-  state: RootState,
+  projectTags: WithActionHash<Tag>[],
   mouseX: number,
   mouseY: number,
   outcomes: { [actionHash: ActionHashB64]: ComputedOutcome },
   extraVerticalPadding: number = 0 // used to make detecting 'hovering' more generous/forgiving
 ) {
-  const {
-    ui: { activeProject },
-  } = state
-  const projectTags = Object.values(state.projects.tags[activeProject] || {})
   // convert the coordinates of the mouse to canvas space
   const convertedMouse = coordsPageToCanvas(
     {
@@ -110,11 +104,9 @@ export function checkForOutcomeAtCoordinates(
     translate,
     scale
   )
-
   // keep track of whether an Outcome was selected
   return Object.keys(outcomes).find((actionHash) => {
     const outcome = outcomes[actionHash]
-    // convert the topLeft and bottomRight points of the outcome to canvas
     const outcomeCoordinate = outcomeCoordinates[outcome.actionHash]
     // do not proceed if we don't have coordinates
     // for the outcome (yet)
@@ -125,18 +117,19 @@ export function checkForOutcomeAtCoordinates(
       y: outcomeCoordinate.y - extraVerticalPadding,
     }
 
-
+    const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel: scale })
+    const outcomeHeight = getOutcomeHeight({
+      ctx,
+      outcome,
+      projectTags,
+      width: outcomeWidth,
+      zoomLevel: scale,
+    })
     const bottomRight = {
       x: topLeft.x + outcomeWidth,
       y:
         outcomeCoordinates[outcome.actionHash].y +
-        getOutcomeHeight({
-          ctx,
-          outcome,
-          projectTags,
-          width: outcomeWidth,
-          zoomLevel: scale,
-        }) +
+        outcomeHeight +
         extraVerticalPadding,
     }
 
@@ -151,48 +144,57 @@ export function checkForOutcomeAtCoordinates(
 }
 
 export function checkForOutcomeAtCoordinatesInBox(
+  ctx: CanvasRenderingContext2D,
   outcomeCoordinates: { [actionHash: ActionHashB64]: { x: number; y: number } },
+  scale: number,
+  projectTags: WithActionHash<Tag>[],
+  outcomes: { [actionHash: ActionHashB64]: ComputedOutcome },
   corner: { x: number; y: number },
   oppositeCorner: { x: number; y: number }
 ) {
-  // convert the coordinates of the click to canvas space
   // keep track of whether an Outcome was selected
   let clickedAddresses = {}
-  Object.keys(outcomeCoordinates)
-    // .map((actionHash) => outcomes[actionHash])
-    .forEach((actionHash) => {
-      // convert the topLeft and bottomRight points of the outcome to canvas
-      const coords = outcomeCoordinates[actionHash]
-      // do not proceed if we don't have coordinates
-      // for the outcome (yet)
-      if (!coords) return
+  Object.keys(outcomes).forEach((actionHash) => {
+    const outcome = outcomes[actionHash]
+    const outcomeCoordinate = outcomeCoordinates[outcome.actionHash]
+    // do not proceed if we don't have coordinates
+    // for the outcome (yet)
+    if (!outcomeCoordinate) return false
 
-      const bottomRight = {
-        x: coords.x + outcomeWidth,
-        y: coords.y + outcomeHeight,
-      }
-
-      // if click occurred within the box of an Outcome
-      if (
-        (oppositeCorner.x < coords.x &&
-          bottomRight.x < corner.x &&
-          oppositeCorner.y < coords.y &&
-          bottomRight.y < corner.y) ||
-        (oppositeCorner.x > bottomRight.x &&
-          coords.x > corner.x &&
-          oppositeCorner.y > bottomRight.y &&
-          coords.y > corner.y) ||
-        (oppositeCorner.x > bottomRight.x &&
-          coords.x > corner.x &&
-          oppositeCorner.y < coords.y &&
-          bottomRight.y < corner.y) ||
-        (oppositeCorner.x < coords.x &&
-          bottomRight.x < corner.x &&
-          oppositeCorner.y > bottomRight.y &&
-          coords.y > corner.y)
-      ) {
-        clickedAddresses[actionHash] = 1
-      }
+    const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel: scale })
+    const outcomeHeight = getOutcomeHeight({
+      ctx,
+      outcome,
+      projectTags,
+      width: outcomeWidth,
+      zoomLevel: scale,
     })
+    const bottomRight = {
+      x: outcomeCoordinate.x + outcomeWidth,
+      y: outcomeCoordinate.y + outcomeHeight,
+    }
+
+    // if box fully encapsulates an Outcome
+    if (
+      (oppositeCorner.x < outcomeCoordinate.x &&
+        bottomRight.x < corner.x &&
+        oppositeCorner.y < outcomeCoordinate.y &&
+        bottomRight.y < corner.y) ||
+      (oppositeCorner.x > bottomRight.x &&
+        outcomeCoordinate.x > corner.x &&
+        oppositeCorner.y > bottomRight.y &&
+        outcomeCoordinate.y > corner.y) ||
+      (oppositeCorner.x > bottomRight.x &&
+        outcomeCoordinate.x > corner.x &&
+        oppositeCorner.y < outcomeCoordinate.y &&
+        bottomRight.y < corner.y) ||
+      (oppositeCorner.x < outcomeCoordinate.x &&
+        bottomRight.x < corner.x &&
+        oppositeCorner.y > bottomRight.y &&
+        outcomeCoordinate.y > corner.y)
+    ) {
+      clickedAddresses[actionHash] = 1
+    }
+  })
   return Object.keys(clickedAddresses)
 }

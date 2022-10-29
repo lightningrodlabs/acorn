@@ -13,6 +13,7 @@ export type drawRoundCornerRectangleInput = {
   strokeWidth?: number
   useBoxShadow: boolean
   useGlow: boolean
+  glowBlur?: number
   glowColor?: string
 }
 
@@ -29,6 +30,7 @@ export default function drawRoundCornerRectangle({
   strokeWidth,
   useBoxShadow,
   useGlow,
+  glowBlur,
   glowColor,
 }: drawRoundCornerRectangleInput) {
   draw(ctx, () => {
@@ -54,7 +56,7 @@ export default function drawRoundCornerRectangle({
       ctx.shadowOffsetY = 0
       if (useGlow) {
         ctx.shadowColor = glowColor
-        ctx.shadowBlur = 60
+        ctx.shadowBlur = glowBlur || 60
         ctx.shadowOffsetX = 0
         ctx.shadowOffsetY = 0
       }

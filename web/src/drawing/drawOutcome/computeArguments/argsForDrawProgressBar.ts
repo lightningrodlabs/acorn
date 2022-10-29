@@ -4,62 +4,56 @@ import {
   PROGRESS_BAR_BACKGROUND_COLOR,
 } from '../../../styles'
 import { ComputedOutcome, ComputedScope } from '../../../types'
-import {
-  DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT,
-  outcomePaddingHorizontal,
-  OUTCOME_VERTICAL_SPACE_BETWEEN,
-  PROGRESS_BAR_HEIGHT,
-} from '../../dimensions'
+import { outcomePaddingHorizontal, PROGRESS_BAR_HEIGHT } from '../../dimensions'
 import drawProgressBar from '../drawProgressBar'
 
 export const argsForDrawProgressBar = ({
+  onlyMeasure,
+  zoomLevel,
   outcome,
   outcomeLeftX,
   outcomeTopY,
+  topOffsetY,
   outcomeWidth,
-  outcomeStatementHeight,
-  outcomeTagsHeight,
-  outcomeTimeAndAssigneesHeight,
   ctx,
 }: {
+  onlyMeasure?: boolean
   outcome: ComputedOutcome
+  zoomLevel: number
   outcomeLeftX: number
   outcomeTopY: number
+  topOffsetY: number
   outcomeWidth: number
-  outcomeStatementHeight: number
-  outcomeTagsHeight: number
-  outcomeTimeAndAssigneesHeight: number
   ctx: CanvasRenderingContext2D
 }): Parameters<typeof drawProgressBar>[0] => {
   const xPosition = outcomeLeftX + outcomePaddingHorizontal
   const width = outcomeWidth - outcomePaddingHorizontal * 2
 
-  const verticalSpacing =
-    OUTCOME_VERTICAL_SPACE_BETWEEN * 3 +
-    // if tags existed, then we need another spacer
-    (outcomeTagsHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0) +
-    // if time or assignees existed, then we need another spacer
-    (outcomeTimeAndAssigneesHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0)
-
-  const yPosition =
-    outcomeTopY +
-    DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT +
-    outcomeStatementHeight +
-    outcomeTagsHeight +
-    outcomeTimeAndAssigneesHeight +
-    verticalSpacing
+  const yPosition = outcomeTopY + topOffsetY
 
   const progress = computeProgress(outcome)
+
+  const skipRender = outcome
+    ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5
+    : false
+
+  const height = outcome
+    ? outcome.computedScope !== ComputedScope.Small && zoomLevel < 0.3
+      ? PROGRESS_BAR_HEIGHT + 10 // adjust per taste
+      : PROGRESS_BAR_HEIGHT
+    : PROGRESS_BAR_HEIGHT
 
   const args: Parameters<typeof drawProgressBar>[0] = {
     ctx,
     xPosition,
     yPosition,
     width,
-    height: PROGRESS_BAR_HEIGHT,
+    height,
     progress,
     backgroundColor: PROGRESS_BAR_BACKGROUND_COLOR,
     foregroundColor: PROGRESS_BAR_FOREGROUND_COLOR,
+    skipRender,
+    onlyMeasure,
   }
   return args
 }

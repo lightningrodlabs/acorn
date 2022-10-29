@@ -15,8 +15,12 @@ import leafGreenSvg from '../../images/leaf-green.svg'
 import uncertainSvg from '../../images/uncertain.svg'
 
 const drawDescendantsAchievementStatus = ({
+  skipRender,
+  onlyMeasure,
+  skipUncertainText,
   fontSize,
   fontFamily,
+  imageSize,
   defaultTextColor,
   achievedTextColor,
   withChildren,
@@ -26,8 +30,12 @@ const drawDescendantsAchievementStatus = ({
   computedAchievementStatus,
   ctx,
 }: {
+  skipRender: boolean
+  onlyMeasure: boolean
+  skipUncertainText: boolean
   fontSize: number
   fontFamily: string
+  imageSize: number
   defaultTextColor: string
   achievedTextColor: string
   withChildren: boolean
@@ -36,13 +44,21 @@ const drawDescendantsAchievementStatus = ({
   computedScope: ComputedScope
   computedAchievementStatus: ComputedAchievementStatus
   ctx: CanvasRenderingContext2D
-}) =>
+}): number => {
+  let height: number = 0
+  // early exit with no rendering, in the case of skipRender
+  if (skipRender) return height
+  // onlyMeasure is different than skipRender
+  // it means that we want to pretend as if it had been rendered
+  // for the sake of getting the height
+  if (onlyMeasure) return imageSize
+
+  // okay, we can confidently now actually draw
   draw(ctx, () => {
     ctx.fillStyle = defaultTextColor
     ctx.font = `${fontSize.toString()}rem ${fontFamily}`
     ctx.textBaseline = 'top'
 
-    const imageSize = 18
     const spaceBetweenSections = 10
     const spaceBetweenIconAndText = 5
 
@@ -123,13 +139,21 @@ const drawDescendantsAchievementStatus = ({
         imageSize
       )
       if (uncertainsImg) {
-        ctx.drawImage(uncertainsImg, xPosition, yPosition - 2, imageSize, imageSize)
+        ctx.drawImage(
+          uncertainsImg,
+          xPosition,
+          yPosition - 2,
+          imageSize,
+          imageSize
+        )
       }
-      ctx.fillText(
-        'Uncertain Scope',
-        xPosition + imageSize + spaceBetweenIconAndText,
-        yPosition
-      )
+      if (!skipUncertainText) {
+        ctx.fillText(
+          'Uncertain Scope',
+          xPosition + imageSize + spaceBetweenIconAndText,
+          yPosition
+        )
+      }
     } else {
       // Small
       const tasksImgGreen = getOrSetImageForUrl(
@@ -170,5 +194,7 @@ const drawDescendantsAchievementStatus = ({
       )
     }
   })
+  return imageSize
+}
 
 export default drawDescendantsAchievementStatus

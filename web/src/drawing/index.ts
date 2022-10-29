@@ -19,7 +19,7 @@ import {
 import {
   CONNECTOR_VERTICAL_SPACING,
   getOutcomeHeight,
-  outcomeWidth,
+  getOutcomeWidth,
 } from './dimensions'
 import {
   ComputedOutcome,
@@ -33,6 +33,7 @@ import { ActionHashB64, WithActionHash } from '../types/shared'
 import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
 import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
 import { ProjectOutcomeMembersState } from '../redux/persistent/projects/outcome-members/reducer'
+import { getPlaceholderOutcome } from './drawOutcome/placeholderOutcome'
 
 function setupCanvas(canvas) {
   // Get the device pixel ratio, falling back to 1.
@@ -90,7 +91,7 @@ export type renderProps = {
     }
   }
   computedOutcomesKeyed: {
-    [actionHash: string]: ComputedOutcome
+    [outcomeActionHash: ActionHashB64]: ComputedOutcome
   }
 }
 
@@ -155,385 +156,395 @@ function render(
   const outcomes = computedOutcomesKeyed
 
   // draw things relating to the project, if the project has fully loaded
-  if (outcomes && connections && outcomeMembers && entryPoints && projectMeta) {
-    const topPriorityOutcomes = projectMeta.topPriorityOutcomes
-    // converts the outcomes object to an array
-    const outcomesAsArray = Object.keys(outcomes).map(
-      (actionHash) => outcomes[actionHash]
-    )
-    // convert the connections object to an array
-    const connectionsAsArray = Object.keys(connections).map(
-      (actionHash) => connections[actionHash]
-    )
+  if (
+    !(outcomes && connections && outcomeMembers && entryPoints && projectMeta)
+  )
+    return
 
-    /*
+  // determine what the dimensions of each outcome will be
+  const allOutcomeDimensions: {
+    [actionHash: ActionHashB64]: { width: number; height: number }
+  } = {}
+  Object.keys(outcomes).forEach((outcomeActionHash) => {
+    const outcome = outcomes[outcomeActionHash]
+    const width = getOutcomeWidth({ outcome, zoomLevel })
+    const height = getOutcomeHeight({
+      ctx,
+      outcome,
+      projectTags,
+      zoomLevel: zoomLevel,
+      width,
+      useLineLimit: true,
+    })
+    allOutcomeDimensions[outcomeActionHash] = {
+      width,
+      height,
+    }
+  })
+
+  const topPriorityOutcomes = projectMeta.topPriorityOutcomes
+  // converts the outcomes object to an array
+  const outcomesAsArray = Object.keys(outcomes).map(
+    (actionHash) => outcomes[actionHash]
+  )
+  // convert the connections object to an array
+  const connectionsAsArray = Object.keys(connections).map(
+    (actionHash) => connections[actionHash]
+  )
+
+  /*
       DRAW ENTRY POINTS
     */
-    const activeEntryPointsObjects = activeEntryPoints.map(
-      (entryPointAddress) => entryPoints[entryPointAddress]
-    )
-    drawEntryPoints(
-      ctx,
-      activeEntryPointsObjects,
-      outcomes,
-      connectionsAsArray,
-      coordinates,
-      zoomLevel,
-      projectTags
-    )
+  const activeEntryPointsObjects = activeEntryPoints.map(
+    (entryPointAddress) => entryPoints[entryPointAddress]
+  )
+  drawEntryPoints(
+    ctx,
+    activeEntryPointsObjects,
+    outcomes,
+    connectionsAsArray,
+    coordinates,
+    allOutcomeDimensions
+  )
 
-    /*
+  /*
       DRAW CONNECTIONS (EXISTING)
     */
-    // render each connection to the canvas, basing it off the rendering coordinates of the parent and child nodes
-    connectionsAsArray.forEach(function (connection) {
-      // if in the pending re-parenting mode for the child card of an existing connection,
-      // temporarily omit/hide the existing connection from view
-      // ASSUMPTION: one parent
-      const pendingReParent =
-        (outcomeConnectorFromAddress === connection.childActionHash &&
-          outcomeConnectorRelation === RELATION_AS_CHILD) ||
-        (outcomeFormIsOpen &&
-          outcomeFormFromActionHash === connection.childActionHash &&
-          outcomeFormRelation === RELATION_AS_CHILD)
-      if (pendingReParent) return
+  // render each connection to the canvas, basing it off the rendering coordinates of the parent and child nodes
+  connectionsAsArray.forEach(function (connection) {
+    // if in the pending re-parenting mode for the child card of an existing connection,
+    // temporarily omit/hide the existing connection from view
+    // ASSUMPTION: one parent
+    const pendingReParent =
+      (outcomeConnectorFromAddress === connection.childActionHash &&
+        outcomeConnectorRelation === RELATION_AS_CHILD) ||
+      (outcomeFormIsOpen &&
+        outcomeFormFromActionHash === connection.childActionHash &&
+        outcomeFormRelation === RELATION_AS_CHILD)
+    if (pendingReParent) return
 
-      const childCoords = coordinates[connection.childActionHash]
-      const parentCoords = coordinates[connection.parentActionHash]
-      const childOutcome = outcomes[connection.childActionHash]
-      const parentOutcome = outcomes[connection.parentActionHash]
-      // we can only render this connection
-      // if we know the coordinates of the Outcomes it connects
-      if (childCoords && parentCoords && parentOutcome && childOutcome) {
-        const [
-          connection1port,
-          connection2port,
-        ] = calculateConnectionCoordsByOutcomeCoords(
-          childCoords,
-          parentCoords,
-          parentOutcome,
-          projectTags,
-          zoomLevel,
-          ctx
-        )
-        const isHovered = hoveredConnectionActionHash === connection.actionHash
-        const isSelected = selectedConnections.includes(connection.actionHash)
-        drawConnection({
-          connection1port,
-          connection2port,
-          ctx,
-          isAchieved:
-            childOutcome.computedAchievementStatus.simple ===
-            ComputedSimpleAchievementStatus.Achieved,
-          isHovered,
-          isSelected,
-        })
-      }
-    })
+    const childCoords = coordinates[connection.childActionHash]
+    const parentCoords = coordinates[connection.parentActionHash]
+    const childOutcome = outcomes[connection.childActionHash]
+    const parentOutcome = outcomes[connection.parentActionHash]
+    // we can only render this connection
+    // if we know the coordinates of the Outcomes it connects
+    if (childCoords && parentCoords && parentOutcome && childOutcome) {
+      const [
+        connection1port,
+        connection2port,
+      ] = calculateConnectionCoordsByOutcomeCoords(
+        childCoords,
+        parentCoords,
+        getOutcomeWidth({ outcome: childOutcome, zoomLevel }),
+        parentOutcome,
+        projectTags,
+        zoomLevel,
+        ctx
+      )
+      const isHovered = hoveredConnectionActionHash === connection.actionHash
+      const isSelected = selectedConnections.includes(connection.actionHash)
+      drawConnection({
+        connection1port,
+        connection2port,
+        ctx,
+        isAchieved:
+          childOutcome.computedAchievementStatus.simple ===
+          ComputedSimpleAchievementStatus.Achieved,
+        isHovered,
+        isSelected,
+        zoomLevel,
+      })
+    }
+  })
 
-    /*
+  /*
       SEPARATE SELECTED & UNSELECTED OUTCOMES
     */
-    // in order to create layers behind and in front of the editing highlight overlay
-    const unselectedOutcomes = outcomesAsArray.filter((outcome) => {
-      return selectedOutcomes.indexOf(outcome.actionHash) === -1
-    })
-    const selectedOutcomesActual = outcomesAsArray.filter((outcome) => {
-      return selectedOutcomes.indexOf(outcome.actionHash) > -1
-    })
+  // in order to create layers behind and in front of the editing highlight overlay
+  const unselectedOutcomes = outcomesAsArray.filter((outcome) => {
+    return selectedOutcomes.indexOf(outcome.actionHash) === -1
+  })
+  const selectedOutcomesActual = outcomesAsArray.filter((outcome) => {
+    return selectedOutcomes.indexOf(outcome.actionHash) > -1
+  })
 
-    /*
+  /*
       DRAW UNSELECTED OUTCOMES
     */
-    // render each unselected outcome to the canvas
-    unselectedOutcomes.forEach((outcome) => {
-      // use the set of coordinates at the same index
-      // in the coordinates array
-      const isSelected = false
-      // const isHovered = state.ui.hover.hoveredOutcome === outcome.actionHash
-      // const isEditing = false
-      // let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(
-      //   (agentInfo) =>
-      //     agentInfo.outcomeBeingEdited !== null &&
-      //     agentInfo.outcomeBeingEdited.outcomeActionHash === outcome.actionHash
-      // )
-      // const isBeingEdited = editInfoObjects.length > 0
-      // const isBeingEditedBy =
-      //   editInfoObjects.length === 1
-      //     ? state.agents[editInfoObjects[0].agentPubKey].handle
-      //     : editInfoObjects.length > 1
-      //     ? `${editInfoObjects.length} people`
-      //     : null
-      // a combination of those editing + those with expanded view open
-      // const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
-      //   .filter(
-      //     (agentInfo) =>
-      //       agentInfo.outcomeExpandedView === outcome.actionHash ||
-      //       (agentInfo.outcomeBeingEdited !== null &&
-      //         agentInfo.outcomeBeingEdited.outcomeActionHash ===
-      //           outcome.actionHash)
-      //   )
-      //   .map(
-      //     (realtimeInfoObject) => state.agents[realtimeInfoObject.agentPubKey]
-      //   )
+  // render each unselected outcome to the canvas
+  unselectedOutcomes.forEach((outcome) => {
+    // use the set of coordinates at the same index
+    // in the coordinates array
+    const isSelected = false
+    // const isHovered = state.ui.hover.hoveredOutcome === outcome.actionHash
+    // const isEditing = false
+    // let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(
+    //   (agentInfo) =>
+    //     agentInfo.outcomeBeingEdited !== null &&
+    //     agentInfo.outcomeBeingEdited.outcomeActionHash === outcome.actionHash
+    // )
+    // const isBeingEdited = editInfoObjects.length > 0
+    // const isBeingEditedBy =
+    //   editInfoObjects.length === 1
+    //     ? state.agents[editInfoObjects[0].agentPubKey].handle
+    //     : editInfoObjects.length > 1
+    //     ? `${editInfoObjects.length} people`
+    //     : null
+    // a combination of those editing + those with expanded view open
+    // const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
+    //   .filter(
+    //     (agentInfo) =>
+    //       agentInfo.outcomeExpandedView === outcome.actionHash ||
+    //       (agentInfo.outcomeBeingEdited !== null &&
+    //         agentInfo.outcomeBeingEdited.outcomeActionHash ===
+    //           outcome.actionHash)
+    //   )
+    //   .map(
+    //     (realtimeInfoObject) => state.agents[realtimeInfoObject.agentPubKey]
+    //   )
 
-      // const membersOfOutcome = Object.keys(outcomeMembers)
-      //   .map(actionHash => outcomeMembers[actionHash])
-      //   .filter(outcomeMember => outcomeMember.outcomeActionHash === outcome.actionHash)
-      //   .map(outcomeMember => state.agents[outcomeMember.memberAgentPubKey])
-      const isTopPriorityOutcome = !!topPriorityOutcomes.find(
-        (actionHash) => actionHash === outcome.actionHash
-      )
-      if (coordinates[outcome.actionHash]) {
-        drawOutcomeCard({
-          useLineLimit: true,
-          zoomLevel: zoomLevel,
-          outcome: outcome,
-          outcomeLeftX: coordinates[outcome.actionHash].x,
-          outcomeTopY: coordinates[outcome.actionHash].y,
-          isSelected: isSelected,
-          ctx: ctx,
-          isTopPriority: isTopPriorityOutcome,
-          outcomeHeight: getOutcomeHeight({
-            ctx,
-            outcome,
-            projectTags,
-            zoomLevel: zoomLevel,
-            width: outcomeWidth,
-            useLineLimit: true,
-          }),
-          outcomeWidth: outcomeWidth,
-          projectTags,
-          // members: membersOfOutcome,
-          // isEditing: isEditing, // self
-          // editText: '',
-          // isHovered: isHovered,
-          // isBeingEdited: isBeingEdited, // by other
-          // isBeingEditedBy: isBeingEditedBy, // other
-          // allMembersActiveOnOutcome: allMembersActiveOnOutcome,
-        })
-      }
-    })
+    // const membersOfOutcome = Object.keys(outcomeMembers)
+    //   .map(actionHash => outcomeMembers[actionHash])
+    //   .filter(outcomeMember => outcomeMember.outcomeActionHash === outcome.actionHash)
+    //   .map(outcomeMember => state.agents[outcomeMember.memberAgentPubKey])
+    const isTopPriorityOutcome = !!topPriorityOutcomes.find(
+      (actionHash) => actionHash === outcome.actionHash
+    )
+    if (coordinates[outcome.actionHash]) {
+      drawOutcomeCard({
+        useLineLimit: true,
+        zoomLevel: zoomLevel,
+        outcome: outcome,
+        outcomeLeftX: coordinates[outcome.actionHash].x,
+        outcomeTopY: coordinates[outcome.actionHash].y,
+        isSelected: isSelected,
+        ctx: ctx,
+        isTopPriority: isTopPriorityOutcome,
+        outcomeHeight: allOutcomeDimensions[outcome.actionHash].height,
+        outcomeWidth: allOutcomeDimensions[outcome.actionHash].width,
+        projectTags,
+        // members: membersOfOutcome,
+        // isEditing: isEditing, // self
+        // editText: '',
+        // isHovered: isHovered,
+        // isBeingEdited: isBeingEdited, // by other
+        // isBeingEditedBy: isBeingEditedBy, // other
+        // allMembersActiveOnOutcome: allMembersActiveOnOutcome,
+      })
+    }
+  })
 
-    /*
+  /*
       DRAW SELECT BOX
     */
-    if (
-      shiftKeyDown &&
-      startedSelection &&
-      startedSelectionCoordinate.x !== 0
-    ) {
-      drawSelectBox(
-        startedSelectionCoordinate,
-        mouseLiveCoordinate,
-        canvas.getContext('2d')
-      )
-    }
+  if (shiftKeyDown && startedSelection && startedSelectionCoordinate.x !== 0) {
+    drawSelectBox(
+      startedSelectionCoordinate,
+      mouseLiveCoordinate,
+      canvas.getContext('2d')
+    )
+  }
 
-    /*
+  /*
       DRAW EDITING HIGHLIGHT SEMI-TRANSPARENT OVERLAY
     */
-    /* if shift key not held down and there are more than 1 Outcomes selected */
-    if (selectedOutcomes.length > 1 && !shiftKeyDown) {
-      // counteract the translation
-      ctx.save()
-      ctx.setTransform(1, 0, 0, 1, 0, 0)
-      drawOverlay(ctx, 0, 0, screenWidth, screenHeight)
-      ctx.restore()
-    }
+  /* if shift key not held down and there are more than 1 Outcomes selected */
+  if (selectedOutcomes.length > 1 && !shiftKeyDown) {
+    drawOverlay(ctx, 0, 0, screenWidth, screenHeight)
+  }
 
-    /*
+  /*
       DRAW SELECTED OUTCOMES
     */
-    selectedOutcomesActual.forEach((outcome) => {
-      // use the set of coordinates at the same index
-      // in the coordinates array
-      const isSelected = true
-      // const isHovered = state.ui.hover.hoveredOutcome === outcome.actionHash
-      // const isEditing = false
-      // let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(
-      //   (agentInfo) =>
-      //     agentInfo.outcomeBeingEdited !== null &&
-      //     agentInfo.outcomeBeingEdited.outcomeActionHash === outcome.actionHash
-      // )
-      // const isBeingEdited = editInfoObjects.length > 0
-      // const isBeingEditedBy =
-      //   editInfoObjects.length === 1
-      //     ? state.agents[editInfoObjects[0].agentPubKey].handle
-      //     : editInfoObjects.length > 1
-      //     ? `${editInfoObjects.length} people`
-      //     : null
-      // a combination of those editing + those with expanded view open
-      // const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
-      //   .filter(
-      //     (agentInfo) =>
-      //       agentInfo.outcomeExpandedView === outcome.actionHash ||
-      //       (agentInfo.outcomeBeingEdited !== null &&
-      //         agentInfo.outcomeBeingEdited.outcomeActionHash ===
-      //           outcome.actionHash)
-      //   )
-      //   .map(
-      //     (realtimeInfoObject) => state.agents[realtimeInfoObject.agentPubKey]
-      //   )
-      // const membersOfOutcome = Object.keys(outcomeMembers)
-      //   .map((actionHash) => outcomeMembers[actionHash])
-      //   .filter(
-      //     (outcomeMember) =>
-      //       outcomeMember.outcomeActionHash === outcome.actionHash
-      //   )
-      //   .map((outcomeMember) => state.agents[outcomeMember.memberAgentPubKey])
-      const isTopPriorityOutcome = !!topPriorityOutcomes.find(
-        (actionHash) => actionHash === outcome.actionHash
-      )
-      if (coordinates[outcome.actionHash]) {
-        drawOutcomeCard({
-          useLineLimit: true,
-          zoomLevel: zoomLevel,
-          outcome: outcome,
-          outcomeLeftX: coordinates[outcome.actionHash].x,
-          outcomeTopY: coordinates[outcome.actionHash].y,
-          isSelected: isSelected,
-          ctx: ctx,
-          isTopPriority: isTopPriorityOutcome,
-          outcomeHeight: getOutcomeHeight({
-            ctx,
-            outcome,
-            projectTags,
-            zoomLevel: zoomLevel,
-            width: outcomeWidth,
-            useLineLimit: true,
-          }),
-          outcomeWidth,
-          projectTags,
-          // members: membersOfOutcome,
-          // isEditing: isEditing,
-          // editText: '',
-          // isHovered: isHovered,
-          // isBeingEdited: isBeingEdited,
-          // isBeingEditedBy: isBeingEditedBy,
-          // allMembersActiveOnOutcome: allMembersActiveOnOutcome,
-        })
-      }
-    })
+  selectedOutcomesActual.forEach((outcome) => {
+    // use the set of coordinates at the same index
+    // in the coordinates array
+    const isSelected = true
+    // const isHovered = state.ui.hover.hoveredOutcome === outcome.actionHash
+    // const isEditing = false
+    // let editInfoObjects = Object.values(state.ui.realtimeInfo).filter(
+    //   (agentInfo) =>
+    //     agentInfo.outcomeBeingEdited !== null &&
+    //     agentInfo.outcomeBeingEdited.outcomeActionHash === outcome.actionHash
+    // )
+    // const isBeingEdited = editInfoObjects.length > 0
+    // const isBeingEditedBy =
+    //   editInfoObjects.length === 1
+    //     ? state.agents[editInfoObjects[0].agentPubKey].handle
+    //     : editInfoObjects.length > 1
+    //     ? `${editInfoObjects.length} people`
+    //     : null
+    // a combination of those editing + those with expanded view open
+    // const allMembersActiveOnOutcome = Object.values(state.ui.realtimeInfo)
+    //   .filter(
+    //     (agentInfo) =>
+    //       agentInfo.outcomeExpandedView === outcome.actionHash ||
+    //       (agentInfo.outcomeBeingEdited !== null &&
+    //         agentInfo.outcomeBeingEdited.outcomeActionHash ===
+    //           outcome.actionHash)
+    //   )
+    //   .map(
+    //     (realtimeInfoObject) => state.agents[realtimeInfoObject.agentPubKey]
+    //   )
+    // const membersOfOutcome = Object.keys(outcomeMembers)
+    //   .map((actionHash) => outcomeMembers[actionHash])
+    //   .filter(
+    //     (outcomeMember) =>
+    //       outcomeMember.outcomeActionHash === outcome.actionHash
+    //   )
+    //   .map((outcomeMember) => state.agents[outcomeMember.memberAgentPubKey])
+    const isTopPriorityOutcome = !!topPriorityOutcomes.find(
+      (actionHash) => actionHash === outcome.actionHash
+    )
+    if (coordinates[outcome.actionHash]) {
+      drawOutcomeCard({
+        useLineLimit: true,
+        zoomLevel: zoomLevel,
+        outcome: outcome,
+        outcomeLeftX: coordinates[outcome.actionHash].x,
+        outcomeTopY: coordinates[outcome.actionHash].y,
+        isSelected: isSelected,
+        ctx: ctx,
+        isTopPriority: isTopPriorityOutcome,
+        outcomeWidth: allOutcomeDimensions[outcome.actionHash].width,
+        outcomeHeight: allOutcomeDimensions[outcome.actionHash].height,
+        projectTags,
+        // members: membersOfOutcome,
+        // isEditing: isEditing,
+        // editText: '',
+        // isHovered: isHovered,
+        // isBeingEdited: isBeingEdited,
+        // isBeingEditedBy: isBeingEditedBy,
+        // allMembersActiveOnOutcome: allMembersActiveOnOutcome,
+      })
+    }
+  })
 
-    /*
+  /*
       DRAW PENDING CONNECTION FOR OUTCOME FORM
     */
-    // render the connection that is pending to be created to the open outcome form
-    if (outcomeFormIsOpen && outcomeFormFromActionHash) {
-      const fromOutcomeCoords = coordinates[outcomeFormFromActionHash]
-      const newOutcomeCoords = {
-        x: outcomeFormLeftConnectionX,
-        y: outcomeFormTopConnectionY,
-      }
-      const fromOutcome = outcomes[outcomeFormFromActionHash]
-      let childCoords, parentCoords
-      if (outcomeFormRelation === RELATION_AS_CHILD) {
-        childCoords = fromOutcomeCoords
-        parentCoords = newOutcomeCoords
-      } else if (outcomeFormRelation === RELATION_AS_PARENT) {
-        childCoords = newOutcomeCoords
-        parentCoords = fromOutcomeCoords
-      }
-      if (childCoords && parentCoords && fromOutcome) {
-        const [
-          connection1port,
-          connection2port,
-        ] = calculateConnectionCoordsByOutcomeCoords(
-          childCoords,
-          parentCoords,
-          fromOutcome,
-          projectTags,
-          zoomLevel,
-          ctx
-        )
-        drawConnection({
-          connection1port,
-          connection2port,
-          ctx,
-          isAchieved: false,
-          isSelected: false,
-          isHovered: false,
-        })
-      }
+  // render the connection that is pending to be created to the open outcome form
+  if (outcomeFormIsOpen && outcomeFormFromActionHash) {
+    const fromOutcomeCoords = coordinates[outcomeFormFromActionHash]
+    const newOutcomeCoords = {
+      x: outcomeFormLeftConnectionX,
+      y: outcomeFormTopConnectionY,
     }
-
-    /*
-      DRAW PENDING CONNECTION FOR "CONNECTION CONNECTOR"
-    */
-    // render the connection that is pending to be created between existing Outcomes
-    if (outcomeConnectorFromAddress) {
-      const fromCoords = coordinates[outcomeConnectorFromAddress]
-      const fromOutcome = outcomes[outcomeConnectorFromAddress]
+    const fromOutcome = outcomes[outcomeFormFromActionHash]
+    let childCoords, parentCoords
+    if (outcomeFormRelation === RELATION_AS_CHILD) {
+      childCoords = fromOutcomeCoords
+      parentCoords = newOutcomeCoords
+    } else if (outcomeFormRelation === RELATION_AS_PARENT) {
+      childCoords = newOutcomeCoords
+      parentCoords = fromOutcomeCoords
+    }
+    const placeholderOutcomeWithoutText = getPlaceholderOutcome()
+    if (childCoords && parentCoords && fromOutcome) {
       const [
-        fromAsChildCoord,
-        fromAsParentCoord,
+        connection1port,
+        connection2port,
       ] = calculateConnectionCoordsByOutcomeCoords(
-        fromCoords,
-        fromCoords,
+        childCoords,
+        parentCoords,
+        getOutcomeWidth({
+          outcome: placeholderOutcomeWithoutText,
+          zoomLevel,
+        }),
         fromOutcome,
         projectTags,
         zoomLevel,
         ctx
       )
-      // if there's an Outcome this is pending
-      // as being "to", then we will be drawing the connection to its correct
-      // upper or lower port
-      // the opposite of whichever the "from" port is connected to
-      let toCoords, toOutcome, toAsChildCoord, toAsParentCoord
-      if (outcomeConnectorToAddress) {
-        toCoords = coordinates[outcomeConnectorToAddress]
-        toOutcome = outcomes[outcomeConnectorToAddress]
-        ;[
-          toAsChildCoord,
-          toAsParentCoord,
-        ] = calculateConnectionCoordsByOutcomeCoords(
-          toCoords,
-          toCoords,
-          toOutcome,
-          projectTags,
-          zoomLevel,
-          ctx
-        )
-      }
-      // in drawConnection, it draws at exactly the two coordinates given,
-      // so we could pass them in either order/position
-      const fromConnectionCoord =
-        outcomeConnectorRelation === RELATION_AS_PARENT
-          ? fromAsParentCoord
-          : fromAsChildCoord
-      // use the current mouse coordinate position, liveCoordinate, by default
-      let toConnectionCoord = mouseLiveCoordinate
-      // use the coordinates relating to an Outcome which it is pending that
-      // this connection will connect the "from" Outcome "to"
-      if (outcomeConnectorToAddress) {
-        toConnectionCoord =
-          outcomeConnectorRelation === RELATION_AS_PARENT
-            ? toAsChildCoord
-            : toAsParentCoord
-      }
-      if (outcomeConnectorRelation === RELATION_AS_CHILD) {
-        fromConnectionCoord.y =
-          fromConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
-        // only modify if we're dealing with an actual outcome being connected to
-        if (outcomeConnectorToAddress)
-          toConnectionCoord.y = toConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
-      } else if (outcomeConnectorRelation === RELATION_AS_PARENT) {
-        fromConnectionCoord.y =
-          fromConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
-        // only modify if we're dealing with an actual outcome being connected to
-        if (outcomeConnectorToAddress)
-          toConnectionCoord.y = toConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
-      }
       drawConnection({
-        connection1port: fromConnectionCoord,
-        connection2port: toConnectionCoord,
+        connection1port,
+        connection2port,
         ctx,
         isAchieved: false,
-        isHovered: false,
         isSelected: false,
+        isHovered: false,
+        zoomLevel,
       })
     }
+  }
+
+  /*
+      DRAW PENDING CONNECTION FOR "CONNECTION CONNECTOR"
+    */
+  // render the connection that is pending to be created between existing Outcomes
+  if (outcomeConnectorFromAddress) {
+    const fromCoords = coordinates[outcomeConnectorFromAddress]
+    const fromOutcome = outcomes[outcomeConnectorFromAddress]
+    const [
+      fromAsChildCoord,
+      fromAsParentCoord,
+    ] = calculateConnectionCoordsByOutcomeCoords(
+      fromCoords,
+      fromCoords,
+      0,
+      fromOutcome,
+      projectTags,
+      zoomLevel,
+      ctx
+    )
+    // if there's an Outcome this is pending
+    // as being "to", then we will be drawing the connection to its correct
+    // upper or lower port
+    // the opposite of whichever the "from" port is connected to
+    let toCoords, toOutcome, toAsChildCoord, toAsParentCoord
+    if (outcomeConnectorToAddress) {
+      toCoords = coordinates[outcomeConnectorToAddress]
+      toOutcome = outcomes[outcomeConnectorToAddress]
+      ;[
+        toAsChildCoord,
+        toAsParentCoord,
+      ] = calculateConnectionCoordsByOutcomeCoords(
+        toCoords,
+        toCoords,
+        getOutcomeWidth({ outcome: fromOutcome, zoomLevel }),
+        toOutcome,
+        projectTags,
+        zoomLevel,
+        ctx
+      )
+    }
+    // in drawConnection, it draws at exactly the two coordinates given,
+    // so we could pass them in either order/position
+    const fromConnectionCoord =
+      outcomeConnectorRelation === RELATION_AS_PARENT
+        ? fromAsParentCoord
+        : fromAsChildCoord
+    // use the current mouse coordinate position, liveCoordinate, by default
+    let toConnectionCoord = mouseLiveCoordinate
+    // use the coordinates relating to an Outcome which it is pending that
+    // this connection will connect the "from" Outcome "to"
+    if (outcomeConnectorToAddress) {
+      toConnectionCoord =
+        outcomeConnectorRelation === RELATION_AS_PARENT
+          ? toAsChildCoord
+          : toAsParentCoord
+    }
+    if (outcomeConnectorRelation === RELATION_AS_CHILD) {
+      fromConnectionCoord.y = fromConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
+      // only modify if we're dealing with an actual outcome being connected to
+      if (outcomeConnectorToAddress)
+        toConnectionCoord.y = toConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
+    } else if (outcomeConnectorRelation === RELATION_AS_PARENT) {
+      fromConnectionCoord.y = fromConnectionCoord.y + CONNECTOR_VERTICAL_SPACING
+      // only modify if we're dealing with an actual outcome being connected to
+      if (outcomeConnectorToAddress)
+        toConnectionCoord.y = toConnectionCoord.y - CONNECTOR_VERTICAL_SPACING
+    }
+    drawConnection({
+      connection1port: fromConnectionCoord,
+      connection2port: toConnectionCoord,
+      ctx,
+      isAchieved: false,
+      isHovered: false,
+      isSelected: false,
+      zoomLevel,
+    })
   }
 
   /*
@@ -545,50 +556,31 @@ function render(
     const isSelected = false
     const isEditing = true
     const isTopPriorityOutcome = false
-    const placeholderOutcome: ComputedOutcome = {
-      actionHash: '',
-      // don't display the text this way, it will be displayed in the overlayed form
-      content: '',
-      creatorAgentPubKey: '',
-      editorAgentPubKey: '',
-      timestampCreated: Date.now(),
-      timestampUpdated: Date.now(),
-      scope: {
-        Uncertain: { smallsEstimate: 0, timeFrame: null, inBreakdown: false },
-      },
-      tags: [],
-      description: '',
-      isImported: false,
-      githubLink: '',
-      computedScope: ComputedScope.Uncertain,
-      computedAchievementStatus: {
-        simple: ComputedSimpleAchievementStatus.NotAchieved,
-        smallsAchieved: 0,
-        smallsTotal: 0,
-        tasksAchieved: 0,
-        tasksTotal: 0,
-        uncertains: 0,
-      },
-      children: [],
-    }
-    drawOutcomeCard({
+    const placeholderOutcomeWithText = getPlaceholderOutcome(outcomeFormContent)
+    const outcomeWidth = getOutcomeWidth({
+      outcome: placeholderOutcomeWithText,
+      zoomLevel,
+    })
+    const outcomeHeight = getOutcomeHeight({
+      ctx,
+      outcome: placeholderOutcomeWithText,
+      projectTags,
+      width: outcomeWidth,
+      zoomLevel,
+      // we set this because in the case of creating a new outcome
+      // it should use the full text at the proper text scaling
+      noStatementPlaceholder: true,
       useLineLimit: false,
-      zoomLevel: zoomLevel,
+    })
+    drawOutcomeCard({
       // draw the Outcome with empty text
       // since the text is presented in the
       // MapViewOutcomeTitleForm
-      outcome: placeholderOutcome,
-      outcomeHeight: getOutcomeHeight({
-        ctx,
-        outcome: {
-          ...placeholderOutcome,
-          content: outcomeFormContent,
-        },
-        projectTags,
-        width: outcomeWidth,
-        zoomLevel,
-        useLineLimit: false,
-      }),
+      skipStatementRender: true,
+      useLineLimit: false,
+      zoomLevel: zoomLevel,
+      outcome: placeholderOutcomeWithText,
+      outcomeHeight,
       outcomeWidth,
       projectTags,
       outcomeLeftX: outcomeFormLeftConnectionX,
