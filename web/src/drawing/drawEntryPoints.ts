@@ -82,7 +82,7 @@ export default function drawEntryPoints(
       // fit within the available width
       function adjustCutoff(cutoff: number) {
         const textToCheck = outcome.content.slice(0, cutoff) + '...'
-        if (ctx.measureText(textToCheck).width < width) {
+        if (cutoff === 1 || ctx.measureText(textToCheck).width < width) {
           return cutoff
         } else {
           return adjustCutoff(cutoff - 1)
