@@ -119,7 +119,8 @@ const MapView: React.FC<MapViewProps> = ({
     translate,
     zoomLevel
   )
-  // don't bother with outcome statement tooltips if the zoom level is less than 0.7
+  // don't bother with outcome statement tooltips if the zoom level is >= 0.7
+  // because it displays the full Outcome statement
   const outcomeStatementTooltipVisible = hoveredOutcome && zoomLevel < 0.7
 
   return (
