@@ -200,8 +200,10 @@ export function getLinesForParagraphs({
     // for extra large text, reduce to only 3 lines
     if (zoomLevel < secondZoomThreshold) {
       lineLimit = 3
-    } else {
+    } else if (zoomLevel < 0.7) {
       lineLimit = 4
+    } else {
+      lineLimit = 10
     }
   } else {
     lineLimit = Infinity

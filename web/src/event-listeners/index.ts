@@ -19,8 +19,6 @@ import {
   unhoverConnection,
 } from '../redux/ephemeral/hover/actions'
 import {
-  setGKeyDown,
-  unsetGKeyDown,
   setShiftKeyDown,
   unsetShiftKeyDown,
 } from '../redux/ephemeral/keyboard/actions'
@@ -154,14 +152,6 @@ export default function setupEventListeners(
     // there are event.code and event.key ...
     // event.key is keyboard layout independent, so works for Dvorak users
     switch (event.key) {
-      case 'g':
-        // only dispatch SET_G_KEYDOWN if it's not already down
-        if (state.ui.keyboard.gKeyDown) {
-          event.preventDefault()
-        } else {
-          store.dispatch(setGKeyDown())
-        }
-        break
 
       case 'Enter':
         if (
@@ -347,9 +337,6 @@ export default function setupEventListeners(
     // there are event.code and event.key ...
     // event.key is keyboard layout independent, so works for Dvorak users
     switch (event.key) {
-      case 'g':
-        store.dispatch(unsetGKeyDown())
-        break
       case 'Shift':
         store.dispatch(unsetShiftKeyDown())
         break
