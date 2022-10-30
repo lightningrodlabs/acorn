@@ -7,7 +7,7 @@
   top: 68px;
   right: 80px;
   position: fixed;
-  font-family: "PlusJakartaSans-medium", Helvetica, Sans-Serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
   font-weight: normal;
   color: #717171;
   font-size: 14px;
@@ -32,6 +32,15 @@ canvas {
 /* transform */
 
 .transform-container,
-.outcome-form-position-container {
+.mapview-elements-container {
   position: fixed;
+}
+
+.outcome-statement-tooltip-visible {
+  // establishes a max width
+  width: 10rem;
+
+  .tooltip-wrapper {
+    visibility: visible;
+  }
 }

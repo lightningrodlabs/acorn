@@ -1,5 +1,4 @@
-
-
+import { ActionHashB64 } from '../../../types/shared'
 import {
   SET_MOUSEDOWN,
   UNSET_MOUSEDOWN,
@@ -12,7 +11,29 @@ import {
   UNSET_SIZE,
 } from './actions'
 
-const defaultState = {
+export interface MouseState {
+  mousedown: boolean
+  // this is whatever current mouse coordinate is
+  liveCoordinate: {
+    x: number
+    y: number
+  }
+  // this is the START coordinate for
+  // an Outcome selection action
+  coordinate: {
+    x: number
+    y: number
+  }
+  size: {
+    w: number
+    h: number
+  }
+  // this is for the list of outcomeActionHashes that
+  // are being selected with the shift-click-drag selection box
+  outcomesAddresses: ActionHashB64[] | null
+}
+
+const defaultState: MouseState = {
   mousedown: false,
   // this is whatever current mouse coordinate is
   liveCoordinate: {
@@ -29,10 +50,12 @@ const defaultState = {
     w: 0,
     h: 0,
   },
+  // this is for the list of outcomeActionHashes that
+  // are being selected with the shift-click-drag selection box
   outcomesAddresses: null,
 }
 
-export default function (state = defaultState, action) {
+export default function (state = defaultState, action: any): MouseState {
   const { coordinate, type, outcomesAddresses, size } = action
   switch (type) {
     case SET_MOUSEDOWN:

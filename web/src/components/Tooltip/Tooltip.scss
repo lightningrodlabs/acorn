@@ -1,0 +1,54 @@
+.tooltip-wrapper {
+  position: absolute;
+  // this property should get toggled
+  visibility: hidden;
+  font-size: 11px;
+  line-height: 12px;
+  white-space: nowrap;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+  
+  // this is the default
+  &.with-delay {
+    transition-delay: 0.9s;
+    transition-property: visibility;
+    transition: 0.3s all ease;
+  }
+  
+  &.allow-wrapping {
+    white-space: normal;
+    width: 100%;
+    align-items: flex-start;
+  }
+  &:not(.allow-wrapping) {
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+  }
+
+  &.top {
+    bottom: 30px;
+  }
+
+  .tooltip-triangle-on-top {
+    width: 12px;
+    height: 12px;
+    margin-bottom: -4px;
+  }
+
+  .tooltip-triangle-on-bottom {
+    width: 12px;
+    height: 12px;
+    margin-top: -4px;
+  }
+
+  .tooltip-text-wrapper {
+    background-color: var(--text-color-link);
+    padding: 7px 8px;
+    border-radius: 4px;
+    color: #ffffff;
+  }
+}
