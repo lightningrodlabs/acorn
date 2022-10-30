@@ -193,22 +193,6 @@ function render(
   )
 
   /*
-      DRAW ENTRY POINTS
-    */
-  const activeEntryPointsObjects = activeEntryPoints
-    .map((entryPointAddress) => entryPoints[entryPointAddress])
-    // drop ones that may be undefined
-    .filter((activeEntryPoint) => activeEntryPoint)
-  drawEntryPoints(
-    ctx,
-    activeEntryPointsObjects,
-    outcomes,
-    connectionsAsArray,
-    coordinates,
-    allOutcomeDimensions
-  )
-
-  /*
       DRAW CONNECTIONS (EXISTING)
     */
   // render each connection to the canvas, basing it off the rendering coordinates of the parent and child nodes
@@ -258,8 +242,8 @@ function render(
   })
 
   /*
-      SEPARATE SELECTED & UNSELECTED OUTCOMES
-    */
+    SEPARATE SELECTED & UNSELECTED OUTCOMES
+  */
   // in order to create layers behind and in front of the editing highlight overlay
   const unselectedOutcomes = outcomesAsArray.filter((outcome) => {
     return selectedOutcomes.indexOf(outcome.actionHash) === -1
@@ -346,16 +330,33 @@ function render(
   }
 
   /*
-      DRAW EDITING HIGHLIGHT SEMI-TRANSPARENT OVERLAY
-    */
+    DRAW ENTRY POINTS
+  */
+  const activeEntryPointsObjects = activeEntryPoints
+    .map((entryPointAddress) => entryPoints[entryPointAddress])
+    // drop ones that may be undefined
+    .filter((activeEntryPoint) => activeEntryPoint)
+  drawEntryPoints(
+    ctx,
+    activeEntryPointsObjects,
+    outcomes,
+    connectionsAsArray,
+    coordinates,
+    allOutcomeDimensions,
+    zoomLevel
+  )
+
+  /*
+    DRAW EDITING HIGHLIGHT SEMI-TRANSPARENT OVERLAY
+  */
   /* if shift key not held down and there are more than 1 Outcomes selected */
   if (selectedOutcomes.length > 1 && !shiftKeyDown) {
     drawOverlay(ctx, 0, 0, screenWidth, screenHeight)
   }
 
   /*
-      DRAW SELECTED OUTCOMES
-    */
+    DRAW SELECTED OUTCOMES
+  */
   selectedOutcomesActual.forEach((outcome) => {
     // use the set of coordinates at the same index
     // in the coordinates array
