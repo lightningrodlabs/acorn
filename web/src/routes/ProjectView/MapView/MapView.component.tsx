@@ -1,21 +1,22 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useStore } from 'react-redux'
 
+import { ActionHashB64, CellIdString } from '../../../types/shared'
+import { RootState } from '../../../redux/reducer'
+import { coordsCanvasToPage } from '../../../drawing/coordinateSystems'
 import render from '../../../drawing'
 import setupEventListeners from '../../../event-listeners'
 import { setScreenDimensions } from '../../../redux/ephemeral/screensize/actions'
 
+import selectRenderProps from './selector'
+import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
 import ProjectEmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
 import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar.connector'
 import OutcomeConnectors from '../../../components/OutcomeConnectors/OutcomeConnectors.connector'
 import MapViewOutcomeTitleForm from '../../../components/MapViewOutcomeTitleForm/MapViewOutcomeTitleForm.connector'
-import './MapView.scss'
-import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
-import { ActionHashB64, CellIdString } from '../../../types/shared'
-import { RootState } from '../../../redux/reducer'
-import selectRenderProps from './selector'
 import Tooltip from '../../../components/Tooltip/Tooltip'
-import { coordsCanvasToPage } from '../../../drawing/coordinateSystems'
+
+import './MapView.scss'
 
 export type MapViewProps = {
   projectId: CellIdString
@@ -139,7 +140,7 @@ const MapView: React.FC<MapViewProps> = ({
         {outcomeFormIsOpen && <MapViewOutcomeTitleForm projectId={projectId} />}
       </div>
 
-      {/* below items inside 'outcome-connectors-container' maintain their normal scale */}
+      {/* below items inside 'mapview-elements-container' maintain their normal scale */}
       {/* while positioning themselves absolutely (position: absolute) on the screen */}
       {/* in coordinates that match with the outcomes being drawn on the canvas */}
       <div className="mapview-elements-container">
@@ -153,7 +154,6 @@ const MapView: React.FC<MapViewProps> = ({
             position: 'absolute',
             left: `${pageMouseCoords.x}px`,
             top: `${pageMouseCoords.y + 25}px`,
-            width: '10rem',
           }}
         >
           <Tooltip

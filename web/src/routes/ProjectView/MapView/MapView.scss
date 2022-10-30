@@ -37,6 +37,9 @@ canvas {
 }
 
 .outcome-statement-tooltip-visible {
+  // establishes a max width
+  width: 10rem;
+
   .tooltip-wrapper {
     visibility: visible;
   }
