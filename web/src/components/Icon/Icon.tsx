@@ -60,12 +60,7 @@ function Icon({
         }}
       ></div>
       {withTooltip && <Tooltip text={tooltipText} />}
-      {/* {withTooltip && <div className='tooltip-wrapper'>{`${tooltipText}`}</div>} */}
       {withTooltipTop && <Tooltip top text={tooltipText} />}
-
-      {/* {withTooltipTop && (
-        <div className='tooltip-wrapper top'>{`${tooltipText}`}</div>
-      )} */}
     </div>
   )
 }
