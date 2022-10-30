@@ -57,16 +57,25 @@ function mapStateToProps(
   }
 
   // people
-  // all project members, plus a bit of data about
+  // all project members, plus 'ghosts', plus a bit of data about
   // whether the person is an assignee on a specific outcome
   // or not
-  const members = state.projects.members[projectId] || {}
+  const projectMembers = state.projects.members[projectId] || {}
   const membersOfOutcome = Object.keys(outcomeMembers)
-    .map((address) => outcomeMembers[address])
+    .map((actionHash) => outcomeMembers[actionHash])
     .filter(
       (outcomeMember) => outcomeMember.outcomeActionHash === outcomeActionHash
     )
-  const people = Object.keys(members)
+  const allRelevantPeopleAddresses = Object.keys(projectMembers)
+  //handle ghosts by including them, they will only appear if they are 'assigned'
+  membersOfOutcome.forEach((memberOfOutcome) => {
+    if (
+      !allRelevantPeopleAddresses.includes(memberOfOutcome.memberAgentPubKey)
+    ) {
+      allRelevantPeopleAddresses.push(memberOfOutcome.memberAgentPubKey)
+    }
+  })
+  const people = allRelevantPeopleAddresses
     .map((address) => state.agents[address])
     // just in case we've received a 'member' before the agents profile
     // filter out any missing profiles for now
@@ -85,7 +94,7 @@ function mapStateToProps(
   function filterAndAddAgentInfo(agentInfo) {
     return {
       ...agentInfo,
-      profileInfo: state.agents[agentInfo.agentPubKey]
+      profileInfo: state.agents[agentInfo.agentPubKey],
     }
   }
   const editingPeers = Object.values(state.ui.realtimeInfo)
