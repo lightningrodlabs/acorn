@@ -475,7 +475,8 @@ export default function setupEventListeners(
           const zoom = Math.exp(wheel * zoomIntensity)
           const mouseX = event.clientX
           const mouseY = event.clientY
-          store.dispatch(changeScale(zoom, mouseX, mouseY))
+          const instant = true
+          store.dispatch(changeScale(zoom, mouseX, mouseY, instant))
         } else {
           // invert the pattern so that it uses new mac style
           // of panning

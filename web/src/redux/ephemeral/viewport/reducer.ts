@@ -11,7 +11,7 @@ const defaultState: ViewportState = {
     x: 0,
     y: 0,
   },
-  scale: 1,
+  scale: 0.5, // default zoom level
 }
 
 const LOWEST_ZOOM_THRESHOLD = 0.02

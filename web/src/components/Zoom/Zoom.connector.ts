@@ -1,21 +1,20 @@
 import { connect } from 'react-redux'
 import { changeScale } from '../../redux/ephemeral/viewport/actions'
 import { RootState } from '../../redux/reducer'
-import Zoom from './Zoom.component'
+import Zoom, { DispatchZoomProps, StateZoomProps } from './Zoom.component'
 
-
-function mapStateToProps (state: RootState) {
+function mapStateToProps(state: RootState): StateZoomProps {
   return {
     screensize: state.ui.screensize,
-    scale: state.ui.viewport.scale
+    scale: state.ui.viewport.scale,
   }
 }
 
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch: any): DispatchZoomProps {
   return {
-    zoom: (zoom, x, y) => {
-      return dispatch(changeScale(zoom, x, y))
-    }
+    zoom: (zoom, x, y, instant) => {
+      return dispatch(changeScale(zoom, x, y, instant))
+    },
   }
 }
 

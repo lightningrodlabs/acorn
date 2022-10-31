@@ -5,11 +5,13 @@
   that can be taken within that feature.
 */
 
+import { CellIdString } from '../../../types/shared'
+
 const SET_ACTIVE_PROJECT = 'SET_ACTIVE_PROJECT'
 
 /* action creator functions */
 
-const setActiveProject = projectId => {
+const setActiveProject = (projectId: CellIdString) => {
   return {
     type: SET_ACTIVE_PROJECT,
     payload: projectId,

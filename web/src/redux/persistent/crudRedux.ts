@@ -5,6 +5,8 @@ import {
   HcActionCreator,
   HdkCrudAction,
   ActionHashB64,
+  CellIdString,
+  WithActionHash,
 } from '../../types/shared'
 
 export function isCrud(
@@ -20,7 +22,11 @@ export function isCrud(
 }
 
 export function crudReducer<EntryType>(
-  state,
+  state: {
+    [cellId: CellIdString]: {
+      [actionHash: ActionHashB64]: WithActionHash<EntryType>
+    }
+  },
   action: HdkCrudAction<EntryType>,
   createAction: string,
   fetchAction: string,
@@ -107,42 +113,46 @@ export function createCrudActionCreators<EntryType>(
 
   const createAction: HcActionCreator<WireRecord<EntryType>> = (
     cellIdString,
-    payload
+    payload,
+    skipLayoutAnimation
   ) => {
     return {
       type: CREATE_ACTION,
       payload,
-      meta: { cellIdString },
+      meta: { cellIdString, skipLayoutAnimation },
     }
   }
   const fetchAction: HcActionCreator<Array<WireRecord<EntryType>>> = (
     cellIdString,
-    payload
+    payload,
+    skipLayoutAnimation
   ) => {
     return {
       type: FETCH_ACTION,
       payload,
-      meta: { cellIdString },
+      meta: { cellIdString, skipLayoutAnimation },
     }
   }
   const updateAction: HcActionCreator<WireRecord<EntryType>> = (
     cellIdString,
-    payload
+    payload,
+    skipLayoutAnimation
   ) => {
     return {
       type: UPDATE_ACTION,
       payload,
-      meta: { cellIdString },
+      meta: { cellIdString, skipLayoutAnimation },
     }
   }
   const deleteAction: HcActionCreator<ActionHashB64> = (
     cellIdString,
-    payload
+    payload,
+    skipLayoutAnimation
   ) => {
     return {
       type: DELETE_ACTION,
       payload,
-      meta: { cellIdString },
+      meta: { cellIdString, skipLayoutAnimation },
     }
   }
   return [

@@ -1,12 +1,24 @@
 import TWEEN from '@tweenjs/tween.js'
 import { CREATE_OUTCOME_WITH_CONNECTION } from '../../persistent/projects/outcomes/actions'
 import { updateLayout } from '../layout/actions'
-import layoutFormula from '../../../drawing/layoutFormula'
+import layoutFormula, { Layout } from '../../../drawing/layoutFormula'
 import { RootState } from '../../reducer'
 import { LAYOUT_ANIMATION_DURATION_MS } from '../../../constants'
 import { TreeData } from '../../persistent/projects/outcomes/outcomesAsTrees'
+import { ComputedOutcome } from '../../../types'
 
-export default function performLayoutAnimation(store, action, currentState) {
+// By default, this function performs an animated transition asynchronously
+// between the old state and the new state, in terms of layout.
+// However, if you pass `instant: true` it will perform it synchronously and
+// instantly without transition
+export default function performLayoutAnimation(
+  store: any,
+  action: {
+    type: string
+    payload?: { outcome?: ComputedOutcome; instant?: boolean }
+  },
+  currentState: RootState
+) {
   // called nextState because by now the
   // initial action has been integrated
   const nextState: RootState = store.getState()
@@ -15,14 +27,14 @@ export default function performLayoutAnimation(store, action, currentState) {
     outcomes: nextState.projects.outcomes[projectId] || {},
     connections: nextState.projects.connections[projectId] || {},
     outcomeMembers: nextState.projects.outcomeMembers[projectId] || {},
-    agents: nextState.agents
+    agents: nextState.agents,
   }
   const zoomLevel = nextState.ui.viewport.scale
   const projectTags = Object.values(nextState.projects.tags[projectId] || {})
   // this is our final destination layout
   // that we'll be animating to
   const newLayout = layoutFormula(graphData, zoomLevel, projectTags)
-  let outcomeCreatedCoord = {}
+  let outcomeCreatedCoord: Layout = {}
   // if creating an Outcome, we also want to animate
   // from the position wherever the user was creating it
   // to its new resting place in the new layout
@@ -35,6 +47,16 @@ export default function performLayoutAnimation(store, action, currentState) {
       y: currentState.ui.outcomeForm.topConnectionYPosition,
     }
   }
+
+  // just instantly update to the new layout without
+  // animating / transitioning between the current one and the new one
+  // if instructed to
+  if (typeof action.payload === 'object' && action.payload.instant) {
+    store.dispatch(updateLayout(newLayout))
+    return
+  }
+
+  // not instant, so continue and run an animated transition
 
   // this is expanding coordinates for Outcomes
   // where the key is their actionHash
@@ -68,15 +90,17 @@ export default function performLayoutAnimation(store, action, currentState) {
     .to(newLayout)
     // use this easing, adjust me to tune, see TWEEN.Easing for options
     .easing(TWEEN.Easing.Quadratic.InOut)
-    .duration(LAYOUT_ANIMATION_DURATION_MS) 
+    .duration(LAYOUT_ANIMATION_DURATION_MS)
     .start()
     // updatedLayout is the transitionary state between currentLayoutTween and newLayout
     .onUpdate((updatedLayout) => {
       // dispatch an update to the layout
       // which will trigger a repaint on the canvas
       // every time the animation loop fires an update
-      store.dispatch(updateLayout({
-        ...updatedLayout
-      }))
+      store.dispatch(
+        updateLayout({
+          ...updatedLayout,
+        })
+      )
     })
 }

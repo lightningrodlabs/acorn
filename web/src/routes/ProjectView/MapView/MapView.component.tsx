@@ -24,6 +24,7 @@ export type MapViewProps = {
   outcomeFormIsOpen: boolean
   hoveredOutcomeAddress: ActionHashB64 | null
   liveMouseCoordinates: { x: number; y: number }
+  mouseIsDown: boolean
   translate: {
     x: number
     y: number
@@ -40,6 +41,7 @@ const MapView: React.FC<MapViewProps> = ({
   outcomeFormIsOpen,
   hoveredOutcomeAddress,
   liveMouseCoordinates,
+  mouseIsDown,
   hasMultiSelection,
 }) => {
   const store = useStore()
@@ -127,7 +129,7 @@ const MapView: React.FC<MapViewProps> = ({
   return (
     <>
       {showEmptyState && <ProjectEmptyState />}
-      <canvas ref={refCanvas} />
+      <canvas ref={refCanvas} className={mouseIsDown ? 'grabbing' : ''} />
       {/* transform everything in this container according  */}
       {/* to the same scaling and tranlating as the canvas */}
       {/* is being scaled and translated, using css matrix transforms */}
@@ -144,6 +146,7 @@ const MapView: React.FC<MapViewProps> = ({
       {/* while positioning themselves absolutely (position: absolute) on the screen */}
       {/* in coordinates that match with the outcomes being drawn on the canvas */}
       <div className="mapview-elements-container">
+        {/* Outcome Statement Tooltip */}
         <div
           className={
             outcomeStatementTooltipVisible
@@ -163,6 +166,7 @@ const MapView: React.FC<MapViewProps> = ({
             text={outcomeStatementTooltipText}
           />
         </div>
+        {/* Outcome Connectors */}
         {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
         {refCanvas.current && zoomLevel >= 0.12 && (
           <OutcomeConnectors

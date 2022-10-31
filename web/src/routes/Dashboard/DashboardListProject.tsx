@@ -10,12 +10,7 @@ import { pickColorForString } from '../../styles'
 import ProjectSettingsModal from '../../components/ProjectSettingsModal/ProjectSettingsModal.connector'
 import { ENTRY_POINTS, GO_TO_OUTCOME } from '../../searchParams'
 import AvatarsList from '../../components/AvatarsList/AvatarsList'
-import {
-  AgentPubKeyB64,
-  CellIdString,
-  WithActionHash,
-} from '../../types/shared'
-import { ProjectMeta, Profile, EntryPoint, Outcome, ProjectAggregated } from '../../types'
+import { ProjectAggregated } from '../../types'
 
 function DashboardListProjectLoading() {
   return (
@@ -95,7 +90,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
         </NavLink>
         <div className="dashboard-list-project-content">
           <NavLink
-            to={`/project/${project.cellId}`}
+            to={`/project/${project.cellId}/map`}
             className={`dashboard-list-project-name`}
           >
             {project.name}

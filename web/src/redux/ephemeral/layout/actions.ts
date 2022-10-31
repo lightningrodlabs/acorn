@@ -6,9 +6,12 @@ const UPDATE_LAYOUT = 'update_layout'
 // this action makes no direct
 // difference to the reducer, it just triggers a reflow
 // of the layout
-function triggerUpdateLayout() {
+function triggerUpdateLayout(instant?: boolean) {
   return {
     type: TRIGGER_UPDATE_LAYOUT,
+    payload: {
+      instant,
+    },
   }
 }
 

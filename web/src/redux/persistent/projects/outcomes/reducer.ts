@@ -11,7 +11,7 @@ import {
 } from './actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 import { FETCH_ENTRY_POINT_DETAILS } from '../entry-points/actions'
-import { Action, CellIdString, ActionHashB64, Option, WithActionHash } from '../../../../types/shared'
+import { Action, CellIdString, ActionHashB64, WithActionHash } from '../../../../types/shared'
 import { CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyResponse, EntryPointDetails, Outcome, Scope, TimeFrame } from '../../../../types'
 import { WireRecord } from '../../../../api/hdkCrud'
 

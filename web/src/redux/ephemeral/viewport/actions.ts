@@ -5,8 +5,8 @@
   that can be taken within that feature.
 */
 
-import { ActionHashB64 } from "../../../types/shared"
-import { ViewportState } from "./state-type"
+import { ActionHashB64 } from '../../../types/shared'
+import { ViewportState } from './state-type'
 
 /* constants */
 const ANIMATE_PAN_AND_ZOOM = 'ANIMATE_PAN_AND_ZOOM' // triggers the middleware animate action
@@ -24,12 +24,18 @@ function resetTranslateAndScale() {
 }
 
 // TODO: this could accept a "Field of View" instead?
-function animatePanAndZoom(outcomeActionHash: ActionHashB64, adjustScale: boolean) {
+function animatePanAndZoom(
+  outcomeActionHash: ActionHashB64,
+  adjustScale: boolean,
+  // if true, instead of an animated transition, perform the change instantly
+  instant?: boolean
+) {
   return {
     type: ANIMATE_PAN_AND_ZOOM,
     payload: {
       outcomeActionHash,
-      adjustScale
+      adjustScale,
+      instant,
     },
   }
 }
@@ -44,13 +50,14 @@ function changeTranslate(x: number, y: number) {
   }
 }
 
-function changeScale(zoom: number, mouseX: number, mouseY: number) {
+function changeScale(zoom: number, mouseX: number, mouseY: number, instant?: boolean) {
   return {
     type: CHANGE_SCALE,
     payload: {
       zoom,
       mouseX,
       mouseY,
+      instant
     },
   }
 }
