@@ -1,8 +1,5 @@
 import * as flextree from 'd3-flextree'
 import { getOutcomeWidth, getOutcomeHeight } from './dimensions'
-import outcomesAsTrees, {
-  TreeData,
-} from '../redux/persistent/projects/outcomes/outcomesAsTrees'
 import { ComputedOutcome, Tag } from '../types'
 import { ActionHashB64, WithActionHash } from '../types/shared'
 import { ProjectComputedOutcomes } from '../context/ComputedOutcomeContext'

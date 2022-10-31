@@ -11,7 +11,7 @@ export type TooltipProps = {
   top?: boolean
   noTriangle?: boolean
   allowWrapping?: boolean
-  noDelay?: boolean
+  noTransition?: boolean
 }
 
 const Tooltip: React.FC<TooltipProps> = ({
@@ -19,13 +19,13 @@ const Tooltip: React.FC<TooltipProps> = ({
   top,
   noTriangle,
   allowWrapping,
-  noDelay,
+  noTransition,
 }) => {
   return (
     <div
       className={`tooltip-wrapper ${top ? 'top' : ''} ${
         allowWrapping ? 'allow-wrapping' : ''
-      } ${noDelay ? '' : 'with-delay'}`}
+      } ${noTransition ? '' : 'with-transition'}`}
     >
       {!top && !noTriangle && (
         <img className="tooltip-triangle-on-top" src={TooltipTriangleOnTop} />

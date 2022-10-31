@@ -39,6 +39,8 @@
   &:hover {
     .tooltip-wrapper {
       visibility: visible;
+      transition-delay: 0.9s;
+      transition-property: visibility;
     }
   }
 

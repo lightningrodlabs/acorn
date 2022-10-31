@@ -4,6 +4,7 @@ import layoutFormula from '../../../drawing/layoutFormula'
 import { ActionHashB64 } from '../../../types/shared'
 import { RootState } from '../../reducer'
 import { updateLayout } from '../layout/actions'
+import { selectOutcome, unselectAll } from '../selection/actions'
 import { changeAllDirect } from '../viewport/actions'
 import { getTreesForState } from './get-trees-for-state'
 
@@ -64,6 +65,10 @@ export default function panZoomToFrame(
   // we should start out by updating the layout to the layout it would be
   // at the destination zoomLevel
   store.dispatch(updateLayout(newLayout))
+  // we should also deselect all other Outcomes, and select the one
+  // we are panning and zooming to
+  store.dispatch(unselectAll())
+  store.dispatch(selectOutcome(outcomeActionHash))
 
   const { width, height } = currentState.ui.screensize
   const dpr = window.devicePixelRatio || 1

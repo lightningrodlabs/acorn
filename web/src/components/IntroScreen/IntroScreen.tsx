@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import PropTypes from 'prop-types'
 
 import './IntroScreen.scss'
 
@@ -89,7 +88,7 @@ export default function IntroScreen() {
                 {/* Intro Screen Text */}
                 <div className='intro-screen-text'>
                   <Typography style='h1'>{screen.title}</Typography>
-                  <Typography style='p'>{screen.description}</Typography>
+                  <Typography style='body1'>{screen.description}</Typography>
                 </div>
 
                 {/* Intro Screen Image */}
@@ -108,7 +107,7 @@ export default function IntroScreen() {
                 name='chevron-left.svg'
                 className='light-grey'
                 onClick={goBack}
-                text={'back'}
+                tooltipText={'back'}
               />
             </div>
           )}
@@ -118,7 +117,7 @@ export default function IntroScreen() {
                 name='chevron-right.svg'
                 className='light-grey'
                 onClick={goForward}
-                text={'next'}
+                tooltipText={'next'}
               />
             </div>
           )}

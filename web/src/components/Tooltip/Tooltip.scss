@@ -9,14 +9,12 @@
   display: flex;
   flex-direction: column;
   z-index: 9999;
-  
+
   // this is the default
-  &.with-delay {
-    transition-delay: 0.9s;
-    transition-property: visibility;
+  &.with-transition {
     transition: 0.3s all ease;
   }
-  
+
   &.allow-wrapping {
     white-space: normal;
     width: 100%;

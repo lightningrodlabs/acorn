@@ -181,8 +181,6 @@ export default function setupEventListeners(
             // select and pan and zoom to
             // the parent
             store.dispatch(animatePanAndZoom(childActionHash, false))
-            store.dispatch(unselectAll())
-            store.dispatch(selectOutcome(childActionHash))
           }
         }
         break
@@ -200,8 +198,6 @@ export default function setupEventListeners(
             // select and pan and zoom to
             // the parent
             store.dispatch(animatePanAndZoom(parentActionHash, false))
-            store.dispatch(unselectAll())
-            store.dispatch(selectOutcome(parentActionHash))
           }
         }
         break
@@ -223,8 +219,6 @@ export default function setupEventListeners(
             // select and pan and zoom to
             // the parent
             store.dispatch(animatePanAndZoom(targetActionHash, false))
-            store.dispatch(unselectAll())
-            store.dispatch(selectOutcome(targetActionHash))
           }
         }
         break
@@ -246,8 +240,6 @@ export default function setupEventListeners(
             // select and pan and zoom to
             // the parent
             store.dispatch(animatePanAndZoom(targetActionHash, false))
-            store.dispatch(unselectAll())
-            store.dispatch(selectOutcome(targetActionHash))
           }
         }
         break

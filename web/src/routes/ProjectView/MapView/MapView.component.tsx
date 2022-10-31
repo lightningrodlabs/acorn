@@ -160,7 +160,7 @@ const MapView: React.FC<MapViewProps> = ({
           }}
         >
           <Tooltip
-            noDelay
+            noTransition
             noTriangle
             allowWrapping
             text={outcomeStatementTooltipText}
