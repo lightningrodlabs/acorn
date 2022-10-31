@@ -1,9 +1,11 @@
 import TWEEN from '@tweenjs/tween.js'
 import { getOutcomeHeight, getOutcomeWidth } from '../../../drawing/dimensions'
+import layoutFormula from '../../../drawing/layoutFormula'
 import { ActionHashB64 } from '../../../types/shared'
-import outcomesAsTrees from '../../persistent/projects/outcomes/outcomesAsTrees'
 import { RootState } from '../../reducer'
+import { updateLayout } from '../layout/actions'
 import { changeAllDirect } from '../viewport/actions'
+import { getTreesForState } from './get-trees-for-state'
 
 export default function panZoomToFrame(
   store: any,
@@ -18,22 +20,25 @@ export default function panZoomToFrame(
 ) {
   let { outcomeActionHash, adjustScale } = action.payload
 
+  // Destination viewport
+  // is to center the outcome
+  // we can also adjust the scale back to a default value, or not,
+  // depending on the 'action.adjustScale' value
+  // 0.7 is a good choice here because the text should be visible
+  const defaultScaleForPanAndZoom = 0.7
+  const zoomLevel = adjustScale
+    ? defaultScaleForPanAndZoom
+    : currentState.ui.viewport.scale
+
   const { activeProject } = currentState.ui
-  const treeData = {
-    agents: currentState.agents,
-    outcomes:
-      currentState.projects.outcomes[currentState.ui.activeProject] || {},
-    connections:
-      currentState.projects.connections[currentState.ui.activeProject] || {},
-    outcomeMembers:
-      currentState.projects.outcomeMembers[currentState.ui.activeProject] || {},
-    outcomeVotes: {},
-    outcomeComments: {},
-  }
-  const outcomeTrees = outcomesAsTrees(treeData, { withMembers: true })
+  const outcomeTrees = getTreesForState(currentState)
   const projectTags = Object.values(
     currentState.projects.tags[activeProject] || {}
   )
+  // this is our final destination layout
+  // that we'll be animating to
+  // use the target zoomLevel
+  const newLayout = layoutFormula(outcomeTrees, zoomLevel, projectTags)
 
   // this accounts for a special case where the caller doesn't
   // provide the intended Outcome ActionHash, but instead expects this
@@ -45,44 +50,48 @@ export default function panZoomToFrame(
   }
 
   const outcome = outcomeTrees.computedOutcomesKeyed[outcomeActionHash]
-  const outcomeCoordinates = currentState.ui.layout[outcomeActionHash]
+  // important, for the outcomeCoordinates we should
+  // definitely choose them from the new intended layout,
+  // not the existing one
+  const outcomeCoordinates = newLayout[outcomeActionHash]
 
   if (!outcomeCoordinates) {
     console.log('could not find coordinates for outcome to animate to')
     return
   }
+
+  // since we will be transitioning the viewport, which changes the zoom
+  // we should start out by updating the layout to the layout it would be
+  // at the destination zoomLevel
+  store.dispatch(updateLayout(newLayout))
+
   const { width, height } = currentState.ui.screensize
   const dpr = window.devicePixelRatio || 1
   const halfScreenWidth = width / (2 * dpr)
   const halfScreenHeight = height / (2 * dpr)
 
-  // Destination viewport
-  // is to center the outcome
-  // we can also adjust the scale back to 1, or not,
-  // depending on the 'action.adjustScale' value
-  const scale = adjustScale ? 1 : currentState.ui.viewport.scale
   const outcomeWidth = getOutcomeWidth({
     outcome,
-    zoomLevel: scale, // use the target scale
+    zoomLevel, // use the target scale
   })
   const outcomeHeight = getOutcomeHeight({
     outcome,
     projectTags,
-    zoomLevel: scale, // use the target scale
+    zoomLevel, // use the target scale
     width: outcomeWidth,
     useLineLimit: true,
   })
-  const newLayout = {
-    scale,
+  const newViewport = {
+    scale: zoomLevel,
     translate: {
       x:
-        -1 * (outcomeCoordinates.x * scale) +
+        -1 * (outcomeCoordinates.x * zoomLevel) +
         halfScreenWidth -
-        (outcomeWidth / 2) * scale,
+        (outcomeWidth / 2) * zoomLevel,
       y:
-        -1 * (outcomeCoordinates.y * scale) +
+        -1 * (outcomeCoordinates.y * zoomLevel) +
         halfScreenHeight -
-        (outcomeHeight / 2) * scale,
+        (outcomeHeight / 2) * zoomLevel,
     },
   }
 
@@ -90,24 +99,24 @@ export default function panZoomToFrame(
   // animating / transitioning between the current one and the new one
   // if instructed to
   if (typeof action.payload === 'object' && action.payload.instant) {
-    store.dispatch(changeAllDirect(newLayout))
+    store.dispatch(changeAllDirect(newViewport))
     return
   }
 
   // not instant, so continue and run an animated transition
-  const currentLayoutTween = {
+  const currentViewportTween = {
     ...currentState.ui.viewport,
   }
 
-  new TWEEN.Tween(currentLayoutTween)
-    .to(newLayout)
+  new TWEEN.Tween(currentViewportTween)
+    .to(newViewport)
     // use this easing, adjust me to tune, see TWEEN.Easing for options
     .easing(TWEEN.Easing.Quadratic.InOut)
     .duration(1000) // last 1000 milliseconds, adjust me to tune
     .start()
-    // updatedLayout is the transitionary state between currentLayoutTween and newLayout
+    // updatedViewport is the transitionary state between currentViewportTween and newViewport
     .onUpdate((updated) => {
-      // dispatch an update to the layout
+      // dispatch an update to the viewport
       // which will trigger a repaint on the canvas
       // every time the animation loop fires an update
       store.dispatch(changeAllDirect(updated))

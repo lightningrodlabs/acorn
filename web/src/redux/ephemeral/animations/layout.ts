@@ -4,8 +4,8 @@ import { updateLayout } from '../layout/actions'
 import layoutFormula, { Layout } from '../../../drawing/layoutFormula'
 import { RootState } from '../../reducer'
 import { LAYOUT_ANIMATION_DURATION_MS } from '../../../constants'
-import { TreeData } from '../../persistent/projects/outcomes/outcomesAsTrees'
 import { ComputedOutcome } from '../../../types'
+import { getTreesForState } from './get-trees-for-state'
 
 // By default, this function performs an animated transition asynchronously
 // between the old state and the new state, in terms of layout.
@@ -22,31 +22,13 @@ export default function performLayoutAnimation(
   // called nextState because by now the
   // initial action has been integrated
   const nextState: RootState = store.getState()
-  const projectId = nextState.ui.activeProject
-  const graphData: TreeData = {
-    outcomes: nextState.projects.outcomes[projectId] || {},
-    connections: nextState.projects.connections[projectId] || {},
-    outcomeMembers: nextState.projects.outcomeMembers[projectId] || {},
-    agents: nextState.agents,
-  }
+  const computedOutcomeTrees = getTreesForState(nextState)
   const zoomLevel = nextState.ui.viewport.scale
+  const projectId = nextState.ui.activeProject
   const projectTags = Object.values(nextState.projects.tags[projectId] || {})
   // this is our final destination layout
   // that we'll be animating to
-  const newLayout = layoutFormula(graphData, zoomLevel, projectTags)
-  let outcomeCreatedCoord: Layout = {}
-  // if creating an Outcome, we also want to animate
-  // from the position wherever the user was creating it
-  // to its new resting place in the new layout
-  if (action.type === CREATE_OUTCOME_WITH_CONNECTION) {
-    // at this point we have the actionHash of the new Outcome
-    // and we also have the coordinates where the "Outcome Form"
-    // was open and being used
-    outcomeCreatedCoord[action.payload.outcome.actionHash] = {
-      x: currentState.ui.outcomeForm.leftConnectionXPosition,
-      y: currentState.ui.outcomeForm.topConnectionYPosition,
-    }
-  }
+  const newLayout = layoutFormula(computedOutcomeTrees, zoomLevel, projectTags)
 
   // just instantly update to the new layout without
   // animating / transitioning between the current one and the new one
@@ -57,6 +39,20 @@ export default function performLayoutAnimation(
   }
 
   // not instant, so continue and run an animated transition
+
+  // if creating an Outcome, we also want to animate
+  // from the position wherever the user was creating it
+  // to its new resting place in the new layout
+  let outcomeCreatedCoord: Layout = {}
+  if (action.type === CREATE_OUTCOME_WITH_CONNECTION) {
+    // at this point we have the actionHash of the new Outcome
+    // and we also have the coordinates where the "Outcome Form"
+    // was open and being used
+    outcomeCreatedCoord[action.payload.outcome.actionHash] = {
+      x: currentState.ui.outcomeForm.leftConnectionXPosition,
+      y: currentState.ui.outcomeForm.topConnectionYPosition,
+    }
+  }
 
   // this is expanding coordinates for Outcomes
   // where the key is their actionHash

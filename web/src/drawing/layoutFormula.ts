@@ -5,6 +5,7 @@ import outcomesAsTrees, {
 } from '../redux/persistent/projects/outcomes/outcomesAsTrees'
 import { ComputedOutcome, Tag } from '../types'
 import { ActionHashB64, WithActionHash } from '../types/shared'
+import { ProjectComputedOutcomes } from '../context/ComputedOutcomeContext'
 
 const fl = flextree.flextree
 
@@ -127,11 +128,10 @@ function layoutForTree(
 }
 
 export default function layoutFormula(
-  data: TreeData,
+  trees: ProjectComputedOutcomes,
   zoomLevel: number,
   projectTags: WithActionHash<Tag>[]
 ): Layout {
-  const trees = outcomesAsTrees(data, { withMembers: true })
 
   let coordinates = {}
   // just do this for efficiency, it's not going to
