@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './OutcomeConnectors.scss'
 import {
-  outcomeWidth,
+  getOutcomeWidth,
   getOutcomeHeight,
   CONNECTOR_VERTICAL_SPACING,
 } from '../../drawing/dimensions'
@@ -57,6 +57,7 @@ const OutcomeConnector = ({
   dispatch,
 }) => {
   const ctx = canvas.getContext('2d')
+  const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel })
   const outcomeHeight = getOutcomeHeight({
     ctx,
     outcome,
@@ -209,7 +210,7 @@ const OutcomeConnectors = ({
     )
     return (
       <div key={connectorAddress}>
-        {outcomeCoordinates && (
+        {outcome && outcomeCoordinates && (
           <OutcomeConnector
             activeProject={activeProject}
             projectTags={projectTags}

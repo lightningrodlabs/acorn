@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
 
 import './ProfileEditForm.scss'
 import Button from '../Button/Button'
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import Avatar from '../Avatar/Avatar'
-import Icon from '../Icon/Icon'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
 import Typography from '../Typography/Typography'
 
@@ -96,13 +94,6 @@ function ProfileEditForm({
       pendingText={pendingText}
       actionText={submitText}
     />
-  )
-
-  console.log(
-    isValidFirstName,
-    isValidLastName,
-    isValidUserName,
-    isValidAvatarUrl
   )
 
   return (

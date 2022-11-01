@@ -1,8 +1,6 @@
 import _ from 'lodash'
 
 import {
-  PREVIEW_CONNECTIONS,
-  CLEAR_CONNECTIONS_PREVIEW,
   CREATE_CONNECTION,
   FETCH_CONNECTIONS,
   UPDATE_CONNECTION,
@@ -10,20 +8,17 @@ import {
 } from './actions'
 import { CREATE_OUTCOME_WITH_CONNECTION, DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { CellIdString, ActionHashB64 } from '../../../../types/shared'
+import { CellIdString, WithActionHash } from '../../../../types/shared'
 import { Connection, CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyResponse } from '../../../../types'
 
 export type ProjectConnectionsState = {
-  [actionHashOrPreviewId: string]: Connection & {
-    actionHash?: ActionHashB64 
-  }
+  [actionHash: string]: WithActionHash<Connection>
 }
 
 export type ConnectionsState = { 
   [cellId: CellIdString]: ProjectConnectionsState
 }
 const defaultState: ConnectionsState = {}
-const PREVIEW_KEY_STRING = 'preview'
 
 export default function (state: ConnectionsState = defaultState, action): ConnectionsState {
   // start out by checking whether this a standard CRUD operation
@@ -43,30 +38,6 @@ export default function (state: ConnectionsState = defaultState, action): Connec
 
   // handle additional cases
   switch (type) {
-    case PREVIEW_CONNECTIONS:
-      cellId = payload.cellId
-      const previews = {}
-      const connections = payload.connections as Array<Connection>
-      connections.forEach(connection => {
-        const rand = Math.random()
-        previews[`${PREVIEW_KEY_STRING}${rand}`] = connection
-      })
-      return {
-        ...state,
-        [cellId]: {
-          ...state[cellId],
-          ...previews,
-        },
-      }
-    case CLEAR_CONNECTIONS_PREVIEW:
-      cellId = payload.cellId as CellIdString
-      return {
-        ...state,
-        [cellId]: _.pickBy(
-          state[cellId],
-          (value, key) => !key.startsWith(PREVIEW_KEY_STRING)
-        ),
-      }
     // CREATE OUTCOME WITH CONNECTION
     case CREATE_OUTCOME_WITH_CONNECTION:
       const createOutcomeWithConnection = payload as CreateOutcomeWithConnectionOutput

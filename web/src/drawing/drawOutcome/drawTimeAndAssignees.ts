@@ -19,6 +19,9 @@ const drawAssignees = ({
   avatarFontFamily,
   avatarFontSizeRem,
   ctx,
+  assigneesPlaceholder,
+  placeholderWidth,
+  placeholderColor,
 }: {
   onlyMeasure: boolean
   members: Profile[]
@@ -30,6 +33,9 @@ const drawAssignees = ({
   avatarSpace: number
   avatarFontSizeRem: number
   avatarFontFamily: string
+  assigneesPlaceholder: boolean
+  placeholderWidth: number
+  placeholderColor: string
   ctx: CanvasRenderingContext2D
 }) => {
   if (members.length === 0) {
@@ -38,7 +44,7 @@ const drawAssignees = ({
 
   // don't draw in cases where we're just trying to determine
   // what the height of this will be
-  if (!onlyMeasure) {
+  if (!assigneesPlaceholder && !onlyMeasure) {
     draw(ctx, () => {
       // draw members avatars
       members.forEach((member, index) => {
@@ -64,6 +70,14 @@ const drawAssignees = ({
         })
       })
     })
+  } else if (assigneesPlaceholder && !onlyMeasure) {
+    ctx.fillStyle = placeholderColor
+    ctx.fillRect(
+      xRightPosition - placeholderWidth,
+      yPosition,
+      placeholderWidth,
+      avatarSize
+    )
   }
   return avatarSize
 }
@@ -82,6 +96,8 @@ const drawTime = ({
   color,
   fontSizeRem,
   fontFamily,
+  timePlaceholder,
+  placeholderColor,
   ctx,
 }: {
   onlyMeasure: boolean
@@ -93,6 +109,8 @@ const drawTime = ({
   color: string
   fontSizeRem: number
   fontFamily: string
+  timePlaceholder: boolean
+  placeholderColor: string
   ctx: CanvasRenderingContext2D
 }) => {
   let height: number = 0
@@ -127,8 +145,11 @@ const drawTime = ({
       const drawAtY = yPosition + 6
       // don't draw in cases where we're just trying to determine
       // what the height of this will be
-      if (!onlyMeasure) {
+      if (!timePlaceholder && !onlyMeasure) {
         ctx.fillText(text, xPosition, drawAtY)
+      } else if (timePlaceholder && !onlyMeasure) {
+        ctx.fillStyle = placeholderColor
+        ctx.fillRect(xPosition, drawAtY, 100, 12)
       }
     })
   }
@@ -142,6 +163,7 @@ const drawTime = ({
 
 const drawTimeAndAssignees = ({
   onlyMeasure,
+  skipRender,
   // assignees
   members,
   assigneesXRightPosition,
@@ -160,9 +182,13 @@ const drawTimeAndAssignees = ({
   timeTextColor,
   timeFontSizeRem,
   timeFontFamily,
+  timeAndAssigneesPlaceholder,
+  timeAndAssigneesPlaceholderColor,
+  maxWidth,
   ctx,
 }: {
   onlyMeasure: boolean
+  skipRender: boolean
   // assignees
   members: Profile[]
   assigneesXRightPosition: number
@@ -181,8 +207,14 @@ const drawTimeAndAssignees = ({
   timeTextColor: string
   timeFontSizeRem: number
   timeFontFamily: string
+  timeAndAssigneesPlaceholder: boolean
+  timeAndAssigneesPlaceholderColor: string
+  maxWidth: number
   ctx: CanvasRenderingContext2D
 }): number => {
+  // early exit with no rendering, in the case of skipRender
+  if (skipRender) return 0
+
   let assigneesHeight: number = 0
   let timeHeight: number = 0
   draw(ctx, () => {
@@ -198,6 +230,9 @@ const drawTimeAndAssignees = ({
       avatarFontFamily,
       avatarInitialsTextColor,
       avatarStrokeColor,
+      assigneesPlaceholder: timeAndAssigneesPlaceholder,
+      placeholderWidth: maxWidth / 4,
+      placeholderColor: timeAndAssigneesPlaceholderColor,
     })
     timeHeight = drawTime({
       onlyMeasure,
@@ -209,6 +244,8 @@ const drawTimeAndAssignees = ({
       fontFamily: timeFontFamily,
       fontSizeRem: timeFontSizeRem,
       color: timeTextColor,
+      timePlaceholder: timeAndAssigneesPlaceholder,
+      placeholderColor: timeAndAssigneesPlaceholderColor,
     })
   })
   // take whichever height is greater

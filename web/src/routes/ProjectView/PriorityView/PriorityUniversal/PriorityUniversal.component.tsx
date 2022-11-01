@@ -279,7 +279,6 @@ export type PriorityUniversalProps = {
   projectMeta: WithActionHash<ProjectMeta>
   projectTags: WithActionHash<Tag>[]
   presentMembers: AgentPubKeyB64[]
-  outcomes: ComputedOutcome[]
   updateProjectMeta: (
     projectMeta: ProjectMeta,
     actionHash: ActionHashB64,
@@ -412,7 +411,7 @@ const PriorityUniversal: React.FC<PriorityUniversalProps> = ({
               You haven't marked any Outcomes as High Priority.
               <br />
               <a
-                href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/high-priority-outcomes"
+                href="https://docs.acorn.software/outcomes/high-priority-outcomes"
                 target="_blank"
               >
                 Learn how to start prioritizing.

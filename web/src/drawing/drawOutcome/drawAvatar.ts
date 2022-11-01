@@ -51,7 +51,7 @@ const drawAvatar = ({
         // if avatar belongs to an imported project and not connected an active memeber
         if (member.isImported) {
           // set an opacity
-          ctx.globalAlpha = 0.5
+          ctx.globalAlpha = 0.3
         }
         ctx.closePath()
         ctx.fill()

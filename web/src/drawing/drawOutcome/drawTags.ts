@@ -4,6 +4,7 @@ import drawRoundCornerRectangle from '../drawRoundCornerRectangle'
 
 const drawTags = ({
   onlyMeasure,
+  skipRender,
   tagVerticalSpaceBetween,
   tagHorizontalSpaceBetween,
   tagHorizontalPadding,
@@ -17,8 +18,10 @@ const drawTags = ({
   yPosition,
   maxWidth,
   ctx,
+  tagPlaceholder,
 }: {
   onlyMeasure: boolean
+  skipRender: boolean
   tagVerticalSpaceBetween: number
   tagHorizontalSpaceBetween: number
   tagHorizontalPadding: number
@@ -32,10 +35,12 @@ const drawTags = ({
   yPosition: number
   maxWidth: number
   ctx: CanvasRenderingContext2D
+  tagPlaceholder: boolean
 }): number => {
   // because the height of this is dynamic
   // we equip it to return the height to the caller
-  if (tags.length === 0) {
+
+  if (tags.length === 0 || skipRender) {
     return 0 // height
   }
 
@@ -85,7 +90,7 @@ const drawTags = ({
           ctx,
           xPosition: currentX,
           yPosition: currentY,
-          width,
+          width: Math.min(maxWidth, width),
           height,
           radius: cornerRadius,
           color: tag.backgroundColor,
@@ -94,11 +99,17 @@ const drawTags = ({
           useBoxShadow: false,
           useGlow: false,
         })
-        ctx.fillText(
-          tag.text,
-          currentX + tagHorizontalPadding,
-          currentY + tagVerticalPadding
-        )
+        // don't render the text if instructed to be in 
+        // 'placeholder mode'
+        // it will only render the background, which looks
+        // fine when zoomed out, as opposed to text
+        if (!tagPlaceholder) {
+          ctx.fillText(
+            tag.text,
+            currentX + tagHorizontalPadding,
+            currentY + tagVerticalPadding
+          )
+        }
       }
       currentX += widthPlusHorizontalSpace
     })

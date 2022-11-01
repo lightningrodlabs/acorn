@@ -1,10 +1,15 @@
 import React, { useEffect } from 'react'
-import { CSSTransition } from 'react-transition-group'
 import './OutcomeConnectorPicker.scss'
-import { Select, Option, useSelect } from '../Select/Select'
+import {
+  Select,
+  Option,
+  useSingleSelect,
+  useMultiSelect,
+} from '../Select/Select'
 import { calculateValidChildren } from '../../tree-logic'
 import Modal, { ModalContent } from '../Modal/Modal'
 import Typography from '../Typography/Typography'
+import { ActionHashB64 } from '../../types/shared'
 
 export default function OutcomeConnectorPicker({
   active,
@@ -12,32 +17,24 @@ export default function OutcomeConnectorPicker({
   selectedOutcomes,
   connections,
   activeProject,
-  previewConnections,
   saveConnections,
-  clearPreview,
 }) {
-  const isOpen = true
-
   // single select
-  const [parentActionHash, toggleParent, resetParent] = useSelect()
+  const [
+    parentActionHash,
+    toggleParent,
+    resetParent,
+  ] = useSingleSelect<ActionHashB64>()
   // multi select
-  const [childrenAddresses, toggleChild, resetChildren] = useSelect(true)
-
-  // on unmount
-  useEffect(() => {
-    return () => {
-      clearPreview(activeProject)
-    }
-  }, [])
+  const [
+    childrenAddresses,
+    toggleChild,
+    resetChildren,
+  ] = useMultiSelect<ActionHashB64>()
 
   useEffect(() => {
     resetChildren()
-    clearPreview(activeProject)
   }, [parentActionHash])
-
-  useEffect(() => {
-    clearPreview(activeProject)
-  }, [JSON.stringify(childrenAddresses)])
 
   const validChildrenAddresses = parentActionHash
     ? calculateValidChildren(
@@ -47,11 +44,6 @@ export default function OutcomeConnectorPicker({
       )
     : []
 
-  const preview = () => {
-    if (!parentActionHash || !childrenAddresses.length) return
-    previewConnections(parentActionHash, childrenAddresses, activeProject)
-  }
-
   const save = async () => {
     if (!parentActionHash || !childrenAddresses.length) return
     try {
@@ -60,13 +52,12 @@ export default function OutcomeConnectorPicker({
     } catch (e) {
       console.log(e)
     }
-    clearPreview(activeProject)
   }
 
   const outcomeConnectorModalContent = (
     <div className="outcome-connector-content">
       <div className="outcome-connector-modal-subheading">
-        <Typography style="p">
+        <Typography style="body1">
           {' '}
           Choose a selected Outcome to become a Parent of the other selected
           Outcomes, if they don't already have a Parent yet.

@@ -8,7 +8,7 @@ import ProgressIndicator, {
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'Example/ProgressIndicator',
+  title: 'Progress/ProgressIndicator',
   component: ProgressIndicator,
 } as ComponentMeta<typeof ProgressIndicator>
 

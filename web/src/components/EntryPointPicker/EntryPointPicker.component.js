@@ -147,7 +147,7 @@ export default function EntryPointPicker({
               <span>
                 You currently have no entry points for this project.{' '}
                 <a
-                  href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/entry-point-outcomes"
+                  href="https://docs.acorn.software/outcomes/entry-point-outcomes"
                   target="_blank"
                   onClick={onClose}
                   className="entry-points-empty-state-content-link"

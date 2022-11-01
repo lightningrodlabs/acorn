@@ -1,10 +1,8 @@
 import { TAGS_TAG_FONT_COLOR } from '../../../styles'
-import { ComputedOutcome, Tag } from '../../../types'
+import { ComputedOutcome, ComputedScope, Tag } from '../../../types'
 import { WithActionHash } from '../../../types/shared'
 import {
-  DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT,
   outcomePaddingHorizontal,
-  OUTCOME_VERTICAL_SPACE_BETWEEN,
   TAGS_SPACE_BETWEEN,
   TAGS_TAG_CORNER_RADIUS,
   TAGS_TAG_FONT_FAMILY,
@@ -20,17 +18,19 @@ export const argsForDrawTags = ({
   outcomeLeftX,
   outcomeTopY,
   outcomeWidth,
-  heightOfStatement,
+  topOffsetY,
   projectTags,
+  zoomLevel,
   ctx,
 }: {
   onlyMeasure?: boolean
   outcome: ComputedOutcome
   outcomeLeftX: number
   outcomeTopY: number
+  topOffsetY: number
   outcomeWidth: number
-  heightOfStatement: number
   projectTags: WithActionHash<Tag>[]
+  zoomLevel: number
   ctx: CanvasRenderingContext2D
 }): Parameters<typeof drawTags>[0] => {
   // turn the actionHash array of tags into
@@ -44,15 +44,21 @@ export const argsForDrawTags = ({
     // filter out tags which have not yet loaded, or are otherwise missing
     .filter((t) => t)
   const xPosition = outcomeLeftX + outcomePaddingHorizontal
-  const yPosition =
-    outcomeTopY +
-    OUTCOME_VERTICAL_SPACE_BETWEEN * 3 +
-    heightOfStatement +
-    DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT
+  const yPosition = outcomeTopY + topOffsetY
   const maxWidth = outcomeWidth - 2 * outcomePaddingHorizontal
+
+  // text size becomes unreadable around this zoom level
+  const tagPlaceholder = outcome
+    ? zoomLevel < 0.5
+    : false
+
+  const skipRender = outcome
+    ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.3
+    : false
 
   const args: Parameters<typeof drawTags>[0] = {
     onlyMeasure,
+    skipRender,
     ctx,
     tagVerticalSpaceBetween: TAGS_SPACE_BETWEEN,
     tagHorizontalSpaceBetween: TAGS_SPACE_BETWEEN,
@@ -66,6 +72,7 @@ export const argsForDrawTags = ({
     xPosition,
     yPosition,
     maxWidth,
+    tagPlaceholder,
   }
   return args
 }

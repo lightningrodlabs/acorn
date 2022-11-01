@@ -61,7 +61,13 @@ const testSmallAchievedOutcome: ComputedOutcome = {
   scope: {
     Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] },
   },
-  tags: [testTag1ActionHash],
+  tags: [
+    testTag1ActionHash,
+    testTag2ActionHash,
+    testTag3ActionHash,
+    testTag4ActionHash,
+    testTag5ActionHash,
+  ],
   description:
     'Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions.',
   githubLink: '',
@@ -75,6 +81,7 @@ const testSmallAchievedOutcome: ComputedOutcome = {
     tasksTotal: 0,
     simple: ComputedSimpleAchievementStatus.Achieved,
   },
+  members: [testProfile, testProfile, testProfile, testProfile],
   children: [],
 }
 

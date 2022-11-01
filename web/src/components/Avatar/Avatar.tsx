@@ -37,8 +37,13 @@ function Avatar({
   withStatusBorder,
   selfAssignedStatus,
   withTooltip,
-  // tooltipText,
-}: AvatarProps) {
+}: // tooltipText,
+AvatarProps) {
+
+  // If it is imported avatar of a ghost member
+  // don't show status circle
+  if (imported) withStatus = false
+
   let classes = []
   // Avatar optional properties
   if (highlighted) classes.push('highlighted')
@@ -60,6 +65,7 @@ function Avatar({
     return (
       <div
         className={`avatar-wrapper 
+        ${imported ? 'imported' : ''} 
         ${withWhiteBorder ? 'with-border white' : ''} 
         ${
           withStatusBorder
@@ -92,7 +98,13 @@ function Avatar({
             ></div>
           </div>
         )}
-        {withTooltip && <Tooltip text={`${firstName} ${lastName}`} />}
+        {withTooltip && (
+          <Tooltip
+            text={`${firstName} ${lastName} ${
+              imported ? '[ghost member]' : ''
+            }`}
+          />
+        )}
       </div>
     )
   }
@@ -102,6 +114,7 @@ function Avatar({
   return (
     <div
       className={`avatar-wrapper 
+      ${imported ? 'imported' : ''} 
       ${withWhiteBorder ? 'with-border white' : ''} 
       ${
         withStatusBorder
@@ -131,7 +144,11 @@ function Avatar({
           ></div>
         </div>
       )}
-      {withTooltip && <Tooltip text={`${firstName} ${lastName}`} />}
+      {withTooltip && (
+        <Tooltip
+          text={`${firstName} ${lastName} ${imported ? '[ghost member]' : ''}`}
+        />
+      )}
     </div>
   )
 }

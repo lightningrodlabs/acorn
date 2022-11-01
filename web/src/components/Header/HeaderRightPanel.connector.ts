@@ -4,6 +4,7 @@ import { openExpandedView } from '../../redux/ephemeral/expanded-view/actions'
 import { animatePanAndZoom } from '../../redux/ephemeral/viewport/actions'
 import HeaderRightPanel from './HeaderRightPanel.component'
 import { unselectAll } from '../../redux/ephemeral/selection/actions'
+import { ActionHashB64 } from '../../types/shared'
 
 function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject
@@ -23,10 +24,11 @@ function mapDispatchToProps(dispatch) {
     unselectAll: () => {
       dispatch(unselectAll())
     },
-    animatePanAndZoom: (address) => {
-      return dispatch(animatePanAndZoom(address))
+    animatePanAndZoom: (outcomeActionHash: ActionHashB64) => {
+      return dispatch(animatePanAndZoom(outcomeActionHash, true))
     },
-    openExpandedView: (address) => dispatch(openExpandedView(address)),
+    openExpandedView: (outcomeActionHash: ActionHashB64) =>
+      dispatch(openExpandedView(outcomeActionHash)),
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(HeaderRightPanel)

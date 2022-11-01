@@ -1,20 +1,23 @@
-
 import {
   RESET_TRANSLATE_AND_SCALE,
   CHANGE_TRANSLATE,
   CHANGE_SCALE,
   CHANGE_ALL_DIRECT,
 } from './actions'
+import { ViewportState } from './state-type'
 
-const defaultState = {
+const defaultState: ViewportState = {
   translate: {
     x: 0,
     y: 0,
   },
-  scale: 1,
+  scale: 0.5, // default zoom level
 }
 
-export default function(state = defaultState, action) {
+const LOWEST_ZOOM_THRESHOLD = 0.02
+const HIGHEST_ZOOM_THRESHOLD = 2.5
+
+export default function (state = defaultState, action: any): ViewportState {
   const { payload, type } = action
   switch (type) {
     case CHANGE_TRANSLATE:
@@ -29,7 +32,7 @@ export default function(state = defaultState, action) {
       return payload
     case CHANGE_SCALE:
       const { zoom, mouseX, mouseY } = payload
-      if (state.scale * zoom < 0.3 || state.scale * zoom > 2.5) {
+      if (state.scale * zoom < LOWEST_ZOOM_THRESHOLD || state.scale * zoom > HIGHEST_ZOOM_THRESHOLD) {
         return state
       }
       // https://stackoverflow.com/a/20821545/2132755 helped

@@ -1,5 +1,6 @@
 import React from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
+import { HashRouter as Router } from 'react-router-dom'
 import '../variables.scss'
 
 import OutcomeTableWithFiltersComponent, {
@@ -17,7 +18,7 @@ export default {
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof OutcomeTableWithFiltersComponent> = (args) => {
-  return <OutcomeTableWithFiltersComponent {...args} />
+  return <Router><OutcomeTableWithFiltersComponent {...args} /></Router>
 }
 
 export const OutcomeTableWithFilters = Template.bind({})

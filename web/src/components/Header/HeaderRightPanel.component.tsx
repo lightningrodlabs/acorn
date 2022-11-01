@@ -8,6 +8,7 @@ import useOnClickOutside from 'use-onclickoutside'
 import { CSSTransition } from 'react-transition-group'
 import { ProjectMapViewOnly } from '../ViewFilters/ViewFilters'
 import Typography from '../Typography/Typography'
+import hashCodeId from '../../api/clientSideIdHash'
 
 function AvatarMenuItem({
   title,
@@ -55,7 +56,7 @@ function SearchResultItem({
           {text}
         </div>
       </div>
-         {/* @ts-ignore */}
+      {/* @ts-ignore */}
       <div className="search-result-item-buttons">
         {/* <div onClick={() => panAndZoom(outcomeActionHash)}>
        
@@ -209,8 +210,10 @@ export default function HeaderRightPanel({
               <div className="search-results-list">
                 {(!noFilters || isTextFilter) &&
                   outcomeList
-                    .filter((outcome) =>
-                      outcome.content.toLowerCase().includes(filterText)
+                    .filter(
+                      (outcome) =>
+                        outcome.content.toLowerCase().includes(filterText) ||
+                        hashCodeId(outcome.actionHash).includes(filterText)
                     )
                     .map((outcome) => (
                       <SearchResultItem
@@ -260,7 +263,7 @@ export default function HeaderRightPanel({
         {/* Help button */}
         <a
           className="help-button-external"
-          href="https://sprillow.gitbook.io/acorn-knowledge-base/"
+          href="https://docs.acorn.software/about-acorn/what-is-acorn"
           target="_blank"
         >
           <Typography style="h8">Help</Typography>

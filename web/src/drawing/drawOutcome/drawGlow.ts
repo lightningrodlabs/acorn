@@ -9,6 +9,7 @@ const drawGlow = ({
   cornerRadius,
   useGlow,
   glowColor,
+  glowBlur,
   ctx,
 }: {
   xPosition: number
@@ -18,6 +19,7 @@ const drawGlow = ({
   cornerRadius: number
   useGlow: boolean
   glowColor: string
+  glowBlur: number // px
   ctx: CanvasRenderingContext2D
 }) =>
   draw(ctx, () => {
@@ -34,6 +36,7 @@ const drawGlow = ({
         useStroke: false,
         useBoxShadow: true,
         useGlow,
+        glowBlur,
         glowColor,
       })
     }

@@ -1,7 +1,8 @@
-import { ComputedOutcome, Profile } from '../../../types'
+import { ComputedOutcome, ComputedScope } from '../../../types'
 import {
   AVATAR_INITIALS_TEXT_COLOR,
   AVATAR_STROKE_COLOR,
+  TIME_ASSIGNEES_PLACEHOLDER_COLOR,
   TIME_TEXT_COLOR,
 } from '../../../styles'
 import {
@@ -9,9 +10,7 @@ import {
   AVATAR_SPACE,
   AVATAR_FONT_SIZE_REM,
   AVATAR_FONT_FAMILY,
-  DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT,
   outcomePaddingHorizontal,
-  OUTCOME_VERTICAL_SPACE_BETWEEN,
   TIME_FONT_FAMILY,
   TIME_FONT_SIZE_REM,
 } from '../../dimensions'
@@ -23,17 +22,17 @@ export const argsForDrawTimeAndAssignees = ({
   outcomeLeftX,
   outcomeWidth,
   outcomeTopY,
-  outcomeStatementHeight,
-  outcomeTagsHeight,
+  topOffsetY,
+  zoomLevel,
   ctx,
 }: {
   onlyMeasure?: boolean
   outcome: ComputedOutcome
   outcomeLeftX: number
   outcomeTopY: number
+  topOffsetY: number
   outcomeWidth: number
-  outcomeStatementHeight: number
-  outcomeTagsHeight: number
+  zoomLevel: number
   ctx: CanvasRenderingContext2D
 }): Parameters<typeof drawTimeAndAssignees>[0] => {
   const timeXLeftPosition = outcomeLeftX + outcomePaddingHorizontal
@@ -41,24 +40,28 @@ export const argsForDrawTimeAndAssignees = ({
   const assigneesXRightPosition =
     outcomeLeftX + outcomeWidth - outcomePaddingHorizontal
 
-  const verticalSpacing =
-    OUTCOME_VERTICAL_SPACE_BETWEEN * 3 +
-    // if tags existed, then we need that fourth spacer
-    (outcomeTagsHeight > 0 ? OUTCOME_VERTICAL_SPACE_BETWEEN : 0)
-  const yPosition =
-    outcomeTopY +
-    DESCENDANTS_ACHIEVEMENT_STATUS_HEIGHT +
-    outcomeStatementHeight +
-    outcomeTagsHeight +
-    verticalSpacing
+  const yPosition = outcomeTopY + topOffsetY
 
   const members = outcome.members || []
   const timeEstimate = null
   const fromDate = null
   const toDate = null
 
+  // the same as statement and the other content
+  const maxWidth = outcomeWidth - 2 * outcomePaddingHorizontal
+
+  const timeAndAssigneesPlaceholder = outcome
+    ? (outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5) ||
+      (outcome.computedScope !== ComputedScope.Small && zoomLevel < 0.3)
+    : false
+
+  const skipRender = outcome
+    ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.3
+    : false
+
   const args: Parameters<typeof drawTimeAndAssignees>[0] = {
     onlyMeasure,
+    skipRender,
     members,
     timeXLeftPosition,
     assigneesXRightPosition,
@@ -75,6 +78,9 @@ export const argsForDrawTimeAndAssignees = ({
     avatarStrokeColor: AVATAR_STROKE_COLOR,
     timeFontSizeRem: TIME_FONT_SIZE_REM,
     timeFontFamily: TIME_FONT_FAMILY,
+    timeAndAssigneesPlaceholder,
+    timeAndAssigneesPlaceholderColor: TIME_ASSIGNEES_PLACEHOLDER_COLOR,
+    maxWidth,
     ctx,
   }
   return args

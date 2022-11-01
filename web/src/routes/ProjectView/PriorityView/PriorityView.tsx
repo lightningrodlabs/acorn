@@ -2,11 +2,11 @@ import React, { useContext } from 'react'
 import { Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-
 import { updateProjectMeta } from '../../../redux/persistent/projects/project-meta/actions'
 import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeView'
 import PriorityUniversal from './PriorityUniversal/PriorityUniversal.connector'
-import PriorityVote from './PriorityVote/PriorityVote'
+// Deprecated
+// import PriorityVote from './PriorityVote/PriorityVote'
 import { PriorityModeOptions } from '../../../constants'
 import ProjectsZomeApi from '../../../api/projectsApi'
 import { getAppWs } from '../../../hcWebsockets'
@@ -14,6 +14,9 @@ import { cellIdFromString } from '../../../utils'
 import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
 
 import './PriorityView.scss'
+import { RootState } from '../../../redux/reducer'
+import { ProjectMeta } from '../../../types'
+import { ActionHashB64, CellIdString } from '../../../types/shared'
 
 function PriorityMode({ projectId, projectMeta, updateProjectMeta }) {
   const computedOutcomes = useContext(ComputedOutcomeContext)
@@ -22,13 +25,15 @@ function PriorityMode({ projectId, projectMeta, updateProjectMeta }) {
     case PriorityModeOptions.Universal:
       main = <PriorityUniversal />
       break
-    case PriorityModeOptions.Vote:
-      main = <PriorityVote />
+      case PriorityModeOptions.Vote:
+        // Deprecated
+        // main = <PriorityVote />
+        main = <></>
       break
     default:
       main = null
   }
-  const wrappedUpdateProjectMeta = (entry, actionHash) => {
+  const wrappedUpdateProjectMeta = (entry: ProjectMeta, actionHash: ActionHashB64) => {
     return updateProjectMeta(entry, actionHash, projectId)
   }
   return (
@@ -43,7 +48,7 @@ function PriorityMode({ projectId, projectMeta, updateProjectMeta }) {
   )
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject
   const projectMeta = state.projects.projectMeta[projectId] || {}
   return {
@@ -51,9 +56,10 @@ function mapStateToProps(state) {
     projectMeta,
   }
 }
+
 function mapDispatchToProps(dispatch) {
   return {
-    updateProjectMeta: async (entry, actionHash, cellIdString) => {
+    updateProjectMeta: async (entry: ProjectMeta, actionHash: ActionHashB64, cellIdString: CellIdString) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
@@ -64,6 +70,7 @@ function mapDispatchToProps(dispatch) {
     },
   }
 }
+
 const ConnectedPriorityMode = connect(mapStateToProps, mapDispatchToProps)(PriorityMode)
 
 

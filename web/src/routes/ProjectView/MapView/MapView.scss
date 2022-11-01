@@ -23,11 +23,24 @@
 
 canvas {
   position: absolute;
+
+  &.grabbing {
+    cursor: grabbing;
+  }
 }
 
 /* transform */
 
 .transform-container,
-.outcome-form-position-container {
+.mapview-elements-container {
   position: fixed;
+}
+
+.outcome-statement-tooltip-visible {
+  // establishes a max width
+  width: 10rem;
+
+  .tooltip-wrapper {
+    visibility: visible;
+  }
 }

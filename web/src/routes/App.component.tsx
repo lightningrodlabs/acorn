@@ -23,7 +23,7 @@ import Dashboard from './Dashboard/Dashboard.connector'
 import ProjectView from './ProjectView/ProjectView.connector'
 // import RunUpdate from './RunUpdate/RunUpdate'
 
-import IntroScreen from '../components/IntroScreen/IntroScreen'
+import IntroScreen from '../components/IntroScreen/IntroScreen.connector'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 // all global modals in here
 import GlobalModals from './GlobalModals'
@@ -80,7 +80,7 @@ const App: React.FC<AppProps> = ({
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
 
-  const onProfileSubmit = async (profile) => {
+  const onProfileSubmit = async (profile: Profile) => {
     await updateWhoami(profile, whoami.actionHash)
     setShowProfileEditForm(false)
   }

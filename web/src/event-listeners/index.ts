@@ -19,8 +19,6 @@ import {
   unhoverConnection,
 } from '../redux/ephemeral/hover/actions'
 import {
-  setGKeyDown,
-  unsetGKeyDown,
   setShiftKeyDown,
   unsetShiftKeyDown,
 } from '../redux/ephemeral/keyboard/actions'
@@ -154,14 +152,6 @@ export default function setupEventListeners(
     // there are event.code and event.key ...
     // event.key is keyboard layout independent, so works for Dvorak users
     switch (event.key) {
-      case 'g':
-        // only dispatch SET_G_KEYDOWN if it's not already down
-        if (state.ui.keyboard.gKeyDown) {
-          event.preventDefault()
-        } else {
-          store.dispatch(setGKeyDown())
-        }
-        break
 
       case 'Enter':
         if (
@@ -190,9 +180,7 @@ export default function setupEventListeners(
           if (childActionHash) {
             // select and pan and zoom to
             // the parent
-            store.dispatch(animatePanAndZoom(childActionHash))
-            store.dispatch(unselectAll())
-            store.dispatch(selectOutcome(childActionHash))
+            store.dispatch(animatePanAndZoom(childActionHash, false))
           }
         }
         break
@@ -209,9 +197,7 @@ export default function setupEventListeners(
           if (parentActionHash) {
             // select and pan and zoom to
             // the parent
-            store.dispatch(animatePanAndZoom(parentActionHash))
-            store.dispatch(unselectAll())
-            store.dispatch(selectOutcome(parentActionHash))
+            store.dispatch(animatePanAndZoom(parentActionHash, false))
           }
         }
         break
@@ -232,9 +218,7 @@ export default function setupEventListeners(
           if (targetActionHash) {
             // select and pan and zoom to
             // the parent
-            store.dispatch(animatePanAndZoom(targetActionHash))
-            store.dispatch(unselectAll())
-            store.dispatch(selectOutcome(targetActionHash))
+            store.dispatch(animatePanAndZoom(targetActionHash, false))
           }
         }
         break
@@ -255,9 +239,7 @@ export default function setupEventListeners(
           if (targetActionHash) {
             // select and pan and zoom to
             // the parent
-            store.dispatch(animatePanAndZoom(targetActionHash))
-            store.dispatch(unselectAll())
-            store.dispatch(selectOutcome(targetActionHash))
+            store.dispatch(animatePanAndZoom(targetActionHash, false))
           }
         }
         break
@@ -347,9 +329,6 @@ export default function setupEventListeners(
     // there are event.code and event.key ...
     // event.key is keyboard layout independent, so works for Dvorak users
     switch (event.key) {
-      case 'g':
-        store.dispatch(unsetGKeyDown())
-        break
       case 'Shift':
         store.dispatch(unsetShiftKeyDown())
         break
@@ -363,15 +342,18 @@ export default function setupEventListeners(
     const state: RootState = store.getState()
     const {
       ui: {
+        activeProject,
         viewport: { translate, scale },
         mouse: {
           coordinate: { x: initialSelectX, y: initialSelectY },
           outcomesAddresses,
         },
         layout: outcomeCoordinates,
-        selection: { selectedOutcomes },
       },
     } = state
+    const connections = state.projects.connections[activeProject] || {}
+    const projectTags = Object.values(state.projects.tags[activeProject] || {})
+
     const convertedCurrentMouse = coordsPageToCanvas(
       {
         x: event.clientX,
@@ -391,7 +373,11 @@ export default function setupEventListeners(
           store.dispatch(setCoordinate(convertedCurrentMouse))
         }
         const outcomeActionHashesToSelect = checkForOutcomeAtCoordinatesInBox(
+          ctx,
           outcomeCoordinates,
+          scale,
+          projectTags,
+          outcomes,
           convertedCurrentMouse,
           { x: initialSelectX, y: initialSelectY }
         )
@@ -410,7 +396,7 @@ export default function setupEventListeners(
       translate,
       scale,
       outcomeCoordinates,
-      state,
+      projectTags,
       event.clientX,
       event.clientY,
       outcomes,
@@ -421,7 +407,8 @@ export default function setupEventListeners(
       translate,
       scale,
       outcomeCoordinates,
-      state,
+      projectTags,
+      connections,
       event.clientX,
       event.clientY,
       outcomes
@@ -458,7 +445,7 @@ export default function setupEventListeners(
   }
 
   // don't allow this function to be called more than every 200 milliseconds
-  const debouncedWheelHandler = _.debounce(
+  const debouncedWheelHandler = // _.debounce(
     (event) => {
       const state = store.getState()
       const {
@@ -475,22 +462,23 @@ export default function setupEventListeners(
         ) {
           // Normalize wheel to +1 or -1.
           const wheel = event.deltaY < 0 ? 1 : -1
-          const zoomIntensity = 0.05
+          const zoomIntensity = 0.07 // 0.05
           // Compute zoom factor.
           const zoom = Math.exp(wheel * zoomIntensity)
           const mouseX = event.clientX
           const mouseY = event.clientY
-          store.dispatch(changeScale(zoom, mouseX, mouseY))
+          const instant = true
+          store.dispatch(changeScale(zoom, mouseX, mouseY, instant))
         } else {
           // invert the pattern so that it uses new mac style
           // of panning
           store.dispatch(changeTranslate(-1 * event.deltaX, -1 * event.deltaY))
         }
       }
-    },
-    2,
-    { leading: true }
-  )
+    }// ,
+    // 2,
+    // { leading: true }
+  // )
 
   function canvasWheel(event) {
     debouncedWheelHandler(event)
@@ -506,11 +494,7 @@ export default function setupEventListeners(
       },
     } = state
 
-    if (state.ui.keyboard.gKeyDown) {
-      // opening the OutcomeForm is dependent on
-      // holding down the `g` keyboard key modifier
-      handleMouseUpForOutcomeForm({ state, event, store })
-    } else if (outcomesAddresses) {
+    if (outcomesAddresses) {
       // finishing a drag box selection action
       outcomesAddresses.forEach((value) => store.dispatch(selectOutcome(value)))
     } else {
@@ -518,17 +502,21 @@ export default function setupEventListeners(
       // select it if so
       const {
         ui: {
+          activeProject,
           viewport: { translate, scale },
         },
       } = state
       const outcomeCoordinates = state.ui.layout
+      const connections = state.projects.connections[activeProject] || {}
+      const projectTags = Object.values(state.projects.tags[activeProject] || {})
 
       const clickedConnectionAddress = checkForConnectionAtCoordinates(
         ctx,
         translate,
         scale,
         outcomeCoordinates,
-        state,
+        projectTags,
+        connections,
         event.clientX,
         event.clientY,
         outcomes
@@ -538,7 +526,7 @@ export default function setupEventListeners(
         translate,
         scale,
         outcomeCoordinates,
-        state,
+        projectTags,
         event.clientX,
         event.clientY,
         outcomes
@@ -622,21 +610,21 @@ export default function setupEventListeners(
   }
 
   function canvasDoubleclick(event) {
-    const state = store.getState()
+    const state: RootState = store.getState()
     const {
       ui: {
         activeProject,
         viewport: { translate, scale },
       },
     } = state
-    const outcomes = state.projects.outcomes[activeProject] || {}
+    const projectTags = Object.values(state.projects.tags[activeProject] || {})
     const outcomeCoordinates = state.ui.layout
     const outcomeActionHash = checkForOutcomeAtCoordinates(
       ctx,
       translate,
       scale,
       outcomeCoordinates,
-      state,
+      projectTags,
       event.clientX,
       event.clientY,
       outcomes

@@ -133,7 +133,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
       {computedScope !== ComputedScope.Small && (
         <div className="more-info-wrapper">
           <div>
-            <a href="https://sprillow.gitbook.io/acorn-knowledge-base/outcomes/progress-indicator" target="_blank">
+            <a href="https://docs.acorn.software/outcomes/progress-indicator" target="_blank">
               <Icon name="info.svg" className="light-grey" size="small" />
             </a>
           </div>

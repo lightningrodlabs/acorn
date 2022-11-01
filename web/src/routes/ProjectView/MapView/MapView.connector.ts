@@ -32,6 +32,9 @@ function mapStateToProps(state: RootState): MapViewProps {
     // only if more than 1 (2+) outcome cards are selected
     // then show the Multi Edit Bar
     hasMultiSelection: state.ui.selection.selectedOutcomes.length > 1,
+    hoveredOutcomeAddress: state.ui.hover.hoveredOutcome,
+    liveMouseCoordinates: state.ui.mouse.liveCoordinate,
+    mouseIsDown: state.ui.mouse.mousedown,
     showEmptyState,
     outcomeFormIsOpen: state.ui.outcomeForm.isOpen,
   }

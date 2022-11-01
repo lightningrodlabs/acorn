@@ -7,6 +7,7 @@ import OutcomeTableComponent, {
 } from '../components/OutcomeTable/OutcomeTable'
 import testTags from './testData/testTags'
 import { testBigAchievedOutcome } from './testData/testOutcomes'
+import { HashRouter as Router } from 'react-router-dom'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -16,7 +17,7 @@ export default {
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof OutcomeTableComponent> = (args) => {
-  return <OutcomeTableComponent {...args} />
+  return <Router><OutcomeTableComponent {...args} /></Router>
 }
 
 export const OutcomeTable = Template.bind({})

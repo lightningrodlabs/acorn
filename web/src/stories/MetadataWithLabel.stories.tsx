@@ -21,9 +21,8 @@ const Template: ComponentStory<typeof MetadataWithLabel> = (args) => {
 export const WithIcon = Template.bind({})
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 WithIcon.args = {
-  // @ts-ignore
-  icon: <Icon name="send-plane.svg" />,
   label: 'Assignees',
+  iconName: 'send-plane.svg'
 } as MetadataWithLabelProps
 
 export const WithoutIcon = Template.bind({})

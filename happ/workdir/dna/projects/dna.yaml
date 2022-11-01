@@ -3,7 +3,7 @@ manifest_version: "1"
 name: projects-dna
 integrity:
   origin_time: 1654092432130000
-  uid: ~
+  network_seed: ~
   properties:
     modifier: "0001"
   zomes:

@@ -31,7 +31,8 @@ export type FetchInput = FetchInputAll | FetchInputSome
 
 export type HcActionCreator<Payload> = (
   cellIdString: string,
-  payload: Payload
+  payload: Payload,
+  skipLayoutAnimation?: boolean
 ) => Action<Payload>
 
 export type Action<Payload> = {

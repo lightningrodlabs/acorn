@@ -37,7 +37,8 @@ export type ProjectViewInnerConnectorDispatchProps = {
   resetProjectView: () => void
   setActiveProject: (projectId: CellIdString) => void
   setActiveEntryPoints: (entryPointActionHashes: ActionHashB64[]) => void
-  goToOutcome: (outcomeActionHash: ActionHashB64) => void
+  goInstantlyToOutcome: (outcomeActionHash: ActionHashB64) => void
+  triggerUpdateLayout: (instant?: boolean) => void
   // remote / holochain calls
   updateOutcome: (outcome: Outcome, actionHash: ActionHashB64) => Promise<void>
   fetchProjectMeta: () => Promise<void>
@@ -46,7 +47,6 @@ export type ProjectViewInnerConnectorDispatchProps = {
   fetchOutcomes: () => Promise<void>
   fetchConnections: () => Promise<void>
   fetchOutcomeMembers: () => Promise<void>
-  fetchOutcomeVotes: () => Promise<void>
   fetchOutcomeComments: () => Promise<void>
   fetchTags: () => Promise<void>
   triggerRealtimeInfoSignal: () => void
@@ -60,12 +60,16 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   projectId,
   activeAgentPubKey,
   expandedViewOutcomeActionHash,
+  entryPointActionHashes,
+  // local only actions
   openExpandedView,
   closeExpandedView,
-  entryPointActionHashes,
   resetProjectView,
   setActiveProject,
   setActiveEntryPoints,
+  goInstantlyToOutcome,
+  triggerUpdateLayout,
+  // remote / holochain calls
   updateOutcome,
   fetchProjectMeta,
   fetchMembers,
@@ -73,15 +77,14 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   fetchOutcomes,
   fetchConnections,
   fetchOutcomeMembers,
-  fetchOutcomeVotes,
   fetchOutcomeComments,
   fetchTags,
-  goToOutcome,
   triggerRealtimeInfoSignal,
 }) => {
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
   const goToOutcomeActionHash = searchParams.get(GO_TO_OUTCOME)
+
   const sendRealtimeInfoFrequency = 10000
   const instance = useRef<NodeJS.Timeout>()
 
@@ -105,22 +108,6 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
     )
   }
 
-  function ifMapGoToOutcome(outcomeActionHash: ActionHashB64) {
-    // TODO
-    // HACK
-    // we wait 100 ms because we wait for
-    // any integration and processing of the final location of Outcomes
-    // this relates to the animation defined in src/animations/layout.js
-    // `performLayoutAnimation`
-    if (location.pathname.includes('map')) {
-      setTimeout(() => {
-        if (outcomeActionHash) {
-          goToOutcome(outcomeActionHash)
-        }
-      }, 100)
-    }
-  }
-
   // this useEffect is called when the ProjectView component is first mounted, and returns when it is dismounted
   // it sets an interval which calls triggerRealTimeInfoSignal at a fixed rate, until the component is dismounted
   useEffect(() => {
@@ -134,7 +121,7 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   }, [])
 
   useEffect(() => {
-    ifMapGoToOutcome(goToOutcomeActionHash)
+    goInstantlyToOutcome(goToOutcomeActionHash)
   }, [goToOutcomeActionHash])
 
   useEffect(() => {
@@ -142,20 +129,30 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
     setActiveProject(projectId)
     triggerRealtimeInfoSignal()
     fetchProjectMeta()
+    // these do not affect map view layout
     fetchMembers()
     fetchEntryPoints()
-    fetchTags()
-    // once Outcomes and Connections, which affect layout are both
-    // 1. fetched, and
-    // 2. animated to their final position
+    fetchOutcomeComments()
+    // once Outcomes, Connections, Outcome Members, and Tags which all
+    //  affect layout are all fetched
     // we then animate to a specific outcome if it was set in the path
     // as a search query param
-    Promise.all([fetchOutcomes(), fetchConnections()]).then(() => {
-      ifMapGoToOutcome(goToOutcomeActionHash)
+    // this version of fetchOutcomes and fetchConnections have been instructed
+    // to not perform a layout update and animation
+    Promise.all([
+      fetchOutcomeMembers(),
+      fetchTags(),
+      fetchOutcomes(),
+      fetchConnections(),
+    ]).then(() => {
+      // fetched all necessary data to perform layout
+      // so perform the layout
+      const instant = true
+      triggerUpdateLayout(instant)
+      // now, adjust the translation of the Map View
+      goInstantlyToOutcome(goToOutcomeActionHash)
     })
-    fetchOutcomeMembers()
-    fetchOutcomeVotes()
-    fetchOutcomeComments()
+
     // this will get called to unmount the component
     return resetProjectView
   }, [projectId])

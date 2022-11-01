@@ -13,8 +13,8 @@ import {
 import draw from '../draw'
 
 const drawStatement = ({
+  skipRender,
   useLineLimit,
-  isRenderingOtherMetadata,
   onlyMeasure,
   xPosition,
   yPosition,
@@ -23,9 +23,13 @@ const drawStatement = ({
   width,
   color,
   ctx,
+  statementPlaceholder,
+  statementPlaceholderHeight,
+  statementPlaceholderLineSpace,
+  statementPlaceholderColor,
 }: {
+  skipRender: boolean
   useLineLimit: boolean
-  isRenderingOtherMetadata: boolean
   onlyMeasure: boolean
   xPosition: number
   yPosition: number
@@ -34,8 +38,15 @@ const drawStatement = ({
   width: number
   color: string
   ctx: CanvasRenderingContext2D
+  statementPlaceholder: boolean
+  statementPlaceholderHeight: number
+  statementPlaceholderLineSpace: number
+  statementPlaceholderColor: string
 }): number => {
-  let height: number
+  let height: number = 0
+  // early exit with no rendering, in the case of skipRender
+  if (skipRender) return height
+
   draw(ctx, () => {
     const textBoxLeft = xPosition
     const textBoxTop = yPosition
@@ -56,37 +67,57 @@ const drawStatement = ({
       lineSpacingToUse = lineSpacingLarge
       fontSizeToUse = fontSizeLargeInt
     }
-    ctx.fillStyle = color
 
-    lines.forEach((line, index) => {
-      let linePosition = index * (fontSizeToUse + lineSpacingToUse)
-      // If calling the function is not for measuring only
+    let dynamicTotalOutcomeStatementHeight: number
+    // If calling the function is not showing statement placeholder and not for measuring only
+    if (!statementPlaceholder) {
       if (!onlyMeasure) {
-        ctx.fillText(line, textBoxLeft, textBoxTop + linePosition)
+        // statement font color
+        ctx.fillStyle = color
+        // Render each line of the Statement text
+        lines.forEach((line, index) => {
+          let linePosition = index * (fontSizeToUse + lineSpacingToUse)
+          ctx.fillText(line, textBoxLeft, textBoxTop + linePosition)
+        })
       }
-    })
+      // make the height of Outcome Statament
+      // dependent on the number of lines it has
+      // which will determine the height of the card
+      // and the space between the statement and
+      // the bottom of the card
+      dynamicTotalOutcomeStatementHeight =
+        fontSizeToUse * lines.length + lineSpacingToUse * lines.length
+    } else if (statementPlaceholder) {
+      // If showing the statement placeholder
+      if (!onlyMeasure) {
+        ctx.fillStyle = statementPlaceholderColor
+        lines.forEach((line, index) => {
+          let linePosition =
+            index * (statementPlaceholderHeight + statementPlaceholderLineSpace)
+          ctx.fillRect(
+            textBoxLeft,
+            textBoxTop + linePosition,
+            width,
+            statementPlaceholderHeight
+          )
+        })
+      }
+      dynamicTotalOutcomeStatementHeight =
+        statementPlaceholderHeight * lines.length +
+        statementPlaceholderLineSpace * lines.length
+    }
 
     // let measurements = ctx.measureText(lines[0])
     // help from https://stackoverflow.com/questions/1134586/how-can-you-find-the-height-of-text-on-an-html-canvas
     // let fontHeight =
     //   measurements.fontBoundingBoxAscent + measurements.fontBoundingBoxDescent
 
-    // make the height of Outcome Statament
-    // dependent on the number of lines it has
-    // which will determine the height of the card
-    // and the space between the statement and
-    // the bottom of the card
-    const dynamicTotalOutcomeStatementHeight =
-      fontSizeToUse * lines.length + lineSpacingToUse * lines.length
-
-    if (lines.length < 4) {
+    if (lines.length < 4 && !statementPlaceholder) {
       height = Math.max(
         outcomeStatementMinHeightWithoutMeta,
         dynamicTotalOutcomeStatementHeight
       )
-    } else if (lines.length >= 4 && !isRenderingOtherMetadata) {
-      height = dynamicTotalOutcomeStatementHeight + 40
-    } else if (lines.length >= 4) {
+    } else {
       height = dynamicTotalOutcomeStatementHeight
     }
   })

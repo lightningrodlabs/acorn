@@ -1,22 +1,22 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
-import ChecklistItem from '../components/ChecklistItem/ChecklistItem'
+import ChecklistItem, { ChecklistItemProps} from '../components/ChecklistItem/ChecklistItem'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'Checkbox & Checklist/ChecklistItem',
   component: ChecklistItem,
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
+
 } as ComponentMeta<typeof ChecklistItem>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof ChecklistItem> = (args) => {
-  const [selectedState, setSelectedState] = useState(false)
+  const [selectedState, setSelectedState] = useState(args.complete)
+  useEffect(() => {
+    setSelectedState(args.complete)
+  }, [args.complete])
   return (
     <ChecklistItem
       {...args}
@@ -30,12 +30,15 @@ export const Primary = Template.bind({})
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Primary.args = {
   size: 'medium',
-  text: 'Create a scope of work, for development.',
-}
+  task: 'Create a scope of work, for development.',
+  complete: true,
+  withStrikethrough: false,
+} as ChecklistItemProps
 
 export const withStrikethrough = Template.bind({})
 withStrikethrough.args = {
-  withStrikethrough,
+  withStrikethrough: true,
+  complete: true,
   size: 'medium',
-  text: 'Create a scope of work, for development.',
-}
+  task: 'Create a scope of work, for development.',
+} as ChecklistItemProps

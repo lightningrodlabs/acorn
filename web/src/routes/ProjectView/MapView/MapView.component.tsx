@@ -1,24 +1,30 @@
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useStore } from 'react-redux'
 
+import { ActionHashB64, CellIdString } from '../../../types/shared'
+import { RootState } from '../../../redux/reducer'
+import { coordsCanvasToPage } from '../../../drawing/coordinateSystems'
 import render from '../../../drawing'
 import setupEventListeners from '../../../event-listeners'
 import { setScreenDimensions } from '../../../redux/ephemeral/screensize/actions'
 
+import selectRenderProps from './selector'
+import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
 import ProjectEmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
 import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar.connector'
 import OutcomeConnectors from '../../../components/OutcomeConnectors/OutcomeConnectors.connector'
 import MapViewOutcomeTitleForm from '../../../components/MapViewOutcomeTitleForm/MapViewOutcomeTitleForm.connector'
+import Tooltip from '../../../components/Tooltip/Tooltip'
+
 import './MapView.scss'
-import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
-import { CellIdString } from '../../../types/shared'
-import { RootState } from '../../../redux/reducer'
-import selectRenderProps from './selector'
 
 export type MapViewProps = {
   projectId: CellIdString
   hasMultiSelection: boolean
   outcomeFormIsOpen: boolean
+  hoveredOutcomeAddress: ActionHashB64 | null
+  liveMouseCoordinates: { x: number; y: number }
+  mouseIsDown: boolean
   translate: {
     x: number
     y: number
@@ -33,6 +39,9 @@ const MapView: React.FC<MapViewProps> = ({
   zoomLevel,
   translate,
   outcomeFormIsOpen,
+  hoveredOutcomeAddress,
+  liveMouseCoordinates,
+  mouseIsDown,
   hasMultiSelection,
 }) => {
   const store = useStore()
@@ -53,13 +62,17 @@ const MapView: React.FC<MapViewProps> = ({
     // size * the device pixel ratio.
     store.dispatch(setScreenDimensions(rect.width * dpr, rect.height * dpr))
   }, [])
-  
+
   // set this up newly, any time the
   // outcomes and connections change
   useEffect(() => {
     const canvas = refCanvas.current
     // attach keyboard and mouse events
-    const removeEventListeners = setupEventListeners(store, canvas, computedOutcomesKeyed)
+    const removeEventListeners = setupEventListeners(
+      store,
+      canvas,
+      computedOutcomesKeyed
+    )
     const doRender = () => {
       const state: RootState = store.getState()
       const activeProject = state.ui.activeProject
@@ -85,10 +98,38 @@ const MapView: React.FC<MapViewProps> = ({
   const transform = {
     transform: `matrix(${zoomLevel}, 0, 0, ${zoomLevel}, ${translate.x}, ${translate.y})`,
   }
+
+  const hoveredOutcome = hoveredOutcomeAddress
+    ? computedOutcomesKeyed[hoveredOutcomeAddress]
+    : null
+
+  // this strategy for updating the tooltip means that whatever
+  // the statement of the last hovered Outcome was, it will remain visible
+  // in the delay between leaving hovering that Outcome, and the
+  // tooltip disappearing
+  const [
+    outcomeStatementTooltipText,
+    setOutcomeStatementTooltipTextText,
+  ] = useState<string>()
+  useEffect(() => {
+    if (hoveredOutcome) {
+      setOutcomeStatementTooltipTextText(hoveredOutcome.content)
+    }
+  }, [hoveredOutcome])
+
+  const pageMouseCoords = coordsCanvasToPage(
+    liveMouseCoordinates,
+    translate,
+    zoomLevel
+  )
+  // don't bother with outcome statement tooltips if the zoom level is >= 0.7
+  // because it displays the full Outcome statement
+  const outcomeStatementTooltipVisible = hoveredOutcome && zoomLevel < 0.7
+
   return (
     <>
       {showEmptyState && <ProjectEmptyState />}
-      <canvas ref={refCanvas} />
+      <canvas ref={refCanvas} className={mouseIsDown ? 'grabbing' : ''} />
       {/* transform everything in this container according  */}
       {/* to the same scaling and tranlating as the canvas */}
       {/* is being scaled and translated, using css matrix transforms */}
@@ -101,17 +142,44 @@ const MapView: React.FC<MapViewProps> = ({
         {outcomeFormIsOpen && <MapViewOutcomeTitleForm projectId={projectId} />}
       </div>
 
-      {/* below items inside 'outcome-form-position-container' maintain their normal scale */}
+      {/* below items inside 'mapview-elements-container' maintain their normal scale */}
       {/* while positioning themselves absolutely (position: absolute) on the screen */}
       {/* in coordinates that match with the outcomes being drawn on the canvas */}
-      <div className="outcome-form-position-container">
+      <div className="mapview-elements-container">
+        {/* Outcome Statement Tooltip */}
+        <div
+          className={
+            outcomeStatementTooltipVisible
+              ? 'outcome-statement-tooltip-visible'
+              : ''
+          }
+          style={{
+            position: 'absolute',
+            left: `${pageMouseCoords.x}px`,
+            top: `${pageMouseCoords.y + 25}px`,
+          }}
+        >
+          <Tooltip
+            noTransition
+            noTriangle
+            allowWrapping
+            text={outcomeStatementTooltipText}
+          />
+        </div>
+        {/* Outcome Connectors */}
         {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
-        {refCanvas.current && (
-          <OutcomeConnectors canvas={refCanvas.current} outcomes={computedOutcomesKeyed} />
+        {refCanvas.current && zoomLevel >= 0.12 && (
+          <OutcomeConnectors
+            canvas={refCanvas.current}
+            outcomes={computedOutcomesKeyed}
+          />
         )}
       </div>
 
-      <MultiEditBar projectId={projectId} hasMultiSelection={hasMultiSelection} />
+      <MultiEditBar
+        projectId={projectId}
+        hasMultiSelection={hasMultiSelection}
+      />
     </>
   )
 }

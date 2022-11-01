@@ -14,7 +14,7 @@ const ExpandChevron: React.FC<ExpandChevronProps> = ({
   size = 'medium',
 }) => {
   return (
-    // TODO: add size variationss
+    // TODO: add size variations
     <div
       className={`expand-chevron-wrapper ${expanded ? 'expanded' : ''} ${
         size === 'small' ? 'small' : ''
