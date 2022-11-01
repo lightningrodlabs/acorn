@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import Icon from '../Icon/Icon'
-import DatePicker from '../DatePicker/DatePicker'
 import OutcomeConnectorPicker from '../OutcomeConnectorPicker/OutcomeConnectorPicker.connector'
 import Modal, { ModalContent } from '../Modal/Modal'
 

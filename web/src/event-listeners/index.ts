@@ -152,7 +152,6 @@ export default function setupEventListeners(
     // there are event.code and event.key ...
     // event.key is keyboard layout independent, so works for Dvorak users
     switch (event.key) {
-
       case 'Enter':
         if (
           state.ui.selection.selectedOutcomes.length === 1 &&
@@ -432,9 +431,7 @@ export default function setupEventListeners(
       // and IMPORTANTLY if Outcome is in the list of `validToAddresses`
       if (
         state.ui.outcomeConnector.fromAddress &&
-        state.ui.outcomeConnector.validToAddresses.includes(
-          outcomeActionHash
-        )
+        state.ui.outcomeConnector.validToAddresses.includes(outcomeActionHash)
       ) {
         store.dispatch(setOutcomeConnectorTo(outcomeActionHash))
       }
@@ -444,44 +441,33 @@ export default function setupEventListeners(
     }
   }
 
-  // don't allow this function to be called more than every 200 milliseconds
-  const debouncedWheelHandler = // _.debounce(
-    (event) => {
-      const state = store.getState()
-      const {
-        ui: {
-          localPreferences: { navigation },
-        },
-      } = state
-      if (!state.ui.outcomeForm.isOpen) {
-        // from https://medium.com/@auchenberg/detecting-multi-touch-trackpad-gestures-in-javascript-a2505babb10e
-        // and https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-translate
-        if (
-          navigation === MOUSE ||
-          (navigation === TRACKPAD && event.ctrlKey)
-        ) {
-          // Normalize wheel to +1 or -1.
-          const wheel = event.deltaY < 0 ? 1 : -1
-          const zoomIntensity = 0.07 // 0.05
-          // Compute zoom factor.
-          const zoom = Math.exp(wheel * zoomIntensity)
-          const mouseX = event.clientX
-          const mouseY = event.clientY
-          const instant = true
-          store.dispatch(changeScale(zoom, mouseX, mouseY, instant))
-        } else {
-          // invert the pattern so that it uses new mac style
-          // of panning
-          store.dispatch(changeTranslate(-1 * event.deltaX, -1 * event.deltaY))
-        }
-      }
-    }// ,
-    // 2,
-    // { leading: true }
-  // )
-
   function canvasWheel(event) {
-    debouncedWheelHandler(event)
+    const state = store.getState()
+    const {
+      ui: {
+        localPreferences: { navigation },
+      },
+    } = state
+    if (!state.ui.outcomeForm.isOpen) {
+      store.dispatch(unhoverOutcome())
+      // from https://medium.com/@auchenberg/detecting-multi-touch-trackpad-gestures-in-javascript-a2505babb10e
+      // and https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-translate
+      if (navigation === MOUSE || (navigation === TRACKPAD && event.ctrlKey)) {
+        // Normalize wheel to +1 or -1.
+        const wheel = event.deltaY < 0 ? 1 : -1
+        const zoomIntensity = 0.07 // 0.05
+        // Compute zoom factor.
+        const zoom = Math.exp(wheel * zoomIntensity)
+        const mouseX = event.clientX
+        const mouseY = event.clientY
+        const instant = true
+        store.dispatch(changeScale(zoom, mouseX, mouseY, instant))
+      } else {
+        // invert the pattern so that it uses new mac style
+        // of panning
+        store.dispatch(changeTranslate(-1 * event.deltaX, -1 * event.deltaY))
+      }
+    }
     event.preventDefault()
   }
 
@@ -508,7 +494,9 @@ export default function setupEventListeners(
       } = state
       const outcomeCoordinates = state.ui.layout
       const connections = state.projects.connections[activeProject] || {}
-      const projectTags = Object.values(state.projects.tags[activeProject] || {})
+      const projectTags = Object.values(
+        state.projects.tags[activeProject] || {}
+      )
 
       const clickedConnectionAddress = checkForConnectionAtCoordinates(
         ctx,
