@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import ProfileEditForm from '../../components/ProfileEditForm/ProfileEditForm'
 import { Profile } from '../../types'
@@ -6,11 +6,31 @@ import { AgentPubKeyB64 } from '../../types/shared'
 import './CreateProfilePage.scss'
 
 export type CreateProfilePageProps = {
+  alreadyHasProfile: boolean
   agentAddress: AgentPubKeyB64
   createWhoami: (profile: Profile) => Promise<void>
+  fetchWhoami: () => Promise<void>
 }
 
-const CreateProfilePage: React.FC<CreateProfilePageProps> = ({ agentAddress, createWhoami }) => {
+const CreateProfilePage: React.FC<CreateProfilePageProps> = ({
+  alreadyHasProfile,
+  agentAddress,
+  createWhoami,
+  fetchWhoami,
+}) => {
+  /*
+    We do this so that if/when the agents Profile gossips to them,
+    having been already imported by someone else,
+    they don't stay here accidentally
+  */
+  const instance = useRef<NodeJS.Timeout>()
+  useEffect(() => {
+    instance.current = setInterval(() => fetchWhoami(), 20000)
+    return () => {
+      clearInterval(instance.current)
+    }
+  }, [])
+
   const titleText = "First, let's set up your profile on Acorn."
   const subText = "You'll be able to edit them later in your Profile Settings."
   const pendingText = 'Setting you up...'
@@ -19,18 +39,18 @@ const CreateProfilePage: React.FC<CreateProfilePageProps> = ({ agentAddress, cre
   const [pending, setPending] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
-  const innerOnSubmit = async profile => {
+  const innerOnSubmit = async (profile) => {
     setPending(true)
     await createWhoami(profile)
     setPending(false)
     setSubmitted(true)
   }
 
-  return submitted ? (
-    <Redirect to='/' />
+  return submitted || alreadyHasProfile ? (
+    <Redirect to="/" />
   ) : (
-    <div className='create_profile_page'>
-      <div className='profile_create_wrapper'>
+    <div className="create_profile_page">
+      <div className="profile_create_wrapper">
         <ProfileEditForm
           onSubmit={innerOnSubmit}
           whoami={null}
@@ -45,7 +65,7 @@ const CreateProfilePage: React.FC<CreateProfilePageProps> = ({ agentAddress, cre
           }}
         />
       </div>
-      <div className='create_profile_splash_image' />
+      <div className="create_profile_splash_image" />
     </div>
   )
 }
