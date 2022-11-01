@@ -41,6 +41,7 @@ const acornApplet: WeApplet = {
         shadowRoot.appendChild(container)
         ReactDOM.render(
           React.createElement(AppProvided, {appWs: appWebsocket, adminWs: adminWebsocket}, null),
+          // element
           container
         );
       },
