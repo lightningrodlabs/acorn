@@ -81,7 +81,7 @@ const layoutWatcher = (store) => {
     const shouldReLayout = isOneOfLayoutAffectingActions(action)
     const shouldAnimateViewport = isOneOfViewportAffectingActions(action)
     // don't call and getState if we don't have to
-    if (shouldReLayout || shouldAnimateViewport) {
+    if (shouldReLayout) {
       currentState = store.getState()
     }
     // perform the usual (next) action ->
@@ -96,7 +96,7 @@ const layoutWatcher = (store) => {
     if (shouldReLayout) {
       performLayoutAnimation(store, action, currentState)
     } else if (shouldAnimateViewport) {
-      panZoomToFrame(store, action, currentState)
+      panZoomToFrame(store, action)
     }
 
     return result

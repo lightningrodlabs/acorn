@@ -16,10 +16,11 @@ export default function panZoomToFrame(
       adjustScale: boolean
       instant?: boolean
     }
-  },
-  currentState: RootState
+  }
 ) {
   let { outcomeActionHash, adjustScale } = action.payload
+
+  const state: RootState = store.getState()
 
   // Destination viewport
   // is to center the outcome
@@ -29,12 +30,13 @@ export default function panZoomToFrame(
   const defaultScaleForPanAndZoom = 0.7
   const zoomLevel = adjustScale
     ? defaultScaleForPanAndZoom
-    : currentState.ui.viewport.scale
+    : state.ui.viewport.scale
 
-  const { activeProject } = currentState.ui
-  const outcomeTrees = getTreesForState(currentState)
+  const { activeProject } = state.ui
+  const outcomeTrees = getTreesForState(state)
+
   const projectTags = Object.values(
-    currentState.projects.tags[activeProject] || {}
+    state.projects.tags[activeProject] || {}
   )
   // this is our final destination layout
   // that we'll be animating to
@@ -70,7 +72,7 @@ export default function panZoomToFrame(
   store.dispatch(unselectAll())
   store.dispatch(selectOutcome(outcomeActionHash))
 
-  const { width, height } = currentState.ui.screensize
+  const { width, height } = state.ui.screensize
   const dpr = window.devicePixelRatio || 1
   const halfScreenWidth = width / (2 * dpr)
   const halfScreenHeight = height / (2 * dpr)
@@ -110,7 +112,7 @@ export default function panZoomToFrame(
 
   // not instant, so continue and run an animated transition
   const currentViewportTween = {
-    ...currentState.ui.viewport,
+    ...state.ui.viewport,
   }
 
   new TWEEN.Tween(currentViewportTween)

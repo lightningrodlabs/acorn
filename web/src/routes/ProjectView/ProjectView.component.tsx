@@ -121,10 +121,6 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   }, [])
 
   useEffect(() => {
-    goInstantlyToOutcome(goToOutcomeActionHash)
-  }, [goToOutcomeActionHash])
-
-  useEffect(() => {
     // pushes this new projectId into the store/state
     setActiveProject(projectId)
     triggerRealtimeInfoSignal()
