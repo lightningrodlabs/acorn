@@ -26,10 +26,14 @@ const IntroScreen: React.FC<IntroScreenProps> = ({
 }) => {
   const history = useHistory()
 
+  /*
+    We do this so that if/when the agents Profile gossips to them,
+    having been already imported by someone else,
+    they don't stay here accidentally
+  */
   const instance = useRef<NodeJS.Timeout>()
-
   useEffect(() => {
-    instance.current = setInterval(() => fetchWhoami(profilesCellId), 20000)
+    instance.current = setInterval(() => fetchWhoami(profilesCellId), 10000)
     return () => {
       clearInterval(instance.current)
     }

@@ -2,19 +2,24 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import ProfileEditForm from '../../components/ProfileEditForm/ProfileEditForm'
 import { Profile } from '../../types'
-import { AgentPubKeyB64 } from '../../types/shared'
+import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 import './CreateProfilePage.scss'
 
 export type CreateProfilePageProps = {
-  alreadyHasProfile: boolean
+  hasProfile: boolean
   agentAddress: AgentPubKeyB64
-  createWhoami: (profile: Profile) => Promise<void>
-  fetchWhoami: () => Promise<void>
+  profilesCellIdString: CellIdString
+  createWhoami: (
+    profile: Profile,
+    profilesCellIdString: CellIdString
+  ) => Promise<void>
+  fetchWhoami: (profilesCellIdString: CellIdString) => Promise<void>
 }
 
 const CreateProfilePage: React.FC<CreateProfilePageProps> = ({
-  alreadyHasProfile,
+  hasProfile,
   agentAddress,
+  profilesCellIdString,
   createWhoami,
   fetchWhoami,
 }) => {
@@ -25,7 +30,9 @@ const CreateProfilePage: React.FC<CreateProfilePageProps> = ({
   */
   const instance = useRef<NodeJS.Timeout>()
   useEffect(() => {
-    instance.current = setInterval(() => fetchWhoami(), 20000)
+    instance.current = setInterval(() => {
+      fetchWhoami(profilesCellIdString)
+    }, 10000)
     return () => {
       clearInterval(instance.current)
     }
@@ -37,16 +44,13 @@ const CreateProfilePage: React.FC<CreateProfilePageProps> = ({
   const submitText = 'Ready to Start'
   const canClose = false
   const [pending, setPending] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
 
-  const innerOnSubmit = async (profile) => {
+  const innerOnSubmit = async (profile: Profile) => {
     setPending(true)
-    await createWhoami(profile)
-    setPending(false)
-    setSubmitted(true)
+    await createWhoami(profile, profilesCellIdString)
   }
 
-  return submitted || alreadyHasProfile ? (
+  return hasProfile ? (
     <Redirect to="/" />
   ) : (
     <div className="create_profile_page">
