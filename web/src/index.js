@@ -18,18 +18,17 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { MAIN_APP_ID, PROFILES_ROLE_ID } from './holochainConfig'
 import acorn from './redux/reducer'
 import signalsHandlers from './signalsHandlers'
-import { setProfilesCellId, setProjectsCellIds } from './redux/persistent/cells/actions'
+import {
+  setProfilesCellId,
+  setProjectsCellIds,
+} from './redux/persistent/cells/actions'
 import { layoutWatcher } from './redux/ephemeral/layout/middleware'
 import { realtimeInfoWatcher } from './redux/persistent/projects/realtime-info-signal/middleware'
 import { fetchAgents } from './redux/persistent/profiles/agents/actions'
 import { whoami } from './redux/persistent/profiles/who-am-i/actions'
 import { fetchAgentAddress } from './redux/persistent/profiles/agent-address/actions'
 import App from './routes/App.connector'
-import {
-  getAppWs,
-  getAdminWs,
-  setAgentPubKey,
-} from './hcWebsockets'
+import { getAppWs, getAdminWs, setAgentPubKey } from './hcWebsockets'
 import { getProjectCellIdStrings } from './projectAppIds'
 import ProfilesZomeApi from './api/profilesApi'
 import { cellIdToString } from './utils'
@@ -75,6 +74,19 @@ getAppWs(signalCallback).then(async (client) => {
     const profiles = await profilesZomeApi.profile.fetchAgents(cellId)
     store.dispatch(fetchAgents(cellIdString, profiles))
     const profile = await profilesZomeApi.profile.whoami(cellId)
+    // this allows us to 'reclaim' a profile that was imported by someone else that is ours
+    // (i.e. it relates to our public key)
+    if (profile) {
+      let nonImportedProfile = {
+        ...profile.entry,
+        isImported: false,
+      }
+      await profilesZomeApi.profile.updateWhoami(cellId, {
+        entry: nonImportedProfile,
+        actionHash: profile.actionHash,
+      })
+      profile.entry = nonImportedProfile
+    }
     store.dispatch(whoami(cellIdString, profile))
     const agentAddress = await profilesZomeApi.profile.fetchAgentAddress(cellId)
     store.dispatch(fetchAgentAddress(cellIdString, agentAddress))
