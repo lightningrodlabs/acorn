@@ -27,12 +27,14 @@ Promise.all([
 
 ]).then(([
   adminWs, 
-  appWs
+  appWs,
 ]) => {
   ReactDOM.render(
     <AppProvided 
       appWs={appWs} 
       adminWs={adminWs}
+      weServices={null}
+      isWeApplet={false}
     />,
     document.getElementById('react')
   )

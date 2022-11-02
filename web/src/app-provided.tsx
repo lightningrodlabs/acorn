@@ -20,11 +20,15 @@ import { fetchAgents } from './redux/persistent/profiles/agents/actions'
 import { whoami } from './redux/persistent/profiles/who-am-i/actions'
 import { fetchAgentAddress } from './redux/persistent/profiles/agent-address/actions'
 import { getProjectCellIdStrings } from './projectAppIds'
+import WeProfilesZomeApi from './api/weProfilesApi'
 
 
 function AppProvided({
     appWs,
     adminWs,
+    weServices,
+    appletAppInfo,
+    isWeApplet
 }) {
     const [storeLoaded, setStoreLoaded] = useState(false)
     const middleware = [layoutWatcher, realtimeInfoWatcher]
@@ -46,13 +50,13 @@ function AppProvided({
 
     useEffect(() => {
         const prepareStore = async () => {
-            getAppWs(signalCallback).then(async (client) => {
+            getAppWs(appWs.client.socket.url, signalCallback).then(async (client) => {
                 try {
-                    const profilesInfo = await appWs.appInfo({
+                    const profilesInfo = isWeApplet ? appletAppInfo.installedAppInfo : await appWs.appInfo({
                         installed_app_id: MAIN_APP_ID,
                     })
                     const { cell_id: cellId } = profilesInfo.cell_data.find(
-                        ({ role_id }) => role_id === PROFILES_ROLE_ID
+                        ({ role_id }) => role_id === isWeApplet ? 'we' : PROFILES_ROLE_ID
                     )
                     const [_dnaHash, agentPubKey] = cellId
                     // cache buffer version of agentPubKey
@@ -60,7 +64,7 @@ function AppProvided({
                     const cellIdString = cellIdToString(cellId)
                     store.current.dispatch(setProfilesCellId(cellIdString))
                     // all functions of the Profiles DNA
-                    const profilesZomeApi = new ProfilesZomeApi(appWs)
+                    const profilesZomeApi = isWeApplet ? new WeProfilesZomeApi(appWs, weServices) : new ProfilesZomeApi(appWs)
         
                     const profiles = await profilesZomeApi.profile.fetchAgents(cellId)
                     store.current.dispatch(fetchAgents(cellIdString, profiles))
@@ -84,7 +88,7 @@ function AppProvided({
     
     return (
         <Provider store={store.current}>
-            <App />
+            <App isWeApplet={isWeApplet}/>
         </Provider>
     )
 }

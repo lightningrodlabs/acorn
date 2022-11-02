@@ -22,6 +22,7 @@ import App, {
   AppStateProps,
   AppDispatchProps,
   AppMergeProps,
+  AppOwnProps,
 } from './App.component'
 import selectProjectMembersPresent from '../redux/persistent/projects/realtime-info-signal/select'
 
@@ -97,7 +98,7 @@ function mapDispatchToProps(dispatch): AppDispatchProps {
 function mergeProps(
   stateProps: AppStateProps,
   dispatchProps: AppDispatchProps,
-  _ownProps: {}
+  ownProps: AppOwnProps
 ): AppProps {
   const { profilesCellIdString } = stateProps
   let cellId
@@ -108,6 +109,7 @@ function mergeProps(
   return {
     ...stateProps,
     ...dispatchProps,
+    ...ownProps,
     updateWhoami: async (entry: Profile, actionHash: string) => {
       const appWebsocket = await getAppWs()
       const profilesZomeApi = new ProfilesZomeApi(appWebsocket)

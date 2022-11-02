@@ -44,7 +44,9 @@ export type AppStateProps = {
   navigationPreference: 'mouse' | 'trackpad'
   inviteMembersModalShowing: null | string // will be the passphrase if defined
 }
-
+export type AppOwnProps = {
+  isWeApplet: boolean
+}
 export type AppDispatchProps = {
   dispatch: any
   setNavigationPreference: (preference: 'mouse' | 'trackpad') => void
@@ -57,7 +59,7 @@ export type AppMergeProps = {
   updateWhoami: (entry: Profile, actionHash: ActionHashB64) => Promise<void>
 }
 
-export type AppProps = AppStateProps & AppDispatchProps & AppMergeProps
+export type AppProps = AppStateProps & AppDispatchProps & AppMergeProps & AppOwnProps
 
 const App: React.FC<AppProps> = ({
   members,
@@ -75,6 +77,7 @@ const App: React.FC<AppProps> = ({
   openInviteMembersModal,
   hideInviteMembersModal,
   goToOutcome,
+  isWeApplet,
 }) => {
   const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
@@ -100,8 +103,13 @@ const App: React.FC<AppProps> = ({
         <Switch>
           {/* Add new routes in here */}
           <Route path="/intro" component={IntroScreen} />
+          {
+            !isWeApplet && 
+          <>
           <Route path="/register" component={CreateProfilePage} />
           <Route path="/dashboard" component={Dashboard} />
+          </>
+          }
           <Route path="/project/:projectId" component={ProjectView} />
           {/* <Route
             path="/run-update"
