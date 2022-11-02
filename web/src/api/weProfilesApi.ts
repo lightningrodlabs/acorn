@@ -1,20 +1,10 @@
 import { AppWebsocket, CellId } from '@holochain/client'
 import { WeServices } from '@lightningrodlabs/we-applet'
-import { ObjectFlags } from 'typescript'
-import { PROFILES_ZOME_NAME } from '../holochainConfig'
 import { Profile, WhoAmIOutput } from '../types'
 import { AgentPubKeyB64, UpdateInput } from '../types/shared'
-import callZome from './callZome'
 import { WireRecord } from './hdkCrud'
+import { get } from 'svelte/store'
 
-const ZOME_FN_NAMES = {
-  CREATE_WHOAMI: 'create_whoami',
-  CREATE_IMPORTED_PROFILE: 'create_imported_profile',
-  UPDATE_WHOAMI: 'update_whoami',
-  WHOAMI: 'whoami',
-  FETCH_AGENTS: 'fetch_agents',
-  FETCH_AGENT_ADDRESS: 'fetch_agent_address',
-}
 function weToAcornProfile(weProfile: WeProfile): Profile {
     let acornProfile: Profile
     Object.keys(weProfile.fields).forEach((key) => {
@@ -40,8 +30,7 @@ function acornToWeProfile(acornProfile: Profile, nickname: string): WeProfile {
     return weProfile
 }
 async function getMyNickname(weServices: WeServices): Promise<string> {
-    let myWeProfile: WeProfile
-    (await weServices.profilesStore.fetchMyProfile()).subscribe((profile) => {myWeProfile = profile})
+    let myWeProfile = get(await weServices.profilesStore.fetchMyProfile());
     return myWeProfile.nickname
 }
 export interface WeProfile {
@@ -84,8 +73,7 @@ const WeProfilesApi = (appWebsocket: AppWebsocket, weServices: WeServices) => {
         }
     },
     whoami: async (cellId: CellId): Promise<WhoAmIOutput> => {
-        let myWeProfile
-        (await weServices.profilesStore.fetchMyProfile()).subscribe((profile) => {myWeProfile = profile})
+        let myWeProfile = get(await weServices.profilesStore.fetchMyProfile());
         return {
             actionHash: null,
             entryHash: null,
@@ -95,22 +83,12 @@ const WeProfilesApi = (appWebsocket: AppWebsocket, weServices: WeServices) => {
         }
     },
     fetchAgents: async (cellId: CellId): Promise<Array<Profile>> => {
-      return callZome(
-        appWebsocket,
-        cellId,
-        PROFILES_ZOME_NAME,
-        ZOME_FN_NAMES.FETCH_AGENTS,
-        null
-      )
+      let profiles: Array<Profile> = get(await weServices.profilesStore.fetchAllProfiles()).values().map((weProfile) => weToAcornProfile(weProfile));
+      return profiles
     },
     fetchAgentAddress: async (cellId: CellId): Promise<AgentPubKeyB64> => {
-      return callZome(
-        appWebsocket,
-        cellId,
-        PROFILES_ZOME_NAME,
-        ZOME_FN_NAMES.FETCH_AGENT_ADDRESS,
-        null
-      )
+      // is this an alright way to convert the byte array to string?
+      return new TextDecoder().decode(weServices.profilesStore.myAgentPubKey)
     },
   }
 }
