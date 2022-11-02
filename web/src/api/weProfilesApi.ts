@@ -1,24 +1,40 @@
 import { AppWebsocket, CellId } from '@holochain/client'
 import { WeServices } from '@lightningrodlabs/we-applet'
-import { Profile, WhoAmIOutput } from '../types'
+import { Profile, Status, WhoAmIOutput } from '../types'
 import { AgentPubKeyB64, UpdateInput } from '../types/shared'
 import { WireRecord } from './hdkCrud'
 import { get } from 'svelte/store'
 
-function weToAcornProfile(weProfile: WeProfile): Profile {
+function weToAcornProfile(weProfile: WeProfile, weServices: WeServices): Profile {
     let acornProfile: Profile
-    Object.keys(weProfile.fields).forEach((key) => {
+    // constrains the fields only to what acorn wants/expects (in case other fields have been added by other applets)
+    const acornFields = ['firstName', 'lastName', 'handle', 'status', 'avatarUrl', 'agentPubKey', 'isImported']
+
+    // field each acorn profile field, check if it exists in the we Profile, if it does, use that, if not, use defaults
+    acornFields.forEach((key) => {
         if (key === 'isImported') {
-            acornProfile[key] = JSON.parse(weProfile.fields[key])
+            // default to false, unless field exists, then parse into bool from string
+            acornProfile[key] = weProfile.fields[key] ? JSON.parse(weProfile.fields[key]) : false
+        }
+        else if (key === 'status') {
+            // default to offline until the fields exists
+            acornProfile[key] = weProfile.fields[key] ? weProfile.fields[key] as Status : "Offline" as Status
+        }
+        else if (key === 'agentPubKey') {
+            acornProfile[key] = weProfile.fields[key] ? weProfile.fields[key] : new TextDecoder().decode(weServices.profilesStore.myAgentPubKey)
+        }
+        else if (key === 'avatarUrl') {
+            acornProfile[key] = weProfile.fields[key] ? JSON.parse(weProfile.fields[key]) : ''
         }
         else {
-            acornProfile[key] = weProfile.fields[key]
+            // if no first and last name and handle are given, use the nickname
+            acornProfile[key] = weProfile.fields[key] ? weProfile.fields[key] : weProfile.nickname
         }
+
     })
     return acornProfile
 }
-function acornToWeProfile(acornProfile: Profile, nickname: string): WeProfile {
-    let weProfile: WeProfile = { nickname: '', fields: {} }
+function acornToWeProfile(acornProfile: Profile, weProfile: WeProfile): WeProfile {
     Object.keys(acornProfile).forEach((key) => {
         if (key === 'isImported') {
             weProfile.fields[key] = JSON.stringify(acornProfile[key])
@@ -40,7 +56,8 @@ export interface WeProfile {
 const WeProfilesApi = (appWebsocket: AppWebsocket, weServices: WeServices) => {
   return {
     createWhoami: async (cellId: CellId, payload: Profile): Promise<WireRecord<Profile>> => {
-        const profile = acornToWeProfile(payload, await getMyNickname(weServices))
+        let myWeProfile = get(await weServices.profilesStore.fetchMyProfile());
+        const profile = acornToWeProfile(payload, myWeProfile)
         await weServices.profilesStore.updateProfile(profile)
         return {
             actionHash: null,
@@ -51,7 +68,8 @@ const WeProfilesApi = (appWebsocket: AppWebsocket, weServices: WeServices) => {
         }
     },
     createImportedProfile: async (cellId: CellId, payload: Profile): Promise<WireRecord<Profile>> => {
-        const profile = acornToWeProfile(payload, await getMyNickname(weServices))
+        let myWeProfile = get(await weServices.profilesStore.fetchMyProfile());
+        const profile = acornToWeProfile(payload, myWeProfile)
         await weServices.profilesStore.updateProfile(profile)
         return {
             actionHash: null,
@@ -62,7 +80,8 @@ const WeProfilesApi = (appWebsocket: AppWebsocket, weServices: WeServices) => {
         }
     },
     updateWhoami: async (cellId: CellId, payload: UpdateInput<Profile>): Promise<WireRecord<Profile>> => {
-        const profile = acornToWeProfile(payload.entry, await getMyNickname(weServices))
+        let myWeProfile = get(await weServices.profilesStore.fetchMyProfile());
+        const profile = acornToWeProfile(payload.entry, myWeProfile)
         await weServices.profilesStore.updateProfile(profile)
         return {
             actionHash: null,
@@ -77,13 +96,13 @@ const WeProfilesApi = (appWebsocket: AppWebsocket, weServices: WeServices) => {
         return {
             actionHash: null,
             entryHash: null,
-            entry: weToAcornProfile(myWeProfile),
+            entry: weToAcornProfile(myWeProfile, weServices),
             createdAt: null,
             updatedAt: null,
         }
     },
     fetchAgents: async (cellId: CellId): Promise<Array<Profile>> => {
-      let profiles: Array<Profile> = get(await weServices.profilesStore.fetchAllProfiles()).values().map((weProfile) => weToAcornProfile(weProfile));
+      let profiles: Array<Profile> = get(await weServices.profilesStore.fetchAllProfiles()).values().map((weProfile) => weToAcornProfile(weProfile, weServices));
       return profiles
     },
     fetchAgentAddress: async (cellId: CellId): Promise<AgentPubKeyB64> => {

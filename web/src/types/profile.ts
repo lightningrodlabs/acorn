@@ -1,6 +1,6 @@
 import { AgentPubKeyB64, ActionHashB64 } from './shared'
 
-type Status = "Online" | "Offline" | "Away"
+export type Status = "Online" | "Offline" | "Away"
 
 export interface Profile {
     firstName: string,
