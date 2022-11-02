@@ -52,13 +52,22 @@ function AppProvided({
         const prepareStore = async () => {
             getAppWs(appWs.client.socket.url, signalCallback).then(async (client) => {
                 try {
-                    const profilesInfo = isWeApplet ? appletAppInfo.installedAppInfo : await appWs.appInfo({
-                        installed_app_id: MAIN_APP_ID,
-                    })
-                    const { cell_id: cellId } = profilesInfo.cell_data.find(
-                        ({ role_id }) => role_id === isWeApplet ? 'we' : PROFILES_ROLE_ID
-                    )
-                    const [_dnaHash, agentPubKey] = cellId
+                    let agentPubKey
+                    let cellId
+                    if (!isWeApplet) {
+                        const profilesInfo = await appWs.appInfo({
+                            installed_app_id: MAIN_APP_ID,
+                        })
+                        cellId = profilesInfo.cell_data.find(
+                            ({ role_id }) => role_id === PROFILES_ROLE_ID
+                        ).cell_id
+                        agentPubKey = cellId[1]
+                    }
+                    else {
+                        agentPubKey = weServices.profilesStore.myAgentPubKey
+                        // create an empty cellId so functions that require it as an input don't error
+                        cellId = new Uint8Array([])
+                    }
                     // cache buffer version of agentPubKey
                     setAgentPubKey(agentPubKey)
                     const cellIdString = cellIdToString(cellId)
