@@ -32,7 +32,10 @@ function AppProvided({
 }) {
     const [storeLoaded, setStoreLoaded] = useState(false)
     const middleware = [layoutWatcher, realtimeInfoWatcher]
-
+    // assuming only info about current applet is passed in and that the acorn we applet has only one DNA
+    let appletProjectId = isWeApplet ? cellIdToString(appletAppInfo[0].installedAppInfo.cell_data[0].cell_id) : ''
+    console.log('applet app info', appletAppInfo)
+    console.log('applet id: ', appletProjectId)
     // This enables the redux-devtools browser extension
     // which gives really awesome debugging for apps that use redux
     // @ts-ignore
@@ -65,12 +68,15 @@ function AppProvided({
                     }
                     else {
                         agentPubKey = weServices.profilesStore.myAgentPubKey
-                        // create an empty cellId so functions that require it as an input don't error
-                        cellId = new Uint8Array([])
+                        cellId = appletAppInfo[0].installedAppInfo.cell_data[0].cell_id
+                        
+                        // TODO get appletProjectId and assign it to the variable
+                        // this will have to come from `appletAppInfo` but will need to know how to get the installed_app_id of this specific instance of the applet
                     }
                     // cache buffer version of agentPubKey
                     setAgentPubKey(agentPubKey)
                     const cellIdString = cellIdToString(cellId)
+                    // currently for We applet this is being set to the project CellId, not sure how to get the we group cell id without knowing the assigned id
                     store.current.dispatch(setProfilesCellId(cellIdString))
                     // all functions of the Profiles DNA
                     const profilesZomeApi = isWeApplet ? new WeProfilesZomeApi(appWs, weServices) : new ProfilesZomeApi(appWs)
@@ -80,14 +86,15 @@ function AppProvided({
                     const profile = await profilesZomeApi.profile.whoami(cellId)
                     store.current.dispatch(whoami(cellIdString, profile))
                     const agentAddress = await profilesZomeApi.profile.fetchAgentAddress(cellId)
+                    console.log('initial fetch of agent address: ', agentAddress)
                     store.current.dispatch(fetchAgentAddress(cellIdString, agentAddress))
         
                     // which projects do we have installed?
-                    const projectCellIds = await getProjectCellIdStrings()
+                    const projectCellIds = isWeApplet ? [cellIdString] : await getProjectCellIdStrings()
                     store.current.dispatch(setProjectsCellIds(projectCellIds))
                     setStoreLoaded(true)
-                } catch (e) {
-                    console.error(e)
+               } catch (e) {
+                    console.error('error at init', e)
                     return
                 }
             })
@@ -97,7 +104,7 @@ function AppProvided({
     
     return (
         <Provider store={store.current}>
-            <App isWeApplet={isWeApplet}/>
+            <App isWeApplet={isWeApplet} appletProjectId={appletProjectId} weServices={weServices} />
         </Provider>
     )
 }

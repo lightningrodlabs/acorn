@@ -21,12 +21,14 @@ import Footer from '../components/Footer/Footer'
 import CreateProfilePage from './CreateProfilePage/CreateProfilePage.connector'
 import Dashboard from './Dashboard/Dashboard.connector'
 import ProjectView from './ProjectView/ProjectView.connector'
+// import ProjectView from './ProjectView/ProjectView.component'
 // import RunUpdate from './RunUpdate/RunUpdate'
 
 import IntroScreen from '../components/IntroScreen/IntroScreen.connector'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 // all global modals in here
 import GlobalModals from './GlobalModals'
+import { WeServices } from '@lightningrodlabs/we-applet'
 
 export type AppStateProps = {
   profilesCellIdString: string
@@ -45,7 +47,9 @@ export type AppStateProps = {
   inviteMembersModalShowing: null | string // will be the passphrase if defined
 }
 export type AppOwnProps = {
-  isWeApplet: boolean
+  isWeApplet: boolean,
+  appletProjectId: string,
+  weServices: WeServices
 }
 export type AppDispatchProps = {
   dispatch: any
@@ -78,11 +82,13 @@ const App: React.FC<AppProps> = ({
   hideInviteMembersModal,
   goToOutcome,
   isWeApplet,
+  appletProjectId,
+  weServices,
 }) => {
   const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
-
+  const projectRouteString = `/project/${appletProjectId}/map`
   const onProfileSubmit = async (profile: Profile) => {
     await updateWhoami(profile, whoami.actionHash)
     setShowProfileEditForm(false)
@@ -103,22 +109,17 @@ const App: React.FC<AppProps> = ({
         <Switch>
           {/* Add new routes in here */}
           <Route path="/intro" component={IntroScreen} />
-          {
-            !isWeApplet && 
-          <>
           <Route path="/register" component={CreateProfilePage} />
           <Route path="/dashboard" component={Dashboard} />
-          </>
-          }
           <Route path="/project/:projectId" component={ProjectView} />
           {/* <Route
             path="/run-update"
             render={() => <RunUpdate preRestart version={updateAvailable} />}
           />
           <Route path="/finish-update" render={() => <RunUpdate />} /> */}
-          <Route path="/" render={() => <Redirect to="/dashboard" />} />
+          <Route path="/" render={() => isWeApplet ? <Redirect to={projectRouteString} /> : <Redirect to="/dashboard" />} />
         </Switch>
-        {agentAddress && (
+        {(agentAddress || isWeApplet) && (
           <Header
             project={activeProjectMeta}
             {...{

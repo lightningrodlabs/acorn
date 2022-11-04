@@ -25,6 +25,7 @@ import App, {
   AppOwnProps,
 } from './App.component'
 import selectProjectMembersPresent from '../redux/persistent/projects/realtime-info-signal/select'
+import WeProfilesZomeApi from '../api/weProfilesApi'
 
 function mapStateToProps(state: RootState): AppStateProps {
   const {
@@ -112,7 +113,7 @@ function mergeProps(
     ...ownProps,
     updateWhoami: async (entry: Profile, actionHash: string) => {
       const appWebsocket = await getAppWs()
-      const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+      const profilesZomeApi = ownProps.isWeApplet ? new WeProfilesZomeApi(appWebsocket, ownProps.weServices) : new ProfilesZomeApi(appWebsocket)
       const updatedWhoami = await profilesZomeApi.profile.updateWhoami(cellId, {
         entry,
         actionHash,
