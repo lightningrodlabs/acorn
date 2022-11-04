@@ -4,9 +4,10 @@ import { Profile, Status, WhoAmIOutput } from '../types'
 import { AgentPubKeyB64, UpdateInput } from '../types/shared'
 import { WireRecord } from './hdkCrud'
 import { get } from 'svelte/store'
+import { serializeHash } from '../utils'
 
 function weToAcornProfile(weProfile: WeProfile, weServices: WeServices): Profile {
-    let acornProfile: Profile
+    let acornProfile = {}
     // constrains the fields only to what acorn wants/expects (in case other fields have been added by other applets)
     const acornFields = ['firstName', 'lastName', 'handle', 'status', 'avatarUrl', 'agentPubKey', 'isImported']
 
@@ -21,7 +22,8 @@ function weToAcornProfile(weProfile: WeProfile, weServices: WeServices): Profile
             acornProfile[key] = weProfile.fields[key] ? weProfile.fields[key] as Status : "Offline" as Status
         }
         else if (key === 'agentPubKey') {
-            acornProfile[key] = weProfile.fields[key] ? weProfile.fields[key] : new TextDecoder().decode(weServices.profilesStore.myAgentPubKey)
+            acornProfile[key] = weProfile.fields[key] ? weProfile.fields[key] : serializeHash(weServices.profilesStore.myAgentPubKey)
+      return serializeHash(weServices.profilesStore.myAgentPubKey)
         }
         else if (key === 'avatarUrl') {
             acornProfile[key] = weProfile.fields[key] ? JSON.parse(weProfile.fields[key]) : ''
@@ -32,7 +34,7 @@ function weToAcornProfile(weProfile: WeProfile, weServices: WeServices): Profile
         }
 
     })
-    return acornProfile
+    return acornProfile as Profile
 }
 function acornToWeProfile(acornProfile: Profile, weProfile: WeProfile): WeProfile {
     Object.keys(acornProfile).forEach((key) => {
@@ -107,7 +109,7 @@ const WeProfilesApi = (appWebsocket: AppWebsocket, weServices: WeServices) => {
     },
     fetchAgentAddress: async (cellId: CellId): Promise<AgentPubKeyB64> => {
       // is this an alright way to convert the byte array to string?
-      return new TextDecoder().decode(weServices.profilesStore.myAgentPubKey)
+      return serializeHash(weServices.profilesStore.myAgentPubKey)
     },
   }
 }
