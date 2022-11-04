@@ -9,6 +9,9 @@ const mainAppId = fs.readFileSync(
 )
 
 module.exports = {
+  optimization: {
+    minimize: false
+  },
   mode: 'production',
   output: {
     publicPath: './',
@@ -30,6 +33,9 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       filename: 'cssBundle.css'
+    }),
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1,
     }),
   ],
   entry: {
