@@ -14,6 +14,7 @@ web/storybook-static
 web/applet-dist/
 happ/workdir/acorn_applet.happ
 happ/workdir/acorn-applet.webhapp
+happ/workdir/applet/acorn-applet.webhapp
 
 target/
 back/.cargo/
