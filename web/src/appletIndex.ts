@@ -13,13 +13,7 @@ import {
 import React from 'react'
 import ReactDOM from "react-dom"
 import AppProvided from './app-provided'
-// import './variables.scss'
-// import * as thing from './global.scss'
-// import style from '!!raw-loader!./global.scss'
-// import style from '!!raw-loader!./styles.scss'
-// import style from '!!raw-loader!./routes/Dashboard/Dashboard.scss'
 import style from '!!raw-loader!../applet-dist/cssBundle.css'
-
 
 const acornApplet: WeApplet = {
   async appletRenderers(
@@ -41,7 +35,6 @@ const acornApplet: WeApplet = {
         shadowRoot.appendChild(container)
         ReactDOM.render(
           React.createElement(AppProvided, {appWs: appWebsocket, adminWs: adminWebsocket, weServices, appletAppInfo, isWeApplet: true}, null),
-          // element
           container
         );
       },
