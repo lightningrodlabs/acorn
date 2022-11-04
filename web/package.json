@@ -53,6 +53,7 @@
     "electron": "^11.2.1",
     "file-loader": "^6.2.0",
     "intersects": "^2.7.2",
+    "js-base64": "^3.7.2",
     "lodash": "^4.17.19",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.27",
