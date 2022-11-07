@@ -87,14 +87,7 @@ module.exports = {
       // .png, .jpg, .svg images
       {
         test: /\.(png|jpg|svg)$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[name].[ext]',
-            outputPath: 'images/',
-          },
-        },
-        type: 'javascript/auto'
+        type: 'asset/inline'
       },
       // scss
       {
