@@ -36,4 +36,8 @@
     overflow-y: scroll;
     padding-bottom: 4rem;
   }
+
+  .acorn-we-applet .outcome-table-rows {
+    overflow-y: unset;
+  }
 }
