@@ -43,6 +43,10 @@
             color: var(--text-color-placeholder);
           }
         }
+
+        .acorn-we-applet textarea {
+          overflow: hidden;
+        }
       }
     }
 
@@ -123,4 +127,8 @@
       }
     }
   }
+}
+
+.ev-details-wrapper {
+  overflow-y: unset;
 }
