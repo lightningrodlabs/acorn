@@ -40,6 +40,10 @@
   z-index: 2;
 }
 
+.acorn-we-applet .breadcrumbs-overlay {
+  position: absolute;
+}
+
 // breadcrumbs css transitions (animation)
 
 .breadcrumbs-overlay-enter {

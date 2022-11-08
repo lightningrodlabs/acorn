@@ -14,6 +14,7 @@ import React from 'react'
 import ReactDOM from "react-dom"
 import AppProvided from './app-provided'
 import style from '!!raw-loader!../applet-dist/cssBundle.css'
+import './variables.scss'
 
 const acornApplet: WeApplet = {
   async appletRenderers(
@@ -28,6 +29,7 @@ const acornApplet: WeApplet = {
         element.attachShadow({ mode: 'open' });
         const { shadowRoot } = element;
         const container = document.createElement('div');
+        container.className = 'acorn-we-applet';
         let styleTag = document.createElement('style');
         styleTag.innerHTML = style
         shadowRoot.appendChild(styleTag)
