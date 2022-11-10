@@ -4,14 +4,14 @@ import drawAvatar from './drawAvatar'
 
 // TODO
 const drawPeopleActive = ({
-  members,
+  outcomeFocusedMembers,
   xPosition,
   yPosition,
   avatarSize,
   avatarSpace,
   ctx,
 }: {
-  members: Profile[]
+  outcomeFocusedMembers: Profile[]
   xPosition: number
   yPosition: number
   avatarSize: number
@@ -19,7 +19,7 @@ const drawPeopleActive = ({
   ctx: CanvasRenderingContext2D
 }) =>
   draw(ctx, () => {
-    members.forEach((member, index) => {
+    outcomeFocusedMembers.forEach((member, index) => {
       // defensive coding
       if (!member) return
 

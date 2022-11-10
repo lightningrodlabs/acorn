@@ -1,4 +1,4 @@
-import { ComputedOutcome, Tag } from '../../types'
+import { ComputedOutcome, Profile, Tag } from '../../types'
 import { WithActionHash } from '../../types/shared'
 import draw from '../draw'
 import {
@@ -42,6 +42,7 @@ const drawOutcome = ({
   zoomLevel,
   isTopPriority,
   isSelected,
+  outcomeFocusedMembers = [],
   // canvas context
   ctx,
 }: {
@@ -57,11 +58,11 @@ const drawOutcome = ({
   zoomLevel: number
   isTopPriority: boolean
   isSelected: boolean
+  outcomeFocusedMembers?: Profile[]
   // canvas context
   ctx: CanvasRenderingContext2D
 }) =>
   draw(ctx, () => {
-
     /*
       Backgrounds and borders of the card
     */
@@ -192,8 +193,10 @@ const drawOutcome = ({
         ctx,
       })
     )
-    // TODO (later)
-    // drawPeopleActive(argsForDrawPeopleActive({ outcome, ctx }))
+    // Draw project members focused on the Outcome
+    drawPeopleActive(
+      argsForDrawPeopleActive({ outcome, ctx, outcomeFocusedMembers })
+    )
     // TODO (later)
     // drawBeingEdited(argsForDrawBeingEdited({ outcome, ctx }))
   })
