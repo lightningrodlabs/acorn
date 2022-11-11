@@ -8,6 +8,9 @@
   background-color: var(--bg-color-primary);
   z-index: 10000;
 }
+.acorn-we-applet .loading_screen_wrapper {
+  position: absolute;
+}
 
 .loading_screen {
   display: flex;
