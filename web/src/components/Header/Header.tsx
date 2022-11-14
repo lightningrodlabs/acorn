@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import useOnClickOutside from 'use-onclickoutside'
+import onClickOutside from 'react-onclickoutside'
 import './Header.scss'
 
 import { PriorityModeOptions } from '../../constants'
@@ -59,7 +59,8 @@ const Header: React.FC<HeaderProps> = ({
 
   // click handlers
   const ref = useRef()
-  useOnClickOutside(ref, () => {
+  // @ts-ignore
+  onClickOutside(ref, () => {
     setIsExportOpen(false)
   })
   const onClickExport = () => {

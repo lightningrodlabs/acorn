@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import useOnClickOutside from 'use-onclickoutside'
+import onClickOutside from 'react-onclickoutside'
 import { AssigneeWithActionHash } from '../../types'
 import { ActionHashB64 } from '../../types/shared'
 import './PersonInfoPopup.scss'
@@ -16,7 +16,8 @@ const PersonInfoPopup: React.FC<PersonInfoPopupProps> = ({
   deleteOutcomeMember,
 }) => {
   const ref = useRef()
-  useOnClickOutside(ref, onClose)
+  //@ts-ignore
+  onClickOutside(ref, onClose)
 
   // TODO : connect "person-info-popup-name" div to the member's profile page
   // TODO : connect "remove from outcome" button to holochain

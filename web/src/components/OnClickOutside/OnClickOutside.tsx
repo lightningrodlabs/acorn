@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import useOnClickOutside from 'use-onclickoutside'
+import useOnClickOutside from 'react-onclickoutside'
 import './OnClickOutside.scss'
 
 /*
@@ -15,6 +15,7 @@ const OnClickOutside: React.FC<OnClickOutsideProps> = ({
   children, onClickOutside
 }) => {
   const ref = useRef()
+  //@ts-ignore
   useOnClickOutside(ref, onClickOutside)
   return <div ref={ref}>{children}</div>
 }

@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react'
-import useOnClickOutside from 'use-onclickoutside'
 import { NavLink, Route, useRouteMatch } from 'react-router-dom'
 import Zoom from '../Zoom/Zoom.connector'
 import './Footer.scss'
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
+import onClickOutside from 'react-onclickoutside'
 
 import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 
@@ -19,7 +19,7 @@ function Footer() {
     bottomRightPanelClassName + (mapPage ? '' : ' bottom-right-panel-not-map')
 
   const ref = useRef()
-  useOnClickOutside(ref, () => setOpenEntryPointPicker(false))
+  onClickOutside(ref, () => setOpenEntryPointPicker(false))
   const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
 
   return (

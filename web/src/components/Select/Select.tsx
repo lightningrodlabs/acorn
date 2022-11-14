@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import useOnClickOutside from 'use-onclickoutside'
+import onClickOutside from 'react-onclickoutside'
 import { CSSTransition } from 'react-transition-group'
 
 import './Select.scss'
@@ -60,7 +60,8 @@ const Select: React.FC<SelectProps> = ({
   const [selectOpen, setSelectOpen] = useState(false)
 
   const ref = useRef()
-  useOnClickOutside(ref, () => setSelectOpen(false))
+  //@ts-ignore
+  onClickOutside(ref, () => setSelectOpen(false))
 
   const handleOptionClick = (value) => {
     return () => {

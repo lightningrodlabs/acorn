@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import useOnClickOutside from 'use-onclickoutside'
+import onClickOutside from 'react-onclickoutside'
 import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
 
@@ -164,7 +164,8 @@ const MapViewOutcomeTitleForm: React.FC<MapViewOutcomeTitleFormProps> = ({
   }
 
   const ref = useRef()
-  useOnClickOutside(ref, handleSubmit)
+  //@ts-ignore
+  onClickOutside(ref, handleSubmit)
 
   return (
     <div

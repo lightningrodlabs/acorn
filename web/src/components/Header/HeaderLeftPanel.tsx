@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { NavLink, Route, useLocation, useRouteMatch } from 'react-router-dom'
-import useOnClickOutside from 'use-onclickoutside'
+import onClickOutside from 'react-onclickoutside'
 
 import { WireRecord } from '../../api/hdkCrud'
 import {
@@ -103,7 +103,8 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
 
   // for entry points
 
-  useOnClickOutside(ref, () => setOpenEntryPointPicker(false))
+  //@ts-ignore
+  onClickOutside(ref, () => setOpenEntryPointPicker(false))
   const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
 
   return (
