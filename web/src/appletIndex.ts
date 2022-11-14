@@ -30,6 +30,8 @@ const acornApplet: WeApplet = {
         const { shadowRoot } = element;
         const container = document.createElement('div');
         container.className = 'acorn-we-applet';
+        container.style.width = '100%';
+        container.style.height = '100%';
         let styleTag = document.createElement('style');
         styleTag.innerHTML = style
         shadowRoot.appendChild(styleTag)
