@@ -75,6 +75,10 @@
   overflow-y: scroll;
 }
 
+.acorn-we-applet .entry-point-picker-list {
+  overflow-y: unset;
+}
+
 .entry-point-picker-item {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;

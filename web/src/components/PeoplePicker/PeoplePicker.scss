@@ -42,6 +42,10 @@ ul.people-picker-list {
   padding-bottom: 1rem
 }
 
+.acorn-we-applet ul.people-picker-list {
+  overflow-y: unset;
+}
+
 .people-picker-list {
   list-style: none;
   padding: 0;
