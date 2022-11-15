@@ -21,6 +21,10 @@ import { whoami } from './redux/persistent/profiles/who-am-i/actions'
 import { fetchAgentAddress } from './redux/persistent/profiles/agent-address/actions'
 import { getProjectCellIdStrings } from './projectAppIds'
 import WeProfilesZomeApi from './api/weProfilesApi'
+import ProjectsZomeApi from './api/projectsApi'
+import { PriorityMode, ProjectMeta } from './types'
+import { simpleCreateProjectMeta } from './redux/persistent/projects/project-meta/actions'
+import { WireRecord } from './api/hdkCrud'
 
 
 function AppProvided({
@@ -93,6 +97,24 @@ function AppProvided({
                     const projectCellIds = isWeApplet ? [cellIdString] : await getProjectCellIdStrings()
                     store.current.dispatch(setProjectsCellIds(projectCellIds))
                     setStoreLoaded(true)
+
+
+                    // initialize project meta with default values if an applet
+                    if (isWeApplet) {
+                    const projectsZomeApi = new ProjectsZomeApi(appWs)
+                    const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(cellId, {
+                        creatorAgentPubKey: agentAddress,
+                        createdAt: Date.now(), // f64
+                        name: 'project',
+                        image: '',
+                        passphrase: 'test',
+                        isImported: false,
+                        priorityMode: PriorityMode.Universal,
+                        topPriorityOutcomes: [],
+                    })
+                    console.log('created meta', simpleCreatedProjectMeta)
+                    store.current.dispatch(simpleCreateProjectMeta(cellIdToString(cellId), simpleCreatedProjectMeta))
+                    }
                } catch (e) {
                     console.error('error at init', e)
                     return

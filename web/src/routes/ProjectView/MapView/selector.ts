@@ -22,19 +22,7 @@ const selectRenderProps = createSelector(
   ({ state }: InputType) => state.ui.viewport.translate,
   ({ state }: InputType) => state.ui.screensize.width,
   ({ state }: InputType) => state.ui.screensize.height,
-  ({ state, activeProject }: InputType) => {
-    return {
-      creatorAgentPubKey: state.agentAddress,
-      createdAt: Date.now(), // f64
-      name: 'project',
-      image: '',
-      passphrase: 'test',
-      isImported: false,
-      priorityMode: PriorityMode.Universal,
-      topPriorityOutcomes: [],
-      actionHash: '',
-    } as WithActionHash<ProjectMeta>
-  }, // state.projects.projectMeta[activeProject],
+  ({ state, activeProject }: InputType) => state.projects.projectMeta[activeProject],
   ({ state, activeProject }: InputType) =>
     state.projects.entryPoints[activeProject],
   ({ state, activeProject }: InputType) =>
