@@ -28,6 +28,9 @@
   --bg-color-canvas: #f4f2f0; //Isabelline 2
   --bg-color-popup: #ebeae7eb; //Cararra (90% opacity)
   --bg-color-achieved: #e9efe7;
+  // background dark
+  --bg-color-primary-dark: #555555;
+  --bg-color-hover-dark: #c7beb430;
 
   // border
   --border-color-primary: #222222; //Raisin Black
@@ -60,7 +63,8 @@
   --text-color-caption: #bcbcbc; //Silver
   --text-color-placeholder: #bdbdbd; //Philippine Gray
   --text-color-strikethrough: #aea49972; //Pale Silver
-  --text-color-dark-bg: #ffffff;
   --text-color-invalid: #ff5d36;
   --text-color-link: #344cff; //Ultamarine blue
+  // text color on dark background
+  --text-color-dark-bg: #ffffff;
 }
