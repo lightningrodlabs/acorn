@@ -68,6 +68,9 @@ function layoutForTree(
   tree: ComputedOutcome,
   allOutcomeDimensions: {
     [actionHash: ActionHashB64]: { width: number; height: number }
+  },
+  projectCollapsedOutcomes: {
+    [outcomeActionHash: ActionHashB64]: boolean
   }
 ): Layout {
   // create a graph
@@ -80,12 +83,17 @@ function layoutForTree(
   function addOutcome(outcome: ComputedOutcome, node: any, level: number) {
     let numDescendants = 0
     node.children = []
-    outcome.children.forEach((childOutcome) => {
-      const childNode = {}
-      const descendantCount = addOutcome(childOutcome, childNode, level + 1)
-      node.children.push(childNode)
-      numDescendants += descendantCount + 1
-    })
+    // Skip over the Outcome if it is included in the list
+    // of collapsed Outcomes
+    console.log(projectCollapsedOutcomes, !projectCollapsedOutcomes[outcome.actionHash])
+    if (!projectCollapsedOutcomes[outcome.actionHash]) {
+      outcome.children.forEach((childOutcome) => {
+        const childNode = {}
+        const descendantCount = addOutcome(childOutcome, childNode, level + 1)
+        node.children.push(childNode)
+        numDescendants += descendantCount + 1
+      })
+    }
 
     const width = allOutcomeDimensions[outcome.actionHash].width
     // to create the dynamic vertical height, we apply
@@ -127,9 +135,11 @@ function layoutForTree(
 export default function layoutFormula(
   trees: ProjectComputedOutcomes,
   zoomLevel: number,
-  projectTags: WithActionHash<Tag>[]
+  projectTags: WithActionHash<Tag>[],
+  projectCollapsedOutcomes: {
+    [outcomeActionHash: ActionHashB64]: boolean
+  }
 ): Layout {
-
   let coordinates = {}
   // just do this for efficiency, it's not going to
   // get displayed or rendered anywhere
@@ -159,7 +169,7 @@ export default function layoutFormula(
   // distinct tree will be
   const layouts = trees.computedOutcomesAsTree.map((tree) => ({
     outcome: tree,
-    layout: layoutForTree(tree, allOutcomeDimensions),
+    layout: layoutForTree(tree, allOutcomeDimensions, projectCollapsedOutcomes),
   }))
   const HORIZONTAL_TREE_SPACING = 100
   // coordinates will be adjusted each time through this iteration

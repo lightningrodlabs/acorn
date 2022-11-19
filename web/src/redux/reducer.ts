@@ -30,6 +30,7 @@ import localPreferences from './ephemeral/local-preferences/reducer'
 import outcomeConnector from './ephemeral/outcome-connector/reducer'
 import outcomeEditing from './ephemeral/outcome-editing/reducer'
 import realtimeInfo from './ephemeral/realtime-info/reducer'
+import collapsedOutcomes from './ephemeral/collapsed-outcomes/reducer'
 // import anotherone from './another/path'
 
 // combine reducers from each feature to create the top-level reducer
@@ -58,6 +59,7 @@ const rootReducer = combineReducers({
     activeEntryPoints,
     outcomeEditing,
     realtimeInfo,
+    collapsedOutcomes,
   }), // ,
   // anotherone: anotherone
 })

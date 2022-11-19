@@ -6,6 +6,7 @@ import { RootState } from '../../reducer'
 import { LAYOUT_ANIMATION_DURATION_MS } from '../../../constants'
 import { ComputedOutcome } from '../../../types'
 import { getTreesForState } from './get-trees-for-state'
+import { ActionHashB64 } from '../../../types/shared'
 
 // By default, this function performs an animated transition asynchronously
 // between the old state and the new state, in terms of layout.
@@ -26,9 +27,16 @@ export default function performLayoutAnimation(
   const zoomLevel = nextState.ui.viewport.scale
   const projectId = nextState.ui.activeProject
   const projectTags = Object.values(nextState.projects.tags[projectId] || {})
+  const collapsedOutcomes =
+    nextState.ui.collapsedOutcomes.collapsedOutcomes[projectId] || {}
   // this is our final destination layout
   // that we'll be animating to
-  const newLayout = layoutFormula(computedOutcomeTrees, zoomLevel, projectTags)
+  const newLayout = layoutFormula(
+    computedOutcomeTrees,
+    zoomLevel,
+    projectTags,
+    collapsedOutcomes
+  )
 
   // just instantly update to the new layout without
   // animating / transitioning between the current one and the new one

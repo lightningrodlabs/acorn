@@ -74,6 +74,7 @@ import {
   RightOrLeft,
 } from '../tree-logic'
 import { OUTCOME_VERTICAL_HOVER_ALLOWANCE } from '../drawing/dimensions'
+import { collapseOutcome, expandOutcome } from '../redux/ephemeral/collapsed-outcomes/actions'
 
 // The "modifier" key is different on Mac and non-Mac
 // Pattern borrowed from TinyKeys library.
@@ -159,7 +160,9 @@ export default function setupEventListeners(
           !state.ui.expandedView.isOpen
         ) {
           store.dispatch(
-            openExpandedView(state.ui.selection.selectedOutcomes[0])
+            // openExpandedView(state.ui.selection.selectedOutcomes[0])
+            // TODO: REVERT!
+            collapseOutcome(activeProject, state.ui.selection.selectedOutcomes[0])
           )
         }
         break
@@ -597,6 +600,7 @@ export default function setupEventListeners(
     store.dispatch(unsetMousedown())
   }
 
+  // DOUBLE CLICK
   function canvasDoubleclick(event) {
     const state: RootState = store.getState()
     const {
@@ -626,7 +630,9 @@ export default function setupEventListeners(
       scale
     )
     if (outcomeActionHash) {
-      store.dispatch(openExpandedView(outcomeActionHash))
+      // store.dispatch(openExpandedView(outcomeActionHash))
+      // TODO: REVERT
+      store.dispatch(expandOutcome(activeProject, outcomeActionHash))
     } else {
       store.dispatch(openOutcomeForm(calcedPoint.x, calcedPoint.y))
     }

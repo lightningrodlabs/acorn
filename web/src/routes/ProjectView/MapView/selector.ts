@@ -8,6 +8,7 @@ export type InputType = {
   computedOutcomesKeyed: {
     [actionHash: string]: ComputedOutcome
   }
+  computedOutcomesAsTree: ComputedOutcome[]
   activeProject: CellIdString
 }
 
@@ -15,6 +16,7 @@ const selectRenderProps = createSelector(
   ({ state }: InputType) => state.ui.activeEntryPoints,
   ({ state }: InputType) => state.ui.viewport.scale,
   ({ computedOutcomesKeyed }: InputType) => computedOutcomesKeyed,
+  ({ computedOutcomesAsTree }: InputType) => computedOutcomesAsTree,
   ({ state }: InputType) => state.ui.outcomeForm.isOpen,
   ({ state }: InputType) => state.ui.layout,
   ({ state, activeProject }: InputType) =>
@@ -49,6 +51,7 @@ const selectRenderProps = createSelector(
     activeEntryPoints,
     zoomLevel,
     computedOutcomesKeyed,
+    computedOutcomesAsTree,
     outcomeFormIsOpen,
     coordinates,
     projectTags,
@@ -79,6 +82,7 @@ const selectRenderProps = createSelector(
       activeEntryPoints,
       zoomLevel,
       computedOutcomesKeyed,
+      computedOutcomesAsTree,
       screenWidth,
       screenHeight,
       projectTags,

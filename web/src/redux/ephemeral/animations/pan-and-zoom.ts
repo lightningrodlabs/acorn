@@ -35,13 +35,19 @@ export default function panZoomToFrame(
   const { activeProject } = state.ui
   const outcomeTrees = getTreesForState(state)
 
-  const projectTags = Object.values(
-    state.projects.tags[activeProject] || {}
-  )
+  const projectTags = Object.values(state.projects.tags[activeProject] || {})
+
+  const collapsedOutcomes =
+    state.ui.collapsedOutcomes.collapsedOutcomes[activeProject] || {}
   // this is our final destination layout
   // that we'll be animating to
   // use the target zoomLevel
-  const newLayout = layoutFormula(outcomeTrees, zoomLevel, projectTags)
+  const newLayout = layoutFormula(
+    outcomeTrees,
+    zoomLevel,
+    projectTags,
+    collapsedOutcomes
+  )
 
   // this accounts for a special case where the caller doesn't
   // provide the intended Outcome ActionHash, but instead expects this

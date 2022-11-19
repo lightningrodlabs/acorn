@@ -47,7 +47,7 @@ const MapView: React.FC<MapViewProps> = ({
   const store = useStore()
   const refCanvas = useRef<HTMLCanvasElement>()
 
-  const { computedOutcomesKeyed } = useContext(ComputedOutcomeContext)
+  const { computedOutcomesKeyed, computedOutcomesAsTree } = useContext(ComputedOutcomeContext)
 
   // only run this one on initial mount
   useEffect(() => {
@@ -80,6 +80,7 @@ const MapView: React.FC<MapViewProps> = ({
         const renderProps = selectRenderProps({
           state,
           computedOutcomesKeyed,
+          computedOutcomesAsTree,
           activeProject,
         })
         render(renderProps, canvas)
