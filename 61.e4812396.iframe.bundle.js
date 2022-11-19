@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[61],{"./src/images/leaf.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/leaf.e178c05c.svg"}}]);

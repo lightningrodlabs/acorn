@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[73],{"./src/images/mouse.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/mouse.d417ede6.svg"}}]);

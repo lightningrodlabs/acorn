@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[51],{"./src/images/font.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/font.cdbc1621.svg"}}]);

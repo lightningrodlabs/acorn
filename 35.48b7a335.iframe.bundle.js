@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[35],{"./src/images/comment.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/comment.9a44c967.svg"}}]);

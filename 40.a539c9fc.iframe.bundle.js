@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[40],{"./src/images/edit.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/edit.4d7ad5e0.svg"}}]);

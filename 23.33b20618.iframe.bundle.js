@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[23],{"./src/images/calculator-grey.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/calculator-grey.ab59278e.svg"}}]);

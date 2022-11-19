@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[100],{"./src/images/team.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/team.dcb6cc64.svg"}}]);
