@@ -13,6 +13,7 @@ import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
 import ProjectEmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
 import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar.connector'
 import OutcomeConnectors from '../../../components/OutcomeConnectors/OutcomeConnectors.connector'
+import CollapsedChildrenPills from '../../../components/CollapsedChildrenPills/CollapsedChildrenPills.connector'
 import MapViewOutcomeTitleForm from '../../../components/MapViewOutcomeTitleForm/MapViewOutcomeTitleForm.connector'
 import Tooltip from '../../../components/Tooltip/Tooltip'
 
@@ -174,7 +175,12 @@ const MapView: React.FC<MapViewProps> = ({
             canvas={refCanvas.current}
             outcomes={computedOutcomesKeyed}
           />
-        )}
+          )}
+          {/* CollapsedChildrenPills */}
+          <CollapsedChildrenPills
+            canvas={refCanvas.current}
+            outcomes={computedOutcomesKeyed}
+          />
       </div>
 
       <MultiEditBar
