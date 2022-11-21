@@ -56,14 +56,17 @@ const CollapsedChildrenPill: React.FC<CollapsedChildrenPillProps> = ({
 
   // calculate the coordinates on the page, based
   // on what the coordinates on the canvas would be
-  const { x: pillLeftCoordinate, y: pillTopCoordinate } = coordsCanvasToPage(
-    {
-      x: outcomeCoordinates.x + outcomeWidth / 2,
-      y: outcomeCoordinates.y + outcomeHeight + 16,
-    },
-    translate,
-    zoomLevel
-  )
+  // const { x: pillLeftCoordinate, y: pillTopCoordinate } = coordsCanvasToPage(
+  //   {
+  //     x: outcomeCoordinates.x + outcomeWidth / 2,
+  //     y: outcomeCoordinates.y + outcomeHeight + 16,
+  //   },
+  //   translate,
+  //   zoomLevel
+  // )
+
+  const pillLeftCoordinate = outcomeCoordinates.x + outcomeWidth / 2
+  const pillTopCoordinate = outcomeCoordinates.y + outcomeHeight + 16
 
   // a default in case of loading/transitioning
   const computedScope = outcome ? outcome.computedScope : ComputedScope.Small

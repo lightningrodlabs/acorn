@@ -168,6 +168,12 @@ const MapView: React.FC<MapViewProps> = ({
         {/* if the scale is greater than or equal to 60% (or we are creating an Outcome) */}
         {/* because otherwise the font size gets to small and the text is cut off */}
         {outcomeFormIsOpen && <MapViewOutcomeTitleForm projectId={projectId} />}
+        {refCanvas.current && (
+          <CollapsedChildrenPills
+            canvas={refCanvas.current}
+            outcomes={computedOutcomesKeyed}
+          />
+        )}
       </div>
 
       {/* below items inside 'mapview-elements-container' maintain their normal scale */}
@@ -206,12 +212,12 @@ const MapView: React.FC<MapViewProps> = ({
         )}
         {/* CollapsedChildrenPills */}
         {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
-        {refCanvas.current && (
+        {/* {refCanvas.current && (
           <CollapsedChildrenPills
             canvas={refCanvas.current}
             outcomes={computedOutcomesKeyed}
           />
-        )}
+        )} */}
 
         {contextMenuCoordinate && (
           <MapViewContextMenu

@@ -67,7 +67,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
                     computedAchievementStatus.tasksTotal) *
                   100
                 )}
-                % )
+                %)
               </div>
             </div>
           </>
@@ -111,7 +111,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
                       computedAchievementStatus.smallsTotal) *
                     100
                   )}
-                  % )
+                  %)
                 </div>
               )}
             </div>
