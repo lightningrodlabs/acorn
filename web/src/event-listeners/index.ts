@@ -223,12 +223,7 @@ export default function setupEventListeners(
           !state.ui.expandedView.isOpen
         ) {
           store.dispatch(
-            // openExpandedView(state.ui.selection.selectedOutcomes[0])
-            // TODO: REVERT!
-            collapseOutcome(
-              activeProject,
-              state.ui.selection.selectedOutcomes[0]
-            )
+            openExpandedView(state.ui.selection.selectedOutcomes[0])
           )
         }
         break
@@ -665,9 +660,7 @@ export default function setupEventListeners(
       scale
     )
     if (checks.outcomeActionHash) {
-      // store.dispatch(openExpandedView(checks.outcomeActionHash))
-      // TODO: REVERT
-      store.dispatch(expandOutcome(activeProject, checks.outcomeActionHash))
+      store.dispatch(openExpandedView(checks.outcomeActionHash))
     } else {
       store.dispatch(openOutcomeForm(calcedPoint.x, calcedPoint.y))
     }
