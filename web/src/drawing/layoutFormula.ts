@@ -85,7 +85,6 @@ function layoutForTree(
     node.children = []
     // Skip over the Outcome if it is included in the list
     // of collapsed Outcomes
-    console.log(projectCollapsedOutcomes, !projectCollapsedOutcomes[outcome.actionHash])
     if (!projectCollapsedOutcomes[outcome.actionHash]) {
       outcome.children.forEach((childOutcome) => {
         const childNode = {}

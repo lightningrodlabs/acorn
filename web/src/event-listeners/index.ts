@@ -30,8 +30,8 @@ import {
   unsetCoordinate,
   unsetOutcomes,
   setOutcomes,
-  setSize,
-  unsetSize,
+  setContextMenu,
+  unsetContextMenu,
 } from '../redux/ephemeral/mouse/actions'
 import {
   openOutcomeForm,
@@ -66,7 +66,6 @@ import { deleteConnection } from '../redux/persistent/projects/connections/actio
 import { ActionHashB64 } from '../types/shared'
 import { ComputedOutcome, RelationInput } from '../types'
 import { RootState } from '../redux/reducer'
-import { MouseEvent } from 'react'
 import {
   findFirstChildActionHash,
   findParentActionHash,
@@ -74,7 +73,10 @@ import {
   RightOrLeft,
 } from '../tree-logic'
 import { OUTCOME_VERTICAL_HOVER_ALLOWANCE } from '../drawing/dimensions'
-import { collapseOutcome, expandOutcome } from '../redux/ephemeral/collapsed-outcomes/actions'
+import {
+  collapseOutcome,
+  expandOutcome,
+} from '../redux/ephemeral/collapsed-outcomes/actions'
 
 // The "modifier" key is different on Mac and non-Mac
 // Pattern borrowed from TinyKeys library.
@@ -86,6 +88,67 @@ let platform =
   navigator?.userAgentData?.platform || navigator?.platform || 'unknown'
 const isMacish = macOsPattern.test(platform)
 const operatingSystemModifier = isMacish ? 'metaKey' : 'ctrlKey'
+
+enum OutcomeConnectionOrBoth {
+  Both,
+  Outcome,
+  Connection,
+}
+function checkForOutcomeOrConnection(
+  outcomeConnectionOrBoth: OutcomeConnectionOrBoth,
+  state: RootState,
+  x: number,
+  y: number,
+  outcomes: { [actionHash: ActionHashB64]: ComputedOutcome },
+  ctx: CanvasRenderingContext2D,
+  extraVerticalPadding?: number
+) {
+  const {
+    ui: {
+      activeProject,
+      viewport: { translate, scale },
+    },
+  } = state
+  const projectTags = Object.values(state.projects.tags[activeProject] || {})
+  const connections = state.projects.connections[activeProject] || {}
+  const outcomeCoordinates = state.ui.layout
+
+  const doCheckOutcomes =
+    outcomeConnectionOrBoth === OutcomeConnectionOrBoth.Both ||
+    outcomeConnectionOrBoth === OutcomeConnectionOrBoth.Outcome
+  const doCheckConnections =
+    outcomeConnectionOrBoth === OutcomeConnectionOrBoth.Both ||
+    outcomeConnectionOrBoth === OutcomeConnectionOrBoth.Connection
+
+  return {
+    outcomeActionHash: doCheckOutcomes
+      ? checkForOutcomeAtCoordinates(
+          ctx,
+          translate,
+          scale,
+          outcomeCoordinates,
+          projectTags,
+          x,
+          y,
+          outcomes,
+          extraVerticalPadding
+        )
+      : null,
+    connectionActionHash: doCheckConnections
+      ? checkForConnectionAtCoordinates(
+          ctx,
+          translate,
+          scale,
+          outcomeCoordinates,
+          projectTags,
+          connections,
+          x,
+          y,
+          outcomes
+        )
+      : null,
+  }
+}
 
 // ASSUMPTION: one parent (existingParentConnectionAddress)
 function handleMouseUpForOutcomeForm({
@@ -162,7 +225,10 @@ export default function setupEventListeners(
           store.dispatch(
             // openExpandedView(state.ui.selection.selectedOutcomes[0])
             // TODO: REVERT!
-            collapseOutcome(activeProject, state.ui.selection.selectedOutcomes[0])
+            collapseOutcome(
+              activeProject,
+              state.ui.selection.selectedOutcomes[0]
+            )
           )
         }
         break
@@ -340,7 +406,7 @@ export default function setupEventListeners(
     }
   }
 
-  function canvasMousemove(event) {
+  function canvasMousemove(event: MouseEvent) {
     const state: RootState = store.getState()
     const {
       ui: {
@@ -353,7 +419,6 @@ export default function setupEventListeners(
         layout: outcomeCoordinates,
       },
     } = state
-    const connections = state.projects.connections[activeProject] || {}
     const projectTags = Object.values(state.projects.tags[activeProject] || {})
 
     const convertedCurrentMouse = coordsPageToCanvas(
@@ -393,58 +458,50 @@ export default function setupEventListeners(
     // for hover, we use OUTCOME_VERTICAL_HOVER_ALLOWANCE
     // to make it so that the OutcomeConnector can display
     // without glitchiness
-    const outcomeActionHash = checkForOutcomeAtCoordinates(
-      ctx,
-      translate,
-      scale,
-      outcomeCoordinates,
-      projectTags,
+    const checks = checkForOutcomeOrConnection(
+      OutcomeConnectionOrBoth.Both,
+      state,
       event.clientX,
       event.clientY,
       outcomes,
+      ctx,
       OUTCOME_VERTICAL_HOVER_ALLOWANCE
     )
-    const connectionAddress = checkForConnectionAtCoordinates(
-      ctx,
-      translate,
-      scale,
-      outcomeCoordinates,
-      projectTags,
-      connections,
-      event.clientX,
-      event.clientY,
-      outcomes
-    )
     if (
-      connectionAddress &&
-      state.ui.hover.hoveredConnection !== connectionAddress
+      checks.connectionActionHash &&
+      state.ui.hover.hoveredConnection !== checks.connectionActionHash
     ) {
-      store.dispatch(hoverConnection(connectionAddress))
-    } else if (!connectionAddress && state.ui.hover.hoveredConnection) {
+      store.dispatch(hoverConnection(checks.connectionActionHash))
+    } else if (
+      !checks.connectionActionHash &&
+      state.ui.hover.hoveredConnection
+    ) {
       store.dispatch(unhoverConnection())
     }
 
     if (
-      outcomeActionHash &&
-      state.ui.hover.hoveredOutcome !== outcomeActionHash
+      checks.outcomeActionHash &&
+      state.ui.hover.hoveredOutcome !== checks.outcomeActionHash
     ) {
-      store.dispatch(hoverOutcome(outcomeActionHash))
+      store.dispatch(hoverOutcome(checks.outcomeActionHash))
       // hook up if the connection connector to a new Outcome
       // if we are using the connection connector
       // and IMPORTANTLY if Outcome is in the list of `validToAddresses`
       if (
         state.ui.outcomeConnector.fromAddress &&
-        state.ui.outcomeConnector.validToAddresses.includes(outcomeActionHash)
+        state.ui.outcomeConnector.validToAddresses.includes(
+          checks.outcomeActionHash
+        )
       ) {
-        store.dispatch(setOutcomeConnectorTo(outcomeActionHash))
+        store.dispatch(setOutcomeConnectorTo(checks.outcomeActionHash))
       }
-    } else if (!outcomeActionHash && state.ui.hover.hoveredOutcome) {
+    } else if (!checks.outcomeActionHash && state.ui.hover.hoveredOutcome) {
       store.dispatch(unhoverOutcome())
       store.dispatch(setOutcomeConnectorTo(null))
     }
   }
 
-  function canvasWheel(event) {
+  function canvasWheel(event: WheelEvent) {
     const state = store.getState()
     const {
       ui: {
@@ -453,6 +510,7 @@ export default function setupEventListeners(
     } = state
     if (!state.ui.outcomeForm.isOpen) {
       store.dispatch(unhoverOutcome())
+      store.dispatch(unsetContextMenu())
       // from https://medium.com/@auchenberg/detecting-multi-touch-trackpad-gestures-in-javascript-a2505babb10e
       // and https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-translate
       if (navigation === MOUSE || (navigation === TRACKPAD && event.ctrlKey)) {
@@ -474,7 +532,7 @@ export default function setupEventListeners(
     event.preventDefault()
   }
 
-  function canvasClick(event) {
+  function canvasClick(event: MouseEvent) {
     const state: RootState = store.getState()
     // outcomesAddresses are Outcomes to be selected
     const {
@@ -487,45 +545,20 @@ export default function setupEventListeners(
       // finishing a drag box selection action
       outcomesAddresses.forEach((value) => store.dispatch(selectOutcome(value)))
     } else {
-      // check for node in clicked area
+      // check for Outcome or Connection at clicked location
       // select it if so
-      const {
-        ui: {
-          activeProject,
-          viewport: { translate, scale },
-        },
-      } = state
-      const outcomeCoordinates = state.ui.layout
-      const connections = state.projects.connections[activeProject] || {}
-      const projectTags = Object.values(
-        state.projects.tags[activeProject] || {}
-      )
-
-      const clickedConnectionAddress = checkForConnectionAtCoordinates(
-        ctx,
-        translate,
-        scale,
-        outcomeCoordinates,
-        projectTags,
-        connections,
+      const checks = checkForOutcomeOrConnection(
+        OutcomeConnectionOrBoth.Both,
+        state,
         event.clientX,
         event.clientY,
-        outcomes
+        outcomes,
+        ctx
       )
-      const clickedOutcomeAddress = checkForOutcomeAtCoordinates(
-        ctx,
-        translate,
-        scale,
-        outcomeCoordinates,
-        projectTags,
-        event.clientX,
-        event.clientY,
-        outcomes
-      )
-      if (clickedConnectionAddress) {
+      if (checks.connectionActionHash) {
         store.dispatch(unselectAll())
-        store.dispatch(selectConnection(clickedConnectionAddress))
-      } else if (clickedOutcomeAddress) {
+        store.dispatch(selectConnection(checks.connectionActionHash))
+      } else if (checks.outcomeActionHash) {
         // if the shift key is being use, do an 'additive' select
         // where you add the Outcome to the list of selected
         if (!event.shiftKey) {
@@ -534,12 +567,13 @@ export default function setupEventListeners(
         // if using shift, and Outcome is already selected, unselect it
         if (
           event.shiftKey &&
-          state.ui.selection.selectedOutcomes.indexOf(clickedOutcomeAddress) >
-            -1
+          state.ui.selection.selectedOutcomes.indexOf(
+            checks.outcomeActionHash
+          ) > -1
         ) {
-          store.dispatch(unselectOutcome(clickedOutcomeAddress))
+          store.dispatch(unselectOutcome(checks.outcomeActionHash))
         } else {
-          store.dispatch(selectOutcome(clickedOutcomeAddress))
+          store.dispatch(selectOutcome(checks.outcomeActionHash))
         }
       } else {
         // If nothing was selected, that means empty
@@ -551,14 +585,19 @@ export default function setupEventListeners(
     // clear box selection vars
     store.dispatch(unsetCoordinate())
     store.dispatch(unsetOutcomes())
-    store.dispatch(unsetSize())
+    store.dispatch(unsetContextMenu())
   }
 
-  function canvasMousedown(event) {
-    store.dispatch(setMousedown())
+  function canvasMousedown(event: MouseEvent) {
+    // don't set mouseDown if it's a right click
+    const RIGHT_CLICK_BUTTON = 2
+    if (event.button !== RIGHT_CLICK_BUTTON) {
+      store.dispatch(setMousedown())
+      store.dispatch(unsetContextMenu())
+    }
   }
 
-  function canvasMouseup(event) {
+  function canvasMouseup(event: MouseEvent) {
     const state = store.getState()
     // ASSUMPTION: one parent (existingParentConnectionAddress)
     const {
@@ -601,7 +640,7 @@ export default function setupEventListeners(
   }
 
   // DOUBLE CLICK
-  function canvasDoubleclick(event) {
+  function canvasDoubleclick(event: MouseEvent) {
     const state: RootState = store.getState()
     const {
       ui: {
@@ -609,17 +648,13 @@ export default function setupEventListeners(
         viewport: { translate, scale },
       },
     } = state
-    const projectTags = Object.values(state.projects.tags[activeProject] || {})
-    const outcomeCoordinates = state.ui.layout
-    const outcomeActionHash = checkForOutcomeAtCoordinates(
-      ctx,
-      translate,
-      scale,
-      outcomeCoordinates,
-      projectTags,
+    const checks = checkForOutcomeOrConnection(
+      OutcomeConnectionOrBoth.Outcome,
+      state,
       event.clientX,
       event.clientY,
-      outcomes
+      outcomes,
+      ctx
     )
     const calcedPoint = coordsPageToCanvas(
       {
@@ -629,12 +664,35 @@ export default function setupEventListeners(
       translate,
       scale
     )
-    if (outcomeActionHash) {
-      // store.dispatch(openExpandedView(outcomeActionHash))
+    if (checks.outcomeActionHash) {
+      // store.dispatch(openExpandedView(checks.outcomeActionHash))
       // TODO: REVERT
-      store.dispatch(expandOutcome(activeProject, outcomeActionHash))
+      store.dispatch(expandOutcome(activeProject, checks.outcomeActionHash))
     } else {
       store.dispatch(openOutcomeForm(calcedPoint.x, calcedPoint.y))
+    }
+  }
+
+  function canvasContextMenu(event: MouseEvent) {
+    event.preventDefault()
+    const state: RootState = store.getState()
+    const checks = checkForOutcomeOrConnection(
+      OutcomeConnectionOrBoth.Outcome,
+      state,
+      event.clientX,
+      event.clientY,
+      outcomes,
+      ctx
+    )
+    // at this time, we are only displaying the ContextMenu if you
+    // right-clicked ON an Outcome
+    if (checks.outcomeActionHash) {
+      store.dispatch(
+        setContextMenu(checks.outcomeActionHash, {
+          x: event.clientX,
+          y: event.clientY,
+        })
+      )
     }
   }
 
@@ -651,6 +709,7 @@ export default function setupEventListeners(
   // This listener is bound to the canvas only so clicks on other parts of
   // the UI like the OutcomeForm won't trigger it.
   canvas.addEventListener('click', canvasClick)
+  canvas.addEventListener('contextmenu', canvasContextMenu)
 
   return function cleanup() {
     window.removeEventListener('resize', windowResize)
@@ -666,5 +725,6 @@ export default function setupEventListeners(
     // This listener is bound to the canvas only so clicks on other parts of
     // the UI like the OutcomeForm won't trigger it.
     canvas.removeEventListener('click', canvasClick)
+    canvas.removeEventListener('contextmenu', canvasContextMenu)
   }
 }

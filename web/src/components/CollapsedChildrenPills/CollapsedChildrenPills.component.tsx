@@ -92,6 +92,7 @@ const CollapsedChildrenPill: React.FC<CollapsedChildrenPillProps> = ({
         childrenCount={childrenCount}
         computedScope={computedScope}
         computedAchievementStatus={computedAchievementStatus}
+        hideMoreInfo
       />
     </div>
   )

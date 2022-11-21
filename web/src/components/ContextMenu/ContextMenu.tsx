@@ -4,7 +4,7 @@ import './ContextMenu.scss'
 
 export type ContextMenuProps = {
   // proptypes
-  menuWidth: string
+  menuWidth?: string
   outcomeActionHash: ActionHashB64
   actions: {
     icon?: React.ReactElement

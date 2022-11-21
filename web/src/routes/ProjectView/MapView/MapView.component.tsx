@@ -18,13 +18,29 @@ import MapViewOutcomeTitleForm from '../../../components/MapViewOutcomeTitleForm
 import Tooltip from '../../../components/Tooltip/Tooltip'
 
 import './MapView.scss'
+import MapViewContextMenu from '../../../components/MapViewContextMenu/MapViewContextMenu'
 
-export type MapViewProps = {
+export type MapViewDispatchProps = {
+  expandOutcome: (
+    projectCellId: CellIdString,
+    outcomeActionHash: ActionHashB64
+  ) => void
+  collapseOutcome: (
+    projectCellId: CellIdString,
+    outcomeActionHash: ActionHashB64
+  ) => void
+  unsetContextMenu: () => void
+}
+
+export type MapViewStateProps = {
   projectId: CellIdString
   hasMultiSelection: boolean
   outcomeFormIsOpen: boolean
   hoveredOutcomeAddress: ActionHashB64 | null
   liveMouseCoordinates: { x: number; y: number }
+  contextMenuCoordinate: { x: number; y: number }
+  contextMenuOutcomeActionHash: ActionHashB64
+  contextMenuOutcomeIsCollapsed: boolean
   mouseIsDown: boolean
   translate: {
     x: number
@@ -34,6 +50,8 @@ export type MapViewProps = {
   showEmptyState: boolean
 }
 
+export type MapViewProps = MapViewDispatchProps & MapViewStateProps
+
 const MapView: React.FC<MapViewProps> = ({
   projectId,
   showEmptyState,
@@ -42,13 +60,21 @@ const MapView: React.FC<MapViewProps> = ({
   outcomeFormIsOpen,
   hoveredOutcomeAddress,
   liveMouseCoordinates,
+  contextMenuCoordinate,
+  contextMenuOutcomeActionHash,
+  contextMenuOutcomeIsCollapsed,
   mouseIsDown,
   hasMultiSelection,
+  expandOutcome,
+  collapseOutcome,
+  unsetContextMenu,
 }) => {
   const store = useStore()
   const refCanvas = useRef<HTMLCanvasElement>()
 
-  const { computedOutcomesKeyed, computedOutcomesAsTree } = useContext(ComputedOutcomeContext)
+  const { computedOutcomesKeyed, computedOutcomesAsTree } = useContext(
+    ComputedOutcomeContext
+  )
 
   // only run this one on initial mount
   useEffect(() => {
@@ -149,38 +175,55 @@ const MapView: React.FC<MapViewProps> = ({
       {/* in coordinates that match with the outcomes being drawn on the canvas */}
       <div className="mapview-elements-container">
         {/* Outcome Statement Tooltip */}
-        <div
-          className={
-            outcomeStatementTooltipVisible
-              ? 'outcome-statement-tooltip-visible'
-              : ''
-          }
-          style={{
-            position: 'absolute',
-            left: `${pageMouseCoords.x + 2}px`,
-            top: `${pageMouseCoords.y + 16}px`,
-          }}
-        >
-          <Tooltip
-            noTransition
-            noTriangle
-            allowWrapping
-            text={outcomeStatementTooltipText}
-          />
-        </div>
+        {!contextMenuCoordinate && (
+          <div
+            className={
+              outcomeStatementTooltipVisible
+                ? 'outcome-statement-tooltip-visible'
+                : ''
+            }
+            style={{
+              position: 'absolute',
+              left: `${pageMouseCoords.x + 2}px`,
+              top: `${pageMouseCoords.y + 16}px`,
+            }}
+          >
+            <Tooltip
+              noTransition
+              noTriangle
+              allowWrapping
+              text={outcomeStatementTooltipText}
+            />
+          </div>
+        )}
         {/* Outcome Connectors */}
         {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
-        {refCanvas.current && zoomLevel >= 0.12 && (
+        {refCanvas.current && zoomLevel >= 0.12 && !contextMenuCoordinate && (
           <OutcomeConnectors
             canvas={refCanvas.current}
             outcomes={computedOutcomesKeyed}
           />
-          )}
-          {/* CollapsedChildrenPills */}
+        )}
+        {/* CollapsedChildrenPills */}
+        {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
+        {refCanvas.current && (
           <CollapsedChildrenPills
             canvas={refCanvas.current}
             outcomes={computedOutcomesKeyed}
           />
+        )}
+
+        {contextMenuCoordinate && (
+          <MapViewContextMenu
+            projectCellId={projectId}
+            isCollapsed={contextMenuOutcomeIsCollapsed}
+            outcomeActionHash={contextMenuOutcomeActionHash}
+            contextMenuCoordinate={contextMenuCoordinate}
+            expandOutcome={expandOutcome}
+            collapseOutcome={collapseOutcome}
+            unsetContextMenu={unsetContextMenu}
+          />
+        )}
       </div>
 
       <MultiEditBar

@@ -9,12 +9,14 @@ export type DescendantsAchievementStatusProps = {
   childrenCount: number
   computedScope: ComputedScope
   computedAchievementStatus: ComputedAchievementStatus
+  hideMoreInfo?: boolean
 }
 
 const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> = ({
   childrenCount,
   computedScope,
   computedAchievementStatus,
+  hideMoreInfo
 }) => {
   return (
     <div className="descendants-achievement-status">
@@ -129,7 +131,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
 
       {/* More info icon */}
       {/* Don't show more info icon if it's small scope */}
-      {computedScope !== ComputedScope.Small && (
+      {computedScope !== ComputedScope.Small && !hideMoreInfo && (
         <div className="more-info-wrapper">
           <div>
             <a href="https://docs.acorn.software/outcomes/progress-indicator" target="_blank">
