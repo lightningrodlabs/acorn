@@ -1,6 +1,8 @@
+// update bar fade in and out animation
+
 .update-bar-enter {
   opacity: 0;
-  margin-top: -45px;
+  margin-top: -64px;
 }
 
 .update-bar-enter-active {
@@ -16,35 +18,69 @@
 
 .update-bar-exit-active {
   opacity: 0;
-  margin-top: -46px;
+  margin-top: -64px;
   transition: 0.4s all;
 }
 
 .update-bar-wrapper {
-  background-color: #00BEB0;
-  color: #ffffff;
-  padding: 10px;
-  font-family: 'PlusJakartaSans-bold', Helvetica, Sans-Serif;
-  line-height: 1.45;
   display: flex;
-  align-items: center;
-  height: 40px;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  font: 0.875rem var(--font-family-primary-bold);
+  background-color: var(--bg-color-secondary);
+  box-shadow: 0rem 0rem 1.25rem var(--shadow-color);
+  padding: 0.75rem 1rem;
   box-sizing: border-box;
-}
+  width: 100%;
+  border-radius: 0.75rem;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.45;
 
-.update-bar-link {
-  text-decoration: underline;
-  margin-left: 4px;
-  cursor: pointer;
-  opacity: 1;
-  transition: 0.2s opacity;
-}
+  .update-bar-text-wrapper {
+    text-indent: -1rem;
+    flex: 1;
+    padding: 0.25rem 1.5rem;
+  }
 
-.update-bar-link:hover {
-  opacity: 0.8;
-}
+  .update-bar-action-buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: fit-content;
 
-.update-bar-close {
-  position: absolute;
-  right: 10px;
+    .update-bar-action-button-primary {
+      font: 0.875rem var(--font-family-primary-extrabold);
+      color: var(--color-myrtle-green);
+      padding: 0.25rem 0.75rem;
+      cursor: pointer;
+
+      transition: 0.2s all ease;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+
+    .update-bar-action-button-secondary {
+      font: 0.825rem var(--font-family-primary-medium);
+      color: var(--text-color-tertiary);
+      padding: 0.25rem 0.75rem;
+      cursor: pointer;
+      margin-right: 0.25rem;
+      transition: 0.2s all ease;
+
+      &:hover {
+        color: var(--text-color-secondary);
+      }
+    }
+  }
+
+  .update-bar-close {
+    margin-left: 0.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
 }
