@@ -18,6 +18,7 @@ import { RootState } from '../../reducer'
 import { CellIdString } from '../../../types/shared'
 import { FETCH_OUTCOME_MEMBERS } from '../../persistent/projects/outcome-members/actions'
 import { FETCH_TAGS } from '../../persistent/projects/tags/actions'
+import { COLLAPSE_OUTCOME, EXPAND_ALL_OUTCOMES, EXPAND_OUTCOME } from '../collapsed-outcomes/actions'
 
 const isOneOfLayoutAffectingActions = (action: {
   type: string
@@ -46,7 +47,10 @@ const isOneOfLayoutAffectingActions = (action: {
     type === FETCH_CONNECTIONS ||
     type === FETCH_OUTCOME_MEMBERS ||
     type === FETCH_TAGS ||
-    type === CHANGE_SCALE
+    type === CHANGE_SCALE ||
+    type === COLLAPSE_OUTCOME ||
+    type === EXPAND_OUTCOME ||
+    type === EXPAND_ALL_OUTCOMES
   )
 }
 

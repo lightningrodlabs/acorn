@@ -93,6 +93,7 @@ export type renderProps = {
   computedOutcomesKeyed: {
     [outcomeActionHash: ActionHashB64]: ComputedOutcome
   }
+  computedOutcomesAsTree: ComputedOutcome[]
 }
 
 // Render is responsible for painting all the existing outcomes & connections,
@@ -110,6 +111,7 @@ function render(
     translate,
     activeEntryPoints,
     computedOutcomesKeyed,
+    computedOutcomesAsTree,
     connections,
     outcomeMembers,
     entryPoints,

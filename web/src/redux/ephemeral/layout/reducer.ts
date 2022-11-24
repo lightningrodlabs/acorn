@@ -10,7 +10,7 @@ export default function (
   const { payload, type } = action
   switch (type) {
     case UPDATE_LAYOUT:
-      return payload
+      return payload.layout
     default:
       return state
   }

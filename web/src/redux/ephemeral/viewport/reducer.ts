@@ -1,3 +1,4 @@
+import { UPDATE_LAYOUT } from '../layout/actions'
 import {
   RESET_TRANSLATE_AND_SCALE,
   CHANGE_TRANSLATE,
@@ -14,7 +15,7 @@ const defaultState: ViewportState = {
   scale: 0.5, // default zoom level
 }
 
-const LOWEST_ZOOM_THRESHOLD = 0.02
+const LOWEST_ZOOM_THRESHOLD = 0.1
 const HIGHEST_ZOOM_THRESHOLD = 2.5
 
 export default function (state = defaultState, action: any): ViewportState {
@@ -28,11 +29,23 @@ export default function (state = defaultState, action: any): ViewportState {
           y: state.translate.y + payload.y,
         },
       }
+    case UPDATE_LAYOUT:
+      if (payload.newTranslate) {
+        return {
+          ...state,
+          translate: payload.newTranslate,
+        }
+      } else {
+        return state
+      }
     case CHANGE_ALL_DIRECT:
       return payload
     case CHANGE_SCALE:
-      const { zoom, mouseX, mouseY } = payload
-      if (state.scale * zoom < LOWEST_ZOOM_THRESHOLD || state.scale * zoom > HIGHEST_ZOOM_THRESHOLD) {
+      const { zoom, pageCoord } = payload
+      if (
+        state.scale * zoom < LOWEST_ZOOM_THRESHOLD ||
+        state.scale * zoom > HIGHEST_ZOOM_THRESHOLD
+      ) {
         return state
       }
       // https://stackoverflow.com/a/20821545/2132755 helped
@@ -40,8 +53,8 @@ export default function (state = defaultState, action: any): ViewportState {
         ...state,
         scale: state.scale * zoom,
         translate: {
-          x: mouseX - (mouseX - state.translate.x) * zoom,
-          y: mouseY - (mouseY - state.translate.y) * zoom,
+          x: pageCoord.x - (pageCoord.x - state.translate.x) * zoom,
+          y: pageCoord.y - (pageCoord.y - state.translate.y) * zoom,
         },
       }
     case RESET_TRANSLATE_AND_SCALE:

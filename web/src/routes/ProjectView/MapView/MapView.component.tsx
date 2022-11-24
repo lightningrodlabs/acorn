@@ -13,17 +13,34 @@ import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
 import ProjectEmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
 import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar.connector'
 import OutcomeConnectors from '../../../components/OutcomeConnectors/OutcomeConnectors.connector'
+import CollapsedChildrenPills from '../../../components/CollapsedChildrenPills/CollapsedChildrenPills.connector'
 import MapViewOutcomeTitleForm from '../../../components/MapViewOutcomeTitleForm/MapViewOutcomeTitleForm.connector'
 import Tooltip from '../../../components/Tooltip/Tooltip'
 
 import './MapView.scss'
+import MapViewContextMenu from '../../../components/MapViewContextMenu/MapViewContextMenu'
 
-export type MapViewProps = {
+export type MapViewDispatchProps = {
+  expandOutcome: (
+    projectCellId: CellIdString,
+    outcomeActionHash: ActionHashB64
+  ) => void
+  collapseOutcome: (
+    projectCellId: CellIdString,
+    outcomeActionHash: ActionHashB64
+  ) => void
+  unsetContextMenu: () => void
+}
+
+export type MapViewStateProps = {
   projectId: CellIdString
   hasMultiSelection: boolean
   outcomeFormIsOpen: boolean
   hoveredOutcomeAddress: ActionHashB64 | null
   liveMouseCoordinates: { x: number; y: number }
+  contextMenuCoordinate: { x: number; y: number }
+  contextMenuOutcomeActionHash: ActionHashB64
+  contextMenuOutcomeIsCollapsed: boolean
   mouseIsDown: boolean
   translate: {
     x: number
@@ -33,6 +50,8 @@ export type MapViewProps = {
   showEmptyState: boolean
 }
 
+export type MapViewProps = MapViewDispatchProps & MapViewStateProps
+
 const MapView: React.FC<MapViewProps> = ({
   projectId,
   showEmptyState,
@@ -41,13 +60,21 @@ const MapView: React.FC<MapViewProps> = ({
   outcomeFormIsOpen,
   hoveredOutcomeAddress,
   liveMouseCoordinates,
+  contextMenuCoordinate,
+  contextMenuOutcomeActionHash,
+  contextMenuOutcomeIsCollapsed,
   mouseIsDown,
   hasMultiSelection,
+  expandOutcome,
+  collapseOutcome,
+  unsetContextMenu,
 }) => {
   const store = useStore()
   const refCanvas = useRef<HTMLCanvasElement>()
 
-  const { computedOutcomesKeyed } = useContext(ComputedOutcomeContext)
+  const { computedOutcomesKeyed, computedOutcomesAsTree } = useContext(
+    ComputedOutcomeContext
+  )
 
   // only run this one on initial mount
   useEffect(() => {
@@ -80,6 +107,7 @@ const MapView: React.FC<MapViewProps> = ({
         const renderProps = selectRenderProps({
           state,
           computedOutcomesKeyed,
+          computedOutcomesAsTree,
           activeProject,
         })
         render(renderProps, canvas)
@@ -140,6 +168,12 @@ const MapView: React.FC<MapViewProps> = ({
         {/* if the scale is greater than or equal to 60% (or we are creating an Outcome) */}
         {/* because otherwise the font size gets to small and the text is cut off */}
         {outcomeFormIsOpen && <MapViewOutcomeTitleForm projectId={projectId} />}
+        {refCanvas.current && (
+          <CollapsedChildrenPills
+            canvas={refCanvas.current}
+            outcomes={computedOutcomesKeyed}
+          />
+        )}
       </div>
 
       {/* below items inside 'mapview-elements-container' maintain their normal scale */}
@@ -147,31 +181,53 @@ const MapView: React.FC<MapViewProps> = ({
       {/* in coordinates that match with the outcomes being drawn on the canvas */}
       <div className="mapview-elements-container">
         {/* Outcome Statement Tooltip */}
-        <div
-          className={
-            outcomeStatementTooltipVisible
-              ? 'outcome-statement-tooltip-visible'
-              : ''
-          }
-          style={{
-            position: 'absolute',
-            left: `${pageMouseCoords.x + 2}px`,
-            top: `${pageMouseCoords.y + 16}px`,
-          }}
-        >
-          <Tooltip
-            noTransition
-            noTriangle
-            allowWrapping
-            text={outcomeStatementTooltipText}
-          />
-        </div>
+        {!contextMenuCoordinate && (
+          <div
+            className={
+              outcomeStatementTooltipVisible
+                ? 'outcome-statement-tooltip-visible'
+                : ''
+            }
+            style={{
+              position: 'absolute',
+              left: `${pageMouseCoords.x + 2}px`,
+              top: `${pageMouseCoords.y + 16}px`,
+            }}
+          >
+            <Tooltip
+              noTransition
+              noTriangle
+              allowWrapping
+              text={outcomeStatementTooltipText}
+            />
+          </div>
+        )}
         {/* Outcome Connectors */}
         {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
-        {refCanvas.current && zoomLevel >= 0.12 && (
+        {refCanvas.current && zoomLevel >= 0.12 && !contextMenuCoordinate && (
           <OutcomeConnectors
             canvas={refCanvas.current}
             outcomes={computedOutcomesKeyed}
+          />
+        )}
+        {/* CollapsedChildrenPills */}
+        {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
+        {/* {refCanvas.current && (
+          <CollapsedChildrenPills
+            canvas={refCanvas.current}
+            outcomes={computedOutcomesKeyed}
+          />
+        )} */}
+
+        {contextMenuCoordinate && (
+          <MapViewContextMenu
+            projectCellId={projectId}
+            isCollapsed={contextMenuOutcomeIsCollapsed}
+            outcomeActionHash={contextMenuOutcomeActionHash}
+            contextMenuCoordinate={contextMenuCoordinate}
+            expandOutcome={expandOutcome}
+            collapseOutcome={collapseOutcome}
+            unsetContextMenu={unsetContextMenu}
           />
         )}
       </div>

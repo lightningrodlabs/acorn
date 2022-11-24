@@ -8,7 +8,11 @@ export type StateZoomProps = {
 }
 
 export type DispatchZoomProps = {
-  zoom: (zoom: number, x: number, y: number, instant?: boolean) => void
+  zoom: (
+    zoom: number,
+    pageCoord: { x: number; y: number },
+    instant?: boolean
+  ) => void
 }
 
 export type ZoomProps = StateZoomProps & DispatchZoomProps
@@ -24,14 +28,14 @@ class Zoom extends React.Component<ZoomProps> {
     const zoom = Math.exp(1 * zoomIntensity)
     let { width, height } = this.props.screensize
     const instant = true
-    this.props.zoom(zoom, width / 2, height / 2, instant)
+    this.props.zoom(zoom, { x: width / 2, y: height / 2 }, instant)
   }
   zoomOut() {
     const zoomIntensity = 0.05
     const zoom = Math.exp(-1 * zoomIntensity)
     let { width, height } = this.props.screensize
     const instant = true
-    this.props.zoom(zoom, width / 2, height / 2, instant)
+    this.props.zoom(zoom, { x: width / 2, y: height / 2 }, instant)
   }
   render() {
     return (

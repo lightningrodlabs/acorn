@@ -12,8 +12,8 @@ function mapStateToProps(state: RootState): StateZoomProps {
 
 function mapDispatchToProps(dispatch: any): DispatchZoomProps {
   return {
-    zoom: (zoom, x, y, instant) => {
-      return dispatch(changeScale(zoom, x, y, instant))
+    zoom: (zoom, pageCoord, instant) => {
+      return dispatch(changeScale(zoom, pageCoord, instant))
     },
   }
 }

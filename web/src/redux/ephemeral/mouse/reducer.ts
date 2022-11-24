@@ -1,4 +1,5 @@
 import { ActionHashB64 } from '../../../types/shared'
+import { CHANGE_SCALE } from '../viewport/actions'
 import {
   SET_MOUSEDOWN,
   UNSET_MOUSEDOWN,
@@ -7,8 +8,9 @@ import {
   UNSET_COORDINATE,
   SET_OUTCOMES,
   UNSET_OUTCOMES,
-  SET_SIZE,
-  UNSET_SIZE,
+  SET_CONTEXTMENU,
+  UNSET_CONTEXTMENU,
+  SET_CLOSEST_OUTCOME,
 } from './actions'
 
 export interface MouseState {
@@ -23,6 +25,17 @@ export interface MouseState {
   coordinate: {
     x: number
     y: number
+  }
+  // the outcome which is closest to the mouse
+  // this is just global, not separated per-map
+  closestOutcome: ActionHashB64
+  // right click / contextmenu coordinate
+  contextMenu: {
+    outcomeActionHash: ActionHashB64
+    coordinate: {
+      x: number
+      y: number
+    }
   }
   size: {
     w: number
@@ -46,6 +59,14 @@ const defaultState: MouseState = {
     x: 0,
     y: 0,
   },
+  // the outcome which is closest to the mouse
+  // this is just global, not separated per-map
+  closestOutcome: null,
+  // right click / contextmenu coordinate
+  contextMenu: {
+    outcomeActionHash: null,
+    coordinate: null,
+  },
   size: {
     w: 0,
     h: 0,
@@ -56,7 +77,7 @@ const defaultState: MouseState = {
 }
 
 export default function (state = defaultState, action: any): MouseState {
-  const { coordinate, type, outcomesAddresses, size } = action
+  const { payload, type } = action
   switch (type) {
     case SET_MOUSEDOWN:
       return {
@@ -71,37 +92,49 @@ export default function (state = defaultState, action: any): MouseState {
     case SET_LIVE_COORDINATE:
       return {
         ...state,
-        liveCoordinate: coordinate,
+        liveCoordinate: payload,
+      }
+    case SET_CLOSEST_OUTCOME:
+      return {
+        ...state,
+        closestOutcome: payload,
       }
     case SET_COORDINATE:
       return {
         ...state,
-        coordinate: coordinate,
+        coordinate: payload,
       }
     case UNSET_COORDINATE:
       return {
         ...state,
         coordinate: { x: 0, y: 0 },
       }
+    case SET_CONTEXTMENU:
+      return {
+        ...state,
+        contextMenu: {
+          outcomeActionHash: payload.outcomeActionHash,
+          coordinate: payload.coordinate,
+        },
+      }
+    case UNSET_CONTEXTMENU:
+    case CHANGE_SCALE: // a side effect of changing scale is that the ContextMenu would be out of place
+      return {
+        ...state,
+        contextMenu: {
+          outcomeActionHash: null,
+          coordinate: null,
+        },
+      }
     case SET_OUTCOMES:
       return {
         ...state,
-        outcomesAddresses,
+        outcomesAddresses: payload.outcomesAddresses,
       }
     case UNSET_OUTCOMES:
       return {
         ...state,
         outcomesAddresses: null,
-      }
-    case SET_SIZE:
-      return {
-        ...state,
-        size,
-      }
-    case UNSET_SIZE:
-      return {
-        ...state,
-        size: { w: 0, h: 0 },
       }
     default:
       return state
