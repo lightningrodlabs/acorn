@@ -8,6 +8,12 @@ import { selectOutcome, unselectAll } from '../selection/actions'
 import { changeAllDirect } from '../viewport/actions'
 import { getTreesForState } from './get-trees-for-state'
 
+
+/*
+  In this function as we animate the "pan and zoom", or "translate and scale"
+  **we take responsibility** not only for those values, but for the Outcome layout
+  which would typically change according to a changing zoomLevel as well
+*/
 export default function panZoomToFrame(
   store: any,
   action: {
