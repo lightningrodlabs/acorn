@@ -13,6 +13,8 @@ const UNSET_MOUSEDOWN = 'UNSET_MOUSEDOWN'
 
 const SET_LIVE_COORDINATE = 'SET_LIVE_COORDINATE' // the current mouse coordinate
 
+const SET_CLOSEST_OUTCOME = 'SET_CLOSEST_OUTCOME' // the outcomeActionHash most recently closest to the mouse
+
 const SET_COORDINATE = 'SET_COORDINATE' // the coordinate where a shift-click originated
 const UNSET_COORDINATE = 'UNSET_COORDINATE'
 
@@ -40,6 +42,13 @@ function setLiveCoordinate(coordinate: { x: number; y: number }) {
   return {
     type: SET_LIVE_COORDINATE,
     payload: coordinate,
+  }
+}
+
+function setClosestOutcome(outcomeActionHash: ActionHashB64) {
+  return {
+    type: SET_CLOSEST_OUTCOME,
+    payload: outcomeActionHash,
   }
 }
 
@@ -94,6 +103,7 @@ export {
   SET_MOUSEDOWN,
   UNSET_MOUSEDOWN,
   SET_LIVE_COORDINATE,
+  SET_CLOSEST_OUTCOME,
   SET_COORDINATE,
   UNSET_COORDINATE,
   SET_CONTEXTMENU,
@@ -103,6 +113,7 @@ export {
   setMousedown,
   unsetMousedown,
   setLiveCoordinate,
+  setClosestOutcome,
   setCoordinate,
   unsetCoordinate,
   setContextMenu,

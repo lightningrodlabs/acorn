@@ -10,6 +10,7 @@ import {
   UNSET_OUTCOMES,
   SET_CONTEXTMENU,
   UNSET_CONTEXTMENU,
+  SET_CLOSEST_OUTCOME,
 } from './actions'
 
 export interface MouseState {
@@ -25,6 +26,9 @@ export interface MouseState {
     x: number
     y: number
   }
+  // the outcome which is closest to the mouse
+  // this is just global, not separated per-map
+  closestOutcome: ActionHashB64
   // right click / contextmenu coordinate
   contextMenu: {
     outcomeActionHash: ActionHashB64
@@ -55,6 +59,9 @@ const defaultState: MouseState = {
     x: 0,
     y: 0,
   },
+  // the outcome which is closest to the mouse
+  // this is just global, not separated per-map
+  closestOutcome: null,
   // right click / contextmenu coordinate
   contextMenu: {
     outcomeActionHash: null,
@@ -86,6 +93,11 @@ export default function (state = defaultState, action: any): MouseState {
       return {
         ...state,
         liveCoordinate: payload,
+      }
+    case SET_CLOSEST_OUTCOME:
+      return {
+        ...state,
+        closestOutcome: payload,
       }
     case SET_COORDINATE:
       return {

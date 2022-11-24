@@ -6,7 +6,36 @@ import { RootState } from '../../reducer'
 import { LAYOUT_ANIMATION_DURATION_MS } from '../../../constants'
 import { ComputedOutcome } from '../../../types'
 import { getTreesForState } from './get-trees-for-state'
+import { coordsCanvasToPage } from '../../../drawing/coordinateSystems'
 import { ActionHashB64 } from '../../../types/shared'
+
+function calcDestTranslate(
+  outcomeActionHash: ActionHashB64,
+  outcomeCoordinates: {
+    [x: string]: {
+      x: number
+      y: number
+    }
+  },
+  zoomLevel: number,
+  additionalOffset = { x: 0, y: 0 }
+) {
+  let translateForFixedPositionOutcome: { x: number; y: number }
+  if (outcomeActionHash && outcomeCoordinates[outcomeActionHash]) {
+    let pageCoords = coordsCanvasToPage(
+      outcomeCoordinates[outcomeActionHash],
+      { x: 0, y: 0 },
+      zoomLevel
+    )
+    translateForFixedPositionOutcome = {
+      // top left of the screen, offset by the original offset
+      x: -1 * pageCoords.x + additionalOffset.x,
+      y: -1 * pageCoords.y + additionalOffset.y,
+    }
+  }
+
+  return translateForFixedPositionOutcome
+}
 
 // By default, this function performs an animated transition asynchronously
 // between the old state and the new state, in terms of layout.
@@ -25,7 +54,9 @@ export default function performLayoutAnimation(
   const nextState: RootState = store.getState()
   const computedOutcomeTrees = getTreesForState(nextState)
   const zoomLevel = nextState.ui.viewport.scale
+  const translate = nextState.ui.viewport.translate
   const projectId = nextState.ui.activeProject
+  const closestOutcome = nextState.ui.mouse.closestOutcome
   const projectTags = Object.values(nextState.projects.tags[projectId] || {})
   const collapsedOutcomes =
     nextState.ui.collapsedOutcomes.collapsedOutcomes[projectId] || {}
@@ -38,11 +69,30 @@ export default function performLayoutAnimation(
     collapsedOutcomes
   )
 
+  // in terms of 'fixing' on a given outcome
+  // get the 'starting position' for that Outcome onscreen
+  let originalOutcomeFixedPosition: { x: number; y: number }
+  if (closestOutcome && currentState.ui.layout[closestOutcome]) {
+    originalOutcomeFixedPosition = coordsCanvasToPage(
+      currentState.ui.layout[closestOutcome],
+      translate,
+      zoomLevel
+    )
+  }
+
   // just instantly update to the new layout without
   // animating / transitioning between the current one and the new one
   // if instructed to
   if (typeof action.payload === 'object' && action.payload.instant) {
-    store.dispatch(updateLayout(newLayout))
+    // figure out what the new Translate value should be
+    // to keep that closest Outcome in a fixed position on the screen
+    let translateForFixedPositionOutcome = calcDestTranslate(
+      closestOutcome,
+      newLayout,
+      zoomLevel,
+      originalOutcomeFixedPosition
+    )
+    store.dispatch(updateLayout(newLayout, translateForFixedPositionOutcome))
     return
   }
 
@@ -79,15 +129,16 @@ export default function performLayoutAnimation(
   // we do NOT want to keep original layouts for Outcomes
   // that are no longer in the project, so those are automatically
   // ignored during this loop
-  for (const outcome in newLayout) {
+  for (const outcomeActionHash in newLayout) {
     // do this to override any new ones with existing ones
     // to begin with
-    if (currentState.ui.layout[outcome]) {
-      currentLayoutTween[outcome] = {
-        ...currentState.ui.layout[outcome],
+    if (currentState.ui.layout[outcomeActionHash]) {
+      currentLayoutTween[outcomeActionHash] = {
+        ...currentState.ui.layout[outcomeActionHash],
       }
     }
   }
+
   // transition currentLayoutTween object
   // into newLayout object
   new TWEEN.Tween(currentLayoutTween)
@@ -98,13 +149,24 @@ export default function performLayoutAnimation(
     .start()
     // updatedLayout is the transitionary state between currentLayoutTween and newLayout
     .onUpdate((updatedLayout) => {
+      // figure out what the new Translate value should be
+      // to keep that closest Outcome in a fixed position on the screen
+      let translateForFixedPositionOutcome = calcDestTranslate(
+        closestOutcome,
+        updatedLayout,
+        zoomLevel,
+        originalOutcomeFixedPosition
+      )
       // dispatch an update to the layout
       // which will trigger a repaint on the canvas
       // every time the animation loop fires an update
       store.dispatch(
-        updateLayout({
-          ...updatedLayout,
-        })
+        updateLayout(
+          {
+            ...updatedLayout,
+          },
+          translateForFixedPositionOutcome
+        )
       )
     })
 }

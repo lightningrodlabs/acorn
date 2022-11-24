@@ -1,11 +1,7 @@
 import _ from 'lodash'
 
 import { coordsPageToCanvas } from '../drawing/coordinateSystems'
-import {
-  checkForConnectionAtCoordinates,
-  checkForOutcomeAtCoordinates,
-  checkForOutcomeAtCoordinatesInBox,
-} from '../drawing/eventDetection'
+import { checkForOutcomeAtCoordinatesInBox } from '../drawing/eventDetection'
 import {
   selectConnection,
   selectOutcome,
@@ -32,6 +28,7 @@ import {
   setOutcomes,
   setContextMenu,
   unsetContextMenu,
+  setClosestOutcome,
 } from '../redux/ephemeral/mouse/actions'
 import {
   openOutcomeForm,
@@ -73,10 +70,10 @@ import {
   RightOrLeft,
 } from '../tree-logic'
 import { OUTCOME_VERTICAL_HOVER_ALLOWANCE } from '../drawing/dimensions'
-import {
-  collapseOutcome,
-  expandOutcome,
-} from '../redux/ephemeral/collapsed-outcomes/actions'
+import checkForOutcomeOrConnection, {
+  OutcomeConnectionOrBoth,
+} from './checkForOutcomeOrConnection'
+import closestOutcomeToPageCoord from './closestOutcome'
 
 // The "modifier" key is different on Mac and non-Mac
 // Pattern borrowed from TinyKeys library.
@@ -88,67 +85,6 @@ let platform =
   navigator?.userAgentData?.platform || navigator?.platform || 'unknown'
 const isMacish = macOsPattern.test(platform)
 const operatingSystemModifier = isMacish ? 'metaKey' : 'ctrlKey'
-
-enum OutcomeConnectionOrBoth {
-  Both,
-  Outcome,
-  Connection,
-}
-function checkForOutcomeOrConnection(
-  outcomeConnectionOrBoth: OutcomeConnectionOrBoth,
-  state: RootState,
-  x: number,
-  y: number,
-  outcomes: { [actionHash: ActionHashB64]: ComputedOutcome },
-  ctx: CanvasRenderingContext2D,
-  extraVerticalPadding?: number
-) {
-  const {
-    ui: {
-      activeProject,
-      viewport: { translate, scale },
-    },
-  } = state
-  const projectTags = Object.values(state.projects.tags[activeProject] || {})
-  const connections = state.projects.connections[activeProject] || {}
-  const outcomeCoordinates = state.ui.layout
-
-  const doCheckOutcomes =
-    outcomeConnectionOrBoth === OutcomeConnectionOrBoth.Both ||
-    outcomeConnectionOrBoth === OutcomeConnectionOrBoth.Outcome
-  const doCheckConnections =
-    outcomeConnectionOrBoth === OutcomeConnectionOrBoth.Both ||
-    outcomeConnectionOrBoth === OutcomeConnectionOrBoth.Connection
-
-  return {
-    outcomeActionHash: doCheckOutcomes
-      ? checkForOutcomeAtCoordinates(
-          ctx,
-          translate,
-          scale,
-          outcomeCoordinates,
-          projectTags,
-          x,
-          y,
-          outcomes,
-          extraVerticalPadding
-        )
-      : null,
-    connectionActionHash: doCheckConnections
-      ? checkForConnectionAtCoordinates(
-          ctx,
-          translate,
-          scale,
-          outcomeCoordinates,
-          projectTags,
-          connections,
-          x,
-          y,
-          outcomes
-        )
-      : null,
-  }
-}
 
 // ASSUMPTION: one parent (existingParentConnectionAddress)
 function handleMouseUpForOutcomeForm({
@@ -426,6 +362,10 @@ export default function setupEventListeners(
     )
     store.dispatch(setLiveCoordinate(convertedCurrentMouse))
 
+    const closestOutcome = closestOutcomeToPageCoord(convertedCurrentMouse, outcomeCoordinates)
+    // store the closest outcome, if there is one
+    store.dispatch(setClosestOutcome(closestOutcome))
+
     // this only is true if the CANVAS was clicked
     // meaning it is not true if e.g. an OutcomeConnector html element
     // was clicked
@@ -514,10 +454,9 @@ export default function setupEventListeners(
         const zoomIntensity = 0.07 // 0.05
         // Compute zoom factor.
         const zoom = Math.exp(wheel * zoomIntensity)
-        const mouseX = event.clientX
-        const mouseY = event.clientY
+        const pageCoord = { x: event.clientX, y: event.clientY }
         const instant = true
-        store.dispatch(changeScale(zoom, mouseX, mouseY, instant))
+        store.dispatch(changeScale(zoom, pageCoord, instant))
       } else {
         // invert the pattern so that it uses new mac style
         // of panning

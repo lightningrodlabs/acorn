@@ -15,10 +15,16 @@ function triggerUpdateLayout(instant?: boolean) {
   }
 }
 
-function updateLayout(payload: LayoutState) {
+function updateLayout(
+  layout: LayoutState,
+  newTranslate?: { x: number; y: number }
+) {
   return {
     type: UPDATE_LAYOUT,
-    payload,
+    payload: {
+      layout,
+      newTranslate,
+    },
   }
 }
 
