@@ -46,6 +46,10 @@ export type AppStateProps = {
   navigationPreference: 'mouse' | 'trackpad'
   inviteMembersModalShowing: null | string // will be the passphrase if defined
 }
+export type AppOwnProps = {
+  appletProjectId: string,
+  weServices: WeServices
+}
 export type AppDispatchProps = {
   dispatch: any
   setNavigationPreference: (preference: 'mouse' | 'trackpad') => void
@@ -58,7 +62,7 @@ export type AppMergeProps = {
   updateWhoami: (entry: Profile, actionHash: ActionHashB64) => Promise<void>
 }
 
-export type AppProps = AppStateProps & AppDispatchProps & AppMergeProps
+export type AppProps = AppStateProps & AppDispatchProps & AppMergeProps & AppOwnProps
 
 const App: React.FC<AppProps> = ({
   members,
@@ -76,10 +80,13 @@ const App: React.FC<AppProps> = ({
   openInviteMembersModal,
   hideInviteMembersModal,
   goToOutcome,
+  appletProjectId,
+  weServices,
 }) => {
   const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
+  const projectRouteString = `/project/${appletProjectId}/map`
   const onProfileSubmit = async (profile: Profile) => {
     await updateWhoami(profile, whoami.actionHash)
     setShowProfileEditForm(false)
@@ -99,35 +106,30 @@ const App: React.FC<AppProps> = ({
       <Router>
         <Switch>
           {/* Add new routes in here */}
-          <Route path="/intro" component={IntroScreen} />
-          <Route path="/register" component={CreateProfilePage} />
-          <Route path="/dashboard" component={Dashboard} />
           <Route path="/project/:projectId" component={ProjectView} />
           {/* <Route
             path="/run-update"
             render={() => <RunUpdate preRestart version={updateAvailable} />}
           />
           <Route path="/finish-update" render={() => <RunUpdate />} /> */}
-          <Route path="/" render={() => <Redirect to="/dashboard" />} />
+          <Route path="/" render={() => <Redirect to={projectRouteString} />} />
         </Switch>
-        {agentAddress && (
-          <Header
-            project={activeProjectMeta}
-            {...{
-              members,
-              presentMembers,
-              activeEntryPoints,
-              projectId,
-              whoami,
-              updateStatus,
-              openInviteMembersModal,
-              setShowProjectSettingsOpen,
-              setShowProfileEditForm,
-              setShowPreferences,
-              goToOutcome,
-            }}
-          />
-        )}
+        <Header
+          project={activeProjectMeta}
+          {...{
+            members,
+            presentMembers,
+            activeEntryPoints,
+            projectId,
+            whoami,
+            updateStatus,
+            openInviteMembersModal,
+            setShowProjectSettingsOpen,
+            setShowProfileEditForm,
+            setShowPreferences,
+            goToOutcome,
+          }}
+        />
         <GlobalModals
           {...{
             whoami,
@@ -150,9 +152,6 @@ const App: React.FC<AppProps> = ({
         />
         {/* Loading Screen if no user agent */}
         {!agentAddress && <LoadingScreen />}
-        {agentAddress && hasFetchedForWhoami && !whoami && (
-          <Redirect to="/intro" />
-        )}
         {agentAddress && whoami && <Footer />}
       </Router>
     </ErrorBoundaryScreen>

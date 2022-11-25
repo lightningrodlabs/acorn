@@ -7,6 +7,7 @@ import { useEffect, useRef } from "react"
 import { applyMiddleware, createStore, compose } from "redux"
 import { Provider } from 'react-redux'
 import App from './routes/App.connector'
+import WeAppletApp from './routes/WeAppletApp.connector'
 import { layoutWatcher } from './redux/ephemeral/layout/middleware'
 import { realtimeInfoWatcher } from './redux/persistent/projects/realtime-info-signal/middleware'
 import acorn from './redux/reducer'
@@ -126,7 +127,8 @@ function AppProvided({
     
     return (
         <Provider store={store.current}>
-            <App isWeApplet={isWeApplet} appletProjectId={appletProjectId} weServices={weServices} />
+            {isWeApplet && <WeAppletApp appletProjectId={appletProjectId} weServices={weServices} />}
+            {!isWeApplet && <App />}
         </Provider>
     )
 }
