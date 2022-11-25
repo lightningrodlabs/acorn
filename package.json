@@ -20,7 +20,7 @@
     "web2": "cd web && ADMIN_WS_PORT=1236 APP_WS_PORT=8899 npx webpack-dev-server --config webpack.dev.js",
     "web-build": "cd web && npx webpack --config webpack.prod.js",
     "applet-build": "cd web && npx webpack --config webpack.applet.js",
-    "package-applet-ui": "rimraf ui.zip && npm run applet-build && cd web/applet-dist && bestzip ../ui.zip index.js",
+    "package-applet-ui": "rimraf ui.zip && npm run applet-build && cd web/applet-dist && bestzip ../ui.zip index.js icon.png",
     "package-applet": "rimraf ./happ/workdir/acorn-applet.webhapp && npm run applet-happ-pack && npm run package-applet-ui && hc web-app pack ./happ/workdir/applet",
     "electron-install": "cd electron && npm install",
     "electron": "cd electron && npm run start",
