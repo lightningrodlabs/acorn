@@ -6,6 +6,7 @@ import Button from '../Button/Button'
 import Typography from '../Typography/Typography'
 
 import './Modal.scss'
+import ButtonClose from '../ButtonClose/ButtonClose'
 
 /* Named Export */
 
@@ -99,12 +100,7 @@ const Modal: React.FC<ModalProps> = ({ white, active, className, onClose, childr
         {/* <OnClickOutside onClickOutside={onClose}> */}
         <div className={`${className} modal-wrapper`}>
           {onClose && (
-            <Icon
-              name="x.svg"
-              size="small-close"
-              className="light-grey"
-              onClick={() => onClose()}
-            />
+            <ButtonClose onClick={onClose} size="medium"/>
           )}
           {children}
         </div>

@@ -7,10 +7,11 @@ import './DashboardListProject.scss'
 
 import { pickColorForString } from '../../styles'
 
-import ProjectSettingsModal from '../../components/ProjectSettingsModal/ProjectSettingsModal.connector'
+// import ProjectSettingsModal from '../../components/ProjectSettingsModal/ProjectSettingsModal.connector'
 import { ENTRY_POINTS, GO_TO_OUTCOME } from '../../searchParams'
 import AvatarsList from '../../components/AvatarsList/AvatarsList'
 import { ProjectAggregated } from '../../types'
+import Button from '../../components/Button/Button'
 
 function DashboardListProjectLoading() {
   return (
@@ -42,14 +43,18 @@ function DashboardListProjectLoading() {
 export type DashboardListProjectProps = {
   project: ProjectAggregated
   setShowInviteMembersModal: (passphrase: string) => void
+  updateRequired?: boolean
+  onClickUpdate?: () => void
+  updateRequiredMoreInfoLink?: string
 }
 
 const DashboardListProject: React.FC<DashboardListProjectProps> = ({
   project,
   setShowInviteMembersModal,
+  updateRequired,
+  onClickUpdate,
+  updateRequiredMoreInfoLink,
 }) => {
-  // TODO: this is placeholder for implementing this
-  const updateIsAvailable = false
   const [showEntryPoints, setShowEntryPoints] = useState(false)
 
   const imageStyles = project.image
@@ -71,12 +76,10 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
 
   return (
     <div className="dashboard-list-project-wrapper">
-      {updateIsAvailable && (
+      {/* when update is required to access the shared project */}
+      {updateRequired && (
         <>
-          <div className="update-required-button" onClick={() => {}}>
-            Update required to access
-          </div>
-          <div className="unavailable-layer"></div>
+          <div className="project-access-blocked-layer"></div>
         </>
       )}
       <div className="dashboard-list-project">
@@ -89,13 +92,38 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
           </div>
         </NavLink>
         <div className="dashboard-list-project-content">
-          <NavLink
-            to={`/project/${project.cellId}/map`}
-            className={`dashboard-list-project-name`}
-          >
-            {project.name}
-          </NavLink>
+          {/* Project name and link + update required button if applicable*/}
+          <div className="dashboard-list-project-name-wrapper">
+            <NavLink
+              to={`/project/${project.cellId}/map`}
+              className={`dashboard-list-project-name`}
+            >
+              {project.name}
+            </NavLink>
+            {/* Update to Access button */}
+            {updateRequired && (
+              <div className="dashboard-list-project-update-button-wrapper">
+                <Button
+                  icon="arrow-circle-up.svg"
+                  text={'Update to Access'}
+                  onClick={onClickUpdate}
+                />
+                <div className="more-info-wrapper">
+                  <div>
+                    <a href={updateRequiredMoreInfoLink} target="_blank">
+                      <Icon
+                        name="info.svg"
+                        className="light-grey"
+                        size="small"
+                      />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
+          {/* Project member count */}
           <div className={`dashboard-list-project-member-count`}>
             {project.members.length} member
             {project.members.length > 1 ? 's' : ''}
@@ -174,13 +202,14 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
           </div>
         )}
       </div>
-      <ProjectSettingsModal
+      {/* TODO */}
+      {/* <ProjectSettingsModal
         showModal={showProjectSettingsModal}
         onClose={() => setShowProjectSettingsModal(false)}
         project={project}
         cellIdString={project.cellId}
         openInviteMembersModal={openInviteMembersModal}
-      />
+      /> */}
     </div>
   )
 }

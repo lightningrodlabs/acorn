@@ -26,6 +26,8 @@ export type TypographyProps = {
     | 'breadcrumbs-bold'
     | 'button-text'
     | 'label'
+    | 'heading-modal'
+    | 'body-modal'
   text?: string
 }
 
