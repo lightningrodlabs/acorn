@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { CSSTransition } from 'react-transition-group'
-import { NavLink } from 'react-router-dom'
 
 import Icon from '../../components/Icon/Icon'
 import DashboardEmptyState from '../../components/DashboardEmptyState/DashboardEmptyState'
@@ -8,6 +7,7 @@ import DashboardEmptyState from '../../components/DashboardEmptyState/DashboardE
 import CreateProjectModal from '../../components/CreateProjectModal/CreateProjectModal'
 import ImportProjectModal from '../../components/ImportProjectModal/ImportProjectModal'
 import JoinProjectModal from '../../components/JoinProjectModal/JoinProjectModal'
+import ProjectSettingsModal from '../../components/ProjectSettingsModal/ProjectSettingsModal.connector'
 // import new modals here
 
 import {
@@ -18,13 +18,8 @@ import PendingProjects from '../../components/PendingProjects/PendingProjects'
 
 import './Dashboard.scss'
 import Typography from '../../components/Typography/Typography'
-import {
-  AgentPubKeyB64,
-  CellIdString,
-} from '../../types/shared'
-import {
-  ProjectAggregated,
-} from '../../types'
+import { AgentPubKeyB64, CellIdString } from '../../types/shared'
+import { ProjectAggregated } from '../../types'
 import { AgentsState } from '../../redux/persistent/profiles/agents/reducer'
 
 export type DashboardStateProps = {
@@ -76,7 +71,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showJoinModal, setShowJoinModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
-
+  // will be a CellIdString if not empty
+  const [showProjectSettingsModal, setShowProjectSettingsModal] = useState('')
   // add new modal state managers here
 
   // cells is an array of cellId strings
@@ -131,6 +127,12 @@ const Dashboard: React.FC<DashboardProps> = ({
       return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
     })
   }
+
+  const projectSettingsProject = showProjectSettingsModal
+    ? sortedProjects.find((project) => {
+        return project.cellId === showProjectSettingsModal
+      })
+    : null
 
   // being in 'projects' means succesful fetchProjectMeta
   // being in 'pendingProjects' means unsuccessful fetchProjectMeta
@@ -229,6 +231,9 @@ const Dashboard: React.FC<DashboardProps> = ({
                     key={'dlp-key' + project.cellId}
                     project={project}
                     setShowInviteMembersModal={setShowInviteMembersModal}
+                    openProjectSettingsModal={(projectCellId: CellIdString) =>
+                      setShowProjectSettingsModal(projectCellId)
+                    }
                   />
                 )
               })}
@@ -255,6 +260,15 @@ const Dashboard: React.FC<DashboardProps> = ({
         onImportProject={onImportProject}
         showModal={showImportModal}
         onClose={() => setShowImportModal(false)}
+      />
+      <ProjectSettingsModal
+        showModal={showProjectSettingsModal !== ''}
+        onClose={() => setShowProjectSettingsModal('')}
+        project={projectSettingsProject}
+        cellIdString={showProjectSettingsModal}
+        openInviteMembersModal={() => {
+          setShowInviteMembersModal(projectSettingsProject.passphrase)
+        }}
       />
       {/* add new modals here */}
     </>

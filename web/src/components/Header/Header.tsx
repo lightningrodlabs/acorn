@@ -16,8 +16,15 @@ import { Status } from './Status'
 import HeaderLeftPanel from './HeaderLeftPanel'
 import HeaderRightPanel from './HeaderRightPanel.connector'
 import HeaderMiddlePanel from './HeaderMiddlePanel'
+import UpdateBar from '../UpdateBar/UpdateBar'
 
 export type HeaderProps = {
+  // for update bar
+  showUpdateBar: boolean
+  setShowUpdateBar: React.Dispatch<React.SetStateAction<boolean>>
+  setShowUpdateModal: React.Dispatch<React.SetStateAction<boolean>>
+  hasMigratedSharedProject?: boolean
+  // other
   whoami: WireRecord<Profile>
   activeEntryPoints: {
     entryPoint: WithActionHash<EntryPoint>
@@ -37,6 +44,11 @@ export type HeaderProps = {
 }
 
 const Header: React.FC<HeaderProps> = ({
+  // for update bar
+  showUpdateBar,
+  setShowUpdateBar,
+  setShowUpdateModal,
+  hasMigratedSharedProject = false,
   whoami,
   openInviteMembersModal,
   setShowProjectSettingsOpen,
@@ -93,12 +105,34 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <div className="header-wrapper" ref={ref}>
-      {/* <UpdateBar
-        active={showUpdateBar}
-        onClose={() => setShowUpdateBar(false)}
-        setShowUpdatePromptModal={setShowUpdatePromptModal}
-      /> */}
+      {/* Update Bar */}
+      <div className="header-update-bar-wrapper">
+        <UpdateBar
+          active={showUpdateBar}
+          onClose={() => setShowUpdateBar(false)}
+          onClickSecondaryAction={() => {
+            // TODO adjust these
+            setShowUpdateModal(true)
+            setShowUpdateBar(false)
+          }}
+          onClickPrimaryAction={() => {
+            // TODO adjust these
+            setShowUpdateModal(true)
+            setShowUpdateBar(false)
+          }}
+          text={'🎉  A new update for Acorn is available.'}
+          buttonPrimaryText={'Update Now'}
+          buttonSecondaryText={'Changelog'}
+          migratedSharedProjectText={
+            hasMigratedSharedProject
+              ? ' Update is required to access a shared project brought to the updated version by another team member.'
+              : ''
+          }
+        />
+      </div>
+
       <div className="header">
+        {/* Header Left Panel */}
         <HeaderLeftPanel
           members={members}
           presentMembers={presentMembers}
@@ -111,6 +145,7 @@ const Header: React.FC<HeaderProps> = ({
           activeEntryPoints={activeEntryPoints}
           goToOutcome={goToOutcome}
         />
+        {/* Header Middle Panel */}
         <HeaderMiddlePanel
           projectId={projectId}
           projectPriorityMode={
@@ -119,6 +154,7 @@ const Header: React.FC<HeaderProps> = ({
         />
         {whoami && (
           // add all these values as props
+          //  Header Left Panel
           <HeaderRightPanel
             {...{
               status,

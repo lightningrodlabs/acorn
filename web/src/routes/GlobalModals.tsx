@@ -8,12 +8,12 @@ import InviteMembersModal from '../components/InviteMembersModal/InviteMembersMo
 import { WireRecord } from '../api/hdkCrud'
 import { Profile, ProjectMeta } from '../types'
 import { AgentPubKeyB64, CellIdString, WithActionHash } from '../types/shared'
-// import UpdatePromptModal from '../components/UpdatePromptModal/UpdatePromptModal'
+import UpdateModal from '../components/UpdateModal/UpdateModal'
 
 export type GlobalModalsProps = {
   whoami: WireRecord<Profile>
   activeProjectMeta: WithActionHash<ProjectMeta>
-  projectId: CellIdString 
+  projectId: CellIdString
   agentAddress: AgentPubKeyB64
   navigationPreference: 'mouse' | 'trackpad'
   setNavigationPreference: (preference: 'mouse' | 'trackpad') => void
@@ -27,6 +27,11 @@ export type GlobalModalsProps = {
   openInviteMembersModal: (passphrase: string) => void
   hideInviteMembersModal: () => void
   onProfileSubmit: (profile: Profile) => Promise<void>
+  showUpdateModal: boolean
+  onCloseUpdateModal: () => void
+  updateReleaseNotes: string
+  updateVersionInfo: string
+  updateSize: string
 }
 
 const GlobalModals: React.FC<GlobalModalsProps> = ({
@@ -46,12 +51,16 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   openInviteMembersModal,
   hideInviteMembersModal,
   onProfileSubmit,
+  showUpdateModal,
+  onCloseUpdateModal,
+  updateReleaseNotes,
+  updateVersionInfo,
+  updateSize,
 }) => {
-
   // profile edit modal
   const titleText = 'Profile Settings'
   const subText = ''
-  // This is hardcoded on purpose, not a big deal because the modal closes 
+  // This is hardcoded on purpose, not a big deal because the modal closes
   // when the user hits 'Save Changes'
   const pending = false
   const pendingText = 'Submitting...'
@@ -69,7 +78,14 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         <ProfileEditForm
           onSubmit={onProfileSubmit}
           whoami={whoami ? whoami.entry : null}
-          {...{ pending, pendingText, titleText, subText, submitText, agentAddress }}
+          {...{
+            pending,
+            pendingText,
+            titleText,
+            subText,
+            submitText,
+            agentAddress,
+          }}
         />
       </Modal>
       {/* Preferences Modal */}
@@ -93,10 +109,21 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         onClose={hideInviteMembersModal}
       />
       {/* Update Prompt Modal */}
-      {/* <UpdatePromptModal
-          show={showUpdatePromptModal}
-          onClose={onCloseUpdatePromptModal}
-        /> */}
+      <UpdateModal
+        show={showUpdateModal}
+        onClose={onCloseUpdateModal}
+        releaseTag={updateVersionInfo}
+        releaseSize={updateSize}
+        heading={'Update to newest version of Acorn'}
+        content={
+          <div>
+            {/* TODO */}
+            Update is required to access a shared project brought to the updated
+            version by another team member. You can continue using your personal
+            projects without the update. See <a>Release Notes & Changelog</a>.
+          </div>
+        }
+      />
     </>
   )
 }

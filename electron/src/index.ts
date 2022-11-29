@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, shell } from 'electron'
+import { app, BrowserWindow, ipcMain, shell, autoUpdater } from 'electron'
 import * as contextMenu from 'electron-context-menu'
 import * as path from 'path'
 // import log from 'electron-log'
@@ -79,6 +79,11 @@ const createMainWindow = (): BrowserWindow => {
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
+
+  autoUpdater.once('update-downloaded', () => {
+    mainWindow.webContents.send('updateDownloaded')
+  })
+
   return mainWindow
 }
 
@@ -158,4 +163,18 @@ app.on('activate', () => {
 
 ipcMain.handle('getProjectsPath', () => {
   return projectsDnaPath
+})
+
+ipcMain.handle('getVersion', () => {
+  return app.getVersion()
+})
+
+ipcMain.handle('initiateUpdate', () => {
+  const server = 'https://update.electronjs.org'
+  const feed = `${server}/lightningrodlabs/acorn/${process.platform}-${process.arch}/${app.getVersion()}`
+  autoUpdater.setFeedURL({ url: feed })
+  // at this point we are not so much 'checking for updates'
+  // as we are pretty sure (via the front-end) that there is an update
+  // for us to download, and we've been instructed to.
+  autoUpdater.checkForUpdates()
 })

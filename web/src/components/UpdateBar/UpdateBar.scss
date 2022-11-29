@@ -38,6 +38,8 @@
   line-height: 1.45;
 
   .update-bar-text-wrapper {
+    display: flex;
+    flex-direction: row;
     text-indent: -1rem;
     flex: 1;
     padding: 0.25rem 1.5rem;
@@ -54,11 +56,10 @@
       color: var(--color-myrtle-green);
       padding: 0.25rem 0.75rem;
       cursor: pointer;
-
       transition: 0.2s all ease;
 
       &:hover {
-        opacity: 0.8;
+        color: var(--text-color-primary);
       }
     }
 

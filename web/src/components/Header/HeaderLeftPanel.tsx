@@ -107,7 +107,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
 
   return (
-    <>
+    <div className="header-left-panel-rows">
       <div className="header-left-panel">
         {/* Acorn Logo - non link */}
 
@@ -265,7 +265,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
           </div>
         </Route>
       )}
-    </>
+    </div>
   )
 }
 

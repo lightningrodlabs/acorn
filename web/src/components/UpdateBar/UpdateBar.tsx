@@ -3,28 +3,29 @@ import { CSSTransition } from 'react-transition-group'
 
 import './UpdateBar.scss'
 
-import Icon from '../Icon/Icon'
 import ButtonClose from '../ButtonClose/ButtonClose'
 
 export type UpdateBarProps = {
   active: boolean
   onClose?: () => void
-  setShowUpdatePromptModal: () => void
+  onClickPrimaryAction: () => void
+  onClickSecondaryAction: () => void
   text: string
   buttonPrimaryText: string
   buttonSecondaryText?: string
   migratedSharedProjectText?: string
 }
 
-export default function UpdateBar({
+const UpdateBar: React.FC<UpdateBarProps> = ({
   active,
   onClose,
-  setShowUpdatePromptModal,
+  onClickPrimaryAction,
+  onClickSecondaryAction,
   text,
   buttonPrimaryText,
   buttonSecondaryText,
   migratedSharedProjectText,
-}) {
+}) => {
   return (
     <CSSTransition
       in={active}
@@ -34,15 +35,15 @@ export default function UpdateBar({
     >
       <div className="update-bar-wrapper">
         <div className="update-bar-text-wrapper">
-          <span>{text}</span>
-          <span>{migratedSharedProjectText}</span>
+          {text}
+          {migratedSharedProjectText}
         </div>
 
         <div className="update-bar-action-buttons">
           {/* secondary action button / changelog */}
           <a
             className="update-bar-action-button-secondary"
-            onClick={() => setShowUpdatePromptModal(true)}
+            onClick={onClickSecondaryAction}
           >
             {buttonSecondaryText}
           </a>
@@ -50,17 +51,19 @@ export default function UpdateBar({
           {/* primary action button / update now */}
           <a
             className="update-bar-action-button-primary"
-            onClick={() => setShowUpdatePromptModal(true)}
+            onClick={onClickPrimaryAction}
           >
             {buttonPrimaryText}
           </a>
         </div>
         {!migratedSharedProjectText && (
           <div className="update-bar-close">
-            <ButtonClose onClick={() => onClose()} size="small" />
+            <ButtonClose onClick={onClose} size="small" />
           </div>
         )}
       </div>
     </CSSTransition>
   )
 }
+
+export default UpdateBar

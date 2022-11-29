@@ -1,14 +1,10 @@
 .dashboard-background {
-  background-color: var(--bg-color-primary);
+  background-color: var(--bg-color-canvas);
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 70px);
-  padding-top: 70px;
-}
-
-.dashboard-left-menu {
-  margin: 6px 40px 40px 20px;
-  position: fixed;
+  flex: 1;
+  height: 100%;
+  padding-top: 1rem;
 }
 
 .dashboard-left-menu-item {

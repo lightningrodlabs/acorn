@@ -7,11 +7,11 @@ import './DashboardListProject.scss'
 
 import { pickColorForString } from '../../styles'
 
-// import ProjectSettingsModal from '../../components/ProjectSettingsModal/ProjectSettingsModal.connector'
 import { ENTRY_POINTS, GO_TO_OUTCOME } from '../../searchParams'
 import AvatarsList from '../../components/AvatarsList/AvatarsList'
 import { ProjectAggregated } from '../../types'
 import Button from '../../components/Button/Button'
+import { CellIdString } from '../../types/shared'
 
 function DashboardListProjectLoading() {
   return (
@@ -43,6 +43,7 @@ function DashboardListProjectLoading() {
 export type DashboardListProjectProps = {
   project: ProjectAggregated
   setShowInviteMembersModal: (passphrase: string) => void
+  openProjectSettingsModal: (projectCellId: CellIdString) => void
   updateRequired?: boolean
   onClickUpdate?: () => void
   updateRequiredMoreInfoLink?: string
@@ -51,6 +52,7 @@ export type DashboardListProjectProps = {
 const DashboardListProject: React.FC<DashboardListProjectProps> = ({
   project,
   setShowInviteMembersModal,
+  openProjectSettingsModal,
   updateRequired,
   onClickUpdate,
   updateRequiredMoreInfoLink,
@@ -65,10 +67,6 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
     .split(' ')
     .map((word) => (word ? word[0].toUpperCase() : 'X'))
     .slice(0, 3)
-
-  const [showProjectSettingsModal, setShowProjectSettingsModal] = useState(
-    false
-  )
 
   const openInviteMembersModal = () => {
     setShowInviteMembersModal(project.passphrase)
@@ -144,7 +142,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
           {/* project item settings */}
           <div
             className="dashboard-list-project-settings-button"
-            onClick={() => setShowProjectSettingsModal(true)}
+            onClick={() => openProjectSettingsModal(project.cellId)}
           >
             <Icon
               name="dots-horizontal.svg"
@@ -202,14 +200,6 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
           </div>
         )}
       </div>
-      {/* TODO */}
-      {/* <ProjectSettingsModal
-        showModal={showProjectSettingsModal}
-        onClose={() => setShowProjectSettingsModal(false)}
-        project={project}
-        cellIdString={project.cellId}
-        openInviteMembersModal={openInviteMembersModal}
-      /> */}
     </div>
   )
 }

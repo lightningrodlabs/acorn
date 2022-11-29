@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import Modal, { ModalContent } from '../Modal/Modal'
+import Modal from '../Modal/Modal'
 import './UpdateModal.scss'
 
 import { useHistory } from 'react-router-dom'
 import Button from '../Button/Button'
 import Typography from '../Typography/Typography'
-import Icon from '../Icon/Icon'
 import Tag from '../Tag/Tag'
 
 export type UpdateModalProps = {
@@ -45,8 +44,6 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
       window.removeEventListener('resize', windowResize)
     }
   }, [])
-
-  console.log(contentHeight, screenHeight)
 
   return (
     <div className="update-modal-wrapper">
@@ -92,11 +89,9 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
           <div className="modal-buttons-wrapper">
             <div className="modal-button-primary">
               <Button
+                onClick={runUpdate}
                 icon="arrow-circle-up.svg"
                 text={'Update Now'}
-                onClick={function (): void {
-                  throw new Error('Function not implemented.')
-                }}
               />
             </div>
             <div className="modal-button-secondary" onClick={onClose}>

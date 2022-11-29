@@ -11,7 +11,7 @@ import {
 import { PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
 import Icon from '../Icon/Icon'
 import './ProjectSettingsModal.scss'
-import { ProjectMeta } from '../../types'
+import { PriorityMode, ProjectMeta } from '../../types'
 import { WithActionHash } from '../../types/shared'
 
 function EditProjectForm({
@@ -36,7 +36,7 @@ function EditProjectForm({
   const [isValidProjectCoverUrl, setisValidProjectCoverUrl] = useState(true)
   const [errorProjectCoverUrl, setErrorProjectCoverUrl] = useState('')
 
-  const changeProjectName = name => {
+  const changeProjectName = (name) => {
     setShouldInvalidateProjectName(true)
     setProjectName(name)
   }
@@ -73,26 +73,30 @@ function EditProjectForm({
     }
   }
 
-  const universalOption = <PreferenceSelectOption
-    key='preference-select-universal'
-    active={priorityMode === PriorityModeOptions.Universal}
-    onClick={() => setPriorityMode(PriorityModeOptions.Universal)}
-    iconName='earth.svg'
-    iconExtraClassName=""
-    title="Universal"
-  />
-  const voteOption = <PreferenceSelectOption
-    key='preference-select-vote'
-    active={priorityMode === PriorityModeOptions.Vote}
-    onClick={() => setPriorityMode(PriorityModeOptions.Vote)}
-    iconName='team.svg'
-    iconExtraClassName=""
-    title="Vote Based"
-  />
+  const universalOption = (
+    <PreferenceSelectOption
+      key="preference-select-universal"
+      active={priorityMode === PriorityModeOptions.Universal}
+      onClick={() => setPriorityMode(PriorityModeOptions.Universal)}
+      iconName="earth.svg"
+      iconExtraClassName=""
+      title="Universal"
+    />
+  )
+  const voteOption = (
+    <PreferenceSelectOption
+      key="preference-select-vote"
+      active={priorityMode === PriorityModeOptions.Vote}
+      onClick={() => setPriorityMode(PriorityModeOptions.Vote)}
+      iconName="team.svg"
+      iconExtraClassName=""
+      title="Vote Based"
+    />
+  )
 
   return (
-    <div className='edit-project-form'>
-      <ProjectModalHeading title='Project Settings' />
+    <div className="edit-project-form">
+      <ProjectModalHeading title="Project Settings" />
       <ProjectModalSubHeading title={subheading} />
       <ProjectModalContent>
         {/* Invite Members Button */}
@@ -100,11 +104,7 @@ function EditProjectForm({
           className="my-projects-button invite-members"
           onClick={() => openInviteMembersModal(projectPassphrase)}
         >
-          <Icon
-            name="user-plus.svg"
-            size="small"
-            className="grey"
-          />
+          <Icon name="user-plus.svg" size="small" className="grey" />
           Invite Members
         </div>
         {/* project name */}
@@ -114,24 +114,22 @@ function EditProjectForm({
           invalidInput={!isValidProjectName}
           validInput={projectName.length > 0 && isValidProjectName}
           errorText={errorProjectName}
-          label='Project Name'
-          placeholder='The best project ever'
+          label="Project Name"
+          placeholder="The best project ever"
         />
         {/* project cover image */}
-        <div className='edit-project-image-row'>
+        <div className="edit-project-image-row">
           <ValidatingFormInput
             value={projectCoverUrl}
             onChange={setProjectCoverUrl}
-            label='Project Cover Image (optional)'
-            placeholder='Paste in your project image URL here'
-            invalidInput={
-              projectCoverUrl.length > 0 && !isValidProjectCoverUrl
-            }
+            label="Project Cover Image (optional)"
+            placeholder="Paste in your project image URL here"
+            invalidInput={projectCoverUrl.length > 0 && !isValidProjectCoverUrl}
             validInput={projectCoverUrl.length > 0 && isValidProjectCoverUrl}
             errorText={errorProjectCoverUrl}
           />
           <div
-            className='edit-project-image'
+            className="edit-project-image"
             style={{ backgroundImage: `url(${projectCoverUrl})` }}
           />
         </div>
@@ -139,7 +137,7 @@ function EditProjectForm({
         {/* MAYBE: re-enable this? */}
         {/* <PreferenceSelect title="Prioritization Mode" subtitle="Select your preferred prioritization mode for you and your team in this project." options={[universalOption, voteOption]} /> */}
       </ProjectModalContent>
-      <ProjectModalButton text='Update' onClick={submit} />
+      <ProjectModalButton text="Update" onClick={submit} />
     </div>
   )
 }
@@ -170,7 +168,7 @@ export default function ProjectSettingsModal({
         topPriorityOutcomes: project.topPriorityOutcomes,
       },
       project.actionHash,
-      cellIdString,
+      cellIdString
     )
     setUpdatingProject(false)
     onClose()
@@ -178,22 +176,25 @@ export default function ProjectSettingsModal({
 
   // editable
   useEffect(() => {
-    setProjectName(project.name)
-    setProjectCoverUrl(project.image)
-    setPriorityMode(project.priorityMode)
-    setProjectPassphrase(project.passphrase)
+    if (project) {
+      setProjectName(project.name)
+      setProjectCoverUrl(project.image)
+      setPriorityMode(project.priorityMode)
+      setProjectPassphrase(project.passphrase)
+    }
   }, [project])
-  const [projectName, setProjectName] = useState(project.name)
-  const [projectCoverUrl, setProjectCoverUrl] = useState(project.image)
-  const [priorityMode, setPriorityMode] = useState(project.priorityMode)
-  const [projectPassphrase, setProjectPassphrase] = useState(project.passphrase)
+  const [projectName, setProjectName] = useState('')
+  const [projectCoverUrl, setProjectCoverUrl] = useState('')
+  const [priorityMode, setPriorityMode] = useState(PriorityMode.Universal)
+  const [projectPassphrase, setProjectPassphrase] = useState('')
 
   return (
     <Modal
       white
       active={showModal}
       onClose={onClose}
-      className='edit-project-modal-wrapper'>
+      className="edit-project-modal-wrapper"
+    >
       <EditProjectForm
         onSubmit={onSubmit}
         updatingProject={updatingProject}
