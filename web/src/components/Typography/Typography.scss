@@ -52,11 +52,16 @@
       color: var(--color-myrtle-green);
       font: 0.875rem var(--font-family-primary-bold);
       cursor: pointer;
-      
+
       &:hover {
         text-decoration: underline;
       }
     }
+  }
+  &.subtitle-modal {
+    font: 1rem var(--font-family-primary-bold);
+    color: var(--text-color-tertiary);
+    line-height: 1.45;
   }
   // Body
   &.body1 {
