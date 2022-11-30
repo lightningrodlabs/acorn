@@ -42,6 +42,7 @@ const args: DashboardListProjectProps = {
     isImported: false,
     priorityMode: PriorityMode.Universal,
     topPriorityOutcomes: [],
+    isMigrated: false,
     actionHash: '2131rueskfjhrkes',
     cellId: 'hfsfjhsdhfj2y87318',
     presentMembers: [],
@@ -51,6 +52,9 @@ const args: DashboardListProjectProps = {
   setShowInviteMembersModal: function (passphrase: string): void {
     throw new Error('Function not implemented.')
   },
+  openProjectSettingsModal: function (projectCellId: string): void {
+    throw new Error('Function not implemented.')
+  }
 }
 
 DashboardListProject.args = args
