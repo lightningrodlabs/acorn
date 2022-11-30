@@ -2,7 +2,6 @@
   top: 0;
   left: 0;
   background: rgb(239 236 231 / 90%);
-  /* background: rgba(31, 31, 31, 0.4); */
   width: 100vw;
   height: 100vh;
   position: fixed;
@@ -24,6 +23,7 @@
   }
 }
 
+// Modal animation
 .modal-enter {
   opacity: 0;
 }
@@ -52,7 +52,7 @@
 
 .modal-wrapper {
   position: absolute;
-  width: 33.75rem;
+  width: 32.5rem;
   box-sizing: border-box;
   padding: 4rem;
   background-color: #ffff;
@@ -72,25 +72,35 @@
     width: fit-content;
     height: fit-content;
   }
-}
 
-.modal-heading-with-icon-wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  .modal-heading-with-icon-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-  .modal-icon {
-    margin-right: 0.5rem;
-    cursor: default;
-  
-    .icon {
-      padding: 0;
-      height: 1.25rem;
-      width: 1.25rem;
+    .modal-icon {
+      margin-right: 0.5rem;
+      cursor: default;
+
+      .icon {
+        padding: 0;
+        height: 1.25rem;
+        width: 1.25rem;
+      }
+    }
+  }
+
+  .modal-buttons-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    &.has-one-button {
+      justify-content: center;
     }
   }
 }
-
 
 .dont-show-again-option {
   cursor: pointer;
@@ -100,17 +110,6 @@
 
 .dont-show-again-option label {
   cursor: pointer;
-}
-
-.modal-buttons-wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-
-  &.has-one-button {
-    justify-content: center;
-  }
 }
 
 .btn-stroked {

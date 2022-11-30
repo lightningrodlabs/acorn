@@ -92,7 +92,7 @@ export type ModalProps = {
   white?: boolean
   active: boolean
   className?: string
-  onClose: () => void
+  onClose?: () => void
 }
 
 const Modal: React.FC<ModalProps> = ({
