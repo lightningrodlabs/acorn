@@ -50,8 +50,8 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
       <Modal white active={show} onClose={onClose}>
         <div className="update-modal-content-wrapper">
           {/* Release tag */}
-          <div className="modal-release-tag-size">
-            <div className="modal-release-tag-wrapper">
+          <div className="update-modal-release-tag-size">
+            <div className="update-modal-release-tag-wrapper">
               <Tag
                 text={`Release ${releaseTag}`}
                 backgroundColor={'#277670'}
@@ -60,23 +60,23 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
 
             {/* Release size */}
             {releaseSize && (
-              <div className="modal-release-size">{releaseSize}</div>
+              <div className="update-modal-release-size">{releaseSize}</div>
             )}
           </div>
           {/* Heading */}
-          <div className="modal-heading">
+          <div className="update-modal-heading">
             <Typography style={'heading-modal'}>{heading}</Typography>
           </div>
 
           {/* Content / body */}
           {/* Conditional on the height on the body, add scrolling class if long  */}
           <div
-            className={`modal-content ${
+            className={`update-modal-content ${
               contentHeight > screenHeight * 0.3 ? 'long-scroll' : ''
             }`}
           >
             <div
-              className="modal-content-text"
+              className="update-modal-content-text"
               ref={(contentDiv) => {
                 if (contentDiv && !contentHeight)
                   setContentHeight(contentDiv.clientHeight)
@@ -86,15 +86,15 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
             </div>
           </div>
           {/* Buttons */}
-          <div className="modal-buttons-wrapper">
-            <div className="modal-button-primary">
+          <div className="update-modal-buttons-wrapper">
+            <div className="update-modal-button-primary">
               <Button
                 onClick={runUpdate}
                 icon="arrow-circle-up.svg"
                 text={'Update Now'}
               />
             </div>
-            <div className="modal-button-secondary" onClick={onClose}>
+            <div className="update-modal-button-secondary" onClick={onClose}>
               I'll update later
             </div>
           </div>

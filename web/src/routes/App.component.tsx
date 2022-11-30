@@ -156,7 +156,7 @@ const App: React.FC<AppProps> = ({
   }
 
   return (
-    <div className="screen-wrapper">
+    <div className={`screen-wrapper`}>
       <ErrorBoundaryScreen>
         <Router>
           {agentAddress && (

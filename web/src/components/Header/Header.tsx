@@ -17,6 +17,7 @@ import HeaderLeftPanel from './HeaderLeftPanel'
 import HeaderRightPanel from './HeaderRightPanel.connector'
 import HeaderMiddlePanel from './HeaderMiddlePanel'
 import UpdateBar from '../UpdateBar/UpdateBar'
+import { useLocation, useRouteMatch } from 'react-router-dom'
 
 export type HeaderProps = {
   // for update bar
@@ -62,6 +63,11 @@ const Header: React.FC<HeaderProps> = ({
   members,
   presentMembers,
 }) => {
+  const isDashboardMatch = useRouteMatch('/dashboard')
+  const isPriorityMatch = useRouteMatch('/project/:project_id/priority')
+  const isTableMatch = useRouteMatch('/project/:project_id/table')
+  // const hasBackground = isPriorityMatch || isTableMatch
+
   const [isExportOpen, setIsExportOpen] = useState(false)
 
   const [status, setStatus] = useState<Status>(
@@ -104,7 +110,10 @@ const Header: React.FC<HeaderProps> = ({
   }
 
   return (
-    <div className="header-wrapper" ref={ref}>
+    <div
+      className={`header-wrapper`}
+      ref={ref}
+    >
       {/* Update Bar */}
       <div className="header-update-bar-wrapper">
         <UpdateBar

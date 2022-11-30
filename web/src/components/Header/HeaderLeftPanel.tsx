@@ -185,7 +185,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                   <Icon
                     name="door-open.svg"
                     size="view-mode"
-                    className={`${openEntryPointPicker ? 'active' : ''}`}
+                    className={`header-action-icon ${openEntryPointPicker ? 'active' : ''}`}
                     withTooltip
                     tooltipText="Entry Points"
                     onClick={() =>
@@ -205,6 +205,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                     tooltipText="Project Settings"
                     size="header"
                     onClick={() => setShowProjectSettingsOpen(true)}
+                    className="header-action-icon"
                   />
                   {/* Export */}
                   <div className="export-wrapper">
@@ -213,7 +214,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                       tooltipText="Export"
                       name="export.svg"
                       size="header"
-                      className={isExportOpen ? 'purple' : ''}
+                      className={`header-action-icon ${isExportOpen ? 'purple' : ''}`}
                       onClick={onClickExport}
                     />
                     {isExportOpen && (

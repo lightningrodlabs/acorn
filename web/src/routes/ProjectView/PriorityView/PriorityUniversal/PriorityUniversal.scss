@@ -14,7 +14,7 @@
 .universal-priority-header {
   padding: 1rem 0;
   margin: 0 2rem;
-  border-bottom: 0.15rem solid var(--bg-color-primary);
+  border-bottom: 0.15rem solid var(--border-color-timberwolf);
 
   .universal-priority-heading {
     margin-bottom: 0.75rem;
@@ -37,10 +37,9 @@
 .universal-priority-outcomes-list-row {
   display: flex;
   flex-direction: row;
-  box-shadow: -0.5rem 0.5rem 1rem var(--shadow-color-read-only),
-    0.5rem -0.5rem 1rem var(--bg-color-primary);
+  box-shadow: -0.5rem 0.5rem 1rem var(--shadow-color-read-only), 0.5rem -0.5rem 1rem var(--bg-color-primary);
   border-radius: 0.75rem;
-  margin: 1rem 0.75rem;
+  margin: 0.75rem 1rem;
 }
 
 // .universal-priority-outcomes-list-row:hover {
@@ -78,7 +77,9 @@
   padding: 1.25rem 1rem 1rem 1.5rem;
   min-height: 1.825rem;
   position: relative;
-  margin-bottom: 0.25rem;
+  // margin-bottom: 0.25rem;
+  background-color: var(--bg-color-secondary);
+  border-radius: 0.75rem;
 }
 
 .universal-priority-outcome-item-buttons {
@@ -107,9 +108,7 @@
   }
 }
 
-.universal-priority-outcome-item-wrapper:hover
-  > .universal-priority-outcome-item-buttons
-  .icon {
+.universal-priority-outcome-item-wrapper:hover > .universal-priority-outcome-item-buttons .icon {
   display: flex;
   height: 1.375rem;
   width: 1.375rem;
@@ -150,7 +149,6 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  
 
   .universal-priority-outcome-item-statement {
     font-family: var(--font-family-primary-medium);
@@ -185,6 +183,14 @@
 
 .universal-priority-droppable-wrapper {
   width: 100%;
+  margin-top: 0.5rem;
+  
+  // TODO: figure out a way to make a classname or id for this div
+  // (draggable element) to prevent the need for !important
+  > div {
+    background: none !important;
+    border-radius: 0.75rem !important;
+  }
 }
 
 .top-priority-empty-state-image {

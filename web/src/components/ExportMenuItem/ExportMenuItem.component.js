@@ -13,11 +13,11 @@ const ExportMenuItem = ({ download, title, type, data, projectName }) => {
           icon="export.svg"
           content={
             <>
-              You just exported the <b>{projectName}</b> canvas. You will be
+              You just exported the <b>{projectName}</b> project data. You will be
               able to find it in your Downloads folder!
             </>
           }
-          primaryButton="OK"
+          primaryButton="Got it"
           primaryButtonAction={() => setPopup(false)}
         />
       </Modal>

@@ -1,16 +1,19 @@
 .header-wrapper {
   width: 100%;
 
-  // TODO: delete this again
-  z-index: 2;
+  // &.has-background {
+  //   background-color: var(--bg-color-tertiary);
+  // }
 
   // Header Update Bar
   .header-update-bar-wrapper {
     display: flex;
-    margin: 0.5rem;
+    width: 100%;
 
     .update-bar-wrapper {
       z-index: 2;
+      margin: 0.5rem 0.5rem 0.25rem 0.5rem;
+      box-sizing: border-box;
     }
   }
 
@@ -22,6 +25,10 @@
     // Header Left Panel
 
     .header-left-panel-rows {
+      height: fit-content;
+      display: flex;
+      flex-direction: column;
+
       .header-left-panel {
         display: flex;
         flex-direction: row;
@@ -31,7 +38,7 @@
         z-index: 2;
 
         &.second-row {
-          height: 2.5rem;
+          height: fit-content;
           margin-top: 0.25rem;
         }
 
@@ -92,21 +99,17 @@
       flex-direction: row;
       align-items: center;
 
-      .icon {
-        padding: 4px;
-        height: 24px;
-        width: 24px;
-        display: inline-block;
-        position: relative;
-        margin: 0 8px 0 0;
-        box-sizing: border-box;
-      }
-
-      .button-close-wrapper .icon {
-        width: 1.75rem;
-        height: 1.75rem;
-        margin-right: 0;
-      }
+      
+        .icon.header-action-icon {
+          padding: 4px;
+          height: 24px;
+          width: 24px;
+          display: inline-block;
+          position: relative;
+          margin: 0 8px 0 0;
+          box-sizing: border-box;
+        }
+      
     }
   }
 }
@@ -338,6 +341,7 @@
   display: flex;
   flex-direction: column;
   z-index: 2;
+  height: 3rem;
 }
 
 .search-button-wrapper.search-is-open {
@@ -350,6 +354,7 @@
   /* transition: 0.2s width, box-shadow, height ease; */
   transition: 0.3s width, box-shadow ease;
   transition: 0.5s height ease;
+  height: 3rem;
 }
 
 .search-button-wrapper.search-is-open .search-open-icon .inner-icon {

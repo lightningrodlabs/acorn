@@ -5,17 +5,17 @@
     }
 
     .update-modal-content-wrapper {
-        .modal-release-tag-size {
+        .update-modal-release-tag-size {
             display: flex;
             flex-direction: row;
             align-items: center;
             margin-bottom: 1rem;
 
-            .modal-release-tag-wrapper {
+            .update-modal-release-tag-wrapper {
                 margin-right: 0.25rem;
             }
 
-            .modal-release-size {
+            .update-modal-release-size {
                 font: 0.75rem var(--font-family-primary-regular);
                 color: var(--text-color-tertiary);
                 background-color: var(--bg-color-primary);
@@ -24,19 +24,18 @@
             }
         }
 
-        .modal-heading {
+        .update-modal-heading {
             margin-bottom: 1.5rem;
         }
 
-        .modal-content {
+        .update-modal-content {
             &.long-scroll {
                 background-color: var(--bg-color-primary);
                 overflow-y: hidden;
                 height: 30vh;
                 border-radius: 0.75rem;
-                
 
-                .modal-content-text {
+                .update-modal-content-text {
                     padding: 1rem;
                     box-sizing: border-box;
                     overflow-y: scroll;
@@ -45,17 +44,17 @@
             }
         }
 
-        .modal-buttons-wrapper {
+        .update-modal-buttons-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             margin-top: 2rem;
 
-            .modal-button-primary {
+            .update-modal-button-primary {
             }
 
-            .modal-button-secondary {
+            .update-modal-button-secondary {
                 font: 0.815rem var(--font-family-primary-medium);
                 color: var(--text-color-tertiary);
                 line-height: 1.45;
