@@ -41,8 +41,14 @@ export type DashboardDispatchProps = {
   fetchProjectMeta: (cellIdString: CellIdString) => Promise<void>
   fetchEntryPointDetails: (cellIdString: CellIdString) => Promise<void>
   joinProject: (passphrase: string) => Promise<boolean>
-  deactivateApp
-  importProject
+  deactivateApp: (appId: string, cellId: CellIdString) => Promise<void>
+  importProject: (
+    existingAgents: any, // TODO: fix
+    agentAddress: AgentPubKeyB64,
+    projectData: any,
+    passphrase: string,
+    profilesCellIdString: CellIdString
+  ) => Promise<void>
   setShowInviteMembersModal: (passphrase: string) => void
 }
 
@@ -103,7 +109,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const onJoinProject = (passphrase: string) => joinProject(passphrase)
 
-  const onImportProject = (projectData, passphrase) =>
+  const onImportProject = (projectData: any, passphrase: string) =>
     importProject(
       existingAgents,
       agentAddress,

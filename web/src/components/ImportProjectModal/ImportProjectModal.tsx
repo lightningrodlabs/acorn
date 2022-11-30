@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useRef } from 'react'
 
 import './ImportProjectModal.scss'
 
+// @ts-ignore
 import AcornLogo from '../../images/acorn-logo.svg'
 
 import Modal from '../Modal/Modal'
@@ -10,28 +11,16 @@ import {
   ProjectModalContent,
   ProjectModalContentSpacer,
   ProjectModalHeading,
-  ProjectModalSubHeading
 } from '../ProjectModal/ProjectModal'
-import ProjectSecret from '../ProjectSecret/ProjectSecret'
-import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
-
-
-
-// since this is a big wordset, dynamically import it
-// instead of including in the main bundle
-async function generatePassphrase() {
-  const { default: randomWord } = await import('diceware-word')
-  return `${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()}`
-}
 
 function ImportProjectFilePicker({ showModal, onFilePicked, onCancel }) {
   const [fileFormatInvalidMessage, setFileFormatInvalidMessage] = useState(
     false
   )
-  const handleFilePicked = e => {
+  const handleFilePicked = (e) => {
     const reader = new FileReader()
-    reader.onload = async e => {
-      const text = e.target.result
+    reader.onload = async (e) => {
+      const text = e.target.result as string
       try {
         const parsed = JSON.parse(text)
         onFilePicked(parsed)
@@ -54,9 +43,8 @@ function ImportProjectFilePicker({ showModal, onFilePicked, onCancel }) {
       white
       active={showModal}
       onClose={onCancel}
-      className='import-project-modal-wrapper'
+      className="import-project-modal-wrapper"
     >
-      {/* <div className='import-project-form'> */}
       <ProjectModalHeading
         title={
           fileFormatInvalidMessage
@@ -67,9 +55,10 @@ function ImportProjectFilePicker({ showModal, onFilePicked, onCancel }) {
       <ProjectModalContentSpacer>
         <ProjectModalContent>
           {!fileFormatInvalidMessage && (
-            <div className='import-project-content-wrapper'>
+            <div className="import-project-content-wrapper">
               Import an Acorn project from a previously exported{' '}
-              <strong>JSON</strong> formatted file.
+              <strong>JSON</strong> formatted file. Note that the same project
+              secret for that project will continue to be the project secret.
             </div>
           )}
           {fileFormatInvalidMessage && (
@@ -81,73 +70,75 @@ function ImportProjectFilePicker({ showModal, onFilePicked, onCancel }) {
       </ProjectModalContentSpacer>
       <input
         ref={fileInput}
-        className='browse-files-button'
-        type='file'
-        accept='application/json, .json, .JSON'
+        className="browse-files-button"
+        type="file"
+        accept="application/json, .json, .JSON"
         onChange={handleFilePicked}
       />
-      <ProjectModalButton text='Browse Files' onClick={onBrowseFilesClick} />
-      {/* </div> */}
+      <ProjectModalButton text="Browse Files" onClick={onBrowseFilesClick} />
     </Modal>
   )
 }
 
 function ImportingProjectModal({ showModal }) {
   return (
-    <Modal white active={showModal} className='import-project-modal-wrapper'>
-      {/* <div className='import-project-form'> */}
-      {/* <ProjectModalContent> */}
-      <div className='importing-modal-content'>
+    <Modal white active={showModal} className="import-project-modal-wrapper">
+      <div className="importing-modal-content">
         <img src={AcornLogo} />
-        <div className='importing-modal-content-title'>
+        <div className="importing-modal-content-title">
           Importing your project
         </div>
         <div>This might take up to a few minutes</div>
       </div>
-      {/* </ProjectModalContent> */}
-      {/* </div> */}
     </Modal>
   )
 }
 
-function ProjectImportedModal({ showModal, onDone, projectName, outcomeCount }) {
+function ProjectImportedModal({
+  showModal,
+  onDone,
+  projectName,
+  outcomeCount,
+}) {
   return (
     <Modal
       white
       active={showModal}
       onClose={onDone}
-      className='import-project-modal-wrapper'
+      className="import-project-modal-wrapper"
     >
-      {/* <div className='import-project-form'> */}
-      <ProjectModalHeading title='Project imported!' />
+      <ProjectModalHeading title="Project imported!" />
       <ProjectModalContentSpacer>
         <ProjectModalContent>
-          <div className='import-project-content-wrapper'>
+          <div className="import-project-content-wrapper">
             <strong>{projectName}</strong> with{' '}
             <strong>{outcomeCount} outcomes</strong> was successfully imported.
           </div>
         </ProjectModalContent>
       </ProjectModalContentSpacer>
-      <ProjectModalButton text='Done' onClick={onDone} />
-      {/* </div> */}
+      <ProjectModalButton text="Done" onClick={onDone} />
     </Modal>
   )
 }
 
-export default function ImportProjectModal({
+export type ImportProjectModalProps = {
+  showModal: boolean
+  onClose: () => void
+  onImportProject: (projectData: any, passphrase: string) => Promise<void>
+}
+
+const ImportProjectModal: React.FC<ImportProjectModalProps> = ({
   showModal,
   onClose,
-  onImportProject
-}) {
+  onImportProject,
+}) => {
   // actively importing
   const [importingProject, setImportingProject] = useState(false)
   const [projectImported, setProjectImported] = useState(false)
-  const [projectSecret, setProjectSecret] = useState('')
   const [projectName, setProjectName] = useState('')
-  const [outcomeCount, setOutcomeCount] = useState('')
-  let hasUnmounted = false
+  const [outcomeCount, setOutcomeCount] = useState(0)
 
-  const onFilePicked = async projectData => {
+  const onFilePicked = async (projectData) => {
     if (!projectData.tags) {
       alert('Cannot import projects from versions prior to v1.0.0-alpha')
       onClose()
@@ -156,32 +147,16 @@ export default function ImportProjectModal({
     setImportingProject(true)
     setProjectName(projectData.projectMeta.name)
     setOutcomeCount(Object.keys(projectData.outcomes).length)
-    await onImportProject(projectData, projectSecret)
+    // keep the existing passphrase, such that other users know how
+    // to enter the new project
+    await onImportProject(projectData, projectData.projectMeta.passphrase)
     setImportingProject(false)
     setProjectImported(true)
-  }
-  const genAndSetPassphrase = async () => {
-    try {
-      const passphrase = await generatePassphrase()
-      if (!hasUnmounted) setProjectSecret(passphrase)
-    } catch (e) {
-      console.log(e)
-    }
   }
   const onDone = () => {
     onClose()
     setProjectImported(false)
-    genAndSetPassphrase()
   }
-
-  // generate a passphrase on component mount
-  useEffect(() => {
-    hasUnmounted = false
-    genAndSetPassphrase()
-    return () => {
-      hasUnmounted = true
-    }
-  }, [])
 
   return (
     <>
@@ -190,15 +165,9 @@ export default function ImportProjectModal({
         onCancel={onDone}
         onFilePicked={onFilePicked}
       />
-      <ImportingProjectModal
-        showModal={showModal && importingProject}
-        projectSecret={projectSecret}
-        onDone={onDone}
-        projectImported={projectImported}
-      />
+      <ImportingProjectModal showModal={showModal && importingProject} />
       <ProjectImportedModal
         showModal={showModal && projectImported}
-        projectSecret={projectSecret}
         onDone={onDone}
         projectName={projectName}
         outcomeCount={outcomeCount}
@@ -212,3 +181,5 @@ export default function ImportProjectModal({
     </>
   )
 }
+
+export default ImportProjectModal

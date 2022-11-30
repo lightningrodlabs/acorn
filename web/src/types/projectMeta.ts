@@ -28,6 +28,7 @@ export interface ProjectMeta {
   isImported: boolean
   priorityMode: PriorityMode
   topPriorityOutcomes: Array<ActionHashB64>
+  isMigrated: boolean
 }
 
 export enum PriorityMode {

@@ -63,7 +63,7 @@ async function installProjectApp(
     path: dnaPath,
     modifiers: {
       network_seed: uid,
-    }
+    },
   })
   // INSTALL
   const installedApp = await adminWs.installApp({
@@ -141,12 +141,12 @@ async function joinProject(passphrase: string, dispatch): Promise<boolean> {
 }
 
 async function importProject(
-  existingAgents,
-  agentAddress,
-  projectData,
-  passphrase,
-  profilesCellIdString,
-  dispatch
+  existingAgents: any, // TODO: fix
+  agentAddress: AgentPubKeyB64,
+  projectData: any,
+  passphrase: string,
+  profilesCellIdString: CellIdString,
+  dispatch: any
 ) {
   // first step is to install the dna
   const [projectsCellIdString] = await installProjectApp(passphrase)
@@ -205,7 +205,11 @@ async function importProject(
   }
 }
 
-async function deactivateApp(appId, cellId, dispatch) {
+async function deactivateApp(
+  appId: string,
+  cellId: CellIdString,
+  dispatch: any
+) {
   const adminWs = await getAdminWs()
   await adminWs.disableApp({
     installed_app_id: appId,
@@ -243,12 +247,13 @@ function mapStateToProps(state: RootState): DashboardStateProps {
 
 function mapDispatchToProps(dispatch): DashboardDispatchProps {
   return {
-    setActiveProject: (projectId: CellIdString) =>
-      dispatch(setActiveProject(projectId)),
+    setActiveProject: (projectId: CellIdString) => {
+      return dispatch(setActiveProject(projectId))
+    },
     setShowInviteMembersModal: (passphrase: string) => {
       return dispatch(openInviteMembersModal(passphrase))
     },
-    deactivateApp: (appId, cellId) => {
+    deactivateApp: async (appId: string, cellId: CellIdString) => {
       return deactivateApp(appId, cellId, dispatch)
     },
     fetchEntryPointDetails: async (cellIdString: CellIdString) => {
@@ -282,7 +287,7 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
       passphrase: string
     ) => {
       // matches the createProjectMeta fn and type signature
-      const projectMeta = {
+      const projectMeta: ProjectMeta = {
         ...project, // name and image
         passphrase,
         creatorAgentPubKey: agentAddress,
@@ -290,25 +295,29 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
         isImported: false,
         priorityMode: PriorityMode.Universal, // default
         topPriorityOutcomes: [],
+        isMigrated: false,
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },
-    joinProject: (passphrase: string) => joinProject(passphrase, dispatch),
+    joinProject: (passphrase: string) => {
+      return joinProject(passphrase, dispatch)
+    },
     importProject: (
       existingAgents,
       agentAddress,
       projectData,
       passphrase,
       profilesCellIdString
-    ) =>
-      importProject(
+    ) => {
+      return importProject(
         existingAgents,
         agentAddress,
         projectData,
         passphrase,
         profilesCellIdString,
         dispatch
-      ),
+      )
+    },
   }
 }
 
