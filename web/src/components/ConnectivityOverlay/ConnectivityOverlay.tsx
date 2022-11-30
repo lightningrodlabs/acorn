@@ -8,12 +8,16 @@ export type ConnectivityOverlayProps = {
   // proptypes
   heading: string
   content: string
+  buttonText: string
+  onClick: () => void
 }
 
 const ConnectivityOverlay: React.FC<ConnectivityOverlayProps> = ({
   // prop declarations
   heading,
   content,
+  buttonText,
+  onClick
 }) => {
   return (
     <div className="connectivity-overlay-wrapper">
@@ -34,10 +38,8 @@ const ConnectivityOverlay: React.FC<ConnectivityOverlayProps> = ({
           <div className="connectivity-modal-button-primary">
             <Button
               icon="refresh.svg"
-              text={'Restart Acorn'}
-              onClick={function (): void {
-                throw new Error('Function not implemented.')
-              }}
+              text={buttonText}
+              onClick={onClick}
             />
           </div>
         </div>

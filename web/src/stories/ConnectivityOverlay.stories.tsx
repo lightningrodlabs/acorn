@@ -29,5 +29,9 @@ const args: ConnectivityOverlayProps = {
   heading: 'Reconnect Acorn',
   content:
     'Acorn lost its connection to the local database due to inactivity. Refresh to reconnect and continue working with Acorn.',
+  buttonText: 'Restart Acorn',
+  onClick: function (): void {
+    throw new Error('Function not implemented.')
+  },
 }
 ConnectivityOverlay.args = args
