@@ -4,7 +4,7 @@
 
 /* Buttom Left Panel */
 
-.bottom-left-panel {
+.bottom-panel {
   position: fixed;
   bottom: 10px;
   left: 10px;
@@ -14,7 +14,7 @@
   height: 48px;
 }
 
-.bottom-left-panel-entry-points {
+.bottom-panel-entry-points {
   background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
   border-radius: 10px;
   height: 46px;
@@ -25,7 +25,7 @@
   justify-content: space-evenly;
 }
 
-.bottom-left-panel-entry-points .icon {
+.bottom-panel-entry-points .icon {
   height: 26px;
   width: 26px;
   padding: 2px;
@@ -35,7 +35,7 @@
 
 /* when Entry Point Icon is open: */
 
-.bottom-left-panel-entry-points .icon.active .inner-icon {
+.bottom-panel-entry-points .icon.active .inner-icon {
   background-color: var(--text-color-link);
 }
 
@@ -45,8 +45,7 @@
   position: fixed;
   bottom: 10px;
   right: 10px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 10px;
+  // border-radius: 10px;
   max-height: 50px;
   padding: 12px 0px;
   box-sizing: border-box;
@@ -54,4 +53,48 @@
   align-items: center;
   flex-direction: row;
   height: 48px;
+
+  .map-viewing-options-button-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .map-viewing-options-menu {
+      position: absolute;
+      z-index: 2;
+      bottom: 3.5rem;
+      // transform: translateX(calc(-50% + 5.5rem));
+    }
+
+    .map-viewing-options-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.625rem;
+      height: 3rem;
+      width: 3rem;
+      padding: 0.75rem 0.625rem;
+      box-sizing: border-box;
+      background-color: rgba(255, 255, 255, 0.9);
+      cursor: pointer;
+      margin-right: 0.5rem;
+
+      &.active {
+
+        .icon .inner-icon {
+          background-color: var(--text-color-link);
+        }
+      }
+
+      .icon.footer-action-icon {
+        padding: 4px;
+        height: 24px;
+        width: 24px;
+        display: inline-block;
+        position: relative;
+        box-sizing: border-box;
+      }
+    }
+  }
 }

@@ -1,26 +1,24 @@
 .zoom-wrapper {
   display: flex;
   align-items: center;
-  margin: 0 0 0 12px;
-}
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 0.625rem;
+  height: 3rem;
+  padding: 0.75rem 0.625rem;
+  box-sizing: border-box;
 
-.zoom-wrapper .icon, span {
-  display: inline-block;
-}
+  .icon {
+    display: inline-block;
+    margin-right: 0.5rem;
+  }
 
-.zoom-wrapper span {
-  font-size: 14px;
-  font-family: 'gilroyextrabold', Helvetica, sans-serif;
-  font-weight: normal;
-  margin-right: 10px;
-  width: 40px;
-  color: #535353;
-}
+  span {
+    display: inline-block;
+    font-size: 14px;
+    font-family: "gilroyextrabold", Helvetica, sans-serif;
+    font-weight: normal;
 
-.zoom-wrapper .icon {
-  margin-right: 8px;
-  /* height: 22px;
-  width: 22px;
-  padding: 4px;
-  box-sizing: border-box; */
+    width: 40px;
+    color: #535353;
+  }
 }

@@ -20,6 +20,9 @@ import MembersIndicator from '../MembersIndicator/MembersIndicator'
 import DoorOpen from '../../images/door-open.svg'
 import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 
+//images
+import triangleTopWhite from '../../images/triangle-top-white.svg'
+
 function ActiveEntryPoint({
   entryPoint,
   outcome,
@@ -108,7 +111,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
 
   return (
     <div className="header-left-panel-rows">
-      <div className="header-left-panel">
+      <div className="header-left-panel" ref={ref}>
         {/* Acorn Logo - non link */}
 
         {!whoami && (
@@ -181,22 +184,25 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
 
                 <div className="current-project-tools">
                   {/* Entry points */}
-
-                  <Icon
-                    name="door-open.svg"
-                    size="view-mode"
-                    className={`header-action-icon ${openEntryPointPicker ? 'active' : ''}`}
-                    withTooltip
-                    tooltipText="Entry Points"
-                    onClick={() =>
-                      setOpenEntryPointPicker(!openEntryPointPicker)
-                    }
-                  />
-                  {/* If entry point picker is open */}
-                  <EntryPointPicker
-                    isOpen={openEntryPointPicker}
-                    onClose={() => setOpenEntryPointPicker(false)}
-                  />
+                  <div className="entry-points-button-wrapper">
+                    <Icon
+                      name="door-open.svg"
+                      size="view-mode"
+                      className={`header-action-icon ${
+                        openEntryPointPicker ? 'active' : ''
+                      }`}
+                      withTooltip
+                      tooltipText="Entry Points"
+                      onClick={() =>
+                        setOpenEntryPointPicker(!openEntryPointPicker)
+                      }
+                    />
+                    {/* If entry point picker is open */}
+                    <EntryPointPicker
+                      isOpen={openEntryPointPicker}
+                      onClose={() => setOpenEntryPointPicker(false)}
+                    />
+                  </div>
 
                   {/* Settings */}
                   <Icon
@@ -214,11 +220,19 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                       tooltipText="Export"
                       name="export.svg"
                       size="header"
-                      className={`header-action-icon ${isExportOpen ? 'purple' : ''}`}
+                      className={`header-action-icon ${
+                        isExportOpen ? 'purple' : ''
+                      }`}
                       onClick={onClickExport}
                     />
                     {isExportOpen && (
                       <div className="export-list-wrapper">
+                        {/* Top Triangle */}
+                        <img
+                          className="triangle-top-white"
+                          src={triangleTopWhite}
+                        />
+
                         <div>
                           <ExportMenuItem
                             type="json"
