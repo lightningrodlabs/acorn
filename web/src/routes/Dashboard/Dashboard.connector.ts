@@ -20,7 +20,7 @@ import {
   joinProjectCellId,
   removeProjectCellId,
 } from '../../redux/persistent/cells/actions'
-import importAllProjectData from '../../import'
+import { importProjectData } from '../../migrating/import'
 import { openInviteMembersModal } from '../../redux/ephemeral/invite-members-modal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString, cellIdToString } from '../../utils'
@@ -152,7 +152,7 @@ async function importProject(
   const [projectsCellIdString] = await installProjectApp(passphrase)
   const cellId = cellIdFromString(projectsCellIdString)
   // next step is to import the rest of the data into that project
-  const oldToNewAddressMap = await importAllProjectData(
+  const oldToNewAddressMap = await importProjectData(
     existingAgents,
     projectData,
     projectsCellIdString,
@@ -295,7 +295,7 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
         isImported: false,
         priorityMode: PriorityMode.Universal, // default
         topPriorityOutcomes: [],
-        isMigrated: false,
+        isMigrated: null,
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
     },

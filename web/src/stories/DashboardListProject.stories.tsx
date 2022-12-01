@@ -42,7 +42,7 @@ const args: DashboardListProjectProps = {
     isImported: false,
     priorityMode: PriorityMode.Universal,
     topPriorityOutcomes: [],
-    isMigrated: false,
+    isMigrated: null,
     actionHash: '2131rueskfjhrkes',
     cellId: 'hfsfjhsdhfj2y87318',
     presentMembers: [],

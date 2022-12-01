@@ -189,7 +189,7 @@ const App: React.FC<AppProps> = ({
             <Route
               path="/run-update"
               render={() => (
-                <RunUpdate preRestart version={updateVersionInfo} />
+                <RunUpdate preRestart />
               )}
             />
             <Route path="/finish-update" render={() => <RunUpdate />} />
