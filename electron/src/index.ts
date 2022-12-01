@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, shell, autoUpdater } from 'electron'
 import * as contextMenu from 'electron-context-menu'
 import * as path from 'path'
+import * as fs from 'fs'
 // import log from 'electron-log'
 import initAgent, {
   StateSignal,
@@ -14,6 +15,7 @@ import {
   prodOptions,
   stateSignalToText,
   BINARY_PATHS,
+  INTEGRITY_VERSION_NUMBER,
 } from './holochain'
 
 // add the right-click "context" menu
@@ -169,12 +171,27 @@ ipcMain.handle('getVersion', () => {
   return app.getVersion()
 })
 
-ipcMain.handle('initiateUpdate', () => {
-  const server = 'https://update.electronjs.org'
-  const feed = `${server}/lightningrodlabs/acorn/${process.platform}-${process.arch}/${app.getVersion()}`
-  autoUpdater.setFeedURL({ url: feed })
-  // at this point we are not so much 'checking for updates'
-  // as we are pretty sure (via the front-end) that there is an update
-  // for us to download, and we've been instructed to.
-  autoUpdater.checkForUpdates()
+
+ipcMain.on('initiateUpdate', () => {
+  console.log('received initiateUpdate')
+  if (app.isPackaged) {
+    const server = 'https://update.electronjs.org'
+    const feed = `${server}/lightningrodlabs/acorn/${process.platform}-${process.arch}/${app.getVersion()}`
+    autoUpdater.setFeedURL({ url: feed })
+    // at this point we are not so much 'checking for updates'
+    // as we are pretty sure (via the front-end) that there is an update
+    // for us to download, and we've been instructed to.
+    autoUpdater.checkForUpdates()
+    // once the update is downloaded, it will trigger the 'update-downloaded' event, which will be
+    // separately listened for, and an event emitted to the client
+  }
+})
+
+const MIGRATION_FILE_NAME_PREFIX = `data-migration-for-integrity-version-`
+
+ipcMain.handle('persistExportData', (event, data) => {
+  console.log('received persistExportData')
+  const migrationFile = path.join(app.getPath('userData'), `${MIGRATION_FILE_NAME_PREFIX}${INTEGRITY_VERSION_NUMBER}`)
+  console.log('migrationFile', migrationFile)
+  fs.writeFileSync(migrationFile, data, { encoding: 'utf-8' })
 })

@@ -2,7 +2,6 @@ import { createImportedProfile } from '../redux/persistent/profiles/agents/actio
 import { createOutcome } from '../redux/persistent/projects/outcomes/actions'
 import { createConnection } from '../redux/persistent/projects/connections/actions'
 import { createOutcomeComment } from '../redux/persistent/projects/outcome-comments/actions'
-import { createOutcomeVote } from '../redux/persistent/projects/outcome-votes/actions'
 import { createOutcomeMember } from '../redux/persistent/projects/outcome-members/actions'
 import { createEntryPoint } from '../redux/persistent/projects/entry-points/actions'
 import ProjectsZomeApi from '../api/projectsApi'
@@ -14,7 +13,12 @@ import { Outcome, Tag } from '../types'
 import { WireRecord } from '../api/hdkCrud'
 import { ActionHashB64 } from '../types/shared'
 
-export default async function importAllProjectData(
+
+export default async function importProjectsData() {
+
+}
+
+export async function importProjectData(
   existingAgents,
   projectData,
   projectsCellIdString,
@@ -23,7 +27,7 @@ export default async function importAllProjectData(
 ) {
   /*
   agents, outcomes, connections,
-  outcomeMembers, outcomeComments, outcomeVotes,
+  outcomeMembers, outcomeComments,
   entryPoints, tags
   */
 
@@ -251,43 +255,6 @@ export default async function importAllProjectData(
       )
     } catch (e) {
       console.log('createOutcomeComment error', e)
-      throw e
-    }
-  }
-
-  // OUTCOME VOTES
-  for (let address of Object.keys(projectData.outcomeVotes)) {
-    const old = projectData.outcomeVotes[address]
-    // v1.0.4-alpha: outcomeActionHash
-    // v1.0.3-alpha and prior: outcomeHeaderHash
-    const newOutcomeActionHash = old.outcomeHeaderHash
-      ? outcomeActionHashMap[old.outcomeHeaderHash]
-      : outcomeActionHashMap[old.outcomeActionHash]
-    const clone = {
-      ...old,
-      outcomeActionHash: newOutcomeActionHash,
-      isImported: true,
-    }
-    // pre v1.0.4-alpha
-    delete clone.outcomeHeaderHash
-    // an assigned field
-    // v1.0.4-alpha
-    delete clone.actionHash
-    // v0.5.4-alpha
-    delete clone.headerHash
-
-    if (!clone.outcomeActionHash && !clone.outcomeHeaderHash) {
-      console.log('weird, invalid outcomeVote:', clone)
-      continue
-    }
-    try {
-      const createdOutcomeVote = await projectsZomeApi.outcomeVote.create(
-        projectsCellId,
-        clone
-      )
-      dispatch(createOutcomeVote(projectsCellIdString, createdOutcomeVote))
-    } catch (e) {
-      console.log('createOutcomeVote error', e)
       throw e
     }
   }

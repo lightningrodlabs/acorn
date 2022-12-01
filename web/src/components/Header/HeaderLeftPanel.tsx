@@ -223,14 +223,14 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                           <ExportMenuItem
                             type="json"
                             title="Export as JSON (Importable)"
-                            download="acorn-project.json"
+                            downloadFilename="acorn-project.json"
                           />
                         </div>
                         <div>
                           <ExportMenuItem
                             type="csv"
                             title="Export as CSV"
-                            download="acorn-project.csv"
+                            downloadFilename="acorn-project.csv"
                           />
                         </div>
                       </div>

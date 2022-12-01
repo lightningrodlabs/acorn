@@ -16,7 +16,7 @@ pub struct ProjectMeta {
     pub is_imported: bool,
     pub priority_mode: PriorityMode,
     pub top_priority_outcomes: Vec<ActionHashB64>,
-    pub is_migrated: bool,
+    pub is_migrated: Option<String>, // the string will represent the version migrated to
 }
 
 impl ProjectMeta {
@@ -29,7 +29,7 @@ impl ProjectMeta {
         is_imported: bool,
         priority_mode: PriorityMode,
         top_priority_outcomes: Vec<ActionHashB64>,
-        is_migrated: bool,
+        is_migrated: Option<String>,
     ) -> Self {
         Self {
             creator_agent_pub_key,
