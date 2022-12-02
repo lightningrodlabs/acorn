@@ -6,7 +6,7 @@ import { WireRecord } from './hdkCrud'
 import { get } from 'svelte/store'
 import { serializeHash } from '../utils'
 
-function weToAcornProfile(weProfile: WeProfile, weServices: WeServices): Profile {
+function weToAcornProfile(weProfile: WeProfile, agentPubKey: string): Profile {
     let acornProfile = {}
     // constrains the fields only to what acorn wants/expects (in case other fields have been added by other applets)
     const acornFields = ['firstName', 'lastName', 'handle', 'status', 'avatarUrl', 'agentPubKey', 'isImported']
@@ -22,8 +22,7 @@ function weToAcornProfile(weProfile: WeProfile, weServices: WeServices): Profile
             acornProfile[key] = weProfile.fields[key] ? weProfile.fields[key] as Status : "Offline" as Status
         }
         else if (key === 'agentPubKey') {
-            acornProfile[key] = weProfile.fields[key] ? weProfile.fields[key] : serializeHash(weServices.profilesStore.myAgentPubKey)
-      return serializeHash(weServices.profilesStore.myAgentPubKey)
+            acornProfile[key] = weProfile.fields[key] ? weProfile.fields[key] : agentPubKey
         }
         else if (key === 'avatarUrl') {
             acornProfile[key] = weProfile.fields[key] ? JSON.parse(weProfile.fields[key]) : ''
@@ -98,13 +97,13 @@ const WeProfilesApi = (appWebsocket: AppWebsocket, weServices: WeServices) => {
         return {
             actionHash: null,
             entryHash: null,
-            entry: weToAcornProfile(myWeProfile, weServices),
+            entry: weToAcornProfile(myWeProfile, serializeHash(weServices.profilesStore.myAgentPubKey)),
             createdAt: null,
             updatedAt: null,
         }
     },
     fetchAgents: async (cellId: CellId): Promise<Array<Profile>> => {
-      let profiles: Array<Profile> = get(await weServices.profilesStore.fetchAllProfiles()).values().map((weProfile) => weToAcornProfile(weProfile, weServices));
+      let profiles: Array<Profile> = get(await weServices.profilesStore.fetchAllProfiles()).entries().map(([agentPubKey, weProfile]) => weToAcornProfile(weProfile, serializeHash(agentPubKey)));
       return profiles
     },
     fetchAgentAddress: async (cellId: CellId): Promise<AgentPubKeyB64> => {
