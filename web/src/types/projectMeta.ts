@@ -26,12 +26,6 @@ export interface ProjectMeta {
   image: Option<string>
   passphrase: string
   isImported: boolean
-  priorityMode: PriorityMode
   topPriorityOutcomes: Array<ActionHashB64>
   isMigrated: Option<string>
-}
-
-export enum PriorityMode {
-  Universal = 'Universal',
-  Vote = 'Vote',
 }

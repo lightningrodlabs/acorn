@@ -10,7 +10,7 @@ import { CellIdString, WithActionHash } from '../types/shared'
 
 export type ExportType = 'csv' | 'json'
 
-export type ProjectExportData = {
+export type ProjectExportDataV1 = {
   projectMeta: WithActionHash<ProjectMeta>
   outcomes: ProjectOutcomesState
   connections: ProjectConnectionsState
@@ -24,7 +24,7 @@ export type ProjectExportData = {
 
 export type AllProjectsDataExport = {
   myProfile: Profile
-  projects: ProjectExportData[]
+  projects: ProjectExportDataV1[]
 }
 
 // should only import projects the active user created?
@@ -84,7 +84,7 @@ export default async function exportProjectsData(
 export function collectExportProjectData(
   state: RootState,
   projectCellId: CellIdString
-): ProjectExportData {
+): ProjectExportDataV1 {
   const outcomes = state.projects.outcomes[projectCellId] || {}
   const connections = state.projects.connections[projectCellId] || {}
   const outcomeMembers = state.projects.outcomeMembers[projectCellId] || {}
@@ -106,7 +106,7 @@ export function collectExportProjectData(
 
 export function exportDataHref(
   type: ExportType,
-  data: ProjectExportData
+  data: ProjectExportDataV1
 ): string {
   let blob: Blob
   if (type === 'csv') {

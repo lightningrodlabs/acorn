@@ -10,6 +10,8 @@ import exportProjectsData, {
   AllProjectsDataExport,
 } from '../../migrating/export'
 import { useStore } from 'react-redux'
+import importProjectsData from '../../migrating/import'
+import { useHistory } from 'react-router-dom'
 
 const persistExportedData = async (
   allProjectsDataExport: AllProjectsDataExport
@@ -38,14 +40,18 @@ const downloadNextVersion = async () => {
 
 export type RunUpdateProps = {
   preRestart?: boolean
+  migrationData?: string
 }
 
-const RunUpdate: React.FC<RunUpdateProps> = ({ preRestart }) => {
+const RunUpdate: React.FC<RunUpdateProps> = ({ preRestart, migrationData }) => {
   // if not preRestart, then this is postRestart
 
   const store = useStore()
+  const history = useHistory()
 
-  const title = preRestart ? 'Preparing your update' : 'Finishing your update'
+  const [title, setTitle] = useState(
+    preRestart ? 'Preparing your update' : 'Finishing your update'
+  )
   const [status, setStatus] = useState('')
   const [progress, setProgress] = useState(0.01) // percent
 
@@ -66,7 +72,25 @@ const RunUpdate: React.FC<RunUpdateProps> = ({ preRestart }) => {
         )
       })
     } else {
+      console.log('test')
       setStatus('Importing your data.')
+      importProjectsData(store, migrationData, (completed, toComplete) => {
+        // percent
+        // avoid 100 % because it does green checkmark
+        let newProgress = Math.floor((completed / toComplete) * 100)
+        if (newProgress === 100) {
+          newProgress = 99.9
+        }
+        setProgress(newProgress)
+      }).then(async () => {
+        setTitle('Finished your update')
+        setStatus(
+          'Your data was imported, you are ready to go! You will be redirected in a moment.'
+        )
+        setTimeout(() => {
+          history.push('/dashboard')
+        }, 4000)
+      })
     }
   }, [preRestart])
 

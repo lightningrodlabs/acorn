@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { PriorityModeOptions } from '../../constants'
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import Modal from '../Modal/Modal'
 import {
@@ -8,10 +7,9 @@ import {
   ProjectModalHeading,
   ProjectModalSubHeading,
 } from '../ProjectModal/ProjectModal'
-import { PreferenceSelectOption } from '../PreferenceSelect/PreferenceSelect'
 import Icon from '../Icon/Icon'
 import './ProjectSettingsModal.scss'
-import { PriorityMode, ProjectMeta } from '../../types'
+import { ProjectMeta } from '../../types'
 import { WithActionHash } from '../../types/shared'
 
 function EditProjectForm({
@@ -21,8 +19,6 @@ function EditProjectForm({
   setProjectName,
   projectCoverUrl,
   setProjectCoverUrl,
-  priorityMode,
-  setPriorityMode,
   projectPassphrase,
   openInviteMembersModal,
 }) {
@@ -73,27 +69,6 @@ function EditProjectForm({
     }
   }
 
-  const universalOption = (
-    <PreferenceSelectOption
-      key="preference-select-universal"
-      active={priorityMode === PriorityModeOptions.Universal}
-      onClick={() => setPriorityMode(PriorityModeOptions.Universal)}
-      iconName="earth.svg"
-      iconExtraClassName=""
-      title="Universal"
-    />
-  )
-  const voteOption = (
-    <PreferenceSelectOption
-      key="preference-select-vote"
-      active={priorityMode === PriorityModeOptions.Vote}
-      onClick={() => setPriorityMode(PriorityModeOptions.Vote)}
-      iconName="team.svg"
-      iconExtraClassName=""
-      title="Vote Based"
-    />
-  )
-
   return (
     <div className="edit-project-form">
       <ProjectModalHeading title="Project Settings" />
@@ -133,9 +108,6 @@ function EditProjectForm({
             style={{ backgroundImage: `url(${projectCoverUrl})` }}
           />
         </div>
-        {/* project priority mode setting */}
-        {/* MAYBE: re-enable this? */}
-        {/* <PreferenceSelect title="Prioritization Mode" subtitle="Select your preferred prioritization mode for you and your team in this project." options={[universalOption, voteOption]} /> */}
       </ProjectModalContent>
       <ProjectModalButton text="Update" onClick={submit} />
     </div>
@@ -159,7 +131,6 @@ export default function ProjectSettingsModal({
         // editable
         name: projectName,
         image: projectCoverUrl,
-        priorityMode: priorityMode,
         // not editable
         creatorAgentPubKey: project.creatorAgentPubKey,
         createdAt: project.createdAt,
@@ -179,13 +150,11 @@ export default function ProjectSettingsModal({
     if (project) {
       setProjectName(project.name)
       setProjectCoverUrl(project.image)
-      setPriorityMode(project.priorityMode)
       setProjectPassphrase(project.passphrase)
     }
   }, [project])
   const [projectName, setProjectName] = useState('')
   const [projectCoverUrl, setProjectCoverUrl] = useState('')
-  const [priorityMode, setPriorityMode] = useState(PriorityMode.Universal)
   const [projectPassphrase, setProjectPassphrase] = useState('')
 
   return (
@@ -204,8 +173,6 @@ export default function ProjectSettingsModal({
         setProjectName={setProjectName}
         projectCoverUrl={projectCoverUrl}
         setProjectCoverUrl={setProjectCoverUrl}
-        priorityMode={priorityMode}
-        setPriorityMode={setPriorityMode}
       />
     </Modal>
   )

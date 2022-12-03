@@ -29,9 +29,11 @@ export type GlobalModalsProps = {
   onProfileSubmit: (profile: Profile) => Promise<void>
   showUpdateModal: boolean
   onCloseUpdateModal: () => void
-  updateReleaseNotes: string
-  updateVersionInfo: string
-  updateSize: string
+  updateVersionInfo: {
+    name: string
+    releaseNotes: string
+    sizeForPlatform: string
+  }
 }
 
 const GlobalModals: React.FC<GlobalModalsProps> = ({
@@ -53,9 +55,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   onProfileSubmit,
   showUpdateModal,
   onCloseUpdateModal,
-  updateReleaseNotes,
   updateVersionInfo,
-  updateSize,
 }) => {
   // profile edit modal
   const titleText = 'Profile Settings'
@@ -112,8 +112,8 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
       <UpdateModal
         show={showUpdateModal}
         onClose={onCloseUpdateModal}
-        releaseTag={updateVersionInfo}
-        releaseSize={updateSize}
+        releaseTag={updateVersionInfo ? updateVersionInfo.name : ''}
+        releaseSize={updateVersionInfo ? updateVersionInfo.sizeForPlatform : ''}
         heading={'Update to newest version of Acorn'}
         content={
           <div>

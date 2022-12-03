@@ -1,7 +1,6 @@
 import { connect } from 'react-redux'
 
-import { PROJECTS_ZOME_NAME, PROJECT_APP_PREFIX } from '../../holochainConfig'
-import { passphraseToUid } from '../../secrets'
+import { PROJECTS_ZOME_NAME } from '../../holochainConfig'
 import { getAdminWs, getAppWs, getAgentPubKey } from '../../hcWebsockets'
 import { fetchEntryPointDetails } from '../../redux/persistent/projects/entry-points/actions'
 import {
@@ -13,19 +12,17 @@ import {
   fetchProjectMeta,
 } from '../../redux/persistent/projects/project-meta/actions'
 import selectEntryPoints from '../../redux/persistent/projects/entry-points/select'
-import { PriorityModeOptions } from '../../constants'
 
 import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
 import {
   joinProjectCellId,
   removeProjectCellId,
 } from '../../redux/persistent/cells/actions'
-import { importProjectData } from '../../migrating/import'
+import { importProjectData, installProjectAppAndImport } from '../../migrating/import'
 import { openInviteMembersModal } from '../../redux/ephemeral/invite-members-modal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
-import { cellIdFromString, cellIdToString } from '../../utils'
+import { cellIdFromString } from '../../utils'
 import { AgentPubKeyB64, CellIdString } from '../../types/shared'
-import { CellId } from '@holochain/client'
 import { RootState } from '../../redux/reducer'
 import Dashboard, {
   DashboardDispatchProps,
@@ -33,60 +30,13 @@ import Dashboard, {
 } from './Dashboard.component'
 import { ProjectMeta, PriorityMode } from '../../types'
 import selectProjectMembersPresent from '../../redux/persistent/projects/realtime-info-signal/select'
-
-async function installProjectApp(
-  passphrase: string
-): Promise<[CellIdString, CellId, string]> {
-  const uid = passphraseToUid(passphrase)
-  // add a bit of randomness so that
-  // the same passphrase can be tried multiple different times
-  // without conflicting
-  // in order to eventually find their peers
-  // note that this will leave a graveyard of deactivated apps for attempted
-  // joins
-  const installed_app_id = `${PROJECT_APP_PREFIX}-${Math.random()
-    .toString()
-    .slice(-6)}-${uid}`
-  const adminWs = await getAdminWs()
-  const agent_key = getAgentPubKey()
-  if (!agent_key) {
-    throw new Error(
-      'Cannot install a new project because no AgentPubKey is known locally'
-    )
-  }
-  // the dna hash HAS to act deterministically
-  // in order for the 'joining' of Projects to work
-  const dnaPath = window.require
-    ? await window.require('electron').ipcRenderer.invoke('getProjectsPath')
-    : './happ/workdir/projects.dna'
-  const hash = await adminWs.registerDna({
-    path: dnaPath,
-    modifiers: {
-      network_seed: uid,
-    },
-  })
-  // INSTALL
-  const installedApp = await adminWs.installApp({
-    agent_key,
-    installed_app_id,
-    dnas: [
-      {
-        role_id: uid,
-        hash,
-      },
-    ],
-  })
-  const cellId = installedApp.cell_data[0].cell_id
-  const cellIdString = cellIdToString(cellId)
-  await adminWs.enableApp({ installed_app_id })
-  return [cellIdString, cellId, installed_app_id]
-}
+import { installProjectApp } from '../../projects/installProjectApp'
 
 async function createProject(
   passphrase: string,
   projectMeta: ProjectMeta,
   agentAddress: AgentPubKeyB64,
-  dispatch
+  dispatch: any
 ) {
   const [cellIdString] = await installProjectApp(passphrase)
   const cellId = cellIdFromString(cellIdString)
@@ -138,71 +88,6 @@ async function joinProject(passphrase: string, dispatch): Promise<boolean> {
   // checks and other things
   dispatch(joinProjectCellId(cellIdString))
   return false
-}
-
-async function importProject(
-  existingAgents: any, // TODO: fix
-  agentAddress: AgentPubKeyB64,
-  projectData: any,
-  passphrase: string,
-  profilesCellIdString: CellIdString,
-  dispatch: any
-) {
-  // first step is to install the dna
-  const [projectsCellIdString] = await installProjectApp(passphrase)
-  const cellId = cellIdFromString(projectsCellIdString)
-  // next step is to import the rest of the data into that project
-  const oldToNewAddressMap = await importProjectData(
-    existingAgents,
-    projectData,
-    projectsCellIdString,
-    profilesCellIdString,
-    dispatch
-  )
-
-  // only add the project meta after the rest has been imported
-  // so it doesn't list itself early in the process
-  // first step is to create new project
-  const originalTopPriorityOutcomes =
-    projectData.projectMeta.topPriorityOutcomes
-  const originalPriorityMode = projectData.projectMeta.priorityMode
-  const projectMeta = {
-    ...projectData.projectMeta,
-    // the question mark operator for backwards compatibility
-    topPriorityOutcomes: originalTopPriorityOutcomes
-      ? originalTopPriorityOutcomes
-          .map((oldAddress) => oldToNewAddressMap[oldAddress])
-          .filter((address) => address)
-      : [],
-    // the question mark operator for backwards compatibility
-    priorityMode: originalPriorityMode
-      ? originalPriorityMode
-      : PriorityModeOptions.Universal,
-    createdAt: Date.now(),
-    creatorAgentPubKey: agentAddress,
-    passphrase: passphrase,
-  }
-  // these are not actuals field
-  // v0.5.4-alpha
-  delete projectMeta.actionHash
-  // pre v0.5.3-alpha and prior
-  delete projectMeta.address
-
-  const appWebsocket = await getAppWs()
-  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-  await dispatch(setMember(projectsCellIdString, { agentPubKey: agentAddress }))
-  try {
-    console.log(projectMeta)
-    const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(
-      cellId,
-      projectMeta
-    )
-    await dispatch(
-      simpleCreateProjectMeta(projectsCellIdString, simpleCreatedProjectMeta)
-    )
-  } catch (e) {
-    throw e
-  }
 }
 
 async function deactivateApp(
@@ -293,7 +178,6 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
         creatorAgentPubKey: agentAddress,
         createdAt: Date.now(),
         isImported: false,
-        priorityMode: PriorityMode.Universal, // default
         topPriorityOutcomes: [],
         isMigrated: null,
       }
@@ -303,18 +187,14 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
       return joinProject(passphrase, dispatch)
     },
     importProject: (
-      existingAgents,
       agentAddress,
       projectData,
       passphrase,
-      profilesCellIdString
     ) => {
-      return importProject(
-        existingAgents,
+      return installProjectAppAndImport(
         agentAddress,
         projectData,
         passphrase,
-        profilesCellIdString,
         dispatch
       )
     },

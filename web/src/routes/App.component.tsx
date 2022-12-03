@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {
-  Redirect,
-  HashRouter as Router,
-  Switch,
-  Route,
-  useHistory,
-} from 'react-router-dom'
+import { Redirect, HashRouter as Router, Switch, Route } from 'react-router-dom'
 
 import { WireRecord } from '../api/hdkCrud'
 import {
@@ -33,6 +27,8 @@ import IntroScreen from '../components/IntroScreen/IntroScreen.connector'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 // all global modals in here
 import GlobalModals from './GlobalModals'
+import useVersionChecker from '../hooks/useVersionChecker'
+import useMigrationChecker from '../hooks/useMigrationChecker'
 
 export type AppStateProps = {
   profilesCellIdString: string
@@ -85,13 +81,16 @@ const App: React.FC<AppProps> = ({
   const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
-  // update related states
-  const [currentVersion, setCurrentVersion] = useState('')
-  const [updateVersionInfo, setUpdateVersionInfo] = useState('')
-  const [updateReleaseNotes, setUpdateReleaseNotes] = useState('')
-  const [updateSize, setUpdateSize] = useState('')
   const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [showUpdateBar, setShowUpdateBar] = useState(false)
+  const updateVersionInfo = useVersionChecker()
+  const migrationChecker = useMigrationChecker()
+
+  useEffect(() => {
+    if (updateVersionInfo) {
+      setShowUpdateModal(true)
+    }
+  }, [JSON.stringify(updateVersionInfo)])
 
   const onProfileSubmit = async (profile: Profile) => {
     await updateWhoami(profile, whoami.actionHash)
@@ -107,53 +106,22 @@ const App: React.FC<AppProps> = ({
     )
   }
 
-  useEffect(() => {
-    if (window.require) {
-      window
-        .require('electron')
-        .ipcRenderer.invoke('getVersion')
-        .then((version: string) => {
-          setCurrentVersion(version)
-        })
-    }
-  }, [])
-
-  useEffect(() => {
-    // every 10 minutes, fetch from github releases
-    // to see if there is any new update available for the app
-    const checkForGithubUpdates = () => {
-      fetch('https://api.github.com/repos/lightningrodlabs/acorn/releases')
-        .then((response) => response.json())
-        .then((releases) => {
-          // 0 index is the latest
-          const latestRelease = releases[0]
-          const latestTagName = latestRelease.tag_name
-          const latestReleaseNotes = latestRelease.body
-          if (currentVersion && latestTagName !== currentVersion) {
-            setShowUpdateModal(true)
-            clearInterval(timerID)
-            setUpdateVersionInfo(latestTagName)
-            setUpdateReleaseNotes(latestReleaseNotes)
-            // TODO
-            setUpdateSize('1mb')
-          }
-        })
-    }
-    // check every 10 minutes
-    const timerID = setInterval(checkForGithubUpdates, 1000 * 60 * 10)
-    checkForGithubUpdates()
-    return () => {
-      // this function will be called
-      // when this component unmounts:
-      // 'tear down the timer'
-      clearInterval(timerID)
-    }
-  }, [currentVersion])
-
   const onCloseUpdateModal = () => {
     setShowUpdateModal(false)
     setShowUpdateBar(true)
   }
+
+  const redirToIntro =
+    agentAddress &&
+    hasFetchedForWhoami &&
+    !whoami &&
+    migrationChecker.hasChecked &&
+    !migrationChecker.dataForNeedsMigration
+
+  const redirToFinishMigration =
+    agentAddress &&
+    migrationChecker.hasChecked &&
+    migrationChecker.dataForNeedsMigration
 
   return (
     <div className={`screen-wrapper`}>
@@ -186,13 +154,15 @@ const App: React.FC<AppProps> = ({
             <Route path="/register" component={CreateProfilePage} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/project/:projectId" component={ProjectView} />
+            <Route path="/run-update" render={() => <RunUpdate preRestart />} />
             <Route
-              path="/run-update"
+              path="/finish-update"
               render={() => (
-                <RunUpdate preRestart />
+                <RunUpdate
+                  migrationData={migrationChecker.dataForNeedsMigration}
+                />
               )}
             />
-            <Route path="/finish-update" render={() => <RunUpdate />} />
             <Route path="/" render={() => <Redirect to="/dashboard" />} />
           </Switch>
 
@@ -217,16 +187,13 @@ const App: React.FC<AppProps> = ({
               showUpdateBar,
               showUpdateModal,
               onCloseUpdateModal,
-              updateReleaseNotes,
-              updateSize,
               updateVersionInfo,
             }}
           />
-          {/* Loading Screen if no user agent */}
-          {!agentAddress && <LoadingScreen />}
-          {agentAddress && hasFetchedForWhoami && !whoami && (
-            <Redirect to="/intro" />
-          )}
+          {/* Loading Screen if no user agent, and also during checking whether migration is necessary */}
+          {(!agentAddress || !migrationChecker.hasChecked) && <LoadingScreen />}
+          {redirToIntro && <Redirect to="/intro" />}
+          {redirToFinishMigration && <Redirect to="/finish-update" />}
           {agentAddress && whoami && <Footer />}
         </Router>
       </ErrorBoundaryScreen>

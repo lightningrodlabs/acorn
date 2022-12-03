@@ -43,11 +43,9 @@ export type DashboardDispatchProps = {
   joinProject: (passphrase: string) => Promise<boolean>
   deactivateApp: (appId: string, cellId: CellIdString) => Promise<void>
   importProject: (
-    existingAgents: any, // TODO: fix
     agentAddress: AgentPubKeyB64,
     projectData: any,
     passphrase: string,
-    profilesCellIdString: CellIdString
   ) => Promise<void>
   setShowInviteMembersModal: (passphrase: string) => void
 }
@@ -111,11 +109,9 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const onImportProject = (projectData: any, passphrase: string) =>
     importProject(
-      existingAgents,
       agentAddress,
       projectData,
       passphrase,
-      profilesCellIdString
     )
 
   const setSortBy = (sortBy) => () => {

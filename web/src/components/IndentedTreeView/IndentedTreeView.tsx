@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useLocation, NavLink } from 'react-router-dom'
-import { ComputedOutcome, ComputedScope, Tag } from '../../types'
+import { ComputedScope } from '../../types'
 
 import Icon from '../Icon/Icon'
-import { PriorityModeOptions } from '../../constants'
 
 import './IndentedTreeView.scss'
 import ExpandChevron from '../ExpandChevron/ExpandChevron'
@@ -34,7 +33,6 @@ function NestedTreeOutcome({
     searchParams.get('contextOutcome') === outcome.actionHash
   const showMakeTopPriorityOutcome =
     projectMeta &&
-    projectMeta.priorityMode === PriorityModeOptions.Universal &&
     !projectMeta.topPriorityOutcomes.find(
       (actionHash) => actionHash === outcome.actionHash
     )

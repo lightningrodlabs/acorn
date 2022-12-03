@@ -8,7 +8,6 @@ import initAgent, {
   STATUS_EVENT,
 } from '@lightningrodlabs/electron-holochain'
 
-
 import {
   devOptions,
   projectsDnaPath,
@@ -20,7 +19,7 @@ import {
 
 // add the right-click "context" menu
 contextMenu({
-  showSaveImageAs: true
+  showSaveImageAs: true,
 })
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -34,10 +33,14 @@ process.on('uncaughtException', (e) => {
 
 const BACKGROUND_COLOR = '#f7f5f3'
 
-
-
-const MAIN_FILE = path.join(app.getAppPath(), '../app.asar.unpacked/web/index.html')
-const SPLASH_FILE = path.join(app.getAppPath(), '../app.asar.unpacked/web/splashscreen.html')
+const MAIN_FILE = path.join(
+  app.getAppPath(),
+  '../app.asar.unpacked/web/index.html'
+)
+const SPLASH_FILE = path.join(
+  app.getAppPath(),
+  '../app.asar.unpacked/web/splashscreen.html'
+)
 const LINUX_ICON_FILE = path.join(
   app.getAppPath(),
   '../app.asar.unpacked/web/logo/acorn-app-icon-512px.png'
@@ -171,12 +174,13 @@ ipcMain.handle('getVersion', () => {
   return app.getVersion()
 })
 
-
 ipcMain.on('initiateUpdate', () => {
   console.log('received initiateUpdate')
   if (app.isPackaged) {
     const server = 'https://update.electronjs.org'
-    const feed = `${server}/lightningrodlabs/acorn/${process.platform}-${process.arch}/${app.getVersion()}`
+    const feed = `${server}/lightningrodlabs/acorn/${process.platform}-${
+      process.arch
+    }/${app.getVersion()}`
     autoUpdater.setFeedURL({ url: feed })
     // at this point we are not so much 'checking for updates'
     // as we are pretty sure (via the front-end) that there is an update
@@ -191,7 +195,38 @@ const MIGRATION_FILE_NAME_PREFIX = `data-migration-for-integrity-version-`
 
 ipcMain.handle('persistExportData', (event, data) => {
   console.log('received persistExportData')
-  const migrationFile = path.join(app.getPath('userData'), `${MIGRATION_FILE_NAME_PREFIX}${INTEGRITY_VERSION_NUMBER}`)
+  const migrationFile = path.join(
+    app.getPath('userData'),
+    `${MIGRATION_FILE_NAME_PREFIX}${INTEGRITY_VERSION_NUMBER}`
+  )
   console.log('migrationFile', migrationFile)
-  fs.writeFileSync(migrationFile, data, { encoding: 'utf-8' })
+  try {
+    const dataObj = JSON.parse(data)
+    const modifiedData = {
+      integrityVersion: INTEGRITY_VERSION_NUMBER,
+      ...dataObj,
+    }
+    fs.writeFileSync(migrationFile, JSON.stringify(modifiedData, null, 2), {
+      encoding: 'utf-8',
+    })
+  } catch (e) {}
+})
+
+ipcMain.handle('checkForMigrationData', (event) => {
+  console.log('received checkForMigrationData')
+  // INTEGRITY_VERSION_NUMBER will just be incremented one number at a time
+  const prevIntegrityVersion = INTEGRITY_VERSION_NUMBER - 1
+  const prevVersionMigrationFile = path.join(
+    app.getPath('userData'),
+    `${MIGRATION_FILE_NAME_PREFIX}${prevIntegrityVersion}`
+  )
+  if (fs.existsSync(prevVersionMigrationFile)) {
+    const prevVersionMigrationDataString = fs.readFileSync(
+      prevVersionMigrationFile,
+      { encoding: 'utf-8' }
+    )
+    return prevVersionMigrationDataString
+  } else {
+    return ''
+  }
 })

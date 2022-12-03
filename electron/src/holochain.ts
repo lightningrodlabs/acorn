@@ -4,8 +4,8 @@ import { ElectronHolochainOptions, StateSignal, PathOptions } from '@lightningro
 
 // see the DEVELOPERS.md about incrementing
 // these values
-export const INTEGRITY_VERSION_NUMBER = '4'
-export const KEYSTORE_VERSION_NUMBER = '3'
+export const INTEGRITY_VERSION_NUMBER = 4
+export const KEYSTORE_VERSION_NUMBER = 3
 
 // these messages get seen on the splash page
 export enum StateSignalText {

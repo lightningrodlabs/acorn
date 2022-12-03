@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
 import './Header.scss'
 
-import { PriorityModeOptions } from '../../constants'
 import { WireRecord } from '../../api/hdkCrud'
 import {
   AgentPubKeyB64,
@@ -15,9 +14,8 @@ import { ProjectMeta, Profile, EntryPoint, Outcome } from '../../types'
 import { Status } from './Status'
 import HeaderLeftPanel from './HeaderLeftPanel'
 import HeaderRightPanel from './HeaderRightPanel.connector'
-import HeaderMiddlePanel from './HeaderMiddlePanel'
 import UpdateBar from '../UpdateBar/UpdateBar'
-import { useLocation, useRouteMatch } from 'react-router-dom'
+import { useRouteMatch } from 'react-router-dom'
 
 export type HeaderProps = {
   // for update bar
@@ -153,13 +151,6 @@ const Header: React.FC<HeaderProps> = ({
           onClickExport={onClickExport}
           activeEntryPoints={activeEntryPoints}
           goToOutcome={goToOutcome}
-        />
-        {/* Header Middle Panel */}
-        <HeaderMiddlePanel
-          projectId={projectId}
-          projectPriorityMode={
-            project ? project.priorityMode : PriorityModeOptions.Universal
-          }
         />
         {whoami && (
           // add all these values as props
