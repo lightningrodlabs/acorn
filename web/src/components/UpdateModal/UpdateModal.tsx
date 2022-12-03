@@ -7,6 +7,11 @@ import Button from '../Button/Button'
 import Typography from '../Typography/Typography'
 import Tag from '../Tag/Tag'
 
+export enum ViewingReleaseNotes {
+  ReleaseNotes,
+  MainMessage,
+}
+
 export type UpdateModalProps = {
   // proptypes
   show: boolean

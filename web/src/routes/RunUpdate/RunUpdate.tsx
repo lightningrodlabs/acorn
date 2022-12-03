@@ -13,6 +13,18 @@ import { useStore } from 'react-redux'
 import importProjectsData from '../../migrating/import'
 import { useHistory } from 'react-router-dom'
 
+const checkIfExportNeeded = (currentVersion: string, toVersion: string) => {
+  // compare
+  // strings like: v2.1.0-alpha or 2.0.1-alpha
+
+  // parseInt here extracts the "major" version number, which, if
+  // it changes, means a migration is required
+  return (
+    parseInt(currentVersion.replace('v', '')) !==
+    parseInt(toVersion.replace('v', ''))
+  )
+}
+
 const persistExportedData = async (
   allProjectsDataExport: AllProjectsDataExport
 ) => {
@@ -47,12 +59,16 @@ const markMigrationDone = () => {
 
 export type RunUpdateProps = {
   preRestart?: boolean
+  // for pre restart
+  currentVersion?: string
   toVersion?: string
+  // for post restart
   migrationData?: string
 }
 
 const RunUpdate: React.FC<RunUpdateProps> = ({
   preRestart,
+  currentVersion,
   toVersion,
   migrationData,
 }) => {
@@ -65,6 +81,8 @@ const RunUpdate: React.FC<RunUpdateProps> = ({
     preRestart ? 'Preparing your update' : 'Finishing your update'
   )
   const [status, setStatus] = useState('')
+  // avoid 0 percent and 100 percent, just because of the component
+  // that renders this value
   const [progress, setProgress] = useState(0.01) // percent
 
   const runExport = async () => {
@@ -79,11 +97,17 @@ const RunUpdate: React.FC<RunUpdateProps> = ({
       }
     )
     await persistExportedData(allExportData)
+  }
+
+  const controlDownloadNextVersion = async () => {
     setStatus('Now downloading the new version.')
     await downloadNextVersion()
+    setProgress(99.9)
+    // avoid 100 % because it does green checkmark
     setStatus(
       'The update has finished downloading. The app will restart shortly.'
     )
+    // the electron side is going to trigger the app to quit and restart
   }
 
   const runImport = async () => {
@@ -110,11 +134,15 @@ const RunUpdate: React.FC<RunUpdateProps> = ({
   // on component mount, initiate
   useEffect(() => {
     if (preRestart) {
-      runExport()
+      if (checkIfExportNeeded(currentVersion, toVersion)) {
+        runExport().then(controlDownloadNextVersion)
+      } else {
+        controlDownloadNextVersion()
+      }
     } else {
       runImport()
     }
-  }, [preRestart])
+  }, [])
 
   return (
     <div className="run-update-screen-wrapper">

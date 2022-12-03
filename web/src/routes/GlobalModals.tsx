@@ -8,7 +8,9 @@ import InviteMembersModal from '../components/InviteMembersModal/InviteMembersMo
 import { WireRecord } from '../api/hdkCrud'
 import { Profile, ProjectMeta } from '../types'
 import { AgentPubKeyB64, CellIdString, WithActionHash } from '../types/shared'
-import UpdateModal from '../components/UpdateModal/UpdateModal'
+import UpdateModal, {
+  ViewingReleaseNotes,
+} from '../components/UpdateModal/UpdateModal'
 
 export type GlobalModalsProps = {
   whoami: WireRecord<Profile>
@@ -27,6 +29,7 @@ export type GlobalModalsProps = {
   openInviteMembersModal: (passphrase: string) => void
   hideInviteMembersModal: () => void
   onProfileSubmit: (profile: Profile) => Promise<void>
+  hasMigratedSharedProject: boolean
   showUpdateModal: boolean
   onCloseUpdateModal: () => void
   updateVersionInfo: {
@@ -38,6 +41,10 @@ export type GlobalModalsProps = {
   exportedProjectName: string
   showExportedModal: boolean
   setShowExportedModal: (show: boolean) => void
+  viewingReleaseNotes: ViewingReleaseNotes
+  setViewingReleaseNotes: React.Dispatch<
+    React.SetStateAction<ViewingReleaseNotes>
+  >
 }
 
 const GlobalModals: React.FC<GlobalModalsProps> = ({
@@ -57,12 +64,15 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   openInviteMembersModal,
   hideInviteMembersModal,
   onProfileSubmit,
+  hasMigratedSharedProject,
   showUpdateModal,
   onCloseUpdateModal,
   updateVersionInfo,
   exportedProjectName,
   showExportedModal,
   setShowExportedModal,
+  viewingReleaseNotes,
+  setViewingReleaseNotes,
 }) => {
   // profile edit modal
   const titleText = 'Profile Settings'
@@ -123,12 +133,35 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         releaseSize={updateVersionInfo ? updateVersionInfo.sizeForPlatform : ''}
         heading={'Update to newest version of Acorn'}
         content={
-          <div>
-            {/* TODO */}
-            Update is required to access a shared project brought to the updated
-            version by another team member. You can continue using your personal
-            projects without the update. See <a>Release Notes & Changelog</a>.
-          </div>
+          <>
+            {viewingReleaseNotes === ViewingReleaseNotes.MainMessage && (
+              <div>
+                {hasMigratedSharedProject ? (
+                  <>
+                    Update is required to access a shared project brought to the
+                    updated version by another team member. You can continue
+                    using your personal projects without the update.
+                  </>
+                ) : (
+                  <>There is a new release of Acorn that you can update to.</>
+                )}{' '}
+                See{' '}
+                <a
+                  onClick={() =>
+                    setViewingReleaseNotes(ViewingReleaseNotes.ReleaseNotes)
+                  }
+                >
+                  Release Notes & Changelog
+                </a>
+                .
+              </div>
+            )}
+            {viewingReleaseNotes === ViewingReleaseNotes.ReleaseNotes && (
+              <div>
+                {updateVersionInfo ? updateVersionInfo.releaseNotes : ''}
+              </div>
+            )}
+          </>
         }
       />
 

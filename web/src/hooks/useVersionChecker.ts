@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 export default function useVersionChecker(): {
+  currentVersion: string
   name: string
   releaseNotes: string
   sizeForPlatform: string
@@ -53,6 +54,7 @@ export default function useVersionChecker(): {
   }, [currentVersion])
 
   return name ? {
+    currentVersion,
     name,
     releaseNotes,
     sizeForPlatform,

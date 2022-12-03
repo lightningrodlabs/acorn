@@ -16,16 +16,19 @@ import HeaderLeftPanel from './HeaderLeftPanel'
 import HeaderRightPanel from './HeaderRightPanel.connector'
 import UpdateBar from '../UpdateBar/UpdateBar'
 import { useRouteMatch } from 'react-router-dom'
+import { ViewingReleaseNotes } from '../UpdateModal/UpdateModal'
 
 export type HeaderProps = {
   // for project export
   setExportedProjectName: React.Dispatch<React.SetStateAction<string>>
-  setShowExportedModal: React.Dispatch<React.SetStateAction<boolean>>
   // for update bar
   showUpdateBar: boolean
   setShowUpdateBar: React.Dispatch<React.SetStateAction<boolean>>
   setShowUpdateModal: React.Dispatch<React.SetStateAction<boolean>>
-  hasMigratedSharedProject?: boolean
+  hasMigratedSharedProject: boolean
+  setViewingReleaseNotes: React.Dispatch<
+    React.SetStateAction<ViewingReleaseNotes>
+  >
   // other
   whoami: WireRecord<Profile>
   activeEntryPoints: {
@@ -48,12 +51,12 @@ export type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({
   // for project export
   setExportedProjectName,
-  setShowExportedModal,
   // for update bar
   showUpdateBar,
   setShowUpdateBar,
   setShowUpdateModal,
-  hasMigratedSharedProject = false,
+  hasMigratedSharedProject,
+  setViewingReleaseNotes,
   whoami,
   openInviteMembersModal,
   setShowProjectSettingsOpen,
@@ -117,19 +120,19 @@ const Header: React.FC<HeaderProps> = ({
         <UpdateBar
           active={showUpdateBar}
           onClose={() => setShowUpdateBar(false)}
+          buttonSecondaryText={'Changelog'}
           onClickSecondaryAction={() => {
-            // TODO adjust these
+            setViewingReleaseNotes(ViewingReleaseNotes.ReleaseNotes)
             setShowUpdateModal(true)
             setShowUpdateBar(false)
           }}
+          buttonPrimaryText={'Update Now'}
           onClickPrimaryAction={() => {
-            // TODO adjust these
+            setViewingReleaseNotes(ViewingReleaseNotes.MainMessage)
             setShowUpdateModal(true)
             setShowUpdateBar(false)
           }}
           text={'🎉 A new update for Acorn is available.'}
-          buttonPrimaryText={'Update Now'}
-          buttonSecondaryText={'Changelog'}
           migratedSharedProjectText={
             hasMigratedSharedProject
               ? ' Update is required to access a shared project brought to the updated version by another team member.'

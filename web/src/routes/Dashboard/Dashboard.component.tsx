@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { CSSTransition } from 'react-transition-group'
 
 import Icon from '../../components/Icon/Icon'
@@ -20,12 +20,10 @@ import './Dashboard.scss'
 import Typography from '../../components/Typography/Typography'
 import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { ProjectAggregated } from '../../types'
-import { AgentsState } from '../../redux/persistent/profiles/agents/reducer'
+import UpdateModalContext from '../../context/UpdateModalContext'
 
 export type DashboardStateProps = {
-  existingAgents: AgentsState
   agentAddress: AgentPubKeyB64
-  profilesCellIdString: CellIdString
   cells: CellIdString[]
   projects: Array<ProjectAggregated>
 }
@@ -45,7 +43,7 @@ export type DashboardDispatchProps = {
   importProject: (
     agentAddress: AgentPubKeyB64,
     projectData: any,
-    passphrase: string,
+    passphrase: string
   ) => Promise<void>
   setShowInviteMembersModal: (passphrase: string) => void
 }
@@ -53,10 +51,8 @@ export type DashboardDispatchProps = {
 export type DashboardProps = DashboardStateProps & DashboardDispatchProps
 
 const Dashboard: React.FC<DashboardProps> = ({
-  existingAgents,
   deactivateApp,
   agentAddress,
-  profilesCellIdString,
   cells,
   projects,
   setActiveProject,
@@ -68,6 +64,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   importProject,
   setShowInviteMembersModal,
 }) => {
+  const { setShowUpdateModal } = useContext(UpdateModalContext)
+
   // createdAt, name
   const [pendingProjects, setPendingProjects] = useState([])
   const [selectedSort, setSelectedSort] = useState('createdAt')
@@ -108,11 +106,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   const onJoinProject = (passphrase: string) => joinProject(passphrase)
 
   const onImportProject = (projectData: any, passphrase: string) =>
-    importProject(
-      agentAddress,
-      projectData,
-      passphrase,
-    )
+    importProject(agentAddress, projectData, passphrase)
 
   const setSortBy = (sortBy) => () => {
     setSelectedSort(sortBy)
@@ -236,6 +230,9 @@ const Dashboard: React.FC<DashboardProps> = ({
                     openProjectSettingsModal={(projectCellId: CellIdString) =>
                       setShowProjectSettingsModal(projectCellId)
                     }
+                    onClickUpdate={() => {
+                      setShowUpdateModal(true)
+                    }}
                   />
                 )
               })}

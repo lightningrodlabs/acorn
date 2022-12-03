@@ -18,7 +18,7 @@ import {
   joinProjectCellId,
   removeProjectCellId,
 } from '../../redux/persistent/cells/actions'
-import { importProjectData, installProjectAppAndImport } from '../../migrating/import'
+import { installProjectAppAndImport } from '../../migrating/import'
 import { openInviteMembersModal } from '../../redux/ephemeral/invite-members-modal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString } from '../../utils'
@@ -28,7 +28,7 @@ import Dashboard, {
   DashboardDispatchProps,
   DashboardStateProps,
 } from './Dashboard.component'
-import { ProjectMeta, PriorityMode } from '../../types'
+import { ProjectMeta } from '../../types'
 import selectProjectMembersPresent from '../../redux/persistent/projects/realtime-info-signal/select'
 import { installProjectApp } from '../../projects/installProjectApp'
 
@@ -122,9 +122,7 @@ function mapStateToProps(state: RootState): DashboardStateProps {
     }
   })
   return {
-    existingAgents: state.agents,
     agentAddress: state.agentAddress,
-    profilesCellIdString: state.cells.profiles,
     cells: state.cells.projects,
     projects,
   }

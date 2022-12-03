@@ -27,9 +27,12 @@ import IntroScreen from '../components/IntroScreen/IntroScreen.connector'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 // all global modals in here
 import GlobalModals from './GlobalModals'
+// hooks
 import useVersionChecker from '../hooks/useVersionChecker'
-import useMigrationChecker from '../hooks/useMigrationChecker'
+import useFinishMigrationChecker from '../hooks/useFinishMigrationChecker'
 import useFileDownloaded from '../hooks/useFileDownloaded'
+import UpdateModalContext from '../context/UpdateModalContext'
+import { ViewingReleaseNotes } from '../components/UpdateModal/UpdateModal'
 
 export type AppStateProps = {
   profilesCellIdString: string
@@ -46,6 +49,7 @@ export type AppStateProps = {
   hasFetchedForWhoami: boolean
   navigationPreference: 'mouse' | 'trackpad'
   inviteMembersModalShowing: null | string // will be the passphrase if defined
+  hasMigratedSharedProject: boolean
 }
 
 export type AppDispatchProps = {
@@ -78,6 +82,7 @@ const App: React.FC<AppProps> = ({
   openInviteMembersModal,
   hideInviteMembersModal,
   goToOutcome,
+  hasMigratedSharedProject,
 }) => {
   const [exportedProjectName, setExportedProjectName] = useState('')
   const [showExportedModal, setShowExportedModal] = useState(false)
@@ -86,9 +91,12 @@ const App: React.FC<AppProps> = ({
   const [showPreferences, setShowPreferences] = useState(false)
   const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [showUpdateBar, setShowUpdateBar] = useState(false)
+  const [viewingReleaseNotes, setViewingReleaseNotes] = useState(
+    ViewingReleaseNotes.MainMessage
+  )
   // custom hooks
   const updateVersionInfo = useVersionChecker()
-  const migrationChecker = useMigrationChecker()
+  const finishMigrationChecker = useFinishMigrationChecker()
   const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
 
   useEffect(() => {
@@ -127,101 +135,114 @@ const App: React.FC<AppProps> = ({
     agentAddress &&
     hasFetchedForWhoami &&
     !whoami &&
-    migrationChecker.hasChecked &&
-    !migrationChecker.dataForNeedsMigration
+    finishMigrationChecker.hasChecked &&
+    !finishMigrationChecker.dataForNeedsMigration
 
   const redirToFinishMigration =
     agentAddress &&
-    migrationChecker.hasChecked &&
-    migrationChecker.dataForNeedsMigration
+    finishMigrationChecker.hasChecked &&
+    finishMigrationChecker.dataForNeedsMigration
 
   return (
     <div className={`screen-wrapper`}>
       <ErrorBoundaryScreen>
-        <Router>
-          {agentAddress && (
-            <Header
-              project={activeProjectMeta}
+        <UpdateModalContext.Provider
+          value={{ showUpdateModal, setShowUpdateModal }}
+        >
+          <Router>
+            {agentAddress && (
+              <Header
+                project={activeProjectMeta}
+                {...{
+                  members,
+                  presentMembers,
+                  activeEntryPoints,
+                  projectId,
+                  whoami,
+                  updateStatus,
+                  openInviteMembersModal,
+                  setShowProjectSettingsOpen,
+                  setShowProfileEditForm,
+                  setShowPreferences,
+                  goToOutcome,
+                  setShowUpdateModal,
+                  showUpdateBar,
+                  setShowUpdateBar,
+                  setExportedProjectName,
+                  showExportedModal,
+                  hasMigratedSharedProject,
+                  setViewingReleaseNotes,
+                }}
+              />
+            )}
+            <Switch>
+              {/* Add new routes in here */}
+              <Route path="/intro" component={IntroScreen} />
+              <Route path="/register" component={CreateProfilePage} />
+              <Route path="/dashboard" component={Dashboard} />
+              <Route path="/project/:projectId" component={ProjectView} />
+              <Route
+                path="/run-update"
+                render={() => (
+                  <RunUpdate
+                    preRestart
+                    currentVersion={
+                      updateVersionInfo ? updateVersionInfo.currentVersion : ''
+                    }
+                    toVersion={updateVersionInfo ? updateVersionInfo.name : ''}
+                  />
+                )}
+              />
+              <Route
+                path="/finish-update"
+                render={() => (
+                  <RunUpdate
+                    migrationData={finishMigrationChecker.dataForNeedsMigration}
+                  />
+                )}
+              />
+              <Route path="/" render={() => <Redirect to="/dashboard" />} />
+            </Switch>
+
+            <GlobalModals
               {...{
-                members,
-                presentMembers,
-                activeEntryPoints,
-                projectId,
                 whoami,
-                updateStatus,
-                openInviteMembersModal,
-                setShowProjectSettingsOpen,
+                activeProjectMeta,
+                projectId,
+                agentAddress,
+                navigationPreference,
+                setNavigationPreference,
+                showProfileEditForm,
                 setShowProfileEditForm,
+                showPreferences,
                 setShowPreferences,
-                goToOutcome,
-                setShowUpdateModal,
+                showProjectSettingsModal,
+                setShowProjectSettingsOpen,
+                inviteMembersModalShowing,
+                openInviteMembersModal,
+                hideInviteMembersModal,
+                onProfileSubmit,
                 showUpdateBar,
-                setShowUpdateBar,
-                setExportedProjectName,
+                showUpdateModal,
+                onCloseUpdateModal,
+                updateVersionInfo,
+                exportedProjectName,
                 showExportedModal,
                 setShowExportedModal,
+                hasMigratedSharedProject,
+                viewingReleaseNotes,
+                setViewingReleaseNotes,
               }}
             />
-          )}
-          <Switch>
-            {/* Add new routes in here */}
-            <Route path="/intro" component={IntroScreen} />
-            <Route path="/register" component={CreateProfilePage} />
-            <Route path="/dashboard" component={Dashboard} />
-            <Route path="/project/:projectId" component={ProjectView} />
-            <Route
-              path="/run-update"
-              render={() => (
-                <RunUpdate
-                  preRestart
-                  toVersion={updateVersionInfo ? updateVersionInfo.name : ''}
-                />
-              )}
-            />
-            <Route
-              path="/finish-update"
-              render={() => (
-                <RunUpdate
-                  migrationData={migrationChecker.dataForNeedsMigration}
-                />
-              )}
-            />
-            <Route path="/" render={() => <Redirect to="/dashboard" />} />
-          </Switch>
-
-          <GlobalModals
-            {...{
-              whoami,
-              activeProjectMeta,
-              projectId,
-              agentAddress,
-              navigationPreference,
-              setNavigationPreference,
-              showProfileEditForm,
-              setShowProfileEditForm,
-              showPreferences,
-              setShowPreferences,
-              showProjectSettingsModal,
-              setShowProjectSettingsOpen,
-              inviteMembersModalShowing,
-              openInviteMembersModal,
-              hideInviteMembersModal,
-              onProfileSubmit,
-              showUpdateBar,
-              showUpdateModal,
-              onCloseUpdateModal,
-              updateVersionInfo,
-              exportedProjectName,
-              showExportedModal,
-              setShowExportedModal,
-            }}
-          />
-          {/* Loading Screen if no user agent, and also during checking whether migration is necessary */}
-          {(!agentAddress || !migrationChecker.hasChecked) && <LoadingScreen />}
-          {redirToIntro && <Redirect to="/intro" />}
-          {redirToFinishMigration && <Redirect to="/finish-update" />}
-          {agentAddress && whoami && <Footer />}
-        </Router>
+            {/* Loading Screen if no user agent, and also during checking whether migration is necessary */}
+            {!(agentAddress && finishMigrationChecker.hasChecked) && (
+              <LoadingScreen />
+            )}
+            {redirToIntro && <Redirect to="/intro" />}
+            {redirToFinishMigration && <Redirect to="/finish-update" />}
+            {agentAddress && whoami && <Footer />}
+          </Router>
+        </UpdateModalContext.Provider>
       </ErrorBoundaryScreen>
     </div>
   )

@@ -44,7 +44,6 @@ export type DashboardListProjectProps = {
   project: ProjectAggregated
   setShowInviteMembersModal: (passphrase: string) => void
   openProjectSettingsModal: (projectCellId: CellIdString) => void
-  updateRequired?: boolean
   onClickUpdate?: () => void
   updateRequiredMoreInfoLink?: string
 }
@@ -53,7 +52,6 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
   project,
   setShowInviteMembersModal,
   openProjectSettingsModal,
-  updateRequired,
   onClickUpdate,
   updateRequiredMoreInfoLink,
 }) => {
@@ -75,7 +73,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
   return (
     <div className="dashboard-list-project-wrapper">
       {/* when update is required to access the shared project */}
-      {updateRequired && (
+      {project.isMigrated && (
         <>
           <div className="project-access-blocked-layer"></div>
         </>
@@ -99,7 +97,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
               {project.name}
             </NavLink>
             {/* Update to Access button */}
-            {updateRequired && (
+            {project.isMigrated && (
               <div className="dashboard-list-project-update-button-wrapper">
                 <Button
                   icon="arrow-circle-up.svg"

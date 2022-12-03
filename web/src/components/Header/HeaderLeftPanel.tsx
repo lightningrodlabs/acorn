@@ -7,9 +7,8 @@ import {
   AgentPubKeyB64,
   ActionHashB64,
   WithActionHash,
-  CellIdString,
 } from '../../types/shared'
-import { ProjectMeta, Profile, EntryPoint, Outcome } from '../../types'
+import { Profile, EntryPoint, Outcome } from '../../types'
 
 import ExportMenuItem from '../ExportMenuItem/ExportMenuItem.connector'
 import Icon from '../Icon/Icon'
@@ -21,6 +20,7 @@ import DoorOpen from '../../images/door-open.svg'
 import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 
 //images
+// @ts-ignore
 import triangleTopWhite from '../../images/triangle-top-white.svg'
 
 function ActiveEntryPoint({

@@ -103,6 +103,10 @@ const createMainWindow = (): BrowserWindow => {
 
   autoUpdater.once('update-downloaded', () => {
     mainWindow.webContents.send('updateDownloaded')
+    // give the client UI a couple seconds to alert the user
+    setTimeout(() => {
+      autoUpdater.quitAndInstall()
+    }, 4000)
   })
 
   return mainWindow

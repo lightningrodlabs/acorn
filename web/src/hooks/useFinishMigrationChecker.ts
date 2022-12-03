@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-export default function useMigrationChecker(): {
+export default function useFinishMigrationChecker(): {
   hasChecked: boolean
   dataForNeedsMigration: string
 } {
