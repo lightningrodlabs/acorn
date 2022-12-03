@@ -38,12 +38,24 @@ const downloadNextVersion = async () => {
   }
 }
 
+const markMigrationDone = () => {
+  if (window.require) {
+    const { ipcRenderer } = window.require('electron')
+    ipcRenderer.send('markMigrationDone')
+  }
+}
+
 export type RunUpdateProps = {
   preRestart?: boolean
+  toVersion?: string
   migrationData?: string
 }
 
-const RunUpdate: React.FC<RunUpdateProps> = ({ preRestart, migrationData }) => {
+const RunUpdate: React.FC<RunUpdateProps> = ({
+  preRestart,
+  toVersion,
+  migrationData,
+}) => {
   // if not preRestart, then this is postRestart
 
   const store = useStore()
@@ -55,42 +67,52 @@ const RunUpdate: React.FC<RunUpdateProps> = ({ preRestart, migrationData }) => {
   const [status, setStatus] = useState('')
   const [progress, setProgress] = useState(0.01) // percent
 
-  // on component mount, initiate
-  useEffect(() => {
-    if (preRestart) {
-      setStatus('Exporting your data.')
-      exportProjectsData(store, (completed, toComplete) => {
+  const runExport = async () => {
+    setStatus('Exporting your data.')
+    const allExportData = await exportProjectsData(
+      store,
+      toVersion,
+      (completed, toComplete) => {
         // percent
         // the + 1 is because there's an additional step after
         setProgress(Math.floor((completed / (toComplete + 1)) * 100))
-      }).then(async (allExportData) => {
-        await persistExportedData(allExportData)
-        setStatus('Now downloading the new version.')
-        await downloadNextVersion()
-        setStatus(
-          'The update has finished downloading. The app will restart shortly.'
-        )
-      })
+      }
+    )
+    await persistExportedData(allExportData)
+    setStatus('Now downloading the new version.')
+    await downloadNextVersion()
+    setStatus(
+      'The update has finished downloading. The app will restart shortly.'
+    )
+  }
+
+  const runImport = async () => {
+    setStatus('Importing your data.')
+    await importProjectsData(store, migrationData, (completed, toComplete) => {
+      // percent
+      // avoid 100 % because it does green checkmark
+      let newProgress = Math.floor((completed / toComplete) * 100)
+      if (newProgress === 100) {
+        newProgress = 99.9
+      }
+      setProgress(newProgress)
+    })
+    markMigrationDone()
+    setTitle('Finished your update')
+    setStatus(
+      'Your data was imported, you are ready to go! You will be redirected in a moment.'
+    )
+    setTimeout(() => {
+      history.push('/dashboard')
+    }, 4000)
+  }
+
+  // on component mount, initiate
+  useEffect(() => {
+    if (preRestart) {
+      runExport()
     } else {
-      console.log('test')
-      setStatus('Importing your data.')
-      importProjectsData(store, migrationData, (completed, toComplete) => {
-        // percent
-        // avoid 100 % because it does green checkmark
-        let newProgress = Math.floor((completed / toComplete) * 100)
-        if (newProgress === 100) {
-          newProgress = 99.9
-        }
-        setProgress(newProgress)
-      }).then(async () => {
-        setTitle('Finished your update')
-        setStatus(
-          'Your data was imported, you are ready to go! You will be redirected in a moment.'
-        )
-        setTimeout(() => {
-          history.push('/dashboard')
-        }, 4000)
-      })
+      runImport()
     }
   }, [preRestart])
 

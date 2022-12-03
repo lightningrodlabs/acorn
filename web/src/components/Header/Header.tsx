@@ -18,6 +18,9 @@ import UpdateBar from '../UpdateBar/UpdateBar'
 import { useRouteMatch } from 'react-router-dom'
 
 export type HeaderProps = {
+  // for project export
+  setExportedProjectName: React.Dispatch<React.SetStateAction<string>>
+  setShowExportedModal: React.Dispatch<React.SetStateAction<boolean>>
   // for update bar
   showUpdateBar: boolean
   setShowUpdateBar: React.Dispatch<React.SetStateAction<boolean>>
@@ -43,6 +46,9 @@ export type HeaderProps = {
 }
 
 const Header: React.FC<HeaderProps> = ({
+  // for project export
+  setExportedProjectName,
+  setShowExportedModal,
   // for update bar
   showUpdateBar,
   setShowUpdateBar,
@@ -78,9 +84,6 @@ const Header: React.FC<HeaderProps> = ({
   useOnClickOutside(ref, () => {
     setIsExportOpen(false)
   })
-  const onClickExport = () => {
-    setIsExportOpen(!isExportOpen)
-  }
   const onClickEditProfile = () => {
     setIsExportOpen(false)
     setShowProfileEditForm(true)
@@ -108,10 +111,7 @@ const Header: React.FC<HeaderProps> = ({
   }
 
   return (
-    <div
-      className={`header-wrapper`}
-      ref={ref}
-    >
+    <div className={`header-wrapper`} ref={ref}>
       {/* Update Bar */}
       <div className="header-update-bar-wrapper">
         <UpdateBar
@@ -127,7 +127,7 @@ const Header: React.FC<HeaderProps> = ({
             setShowUpdateModal(true)
             setShowUpdateBar(false)
           }}
-          text={'🎉  A new update for Acorn is available.'}
+          text={'🎉 A new update for Acorn is available.'}
           buttonPrimaryText={'Update Now'}
           buttonSecondaryText={'Changelog'}
           migratedSharedProjectText={
@@ -148,9 +148,10 @@ const Header: React.FC<HeaderProps> = ({
           setShowProjectSettingsOpen={setShowProjectSettingsOpen}
           projectName={project ? project.name : ''}
           isExportOpen={isExportOpen}
-          onClickExport={onClickExport}
+          setIsExportOpen={setIsExportOpen}
           activeEntryPoints={activeEntryPoints}
           goToOutcome={goToOutcome}
+          setExportedProjectName={setExportedProjectName}
         />
         {whoami && (
           // add all these values as props

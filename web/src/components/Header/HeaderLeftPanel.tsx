@@ -59,15 +59,17 @@ export type HeaderLeftPanelProps = {
   members: Profile[]
   presentMembers: AgentPubKeyB64[]
   projectName: string
-  isExportOpen: boolean
   activeEntryPoints: {
     entryPoint: WithActionHash<EntryPoint>
     outcome: WithActionHash<Outcome>
   }[]
   openInviteMembersModal: () => void
   setShowProjectSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  onClickExport: () => void
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
+  // for project export
+  isExportOpen: boolean
+  setIsExportOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setExportedProjectName: React.Dispatch<React.SetStateAction<string>>
 }
 
 const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
@@ -76,7 +78,8 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   whoami,
   projectName,
   isExportOpen,
-  onClickExport,
+  setIsExportOpen,
+  setExportedProjectName,
   activeEntryPoints,
   goToOutcome,
   members,
@@ -223,7 +226,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                       className={`header-action-icon ${
                         isExportOpen ? 'purple' : ''
                       }`}
-                      onClick={onClickExport}
+                      onClick={() => setIsExportOpen(!isExportOpen)}
                     />
                     {isExportOpen && (
                       <div className="export-list-wrapper">
@@ -232,21 +235,24 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                           className="triangle-top-white"
                           src={triangleTopWhite}
                         />
-
-                        <div>
-                          <ExportMenuItem
-                            type="json"
-                            title="Export as JSON (Importable)"
-                            downloadFilename="acorn-project.json"
-                          />
-                        </div>
-                        <div>
-                          <ExportMenuItem
-                            type="csv"
-                            title="Export as CSV"
-                            downloadFilename="acorn-project.csv"
-                          />
-                        </div>
+                        <ExportMenuItem
+                          type="json"
+                          title="Export as JSON (Importable)"
+                          downloadFilename="acorn-project.json"
+                          onClick={() => {
+                            setExportedProjectName(projectName)
+                            setIsExportOpen(false)
+                          }}
+                        />
+                        <ExportMenuItem
+                          type="csv"
+                          title="Export as CSV"
+                          downloadFilename="acorn-project.csv"
+                          onClick={() => {
+                            setExportedProjectName(projectName)
+                            setIsExportOpen(false)
+                          }}
+                        />
                       </div>
                     )}
                   </div>

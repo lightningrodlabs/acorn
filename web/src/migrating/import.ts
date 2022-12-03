@@ -90,7 +90,7 @@ export async function installProjectAppAndImport(
   // first step is to create new project
   const originalTopPriorityOutcomes =
     projectData.projectMeta.topPriorityOutcomes
-  const projectMeta: ProjectMeta = {
+  const projectMeta = {
     ...projectData.projectMeta,
     // the question mark operator for backwards compatibility
     topPriorityOutcomes: originalTopPriorityOutcomes
@@ -103,13 +103,9 @@ export async function installProjectAppAndImport(
     passphrase: passphrase,
     isMigrated: null,
   }
-  // these are not actual fields
   // v0.5.4-alpha
-  // @ts-ignore
+  // not an actual field in the backend
   delete projectMeta.actionHash
-  // pre v0.5.3-alpha and prior
-  // @ts-ignore
-  delete projectMeta.address
 
   const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)

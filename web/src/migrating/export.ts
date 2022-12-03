@@ -1,4 +1,7 @@
+import { CellId } from '@holochain/client'
 import constructProjectDataFetchers from '../api/projectDataFetchers'
+import ProjectsZomeApi from '../api/projectsApi'
+import { getAppWs } from '../hcWebsockets'
 import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
 import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
 import { ProjectOutcomeCommentsState } from '../redux/persistent/projects/outcome-comments/reducer'
@@ -6,7 +9,8 @@ import { ProjectOutcomeMembersState } from '../redux/persistent/projects/outcome
 import { ProjectOutcomesState } from '../redux/persistent/projects/outcomes/reducer'
 import { RootState } from '../redux/reducer'
 import { Profile, ProjectMeta, Tag } from '../types'
-import { CellIdString, WithActionHash } from '../types/shared'
+import { ActionHashB64, CellIdString, WithActionHash } from '../types/shared'
+import { cellIdFromString } from '../utils'
 
 export type ExportType = 'csv' | 'json'
 
@@ -27,17 +31,23 @@ export type AllProjectsDataExport = {
   projects: ProjectExportDataV1[]
 }
 
-// should only import projects the active user created?
-// should also only import projects that weren't already migrated
-// const projectCellIds = initialState.cells.projects.filter((projectCellId) => {
-//   const projectMeta = initialState.projects.projectMeta[projectCellId]
-//   return (
-//     projectMeta && projectMeta.creatorAgentPubKey === myProfile.agentPubKey
-//   )
-// })
+export async function updateProjectMeta(
+  projectMeta: ProjectMeta,
+  actionHash: ActionHashB64,
+  cellIdString: CellIdString
+) {
+  const cellId = cellIdFromString(cellIdString)
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+  await projectsZomeApi.projectMeta.update(cellId, {
+    entry: projectMeta,
+    actionHash,
+  })
+}
 
 export default async function exportProjectsData(
   store: any,
+  toVersion: string,
   onStep: (completed: number, toComplete: number) => void
 ) {
   const initialState: RootState = store.getState()
@@ -75,6 +85,13 @@ export default async function exportProjectsData(
       projectCellId
     )
     allProjectsDataExport.projects.push(exportProjectData)
+    // mark the projectMeta as having been migrated, and to which version
+    const { actionHash, ...projectMetaDetails } = exportProjectData.projectMeta
+    const newProjectMeta: ProjectMeta = {
+      ...projectMetaDetails,
+      isMigrated: toVersion,
+    }
+    await updateProjectMeta(newProjectMeta, actionHash, projectCellId)
     completedTracker++
     onStep(completedTracker, projectCellIds.length)
   }

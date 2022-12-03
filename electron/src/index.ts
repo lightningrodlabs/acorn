@@ -80,6 +80,22 @@ const createMainWindow = (): BrowserWindow => {
     event.preventDefault()
     shell.openExternal(url)
   })
+
+  // let the browser window know when the individual project export
+  // download has completed
+  mainWindow.webContents.session.on(
+    'will-download',
+    (event, item, webContents) => {
+      // Set the save path, making Electron not to prompt a save dialog.
+      // item.setSavePath('/tmp/save.pdf')
+      item.once('done', (event, state) => {
+        if (state === 'completed') {
+          mainWindow.webContents.send('exportDownloaded')
+        }
+      })
+    }
+  )
+
   // once its ready to show, show
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
@@ -229,4 +245,16 @@ ipcMain.handle('checkForMigrationData', (event) => {
   } else {
     return ''
   }
+})
+
+ipcMain.on('markMigrationDone', () => {
+  console.log('received markMigrationDone')
+  // INTEGRITY_VERSION_NUMBER will just be incremented one number at a time
+  const prevIntegrityVersion = INTEGRITY_VERSION_NUMBER - 1
+  const prevVersionMigrationFile = path.join(
+    app.getPath('userData'),
+    `${MIGRATION_FILE_NAME_PREFIX}${prevIntegrityVersion}`
+  )
+  // delete the file, thus completing the migration
+  fs.unlinkSync(prevVersionMigrationFile)
 })

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Modal from '../components/Modal/Modal'
+import Modal, { ModalContent } from '../components/Modal/Modal'
 import Preferences from '../components/Preferences/Preferences'
 import ProfileEditForm from '../components/ProfileEditForm/ProfileEditForm'
 import ProjectSettingsModal from '../components/ProjectSettingsModal/ProjectSettingsModal.connector'
@@ -34,6 +34,10 @@ export type GlobalModalsProps = {
     releaseNotes: string
     sizeForPlatform: string
   }
+  // single manual project export
+  exportedProjectName: string
+  showExportedModal: boolean
+  setShowExportedModal: (show: boolean) => void
 }
 
 const GlobalModals: React.FC<GlobalModalsProps> = ({
@@ -56,6 +60,9 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   showUpdateModal,
   onCloseUpdateModal,
   updateVersionInfo,
+  exportedProjectName,
+  showExportedModal,
+  setShowExportedModal,
 }) => {
   // profile edit modal
   const titleText = 'Profile Settings'
@@ -124,6 +131,26 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
           </div>
         }
       />
+
+      {/* Export Successful Modal */}
+      <Modal
+        active={showExportedModal}
+        onClose={() => setShowExportedModal(false)}
+      >
+        <ModalContent
+          heading="Exporting"
+          icon="export.svg"
+          content={
+            <>
+              You just exported the <b>{exportedProjectName}</b> project data.
+              You can use that file to transfer the project to a different
+              owner, or archive as a backup.
+            </>
+          }
+          primaryButton="Got it"
+          primaryButtonAction={() => setShowExportedModal(false)}
+        />
+      </Modal>
     </>
   )
 }

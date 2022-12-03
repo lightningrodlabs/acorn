@@ -29,6 +29,7 @@ import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 import GlobalModals from './GlobalModals'
 import useVersionChecker from '../hooks/useVersionChecker'
 import useMigrationChecker from '../hooks/useMigrationChecker'
+import useFileDownloaded from '../hooks/useFileDownloaded'
 
 export type AppStateProps = {
   profilesCellIdString: string
@@ -78,13 +79,24 @@ const App: React.FC<AppProps> = ({
   hideInviteMembersModal,
   goToOutcome,
 }) => {
+  const [exportedProjectName, setExportedProjectName] = useState('')
+  const [showExportedModal, setShowExportedModal] = useState(false)
   const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
   const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [showUpdateBar, setShowUpdateBar] = useState(false)
+  // custom hooks
   const updateVersionInfo = useVersionChecker()
   const migrationChecker = useMigrationChecker()
+  const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
+
+  useEffect(() => {
+    if (fileDownloaded) {
+      setFileDownloaded(false)
+      setShowExportedModal(true)
+    }
+  }, [fileDownloaded, setFileDownloaded])
 
   useEffect(() => {
     if (updateVersionInfo) {
@@ -145,6 +157,9 @@ const App: React.FC<AppProps> = ({
                 setShowUpdateModal,
                 showUpdateBar,
                 setShowUpdateBar,
+                setExportedProjectName,
+                showExportedModal,
+                setShowExportedModal,
               }}
             />
           )}
@@ -154,7 +169,15 @@ const App: React.FC<AppProps> = ({
             <Route path="/register" component={CreateProfilePage} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/project/:projectId" component={ProjectView} />
-            <Route path="/run-update" render={() => <RunUpdate preRestart />} />
+            <Route
+              path="/run-update"
+              render={() => (
+                <RunUpdate
+                  preRestart
+                  toVersion={updateVersionInfo ? updateVersionInfo.name : ''}
+                />
+              )}
+            />
             <Route
               path="/finish-update"
               render={() => (
@@ -188,6 +211,9 @@ const App: React.FC<AppProps> = ({
               showUpdateModal,
               onCloseUpdateModal,
               updateVersionInfo,
+              exportedProjectName,
+              showExportedModal,
+              setShowExportedModal,
             }}
           />
           {/* Loading Screen if no user agent, and also during checking whether migration is necessary */}
