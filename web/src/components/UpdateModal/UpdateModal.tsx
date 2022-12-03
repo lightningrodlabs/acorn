@@ -36,6 +36,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
   }
 
   // These are for dynamic calculatio of content height and screen height
+  const [contentDiv, setContentDiv] = useState<HTMLDivElement>()
   const [screenHeight, setScreenHeight] = useState<number>()
   const [contentHeight, setContentHeight] = useState<number>()
 
@@ -49,6 +50,14 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
       window.removeEventListener('resize', windowResize)
     }
   }, [])
+
+  // when content changes,
+  // update the height, so that it can switch to scrollable
+  useEffect(() => {
+    if (contentDiv) {
+      setContentHeight(contentDiv.clientHeight)
+    }
+  }, [contentDiv, content])
 
   return (
     <div className="update-modal-wrapper">
@@ -80,13 +89,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
               contentHeight > screenHeight * 0.3 ? 'long-scroll' : ''
             }`}
           >
-            <div
-              className="update-modal-content-text"
-              ref={(contentDiv) => {
-                if (contentDiv && !contentHeight)
-                  setContentHeight(contentDiv.clientHeight)
-              }}
-            >
+            <div className="update-modal-content-text" ref={setContentDiv}>
               <Typography style={'body-modal'}>{content}</Typography>
             </div>
           </div>

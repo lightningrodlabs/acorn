@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactMarkdown from 'react-markdown'
 
 import Modal, { ModalContent } from '../components/Modal/Modal'
 import Preferences from '../components/Preferences/Preferences'
@@ -131,7 +132,11 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         onClose={onCloseUpdateModal}
         releaseTag={updateVersionInfo ? updateVersionInfo.name : ''}
         releaseSize={updateVersionInfo ? updateVersionInfo.sizeForPlatform : ''}
-        heading={'Update to newest version of Acorn'}
+        heading={
+          viewingReleaseNotes === ViewingReleaseNotes.MainMessage
+            ? 'Update to newest version of Acorn'
+            : 'Release Notes'
+        }
         content={
           <>
             {viewingReleaseNotes === ViewingReleaseNotes.MainMessage && (
@@ -157,9 +162,9 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
               </div>
             )}
             {viewingReleaseNotes === ViewingReleaseNotes.ReleaseNotes && (
-              <div>
+              <ReactMarkdown>
                 {updateVersionInfo ? updateVersionInfo.releaseNotes : ''}
-              </div>
+              </ReactMarkdown>
             )}
           </>
         }
