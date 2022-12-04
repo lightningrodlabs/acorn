@@ -200,7 +200,8 @@ ipcMain.on('initiateUpdate', () => {
     const server = 'https://update.electronjs.org'
     const feed = `${server}/lightningrodlabs/acorn/${process.platform}-${
       process.arch
-    }/${app.getVersion()}`
+    }/v${app.getVersion()}`
+    console.log(`autoUpdater.setFeedURL({ url: ${feed} })`)
     autoUpdater.setFeedURL({ url: feed })
     // at this point we are not so much 'checking for updates'
     // as we are pretty sure (via the front-end) that there is an update

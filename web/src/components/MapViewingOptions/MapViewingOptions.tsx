@@ -6,6 +6,7 @@ import { CSSTransition } from 'react-transition-group'
 import './MapViewingOptions.scss'
 import Typography from '../Typography/Typography'
 
+// @ts-ignore
 import triangleBottomWhite from '../../images/triangle-bottom-white.svg'
 
 export type MapViewingOptionsProps = {
