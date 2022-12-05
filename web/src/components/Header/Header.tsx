@@ -132,7 +132,8 @@ const Header: React.FC<HeaderProps> = ({
             setShowUpdateModal(true)
             setShowUpdateBar(false)
           }}
-          text={'🎉 A new update for Acorn is available.'}
+          // party popper emoji
+          text={<>&#x1F389; A new update for Acorn is available.</>}
           migratedSharedProjectText={
             hasMigratedSharedProject
               ? ' Update is required to access a shared project brought to the updated version by another team member.'

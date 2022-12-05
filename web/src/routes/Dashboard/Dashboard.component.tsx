@@ -208,40 +208,40 @@ const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           <div className="my-projects-content">
-            {pendingProjects.length > 0 && (
-              <PendingProjects
-                pendingProjects={pendingProjects}
-                fetchProjectMeta={fetchProjectMeta}
-                setPendingProjects={setPendingProjects}
-                deactivateApp={deactivateApp}
-              />
-            )}
-            {!hasFetchedForAllProjects &&
-              cells.map((cellId) => (
-                <DashboardListProjectLoading key={'dlpl-key' + cellId} />
-              ))}
-            {hasFetchedForAllProjects &&
-              sortedProjects.map((project) => {
-                return (
-                  <DashboardListProject
-                    key={'dlp-key' + project.cellId}
-                    project={project}
-                    setShowInviteMembersModal={setShowInviteMembersModal}
-                    openProjectSettingsModal={(projectCellId: CellIdString) =>
-                      setShowProjectSettingsModal(projectCellId)
-                    }
-                    onClickUpdate={() => {
-                      setShowUpdateModal(true)
-                    }}
-                  />
-                )
-              })}
-            {hasFetchedForAllProjects && projects.length === 0 && (
-              <DashboardEmptyState
-                onJoinClick={() => setShowJoinModal(true)}
-                onCreateClick={() => setShowCreateModal(true)}
-              />
-            )}
+              {pendingProjects.length > 0 && (
+                <PendingProjects
+                  pendingProjects={pendingProjects}
+                  fetchProjectMeta={fetchProjectMeta}
+                  setPendingProjects={setPendingProjects}
+                  deactivateApp={deactivateApp}
+                />
+              )}
+              {!hasFetchedForAllProjects &&
+                cells.map((cellId) => (
+                  <DashboardListProjectLoading key={'dlpl-key' + cellId} />
+                ))}
+              {hasFetchedForAllProjects &&
+                sortedProjects.map((project) => {
+                  return (
+                    <DashboardListProject
+                      key={'dlp-key' + project.cellId}
+                      project={project}
+                      setShowInviteMembersModal={setShowInviteMembersModal}
+                      openProjectSettingsModal={(projectCellId: CellIdString) =>
+                        setShowProjectSettingsModal(projectCellId)
+                      }
+                      onClickUpdate={() => {
+                        setShowUpdateModal(true)
+                      }}
+                    />
+                  )
+                })}
+              {hasFetchedForAllProjects && projects.length === 0 && (
+                <DashboardEmptyState
+                  onJoinClick={() => setShowJoinModal(true)}
+                  onCreateClick={() => setShowCreateModal(true)}
+                />
+              )}
           </div>
         </div>
       </div>

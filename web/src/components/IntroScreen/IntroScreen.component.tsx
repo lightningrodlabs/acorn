@@ -106,9 +106,9 @@ const IntroScreen: React.FC<IntroScreenProps> = ({
       */}
       {whoami && <Redirect to="/" />}
       <div className="intro-screen-wrapper">
-        <div className="skip-intro-button">
+        {/* <div className="skip-intro-button">
           <div onClick={goToRegister}>Skip Intro</div>
-        </div>
+        </div> */}
         <div className="intro-screen-content-frame">
           {/* all 4 screens */}
           <div className={`content-wrapper active-screen-${screenContent}`}>

@@ -10,7 +10,7 @@ export type UpdateBarProps = {
   onClose?: () => void
   onClickPrimaryAction: () => void
   onClickSecondaryAction: () => void
-  text: string
+  text: string | React.ReactElement
   buttonPrimaryText: string
   buttonSecondaryText?: string
   migratedSharedProjectText?: string
