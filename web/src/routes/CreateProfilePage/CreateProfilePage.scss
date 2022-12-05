@@ -1,7 +1,6 @@
 .create_profile_page {
   width: 100%;
   height: 100vh;
-  background-color: var(--bg-color-primary);
   display: flex;
   flex-direction: row;
 }
@@ -39,6 +38,9 @@
   background-size: cover;
   width: 40%;
   background-position: bottom;
+  height: 100vh;
+  // height of the header, normally (without 'update now')
+  margin-top: -64px;
 }
 
 @media only screen and (max-height: 800px) {

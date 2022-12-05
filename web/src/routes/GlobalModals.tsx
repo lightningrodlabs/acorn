@@ -148,7 +148,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
                     using your personal projects without the update.
                   </>
                 ) : (
-                  <>There is a new release of Acorn that you can update to.</>
+                  <>By updating you'll gain access to bug fixes, new features, and other improvements.</>
                 )}{' '}
                 See{' '}
                 <a

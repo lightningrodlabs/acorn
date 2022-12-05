@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
-import './Header.scss'
 
 import { WireRecord } from '../../api/hdkCrud'
 import {
@@ -17,6 +16,8 @@ import HeaderRightPanel from './HeaderRightPanel.connector'
 import UpdateBar from '../UpdateBar/UpdateBar'
 import { useRouteMatch } from 'react-router-dom'
 import { ViewingReleaseNotes } from '../UpdateModal/UpdateModal'
+
+import './Header.scss'
 
 export type HeaderProps = {
   // for project export
