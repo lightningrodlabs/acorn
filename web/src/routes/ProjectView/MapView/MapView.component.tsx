@@ -40,6 +40,7 @@ export type MapViewStateProps = {
   liveMouseCoordinates: { x: number; y: number }
   contextMenuCoordinate: { x: number; y: number }
   contextMenuOutcomeActionHash: ActionHashB64
+  contextMenuOutcomeStatement: string
   contextMenuOutcomeIsCollapsed: boolean
   mouseIsDown: boolean
   translate: {
@@ -62,6 +63,7 @@ const MapView: React.FC<MapViewProps> = ({
   liveMouseCoordinates,
   contextMenuCoordinate,
   contextMenuOutcomeActionHash,
+  contextMenuOutcomeStatement,
   contextMenuOutcomeIsCollapsed,
   mouseIsDown,
   hasMultiSelection,
@@ -224,6 +226,7 @@ const MapView: React.FC<MapViewProps> = ({
             projectCellId={projectId}
             isCollapsed={contextMenuOutcomeIsCollapsed}
             outcomeActionHash={contextMenuOutcomeActionHash}
+            outcomeStatement={contextMenuOutcomeStatement}
             contextMenuCoordinate={contextMenuCoordinate}
             expandOutcome={expandOutcome}
             collapseOutcome={collapseOutcome}

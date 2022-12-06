@@ -39,6 +39,11 @@ function mapStateToProps(state: RootState): MapViewStateProps {
 
   const contextMenuOutcomeActionHash =
     state.ui.mouse.contextMenu.outcomeActionHash
+  const contextMenuOutcomeStatement =
+    state.projects.outcomes[projectId] &&
+    state.projects.outcomes[projectId][contextMenuOutcomeActionHash]
+      ? state.projects.outcomes[projectId][contextMenuOutcomeActionHash].content
+      : ''
 
   const contextMenuOutcomeIsCollapsed = contextMenuOutcomeActionHash
     ? collapsedOutcomes[contextMenuOutcomeActionHash]
@@ -56,6 +61,7 @@ function mapStateToProps(state: RootState): MapViewStateProps {
     liveMouseCoordinates: state.ui.mouse.liveCoordinate,
     contextMenuCoordinate: state.ui.mouse.contextMenu.coordinate,
     contextMenuOutcomeActionHash,
+    contextMenuOutcomeStatement,
     contextMenuOutcomeIsCollapsed,
     mouseIsDown: state.ui.mouse.mousedown,
     showEmptyState,

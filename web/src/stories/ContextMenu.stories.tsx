@@ -28,11 +28,21 @@ const args: ContextMenuProps = {
   outcomeActionHash: 'jfiosdjfoshig1231314',
   actions: [
     {
-      icon: <Icon name="leaf.svg" size="small not-hoverable" className='white' />,
+      key: '123',
+      icon: (
+        <Icon name="leaf.svg" size="small not-hoverable" className="white" />
+      ),
       text: 'Collapse Children',
     },
     {
-      icon: <Icon name="text-align-left.svg" size="small not-hoverable" className='white' />,
+      key: '456',
+      icon: (
+        <Icon
+          name="text-align-left.svg"
+          size="small not-hoverable"
+          className="white"
+        />
+      ),
       text: 'Copy Statement',
     },
   ],
