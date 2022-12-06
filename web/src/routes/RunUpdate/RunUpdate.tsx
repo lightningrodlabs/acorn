@@ -105,7 +105,7 @@ const RunUpdate: React.FC<RunUpdateProps> = ({
   }
 
   const controlDownloadNextVersion = async () => {
-    if (updateVersionInfo.platform !== 'darwin') {
+    if (updateVersionInfo.platform === 'darwin') {
       setStatus('Now downloading the new version.')
       await downloadNextVersion()
       setProgress(99.9)
