@@ -191,8 +191,12 @@ ipcMain.handle('getProjectsPath', () => {
 })
 
 ipcMain.handle('getVersion', () => {
-  // append v to match the tag name
-  return `v${app.getVersion()}`
+  return {
+    // append v to match the tag name
+    version: `v${app.getVersion()}`,
+    platform: process.platform,
+    arch: process.arch,
+  }
 })
 
 ipcMain.on('initiateUpdate', () => {

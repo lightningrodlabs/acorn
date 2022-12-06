@@ -60,16 +60,21 @@ const markMigrationDone = () => {
 export type RunUpdateProps = {
   preRestart?: boolean
   // for pre restart
-  currentVersion?: string
-  toVersion?: string
+  updateVersionInfo?: {
+    currentVersion: string
+    platform: string
+    arch: string
+    name: string
+    releaseNotes: string
+    sizeForPlatform: string
+  }
   // for post restart
   migrationData?: string
 }
 
 const RunUpdate: React.FC<RunUpdateProps> = ({
   preRestart,
-  currentVersion,
-  toVersion,
+  updateVersionInfo,
   migrationData,
 }) => {
   // if not preRestart, then this is postRestart
@@ -80,7 +85,7 @@ const RunUpdate: React.FC<RunUpdateProps> = ({
   const [title, setTitle] = useState(
     preRestart ? 'Preparing your update' : 'Finishing your update'
   )
-  const [status, setStatus] = useState('')
+  const [status, setStatus] = useState<string | React.ReactElement>('')
   // avoid 0 percent and 100 percent, just because of the component
   // that renders this value
   const [progress, setProgress] = useState(0.01) // percent
@@ -89,7 +94,7 @@ const RunUpdate: React.FC<RunUpdateProps> = ({
     setStatus('Exporting your data.')
     const allExportData = await exportProjectsData(
       store,
-      toVersion,
+      updateVersionInfo.name,
       (completed, toComplete) => {
         // percent
         // the + 1 is because there's an additional step after
@@ -100,14 +105,32 @@ const RunUpdate: React.FC<RunUpdateProps> = ({
   }
 
   const controlDownloadNextVersion = async () => {
-    setStatus('Now downloading the new version.')
-    await downloadNextVersion()
-    setProgress(99.9)
-    // avoid 100 % because it does green checkmark
-    setStatus(
-      'The update has finished downloading. The app will restart shortly.'
-    )
-    // the electron side is going to trigger the app to quit and restart
+    if (updateVersionInfo.platform !== 'darwin') {
+      setStatus('Now downloading the new version.')
+      await downloadNextVersion()
+      setProgress(99.9)
+      // avoid 100 % because it does green checkmark
+      setStatus(
+        'The update has finished downloading. The app will restart shortly.'
+      )
+      // the electron side is going to trigger the app to quit and restart
+    } else {
+      setProgress(99.9)
+      setTitle('Your update is prepared')
+      setStatus(
+        <>
+          Currently only MacOS supports a fully auto-updating process. Please{' '}
+          <a
+            href={`https://github.com/lightningrodlabs/acorn/releases/${updateVersionInfo.name}`}
+            target="_blank"
+          >
+            click here to download the new release from Github
+          </a>{' '}
+          and install it to continue the update.{' '}
+          <b>Quit this application before installing the new version.</b>
+        </>
+      )
+    }
   }
 
   const runImport = async () => {
@@ -134,7 +157,14 @@ const RunUpdate: React.FC<RunUpdateProps> = ({
   // on component mount, initiate
   useEffect(() => {
     if (preRestart) {
-      if (checkIfExportNeeded(currentVersion, toVersion)) {
+      // first determine, is this a 'hard update' or a 'soft update',
+      // meaning does it require migrating data between different integrity versions?
+      if (
+        checkIfExportNeeded(
+          updateVersionInfo.currentVersion,
+          updateVersionInfo.name
+        )
+      ) {
         runExport().then(controlDownloadNextVersion)
       } else {
         controlDownloadNextVersion()

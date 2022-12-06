@@ -28,6 +28,9 @@
       "node_modules/**/*",
       "package.json"
     ],
+    "mac": {
+      "artifactName": "${productName}.${version}.${platform}-${arch}.${ext}"
+    },
     "win": {
       "target": "NSIS",
       "icon": "build/icon.ico",

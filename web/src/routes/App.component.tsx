@@ -186,10 +186,7 @@ const App: React.FC<AppProps> = ({
                 render={() => (
                   <RunUpdate
                     preRestart
-                    currentVersion={
-                      updateVersionInfo ? updateVersionInfo.currentVersion : ''
-                    }
-                    toVersion={updateVersionInfo ? updateVersionInfo.name : ''}
+                    updateVersionInfo={updateVersionInfo}
                   />
                 )}
               />

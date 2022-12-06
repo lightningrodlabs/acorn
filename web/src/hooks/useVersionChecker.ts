@@ -1,12 +1,33 @@
 import { useEffect, useState } from 'react'
 
+
+const findGithubAssetForPlatformArch = (platform: string, arch: string) => (asset: any) => {
+  if (platform === 'darwin') {
+    if (arch === 'arm64') {
+      return asset.name.includes('mac-arm64')
+    } else {
+      return (
+        asset.name.includes('mac') && !asset.name.includes('arm64')
+      )
+    }
+  } else if (platform === 'win32') {
+    return asset.name.includes('.exe')
+  } else if (platform === 'linux') {
+    return asset.name.includes('.AppImage')
+  }
+}
+
 export default function useVersionChecker(): {
   currentVersion: string
+  platform: string
+  arch: string
   name: string
   releaseNotes: string
   sizeForPlatform: string
 } {
   const [currentVersion, setCurrentVersion] = useState('')
+  const [platform, setPlatform] = useState('')
+  const [arch, setArch] = useState('')
   const [name, setName] = useState('')
   const [releaseNotes, setReleaseNotes] = useState('')
   const [sizeForPlatform, setSizeForPlatform] = useState('')
@@ -16,9 +37,17 @@ export default function useVersionChecker(): {
       window
         .require('electron')
         .ipcRenderer.invoke('getVersion')
-        .then((version: string) => {
-          setCurrentVersion(version)
-        })
+        .then(
+          (currentVersionInfo: {
+            version: string
+            platform: string
+            arch: string
+          }) => {
+            setCurrentVersion(currentVersionInfo.version)
+            setPlatform(currentVersionInfo.platform)
+            setArch(currentVersionInfo.arch)
+          }
+        )
     }
   }, [])
 
@@ -37,8 +66,11 @@ export default function useVersionChecker(): {
             clearInterval(timerID)
             setName(latestTagName)
             setReleaseNotes(latestReleaseNotes)
-            // TODO
-            setSizeForPlatform('1mb')
+            const asset = latestRelease.assets.find(findGithubAssetForPlatformArch(platform, arch))
+            if (asset) {
+              // math for bytes -> megabytes
+              setSizeForPlatform(`${Math.floor(0.000001 * asset.size)}mb`)
+            }
           }
         })
     }
@@ -51,12 +83,16 @@ export default function useVersionChecker(): {
       // 'tear down the timer'
       clearInterval(timerID)
     }
-  }, [currentVersion])
+  }, [currentVersion, platform, arch])
 
-  return name ? {
-    currentVersion,
-    name,
-    releaseNotes,
-    sizeForPlatform,
-  } : null
+  return name
+    ? {
+        currentVersion,
+        platform,
+        arch,
+        name,
+        releaseNotes,
+        sizeForPlatform,
+      }
+    : null
 }
