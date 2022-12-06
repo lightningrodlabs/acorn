@@ -101,7 +101,11 @@ const RunUpdate: React.FC<RunUpdateProps> = ({
         setProgress(Math.floor((completed / (toComplete + 1)) * 100))
       }
     )
-    await persistExportedData(allExportData)
+    // do the if check just in case the user is updating without ever having even created a profile
+    // in which case we should skip it
+    if (allExportData) {
+      await persistExportedData(allExportData)
+    }
   }
 
   const controlDownloadNextVersion = async () => {

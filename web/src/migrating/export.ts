@@ -51,6 +51,11 @@ export default async function exportProjectsData(
   onStep: (completed: number, toComplete: number) => void
 ) {
   const initialState: RootState = store.getState()
+
+  if (!initialState.whoami) {
+    return
+  }
+
   // the profile of the current user
   const myProfile = initialState.whoami.entry
   // this is the variable to capture the final data for export
