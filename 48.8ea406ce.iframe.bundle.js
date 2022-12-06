@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[48],{"./src/images/file-copy.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/file-copy.e78b4ff7.svg"}}]);

@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[69],{"./src/images/notification.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/notification.fc731b6d.svg"}}]);

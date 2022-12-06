@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[82],{"./src/images/splash-image-valeriia-miller.jpg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/splash-image-valeriia-miller.30c25283.jpg"}}]);

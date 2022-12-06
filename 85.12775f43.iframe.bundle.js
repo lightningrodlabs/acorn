@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[85],{"./src/images/table.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/table.7cb502ab.svg"}}]);
