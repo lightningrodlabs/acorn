@@ -12,6 +12,8 @@ import { NavLink } from 'react-router-dom'
 import { ENTRY_POINTS } from '../../searchParams'
 import Checkbox from '../Checkbox/Checkbox'
 
+import triangleTopWhite from '../../images/triangle-top-white.svg'
+
 function EntryPointPickerItem({
   entryPoint,
   outcome,
@@ -24,17 +26,15 @@ function EntryPointPickerItem({
   }
   const location = useLocation()
 
-  const pathWithEntryPoint = `${
-    location.pathname
-  }?${ENTRY_POINTS}=${activeEntryPoints
-    .concat([entryPoint.actionHash])
-    .join(',')}`
+  const pathWithEntryPoint = `${location.pathname
+    }?${ENTRY_POINTS}=${activeEntryPoints
+      .concat([entryPoint.actionHash])
+      .join(',')}`
 
-  const pathWithoutEntryPoint = `${
-    location.pathname
-  }?${ENTRY_POINTS}=${activeEntryPoints
-    .filter((actionHash) => actionHash !== entryPoint.actionHash)
-    .join(',')}`
+  const pathWithoutEntryPoint = `${location.pathname
+    }?${ENTRY_POINTS}=${activeEntryPoints
+      .filter((actionHash) => actionHash !== entryPoint.actionHash)
+      .join(',')}`
 
   const onClickArrow = (event) => {
     // prevent the navigation (NavLink)
@@ -95,7 +95,11 @@ export default function EntryPointPicker({
         className="entry-point-picker"
         heading="Entry Points"
         onClose={onClose}
+        skipOnClickOutside
       >
+        {/* Top Triangle */}
+        <img className="triangle-top-white" src={triangleTopWhite} />
+
         {/* Entry Point Picker Search */}
         <div className="entry-point-picker-search">
           <Icon name="search.svg" size="small" className="grey not-hoverable" />

@@ -1,6 +1,6 @@
 {
   "name": "acorn",
-  "version": "2.1.1-alpha",
+  "version": "2.1.0-alpha",
   "description": "Open source peer-to-peer project management for software teams",
   "main": "dist/index.js",
   "scripts": {
@@ -28,6 +28,9 @@
       "node_modules/**/*",
       "package.json"
     ],
+    "mac": {
+      "artifactName": "${productName}.${version}.${platform}-${arch}.${ext}"
+    },
     "win": {
       "target": "NSIS",
       "icon": "build/icon.ico",

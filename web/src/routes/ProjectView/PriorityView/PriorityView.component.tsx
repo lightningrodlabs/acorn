@@ -3,24 +3,27 @@ import _ from 'lodash'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { useHistory, useLocation } from 'react-router-dom'
 
-import './PriorityUniversal.scss'
-
-import Icon from '../../../../components/Icon/Icon'
-import TimeframeFormat from '../../../../components/TimeframeFormat'
-import ProgressIndicatorCalculated from '../../../../components/ProgressIndicatorCalculated/ProgressIndicatorCalculated'
-import { ComputedOutcome, ComputedScope, ProjectMeta } from '../../../../types'
-import ComputedOutcomeContext from '../../../../context/ComputedOutcomeContext'
 import {
   ActionHashB64,
   AgentPubKeyB64,
   CellIdString,
   WithActionHash,
-} from '../../../../types/shared'
-import Typography from '../../../../components/Typography/Typography'
-import AvatarsList from '../../../../components/AvatarsList/AvatarsList'
-import TagsList from '../../../../components/TagsList/TagsList'
+} from '../../../types/shared'
+import {
+  Tag,
+  ComputedOutcome,
+  ComputedScope,
+  ProjectMeta,
+} from '../../../types'
+import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
+import Icon from '../../../components/Icon/Icon'
+import ProgressIndicatorCalculated from '../../../components/ProgressIndicatorCalculated/ProgressIndicatorCalculated'
+import Typography from '../../../components/Typography/Typography'
+import AvatarsList from '../../../components/AvatarsList/AvatarsList'
+import TagsList from '../../../components/TagsList/TagsList'
+import IndentedTreeView from '../../../components/IndentedTreeView/IndentedTreeView'
 
-import { Tag } from '../../../../types'
+import './PriorityView.scss'
 
 export type UniversalOutcomeProps = {
   projectTags: WithActionHash<Tag>[]
@@ -75,7 +78,7 @@ const UniversalOutcome: React.FC<UniversalOutcomeProps> = ({
                   </div>
                 )}
             </div>
-            <div className='outcome-item-statement-tags'>
+            <div className="outcome-item-statement-tags">
               {' '}
               {/* Outcome statement */}
               <div className="universal-priority-outcome-item-statement">
@@ -274,7 +277,7 @@ const PriorityUniversalDroppable: React.FC<PriorityUniversalDroppableProps> = ({
 }
 
 // the default export, and main high level component here
-export type PriorityUniversalProps = {
+export type PriorityViewProps = {
   projectId: CellIdString
   projectMeta: WithActionHash<ProjectMeta>
   projectTags: WithActionHash<Tag>[]
@@ -287,7 +290,7 @@ export type PriorityUniversalProps = {
   openExpandedView: (outcomeActionHash: ActionHashB64) => void
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
 }
-const PriorityUniversal: React.FC<PriorityUniversalProps> = ({
+const PriorityView: React.FC<PriorityViewProps> = ({
   projectMeta,
   projectId,
   presentMembers,
@@ -303,7 +306,16 @@ const PriorityUniversal: React.FC<PriorityUniversalProps> = ({
     goToOutcome(actionHash)
   }
 
-  const { computedOutcomesKeyed } = useContext(ComputedOutcomeContext)
+  const wrappedUpdateProjectMeta = (
+    entry: ProjectMeta,
+    actionHash: ActionHashB64
+  ) => {
+    return updateProjectMeta(entry, actionHash, projectId)
+  }
+
+  const { computedOutcomesKeyed, computedOutcomesAsTree } = useContext(
+    ComputedOutcomeContext
+  )
   /// will be { source: int, destination: int }
   // both are indexes, if set at all
   const [whileDraggingIndexes, setWhileDraggingIndexes] = useState(null)
@@ -333,7 +345,11 @@ const PriorityUniversal: React.FC<PriorityUniversalProps> = ({
   }
 
   // a little function to help us with reordering the result
-  const reorder = (list: ActionHashB64[], startIndex: number, endIndex: number) => {
+  const reorder = (
+    list: ActionHashB64[],
+    startIndex: number,
+    endIndex: number
+  ) => {
     const result = Array.from(list)
     const [removed] = result.splice(startIndex, 1)
     result.splice(endIndex, 0, removed)
@@ -385,59 +401,66 @@ const PriorityUniversal: React.FC<PriorityUniversalProps> = ({
   )
 
   return (
-    <div className="universal-priority-wrapper">
-      <div className="universal-priority-header">
-        <div className="universal-priority-heading">
-          <Typography style="h2">
-            High Priority Outcomes ({topPriorityOutcomes.length})
-          </Typography>
-        </div>
-        <div className="universal-priority-subheading">
-          <Typography style="subtitle3">
-            Drag and drop the outcomes to sort their order of importance for you
-            and your teammates.
-          </Typography>
-        </div>
-      </div>
-
-      <div className="universal-priority-outcomes-list-wrapper">
-        {topPriorityOutcomes.length === 0 && (
-          <div className="top-priority-empty-state-wrapper">
-            <img
-              src="images/priority-view-empty-state.svg"
-              className="top-priority-empty-state-image"
-            />
-            <Typography style="body1">
-              You haven't marked any Outcomes as High Priority.
-              <br />
-              <a
-                href="https://docs.acorn.software/outcomes/high-priority-outcomes"
-                target="_blank"
-              >
-                Learn how to start prioritizing.
-              </a>{' '}
+    <div className="priority-view-wrapper">
+      <IndentedTreeView
+        outcomeTrees={computedOutcomesAsTree}
+        projectMeta={projectMeta}
+        updateProjectMeta={wrappedUpdateProjectMeta}
+      />
+      <div className="universal-priority-wrapper">
+        <div className="universal-priority-header">
+          <div className="universal-priority-heading">
+            <Typography style="h2">
+              High Priority Outcomes ({topPriorityOutcomes.length})
             </Typography>
           </div>
-        )}
-        {topPriorityOutcomes.length !== 0 && (
-          <DragDropContext
-            onDragEnd={onDragEnd}
-            onDragUpdate={onDragUpdate}
-            style={{ overflow: 'auto' }}
-          >
-            <PriorityUniversalDroppable
-              presentMembers={presentMembers}
-              outcomes={topPriorityOutcomes}
-              whileDraggingIndexes={whileDraggingIndexes}
-              openExpandedView={openExpandedView}
-              goToOutcome={navAndGoToOutcome}
-              projectTags={projectTags}
-            />
-          </DragDropContext>
-        )}
+          <div className="universal-priority-subheading">
+            <Typography style="subtitle3">
+              Drag and drop the outcomes to sort their order of importance for
+              you and your teammates.
+            </Typography>
+          </div>
+        </div>
+
+        <div className="universal-priority-outcomes-list-wrapper">
+          {topPriorityOutcomes.length === 0 && (
+            <div className="top-priority-empty-state-wrapper">
+              <img
+                src="images/priority-view-empty-state.svg"
+                className="top-priority-empty-state-image"
+              />
+              <Typography style="body1">
+                You haven't marked any Outcomes as High Priority.
+                <br />
+                <a
+                  href="https://docs.acorn.software/outcomes/high-priority-outcomes"
+                  target="_blank"
+                >
+                  Learn how to start prioritizing.
+                </a>{' '}
+              </Typography>
+            </div>
+          )}
+          {topPriorityOutcomes.length !== 0 && (
+            <DragDropContext
+              onDragEnd={onDragEnd}
+              onDragUpdate={onDragUpdate}
+              style={{ overflow: 'auto' }}
+            >
+              <PriorityUniversalDroppable
+                presentMembers={presentMembers}
+                outcomes={topPriorityOutcomes}
+                whileDraggingIndexes={whileDraggingIndexes}
+                openExpandedView={openExpandedView}
+                goToOutcome={navAndGoToOutcome}
+                projectTags={projectTags}
+              />
+            </DragDropContext>
+          )}
+        </div>
       </div>
     </div>
   )
 }
 
-export default PriorityUniversal
+export default PriorityView

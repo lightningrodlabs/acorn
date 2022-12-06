@@ -19,7 +19,7 @@ const ButtonClose: React.FC<ButtonCloseProps> = ({
         onClick={onClick}
         name="x.svg"
         size="small-close"
-        className="light-grey"
+        className={`light-grey ${size == 'small' ? 'small' : ''}`}
       />
     </div>
   )

@@ -61,6 +61,13 @@ function mapStateToProps(state: RootState): AppStateProps {
     // cut out invalid ones
     .filter((e) => e)
 
+  // has any project been migrated
+  const hasMigratedSharedProject = !!Object.values(
+    state.projects.projectMeta
+  ).find((projectMeta) => {
+    return projectMeta.isMigrated
+  })
+
   return {
     profilesCellIdString,
     activeEntryPoints: activeEntryPointsObjects,
@@ -73,6 +80,7 @@ function mapStateToProps(state: RootState): AppStateProps {
     inviteMembersModalShowing: inviteMembersModal.passphrase,
     members,
     presentMembers,
+    hasMigratedSharedProject,
   }
 }
 

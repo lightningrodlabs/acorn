@@ -7,9 +7,8 @@ import {
   AgentPubKeyB64,
   ActionHashB64,
   WithActionHash,
-  CellIdString,
 } from '../../types/shared'
-import { ProjectMeta, Profile, EntryPoint, Outcome } from '../../types'
+import { Profile, EntryPoint, Outcome } from '../../types'
 
 import ExportMenuItem from '../ExportMenuItem/ExportMenuItem.connector'
 import Icon from '../Icon/Icon'
@@ -19,6 +18,10 @@ import MembersIndicator from '../MembersIndicator/MembersIndicator'
 // @ts-ignore
 import DoorOpen from '../../images/door-open.svg'
 import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
+
+//images
+// @ts-ignore
+import triangleTopWhite from '../../images/triangle-top-white.svg'
 
 function ActiveEntryPoint({
   entryPoint,
@@ -56,15 +59,17 @@ export type HeaderLeftPanelProps = {
   members: Profile[]
   presentMembers: AgentPubKeyB64[]
   projectName: string
-  isExportOpen: boolean
   activeEntryPoints: {
     entryPoint: WithActionHash<EntryPoint>
     outcome: WithActionHash<Outcome>
   }[]
   openInviteMembersModal: () => void
   setShowProjectSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
-  onClickExport: () => void
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
+  // for project export
+  isExportOpen: boolean
+  setIsExportOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setExportedProjectName: React.Dispatch<React.SetStateAction<string>>
 }
 
 const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
@@ -73,7 +78,8 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   whoami,
   projectName,
   isExportOpen,
-  onClickExport,
+  setIsExportOpen,
+  setExportedProjectName,
   activeEntryPoints,
   goToOutcome,
   members,
@@ -107,8 +113,8 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
 
   return (
-    <>
-      <div className="header-left-panel">
+    <div className="header-left-panel-rows">
+      <div className="header-left-panel" ref={ref}>
         {/* Acorn Logo - non link */}
 
         {!whoami && (
@@ -181,22 +187,25 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
 
                 <div className="current-project-tools">
                   {/* Entry points */}
-
-                  <Icon
-                    name="door-open.svg"
-                    size="view-mode"
-                    className={`${openEntryPointPicker ? 'active' : ''}`}
-                    withTooltip
-                    tooltipText="Entry Points"
-                    onClick={() =>
-                      setOpenEntryPointPicker(!openEntryPointPicker)
-                    }
-                  />
-                  {/* If entry point picker is open */}
-                  <EntryPointPicker
-                    isOpen={openEntryPointPicker}
-                    onClose={() => setOpenEntryPointPicker(false)}
-                  />
+                  <div className="entry-points-button-wrapper">
+                    <Icon
+                      name="door-open.svg"
+                      size="view-mode"
+                      className={`header-action-icon ${
+                        openEntryPointPicker ? 'active' : ''
+                      }`}
+                      withTooltip
+                      tooltipText="Entry Points"
+                      onClick={() =>
+                        setOpenEntryPointPicker(!openEntryPointPicker)
+                      }
+                    />
+                    {/* If entry point picker is open */}
+                    <EntryPointPicker
+                      isOpen={openEntryPointPicker}
+                      onClose={() => setOpenEntryPointPicker(false)}
+                    />
+                  </div>
 
                   {/* Settings */}
                   <Icon
@@ -205,6 +214,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                     tooltipText="Project Settings"
                     size="header"
                     onClick={() => setShowProjectSettingsOpen(true)}
+                    className="header-action-icon"
                   />
                   {/* Export */}
                   <div className="export-wrapper">
@@ -213,25 +223,36 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                       tooltipText="Export"
                       name="export.svg"
                       size="header"
-                      className={isExportOpen ? 'purple' : ''}
-                      onClick={onClickExport}
+                      className={`header-action-icon ${
+                        isExportOpen ? 'purple' : ''
+                      }`}
+                      onClick={() => setIsExportOpen(!isExportOpen)}
                     />
                     {isExportOpen && (
                       <div className="export-list-wrapper">
-                        <div>
-                          <ExportMenuItem
-                            type="json"
-                            title="Export as JSON (Importable)"
-                            download="acorn-project.json"
-                          />
-                        </div>
-                        <div>
-                          <ExportMenuItem
-                            type="csv"
-                            title="Export as CSV"
-                            download="acorn-project.csv"
-                          />
-                        </div>
+                        {/* Top Triangle */}
+                        <img
+                          className="triangle-top-white"
+                          src={triangleTopWhite}
+                        />
+                        <ExportMenuItem
+                          type="json"
+                          title="Export as JSON (Importable)"
+                          downloadFilename="acorn-project.json"
+                          onClick={() => {
+                            setExportedProjectName(projectName)
+                            setIsExportOpen(false)
+                          }}
+                        />
+                        <ExportMenuItem
+                          type="csv"
+                          title="Export as CSV"
+                          downloadFilename="acorn-project.csv"
+                          onClick={() => {
+                            setExportedProjectName(projectName)
+                            setIsExportOpen(false)
+                          }}
+                        />
                       </div>
                     )}
                   </div>
@@ -265,7 +286,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
           </div>
         </Route>
       )}
-    </>
+    </div>
   )
 }
 

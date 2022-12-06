@@ -10,9 +10,12 @@ export default function PickerTemplate({
   children,
   heading,
   onClose,
+  skipOnClickOutside = false
 }) {
   return (
-    <OnClickOutside onClickOutside={onClose}>
+    <OnClickOutside onClickOutside={() => {
+      if (!skipOnClickOutside) onClose()
+    }}>
       <div className={`${className} picker-popup`}>
         <div className='close-button'>
           <ButtonClose onClick={() => onClose()} />

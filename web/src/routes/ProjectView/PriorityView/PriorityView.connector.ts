@@ -1,17 +1,15 @@
 import { connect } from 'react-redux'
-import _ from 'lodash'
-
-import { openExpandedView } from '../../../../redux/ephemeral/expanded-view/actions'
-import selectProjectMembersPresent from '../../../../redux/persistent/projects/realtime-info-signal/select'
-import { updateProjectMeta } from '../../../../redux/persistent/projects/project-meta/actions'
-import { animatePanAndZoom } from '../../../../redux/ephemeral/viewport/actions'
-import ProjectsZomeApi from '../../../../api/projectsApi'
-import { getAppWs } from '../../../../hcWebsockets'
-import { cellIdFromString } from '../../../../utils'
-import PriorityUniversal from './PriorityUniversal.component'
-import { RootState } from '../../../../redux/reducer'
-import { CellIdString, ActionHashB64 } from '../../../../types/shared'
-import { ProjectMeta } from '../../../../types'
+import ProjectsZomeApi from '../../../api/projectsApi'
+import { getAppWs } from '../../../hcWebsockets'
+import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions'
+import { animatePanAndZoom } from '../../../redux/ephemeral/viewport/actions'
+import { updateProjectMeta } from '../../../redux/persistent/projects/project-meta/actions'
+import selectProjectMembersPresent from '../../../redux/persistent/projects/realtime-info-signal/select'
+import { RootState } from '../../../redux/reducer'
+import { ProjectMeta } from '../../../types'
+import { ActionHashB64, CellIdString } from '../../../types/shared'
+import { cellIdFromString } from '../../../utils'
+import PriorityView from './PriorityView.component'
 
 function mapStateToProps(state: RootState) {
   const projectId = state.ui.activeProject
@@ -59,4 +57,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PriorityUniversal)
+export default connect(mapStateToProps, mapDispatchToProps)(PriorityView)

@@ -4,8 +4,8 @@ import { ElectronHolochainOptions, StateSignal, PathOptions } from '@lightningro
 
 // see the DEVELOPERS.md about incrementing
 // these values
-const DATABASES_VERSION_NUMBER = '4'
-const KEYSTORE_VERSION_NUMBER = '3'
+export const INTEGRITY_VERSION_NUMBER = 5
+export const KEYSTORE_VERSION_NUMBER = 3
 
 // these messages get seen on the splash page
 export enum StateSignalText {
@@ -78,7 +78,7 @@ const devOptions: ElectronHolochainOptions = {
 }
 const prodOptions: ElectronHolochainOptions = {
   happPath: profilesHappPath, // preload
-  datastorePath: path.join(app.getPath('userData'), `databases-${DATABASES_VERSION_NUMBER}`),
+  datastorePath: path.join(app.getPath('userData'), `databases-${INTEGRITY_VERSION_NUMBER}`),
   appId: MAIN_APP_ID,
   appWsPort: 8889,
   adminWsPort: 1235,

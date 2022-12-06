@@ -5,11 +5,11 @@ import Button from '../Button/Button'
 import Typography from '../Typography/Typography'
 
 function ProjectModalHeading({ title }) {
-  return <div className='project-modal-heading'><Typography style="h3">{title}</Typography></div>
+  return <div className='project-modal-heading'><Typography style="heading-modal">{title}</Typography></div>
 }
 
 function ProjectModalSubHeading({ title }) {
-  return <div className='project-modal-subheading'><Typography style="subtitle3">{title}</Typography></div>
+  return <div className='project-modal-subheading'><Typography style="subtitle-modal">{title}</Typography></div>
 }
 
 function ProjectModalContent({ children }) {

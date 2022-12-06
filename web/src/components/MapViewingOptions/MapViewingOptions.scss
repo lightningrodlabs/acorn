@@ -1,0 +1,49 @@
+.map-viewing-options-menu {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    background-color: var(--bg-color-secondary);
+    bottom: 3rem;
+    margin-top: 0.3rem;
+    box-shadow: 0px 0rem 1.25rem var(--shadow-color-hover);
+    border-radius: 0.625rem;
+    -webkit-font-smoothing: antialiased;
+    padding: 1.75rem;
+    box-sizing: border-box;
+
+    .map-viewing-option-heading {
+        margin-bottom: 0.5rem;
+
+        &:not(:first-child) {
+            margin-top: 1rem;
+        }
+    }
+
+    .triangle-bottom-white {
+        width: 2rem;
+        height: 2rem;
+        position: absolute;
+        right: calc(50% - 0.75rem);
+        bottom: -0.925rem;
+    }
+}
+
+// Map viewing options transition animation
+
+.map-view-options-wrapper-enter {
+    opacity: 0;
+}
+
+.map-view-options-wrapper-enter-active {
+    opacity: 1;
+    transition: opacity 0.1s ease-in;
+}
+
+.map-view-options-wrapper-exit {
+    opacity: 1;
+}
+
+.map-view-options-wrapper-exit-active {
+    opacity: 0;
+    transition: opacity 0.1s ease-out;
+}
