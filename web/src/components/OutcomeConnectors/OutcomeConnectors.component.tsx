@@ -47,6 +47,7 @@ const OutcomeConnector = ({
   toAddress,
   address,
   outcomeCoordinates,
+  isCollapsed,
   canvas,
   setOutcomeConnectorFrom,
   setOutcomeConnectorTo,
@@ -101,7 +102,7 @@ const OutcomeConnector = ({
   // a connection to this lower port would make this Outcome a parent of the current 'from' Outcome of the connection connector
   // if there is one
   const canShowBottomConnector =
-    !topConnectorActive && (!relation || relation === RELATION_AS_CHILD)
+    !topConnectorActive && (!relation || relation === RELATION_AS_CHILD) && !isCollapsed
 
   // shared code for mouse event handlers
   const connectionConnectMouseDown = (direction, validity) => () => {
@@ -192,6 +193,7 @@ const OutcomeConnectors = ({
   toAddress,
   existingParentConnectionAddress,
   connectorAddresses,
+  collapsedOutcomes,
   canvas,
   setOutcomeConnectorFrom,
   setOutcomeConnectorTo,
@@ -202,6 +204,7 @@ const OutcomeConnectors = ({
   return connectorAddresses.map((connectorAddress) => {
     const outcomeCoordinates = coordinates[connectorAddress]
     const outcome = outcomes[connectorAddress]
+    const isCollapsed = collapsedOutcomes[connectorAddress]
     // look for an existing connection that defines a parent
     // of this Outcome, so that it can be deleted
     // if it is to be changed and a new one added
@@ -234,6 +237,7 @@ const OutcomeConnectors = ({
             dispatch={dispatch}
             translate={translate}
             zoomLevel={zoomLevel}
+            isCollapsed={isCollapsed}
           />
         )}
       </div>

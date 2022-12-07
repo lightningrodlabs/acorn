@@ -1,5 +1,4 @@
 import React from 'react'
-import Icon from '../Icon/Icon'
 import { ActionHashB64, CellIdString } from '../../types/shared'
 
 import './MapViewContextMenu.scss'
@@ -10,6 +9,7 @@ export type CheckboxProps = {
   outcomeActionHash: ActionHashB64
   outcomeStatement: string
   isCollapsed: boolean
+  hasChildren: boolean
   contextMenuCoordinate: {
     x: number
     y: number
@@ -30,6 +30,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
   outcomeActionHash,
   outcomeStatement,
   isCollapsed,
+  hasChildren,
   contextMenuCoordinate,
   expandOutcome,
   collapseOutcome,
@@ -51,9 +52,9 @@ const Checkbox: React.FC<CheckboxProps> = ({
   const actions = []
   actions.push({ key: 'copy-statement', text: 'Copy Statement', onClick: copyOutcomeStatement })
 
-  if (isCollapsed) {
+  if (hasChildren && isCollapsed) {
     actions.push({ key: 'expand', text: 'Expand Outcome', onClick: wrappedExpandOutcome })
-  } else {
+  } else if (hasChildren) {
     actions.push({ key: 'collapse', text: 'Collapse Outcome', onClick: wrappedCollapseOutcome })
   }
 

@@ -156,6 +156,13 @@ const MapView: React.FC<MapViewProps> = ({
   // because it displays the full Outcome statement
   const outcomeStatementTooltipVisible = hoveredOutcome && zoomLevel < 0.7
 
+  // don't display the 'collapse/expand' contextmenu item if
+  // the Outcome doesn't have children
+  const contextMenuOutcome = computedOutcomesKeyed[contextMenuOutcomeActionHash]
+  const contextMenuOutcomeHasChildren = contextMenuOutcome
+    ? !!contextMenuOutcome.children?.length
+    : false
+
   return (
     <>
       {showEmptyState && <ProjectEmptyState />}
@@ -225,6 +232,7 @@ const MapView: React.FC<MapViewProps> = ({
           <MapViewContextMenu
             projectCellId={projectId}
             isCollapsed={contextMenuOutcomeIsCollapsed}
+            hasChildren={contextMenuOutcomeHasChildren}
             outcomeActionHash={contextMenuOutcomeActionHash}
             outcomeStatement={contextMenuOutcomeStatement}
             contextMenuCoordinate={contextMenuCoordinate}
