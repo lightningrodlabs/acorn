@@ -78,7 +78,6 @@ const MapView: React.FC<MapViewProps> = ({
   const { computedOutcomesKeyed, computedOutcomesAsTree } = useContext(
     ComputedOutcomeContext
   )
-  // const [renderProps, setRenderProps] = useState<ReturnType<typeof selectRenderProps>>()
 
   // only run this one on initial mount
   useEffect(() => {
