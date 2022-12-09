@@ -8,7 +8,7 @@ import render from '../../../drawing'
 import setupEventListeners from '../../../event-listeners'
 import { setScreenDimensions } from '../../../redux/ephemeral/screensize/actions'
 
-import selectRenderProps from './selector'
+import selectRenderProps from './selectRenderProps'
 import ComputedOutcomeContext from '../../../context/ComputedOutcomeContext'
 import ProjectEmptyState from '../../../components/ProjectEmptyState/ProjectEmptyState'
 import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar.connector'
@@ -19,6 +19,7 @@ import Tooltip from '../../../components/Tooltip/Tooltip'
 
 import './MapView.scss'
 import MapViewContextMenu from '../../../components/MapViewContextMenu/MapViewContextMenu'
+import { useSelector } from 'react-redux'
 
 export type MapViewDispatchProps = {
   expandOutcome: (
@@ -92,38 +93,37 @@ const MapView: React.FC<MapViewProps> = ({
     store.dispatch(setScreenDimensions(rect.width * dpr, rect.height * dpr))
   }, [])
 
+  // event listeners effect
   // set this up newly, any time the
   // outcomes and connections change
   useEffect(() => {
-    const canvas = refCanvas.current
     // attach keyboard and mouse events
+    const canvas = refCanvas.current
     const removeEventListeners = setupEventListeners(
       store,
       canvas,
       computedOutcomesKeyed
     )
-    const doRender = () => {
-      const state: RootState = store.getState()
-      const activeProject = state.ui.activeProject
-      if (activeProject) {
-        const renderProps = selectRenderProps({
-          state,
-          computedOutcomesKeyed,
-          computedOutcomesAsTree,
-          activeProject,
-        })
-        render(renderProps, canvas)
-      }
-    }
-    // do initial render
-    doRender()
-    // re-render any time an action is dispatched
-    const unsub = store.subscribe(doRender)
     return function cleanup() {
       removeEventListeners()
-      unsub()
     }
   }, [computedOutcomesKeyed])
+
+  // using this smart selector is a performance gain
+  // because renderProps value will only obtain a new reference
+  // when the output changes
+  const renderProps = useSelector(selectRenderProps)
+
+  useEffect(() => {
+    const canvas = refCanvas.current
+    if (projectId && renderProps) {
+      render({
+        ...renderProps,
+        computedOutcomesKeyed,
+        computedOutcomesAsTree,
+      }, canvas)
+    }
+  }, [renderProps, projectId, computedOutcomesAsTree, computedOutcomesKeyed])
 
   const transform = {
     transform: `matrix(${zoomLevel}, 0, 0, ${zoomLevel}, ${translate.x}, ${translate.y})`,

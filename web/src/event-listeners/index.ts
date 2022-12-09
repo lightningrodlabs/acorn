@@ -337,6 +337,8 @@ export default function setupEventListeners(
     }
   }
 
+  // this method is being called super frequently, and is not performance optimized
+  // and seems to be dragging down the performance as a bottleneck.
   function canvasMousemove(event: MouseEvent) {
     const state: RootState = store.getState()
     const {
