@@ -15,7 +15,7 @@ import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
 
 // Local Imports
-import { MAIN_APP_ID, PROFILES_ROLE_ID } from './holochainConfig'
+import { MAIN_APP_ID, PROFILES_ROLE_NAME } from './holochainConfig'
 import acorn from './redux/reducer'
 import signalsHandlers from './signalsHandlers'
 import {
@@ -53,15 +53,15 @@ let store = createStore(
   /* preloadedState, */ composeEnhancers(applyMiddleware(...middleware))
 )
 
-// initialize the appWs with the signals handler
-const signalCallback = signalsHandlers(store)
-getAppWs(signalCallback).then(async (client) => {
+getAppWs().then(async (client) => {
+  // connect the signal handler to the app websocket
+  client.on('signal', signalsHandlers(store))
   try {
     const profilesInfo = await client.appInfo({
       installed_app_id: MAIN_APP_ID,
     })
     const { cell_id: cellId } = profilesInfo.cell_data.find(
-      ({ role_id }) => role_id === PROFILES_ROLE_ID
+      ({ role_name }) => role_name === PROFILES_ROLE_NAME
     )
     const [_dnaHash, agentPubKey] = cellId
     // cache buffer version of agentPubKey

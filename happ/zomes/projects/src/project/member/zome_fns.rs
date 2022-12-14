@@ -34,7 +34,7 @@ pub fn init_signal(_: ()) -> ExternResult<()> {
         agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey),
     };
     let signal = MemberSignal::new(member.clone());
-    let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e.into()))?;
+    let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e))?;
     let peers = get_peers_latest()?;
     remote_signal(payload, peers)?;
     Ok(())

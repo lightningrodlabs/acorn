@@ -42,7 +42,7 @@ export async function installProjectApp(
       installed_app_id,
       dnas: [
         {
-          role_id: uid,
+          role_name: uid,
           hash,
         },
       ],

@@ -169,7 +169,7 @@ pub fn create_outcome_with_connection(
         action: ActionType::Create,
         data: outcome_with_connection.clone(),
     });
-    let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e.into()))?;
+    let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e))?;
     let peers = get_peers_content()?;
     remote_signal(payload, peers)?;
 
@@ -343,7 +343,7 @@ pub fn delete_outcome_fully(address: ActionHashB64) -> ExternResult<DeleteOutcom
         action: ActionType::Delete,
         data: delete_response.clone(),
     });
-    let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e.into()))?;
+    let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e))?;
     let peers = get_peers_content()?;
     remote_signal(payload, peers)?;
 
