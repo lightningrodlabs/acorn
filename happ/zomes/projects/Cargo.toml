@@ -8,9 +8,9 @@ crate-type = ["cdylib", "rlib"]
 name = "projects"
 
 [dependencies]
-hdk_crud = { version = "0.7.1", features = ["no_example"] }
-hdk = "0.0.154"
-holo_hash = {version = "=0.0.33", features = ["encoding"]}
+hdk_crud = { version = "0.8.0", features = ["no_example"] }
+hdk = "0.0.163"
+holo_hash = {version = "=0.0.35", features = ["encoding"]}
 projects_integrity = { path = "../projects_integrity" }
 paste = "*"
 chrono = { version = "=0.4.22", default-features = false, features = ["clock", "std", "oldtime", "serde"] }

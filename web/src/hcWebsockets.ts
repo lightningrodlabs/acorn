@@ -28,10 +28,10 @@ export async function getAdminWs(): Promise<AdminWebsocket> {
   }
 }
 
-export async function getAppWs(signalsHandler?: any): Promise<AppWebsocket> {
+export async function getAppWs(): Promise<AppWebsocket> {
   async function connect() {
     // undefined is for default request timeout
-    appWsPromise = AppWebsocket.connect(APP_WS_URL, undefined, signalsHandler)
+    appWsPromise = AppWebsocket.connect(APP_WS_URL)
     appWs = await appWsPromise
     appWsPromise = null
     appWs.client.socket.addEventListener('close', async () => {
