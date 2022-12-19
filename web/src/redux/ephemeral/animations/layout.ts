@@ -1,6 +1,6 @@
 import TWEEN from '@tweenjs/tween.js'
 import { CREATE_OUTCOME_WITH_CONNECTION } from '../../persistent/projects/outcomes/actions'
-import { updateLayout, updateOutcomeCoordinates } from '../layout/actions'
+import { updateLayout } from '../layout/actions'
 import layoutFormula from '../../../drawing/layoutFormula'
 import { RootState } from '../../reducer'
 import { LAYOUT_ANIMATION_DURATION_MS } from '../../../constants'
@@ -113,8 +113,10 @@ export default function performLayoutAnimation(
       y: currentState.ui.outcomeForm.topConnectionYPosition,
     }
     outcomeCreatedDimensions[action.payload.outcome.actionHash] = {
-      width: 10,
-      height: 10,
+      // TODO: this is a bit hacky
+      // as its just hardcoded dimenions
+      width: 200,
+      height: 100,
     }
   }
 
@@ -184,12 +186,6 @@ export default function performLayoutAnimation(
           },
           translateForFixedPositionOutcome
         )
-        // updateOutcomeCoordinates(
-        //   {
-        //     ...updatedLayout,
-        //   },
-        //   translateForFixedPositionOutcome
-        // )
       )
     })
 }
