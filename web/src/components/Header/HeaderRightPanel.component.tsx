@@ -96,7 +96,7 @@ export default function HeaderRightPanel({
   unselectAll,
   projectId,
 }) {
-  const ref = useRef()
+  const ref = useRef<HTMLDivElement>(null)
   useOnClickOutside(ref, () => {
     setIsAvatarMenuOpen(false)
     setIsStatusOpen(false)
