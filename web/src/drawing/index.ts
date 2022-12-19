@@ -39,11 +39,19 @@ function setupCanvas(canvas) {
   // Get the device pixel ratio, falling back to 1.
   const dpr = window.devicePixelRatio || 1
   // Get the size of the canvas in CSS pixels.
+  console.log(canvas.parentElement)
   const rect = canvas.getBoundingClientRect()
   // Give the canvas pixel dimensions of their CSS
   // size * the device pixel ratio.
   canvas.width = rect.width * dpr
   canvas.height = rect.height * dpr
+  // TODO: fix this issue
+
+  // const rect = { width: canvas.parentElement.clientWidth, height: canvas.parentElement.clientHeight } // canvas.getBoundingClientRect()
+  // console.log('dpr', dpr)
+  // console.log('rect', rect.width, rect.height)
+  // canvas.width = 1000
+  // canvas.height = 1000
   const ctx = canvas.getContext('2d')
   return ctx
 }
@@ -133,13 +141,17 @@ function render(
   }: renderProps,
   canvas: HTMLCanvasElement
 ) {
+  const currentTime = Date.now()
+
   // Get the 2 dimensional drawing context of the canvas (there is also 3 dimensional, e.g.)
   const ctx = setupCanvas(canvas)
-
   // zoomLevel x, skew x, skew y, zoomLevel y, translate x, and translate y
+  console.log('before transform', Date.now() - currentTime)
   ctx.setTransform(1, 0, 0, 1, 0, 0) // normalize
+  console.log('after set transform', Date.now() - currentTime)
   // clear the entirety of the canvas
   ctx.clearRect(0, 0, screenWidth, screenHeight)
+  console.log('after clear rect', Date.now() - currentTime)
 
   // zoomLevel all drawing operations by the dpr, as well as the zoom, so you
   // don't have to worry about the difference.
@@ -152,6 +164,7 @@ function render(
     translate.x * dpr,
     translate.y * dpr
   )
+  console.log('after 2nd set transform', Date.now() - currentTime)
 
   const outcomes = computedOutcomesKeyed
 
@@ -191,7 +204,7 @@ function render(
   const connectionsAsArray = Object.keys(connections).map(
     (actionHash) => connections[actionHash]
   )
-
+  console.log('set up', Date.now() - currentTime)
   /*
       DRAW CONNECTIONS (EXISTING)
     */
@@ -241,6 +254,7 @@ function render(
     }
   })
 
+  console.log('breakpoint 2', Date.now() - currentTime)
   /*
     SEPARATE SELECTED & UNSELECTED OUTCOMES
   */
@@ -252,6 +266,7 @@ function render(
     return selectedOutcomes.indexOf(outcome.actionHash) > -1
   })
 
+  console.log('breakpoint 3', Date.now() - currentTime)
   /*
       DRAW UNSELECTED OUTCOMES
     */
@@ -318,6 +333,7 @@ function render(
     }
   })
 
+  console.log('breakpoint 4', Date.now() - currentTime)
   /*
       DRAW SELECT BOX
     */
@@ -346,6 +362,7 @@ function render(
     zoomLevel
   )
 
+  console.log('breakpoint 5', Date.now() - currentTime)
   /*
     DRAW EDITING HIGHLIGHT SEMI-TRANSPARENT OVERLAY
   */
@@ -354,6 +371,7 @@ function render(
     drawOverlay(ctx, 0, 0, screenWidth, screenHeight)
   }
 
+  console.log('breakpoint 6', Date.now() - currentTime)
   /*
     DRAW SELECTED OUTCOMES
   */
@@ -442,6 +460,7 @@ function render(
     useLineLimit: false,
   })
 
+  console.log('breakpoint 7', Date.now() - currentTime)
   /*
       DRAW PENDING CONNECTION FOR OUTCOME FORM
     */
@@ -472,6 +491,7 @@ function render(
     })
   }
 
+  console.log('breakpoint 8', Date.now() - currentTime)
   /*
       DRAW PENDING CONNECTION FOR "CONNECTION CONNECTOR"
     */
@@ -510,6 +530,7 @@ function render(
     })
   }
 
+  console.log('breakpoint 9', Date.now() - currentTime)
   /*
     DRAW NEW OUTCOME PLACEHOLDER
   */
@@ -545,6 +566,7 @@ function render(
       // allMembersActiveOnOutcome: [],
     })
   }
+  console.log('breakpoint 10', Date.now() - currentTime)
 }
 
 export default render

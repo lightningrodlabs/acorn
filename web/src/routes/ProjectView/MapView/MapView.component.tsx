@@ -82,7 +82,9 @@ const MapView: React.FC<MapViewProps> = ({
           computedOutcomesKeyed,
           activeProject,
         })
+        console.log('before render time', Date.now())
         render(renderProps, canvas)
+        console.log('after render time', Date.now())
       }
     }
     // do initial render
