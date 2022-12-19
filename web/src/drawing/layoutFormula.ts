@@ -3,6 +3,11 @@ import { getOutcomeWidth, getOutcomeHeight } from './dimensions'
 import { ComputedOutcome, Tag } from '../types'
 import { ActionHashB64, WithActionHash } from '../types/shared'
 import { ProjectComputedOutcomes } from '../context/ComputedOutcomeContext'
+import {
+  CoordinatesState,
+  DimensionsState,
+  LayoutState,
+} from '../redux/ephemeral/layout/state-type'
 
 const fl = flextree.flextree
 
@@ -10,12 +15,8 @@ const VERTICAL_SPACING = 100
 
 function getBoundingRec(
   outcome: ComputedOutcome,
-  allOutcomeCoordinates: {
-    [actionHash: ActionHashB64]: { x: number; y: number }
-  },
-  allOutcomeDimensions: {
-    [actionHash: ActionHashB64]: { width: number; height: number }
-  }
+  allOutcomeCoordinates: CoordinatesState,
+  allOutcomeDimensions: DimensionsState
 ) {
   const origCoord = allOutcomeCoordinates[outcome.actionHash]
   if (!origCoord) {
@@ -57,22 +58,13 @@ function getBoundingRec(
 
 export { getBoundingRec }
 
-export interface Layout {
-  [outcomeActionHash: ActionHashB64]: {
-    x: number
-    y: number
-  }
-}
-
 function layoutForTree(
   tree: ComputedOutcome,
-  allOutcomeDimensions: {
-    [actionHash: ActionHashB64]: { width: number; height: number }
-  },
+  allOutcomeDimensions: DimensionsState,
   projectCollapsedOutcomes: {
     [outcomeActionHash: ActionHashB64]: boolean
   }
-): Layout {
+): CoordinatesState {
   // create a graph
   const layout = fl().spacing((nodeA, nodeB) => {
     return nodeA.path(nodeB).length * 40
@@ -138,7 +130,7 @@ export default function layoutFormula(
   projectCollapsedOutcomes: {
     [outcomeActionHash: ActionHashB64]: boolean
   }
-): Layout {
+): LayoutState {
   let coordinates = {}
   // just do this for efficiency, it's not going to
   // get displayed or rendered anywhere
@@ -175,7 +167,7 @@ export default function layoutFormula(
   layouts.forEach((tree, index) => {
     // in the case of the first one, let it stay where it is
     if (index === 0) {
-      const adjusted: Layout = {}
+      const adjusted: CoordinatesState = {}
       const offsetFromZero = tree.layout[tree.outcome.actionHash].y
       Object.keys(tree.layout).forEach((coordKey) => {
         adjusted[coordKey] = {
@@ -198,7 +190,7 @@ export default function layoutFormula(
         tree.layout,
         allOutcomeDimensions
       )
-      const adjusted: Layout = {}
+      const adjusted: CoordinatesState = {}
       const yOffset = -1 * tree.layout[tree.outcome.actionHash].y
       const xOffset = lastTreeRight - thisTreeLeft + HORIZONTAL_TREE_SPACING
       Object.keys(tree.layout).forEach((coordKey) => {
@@ -215,5 +207,8 @@ export default function layoutFormula(
     }
   })
 
-  return coordinates
+  return {
+    coordinates,
+    dimensions: allOutcomeDimensions,
+  }
 }

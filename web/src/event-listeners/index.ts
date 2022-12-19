@@ -349,7 +349,7 @@ export default function setupEventListeners(
           coordinate: { x: initialSelectX, y: initialSelectY },
           outcomesAddresses,
         },
-        layout: outcomeCoordinates,
+        layout: { coordinates: outcomesCoordinates, dimensions: outcomesDimensions },
       },
     } = state
     const projectTags = Object.values(state.projects.tags[activeProject] || {})
@@ -364,7 +364,7 @@ export default function setupEventListeners(
     )
     store.dispatch(setLiveCoordinate(convertedCurrentMouse))
 
-    const closestOutcome = closestOutcomeToPageCoord(convertedCurrentMouse, outcomeCoordinates)
+    const closestOutcome = closestOutcomeToPageCoord(convertedCurrentMouse, outcomesCoordinates)
     // store the closest outcome, if there is one
     store.dispatch(setClosestOutcome(closestOutcome))
 
@@ -377,10 +377,8 @@ export default function setupEventListeners(
           store.dispatch(setCoordinate(convertedCurrentMouse))
         }
         const outcomeActionHashesToSelect = checkForOutcomeAtCoordinatesInBox(
-          ctx,
-          outcomeCoordinates,
-          scale,
-          projectTags,
+          outcomesCoordinates,
+          outcomesDimensions,
           outcomes,
           convertedCurrentMouse,
           { x: initialSelectX, y: initialSelectY }
@@ -401,7 +399,6 @@ export default function setupEventListeners(
       event.clientX,
       event.clientY,
       outcomes,
-      ctx,
       OUTCOME_VERTICAL_HOVER_ALLOWANCE
     )
     if (
@@ -489,7 +486,6 @@ export default function setupEventListeners(
         event.clientX,
         event.clientY,
         outcomes,
-        ctx
       )
       if (checks.connectionActionHash) {
         store.dispatch(unselectAll())
@@ -590,7 +586,6 @@ export default function setupEventListeners(
       event.clientX,
       event.clientY,
       outcomes,
-      ctx
     )
     const calcedPoint = coordsPageToCanvas(
       {
@@ -616,7 +611,6 @@ export default function setupEventListeners(
       event.clientX,
       event.clientY,
       outcomes,
-      ctx
     )
     // at this time, we are only displaying the ContextMenu if you
     // right-clicked ON an Outcome
@@ -633,8 +627,6 @@ export default function setupEventListeners(
   window.addEventListener('resize', windowResize)
   document.body.addEventListener('keydown', bodyKeydown)
   document.body.addEventListener('keyup', bodyKeyup)
-  // TODO: debounce/throttle this so that it doesn't fire crazy frequently and
-  // kill performance
   canvas.addEventListener('mousemove', canvasMousemove)
   canvas.addEventListener('wheel', canvasWheel)
   canvas.addEventListener('mousedown', canvasMousedown)
@@ -649,8 +641,6 @@ export default function setupEventListeners(
     window.removeEventListener('resize', windowResize)
     document.body.removeEventListener('keydown', bodyKeydown)
     document.body.removeEventListener('keyup', bodyKeyup)
-    // TODO: debounce/throttle this so that it doesn't fire crazy frequently and
-    // kill performance
     canvas.removeEventListener('mousemove', canvasMousemove)
     canvas.removeEventListener('wheel', canvasWheel)
     canvas.removeEventListener('mousedown', canvasMousedown)

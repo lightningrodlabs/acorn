@@ -5,55 +5,40 @@ import {
   ComputedOutcome,
   ComputedScope,
   ComputedSimpleAchievementStatus,
-  Tag,
 } from '../../types'
 
-import {
-  getOutcomeWidth,
-  getOutcomeHeight,
-  CONNECTOR_VERTICAL_SPACING,
-} from '../../drawing/dimensions'
-import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import DescendantsAchievementStatus from '../DescendantsAchievementStatus/DescendantsAchievementStatus'
 import { ActionHashB64, CellIdString, WithActionHash } from '../../types/shared'
+import { CoordinatesState, DimensionsState } from '../../redux/ephemeral/layout/state-type'
 
 export type CollapsedChildrenPillProps = {
-  projectTags: WithActionHash<Tag>[]
   outcome: ComputedOutcome
   outcomeCoordinates: {
     x: number
     y: number
   }
-  translate: { x: number; y: number }
-  zoomLevel: number
+  outcomeDimensions: {
+    width: number
+    height: number
+  }
   activeProject: CellIdString
   expandOutcome: (
     projectCellId: CellIdString,
     outcomeActionHash: ActionHashB64
   ) => void
-  canvas: HTMLCanvasElement
 }
 
 const CollapsedChildrenPill: React.FC<CollapsedChildrenPillProps> = ({
-  projectTags,
   outcome,
   outcomeCoordinates,
-  translate,
-  zoomLevel,
+  outcomeDimensions,
   activeProject,
   expandOutcome,
-  canvas,
 }) => {
-  const ctx = canvas.getContext('2d')
-  const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel })
-  const outcomeHeight = getOutcomeHeight({
-    ctx,
-    outcome,
-    projectTags,
-    zoomLevel,
-    width: outcomeWidth,
-  })
 
+  // THIS IS TO DO WITH WHAT APPROACH TO RENDERING
+  // THESE COLLAPSED CHILDREN PILLS COMPONENTS...
+  // SCALING OR NON-SCALING
   // calculate the coordinates on the page, based
   // on what the coordinates on the canvas would be
   // const { x: pillLeftCoordinate, y: pillTopCoordinate } = coordsCanvasToPage(
@@ -65,8 +50,8 @@ const CollapsedChildrenPill: React.FC<CollapsedChildrenPillProps> = ({
   //   zoomLevel
   // )
 
-  const pillLeftCoordinate = outcomeCoordinates.x + outcomeWidth / 2
-  const pillTopCoordinate = outcomeCoordinates.y + outcomeHeight + 16
+  const pillLeftCoordinate = outcomeCoordinates.x + outcomeDimensions.width / 2
+  const pillTopCoordinate = outcomeCoordinates.y + outcomeDimensions.height + 16
 
   // a default in case of loading/transitioning
   const computedScope = outcome ? outcome.computedScope : ComputedScope.Small
@@ -102,20 +87,12 @@ const CollapsedChildrenPill: React.FC<CollapsedChildrenPillProps> = ({
 }
 
 export type CollapsedChildrenPillsProps = {
-  canvas: HTMLCanvasElement
   outcomes: {
     [actionHash: string]: ComputedOutcome
   }
   activeProject: CellIdString
-  projectTags: WithActionHash<Tag>[]
-  translate: { x: number; y: number }
-  zoomLevel: number
-  coordinates: {
-    [outcomeActionHash: ActionHashB64]: {
-      x: number
-      y: number
-    }
-  }
+  coordinates: CoordinatesState
+  dimensions: DimensionsState
   projectCollapsedOutcomes: ActionHashB64[]
   expandOutcome: (
     projectCellId: CellIdString,
@@ -124,13 +101,10 @@ export type CollapsedChildrenPillsProps = {
 }
 
 const CollapsedChildrenPills: React.FC<CollapsedChildrenPillsProps> = ({
-  canvas,
   outcomes,
   activeProject,
-  projectTags,
-  translate,
-  zoomLevel,
   coordinates,
+  dimensions,
   projectCollapsedOutcomes,
   expandOutcome,
 }) => {
@@ -138,18 +112,16 @@ const CollapsedChildrenPills: React.FC<CollapsedChildrenPillsProps> = ({
     <>
       {projectCollapsedOutcomes.map((outcomeActionHash) => {
         const outcomeCoordinates = coordinates[outcomeActionHash]
+        const outcomeDimensions = dimensions[outcomeActionHash]
         const outcome = outcomes[outcomeActionHash]
         return (
           <div key={outcomeActionHash}>
             {outcome && outcomeCoordinates && (
               <CollapsedChildrenPill
-                canvas={canvas}
-                projectTags={projectTags}
                 activeProject={activeProject}
                 outcome={outcome}
                 outcomeCoordinates={outcomeCoordinates}
-                translate={translate}
-                zoomLevel={zoomLevel}
+                outcomeDimensions={outcomeDimensions}
                 expandOutcome={expandOutcome}
               />
             )}

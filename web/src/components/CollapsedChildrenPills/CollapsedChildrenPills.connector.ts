@@ -8,12 +8,10 @@ function mapStateToProps(state: RootState) {
   const {
     ui: {
       activeProject,
-      viewport: { translate, scale },
-      layout: coordinates,
+      layout: { coordinates, dimensions },
       collapsedOutcomes: { collapsedOutcomes },
     },
   } = state
-  const projectTags = Object.values(state.projects.tags[activeProject] || {})
   const projectCollapsedOutcomesData = collapsedOutcomes[activeProject] || {}
 
   // only keep the list of Outcomes which are actually collapsed
@@ -25,10 +23,8 @@ function mapStateToProps(state: RootState) {
 
   return {
     activeProject,
-    translate,
-    projectTags,
-    zoomLevel: scale,
     coordinates,
+    dimensions,
     projectCollapsedOutcomes,
   }
 }
