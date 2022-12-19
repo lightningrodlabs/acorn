@@ -29,7 +29,6 @@ function AvatarMenuItem({
 function StatusMenuItem({ color, title, onClick }) {
   return (
     <button onClick={onClick}>
-      {/* @ts-ignore */}
       <div className={`status-circle ${color}`} />
       <p>{title}</p>
     </button>
