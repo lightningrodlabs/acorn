@@ -1,13 +1,14 @@
 import TWEEN from '@tweenjs/tween.js'
 import { CREATE_OUTCOME_WITH_CONNECTION } from '../../persistent/projects/outcomes/actions'
-import { updateLayout } from '../layout/actions'
-import layoutFormula, { Layout } from '../../../drawing/layoutFormula'
+import { updateLayout, updateOutcomeCoordinates } from '../layout/actions'
+import layoutFormula from '../../../drawing/layoutFormula'
 import { RootState } from '../../reducer'
 import { LAYOUT_ANIMATION_DURATION_MS } from '../../../constants'
 import { ComputedOutcome } from '../../../types'
 import { getTreesForState } from './get-trees-for-state'
 import { coordsCanvasToPage } from '../../../drawing/coordinateSystems'
 import { ActionHashB64 } from '../../../types/shared'
+import { CoordinatesState, DimensionsState } from '../layout/state-type'
 
 function calcDestTranslate(
   outcomeActionHash: ActionHashB64,
@@ -72,9 +73,9 @@ export default function performLayoutAnimation(
   // in terms of 'fixing' on a given outcome
   // get the 'starting position' for that Outcome onscreen
   let originalOutcomeFixedPosition: { x: number; y: number }
-  if (closestOutcome && currentState.ui.layout[closestOutcome]) {
+  if (closestOutcome && currentState.ui.layout.coordinates[closestOutcome]) {
     originalOutcomeFixedPosition = coordsCanvasToPage(
-      currentState.ui.layout[closestOutcome],
+      currentState.ui.layout.coordinates[closestOutcome],
       translate,
       zoomLevel
     )
@@ -88,7 +89,7 @@ export default function performLayoutAnimation(
     // to keep that closest Outcome in a fixed position on the screen
     let translateForFixedPositionOutcome = calcDestTranslate(
       closestOutcome,
-      newLayout,
+      newLayout.coordinates,
       zoomLevel,
       originalOutcomeFixedPosition
     )
@@ -101,7 +102,8 @@ export default function performLayoutAnimation(
   // if creating an Outcome, we also want to animate
   // from the position wherever the user was creating it
   // to its new resting place in the new layout
-  let outcomeCreatedCoord: Layout = {}
+  let outcomeCreatedCoord: CoordinatesState = {}
+  let outcomeCreatedDimensions: DimensionsState = {}
   if (action.type === CREATE_OUTCOME_WITH_CONNECTION) {
     // at this point we have the actionHash of the new Outcome
     // and we also have the coordinates where the "Outcome Form"
@@ -110,6 +112,10 @@ export default function performLayoutAnimation(
       x: currentState.ui.outcomeForm.leftConnectionXPosition,
       y: currentState.ui.outcomeForm.topConnectionYPosition,
     }
+    outcomeCreatedDimensions[action.payload.outcome.actionHash] = {
+      width: 10,
+      height: 10,
+    }
   }
 
   // this is expanding coordinates for Outcomes
@@ -117,14 +123,20 @@ export default function performLayoutAnimation(
   // and the value is an object with `x` and `y` values
   // (tween is going to directly modify this object)
   const currentLayoutTween = {
-    // do this to add any new ones
-    // that will just start out in their final position
-    ...newLayout,
-    // do this to override the coordinates of the newly
-    // created Outcome when handling a create action
-    // and make its original position equal to the position
-    // of the Outcome Form when it was open
-    ...outcomeCreatedCoord,
+    dimensions: {
+      ...newLayout.dimensions,
+      ...outcomeCreatedDimensions,
+    },
+    coordinates: {
+      // do this to add any new ones
+      // that will just start out in their final position
+      ...newLayout.coordinates,
+      // do this to override the coordinates of the newly
+      // created Outcome when handling a create action
+      // and make its original position equal to the position
+      // of the Outcome Form when it was open
+      ...outcomeCreatedCoord,
+    },
   }
   // we do NOT want to keep original layouts for Outcomes
   // that are no longer in the project, so those are automatically
@@ -132,9 +144,14 @@ export default function performLayoutAnimation(
   for (const outcomeActionHash in newLayout) {
     // do this to override any new ones with existing ones
     // to begin with
-    if (currentState.ui.layout[outcomeActionHash]) {
-      currentLayoutTween[outcomeActionHash] = {
-        ...currentState.ui.layout[outcomeActionHash],
+    if (currentState.ui.layout.coordinates[outcomeActionHash]) {
+      currentLayoutTween.coordinates[outcomeActionHash] = {
+        ...currentState.ui.layout.coordinates[outcomeActionHash],
+      }
+    }
+    if (currentState.ui.layout.dimensions[outcomeActionHash]) {
+      currentLayoutTween.dimensions[outcomeActionHash] = {
+        ...currentState.ui.layout.dimensions[outcomeActionHash],
       }
     }
   }
@@ -153,7 +170,7 @@ export default function performLayoutAnimation(
       // to keep that closest Outcome in a fixed position on the screen
       let translateForFixedPositionOutcome = calcDestTranslate(
         closestOutcome,
-        updatedLayout,
+        updatedLayout.coordinates,
         zoomLevel,
         originalOutcomeFixedPosition
       )
@@ -167,6 +184,12 @@ export default function performLayoutAnimation(
           },
           translateForFixedPositionOutcome
         )
+        // updateOutcomeCoordinates(
+        //   {
+        //     ...updatedLayout,
+        //   },
+        //   translateForFixedPositionOutcome
+        // )
       )
     })
 }
