@@ -26,7 +26,7 @@ import ProjectsZomeApi from './api/projectsApi'
 import { PriorityMode, ProjectMeta } from './types'
 import { simpleCreateProjectMeta } from './redux/persistent/projects/project-meta/actions'
 import { WireRecord } from './api/hdkCrud'
-
+import AppRuntimeContext from './context/AppRuntimeContext'
 
 function AppProvided({
     appWs,
@@ -39,8 +39,6 @@ function AppProvided({
     const middleware = [layoutWatcher, realtimeInfoWatcher]
     // assuming only info about current applet is passed in and that the acorn we applet has only one DNA
     let appletProjectId = isWeApplet ? cellIdToString(appletAppInfo[0].installedAppInfo.cell_data[0].cell_id) : ''
-    console.log('applet app info', appletAppInfo)
-    console.log('applet id: ', appletProjectId)
     // This enables the redux-devtools browser extension
     // which gives really awesome debugging for apps that use redux
     // @ts-ignore
@@ -102,19 +100,22 @@ function AppProvided({
 
                     // initialize project meta with default values if an applet
                     if (isWeApplet) {
-                    const projectsZomeApi = new ProjectsZomeApi(appWs)
-                    const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(cellId, {
-                        creatorAgentPubKey: agentAddress,
-                        createdAt: Date.now(), // f64
-                        name: 'project',
-                        image: '',
-                        passphrase: 'test',
-                        isImported: false,
-                        priorityMode: PriorityMode.Universal,
-                        topPriorityOutcomes: [],
-                    })
-                    console.log('created meta', simpleCreatedProjectMeta)
-                    store.current.dispatch(simpleCreateProjectMeta(cellIdToString(cellId), simpleCreatedProjectMeta))
+                        const projectsZomeApi = new ProjectsZomeApi(appWs)
+                        const projectMetaExists = await projectsZomeApi.projectMeta.checkProjectMetaExists(cellId)
+                        if (!projectMetaExists) {
+                            const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(cellId, {
+                                creatorAgentPubKey: agentAddress,
+                                createdAt: Date.now(), // f64
+                                name: 'project',
+                                image: '',
+                                passphrase: 'test',
+                                isImported: false,
+                                priorityMode: PriorityMode.Universal,
+                                topPriorityOutcomes: [],
+                            })
+                            console.log('created meta', simpleCreatedProjectMeta)
+                            store.current.dispatch(simpleCreateProjectMeta(cellIdToString(cellId), simpleCreatedProjectMeta))
+                        }
                     }
                } catch (e) {
                     console.error('error at init', e)
@@ -127,8 +128,10 @@ function AppProvided({
     
     return (
         <Provider store={store.current}>
-            {isWeApplet && <WeAppletApp appletProjectId={appletProjectId} weServices={weServices} />}
-            {!isWeApplet && <App />}
+            <AppRuntimeContext.Provider value={isWeApplet}>
+                {isWeApplet && <WeAppletApp appletProjectId={appletProjectId} weServices={weServices} />}
+                {!isWeApplet && <App />}
+            </AppRuntimeContext.Provider>
         </Provider>
     )
 }
