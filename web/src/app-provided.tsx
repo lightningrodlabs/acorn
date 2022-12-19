@@ -23,10 +23,8 @@ import { fetchAgentAddress } from './redux/persistent/profiles/agent-address/act
 import { getProjectCellIdStrings } from './projectAppIds'
 import WeProfilesZomeApi from './api/weProfilesApi'
 import ProjectsZomeApi from './api/projectsApi'
-import { PriorityMode, ProjectMeta } from './types'
+import { PriorityMode } from './types'
 import { simpleCreateProjectMeta } from './redux/persistent/projects/project-meta/actions'
-import { WireRecord } from './api/hdkCrud'
-import AppRuntimeContext from './context/AppRuntimeContext'
 
 function AppProvided({
     appWs,
