@@ -12,7 +12,12 @@ export type TagsListProps = {
   tags: WithActionHash<TagType>[]
   selectedTags: ActionHashB64[]
   onChange?: (newSelectedTags: ActionHashB64[]) => void
-  onSaveTag?: (text: string, backgroundColor: string) => Promise<void>
+  onCreateTag?: (text: string, backgroundColor: string) => Promise<void>
+  onUpdateExistingTag?: (
+    actionHash: ActionHashB64,
+    text: string,
+    backgroundColor: string
+  ) => Promise<void>
   showAddTagButton: boolean
 }
 
@@ -20,7 +25,8 @@ const TagsList: React.FC<TagsListProps> = ({
   tags,
   selectedTags,
   onChange,
-  onSaveTag,
+  onCreateTag,
+  onUpdateExistingTag,
   showAddTagButton,
 }) => {
   const [isOpenTagPicker, setIsOpenTagPicker] = useState(false)
@@ -56,7 +62,8 @@ const TagsList: React.FC<TagsListProps> = ({
                 tags={tags}
                 selectedTags={selectedTags}
                 onChange={onChange}
-                onSaveTag={onSaveTag}
+                onCreateTag={onCreateTag}
+                onUpdateExistingTag={onUpdateExistingTag}
                 filterText={filterText}
                 setFilterText={setFilterText}
                 onClose={onClose}
