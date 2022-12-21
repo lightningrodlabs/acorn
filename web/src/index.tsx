@@ -63,54 +63,54 @@ getAppWs().then(async (client) => {
       installed_app_id: MAIN_APP_ID,
     })
 
-    console.log(profilesInfo.cell_info)
     const cellInfo = profilesInfo.cell_info[PROFILES_ROLE_NAME][0]
     const cellId = ("Provisioned" in cellInfo) ? cellInfo.Provisioned.cell_id : undefined
-    console.log('cell_id', cellId)
-
-    console.log('before authorize signing key')
-    // authorize zome call signer
-    const adminWs = await getAdminWs()
-    await authorizeNewSigningKeyPair(adminWs, cellId!, profilesZomeFunctions);
-    console.log('after authorize key')
-    
-
-    const [_dnaHash, agentPubKey] = cellId!
-    // cache buffer version of agentPubKey
-    setAgentPubKey(agentPubKey)
-    const cellIdString = cellIdToString(cellId!)
-    store.dispatch(setProfilesCellId(cellIdString))
-    // all functions of the Profiles DNA
-    const profilesZomeApi = new ProfilesZomeApi(client)
-
-    const profiles = await profilesZomeApi.profile.fetchAgents(cellId!)
-    store.dispatch(fetchAgents(cellIdString, profiles))
-    const profile = await profilesZomeApi.profile.whoami(cellId!)
-    // this allows us to 'reclaim' a profile that was imported by someone else that is ours
-    // (i.e. it relates to our public key)
-    if (profile) {
-      let nonImportedProfile = {
-        ...profile.entry,
-        isImported: false,
-      }
-      await profilesZomeApi.profile.updateWhoami(cellId!, {
-        entry: nonImportedProfile,
-        actionHash: profile.actionHash,
-      })
-      profile.entry = nonImportedProfile
+    if (cellId == undefined) {
+      throw 'cellId undefined'
     }
-    store.dispatch(whoami(cellIdString, profile))
-    const agentAddress = await profilesZomeApi.profile.fetchAgentAddress(cellId!)
-    store.dispatch(fetchAgentAddress(cellIdString, agentAddress))
-    // which projects do we have installed?
-    const projectCellIds = await getProjectCellIdStrings()
-    
-    // before any zome calls can be made, we need to gain zome call signing authorization
-    // for each of the project cells that we have installed
-    await Promise.all(projectCellIds.map(async (cellId) => {
-      await authorizeNewSigningKeyPair(adminWs, cellIdFromString(cellId), projectsZomeFunctions)
-    }))
-    store.dispatch(setProjectsCellIds(projectCellIds))
+    else {
+      // authorize zome call signer
+      const adminWs = await getAdminWs()
+      await authorizeNewSigningKeyPair(adminWs, cellId, profilesZomeFunctions);
+      
+  
+      const [_dnaHash, agentPubKey] = cellId
+      // cache buffer version of agentPubKey
+      setAgentPubKey(agentPubKey)
+      const cellIdString = cellIdToString(cellId)
+      store.dispatch(setProfilesCellId(cellIdString))
+      // all functions of the Profiles DNA
+      const profilesZomeApi = new ProfilesZomeApi(client)
+  
+      const profiles = await profilesZomeApi.profile.fetchAgents(cellId)
+      store.dispatch(fetchAgents(cellIdString, profiles))
+      const profile = await profilesZomeApi.profile.whoami(cellId)
+      // this allows us to 'reclaim' a profile that was imported by someone else that is ours
+      // (i.e. it relates to our public key)
+      if (profile) {
+        let nonImportedProfile = {
+          ...profile.entry,
+          isImported: false,
+        }
+        await profilesZomeApi.profile.updateWhoami(cellId, {
+          entry: nonImportedProfile,
+          actionHash: profile.actionHash,
+        })
+        profile.entry = nonImportedProfile
+      }
+      store.dispatch(whoami(cellIdString, profile))
+      const agentAddress = await profilesZomeApi.profile.fetchAgentAddress(cellId)
+      store.dispatch(fetchAgentAddress(cellIdString, agentAddress))
+      // which projects do we have installed?
+      const projectCellIds = await getProjectCellIdStrings()
+      
+      // before any zome calls can be made, we need to gain zome call signing authorization
+      // for each of the project cells that we have installed
+      await Promise.all(projectCellIds.map(async (cellId) => {
+        await authorizeNewSigningKeyPair(adminWs, cellIdFromString(cellId), projectsZomeFunctions)
+      }))
+      store.dispatch(setProjectsCellIds(projectCellIds))
+    }
   } catch (e) {
     console.error(e)
     return

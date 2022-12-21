@@ -40,8 +40,7 @@ function PendingProjects({
             ([_appId, appInfo]) => appInfo.cellIdString === pendingCellId
           )
 
-          appInfo.cell_info
-          const cellInfo = appInfo.cell_info[0][0]
+          const cellInfo = Object.values(appInfo.cell_info)[0][0]
           const cellRoleName = ('Provisioned' in cellInfo) ? cellInfo.Provisioned.name : ''
           const appInfoForCellId = {
             uid: cellRoleName,
