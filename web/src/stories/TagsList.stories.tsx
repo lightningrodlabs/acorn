@@ -5,6 +5,7 @@ import '../variables.scss'
 import TagsListComponent, {
   TagsListProps,
 } from '../components/TagsList/TagsList'
+import { ActionHashB64 } from '../types/shared'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -50,7 +51,14 @@ const args: TagsListProps = {
   onChange: function (newSelectedTags: string[]): void {
     throw new Error('Function not implemented.')
   },
-  onSaveTag: function (text: string, backgroundColor: string): Promise<void> {
+  onCreateTag: function (text: string, backgroundColor: string): Promise<void> {
+    throw new Error('Function not implemented.')
+  },
+  onUpdateExistingTag: function (
+    actionHash: ActionHashB64,
+    text: string,
+    backgroundColor: string
+  ): Promise<void> {
     throw new Error('Function not implemented.')
   },
 }
