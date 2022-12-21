@@ -68,7 +68,7 @@ export default function panZoomToFrame(
   // important, for the outcomeCoordinates we should
   // definitely choose them from the new intended layout,
   // not the existing one
-  const outcomeCoordinates = newLayout[outcomeActionHash]
+  const outcomeCoordinates = newLayout.coordinates[outcomeActionHash]
 
   if (!outcomeCoordinates) {
     console.log('could not find coordinates for outcome to animate to')

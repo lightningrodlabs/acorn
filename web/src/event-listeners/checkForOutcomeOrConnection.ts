@@ -18,7 +18,6 @@ export default function checkForOutcomeOrConnection(
   x: number,
   y: number,
   outcomes: { [actionHash: ActionHashB64]: ComputedOutcome },
-  ctx: CanvasRenderingContext2D,
   extraVerticalPadding?: number
 ) {
   const {
@@ -27,9 +26,9 @@ export default function checkForOutcomeOrConnection(
       viewport: { translate, scale },
     },
   } = state
-  const projectTags = Object.values(state.projects.tags[activeProject] || {})
   const connections = state.projects.connections[activeProject] || {}
-  const outcomeCoordinates = state.ui.layout
+  const outcomesCoordinates = state.ui.layout.coordinates
+  const outcomesDimensions = state.ui.layout.dimensions
 
   const doCheckOutcomes =
     outcomeConnectionOrBoth === OutcomeConnectionOrBoth.Both ||
@@ -41,11 +40,10 @@ export default function checkForOutcomeOrConnection(
   return {
     outcomeActionHash: doCheckOutcomes
       ? checkForOutcomeAtCoordinates(
-          ctx,
           translate,
           scale,
-          outcomeCoordinates,
-          projectTags,
+          outcomesCoordinates,
+          outcomesDimensions,
           x,
           y,
           outcomes,
@@ -54,11 +52,10 @@ export default function checkForOutcomeOrConnection(
       : null,
     connectionActionHash: doCheckConnections
       ? checkForConnectionAtCoordinates(
-          ctx,
           translate,
           scale,
-          outcomeCoordinates,
-          projectTags,
+          outcomesCoordinates,
+          outcomesDimensions,
           connections,
           x,
           y,

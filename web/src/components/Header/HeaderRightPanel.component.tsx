@@ -29,7 +29,6 @@ function AvatarMenuItem({
 function StatusMenuItem({ color, title, onClick }) {
   return (
     <button onClick={onClick}>
-      {/* @ts-ignore */}
       <div className={`status-circle ${color}`} />
       <p>{title}</p>
     </button>
@@ -97,7 +96,7 @@ export default function HeaderRightPanel({
   unselectAll,
   projectId,
 }) {
-  const ref = useRef()
+  const ref = useRef<HTMLDivElement>(null)
   useOnClickOutside(ref, () => {
     setIsAvatarMenuOpen(false)
     setIsStatusOpen(false)

@@ -42,7 +42,7 @@ const EvComments: React.FC<EvCommentsProps> = ({
   createOutcomeComment,
   activeAgentPubKey,
 }) => {
-  const commentHistoryRef = useRef<any>()
+  const commentHistoryRef = useRef<HTMLDivElement>(null)
 
   // the state for capturing the
   // user input of the new comment
@@ -54,8 +54,10 @@ const EvComments: React.FC<EvCommentsProps> = ({
     // which in this case a reference
     // to the .comments-posted-wrapper div
     setTimeout(() => {
-      commentHistoryRef.current.scrollTop =
-        commentHistoryRef.current.scrollHeight
+      if (commentHistoryRef.current) {
+        commentHistoryRef.current.scrollTop =
+          commentHistoryRef.current.scrollHeight
+      }
     }, 10)
   }, [])
 
@@ -73,8 +75,10 @@ const EvComments: React.FC<EvCommentsProps> = ({
         isImported: false,
       })
       // then scroll to bottom
-      commentHistoryRef.current.scrollTop =
-        commentHistoryRef.current.scrollHeight
+      if (commentHistoryRef.current) {
+        commentHistoryRef.current.scrollTop =
+          commentHistoryRef.current.scrollHeight
+      }
       // then reset the typing input
       setValue('')
     } catch (e) {
@@ -100,11 +104,12 @@ const EvComments: React.FC<EvCommentsProps> = ({
     <>
       <EvReadOnlyHeading
         headingText={outcomeContent}
-        // @ts-ignore
         overviewIcon={
           <Icon name="chats-circle.svg" className="not-hoverable" />
         }
-        overviewText={`${comments.length} comment${comments.length !== 1 ? 's' : ''}`}
+        overviewText={`${comments.length} comment${
+          comments.length !== 1 ? 's' : ''
+        }`}
       />
       <div className="comments-posted-wrapper" ref={commentHistoryRef}>
         {comments
@@ -112,7 +117,10 @@ const EvComments: React.FC<EvCommentsProps> = ({
           .sort((a, b) => (a.unixTimestamp < b.unixTimestamp ? -1 : 1))
           .map((comment) => {
             return (
-              <div key={comment.actionHash} className="comments-posted-list-item">
+              <div
+                key={comment.actionHash}
+                className="comments-posted-list-item"
+              >
                 <CommentPosted
                   comment={comment}
                   creator={profiles[comment.creatorAgentPubKey]}

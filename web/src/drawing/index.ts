@@ -13,17 +13,14 @@ import drawOverlay from './drawOverlay'
 import drawSelectBox from './drawSelectBox'
 import drawEntryPoints from './drawEntryPoints'
 import {
-  RELATION_AS_PARENT,
   RELATION_AS_CHILD,
 } from '../redux/ephemeral/outcome-connector/actions'
 import {
-  CONNECTOR_VERTICAL_SPACING,
   getOutcomeHeight,
   getOutcomeWidth,
 } from './dimensions'
 import {
   ComputedOutcome,
-  ComputedScope,
   ComputedSimpleAchievementStatus,
   ProjectMeta,
   RelationInput,
@@ -34,6 +31,7 @@ import { ProjectConnectionsState } from '../redux/persistent/projects/connection
 import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
 import { ProjectOutcomeMembersState } from '../redux/persistent/projects/outcome-members/reducer'
 import { getPlaceholderOutcome } from './drawOutcome/placeholderOutcome'
+import { CoordinatesState, DimensionsState } from '../redux/ephemeral/layout/state-type'
 
 function setupCanvas(canvas) {
   // Get the device pixel ratio, falling back to 1.
@@ -84,12 +82,8 @@ export type renderProps = {
     x: number
     y: number
   }
-  coordinates: {
-    [outcomeActionHash: ActionHashB64]: {
-      x: number
-      y: number
-    }
-  }
+  coordinates: CoordinatesState
+  dimensions: DimensionsState
   computedOutcomesKeyed: {
     [outcomeActionHash: ActionHashB64]: ComputedOutcome
   }
@@ -108,6 +102,7 @@ function render(
     screenHeight,
     zoomLevel,
     coordinates,
+    dimensions: allOutcomeDimensions,
     translate,
     activeEntryPoints,
     computedOutcomesKeyed,
@@ -162,27 +157,6 @@ function render(
     !(outcomes && connections && outcomeMembers && entryPoints && projectMeta)
   )
     return
-
-  // determine what the dimensions of each outcome will be
-  const allOutcomeDimensions: {
-    [actionHash: ActionHashB64]: { width: number; height: number }
-  } = {}
-  Object.keys(outcomes).forEach((outcomeActionHash) => {
-    const outcome = outcomes[outcomeActionHash]
-    const width = getOutcomeWidth({ outcome, zoomLevel })
-    const height = getOutcomeHeight({
-      ctx,
-      outcome,
-      projectTags,
-      zoomLevel: zoomLevel,
-      width,
-      useLineLimit: true,
-    })
-    allOutcomeDimensions[outcomeActionHash] = {
-      width,
-      height,
-    }
-  })
 
   const topPriorityOutcomes = projectMeta.topPriorityOutcomes
   // converts the outcomes object to an array

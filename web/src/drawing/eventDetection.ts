@@ -1,20 +1,22 @@
-import { getOutcomeWidth, getOutcomeHeight } from './dimensions'
 import { coordsPageToCanvas } from './coordinateSystems'
 import {
   calculateConnectionCoordsByOutcomeCoords,
   pathForConnection,
 } from './drawConnection'
-import { ActionHashB64, WithActionHash } from '../types/shared'
-import { ComputedOutcome, Tag } from '../types'
+import { ActionHashB64 } from '../types/shared'
+import { ComputedOutcome } from '../types'
 import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
 import { RELATION_AS_CHILD } from '../redux/ephemeral/outcome-connector/actions'
+import {
+  CoordinatesState,
+  DimensionsState,
+} from '../redux/ephemeral/layout/state-type'
 
 export function checkForConnectionAtCoordinates(
-  ctx: CanvasRenderingContext2D,
   translate: { x: number; y: number },
   scale: number,
-  outcomeCoordinates: { [actionHash: ActionHashB64]: { x: number; y: number } },
-  projectTags: WithActionHash<Tag>[],
+  outcomeCoordinates: CoordinatesState,
+  outcomeDimensions: DimensionsState,
   connections: ProjectConnectionsState,
   mouseX: number,
   mouseY: number,
@@ -38,6 +40,10 @@ export function checkForConnectionAtCoordinates(
       const parentOutcomeCoords =
         outcomeCoordinates[connection.parentActionHash]
       const childOutcomeCoords = outcomeCoordinates[connection.childActionHash]
+      const parentOutcomeDimensions =
+        outcomeDimensions[connection.parentActionHash]
+      const childOutcomeDimensions =
+        outcomeDimensions[connection.childActionHash]
       const childOutcome = outcomes[connection.childActionHash]
       const parentOutcome = outcomes[connection.parentActionHash]
 
@@ -52,49 +58,15 @@ export function checkForConnectionAtCoordinates(
         return
       }
 
-      // get the dimensions of the parent and child
-      // in preparation for getting the connection end points
-      const childOutcomeWidth = getOutcomeWidth({
-        outcome: childOutcome,
-        zoomLevel: scale,
-      })
-      const childOutcomeHeight = getOutcomeHeight({
-        outcome: childOutcome,
-        zoomLevel: scale,
-        width: childOutcomeWidth,
-        projectTags,
-        ctx,
-      })
-      const childDimensions = {
-        width: childOutcomeWidth,
-        height: childOutcomeHeight,
-      }
-
-      const parentOutcomeWidth = getOutcomeWidth({
-        outcome: parentOutcome,
-        zoomLevel: scale,
-      })
-      const parentOutcomeHeight = getOutcomeHeight({
-        outcome: parentOutcome,
-        zoomLevel: scale,
-        width: parentOutcomeWidth,
-        projectTags,
-        ctx,
-      })
-      const parentDimensions = {
-        width: parentOutcomeWidth,
-        height: parentOutcomeHeight,
-      }
-
       // get the coordinates for the connection end points
       const [
         childConnectionCoords,
         parentConnectionCoords,
       ] = calculateConnectionCoordsByOutcomeCoords(
         childOutcomeCoords,
-        childDimensions,
+        childOutcomeDimensions,
         parentOutcomeCoords,
-        parentDimensions,
+        parentOutcomeDimensions,
         RELATION_AS_CHILD
       )
       const connectionPath = pathForConnection({
@@ -123,11 +95,10 @@ export function checkForConnectionAtCoordinates(
 }
 
 export function checkForOutcomeAtCoordinates(
-  ctx: CanvasRenderingContext2D,
   translate: { x: number; y: number },
   scale: number,
-  outcomeCoordinates: { [actionHash: ActionHashB64]: { x: number; y: number } },
-  projectTags: WithActionHash<Tag>[],
+  outcomesCoordinates: CoordinatesState,
+  outcomesDimensions: DimensionsState,
   mouseX: number,
   mouseY: number,
   outcomes: { [actionHash: ActionHashB64]: ComputedOutcome },
@@ -145,30 +116,20 @@ export function checkForOutcomeAtCoordinates(
   // keep track of whether an Outcome was selected
   return Object.keys(outcomes).find((actionHash) => {
     const outcome = outcomes[actionHash]
-    const outcomeCoordinate = outcomeCoordinates[outcome.actionHash]
-    // do not proceed if we don't have coordinates
+    const outcomeCoordinate = outcomesCoordinates[outcome.actionHash]
+    const outcomeDimensions = outcomesDimensions[outcome.actionHash]
+    // do not proceed if we don't have coordinates or dimensions
     // for the outcome (yet)
-    if (!outcomeCoordinate) return false
+    if (!(outcomeCoordinate && outcomeDimensions)) return false
 
     const topLeft = {
       x: outcomeCoordinate.x,
       y: outcomeCoordinate.y - extraVerticalPadding,
     }
 
-    const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel: scale })
-    const outcomeHeight = getOutcomeHeight({
-      ctx,
-      outcome,
-      projectTags,
-      width: outcomeWidth,
-      zoomLevel: scale,
-    })
     const bottomRight = {
-      x: topLeft.x + outcomeWidth,
-      y:
-        outcomeCoordinates[outcome.actionHash].y +
-        outcomeHeight +
-        extraVerticalPadding,
+      x: topLeft.x + outcomeDimensions.width,
+      y: outcomeCoordinate.y + outcomeDimensions.height + extraVerticalPadding,
     }
 
     // is mouse within the box of an Outcome
@@ -182,10 +143,8 @@ export function checkForOutcomeAtCoordinates(
 }
 
 export function checkForOutcomeAtCoordinatesInBox(
-  ctx: CanvasRenderingContext2D,
-  outcomeCoordinates: { [actionHash: ActionHashB64]: { x: number; y: number } },
-  scale: number,
-  projectTags: WithActionHash<Tag>[],
+  outcomesCoordinates: CoordinatesState,
+  outcomesDimensions: DimensionsState,
   outcomes: { [actionHash: ActionHashB64]: ComputedOutcome },
   corner: { x: number; y: number },
   oppositeCorner: { x: number; y: number }
@@ -194,22 +153,15 @@ export function checkForOutcomeAtCoordinatesInBox(
   let clickedAddresses = {}
   Object.keys(outcomes).forEach((actionHash) => {
     const outcome = outcomes[actionHash]
-    const outcomeCoordinate = outcomeCoordinates[outcome.actionHash]
+    const outcomeCoordinate = outcomesCoordinates[outcome.actionHash]
+    const outcomeDimensions = outcomesDimensions[outcome.actionHash]
     // do not proceed if we don't have coordinates
     // for the outcome (yet)
-    if (!outcomeCoordinate) return false
+    if (!(outcomeCoordinate && outcomeDimensions)) return false
 
-    const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel: scale })
-    const outcomeHeight = getOutcomeHeight({
-      ctx,
-      outcome,
-      projectTags,
-      width: outcomeWidth,
-      zoomLevel: scale,
-    })
     const bottomRight = {
-      x: outcomeCoordinate.x + outcomeWidth,
-      y: outcomeCoordinate.y + outcomeHeight,
+      x: outcomeCoordinate.x + outcomeDimensions.width,
+      y: outcomeCoordinate.y + outcomeDimensions.height,
     }
 
     // if box fully encapsulates an Outcome

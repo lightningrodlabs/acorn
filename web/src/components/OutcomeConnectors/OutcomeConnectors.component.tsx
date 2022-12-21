@@ -1,10 +1,6 @@
 import React from 'react'
 import './OutcomeConnectors.scss'
-import {
-  getOutcomeWidth,
-  getOutcomeHeight,
-  CONNECTOR_VERTICAL_SPACING,
-} from '../../drawing/dimensions'
+import { CONNECTOR_VERTICAL_SPACING } from '../../drawing/dimensions'
 import {
   RELATION_AS_CHILD,
   RELATION_AS_PARENT,
@@ -38,8 +34,6 @@ const OutcomeConnectorHtml = ({
 
 const OutcomeConnector = ({
   activeProject,
-  projectTags,
-  outcome,
   ownExistingParentConnectionAddress,
   presetExistingParentConnectionAddress,
   fromAddress,
@@ -47,8 +41,8 @@ const OutcomeConnector = ({
   toAddress,
   address,
   outcomeCoordinates,
+  outcomeDimensions,
   isCollapsed,
-  canvas,
   setOutcomeConnectorFrom,
   setOutcomeConnectorTo,
   connections,
@@ -57,21 +51,11 @@ const OutcomeConnector = ({
   zoomLevel,
   dispatch,
 }) => {
-  const ctx = canvas.getContext('2d')
-  const outcomeWidth = getOutcomeWidth({ outcome, zoomLevel })
-  const outcomeHeight = getOutcomeHeight({
-    ctx,
-    outcome,
-    projectTags,
-    zoomLevel,
-    width: outcomeWidth,
-  })
-
   // calculate the coordinates on the page, based
   // on what the coordinates on the canvas would be
   const { x: topConnectorLeft, y: topConnectorTop } = coordsCanvasToPage(
     {
-      x: outcomeCoordinates.x + outcomeWidth / 2,
+      x: outcomeCoordinates.x + outcomeDimensions.width / 2,
       y: outcomeCoordinates.y - CONNECTOR_VERTICAL_SPACING,
     },
     translate,
@@ -79,8 +63,11 @@ const OutcomeConnector = ({
   )
   const { x: bottomConnectorLeft, y: bottomConnectorTop } = coordsCanvasToPage(
     {
-      x: outcomeCoordinates.x + outcomeWidth / 2,
-      y: outcomeCoordinates.y + outcomeHeight + CONNECTOR_VERTICAL_SPACING,
+      x: outcomeCoordinates.x + outcomeDimensions.width / 2,
+      y:
+        outcomeCoordinates.y +
+        outcomeDimensions.height +
+        CONNECTOR_VERTICAL_SPACING,
     },
     translate,
     zoomLevel
@@ -102,7 +89,9 @@ const OutcomeConnector = ({
   // a connection to this lower port would make this Outcome a parent of the current 'from' Outcome of the connection connector
   // if there is one
   const canShowBottomConnector =
-    !topConnectorActive && (!relation || relation === RELATION_AS_CHILD) && !isCollapsed
+    !topConnectorActive &&
+    (!relation || relation === RELATION_AS_CHILD) &&
+    !isCollapsed
 
   // shared code for mouse event handlers
   const connectionConnectMouseDown = (direction, validity) => () => {
@@ -142,8 +131,7 @@ const OutcomeConnector = ({
 
   const connectorOnMouseOver = () => {
     // cannot set 'to' the very same Outcome
-    if (fromAddress && address !== fromAddress)
-      setOutcomeConnectorTo(address)
+    if (fromAddress && address !== fromAddress) setOutcomeConnectorTo(address)
   }
   const connectorOnMouseOut = () => {
     setOutcomeConnectorTo(null)
@@ -183,27 +171,26 @@ const OutcomeConnector = ({
 const OutcomeConnectors = ({
   outcomes,
   activeProject,
-  projectTags,
   translate,
   zoomLevel,
   connections,
   coordinates,
+  dimensions,
   fromAddress,
   relation,
   toAddress,
   existingParentConnectionAddress,
   connectorAddresses,
   collapsedOutcomes,
-  canvas,
   setOutcomeConnectorFrom,
   setOutcomeConnectorTo,
   dispatch,
 }) => {
-   // convert from object to array
+  // convert from object to array
   const outcomeActionHashes = Object.keys(outcomes)
   return connectorAddresses.map((connectorAddress) => {
     const outcomeCoordinates = coordinates[connectorAddress]
-    const outcome = outcomes[connectorAddress]
+    const outcomeDimensions = dimensions[connectorAddress]
     const isCollapsed = collapsedOutcomes[connectorAddress]
     // look for an existing connection that defines a parent
     // of this Outcome, so that it can be deleted
@@ -213,11 +200,9 @@ const OutcomeConnectors = ({
     )
     return (
       <div key={connectorAddress}>
-        {outcome && outcomeCoordinates && (
+        {outcomeCoordinates && outcomeDimensions && (
           <OutcomeConnector
             activeProject={activeProject}
-            projectTags={projectTags}
-            outcome={outcome}
             connections={connections}
             outcomeActionHashes={outcomeActionHashes}
             fromAddress={fromAddress}
@@ -233,7 +218,7 @@ const OutcomeConnectors = ({
             setOutcomeConnectorFrom={setOutcomeConnectorFrom}
             setOutcomeConnectorTo={setOutcomeConnectorTo}
             outcomeCoordinates={outcomeCoordinates}
-            canvas={canvas}
+            outcomeDimensions={outcomeDimensions}
             dispatch={dispatch}
             translate={translate}
             zoomLevel={zoomLevel}

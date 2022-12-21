@@ -12,7 +12,7 @@ function mapStateToProps(state: RootState) {
     ui: {
       activeProject,
       viewport: { translate, scale },
-      layout: coordinates,
+      layout: { coordinates, dimensions },
       hover: { hoveredOutcome: hoveredOutcomeAddress },
       outcomeConnector: {
         fromAddress,
@@ -47,6 +47,7 @@ function mapStateToProps(state: RootState) {
     translate,
     zoomLevel: scale,
     coordinates,
+    dimensions,
     connections: Object.values(connections), // convert from object to array
     fromAddress,
     relation,
