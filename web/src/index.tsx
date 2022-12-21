@@ -105,6 +105,8 @@ getAppWs().then(async (client) => {
     // which projects do we have installed?
     const projectCellIds = await getProjectCellIdStrings()
     
+    // before any zome calls can be made, we need to gain zome call signing authorization
+    // for each of the project cells that we have installed
     await Promise.all(projectCellIds.map(async (cellId) => {
       await authorizeNewSigningKeyPair(adminWs, cellIdFromString(cellId), projectsZomeFunctions)
     }))
