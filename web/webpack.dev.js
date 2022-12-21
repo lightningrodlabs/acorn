@@ -32,7 +32,7 @@ module.exports = {
     }),
   ],
   entry: {
-    app: './src/index.js',
+    app: './src/index.tsx',
     splash: './src/splashscreen.scss',
   },
   resolve: {
@@ -53,8 +53,21 @@ module.exports = {
   },
   module: {
     rules: [
+      // {
+      //   test: /\.wasm$/,
+      //   dependency: { not: ['url']},
+      //   use: [
+      //     {
+      //       loader: 'url-loader',
+      //       options: {
+      //         limit: 8192,
+      //       },
+      //     },
+      //   ],
+      // },
       {
         test: /\.js$/,
+        // dependency: { not: ['url']},
         exclude: {
           and: [/node_modules/],
           not: [/\@holochain\/client/]
@@ -74,6 +87,7 @@ module.exports = {
       },
       {
         test: /\.(ts|tsx)$/,
+        // dependency: { not: ['url']},
         exclude: [/node_modules/, /stories/],
         use: [
           {
@@ -94,6 +108,7 @@ module.exports = {
         // svg could be added here, but would need to be distinguished
         // from non-font svgs
         test: /\.(ttf|eot|woff|woff2)$/,
+        // dependency: { not: ['url']},
         use: {
           loader: 'file-loader',
           options: {
@@ -106,6 +121,7 @@ module.exports = {
       // .png, .jpg, .svg images
       {
         test: /\.(png|jpg|svg)$/,
+        // dependency: { not: ['url']},
         use: {
           loader: 'file-loader',
           options: {
@@ -118,6 +134,7 @@ module.exports = {
       // scss
       {
         test: /\.scss$/i,
+        // dependency: { not: ['url']},
         use: [
           // Creates `style` nodes from JS strings
           'style-loader',

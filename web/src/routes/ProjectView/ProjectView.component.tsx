@@ -19,6 +19,10 @@ import { AgentPubKeyB64, CellIdString, ActionHashB64 } from '../../types/shared'
 import { ComputedOutcome, Outcome } from '../../types'
 import selectAndComputeOutcomes from '../../selectors/computeOutcomes'
 import selectOutcomeAndAncestors from '../../selectors/outcomeAndAncestors'
+import { getAdminWs } from '../../hcWebsockets'
+import { authorizeNewSigningKeyPair } from '@holochain/client'
+import { projectsZomeFunctions } from '../../api/zomeFunctions'
+import { cellIdFromString } from '../../utils'
 
 export type ProjectViewInnerOwnProps = {
   projectId: CellIdString
@@ -123,30 +127,34 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   useEffect(() => {
     // pushes this new projectId into the store/state
     setActiveProject(projectId)
-    triggerRealtimeInfoSignal()
-    fetchProjectMeta()
-    // these do not affect map view layout
-    fetchMembers()
-    fetchEntryPoints()
-    fetchOutcomeComments()
-    // once Outcomes, Connections, Outcome Members, and Tags which all
-    //  affect layout are all fetched
-    // we then animate to a specific outcome if it was set in the path
-    // as a search query param
-    // this version of fetchOutcomes and fetchConnections have been instructed
-    // to not perform a layout update and animation
-    Promise.all([
-      fetchOutcomeMembers(),
-      fetchTags(),
-      fetchOutcomes(),
-      fetchConnections(),
-    ]).then(() => {
-      // fetched all necessary data to perform layout
-      // so perform the layout
-      const instant = true
-      triggerUpdateLayout(instant)
-      // now, adjust the translation of the Map View
-      goInstantlyToOutcome(goToOutcomeActionHash)
+    getAdminWs().then(async (adminWs) => {
+      // authorize zome calls on each page refresh
+      await authorizeNewSigningKeyPair(adminWs, cellIdFromString(projectId), projectsZomeFunctions)
+      triggerRealtimeInfoSignal()
+      fetchProjectMeta()
+      // these do not affect map view layout
+      fetchMembers()
+      fetchEntryPoints()
+      fetchOutcomeComments()
+      // once Outcomes, Connections, Outcome Members, and Tags which all
+      //  affect layout are all fetched
+      // we then animate to a specific outcome if it was set in the path
+      // as a search query param
+      // this version of fetchOutcomes and fetchConnections have been instructed
+      // to not perform a layout update and animation
+      Promise.all([
+        fetchOutcomeMembers(),
+        fetchTags(),
+        fetchOutcomes(),
+        fetchConnections(),
+      ]).then(() => {
+        // fetched all necessary data to perform layout
+        // so perform the layout
+        const instant = true
+        triggerUpdateLayout(instant)
+        // now, adjust the translation of the Map View
+        goInstantlyToOutcome(goToOutcomeActionHash)
+      })
     })
 
     // this will get called to unmount the component

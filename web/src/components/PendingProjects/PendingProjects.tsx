@@ -1,4 +1,4 @@
-import { InstalledAppInfo } from '@holochain/client'
+import { AppInfo } from '@holochain/client'
 import React, { useEffect, useState } from 'react'
 import { getAllApps } from '../../projectAppIds'
 import { uidToPassphrase } from '../../secrets'
@@ -32,15 +32,19 @@ function PendingProjects({
   useEffect(() => {
     getAllApps().then(
       (results: {
-        [app_id: string]: InstalledAppInfo & { cellIdString: string }
+        [app_id: string]: AppInfo & { cellIdString: string }
       }) => {
         const newPassphrases: AppInfoStore = {}
         pendingProjects.forEach((pendingCellId) => {
           const [appId, appInfo] = Object.entries(results).find(
             ([_appId, appInfo]) => appInfo.cellIdString === pendingCellId
           )
+
+          appInfo.cell_info
+          const cellInfo = appInfo.cell_info[0][0]
+          const cellRoleName = ('Provisioned' in cellInfo) ? cellInfo.Provisioned.name : ''
           const appInfoForCellId = {
-            uid: appInfo.cell_data[0].role_name,
+            uid: cellRoleName,
             appId,
           }
           newPassphrases[pendingCellId] = appInfoForCellId

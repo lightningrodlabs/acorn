@@ -37,13 +37,13 @@ export function stateSignalToText(state: StateSignal): StateSignalText {
   }
 }
 
-const projectsDnaPath = app.isPackaged
-  ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/projects.dna')
-  : path.join(app.getAppPath(), '../happ/workdir/projects.dna')
+const projectsHappPath = app.isPackaged
+  ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/projects.happ')
+  : path.join(app.getAppPath(), '../happ/workdir/projects/projects.happ')
 
 const profilesHappPath = app.isPackaged
   ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/profiles.happ')
-  : path.join(app.getAppPath(), '../happ/workdir/profiles.happ')
+  : path.join(app.getAppPath(), '../happ/workdir/profiles/profiles.happ')
 
 // in production
 // must point to unpacked versions, not in an asar archive
@@ -87,4 +87,4 @@ const prodOptions: ElectronHolochainOptions = {
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 
-export { projectsDnaPath, BINARY_PATHS, devOptions, prodOptions }
+export { projectsHappPath as projectsDnaPath, BINARY_PATHS, devOptions, prodOptions }
