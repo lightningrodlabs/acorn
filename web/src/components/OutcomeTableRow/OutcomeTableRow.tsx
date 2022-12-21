@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import hashCodeId from '../../api/clientSideIdHash'
 import { ComputedOutcome, ComputedScope, Tag } from '../../types'
-import { ActionHashB64, AgentPubKeyB64, WithActionHash } from '../../types/shared'
+import {
+  ActionHashB64,
+  AgentPubKeyB64,
+  WithActionHash,
+} from '../../types/shared'
 import AvatarsList from '../AvatarsList/AvatarsList'
 import ExpandChevron from '../ExpandChevron/ExpandChevron'
 import Icon from '../Icon/Icon'
