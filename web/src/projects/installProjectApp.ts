@@ -1,4 +1,4 @@
-import { authorizeNewSigningKeyPair, CellId } from "@holochain/client"
+import { authorizeSigningCredentials, CellId } from "@holochain/client"
 import { projectsZomeFunctions } from "../api/zomeFunctions"
 import { getAdminWs, getAgentPubKey } from "../hcWebsockets"
 import { PROJECT_APP_PREFIX } from "../holochainConfig"
@@ -48,6 +48,6 @@ export async function installProjectApp(
 
     //authorize zome call signer
 
-    await authorizeNewSigningKeyPair(adminWs, cellId, projectsZomeFunctions)
+    await authorizeSigningCredentials(adminWs, cellId, projectsZomeFunctions)
     return [cellIdString, cellId, installed_app_id]
   }

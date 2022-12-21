@@ -32,7 +32,7 @@ import { getAppWs, getAdminWs, setAgentPubKey } from './hcWebsockets'
 import { getProjectCellIdStrings } from './projectAppIds'
 import ProfilesZomeApi from './api/profilesApi'
 import { cellIdFromString, cellIdToString } from './utils'
-import { authorizeNewSigningKeyPair, CellInfo } from '@holochain/client'
+import { authorizeSigningCredentials } from '@holochain/client'
 import { profilesZomeFunctions, projectsZomeFunctions } from './api/zomeFunctions'
 
 // Import styles
@@ -71,7 +71,7 @@ getAppWs().then(async (client) => {
     else {
       // authorize zome call signer
       const adminWs = await getAdminWs()
-      await authorizeNewSigningKeyPair(adminWs, cellId, profilesZomeFunctions);
+      await authorizeSigningCredentials(adminWs, cellId, profilesZomeFunctions);
       
   
       const [_dnaHash, agentPubKey] = cellId
@@ -107,7 +107,7 @@ getAppWs().then(async (client) => {
       // before any zome calls can be made, we need to gain zome call signing authorization
       // for each of the project cells that we have installed
       await Promise.all(projectCellIds.map(async (cellId) => {
-        await authorizeNewSigningKeyPair(adminWs, cellIdFromString(cellId), projectsZomeFunctions)
+        await authorizeSigningCredentials(adminWs, cellIdFromString(cellId), projectsZomeFunctions)
       }))
       store.dispatch(setProjectsCellIds(projectCellIds))
     }
