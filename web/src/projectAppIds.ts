@@ -11,7 +11,6 @@ export async function getAllApps() {
   // which could become wrong at some point
   const appProjects = (
     appIds.map(appInfo => {
-      console.log('appInfo', appInfo)
       const cellInfo = Object.values(appInfo.cell_info)[0][0]
       const cellId = ("Provisioned" in cellInfo) ? cellInfo.Provisioned.cell_id : undefined
       

@@ -5,8 +5,8 @@ const entryTypes = [
     "outcome_comment",
     "outcome_member",
     "outcome_vote",
-    "outcome_meta",
-    "tag"
+    "tag",
+    "project_meta",
 ]
 let crudZomeFunctionNames: [string, string][] = []
 for (const entryType of entryTypes) {
@@ -21,7 +21,6 @@ for (const entryType of entryTypes) {
 }
 
 const profilesZomeFunctions: [string, string][] = [
-      ["profiles", "init"],
       ["profiles", "create_whoami"],
       ["profiles", "create_imported_profile"],
       ["profiles", "update_whoami"],
@@ -31,7 +30,6 @@ const profilesZomeFunctions: [string, string][] = [
       ["profiles", "recv_remote_signal"],
 ]
 const projectsZomeFunctions: [string, string][] = [
-      ["projects", "init"],
       ["projects", "emit_realtime_info_signal"],
       ["projects", "emit_editing_outcome_signal"],
       ["projects", "recv_remote_signal"],
@@ -42,7 +40,6 @@ const projectsZomeFunctions: [string, string][] = [
       ["projects", "delete_outcome_fully"],
       ["projects", "simple_create_project_meta"],
       ["projects", "fetch_project_meta"],
-      ["projects", "check_project_meta_exists"],
       ["projects", "check_project_meta_exists"],
       ...crudZomeFunctionNames
 ]
