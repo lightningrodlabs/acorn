@@ -45,7 +45,7 @@
     "core-js": "^3.6.5",
     "d3-flextree": "^2.1.2",
     "diceware-word": "^1.0.0",
-    "electron": "^11.2.1",
+    "electron": "^20.1.3",
     "file-loader": "^6.2.0",
     "intersects": "^2.7.2",
     "lodash": "^4.17.19",

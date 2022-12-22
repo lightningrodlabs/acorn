@@ -129,7 +129,7 @@ export default function (state = defaultState, action: any): MouseState {
     case SET_OUTCOMES:
       return {
         ...state,
-        outcomesAddresses: payload.outcomesAddresses,
+        outcomesAddresses: payload,
       }
     case UNSET_OUTCOMES:
       return {
