@@ -27,6 +27,7 @@ OutcomeTableRow.storyName = 'OutcomeTableRow'
 const args: OutcomeTableRowProps = {
   projectTags: testTags,
   outcome: testBigAchievedOutcome,
+  topPriorityOutcomes: [],
   presentMembers: [],
   filter: {},
   parentExpanded: true,

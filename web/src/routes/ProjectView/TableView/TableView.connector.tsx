@@ -16,6 +16,8 @@ function mapStateToProps(state: RootState): TableViewConnectorStateProps {
   const whoAmIWireRecord = state.whoami || ({} as WireRecord<Profile>)
   // can be undefined, based on line above, intentionally
   const whoAmI = whoAmIWireRecord.entry
+  const projectMeta = state.projects.projectMeta[projectId]
+  const topPriorityOutcomes = projectMeta ? projectMeta.topPriorityOutcomes : []
   const projectTagsObject = state.projects.tags[projectId] || {}
   const projectMembers = state.projects.members[projectId] || {}
   const projectMemberProfiles = Object.keys(projectMembers)
@@ -29,6 +31,7 @@ function mapStateToProps(state: RootState): TableViewConnectorStateProps {
   const projectTags = Object.values(projectTagsObject)
   return {
     whoAmI,
+    topPriorityOutcomes,
     presentMembers,
     projectMemberProfiles,
     projectTags,

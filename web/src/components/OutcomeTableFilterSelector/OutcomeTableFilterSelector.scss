@@ -3,11 +3,11 @@
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
-  margin: 0.25rem 0.5rem;
+  margin: 0 0.5rem;
 
   .table-view-filter-wrapper {
     margin-right: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     margin-top: 0.5rem;
 
     &:first-child {
@@ -58,7 +58,7 @@
   .table-view-filter-wrapper-clear {
     cursor: pointer;
     padding: 0.25rem;
-    margin-bottom: 0.25rem;
+    margin-top: 0.25rem;
     // TODO: smarter styling here
     .typography {
       color: var(--text-color-tertiary);

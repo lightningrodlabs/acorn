@@ -7,6 +7,7 @@ import { OutcomeTableFilter } from '../OutcomeTableRow/filterMatch'
 import './OutcomeTableWithFilters.scss'
 
 export type OutcomeTableWithFiltersProps = {
+  topPriorityOutcomes: ActionHashB64[]
   projectTags: WithActionHash<Tag>[]
   whoAmI: Profile
   presentMembers: AgentPubKeyB64[]
@@ -17,6 +18,7 @@ export type OutcomeTableWithFiltersProps = {
 }
 
 const OutcomeTableWithFilters: React.FC<OutcomeTableWithFiltersProps> = ({
+  topPriorityOutcomes,
   projectTags,
   whoAmI,
   presentMembers,
@@ -36,6 +38,7 @@ const OutcomeTableWithFilters: React.FC<OutcomeTableWithFiltersProps> = ({
         projectMemberProfiles={projectMemberProfiles}
       />
       <OutcomeTable
+        topPriorityOutcomes={topPriorityOutcomes}
         projectTags={projectTags}
         outcomeTrees={computedOutcomesAsTree}
         presentMembers={presentMembers}

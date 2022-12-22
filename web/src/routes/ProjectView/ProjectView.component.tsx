@@ -16,7 +16,7 @@ import ConnectedExpandedViewMode from '../../components/ExpandedViewMode/Expande
 
 import ComputedOutcomeContext from '../../context/ComputedOutcomeContext'
 import { AgentPubKeyB64, CellIdString, ActionHashB64 } from '../../types/shared'
-import { ComputedOutcome, Outcome } from '../../types'
+import { ComputedOutcome, Outcome, CreateOutcomeWithConnectionInput } from '../../types'
 import selectAndComputeOutcomes from '../../selectors/computeOutcomes'
 import selectOutcomeAndAncestors from '../../selectors/outcomeAndAncestors'
 
@@ -40,6 +40,7 @@ export type ProjectViewInnerConnectorDispatchProps = {
   goInstantlyToOutcome: (outcomeActionHash: ActionHashB64) => void
   triggerUpdateLayout: (instant?: boolean) => void
   // remote / holochain calls
+  createOutcomeWithConnection: (outcomeWithConnection: CreateOutcomeWithConnectionInput) => Promise<void>
   updateOutcome: (outcome: Outcome, actionHash: ActionHashB64) => Promise<void>
   fetchProjectMeta: () => Promise<void>
   fetchEntryPoints: () => Promise<void>
@@ -70,6 +71,7 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   goInstantlyToOutcome,
   triggerUpdateLayout,
   // remote / holochain calls
+  createOutcomeWithConnection,
   updateOutcome,
   fetchProjectMeta,
   fetchMembers,
@@ -190,6 +192,7 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
           outcome={expandedViewOutcome}
           outcomeAndAncestors={expandedViewOutcomeAndAncestors}
           updateOutcome={updateOutcome}
+          createOutcomeWithConnection={createOutcomeWithConnection}
         />
       </ComputedOutcomeContext.Provider>
     </>

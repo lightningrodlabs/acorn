@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { ComputedOutcome } from '../../../../../types'
 import { ActionHashB64 } from '../../../../../types/shared'
+import AddOutcomeChildInput from '../../../../AddOutcomeChildInput/AddOutcomeChildInput'
 import EvReadOnlyHeading from '../../../../EvReadOnlyHeading/EvReadOnlyHeading'
 import Icon from '../../../../Icon/Icon'
 import OutcomeListItem from '../../../../OutcomeListItem/OutcomeListItem'
@@ -10,12 +11,14 @@ export type EvChildrenProps = {
   outcomeContent: string
   directChildren: ComputedOutcome[]
   openExpandedView: (actionHash: ActionHashB64) => void
+  onCreateChildOutcome: (newOutcomeText: string) => Promise<void>
 }
 
 const EvChildren: React.FC<EvChildrenProps> = ({
   outcomeContent,
   directChildren,
   openExpandedView,
+  onCreateChildOutcome,
 }) => {
   return (
     <div className="ev-children-view-wrapper">
@@ -37,6 +40,9 @@ const EvChildren: React.FC<EvChildrenProps> = ({
             />
           )
         })}
+      </div>
+      <div className='ev-children-add-new-child'>
+        <AddOutcomeChildInput onCreateChildOutcome={onCreateChildOutcome} />
       </div>
     </div>
   )
