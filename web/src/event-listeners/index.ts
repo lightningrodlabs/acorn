@@ -473,7 +473,6 @@ export default function setupEventListeners(
       },
     } = state
 
-    console.log('outcomesAddresses', outcomesAddresses)
     if (outcomesAddresses) {
       // finishing a drag box selection action
       outcomesAddresses.forEach((value) => store.dispatch(selectOutcome(value)))

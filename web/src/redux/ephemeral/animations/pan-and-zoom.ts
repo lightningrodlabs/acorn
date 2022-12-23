@@ -8,7 +8,6 @@ import { selectOutcome, unselectAll } from '../selection/actions'
 import { changeAllDirect } from '../viewport/actions'
 import { getTreesForState } from './get-trees-for-state'
 
-
 /*
   In this function as we animate the "pan and zoom", or "translate and scale"
   **we take responsibility** not only for those values, but for the Outcome layout
@@ -42,6 +41,10 @@ export default function panZoomToFrame(
   const outcomeTrees = getTreesForState(state)
 
   const projectTags = Object.values(state.projects.tags[activeProject] || {})
+  const hiddenSmallOutcomes = state.ui.mapViewSettings.hiddenSmallOutcomes
+  const hiddenAchievedOutcomes = state.ui.mapViewSettings.hiddenAchievedOutcomes
+  const hiddenSmalls = hiddenSmallOutcomes.includes(activeProject)
+  const hiddenAchieved = hiddenAchievedOutcomes.includes(activeProject)
 
   const collapsedOutcomes =
     state.ui.collapsedOutcomes.collapsedOutcomes[activeProject] || {}
@@ -52,7 +55,9 @@ export default function panZoomToFrame(
     outcomeTrees,
     zoomLevel,
     projectTags,
-    collapsedOutcomes
+    collapsedOutcomes,
+    hiddenSmalls,
+    hiddenAchieved,
   )
 
   // this accounts for a special case where the caller doesn't

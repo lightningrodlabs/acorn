@@ -9,6 +9,8 @@ import { getTreesForState } from './get-trees-for-state'
 import { coordsCanvasToPage } from '../../../drawing/coordinateSystems'
 import { ActionHashB64 } from '../../../types/shared'
 import { CoordinatesState, DimensionsState } from '../layout/state-type'
+import { getOutcomeHeight, getOutcomeWidth } from '../../../drawing/dimensions'
+import { getPlaceholderOutcome } from '../../../drawing/drawOutcome/placeholderOutcome'
 
 function calcDestTranslate(
   outcomeActionHash: ActionHashB64,
@@ -94,12 +96,14 @@ export default function performLayoutAnimation(
   if (typeof action.payload === 'object' && action.payload.instant) {
     // figure out what the new Translate value should be
     // to keep that closest Outcome in a fixed position on the screen
-    let translateForFixedPositionOutcome = calcDestTranslate(
-      closestOutcome,
-      newLayout.coordinates,
-      zoomLevel,
-      originalOutcomeFixedPosition
-    )
+    let translateForFixedPositionOutcome = originalOutcomeFixedPosition
+      ? calcDestTranslate(
+          closestOutcome,
+          newLayout.coordinates,
+          zoomLevel,
+          originalOutcomeFixedPosition
+        )
+      : undefined
     store.dispatch(updateLayout(newLayout, translateForFixedPositionOutcome))
     return
   }
@@ -119,11 +123,26 @@ export default function performLayoutAnimation(
       x: currentState.ui.outcomeForm.leftConnectionXPosition,
       y: currentState.ui.outcomeForm.topConnectionYPosition,
     }
+    const placeholderOutcomeWithText = getPlaceholderOutcome(
+      action.payload.outcome.content
+    )
+    const newOutcomeWidth = getOutcomeWidth({
+      outcome: placeholderOutcomeWithText,
+      zoomLevel,
+    })
+    const newOutcomeHeight = getOutcomeHeight({
+      outcome: placeholderOutcomeWithText,
+      projectTags,
+      width: newOutcomeWidth,
+      zoomLevel,
+      // we set this because in the case of creating a new outcome
+      // it should use the full text at the proper text scaling
+      noStatementPlaceholder: true,
+      useLineLimit: false,
+    })
     outcomeCreatedDimensions[action.payload.outcome.actionHash] = {
-      // TODO: this is a bit hacky
-      // as its just hardcoded dimenions
-      width: 200,
-      height: 100,
+      width: newOutcomeWidth,
+      height: newOutcomeHeight,
     }
   }
 
@@ -177,12 +196,14 @@ export default function performLayoutAnimation(
     .onUpdate((updatedLayout) => {
       // figure out what the new Translate value should be
       // to keep that closest Outcome in a fixed position on the screen
-      let translateForFixedPositionOutcome = calcDestTranslate(
-        closestOutcome,
-        updatedLayout.coordinates,
-        zoomLevel,
-        originalOutcomeFixedPosition
-      )
+      let translateForFixedPositionOutcome = originalOutcomeFixedPosition
+        ? calcDestTranslate(
+            closestOutcome,
+            updatedLayout.coordinates,
+            zoomLevel,
+            originalOutcomeFixedPosition
+          )
+        : undefined
       // dispatch an update to the layout
       // which will trigger a repaint on the canvas
       // every time the animation loop fires an update
