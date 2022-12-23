@@ -6,7 +6,7 @@ import './Button.scss'
 export type ButtonProps = {
   size?: 'small' | 'medium' | 'large'
   text: string
-  onClick: () => void
+  onClick?: () => void
   icon?: string
   className?: string
   color?: string

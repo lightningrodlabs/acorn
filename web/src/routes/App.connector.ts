@@ -17,13 +17,14 @@ import ProfilesZomeApi from '../api/profilesApi'
 import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { RootState } from '../redux/reducer'
-import App, {
-  AppProps,
-  AppStateProps,
-  AppDispatchProps,
-  AppMergeProps,
-} from './App.component'
+import App, { AppProps, AppStateProps, AppDispatchProps } from './App.component'
 import selectProjectMembersPresent from '../redux/persistent/projects/realtime-info-signal/select'
+import {
+  hideAchievedOutcomes,
+  hideSmallOutcomes,
+  showAchievedOutcomes,
+  showSmallOutcomes,
+} from '../redux/ephemeral/map-view-settings/actions'
 
 function mapStateToProps(state: RootState): AppStateProps {
   const {
@@ -81,6 +82,8 @@ function mapStateToProps(state: RootState): AppStateProps {
     members,
     presentMembers,
     hasMigratedSharedProject,
+    hiddenAchievedOutcomes: state.ui.mapViewSettings.hiddenAchievedOutcomes,
+    hiddenSmallOutcomes: state.ui.mapViewSettings.hiddenSmallOutcomes,
   }
 }
 
@@ -98,6 +101,18 @@ function mapDispatchToProps(dispatch): AppDispatchProps {
     },
     hideInviteMembersModal: () => {
       return dispatch(closeInviteMembersModal())
+    },
+    showSmallOutcomes: (projectCellId) => {
+      return dispatch(showSmallOutcomes(projectCellId))
+    },
+    hideSmallOutcomes: (projectCellId) => {
+      return dispatch(hideSmallOutcomes(projectCellId))
+    },
+    showAchievedOutcomes: (projectCellId) => {
+      return dispatch(showAchievedOutcomes(projectCellId))
+    },
+    hideAchievedOutcomes: (projectCellId) => {
+      return dispatch(hideAchievedOutcomes(projectCellId))
     },
   }
 }

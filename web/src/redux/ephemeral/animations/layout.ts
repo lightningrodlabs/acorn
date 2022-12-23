@@ -58,16 +58,23 @@ export default function performLayoutAnimation(
   const translate = nextState.ui.viewport.translate
   const projectId = nextState.ui.activeProject
   const closestOutcome = nextState.ui.mouse.closestOutcome
+  const hiddenSmallOutcomes = nextState.ui.mapViewSettings.hiddenSmallOutcomes
+  const hiddenAchievedOutcomes =
+    nextState.ui.mapViewSettings.hiddenAchievedOutcomes
   const projectTags = Object.values(nextState.projects.tags[projectId] || {})
   const collapsedOutcomes =
     nextState.ui.collapsedOutcomes.collapsedOutcomes[projectId] || {}
+  const hiddenSmalls = hiddenSmallOutcomes.includes(projectId)
+  const hiddenAchieved = hiddenAchievedOutcomes.includes(projectId)
   // this is our final destination layout
   // that we'll be animating to
   const newLayout = layoutFormula(
     computedOutcomeTrees,
     zoomLevel,
     projectTags,
-    collapsedOutcomes
+    collapsedOutcomes,
+    hiddenSmalls,
+    hiddenAchieved
   )
 
   // in terms of 'fixing' on a given outcome
