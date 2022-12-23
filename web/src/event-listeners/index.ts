@@ -381,7 +381,6 @@ export default function setupEventListeners(
           convertedCurrentMouse,
           { x: initialSelectX, y: initialSelectY }
         )
-        console.log('test test', outcomeActionHashesToSelect)
         store.dispatch(setOutcomes(outcomeActionHashesToSelect))
       } else {
         store.dispatch(changeTranslate(event.movementX, event.movementY))
