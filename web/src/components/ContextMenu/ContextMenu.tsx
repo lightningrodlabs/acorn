@@ -1,5 +1,6 @@
 import React from 'react'
 import { ActionHashB64 } from '../../types/shared'
+import Icon from '../Icon/Icon'
 import './ContextMenu.scss'
 
 export type ContextMenuProps = {
@@ -8,7 +9,7 @@ export type ContextMenuProps = {
   outcomeActionHash: ActionHashB64
   actions: {
     key: string
-    icon?: React.ReactElement
+    icon?: string
     text: string
     onClick?: (outcomeActionHash: ActionHashB64) => void
   }[]
@@ -29,7 +30,9 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
             key={action.key}
             onClick={() => action.onClick(outcomeActionHash)}
           >
-            <div className="context-menu-action-icon">{action.icon}</div>
+            <div className="context-menu-action-icon">
+              <Icon name={action.icon} className="not-hoverable white" />
+            </div>
             <div className="context-menu-action-text">{action.text}</div>
           </div>
         ))}

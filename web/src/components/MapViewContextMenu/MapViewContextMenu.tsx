@@ -50,12 +50,27 @@ const Checkbox: React.FC<CheckboxProps> = ({
   }
 
   const actions = []
-  actions.push({ key: 'copy-statement', text: 'Copy Statement', onClick: copyOutcomeStatement })
+  actions.push({
+    key: 'copy-statement',
+    icon: 'text-align-left.svg',
+    text: 'Copy Statement',
+    onClick: copyOutcomeStatement,
+  })
 
   if (hasChildren && isCollapsed) {
-    actions.push({ key: 'expand', text: 'Expand Outcome', onClick: wrappedExpandOutcome })
+    actions.push({
+      key: 'expand',
+      icon: 'leaf.svg',
+      text: 'Expand Outcome',
+      onClick: wrappedExpandOutcome,
+    })
   } else if (hasChildren) {
-    actions.push({ key: 'collapse', text: 'Collapse Outcome', onClick: wrappedCollapseOutcome })
+    actions.push({
+      key: 'collapse',
+      icon: 'leaf.svg',
+      text: 'Collapse Outcome',
+      onClick: wrappedCollapseOutcome,
+    })
   }
 
   return (
