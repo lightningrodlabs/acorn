@@ -16,13 +16,11 @@
     margin-right: 2.75rem;
     flex: 1;
     height: 100%;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    flex-wrap: nowrap;
-    display: flex;
-    line-clamp: 2;
+    display: -webkit-box;
+    display: box;
     -webkit-line-clamp: 2;
-    box-orient: vertical;
     -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
