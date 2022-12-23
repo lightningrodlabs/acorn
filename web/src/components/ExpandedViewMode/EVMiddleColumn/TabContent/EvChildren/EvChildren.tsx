@@ -24,10 +24,9 @@ const EvChildren: React.FC<EvChildrenProps> = ({
     <div className="ev-children-view-wrapper">
       <EvReadOnlyHeading
         headingText={outcomeContent}
-        // @ts-ignore
         overviewIcon={<Icon name="hierarchy.svg" className="not-hoverable" />}
         overviewText={`${directChildren.length} child${
-          directChildren.length > 1 ? 'ren' : ''
+          directChildren.length !== 1 ? 'ren' : ''
         }`}
       />
       <div className="ev-children-view-outcome-list">
