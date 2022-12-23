@@ -35,7 +35,7 @@
         height: 68px;
         background-size: cover;
         background-repeat: no-repeat;
-        font-family: "PlusJakartaSans-bold", Helvetica, sans-serif;
+        font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
       }
     }
 
@@ -72,14 +72,19 @@
             margin-bottom: 16px;
 
             &::before {
-              content: "";
+              content: '';
               display: block;
               position: absolute;
               left: -150px;
               top: 0;
               height: 30px;
               width: 200px;
-              background: linear-gradient(to right, transparent 0%, #f7f7f7 50%, transparent 100%);
+              background: linear-gradient(
+                to right,
+                transparent 0%,
+                #f7f7f7 50%,
+                transparent 100%
+              );
               animation: load 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
             }
 
@@ -121,7 +126,7 @@
 
   .dashboard-list-project-entry-points {
     margin-top: 10px;
-    font-family: "PlusJakartaSans-medium", Helvetica, sans-serif;
+    font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
     margin-left: 82px;
     display: flex;
     flex-direction: column;
@@ -140,7 +145,7 @@
       transition: color 0.2s ease-in;
       color: #9b9b9b;
       cursor: pointer;
-      font-family: "gilroyextrabold", Helvetica, sans-serif;
+      font-family: 'gilroyextrabold', Helvetica, sans-serif;
 
       .icon {
         transition: transform 0.2s ease-in;
@@ -174,17 +179,14 @@
     .entry-point-item {
       display: flex;
       flex-direction: row;
-      align-items: center;
+      align-items: flex-start;
       margin-top: 15px;
       margin-left: 23px;
       text-decoration: none;
+      color: var(--text-color-primary);
 
-      .entry-point-color-dot {
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        margin-right: 12px;
-        margin-top: 4px;
+      &:hover {
+        text-decoration: underline;
       }
 
       .entry-point-color-dot {
@@ -192,7 +194,8 @@
         height: 16px;
         border-radius: 50%;
         margin-right: 12px;
-        margin-top: 4px;
+        margin-top: 3px;
+        aspect-ratio: 1/1;
       }
     }
   }
@@ -217,14 +220,19 @@
     overflow: hidden;
 
     &::before {
-      content: "";
+      content: '';
       display: block;
       position: absolute;
       left: -150px;
       top: 0;
       height: 30px;
       width: 200px;
-      background: linear-gradient(to right, transparent 0%, #f7f7f7 50%, transparent 100%);
+      background: linear-gradient(
+        to right,
+        transparent 0%,
+        #f7f7f7 50%,
+        transparent 100%
+      );
       animation: load 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
     }
 

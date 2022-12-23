@@ -2,7 +2,7 @@
   border-radius: 0.625rem;
   background: var(--bg-color-secondary);
   box-shadow: 0px 0px 1.25rem var(--shadow-color);
-  padding: 1.25rem 0px;
+  padding: 1.25rem 0 0 0;
   box-sizing: border-box;
   width: 22rem;
   height: 22rem;
@@ -49,7 +49,17 @@
   border-bottom: 0.15rem solid var(--bg-color-canvas);
   display: flex;
   align-items: center;
-  padding: 0.625rem 1.25rem;
+  padding: 0.5rem 0.8rem 0.725rem 0.725rem;
+
+  .clear-button {
+    margin-right: 0.25rem;
+    opacity: 0.8;
+
+    &:hover {
+      background-color: var(--bg-color-hover);
+      border-radius: 50%;
+    }
+  }
 
   input {
     width: 100%;
@@ -75,6 +85,7 @@
   padding: 0;
   flex: 1;
   overflow-y: scroll;
+  padding-top: 0.25rem;
 }
 
 .entry-point-picker-item {
@@ -89,9 +100,11 @@
   text-decoration: none;
   color: var(--text-color-secondary);
   font-family: var(--font-family-primary-semibold);
+  margin: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
 
   &:hover {
-    background: #f2f2f2;
+    background: var(--bg-color-hover);
     color: var(--text-color-primary);
 
     > .entry-point-picker-switch {
@@ -129,7 +142,8 @@
   }
 
   .entry-point-picker-switch {
-    margin-left: 0.5rem;
+    margin-left: 0.75rem;
+    margin-right: 0.25rem;
   }
 
   .checkbox-wrapper {

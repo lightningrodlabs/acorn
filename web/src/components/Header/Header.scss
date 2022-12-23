@@ -214,15 +214,26 @@
 .active-entry-point {
   position: relative;
   font-size: 0.875rem;
-  margin-left: 0.375rem;
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 0.625rem;
   display: flex;
   align-items: center;
-  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  padding: 0.5rem 1rem 0.5rem 0.75rem;
   color: #4d4d4d;
   transition: 0.5s all ease-in-out;
+  margin-left: 0.375rem;
   margin-top: 0.25rem;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  img {
+    height: 1rem;
+    width: 1rem;
+    margin-right: 0.5rem;
+    opacity: 0.4;
+  }
 
   &:hover {
     background-color: #ffffff;
@@ -242,13 +253,6 @@
       > .active-entry-point-close {
         visibility: visible;
       }
-    }
-
-    img {
-      height: 14px;
-      width: 14px;
-      margin-right: 6px;
-      opacity: 0.8;
     }
 
     .active-entry-point-close {
