@@ -1,4 +1,5 @@
-import { CellId } from "@holochain/client"
+import { authorizeSigningCredentials, CellId } from "@holochain/client"
+import { projectsZomeFunctions } from "../api/zomeFunctions"
 import { getAdminWs, getAgentPubKey } from "../hcWebsockets"
 import { PROJECT_APP_PREFIX } from "../holochainConfig"
 import { passphraseToUid } from "../secrets"
@@ -27,28 +28,26 @@ export async function installProjectApp(
     }
     // the dna hash HAS to act deterministically
     // in order for the 'joining' of Projects to work
-    const dnaPath = window.require
+    const happPath = window.require
       ? await window.require('electron').ipcRenderer.invoke('getProjectsPath')
-      : './happ/workdir/projects.dna'
-    const hash = await adminWs.registerDna({
-      path: dnaPath,
-      modifiers: {
-        network_seed: uid,
-      },
-    })
+      : './happ/workdir/projects/projects.happ'
+    console.log(happPath)
     // INSTALL
     const installedApp = await adminWs.installApp({
       agent_key,
       installed_app_id,
-      dnas: [
-        {
-          role_name: uid,
-          hash,
-        },
-      ],
+      // what to do about the membrane_proof?
+      membrane_proofs: {},
+      path: happPath,
+      network_seed: uid,
     })
-    const cellId = installedApp.cell_data[0].cell_id
+    const cellInfo = Object.values(installedApp.cell_info)[0][0]
+    const cellId = ('Provisioned' in cellInfo) ? cellInfo.Provisioned.cell_id : null
     const cellIdString = cellIdToString(cellId)
     await adminWs.enableApp({ installed_app_id })
+
+    //authorize zome call signer
+
+    await authorizeSigningCredentials(adminWs, cellId, projectsZomeFunctions)
     return [cellIdString, cellId, installed_app_id]
   }

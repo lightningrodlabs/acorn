@@ -125,13 +125,11 @@ function handleMouseUpForOutcomeForm({
 
 // outcomes is ComputedOutcomes in an object, keyed by their actionHash
 export default function setupEventListeners(
-  store,
+  store: any,
   canvas: HTMLCanvasElement,
   outcomes: { [actionHash: ActionHashB64]: ComputedOutcome }
 ) {
-  const ctx = canvas.getContext('2d')
-
-  function windowResize(event) {
+  function windowResize() {
     // Get the device pixel ratio, falling back to 1.
     const dpr = window.devicePixelRatio || 1
     // Get the size of the canvas in CSS pixels.
@@ -343,16 +341,16 @@ export default function setupEventListeners(
     const state: RootState = store.getState()
     const {
       ui: {
-        activeProject,
         viewport: { translate, scale },
         mouse: {
           coordinate: { x: initialSelectX, y: initialSelectY },
-          outcomesAddresses,
         },
-        layout: { coordinates: outcomesCoordinates, dimensions: outcomesDimensions },
+        layout: {
+          coordinates: outcomesCoordinates,
+          dimensions: outcomesDimensions,
+        },
       },
     } = state
-    const projectTags = Object.values(state.projects.tags[activeProject] || {})
 
     const convertedCurrentMouse = coordsPageToCanvas(
       {
@@ -364,7 +362,10 @@ export default function setupEventListeners(
     )
     store.dispatch(setLiveCoordinate(convertedCurrentMouse))
 
-    const closestOutcome = closestOutcomeToPageCoord(convertedCurrentMouse, outcomesCoordinates)
+    const closestOutcome = closestOutcomeToPageCoord(
+      convertedCurrentMouse,
+      outcomesCoordinates
+    )
     // store the closest outcome, if there is one
     store.dispatch(setClosestOutcome(closestOutcome))
 
@@ -373,9 +374,6 @@ export default function setupEventListeners(
     // was clicked
     if (state.ui.mouse.mousedown) {
       if (event.shiftKey) {
-        if (!outcomesAddresses) {
-          store.dispatch(setCoordinate(convertedCurrentMouse))
-        }
         const outcomeActionHashesToSelect = checkForOutcomeAtCoordinatesInBox(
           outcomesCoordinates,
           outcomesDimensions,
@@ -383,6 +381,7 @@ export default function setupEventListeners(
           convertedCurrentMouse,
           { x: initialSelectX, y: initialSelectY }
         )
+        console.log('test test', outcomeActionHashesToSelect)
         store.dispatch(setOutcomes(outcomeActionHashesToSelect))
       } else {
         store.dispatch(changeTranslate(event.movementX, event.movementY))
@@ -474,6 +473,7 @@ export default function setupEventListeners(
       },
     } = state
 
+    console.log('outcomesAddresses', outcomesAddresses)
     if (outcomesAddresses) {
       // finishing a drag box selection action
       outcomesAddresses.forEach((value) => store.dispatch(selectOutcome(value)))
@@ -485,7 +485,7 @@ export default function setupEventListeners(
         state,
         event.clientX,
         event.clientY,
-        outcomes,
+        outcomes
       )
       if (checks.connectionActionHash) {
         store.dispatch(unselectAll())
@@ -521,11 +521,26 @@ export default function setupEventListeners(
   }
 
   function canvasMousedown(event: MouseEvent) {
+    const state: RootState = store.getState()
+    const {
+      ui: {
+        viewport: { translate, scale },
+      },
+    } = state
     // don't set mouseDown if it's a right click
     const RIGHT_CLICK_BUTTON = 2
     if (event.button !== RIGHT_CLICK_BUTTON) {
       store.dispatch(setMousedown())
       store.dispatch(unsetContextMenu())
+      const convertedCurrentMouse = coordsPageToCanvas(
+        {
+          x: event.clientX,
+          y: event.clientY,
+        },
+        translate,
+        scale
+      )
+      store.dispatch(setCoordinate(convertedCurrentMouse))
     }
   }
 
@@ -576,7 +591,6 @@ export default function setupEventListeners(
     const state: RootState = store.getState()
     const {
       ui: {
-        activeProject,
         viewport: { translate, scale },
       },
     } = state
@@ -585,20 +599,20 @@ export default function setupEventListeners(
       state,
       event.clientX,
       event.clientY,
-      outcomes,
-    )
-    const calcedPoint = coordsPageToCanvas(
-      {
-        x: event.clientX,
-        y: event.clientY,
-      },
-      translate,
-      scale
+      outcomes
     )
     if (checks.outcomeActionHash) {
       store.dispatch(openExpandedView(checks.outcomeActionHash))
     } else {
-      store.dispatch(openOutcomeForm(calcedPoint.x, calcedPoint.y))
+      const canvasPoint = coordsPageToCanvas(
+        {
+          x: event.clientX,
+          y: event.clientY,
+        },
+        translate,
+        scale
+      )
+      store.dispatch(openOutcomeForm(canvasPoint.x, canvasPoint.y))
     }
   }
 
@@ -610,7 +624,7 @@ export default function setupEventListeners(
       state,
       event.clientX,
       event.clientY,
-      outcomes,
+      outcomes
     )
     // at this time, we are only displaying the ContextMenu if you
     // right-clicked ON an Outcome

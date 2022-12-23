@@ -6,15 +6,17 @@ import { cellIdToString } from './utils'
 export async function getAllApps() {
   const adminWs = await getAdminWs()
   const appWs = await getAppWs()
-  const appIds = await adminWs.listActiveApps()
+  const appIds = await adminWs.listApps({})
   // this function assumes a one-dna-per-app
   // which could become wrong at some point
-  const appProjects = await Promise.all(
-    appIds.map(async installed_app_id => {
-      const appInfo = await appWs.appInfo({ installed_app_id })
+  const appProjects = (
+    appIds.map(appInfo => {
+      const cellInfo = Object.values(appInfo.cell_info)[0][0]
+      const cellId = ("Provisioned" in cellInfo) ? cellInfo.Provisioned.cell_id : undefined
+      
       return {
         ...appInfo,
-        cellIdString: cellIdToString(appInfo.cell_data[0].cell_id)
+        cellIdString: cellIdToString(cellId)
       }
     })
   )

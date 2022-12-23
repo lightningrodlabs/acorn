@@ -12,11 +12,19 @@ import triangleBottomWhite from '../../images/triangle-bottom-white.svg'
 export type MapViewingOptionsProps = {
   // proptypes
   isOpen: boolean
+  showAchievedOutcomes: boolean
+  showSmallOutcomes: boolean
+  onChangeShowAchievedOutcomes: (newState: boolean) => void
+  onChangeShowSmallOutcomes: (newState: boolean) => void
 }
 
 const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
   // prop declarations
   isOpen,
+  showAchievedOutcomes,
+  onChangeShowAchievedOutcomes,
+  showSmallOutcomes,
+  onChangeShowSmallOutcomes,
 }) => {
   return (
     <CSSTransition
@@ -31,8 +39,8 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
         </div>
         <ButtonCheckbox
           size="tiny"
-          isChecked={true}
-          onChange={null}
+          isChecked={showAchievedOutcomes}
+          onChange={onChangeShowAchievedOutcomes}
           icon={
             <Icon name="circle-check.svg" className="not-hoverable achieved" />
           }
@@ -43,8 +51,8 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
         </div>
         <ButtonCheckbox
           size="tiny"
-          isChecked={true}
-          onChange={null}
+          isChecked={showSmallOutcomes}
+          onChange={onChangeShowSmallOutcomes}
           icon={<Icon name="leaf.svg" className="not-hoverable" />}
           text="Show All Small"
         />

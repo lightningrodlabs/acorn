@@ -50,6 +50,8 @@ export type AppStateProps = {
   navigationPreference: 'mouse' | 'trackpad'
   inviteMembersModalShowing: null | string // will be the passphrase if defined
   hasMigratedSharedProject: boolean
+  hiddenAchievedOutcomes: CellIdString[]
+  hiddenSmallOutcomes: CellIdString[]
 }
 
 export type AppDispatchProps = {
@@ -58,6 +60,10 @@ export type AppDispatchProps = {
   hideInviteMembersModal: () => void
   openInviteMembersModal: (passphrase: string) => void
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
+  showSmallOutcomes: (projectCellId: CellIdString) => void
+  hideSmallOutcomes: (projectCellId: CellIdString) => void
+  showAchievedOutcomes: (projectCellId: CellIdString) => void
+  hideAchievedOutcomes: (projectCellId: CellIdString) => void
 }
 
 export type AppMergeProps = {
@@ -83,6 +89,12 @@ const App: React.FC<AppProps> = ({
   hideInviteMembersModal,
   goToOutcome,
   hasMigratedSharedProject,
+  hiddenAchievedOutcomes,
+  hiddenSmallOutcomes,
+  showSmallOutcomes,
+  hideSmallOutcomes,
+  showAchievedOutcomes,
+  hideAchievedOutcomes,
 }) => {
   const [exportedProjectName, setExportedProjectName] = useState('')
   const [showExportedModal, setShowExportedModal] = useState(false)
@@ -184,10 +196,7 @@ const App: React.FC<AppProps> = ({
               <Route
                 path="/run-update"
                 render={() => (
-                  <RunUpdate
-                    preRestart
-                    updateVersionInfo={updateVersionInfo}
-                  />
+                  <RunUpdate preRestart updateVersionInfo={updateVersionInfo} />
                 )}
               />
               <Route
@@ -237,7 +246,16 @@ const App: React.FC<AppProps> = ({
             )}
             {redirToIntro && <Redirect to="/intro" />}
             {redirToFinishMigration && <Redirect to="/finish-update" />}
-            {agentAddress && whoami && <Footer />}
+            {agentAddress && whoami && (
+              <Footer
+                hiddenAchievedOutcomes={hiddenAchievedOutcomes}
+                hiddenSmallOutcomes={hiddenSmallOutcomes}
+                showSmallOutcomes={showSmallOutcomes}
+                hideSmallOutcomes={hideSmallOutcomes}
+                showAchievedOutcomes={showAchievedOutcomes}
+                hideAchievedOutcomes={hideAchievedOutcomes}
+              />
+            )}
           </Router>
         </UpdateModalContext.Provider>
       </ErrorBoundaryScreen>

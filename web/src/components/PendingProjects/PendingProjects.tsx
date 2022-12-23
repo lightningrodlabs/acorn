@@ -1,4 +1,4 @@
-import { InstalledAppInfo } from '@holochain/client'
+import { AppInfo } from '@holochain/client'
 import React, { useEffect, useState } from 'react'
 import { getAllApps } from '../../projectAppIds'
 import { uidToPassphrase } from '../../secrets'
@@ -6,7 +6,7 @@ import Icon from '../Icon/Icon'
 import './PendingProjects.scss'
 
 type AppInfoDetails = {
-  uid: string
+  networkSeed: string
   appId: string
 }
 type AppInfoStore = {
@@ -30,24 +30,25 @@ function PendingProjects({
   // handle the regular checking for those projects
   // that haven't synced yet
   useEffect(() => {
-    getAllApps().then(
-      (results: {
-        [app_id: string]: InstalledAppInfo & { cellIdString: string }
-      }) => {
-        const newPassphrases: AppInfoStore = {}
-        pendingProjects.forEach((pendingCellId) => {
-          const [appId, appInfo] = Object.entries(results).find(
-            ([_appId, appInfo]) => appInfo.cellIdString === pendingCellId
-          )
-          const appInfoForCellId = {
-            uid: appInfo.cell_data[0].role_name,
-            appId,
-          }
-          newPassphrases[pendingCellId] = appInfoForCellId
-        })
-        setPassphrases(newPassphrases)
-      }
-    )
+    getAllApps().then((results) => {
+      const newPassphrases: AppInfoStore = {}
+      pendingProjects.forEach((pendingCellId) => {
+        const [appId, appInfo] = Object.entries(results).find(
+          ([_appId, appInfo]) => appInfo.cellIdString === pendingCellId
+        )
+        const cellInfo = Object.values(appInfo.cell_info)[0][0]
+        const networkSeed =
+          'Provisioned' in cellInfo
+            ? cellInfo.Provisioned.dna_modifiers.network_seed
+            : ''
+        const appInfoForCellId = {
+          networkSeed,
+          appId,
+        }
+        newPassphrases[pendingCellId] = appInfoForCellId
+      })
+      setPassphrases(newPassphrases)
+    })
 
     const checkAgainInterval = setInterval(async () => {
       const found = await Promise.all(
@@ -94,10 +95,7 @@ function PendingProjects({
           <div className="pending-projects-for-sync-message-icon">
             {/* @ts-ignore */}
             <div className="pending-projects-syncing-icon">
-              <Icon
-                name="acorn-logo.svg"
-                className="not-hoverable small"
-              />
+              <Icon name="acorn-logo.svg" className="not-hoverable small" />
             </div>
             <div className="pending-projects-for-sync-message">
               {pendingProjects.length}{' '}
@@ -136,7 +134,7 @@ function PendingProjects({
                       className="pending-projects-details-item"
                       key={pendingProjectCellId}
                     >
-                      <div>{uidToPassphrase(appInfoDetails.uid)}</div>
+                      <div>{uidToPassphrase(appInfoDetails.networkSeed)}</div>
                       <div
                         className="pending-project-cancel-queue-button"
                         onClick={() =>
