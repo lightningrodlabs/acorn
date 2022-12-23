@@ -197,7 +197,7 @@ const MapView: React.FC<MapViewProps> = ({
             style={{
               position: 'absolute',
               left: `${pageMouseCoords.x + 2}px`,
-              top: `${pageMouseCoords.y + 16}px`,
+              top: `${pageMouseCoords.y + 40}px`,
             }}
           >
             <Tooltip
