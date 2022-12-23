@@ -15,6 +15,7 @@ export type drawRoundCornerRectangleInput = {
   useGlow: boolean
   glowBlur?: number
   glowColor?: string
+  useGreenBoxShadow?: boolean
 }
 
 export default function drawRoundCornerRectangle({
@@ -32,6 +33,8 @@ export default function drawRoundCornerRectangle({
   useGlow,
   glowBlur,
   glowColor,
+  useGreenBoxShadow,
+
 }: drawRoundCornerRectangleInput) {
   draw(ctx, () => {
     const rightConnection = xPosition + width
@@ -50,10 +53,16 @@ export default function drawRoundCornerRectangle({
 
     // outcome card box shadow
     if (useBoxShadow) {
-      ctx.shadowColor = '#00000030'
-      ctx.shadowBlur = 30
+      ctx.shadowColor = '#8377699b'
+      ctx.shadowBlur = 36
       ctx.shadowOffsetX = 0
       ctx.shadowOffsetY = 0
+      if (useGreenBoxShadow) {
+        ctx.shadowColor = '#4a604392'
+        ctx.shadowBlur = 36
+        ctx.shadowOffsetX = 0
+        ctx.shadowOffsetY = 0
+      }
       if (useGlow) {
         ctx.shadowColor = glowColor
         ctx.shadowBlur = glowBlur || 60

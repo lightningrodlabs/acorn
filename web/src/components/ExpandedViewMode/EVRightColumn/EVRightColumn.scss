@@ -19,6 +19,21 @@
     .ev-right-column-heading {
       margin-bottom: 0.5rem;
     }
+
+    .ev-right-column-heading-more-info {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      .more-info-wrapper {
+        margin-bottom: 0.375rem;
+        margin-left: 0.25rem;
+
+        .icon {
+          padding: 0.25rem;
+        }
+      }
+    }
   }
 
   .read-only-info-wrapper.small,

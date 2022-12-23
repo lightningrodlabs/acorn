@@ -1,6 +1,10 @@
 import React from 'react'
 import hashCodeId from '../../api/clientSideIdHash'
-import { ComputedOutcome, ComputedScope, ComputedSimpleAchievementStatus } from '../../types'
+import {
+  ComputedOutcome,
+  ComputedScope,
+  ComputedSimpleAchievementStatus,
+} from '../../types'
 import { ActionHashB64 } from '../../types/shared'
 import Icon from '../Icon/Icon'
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator'
@@ -57,9 +61,6 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({
       </div>
 
       {/* ProgressIndicator */}
-      <div className="outcome-list-item-icon-wrapper progress">
-        <ProgressIndicator progress={progress} />
-      </div>
 
       {/* only show leaf icon for small scope children */}
       {/* Leaf (or not) */}
@@ -69,9 +70,28 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({
         </div>
       )}
 
+      {outcome.computedScope === ComputedScope.Big ||
+        (outcome.computedScope === ComputedScope.Uncertain && (
+          <div style={{ marginLeft: '1.775rem' }} />
+        ))}
+
+      {outcome.computedScope === ComputedScope.Big ||
+        (outcome.computedScope === ComputedScope.Small && (
+          <div className="outcome-list-item-icon-wrapper progress">
+            <ProgressIndicator progress={progress} />
+          </div>
+        ))}
+
+      {/* if uncertain show uncertain scope icon */}
+      {outcome.computedScope === ComputedScope.Uncertain && (
+        <div className="outcome-list-item-icon-wrapper uncertain">
+          <Icon name="uncertain.svg" className="not-hoverable uncertain" />
+        </div>
+      )}
+
       {/* Outcome statement text */}
       <div className="outcome-list-item-statement" title={outcome.content}>
-        <Typography style="h7">{outcome.content}</Typography>
+        <Typography style="body1">{outcome.content}</Typography>
       </div>
 
       {/* on click navigate to the Expanded View mode for that Outcome */}
@@ -82,7 +102,7 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({
           openExpandedView(outcome.actionHash)
         }}
       >
-        <Icon name="enter.svg" size="small" className="light-grey" />
+        <Icon name="enter.svg" size="small" className="light-grey" withTooltip tooltipText='Switch to' />
       </div>
     </div>
   )

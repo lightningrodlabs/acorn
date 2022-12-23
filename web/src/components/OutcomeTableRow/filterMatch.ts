@@ -4,10 +4,11 @@ import {
   ComputedScope,
   ComputedSimpleAchievementStatus,
 } from '../../types'
-import { AgentPubKeyB64 } from '../../types/shared'
+import { AgentPubKeyB64, ActionHashB64 } from '../../types/shared'
 
 export type OutcomeTableFilter = {
   keywordOrId?: string
+  highPriority?: boolean
   achievementStatus?: ComputedSimpleAchievementStatus[]
   scope?: ComputedScope[]
   assignees?: AgentPubKeyB64[]
@@ -16,9 +17,11 @@ export type OutcomeTableFilter = {
 
 export default function filterMatch(
   outcome: ComputedOutcome,
+  topPriorityOutcomes: ActionHashB64[],
   filter: OutcomeTableFilter
 ) {
   let keywordOrIdMatch = true
+  let highPriorityMatch = true
   let achievementStatusMatch = true
   let scopeMatch = true
   let assigneesMatch = true
@@ -33,6 +36,28 @@ export default function filterMatch(
           .includes(filter.keywordOrId.toLowerCase())) ||
       hashCodeId(outcome.actionHash).includes(filter.keywordOrId)
   }
+
+
+  if ('assignees' in filter) {
+    assigneesMatch = false
+    for (const assignee of filter.assignees) {
+      // assuming assignee filter selection is an OR rather than AND
+      if (
+        (outcome.members || []).map((m) => m.agentPubKey).includes(assignee)
+      ) {
+        assigneesMatch = true
+        break
+      }
+    }
+  }
+
+  if ('highPriority' in filter) {
+    highPriorityMatch = false
+    if (topPriorityOutcomes.includes(outcome.actionHash) ) {
+      highPriorityMatch = true
+    }
+  }
+
 
   if ('achievementStatus' in filter) {
     achievementStatusMatch = false
@@ -54,19 +79,6 @@ export default function filterMatch(
     }
   }
 
-  if ('assignees' in filter) {
-    assigneesMatch = false
-    for (const assignee of filter.assignees) {
-      // assuming assignee filter selection is an OR rather than AND
-      if (
-        (outcome.members || []).map((m) => m.agentPubKey).includes(assignee)
-      ) {
-        assigneesMatch = true
-        break
-      }
-    }
-  }
-
   if ('tags' in filter) {
     tagsMatch = false
     for (const tag of filter.tags) {
@@ -76,8 +88,10 @@ export default function filterMatch(
       }
     }
   }
+
   return (
     keywordOrIdMatch &&
+    highPriorityMatch &&
     achievementStatusMatch &&
     scopeMatch &&
     assigneesMatch &&

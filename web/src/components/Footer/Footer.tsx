@@ -90,6 +90,9 @@ const Footer: React.FC<FooterProps> = ({
                 }`}
                 onClick={() => setOpenMapViewingOptions(!openMapViewingOptions)}
               >
+                {(!showAchievedOutcomesValue || !showSmallOutcomesValue) && (
+                  <div className="map-viewing-options-with-unchecked" />
+                )}
                 <Icon
                   name="eye.svg"
                   className="footer-action-icon"

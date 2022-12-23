@@ -202,8 +202,9 @@
 
 .universal-priority-droppable-wrapper {
   width: 100%;
-  margin-top: 0.5rem;
-  
+  padding-top: 0.5rem;
+  padding-bottom: 5rem;
+
   // TODO: figure out a way to make a classname or id for this div
   // (draggable element) to prevent the need for !important
   > div {

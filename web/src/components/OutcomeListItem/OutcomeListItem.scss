@@ -2,7 +2,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0.625rem 2rem 0.625rem 3rem;
+  padding: 0.625rem 1.5rem 0.625rem 1.125rem;
+  border-radius: 0.5rem;
   transition: 0.2s background-color ease;
   position: relative;
 
@@ -15,23 +16,25 @@
   }
 
   .outcome-list-item-id {
-    margin-right: 1rem;
+    margin-right: 0.5rem;
     width: 3.5rem;
   }
 
   .outcome-list-item-icon-wrapper {
-    margin-right: 0.25rem;
+    margin-right: 0.325rem;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     width: 1.25rem;
     height: 1.25rem;
-    aspect-ratio: 1/1;
+    // aspect-ratio: 1/1;
     padding: 0.125rem;
 
     &.progress {
-      margin-right: 0.375rem;
+      .progress-ring {
+        scale: 1.125;
+      }
     }
 
     .icon {
@@ -44,6 +47,7 @@
   .outcome-list-item-statement {
     transition: 0.2s all ease;
     overflow: hidden;
+    flex: 1;
 
     div {
       white-space: nowrap;
@@ -55,20 +59,27 @@
   .outcome-list-item-switch-button {
     display: none;
     cursor: pointer;
-    background-color: var(--bg-color-hover);
+    background-color: var(--bg-color-secondary);
     position: absolute;
-    padding: 0.125rem 0.5rem;
-    right: 1rem;
-    top: 0.5rem;
+    padding: 0.325rem;
+    right: 0.5rem;
+    border-radius: 0.25rem;
+
+    &:hover {
+      background-color: var(--bg-color-secondary);
+      .icon .inner-icon {
+       background-color: var(--text-color-link);
+      }
+
+    }
 
     .icon {
       height: 1.5rem;
       width: 1.5rem;
-      padding: 0;
 
       .inner-icon {
         &:hover {
-          background-color: var(--text-color-primary);
+          background-color: var(--text-color-link);
         }
       }
     }

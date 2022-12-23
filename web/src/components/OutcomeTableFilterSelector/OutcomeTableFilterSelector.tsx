@@ -139,7 +139,7 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
       <div className="table-view-filter-wrapper">
         <FilterButton
           size="medium"
-          text="Only show my cards"
+          text="Only my cards"
           icon={
             <Avatar
               size="small"
@@ -163,6 +163,26 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           }}
         />
       </div>
+      {/* Only show high priority cards */}
+      <div className="table-view-filter-wrapper">
+        <FilterButton
+          size="medium"
+          text="Only high priority"
+          icon={<Icon name="sort-asc.svg" />}
+          isSelected={filter.highPriority}
+          onChange={() => {
+            let newFilter = {
+              ...filter,
+            }
+            if (filter.highPriority) {
+              delete newFilter.highPriority
+            } else {
+              newFilter.highPriority = true
+            }
+            onApplyOutcomeTableFilter(newFilter)
+          }}
+        />
+      </div>
       {/* Achievement Status filter */}
       <div className="table-view-filter-wrapper">
         <FilterDropdown
@@ -171,7 +191,6 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           }
           options={achievementStatusOptions}
           text="Achievement Status"
-          // @ts-ignore
           icon={<Icon name="circle-dashed.svg" />}
           size="medium"
           onChange={(newSelectionOptions) => {
@@ -193,7 +212,6 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           selectedOptions={filter.scope ? filter.scope : []}
           options={scopeOptions}
           text="Scope"
-          // @ts-ignore
           icon={<Icon name="leaf.svg" />}
           size="medium"
           onChange={(newSelectionOptions) => {
@@ -215,7 +233,6 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           selectedOptions={filter.assignees ? filter.assignees : []}
           options={assigneeOptions}
           text="Assignees"
-          // @ts-ignore
           icon={<Icon name="assignees.svg" />}
           size="medium"
           onChange={(newSelectionOptions) => {
@@ -237,7 +254,6 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           selectedOptions={filter.tags ? filter.tags : []}
           options={tagOptions}
           text="Tags"
-          // @ts-ignore
           icon={<Icon name="tag.svg" />}
           size="medium"
           onChange={(newSelectionOptions) => {

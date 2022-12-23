@@ -8,6 +8,7 @@ const drawBackgroundColor = ({
   height,
   cornerRadius,
   backgroundColor,
+  useGreenBoxShadow,
   ctx,
 }: {
   xPosition: number
@@ -15,7 +16,8 @@ const drawBackgroundColor = ({
   width: number
   height: number
   cornerRadius: number
-  backgroundColor: string
+  backgroundColor: string,
+  useGreenBoxShadow: boolean,
   ctx: CanvasRenderingContext2D
 }) =>
   draw(ctx, () => {
@@ -36,6 +38,7 @@ const drawBackgroundColor = ({
       height,
       radius: cornerRadius,
       color: backgroundColor,
+      useGreenBoxShadow,
       useBoxShadow: true,
       useDashedStroke: false,
       useStroke: false,

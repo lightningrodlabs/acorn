@@ -20,6 +20,7 @@ export type OutcomeTableRowProps = {
   projectTags: WithActionHash<Tag>[]
   outcome: ComputedOutcome
   filter: OutcomeTableFilter
+  topPriorityOutcomes: ActionHashB64[]
   presentMembers: AgentPubKeyB64[]
   parentExpanded: boolean
   indentationLevel: number
@@ -34,6 +35,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   outcome,
   presentMembers,
   filter,
+  topPriorityOutcomes,
   parentExpanded,
   indentationLevel,
   expandByDefault = false,
@@ -41,10 +43,11 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
   goToOutcome,
 }) => {
   let [expanded, setExpanded] = useState(expandByDefault)
-  let match = filterMatch(outcome, filter)
+  let match = filterMatch(outcome, topPriorityOutcomes, filter)
 
   const specialFilterApplied =
     'keywordOrId' in filter ||
+    'highPriority' in filter ||
     'achievementStatus' in filter ||
     'scope' in filter ||
     'assignees' in filter ||
@@ -187,6 +190,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
             outcome={outcomeChild}
             presentMembers={presentMembers}
             filter={filter}
+            topPriorityOutcomes={topPriorityOutcomes}
             parentExpanded={expanded && parentExpanded}
             indentationLevel={indentationLevel + 1}
             openExpandedView={openExpandedView}

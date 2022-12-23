@@ -9,6 +9,7 @@ import './OutcomeTable.scss'
 export type OutcomeTableProps = {
   projectTags: WithActionHash<Tag>[]
   outcomeTrees: ComputedOutcome[]
+  topPriorityOutcomes: ActionHashB64[]
   presentMembers: AgentPubKeyB64[]
   filter: OutcomeTableFilter
   openExpandedView: (actionHash: ActionHashB64) => void
@@ -16,6 +17,7 @@ export type OutcomeTableProps = {
 }
 
 const OutcomeTable: React.FC<OutcomeTableProps> = ({
+  topPriorityOutcomes,
   projectTags,
   outcomeTrees,
   presentMembers,
@@ -102,6 +104,7 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
               key={outcome.actionHash}
               columnWidthPercentages={columnWidthPercentages}
               projectTags={projectTags}
+              topPriorityOutcomes={topPriorityOutcomes}
               outcome={outcome}
               presentMembers={presentMembers}
               filter={filter}
