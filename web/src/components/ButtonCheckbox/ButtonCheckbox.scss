@@ -14,6 +14,7 @@
   transition: 0.2s box-shadow ease;
   -webkit-font-smoothing: antialiased;
   user-select: none;
+  border: 0.15rem solid #ffffff00;
 
   &:hover,
   &.focused {

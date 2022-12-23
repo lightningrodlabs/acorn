@@ -79,9 +79,21 @@
       background-color: rgba(255, 255, 255, 0.9);
       cursor: pointer;
       margin-right: 0.5rem;
+      position: relative;
+
+      .map-viewing-options-with-unchecked {
+        height: 0.75rem;
+        width: 0.75rem;
+        aspect-ratio: 1/1;
+        border-radius: 50%;
+        background-color: var(--text-color-link);
+        box-shadow: 0 0 0.5rem var(--shadow-color-dark);
+        position: absolute;
+        top: -0.125rem;
+        right: -0.125rem;
+      }
 
       &.active {
-
         .icon .inner-icon {
           background-color: var(--text-color-link);
         }
