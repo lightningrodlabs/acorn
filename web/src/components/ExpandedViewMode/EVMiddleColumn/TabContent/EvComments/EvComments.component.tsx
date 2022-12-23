@@ -113,6 +113,9 @@ const EvComments: React.FC<EvCommentsProps> = ({
       />
       <div className="comments-posted-wrapper" ref={commentHistoryRef}>
         {comments
+          // just in case we don't have someones profile, don't show them for now
+          // so only keep ones whose profiles we have
+          .filter((comment) => profiles[comment.creatorAgentPubKey])
           // order the comments by most recent, to least recent
           .sort((a, b) => (a.unixTimestamp < b.unixTimestamp ? -1 : 1))
           .map((comment) => {
