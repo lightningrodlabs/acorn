@@ -2,7 +2,8 @@
   margin: 0;
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  flex: 1;
+  overflow: hidden;
   padding: 0rem 0.5rem 0rem 0;
   box-sizing: border-box;
 }
@@ -202,8 +203,7 @@
 
 .universal-priority-droppable-wrapper {
   width: 100%;
-  padding-top: 0.5rem;
-  padding-bottom: 5rem;
+  padding: 0.5rem 0;
 
   // TODO: figure out a way to make a classname or id for this div
   // (draggable element) to prevent the need for !important

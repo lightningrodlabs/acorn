@@ -6,7 +6,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bg-color-tertiary);
-  margin: 0.5rem 0.5rem 0 0.5rem;
+  margin: 0.5rem;
   border-radius: 0.5rem;
   box-shadow: 0rem 0rem 1.25rem var(--shadow-color);
 
@@ -42,6 +42,6 @@
   .outcome-table-rows {
     flex: 1;
     overflow-y: scroll;
-    padding-bottom: 9rem;
+    padding-bottom: 3rem;
   }
 }
