@@ -11,8 +11,8 @@
 # ensure all necessary binaries are packaged in the app
 rm -rf electron/binaries
 mkdir electron/binaries
-cp happ/workdir/projects.dna electron/binaries/projects.dna
-cp happ/workdir/profiles.happ electron/binaries/profiles.happ
+cp happ/workdir/projects/projects.happ electron/binaries/projects.happ
+cp happ/workdir/profiles/profiles.happ electron/binaries/profiles.happ
 bash scripts/copy-binaries.sh
 
 # ui

@@ -29,6 +29,7 @@ const args: OutcomeTableProps = {
   projectTags: testTags,
   outcomeTrees: [testBigAchievedOutcome],
   presentMembers: [],
+  topPriorityOutcomes: [],
   filter: {},
   openExpandedView: function (actionHash: string): void {
     throw new Error('Function not implemented.')

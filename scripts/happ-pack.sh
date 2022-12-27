@@ -9,4 +9,5 @@ hc dna pack --output=happ/workdir/profiles.dna happ/workdir/dna/profiles
 hc dna pack --output=happ/workdir/projects.dna happ/workdir/dna/projects
 
 # Pack hApp
-hc app pack --output=happ/workdir/profiles.happ happ/workdir
+hc app pack --output=happ/workdir/profiles/profiles.happ happ/workdir/profiles
+hc app pack --output=happ/workdir/projects/projects.happ happ/workdir/projects

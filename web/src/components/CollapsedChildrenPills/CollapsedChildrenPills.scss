@@ -1,0 +1,18 @@
+.collapsed-children-pill-wrapper {
+  position: absolute;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-color-secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 1.25rem;
+  z-index: 2;
+  transform: translateX(-50%);
+  box-shadow: 0rem 0rem 1.25rem var(--shadow-color);
+  min-width: 3rem;
+
+  div:last-child {
+    // margin-right: 0.25rem;
+  }
+}

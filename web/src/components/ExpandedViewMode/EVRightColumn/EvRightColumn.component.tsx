@@ -281,9 +281,23 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
         {/* not annotate them */}
         {hasChildren && (
           <div className="ev-right-column-section">
-            <Typography style="h7">
-              <div className="ev-right-column-heading">This outcome is</div>
-            </Typography>
+            <div className="ev-right-column-heading-more-info">
+              <Typography style="h7">
+                <div className="ev-right-column-heading">This outcome is</div>
+              </Typography>
+              {/* More info icon */}
+              <div className="more-info-wrapper">
+                <div>
+                  <a
+                    href="https://docs.acorn.software/outcomes/achievement-status"
+                    target="_blank"
+                  >
+                    {/* @ts-ignore */}
+                    <Icon name="info.svg" className="light-grey" size="small" />
+                  </a>
+                </div>
+              </div>
+            </div>
             <ReadOnlyInfo size="small" infos={readOnlyInfos} />
           </div>
         )}

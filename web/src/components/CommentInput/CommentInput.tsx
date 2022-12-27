@@ -27,7 +27,6 @@ const CommentInput: React.FC<CommentInputProps> = ({
           onKeyDown={onKeyDown}
         />
         <div className="comment-input-enter-button">
-          {/* @ts-ignore */}
           <Icon
             name="send-plane.svg"
             className="small grey"

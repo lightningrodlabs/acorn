@@ -4,7 +4,7 @@ import './UpdatePromptModal.scss'
 import Modal, { ModalContent } from '../Modal/Modal'
 import { useHistory } from 'react-router-dom'
 
-export default function UpdatePromptModal ({ show, onClose }) {
+export default function UpdatePromptModal({ show, onClose }) {
   const history = useHistory()
   const updateDetails = (
     <div className='update-details-wrapper'>

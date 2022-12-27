@@ -1,12 +1,12 @@
-import { app, BrowserWindow, ipcMain, shell } from 'electron'
+import { app, BrowserWindow, ipcMain, shell, autoUpdater } from 'electron'
 import * as contextMenu from 'electron-context-menu'
 import * as path from 'path'
+import * as fs from 'fs'
 // import log from 'electron-log'
 import initAgent, {
   StateSignal,
   STATUS_EVENT,
 } from '@lightningrodlabs/electron-holochain'
-
 
 import {
   devOptions,
@@ -14,11 +14,12 @@ import {
   prodOptions,
   stateSignalToText,
   BINARY_PATHS,
+  INTEGRITY_VERSION_NUMBER,
 } from './holochain'
 
 // add the right-click "context" menu
 contextMenu({
-  showSaveImageAs: true
+  showSaveImageAs: true,
 })
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -32,10 +33,14 @@ process.on('uncaughtException', (e) => {
 
 const BACKGROUND_COLOR = '#f7f5f3'
 
-
-
-const MAIN_FILE = path.join(app.getAppPath(), '../app.asar.unpacked/web/index.html')
-const SPLASH_FILE = path.join(app.getAppPath(), '../app.asar.unpacked/web/splashscreen.html')
+const MAIN_FILE = path.join(
+  app.getAppPath(),
+  '../app.asar.unpacked/web/index.html'
+)
+const SPLASH_FILE = path.join(
+  app.getAppPath(),
+  '../app.asar.unpacked/web/splashscreen.html'
+)
 const LINUX_ICON_FILE = path.join(
   app.getAppPath(),
   '../app.asar.unpacked/web/logo/acorn-app-icon-512px.png'
@@ -75,10 +80,35 @@ const createMainWindow = (): BrowserWindow => {
     event.preventDefault()
     shell.openExternal(url)
   })
+
+  // let the browser window know when the individual project export
+  // download has completed
+  mainWindow.webContents.session.on(
+    'will-download',
+    (event, item, webContents) => {
+      // Set the save path, making Electron not to prompt a save dialog.
+      // item.setSavePath('/tmp/save.pdf')
+      item.once('done', (event, state) => {
+        if (state === 'completed') {
+          mainWindow.webContents.send('exportDownloaded')
+        }
+      })
+    }
+  )
+
   // once its ready to show, show
   mainWindow.once('ready-to-show', () => {
     mainWindow.show()
   })
+
+  autoUpdater.once('update-downloaded', () => {
+    mainWindow.webContents.send('updateDownloaded')
+    // give the client UI a couple seconds to alert the user
+    setTimeout(() => {
+      autoUpdater.quitAndInstall()
+    }, 4000)
+  })
+
   return mainWindow
 }
 
@@ -158,4 +188,83 @@ app.on('activate', () => {
 
 ipcMain.handle('getProjectsPath', () => {
   return projectsDnaPath
+})
+
+ipcMain.handle('getVersion', () => {
+  return {
+    // append v to match the tag name
+    version: `v${app.getVersion()}`,
+    platform: process.platform,
+    arch: process.arch,
+  }
+})
+
+ipcMain.on('initiateUpdate', () => {
+  console.log('received initiateUpdate')
+  if (app.isPackaged) {
+    const server = 'https://update.electronjs.org'
+    const feed = `${server}/lightningrodlabs/acorn/${process.platform}-${
+      process.arch
+    }/v${app.getVersion()}`
+    console.log(`autoUpdater.setFeedURL({ url: ${feed} })`)
+    autoUpdater.setFeedURL({ url: feed })
+    // at this point we are not so much 'checking for updates'
+    // as we are pretty sure (via the front-end) that there is an update
+    // for us to download, and we've been instructed to.
+    autoUpdater.checkForUpdates()
+    // once the update is downloaded, it will trigger the 'update-downloaded' event, which will be
+    // separately listened for, and an event emitted to the client
+  }
+})
+
+const MIGRATION_FILE_NAME_PREFIX = `data-migration-for-integrity-version-`
+
+ipcMain.handle('persistExportData', (event, data) => {
+  console.log('received persistExportData')
+  const migrationFile = path.join(
+    app.getPath('userData'),
+    `${MIGRATION_FILE_NAME_PREFIX}${INTEGRITY_VERSION_NUMBER}`
+  )
+  console.log('migrationFile', migrationFile)
+  try {
+    const dataObj = JSON.parse(data)
+    const modifiedData = {
+      integrityVersion: INTEGRITY_VERSION_NUMBER,
+      ...dataObj,
+    }
+    fs.writeFileSync(migrationFile, JSON.stringify(modifiedData, null, 2), {
+      encoding: 'utf-8',
+    })
+  } catch (e) {}
+})
+
+ipcMain.handle('checkForMigrationData', (event) => {
+  console.log('received checkForMigrationData')
+  // INTEGRITY_VERSION_NUMBER will just be incremented one number at a time
+  const prevIntegrityVersion = INTEGRITY_VERSION_NUMBER - 1
+  const prevVersionMigrationFile = path.join(
+    app.getPath('userData'),
+    `${MIGRATION_FILE_NAME_PREFIX}${prevIntegrityVersion}`
+  )
+  if (fs.existsSync(prevVersionMigrationFile)) {
+    const prevVersionMigrationDataString = fs.readFileSync(
+      prevVersionMigrationFile,
+      { encoding: 'utf-8' }
+    )
+    return prevVersionMigrationDataString
+  } else {
+    return ''
+  }
+})
+
+ipcMain.on('markMigrationDone', () => {
+  console.log('received markMigrationDone')
+  // INTEGRITY_VERSION_NUMBER will just be incremented one number at a time
+  const prevIntegrityVersion = INTEGRITY_VERSION_NUMBER - 1
+  const prevVersionMigrationFile = path.join(
+    app.getPath('userData'),
+    `${MIGRATION_FILE_NAME_PREFIX}${prevIntegrityVersion}`
+  )
+  // delete the file, thus completing the migration
+  fs.unlinkSync(prevVersionMigrationFile)
 })

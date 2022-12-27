@@ -12,7 +12,7 @@ function mapStateToProps(state: RootState) {
     ui: {
       activeProject,
       viewport: { translate, scale },
-      layout: coordinates,
+      layout: { coordinates, dimensions },
       hover: { hoveredOutcome: hoveredOutcomeAddress },
       outcomeConnector: {
         fromAddress,
@@ -26,6 +26,8 @@ function mapStateToProps(state: RootState) {
   } = state
   const connections = state.projects.connections[activeProject] || {}
   const projectTags = Object.values(state.projects.tags[activeProject] || {})
+  const collapsedOutcomes =
+    state.ui.collapsedOutcomes.collapsedOutcomes[activeProject] || {}
   let connectorAddresses: ActionHashB64[] = []
   // only set validToAddresses if we are actually utilizing the connection connector right now
   if (fromAddress) {
@@ -45,12 +47,14 @@ function mapStateToProps(state: RootState) {
     translate,
     zoomLevel: scale,
     coordinates,
+    dimensions,
     connections: Object.values(connections), // convert from object to array
     fromAddress,
     relation,
     toAddress,
     existingParentConnectionAddress,
     connectorAddresses,
+    collapsedOutcomes,
   }
 }
 
@@ -78,7 +82,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OutcomeConnectors)
+export default connect(mapStateToProps, mapDispatchToProps)(OutcomeConnectors)

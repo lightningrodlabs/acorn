@@ -1,21 +1,24 @@
 .entry-point-picker.picker-popup {
-  /* this overrides defult top position set for picker-popup which is 0*/
-  top: 40px;
-  left: 0;
-  margin-left: 0;
-  border-radius: 10px;
-  background: #ffffff;
+  border-radius: 0.625rem;
+  background: var(--bg-color-secondary);
   box-shadow: 0px 0px 1.25rem var(--shadow-color);
-  padding: 20px 0px;
-  z-index: 10;
-  // position: fixed;
+  padding: 1.25rem 0 0 0;
   box-sizing: border-box;
-  width: 360px;
-  height: 360px;
+  width: 22rem;
+  height: 22rem;
   display: flex;
   flex-direction: column;
+
+  .triangle-top-white {
+    width: 2rem;
+    height: 2rem;
+    position: absolute;
+    right: calc(50% - 0.75rem);
+    top: -0.925rem;
+  }
 }
 
+// Entry Point picker transition animation
 .entry-point-picker-wrapper-enter {
   opacity: 0;
 }
@@ -46,7 +49,17 @@
   border-bottom: 0.15rem solid var(--bg-color-canvas);
   display: flex;
   align-items: center;
-  padding: 0.625rem 1.25rem;
+  padding: 0.5rem 0.8rem 0.725rem 0.725rem;
+
+  .clear-button {
+    margin-right: 0.25rem;
+    opacity: 0.8;
+
+    &:hover {
+      background-color: var(--bg-color-hover);
+      border-radius: 50%;
+    }
+  }
 
   input {
     width: 100%;
@@ -61,9 +74,8 @@
     &::placeholder {
       color: var(--text-color-placeholder);
     }
+  }
 }
-}
-
 
 /* Entry Point Picker List */
 
@@ -73,6 +85,7 @@
   padding: 0;
   flex: 1;
   overflow-y: scroll;
+  padding-top: 0.25rem;
 }
 
 .acorn-we-applet .entry-point-picker-list {
@@ -91,11 +104,12 @@
   text-decoration: none;
   color: var(--text-color-secondary);
   font-family: var(--font-family-primary-semibold);
+  margin: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
 
   &:hover {
-    background: #f2f2f2;
+    background: var(--bg-color-hover);
     color: var(--text-color-primary);
-    
 
     > .entry-point-picker-switch {
       visibility: visible;
@@ -132,7 +146,8 @@
   }
 
   .entry-point-picker-switch {
-    margin-left: 0.5rem;
+    margin-left: 0.75rem;
+    margin-right: 0.25rem;
   }
 
   .checkbox-wrapper {

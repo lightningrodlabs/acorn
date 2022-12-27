@@ -74,9 +74,12 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
 
   const outcomeId = hashCodeId(outcomeActionHash)
 
+  // if not small, then show children list icon on left menu
+  const showChildrenListMenuItem = outcome && !('Small' in outcome.scope)
   const childrenCount =
     outcome && outcome.children ? outcome.children.length : 0
 
+  // if  small, then show task list icon on left menu
   const showTaskListMenuItem =
     childrenCount === 0 && outcome && 'Small' in outcome.scope
   const taskListCount =
@@ -121,6 +124,7 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
             activeTab={activeTab}
             onChange={setActiveTab}
             commentCount={commentCount}
+            showChildrenList={showChildrenListMenuItem}
             childrenCount={childrenCount}
             showTaskList={showTaskListMenuItem}
             taskListCount={taskListCount}

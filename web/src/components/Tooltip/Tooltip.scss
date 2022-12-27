@@ -2,10 +2,10 @@
   position: absolute;
   // this property should get toggled
   visibility: hidden;
-  font-size: 11px;
-  line-height: 12px;
+  font-size: 0.6875rem;
+  line-height: 1.15;
   white-space: nowrap;
-  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
+  font-family: var(--font-family-primary-bold);
   display: flex;
   flex-direction: column;
   z-index: 9999;
@@ -15,10 +15,17 @@
     transition: 0.3s all ease;
   }
 
+  // used for Outcome Statement tooltip
   &.allow-wrapping {
     white-space: normal;
     width: 100%;
     align-items: flex-start;
+    font-size: 0.875rem;
+
+    .tooltip-text-wrapper {
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+    }
   }
   &:not(.allow-wrapping) {
     bottom: -30px;
@@ -31,6 +38,13 @@
     bottom: 30px;
   }
 
+  .tooltip-text-wrapper {
+    background-color: var(--text-color-link);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    color: var(--text-color-dark-bg);
+  }
+
   .tooltip-triangle-on-top {
     width: 12px;
     height: 12px;
@@ -41,12 +55,5 @@
     width: 12px;
     height: 12px;
     margin-top: -4px;
-  }
-
-  .tooltip-text-wrapper {
-    background-color: var(--text-color-link);
-    padding: 7px 8px;
-    border-radius: 4px;
-    color: #ffffff;
   }
 }

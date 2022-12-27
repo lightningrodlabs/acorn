@@ -39,6 +39,7 @@ const args: OutcomeTableWithFiltersProps = {
     throw new Error('Function not implemented.')
   },
   projectTags: testTags,
+  topPriorityOutcomes: [],
   presentMembers: [],
   goToOutcome: function (actionHash: string): void {
     throw new Error('Function not implemented.')

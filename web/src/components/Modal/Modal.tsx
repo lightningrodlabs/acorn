@@ -6,18 +6,19 @@ import Button from '../Button/Button'
 import Typography from '../Typography/Typography'
 
 import './Modal.scss'
+import ButtonClose from '../ButtonClose/ButtonClose'
 
 /* Named Export */
 
 export type ModalContentProps = {
-  content: string | JSX.Element,
-  secondaryContent?: string,
-  heading: string,
-  icon?: string,
-  primaryButton: string,
-  primaryButtonAction: () => void,
-  altButton?: string,
-  altButtonAction?: () => void,
+  content: string | JSX.Element
+  secondaryContent?: string
+  heading: string
+  icon?: string
+  primaryButton: string
+  primaryButtonAction: () => void
+  altButton?: string
+  altButtonAction?: () => void
 }
 
 const ModalContent: React.FC<ModalContentProps> = ({
@@ -32,19 +33,21 @@ const ModalContent: React.FC<ModalContentProps> = ({
 }) => {
   return (
     <>
-      <div className="modal-header">
+      {/* Modal Heading and Icon */}
+      <div className="modal-heading-with-icon-wrapper">
         {icon && (
-          <span className="modal-icon">
+          <div className="modal-icon">
             <Icon name={icon} className="not-hoverable" />
-          </span>
+          </div>
         )}
         <div className="modal-heading">
-          <Typography style="h2">{heading}</Typography>
+          <Typography style="heading-modal">{heading}</Typography>
         </div>
       </div>
+      {/* Modal Content */}
       <div className="modal-content-wrapper">
         <div className="modal-content">
-          <Typography style="body1">{content}</Typography>
+          <Typography style="body-modal">{content}</Typography>
         </div>
         {secondaryContent ? secondaryContent : null}
       </div>
@@ -54,7 +57,11 @@ const ModalContent: React.FC<ModalContentProps> = ({
             <input type='checkbox' id='checkbox-dont-show-again' />
             <label htmlFor='checkbox-dont-show-again'>Don't show me again</label>
           </div> */}
-        <div className="buttons-wrapper">
+        <div
+          className={`modal-buttons-wrapper ${
+            !altButton ? 'has-one-button' : ''
+          }`}
+        >
           <div>
             {altButton && (
               <Button
@@ -79,17 +86,22 @@ const ModalContent: React.FC<ModalContentProps> = ({
 
 export { ModalContent }
 
-
 /* Default Export */
 
 export type ModalProps = {
-  white?: boolean,
-  active: boolean,
-  className?: string,
-  onClose: () => void,
+  white?: boolean
+  active: boolean
+  className?: string
+  onClose?: () => void
 }
 
-const Modal: React.FC<ModalProps> = ({ white, active, className, onClose, children }) => {
+const Modal: React.FC<ModalProps> = ({
+  white,
+  active,
+  className,
+  onClose,
+  children,
+}) => {
   return (
     <CSSTransition in={active} timeout={100} unmountOnExit classNames="modal">
       <div className={`modal ${white ? 'modal-white' : ''}`}>
@@ -99,12 +111,9 @@ const Modal: React.FC<ModalProps> = ({ white, active, className, onClose, childr
         {/* <OnClickOutside onClickOutside={onClose}> */}
         <div className={`${className} modal-wrapper`}>
           {onClose && (
-            <Icon
-              name="x.svg"
-              size="small-close"
-              className="light-grey"
-              onClick={() => onClose()}
-            />
+            <div className="modal-button-close">
+              <ButtonClose onClick={onClose} size="medium" />
+            </div>
           )}
           {children}
         </div>

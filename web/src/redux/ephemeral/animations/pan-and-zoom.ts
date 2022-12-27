@@ -8,6 +8,11 @@ import { selectOutcome, unselectAll } from '../selection/actions'
 import { changeAllDirect } from '../viewport/actions'
 import { getTreesForState } from './get-trees-for-state'
 
+/*
+  In this function as we animate the "pan and zoom", or "translate and scale"
+  **we take responsibility** not only for those values, but for the Outcome layout
+  which would typically change according to a changing zoomLevel as well
+*/
 export default function panZoomToFrame(
   store: any,
   action: {
@@ -16,10 +21,11 @@ export default function panZoomToFrame(
       adjustScale: boolean
       instant?: boolean
     }
-  },
-  currentState: RootState
+  }
 ) {
   let { outcomeActionHash, adjustScale } = action.payload
+
+  const state: RootState = store.getState()
 
   // Destination viewport
   // is to center the outcome
@@ -29,17 +35,30 @@ export default function panZoomToFrame(
   const defaultScaleForPanAndZoom = 0.7
   const zoomLevel = adjustScale
     ? defaultScaleForPanAndZoom
-    : currentState.ui.viewport.scale
+    : state.ui.viewport.scale
 
-  const { activeProject } = currentState.ui
-  const outcomeTrees = getTreesForState(currentState)
-  const projectTags = Object.values(
-    currentState.projects.tags[activeProject] || {}
-  )
+  const { activeProject } = state.ui
+  const outcomeTrees = getTreesForState(state)
+
+  const projectTags = Object.values(state.projects.tags[activeProject] || {})
+  const hiddenSmallOutcomes = state.ui.mapViewSettings.hiddenSmallOutcomes
+  const hiddenAchievedOutcomes = state.ui.mapViewSettings.hiddenAchievedOutcomes
+  const hiddenSmalls = hiddenSmallOutcomes.includes(activeProject)
+  const hiddenAchieved = hiddenAchievedOutcomes.includes(activeProject)
+
+  const collapsedOutcomes =
+    state.ui.collapsedOutcomes.collapsedOutcomes[activeProject] || {}
   // this is our final destination layout
   // that we'll be animating to
   // use the target zoomLevel
-  const newLayout = layoutFormula(outcomeTrees, zoomLevel, projectTags)
+  const newLayout = layoutFormula(
+    outcomeTrees,
+    zoomLevel,
+    projectTags,
+    collapsedOutcomes,
+    hiddenSmalls,
+    hiddenAchieved,
+  )
 
   // this accounts for a special case where the caller doesn't
   // provide the intended Outcome ActionHash, but instead expects this
@@ -54,7 +73,7 @@ export default function panZoomToFrame(
   // important, for the outcomeCoordinates we should
   // definitely choose them from the new intended layout,
   // not the existing one
-  const outcomeCoordinates = newLayout[outcomeActionHash]
+  const outcomeCoordinates = newLayout.coordinates[outcomeActionHash]
 
   if (!outcomeCoordinates) {
     console.log('could not find coordinates for outcome to animate to')
@@ -70,7 +89,7 @@ export default function panZoomToFrame(
   store.dispatch(unselectAll())
   store.dispatch(selectOutcome(outcomeActionHash))
 
-  const { width, height } = currentState.ui.screensize
+  const { width, height } = state.ui.screensize
   const dpr = window.devicePixelRatio || 1
   const halfScreenWidth = width / (2 * dpr)
   const halfScreenHeight = height / (2 * dpr)
@@ -110,7 +129,7 @@ export default function panZoomToFrame(
 
   // not instant, so continue and run an animated transition
   const currentViewportTween = {
-    ...currentState.ui.viewport,
+    ...state.ui.viewport,
   }
 
   new TWEEN.Tween(currentViewportTween)

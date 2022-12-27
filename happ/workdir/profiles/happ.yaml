@@ -1,0 +1,11 @@
+manifest_version: "1"
+name: acorn
+description: productivity tool for distributed software teams
+roles:
+  - name: profiles-role
+    provisioning:
+      strategy: create
+      deferred: false
+    dna:
+      bundled: "../profiles.dna"
+      clone_limit: 0

@@ -5,7 +5,7 @@ import Icon from '../Icon/Icon'
 import './ButtonCheckbox.scss'
 
 export type ButtonCheckboxProps = {
-  size: 'small' | 'medium' | 'large'
+  size: 'tiny' | 'small' | 'medium' | 'large'
   isChecked: boolean
   onChange: (newState: boolean) => void
   icon: React.ReactElement
@@ -22,7 +22,13 @@ const ButtonCheckbox: React.FC<ButtonCheckboxProps> = ({
   return (
     <div
       className={`button-checkbox-wrapper ${isChecked ? 'selected' : ''} ${
-        size === 'small' ? 'small' : size === 'large' ? 'large' : ''
+        size === 'tiny'
+          ? 'tiny'
+          : size === 'small'
+          ? 'small'
+          : size === 'large'
+          ? 'large'
+          : ''
       }`}
       onClick={() => onChange(!isChecked)}
     >

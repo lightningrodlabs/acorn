@@ -17,6 +17,15 @@
   margin: 1rem;
   text-decoration: none;
 
+  .button-icon {
+    margin-right: 0.375rem;
+    .icon {
+      width: 1.125rem;
+      height: 1.125rem;
+      padding: 0;
+    }
+  }
+
   &.secondary {
     font: 0.875rem var(--font-family-primary-medium);
   }
@@ -30,19 +39,6 @@
       box-shadow: 0rem 0rem 0.75rem var(--shadow-color);
     }
   }
-
-  // border-radius: 25px;
-  // background: #6600ff;
-  // border: 1px solid #6600ff;
-  // color: #ffffff;
-  // outline: none;
-  // border: none;
-  // font-size: 1rem;
-  // line-height: 19px;
-  // padding: 16px 42px;
-  // cursor: pointer;
-  // font-family: 'gilroyextrabold', Helvetica, sans-serif;
-  // transition: 0.2s all;
 
   &:hover {
     box-shadow: 0rem 0rem 1.25rem var(--shadow-color-hover);
@@ -60,13 +56,13 @@
 
   // buttons sizes
   &.small {
-    font-size: 0.875rem;
+    font-size: 0.825rem;
     line-height: 1.45;
     padding: 0.625rem 0.875rem;
     margin: 0.25rem;
   }
   &.medium {
-    font-size: 1rem;
+    font-size: 0.875rem;
     line-height: 1.45;
     padding: 0.875rem 1.5rem;
   }
@@ -100,7 +96,7 @@
   text-decoration: none;
   cursor: pointer;
   margin: 0;
-  font-family: 'PlusJakartaSans-bold';
+  font-family: "PlusJakartaSans-bold";
   font-size: 0.75rem;
   padding: 0;
   color: #00beb0;

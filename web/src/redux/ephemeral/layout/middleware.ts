@@ -18,6 +18,17 @@ import { RootState } from '../../reducer'
 import { CellIdString } from '../../../types/shared'
 import { FETCH_OUTCOME_MEMBERS } from '../../persistent/projects/outcome-members/actions'
 import { FETCH_TAGS } from '../../persistent/projects/tags/actions'
+import {
+  COLLAPSE_OUTCOME,
+  EXPAND_ALL_OUTCOMES,
+  EXPAND_OUTCOME,
+} from '../collapsed-outcomes/actions'
+import {
+  HIDE_ACHIEVED_OUTCOMES,
+  HIDE_SMALL_OUTCOMES,
+  SHOW_ACHIEVED_OUTCOMES,
+  SHOW_SMALL_OUTCOMES,
+} from '../map-view-settings/actions'
 
 const isOneOfLayoutAffectingActions = (action: {
   type: string
@@ -46,7 +57,14 @@ const isOneOfLayoutAffectingActions = (action: {
     type === FETCH_CONNECTIONS ||
     type === FETCH_OUTCOME_MEMBERS ||
     type === FETCH_TAGS ||
-    type === CHANGE_SCALE
+    type === CHANGE_SCALE ||
+    type === COLLAPSE_OUTCOME ||
+    type === EXPAND_OUTCOME ||
+    type === EXPAND_ALL_OUTCOMES ||
+    type === HIDE_ACHIEVED_OUTCOMES ||
+    type === SHOW_ACHIEVED_OUTCOMES ||
+    type === HIDE_SMALL_OUTCOMES ||
+    type === SHOW_SMALL_OUTCOMES
   )
 }
 
@@ -81,7 +99,7 @@ const layoutWatcher = (store) => {
     const shouldReLayout = isOneOfLayoutAffectingActions(action)
     const shouldAnimateViewport = isOneOfViewportAffectingActions(action)
     // don't call and getState if we don't have to
-    if (shouldReLayout || shouldAnimateViewport) {
+    if (shouldReLayout) {
       currentState = store.getState()
     }
     // perform the usual (next) action ->
@@ -96,7 +114,7 @@ const layoutWatcher = (store) => {
     if (shouldReLayout) {
       performLayoutAnimation(store, action, currentState)
     } else if (shouldAnimateViewport) {
-      panZoomToFrame(store, action, currentState)
+      panZoomToFrame(store, action)
     }
 
     return result

@@ -36,11 +36,13 @@ export const argsForDrawBackgroundColor = ({
   const height = outcomeHeight - borderWidth
   const backgroundCornerRadius = cornerRadius - 1
   let backgroundColor: string
+  let useGreenBoxShadow = false
   if (
     outcome.computedAchievementStatus.simple ===
     ComputedSimpleAchievementStatus.Achieved
   ) {
     backgroundColor = ACHIEVED_BACKGROUND_COLOR
+    useGreenBoxShadow = true
   } else if (outcome.computedScope === ComputedScope.Small) {
     backgroundColor = NOT_ACHIEVED_BACKGROUND_COLOR
   } else {
@@ -54,6 +56,7 @@ export const argsForDrawBackgroundColor = ({
     cornerRadius: backgroundCornerRadius,
     // compute according to Scope and Achievement Status
     backgroundColor,
+    useGreenBoxShadow,
     ctx,
   }
   return args

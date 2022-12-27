@@ -1,20 +1,13 @@
 import React from 'react'
-import PropTypes, { bool } from 'prop-types'
-import './Button.scss'
+import Icon from '../Icon/Icon'
 
-// Button.propTypes = {
-//   className: PropTypes.string,
-//   size: PropTypes.string,
-//   color: PropTypes.string,
-//   stroke: PropTypes.bool,
-//   onClick: PropTypes.func,
-// }
+import './Button.scss'
 
 export type ButtonProps = {
   size?: 'small' | 'medium' | 'large'
   text: string
-  onClick: () => void
-  icon?: React.ReactElement
+  onClick?: () => void
+  icon?: string
   className?: string
   color?: string
   stroke?: boolean
@@ -29,6 +22,7 @@ const Button: React.FC<ButtonProps> = ({
   color,
   stroke,
   onClick,
+  icon,
   secondary,
   disabled,
 }) => {
@@ -42,6 +36,11 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button disabled={disabled} className={classNames} onClick={onClick}>
+      {icon && (
+        <span className="button-icon">
+          <Icon name={icon} className="not-hoverable" />
+        </span>
+      )}
       {text}
     </button>
   )

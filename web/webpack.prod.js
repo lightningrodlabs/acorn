@@ -38,7 +38,7 @@ module.exports = {
     }),
   ],
   entry: {
-    app: './src/index.js',
+    app: './src/index.tsx',
     splash: './src/splashscreen.scss',
   },
   resolve: {
@@ -57,7 +57,6 @@ module.exports = {
         test: /\.js$/,
         exclude: {
           and: [/node_modules/],
-          not: [/\@holochain\/client/]
         },
         use: {
           loader: 'babel-loader',

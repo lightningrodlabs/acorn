@@ -158,7 +158,7 @@ pub fn emit_realtime_info_signal(realtime_info: RealtimeInfoInput) -> ExternResu
     };
 
     let signal = SignalType::RealtimeInfo(realtime_info_signal);
-    let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e.into()))?;
+    let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e))?;
     let peers = get_peers_content()?;
     remote_signal(payload, peers)?;
     Ok(())
@@ -173,7 +173,7 @@ pub fn emit_editing_outcome_signal(editing_outcome_info: EditingOutcomeInput) ->
     };
 
     let signal = SignalType::EditingOutcome(editing_outcome_signal);
-    let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e.into()))?;
+    let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e))?;
     let peers = get_peers_content()?;
     remote_signal(payload, peers)?;
     Ok(())
@@ -212,7 +212,7 @@ pub fn get_peers(get_options: GetOptions) -> ExternResult<Vec<AgentPubKey>> {
 // (forwards signals to the UI)
 #[hdk_extern]
 pub fn recv_remote_signal(signal: ExternIO) -> ExternResult<()> {
-    let sig: SignalType = signal.decode().map_err(|e| wasm_error!(e.into()))?;
+    let sig: SignalType = signal.decode().map_err(|e| wasm_error!(e))?;
     debug!("Received remote signal {:?}", sig);
     Ok(emit_signal(&signal)?)
 }

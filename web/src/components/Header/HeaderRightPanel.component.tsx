@@ -29,7 +29,6 @@ function AvatarMenuItem({
 function StatusMenuItem({ color, title, onClick }) {
   return (
     <button onClick={onClick}>
-      {/* @ts-ignore */}
       <div className={`status-circle ${color}`} />
       <p>{title}</p>
     </button>
@@ -135,7 +134,7 @@ export default function HeaderRightPanel({
   const noFilters = isTextFilter || isDescriptionFilter || isCommentFilter
 
   return (
-    <>
+    <div className="header-right-panel">
       <ProjectMapViewOnly>
         <div
           className={`search-button-wrapper ${
@@ -260,7 +259,7 @@ export default function HeaderRightPanel({
         {/* end search */}
       </ProjectMapViewOnly>
 
-      <div className="header-right-panel">
+      <div className="header-right-panel-help-profile">
         {/* Help button */}
         <a
           className="help-button-external"
@@ -341,6 +340,6 @@ export default function HeaderRightPanel({
           </div>
         )}
       </div>
-    </>
+    </div>
   )
 }

@@ -1,21 +1,40 @@
 import * as flextree from 'd3-flextree'
 import { getOutcomeWidth, getOutcomeHeight } from './dimensions'
-import { ComputedOutcome, Tag } from '../types'
+import {
+  ComputedOutcome,
+  ComputedScope,
+  ComputedSimpleAchievementStatus,
+  Tag,
+} from '../types'
 import { ActionHashB64, WithActionHash } from '../types/shared'
 import { ProjectComputedOutcomes } from '../context/ComputedOutcomeContext'
+import {
+  CoordinatesState,
+  DimensionsState,
+  LayoutState,
+} from '../redux/ephemeral/layout/state-type'
 
 const fl = flextree.flextree
 
 const VERTICAL_SPACING = 100
 
+function checkOutcomeAgainstViewingFilters(
+  outcome: ComputedOutcome,
+  hiddenSmalls: boolean,
+  hiddenAchieved: boolean
+): boolean {
+  return !(
+    (hiddenAchieved &&
+      outcome.computedAchievementStatus.simple ===
+        ComputedSimpleAchievementStatus.Achieved) ||
+    (hiddenSmalls && outcome.computedScope === ComputedScope.Small)
+  )
+}
+
 function getBoundingRec(
   outcome: ComputedOutcome,
-  allOutcomeCoordinates: {
-    [actionHash: ActionHashB64]: { x: number; y: number }
-  },
-  allOutcomeDimensions: {
-    [actionHash: ActionHashB64]: { width: number; height: number }
-  }
+  allOutcomeCoordinates: CoordinatesState,
+  allOutcomeDimensions: DimensionsState
 ) {
   const origCoord = allOutcomeCoordinates[outcome.actionHash]
   if (!origCoord) {
@@ -57,19 +76,15 @@ function getBoundingRec(
 
 export { getBoundingRec }
 
-export interface Layout {
-  [outcomeActionHash: ActionHashB64]: {
-    x: number
-    y: number
-  }
-}
-
 function layoutForTree(
   tree: ComputedOutcome,
-  allOutcomeDimensions: {
-    [actionHash: ActionHashB64]: { width: number; height: number }
-  }
-): Layout {
+  allOutcomeDimensions: DimensionsState,
+  projectCollapsedOutcomes: {
+    [outcomeActionHash: ActionHashB64]: boolean
+  },
+  hiddenSmalls: boolean,
+  hiddenAchieved: boolean
+): CoordinatesState {
   // create a graph
   const layout = fl().spacing((nodeA, nodeB) => {
     return nodeA.path(nodeB).length * 40
@@ -80,12 +95,25 @@ function layoutForTree(
   function addOutcome(outcome: ComputedOutcome, node: any, level: number) {
     let numDescendants = 0
     node.children = []
-    outcome.children.forEach((childOutcome) => {
-      const childNode = {}
-      const descendantCount = addOutcome(childOutcome, childNode, level + 1)
-      node.children.push(childNode)
-      numDescendants += descendantCount + 1
-    })
+    // Skip over the Outcome if it is included in the list
+    // of collapsed Outcomes
+    if (!projectCollapsedOutcomes[outcome.actionHash]) {
+      outcome.children.forEach((childOutcome) => {
+        const childNode = {}
+        // filter out children who don't match the viewing filter criteria
+        if (
+          checkOutcomeAgainstViewingFilters(
+            childOutcome,
+            hiddenSmalls,
+            hiddenAchieved
+          )
+        ) {
+          const descendantCount = addOutcome(childOutcome, childNode, level + 1)
+          node.children.push(childNode)
+          numDescendants += descendantCount + 1
+        }
+      })
+    }
 
     const width = allOutcomeDimensions[outcome.actionHash].width
     // to create the dynamic vertical height, we apply
@@ -127,9 +155,13 @@ function layoutForTree(
 export default function layoutFormula(
   trees: ProjectComputedOutcomes,
   zoomLevel: number,
-  projectTags: WithActionHash<Tag>[]
-): Layout {
-
+  projectTags: WithActionHash<Tag>[],
+  projectCollapsedOutcomes: {
+    [outcomeActionHash: ActionHashB64]: boolean
+  },
+  hiddenSmalls: boolean,
+  hiddenAchieved: boolean
+): LayoutState {
   let coordinates = {}
   // just do this for efficiency, it's not going to
   // get displayed or rendered anywhere
@@ -157,16 +189,31 @@ export default function layoutFormula(
 
   // based on the dimensions, determine what the layout of each
   // distinct tree will be
-  const layouts = trees.computedOutcomesAsTree.map((tree) => ({
-    outcome: tree,
-    layout: layoutForTree(tree, allOutcomeDimensions),
-  }))
+  const layouts = trees.computedOutcomesAsTree
+    .filter((computedOutcome) => {
+      // filter out trees which have been hidden
+      return checkOutcomeAgainstViewingFilters(
+        computedOutcome,
+        hiddenSmalls,
+        hiddenAchieved
+      )
+    })
+    .map((tree) => ({
+      outcome: tree,
+      layout: layoutForTree(
+        tree,
+        allOutcomeDimensions,
+        projectCollapsedOutcomes,
+        hiddenSmalls,
+        hiddenAchieved
+      ),
+    }))
   const HORIZONTAL_TREE_SPACING = 100
   // coordinates will be adjusted each time through this iteration
   layouts.forEach((tree, index) => {
     // in the case of the first one, let it stay where it is
     if (index === 0) {
-      const adjusted: Layout = {}
+      const adjusted: CoordinatesState = {}
       const offsetFromZero = tree.layout[tree.outcome.actionHash].y
       Object.keys(tree.layout).forEach((coordKey) => {
         adjusted[coordKey] = {
@@ -189,7 +236,7 @@ export default function layoutFormula(
         tree.layout,
         allOutcomeDimensions
       )
-      const adjusted: Layout = {}
+      const adjusted: CoordinatesState = {}
       const yOffset = -1 * tree.layout[tree.outcome.actionHash].y
       const xOffset = lastTreeRight - thisTreeLeft + HORIZONTAL_TREE_SPACING
       Object.keys(tree.layout).forEach((coordKey) => {
@@ -206,5 +253,8 @@ export default function layoutFormula(
     }
   })
 
-  return coordinates
+  return {
+    coordinates,
+    dimensions: allOutcomeDimensions,
+  }
 }

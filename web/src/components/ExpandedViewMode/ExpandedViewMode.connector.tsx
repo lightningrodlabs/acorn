@@ -11,6 +11,8 @@ import ExpandedViewModeComponent, {
 import { AgentPubKeyB64, CellIdString, ActionHashB64 } from '../../types/shared'
 import {
   ComputedOutcome,
+  CreateOutcomeWithConnectionInput,
+  RelationInput,
   Outcome,
   ScopeSmallVariant,
   SmallTask,
@@ -58,6 +60,7 @@ export type ConnectedExpandedViewModeProps = {
   outcomeAndAncestors: ComputedOutcome[]
   onClose: () => void
   updateOutcome: (outcome: Outcome, actionHash: string) => Promise<void>
+  createOutcomeWithConnection: (outcomeWithConnection: CreateOutcomeWithConnectionInput) => Promise<void>
 }
 
 const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
@@ -68,6 +71,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   outcomeAndAncestors,
   onClose,
   updateOutcome,
+  createOutcomeWithConnection,
 }) => {
   const updateOutcomeTaskList = (taskList: Array<SmallTask>) => {
     const cleanedOutcome = cleanOutcome(outcome)
@@ -87,15 +91,39 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
     )
   }
 
+  const onCreateChildOutcome = async (newOutcomeStatement: string) => {
+    await createOutcomeWithConnection({
+      entry: {
+        content: newOutcomeStatement,
+        creatorAgentPubKey: activeAgentPubKey,
+        editorAgentPubKey: null,
+        timestampCreated: moment().unix(),
+        timestampUpdated: null,
+        scope: { Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false } },
+        tags: [],
+        description: '',
+        isImported: false,
+        githubLink: '',
+      },
+      // link this new Outcome to its parent, which
+      // is the current Expanded View Mode outcome
+      maybeLinkedOutcome: {
+        outcomeActionHash: outcome.actionHash,
+        relation: RelationInput.ExistingOutcomeAsParent
+      }
+    })
+  }
+
   const outcomeContent = outcome ? outcome.content : ''
   let childrenList: React.ReactElement
   let taskList: React.ReactElement
-  if (outcome && outcome.children && outcome.children.length) {
+  if (outcome && !('Small' in outcome.scope)) {
     childrenList = (
       <EvChildren
         outcomeContent={outcomeContent}
         directChildren={outcome.children}
         openExpandedView={openExpandedView}
+        onCreateChildOutcome={onCreateChildOutcome}
       />
     )
   } else if (outcome && 'Small' in outcome.scope) {

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import drawOutcome from '../../drawing/drawOutcome'
-import { ComputedOutcome, Tag } from '../../types'
+import { ComputedOutcome, Profile, Tag } from '../../types'
 import { WithActionHash } from '../../types/shared'
 import './MapViewDevMode.scss'
 
@@ -15,6 +15,7 @@ export type MapViewDevModeProps = {
   zoomLevel: number
   isTopPriority: boolean
   isSelected: boolean
+  outcomeFocusedMembers: Profile[]
 }
 
 const MapViewDevMode: React.FC<MapViewDevModeProps> = ({
@@ -28,6 +29,7 @@ const MapViewDevMode: React.FC<MapViewDevModeProps> = ({
   zoomLevel,
   isTopPriority,
   isSelected,
+  outcomeFocusedMembers
 }) => {
   const refCanvas = useRef<HTMLCanvasElement>()
   useEffect(() => {
@@ -54,6 +56,7 @@ const MapViewDevMode: React.FC<MapViewDevModeProps> = ({
       zoomLevel,
       isSelected,
       isTopPriority,
+      outcomeFocusedMembers,
       ctx: canvas.getContext('2d'),
     }
     drawOutcome(args)

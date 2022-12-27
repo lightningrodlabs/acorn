@@ -4,6 +4,9 @@
   // color names from https://www.color-name.com
 
   // color
+  --color-virtually-transaprent: #ffffff00; // when you need an element but transparent
+  --color-green-shadow: #4a604392; // for achieved outcome cards
+  --shadow-brown-shadow: #8377699b; // for not achieved outcome cards
   --color-silver: #bebebe; //Silver
   --color-green: #008414; //Green
   --color-forest-green: #15841d; //Forset green (used for achieved small)
@@ -15,6 +18,7 @@
   --color-alto: #d0d0d0; //Alto
   --color-turquoise: #12d6c7; //Bright Turquoise
   --color-persian-green: #00a599; //Persian Green
+  --color-myrtle-green: #277670; //Myrtle Green
 
   // icon
   --icon-color-light-grey: #d0d0d0; //Alto
@@ -25,9 +29,13 @@
   --bg-color-secondary-read-only: #ffffff80; //White (50%)
   --bg-color-tertiary: #fbfbf9; //Lotion
   --bg-color-hover: #f4f1ed; //Isabelline
+  --bg-color-hover-semi-transparent: #f4f1eda1; //Isabelline 8--color-silver: #bebebe; //Silver0%
   --bg-color-canvas: #f4f2f0; //Isabelline 2
   --bg-color-popup: #ebeae7eb; //Cararra (90% opacity)
   --bg-color-achieved: #e9efe7;
+  // background dark
+  --bg-color-primary-dark: #555555;
+  --bg-color-hover-dark: #c7beb430;
 
   // border
   --border-color-primary: #222222; //Raisin Black
@@ -43,6 +51,8 @@
   --shadow-color-dark: #c7beb4bd; //Pale Silver (80% opacity)
   --shadow-color-hover: #c7beb4bd; //Pale Silver
   --shadow-color-high-priority: #334cf8; //
+
+ 
 
   // typography
   --font-family-primary-extrabold: "PlusJakartaSans-extrabold", sans-serif;
@@ -60,7 +70,8 @@
   --text-color-caption: #bcbcbc; //Silver
   --text-color-placeholder: #bdbdbd; //Philippine Gray
   --text-color-strikethrough: #aea49972; //Pale Silver
-  --text-color-dark-bg: #ffffff;
   --text-color-invalid: #ff5d36;
   --text-color-link: #344cff; //Ultamarine blue
+  // text color on dark background
+  --text-color-dark-bg: #ffffff;
 }

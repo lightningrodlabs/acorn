@@ -11,6 +11,7 @@ export type EvLeftColumnProps = {
   activeTab: ExpandedViewTab
   commentCount: number
   childrenCount: number
+  showChildrenList: boolean
   taskListCount: number
   showTaskList: boolean
 }
@@ -21,6 +22,7 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
   activeTab,
   commentCount,
   childrenCount,
+  showChildrenList,
   taskListCount,
   showTaskList,
 }) => {
@@ -38,7 +40,7 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
     ,
   ]
 
-  if (childrenCount > 0) {
+  if (showChildrenList) {
     navItems.push({
       text: `Children (${childrenCount})`,
       icon: 'hierarchy.svg',

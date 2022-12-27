@@ -37,6 +37,32 @@
     line-height: 1.45;
     color: var(--text-color-primary);
   }
+  // for modals
+  &.heading-modal {
+    font: 1.375rem var(--font-family-primary-bold);
+    line-height: 1.45;
+    color: var(--text-color-primary);
+  }
+  &.body-modal {
+    font: 0.925rem var(--font-family-primary-medium);
+    color: var(--text-color-primary);
+    line-height: 1.6;
+
+    a {
+      color: var(--color-myrtle-green);
+      font: 0.875rem var(--font-family-primary-bold);
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  &.subtitle-modal {
+    font: 1rem var(--font-family-primary-bold);
+    color: var(--text-color-tertiary);
+    line-height: 1.45;
+  }
   // Body
   &.body1 {
     font: 1rem var(--font-family-primary-medium);
@@ -53,7 +79,15 @@
   &.body2 {
     font: 0.875rem var(--font-family-primary-medium);
     color: var(--text-color-primary);
-    line-height: 1.45;
+    line-height: 1.5;
+
+    a {
+      color: var(--color-myrtle-green);
+      font: 0.875rem var(--font-family-primary-bold);
+      &:hover {
+        text-decoration: underline;
+      }
+    }
   }
   // Subtitles
   &.subtitle1 {

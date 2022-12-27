@@ -5,7 +5,7 @@
   border-bottom: 0.125rem solid var(--border-color-bright-gray);
 
   &:hover {
-    background-color: var(--bg-color-primary);
+    background-color: var(--bg-color-hover-semi-transparent);
   }
 
   .outcome-table-row-assignees-tags-time {
@@ -23,20 +23,23 @@
     font: 1rem var(--font-family-primary-medium);
     padding: 0.5rem 1rem;
 
+    &:last-child {
+      border-right: none;
+    }
+
     &.id-number {
       padding: 0.75rem 0.5rem;
       font-size: 0.875rem;
       color: var(--text-color-caption);
-      border-left: 0.125rem solid var(--border-color-bright-gray);
     }
 
     &.outcome-statement-wrapper {
       display: flex;
       flex-direction: row;
       align-items: center;
-      font: 1rem var(--font-family-primary-semibold);
+      font: 1rem var(--font-family-primary-medium);
       color: var(--text-color-secondary);
-      padding: 0.5rem 0.25rem 0.5rem 0.5rem;
+      padding: 0.375rem 0.25rem 0.375rem 0.5rem;
 
       &:hover {
         color: var(--text-color-primary);
@@ -144,7 +147,6 @@
           background-color: var(--border-color-primary);
         }
       }
-
     }
 
     .outcome-table-row-hover-button .icon {

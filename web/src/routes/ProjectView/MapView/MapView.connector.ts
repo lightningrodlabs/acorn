@@ -1,13 +1,33 @@
 import { connect } from 'react-redux'
+import {
+  collapseOutcome,
+  expandOutcome,
+} from '../../../redux/ephemeral/collapsed-outcomes/actions'
+import { unsetContextMenu } from '../../../redux/ephemeral/mouse/actions'
 import { RootState } from '../../../redux/reducer'
-import MapView, { MapViewProps } from './MapView.component'
+import MapView, {
+  MapViewDispatchProps,
+  MapViewStateProps,
+} from './MapView.component'
 
-function mapDispatchToProps(dispatch) {
-  return {}
+function mapDispatchToProps(dispatch): MapViewDispatchProps {
+  return {
+    expandOutcome: (projectCellId, outcomeActionHash) => {
+      return dispatch(expandOutcome(projectCellId, outcomeActionHash))
+    },
+    collapseOutcome: (projectCellId, outcomeActionHash) => {
+      return dispatch(collapseOutcome(projectCellId, outcomeActionHash))
+    },
+    unsetContextMenu: () => {
+      return dispatch(unsetContextMenu())
+    },
+  }
 }
 
-function mapStateToProps(state: RootState): MapViewProps {
+function mapStateToProps(state: RootState): MapViewStateProps {
   const projectId = state.ui.activeProject
+  const collapsedOutcomes =
+    state.ui.collapsedOutcomes.collapsedOutcomes[projectId] || {}
 
   // TODO: make this also based on whether the user has just registered (created their profile)
   const showEmptyState =
@@ -17,13 +37,18 @@ function mapStateToProps(state: RootState): MapViewProps {
       // project is loading
       !state.projects.outcomes[projectId])
 
-  // console.log(projectId)
-  // console.log(!!state.agentAddress)
-  // console.log(
-  //   state.projects.outcomes[projectId] &&
-  //     Object.values(state.projects.outcomes[projectId]).length === 0
-  // )
-  // console.log(!state.projects.outcomes[projectId])
+  const contextMenuOutcomeActionHash =
+    state.ui.mouse.contextMenu.outcomeActionHash
+  const contextMenuOutcomeStatement =
+    state.projects.outcomes[projectId] &&
+    state.projects.outcomes[projectId][contextMenuOutcomeActionHash]
+      ? state.projects.outcomes[projectId][contextMenuOutcomeActionHash].content
+      : ''
+
+  const contextMenuOutcomeIsCollapsed = contextMenuOutcomeActionHash
+    ? collapsedOutcomes[contextMenuOutcomeActionHash]
+    : false
+
   return {
     projectId,
     translate: state.ui.viewport.translate,
@@ -34,6 +59,10 @@ function mapStateToProps(state: RootState): MapViewProps {
     hasMultiSelection: state.ui.selection.selectedOutcomes.length > 1,
     hoveredOutcomeAddress: state.ui.hover.hoveredOutcome,
     liveMouseCoordinates: state.ui.mouse.liveCoordinate,
+    contextMenuCoordinate: state.ui.mouse.contextMenu.coordinate,
+    contextMenuOutcomeActionHash,
+    contextMenuOutcomeStatement,
+    contextMenuOutcomeIsCollapsed,
     mouseIsDown: state.ui.mouse.mousedown,
     showEmptyState,
     outcomeFormIsOpen: state.ui.outcomeForm.isOpen,

@@ -57,7 +57,13 @@ export type EvDetailsConnectorStateProps = {
 }
 
 export type EvDetailsConnectorDispatchProps = {
-  onSaveTag: (text: string, backgroundColor: string) => Promise<void>
+  // tags
+  onCreateTag: (text: string, backgroundColor: string) => Promise<void>
+  onUpdateExistingTag: (
+    actionHash: ActionHashB64,
+    text: string,
+    backgroundColor: string
+  ) => Promise<void>
   updateOutcome: (outcome: Outcome, actionHash: ActionHashB64) => Promise<void>
   createOutcomeMember: (
     outcomeActionHash: ActionHashB64,
@@ -87,7 +93,9 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   people,
   presentMembers,
   // dispatch props
-  onSaveTag,
+  // tags
+  onCreateTag,
+  onUpdateExistingTag,
   updateOutcome,
   createOutcomeMember,
   deleteOutcomeMember,
@@ -332,7 +340,8 @@ const EvDetails: React.FC<EvDetailsProps> = ({
               showAddTagButton={true}
               selectedTags={selectedTags}
               onChange={onSelectNewTags}
-              onSaveTag={onSaveTag}
+              onCreateTag={onCreateTag}
+              onUpdateExistingTag={onUpdateExistingTag}
             />
           </div>
 

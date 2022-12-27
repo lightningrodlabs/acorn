@@ -13,7 +13,10 @@ import {
   deleteOutcomeMember,
 } from '../../../../../redux/persistent/projects/outcome-members/actions'
 import { updateOutcome } from '../../../../../redux/persistent/projects/outcomes/actions'
-import { createTag } from '../../../../../redux/persistent/projects/tags/actions'
+import {
+  createTag,
+  updateTag,
+} from '../../../../../redux/persistent/projects/tags/actions'
 import selectProjectMembersPresent from '../../../../../redux/persistent/projects/realtime-info-signal/select'
 import { RootState } from '../../../../../redux/reducer'
 import { AssigneeWithActionHash, Outcome } from '../../../../../types'
@@ -124,7 +127,7 @@ function mapDispatchToProps(
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
-    onSaveTag: async (text: string, backgroundColor: string) => {
+    onCreateTag: async (text: string, backgroundColor: string) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const createdTag = await projectsZomeApi.tag.create(cellId, {
@@ -132,6 +135,15 @@ function mapDispatchToProps(
         backgroundColor,
       })
       return dispatch(createTag(cellIdString, createdTag))
+    },
+    onUpdateExistingTag: async (actionHash, text, backgroundColor) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const updatedExistingTag = await projectsZomeApi.tag.update(cellId, {
+        actionHash,
+        entry: { text, backgroundColor },
+      })
+      return dispatch(updateTag(cellIdString, updatedExistingTag))
     },
     updateOutcome: async (outcome: Outcome, actionHash: ActionHashB64) => {
       const appWebsocket = await getAppWs()

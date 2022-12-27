@@ -12,7 +12,7 @@
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  z-index: 2;
+  z-index: 3;
 
   .button-close-wrapper {
     position: absolute;
@@ -30,7 +30,7 @@
   overflow-y: hidden;
   position: fixed;
   top: 0;
-  z-index: 1;
+  z-index: 2;
 }
 
 .acorn-we-applet .expanded-view-overlay {
@@ -41,7 +41,7 @@
   position: fixed;
   top: 0.5rem;
   left: 1rem;
-  z-index: 2;
+  z-index: 3;
 }
 
 .acorn-we-applet .breadcrumbs-overlay {

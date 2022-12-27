@@ -3,17 +3,7 @@ import { useParams, useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 // data
-import { fetchProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
-import { fetchEntryPoints } from '../../redux/persistent/projects/entry-points/actions'
-import { fetchMembers } from '../../redux/persistent/projects/members/actions'
-import {
-  fetchOutcomes,
-  updateOutcome,
-} from '../../redux/persistent/projects/outcomes/actions'
-import { fetchConnections } from '../../redux/persistent/projects/connections/actions'
-import { fetchOutcomeMembers } from '../../redux/persistent/projects/outcome-members/actions'
-import { fetchOutcomeComments } from '../../redux/persistent/projects/outcome-comments/actions'
-import { fetchTags } from '../../redux/persistent/projects/tags/actions'
+import { createOutcomeWithConnection, updateOutcome } from '../../redux/persistent/projects/outcomes/actions'
 // ui
 import { setActiveEntryPoints } from '../../redux/ephemeral/active-entry-points/actions'
 import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
@@ -44,6 +34,7 @@ import ProjectViewInner, {
   ProjectViewInnerOwnProps,
 } from './ProjectView.component'
 import { triggerUpdateLayout } from '../../redux/ephemeral/layout/actions'
+import constructProjectDataFetchers from '../../api/projectDataFetchers'
 
 function mapStateToProps(
   state: RootState
@@ -62,7 +53,12 @@ function mapDispatchToProps(
 ): ProjectViewInnerConnectorDispatchProps {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
+  const projectDataFetchers = constructProjectDataFetchers(
+    dispatch,
+    cellIdString
+  )
   return {
+    ...projectDataFetchers,
     setActiveProject: (projectId: CellIdString) =>
       dispatch(setActiveProject(projectId)),
     setActiveEntryPoints: (entryPointActionHashes: ActionHashB64[]) =>
@@ -84,7 +80,9 @@ function mapDispatchToProps(
     goInstantlyToOutcome: (outcomeActionHash: ActionHashB64) => {
       const adjustScale = false
       const instant = true
-      return dispatch(animatePanAndZoom(outcomeActionHash, adjustScale, instant))
+      return dispatch(
+        animatePanAndZoom(outcomeActionHash, adjustScale, instant)
+      )
     },
     updateOutcome: async (outcome: Outcome, actionHash: ActionHashB64) => {
       const appWebsocket = await getAppWs()
@@ -95,91 +93,13 @@ function mapDispatchToProps(
       })
       return dispatch(updateOutcome(cellIdString, outcomeWireRecord))
     },
-    fetchProjectMeta: async () => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const projectMeta = await projectsZomeApi.projectMeta.fetchProjectMeta(
-        cellId
-      )
-      // is not currently a layout affecting action
-      return dispatch(fetchProjectMeta(cellIdString, projectMeta))
-    },
-    fetchEntryPoints: async () => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const entryPoints = await projectsZomeApi.entryPoint.fetch(cellId, {
-        All: null,
-      })
-      // is not currently a layout affecting action
-      return dispatch(fetchEntryPoints(cellIdString, entryPoints))
-    },
-    fetchMembers: async () => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const members = await projectsZomeApi.member.fetch(cellId)
-      // is not currently a layout affecting action
-      return dispatch(fetchMembers(cellIdString, members))
-    },
-    fetchOutcomes: async () => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const outcomes = await projectsZomeApi.outcome.fetch(cellId, {
-        All: null,
-      })
-      const skipLayoutAnimation = true
-      return dispatch(
-        fetchOutcomes(cellIdString, outcomes, skipLayoutAnimation)
-      )
-    },
-    fetchConnections: async () => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const connections = await projectsZomeApi.connection.fetch(cellId, {
-        All: null,
-      })
-      const skipLayoutAnimation = true
-      return dispatch(
-        fetchConnections(cellIdString, connections, skipLayoutAnimation)
-      )
-    },
-    fetchOutcomeMembers: async () => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const outcomeMembers = await projectsZomeApi.outcomeMember.fetch(cellId, {
-        All: null,
-      })
-      const skipLayoutAnimation = true
-      return dispatch(
-        fetchOutcomeMembers(cellIdString, outcomeMembers, skipLayoutAnimation)
-      )
-    },
-    // DEPRECATED
-    // fetchOutcomeVotes: async () => {
-    //   const appWebsocket = await getAppWs()
-    //   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-    //   const outcomeVotes = await projectsZomeApi.outcomeVote.fetch(cellId, {
-    //     All: null,
-    //   })
-    //   return dispatch(fetchOutcomeVotes(cellIdString, outcomeVotes))
-    // },
-    fetchOutcomeComments: async () => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const outcomeComments = await projectsZomeApi.outcomeComment.fetch(
-        cellId,
-        { All: null }
-      )
-      // is not currently a layout affecting action
-      return dispatch(fetchOutcomeComments(cellIdString, outcomeComments))
-    },
-    fetchTags: async () => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const tags = await projectsZomeApi.tag.fetch(cellId, { All: null })
-      const skipLayoutAnimation = true
-      dispatch(fetchTags(cellIdString, tags, skipLayoutAnimation))
-    },
     triggerRealtimeInfoSignal: () => dispatch(triggerRealtimeInfoSignal()),
+    createOutcomeWithConnection: async (outcomeWithConnection) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const outcomeWireRecord = await projectsZomeApi.outcome.createOutcomeWithConnection(cellId, outcomeWithConnection)
+      return dispatch(createOutcomeWithConnection(cellIdString, outcomeWireRecord))
+    }
   }
 }
 

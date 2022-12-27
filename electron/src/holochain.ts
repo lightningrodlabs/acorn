@@ -4,8 +4,8 @@ import { ElectronHolochainOptions, StateSignal, PathOptions } from '@lightningro
 
 // see the DEVELOPERS.md about incrementing
 // these values
-const DATABASES_VERSION_NUMBER = '4'
-const KEYSTORE_VERSION_NUMBER = '3'
+export const INTEGRITY_VERSION_NUMBER = 6
+export const KEYSTORE_VERSION_NUMBER = 3
 
 // these messages get seen on the splash page
 export enum StateSignalText {
@@ -37,13 +37,13 @@ export function stateSignalToText(state: StateSignal): StateSignalText {
   }
 }
 
-const projectsDnaPath = app.isPackaged
-  ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/projects.dna')
-  : path.join(app.getAppPath(), '../happ/workdir/projects.dna')
+const projectsHappPath = app.isPackaged
+  ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/projects.happ')
+  : path.join(app.getAppPath(), '../happ/workdir/projects/projects.happ')
 
 const profilesHappPath = app.isPackaged
   ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/profiles.happ')
-  : path.join(app.getAppPath(), '../happ/workdir/profiles.happ')
+  : path.join(app.getAppPath(), '../happ/workdir/profiles/profiles.happ')
 
 // in production
 // must point to unpacked versions, not in an asar archive
@@ -78,7 +78,7 @@ const devOptions: ElectronHolochainOptions = {
 }
 const prodOptions: ElectronHolochainOptions = {
   happPath: profilesHappPath, // preload
-  datastorePath: path.join(app.getPath('userData'), `databases-${DATABASES_VERSION_NUMBER}`),
+  datastorePath: path.join(app.getPath('userData'), `databases-${INTEGRITY_VERSION_NUMBER}`),
   appId: MAIN_APP_ID,
   appWsPort: 8889,
   adminWsPort: 1235,
@@ -87,4 +87,4 @@ const prodOptions: ElectronHolochainOptions = {
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 
-export { projectsDnaPath, BINARY_PATHS, devOptions, prodOptions }
+export { projectsHappPath as projectsDnaPath, BINARY_PATHS, devOptions, prodOptions }

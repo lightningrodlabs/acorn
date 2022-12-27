@@ -71,9 +71,17 @@
         padding: 0.625rem 1rem;
         border-radius: 0.5rem;
         margin: 0.25rem 0.5rem;
-        cursor: pointer;
+
         transition: 0.2s all ease;
         position: relative;
+
+        .tag-picker-selectable-area {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          flex: 1;
+          cursor: pointer;
+        }
 
         .checkbox-wrapper {
           margin-right: 0.625rem;
@@ -81,11 +89,15 @@
 
         .tag-picker-edit-button {
           position: absolute;
-          right: 1rem;
+          right: 0.5rem;
           display: none;
-          transition: 0.2s background-color ease;
+          transition: 0.2s all ease;
+          cursor: pointer;
+          padding: 0.25rem;
+          border-radius: 0.5rem;
 
           &:hover {
+            background-color: var(--bg-color-secondary);
             .icon .inner-icon {
               background-color: var(--text-color-primary);
             }
@@ -116,7 +128,7 @@
       align-items: center;
       justify-content: center;
       // box-shadow: 0rem 0rem 1.25rem var(--shadow-color);
-        border-top: 0.125rem solid var(--border-color-timberwolf);
+      border-top: 0.125rem solid var(--border-color-timberwolf);
       padding: 1rem;
       // margin: 0.75rem 1rem 1rem 1rem;
       border-radius: 0 0 0.5rem 0.5rem;

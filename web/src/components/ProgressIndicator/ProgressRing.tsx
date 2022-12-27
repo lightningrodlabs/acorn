@@ -51,6 +51,7 @@ const ProgressRing: React.FC<ProgressRingProps> = ({
           cx="50%"
           cy="50%"
           r={radius}
+          id="progress-ring-bg-circle"
         />
         <circle
           style={{ transition: 'stroke-dashoffset 0.35s' }}

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import Icon from '../Icon/Icon'
-import DatePicker from '../DatePicker/DatePicker'
 import OutcomeConnectorPicker from '../OutcomeConnectorPicker/OutcomeConnectorPicker.connector'
 import Modal, { ModalContent } from '../Modal/Modal'
 
@@ -106,13 +105,11 @@ export default function MultiEditBar({
       {selectedOutcomes.length > 1 && <b>{selectedOutcomes.length}</b>} Outcome
       {selectedOutcomes.length > 1 ? 's' : ''}:
       <div className="modal-outcomes-list">
-        {selectedOutcomes.map((outcome) => (
-          <ul>
-            <div key={outcome.actionHash}>
-              <li>{outcome.content}</li>
-            </div>
-          </ul>
-        ))}
+        <ul>
+          {selectedOutcomes.map((outcome) => (
+            <li key={outcome.actionHash}>{outcome.content}</li>
+          ))}
+        </ul>
       </div>
       You will no longer have access to archived Outcomes. Proceed?
     </div>
@@ -190,10 +187,13 @@ export default function MultiEditBar({
         active={viewsOpen.outcomeConnector}
         onClose={() => setViews({ ...defaultViews })}
       />
-   
 
       {/* open modal for archiving selected outcomes */}
-      <Modal onClose={reset} className="multi-edit-modal" active={viewsOpen.delete}>
+      <Modal
+        onClose={reset}
+        className="multi-edit-modal"
+        active={viewsOpen.delete}
+      >
         <ModalContent
           heading="Archiving"
           content={archiveContent}

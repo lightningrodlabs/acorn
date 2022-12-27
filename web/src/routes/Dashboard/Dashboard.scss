@@ -1,14 +1,11 @@
 .dashboard-background {
-  background-color: var(--bg-color-primary);
+  background-color: var(--bg-color-canvas);
   display: flex;
   flex-direction: row;
-  height: calc(100vh - 70px);
-  padding-top: 70px;
-}
-
-.dashboard-left-menu {
-  margin: 6px 40px 40px 20px;
-  position: fixed;
+  flex: 1;
+  height: 100%;
+  padding-top: 1rem;
+  overflow: hidden;
 }
 
 .dashboard-left-menu-item {
@@ -89,7 +86,6 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  /* border: 1.8px solid #d5d5d5; */
   border-radius: 30px;
   font-size: 14px;
   padding: 10px 0;
@@ -97,7 +93,7 @@
   cursor: pointer;
   margin-right: 40px;
   font-family: 'PlusJakartaSans-bold';
-  color: #4d4d4d;
+  color: var(--text-color-primary);
   transition: 0.2s all ease;
 }
 
@@ -210,7 +206,7 @@
 /* dont show a physical scroll bar */
 
 .my-projects-content::-webkit-scrollbar {
-  display: none;
+  // display: none;
 }
 
 .my-projects-content {
