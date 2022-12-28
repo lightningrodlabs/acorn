@@ -39,10 +39,15 @@ export default async function importProjectsData(
     return !project.projectMeta.isMigrated
   })
 
+  const migratedProjectsToJoin = migrationDataParsed.projects.filter((project) => {
+    return project.projectMeta.isMigrated
+  })
+
   // count the number of steps this is going to take
   const totalSteps =
     1 + // the create personal profile step
-    projectsToMigrate.length // the number of projects to import
+    projectsToMigrate.length + // the number of projects to import
+    migratedProjectsToJoin.length // the number of projects to join
   let stepsSoFar = 0
 
   // import active user's own profile
@@ -67,7 +72,16 @@ export default async function importProjectsData(
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
   }
+
+  // join each project that has already been migrated by a peer
+  for await (let projectData of migratedProjectsToJoin) {
+    const passphrase = projectData.projectMeta.passphrase
+    await installProjectApp(passphrase)
+    stepsSoFar++
+    onStep(stepsSoFar, totalSteps)
+  }
 }
+
 
 export async function installProjectAppAndImport(
   agentAddress: AgentPubKeyB64,
