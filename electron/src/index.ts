@@ -10,12 +10,13 @@ import initAgent, {
 
 import {
   devOptions,
-  projectsDnaPath,
+  projectsHappPath,
   prodOptions,
   stateSignalToText,
   BINARY_PATHS,
   INTEGRITY_VERSION_NUMBER,
 } from './holochain'
+import { PREV_VER_USER_DATA_MIGRATION_FILE_PATH, USER_DATA_MIGRATION_FILE_PATH } from './paths'
 
 // add the right-click "context" menu
 contextMenu({
@@ -187,7 +188,7 @@ app.on('activate', () => {
 })
 
 ipcMain.handle('getProjectsPath', () => {
-  return projectsDnaPath
+  return projectsHappPath
 })
 
 ipcMain.handle('getVersion', () => {
@@ -217,29 +218,16 @@ ipcMain.on('initiateUpdate', () => {
   }
 })
 
-const userNumber = process.env.ACORN_TEST_USER_2 ? "2" : ""
-const MIGRATION_FILE_NAME_PREFIX = `data-migration-for-integrity-version-`
-const dataPath = app.isPackaged ? app.getPath('userData') : path.join(__dirname, `../../user${userNumber}-data/`)
-const migrationFile = path.join(
-  dataPath,
-  `${MIGRATION_FILE_NAME_PREFIX}${INTEGRITY_VERSION_NUMBER}`
-)
-const prevIntegrityVersion = INTEGRITY_VERSION_NUMBER - 1
-const prevVersionMigrationFile = path.join(
-  dataPath,
-  `${MIGRATION_FILE_NAME_PREFIX}${prevIntegrityVersion}`
-)
-
 ipcMain.handle('persistExportData', (event, data) => {
   console.log('received persistExportData')
-  console.log('migrationFile', migrationFile)
+  console.log('migrationFile', USER_DATA_MIGRATION_FILE_PATH)
   try {
     const dataObj = JSON.parse(data)
     const modifiedData = {
       integrityVersion: INTEGRITY_VERSION_NUMBER,
       ...dataObj,
     }
-    fs.writeFileSync(migrationFile, JSON.stringify(modifiedData, null, 2), {
+    fs.writeFileSync(USER_DATA_MIGRATION_FILE_PATH, JSON.stringify(modifiedData, null, 2), {
       encoding: 'utf-8',
     })
   } catch (e) {}
@@ -248,9 +236,9 @@ ipcMain.handle('persistExportData', (event, data) => {
 ipcMain.handle('checkForMigrationData', (event) => {
   console.log('received checkForMigrationData')
   // INTEGRITY_VERSION_NUMBER will just be incremented one number at a time
-  if (fs.existsSync(prevVersionMigrationFile)) {
+  if (fs.existsSync(PREV_VER_USER_DATA_MIGRATION_FILE_PATH)) {
     const prevVersionMigrationDataString = fs.readFileSync(
-      prevVersionMigrationFile,
+      PREV_VER_USER_DATA_MIGRATION_FILE_PATH,
       { encoding: 'utf-8' }
     )
     return prevVersionMigrationDataString
@@ -262,11 +250,6 @@ ipcMain.handle('checkForMigrationData', (event) => {
 ipcMain.on('markMigrationDone', () => {
   console.log('received markMigrationDone')
   // INTEGRITY_VERSION_NUMBER will just be incremented one number at a time
-  const prevIntegrityVersion = INTEGRITY_VERSION_NUMBER - 1
-  const prevVersionMigrationFile = path.join(
-    dataPath,
-    `${MIGRATION_FILE_NAME_PREFIX}${prevIntegrityVersion}`
-  )
   // delete the file, thus completing the migration
-  fs.unlinkSync(prevVersionMigrationFile)
+  fs.unlinkSync(PREV_VER_USER_DATA_MIGRATION_FILE_PATH)
 })
