@@ -1,11 +1,7 @@
 import * as path from 'path'
 import { app } from 'electron'
 import { ElectronHolochainOptions, StateSignal, PathOptions } from '@lightningrodlabs/electron-holochain'
-
-// see the DEVELOPERS.md about incrementing
-// these values
-export const INTEGRITY_VERSION_NUMBER = 6
-export const KEYSTORE_VERSION_NUMBER = 3
+import { INTEGRITY_VERSION_NUMBER, KEYSTORE_VERSION_NUMBER, USER_DATA_PATH } from './paths'
 
 // these messages get seen on the splash page
 export enum StateSignalText {
@@ -64,15 +60,11 @@ const COMMUNITY_PROXY_URL =
 
 const devOptions: ElectronHolochainOptions = {
   happPath: profilesHappPath, // preload
-  datastorePath: process.env.ACORN_TEST_USER_2
-    ? '../user2-data/databases'
-    : path.join(__dirname, '../../user-data/databases'),
+  datastorePath: path.join(USER_DATA_PATH, `databases-${INTEGRITY_VERSION_NUMBER}`),
   appId: MAIN_APP_ID,
   appWsPort: process.env.ACORN_TEST_USER_2 ? 8899 : 8888,
   adminWsPort: process.env.ACORN_TEST_USER_2 ? 1236 : 1234,
-  keystorePath: process.env.ACORN_TEST_USER_2
-    ? '../user2-data/keystore'
-    : path.join(__dirname, '../../user-data/keystore'),
+  keystorePath: path.join(USER_DATA_PATH, `keystore-${INTEGRITY_VERSION_NUMBER}`),
   passphrase: 'test-passphrase',
   proxyUrl: COMMUNITY_PROXY_URL,
 }
@@ -87,4 +79,4 @@ const prodOptions: ElectronHolochainOptions = {
   proxyUrl: COMMUNITY_PROXY_URL,
 }
 
-export { projectsHappPath as projectsDnaPath, BINARY_PATHS, devOptions, prodOptions }
+export { projectsHappPath, BINARY_PATHS, devOptions, prodOptions }

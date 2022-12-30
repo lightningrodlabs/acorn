@@ -18,6 +18,7 @@ import { createWhoami } from '../redux/persistent/profiles/who-am-i/actions'
 import { setMember } from '../redux/persistent/projects/members/actions'
 import { simpleCreateProjectMeta } from '../redux/persistent/projects/project-meta/actions'
 import { installProjectApp } from '../projects/installProjectApp'
+import { joinProjectCellId } from '../redux/persistent/cells/actions'
 
 export default async function importProjectsData(
   store: any,
@@ -76,7 +77,8 @@ export default async function importProjectsData(
   // join each project that has already been migrated by a peer
   for await (let projectData of migratedProjectsToJoin) {
     const passphrase = projectData.projectMeta.passphrase
-    await installProjectApp(passphrase)
+    const [cellIdString, _, __] = await installProjectApp(passphrase)
+    await store.dispatch(joinProjectCellId(cellIdString))
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
   }
