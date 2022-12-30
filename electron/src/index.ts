@@ -217,14 +217,21 @@ ipcMain.on('initiateUpdate', () => {
   }
 })
 
+const userNumber = process.env.ACORN_TEST_USER_2 ? "2" : ""
 const MIGRATION_FILE_NAME_PREFIX = `data-migration-for-integrity-version-`
+const dataPath = app.isPackaged ? app.getPath('userData') : path.join(__dirname, `../../user${userNumber}-data/`)
+const migrationFile = path.join(
+  dataPath,
+  `${MIGRATION_FILE_NAME_PREFIX}${INTEGRITY_VERSION_NUMBER}`
+)
+const prevIntegrityVersion = INTEGRITY_VERSION_NUMBER - 1
+const prevVersionMigrationFile = path.join(
+  dataPath,
+  `${MIGRATION_FILE_NAME_PREFIX}${prevIntegrityVersion}`
+)
 
 ipcMain.handle('persistExportData', (event, data) => {
   console.log('received persistExportData')
-  const migrationFile = path.join(
-    app.getPath('userData'),
-    `${MIGRATION_FILE_NAME_PREFIX}${INTEGRITY_VERSION_NUMBER}`
-  )
   console.log('migrationFile', migrationFile)
   try {
     const dataObj = JSON.parse(data)
@@ -241,11 +248,6 @@ ipcMain.handle('persistExportData', (event, data) => {
 ipcMain.handle('checkForMigrationData', (event) => {
   console.log('received checkForMigrationData')
   // INTEGRITY_VERSION_NUMBER will just be incremented one number at a time
-  const prevIntegrityVersion = INTEGRITY_VERSION_NUMBER - 1
-  const prevVersionMigrationFile = path.join(
-    app.getPath('userData'),
-    `${MIGRATION_FILE_NAME_PREFIX}${prevIntegrityVersion}`
-  )
   if (fs.existsSync(prevVersionMigrationFile)) {
     const prevVersionMigrationDataString = fs.readFileSync(
       prevVersionMigrationFile,
@@ -262,7 +264,7 @@ ipcMain.on('markMigrationDone', () => {
   // INTEGRITY_VERSION_NUMBER will just be incremented one number at a time
   const prevIntegrityVersion = INTEGRITY_VERSION_NUMBER - 1
   const prevVersionMigrationFile = path.join(
-    app.getPath('userData'),
+    dataPath,
     `${MIGRATION_FILE_NAME_PREFIX}${prevIntegrityVersion}`
   )
   // delete the file, thus completing the migration

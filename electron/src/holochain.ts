@@ -65,14 +65,14 @@ const COMMUNITY_PROXY_URL =
 const devOptions: ElectronHolochainOptions = {
   happPath: profilesHappPath, // preload
   datastorePath: process.env.ACORN_TEST_USER_2
-    ? '../user2-data/databases'
-    : path.join(__dirname, '../../user-data/databases'),
+    ? path.join(__dirname, `../../user2-data/databases-${INTEGRITY_VERSION_NUMBER}`)
+    : path.join(__dirname, `../../user-data/databases-${INTEGRITY_VERSION_NUMBER}`),
   appId: MAIN_APP_ID,
   appWsPort: process.env.ACORN_TEST_USER_2 ? 8899 : 8888,
   adminWsPort: process.env.ACORN_TEST_USER_2 ? 1236 : 1234,
   keystorePath: process.env.ACORN_TEST_USER_2
-    ? '../user2-data/keystore'
-    : path.join(__dirname, '../../user-data/keystore'),
+    ? path.join(__dirname, `../../user2-data/keystore-${KEYSTORE_VERSION_NUMBER}`)
+    : path.join(__dirname, `../../user-data/keystore-${KEYSTORE_VERSION_NUMBER}`),
   passphrase: 'test-passphrase',
   proxyUrl: COMMUNITY_PROXY_URL,
 }
