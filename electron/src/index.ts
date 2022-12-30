@@ -14,9 +14,8 @@ import {
   prodOptions,
   stateSignalToText,
   BINARY_PATHS,
-  INTEGRITY_VERSION_NUMBER,
 } from './holochain'
-import { PREV_VER_USER_DATA_MIGRATION_FILE_PATH, USER_DATA_MIGRATION_FILE_PATH } from './paths'
+import { INTEGRITY_VERSION_NUMBER, PREV_VER_USER_DATA_MIGRATION_FILE_PATH, USER_DATA_MIGRATION_FILE_PATH } from './paths'
 
 // add the right-click "context" menu
 contextMenu({

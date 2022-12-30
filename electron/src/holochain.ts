@@ -1,12 +1,7 @@
 import * as path from 'path'
 import { app } from 'electron'
 import { ElectronHolochainOptions, StateSignal, PathOptions } from '@lightningrodlabs/electron-holochain'
-import { USER_DATA_PATH } from './paths'
-
-// see the DEVELOPERS.md about incrementing
-// these values
-export const INTEGRITY_VERSION_NUMBER = 6
-export const KEYSTORE_VERSION_NUMBER = 3
+import { INTEGRITY_VERSION_NUMBER, KEYSTORE_VERSION_NUMBER, USER_DATA_PATH } from './paths'
 
 // these messages get seen on the splash page
 export enum StateSignalText {
