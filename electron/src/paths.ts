@@ -3,7 +3,7 @@ import * as path from 'path'
 
 // see the DEVELOPERS.md about incrementing
 // these values
-export const INTEGRITY_VERSION_NUMBER = 6
+export const INTEGRITY_VERSION_NUMBER = 7
 export const KEYSTORE_VERSION_NUMBER = 3
 
 const userNumber = process.env.ACORN_TEST_USER_2 ? "2" : ""

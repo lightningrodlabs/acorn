@@ -9,7 +9,7 @@ name = "projects"
 
 [dependencies]
 hdk_crud = { version = "0.9.0", features = ["no_example"] }
-hdk = "0.1.0-beta-rc.0"
+hdk = "0.1.0-beta-rc.1"
 holo_hash = {version = "0.1.0-beta-rc.0", features = ["encoding"]}
 projects_integrity = { path = "../projects_integrity" }
 paste = "*"
