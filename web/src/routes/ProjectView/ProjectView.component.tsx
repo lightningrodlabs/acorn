@@ -20,8 +20,6 @@ import { ComputedOutcome, Outcome, CreateOutcomeWithConnectionInput } from '../.
 import selectAndComputeOutcomes from '../../selectors/computeOutcomes'
 import selectOutcomeAndAncestors from '../../selectors/outcomeAndAncestors'
 import { getAdminWs } from '../../hcWebsockets'
-import { authorizeSigningCredentials } from '@holochain/client'
-import { projectsZomeFunctions } from '../../api/zomeFunctions'
 import { cellIdFromString } from '../../utils'
 
 export type ProjectViewInnerOwnProps = {
@@ -131,7 +129,7 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
     setActiveProject(projectId)
     getAdminWs().then(async (adminWs) => {
       // authorize zome calls on each page refresh
-      await authorizeSigningCredentials(adminWs, cellIdFromString(projectId), projectsZomeFunctions)
+      await adminWs.authorizeSigningCredentials(cellIdFromString(projectId))
       triggerRealtimeInfoSignal()
       fetchProjectMeta()
       // these do not affect map view layout
