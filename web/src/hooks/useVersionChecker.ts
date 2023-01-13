@@ -73,6 +73,9 @@ export default function useVersionChecker(): {
             }
           }
         })
+        .catch((e) => {
+          console.log('could not check for updates. likely cause is no internet connectivity')
+        })
     }
     // check every 10 minutes
     const timerID = setInterval(checkForGithubUpdates, 1000 * 60 * 10)

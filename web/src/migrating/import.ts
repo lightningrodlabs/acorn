@@ -1,4 +1,3 @@
-import { createImportedProfile } from '../redux/persistent/profiles/agents/actions'
 import { createOutcome } from '../redux/persistent/projects/outcomes/actions'
 import { createConnection } from '../redux/persistent/projects/connections/actions'
 import { createOutcomeComment } from '../redux/persistent/projects/outcome-comments/actions'
@@ -9,7 +8,7 @@ import ProfilesZomeApi from '../api/profilesApi'
 import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { createTag } from '../redux/persistent/projects/tags/actions'
-import { Outcome, ProjectMeta, Tag } from '../types'
+import { Outcome, Tag } from '../types'
 import { WireRecord } from '../api/hdkCrud'
 import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../types/shared'
 import { RootState } from '../redux/reducer'
@@ -18,6 +17,7 @@ import { createWhoami } from '../redux/persistent/profiles/who-am-i/actions'
 import { setMember } from '../redux/persistent/projects/members/actions'
 import { simpleCreateProjectMeta } from '../redux/persistent/projects/project-meta/actions'
 import { installProjectApp } from '../projects/installProjectApp'
+import { joinProjectCellId } from '../redux/persistent/cells/actions'
 
 export default async function importProjectsData(
   store: any,
@@ -39,10 +39,15 @@ export default async function importProjectsData(
     return !project.projectMeta.isMigrated
   })
 
+  const migratedProjectsToJoin = migrationDataParsed.projects.filter((project) => {
+    return project.projectMeta.isMigrated
+  })
+
   // count the number of steps this is going to take
   const totalSteps =
     1 + // the create personal profile step
-    projectsToMigrate.length // the number of projects to import
+    projectsToMigrate.length + // the number of projects to import
+    migratedProjectsToJoin.length // the number of projects to join
   let stepsSoFar = 0
 
   // import active user's own profile
@@ -67,7 +72,17 @@ export default async function importProjectsData(
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
   }
+
+  // join each project that has already been migrated by a peer
+  for await (let projectData of migratedProjectsToJoin) {
+    const passphrase = projectData.projectMeta.passphrase
+    const [cellIdString, _, __] = await installProjectApp(passphrase)
+    await store.dispatch(joinProjectCellId(cellIdString))
+    stepsSoFar++
+    onStep(stepsSoFar, totalSteps)
+  }
 }
+
 
 export async function installProjectAppAndImport(
   agentAddress: AgentPubKeyB64,
