@@ -41,10 +41,9 @@ function AppProvided({
 
 }) {
     const [storeLoaded, setStoreLoaded] = useState(false)
+    const [appletProjectId, setAppletProjectId] = useState(null)
     const middleware = [layoutWatcher, realtimeInfoWatcher]
     // assuming only info about current applet is passed in and that the acorn we applet has only one DNA
-    // let appletProjectId = isWeApplet ? cellIdToString(appletInfo[0].appInfo.cell_info[APPLET_ROLE_NAME][0]) : ''
-    let appletProjectId
     // This enables the redux-devtools browser extension
     // which gives really awesome debugging for apps that use redux
     // @ts-ignore
@@ -77,10 +76,13 @@ function AppProvided({
                         agentPubKey = cellId[1]
                     }
                     else {
+                        console.log('app Info', appletInfo)
                         agentPubKey = weStore.profilesStore.myAgentPubKey
                         const cellInfo = appletInfo[0].appInfo.cell_info[APPLET_ROLE_NAME][0]
                         cellId = ("Provisioned" in cellInfo) ? cellInfo.Provisioned.cell_id : undefined
-                        appletProjectId = cellIdToString(cellId)
+                        const appletProjectId = cellIdToString(cellId)
+                        setAppletProjectId(appletProjectId)
+                        console.log('applet has id', appletProjectId)
                     }
                     setAgentPubKey(agentPubKey)
                     if (cellId == undefined) {
@@ -156,11 +158,11 @@ function AppProvided({
         }
         prepareStore().catch(console.error)
     }, [])
-    
+    console.log('applet id before render', appletProjectId)
+    console.log('is we applet', isWeApplet)
     return (
         <Provider store={store.current}>
-            {isWeApplet && <App appletProjectId={appletProjectId} weServices={weStore} />}
-            {!isWeApplet && <App />}
+            {isWeApplet ? <App appletProjectId={appletProjectId} weServices={weStore} /> : <App />}
         </Provider>
     )
 }

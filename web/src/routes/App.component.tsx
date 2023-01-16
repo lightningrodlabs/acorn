@@ -119,6 +119,8 @@ const App: React.FC<AppProps> = ({
   const finishMigrationChecker = useFinishMigrationChecker()
   const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
 
+  console.log('applet project id from app component', appletProjectId)
+
   useEffect(() => {
     if (fileDownloaded) {
       setFileDownloaded(false)
@@ -195,10 +197,9 @@ const App: React.FC<AppProps> = ({
                 }}
               />
             )}
-            <Switch>
               {/* Add new routes in here */}
               {/* routes for electron app */}
-              {!appletProjectId && (
+              {!weServices && (
               <Switch>
                 <Route path="/intro" component={IntroScreen} />
                 <Route path="/register" component={CreateProfilePage} />
@@ -222,13 +223,12 @@ const App: React.FC<AppProps> = ({
               </Switch>
               )}
               {/* routes for we applet */}
-              {appletProjectId && (
+              {weServices && (
               <Switch>
                 <Route path="/" render={() => <Redirect to={`/project/${appletProjectId}/map`} />} />
                 <Route path="/project/:projectId" component={ProjectView} />
               </Switch>
               )}
-            </Switch>
 
             <GlobalModals
               {...{
@@ -264,12 +264,8 @@ const App: React.FC<AppProps> = ({
             {!(agentAddress && finishMigrationChecker.hasChecked) && (
               <LoadingScreen />
             )}
-            {/* {!appletProjectId && (
-              <> */}
-              {redirToIntro && <Redirect to="/intro" />}
-              {redirToFinishMigration && <Redirect to="/finish-update" />}
-              {/* </>
-            )} */}
+            {redirToIntro && <Redirect to="/intro" />}
+            {redirToFinishMigration && <Redirect to="/finish-update" />}
             {agentAddress && whoami && (
               <Footer
                 hiddenAchievedOutcomes={hiddenAchievedOutcomes}
