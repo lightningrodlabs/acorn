@@ -104,24 +104,6 @@ const MapView: React.FC<MapViewProps> = ({
       canvas,
       computedOutcomesKeyed
     )
-    const doRender = () => {
-      const state: RootState = store.getState()
-      const activeProject = state.ui.activeProject
-      if (activeProject) {
-        const renderProps = selectRenderProps({
-          state,
-          computedOutcomesKeyed,
-          activeProject,
-        })
-        console.log('before render time', Date.now())
-        render(renderProps, canvas)
-        console.log('after render time', Date.now())
-      }
-    }
-    // do initial render
-    doRender()
-    // re-render any time an action is dispatched
-    const unsub = store.subscribe(doRender)
     return function cleanup() {
       removeEventListeners()
     }

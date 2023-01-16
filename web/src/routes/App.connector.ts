@@ -17,7 +17,7 @@ import ProfilesZomeApi from '../api/profilesApi'
 import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { RootState } from '../redux/reducer'
-import App, { AppProps, AppStateProps, AppDispatchProps } from './App.component'
+import App, { AppProps, AppStateProps, AppDispatchProps, AppOwnProps } from './App.component'
 import selectProjectMembersPresent from '../redux/persistent/projects/realtime-info-signal/select'
 import WeProfilesZomeApi from '../api/weProfilesApi'
 import {
@@ -121,6 +121,7 @@ function mapDispatchToProps(dispatch): AppDispatchProps {
 function mergeProps(
   stateProps: AppStateProps,
   dispatchProps: AppDispatchProps,
+  ownProps: AppOwnProps,
 ): AppProps {
   const { profilesCellIdString } = stateProps
   let cellId
@@ -131,9 +132,10 @@ function mergeProps(
   return {
     ...stateProps,
     ...dispatchProps,
+    ...ownProps,
     updateWhoami: async (entry: Profile, actionHash: string) => {
       const appWebsocket = await getAppWs()
-      const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+      const profilesZomeApi = !ownProps.appletProjectId ? new ProfilesZomeApi(appWebsocket) : new WeProfilesZomeApi(appWebsocket, ownProps.weServices)
       const updatedWhoami = await profilesZomeApi.profile.updateWhoami(cellId, {
         entry,
         actionHash,

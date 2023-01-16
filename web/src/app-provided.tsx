@@ -7,12 +7,11 @@ import { useEffect, useRef } from "react"
 import { applyMiddleware, createStore, compose } from "redux"
 import { Provider } from 'react-redux'
 import App from './routes/App.connector'
-import WeAppletApp from './routes/WeAppletApp.connector'
 import { layoutWatcher } from './redux/ephemeral/layout/middleware'
 import { realtimeInfoWatcher } from './redux/persistent/projects/realtime-info-signal/middleware'
 import acorn from './redux/reducer'
 import signalsHandlers from './signalsHandlers'
-import { MAIN_APP_ID, PROFILES_ROLE_ID } from './holochainConfig'
+import { MAIN_APP_ID, PROFILES_ROLE_NAME } from './holochainConfig'
 import { getAppWs, setAgentPubKey } from './hcWebsockets'
 import { cellIdToString } from './utils'
 import { setProfilesCellId, setProjectsCellIds } from './redux/persistent/cells/actions'
@@ -23,20 +22,19 @@ import { fetchAgentAddress } from './redux/persistent/profiles/agent-address/act
 import { getProjectCellIdStrings } from './projectAppIds'
 import WeProfilesZomeApi from './api/weProfilesApi'
 import ProjectsZomeApi from './api/projectsApi'
-import { PriorityMode } from './types'
 import { simpleCreateProjectMeta } from './redux/persistent/projects/project-meta/actions'
 
 function AppProvided({
     appWs,
     adminWs,
-    weServices,
-    appletAppInfo,
+    weStore,
+    appletInfo,
     isWeApplet
 }) {
     const [storeLoaded, setStoreLoaded] = useState(false)
     const middleware = [layoutWatcher, realtimeInfoWatcher]
     // assuming only info about current applet is passed in and that the acorn we applet has only one DNA
-    let appletProjectId = isWeApplet ? cellIdToString(appletAppInfo[0].installedAppInfo.cell_data[0].cell_id) : ''
+    let appletProjectId = isWeApplet ? cellIdToString(appletInfo[0].installedAppInfo.cell_data[0].cell_id) : ''
     // This enables the redux-devtools browser extension
     // which gives really awesome debugging for apps that use redux
     // @ts-ignore
@@ -63,13 +61,13 @@ function AppProvided({
                             installed_app_id: MAIN_APP_ID,
                         })
                         cellId = profilesInfo.cell_data.find(
-                            ({ role_id }) => role_id === PROFILES_ROLE_ID
+                            ({ role_id }) => role_id === PROFILES_ROLE_NAME
                         ).cell_id
                         agentPubKey = cellId[1]
                     }
                     else {
-                        agentPubKey = weServices.profilesStore.myAgentPubKey
-                        cellId = appletAppInfo[0].installedAppInfo.cell_data[0].cell_id
+                        agentPubKey = weStore.profilesStore.myAgentPubKey
+                        cellId = appletInfo[0].installedAppInfo.cell_data[0].cell_id
                         
                         // TODO get appletProjectId and assign it to the variable
                         // this will have to come from `appletAppInfo` but will need to know how to get the installed_app_id of this specific instance of the applet
@@ -80,7 +78,7 @@ function AppProvided({
                     // currently for We applet this is being set to the project CellId, not sure how to get the we group cell id without knowing the assigned id
                     store.current.dispatch(setProfilesCellId(cellIdString))
                     // all functions of the Profiles DNA
-                    const profilesZomeApi = isWeApplet ? new WeProfilesZomeApi(appWs, weServices) : new ProfilesZomeApi(appWs)
+                    const profilesZomeApi = isWeApplet ? new WeProfilesZomeApi(appWs, weStore) : new ProfilesZomeApi(appWs)
         
                     const profiles = await profilesZomeApi.profile.fetchAgents(cellId)
                     store.current.dispatch(fetchAgents(cellIdString, profiles))
@@ -108,8 +106,8 @@ function AppProvided({
                                 image: '',
                                 passphrase: 'test',
                                 isImported: false,
-                                priorityMode: PriorityMode.Universal,
                                 topPriorityOutcomes: [],
+                                isMigrated: null,
                             })
                             console.log('created meta', simpleCreatedProjectMeta)
                             store.current.dispatch(simpleCreateProjectMeta(cellIdToString(cellId), simpleCreatedProjectMeta))
@@ -126,10 +124,8 @@ function AppProvided({
     
     return (
         <Provider store={store.current}>
-            <AppRuntimeContext.Provider value={isWeApplet}>
-                {isWeApplet && <WeAppletApp appletProjectId={appletProjectId} weServices={weServices} />}
-                {!isWeApplet && <App />}
-            </AppRuntimeContext.Provider>
+            {isWeApplet && <App appletProjectId={appletProjectId} weServices={weStore} />}
+            {!isWeApplet && <App />}
         </Provider>
     )
 }

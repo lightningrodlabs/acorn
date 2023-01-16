@@ -54,6 +54,12 @@ export type AppStateProps = {
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
 }
+
+export type AppOwnProps = {
+  appletProjectId?: string,
+  weServices?: WeServices
+}
+
 export type AppDispatchProps = {
   dispatch: any
   setNavigationPreference: (preference: 'mouse' | 'trackpad') => void
@@ -70,7 +76,7 @@ export type AppMergeProps = {
   updateWhoami: (entry: Profile, actionHash: ActionHashB64) => Promise<void>
 }
 
-export type AppProps = AppStateProps & AppDispatchProps & AppMergeProps
+export type AppProps = AppStateProps & AppDispatchProps & AppMergeProps & AppOwnProps
 
 const App: React.FC<AppProps> = ({
   members,
@@ -95,6 +101,8 @@ const App: React.FC<AppProps> = ({
   hideSmallOutcomes,
   showAchievedOutcomes,
   hideAchievedOutcomes,
+  appletProjectId,
+  weServices,
 }) => {
   const [exportedProjectName, setExportedProjectName] = useState('')
   const [showExportedModal, setShowExportedModal] = useState(false)
@@ -189,25 +197,37 @@ const App: React.FC<AppProps> = ({
             )}
             <Switch>
               {/* Add new routes in here */}
-              <Route path="/intro" component={IntroScreen} />
-              <Route path="/register" component={CreateProfilePage} />
-              <Route path="/dashboard" component={Dashboard} />
-              <Route path="/project/:projectId" component={ProjectView} />
-              <Route
-                path="/run-update"
-                render={() => (
-                  <RunUpdate preRestart updateVersionInfo={updateVersionInfo} />
-                )}
-              />
-              <Route
-                path="/finish-update"
-                render={() => (
-                  <RunUpdate
-                    migrationData={finishMigrationChecker.dataForNeedsMigration}
-                  />
-                )}
-              />
-              <Route path="/" render={() => <Redirect to="/dashboard" />} />
+              {/* routes for electron app */}
+              {!appletProjectId && (
+              <Switch>
+                <Route path="/intro" component={IntroScreen} />
+                <Route path="/register" component={CreateProfilePage} />
+                <Route path="/dashboard" component={Dashboard} />
+                <Route path="/project/:projectId" component={ProjectView} />
+                <Route
+                  path="/run-update"
+                  render={() => (
+                    <RunUpdate preRestart updateVersionInfo={updateVersionInfo} />
+                  )}
+                />
+                <Route
+                  path="/finish-update"
+                  render={() => (
+                    <RunUpdate
+                      migrationData={finishMigrationChecker.dataForNeedsMigration}
+                    />
+                  )}
+                />
+                <Route path="/" render={() => <Redirect to="/dashboard" />} />
+              </Switch>
+              )}
+              {/* routes for we applet */}
+              {appletProjectId && (
+              <Switch>
+                <Route path="/" render={() => <Redirect to={`/project/${appletProjectId}/map`} />} />
+                <Route path="/project/:projectId" component={ProjectView} />
+              </Switch>
+              )}
             </Switch>
 
             <GlobalModals
@@ -244,8 +264,12 @@ const App: React.FC<AppProps> = ({
             {!(agentAddress && finishMigrationChecker.hasChecked) && (
               <LoadingScreen />
             )}
-            {redirToIntro && <Redirect to="/intro" />}
-            {redirToFinishMigration && <Redirect to="/finish-update" />}
+            {/* {!appletProjectId && (
+              <> */}
+              {redirToIntro && <Redirect to="/intro" />}
+              {redirToFinishMigration && <Redirect to="/finish-update" />}
+              {/* </>
+            )} */}
             {agentAddress && whoami && (
               <Footer
                 hiddenAchievedOutcomes={hiddenAchievedOutcomes}
