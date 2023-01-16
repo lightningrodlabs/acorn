@@ -1,14 +1,13 @@
 import {
   AdminWebsocket,
   AppWebsocket,
-  InstalledAppInfo,
   InstalledCell,
 } from "@holochain/client";
 import {
   WeApplet,
   AppletRenderers,
   WeServices,
-  InstalledAppletInfo,
+  AppletInfo,
 } from "@lightningrodlabs/we-applet";
 import React from 'react'
 import ReactDOM from "react-dom"
@@ -20,8 +19,8 @@ const acornApplet: WeApplet = {
   async appletRenderers(
     appWebsocket: AppWebsocket,
     adminWebsocket: AdminWebsocket,
-    weServices: WeServices,
-    appletAppInfo: InstalledAppletInfo[]
+    weStore: WeServices,
+    appletInfo: AppletInfo[]
   ): Promise<AppletRenderers> {
     return {
       full(element: HTMLElement, registry: CustomElementRegistry) {
@@ -38,7 +37,7 @@ const acornApplet: WeApplet = {
 
         shadowRoot.appendChild(container)
         ReactDOM.render(
-          React.createElement(AppProvided, {appWs: appWebsocket, adminWs: adminWebsocket, weServices, appletAppInfo, isWeApplet: true}, null),
+          React.createElement(AppProvided, {appWs: appWebsocket, adminWs: adminWebsocket, weStore, appletInfo, isWeApplet: true}, null),
           container
         );
       },
