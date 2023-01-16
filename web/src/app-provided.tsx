@@ -63,70 +63,6 @@ function AppProvided({
     useEffect(() => {
         const prepareStore = async () => {
             getAppWs(appWs.client.socket.url, signalCallback).then(async (client) => {
-                // try {
-                //     let agentPubKey
-                //     let cellId
-                //     if (!isWeApplet) {
-                //         const profilesInfo = await appWs.appInfo({
-                //             installed_app_id: MAIN_APP_ID,
-                //         })
-                //         cellId = profilesInfo.cell_data.find(
-                //             ({ role_id }) => role_id === PROFILES_ROLE_NAME
-                //         ).cell_id
-                //         agentPubKey = cellId[1]
-                //     }
-                //     else {
-                //         agentPubKey = weStore.profilesStore.myAgentPubKey
-                //         cellId = appletInfo[0].installedAppInfo.cell_data[0].cell_id
-                        
-                //         // TODO get appletProjectId and assign it to the variable
-                //         // this will have to come from `appletAppInfo` but will need to know how to get the installed_app_id of this specific instance of the applet
-                //     }
-                //     // cache buffer version of agentPubKey
-                //     setAgentPubKey(agentPubKey)
-                //     const cellIdString = cellIdToString(cellId)
-                //     // currently for We applet this is being set to the project CellId, not sure how to get the we group cell id without knowing the assigned id
-                //     store.current.dispatch(setProfilesCellId(cellIdString))
-                //     // all functions of the Profiles DNA
-                //     const profilesZomeApi = isWeApplet ? new WeProfilesZomeApi(appWs, weStore) : new ProfilesZomeApi(appWs)
-        
-                //     const profiles = await profilesZomeApi.profile.fetchAgents(cellId)
-                //     store.current.dispatch(fetchAgents(cellIdString, profiles))
-                //     const profile = await profilesZomeApi.profile.whoami(cellId)
-                //     store.current.dispatch(whoami(cellIdString, profile))
-                //     const agentAddress = await profilesZomeApi.profile.fetchAgentAddress(cellId)
-                //     console.log('initial fetch of agent address: ', agentAddress)
-                //     store.current.dispatch(fetchAgentAddress(cellIdString, agentAddress))
-        
-                //     // which projects do we have installed?
-                //     const projectCellIds = isWeApplet ? [cellIdString] : await getProjectCellIdStrings()
-                //     store.current.dispatch(setProjectsCellIds(projectCellIds))
-                //     setStoreLoaded(true)
-
-
-                //     // initialize project meta with default values if an applet
-                //     if (isWeApplet) {
-                //         const projectsZomeApi = new ProjectsZomeApi(appWs)
-                //         const projectMetaExists = await projectsZomeApi.projectMeta.checkProjectMetaExists(cellId)
-                //         if (!projectMetaExists) {
-                //             const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(cellId, {
-                //                 creatorAgentPubKey: agentAddress,
-                //                 createdAt: Date.now(), // f64
-                //                 name: 'project',
-                //                 image: '',
-                //                 passphrase: 'test',
-                //                 isImported: false,
-                //                 topPriorityOutcomes: [],
-                //                 isMigrated: null,
-                //             })
-                //             console.log('created meta', simpleCreatedProjectMeta)
-                //             store.current.dispatch(simpleCreateProjectMeta(cellIdToString(cellId), simpleCreatedProjectMeta))
-                //         }
-                //     }
-                // } catch (e) {
-                //     console.error('error at init', e)
-                //     return
-                // }
                 // connect the signal handler to the app websocket
                 client.on('signal', signalCallback)
                 try {
@@ -152,7 +88,6 @@ function AppProvided({
                     }
                     else {
                     // authorize zome call signer
-                    // const adminWs = await getAdminWs()
                     await adminWs.authorizeSigningCredentials(cellId)
                     
                 
@@ -162,7 +97,6 @@ function AppProvided({
                     const cellIdString = cellIdToString(cellId)
                     store.current.dispatch(setProfilesCellId(cellIdString))
                     // all functions of the Profiles DNA
-                    // const profilesZomeApi = new ProfilesZomeApi(client)
                     const profilesZomeApi = isWeApplet ? new WeProfilesZomeApi(client, weStore) : new ProfilesZomeApi(client)
                 
                     const profiles = await profilesZomeApi.profile.fetchAgents(cellId)
@@ -185,7 +119,6 @@ function AppProvided({
                     const agentAddress = await profilesZomeApi.profile.fetchAgentAddress(cellId)
                     store.current.dispatch(fetchAgentAddress(cellIdString, agentAddress))
                     // which projects do we have installed?
-                    // const projectCellIds = await getProjectCellIdStrings()
                     const projectCellIds = isWeApplet ? [cellIdString] : await getProjectCellIdStrings()
                     
                     // before any zome calls can be made, we need to gain zome call signing authorization
