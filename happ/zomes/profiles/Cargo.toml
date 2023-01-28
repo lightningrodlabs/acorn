@@ -8,9 +8,9 @@ crate-type = ["cdylib", "rlib"]
 name = "profiles"
 
 [dependencies]
-hdk_crud = { version = "0.10.0", features = ["no_example"] }
-hdk = "0.1.0-beta-rc.1" 
-holo_hash = {version = "0.1.0-beta-rc.0", features = ["encoding", "fixturators"]}
+hdk_crud = { version = "0.11.0", features = ["no_example"] }
+hdk = "0.1.0" 
+holo_hash = {version = "0.1.0", features = ["encoding", "fixturators"]}
 profiles_integrity = { path = "../profiles_integrity" }
 chrono = { version = "=0.4.22", default-features = false, features = ["clock", "std", "oldtime", "serde"] }
 paste = "*"

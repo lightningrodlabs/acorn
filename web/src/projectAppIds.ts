@@ -1,3 +1,4 @@
+import { CellType } from '@holochain/client'
 import _ from 'lodash'
 import { getAppWs, getAdminWs } from './hcWebsockets'
 import { PROJECT_APP_PREFIX } from './holochainConfig'
@@ -12,7 +13,7 @@ export async function getAllApps() {
   const appProjects = (
     appIds.map(appInfo => {
       const cellInfo = Object.values(appInfo.cell_info)[0][0]
-      const cellId = ("Provisioned" in cellInfo) ? cellInfo.Provisioned.cell_id : undefined
+      const cellId = (CellType.Provisioned in cellInfo) ? cellInfo[CellType.Provisioned].cell_id : undefined
       
       return {
         ...appInfo,

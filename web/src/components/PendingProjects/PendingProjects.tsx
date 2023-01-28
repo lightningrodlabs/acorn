@@ -1,4 +1,4 @@
-import { AppInfo } from '@holochain/client'
+import { AppInfo, CellType } from '@holochain/client'
 import React, { useEffect, useState } from 'react'
 import { getAllApps } from '../../projectAppIds'
 import { uidToPassphrase } from '../../secrets'
@@ -38,8 +38,8 @@ function PendingProjects({
         )
         const cellInfo = Object.values(appInfo.cell_info)[0][0]
         const networkSeed =
-          'Provisioned' in cellInfo
-            ? cellInfo.Provisioned.dna_modifiers.network_seed
+          CellType.Provisioned in cellInfo
+            ? cellInfo[CellType.Provisioned].dna_modifiers.network_seed
             : ''
         const appInfoForCellId = {
           networkSeed,
