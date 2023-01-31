@@ -76,7 +76,7 @@ export default function outcomesAsTrees(
   const computedOutcomesKeyed: ProjectComputedOutcomes['computedOutcomesKeyed'] = {}
   // recursively calls itself
   // so that it constructs the full sub-tree for each root Outcome
-  function getOutcome(outcomeActionHash: ActionHashB64): ComputedOutcome {
+  const getOutcome = (depth: number) => (outcomeActionHash: ActionHashB64) => {
     const self = allOutcomes[outcomeActionHash]
     if (!self) {
       // defensive coding, during loading
@@ -86,7 +86,7 @@ export default function outcomesAsTrees(
       // find the connections indicating the children of this outcome
       .filter((connection) => connection.parentActionHash === outcomeActionHash)
       // actually nest the children Outcomes, recurse
-      .map((connection) => getOutcome(connection.childActionHash))
+      .map((connection) => getOutcome(depth + 1)(connection.childActionHash))
       .filter((maybeOutcome) => !!maybeOutcome)
 
     const computedOutcome = {
@@ -94,6 +94,7 @@ export default function outcomesAsTrees(
       computedAchievementStatus: computeAchievementStatus(self, children),
       computedScope: computeScope(self, children),
       children,
+      depth,
     }
     // add it to our 'tracking' object as well
     // which will be used for quicker access to specific
@@ -102,7 +103,7 @@ export default function outcomesAsTrees(
     return computedOutcome
   }
   // start with the root Outcomes, and recurse down to their children
-  const computedOutcomesAsTree = noParentsAddresses.map(getOutcome)
+  const computedOutcomesAsTree = noParentsAddresses.map(getOutcome(0))
 
   return {
     computedOutcomesAsTree,

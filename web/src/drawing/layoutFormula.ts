@@ -122,7 +122,7 @@ function layoutForTree(
     // might be
     const height =
       allOutcomeDimensions[outcome.actionHash].height +
-      (numDescendants > 0 ? Math.pow(numDescendants + 25, 1.5) : 60) +
+      (numDescendants > 0 ? Math.pow(numDescendants + 25, 1.5) : 60) // +
       VERTICAL_SPACING
 
     node.actionHash = outcome.actionHash
@@ -160,7 +160,8 @@ export default function layoutFormula(
     [outcomeActionHash: ActionHashB64]: boolean
   },
   hiddenSmalls: boolean,
-  hiddenAchieved: boolean
+  hiddenAchieved: boolean,
+  depthPerception: number
 ): LayoutState {
   let coordinates = {}
   // just do this for efficiency, it's not going to
@@ -173,7 +174,7 @@ export default function layoutFormula(
   } = {}
   Object.keys(trees.computedOutcomesKeyed).forEach((outcomeActionHash) => {
     const outcome = trees.computedOutcomesKeyed[outcomeActionHash]
-    const width = getOutcomeWidth({ outcome, zoomLevel })
+    const width = getOutcomeWidth({ outcome, zoomLevel, depthPerception })
     const height = getOutcomeHeight({
       ctx,
       outcome,

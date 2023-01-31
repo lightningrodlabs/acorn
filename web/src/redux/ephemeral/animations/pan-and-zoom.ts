@@ -43,6 +43,7 @@ export default function panZoomToFrame(
   const projectTags = Object.values(state.projects.tags[activeProject] || {})
   const hiddenSmallOutcomes = state.ui.mapViewSettings.hiddenSmallOutcomes
   const hiddenAchievedOutcomes = state.ui.mapViewSettings.hiddenAchievedOutcomes
+  const depthPerception = state.ui.depthPerception.value
   const hiddenSmalls = hiddenSmallOutcomes.includes(activeProject)
   const hiddenAchieved = hiddenAchievedOutcomes.includes(activeProject)
 
@@ -58,6 +59,7 @@ export default function panZoomToFrame(
     collapsedOutcomes,
     hiddenSmalls,
     hiddenAchieved,
+    depthPerception,
   )
 
   // this accounts for a special case where the caller doesn't
@@ -97,6 +99,7 @@ export default function panZoomToFrame(
   const outcomeWidth = getOutcomeWidth({
     outcome,
     zoomLevel, // use the target scale
+    depthPerception,
   })
   const outcomeHeight = getOutcomeHeight({
     outcome,

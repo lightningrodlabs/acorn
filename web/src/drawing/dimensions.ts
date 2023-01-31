@@ -280,23 +280,48 @@ export function getOutcomeDimensions({
 
 export function getOutcomeWidth({
   outcome,
+  depthPerception = 0,
   zoomLevel,
 }: {
   outcome: ComputedOutcome
-  zoomLevel: number
+  depthPerception?: number
+  zoomLevel?: number
 }) {
   // outcome width = outcome statement width + ( 2 * width padding)
-  const defaultWidth = 520 // 520 = 392 + ( 2 * 64 )
+  // 520 = 392 + ( 2 * 64 )
+  const defaultWidth = 520
+  const depth = outcome.depth || 0
+  // linear
+  const minWidth = 50
+  let depthSubtraction = 0
+  if (depthPerception === 1) {
+    if (depth === 1) {
+      depthSubtraction = 50
+    } else if (depth === 2) {
+      depthSubtraction = 100
+    } else if (depth === 3) {
+      depthSubtraction = 150
+    } else if (depth > 3) {
+      depthSubtraction = 200
+    }
+  } else if (depthPerception === 2) {
 
-  if (outcome.computedScope === ComputedScope.Small) {
-    // 0.02 < zoomLevel < 2.5
-    if (zoomLevel < 1) {
-      // 0.02 < zoomLevel < 1
-      return defaultWidth * Math.min(zoomLevel * 1.4, 1)
-    } else return defaultWidth
-  } else {
-    return defaultWidth
+  } else if (depthPerception === 3) {
+
   }
+  return Math.max(minWidth, defaultWidth - depthSubtraction)
+  // logarithmic
+  // return defaultWidth * (1 / depth + 1)
+
+  // if (outcome.computedScope === ComputedScope.Small) {
+  //   // 0.02 < zoomLevel < 2.5
+  //   if (zoomLevel < 1) {
+  //     // 0.02 < zoomLevel < 1
+  //     return defaultWidth * Math.min(zoomLevel * 1.4, 1)
+  //   } else return defaultWidth
+  // } else {
+  //   return defaultWidth
+  // }
 }
 
 // height is a function of width

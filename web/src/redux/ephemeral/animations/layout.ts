@@ -58,6 +58,7 @@ export default function performLayoutAnimation(
   const computedOutcomeTrees = getTreesForState(nextState)
   const zoomLevel = nextState.ui.viewport.scale
   const translate = nextState.ui.viewport.translate
+  const depthPerception = nextState.ui.depthPerception.value
   const projectId = nextState.ui.activeProject
   const closestOutcome = nextState.ui.mouse.closestOutcome
   const hiddenSmallOutcomes = nextState.ui.mapViewSettings.hiddenSmallOutcomes
@@ -76,7 +77,8 @@ export default function performLayoutAnimation(
     projectTags,
     collapsedOutcomes,
     hiddenSmalls,
-    hiddenAchieved
+    hiddenAchieved,
+    depthPerception
   )
 
   // in terms of 'fixing' on a given outcome

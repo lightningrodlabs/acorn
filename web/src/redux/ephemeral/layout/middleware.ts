@@ -29,6 +29,7 @@ import {
   SHOW_ACHIEVED_OUTCOMES,
   SHOW_SMALL_OUTCOMES,
 } from '../map-view-settings/actions'
+import { CHANGE_DEPTH_PERCEPTION } from '../depth-perception/actions'
 
 const isOneOfLayoutAffectingActions = (action: {
   type: string
@@ -64,7 +65,8 @@ const isOneOfLayoutAffectingActions = (action: {
     type === HIDE_ACHIEVED_OUTCOMES ||
     type === SHOW_ACHIEVED_OUTCOMES ||
     type === HIDE_SMALL_OUTCOMES ||
-    type === SHOW_SMALL_OUTCOMES
+    type === SHOW_SMALL_OUTCOMES ||
+    type === CHANGE_DEPTH_PERCEPTION
   )
 }
 

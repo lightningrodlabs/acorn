@@ -119,9 +119,9 @@ const App: React.FC<AppProps> = ({
   }, [fileDownloaded, setFileDownloaded])
 
   useEffect(() => {
-    if (updateVersionInfo) {
-      setShowUpdateModal(true)
-    }
+    // if (updateVersionInfo) {
+    //   setShowUpdateModal(true)
+    // }
   }, [JSON.stringify(updateVersionInfo)])
 
   const onProfileSubmit = async (profile: Profile) => {
