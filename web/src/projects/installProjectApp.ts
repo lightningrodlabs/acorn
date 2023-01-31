@@ -1,4 +1,4 @@
-import { CellId } from "@holochain/client"
+import { CellId, CellType } from "@holochain/client"
 import { getAdminWs, getAgentPubKey } from "../hcWebsockets"
 import { PROJECT_APP_PREFIX } from "../holochainConfig"
 import { passphraseToUid } from "../secrets"
@@ -41,7 +41,7 @@ export async function installProjectApp(
       network_seed: uid,
     })
     const cellInfo = Object.values(installedApp.cell_info)[0][0]
-    const cellId = ('Provisioned' in cellInfo) ? cellInfo.Provisioned.cell_id : null
+    const cellId = (CellType.Provisioned in cellInfo) ? cellInfo[CellType.Provisioned].cell_id : null
     const cellIdString = cellIdToString(cellId)
     await adminWs.enableApp({ installed_app_id })
 

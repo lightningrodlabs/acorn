@@ -36,6 +36,7 @@ import { cellIdFromString, cellIdToString } from './utils'
 // Import styles
 import './variables.scss'
 import './global.scss'
+import { CellType } from '@holochain/client'
 
 // trigger caching of adminWs connection
 getAdminWs()
@@ -62,7 +63,7 @@ getAppWs().then(async (client) => {
     })
 
     const cellInfo = profilesInfo.cell_info[PROFILES_ROLE_NAME][0]
-    const cellId = ("Provisioned" in cellInfo) ? cellInfo.Provisioned.cell_id : undefined
+    const cellId = (CellType.Provisioned in cellInfo) ? cellInfo[CellType.Provisioned].cell_id : undefined
     if (cellId == undefined) {
       throw 'cellId undefined'
     }
