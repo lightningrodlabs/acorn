@@ -1,0 +1,9 @@
+services:
+  web1:
+    build: 
+      context: ./
+      dockerfile: ./web/Dockerfile
+    env_file:
+      - './.env'
+    ports:
+      - "${PORT_UI_USER_1}:${PORT_UI_USER_1}"
