@@ -38,15 +38,15 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     fallback: {
-      fs: false
-    }
+      fs: false,
+    },
   },
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
   },
   devServer: {
-    host: 'localhost',
+    host: '0.0.0.0',
     allowedHosts: 'all',
     static: './dist',
     hot: true, // hot module reloading
@@ -66,7 +66,7 @@ module.exports = {
             plugins: [
               // ... other plugins
               require.resolve('react-refresh/babel'),
-              "transform-class-properties",
+              'transform-class-properties',
             ],
           },
         },
@@ -100,7 +100,7 @@ module.exports = {
             outputPath: 'fonts/',
           },
         },
-        type: 'javascript/auto'
+        type: 'javascript/auto',
       },
       // .png, .jpg, .svg images
       {
@@ -112,7 +112,7 @@ module.exports = {
             outputPath: 'images/',
           },
         },
-        type: 'javascript/auto'
+        type: 'javascript/auto',
       },
       // scss
       {
