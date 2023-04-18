@@ -20,7 +20,10 @@
     "afterSign": "./afterSignHook.js",
     "appId": "org.lightningrodlabs.acorn",
     "copyright": "© 2020-2022 Harris-Braun Enterprises, LLC",
-    "asarUnpack": ["binaries/**/*", "web/**/*"],
+    "asarUnpack": [
+      "binaries/**/*",
+      "web/**/*"
+    ],
     "files": [
       "dist/**/*",
       "web/**/*",
@@ -43,6 +46,7 @@
   "devDependencies": {
     "@types/node": "14.10.1",
     "@types/split": "^1.0.0",
+    "dotenv": "^16.0.3",
     "electron": "^20.1.3",
     "electron-builder": "^23.3.3",
     "eslint": "^7.25.0",

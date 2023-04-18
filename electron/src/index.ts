@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain, shell, autoUpdater } from 'electron'
 import * as contextMenu from 'electron-context-menu'
 import * as path from 'path'
 import * as fs from 'fs'
+import * as dotenv from 'dotenv'
 // import log from 'electron-log'
 import initAgent, {
   StateSignal,
@@ -15,7 +16,14 @@ import {
   stateSignalToText,
   BINARY_PATHS,
 } from './holochain'
-import { INTEGRITY_VERSION_NUMBER, PREV_VER_USER_DATA_MIGRATION_FILE_PATH, USER_DATA_MIGRATION_FILE_PATH } from './paths'
+import {
+  INTEGRITY_VERSION_NUMBER,
+  PREV_VER_USER_DATA_MIGRATION_FILE_PATH,
+  USER_DATA_MIGRATION_FILE_PATH,
+} from './paths'
+
+dotenv.config({ path: '../.env' })
+console.log(process.env)
 
 // add the right-click "context" menu
 contextMenu({
@@ -46,9 +54,11 @@ const LINUX_ICON_FILE = path.join(
   '../app.asar.unpacked/web/logo/acorn-app-icon-512px.png'
 )
 
-const DEVELOPMENT_UI_URL = process.env.ACORN_TEST_USER_2
-  ? 'http://localhost:8081'
-  : 'http://localhost:8080'
+const DEVELOPMENT_UI_URL = `http://localhost:${
+  process.env.ACORN_TEST_USER_2
+    ? process.env.PORT_UI_USER_2
+    : process.env.PORT_UI_USER_1
+}`
 
 const createMainWindow = (): BrowserWindow => {
   // Create the browser window.
@@ -226,9 +236,13 @@ ipcMain.handle('persistExportData', (event, data) => {
       integrityVersion: INTEGRITY_VERSION_NUMBER,
       ...dataObj,
     }
-    fs.writeFileSync(USER_DATA_MIGRATION_FILE_PATH, JSON.stringify(modifiedData, null, 2), {
-      encoding: 'utf-8',
-    })
+    fs.writeFileSync(
+      USER_DATA_MIGRATION_FILE_PATH,
+      JSON.stringify(modifiedData, null, 2),
+      {
+        encoding: 'utf-8',
+      }
+    )
   } catch (e) {}
 })
 
