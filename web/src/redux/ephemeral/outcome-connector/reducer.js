@@ -10,10 +10,9 @@ const defaultState = {
   relation: null,
   validToAddresses: [],
   toAddress: null,
-  // existingParentConnectionAddress is the actionHash of the connection that
+  //
   // we would delete in order to create a new one
   // ASSUMPTION: one parent
-  existingParentConnectionAddress: null
 }
 
 export default function reducer(state = defaultState, action) {
@@ -26,7 +25,6 @@ export default function reducer(state = defaultState, action) {
         relation: payload.relation,
         validToAddresses: payload.validToAddresses,
         // ASSUMPTION: one parent
-        existingParentConnectionAddress: payload.existingParentConnectionAddress
       }
     case SET_CONNECTION_CONNECTOR_TO:
       return {

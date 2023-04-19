@@ -1,20 +1,24 @@
 import { connect } from 'react-redux'
 import { RootState } from '../../redux/reducer'
-import {
-  createOutcomeWithConnection,
-} from '../../redux/persistent/projects/outcomes/actions'
+import { createOutcomeWithConnection } from '../../redux/persistent/projects/outcomes/actions'
 import { deleteConnection } from '../../redux/persistent/projects/connections/actions'
 import {
   closeOutcomeForm,
   updateContent,
 } from '../../redux/ephemeral/outcome-form/actions'
-import MapViewOutcomeTitleForm, { MapViewOutcomeTitleFormConnectorDispatchProps, MapViewOutcomeTitleFormOwnProps } from './MapViewOutcomeTitleForm.component'
+import MapViewOutcomeTitleForm, {
+  MapViewOutcomeTitleFormConnectorDispatchProps,
+  MapViewOutcomeTitleFormOwnProps,
+} from './MapViewOutcomeTitleForm.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 import { ActionHashB64, Option } from '../../types/shared'
 import { LinkedOutcomeDetails, Outcome } from '../../types'
-import { selectOutcome, unselectAll } from '../../redux/ephemeral/selection/actions'
+import {
+  selectOutcome,
+  unselectAll,
+} from '../../redux/ephemeral/selection/actions'
 import { animatePanAndZoom } from '../../redux/ephemeral/viewport/actions'
 import { LAYOUT_ANIMATION_DURATION_MS } from '../../constants'
 
@@ -35,8 +39,6 @@ function mapStateToProps(state: RootState) {
         // these three all relate to each other
         fromAddress,
         relation,
-        // ASSUMPTION: one parent
-        existingParentConnectionAddress, // this is optional though
       },
     },
   } = state
@@ -50,10 +52,6 @@ function mapStateToProps(state: RootState) {
     // between the potential fromAddress Outcome
     // and a new Outcome to be created
     relation,
-    // optional, the address of an existing connection that
-    // indicates this Outcome as the child of another (a.k.a has a parent)
-    // ASSUMPTION: one parent
-    existingParentConnectionAddress,
     content,
     leftConnectionXPosition: leftConnectionXPosition,
     topConnectionYPosition: topConnectionYPosition,
@@ -64,7 +62,10 @@ function mapStateToProps(state: RootState) {
 // Designed to pass functions into components which are already wrapped as
 // action dispatchers for redux action types
 
-function mapDispatchToProps(dispatch, ownProps: MapViewOutcomeTitleFormOwnProps): MapViewOutcomeTitleFormConnectorDispatchProps {
+function mapDispatchToProps(
+  dispatch,
+  ownProps: MapViewOutcomeTitleFormOwnProps
+): MapViewOutcomeTitleFormConnectorDispatchProps {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
@@ -82,7 +83,10 @@ function mapDispatchToProps(dispatch, ownProps: MapViewOutcomeTitleFormOwnProps)
       await projectsZomeApi.connection.delete(cellId, actionHash)
       return dispatch(deleteConnection(cellIdString, actionHash))
     },
-    createOutcomeWithConnection: async (entry: Outcome, maybeLinkedOutcome: Option<LinkedOutcomeDetails>) => {
+    createOutcomeWithConnection: async (
+      entry: Outcome,
+      maybeLinkedOutcome: Option<LinkedOutcomeDetails>
+    ) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeWithConnection = await projectsZomeApi.outcome.createOutcomeWithConnection(
@@ -92,19 +96,19 @@ function mapDispatchToProps(dispatch, ownProps: MapViewOutcomeTitleFormOwnProps)
           maybeLinkedOutcome,
         }
       )
-      dispatch(
-        createOutcomeWithConnection(cellIdString, outcomeWithConnection)
-      )
+      dispatch(createOutcomeWithConnection(cellIdString, outcomeWithConnection))
       // Re. the timeout...
       // it is necessary because an animation
       // runs in layout.ts that initially moves the position
-      // of the Outcome itself. Before animating to the 
+      // of the Outcome itself. Before animating to the
       const ADDITIONAL_WAIT_BUFFER_MS = 40
       setTimeout(() => {
         dispatch(unselectAll())
         dispatch(selectOutcome(outcomeWithConnection.outcome.actionHash))
         // `false` here means DONT change the scale, only the translate
-        dispatch(animatePanAndZoom(outcomeWithConnection.outcome.actionHash, false))
+        dispatch(
+          animatePanAndZoom(outcomeWithConnection.outcome.actionHash, false)
+        )
       }, LAYOUT_ANIMATION_DURATION_MS + ADDITIONAL_WAIT_BUFFER_MS)
     },
     closeOutcomeForm: () => {

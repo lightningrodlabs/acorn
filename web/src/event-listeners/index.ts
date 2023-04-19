@@ -86,21 +86,19 @@ let platform =
 const isMacish = macOsPattern.test(platform)
 const operatingSystemModifier = isMacish ? 'metaKey' : 'ctrlKey'
 
-// ASSUMPTION: one parent (existingParentConnectionAddress)
+// ASSUMPTION: one parent (
 function handleMouseUpForOutcomeForm({
   state,
   event,
   store,
   fromAddress,
   relation,
-  existingParentConnectionAddress,
 }: {
   state: RootState
   event: MouseEvent
   store: any // redux store, for the sake of dispatch
   fromAddress?: ActionHashB64
   relation?: RelationInput
-  existingParentConnectionAddress?: ActionHashB64
 }) {
   const calcedPoint = coordsPageToCanvas(
     {
@@ -111,15 +109,8 @@ function handleMouseUpForOutcomeForm({
     state.ui.viewport.scale
   )
   store.dispatch(
-    // ASSUMPTION: one parent (existingParentConnectionAddress)
-    openOutcomeForm(
-      calcedPoint.x,
-      calcedPoint.y,
-      null,
-      fromAddress,
-      relation,
-      existingParentConnectionAddress
-    )
+    // ASSUMPTION: one parent (
+    openOutcomeForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation)
   )
 }
 
@@ -544,13 +535,8 @@ export default function setupEventListeners(
 
   function canvasMouseup(event: MouseEvent) {
     const state = store.getState()
-    // ASSUMPTION: one parent (existingParentConnectionAddress)
-    const {
-      fromAddress,
-      relation,
-      toAddress,
-      existingParentConnectionAddress,
-    } = state.ui.outcomeConnector
+    // ASSUMPTION: one parent (
+    const { fromAddress, relation, toAddress } = state.ui.outcomeConnector
     const { activeProject } = state.ui
     if (fromAddress) {
       // covers the case where we are hovered over an Outcome
@@ -573,7 +559,6 @@ export default function setupEventListeners(
           store,
           fromAddress,
           relation,
-          existingParentConnectionAddress,
         })
       }
     }

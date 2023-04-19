@@ -34,8 +34,6 @@ const OutcomeConnectorHtml = ({
 
 const OutcomeConnector = ({
   activeProject,
-  ownExistingParentConnectionAddress,
-  presetExistingParentConnectionAddress,
   fromAddress,
   relation,
   toAddress,
@@ -99,13 +97,7 @@ const OutcomeConnector = ({
       setOutcomeConnectorFrom(
         address,
         direction,
-        validity(address, connections, outcomeActionHashes),
-        // we don't think about overriding the existing
-        // parent when it comes to children, since it can have many
-        // ASSUMPTION: one parent
-        direction === RELATION_AS_CHILD
-          ? ownExistingParentConnectionAddress
-          : undefined
+        validity(address, connections, outcomeActionHashes)
       )
     }
   }
@@ -177,7 +169,6 @@ const OutcomeConnectors = ({
   fromAddress,
   relation,
   toAddress,
-  existingParentConnectionAddress,
   connectorAddresses,
   collapsedOutcomes,
   setOutcomeConnectorFrom,
@@ -206,12 +197,6 @@ const OutcomeConnectors = ({
             fromAddress={fromAddress}
             relation={relation}
             toAddress={toAddress}
-            ownExistingParentConnectionAddress={
-              hasParent && hasParent.actionHash
-            }
-            presetExistingParentConnectionAddress={
-              existingParentConnectionAddress
-            }
             address={connectorAddress}
             setOutcomeConnectorFrom={setOutcomeConnectorFrom}
             setOutcomeConnectorTo={setOutcomeConnectorTo}
