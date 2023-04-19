@@ -114,8 +114,6 @@ const OutcomeConnector = ({
       fromAddress,
       relation,
       toAddress,
-      // ASSUMPTION: one parent
-      presetExistingParentConnectionAddress,
       activeProject,
       dispatch
     )

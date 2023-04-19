@@ -11,8 +11,6 @@ export default async function handleConnectionConnectMouseUp(
   fromAddress,
   relation,
   toAddress,
-  // ASSUMPTION: one parent
-  existingParentConnectionAddress,
   activeProject,
   dispatch
 ) {
