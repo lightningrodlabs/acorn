@@ -86,7 +86,6 @@ let platform =
 const isMacish = macOsPattern.test(platform)
 const operatingSystemModifier = isMacish ? 'metaKey' : 'ctrlKey'
 
-// ASSUMPTION: one parent (
 function handleMouseUpForOutcomeForm({
   state,
   event,
@@ -109,7 +108,6 @@ function handleMouseUpForOutcomeForm({
     state.ui.viewport.scale
   )
   store.dispatch(
-    // ASSUMPTION: one parent (
     openOutcomeForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation)
   )
 }
@@ -535,7 +533,6 @@ export default function setupEventListeners(
 
   function canvasMouseup(event: MouseEvent) {
     const state = store.getState()
-    // ASSUMPTION: one parent (
     const { fromAddress, relation, toAddress } = state.ui.outcomeConnector
     const { activeProject } = state.ui
     if (fromAddress) {

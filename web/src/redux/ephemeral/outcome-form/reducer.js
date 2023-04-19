@@ -18,9 +18,6 @@ const defaultState = {
   // and relation indicates the 'port' in a sense, to be parent or child
   fromAddress: null,
   relation: null, // RELATION_AS_CHILD or RELATION_AS_PARENT
-  //
-  // we would delete in order to create a new one
-  // ASSUMPTION: one parent
 }
 
 export default function (state = defaultState, action) {
@@ -34,7 +31,6 @@ export default function (state = defaultState, action) {
     // these three go together
     fromAddress: null,
     relation: null,
-    // ASSUMPTION: one parent
   }
 
   switch (type) {
@@ -55,7 +51,6 @@ export default function (state = defaultState, action) {
         // these three go together
         fromAddress: payload.fromAddress,
         relation: payload.relation,
-        // ASSUMPTION: one parent
       }
     case CLOSE_OUTCOME_FORM:
       return resetVersion
