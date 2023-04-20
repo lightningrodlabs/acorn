@@ -1,7 +1,7 @@
 import outcomesAsGraph, {
   Graph,
   GraphData,
-} from '../../persistent/projects/outcomes/outcomesAsTrees'
+} from '../../persistent/projects/outcomes/outcomesAsGraph'
 import { RootState } from '../../reducer'
 
 export function getGraphForState(state: RootState): Graph {

@@ -10,7 +10,7 @@ import { ProjectOutcomeVotesState } from '../outcome-votes/reducer'
 import { computeAchievementStatus, computeScope } from './computedState'
 import { ProjectOutcomesState } from './reducer'
 
-export type TreeData = {
+export type GraphData = {
   outcomes: ProjectOutcomesState
   connections: ProjectConnectionsState
   agents?: AgentsState
@@ -19,10 +19,14 @@ export type TreeData = {
   outcomeComments?: ProjectOutcomeCommentsState
 }
 
-export default function outcomesAsTrees(
-  treeData: TreeData,
+export type Graph = {
+  outcomes: ProjectComputedOutcomes
+  connections: ProjectConnectionsState
+}
+export default function outcomesAsGraph(
+  graphData: GraphData,
   { withMembers = false, withComments = false, withVotes = false } = {}
-): ProjectComputedOutcomes {
+): Graph {
   const {
     outcomes,
     connections,
@@ -30,7 +34,7 @@ export default function outcomesAsTrees(
     outcomeVotes,
     outcomeComments,
     agents,
-  } = treeData
+  } = graphData
 
   // modify so that all outcomes have their related things, if in opts
   let allOutcomes = outcomes
@@ -105,7 +109,10 @@ export default function outcomesAsTrees(
   const computedOutcomesAsTree = noParentsAddresses.map(getOutcome)
 
   return {
-    computedOutcomesAsTree,
-    computedOutcomesKeyed,
+    outcomes: {
+      computedOutcomesAsTree,
+      computedOutcomesKeyed,
+    },
+    connections,
   }
 }
