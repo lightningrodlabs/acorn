@@ -1,16 +1,16 @@
-import { ProjectComputedOutcomes } from '../../../context/ComputedOutcomeContext'
-import outcomesAsTrees, {
-  TreeData,
+import outcomesAsGraph, {
+  Graph,
+  GraphData,
 } from '../../persistent/projects/outcomes/outcomesAsTrees'
 import { RootState } from '../../reducer'
 
-export function getTreesForState(state: RootState): ProjectComputedOutcomes {
+export function getGraphForState(state: RootState): Graph {
   const projectId = state.ui.activeProject
-  const graphData: TreeData = {
+  const graphData: GraphData = {
     outcomes: state.projects.outcomes[projectId] || {},
     connections: state.projects.connections[projectId] || {},
     outcomeMembers: state.projects.outcomeMembers[projectId] || {},
     agents: state.agents,
   }
-  return outcomesAsTrees(graphData, { withMembers: true })
+  return outcomesAsGraph(graphData, { withMembers: true })
 }
