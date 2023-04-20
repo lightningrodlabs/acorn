@@ -35,6 +35,16 @@ function mapStateToProps(state: RootState) {
     connectorAddresses = [hoveredOutcomeAddress]
   }
 
+  // remove any connections that are already in place
+  connectorAddresses = connectorAddresses.filter((address) => {
+    return !Object.values(connections).find((connection) => {
+      return (
+        connection.childActionHash === fromAddress &&
+        connection.parentActionHash === address
+      )
+    })
+  })
+
   return {
     activeProject,
     projectTags,
