@@ -5,7 +5,7 @@ import layoutFormula from '../../../drawing/layoutFormula'
 import { RootState } from '../../reducer'
 import { LAYOUT_ANIMATION_DURATION_MS } from '../../../constants'
 import { ComputedOutcome } from '../../../types'
-import { getTreesForState } from './get-trees-for-state'
+import { getGraphForState } from './getGraphForState'
 import { coordsCanvasToPage } from '../../../drawing/coordinateSystems'
 import { ActionHashB64 } from '../../../types/shared'
 import { CoordinatesState, DimensionsState } from '../layout/state-type'
@@ -55,7 +55,7 @@ export default function performLayoutAnimation(
   // called nextState because by now the
   // initial action has been integrated
   const nextState: RootState = store.getState()
-  const computedOutcomeTrees = getTreesForState(nextState)
+  const graph = getGraphForState(nextState)
   const zoomLevel = nextState.ui.viewport.scale
   const translate = nextState.ui.viewport.translate
   const projectId = nextState.ui.activeProject
@@ -71,7 +71,7 @@ export default function performLayoutAnimation(
   // this is our final destination layout
   // that we'll be animating to
   const newLayout = layoutFormula(
-    computedOutcomeTrees,
+    graph,
     zoomLevel,
     projectTags,
     collapsedOutcomes,
