@@ -94,18 +94,28 @@ function layoutForGraph(
   // add all the nodes with connections
   Object.keys(connections).forEach((hash) => {
     const connection = connections[hash]
+
     if (
-      checkOutcomeAgainstViewingFilters(
+      !checkOutcomeAgainstViewingFilters(
         outcomes[connection.parentActionHash],
         hiddenSmalls,
         hiddenAchieved
-      )
+      ) || // parent is hidden
+      !checkOutcomeAgainstViewingFilters(
+        outcomes[connection.childActionHash],
+        hiddenSmalls,
+        hiddenAchieved
+      ) || // child is hidden
+      projectCollapsedOutcomes[connection.parentActionHash] || // parent is collapsed
+      projectCollapsedOutcomes[connection.childActionHash] // child is collapsed
     ) {
-      nodeConnections.push([
-        connection.parentActionHash,
-        connection.childActionHash,
-      ])
+      return
     }
+
+    nodeConnections.push([
+      connection.parentActionHash,
+      connection.childActionHash,
+    ])
   })
 
   // add all the nodes without connections
