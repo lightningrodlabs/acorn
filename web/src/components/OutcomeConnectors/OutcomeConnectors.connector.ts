@@ -14,13 +14,7 @@ function mapStateToProps(state: RootState) {
       viewport: { translate, scale },
       layout: { coordinates, dimensions },
       hover: { hoveredOutcome: hoveredOutcomeAddress },
-      outcomeConnector: {
-        fromAddress,
-        relation,
-        toAddress,
-        existingParentConnectionAddress,
-        validToAddresses,
-      },
+      outcomeConnector: { fromAddress, relation, toAddress, validToAddresses },
       selection: { selectedOutcomes },
     },
   } = state
@@ -52,7 +46,6 @@ function mapStateToProps(state: RootState) {
     fromAddress,
     relation,
     toAddress,
-    existingParentConnectionAddress,
     connectorAddresses,
     collapsedOutcomes,
   }
