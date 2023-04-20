@@ -27,7 +27,7 @@ function mapStateToProps(state: RootState) {
   if (fromAddress) {
     // connector addresses includes the outcome we are connecting from
     // to all the possible outcomes we can connect to validly
-    connectorAddresses = validToAddresses
+    connectorAddresses = [fromAddress, ...validToAddresses]
   }
   // don't allow the connection connectors when we have multiple outcomes selected
   // as it doesn't blend well with the user interface, or make sense at that point
