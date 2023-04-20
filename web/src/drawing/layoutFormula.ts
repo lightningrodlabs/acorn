@@ -17,8 +17,6 @@ import { greedy } from 'd3-dag/dist/sugiyama/coord/greedy'
 import { coffmanGraham } from 'd3-dag/dist/sugiyama/layering/coffman-graham'
 import { Graph } from '../redux/persistent/projects/outcomes/outcomesAsGraph'
 
-const VERTICAL_SPACING = 100
-
 function checkOutcomeAgainstViewingFilters(
   outcome: ComputedOutcome,
   hiddenSmalls: boolean,
@@ -132,6 +130,9 @@ function layoutForGraph(
       nodeConnections.push([outcome.actionHash, outcome.actionHash])
     }
   })
+
+  // if there are no nodes, return an empty object
+  if (!nodeConnections.length) return {}
 
   const create = connect().single(true) // allow single nodes without connections
   const dag = create(nodeConnections as any)
