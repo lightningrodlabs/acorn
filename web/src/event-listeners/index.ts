@@ -151,84 +151,88 @@ export default function setupEventListeners(
         }
         break
 
+      // DISABLED: navigating with keyboard
       // Used for navigating to a child
-      case 'ArrowDown':
-        if (
-          state.ui.selection.selectedOutcomes.length === 1 &&
-          !state.ui.outcomeForm.isOpen &&
-          !state.ui.expandedView.isOpen
-        ) {
-          const selectedOutcome = state.ui.selection.selectedOutcomes[0]
-          const childActionHash = findFirstChildActionHash(
-            selectedOutcome,
-            state
-          )
-          if (childActionHash) {
-            // select and pan and zoom to
-            // the parent
-            store.dispatch(animatePanAndZoom(childActionHash, false))
-          }
-        }
-        break
+      // case 'ArrowDown':
+      //   if (
+      //     state.ui.selection.selectedOutcomes.length === 1 &&
+      //     !state.ui.outcomeForm.isOpen &&
+      //     !state.ui.expandedView.isOpen
+      //   ) {
+      //     const selectedOutcome = state.ui.selection.selectedOutcomes[0]
+      //     const childActionHash = findFirstChildActionHash(
+      //       selectedOutcome,
+      //       state
+      //     )
+      //     if (childActionHash) {
+      //       // select and pan and zoom to
+      //       // the parent
+      //       store.dispatch(animatePanAndZoom(childActionHash, false))
+      //     }
+      //   }
+      //   break
 
+      // DISABLED: navigating with keyboard
       // Used for navigating to a parent
-      case 'ArrowUp':
-        if (
-          state.ui.selection.selectedOutcomes.length === 1 &&
-          !state.ui.outcomeForm.isOpen &&
-          !state.ui.expandedView.isOpen
-        ) {
-          const selectedOutcome = state.ui.selection.selectedOutcomes[0]
-          const parentActionHash = findParentActionHash(selectedOutcome, state)
-          if (parentActionHash) {
-            // select and pan and zoom to
-            // the parent
-            store.dispatch(animatePanAndZoom(parentActionHash, false))
-          }
-        }
-        break
+      // case 'ArrowUp':
+      //   if (
+      //     state.ui.selection.selectedOutcomes.length === 1 &&
+      //     !state.ui.outcomeForm.isOpen &&
+      //     !state.ui.expandedView.isOpen
+      //   ) {
+      //     const selectedOutcome = state.ui.selection.selectedOutcomes[0]
+      //     const parentActionHash = findParentActionHash(selectedOutcome, state)
+      //     if (parentActionHash) {
+      //       // select and pan and zoom to
+      //       // the parent
+      //       store.dispatch(animatePanAndZoom(parentActionHash, false))
+      //     }
+      //   }
+      //   break
 
+      // DISABLED: navigating with keyboard
       // Used for navigating to the left sibling
-      case 'ArrowLeft':
-        if (
-          state.ui.selection.selectedOutcomes.length === 1 &&
-          !state.ui.outcomeForm.isOpen &&
-          !state.ui.expandedView.isOpen
-        ) {
-          const selectedOutcome = state.ui.selection.selectedOutcomes[0]
-          const targetActionHash = findSiblingActionHash(
-            selectedOutcome,
-            state,
-            RightOrLeft.Left
-          )
-          if (targetActionHash) {
-            // select and pan and zoom to
-            // the parent
-            store.dispatch(animatePanAndZoom(targetActionHash, false))
-          }
-        }
-        break
+      // case 'ArrowLeft':
+      //   if (
+      //     state.ui.selection.selectedOutcomes.length === 1 &&
+      //     !state.ui.outcomeForm.isOpen &&
+      //     !state.ui.expandedView.isOpen
+      //   ) {
+      //     const selectedOutcome = state.ui.selection.selectedOutcomes[0]
+      //     const targetActionHash = findSiblingActionHash(
+      //       selectedOutcome,
+      //       state,
+      //       RightOrLeft.Left
+      //     )
+      //     if (targetActionHash) {
+      //       // select and pan and zoom to
+      //       // the parent
+      //       store.dispatch(animatePanAndZoom(targetActionHash, false))
+      //     }
+      //   }
+      //   break
 
+      // DISABLED: navigating with keyboard
       // Used for navigating to the right sibling
-      case 'ArrowRight':
-        if (
-          state.ui.selection.selectedOutcomes.length === 1 &&
-          !state.ui.outcomeForm.isOpen &&
-          !state.ui.expandedView.isOpen
-        ) {
-          const selectedOutcome = state.ui.selection.selectedOutcomes[0]
-          const targetActionHash = findSiblingActionHash(
-            selectedOutcome,
-            state,
-            RightOrLeft.Right
-          )
-          if (targetActionHash) {
-            // select and pan and zoom to
-            // the parent
-            store.dispatch(animatePanAndZoom(targetActionHash, false))
-          }
-        }
-        break
+      // case 'ArrowRight':
+      //   if (
+      //     state.ui.selection.selectedOutcomes.length === 1 &&
+      //     !state.ui.outcomeForm.isOpen &&
+      //     !state.ui.expandedView.isOpen
+      //   ) {
+      //     const selectedOutcome = state.ui.selection.selectedOutcomes[0]
+      //     const targetActionHash = findSiblingActionHash(
+      //       selectedOutcome,
+      //       state,
+      //       RightOrLeft.Right
+      //     )
+      //     if (targetActionHash) {
+      //       // select and pan and zoom to
+      //       // the parent
+      //       store.dispatch(animatePanAndZoom(targetActionHash, false))
+      //     }
+      //   }
+      //   break
 
       // Used in multi selecting Outcomes
       case 'Shift':
