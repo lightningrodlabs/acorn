@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react'
 
-
-const findGithubAssetForPlatformArch = (platform: string, arch: string) => (asset: any) => {
+const findGithubAssetForPlatformArch = (platform: string, arch: string) => (
+  asset: any
+) => {
   if (platform === 'darwin') {
     if (arch === 'arm64') {
       return asset.name.includes('mac-arm64')
     } else {
-      return (
-        asset.name.includes('mac') && !asset.name.includes('arm64')
-      )
+      return asset.name.includes('mac') && !asset.name.includes('arm64')
     }
   } else if (platform === 'win32') {
     return asset.name.includes('.exe')
@@ -51,6 +50,34 @@ export default function useVersionChecker(): {
     }
   }, [])
 
+  function isVersionOutOfDate(
+    currentVersion: string,
+    latestVersion: string
+  ): boolean {
+    currentVersion = currentVersion.substring(
+      currentVersion.indexOf('v') + 1,
+      currentVersion.lastIndexOf('-')
+    )
+    latestVersion = currentVersion.substring(
+      latestVersion.indexOf('v') + 1,
+      latestVersion.lastIndexOf('-')
+    )
+    const currentVersionParts = currentVersion.split('.')
+    const latestVersionParts = latestVersion.split('.')
+    if (currentVersionParts[0] < latestVersionParts[0]) {
+      return true
+    } else if (currentVersionParts[0] === latestVersionParts[0]) {
+      if (currentVersionParts[1] < latestVersionParts[1]) {
+        return true
+      } else if (currentVersionParts[1] === latestVersionParts[1]) {
+        if (currentVersionParts[2] < latestVersionParts[2]) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
   useEffect(() => {
     // every 10 minutes, fetch from github releases
     // to see if there is any new update available for the app
@@ -62,11 +89,13 @@ export default function useVersionChecker(): {
           const latestRelease = releases[0]
           const latestTagName = latestRelease.tag_name
           const latestReleaseNotes = latestRelease.body
-          if (currentVersion && latestTagName !== currentVersion) {
+          if (isVersionOutOfDate(currentVersion, latestTagName)) {
             clearInterval(timerID)
             setName(latestTagName)
             setReleaseNotes(latestReleaseNotes)
-            const asset = latestRelease.assets.find(findGithubAssetForPlatformArch(platform, arch))
+            const asset = latestRelease.assets.find(
+              findGithubAssetForPlatformArch(platform, arch)
+            )
             if (asset) {
               // math for bytes -> megabytes
               setSizeForPlatform(`${Math.floor(0.000001 * asset.size)}mb`)
@@ -74,7 +103,9 @@ export default function useVersionChecker(): {
           }
         })
         .catch((e) => {
-          console.log('could not check for updates. likely cause is no internet connectivity')
+          console.log(
+            'could not check for updates. likely cause is no internet connectivity'
+          )
         })
     }
     // check every 10 minutes
