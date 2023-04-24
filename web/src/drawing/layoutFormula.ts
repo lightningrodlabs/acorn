@@ -153,12 +153,16 @@ function layoutForGraph(
 
   dagLayout(dag)
 
-  // create the coordinates
+  // define the coordinates of each node
   const coordinates = {}
   for (const node of dag) {
+    const width = allOutcomeDimensions[node.data.id].width
+    const height = allOutcomeDimensions[node.data.id].height
     coordinates[node.data.id] = {
-      x: node.x,
-      y: node.y,
+      // transform the coordinates so that the origin is at the top
+      // left corner of the outcome
+      x: node.x - width / 2,
+      y: node.y - height / 2,
     }
   }
 
