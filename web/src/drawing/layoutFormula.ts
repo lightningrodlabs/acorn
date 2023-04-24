@@ -12,7 +12,7 @@ import {
   LayoutState,
 } from '../redux/ephemeral/layout/state-type'
 import { connect } from 'd3-dag/dist/dag/create'
-import { sugiyama } from 'd3-dag'
+import { DagNode, sugiyama } from 'd3-dag'
 import { greedy } from 'd3-dag/dist/sugiyama/coord/greedy'
 import { coffmanGraham } from 'd3-dag/dist/sugiyama/layering/coffman-graham'
 import { Graph } from '../redux/persistent/projects/outcomes/outcomesAsGraph'
@@ -77,6 +77,7 @@ export { getBoundingRec }
 
 function layoutForGraph(
   graph: Graph,
+  allOutcomeDimensions: DimensionsState,
   projectCollapsedOutcomes: {
     [outcomeActionHash: ActionHashB64]: boolean
   },
@@ -137,8 +138,15 @@ function layoutForGraph(
   const create = connect().single(true) // allow single nodes without connections
   const dag = create(nodeConnections as any)
   const dagLayout = sugiyama()
-    // NOTE: make the width and height dynamic based on the card dimensions
-    .nodeSize((node) => (node === undefined ? [0, 0] : [750, 500]))
+    .nodeSize((node: any) => {
+      // width and height, plus some extra padding
+      const width =
+        node === undefined ? 0 : allOutcomeDimensions[node.data.id].width + 200
+      const height =
+        node === undefined ? 0 : allOutcomeDimensions[node.data.id].height + 200
+
+      return [width, height]
+    })
     // NOTE: might be useful to expose these two properties to the user
     .coord(greedy())
   // .layering(coffmanGraham())
@@ -197,6 +205,7 @@ export default function layoutFormula(
 
   coordinates = layoutForGraph(
     graph,
+    allOutcomeDimensions,
     collapsedOutcomes,
     hiddenSmalls,
     hiddenAchieved
