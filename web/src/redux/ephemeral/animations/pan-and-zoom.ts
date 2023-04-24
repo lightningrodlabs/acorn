@@ -6,7 +6,7 @@ import { RootState } from '../../reducer'
 import { updateLayout } from '../layout/actions'
 import { selectOutcome, unselectAll } from '../selection/actions'
 import { changeAllDirect } from '../viewport/actions'
-import { getTreesForState } from './get-trees-for-state'
+import { getGraphForState } from './getGraphForState'
 
 /*
   In this function as we animate the "pan and zoom", or "translate and scale"
@@ -38,7 +38,7 @@ export default function panZoomToFrame(
     : state.ui.viewport.scale
 
   const { activeProject } = state.ui
-  const outcomeTrees = getTreesForState(state)
+  const graph = getGraphForState(state)
 
   const projectTags = Object.values(state.projects.tags[activeProject] || {})
   const hiddenSmallOutcomes = state.ui.mapViewSettings.hiddenSmallOutcomes
@@ -52,12 +52,12 @@ export default function panZoomToFrame(
   // that we'll be animating to
   // use the target zoomLevel
   const newLayout = layoutFormula(
-    outcomeTrees,
+    graph,
     zoomLevel,
     projectTags,
     collapsedOutcomes,
     hiddenSmalls,
-    hiddenAchieved,
+    hiddenAchieved
   )
 
   // this accounts for a special case where the caller doesn't
@@ -65,11 +65,11 @@ export default function panZoomToFrame(
   // function to pick the best one
   if (!outcomeActionHash) {
     // pick the first parent to center on
-    outcomeActionHash = (outcomeTrees.computedOutcomesAsTree[0] || {})
+    outcomeActionHash = (graph.outcomes.computedOutcomesAsTree[0] || {})
       .actionHash
   }
 
-  const outcome = outcomeTrees.computedOutcomesKeyed[outcomeActionHash]
+  const outcome = graph.outcomes.computedOutcomesKeyed[outcomeActionHash]
   // important, for the outcomeCoordinates we should
   // definitely choose them from the new intended layout,
   // not the existing one

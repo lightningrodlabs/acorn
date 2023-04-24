@@ -1,6 +1,9 @@
 {
   "name": "acorn-ui",
   "version": "5.0.0-alpha",
+  "browser": {
+    "child_process": false
+  },
   "devDependencies": {
     "@babel/core": "^7.14.0",
     "@babel/preset-env": "^7.5.5",
@@ -40,6 +43,7 @@
     "@holochain/client": "0.12.0",
     "@material-ui/core": "^4.6.1",
     "@tweenjs/tween.js": "^18.6.4",
+    "d3-dag": "^0.11.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "buffer": "^6.0.3",
     "core-js": "^3.6.5",

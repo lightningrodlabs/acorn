@@ -12,13 +12,8 @@ import drawConnection, {
 import drawOverlay from './drawOverlay'
 import drawSelectBox from './drawSelectBox'
 import drawEntryPoints from './drawEntryPoints'
-import {
-  RELATION_AS_CHILD,
-} from '../redux/ephemeral/outcome-connector/actions'
-import {
-  getOutcomeHeight,
-  getOutcomeWidth,
-} from './dimensions'
+import { RELATION_AS_CHILD } from '../redux/ephemeral/outcome-connector/actions'
+import { getOutcomeHeight, getOutcomeWidth } from './dimensions'
 import {
   ComputedOutcome,
   ComputedSimpleAchievementStatus,
@@ -31,7 +26,10 @@ import { ProjectConnectionsState } from '../redux/persistent/projects/connection
 import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
 import { ProjectOutcomeMembersState } from '../redux/persistent/projects/outcome-members/reducer'
 import { getPlaceholderOutcome } from './drawOutcome/placeholderOutcome'
-import { CoordinatesState, DimensionsState } from '../redux/ephemeral/layout/state-type'
+import {
+  CoordinatesState,
+  DimensionsState,
+} from '../redux/ephemeral/layout/state-type'
 
 function setupCanvas(canvas) {
   // Get the device pixel ratio, falling back to 1.
@@ -173,17 +171,6 @@ function render(
     */
   // render each connection to the canvas, basing it off the rendering coordinates of the parent and child nodes
   connectionsAsArray.forEach(function (connection) {
-    // if in the pending re-parenting mode for the child card of an existing connection,
-    // temporarily omit/hide the existing connection from view
-    // ASSUMPTION: one parent
-    const pendingReParent =
-      (outcomeConnectorFromAddress === connection.childActionHash &&
-        outcomeConnectorRelation === RELATION_AS_CHILD) ||
-      (outcomeFormIsOpen &&
-        outcomeFormFromActionHash === connection.childActionHash &&
-        outcomeFormRelation === RELATION_AS_CHILD)
-    if (pendingReParent) return
-
     const childCoords = coordinates[connection.childActionHash]
     const parentCoords = coordinates[connection.parentActionHash]
     const childOutcome = outcomes[connection.childActionHash]

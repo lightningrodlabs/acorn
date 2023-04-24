@@ -14,13 +14,7 @@ function mapStateToProps(state: RootState) {
       viewport: { translate, scale },
       layout: { coordinates, dimensions },
       hover: { hoveredOutcome: hoveredOutcomeAddress },
-      outcomeConnector: {
-        fromAddress,
-        relation,
-        toAddress,
-        existingParentConnectionAddress,
-        validToAddresses,
-      },
+      outcomeConnector: { fromAddress, relation, toAddress, validToAddresses },
       selection: { selectedOutcomes },
     },
   } = state
@@ -33,13 +27,23 @@ function mapStateToProps(state: RootState) {
   if (fromAddress) {
     // connector addresses includes the outcome we are connecting from
     // to all the possible outcomes we can connect to validly
-    connectorAddresses = [fromAddress].concat(validToAddresses)
+    connectorAddresses = [fromAddress, ...validToAddresses]
   }
   // don't allow the connection connectors when we have multiple outcomes selected
   // as it doesn't blend well with the user interface, or make sense at that point
   else if (hoveredOutcomeAddress && selectedOutcomes.length <= 1) {
     connectorAddresses = [hoveredOutcomeAddress]
   }
+
+  // remove any connections that are already in place
+  connectorAddresses = connectorAddresses.filter((address) => {
+    return !Object.values(connections).find((connection) => {
+      return (
+        connection.childActionHash === fromAddress &&
+        connection.parentActionHash === address
+      )
+    })
+  })
 
   return {
     activeProject,
@@ -52,7 +56,6 @@ function mapStateToProps(state: RootState) {
     fromAddress,
     relation,
     toAddress,
-    existingParentConnectionAddress,
     connectorAddresses,
     collapsedOutcomes,
   }

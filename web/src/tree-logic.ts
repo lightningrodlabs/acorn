@@ -81,14 +81,11 @@ function calculateValidChildren(
 ) {
   return outcomeActionHashes.filter((outcomeActionHash) => {
     return (
-      // filter out self-address in the process
+      // filter out self
       outcomeActionHash !== fromAddress &&
-      // find the Outcome objects without parent Outcomes
-      // since they will sit at the top level
-      !connections.find(
-        (connection) => connection.childActionHash === outcomeActionHash
-      ) &&
-      !isAncestor(fromAddress, outcomeActionHash, connections)
+      // find the Outcome objects that are not descendants of the fromAddress
+      // since we don't want to create cycles
+      !isAncestor(outcomeActionHash, fromAddress, connections)
     )
   })
 }

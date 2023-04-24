@@ -64,14 +64,16 @@ const Checkbox: React.FC<CheckboxProps> = ({
       text: 'Expand Outcome',
       onClick: wrappedExpandOutcome,
     })
-  } else if (hasChildren) {
-    actions.push({
-      key: 'collapse',
-      icon: 'leaf.svg',
-      text: 'Collapse Outcome',
-      onClick: wrappedCollapseOutcome,
-    })
   }
+  // DISABLED: collapsing outcomes
+  // else if (hasChildren) {
+  // actions.push({
+  //   key: 'collapse',
+  //   icon: 'leaf.svg',
+  //   text: 'Collapse Outcome',
+  //   onClick: wrappedCollapseOutcome,
+  // })
+  // }
 
   return (
     <div
