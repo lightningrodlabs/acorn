@@ -49,14 +49,14 @@ export const argsForDrawStatement = ({
   const statementPlaceholder = noStatementPlaceholder
     ? false
     : outcome
-    ? (outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.5) ||
-      (outcome.computedScope !== ComputedScope.Small && zoomLevel <= 0.25)
+    ? (outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.4) ||
+      (outcome.computedScope !== ComputedScope.Small && zoomLevel <= 0.2)
     : false
 
   skipRender =
     skipRender ||
     (outcome
-      ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.3
+      ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.25
       : false)
 
   // statement placeholder line heights depending on outcome scope
