@@ -7,28 +7,26 @@ use crate::ui_enum::UIEnum;
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, SerializedBytes)]
 #[serde(from = "UIEnum")]
 #[serde(into = "UIEnum")]
-pub enum LayoutAlgorithm {
-    Simplex,
+pub enum LayeringAlgorithm {
     LongestPath,
     CoffmanGraham,
 }
 
-impl From<UIEnum> for LayoutAlgorithm {
+impl From<UIEnum> for LayeringAlgorithm {
     fn from(ui_enum: UIEnum) -> Self {
         match ui_enum.0.as_str() {
-            "Simplex" => Self::Simplex,
             "LongestPath" => Self::LongestPath,
             "CoffmanGraham" => Self::CoffmanGraham,
-            _ => Self::Simplex,
+            _ => Self::CoffmanGraham,
         }
     }
 }
-impl From<LayoutAlgorithm> for UIEnum {
-    fn from(layout_algorithm: LayoutAlgorithm) -> Self {
-        Self(layout_algorithm.to_string())
+impl From<LayeringAlgorithm> for UIEnum {
+    fn from(layering_algorithm: LayeringAlgorithm) -> Self {
+        Self(layering_algorithm.to_string())
     }
 }
-impl fmt::Display for LayoutAlgorithm {
+impl fmt::Display for LayeringAlgorithm {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:?}", self)
     }
@@ -44,7 +42,7 @@ pub struct ProjectMeta {
     pub image: Option<String>,
     pub passphrase: String,
     pub is_imported: bool,
-    pub layout_algorithm: LayoutAlgorithm,
+    pub layering_algorithm: LayeringAlgorithm,
     pub top_priority_outcomes: Vec<ActionHashB64>,
     pub is_migrated: Option<String>, // the string will represent the version migrated to
 }
@@ -57,7 +55,7 @@ impl ProjectMeta {
         image: Option<String>,
         passphrase: String,
         is_imported: bool,
-        layout_algorithm: LayoutAlgorithm,
+        layering_algorithm: LayeringAlgorithm,
         top_priority_outcomes: Vec<ActionHashB64>,
         is_migrated: Option<String>,
     ) -> Self {
@@ -68,7 +66,7 @@ impl ProjectMeta {
             image,
             passphrase,
             is_imported,
-            layout_algorithm,
+            layering_algorithm,
             top_priority_outcomes,
             is_migrated,
         }
