@@ -19,6 +19,11 @@ export type ProjectAggregated = WithActionHash<ProjectMeta> & {
   }[]
 }
 
+export enum LayeringAlgorithm {
+  LongestPath = 'LongestPath',
+  CoffmanGraham = 'CoffmanGraham',
+}
+
 export interface ProjectMeta {
   creatorAgentPubKey: AgentPubKeyB64
   createdAt: number // f64
@@ -26,6 +31,7 @@ export interface ProjectMeta {
   image: Option<string>
   passphrase: string
   isImported: boolean
+  layeringAlgorithm: LayeringAlgorithm
   topPriorityOutcomes: Array<ActionHashB64>
   isMigrated: Option<string>
 }

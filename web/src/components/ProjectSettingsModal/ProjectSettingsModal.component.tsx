@@ -131,6 +131,7 @@ export default function ProjectSettingsModal({
         // editable
         name: projectName,
         image: projectCoverUrl,
+        layeringAlgorithm: project.layeringAlgorithm,
         // not editable
         creatorAgentPubKey: project.creatorAgentPubKey,
         createdAt: project.createdAt,

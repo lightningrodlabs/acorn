@@ -4,7 +4,7 @@ import { updateLayout } from '../layout/actions'
 import layoutFormula from '../../../drawing/layoutFormula'
 import { RootState } from '../../reducer'
 import { LAYOUT_ANIMATION_DURATION_MS } from '../../../constants'
-import { ComputedOutcome } from '../../../types'
+import { ComputedOutcome, LayeringAlgorithm } from '../../../types'
 import { getGraphForState } from './getGraphForState'
 import { coordsCanvasToPage } from '../../../drawing/coordinateSystems'
 import { ActionHashB64 } from '../../../types/shared'
@@ -68,10 +68,14 @@ export default function performLayoutAnimation(
     nextState.ui.collapsedOutcomes.collapsedOutcomes[projectId] || {}
   const hiddenSmalls = hiddenSmallOutcomes.includes(projectId)
   const hiddenAchieved = hiddenAchievedOutcomes.includes(projectId)
+  const layeringAlgorithm =
+    nextState.projects.projectMeta[projectId].layeringAlgorithm ||
+    LayeringAlgorithm.CoffmanGraham
   // this is our final destination layout
   // that we'll be animating to
   const newLayout = layoutFormula(
     graph,
+    layeringAlgorithm,
     zoomLevel,
     projectTags,
     collapsedOutcomes,
