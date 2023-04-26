@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ButtonCheckbox from '../ButtonCheckbox/ButtonCheckbox'
 import Icon from '../Icon/Icon'
 import { CSSTransition } from 'react-transition-group'
@@ -8,14 +8,17 @@ import Typography from '../Typography/Typography'
 
 // @ts-ignore
 import triangleBottomWhite from '../../images/triangle-bottom-white.svg'
+import SelectDropdown from '../SelectDropdown/SelectDropdown'
 
 export type MapViewingOptionsProps = {
   // proptypes
   isOpen: boolean
   showAchievedOutcomes: boolean
   showSmallOutcomes: boolean
+  selectedLayeringAlgo: string
   onChangeShowAchievedOutcomes: (newState: boolean) => void
   onChangeShowSmallOutcomes: (newState: boolean) => void
+  onSelectLayeringAlgo: (newState: string) => void
 }
 
 const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
@@ -25,6 +28,8 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
   onChangeShowAchievedOutcomes,
   showSmallOutcomes,
   onChangeShowSmallOutcomes,
+  selectedLayeringAlgo,
+  onSelectLayeringAlgo,
 }) => {
   return (
     <CSSTransition
@@ -34,6 +39,37 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
       classNames="map-viewing-options-wrapper"
     >
       <div className="map-viewing-options-menu">
+        <div className="map-viewing-option-heading">
+          <Typography style="h8">Layering Algorithm</Typography>
+        </div>
+        <SelectDropdown
+          size={'small'}
+          selectedOptionId={selectedLayeringAlgo || 'longestPath'}
+          options={[
+            {
+              id: 'longestPath',
+              text: 'Minimum Height',
+              icon: (
+                <Icon
+                  name="circle-check.svg"
+                  className="not-hoverable achieved"
+                />
+              ),
+            },
+            {
+              id: 'coffmanGraham',
+              text: 'Constrained Width',
+              icon: (
+                <Icon
+                  name="circle-check.svg"
+                  className="not-hoverable achieved"
+                />
+              ),
+            },
+          ]}
+          onSelect={onSelectLayeringAlgo}
+        />
+
         <div className="map-viewing-option-heading">
           <Typography style="h8">By Achievement Status</Typography>
         </div>
@@ -46,6 +82,7 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
           }
           text="Show All Achieved"
         />
+
         <div className="map-viewing-option-heading">
           <Typography style="h8">By Scope</Typography>
         </div>
@@ -56,6 +93,7 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
           icon={<Icon name="leaf.svg" className="not-hoverable" />}
           text="Show All Small"
         />
+
         {/* Bottom Triangle */}
         <img className="triangle-bottom-white" src={triangleBottomWhite} />
       </div>

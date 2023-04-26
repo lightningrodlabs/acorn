@@ -12,6 +12,7 @@ const SHOW_ACHIEVED_OUTCOMES = 'SHOW_ACHIEVED_OUTCOMES'
 const HIDE_ACHIEVED_OUTCOMES = 'HIDE_ACHIEVED_OUTCOMES'
 const SHOW_SMALL_OUTCOMES = 'SHOW_SMALL_OUTCOMES'
 const HIDE_SMALL_OUTCOMES = 'HIDE_SMALL_OUTCOMES'
+const SET_SELECTED_LAYERING_ALGO = 'SET_SELECTED_LAYERING_ALGO'
 
 /* action creator functions */
 
@@ -41,13 +42,22 @@ function hideSmallOutcomes(projectCellId: CellIdString) {
   }
 }
 
+function setSelectedLayeringAlgo(layeringAlgo: string) {
+  return {
+    type: SET_SELECTED_LAYERING_ALGO,
+    payload: layeringAlgo,
+  }
+}
+
 export {
   SHOW_ACHIEVED_OUTCOMES,
   HIDE_ACHIEVED_OUTCOMES,
   SHOW_SMALL_OUTCOMES,
   HIDE_SMALL_OUTCOMES,
+  SET_SELECTED_LAYERING_ALGO,
   showAchievedOutcomes,
   hideAchievedOutcomes,
   showSmallOutcomes,
   hideSmallOutcomes,
+  setSelectedLayeringAlgo,
 }

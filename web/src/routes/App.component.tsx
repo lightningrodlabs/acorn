@@ -52,6 +52,7 @@ export type AppStateProps = {
   hasMigratedSharedProject: boolean
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
+  selectedLayeringAlgo: string
 }
 
 export type AppDispatchProps = {
@@ -64,6 +65,7 @@ export type AppDispatchProps = {
   hideSmallOutcomes: (projectCellId: CellIdString) => void
   showAchievedOutcomes: (projectCellId: CellIdString) => void
   hideAchievedOutcomes: (projectCellId: CellIdString) => void
+  setSelectedLayeringAlgo: (layeringAlgo: string) => void
 }
 
 export type AppMergeProps = {
@@ -95,6 +97,8 @@ const App: React.FC<AppProps> = ({
   hideSmallOutcomes,
   showAchievedOutcomes,
   hideAchievedOutcomes,
+  selectedLayeringAlgo,
+  setSelectedLayeringAlgo,
 }) => {
   const [exportedProjectName, setExportedProjectName] = useState('')
   const [showExportedModal, setShowExportedModal] = useState(false)
@@ -254,6 +258,8 @@ const App: React.FC<AppProps> = ({
                 hideSmallOutcomes={hideSmallOutcomes}
                 showAchievedOutcomes={showAchievedOutcomes}
                 hideAchievedOutcomes={hideAchievedOutcomes}
+                selectedLayeringAlgo={selectedLayeringAlgo}
+                setSelectedLayeringAlgo={setSelectedLayeringAlgo}
               />
             )}
           </Router>

@@ -4,16 +4,19 @@ import {
   SHOW_ACHIEVED_OUTCOMES,
   HIDE_SMALL_OUTCOMES,
   SHOW_SMALL_OUTCOMES,
+  SET_SELECTED_LAYERING_ALGO,
 } from './actions'
 
 export interface CollapsedOutcomesState {
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
+  selectedLayeringAlgo: string
 }
 
 const defaultState: CollapsedOutcomesState = {
   hiddenAchievedOutcomes: [],
   hiddenSmallOutcomes: [],
+  selectedLayeringAlgo: 'longestPath',
 }
 
 export default function (
@@ -45,6 +48,11 @@ export default function (
       return {
         ...state,
         hiddenSmallOutcomes: [...state.hiddenSmallOutcomes, payload],
+      }
+    case SET_SELECTED_LAYERING_ALGO:
+      return {
+        ...state,
+        selectedLayeringAlgo: payload,
       }
     default:
       return state

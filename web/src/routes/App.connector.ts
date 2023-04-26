@@ -22,6 +22,7 @@ import selectProjectMembersPresent from '../redux/persistent/projects/realtime-i
 import {
   hideAchievedOutcomes,
   hideSmallOutcomes,
+  setSelectedLayeringAlgo,
   showAchievedOutcomes,
   showSmallOutcomes,
 } from '../redux/ephemeral/map-view-settings/actions'
@@ -84,6 +85,7 @@ function mapStateToProps(state: RootState): AppStateProps {
     hasMigratedSharedProject,
     hiddenAchievedOutcomes: state.ui.mapViewSettings.hiddenAchievedOutcomes,
     hiddenSmallOutcomes: state.ui.mapViewSettings.hiddenSmallOutcomes,
+    selectedLayeringAlgo: state.ui.mapViewSettings.selectedLayeringAlgo,
   }
 }
 
@@ -113,6 +115,9 @@ function mapDispatchToProps(dispatch): AppDispatchProps {
     },
     hideAchievedOutcomes: (projectCellId) => {
       return dispatch(hideAchievedOutcomes(projectCellId))
+    },
+    setSelectedLayeringAlgo: (layeringAlgo) => {
+      return dispatch(setSelectedLayeringAlgo(layeringAlgo))
     },
   }
 }
