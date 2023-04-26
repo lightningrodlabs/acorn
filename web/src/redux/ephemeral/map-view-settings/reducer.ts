@@ -1,22 +1,24 @@
+import { LayeringAlgorithm } from '../../../types'
 import { CellIdString } from '../../../types/shared'
 import {
   HIDE_ACHIEVED_OUTCOMES,
   SHOW_ACHIEVED_OUTCOMES,
   HIDE_SMALL_OUTCOMES,
   SHOW_SMALL_OUTCOMES,
-  SET_SELECTED_LAYERING_ALGO,
 } from './actions'
 
 export interface CollapsedOutcomesState {
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
-  selectedLayeringAlgo: string
+  selectedLayeringAlgo:
+    | LayeringAlgorithm.LongestPath
+    | LayeringAlgorithm.CoffmanGraham
 }
 
 const defaultState: CollapsedOutcomesState = {
   hiddenAchievedOutcomes: [],
   hiddenSmallOutcomes: [],
-  selectedLayeringAlgo: 'longestPath',
+  selectedLayeringAlgo: LayeringAlgorithm.LongestPath,
 }
 
 export default function (
@@ -48,11 +50,6 @@ export default function (
       return {
         ...state,
         hiddenSmallOutcomes: [...state.hiddenSmallOutcomes, payload],
-      }
-    case SET_SELECTED_LAYERING_ALGO:
-      return {
-        ...state,
-        selectedLayeringAlgo: payload,
       }
     default:
       return state

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import ButtonCheckbox from '../ButtonCheckbox/ButtonCheckbox'
 import Icon from '../Icon/Icon'
 import { CSSTransition } from 'react-transition-group'
@@ -9,6 +9,7 @@ import Typography from '../Typography/Typography'
 // @ts-ignore
 import triangleBottomWhite from '../../images/triangle-bottom-white.svg'
 import SelectDropdown from '../SelectDropdown/SelectDropdown'
+import { LayeringAlgorithm } from '../../types'
 
 export type MapViewingOptionsProps = {
   // proptypes
@@ -44,10 +45,10 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
         </div>
         <SelectDropdown
           size={'small'}
-          selectedOptionId={selectedLayeringAlgo || 'longestPath'}
+          selectedOptionId={selectedLayeringAlgo}
           options={[
             {
-              id: 'longestPath',
+              id: LayeringAlgorithm.LongestPath,
               text: 'Minimum Height',
               icon: (
                 <Icon
@@ -57,7 +58,7 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
               ),
             },
             {
-              id: 'coffmanGraham',
+              id: LayeringAlgorithm.CoffmanGraham,
               text: 'Constrained Width',
               icon: (
                 <Icon

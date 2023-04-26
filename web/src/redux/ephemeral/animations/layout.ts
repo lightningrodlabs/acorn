@@ -71,6 +71,7 @@ export default function performLayoutAnimation(
   const layeringAlgorithm =
     nextState.projects.projectMeta[projectId].layeringAlgorithm ||
     LayeringAlgorithm.CoffmanGraham
+
   // this is our final destination layout
   // that we'll be animating to
   const newLayout = layoutFormula(

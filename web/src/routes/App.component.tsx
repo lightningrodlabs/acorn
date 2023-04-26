@@ -8,7 +8,13 @@ import {
   CellIdString,
   WithActionHash,
 } from '../types/shared'
-import { ProjectMeta, Profile, EntryPoint, Outcome } from '../types'
+import {
+  ProjectMeta,
+  Profile,
+  EntryPoint,
+  Outcome,
+  LayeringAlgorithm,
+} from '../types'
 
 import './App.scss'
 
@@ -65,11 +71,13 @@ export type AppDispatchProps = {
   hideSmallOutcomes: (projectCellId: CellIdString) => void
   showAchievedOutcomes: (projectCellId: CellIdString) => void
   hideAchievedOutcomes: (projectCellId: CellIdString) => void
-  setSelectedLayeringAlgo: (layeringAlgo: string) => void
 }
 
 export type AppMergeProps = {
   updateWhoami: (entry: Profile, actionHash: ActionHashB64) => Promise<void>
+  setSelectedLayeringAlgo: (
+    layeringAlgorithm: LayeringAlgorithm
+  ) => Promise<void>
 }
 
 export type AppProps = AppStateProps & AppDispatchProps & AppMergeProps
