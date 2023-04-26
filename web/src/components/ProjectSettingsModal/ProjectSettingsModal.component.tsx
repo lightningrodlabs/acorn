@@ -128,16 +128,9 @@ export default function ProjectSettingsModal({
     setUpdatingProject(true)
     await updateProjectMeta(
       {
-        // editable
+        ...project,
         name: projectName,
         image: projectCoverUrl,
-        layeringAlgorithm: project.layeringAlgorithm,
-        // not editable
-        creatorAgentPubKey: project.creatorAgentPubKey,
-        createdAt: project.createdAt,
-        passphrase: project.passphrase,
-        isImported: project.isImported,
-        topPriorityOutcomes: project.topPriorityOutcomes,
       },
       project.actionHash,
       cellIdString
