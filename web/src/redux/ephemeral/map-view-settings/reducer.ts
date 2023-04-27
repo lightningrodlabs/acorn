@@ -10,9 +10,7 @@ import {
 export interface CollapsedOutcomesState {
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
-  selectedLayeringAlgo:
-    | LayeringAlgorithm.LongestPath
-    | LayeringAlgorithm.CoffmanGraham
+  selectedLayeringAlgo: LayeringAlgorithm
 }
 
 const defaultState: CollapsedOutcomesState = {
