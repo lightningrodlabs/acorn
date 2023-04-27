@@ -70,8 +70,7 @@ const isOneOfLayoutAffectingActions = (action: {
     type === SHOW_ACHIEVED_OUTCOMES ||
     type === HIDE_SMALL_OUTCOMES ||
     type === SHOW_SMALL_OUTCOMES ||
-    // type === FETCH_PROJECT_META ||
-    // type === FETCH_PROJECT_METAS ||
+    type === FETCH_PROJECT_METAS ||
     type === UPDATE_PROJECT_META
   )
 }
