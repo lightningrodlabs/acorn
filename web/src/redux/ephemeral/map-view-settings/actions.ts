@@ -42,13 +42,6 @@ function hideSmallOutcomes(projectCellId: CellIdString) {
   }
 }
 
-function setSelectedLayeringAlgo(layeringAlgo: string) {
-  return {
-    type: SET_SELECTED_LAYERING_ALGO,
-    payload: layeringAlgo,
-  }
-}
-
 export {
   SHOW_ACHIEVED_OUTCOMES,
   HIDE_ACHIEVED_OUTCOMES,
@@ -59,5 +52,4 @@ export {
   hideAchievedOutcomes,
   showSmallOutcomes,
   hideSmallOutcomes,
-  setSelectedLayeringAlgo,
 }
