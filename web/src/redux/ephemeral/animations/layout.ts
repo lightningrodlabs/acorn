@@ -68,10 +68,10 @@ export default function performLayoutAnimation(
     nextState.ui.collapsedOutcomes.collapsedOutcomes[projectId] || {}
   const hiddenSmalls = hiddenSmallOutcomes.includes(projectId)
   const hiddenAchieved = hiddenAchievedOutcomes.includes(projectId)
-  const layeringAlgorithm =
-    nextState.projects.projectMeta[projectId].layeringAlgorithm ||
-    LayeringAlgorithm.CoffmanGraham
 
+  const projectMeta = nextState.projects.projectMeta
+  const layeringAlgorithm =
+    projectMeta[projectId]?.layeringAlgorithm || LayeringAlgorithm.LongestPath
   // this is our final destination layout
   // that we'll be animating to
   const newLayout = layoutFormula(
