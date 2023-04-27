@@ -3,6 +3,7 @@ import {
   ComputedOutcome,
   ComputedScope,
   ComputedSimpleAchievementStatus,
+  LayeringAlgorithm,
   Tag,
 } from '../types'
 import { ActionHashB64, WithActionHash } from '../types/shared'
@@ -12,10 +13,10 @@ import {
   LayoutState,
 } from '../redux/ephemeral/layout/state-type'
 import { connect } from 'd3-dag/dist/dag/create'
-import { DagNode, sugiyama } from 'd3-dag'
-import { greedy } from 'd3-dag/dist/sugiyama/coord/greedy'
+import { sugiyama } from 'd3-dag'
 import { coffmanGraham } from 'd3-dag/dist/sugiyama/layering/coffman-graham'
 import { Graph } from '../redux/persistent/projects/outcomes/outcomesAsGraph'
+import { longestPath } from 'd3-dag/dist/sugiyama/layering/longest-path'
 
 function checkOutcomeAgainstViewingFilters(
   outcome: ComputedOutcome,
@@ -77,6 +78,7 @@ export { getBoundingRec }
 
 function layoutForGraph(
   graph: Graph,
+  layeringAlgorithm: LayeringAlgorithm,
   allOutcomeDimensions: DimensionsState,
   projectCollapsedOutcomes: {
     [outcomeActionHash: ActionHashB64]: boolean
@@ -89,6 +91,20 @@ function layoutForGraph(
   const nodeConnections: string[][] = []
   const connections = graph.connections
   const outcomes = graph.outcomes.computedOutcomesKeyed
+
+  const layeringAlgo = (layeringAlgo: LayeringAlgorithm) => {
+    switch (layeringAlgo) {
+      // TODO: add back in when we figure out how to not have it crash
+      // case LayeringAlgorithm.Simplex:
+      // return simplex
+      case LayeringAlgorithm.LongestPath:
+        return longestPath
+      case LayeringAlgorithm.CoffmanGraham:
+        return coffmanGraham
+      default:
+        return coffmanGraham
+    }
+  }
 
   // add all the nodes with connections
   Object.keys(connections).forEach((hash) => {
@@ -147,9 +163,7 @@ function layoutForGraph(
 
       return [width, height]
     })
-    // NOTE: might be useful to expose these two properties to the user
-    .coord(greedy())
-  // .layering(coffmanGraham())
+    .layering(layeringAlgo(layeringAlgorithm)())
 
   dagLayout(dag)
 
@@ -171,6 +185,7 @@ function layoutForGraph(
 
 export default function layoutFormula(
   graph: Graph,
+  layeringAlgorithm: LayeringAlgorithm,
   zoomLevel: number,
   projectTags: WithActionHash<Tag>[],
   collapsedOutcomes: {
@@ -209,6 +224,7 @@ export default function layoutFormula(
 
   coordinates = layoutForGraph(
     graph,
+    layeringAlgorithm,
     allOutcomeDimensions,
     collapsedOutcomes,
     hiddenSmalls,

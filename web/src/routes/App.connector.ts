@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import { ActionHashB64 } from '../types/shared'
-import { Profile } from '../types'
+import { LayeringAlgorithm, Profile } from '../types'
 
 import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
 import { setNavigationPreference } from '../redux/ephemeral/local-preferences/actions'
@@ -22,9 +22,12 @@ import selectProjectMembersPresent from '../redux/persistent/projects/realtime-i
 import {
   hideAchievedOutcomes,
   hideSmallOutcomes,
+  setSelectedLayeringAlgo,
   showAchievedOutcomes,
   showSmallOutcomes,
 } from '../redux/ephemeral/map-view-settings/actions'
+import ProjectsZomeApi from '../api/projectsApi'
+import { updateProjectMeta } from '../redux/persistent/projects/project-meta/actions'
 
 function mapStateToProps(state: RootState): AppStateProps {
   const {
@@ -69,6 +72,10 @@ function mapStateToProps(state: RootState): AppStateProps {
     return projectMeta.isMigrated
   })
 
+  const selectedLayeringAlgo = activeProjectMeta
+    ? activeProjectMeta.layeringAlgorithm
+    : LayeringAlgorithm.LongestPath
+
   return {
     profilesCellIdString,
     activeEntryPoints: activeEntryPointsObjects,
@@ -84,6 +91,7 @@ function mapStateToProps(state: RootState): AppStateProps {
     hasMigratedSharedProject,
     hiddenAchievedOutcomes: state.ui.mapViewSettings.hiddenAchievedOutcomes,
     hiddenSmallOutcomes: state.ui.mapViewSettings.hiddenSmallOutcomes,
+    selectedLayeringAlgo,
   }
 }
 
@@ -122,7 +130,7 @@ function mergeProps(
   dispatchProps: AppDispatchProps,
   _ownProps: {}
 ): AppProps {
-  const { profilesCellIdString } = stateProps
+  const { profilesCellIdString, projectId } = stateProps
   let cellId
   if (profilesCellIdString) {
     cellId = cellIdFromString(profilesCellIdString)
@@ -139,6 +147,26 @@ function mergeProps(
         actionHash,
       })
       return dispatch(updateWhoami(profilesCellIdString, updatedWhoami))
+    },
+    setSelectedLayeringAlgo: async (layeringAlgorithm: LayeringAlgorithm) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+
+      const entry = {
+        ...stateProps.activeProjectMeta,
+        layeringAlgorithm,
+      }
+
+      const actionHash = stateProps.activeProjectMeta.actionHash
+
+      const updatedProjectMeta = await projectsZomeApi.projectMeta.update(
+        cellIdFromString(projectId),
+        {
+          entry,
+          actionHash,
+        }
+      )
+      return dispatch(updateProjectMeta(projectId, updatedProjectMeta))
     },
   }
 }
