@@ -24,5 +24,8 @@ keystore
 keystore2
 my-proxy-cert.cert
 
+**/*.dna
+**/*.happ
+
 **/.DS_Store
 .DS_Store

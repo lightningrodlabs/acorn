@@ -12,19 +12,23 @@ import { CellIdString } from '../../types/shared'
 export type FooterProps = {
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
+  selectedLayeringAlgo: string
   showSmallOutcomes: (projectCellId: CellIdString) => void
   hideSmallOutcomes: (projectCellId: CellIdString) => void
   showAchievedOutcomes: (projectCellId: CellIdString) => void
   hideAchievedOutcomes: (projectCellId: CellIdString) => void
+  setSelectedLayeringAlgo: (layeringAlgo: string) => void
 }
 
 const Footer: React.FC<FooterProps> = ({
   hiddenAchievedOutcomes,
   hiddenSmallOutcomes,
+  selectedLayeringAlgo,
   showSmallOutcomes,
   hideSmallOutcomes,
   showAchievedOutcomes,
   hideAchievedOutcomes,
+  setSelectedLayeringAlgo,
 }) => {
   const projectPage = useRouteMatch<{ projectId: CellIdString }>(
     '/project/:projectId'
@@ -82,6 +86,8 @@ const Footer: React.FC<FooterProps> = ({
                 showSmallOutcomes={showSmallOutcomesValue}
                 onChangeShowAchievedOutcomes={onChangeShowAchievedOutcomes}
                 onChangeShowSmallOutcomes={onChangeShowSmallOutcomes}
+                selectedLayeringAlgo={selectedLayeringAlgo}
+                onSelectLayeringAlgo={setSelectedLayeringAlgo}
               />
               {/* Map Viewing Options Button */}
               <div

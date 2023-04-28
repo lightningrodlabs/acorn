@@ -28,7 +28,7 @@ import Dashboard, {
   DashboardDispatchProps,
   DashboardStateProps,
 } from './Dashboard.component'
-import { ProjectMeta } from '../../types'
+import { LayeringAlgorithm, ProjectMeta } from '../../types'
 import selectProjectMembersPresent from '../../redux/persistent/projects/realtime-info-signal/select'
 import { installProjectApp } from '../../projects/installProjectApp'
 
@@ -176,6 +176,7 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
         creatorAgentPubKey: agentAddress,
         createdAt: Date.now(),
         isImported: false,
+        layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
         topPriorityOutcomes: [],
         isMigrated: null,
       }
@@ -184,11 +185,7 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
     joinProject: (passphrase: string) => {
       return joinProject(passphrase, dispatch)
     },
-    importProject: (
-      agentAddress,
-      projectData,
-      passphrase,
-    ) => {
+    importProject: (agentAddress, projectData, passphrase) => {
       return installProjectAppAndImport(
         agentAddress,
         projectData,

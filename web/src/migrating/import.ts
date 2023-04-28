@@ -8,7 +8,7 @@ import ProfilesZomeApi from '../api/profilesApi'
 import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { createTag } from '../redux/persistent/projects/tags/actions'
-import { Outcome, Tag } from '../types'
+import { LayeringAlgorithm, Outcome, ProjectMeta, Tag } from '../types'
 import { WireRecord } from '../api/hdkCrud'
 import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../types/shared'
 import { RootState } from '../redux/reducer'
@@ -39,9 +39,11 @@ export default async function importProjectsData(
     return !project.projectMeta.isMigrated
   })
 
-  const migratedProjectsToJoin = migrationDataParsed.projects.filter((project) => {
-    return project.projectMeta.isMigrated
-  })
+  const migratedProjectsToJoin = migrationDataParsed.projects.filter(
+    (project) => {
+      return project.projectMeta.isMigrated
+    }
+  )
 
   // count the number of steps this is going to take
   const totalSteps =
@@ -83,7 +85,6 @@ export default async function importProjectsData(
   }
 }
 
-
 export async function installProjectAppAndImport(
   agentAddress: AgentPubKeyB64,
   projectData: ProjectExportDataV1,
@@ -105,7 +106,7 @@ export async function installProjectAppAndImport(
   // first step is to create new project
   const originalTopPriorityOutcomes =
     projectData.projectMeta.topPriorityOutcomes
-  const projectMeta = {
+  const projectMeta: ProjectMeta = {
     ...projectData.projectMeta,
     // the question mark operator for backwards compatibility
     topPriorityOutcomes: originalTopPriorityOutcomes
@@ -113,6 +114,10 @@ export async function installProjectAppAndImport(
           .map((oldAddress) => oldToNewAddressMap[oldAddress])
           .filter((address) => address)
       : [],
+    // add a fallback layering algorithm in case the project has none
+    layeringAlgorithm: projectData.projectMeta.layeringAlgorithm
+      ? projectData.projectMeta.layeringAlgorithm
+      : LayeringAlgorithm.LongestPath,
     createdAt: Date.now(),
     creatorAgentPubKey: agentAddress,
     passphrase: passphrase,
@@ -120,7 +125,8 @@ export async function installProjectAppAndImport(
   }
   // v0.5.4-alpha
   // not an actual field in the backend
-  delete projectMeta.actionHash
+  // needed to type-convert to any so typescript doesn't complain
+  delete (projectMeta as any).actionHash
 
   const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
