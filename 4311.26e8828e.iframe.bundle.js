@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkacorn_ui=self.webpackChunkacorn_ui||[]).push([[4311],{"./src/images/booklet.svg":(module,__unused_webpack_exports,__webpack_require__)=>{module.exports=__webpack_require__.p+"static/media/booklet.3abadae6.svg"}}]);

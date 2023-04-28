@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkacorn_ui=self.webpackChunkacorn_ui||[]).push([[5492],{"./src/images/acorn-logo.svg":(module,__unused_webpack_exports,__webpack_require__)=>{module.exports=__webpack_require__.p+"static/media/acorn-logo.95d1333b.svg"}}]);

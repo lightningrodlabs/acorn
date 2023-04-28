@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[24],{"./src/images/chats-circle.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/chats-circle.19d2f394.svg"}}]);

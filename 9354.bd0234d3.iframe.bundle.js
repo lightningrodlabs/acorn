@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkacorn_ui=self.webpackChunkacorn_ui||[]).push([[9354],{"./src/images/lightning.svg":(module,__unused_webpack_exports,__webpack_require__)=>{module.exports=__webpack_require__.p+"static/media/lightning.72cf22a7.svg"}}]);

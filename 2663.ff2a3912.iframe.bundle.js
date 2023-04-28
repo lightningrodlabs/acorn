@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkacorn_ui=self.webpackChunkacorn_ui||[]).push([[2663],{"./src/images/acorn-alpha-logo.png":(module,__unused_webpack_exports,__webpack_require__)=>{module.exports=__webpack_require__.p+"static/media/acorn-alpha-logo.7611e6e9.png"}}]);

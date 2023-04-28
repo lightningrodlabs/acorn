@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkacorn_ui=self.webpackChunkacorn_ui||[]).push([[3960],{"./src/images/leaf-bronze.svg":(module,__unused_webpack_exports,__webpack_require__)=>{module.exports=__webpack_require__.p+"static/media/leaf-bronze.454f821f.svg"}}]);

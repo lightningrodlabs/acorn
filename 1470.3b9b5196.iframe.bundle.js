@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkacorn_ui=self.webpackChunkacorn_ui||[]).push([[1470],{"./src/images/popup-curved-pointer-upside.svg":(module,__unused_webpack_exports,__webpack_require__)=>{module.exports=__webpack_require__.p+"static/media/popup-curved-pointer-upside.f5fec0ad.svg"}}]);

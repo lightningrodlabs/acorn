@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[67],{"./src/images/minus.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/minus.27f193c5.svg"}}]);

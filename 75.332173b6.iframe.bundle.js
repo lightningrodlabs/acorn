@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[75],{"./src/images/popup-curved-pointer-upside.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/popup-curved-pointer-upside.f5fec0ad.svg"}}]);

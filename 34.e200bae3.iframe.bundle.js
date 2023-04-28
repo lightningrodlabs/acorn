@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[34],{"./src/images/delete-bin.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/delete-bin.098f8e1a.svg"}}]);

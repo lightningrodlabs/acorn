@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkacorn_ui=self.webpackChunkacorn_ui||[]).push([[8010],{"./src/images/splash-image-valeriia-miller.jpg":(module,__unused_webpack_exports,__webpack_require__)=>{module.exports=__webpack_require__.p+"static/media/splash-image-valeriia-miller.30c25283.jpg"}}]);

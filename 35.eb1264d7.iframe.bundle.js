@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[35],{"./src/images/details.svg":function(module,exports,__webpack_require__){module.exports=__webpack_require__.p+"static/media/details.9f1db4b0.svg"}}]);
