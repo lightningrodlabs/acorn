@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Icon from '../Icon/Icon'
 import OnClickOutside from '../OnClickOutside/OnClickOutside'
 import './GithubLink.scss'
@@ -9,7 +9,6 @@ export type GithubLinkProps = {
   isEditing: boolean
   setIsEditing: (isEditing: boolean) => void
   inputLinkText: string
-  inputLinkTextInvalid?: boolean
   setInputLinkText: (linkText: string) => void
 }
 
@@ -19,23 +18,37 @@ const GithubLink: React.FC<GithubLinkProps> = ({
   isEditing,
   setIsEditing,
   inputLinkText,
-  inputLinkTextInvalid,
   setInputLinkText,
 }) => {
-  // TODO: make this validate that it is
-  // 1. a URL
-  // 2. ends with a set of numeric digits
   const regex = /\d+/g
+  const githubLinkRegex = /https?:\/\/github\.com\/[\w-]+\/[\w-]+\/(issues|pull)\/\d+/i
   const linkNumber = githubLink ? githubLink.match(regex) : null
-  // validate the github link input, if validated then submit
+  const INVALID_LINK_TEXT = 'Invalid link'
+
+  const [isInvalidLink, setIsInvalidLink] = useState(false)
+
   const validateAndSubmit = () => {
-    if (inputLinkText.length > 0) {
-      onSubmit()
-      // TODO: change to if length not zero and url not correct
-    } else if (inputLinkText.length == 0) {
-      // TODO: make text red and do not submit
+    if (!inputLinkText.trim()) return
+
+    if (!githubLinkRegex.test(inputLinkText.trim())) {
+      setIsInvalidLink(true)
+      return
     }
+
+    onSubmit()
   }
+
+  useEffect(() => {
+    if (inputLinkText !== INVALID_LINK_TEXT) {
+      setIsInvalidLink(false)
+    }
+  }, [inputLinkText])
+
+  useEffect(() => {
+    if (isInvalidLink) {
+      setInputLinkText(INVALID_LINK_TEXT)
+    }
+  }, [isInvalidLink])
 
   return (
     <div className="github-link-wrapper">
@@ -66,10 +79,10 @@ const GithubLink: React.FC<GithubLinkProps> = ({
       )}
       {/* The Github Input */}
       {isEditing && (
-        <div className='input-with-onlick-outside'>
+        <div className="input-with-onlick-outside">
           <OnClickOutside onClickOutside={validateAndSubmit}>
             <input
-              className={inputLinkTextInvalid ? 'invalid' : ''}
+              className={isInvalidLink ? 'invalid' : ''}
               type="text"
               placeholder="Add a GitHub Issue or pull request link"
               value={inputLinkText}

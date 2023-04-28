@@ -22,7 +22,6 @@ import selectProjectMembersPresent from '../redux/persistent/projects/realtime-i
 import {
   hideAchievedOutcomes,
   hideSmallOutcomes,
-  setSelectedLayeringAlgo,
   showAchievedOutcomes,
   showSmallOutcomes,
 } from '../redux/ephemeral/map-view-settings/actions'
