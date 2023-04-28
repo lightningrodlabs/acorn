@@ -28,6 +28,7 @@
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",
   "dependencies": {
-    "pm2": "^5.1.1"
+    "pm2": "^5.1.1",
+    "react-onclickoutside": "^6.12.2"
   }
 }

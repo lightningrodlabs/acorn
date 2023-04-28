@@ -10,6 +10,7 @@ import Typography from '../Typography/Typography'
 import triangleBottomWhite from '../../images/triangle-bottom-white.svg'
 import SelectDropdown from '../SelectDropdown/SelectDropdown'
 import { LayeringAlgorithm } from '../../types'
+import FilterDropdownSelect from '../FilterDropdownSelect/FilterDropdownSelect'
 
 export type MapViewingOptionsProps = {
   // proptypes
@@ -43,29 +44,17 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
         <div className="map-viewing-option-heading">
           <Typography style="h8">Layering Algorithm</Typography>
         </div>
-        <SelectDropdown
+        <FilterDropdownSelect
           size={'small'}
           selectedOptionId={selectedLayeringAlgo}
           options={[
             {
               id: LayeringAlgorithm.LongestPath,
               text: 'Minimum Height',
-              icon: (
-                <Icon
-                  name="circle-check.svg"
-                  className="not-hoverable achieved"
-                />
-              ),
             },
             {
               id: LayeringAlgorithm.CoffmanGraham,
               text: 'Constrained Width',
-              icon: (
-                <Icon
-                  name="circle-check.svg"
-                  className="not-hoverable achieved"
-                />
-              ),
             },
           ]}
           onSelect={onSelectLayeringAlgo}
