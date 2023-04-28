@@ -9,6 +9,6 @@ let
 in nixpkgs.mkShell {
   inputsFrom = [ holonix.main ];
   packages = with nixpkgs; [
-    nodejs-18
+    nodejs-16_x
   ];
 }
