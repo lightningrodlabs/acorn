@@ -53,7 +53,7 @@ jobs:
       - name: Build hApp
         run: |
           nix-shell --run "npm run happ-pack"
-      # "upload" dna as build artifact
+      # store happs as build artifacts
       - uses: actions/upload-artifact@master
         with:
           name: profiles-artifact
