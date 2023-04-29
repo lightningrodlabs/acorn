@@ -18,4 +18,4 @@ Acorn is currently in **Alpha** testing phase.
 ![A Sample of Acorn App Design showing Expanded View of an Outcome with details such as Outcome Statement, Achievement Status, GitHub Link, Tags, Assignees, Time, Description, and Action Buttons.](https://github.com/lightningrodlabs/acorn/blob/main/acorn-design-sample-june2022.png)
 
 
-© 2020-2022 Harris-Braun Enterprises, LLC, operating as [Lightningrod Labs](https://lightningrodlabs.org). Licensed under the [Cryptographic Autonomy License v1.0](https://opensource.org/licenses/CAL-1.0).
+© 2020-2023 Harris-Braun Enterprises, LLC, operating as [Lightningrod Labs](https://lightningrodlabs.org). Licensed under the [Cryptographic Autonomy License v1.0](https://opensource.org/licenses/CAL-1.0).
