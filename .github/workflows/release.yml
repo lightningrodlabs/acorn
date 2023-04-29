@@ -75,11 +75,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      # rm the dna files from repository
-      - name: clearing precompiled files
-        run: |
-          rm happ/workdir/*.dna
-          rm happ/workdir/*.happ
       - uses: actions/download-artifact@master
         with:
           name: profiles-artifact
@@ -88,9 +83,6 @@ jobs:
         with:
           name: projects-artifact
           path: happ/workdir
-      - name: list downloads
-        run: ls -R
-        working-directory: happ/workdir
       # depending on the windows command (when we are ready to build for it), may have to check which os currently on
       - name: Install nodejs dependencies
         run: |
