@@ -57,11 +57,11 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: profiles-artifact
-          path: happ/workdir/profiles.happ
+          path: happ/workdir/profiles/profiles.happ
       - uses: actions/upload-artifact@master
         with:
           name: projects-artifact
-          path: happ/workdir/projects.dna
+          path: happ/workdir/projects/projects.happ
 
   # upload the app package for each target os
   upload-assets:
@@ -78,11 +78,11 @@ jobs:
       - uses: actions/download-artifact@master
         with:
           name: profiles-artifact
-          path: happ/workdir
+          path: happ/workdir/profiles
       - uses: actions/download-artifact@master
         with:
           name: projects-artifact
-          path: happ/workdir
+          path: happ/workdir/projects
       # depending on the windows command (when we are ready to build for it), may have to check which os currently on
       - name: Install nodejs dependencies
         run: |
