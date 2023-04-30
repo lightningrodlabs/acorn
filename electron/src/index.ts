@@ -15,7 +15,11 @@ import {
   stateSignalToText,
   BINARY_PATHS,
 } from './holochain'
-import { INTEGRITY_VERSION_NUMBER, PREV_VER_USER_DATA_MIGRATION_FILE_PATH, USER_DATA_MIGRATION_FILE_PATH } from './paths'
+import {
+  INTEGRITY_VERSION_NUMBER,
+  PREV_VER_USER_DATA_MIGRATION_FILE_PATHS,
+  USER_DATA_MIGRATION_FILE_PATH,
+} from './paths'
 
 // add the right-click "context" menu
 contextMenu({
@@ -226,18 +230,26 @@ ipcMain.handle('persistExportData', (event, data) => {
       integrityVersion: INTEGRITY_VERSION_NUMBER,
       ...dataObj,
     }
-    fs.writeFileSync(USER_DATA_MIGRATION_FILE_PATH, JSON.stringify(modifiedData, null, 2), {
-      encoding: 'utf-8',
-    })
+    fs.writeFileSync(
+      USER_DATA_MIGRATION_FILE_PATH,
+      JSON.stringify(modifiedData, null, 2),
+      {
+        encoding: 'utf-8',
+      }
+    )
   } catch (e) {}
 })
 
 ipcMain.handle('checkForMigrationData', (event) => {
   console.log('received checkForMigrationData')
-  // INTEGRITY_VERSION_NUMBER will just be incremented one number at a time
-  if (fs.existsSync(PREV_VER_USER_DATA_MIGRATION_FILE_PATH)) {
+  const existingMigrationPath = PREV_VER_USER_DATA_MIGRATION_FILE_PATHS.find(
+    (prevPath) => {
+      return fs.existsSync(prevPath)
+    }
+  )
+  if (existingMigrationPath) {
     const prevVersionMigrationDataString = fs.readFileSync(
-      PREV_VER_USER_DATA_MIGRATION_FILE_PATH,
+      existingMigrationPath,
       { encoding: 'utf-8' }
     )
     return prevVersionMigrationDataString
@@ -248,7 +260,10 @@ ipcMain.handle('checkForMigrationData', (event) => {
 
 ipcMain.on('markMigrationDone', () => {
   console.log('received markMigrationDone')
-  // INTEGRITY_VERSION_NUMBER will just be incremented one number at a time
-  // delete the file, thus completing the migration
-  fs.unlinkSync(PREV_VER_USER_DATA_MIGRATION_FILE_PATH)
+  // delete any migration files, thus completing the migration
+  PREV_VER_USER_DATA_MIGRATION_FILE_PATHS.forEach((prevPath) => {
+    if (fs.existsSync(prevPath)) {
+      fs.unlinkSync(prevPath)
+    }
+  })
 })
