@@ -64,7 +64,7 @@ const devOptions: ElectronHolochainOptions = {
   appId: MAIN_APP_ID,
   appWsPort: process.env.ACORN_TEST_USER_2 ? 8899 : 8888,
   adminWsPort: process.env.ACORN_TEST_USER_2 ? 1236 : 1234,
-  keystorePath: path.join(USER_DATA_PATH, `keystore-${INTEGRITY_VERSION_NUMBER}`),
+  keystorePath: path.join(USER_DATA_PATH, `keystore-${KEYSTORE_VERSION_NUMBER}`),
   passphrase: 'test-passphrase',
   proxyUrl: COMMUNITY_PROXY_URL,
 }
