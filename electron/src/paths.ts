@@ -3,7 +3,7 @@ import * as path from 'path'
 
 // see the DEVELOPERS.md about incrementing
 // these values
-export const INTEGRITY_VERSION_NUMBER = 7
+export const INTEGRITY_VERSION_NUMBER = 8
 export const KEYSTORE_VERSION_NUMBER = 4
 
 const userNumber = process.env.ACORN_TEST_USER_2 ? '2' : ''
@@ -15,7 +15,7 @@ const USER_DATA_MIGRATION_FILE_PATH = path.join(
   USER_DATA_PATH,
   `${MIGRATION_FILE_NAME_PREFIX}${INTEGRITY_VERSION_NUMBER}`
 )
-const prevIntegrityVersion = INTEGRITY_VERSION_NUMBER - 1
+const prevIntegrityVersion = 6 // <-- SPECIAL CASE -- INTEGRITY_VERSION_NUMBER - 1
 const PREV_VER_USER_DATA_MIGRATION_FILE_PATH = path.join(
   USER_DATA_PATH,
   `${MIGRATION_FILE_NAME_PREFIX}${prevIntegrityVersion}`
