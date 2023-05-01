@@ -21,4 +21,4 @@ jobs:
      - run: rustup show
 
      - run: cargo install holochain_cli --version 0.1.0 --locked
-     - run: ./scripts/happ-pack.sh
+     - run: bash ./scripts/happ-pack.sh
