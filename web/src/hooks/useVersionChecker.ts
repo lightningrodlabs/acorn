@@ -58,7 +58,7 @@ export default function useVersionChecker(): {
       currentVersion.indexOf('v') + 1,
       currentVersion.lastIndexOf('-')
     )
-    latestVersion = currentVersion.substring(
+    latestVersion = latestVersion.substring(
       latestVersion.indexOf('v') + 1,
       latestVersion.lastIndexOf('-')
     )
