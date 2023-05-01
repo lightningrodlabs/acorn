@@ -38,8 +38,7 @@ jobs:
         run: cargo install holochain_cli --version 0.1.0 --locked
        # build hApp
       - name: Build hApp
-        run: |
-          nix-shell --run "npm run happ-pack"
+        run: bash ./scripts/happ-pack.sh
       # store happs as build artifacts
       - uses: actions/upload-artifact@master
         with:
