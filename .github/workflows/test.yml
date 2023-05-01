@@ -12,13 +12,13 @@ jobs:
      - uses: actions/checkout@v3
      - uses: actions-rs/toolchain@v1
        with:
-         toolchain: 1.58
+         toolchain: 1.69
          target: wasm32-unknown-unknown
 
-     - run: rustup update stable
      - run: rustc --version
      - run: cargo --version
      - run: rustup component list --installed
      - run: rustup show
 
      - run: cargo install holochain_cli --version 0.1.0 --locked
+     - run: ./scripts/happ-pack.sh
