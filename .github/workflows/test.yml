@@ -1,23 +1,24 @@
 # Disabled for now, to not waste CI resources
 
-name: Cargo tests
-
-on: [ push, pull_request ]
-
-jobs:
-  cargo_test:
-    runs-on: ubuntu-latest
-
-    steps:
-     - uses: actions/checkout@v3
-     - uses: dtolnay/rust-toolchain@1.65
-       with:
-         targets: wasm32-unknown-unknown
-
-     - run: rustc --version
-     - run: cargo --version
-     - run: rustup component list --installed
-     - run: rustup show
-
-     - run: cargo install holochain_cli --version 0.1.0 --locked
-     - run: bash ./scripts/happ-pack.sh
+# name: Cargo tests
+#
+# on: [ push, pull_request ]
+#
+# jobs:
+#   cargo_test:
+#     runs-on: ubuntu-latest
+#
+#     steps:
+#      - uses: actions/checkout@v3
+#      - uses: dtolnay/rust-toolchain@1.65
+#        with:
+#          targets: wasm32-unknown-unknown
+#
+#      - run: rustc --version
+#      - run: cargo --version
+#      - run: rustup component list --installed
+#      - run: rustup show
+#
+#      - run: cargo install holochain_cli --version 0.1.0 --locked
+#      - run: bash ./scripts/happ-pack.sh
+#
