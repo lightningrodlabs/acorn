@@ -21,6 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@1.65
+        with:
+          targets: wasm32-unknown-unknown
       - name: Install holochain_cli
         run: cargo install holochain_cli --version 0.1.0 --locked
        # build hApp
