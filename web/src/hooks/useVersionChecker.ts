@@ -54,6 +54,8 @@ export default function useVersionChecker(): {
     currentVersion: string,
     latestVersion: string
   ): boolean {
+    const versionPattern: RegExp = /^\d+\.\d+\.\d+$/
+
     currentVersion = currentVersion.substring(
       currentVersion.indexOf('v') + 1,
       currentVersion.lastIndexOf('-')
@@ -62,6 +64,15 @@ export default function useVersionChecker(): {
       latestVersion.indexOf('v') + 1,
       latestVersion.lastIndexOf('-')
     )
+
+    // we can't be sure that we are out of date if the version
+    // is not in the correct format
+    if (
+      !versionPattern.test(currentVersion) ||
+      !versionPattern.test(latestVersion)
+    )
+      return false
+
     const currentVersionParts = currentVersion.split('.')
     const latestVersionParts = latestVersion.split('.')
     if (currentVersionParts[0] < latestVersionParts[0]) {
