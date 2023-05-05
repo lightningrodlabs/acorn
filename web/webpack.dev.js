@@ -35,6 +35,9 @@ module.exports = {
     app: './src/index.tsx',
     splash: './src/splashscreen.scss',
   },
+  externals: {
+    "node:crypto": {}
+  },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     fallback: {
