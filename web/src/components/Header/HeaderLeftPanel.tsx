@@ -267,6 +267,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
             />
           </Route>
         )}
+        {/* TODO: Add project syncing logo here */}
       </div>
       {/* Second row of the header */}
       {/* for showing active entry points tabs */}
