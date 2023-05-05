@@ -55,8 +55,6 @@ const BINARY_PATHS: PathOptions | undefined = app.isPackaged
   : undefined
 
 const MAIN_APP_ID = 'main-app'
-const COMMUNITY_PROXY_URL =
-  'kitsune-proxy://SYVd4CF3BdJ4DS7KwLLgeU3_DbHoZ34Y-qroZ79DOs8/kitsune-quic/h/165.22.32.11/p/5779/--'
 
 const devOptions: ElectronHolochainOptions = {
   happPath: profilesHappPath, // preload
@@ -66,7 +64,7 @@ const devOptions: ElectronHolochainOptions = {
   adminWsPort: process.env.ACORN_TEST_USER_2 ? 1236 : 1234,
   keystorePath: path.join(USER_DATA_PATH, `keystore-${KEYSTORE_VERSION_NUMBER}`),
   passphrase: 'test-passphrase',
-  proxyUrl: COMMUNITY_PROXY_URL,
+  bootstrapUrl: 'https://bootstrap.holo.host'
 }
 const prodOptions: ElectronHolochainOptions = {
   happPath: profilesHappPath, // preload
@@ -76,7 +74,7 @@ const prodOptions: ElectronHolochainOptions = {
   adminWsPort: 1235,
   keystorePath: path.join(app.getPath('userData'), `keystore-${KEYSTORE_VERSION_NUMBER}`),
   passphrase: 'test-passphrase',
-  proxyUrl: COMMUNITY_PROXY_URL,
+  bootstrapUrl: 'https://bootstrap.holo.host'
 }
 
 export { projectsHappPath, BINARY_PATHS, devOptions, prodOptions }
