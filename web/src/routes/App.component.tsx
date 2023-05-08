@@ -179,6 +179,7 @@ const App: React.FC<AppProps> = ({
                 project={activeProjectMeta}
                 {...{
                   members,
+                  agentAddress,
                   presentMembers,
                   activeEntryPoints,
                   projectId,

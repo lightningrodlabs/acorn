@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink, Route, useLocation, useRouteMatch } from 'react-router-dom'
 import useOnClickOutside from 'use-onclickoutside'
 
@@ -22,6 +22,9 @@ import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 //images
 // @ts-ignore
 import triangleTopWhite from '../../images/triangle-top-white.svg'
+import { getAdminWs, getAppWs } from '../../hcWebsockets'
+import { getAllApps } from '../../projectAppIds'
+import { net } from 'electron'
 
 function ActiveEntryPoint({
   entryPoint,
@@ -57,6 +60,7 @@ function ActiveEntryPoint({
 export type HeaderLeftPanelProps = {
   whoami: WireRecord<Profile>
   members: Profile[]
+  agentAddress: AgentPubKeyB64
   presentMembers: AgentPubKeyB64[]
   projectName: string
   activeEntryPoints: {
@@ -83,6 +87,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   activeEntryPoints,
   goToOutcome,
   members,
+  agentAddress,
   presentMembers,
 }) => {
   const activeEntryPointAddresses = activeEntryPoints.map(
@@ -111,6 +116,34 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
 
   useOnClickOutside(ref, () => setOpenEntryPointPicker(false))
   const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
+
+  const [numOpsToFetch, setNumOpsToFetch] = useState(0)
+
+  // display syncing indicator when numOpsToFetch > 0
+  useEffect(() => {
+    getAdminWs().then((adminWs) => {
+      getAppWs().then((appWs) => {
+        adminWs.listDnas().then((dnas) => {
+          appWs
+            .networkInfo({
+              agent_pub_key: agentAddress as any,
+              dnas: dnas as any,
+            })
+            .then((networkInfo) => {
+              setInterval(() => {
+                let sum = 0
+                networkInfo.forEach((infoEntry) => {
+                  sum += infoEntry.fetch_pool_info.num_ops_to_fetch
+                })
+
+                setNumOpsToFetch(sum)
+              }, 5000)
+            })
+            .catch(console.error)
+        })
+      })
+    })
+  }, [])
 
   return (
     <div className="header-left-panel-rows">
@@ -267,7 +300,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
             />
           </Route>
         )}
-        {/* TODO: Add project syncing logo here */}
+        {numOpsToFetch > 0 && <div>Syncing...</div>}
       </div>
       {/* Second row of the header */}
       {/* for showing active entry points tabs */}

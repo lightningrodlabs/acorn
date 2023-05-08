@@ -39,6 +39,7 @@ export type HeaderProps = {
   project: WithActionHash<ProjectMeta>
   projectId: CellIdString
   members: Profile[]
+  agentAddress: AgentPubKeyB64
   presentMembers: AgentPubKeyB64[]
   openInviteMembersModal: (passphrase: string) => void
   setShowProjectSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -69,6 +70,7 @@ const Header: React.FC<HeaderProps> = ({
   projectId,
   goToOutcome,
   members,
+  agentAddress,
   presentMembers,
 }) => {
   const isDashboardMatch = useRouteMatch('/dashboard')
@@ -147,6 +149,7 @@ const Header: React.FC<HeaderProps> = ({
         {/* Header Left Panel */}
         <HeaderLeftPanel
           members={members}
+          agentAddress={agentAddress}
           presentMembers={presentMembers}
           whoami={whoami}
           openInviteMembersModal={openInviteMembersModalForActive}
