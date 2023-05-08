@@ -25,6 +25,7 @@ import triangleTopWhite from '../../images/triangle-top-white.svg'
 import { getAdminWs, getAppWs } from '../../hcWebsockets'
 import { getAllApps } from '../../projectAppIds'
 import { net } from 'electron'
+import SyncingIndicator from '../SyncingIndicator/SyncingIndicator'
 
 function ActiveEntryPoint({
   entryPoint,
@@ -300,7 +301,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
             />
           </Route>
         )}
-        {numOpsToFetch > 0 && <div>Syncing...</div>}
+        <SyncingIndicator visible={numOpsToFetch > 0} />
       </div>
       {/* Second row of the header */}
       {/* for showing active entry points tabs */}
