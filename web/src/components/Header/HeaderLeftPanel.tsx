@@ -122,28 +122,26 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
 
   // display syncing indicator when numOpsToFetch > 0
   useEffect(() => {
-    getAdminWs().then((adminWs) => {
-      getAppWs().then((appWs) => {
-        adminWs.listDnas().then((dnas) => {
-          appWs
-            .networkInfo({
-              agent_pub_key: agentAddress as any,
-              dnas: dnas as any,
-            })
-            .then((networkInfo) => {
-              setInterval(() => {
-                let sum = 0
-                networkInfo.forEach((infoEntry) => {
-                  sum += infoEntry.fetch_pool_info.num_ops_to_fetch
-                })
-
-                setNumOpsToFetch(sum)
-              }, 5000)
-            })
-            .catch(console.error)
-        })
+    const fetchOpData = async () => {
+      const adminWs = await getAdminWs()
+      const dnas = await adminWs.listDnas()
+      const appWs = await getAppWs()
+      const networkInfo = await appWs.networkInfo({
+        agent_pub_key: agentAddress as any,
+        dnas: dnas as any,
       })
-    })
+
+      let sum = 0
+      networkInfo.forEach((infoEntry) => {
+        sum += infoEntry.fetch_pool_info.num_ops_to_fetch
+      })
+
+      setNumOpsToFetch(sum)
+    }
+
+    const interval = setInterval(() => fetchOpData(), 5000)
+
+    return () => clearInterval(interval)
   }, [])
 
   return (
