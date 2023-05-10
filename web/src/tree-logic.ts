@@ -62,7 +62,8 @@ function calculateValidParents(
       // filter out self-address in the process
       outcomeActionHash !== fromAddress &&
       // filter out any descendants
-      !descendants.includes(outcomeActionHash)
+      !descendants.includes(outcomeActionHash) &&
+      !isAncestor(fromAddress, outcomeActionHash, connections)
     )
   })
 }
