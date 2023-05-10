@@ -85,7 +85,8 @@ function calculateValidChildren(
       outcomeActionHash !== fromAddress &&
       // find the Outcome objects that are not descendants of the fromAddress
       // since we don't want to create cycles
-      !isAncestor(outcomeActionHash, fromAddress, connections)
+      !isAncestor(outcomeActionHash, fromAddress, connections) &&
+      !isAncestor(fromAddress, outcomeActionHash, connections)
     )
   })
 }
