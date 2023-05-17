@@ -20,6 +20,8 @@ export type GlobalModalsProps = {
   agentAddress: AgentPubKeyB64
   navigationPreference: 'mouse' | 'trackpad'
   setNavigationPreference: (preference: 'mouse' | 'trackpad') => void
+  colorPreference: 'dark' | 'light'
+  setColorPreference: (preference: 'dark' | 'light') => void
   showProfileEditForm: boolean
   setShowProfileEditForm: (val: boolean) => void
   showPreferences: boolean
@@ -55,6 +57,8 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   agentAddress,
   navigationPreference,
   setNavigationPreference,
+  colorPreference,
+  setColorPreference,
   showProfileEditForm,
   setShowProfileEditForm,
   showPreferences,
@@ -110,6 +114,8 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
       <Preferences
         navigation={navigationPreference}
         setNavigationPreference={setNavigationPreference}
+        color={colorPreference}
+        setColorPreference={setColorPreference}
         showPreferences={showPreferences}
         setShowPreferences={setShowPreferences}
       />

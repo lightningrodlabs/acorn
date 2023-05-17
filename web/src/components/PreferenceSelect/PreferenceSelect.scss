@@ -84,6 +84,56 @@
   font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
 }
 
+/* PreferenceSelectOptionColor */
+
+.preference-select-options-color-wrapper {
+    display: flex;
+    flex-direction: row;
+    padding: 0 30px;
+    margin-bottom: 1rem;
+}
+
+.preference-select-option-color {
+    font-size: 16px;
+    line-height: 22px;
+    font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
+    color: #222222;
+    text-align: center;
+    border: 1px solid #e3e3e3;
+    border-radius: 10px;
+    width: 150px;
+    height: 120px;
+    margin: 0 auto;
+    display: block;
+    cursor: pointer;
+    transition: border 0.2s ease-in-out;
+}
+
+.preference-select-option-color:hover, .preference-select-option-color.active {
+    border: 1px solid #6d0ef7;
+    box-shadow: 0px 3px 6px #00000016;
+}
+
+.preference-select-option-color-content {
+    width: 150px;
+    height: 120px;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.preference-select-option-color-content .icon {
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.preference-select-option-color-text {
+    margin-top: 14px;
+}
+
+.preference-select-option-color.active .preference-select-option-color-text {
+    font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
+}
+
 /* PreferenceSelectExtra */
 
 .preference-select-description-wrapper {

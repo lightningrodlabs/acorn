@@ -4,10 +4,11 @@ import './Preferences.scss'
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
 import Modal from '../Modal/Modal'
-import { MOUSE, TRACKPAD } from '../../redux/ephemeral/local-preferences/reducer'
+import { MOUSE, TRACKPAD, LIGHT, DARK } from '../../redux/ephemeral/local-preferences/reducer'
 import PreferenceSelect, {
   PreferenceSelectExtra,
   PreferenceSelectOption,
+  PreferenceSelectOptionColor,
 } from '../PreferenceSelect/PreferenceSelect'
 
 function Descriptions({ navigation }) {
@@ -48,11 +49,16 @@ function Descriptions({ navigation }) {
           {navigation === MOUSE && 'Click and drag the canvas'}
         </div>
       </PreferenceSelectExtra>
+      <PreferenceSelectExtra>
+        <div className='color-mode-description-title-wrapper'>
+          
+        </div>
+      </PreferenceSelectExtra>
     </>
   )
 }
 
-function Internal({ navigation, setNavigationSelected, save }) {
+function Internal({ navigation, setNavigationSelected, setColorSelected, save }) {
   const options = (
     <>
       <PreferenceSelectOption
@@ -71,6 +77,24 @@ function Internal({ navigation, setNavigationSelected, save }) {
       />
     </>
   )
+  const color = (
+    <>
+      <PreferenceSelectOptionColor
+        active={color === LIGHT}
+        onClick={() => setColorSelected(LIGHT)}
+        iconName="acorn-logo.svg"
+        iconExtraClassName="color-mode-option-icon-light"
+        title="Light"
+      />
+      <PreferenceSelectOptionColor
+        active={color === DARK}
+        onClick={() => setColorSelected(DARK)}
+        iconName="acorn-logo-light.svg"
+        iconExtraClassName="color-mode-option-icon-dark"
+        title="Dark"
+      />
+    </>
+  )
   return (
     <div className="preferences-content-wrapper">
       <div className="preferences-title">Preferences</div>
@@ -81,6 +105,12 @@ function Internal({ navigation, setNavigationSelected, save }) {
           pointer device"
         options={options}
         descriptions={<Descriptions navigation={navigation} />}
+      />
+      <PreferenceSelect
+        iconName="acorn-logo.svg"
+        title="Light Mode"
+        subtitle="Select your perferred color scheme"
+        options={color}
       />
       <div className="preferences-save-button">
         <Button onClick={save} text="Save Changes" />
@@ -94,12 +124,16 @@ export default function Preferences({
   setNavigationPreference,
   showPreferences,
   setShowPreferences,
+  color,
+  setColorPreference,
 }) {
   // hold an internal version of the preferences state, so that we can toggle it, before saving it
   const [navigationSelected, setNavigationSelected] = useState(navigation)
+  const [colorSelected, setColorSelected] = useState(color)
 
   const save = () => {
     setNavigationPreference(navigationSelected)
+    setColorPreference(colorSelected)
     setShowPreferences(false)
   }
   const close = () => {
@@ -107,6 +141,7 @@ export default function Preferences({
     // whatever the canonical state of navigation preference
     // is equal to
     setNavigationSelected(navigation)
+    setColorSelected(color)
     setShowPreferences(false)
   }
 
@@ -115,6 +150,8 @@ export default function Preferences({
       <Internal
         navigation={navigationSelected}
         setNavigationSelected={setNavigationSelected}
+        color={colorSelected}
+        setColorSelected={setColorSelected}
         save={save}
       />
     </Modal>

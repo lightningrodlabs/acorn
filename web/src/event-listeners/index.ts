@@ -45,7 +45,7 @@ import {
   closeExpandedView,
   openExpandedView,
 } from '../redux/ephemeral/expanded-view/actions'
-import { MOUSE, TRACKPAD } from '../redux/ephemeral/local-preferences/reducer'
+import { MOUSE, TRACKPAD, LIGHT, DARK } from '../redux/ephemeral/local-preferences/reducer'
 
 import { setOutcomeClone } from '../redux/ephemeral/outcome-clone/actions'
 
@@ -74,6 +74,7 @@ import checkForOutcomeOrConnection, {
   OutcomeConnectionOrBoth,
 } from './checkForOutcomeOrConnection'
 import closestOutcomeToPageCoord from './closestOutcome'
+import { light } from '@material-ui/core/styles/createPalette'
 
 // The "modifier" key is different on Mac and non-Mac
 // Pattern borrowed from TinyKeys library.
@@ -431,6 +432,7 @@ export default function setupEventListeners(
     const {
       ui: {
         localPreferences: { navigation },
+        localPreferences: { color },
       },
     } = state
     if (!state.ui.outcomeForm.isOpen) {
@@ -447,6 +449,7 @@ export default function setupEventListeners(
         const pageCoord = { x: event.clientX, y: event.clientY }
         const instant = true
         store.dispatch(changeScale(zoom, pageCoord, instant))
+      } else if (color === LIGHT || (color === DARK)) {
       } else {
         // invert the pattern so that it uses new mac style
         // of panning

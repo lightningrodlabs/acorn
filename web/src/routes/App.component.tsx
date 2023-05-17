@@ -54,6 +54,7 @@ export type AppStateProps = {
   whoami: WireRecord<Profile>
   hasFetchedForWhoami: boolean
   navigationPreference: 'mouse' | 'trackpad'
+  colorPreference: 'dark' | 'light'
   inviteMembersModalShowing: null | string // will be the passphrase if defined
   hasMigratedSharedProject: boolean
   hiddenAchievedOutcomes: CellIdString[]
@@ -64,6 +65,7 @@ export type AppStateProps = {
 export type AppDispatchProps = {
   dispatch: any
   setNavigationPreference: (preference: 'mouse' | 'trackpad') => void
+  setColorPreference: (preference: 'dark' | 'light') => void
   hideInviteMembersModal: () => void
   openInviteMembersModal: (passphrase: string) => void
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
@@ -94,6 +96,8 @@ const App: React.FC<AppProps> = ({
   updateWhoami,
   navigationPreference,
   setNavigationPreference,
+  colorPreference,
+  setColorPreference,
   inviteMembersModalShowing,
   openInviteMembersModal,
   hideInviteMembersModal,
@@ -230,6 +234,8 @@ const App: React.FC<AppProps> = ({
                 agentAddress,
                 navigationPreference,
                 setNavigationPreference,
+                colorPreference,
+                setColorPreference,
                 showProfileEditForm,
                 setShowProfileEditForm,
                 showPreferences,

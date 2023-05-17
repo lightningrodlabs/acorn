@@ -39,7 +39,36 @@ function PreferenceSelectOption({
   )
 }
 
-export { PreferenceSelectExtra, PreferenceSelectOption }
+function PreferenceSelectOptionColor({
+  active,
+  onClick,
+  iconName,
+  iconExtraClassName,
+  title,
+}: {
+  active: boolean
+  onClick: () => void
+  iconExtraClassName: string
+  iconName: string
+  title: string
+}) {
+  return (
+    <div
+      className={`preference-select-option-color ${active ? 'active' : ''}`}
+      onClick={onClick}
+    >
+      <div className="preference-select-option-color-content">
+        <div className={iconExtraClassName}>
+          {/*  @ts-ignore */}
+          <Icon name={iconName} size="large" className="not-hoverable" />
+        </div>
+        <div className="preference-select-option-color-text">{title}</div>
+      </div>
+    </div>
+  )
+}
+
+export { PreferenceSelectExtra, PreferenceSelectOption, PreferenceSelectOptionColor }
 
 function PreferenceSelect({
   iconName,
@@ -47,12 +76,14 @@ function PreferenceSelect({
   subtitle,
   options,
   descriptions,
+  color,
 }: {
   iconName: string
   title: string
   subtitle: string
   options: React.ReactNode[]
   descriptions: React.ReactNode[]
+  color: React.ReactNode[]
 }) {
   return (
     <div className="preference-select">
@@ -65,7 +96,9 @@ function PreferenceSelect({
       </div>
       <div className="preference-select-subtitle">{subtitle}</div>
       <div className="preference-select-options-wrapper">{options}</div>
+      <div className="preference-select-options-color-wrapper">{color}</div>
       {descriptions}
+      {color}
     </div>
   )
 }
