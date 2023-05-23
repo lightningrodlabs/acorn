@@ -152,7 +152,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
     const interval = setInterval(() => fetchOpData(), 5000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [projectId, agentAddress])
 
   return (
     <div className="header-left-panel-rows">
