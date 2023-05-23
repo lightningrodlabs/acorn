@@ -115,44 +115,51 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
 
   useOnClickOutside(ref, () => setOpenEntryPointPicker(false))
   const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
-
+  const [dnas, setDnas] = useState([])
   const [numOpsToFetch, setNumOpsToFetch] = useState(0)
+
+  useEffect(() => {
+    const getDnas = async () => {
+      const adminWs = await getAdminWs()
+      const dnas = await adminWs.listDnas()
+      setDnas(dnas)
+    }
+
+    getDnas()
+  }, [projectId])
 
   // display syncing indicator when numOpsToFetch > 0
   useEffect(() => {
     const fetchOpData = async () => {
-      const adminWs = await getAdminWs()
-      const dnas = await adminWs.listDnas()
+      if (!projectId) {
+        return
+      }
+
+      const activeProjectDna = projectId.substring(0, projectId.indexOf('['))
       const appWs = await getAppWs()
+      // TODO: check `last_time_queried` parameter to see if its useful
       const networkInfo = await appWs.networkInfo({
         agent_pub_key: agentAddress as any,
         dnas: dnas as any,
       })
 
-      if (projectId === null || projectId === undefined) {
-        return
-      }
-
       let i: number
+      let sum = 0
+
       for (i = 0; i < dnas.length; i++) {
         const dna = dnas[i].toString()
-        const activeProjectDna = projectId.substring(0, projectId.indexOf('['))
-        if (dna === activeProjectDna) break
-      }
 
-      if (i >= dnas.length) {
-        return
+        if (dna === activeProjectDna)
+          sum = networkInfo[i].fetch_pool_info.num_ops_to_fetch
       }
-
-      let sum = networkInfo[i].fetch_pool_info.num_ops_to_fetch
 
       setNumOpsToFetch(sum)
     }
 
-    const interval = setInterval(() => fetchOpData(), 5000)
+    const interval = setInterval(() => fetchOpData(), 1000)
 
     return () => clearInterval(interval)
-  }, [projectId, agentAddress])
+  }, [projectId, agentAddress, dnas])
 
   return (
     <div className="header-left-panel-rows">
