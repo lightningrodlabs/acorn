@@ -23,8 +23,6 @@ import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 // @ts-ignore
 import triangleTopWhite from '../../images/triangle-top-white.svg'
 import { getAdminWs, getAppWs } from '../../hcWebsockets'
-import { getAllApps } from '../../projectAppIds'
-import { net } from 'electron'
 import SyncingIndicator from '../SyncingIndicator/SyncingIndicator'
 
 function ActiveEntryPoint({
@@ -131,10 +129,22 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
         dnas: dnas as any,
       })
 
-      let sum = 0
-      networkInfo.forEach((infoEntry) => {
-        sum += infoEntry.fetch_pool_info.num_ops_to_fetch
-      })
+      if (projectId === null || projectId === undefined) {
+        return
+      }
+
+      let i: number
+      for (i = 0; i < dnas.length; i++) {
+        const dna = dnas[i].toString()
+        const activeProjectDna = projectId.substring(0, projectId.indexOf('['))
+        if (dna === activeProjectDna) break
+      }
+
+      if (i >= dnas.length) {
+        return
+      }
+
+      let sum = networkInfo[i].fetch_pool_info.num_ops_to_fetch
 
       setNumOpsToFetch(sum)
     }
