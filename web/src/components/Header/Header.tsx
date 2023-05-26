@@ -149,7 +149,6 @@ const Header: React.FC<HeaderProps> = ({
         {/* Header Left Panel */}
         <HeaderLeftPanel
           members={members}
-          agentAddress={agentAddress}
           presentMembers={presentMembers}
           whoami={whoami}
           openInviteMembersModal={openInviteMembersModalForActive}

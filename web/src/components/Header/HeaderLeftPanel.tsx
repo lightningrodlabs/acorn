@@ -59,7 +59,6 @@ function ActiveEntryPoint({
 export type HeaderLeftPanelProps = {
   whoami: WireRecord<Profile>
   members: Profile[]
-  agentAddress: AgentPubKeyB64
   presentMembers: AgentPubKeyB64[]
   projectName: string
   activeEntryPoints: {
@@ -86,7 +85,6 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   activeEntryPoints,
   goToOutcome,
   members,
-  agentAddress,
   presentMembers,
 }) => {
   const activeEntryPointAddresses = activeEntryPoints.map(
@@ -115,51 +113,6 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
 
   useOnClickOutside(ref, () => setOpenEntryPointPicker(false))
   const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
-  const [dnas, setDnas] = useState([])
-  const [numOpsToFetch, setNumOpsToFetch] = useState(0)
-
-  useEffect(() => {
-    const getDnas = async () => {
-      const adminWs = await getAdminWs()
-      const dnas = await adminWs.listDnas()
-      setDnas(dnas)
-    }
-
-    getDnas()
-  }, [projectId])
-
-  // display syncing indicator when numOpsToFetch > 0
-  useEffect(() => {
-    const fetchOpData = async () => {
-      if (!projectId) {
-        return
-      }
-
-      const activeProjectDna = projectId.substring(0, projectId.indexOf('['))
-      const appWs = await getAppWs()
-      // TODO: check `last_time_queried` parameter to see if its useful
-      const networkInfo = await appWs.networkInfo({
-        agent_pub_key: agentAddress as any,
-        dnas: dnas as any,
-      })
-
-      let i: number
-      let sum = 0
-
-      for (i = 0; i < dnas.length; i++) {
-        const dna = dnas[i].toString()
-
-        if (dna === activeProjectDna)
-          sum = networkInfo[i].fetch_pool_info.num_ops_to_fetch
-      }
-
-      setNumOpsToFetch(sum)
-    }
-
-    const interval = setInterval(() => fetchOpData(), 1000)
-
-    return () => clearInterval(interval)
-  }, [projectId, agentAddress, dnas])
 
   return (
     <div className="header-left-panel-rows">
@@ -316,7 +269,6 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
             />
           </Route>
         )}
-        <SyncingIndicator visible={numOpsToFetch > 0} />
       </div>
       {/* Second row of the header */}
       {/* for showing active entry points tabs */}
