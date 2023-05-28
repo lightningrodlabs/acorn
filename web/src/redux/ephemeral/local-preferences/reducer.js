@@ -36,7 +36,7 @@ export default function (state = defaultState, action) {
       setLocalItem(COLOR_KEY, payload)
       return {
         ...state,
-        color:payload
+        color: payload
       }
     default:
       return state

@@ -449,7 +449,6 @@ export default function setupEventListeners(
         const pageCoord = { x: event.clientX, y: event.clientY }
         const instant = true
         store.dispatch(changeScale(zoom, pageCoord, instant))
-      } else if (color === LIGHT || (color === DARK)) {
       } else {
         // invert the pattern so that it uses new mac style
         // of panning

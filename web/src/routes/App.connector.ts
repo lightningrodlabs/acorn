@@ -35,7 +35,7 @@ function mapStateToProps(state: RootState): AppStateProps {
       activeProject,
       activeEntryPoints,
       inviteMembersModal,
-      localPreferences: { navigation },
+      localPreferences: { navigation, color },
     },
     cells: { profiles: profilesCellIdString },
   } = state
@@ -84,7 +84,7 @@ function mapStateToProps(state: RootState): AppStateProps {
     hasFetchedForWhoami,
     agentAddress: state.agentAddress,
     navigationPreference: navigation,
-    colorPreference: navigation,
+    colorPreference: color,
     inviteMembersModalShowing: inviteMembersModal.passphrase,
     members,
     presentMembers,
