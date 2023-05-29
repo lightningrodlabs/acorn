@@ -11,7 +11,7 @@ import PreferenceSelect, {
   PreferenceSelectOptionColor,
 } from '../PreferenceSelect/PreferenceSelect'
 
-function Descriptions({ navigation }) {
+function Descriptions({ navigation, color }) {
   return (
     <>
       <PreferenceSelectExtra>
@@ -51,14 +51,18 @@ function Descriptions({ navigation }) {
       </PreferenceSelectExtra>
       <PreferenceSelectExtra>
         <div className='color-mode-description-title-wrapper'>
-          
+        </div>
+        <div className="navigation-mode-description-text">
+          {color === DARK &&
+            'Slide on trackpad with two fingers, or click and drag with mouse'}
+          {color === LIGHT && 'Click and drag the canvas'}
         </div>
       </PreferenceSelectExtra>
     </>
   )
 }
 
-function Internal({ navigation, setNavigationSelected, setColorSelected, save }) {
+function Internal({ navigation, setNavigationSelected, color, setColorSelected, save }) {
   const options = (
     <>
       <PreferenceSelectOption
@@ -77,7 +81,7 @@ function Internal({ navigation, setNavigationSelected, setColorSelected, save })
       />
     </>
   )
-  const color = (
+  const colorOptions = (
     <>
       <PreferenceSelectOptionColor
         active={color === LIGHT}
@@ -110,7 +114,7 @@ function Internal({ navigation, setNavigationSelected, setColorSelected, save })
         iconName="acorn-logo.svg"
         title="Light Mode"
         subtitle="Select your perferred color scheme"
-        options={color}
+        options={colorOptions}
       />
       <div className="preferences-save-button">
         <Button onClick={save} text="Save Changes" />
