@@ -51,11 +51,7 @@ function Descriptions({ navigation, color }) {
       </PreferenceSelectExtra>
       <PreferenceSelectExtra>
         <div className='color-mode-description-title-wrapper'>
-        </div>
-        <div className="navigation-mode-description-text">
-          {color === DARK &&
-            'Slide on trackpad with two fingers, or click and drag with mouse'}
-          {color === LIGHT && 'Click and drag the canvas'}
+
         </div>
       </PreferenceSelectExtra>
     </>
