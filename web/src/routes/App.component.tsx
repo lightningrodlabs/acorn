@@ -183,6 +183,7 @@ const App: React.FC<AppProps> = ({
                 project={activeProjectMeta}
                 {...{
                   members,
+                  agentAddress,
                   presentMembers,
                   activeEntryPoints,
                   projectId,
@@ -266,6 +267,7 @@ const App: React.FC<AppProps> = ({
             {redirToFinishMigration && <Redirect to="/finish-update" />}
             {agentAddress && whoami && (
               <Footer
+                agentAddress={agentAddress}
                 hiddenAchievedOutcomes={hiddenAchievedOutcomes}
                 hiddenSmallOutcomes={hiddenSmallOutcomes}
                 showSmallOutcomes={showSmallOutcomes}
