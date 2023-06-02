@@ -11,7 +11,7 @@ import PreferenceSelect, {
   PreferenceSelectOptionColor,
 } from '../PreferenceSelect/PreferenceSelect'
 
-function Descriptions({ navigation, color }) {
+function Descriptions({ navigation }) {
   return (
     <>
       <PreferenceSelectExtra>
