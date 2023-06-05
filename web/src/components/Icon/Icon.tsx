@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './Icon.scss'
 import Tooltip from '../Tooltip/Tooltip'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 
 function Icon({
   name,
@@ -10,7 +12,7 @@ function Icon({
   withTooltip,
   tooltipText,
   className,
-  onClick = () => { },
+  onClick = () => {},
 }: {
   name: string
   withBackground?: boolean
@@ -24,8 +26,12 @@ function Icon({
   let [icon, setIcon] = useState('')
   let unmounted = false
 
+  const theme = useSelector(
+    (state: RootState) => state.ui.localPreferences.color
+  )
+
   useEffect(() => {
-    ; (async () => {
+    ;(async () => {
       // @ts-ignore
       let importedIcon = await import(`../../images/${name}`)
       if (!unmounted) {
@@ -33,7 +39,6 @@ function Icon({
       }
     })()
   }, [name])
-
 
   useEffect(() => {
     return function unsub() {
@@ -53,7 +58,7 @@ function Icon({
       onClick={onClick}
     >
       <div
-        className="inner-icon"
+        className={`inner-icon ${theme}`}
         style={{
           maskImage: `url(${icon})`,
           WebkitMaskImage: `url(${icon})`,

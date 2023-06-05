@@ -5,6 +5,14 @@
   //   background-color: var(--bg-color-tertiary);
   // }
 
+  &.light {
+    background-color: var(--bg-color-canvas);
+  }
+
+  &.dark {
+    background-color: var(--bg-color-canvas-dark);
+  }
+
   // Header Update Bar
   .header-update-bar-wrapper {
     display: flex;
@@ -45,12 +53,21 @@
         .logo {
           padding-right: 0.75rem;
           padding-left: 0.75rem;
-          background-color: rgba(255, 255, 255, 0.9);
           border-radius: 0.625rem;
           display: flex;
           align-items: center;
           margin-right: 5px;
           height: 3rem;
+
+          &.light {
+            // !DARK: not sure if this is the preferred color
+            background-color: rgba(255, 255, 255, 0.9);
+          }
+
+          &.dark {
+            // !DARK: not sure if this is the preferred color
+            background-color: var(--bg-color-primary-dark);
+          }
 
           &.non-link {
             background-color: unset;
@@ -72,6 +89,14 @@
   align-items: center;
   height: 100%;
 
+  &.light {
+    background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
+  }
+  &.dark {
+    // !DARK: not sure if this is the preferred color
+    background: var(--bg-color-primary-dark) 0% 0% no-repeat padding-box;
+  }
+
   .current-project-content {
     margin-left: 12px;
     margin-right: 10px;
@@ -82,9 +107,17 @@
       margin: 0 0.825rem 0.25rem 0;
       font-family: var(--font-family-primary-bold);
       font-size: 0.875rem;
-      color: var(--text-color-primary);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+
+      &.light {
+        color: var(--text-color-primary);
+      }
+
+      &.dark {
+        // !DARK: not sure if this is the preferred color
+        color: var(--text-color-dark-bg);
+      }
     }
 
     .divider-line {
@@ -154,7 +187,14 @@
 
     &.view-mode-active {
       .icon .inner-icon {
-        background-color: var(--text-color-primary);
+        &.light {
+          background-color: var(--text-color-primary);
+        }
+
+        &.dark {
+          // !DARK: not sure if this is the preferred color
+          background-color: var(--text-color-dark-bg);
+        }
       }
     }
   }

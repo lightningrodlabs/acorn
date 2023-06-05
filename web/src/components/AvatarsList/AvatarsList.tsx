@@ -6,6 +6,8 @@ import Avatar from '../Avatar/Avatar'
 import Icon from '../Icon/Icon'
 
 import './AvatarsList.scss'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 
 export type AvatarsListProps = {
   size: 'small' | 'small-medium' | 'medium' | 'medium-large' | 'large'
@@ -28,6 +30,10 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
   onClickButton,
   withStatus = true,
 }) => {
+  const theme = useSelector(
+    (state: RootState) => state.ui.localPreferences.color
+  )
+
   return (
     <div
       className={`avatars-list-wrapper ${
@@ -74,7 +80,7 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
       })}
       {/* Invite members button or Add Assignees button(optional) */}
       {(showInviteButton || showAddButton) && (
-        <div className="avatars-list-button-wrapper">
+        <div className={`avatars-list-button-wrapper ${theme}`}>
           <div
             className={`avatars-list-button ${
               size === 'small'

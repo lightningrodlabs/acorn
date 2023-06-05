@@ -24,6 +24,8 @@ import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 import triangleTopWhite from '../../images/triangle-top-white.svg'
 import { getAdminWs, getAppWs } from '../../hcWebsockets'
 import SyncingIndicator from '../SyncingIndicator/SyncingIndicator'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 
 function ActiveEntryPoint({
   entryPoint,
@@ -114,6 +116,10 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   useOnClickOutside(ref, () => setOpenEntryPointPicker(false))
   const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
 
+  const theme = useSelector(
+    (state: RootState) => state.ui.localPreferences.color
+  )
+
   return (
     <div className="header-left-panel-rows">
       <div className="header-left-panel" ref={ref}>
@@ -127,14 +133,14 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
 
         {/* Acorn Logo - linked */}
         {whoami && (
-          <NavLink to="/" className="logo">
+          <NavLink to="/" className={`logo ${theme}`}>
             <img src="images/acorn-alpha-logo.png" className="logo-image" />
           </NavLink>
         )}
 
         {whoami && (
           <Route path="/project">
-            <div className="current-project-wrapper">
+            <div className={`current-project-wrapper  ${theme}`}>
               {/* Project Name and Settings */}
               <div className="current-project-content">
                 <div className="top-left-panel-view-modes">
@@ -184,7 +190,9 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                   </NavLink>
                   {/* <Icon name='timeline.svg' className='grey' size='view-mode' /> */}
                 </div>
-                <div className="current-project-name">{projectName}</div>
+                <div className={`current-project-name ${theme}`}>
+                  {projectName}
+                </div>
                 <div className="divider-line"></div>
 
                 <div className="current-project-tools">
