@@ -18,6 +18,8 @@ import { useRouteMatch } from 'react-router-dom'
 import { ViewingReleaseNotes } from '../UpdateModal/UpdateModal'
 
 import './Header.scss'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../redux/reducer'
 
 export type HeaderProps = {
   // for project export
@@ -116,8 +118,12 @@ const Header: React.FC<HeaderProps> = ({
     }
   }
 
+  const theme = useSelector(
+    (state: RootState) => state.ui.localPreferences.color
+  )
+
   return (
-    <div className={`header-wrapper`} ref={ref}>
+    <div className={`header-wrapper ${theme}`} ref={ref}>
       {/* Update Bar */}
       <div className="header-update-bar-wrapper">
         <UpdateBar
