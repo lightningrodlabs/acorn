@@ -74,7 +74,6 @@ import checkForOutcomeOrConnection, {
   OutcomeConnectionOrBoth,
 } from './checkForOutcomeOrConnection'
 import closestOutcomeToPageCoord from './closestOutcome'
-import { light } from '@material-ui/core/styles/createPalette'
 
 // The "modifier" key is different on Mac and non-Mac
 // Pattern borrowed from TinyKeys library.
