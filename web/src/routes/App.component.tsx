@@ -128,6 +128,10 @@ const App: React.FC<AppProps> = ({
   const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
 
   useEffect(() => {
+    document.body.className = colorPreference
+  }, [colorPreference])
+
+  useEffect(() => {
     if (fileDownloaded) {
       setFileDownloaded(false)
       setShowExportedModal(true)
