@@ -9,6 +9,7 @@ import { CSSTransition } from 'react-transition-group'
 import { ProjectMapViewOnly } from '../ViewFilters/ViewFilters'
 import Typography from '../Typography/Typography'
 import hashCodeId from '../../api/clientSideIdHash'
+import useTheme from '../../hooks/useTheme'
 
 function AvatarMenuItem({
   title,
@@ -42,13 +43,15 @@ function SearchResultItem({
   panAndZoom,
   outcomeActionHash,
 }) {
+  const theme = useTheme()
+
   return (
-    <div className="search-result-item-wrapper">
+    <div className={`search-result-item-wrapper ${theme}`}>
       <div className="search-result-item-text-icon">
         {/* @ts-ignore */}
-        <Icon name={name} size="small" className="light-grey not-hoverable" />
+        <Icon name={name} size="small" className={'light-grey not-hoverable'} />
         <div
-          className="search-result-item-text"
+          className={`search-result-item-text ${theme}`}
           title={text}
           onClick={() => panAndZoom(outcomeActionHash)}
         >
@@ -56,7 +59,7 @@ function SearchResultItem({
         </div>
       </div>
       {/* @ts-ignore */}
-      <div className="search-result-item-buttons">
+      <div className={`search-result-item-buttons ${theme}`}>
         {/* <div onClick={() => panAndZoom(outcomeActionHash)}>
        
           <Icon name="enter.svg" size="small" className="light-grey" />
@@ -119,6 +122,8 @@ export default function HeaderRightPanel({
     setIsAvatarHover(false)
   }
 
+  const theme = useTheme()
+
   // reset the search when the project
   // changes, including navigating away
   // to the dashboard
@@ -139,10 +144,10 @@ export default function HeaderRightPanel({
           className={`search-button-wrapper ${
             isSearchOpen ? 'search-is-open' : ''
           } 
-        ${filterText !== '' ? 'results-dropdown-is-open' : ''}`}
+        ${filterText !== '' ? 'results-dropdown-is-open' : ''} ${theme}`}
         >
           <div className="search-icon-input">
-            <div className="search-open-icon">
+            <div className={`search-open-icon ${theme}`}>
               {/* @ts-ignore */}
               <Icon
                 name="search.svg"
@@ -159,9 +164,10 @@ export default function HeaderRightPanel({
                 in={isSearchOpen}
                 timeout={100}
                 unmountOnExit
-                classNames="search-input-wrapper"
+                classNames={`search-input-wrapper ${theme}`}
               >
                 <input
+                  className={`${theme}`}
                   onFocus={() => {
                     unselectAll()
                   }}
