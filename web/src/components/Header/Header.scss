@@ -549,15 +549,24 @@
   }
 
   .search-results-filter-wrapper {
-    background-color: #f4f0ec;
-    border: 2px solid #f4f0ec;
-    color: #535353;
     padding: 3px 16px 5px 16px;
     border-radius: 10px;
     margin-right: 8px;
     font-family: 'PlusJakartaSans-bold', sans-serif;
     font-size: 12px;
     cursor: pointer;
+
+    &.light {
+      background-color: #f4f0ec;
+      border: 2px solid #f4f0ec;
+      color: #535353;
+    }
+    // !DARK: optionally change this
+    &.dark {
+      background-color: #f4f0ec;
+      border: 2px solid #f4f0ec;
+      color: #535353;
+    }
   }
 
   .search-results-filter-wrapper.Titles {

@@ -74,11 +74,13 @@ function SearchResultItem({
 }
 
 function SearchResultsFilter({ name, filterActive, setFilter }) {
+  const theme = useTheme()
+
   return (
     <div
       className={`search-results-filter-wrapper ${name} ${
         filterActive ? 'filter-is-applied' : ''
-      } `}
+      } ${theme}`}
       onClick={() => setFilter(!filterActive)}
     >
       {name}
