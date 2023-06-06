@@ -313,7 +313,6 @@
     margin-left: 5px;
     position: relative;
     padding: 5px 12px;
-    background: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     display: flex;
     flex-direction: row;
@@ -322,6 +321,14 @@
     box-sizing: border-box;
     height: 3rem;
     z-index: 2;
+
+    &.light {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    &.dark {
+      background: var(--bg-color-primary-dark);
+    }
 
     .icon {
       position: relative;
@@ -337,16 +344,34 @@
       cursor: pointer;
 
       .typography {
-        color: var(--text-color-secondary);
+        &.light {
+          color: var(--text-color-secondary);
+        }
+
+        &.dark {
+          color: var(--text-color-dark-bg);
+        }
       }
 
       &:hover {
         .typography {
-          color: var(--text-color-primary);
+          &.light {
+            color: var(--text-color-primary);
+          }
+
+          &.dark {
+            color: var(--text-color-tertiary);
+          }
         }
 
         .icon .inner-icon {
-          background-color: var(--text-color-primary);
+          &.light {
+            background-color: var(--text-color-primary);
+          }
+
+          &.dark {
+            background-color: var(--text-color-tertiary);
+          }
         }
       }
 
@@ -357,7 +382,13 @@
         margin-left: 0.25rem;
 
         .inner-icon {
-          background-color: var(--text-color-secondary);
+          &.light {
+            background-color: var(--text-color-secondary);
+          }
+
+          &.dark {
+            background-color: var(--text-color-dark-bg);
+          }
         }
       }
     }
@@ -638,19 +669,25 @@
     right: 0;
     top: 52px;
     border-radius: 14px;
-    background-color: #ffffff;
     padding: 12px 0;
-    box-shadow: 0px 0px 1.25em var(--shadow-color);
     display: flex;
     flex-direction: column;
     white-space: nowrap;
+
+    &.light {
+      background-color: #ffffff;
+      box-shadow: 0px 0px 1.25em var(--shadow-color);
+    }
+
+    &.dark {
+      // !DARK: not sure if this is the preferred color
+      background-color: var(--bg-color-primary-dark);
+      box-shadow: 0px 0px 1.25em var(--shadow-color-dark);
+    }
   }
 
   .profile-wrapper button {
     padding: 0 16px;
-  }
-
-  .profile-wrapper button {
     outline: none;
     background: none;
     border: none;
@@ -658,12 +695,24 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+
+    &.dark {
+      color: var(--text-color-dark-bg);
+    }
   }
 
   .profile-wrapper button:hover,
   .profile-wrapper button.active {
-    background: #f4f4f4;
-    color: var(--text-color-link);
+    &.light {
+      background: #f4f4f4;
+      color: var(--text-color-link);
+    }
+
+    &.dark {
+      // !DARK: not sure if this is the preferred color
+      background: var(--bg-color-hover-dark);
+      color: var(--text-color-link);
+    }
   }
 
   .profile-wrapper button p {
@@ -696,11 +745,19 @@
     top: 0px;
     right: 139px;
     border-radius: 14px;
-    background-color: #ffffff;
     padding: 12px 0;
     box-shadow: 0px 0px 1.25em var(--shadow-color);
     display: flex;
     flex-direction: column;
+
+    &.light {
+      background-color: #ffffff;
+    }
+
+    &.dark {
+      // !DARK: not sure if this is the preferred color
+      background-color: var(--bg-color-primary-dark);
+    }
   }
 
   .user-status-wrapper button {

@@ -54,7 +54,13 @@
     border-width: 0.25rem;
 
     &.white {
-      border-color: var(--bg-color-secondary);
+      &.light {
+        border-color: var(--bg-color-secondary);
+      }
+
+      &.dark {
+        border-color: var(--bg-color-hover-dark);
+      }
     }
     // avatar wrapper can have status circle if bordered
     &.status-color {
@@ -82,9 +88,16 @@
     position: absolute;
 
     .status-circle {
-      border: 0.1825rem solid var(--bg-color-secondary);
       box-shadow: none;
       border-radius: 50%;
+      &.light {
+        border: 0.1825rem solid var(--bg-color-secondary);
+      }
+
+      &.dark {
+        // !DARK: may want to change this
+        border: 0.1825rem solid var(--bg-color-secondary);
+      }
     }
   }
 

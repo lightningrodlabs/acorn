@@ -27,9 +27,9 @@ function AvatarMenuItem({
   )
 }
 
-function StatusMenuItem({ color, title, onClick }) {
+function StatusMenuItem({ color, title, onClick, theme }) {
   return (
-    <button onClick={onClick}>
+    <button onClick={onClick} className={`${theme}`}>
       <div className={`status-circle ${color}`} />
       <p>{title}</p>
     </button>
@@ -264,14 +264,16 @@ export default function HeaderRightPanel({
         {/* end search */}
       </ProjectMapViewOnly>
 
-      <div className="header-right-panel-help-profile">
+      <div className={`header-right-panel-help-profile ${theme}`}>
         {/* Help button */}
         <a
-          className="help-button-external"
+          className={`help-button-external ${theme}`}
           href="https://docs.acorn.software/about-acorn/what-is-acorn"
           target="_blank"
         >
-          <Typography style="h8">Help</Typography>
+          <Typography style="h8" theme={theme}>
+            Help
+          </Typography>
           {/* @ts-ignore */}
           <Icon
             name="external-link.svg"
@@ -306,16 +308,17 @@ export default function HeaderRightPanel({
         </div>
         {/* Profile Menu */}
         {isAvatarMenuOpen && (
-          <div className="profile-wrapper" ref={ref}>
+          <div className={`profile-wrapper ${theme}`} ref={ref}>
             <AvatarMenuItem
-              className={isStatusOpen ? 'active' : ''}
+              className={`${theme} ${isStatusOpen ? 'active' : ''}`}
               title="Change Status"
               onClick={() => setIsStatusOpen(true)}
             />
             {isStatusOpen && (
-              <div className="user-status-wrapper">
+              <div className={`user-status-wrapper ${theme}`}>
                 {Object.keys(Status).map((key) => (
                   <StatusMenuItem
+                    theme={theme}
                     key={key}
                     color={StatusCssColorClass[key]}
                     title={key}
@@ -334,9 +337,11 @@ export default function HeaderRightPanel({
                 onClickEditProfile()
                 setIsAvatarMenuOpen(false)
               }}
+              className={`${theme}`}
             />
             <AvatarMenuItem
               title="Preferences"
+              className={`${theme}`}
               onClick={() => {
                 onClickPreferences()
                 setIsAvatarMenuOpen(false)
