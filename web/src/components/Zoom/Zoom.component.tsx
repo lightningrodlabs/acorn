@@ -1,6 +1,7 @@
 import React from 'react'
 import './Zoom.scss'
 import Icon from '../Icon/Icon'
+import useTheme from '../../hooks/useTheme'
 
 export type StateZoomProps = {
   screensize: { width: number; height: number }
@@ -17,46 +18,41 @@ export type DispatchZoomProps = {
 
 export type ZoomProps = StateZoomProps & DispatchZoomProps
 
-class Zoom extends React.Component<ZoomProps> {
-  constructor(props: ZoomProps) {
-    super(props)
-    this.zoomIn = this.zoomIn.bind(this)
-    this.zoomOut = this.zoomOut.bind(this)
-  }
-  zoomIn() {
+const Zoom: React.FC<ZoomProps> = (props: ZoomProps) => {
+  function zoomIn() {
     const zoomIntensity = 0.05
     const zoom = Math.exp(1 * zoomIntensity)
     let { width, height } = this.props.screensize
     const instant = true
     this.props.zoom(zoom, { x: width / 2, y: height / 2 }, instant)
   }
-  zoomOut() {
+  function zoomOut() {
     const zoomIntensity = 0.05
     const zoom = Math.exp(-1 * zoomIntensity)
     let { width, height } = this.props.screensize
     const instant = true
     this.props.zoom(zoom, { x: width / 2, y: height / 2 }, instant)
   }
-  render() {
-    return (
-      <div className="zoom-wrapper">
-        <Icon
-          name="minus.svg"
-          size="small"
-          className="grey"
-          withBackground={false}
-          onClick={this.zoomOut}
-        />
-        <Icon
-          name="plus.svg"
-          size="small"
-          className="grey"
-          withBackground={false}
-          onClick={this.zoomIn}
-        />
-        <span>{Math.round(this.props.scale * 100)}%</span>
-      </div>
-    )
-  }
+
+  return (
+    <div className="zoom-wrapper">
+      <Icon
+        name="minus.svg"
+        size="small"
+        className="grey"
+        withBackground={false}
+        onClick={zoomOut}
+      />
+      <Icon
+        name="plus.svg"
+        size="small"
+        className="grey"
+        withBackground={false}
+        onClick={zoomIn}
+      />
+      <span>{Math.round(props.scale * 100)}%</span>
+    </div>
+  )
 }
+
 export default Zoom
