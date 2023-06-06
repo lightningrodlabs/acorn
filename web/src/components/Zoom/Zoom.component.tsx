@@ -22,20 +22,22 @@ const Zoom: React.FC<ZoomProps> = (props: ZoomProps) => {
   function zoomIn() {
     const zoomIntensity = 0.05
     const zoom = Math.exp(1 * zoomIntensity)
-    let { width, height } = this.props.screensize
+    let { width, height } = props.screensize
     const instant = true
-    this.props.zoom(zoom, { x: width / 2, y: height / 2 }, instant)
+    props.zoom(zoom, { x: width / 2, y: height / 2 }, instant)
   }
   function zoomOut() {
     const zoomIntensity = 0.05
     const zoom = Math.exp(-1 * zoomIntensity)
-    let { width, height } = this.props.screensize
+    let { width, height } = props.screensize
     const instant = true
-    this.props.zoom(zoom, { x: width / 2, y: height / 2 }, instant)
+    props.zoom(zoom, { x: width / 2, y: height / 2 }, instant)
   }
 
+  const theme = useTheme()
+
   return (
-    <div className="zoom-wrapper">
+    <div className={`zoom-wrapper ${theme}`}>
       <Icon
         name="minus.svg"
         size="small"
@@ -50,7 +52,7 @@ const Zoom: React.FC<ZoomProps> = (props: ZoomProps) => {
         withBackground={false}
         onClick={zoomIn}
       />
-      <span>{Math.round(props.scale * 100)}%</span>
+      <span className={`${theme}`}>{Math.round(props.scale * 100)}%</span>
     </div>
   )
 }
