@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './Icon.scss'
 import Tooltip from '../Tooltip/Tooltip'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../redux/reducer'
+import useTheme from '../../hooks/useTheme'
 
 function Icon({
   name,
@@ -26,9 +25,7 @@ function Icon({
   let [icon, setIcon] = useState('')
   let unmounted = false
 
-  const theme = useSelector(
-    (state: RootState) => state.ui.localPreferences.color
-  )
+  const theme = useTheme()
 
   useEffect(() => {
     ;(async () => {

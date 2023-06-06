@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { NavLink, Route, useLocation, useRouteMatch } from 'react-router-dom'
 import useOnClickOutside from 'use-onclickoutside'
 
@@ -22,10 +22,7 @@ import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 //images
 // @ts-ignore
 import triangleTopWhite from '../../images/triangle-top-white.svg'
-import { getAdminWs, getAppWs } from '../../hcWebsockets'
-import SyncingIndicator from '../SyncingIndicator/SyncingIndicator'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../redux/reducer'
+import useTheme from '../../hooks/useTheme'
 
 function ActiveEntryPoint({
   entryPoint,
@@ -116,9 +113,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   useOnClickOutside(ref, () => setOpenEntryPointPicker(false))
   const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
 
-  const theme = useSelector(
-    (state: RootState) => state.ui.localPreferences.color
-  )
+  const theme = useTheme()
 
   return (
     <div className="header-left-panel-rows">

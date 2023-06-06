@@ -6,8 +6,7 @@ import Avatar from '../Avatar/Avatar'
 import Icon from '../Icon/Icon'
 
 import './AvatarsList.scss'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../redux/reducer'
+import useTheme from '../../hooks/useTheme'
 
 export type AvatarsListProps = {
   size: 'small' | 'small-medium' | 'medium' | 'medium-large' | 'large'
@@ -30,9 +29,7 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
   onClickButton,
   withStatus = true,
 }) => {
-  const theme = useSelector(
-    (state: RootState) => state.ui.localPreferences.color
-  )
+  const theme = useTheme()
 
   return (
     <div

@@ -18,8 +18,7 @@ import { useRouteMatch } from 'react-router-dom'
 import { ViewingReleaseNotes } from '../UpdateModal/UpdateModal'
 
 import './Header.scss'
-import { useSelector } from 'react-redux'
-import { RootState } from '../../redux/reducer'
+import useTheme from '../../hooks/useTheme'
 
 export type HeaderProps = {
   // for project export
@@ -118,9 +117,7 @@ const Header: React.FC<HeaderProps> = ({
     }
   }
 
-  const theme = useSelector(
-    (state: RootState) => state.ui.localPreferences.color
-  )
+  const theme = useTheme()
 
   return (
     <div className={`header-wrapper ${theme}`} ref={ref}>
