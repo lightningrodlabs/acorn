@@ -53,10 +53,6 @@
     background-color: #00afa4;
     color: #ffffff;
   }
-  &.black {
-    background-color: black;
-    color: #ffffff;
-  }
 
   // buttons sizes
   &.small {
@@ -100,7 +96,7 @@
   text-decoration: none;
   cursor: pointer;
   margin: 0;
-  font-family: "PlusJakartaSans-bold";
+  font-family: 'PlusJakartaSans-bold';
   font-size: 0.75rem;
   padding: 0;
   color: #00beb0;
