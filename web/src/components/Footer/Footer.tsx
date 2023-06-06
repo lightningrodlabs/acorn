@@ -10,6 +10,7 @@ import MapViewingOptions from '../MapViewingOptions/MapViewingOptions'
 import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { getAdminWs, getAppWs } from '../../hcWebsockets'
 import SyncingIndicator from '../SyncingIndicator/SyncingIndicator'
+import useTheme from '../../hooks/useTheme'
 
 export type FooterProps = {
   agentAddress: AgentPubKeyB64
@@ -70,6 +71,8 @@ const Footer: React.FC<FooterProps> = ({
   // for syncing a project
   const [dnas, setDnas] = useState([])
   const [numOpsToFetch, setNumOpsToFetch] = useState(0)
+
+  const theme = useTheme()
 
   useEffect(() => {
     const getDnas = async () => {
@@ -147,7 +150,7 @@ const Footer: React.FC<FooterProps> = ({
               <div
                 className={`map-viewing-options-button ${
                   openMapViewingOptions ? 'active' : ''
-                }`}
+                } ${theme}`}
                 onClick={() => setOpenMapViewingOptions(!openMapViewingOptions)}
               >
                 {(!showAchievedOutcomesValue || !showSmallOutcomesValue) && (

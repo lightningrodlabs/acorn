@@ -76,10 +76,17 @@
       width: 3rem;
       padding: 0.75rem 0.625rem;
       box-sizing: border-box;
-      background-color: rgba(255, 255, 255, 0.9);
       cursor: pointer;
       margin-right: 0.5rem;
       position: relative;
+
+      &.light {
+        background-color: rgba(255, 255, 255, 0.9);
+      }
+
+      &.dark {
+        background-color: var(--bg-color-primary-dark);
+      }
 
       .map-viewing-options-with-unchecked {
         height: 0.75rem;
