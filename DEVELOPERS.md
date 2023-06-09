@@ -48,10 +48,10 @@ To test backend:
 #### Multi-User Testing
 run the following commands in separate terminal instances (must have a running instance of acorn for the first user, either by running `npm run dev` or the below commands without the `2`):
 
-- `npm run web2`
-- `npm run electron2`
+- `npm run web(2,3,4)`
+- `npm run electron(2,3,4)`
 
-After running these commands, a `user2-data/` directory is created with user data. It too can be cleared by running `npm run user-data-reset`.
+After running these commands, a `user-data/` directory is created with user data. It too can be cleared by running `npm run user-data-reset`.
 
 ### Building / Packaging
 
@@ -61,7 +61,7 @@ To build:
 
 The packaged executables can be found in `frontend/electron/out`.
 
-In order to get cross-platform builds, just tag your repository like `v0.0.1` and push the tag to Github. CI will automatically start running a build, under the "Release" action.
+In order to get cross-platform builds, just tag your repository like `v1.0.0-alpha` and push the tag to Github. CI will automatically start running a build, under the "Release" action.
 
 > Macos: You will need to have set the following environment variables as repository secrets:
 > - APPLE_CERTIFICATE_BASE64
@@ -96,13 +96,7 @@ KEYSTORE_VERSION_NUMBER should be incremented if the version of lair-keystore ch
 
 This project is currently using:
 
-holochain-runner [v0.5.2](https://github.com/Sprillow/holochain-runner/releases/tag/v0.5.2)
-
-which has an underlying `holochain` version of [0.1.0-beta-rc.2](https://github.com/holochain/holochain/releases/tag/holochain-0.1.0-beta-rc.2)
-
-expects an HAPP built with
-- HDK [v0.1.0-beta-rc.1](https://docs.rs/hdk/0.1.0-beta-rc.1/hdk/index.html)
-- HDI [v0.2.0-beta-rc.1](https://docs.rs/hdi/0.2.0-beta-rc.1/hdi/index.html)
+holochain-runner [v0.7.4](https://github.com/Sprillow/holochain-runner/releases/tag/v0.7.4) (check the link to see the underlying `holochain` version)
 
 and [electron 20](https://www.electronjs.org/docs/latest/api/app)
 
