@@ -1,11 +1,17 @@
 .dashboard-background {
-  background-color: var(--bg-color-canvas);
   display: flex;
   flex-direction: row;
   flex: 1;
   height: 100%;
   padding-top: 1rem;
   overflow: hidden;
+
+  &.light {
+    background-color: var(--bg-color-canvas);
+  }
+  &.dark {
+    background-color: var(--bg-color-canvas-dark);
+  }
 }
 
 .dashboard-left-menu-item {

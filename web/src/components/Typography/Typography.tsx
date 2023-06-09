@@ -29,11 +29,17 @@ export type TypographyProps = {
     | 'heading-modal'
     | 'body-modal'
   text?: string
+  theme?: 'light' | 'dark'
 }
 
-const Typography: React.FC<TypographyProps> = ({ style, text, children }) => {
+const Typography: React.FC<TypographyProps> = ({
+  style,
+  text,
+  theme,
+  children,
+}) => {
   return (
-    <div className={`typography ${style}`}>
+    <div className={`typography ${style} ${theme}`}>
       {text}
       {children}
     </div>

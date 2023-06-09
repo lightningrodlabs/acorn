@@ -9,7 +9,6 @@
 
 .inner-icon {
   /* default: dark grey */
-  background-color: var(--text-color-primary);
   mask-repeat: no-repeat;
   mask-position: center;
   mask-size: contain;
@@ -18,6 +17,15 @@
   -webkit-mask-size: contain;
   width: 100%;
   height: 100%;
+
+  &.light {
+    background-color: var(--text-color-primary);
+  }
+
+  &.dark {
+    // !DARK: not sure if this is the preferred color
+    background-color: var(--icon-color-light-grey);
+  }
 }
 
 .icon:not(.not-hoverable) .inner-icon {

@@ -96,10 +96,17 @@
   /* Invite Members or Add Assignees Button */
 
   .avatars-list-button-wrapper {
-    border: 0.25rem solid #ffffff;
     border-radius: 50%;
     z-index: 1;
     margin-left: -0.5rem;
+
+    &.light {
+      border: 0.25rem solid white;
+    }
+
+    &.dark {
+      border: 0.25rem solid var(--bg-color-hover-dark);
+    }
 
     .avatars-list-button {
       border-radius: 50%;

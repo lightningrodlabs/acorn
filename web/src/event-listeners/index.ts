@@ -45,7 +45,7 @@ import {
   closeExpandedView,
   openExpandedView,
 } from '../redux/ephemeral/expanded-view/actions'
-import { MOUSE, TRACKPAD } from '../redux/ephemeral/local-preferences/reducer'
+import { MOUSE, TRACKPAD, LIGHT, DARK } from '../redux/ephemeral/local-preferences/reducer'
 
 import { setOutcomeClone } from '../redux/ephemeral/outcome-clone/actions'
 
@@ -431,6 +431,7 @@ export default function setupEventListeners(
     const {
       ui: {
         localPreferences: { navigation },
+        localPreferences: { color },
       },
     } = state
     if (!state.ui.outcomeForm.isOpen) {

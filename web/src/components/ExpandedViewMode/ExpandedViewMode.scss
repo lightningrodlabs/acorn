@@ -22,7 +22,6 @@
 }
 
 .expanded-view-overlay {
-  background: var(--bg-color-popup);
   height: 100vh;
   width: 100%;
   margin: 0;
@@ -31,6 +30,17 @@
   position: fixed;
   top: 0;
   z-index: 2;
+  background: var(--bg-color-popup);
+
+  // !DARK: needs plumbing
+  &.light {
+    background: var(--bg-color-popup);
+  }
+
+  &.dark {
+    //background: var(--bg-color-popup-dark);
+    background: red;
+  }
 }
 
 .breadcrumbs-overlay {
@@ -142,7 +152,7 @@
   height: 70px;
   resize: none;
   color: #4d4d4d;
-  font-family: "PlusJakartaSans-medium", Helvetica, Sans-Serif;
+  font-family: 'PlusJakartaSans-medium', Helvetica, Sans-Serif;
   font-size: 20px;
   line-height: 24px;
 }

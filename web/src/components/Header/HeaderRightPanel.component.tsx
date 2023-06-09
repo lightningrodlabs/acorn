@@ -9,6 +9,7 @@ import { CSSTransition } from 'react-transition-group'
 import { ProjectMapViewOnly } from '../ViewFilters/ViewFilters'
 import Typography from '../Typography/Typography'
 import hashCodeId from '../../api/clientSideIdHash'
+import useTheme from '../../hooks/useTheme'
 
 function AvatarMenuItem({
   title,
@@ -26,9 +27,9 @@ function AvatarMenuItem({
   )
 }
 
-function StatusMenuItem({ color, title, onClick }) {
+function StatusMenuItem({ color, title, onClick, theme }) {
   return (
-    <button onClick={onClick}>
+    <button onClick={onClick} className={`${theme}`}>
       <div className={`status-circle ${color}`} />
       <p>{title}</p>
     </button>
@@ -42,13 +43,15 @@ function SearchResultItem({
   panAndZoom,
   outcomeActionHash,
 }) {
+  const theme = useTheme()
+
   return (
-    <div className="search-result-item-wrapper">
+    <div className={`search-result-item-wrapper ${theme}`}>
       <div className="search-result-item-text-icon">
         {/* @ts-ignore */}
-        <Icon name={name} size="small" className="light-grey not-hoverable" />
+        <Icon name={name} size="small" className={'light-grey not-hoverable'} />
         <div
-          className="search-result-item-text"
+          className={`search-result-item-text ${theme}`}
           title={text}
           onClick={() => panAndZoom(outcomeActionHash)}
         >
@@ -56,7 +59,7 @@ function SearchResultItem({
         </div>
       </div>
       {/* @ts-ignore */}
-      <div className="search-result-item-buttons">
+      <div className={`search-result-item-buttons ${theme}`}>
         {/* <div onClick={() => panAndZoom(outcomeActionHash)}>
        
           <Icon name="enter.svg" size="small" className="light-grey" />
@@ -71,11 +74,13 @@ function SearchResultItem({
 }
 
 function SearchResultsFilter({ name, filterActive, setFilter }) {
+  const theme = useTheme()
+
   return (
     <div
       className={`search-results-filter-wrapper ${name} ${
         filterActive ? 'filter-is-applied' : ''
-      } `}
+      } ${theme}`}
       onClick={() => setFilter(!filterActive)}
     >
       {name}
@@ -119,6 +124,8 @@ export default function HeaderRightPanel({
     setIsAvatarHover(false)
   }
 
+  const theme = useTheme()
+
   // reset the search when the project
   // changes, including navigating away
   // to the dashboard
@@ -139,10 +146,10 @@ export default function HeaderRightPanel({
           className={`search-button-wrapper ${
             isSearchOpen ? 'search-is-open' : ''
           } 
-        ${filterText !== '' ? 'results-dropdown-is-open' : ''}`}
+        ${filterText !== '' ? 'results-dropdown-is-open' : ''} ${theme}`}
         >
           <div className="search-icon-input">
-            <div className="search-open-icon">
+            <div className={`search-open-icon ${theme}`}>
               {/* @ts-ignore */}
               <Icon
                 name="search.svg"
@@ -159,9 +166,10 @@ export default function HeaderRightPanel({
                 in={isSearchOpen}
                 timeout={100}
                 unmountOnExit
-                classNames="search-input-wrapper"
+                classNames={`search-input-wrapper ${theme}`}
               >
                 <input
+                  className={`${theme}`}
                   onFocus={() => {
                     unselectAll()
                   }}
@@ -258,14 +266,16 @@ export default function HeaderRightPanel({
         {/* end search */}
       </ProjectMapViewOnly>
 
-      <div className="header-right-panel-help-profile">
+      <div className={`header-right-panel-help-profile ${theme}`}>
         {/* Help button */}
         <a
-          className="help-button-external"
+          className={`help-button-external ${theme}`}
           href="https://docs.acorn.software/about-acorn/what-is-acorn"
           target="_blank"
         >
-          <Typography style="h8">Help</Typography>
+          <Typography style="h8" theme={theme}>
+            Help
+          </Typography>
           {/* @ts-ignore */}
           <Icon
             name="external-link.svg"
@@ -300,16 +310,17 @@ export default function HeaderRightPanel({
         </div>
         {/* Profile Menu */}
         {isAvatarMenuOpen && (
-          <div className="profile-wrapper" ref={ref}>
+          <div className={`profile-wrapper ${theme}`} ref={ref}>
             <AvatarMenuItem
-              className={isStatusOpen ? 'active' : ''}
+              className={`${theme} ${isStatusOpen ? 'active' : ''}`}
               title="Change Status"
               onClick={() => setIsStatusOpen(true)}
             />
             {isStatusOpen && (
-              <div className="user-status-wrapper">
+              <div className={`user-status-wrapper ${theme}`}>
                 {Object.keys(Status).map((key) => (
                   <StatusMenuItem
+                    theme={theme}
                     key={key}
                     color={StatusCssColorClass[key]}
                     title={key}
@@ -328,9 +339,11 @@ export default function HeaderRightPanel({
                 onClickEditProfile()
                 setIsAvatarMenuOpen(false)
               }}
+              className={`${theme}`}
             />
             <AvatarMenuItem
               title="Preferences"
+              className={`${theme}`}
               onClick={() => {
                 onClickPreferences()
                 setIsAvatarMenuOpen(false)

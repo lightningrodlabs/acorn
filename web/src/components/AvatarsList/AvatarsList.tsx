@@ -6,6 +6,7 @@ import Avatar from '../Avatar/Avatar'
 import Icon from '../Icon/Icon'
 
 import './AvatarsList.scss'
+import useTheme from '../../hooks/useTheme'
 
 export type AvatarsListProps = {
   size: 'small' | 'small-medium' | 'medium' | 'medium-large' | 'large'
@@ -28,6 +29,8 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
   onClickButton,
   withStatus = true,
 }) => {
+  const theme = useTheme()
+
   return (
     <div
       className={`avatars-list-wrapper ${
@@ -74,7 +77,7 @@ const AvatarsList: React.FC<AvatarsListProps> = ({
       })}
       {/* Invite members button or Add Assignees button(optional) */}
       {(showInviteButton || showAddButton) && (
-        <div className="avatars-list-button-wrapper">
+        <div className={`avatars-list-button-wrapper ${theme}`}>
           <div
             className={`avatars-list-button ${
               size === 'small'

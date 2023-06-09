@@ -20,6 +20,7 @@ import hover from './ephemeral/hover/reducer'
 import keyboard from './ephemeral/keyboard/reducer'
 import layout from './ephemeral/layout/reducer'
 import mouse from './ephemeral/mouse/reducer'
+import theme from './ephemeral/theme/reducer'
 import screensize from './ephemeral/screensize/reducer'
 import viewport from './ephemeral/viewport/reducer'
 import expandedView from './ephemeral/expanded-view/reducer'
@@ -54,6 +55,7 @@ const rootReducer = combineReducers({
     screensize,
     viewport,
     mouse,
+    theme,
     expandedView,
     outcomeClone,
     activeProject,

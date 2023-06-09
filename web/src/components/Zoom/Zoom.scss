@@ -1,24 +1,44 @@
 .zoom-wrapper {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.9);
   border-radius: 0.625rem;
   height: 3rem;
   padding: 0.75rem 0.625rem;
   box-sizing: border-box;
 
+  &.light {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  &.dark {
+    background: var(--bg-color-primary-dark);
+  }
+
   .icon {
     display: inline-block;
     margin-right: 0.5rem;
+
+    .inner-icon {
+      &.dark {
+        background-color: var(--text-color-tertiary);
+      }
+    }
   }
 
   span {
     display: inline-block;
     font-size: 14px;
-    font-family: "gilroyextrabold", Helvetica, sans-serif;
+    font-family: 'gilroyextrabold', Helvetica, sans-serif;
     font-weight: normal;
 
     width: 40px;
-    color: #535353;
+
+    &.light {
+      color: #535353;
+    }
+
+    &.dark {
+      color: var(--text-color-dark-bg);
+    }
   }
 }

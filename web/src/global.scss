@@ -20,12 +20,19 @@ canvas {
 }
 
 body {
-  background-color: var(--bg-color-canvas);
   font-family: var(--font-family-primary-medium);
   word-spacing: 0.005rem;
   letter-spacing: 0.001rem;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  &.light {
+    background-color: var(--bg-color-canvas);
+  }
+
+  &.dark {
+    background-color: var(--bg-color-canvas-dark);
+  }
 }
 
 .screen-wrapper {
@@ -35,7 +42,7 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-} 
+}
 
 a {
   text-decoration: none;
@@ -54,7 +61,7 @@ a {
 h1 {
   font-size: 30px;
   line-height: 36px;
-  font-family: "gilroyextrabold", Helvetica, sans-serif;
+  font-family: 'gilroyextrabold', Helvetica, sans-serif;
   font-weight: normal;
   margin-block-start: 0.1em;
   margin-block-end: 0.5em;
@@ -64,21 +71,21 @@ h1 {
 h2 {
   font-size: 22px;
   line-height: 28px;
-  font-family: "PlusJakartaSans-bold", Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   font-weight: normal;
 }
 
 h3 {
   font-size: 20px;
   line-height: 24px;
-  font-family: "PlusJakartaSans-bold", Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   font-weight: normal;
 }
 
 h4 {
   font-size: 16px;
   line-height: 24px;
-  font-family: "PlusJakartaSans-bold", Helvetica, sans-serif;
+  font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
   font-weight: normal;
   color: #8d8c8c;
   margin-block-start: 0.1em;

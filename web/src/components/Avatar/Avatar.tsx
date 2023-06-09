@@ -3,6 +3,7 @@ import './Avatar.scss'
 import { pickColorForString } from '../../styles'
 import { StatusCssColorClass, Status } from '../Header/Status'
 import Tooltip from '../Tooltip/Tooltip'
+import useTheme from '../../hooks/useTheme'
 
 interface AvatarProps {
   size: 'small' | 'small-medium' | 'medium' | 'medium-large' | 'large'
@@ -39,7 +40,6 @@ function Avatar({
   withTooltip,
 }: // tooltipText,
 AvatarProps) {
-
   // If it is imported avatar of a ghost member
   // don't show status circle
   if (imported) withStatus = false
@@ -52,6 +52,7 @@ AvatarProps) {
   if (withStatus) classes.push('with-status')
   if (withTooltip) classes.push('with-tooltip')
   if (disconnected) classes.push('disconnected')
+  const theme = useTheme()
 
   // avatar with no image, showing initials
   if (!avatarUrl) {
@@ -65,6 +66,7 @@ AvatarProps) {
     return (
       <div
         className={`avatar-wrapper 
+        ${theme}
         ${imported ? 'imported' : ''} 
         ${withWhiteBorder ? 'with-border white' : ''} 
         ${
@@ -94,7 +96,7 @@ AvatarProps) {
         {withStatus && (
           <div className="status-circle-wrapper">
             <div
-              className={`status-circle ${StatusCssColorClass[selfAssignedStatus]}`}
+              className={`status-circle ${theme} ${StatusCssColorClass[selfAssignedStatus]}`}
             ></div>
           </div>
         )}
@@ -114,6 +116,7 @@ AvatarProps) {
   return (
     <div
       className={`avatar-wrapper 
+      ${theme}
       ${imported ? 'imported' : ''} 
       ${withWhiteBorder ? 'with-border white' : ''} 
       ${
@@ -140,7 +143,7 @@ AvatarProps) {
       {withStatus && (
         <div className="status-circle-wrapper">
           <div
-            className={`status-circle ${StatusCssColorClass[selfAssignedStatus]}`}
+            className={`status-circle ${theme} ${StatusCssColorClass[selfAssignedStatus]}`}
           ></div>
         </div>
       )}

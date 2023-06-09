@@ -4,7 +4,7 @@ import { ActionHashB64 } from '../types/shared'
 import { LayeringAlgorithm, Profile } from '../types'
 
 import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
-import { setNavigationPreference } from '../redux/ephemeral/local-preferences/actions'
+import { setNavigationPreference, setColorPreference } from '../redux/ephemeral/local-preferences/actions'
 import selectEntryPoints, {
   selectActiveProjectMembers,
 } from '../redux/persistent/projects/entry-points/select'
@@ -35,7 +35,7 @@ function mapStateToProps(state: RootState): AppStateProps {
       activeProject,
       activeEntryPoints,
       inviteMembersModal,
-      localPreferences: { navigation },
+      localPreferences: { navigation, color },
     },
     cells: { profiles: profilesCellIdString },
   } = state
@@ -84,6 +84,7 @@ function mapStateToProps(state: RootState): AppStateProps {
     hasFetchedForWhoami,
     agentAddress: state.agentAddress,
     navigationPreference: navigation,
+    colorPreference: color,
     inviteMembersModalShowing: inviteMembersModal.passphrase,
     members,
     presentMembers,
@@ -99,6 +100,9 @@ function mapDispatchToProps(dispatch): AppDispatchProps {
     dispatch,
     setNavigationPreference: (preference) => {
       return dispatch(setNavigationPreference(preference))
+    },
+    setColorPreference: (preference) => {
+      return dispatch(setColorPreference(preference))
     },
     goToOutcome: (outcomeActionHash) => {
       return dispatch(animatePanAndZoom(outcomeActionHash, true))
