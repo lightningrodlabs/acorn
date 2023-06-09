@@ -62,7 +62,8 @@ function calculateValidParents(
       // filter out self-address in the process
       outcomeActionHash !== fromAddress &&
       // filter out any descendants
-      !descendants.includes(outcomeActionHash)
+      !descendants.includes(outcomeActionHash) &&
+      !isAncestor(fromAddress, outcomeActionHash, connections)
     )
   })
 }
@@ -85,7 +86,8 @@ function calculateValidChildren(
       outcomeActionHash !== fromAddress &&
       // find the Outcome objects that are not descendants of the fromAddress
       // since we don't want to create cycles
-      !isAncestor(outcomeActionHash, fromAddress, connections)
+      !isAncestor(outcomeActionHash, fromAddress, connections) &&
+      !isAncestor(fromAddress, outcomeActionHash, connections)
     )
   })
 }

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink, Route, useLocation, useRouteMatch } from 'react-router-dom'
 import useOnClickOutside from 'use-onclickoutside'
 
@@ -22,6 +22,8 @@ import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 //images
 // @ts-ignore
 import triangleTopWhite from '../../images/triangle-top-white.svg'
+import { getAdminWs, getAppWs } from '../../hcWebsockets'
+import SyncingIndicator from '../SyncingIndicator/SyncingIndicator'
 
 function ActiveEntryPoint({
   entryPoint,
@@ -267,7 +269,6 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
             />
           </Route>
         )}
-        {/* TODO: Add project syncing logo here */}
       </div>
       {/* Second row of the header */}
       {/* for showing active entry points tabs */}
