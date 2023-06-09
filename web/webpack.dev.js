@@ -49,6 +49,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
   },
   devServer: {
+    port: process.env.WEB_PORT,
     host: 'localhost',
     allowedHosts: 'all',
     static: './dist',

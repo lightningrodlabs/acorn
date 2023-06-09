@@ -14,6 +14,8 @@ module.exports = {
       watch: ['electron/dist'],
       env: {
         NODE_ENV: 'development',
+        ACORN_AGENT_NUM: '1',
+        WEB_PORT: '8081',
       },
     },
     // {

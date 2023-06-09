@@ -6,11 +6,14 @@ import * as path from 'path'
 export const INTEGRITY_VERSION_NUMBER = 8
 export const KEYSTORE_VERSION_NUMBER = 4
 
-const userNumber = process.env.ACORN_TEST_USER_2 ? '2' : ''
+const DEV_USER_NUMBER = process.env.ACORN_AGENT_NUM
+
 const MIGRATION_FILE_NAME_PREFIX = `data-migration-for-integrity-version-`
+
 const USER_DATA_PATH = app.isPackaged
   ? app.getPath('userData')
-  : path.join(__dirname, `../../user${userNumber}-data/`)
+  : path.join(__dirname, `../../user-data/agent${DEV_USER_NUMBER}`)
+
 const USER_DATA_MIGRATION_FILE_PATH = path.join(
   USER_DATA_PATH,
   `${MIGRATION_FILE_NAME_PREFIX}${INTEGRITY_VERSION_NUMBER}`

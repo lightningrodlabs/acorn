@@ -54,14 +54,19 @@ const BINARY_PATHS: PathOptions | undefined = app.isPackaged
     }
   : undefined
 
+// NEEDS TO MATCH IN THE `web` folder source code
+// `MAIN_APP_ID`
 const MAIN_APP_ID = 'main-app'
+
+const ACORN_AGENT_NUM = parseInt(process.env.ACORN_AGENT_NUM)
+console.log('ACORN_AGENT_NUM', ACORN_AGENT_NUM)
 
 const devOptions: ElectronHolochainOptions = {
   happPath: profilesHappPath, // preload
   datastorePath: path.join(USER_DATA_PATH, `databases-${INTEGRITY_VERSION_NUMBER}`),
   appId: MAIN_APP_ID,
-  appWsPort: process.env.ACORN_TEST_USER_2 ? 8899 : 8888,
-  adminWsPort: process.env.ACORN_TEST_USER_2 ? 1236 : 1234,
+  appWsPort:  8100 + ACORN_AGENT_NUM,
+  adminWsPort: 1100 + ACORN_AGENT_NUM,
   keystorePath: path.join(USER_DATA_PATH, `keystore-${KEYSTORE_VERSION_NUMBER}`),
   passphrase: 'test-passphrase',
   bootstrapUrl: 'https://bootstrap.holo.host'

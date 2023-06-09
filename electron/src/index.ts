@@ -50,9 +50,7 @@ const LINUX_ICON_FILE = path.join(
   '../app.asar.unpacked/web/logo/acorn-app-icon-512px.png'
 )
 
-const DEVELOPMENT_UI_URL = process.env.ACORN_TEST_USER_2
-  ? 'http://localhost:8081'
-  : 'http://localhost:8080'
+const DEVELOPMENT_UI_URL = `http://localhost:${process.env.WEB_PORT}`
 
 const createMainWindow = (): BrowserWindow => {
   // Create the browser window.
