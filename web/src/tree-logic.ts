@@ -1,3 +1,4 @@
+import { CoordinatesState } from './redux/ephemeral/layout/state-type'
 import { RootState } from './redux/reducer'
 import { Connection } from './types'
 import { ActionHashB64, WithActionHash } from './types/shared'
@@ -92,30 +93,36 @@ function calculateValidChildren(
   })
 }
 
-function findParentActionHash(
+function findParentsActionHashes(
   childActionHash: ActionHashB64,
   state: RootState
-) {
+): string[] {
   const connections = state.projects.connections[state.ui.activeProject] || {}
   const connectionsArray = Object.values(connections)
-  // ASSUMPTION: one-parent
-  // just takes first it finds
-  const parentConnection = connectionsArray.find(
+
+  const parentConnections = connectionsArray.filter(
     (connection) => connection.childActionHash === childActionHash
   )
-  return parentConnection ? parentConnection.parentActionHash : undefined
+  const parentActionHashes = parentConnections.map(
+    (connection) => connection.parentActionHash
+  )
+
+  return parentActionHashes
 }
 
-function findFirstChildActionHash(
+function findChildrenActionHashes(
   parentActionHash: ActionHashB64,
   state: RootState
-) {
+): string[] {
   const connections = state.projects.connections[state.ui.activeProject] || {}
   const connectionsArray = Object.values(connections)
-  const childConnection = connectionsArray.find(
+  const childConnections = connectionsArray.filter(
     (connection) => connection.parentActionHash === parentActionHash
   )
-  return childConnection ? childConnection.childActionHash : undefined
+  const childActionHashes = childConnections.map(
+    (connection) => connection.childActionHash
+  )
+  return childActionHashes
 }
 
 // Which direction of the list of children
@@ -123,6 +130,45 @@ function findFirstChildActionHash(
 enum RightOrLeft {
   Right,
   Left,
+}
+
+function getSiblings(
+  connectionsArray: WithActionHash<Connection>[],
+  parentConnections: WithActionHash<Connection>[],
+  layoutCoords: CoordinatesState
+): ActionHashB64[] {
+  let siblings = connectionsArray
+    // find all connections that share any (.find) parent with the selected outcome
+    .filter((connection) =>
+      parentConnections.find(
+        (parentConnection) =>
+          parentConnection.parentActionHash === connection.parentActionHash
+      )
+    )
+    // only keep the action hashes
+    .map((connection) => connection.childActionHash)
+  // make unique
+  siblings = [...new Set(siblings)]
+
+  // sort by x coordinate left -> right
+  return siblings.sort((a, b) => {
+    const aCoords = layoutCoords[a]
+    const bCoords = layoutCoords[b]
+    if (aCoords && bCoords) {
+      return aCoords.x - bCoords.x
+    }
+  })
+}
+
+function pickSiblingIndexFromDirection(
+  siblings: string[],
+  childActionHash: string,
+  direction: RightOrLeft
+): number {
+  // index of this child in the list of all children
+  const selfIndex = siblings.indexOf(childActionHash)
+  // left or right?
+  return selfIndex + (direction === RightOrLeft.Left ? -1 : 1)
 }
 
 function findSiblingActionHash(
@@ -133,23 +179,24 @@ function findSiblingActionHash(
   const connections = state.projects.connections[state.ui.activeProject] || {}
   const outcomes = state.projects.outcomes[state.ui.activeProject] || {}
   const connectionsArray = Object.values(connections)
-  // ASSUMPTION: one-parent
-  // just takes first it finds
-  const parentConnection = connectionsArray.find(
+  const layoutCoords = state.ui.layout.coordinates
+
+  const parentConnections = connectionsArray.filter(
     (connection) => connection.childActionHash === childActionHash
   )
-  if (parentConnection) {
-    const siblings = connectionsArray
-      .filter(
-        (connection) =>
-          connection.parentActionHash === parentConnection.parentActionHash
-      )
-      .map((connection) => connection.childActionHash)
-    // index of this child in the list of all children
-    const selfIndex = siblings.indexOf(childActionHash)
-    // left or right?
-    const pickSiblingAtIndex =
-      selfIndex + (direction === RightOrLeft.Left ? -1 : 1)
+  // there is at least 1 parent
+  if (parentConnections.length) {
+    const siblings = getSiblings(
+      connectionsArray,
+      parentConnections,
+      layoutCoords
+    )
+    const pickSiblingAtIndex = pickSiblingIndexFromDirection(
+      siblings,
+      childActionHash,
+      direction
+    )
+
     return siblings[pickSiblingAtIndex]
   } else {
     // we are in a root node
@@ -167,11 +214,22 @@ function findSiblingActionHash(
         )
       }
     )
-    // index of this outcome in the list of all those outcomes without parents
-    const selfIndex = noParentsAddresses.indexOf(childActionHash)
-    // left or right?
-    const pickOutcomeAtIndex =
-      selfIndex + (direction === RightOrLeft.Left ? -1 : 1)
+
+    // sort by x coordinate left -> right
+    noParentsAddresses.sort((a, b) => {
+      const aCoords = layoutCoords[a]
+      const bCoords = layoutCoords[b]
+      if (aCoords && bCoords) {
+        return aCoords.x - bCoords.x
+      }
+    })
+
+    const pickOutcomeAtIndex = pickSiblingIndexFromDirection(
+      noParentsAddresses,
+      childActionHash,
+      direction
+    )
+
     return noParentsAddresses[pickOutcomeAtIndex]
   }
 }
@@ -181,8 +239,8 @@ export {
   calculateValidChildren,
   isAncestor,
   allDescendants,
-  findParentActionHash,
-  findFirstChildActionHash,
+  findParentsActionHashes,
+  findChildrenActionHashes,
   findSiblingActionHash,
   RightOrLeft,
 }
