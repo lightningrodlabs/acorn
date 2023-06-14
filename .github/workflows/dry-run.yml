@@ -3,7 +3,7 @@ name: Release Dry Run
 on:
   push:
     branches:
-      - **
+      - '*'
 
 jobs:
   build-test:
