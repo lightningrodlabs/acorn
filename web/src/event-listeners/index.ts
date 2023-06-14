@@ -64,8 +64,8 @@ import { ActionHashB64 } from '../types/shared'
 import { ComputedOutcome, RelationInput } from '../types'
 import { RootState } from '../redux/reducer'
 import {
-  findFirstChildActionHash,
-  findParentActionHash,
+  findChildrenActionHashes,
+  findParentsActionHashes,
   findSiblingActionHash,
   RightOrLeft,
 } from '../tree-logic'
@@ -74,6 +74,10 @@ import checkForOutcomeOrConnection, {
   OutcomeConnectionOrBoth,
 } from './checkForOutcomeOrConnection'
 import closestOutcomeToPageCoord from './closestOutcome'
+import {
+  setNavModalOpenChildren,
+  setNavModalOpenParents,
+} from '../redux/ephemeral/navigation-modal/actions'
 
 // The "modifier" key is different on Mac and non-Mac
 // Pattern borrowed from TinyKeys library.
@@ -128,6 +132,19 @@ export default function setupEventListeners(
     store.dispatch(setScreenDimensions(rect.width * dpr, rect.height * dpr))
   }
 
+  function canPerformKeyboardAction(state: RootState): boolean {
+    return (
+      state.ui.selection.selectedOutcomes.length === 1 &&
+      !state.ui.outcomeForm.isOpen &&
+      !state.ui.expandedView.isOpen &&
+      !state.ui.navigationModal.open
+    )
+  }
+
+  function panAndZoom(actionHash: string) {
+    store.dispatch(animatePanAndZoom(actionHash, false))
+  }
+
   async function bodyKeydown(event) {
     const appWebsocket = await getAppWs()
     const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
@@ -140,99 +157,88 @@ export default function setupEventListeners(
     // event.key is keyboard layout independent, so works for Dvorak users
     switch (event.key) {
       case 'Enter':
-        if (
-          state.ui.selection.selectedOutcomes.length === 1 &&
-          !state.ui.outcomeForm.isOpen &&
-          !state.ui.expandedView.isOpen
-        ) {
+        if (canPerformKeyboardAction(state)) {
+          event.stopPropagation()
           store.dispatch(
             openExpandedView(state.ui.selection.selectedOutcomes[0])
           )
         }
+
         break
 
-      // DISABLED: navigating with keyboard
       // Used for navigating to a child
-      // case 'ArrowDown':
-      //   if (
-      //     state.ui.selection.selectedOutcomes.length === 1 &&
-      //     !state.ui.outcomeForm.isOpen &&
-      //     !state.ui.expandedView.isOpen
-      //   ) {
-      //     const selectedOutcome = state.ui.selection.selectedOutcomes[0]
-      //     const childActionHash = findFirstChildActionHash(
-      //       selectedOutcome,
-      //       state
-      //     )
-      //     if (childActionHash) {
-      //       // select and pan and zoom to
-      //       // the parent
-      //       store.dispatch(animatePanAndZoom(childActionHash, false))
-      //     }
-      //   }
-      //   break
+      case 'ArrowDown':
+        if (canPerformKeyboardAction(state)) {
+          const selectedOutcome = state.ui.selection.selectedOutcomes[0]
 
-      // DISABLED: navigating with keyboard
+          const childrenActionHashes = findChildrenActionHashes(
+            selectedOutcome,
+            state
+          )
+          if (childrenActionHashes.length) {
+            event.stopPropagation()
+            if (childrenActionHashes.length === 1)
+              panAndZoom(childrenActionHashes[0])
+            else {
+              store.dispatch(setNavModalOpenChildren(childrenActionHashes))
+            }
+          }
+        }
+        break
+
       // Used for navigating to a parent
-      // case 'ArrowUp':
-      //   if (
-      //     state.ui.selection.selectedOutcomes.length === 1 &&
-      //     !state.ui.outcomeForm.isOpen &&
-      //     !state.ui.expandedView.isOpen
-      //   ) {
-      //     const selectedOutcome = state.ui.selection.selectedOutcomes[0]
-      //     const parentActionHash = findParentActionHash(selectedOutcome, state)
-      //     if (parentActionHash) {
-      //       // select and pan and zoom to
-      //       // the parent
-      //       store.dispatch(animatePanAndZoom(parentActionHash, false))
-      //     }
-      //   }
-      //   break
+      case 'ArrowUp':
+        if (canPerformKeyboardAction(state)) {
+          const selectedOutcome = state.ui.selection.selectedOutcomes[0]
+          const parentsActionHashes = findParentsActionHashes(
+            selectedOutcome,
+            state
+          )
+          if (parentsActionHashes.length) {
+            event.stopPropagation()
+            if (parentsActionHashes.length === 1)
+              panAndZoom(parentsActionHashes[0])
+            else {
+              store.dispatch(setNavModalOpenParents(parentsActionHashes))
+            }
+          }
+        }
 
-      // DISABLED: navigating with keyboard
+        break
+
       // Used for navigating to the left sibling
-      // case 'ArrowLeft':
-      //   if (
-      //     state.ui.selection.selectedOutcomes.length === 1 &&
-      //     !state.ui.outcomeForm.isOpen &&
-      //     !state.ui.expandedView.isOpen
-      //   ) {
-      //     const selectedOutcome = state.ui.selection.selectedOutcomes[0]
-      //     const targetActionHash = findSiblingActionHash(
-      //       selectedOutcome,
-      //       state,
-      //       RightOrLeft.Left
-      //     )
-      //     if (targetActionHash) {
-      //       // select and pan and zoom to
-      //       // the parent
-      //       store.dispatch(animatePanAndZoom(targetActionHash, false))
-      //     }
-      //   }
-      //   break
+      case 'ArrowLeft':
+        if (canPerformKeyboardAction(state)) {
+          const selectedOutcome = state.ui.selection.selectedOutcomes[0]
+          const targetActionHash = findSiblingActionHash(
+            selectedOutcome,
+            state,
+            RightOrLeft.Left
+          )
+          if (targetActionHash) {
+            // select and pan and zoom to
+            // the parent
+            store.dispatch(animatePanAndZoom(targetActionHash, false))
+          }
+        }
+        break
 
-      // DISABLED: navigating with keyboard
       // Used for navigating to the right sibling
-      // case 'ArrowRight':
-      //   if (
-      //     state.ui.selection.selectedOutcomes.length === 1 &&
-      //     !state.ui.outcomeForm.isOpen &&
-      //     !state.ui.expandedView.isOpen
-      //   ) {
-      //     const selectedOutcome = state.ui.selection.selectedOutcomes[0]
-      //     const targetActionHash = findSiblingActionHash(
-      //       selectedOutcome,
-      //       state,
-      //       RightOrLeft.Right
-      //     )
-      //     if (targetActionHash) {
-      //       // select and pan and zoom to
-      //       // the parent
-      //       store.dispatch(animatePanAndZoom(targetActionHash, false))
-      //     }
-      //   }
-      //   break
+      case 'ArrowRight':
+        if (canPerformKeyboardAction(state)) {
+          const selectedOutcome = state.ui.selection.selectedOutcomes[0]
+          const targetActionHash = findSiblingActionHash(
+            selectedOutcome,
+            state,
+            RightOrLeft.Right
+          )
+          if (targetActionHash) {
+            // select and pan and zoom to
+            // the parent
+            store.dispatch(animatePanAndZoom(targetActionHash, false))
+          }
+        }
+        break
 
       // Used in multi selecting Outcomes
       case 'Shift':
@@ -241,7 +247,7 @@ export default function setupEventListeners(
       case 'Escape':
         // Only unselect all Outcomes if the expanded view
         // is not open
-        if (!state.ui.expandedView.isOpen) {
+        if (!state.ui.expandedView.isOpen && !state.ui.navigationModal.open) {
           store.dispatch(unselectAll())
         }
         store.dispatch(closeExpandedView())

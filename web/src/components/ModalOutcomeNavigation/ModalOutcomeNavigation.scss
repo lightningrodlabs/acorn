@@ -1,0 +1,53 @@
+.modal-outcome-navigation {
+  .modal-wrapper {
+    padding: 2rem 2rem 0 2rem;
+    max-width: 28rem;
+    min-height: 12rem;
+    overflow-y: hidden;
+  }
+
+  .close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+
+  .title {
+    font-size: 1.05rem;
+    font-family: var(--font-family-primary-bold);
+    padding: 1rem 0.75rem 1.25rem 0.75rem;
+    box-sizing: border-box;
+    border-bottom: 2px solid var(--border-color-timberwolf);
+  }
+
+  .options {
+    overflow-y: scroll;
+    height: 100%;
+    padding-top: 0.75rem;
+    padding-bottom: 2rem;
+    box-sizing: border-box;
+
+    .modal-outcome-navigation-option {
+      font-size: 0.975rem;
+      line-height: 1.6;
+      padding: 0.625rem 0.75rem;
+      box-sizing: border-box;
+      border-radius: 0.625rem;
+      cursor: pointer;
+      transition: 0.2s all ease;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow-x: hidden;
+      border: 2px solid transparent;
+
+      &:hover {
+        opacity: 0.7;
+      }
+
+      &.active {
+        border: 2px solid var(--color-ultramarine-blue);
+      }
+    }
+  }
+}
