@@ -7,12 +7,8 @@
     "url": "git+https://github.com/h-be/acorn.git"
   },
   "scripts": {
-    "install-deps": "npm install && npm run happ-install && npm run web-install && npm run electron-install && npm run electron-tsc",
+    "install-deps": "npm install && npm run web-install && npm run electron-install && npm run electron-tsc",
     "dev": "pm2-dev pm2.config.js",
-    "happ-install": "bash scripts/install-hc-tools.sh",
-    "happ-test": "bash scripts/happ-test.sh",
-    "happ-pack": "bash scripts/happ-pack.sh",
-    "happ-reset": "npm run happ-pack && npm run user-data-reset",
     "user-data-reset": "rm -rf user-data && mkdir user-data",
     "web-install": "cd web && npm install",
     "web": "cd web && WEB_PORT=8081 ADMIN_WS_PORT=1101 APP_WS_PORT=8101 npx webpack-dev-server --config webpack.dev.js",
@@ -27,7 +23,9 @@
     "electron4": "cd electron && WEB_PORT=8084 ACORN_AGENT_NUM=4 npm run start",
     "electron-tsc": "cd electron && npm run tsc",
     "build": "bash scripts/build.sh",
-    "storybook": "cd web && npm run storybook"
+    "download-happs": "bash scripts/download-happs.sh",
+    "storybook": "cd web && npm run storybook",
+    "postinstall": "npm run download-happs"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",
