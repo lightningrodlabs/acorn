@@ -16,7 +16,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      # depending on the windows command (when we are ready to build for it), may have to check which os currently on
+      - name: Windows only, install wget
+        if: ${{ runner.os == 'windows-latest' }}
+        run: |
+          choco install wget --no-progress
       - name: Install nodejs dependencies
         run: |
           npm install
