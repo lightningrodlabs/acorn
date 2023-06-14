@@ -33,8 +33,7 @@ jobs:
           npm install
           npm run web-install
           npm run electron-install
-        # if: ${{ runner.os == 'Windows' }}
-        # shell: bash
+        shell: bash
       - name: setup for codesigning (macos only)
         if: ${{ runner.os == 'macOs' }}
         uses: figleafteam/import-codesign-certs@v2
