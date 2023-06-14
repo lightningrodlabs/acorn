@@ -76,7 +76,7 @@ INTEGRITY_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER are defined in `electron/sr
 
 You can tweak INTEGRITY_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER independently. 
 
-INTEGRITY_VERSION_NUMBER should be incremented when a new DNA is in use. This occurs when the version number of the release in [./scripts/download-happs.sh] changes. It will cause users to have to re-create profiles and re-instate data they've previously added.
+INTEGRITY_VERSION_NUMBER should be incremented when a new DNA is in use. This occurs when the version number of the release in [./scripts/download-happs.sh](./scripts/download-happs.sh) changes. It will cause users to have to re-create profiles and re-instate data they've previously added.
 
 KEYSTORE_VERSION_NUMBER should be incremented if the version of lair-keystore changes, and has a new key format. Or if you otherwise want users to have to switch and generate new keys.
 
