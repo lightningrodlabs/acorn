@@ -27,10 +27,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      # Download the happ files from the acorn-happ release. This feeds in the copy files portion of scripts/build.sh
-      - name: Download happs
-        run: |
-          
       # depending on the windows command (when we are ready to build for it), may have to check which os currently on
       - name: Install nodejs dependencies
         run: |
