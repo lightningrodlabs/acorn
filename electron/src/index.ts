@@ -1,4 +1,12 @@
-import { app, BrowserWindow, ipcMain, shell, autoUpdater } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  shell,
+  autoUpdater,
+  Menu,
+  dialog,
+} from 'electron'
 import * as contextMenu from 'electron-context-menu'
 import * as path from 'path'
 import * as fs from 'fs'
@@ -10,16 +18,80 @@ import initAgent, {
 
 import {
   devOptions,
-  projectsHappPath,
   prodOptions,
   stateSignalToText,
   BINARY_PATHS,
 } from './holochain'
 import {
+  DATASTORE_PATH,
   INTEGRITY_VERSION_NUMBER,
+  KEYSTORE_PATH,
   PREV_VER_USER_DATA_MIGRATION_FILE_PATHS,
+  PROJECTS_HAPP_PATH,
   USER_DATA_MIGRATION_FILE_PATH,
 } from './paths'
+import defaultMenu = require('electron-default-menu')
+
+// credit: https://stackoverflow.com/a/20920795/21533410
+function deleteFolderRecursive(path: string) {
+  if (fs.existsSync(path)) {
+    fs.readdirSync(path).forEach(function (file) {
+      var curPath = path + '/' + file
+      if (fs.lstatSync(curPath).isDirectory()) {
+        // recurse
+        deleteFolderRecursive(curPath)
+      } else {
+        // delete file
+        fs.unlinkSync(curPath)
+      }
+    })
+    fs.rmdirSync(path)
+  }
+}
+
+// Get default menu template
+const menu = defaultMenu(app, shell)
+const newMenuItem = {
+  label: 'Factory Reset',
+  click: (item, focusedWindow) => {
+    // show a message box and factory reset if they confirm
+    dialog
+      .showMessageBox({
+        message: 'Factory Reset Acorn?',
+        buttons: ['Confirm', 'Cancel'],
+      })
+      .then(({ response }) => {
+        if (response === 0) {
+          // factory reset
+          if (fs.existsSync(KEYSTORE_PATH)) {
+            try {
+              deleteFolderRecursive(KEYSTORE_PATH)
+            } catch (err) {
+              console.error(`Error deleting ${KEYSTORE_PATH}: ${err.message}`)
+            }
+          }
+          if (fs.existsSync(DATASTORE_PATH)) {
+            try {
+              deleteFolderRecursive(DATASTORE_PATH)
+            } catch (err) {
+              console.error(`Error deleting ${DATASTORE_PATH}: ${err.message}`)
+            }
+          }
+
+          // restart the app
+          app.relaunch()
+          app.quit()
+        }
+      })
+  },
+}
+// Add custom menu
+if (Array.isArray(menu[0].submenu)) {
+  menu[0].submenu.splice(1, 0, newMenuItem)
+}
+
+// Set application menu
+Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
 
 // add the right-click "context" menu
 contextMenu({
@@ -189,7 +261,7 @@ app.on('activate', () => {
 })
 
 ipcMain.handle('getProjectsPath', () => {
-  return projectsHappPath
+  return PROJECTS_HAPP_PATH
 })
 
 ipcMain.handle('getVersion', () => {
