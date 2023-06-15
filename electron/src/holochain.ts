@@ -37,21 +37,6 @@ export function stateSignalToText(state: StateSignal): StateSignalText {
   }
 }
 
-// in production
-// must point to unpacked versions, not in an asar archive
-// in development
-// fall back on defaults in the electron-holochain package
-const BINARY_PATHS: PathOptions | undefined = app.isPackaged
-  ? {
-      holochainRunnerBinaryPath: path.join(
-        __dirname,
-        `../../app.asar.unpacked/binaries/holochain-runner${
-          process.platform === 'win32' ? '.exe' : ''
-        }`
-      ),
-    }
-  : undefined
-
 // NEEDS TO MATCH IN THE `web` folder source code
 // `MAIN_APP_ID`
 const MAIN_APP_ID = 'main-app'
@@ -80,4 +65,4 @@ const prodOptions: ElectronHolochainOptions = {
   bootstrapUrl: 'https://bootstrap.holo.host',
 }
 
-export { BINARY_PATHS, devOptions, prodOptions }
+export { devOptions, prodOptions }

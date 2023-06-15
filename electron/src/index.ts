@@ -10,19 +10,14 @@ import {
 import * as contextMenu from 'electron-context-menu'
 import * as path from 'path'
 import * as fs from 'fs'
-// import log from 'electron-log'
 import initAgent, {
   StateSignal,
   STATUS_EVENT,
 } from '@lightningrodlabs/electron-holochain'
 
+import { devOptions, prodOptions, stateSignalToText } from './holochain'
 import {
-  devOptions,
-  prodOptions,
-  stateSignalToText,
   BINARY_PATHS,
-} from './holochain'
-import {
   DATASTORE_PATH,
   INTEGRITY_VERSION_NUMBER,
   KEYSTORE_PATH,
@@ -31,29 +26,34 @@ import {
   USER_DATA_MIGRATION_FILE_PATH,
 } from './paths'
 import defaultMenu = require('electron-default-menu')
+import { deleteFolderRecursive } from './file-utils'
 
-// credit: https://stackoverflow.com/a/20920795/21533410
-function deleteFolderRecursive(path: string) {
-  if (fs.existsSync(path)) {
-    fs.readdirSync(path).forEach(function (file) {
-      var curPath = path + '/' + file
-      if (fs.lstatSync(curPath).isDirectory()) {
-        // recurse
-        deleteFolderRecursive(curPath)
-      } else {
-        // delete file
-        fs.unlinkSync(curPath)
-      }
-    })
-    fs.rmdirSync(path)
+function factoryResetVersion() {
+  if (fs.existsSync(KEYSTORE_PATH)) {
+    try {
+      deleteFolderRecursive(KEYSTORE_PATH)
+    } catch (err) {
+      console.error(`Error deleting ${KEYSTORE_PATH}: ${err.message}`)
+    }
   }
+  if (fs.existsSync(DATASTORE_PATH)) {
+    try {
+      deleteFolderRecursive(DATASTORE_PATH)
+    } catch (err) {
+      console.error(`Error deleting ${DATASTORE_PATH}: ${err.message}`)
+    }
+  }
+
+  // restart the app
+  app.relaunch()
+  app.quit()
 }
 
 // Get default menu template
 const menu = defaultMenu(app, shell)
 const newMenuItem = {
   label: 'Factory Reset',
-  click: (item, focusedWindow) => {
+  click: () => {
     // show a message box and factory reset if they confirm
     dialog
       .showMessageBox({
@@ -62,25 +62,7 @@ const newMenuItem = {
       })
       .then(({ response }) => {
         if (response === 0) {
-          // factory reset
-          if (fs.existsSync(KEYSTORE_PATH)) {
-            try {
-              deleteFolderRecursive(KEYSTORE_PATH)
-            } catch (err) {
-              console.error(`Error deleting ${KEYSTORE_PATH}: ${err.message}`)
-            }
-          }
-          if (fs.existsSync(DATASTORE_PATH)) {
-            try {
-              deleteFolderRecursive(DATASTORE_PATH)
-            } catch (err) {
-              console.error(`Error deleting ${DATASTORE_PATH}: ${err.message}`)
-            }
-          }
-
-          // restart the app
-          app.relaunch()
-          app.quit()
+          factoryResetVersion()
         }
       })
   },
