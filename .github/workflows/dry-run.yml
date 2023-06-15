@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Windows only, install wget
-        if: ${{ runner.os == 'windows-latest' }}
+        if: ${{ runner.os == 'Windows' }}
         run: |
           choco install wget --no-progress
       - name: Install nodejs dependencies
