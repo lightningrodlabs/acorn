@@ -1,3 +1,4 @@
+import { PathOptions } from '@lightningrodlabs/electron-holochain/dist/src/options'
 import { app } from 'electron'
 import * as path from 'path'
 
@@ -26,8 +27,47 @@ const PREV_VER_USER_DATA_MIGRATION_FILE_PATHS = [
   // Acorn 5
   path.join(USER_DATA_PATH, `${MIGRATION_FILE_NAME_PREFIX}8`),
 ]
+
+const PROJECTS_HAPP_PATH = app.isPackaged
+  ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/projects.happ')
+  : path.join(app.getAppPath(), 'binaries/projects.happ')
+
+const PROFILES_HAPP_PATH = app.isPackaged
+  ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/profiles.happ')
+  : path.join(app.getAppPath(), 'binaries/profiles.happ')
+
+const DATASTORE_PATH = path.join(
+  USER_DATA_PATH,
+  `databases-${INTEGRITY_VERSION_NUMBER}`
+)
+
+const KEYSTORE_PATH = path.join(
+  USER_DATA_PATH,
+  `keystore-${KEYSTORE_VERSION_NUMBER}`
+)
+
+// in production
+// must point to unpacked versions, not in an asar archive
+// in development
+// fall back on defaults in the electron-holochain package
+const BINARY_PATHS: PathOptions | undefined = app.isPackaged
+  ? {
+      holochainRunnerBinaryPath: path.join(
+        __dirname,
+        `../../app.asar.unpacked/binaries/holochain-runner${
+          process.platform === 'win32' ? '.exe' : ''
+        }`
+      ),
+    }
+  : undefined
+
 export {
   USER_DATA_PATH,
   USER_DATA_MIGRATION_FILE_PATH,
   PREV_VER_USER_DATA_MIGRATION_FILE_PATHS,
+  PROJECTS_HAPP_PATH,
+  PROFILES_HAPP_PATH,
+  DATASTORE_PATH,
+  KEYSTORE_PATH,
+  BINARY_PATHS,
 }

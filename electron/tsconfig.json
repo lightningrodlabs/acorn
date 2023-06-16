@@ -2,8 +2,7 @@
   "compilerOptions": {
     "module": "commonjs",
     "outDir": "dist",
+    "esModuleInterop": true
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*"]
 }

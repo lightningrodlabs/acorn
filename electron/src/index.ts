@@ -1,28 +1,59 @@
-import { app, BrowserWindow, ipcMain, shell, autoUpdater } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  shell,
+  autoUpdater,
+  Menu,
+  dialog,
+} from 'electron'
 import * as contextMenu from 'electron-context-menu'
 import * as path from 'path'
 import * as fs from 'fs'
-// import log from 'electron-log'
 import initAgent, {
   StateSignal,
   STATUS_EVENT,
 } from '@lightningrodlabs/electron-holochain'
 
+import { devOptions, prodOptions, stateSignalToText } from './holochain'
 import {
-  devOptions,
-  projectsHappPath,
-  prodOptions,
-  stateSignalToText,
   BINARY_PATHS,
-} from './holochain'
-import {
   INTEGRITY_VERSION_NUMBER,
   PREV_VER_USER_DATA_MIGRATION_FILE_PATHS,
+  PROJECTS_HAPP_PATH,
   USER_DATA_MIGRATION_FILE_PATH,
 } from './paths'
+import defaultMenu from 'electron-default-menu'
+import factoryResetVersion from './factory-reset'
+
+// Get default menu template
+const menu = defaultMenu(app, shell)
+const newMenuItem = {
+  label: 'Factory Reset',
+  click: () => {
+    // show a message box and factory reset if they confirm
+    dialog
+      .showMessageBox({
+        message: 'Factory Reset Acorn?',
+        buttons: ['Confirm', 'Cancel'],
+      })
+      .then(({ response }) => {
+        if (response === 0) {
+          factoryResetVersion()
+        }
+      })
+  },
+}
+// Add custom menu
+if (Array.isArray(menu[0].submenu)) {
+  menu[0].submenu.splice(1, 0, newMenuItem)
+}
+
+// Set application menu
+Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
 
 // add the right-click "context" menu
-contextMenu({
+contextMenu.default({
   showSaveImageAs: true,
 })
 
@@ -189,7 +220,7 @@ app.on('activate', () => {
 })
 
 ipcMain.handle('getProjectsPath', () => {
-  return projectsHappPath
+  return PROJECTS_HAPP_PATH
 })
 
 ipcMain.handle('getVersion', () => {
