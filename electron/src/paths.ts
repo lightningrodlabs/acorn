@@ -36,13 +36,15 @@ const PROFILES_HAPP_PATH = app.isPackaged
   ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/profiles.happ')
   : path.join(app.getAppPath(), 'binaries/profiles.happ')
 
-const DATASTORE_PATH = app.isPackaged
-  ? path.join(USER_DATA_PATH, `databases-${INTEGRITY_VERSION_NUMBER}`)
-  : path.join(USER_DATA_PATH, `databases-${INTEGRITY_VERSION_NUMBER}`)
+const DATASTORE_PATH = path.join(
+  USER_DATA_PATH,
+  `databases-${INTEGRITY_VERSION_NUMBER}`
+)
 
-const KEYSTORE_PATH = app.isPackaged
-  ? path.join(USER_DATA_PATH, `keystore-${KEYSTORE_VERSION_NUMBER}`)
-  : path.join(USER_DATA_PATH, `keystore-${KEYSTORE_VERSION_NUMBER}`)
+const KEYSTORE_PATH = path.join(
+  USER_DATA_PATH,
+  `keystore-${KEYSTORE_VERSION_NUMBER}`
+)
 
 // in production
 // must point to unpacked versions, not in an asar archive
@@ -60,7 +62,7 @@ const BINARY_PATHS: PathOptions | undefined = app.isPackaged
   : undefined
 
 export {
-  USER_DATA_PATH as USER_DATA_PATH,
+  USER_DATA_PATH,
   USER_DATA_MIGRATION_FILE_PATH,
   PREV_VER_USER_DATA_MIGRATION_FILE_PATHS,
   PROJECTS_HAPP_PATH,

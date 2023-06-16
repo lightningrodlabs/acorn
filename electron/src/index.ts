@@ -18,36 +18,13 @@ import initAgent, {
 import { devOptions, prodOptions, stateSignalToText } from './holochain'
 import {
   BINARY_PATHS,
-  DATASTORE_PATH,
   INTEGRITY_VERSION_NUMBER,
-  KEYSTORE_PATH,
   PREV_VER_USER_DATA_MIGRATION_FILE_PATHS,
   PROJECTS_HAPP_PATH,
   USER_DATA_MIGRATION_FILE_PATH,
 } from './paths'
-import defaultMenu = require('electron-default-menu')
-import { deleteFolderRecursive } from './file-utils'
-
-function factoryResetVersion() {
-  if (fs.existsSync(KEYSTORE_PATH)) {
-    try {
-      deleteFolderRecursive(KEYSTORE_PATH)
-    } catch (err) {
-      console.error(`Error deleting ${KEYSTORE_PATH}: ${err.message}`)
-    }
-  }
-  if (fs.existsSync(DATASTORE_PATH)) {
-    try {
-      deleteFolderRecursive(DATASTORE_PATH)
-    } catch (err) {
-      console.error(`Error deleting ${DATASTORE_PATH}: ${err.message}`)
-    }
-  }
-
-  // restart the app
-  app.relaunch()
-  app.quit()
-}
+import defaultMenu from 'electron-default-menu'
+import factoryResetVersion from './factory-reset'
 
 // Get default menu template
 const menu = defaultMenu(app, shell)
@@ -76,7 +53,7 @@ if (Array.isArray(menu[0].submenu)) {
 Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
 
 // add the right-click "context" menu
-contextMenu({
+contextMenu.default({
   showSaveImageAs: true,
 })
 
