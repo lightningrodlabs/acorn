@@ -16,6 +16,7 @@
     "web3": "cd web && WEB_PORT=8083 ADMIN_WS_PORT=1103 APP_WS_PORT=8103 npx webpack-dev-server --config webpack.dev.js",
     "web4": "cd web && WEB_PORT=8084 ADMIN_WS_PORT=1104 APP_WS_PORT=8104 npx webpack-dev-server --config webpack.dev.js",
     "web-build": "cd web && npx webpack --config webpack.prod.js",
+    "web-test": "cd web && npm run test",
     "electron-install": "cd electron && npm install",
     "electron": "cd electron && WEB_PORT=8081 ACORN_AGENT_NUM=1 npm run start",
     "electron2": "cd electron && WEB_PORT=8082 ACORN_AGENT_NUM=2 npm run start",
