@@ -1,7 +1,6 @@
-import { CellId } from '@holochain/client'
-import constructProjectDataFetchers from '../api/projectDataFetchers'
-import ProjectsZomeApi from '../api/projectsApi'
-import { getAppWs } from '../hcWebsockets'
+// import constructProjectDataFetchers from '../api/projectDataFetchers'
+// import ProjectsZomeApi from '../api/projectsApi'
+// import { getAppWs } from '../hcWebsockets'
 import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
 import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
 import { ProjectOutcomeCommentsState } from '../redux/persistent/projects/outcome-comments/reducer'
@@ -37,7 +36,9 @@ export async function updateProjectMeta(
   cellIdString: CellIdString
 ) {
   const cellId = cellIdFromString(cellIdString)
+  //@ts-ignore
   const appWebsocket = await getAppWs()
+  //@ts-ignore
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   await projectsZomeApi.projectMeta.update(cellId, {
     entry: projectMeta,
@@ -45,15 +46,20 @@ export async function updateProjectMeta(
   })
 }
 
-export default async function exportProjectsData(
+export async function internalExportProjectsData(
+  constructProjectDataFetchersFunction: (dispatch: any, cellId: string) => any,
+  collectExportProjectDataFunction: (
+    state: RootState,
+    cellId: string
+  ) => ProjectExportDataV1,
   store: any,
   toVersion: string,
   onStep: (completed: number, toComplete: number) => void
-) {
+): Promise<AllProjectsDataExport | null> {
   const initialState: RootState = store.getState()
 
   if (!initialState.whoami) {
-    return
+    return null
   }
 
   // the profile of the current user
@@ -70,7 +76,7 @@ export default async function exportProjectsData(
   for await (let projectCellId of projectCellIds) {
     // step 1: make sure all the data is fetched
     // and integrated into the redux store
-    const projectDataFetchers = constructProjectDataFetchers(
+    const projectDataFetchers = constructProjectDataFetchersFunction(
       store.dispatch,
       projectCellId
     )
@@ -85,7 +91,7 @@ export default async function exportProjectsData(
     ])
     // step 2: collect the data to be exported for each project
     const allDataFetchedState: RootState = store.getState()
-    const exportProjectData = collectExportProjectData(
+    const exportProjectData = collectExportProjectDataFunction(
       allDataFetchedState,
       projectCellId
     )
@@ -101,6 +107,21 @@ export default async function exportProjectsData(
     onStep(completedTracker, projectCellIds.length)
   }
   return allProjectsDataExport
+}
+
+export default async function exportProjectsData(
+  store: any,
+  toVersion: string,
+  onStep: (completed: number, toComplete: number) => void
+) {
+  return internalExportProjectsData(
+    //@ts-ignore
+    constructProjectDataFetchers,
+    collectExportProjectData,
+    store,
+    toVersion,
+    onStep
+  )
 }
 
 export function collectExportProjectData(
