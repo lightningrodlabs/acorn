@@ -52,6 +52,11 @@ export async function internalExportProjectsData(
     state: RootState,
     cellId: string
   ) => ProjectExportDataV1,
+  updateProjectMeta: (
+    newProjectMeta: ProjectMeta,
+    actionHash: string,
+    cellId: string
+  ) => Promise<void>,
   store: any,
   toVersion: string,
   onStep: (completed: number, toComplete: number) => void
@@ -118,6 +123,7 @@ export default async function exportProjectsData(
     //@ts-ignore
     constructProjectDataFetchers,
     collectExportProjectData,
+    updateProjectMeta,
     store,
     toVersion,
     onStep
