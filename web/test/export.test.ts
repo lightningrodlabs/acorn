@@ -77,58 +77,6 @@ describe('test export functionality', () => {
     mockBaseRootState = {
       whoami,
       cells: { profiles: 'testProfileCellId', projects: ['testProjectCellId'] },
-      projects: {
-        projectMeta: {
-          testProjectCellId: testProjectMeta,
-        },
-        members: {
-          testMemberCellId: {
-            testMemberAddress: testMember,
-          },
-        },
-        tags: {
-          testTagCellId1: {
-            testTagActionHash1: testTags[0],
-          },
-          testTagCellId2: {
-            testTagActionHash2: testTags[1],
-          },
-        },
-        outcomes: {
-          testOutcomeCellId1: {
-            testOutcome1ActionHash: testBigAchievedOutcome,
-          },
-          testOutcomeCellId2: {
-            testOutcome2ActionHash: testSmallAchievedOutcome,
-          },
-        },
-        connections: {
-          testConnectionCellId: {
-            testConnectionActionHash: testConnection,
-          },
-        },
-        entryPoints: {
-          testEntryPointCellId: {
-            testEntryPointActionHash: testEntryPoint,
-          },
-        },
-        outcomeMembers: {
-          testOutcomeMemberCellId: {
-            testOutcomeMemberActionHash: testOutcomeMember,
-          },
-        },
-        outcomeVotes: {
-          testOutcomeVoteCellId: {
-            testOutcomeVoteActionHash: testOutcomeVote,
-          },
-        },
-        outcomeComments: {
-          testOutcomeCommentCellId: {
-            testOutcomeCommentActionHash: testComments[0],
-          },
-        },
-        outcomeHistory: {},
-      },
     }
   })
 
@@ -147,6 +95,58 @@ describe('test export functionality', () => {
         ...mockBaseRootState,
         agents: testAgent,
         agentAddress: 'testAgentAddress',
+        projects: {
+          projectMeta: {
+            testProjectCellId: testProjectMeta,
+          },
+          members: {
+            testMemberCellId: {
+              testMemberAddress: testMember,
+            },
+          },
+          tags: {
+            testTagCellId1: {
+              testTagActionHash1: testTags[0],
+            },
+            testTagCellId2: {
+              testTagActionHash2: testTags[1],
+            },
+          },
+          outcomes: {
+            testOutcomeCellId1: {
+              testOutcome1ActionHash: testBigAchievedOutcome,
+            },
+            testOutcomeCellId2: {
+              testOutcome2ActionHash: testSmallAchievedOutcome,
+            },
+          },
+          connections: {
+            testConnectionCellId: {
+              testConnectionActionHash: testConnection,
+            },
+          },
+          entryPoints: {
+            testEntryPointCellId: {
+              testEntryPointActionHash: testEntryPoint,
+            },
+          },
+          outcomeMembers: {
+            testOutcomeMemberCellId: {
+              testOutcomeMemberActionHash: testOutcomeMember,
+            },
+          },
+          outcomeVotes: {
+            testOutcomeVoteCellId: {
+              testOutcomeVoteActionHash: testOutcomeVote,
+            },
+          },
+          outcomeComments: {
+            testOutcomeCommentCellId: {
+              testOutcomeCommentActionHash: testComments[0],
+            },
+          },
+          outcomeHistory: {},
+        },
       })
 
     const store = {
