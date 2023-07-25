@@ -5,10 +5,26 @@ import {
   internalExportProjectsData,
 } from '../src/migrating/export'
 import { LayeringAlgorithm, Profile } from '../src/types'
+import {
+  testBigAchievedOutcome,
+  testSmallAchievedOutcome,
+} from '../src/stories/testData/testOutcomes'
+
+import testAgent from '../src/stories/testData/testAgent'
+import testProjectMeta from '../src/stories/testData/testProjectMeta'
+import testMember from '../src/stories/testData/testMember'
+import testTags from '../src/stories/testData/testTags'
+import testConnection from '../src/stories/testData/testConnection'
+import testEntryPoint from '../src/stories/testData/testEntryPoint'
+import testOutcomeMember from '../src/stories/testData/testOutcomeMember'
+import testOutcomeVote from '../src/stories/testData/testOutcomeVote'
+import testComments from '../src/stories/testData/testComments'
 
 describe('test export functionality', () => {
   let whoami: WireRecord<Profile>
   let mockProjectData: ProjectExportDataV1
+  let mockProjectDataFetchers
+  let mockBaseRootState
 
   beforeEach(() => {
     whoami = {
@@ -47,10 +63,8 @@ describe('test export functionality', () => {
       entryPoints: {},
       tags: {},
     }
-  })
 
-  it('should return projects data', async () => {
-    const constructProjectDataFetchers = jest.fn().mockReturnValue({
+    mockProjectDataFetchers = {
       fetchProjectMeta: jest.fn(),
       fetchEntryPoints: jest.fn(),
       fetchOutcomeComments: jest.fn(),
@@ -58,18 +72,86 @@ describe('test export functionality', () => {
       fetchTags: jest.fn(),
       fetchOutcomes: jest.fn(),
       fetchConnections: jest.fn(),
-    })
+    }
+
+    mockBaseRootState = {
+      whoami,
+      cells: { profiles: 'testProfileCellId', projects: ['testProjectCellId'] },
+      projects: {
+        projectMeta: {
+          testProjectCellId: testProjectMeta,
+        },
+        members: {
+          testMemberCellId: {
+            testMemberAddress: testMember,
+          },
+        },
+        tags: {
+          testTagCellId1: {
+            testTagActionHash1: testTags[0],
+          },
+          testTagCellId2: {
+            testTagActionHash2: testTags[1],
+          },
+        },
+        outcomes: {
+          testOutcomeCellId1: {
+            testOutcome1ActionHash: testBigAchievedOutcome,
+          },
+          testOutcomeCellId2: {
+            testOutcome2ActionHash: testSmallAchievedOutcome,
+          },
+        },
+        connections: {
+          testConnectionCellId: {
+            testConnectionActionHash: testConnection,
+          },
+        },
+        entryPoints: {
+          testEntryPointCellId: {
+            testEntryPointActionHash: testEntryPoint,
+          },
+        },
+        outcomeMembers: {
+          testOutcomeMemberCellId: {
+            testOutcomeMemberActionHash: testOutcomeMember,
+          },
+        },
+        outcomeVotes: {
+          testOutcomeVoteCellId: {
+            testOutcomeVoteActionHash: testOutcomeVote,
+          },
+        },
+        outcomeComments: {
+          testOutcomeCommentCellId: {
+            testOutcomeCommentActionHash: testComments[0],
+          },
+        },
+        outcomeHistory: {},
+      },
+    }
+  })
+
+  it('should return projects data', async () => {
+    const constructProjectDataFetchers = jest
+      .fn()
+      .mockReturnValue(mockProjectDataFetchers)
 
     const updateProjectMeta = jest.fn()
 
     const collectExportProjectData = jest.fn().mockReturnValue(mockProjectData)
+    const mockGetState = jest
+      .fn()
+      .mockReturnValueOnce(mockBaseRootState)
+      .mockReturnValueOnce({
+        ...mockBaseRootState,
+        agents: testAgent,
+        agentAddress: 'testAgentAddress',
+      })
 
     const store = {
       dispatch: jest.fn(),
-      getState: jest.fn().mockReturnValue({
-        whoami,
-        cells: { profiles: null, projects: ['testProjectCellId'] },
-      }),
+      getState: mockGetState,
     }
 
     const toVersion = 'test'
@@ -87,9 +169,15 @@ describe('test export functionality', () => {
     expect(result.myProfile).toEqual(whoami.entry)
     expect(result.projects).toEqual([mockProjectData])
 
-    expect(constructProjectDataFetchers).toHaveBeenCalledTimes(1)
-    expect(collectExportProjectData).toHaveBeenCalledTimes(1)
-    expect(updateProjectMeta).toHaveBeenCalledTimes(1)
-    expect(onStep).toHaveBeenCalledTimes(1)
+    const numProjects = result.projects.length
+
+    expect(constructProjectDataFetchers).toHaveBeenCalledTimes(numProjects)
+    expect(collectExportProjectData).toHaveBeenCalledTimes(numProjects)
+    expect(updateProjectMeta).toHaveBeenCalledTimes(numProjects)
+    expect(onStep).toHaveBeenCalledTimes(numProjects)
+
+    Object.keys(mockProjectDataFetchers).forEach((key) => {
+      expect(mockProjectDataFetchers[key]).toHaveBeenCalledTimes(numProjects)
+    })
   })
 })
