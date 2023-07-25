@@ -25,6 +25,14 @@ describe('test export functionality', () => {
   let mockProjectData: ProjectExportDataV1
   let mockProjectDataFetchers
   let mockBaseRootState
+  let mockGetState
+
+  let constructProjectDataFetchers
+  let updateProjectMeta
+  let collectExportProjectData
+  let store
+  let toVersion
+  let onStep
 
   beforeEach(() => {
     whoami = {
@@ -78,17 +86,8 @@ describe('test export functionality', () => {
       whoami,
       cells: { profiles: 'testProfileCellId', projects: ['testProjectCellId'] },
     }
-  })
 
-  it('should return projects data', async () => {
-    const constructProjectDataFetchers = jest
-      .fn()
-      .mockReturnValue(mockProjectDataFetchers)
-
-    const updateProjectMeta = jest.fn()
-
-    const collectExportProjectData = jest.fn().mockReturnValue(mockProjectData)
-    const mockGetState = jest
+    mockGetState = jest
       .fn()
       .mockReturnValueOnce(mockBaseRootState)
       .mockReturnValueOnce({
@@ -149,15 +148,43 @@ describe('test export functionality', () => {
         },
       })
 
-    const store = {
+    constructProjectDataFetchers = jest
+      .fn()
+      .mockReturnValue(mockProjectDataFetchers)
+
+    updateProjectMeta = jest.fn()
+
+    collectExportProjectData = jest.fn().mockReturnValue(mockProjectData)
+    store = {
       dispatch: jest.fn(),
       getState: mockGetState,
     }
 
-    const toVersion = 'test'
-    const onStep = jest.fn()
+    onStep = jest.fn()
+    toVersion = 'test'
+  })
 
-    const result: AllProjectsDataExport = await internalExportProjectsData(
+  it('should return null when state.whoami is undefined', async () => {
+    mockGetState = jest.fn().mockReturnValue({
+      ...mockBaseRootState,
+      whoami: undefined,
+    })
+    store.getState = mockGetState
+
+    const result = await internalExportProjectsData(
+      constructProjectDataFetchers,
+      collectExportProjectData,
+      updateProjectMeta,
+      store,
+      toVersion,
+      onStep
+    )
+
+    expect(result).toBeNull()
+  })
+
+  it('should return projects data when state.whoami is defined', async () => {
+    const result = await internalExportProjectsData(
       constructProjectDataFetchers,
       collectExportProjectData,
       updateProjectMeta,
