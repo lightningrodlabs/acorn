@@ -19,7 +19,15 @@ import { simpleCreateProjectMeta } from '../redux/persistent/projects/project-me
 import { installProjectApp } from '../projects/installProjectApp'
 import { joinProjectCellId } from '../redux/persistent/cells/actions'
 
-export default async function importProjectsData(
+export async function internalImportProjectsData(
+  getAppWs: () => Promise<any>,
+  createProfilesZomeApi: (appWebsocket: any) => ProfilesZomeApi,
+  installProjectAppAndImport: (
+    agentAddress: AgentPubKeyB64,
+    projectData: ProjectExportDataV1,
+    passphrase: string,
+    dispatch: any
+  ) => Promise<void>,
   store: any,
   migrationData: string,
   onStep: (completed: number, toComplete: number) => void
@@ -31,7 +39,7 @@ export default async function importProjectsData(
 
   const profilesCellIdString = initialState.cells.profiles
   const appWebsocket = await getAppWs()
-  const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+  const profilesZomeApi = createProfilesZomeApi(appWebsocket)
   const profilesCellId = cellIdFromString(profilesCellIdString)
 
   // prepare a list of only the NON-migrated projects to migrate
@@ -83,6 +91,25 @@ export default async function importProjectsData(
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
   }
+}
+
+function createProfilesZomeApi(appWebsocket: any): ProfilesZomeApi {
+  return new ProfilesZomeApi(appWebsocket)
+}
+
+export default async function importProjectsData(
+  store: any,
+  migrationData: string,
+  onStep: (completed: number, toComplete: number) => void
+) {
+  await internalImportProjectsData(
+    getAppWs,
+    createProfilesZomeApi,
+    installProjectAppAndImport,
+    store,
+    migrationData,
+    onStep
+  )
 }
 
 export async function installProjectAppAndImport(
