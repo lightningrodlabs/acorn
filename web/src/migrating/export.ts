@@ -10,6 +10,7 @@ import { RootState } from '../redux/reducer'
 import { Profile, ProjectMeta, Tag } from '../types'
 import { ActionHashB64, CellIdString, WithActionHash } from '../types/shared'
 import { cellIdFromString } from '../utils'
+import { INTEGRITY_VERSION_NUMBER } from '../../../electron/src/paths'
 
 export type ExportType = 'csv' | 'json'
 
@@ -28,6 +29,7 @@ export type ProjectExportDataV1 = {
 export type AllProjectsDataExport = {
   myProfile: Profile
   projects: ProjectExportDataV1[]
+  integrityVersion: number
 }
 
 export async function updateProjectMeta(
@@ -59,7 +61,8 @@ export async function internalExportProjectsData(
   ) => Promise<void>,
   store: any,
   toVersion: string,
-  onStep: (completed: number, toComplete: number) => void
+  onStep: (completed: number, toComplete: number) => void,
+  integrityVersion: number
 ): Promise<AllProjectsDataExport | null> {
   const initialState: RootState = store.getState()
 
@@ -73,6 +76,7 @@ export async function internalExportProjectsData(
   const allProjectsDataExport: AllProjectsDataExport = {
     myProfile,
     projects: [],
+    integrityVersion,
   }
   const projectCellIds = initialState.cells.projects
 
@@ -126,7 +130,8 @@ export default async function exportProjectsData(
     updateProjectMeta,
     store,
     toVersion,
-    onStep
+    onStep,
+    INTEGRITY_VERSION_NUMBER
   )
 }
 

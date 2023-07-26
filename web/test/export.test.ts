@@ -1,6 +1,5 @@
 import { WireRecord } from '../src/api/hdkCrud'
 import {
-  AllProjectsDataExport,
   ProjectExportDataV1,
   internalExportProjectsData,
 } from '../src/migrating/export'
@@ -31,10 +30,13 @@ describe('test export functionality', () => {
   let updateProjectMeta
   let collectExportProjectData
   let store
-  let toVersion
+  let toVersion: string
   let onStep
+  let intergrityVersion: number
 
   beforeEach(() => {
+    intergrityVersion = 1
+
     whoami = {
       actionHash: 'testActionHash',
       entryHash: 'testEntryHash',
@@ -177,7 +179,8 @@ describe('test export functionality', () => {
       updateProjectMeta,
       store,
       toVersion,
-      onStep
+      onStep,
+      intergrityVersion
     )
 
     expect(result).toBeNull()
@@ -190,7 +193,8 @@ describe('test export functionality', () => {
       updateProjectMeta,
       store,
       toVersion,
-      onStep
+      onStep,
+      intergrityVersion
     )
 
     expect(result.myProfile).toEqual(whoami.entry)
