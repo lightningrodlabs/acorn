@@ -12,6 +12,7 @@ import ProfilesZomeApi from '../src/api/profilesApi'
 import { ProjectExportDataV1 } from '../src/migrating/export'
 import { internalImportProjectsData } from '../src/migrating/import'
 import { AgentPubKeyB64 } from '../src/types/shared'
+import { sampleGoodDataExport } from './sample-good-data-export'
 
 describe('importProjectsData()', () => {
   let store: any
@@ -28,6 +29,7 @@ describe('importProjectsData()', () => {
 
   beforeEach(() => {})
   it('should do something', () => {
+    migrationData = JSON.stringify(sampleGoodDataExport)
     internalImportProjectsData(
       getAppWs,
       createProfilesZomeApi,

@@ -25,6 +25,7 @@
     "@types/react-dates": "^21.8.3",
     "@types/react-dom": "^17.0.4",
     "@types/react-router-dom": "^5.1.7",
+    "babel-jest": "^29.6.1",
     "babel-loader": "^8.2.5",
     "css-loader": "^3.2.0",
     "html-webpack-plugin": "^5.5.0",

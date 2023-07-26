@@ -32,10 +32,10 @@ describe('test export functionality', () => {
   let store
   let toVersion: string
   let onStep
-  let intergrityVersion: number
+  let intergrityVersion: string
 
   beforeEach(() => {
-    intergrityVersion = 1
+    intergrityVersion = '1'
 
     whoami = {
       actionHash: 'testActionHash',

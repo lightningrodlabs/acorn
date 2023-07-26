@@ -1,6 +1,6 @@
-// import constructProjectDataFetchers from '../api/projectDataFetchers'
-// import ProjectsZomeApi from '../api/projectsApi'
-// import { getAppWs } from '../hcWebsockets'
+import constructProjectDataFetchers from '../api/projectDataFetchers'
+import ProjectsZomeApi from '../api/projectsApi'
+import { getAppWs } from '../hcWebsockets'
 import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
 import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
 import { ProjectOutcomeCommentsState } from '../redux/persistent/projects/outcome-comments/reducer'
@@ -10,7 +10,6 @@ import { RootState } from '../redux/reducer'
 import { Profile, ProjectMeta, Tag } from '../types'
 import { ActionHashB64, CellIdString, WithActionHash } from '../types/shared'
 import { cellIdFromString } from '../utils'
-// import { INTEGRITY_VERSION_NUMBER } from '../../../electron/src/paths'
 
 export type ExportType = 'csv' | 'json'
 
@@ -29,7 +28,7 @@ export type ProjectExportDataV1 = {
 export type AllProjectsDataExport = {
   myProfile: Profile
   projects: ProjectExportDataV1[]
-  integrityVersion: number
+  integrityVersion: string
 }
 
 export async function updateProjectMeta(
@@ -38,9 +37,7 @@ export async function updateProjectMeta(
   cellIdString: CellIdString
 ) {
   const cellId = cellIdFromString(cellIdString)
-  //@ts-ignore
   const appWebsocket = await getAppWs()
-  //@ts-ignore
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   await projectsZomeApi.projectMeta.update(cellId, {
     entry: projectMeta,
@@ -62,7 +59,7 @@ export async function internalExportProjectsData(
   store: any,
   toVersion: string,
   onStep: (completed: number, toComplete: number) => void,
-  integrityVersion: number
+  integrityVersion: string
 ): Promise<AllProjectsDataExport | null> {
   const initialState: RootState = store.getState()
 
@@ -124,14 +121,13 @@ export default async function exportProjectsData(
   onStep: (completed: number, toComplete: number) => void
 ) {
   return internalExportProjectsData(
-    //@ts-ignore
     constructProjectDataFetchers,
     collectExportProjectData,
     updateProjectMeta,
     store,
     toVersion,
     onStep,
-    8 // TODO: replace with INTEGRITY_VERSION_NUMBER
+    '8' // TODO: replace with INTEGRITY_VERSION_NUMBER
     // INTEGRITY_VERSION_NUMBER
   )
 }
