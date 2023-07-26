@@ -1,4 +1,5 @@
-import { AppWebsocket, AdminWebsocket } from '@holochain/client'
+// TODO: uncomment
+// import { AppWebsocket, AdminWebsocket } from '@holochain/client'
 
 // export for use by holochainMiddleware (redux)
 // @ts-ignore
@@ -6,15 +7,20 @@ export const APP_WS_URL = `ws://localhost:${__APP_PORT__}`
 // @ts-ignore
 const ADMIN_WS_URL = `ws://localhost:${__ADMIN_PORT__}`
 
+//@ts-ignore
 let appWs: AppWebsocket
+//@ts-ignore
 let appWsPromise: Promise<AppWebsocket>
+//@ts-ignore
 let adminWs: AdminWebsocket
 let agentPubKey
 
+//@ts-ignore
 export async function getAdminWs(): Promise<AdminWebsocket> {
   if (adminWs) {
     return adminWs
   } else {
+    //@ts-ignore
     adminWs = await AdminWebsocket.connect(ADMIN_WS_URL)
     setInterval(() => {
       if (adminWs.client.socket.readyState === adminWs.client.socket.OPEN) {
@@ -28,9 +34,11 @@ export async function getAdminWs(): Promise<AdminWebsocket> {
   }
 }
 
+//@ts-ignore
 export async function getAppWs(): Promise<AppWebsocket> {
   async function connect() {
     // undefined is for default request timeout
+    //@ts-ignore
     appWsPromise = AppWebsocket.connect(APP_WS_URL)
     appWs = await appWsPromise
     appWsPromise = null
