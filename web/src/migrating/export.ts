@@ -10,7 +10,7 @@ import { RootState } from '../redux/reducer'
 import { Profile, ProjectMeta, Tag } from '../types'
 import { ActionHashB64, CellIdString, WithActionHash } from '../types/shared'
 import { cellIdFromString } from '../utils'
-import { INTEGRITY_VERSION_NUMBER } from '../../../electron/src/paths'
+// import { INTEGRITY_VERSION_NUMBER } from '../../../electron/src/paths'
 
 export type ExportType = 'csv' | 'json'
 
@@ -131,7 +131,8 @@ export default async function exportProjectsData(
     store,
     toVersion,
     onStep,
-    INTEGRITY_VERSION_NUMBER
+    8 // TODO: replace with INTEGRITY_VERSION_NUMBER
+    // INTEGRITY_VERSION_NUMBER
   )
 }
 
