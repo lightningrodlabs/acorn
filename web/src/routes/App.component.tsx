@@ -27,7 +27,8 @@ import Footer from '../components/Footer/Footer'
 import CreateProfilePage from './CreateProfilePage/CreateProfilePage.connector'
 import Dashboard from './Dashboard/Dashboard.connector'
 import ProjectView from './ProjectView/ProjectView.connector'
-import RunUpdate from './RunUpdate/RunUpdate'
+import VersionUpdateLeaving from './VersionUpdateLeaving/VersionUpdateLeaving'
+import VersionUpdateEntering from './VersionUpdateEntering/VersionUpdateEntering'
 
 import IntroScreen from '../components/IntroScreen/IntroScreen.connector'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
@@ -119,7 +120,7 @@ const App: React.FC<AppProps> = ({
     ViewingReleaseNotes.MainMessage
   )
   // custom hooks
-  const updateVersionInfo = useVersionChecker()
+  const updateVersionInfo = useVersionChecker(true)
   const finishMigrationChecker = useFinishMigrationChecker()
   const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
 
@@ -209,13 +210,13 @@ const App: React.FC<AppProps> = ({
               <Route
                 path="/run-update"
                 render={() => (
-                  <RunUpdate preRestart updateVersionInfo={updateVersionInfo} />
+                  <VersionUpdateLeaving updateVersionInfo={updateVersionInfo} />
                 )}
               />
               <Route
                 path="/finish-update"
                 render={() => (
-                  <RunUpdate
+                  <VersionUpdateEntering
                     migrationData={finishMigrationChecker.dataForNeedsMigration}
                   />
                 )}
