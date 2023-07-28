@@ -126,4 +126,40 @@ describe('importProjectsData()', () => {
       1 + sampleGoodDataExport.projects.length
     )
   })
+
+  it('throws error with invalid json', async () => {
+    mockMigrationData = 'invalid json'
+    try {
+      await internalImportProjectsData(
+        getAppWs,
+        createProfilesZomeApi,
+        installProjectAppAndImport,
+        installProjectApp,
+        store,
+        mockMigrationData,
+        onStep
+      )
+    } catch (e) {
+      expect(e).toBeInstanceOf(SyntaxError)
+      expect(e.message).toBe('Unexpected token i in JSON at position 0')
+    }
+
+    mockMigrationData = null
+    try {
+      await internalImportProjectsData(
+        getAppWs,
+        createProfilesZomeApi,
+        installProjectAppAndImport,
+        installProjectApp,
+        store,
+        mockMigrationData,
+        onStep
+      )
+    } catch (e) {
+      expect(e).toBeInstanceOf(TypeError)
+      expect(e.message).toBe(
+        "Cannot read properties of null (reading 'projects')"
+      )
+    }
+  })
 })
