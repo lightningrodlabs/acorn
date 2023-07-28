@@ -1,18 +1,7 @@
-// appWs needs a callZome() method
-/* fields needed on profilesApi:
- * createWhoami
- * createImportedProfile
- * updateWhoami
- * whoami
- * fetchAgents
- * fetchAgentAddress
- */
-
 import { CellId } from '@holochain/client'
 import ProfilesZomeApi from '../src/api/profilesApi'
 import { ProjectExportDataV1 } from '../src/migrating/export'
 import { internalImportProjectsData } from '../src/migrating/import'
-import testAgent from '../src/stories/testData/testAgent'
 import { AgentPubKeyB64, CellIdString } from '../src/types/shared'
 import { sampleGoodDataExport } from './sample-good-data-export'
 
@@ -108,6 +97,14 @@ describe('importProjectsData()', () => {
 
     expect(createProfilesZomeApi).toHaveBeenCalledTimes(1)
     expect(createProfilesZomeApi).toHaveBeenCalledWith({})
+
+    // make sure the test data is actually set up the way the test
+    // expects it to be
+    expect(sampleGoodDataExport.projects.length).toBe(2)
+    expect(sampleGoodDataExport.projects[0].projectMeta.isMigrated).toBeNull()
+    expect(
+      sampleGoodDataExport.projects[1].projectMeta.isMigrated
+    ).not.toBeNull()
 
     expect(installProjectAppAndImport).toHaveBeenCalledTimes(1)
     expect(installProjectAppAndImport).toHaveBeenCalledWith(
