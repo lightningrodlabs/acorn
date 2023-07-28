@@ -18,8 +18,10 @@ import { setMember } from '../redux/persistent/projects/members/actions'
 import { simpleCreateProjectMeta } from '../redux/persistent/projects/project-meta/actions'
 import { installProjectApp } from '../projects/installProjectApp'
 import { joinProjectCellId } from '../redux/persistent/cells/actions'
+import { CellId } from '@holochain/client'
 
 export async function internalImportProjectsData(
+  // dependent functions
   getAppWs: () => Promise<any>,
   createProfilesZomeApi: (appWebsocket: any) => ProfilesZomeApi,
   installProjectAppAndImport: (
@@ -28,11 +30,22 @@ export async function internalImportProjectsData(
     passphrase: string,
     dispatch: any
   ) => Promise<void>,
+  installProjectApp: (
+    passphrase: string
+  ) => Promise<[CellIdString, CellId, string]>,
   store: any,
+  // main input data and callbacks
   migrationData: string,
   onStep: (completed: number, toComplete: number) => void
 ) {
-  const migrationDataParsed: AllProjectsDataExport = JSON.parse(migrationData)
+  let migrationDataParsed: AllProjectsDataExport
+  try {
+    migrationDataParsed = JSON.parse(migrationData)
+  } catch (e) {
+    console.log('error parsing migration data', e)
+    // TODO: return an error
+    return
+  }
 
   const initialState: RootState = store.getState()
   const myAgentPubKey = initialState.agentAddress
@@ -42,6 +55,8 @@ export async function internalImportProjectsData(
   const profilesZomeApi = createProfilesZomeApi(appWebsocket)
   const profilesCellId = cellIdFromString(profilesCellIdString)
 
+  // TODO: make a unit test to make sure a 'migrated' project
+  // doesn't get migrated again
   // prepare a list of only the NON-migrated projects to migrate
   const projectsToMigrate = migrationDataParsed.projects.filter((project) => {
     return !project.projectMeta.isMigrated
@@ -106,6 +121,7 @@ export default async function importProjectsData(
     getAppWs,
     createProfilesZomeApi,
     installProjectAppAndImport,
+    installProjectApp,
     store,
     migrationData,
     onStep
