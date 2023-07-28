@@ -188,6 +188,7 @@ const sampleGoodMigratedProjectData: ProjectExportDataV1 = {
   projectMeta: {
     ...sampleGoodUnmigratedProjectData.projectMeta,
     isMigrated: 'v1.0.0-alpha',
+    passphrase: 'daily plant employee shorten other',
   },
 }
 
