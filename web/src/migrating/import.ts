@@ -10,7 +10,12 @@ import { cellIdFromString } from '../utils'
 import { createTag } from '../redux/persistent/projects/tags/actions'
 import { LayeringAlgorithm, Outcome, ProjectMeta, Tag } from '../types'
 import { WireRecord } from '../api/hdkCrud'
-import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../types/shared'
+import {
+  Action,
+  ActionHashB64,
+  AgentPubKeyB64,
+  CellIdString,
+} from '../types/shared'
 import { RootState } from '../redux/reducer'
 import { AllProjectsDataExport, ProjectExportDataV1 } from './export'
 import { createWhoami } from '../redux/persistent/profiles/who-am-i/actions'
@@ -104,6 +109,9 @@ export async function internalImportProjectsData(
 function createProfilesZomeApi(appWebsocket: any): ProfilesZomeApi {
   return new ProfilesZomeApi(appWebsocket)
 }
+function createProjectsZomeApi(appWebsocket: any): ProjectsZomeApi {
+  return new ProjectsZomeApi(appWebsocket)
+}
 
 export default async function importProjectsData(
   store: any,
@@ -121,11 +129,25 @@ export default async function importProjectsData(
   )
 }
 
-export async function installProjectAppAndImport(
+export async function internalInstallProjectAppAndImport(
   agentAddress: AgentPubKeyB64,
   projectData: ProjectExportDataV1,
   passphrase: string,
-  dispatch: any
+  dispatch: any,
+  installProjectApp: (
+    passphrase: string
+  ) => Promise<[CellIdString, CellId, string]>,
+  importProjectData: (
+    projectData: ProjectExportDataV1,
+    projectsCellIdString: CellIdString,
+    dispatch: any
+  ) => Promise<{ [oldActionHash: string]: string }>,
+  getAppWs: () => Promise<any>,
+  createProjectsZomeApi: (appWebsocket: any) => ProjectsZomeApi,
+  simpleCreateProjectMeta: (
+    projectsCellIdString: CellIdString,
+    projectMeta: WireRecord<ProjectMeta>
+  ) => Action<WireRecord<ProjectMeta>>
 ) {
   // first step is to install the dna
   const [projectsCellIdString] = await installProjectApp(passphrase)
@@ -165,7 +187,7 @@ export async function installProjectAppAndImport(
   delete (projectMeta as any).actionHash
 
   const appWebsocket = await getAppWs()
-  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+  const projectsZomeApi = createProjectsZomeApi(appWebsocket)
   await dispatch(setMember(projectsCellIdString, { agentPubKey: agentAddress }))
   try {
     const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(
@@ -178,6 +200,25 @@ export async function installProjectAppAndImport(
   } catch (e) {
     throw e
   }
+}
+
+export async function installProjectAppAndImport(
+  agentAddress: AgentPubKeyB64,
+  projectData: ProjectExportDataV1,
+  passphrase: string,
+  dispatch: any
+) {
+  internalInstallProjectAppAndImport(
+    agentAddress,
+    projectData,
+    passphrase,
+    dispatch,
+    installProjectApp,
+    importProjectData,
+    getAppWs,
+    createProjectsZomeApi,
+    simpleCreateProjectMeta
+  )
 }
 
 export async function importProjectData(
