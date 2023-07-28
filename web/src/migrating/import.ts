@@ -38,14 +38,7 @@ export async function internalImportProjectsData(
   migrationData: string,
   onStep: (completed: number, toComplete: number) => void
 ) {
-  let migrationDataParsed: AllProjectsDataExport
-  try {
-    migrationDataParsed = JSON.parse(migrationData)
-  } catch (e) {
-    console.log('error parsing migration data', e)
-    // TODO: return an error
-    return
-  }
+  const migrationDataParsed: AllProjectsDataExport = JSON.parse(migrationData)
 
   const initialState: RootState = store.getState()
   const myAgentPubKey = initialState.agentAddress
