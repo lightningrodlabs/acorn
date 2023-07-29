@@ -210,14 +210,16 @@ const App: React.FC<AppProps> = ({
               <Route
                 path="/run-update"
                 render={() => (
-                  <VersionUpdateLeaving updateVersionInfo={updateVersionInfo} />
+                  <VersionUpdateLeaving updateVersionInfo={updateVersionInfo} triggerAMigrationCheck={finishMigrationChecker.triggerACheck} />
                 )}
               />
               <Route
                 path="/finish-update"
                 render={() => (
                   <VersionUpdateEntering
+                    hasCheckedForMigration={finishMigrationChecker.hasChecked}
                     migrationData={finishMigrationChecker.dataForNeedsMigration}
+                    migrationDataFileName={finishMigrationChecker.migrationDataFileName}
                   />
                 )}
               />

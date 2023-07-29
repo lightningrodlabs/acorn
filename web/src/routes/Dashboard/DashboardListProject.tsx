@@ -43,8 +43,8 @@ function DashboardListProjectLoading() {
 export type DashboardListProjectProps = {
   project: ProjectAggregated
   setShowInviteMembersModal: (passphrase: string) => void
-  openProjectSettingsModal: (projectCellId: CellIdString) => void
-  onClickUpdate?: () => void
+  openProjectSettingsModal: () => void
+  onClickProjectMigrated?: () => void
   updateRequiredMoreInfoLink?: string
 }
 
@@ -52,28 +52,28 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
   project,
   setShowInviteMembersModal,
   openProjectSettingsModal,
-  onClickUpdate,
+  onClickProjectMigrated,
   updateRequiredMoreInfoLink,
 }) => {
   const [showEntryPoints, setShowEntryPoints] = useState(false)
 
-  const imageStyles = project.image
-    ? { backgroundImage: `url(${project.image})` }
-    : { backgroundColor: pickColorForString(project.name) }
+  const imageStyles = project.projectMeta.image
+    ? { backgroundImage: `url(${project.projectMeta.image})` }
+    : { backgroundColor: pickColorForString(project.projectMeta.name) }
 
-  const projectInitials = project.name
+  const projectInitials = project.projectMeta.name
     .split(' ')
     .map((word) => (word ? word[0].toUpperCase() : 'X'))
     .slice(0, 3)
 
   const openInviteMembersModal = () => {
-    setShowInviteMembersModal(project.passphrase)
+    setShowInviteMembersModal(project.projectMeta.passphrase)
   }
 
   return (
     <div className="dashboard-list-project-wrapper">
       {/* when update is required to access the shared project */}
-      {project.isMigrated && (
+      {project.projectMeta.isMigrated && (
         <>
           <div className="project-access-blocked-layer"></div>
         </>
@@ -84,7 +84,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
           className="dashboard-list-project-image"
         >
           <div className="dashboard-list-project-image-bg" style={imageStyles}>
-            {project.image ? '' : projectInitials}
+            {project.projectMeta.image ? '' : projectInitials}
           </div>
         </NavLink>
         <div className="dashboard-list-project-content">
@@ -94,15 +94,15 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
               to={`/project/${project.cellId}/map`}
               className={`dashboard-list-project-name`}
             >
-              {project.name}
+              {project.projectMeta.name}
             </NavLink>
             {/* Update to Access button */}
-            {project.isMigrated && (
+            {project.projectMeta.isMigrated && (
               <div className="dashboard-list-project-update-button-wrapper">
                 <Button
                   icon="arrow-circle-up.svg"
-                  text={'Update to Access'}
-                  onClick={onClickUpdate}
+                  text={'Project Migrated'}
+                  onClick={onClickProjectMigrated}
                 />
                 <div className="more-info-wrapper">
                   <div>
@@ -140,7 +140,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
           {/* project item settings */}
           <div
             className="dashboard-list-project-settings-button"
-            onClick={() => openProjectSettingsModal(project.cellId)}
+            onClick={openProjectSettingsModal}
           >
             <Icon
               name="dots-horizontal.svg"

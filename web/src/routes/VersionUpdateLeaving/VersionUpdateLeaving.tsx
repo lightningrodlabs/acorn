@@ -6,7 +6,6 @@ import exportProjectsData, {
   AllProjectsDataExport,
 } from '../../migrating/export'
 import { useStore } from 'react-redux'
-import { useHistory } from 'react-router-dom'
 import MigrationProgress from '../../components/MigrationProgress/MigrationProgress'
 
 const checkIfExportNeeded = (currentVersion: string, toVersion: string) => {
@@ -46,14 +45,10 @@ const downloadNextVersion = async () => {
   }
 }
 
-const markMigrationDone = () => {
-  if (window.require) {
-    const { ipcRenderer } = window.require('electron')
-    ipcRenderer.send('markMigrationDone')
-  }
-}
-
 export type VersionUpdateLeavingProps = {
+  // this prop is for shortcutting the migration process
+  // for testing purposes
+  triggerAMigrationCheck: () => void
   updateVersionInfo?: {
     currentVersion: string
     platform: string
@@ -65,17 +60,13 @@ export type VersionUpdateLeavingProps = {
 }
 
 const VersionUpdateLeaving: React.FC<VersionUpdateLeavingProps> = ({
+  triggerAMigrationCheck,
   updateVersionInfo,
 }) => {
-  // if not preRestart, then this is postRestart
-
   const store = useStore()
-  const history = useHistory()
 
   const [hasStarted, setHasStarted] = useState(false)
-  const [title, setTitle] = useState(
-    'Preparing your update'
-  )
+  const [title, setTitle] = useState('Preparing your update')
   const [status, setStatus] = useState<string | React.ReactElement>('')
   // avoid 0 percent and 100 percent, just because of the component
   // that renders this value
@@ -125,6 +116,12 @@ const VersionUpdateLeaving: React.FC<VersionUpdateLeavingProps> = ({
           <b>Quit this application before installing the new version.</b>
         </>
       )
+    }
+    // if in dev mode, just redirect to 'finish-update''
+    if (window.location.host.includes('localhost')) {
+      setTimeout(() => {
+        triggerAMigrationCheck()
+      }, 2000)
     }
   }
 

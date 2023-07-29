@@ -65,10 +65,11 @@ function mapStateToProps(state: RootState): AppStateProps {
     .filter((e) => e)
 
   // has any project been migrated
-  const hasMigratedSharedProject = !!Object.values(
+  const hasMigratedSharedProject = !!Object.entries(
     state.projects.projectMeta
-  ).find((projectMeta) => {
-    return projectMeta.isMigrated
+  ).find(([cellIdString, projectMeta]) => {
+    const members = selectActiveProjectMembers(state, cellIdString)
+    return members.length > 1 && projectMeta.isMigrated
   })
 
   const selectedLayeringAlgo = activeProjectMeta

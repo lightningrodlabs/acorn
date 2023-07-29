@@ -117,9 +117,9 @@ function EditProjectForm({
 export default function ProjectSettingsModal({
   showModal,
   onClose,
+  project = {} as WithActionHash<ProjectMeta>,
   updateProjectMeta,
   openInviteMembersModal,
-  project = {} as WithActionHash<ProjectMeta>,
   cellIdString,
 }) {
   const [updatingProject, setUpdatingProject] = useState(false)

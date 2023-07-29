@@ -1,22 +1,24 @@
 import { connect } from 'react-redux'
-import { collectExportProjectData } from '../../migrating/export'
+import {
+  collectExportProjectData,
+  projectDataToCsv,
+} from '../../migrating/export'
 import { RootState } from '../../redux/reducer'
-import ExportMenuItem from './ExportMenuItem.component'
+import ExportMenuItem, { ExportMenuItemProps } from './ExportMenuItem.component'
 
-function mapStateToProps(state: RootState) {
+type ConnectedExportMenuItemProps = Omit<ExportMenuItemProps, 'data'>
+
+function mapStateToProps(state: RootState, ownProps: ConnectedExportMenuItemProps) {
   const {
     ui: { activeProject },
   } = state
-  const data = collectExportProjectData(state, activeProject)
-  // defensive coding for loading phase
-  const projectName = (
-    data.projectMeta || {
-      name: '',
-    }
-  ).name
+  const activeProjectData = collectExportProjectData(state, activeProject)
+  const data =
+    ownProps.type === 'csv'
+      ? projectDataToCsv(activeProjectData)
+      : JSON.stringify(activeProjectData, null, 2)
 
   return {
-    projectName,
     data,
   }
 }

@@ -9,12 +9,14 @@ export type MigrationProgressProps = {
   title: string
   status: string | React.ReactElement
   progress: number
+  actionButtons?: React.ReactElement
 }
 
 const MigrationProgress: React.FC<MigrationProgressProps> = ({
   title,
   status,
   progress,
+  actionButtons,
 }) => {
   return (
     <div className="run-update-screen-wrapper">
@@ -32,6 +34,7 @@ const MigrationProgress: React.FC<MigrationProgressProps> = ({
         </div>
         <div className="run-update-screen-subheading">
           <Typography style={'body1'}>{status}</Typography>
+          {actionButtons ? actionButtons : null}
         </div>
       </div>
     </div>
