@@ -19,6 +19,8 @@ const USER_DATA_MIGRATION_FILE_PATH = path.join(
   USER_DATA_PATH,
   `${MIGRATION_FILE_NAME_PREFIX}${INTEGRITY_VERSION_NUMBER}`
 )
+// this array defines which previous versions of acorn it 
+// is possible to migrate from
 const PREV_VER_USER_DATA_MIGRATION_FILE_PATHS = [
   // Acorn 3
   path.join(USER_DATA_PATH, `${MIGRATION_FILE_NAME_PREFIX}5`),
@@ -26,6 +28,8 @@ const PREV_VER_USER_DATA_MIGRATION_FILE_PATHS = [
   path.join(USER_DATA_PATH, `${MIGRATION_FILE_NAME_PREFIX}6`),
   // Acorn 5
   path.join(USER_DATA_PATH, `${MIGRATION_FILE_NAME_PREFIX}8`),
+  // Acorn 6
+  path.join(USER_DATA_PATH, `${MIGRATION_FILE_NAME_PREFIX}9`),
 ]
 
 const PROJECTS_HAPP_PATH = app.isPackaged

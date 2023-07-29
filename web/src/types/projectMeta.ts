@@ -9,7 +9,8 @@ import {
   WithActionHash,
 } from './shared'
 
-export type ProjectAggregated = WithActionHash<ProjectMeta> & {
+export type ProjectAggregated = {
+  projectMeta: WithActionHash<ProjectMeta>
   cellId: CellIdString
   presentMembers: AgentPubKeyB64[]
   members: Profile[]

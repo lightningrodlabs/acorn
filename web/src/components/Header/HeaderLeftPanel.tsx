@@ -15,15 +15,13 @@ import Icon from '../Icon/Icon'
 import { ENTRY_POINTS } from '../../searchParams'
 import MembersIndicator from '../MembersIndicator/MembersIndicator'
 
-// @ts-ignore
-import DoorOpen from '../../images/door-open.svg'
 import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 
 //images
 // @ts-ignore
 import triangleTopWhite from '../../images/triangle-top-white.svg'
-import { getAdminWs, getAppWs } from '../../hcWebsockets'
-import SyncingIndicator from '../SyncingIndicator/SyncingIndicator'
+// @ts-ignore
+import DoorOpen from '../../images/door-open.svg'
 
 function ActiveEntryPoint({
   entryPoint,

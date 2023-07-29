@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react'
 
-import './RunUpdate.scss'
+import './VersionUpdateLeaving.scss'
 
-// @ts-ignore
-import AcornLogo from '../../images/acorn-logo.svg'
-import ProgressIndicator from '../../components/ProgressIndicator/ProgressIndicator'
-import Typography from '../../components/Typography/Typography'
 import exportProjectsData, {
   AllProjectsDataExport,
 } from '../../migrating/export'
 import { useStore } from 'react-redux'
-import importProjectsData from '../../migrating/import'
-import { useHistory } from 'react-router-dom'
+import MigrationProgress from '../../components/MigrationProgress/MigrationProgress'
 
 const checkIfExportNeeded = (currentVersion: string, toVersion: string) => {
   // compare
@@ -50,41 +45,28 @@ const downloadNextVersion = async () => {
   }
 }
 
-const markMigrationDone = () => {
-  if (window.require) {
-    const { ipcRenderer } = window.require('electron')
-    ipcRenderer.send('markMigrationDone')
-  }
-}
-
-export type RunUpdateProps = {
-  preRestart?: boolean
-  // for pre restart
+export type VersionUpdateLeavingProps = {
+  // this prop is for shortcutting the migration process
+  // for testing purposes
+  triggerAMigrationCheck: () => void
   updateVersionInfo?: {
     currentVersion: string
     platform: string
     arch: string
-    name: string
+    newReleaseVersion: string
     releaseNotes: string
     sizeForPlatform: string
   }
-  // for post restart
-  migrationData?: string
 }
 
-const RunUpdate: React.FC<RunUpdateProps> = ({
-  preRestart,
+const VersionUpdateLeaving: React.FC<VersionUpdateLeavingProps> = ({
+  triggerAMigrationCheck,
   updateVersionInfo,
-  migrationData,
 }) => {
-  // if not preRestart, then this is postRestart
-
   const store = useStore()
-  const history = useHistory()
 
-  const [title, setTitle] = useState(
-    preRestart ? 'Preparing your update' : 'Finishing your update'
-  )
+  const [hasStarted, setHasStarted] = useState(false)
+  const [title, setTitle] = useState('Preparing your update')
   const [status, setStatus] = useState<string | React.ReactElement>('')
   // avoid 0 percent and 100 percent, just because of the component
   // that renders this value
@@ -94,7 +76,7 @@ const RunUpdate: React.FC<RunUpdateProps> = ({
     setStatus('Exporting your data.')
     const allExportData = await exportProjectsData(
       store,
-      updateVersionInfo.name,
+      updateVersionInfo.newReleaseVersion,
       (completed, toComplete) => {
         // percent
         // the + 1 is because there's an additional step after
@@ -125,7 +107,7 @@ const RunUpdate: React.FC<RunUpdateProps> = ({
         <>
           Currently only MacOS supports a fully auto-updating process. Please{' '}
           <a
-            href={`https://github.com/lightningrodlabs/acorn/releases/${updateVersionInfo.name}`}
+            href={`https://github.com/lightningrodlabs/acorn/releases/${updateVersionInfo.newReleaseVersion}`}
             target="_blank"
           >
             click here to download the new release from Github
@@ -135,69 +117,34 @@ const RunUpdate: React.FC<RunUpdateProps> = ({
         </>
       )
     }
+    // if in dev mode, just redirect to 'finish-update''
+    if (window.location.host.includes('localhost')) {
+      setTimeout(() => {
+        triggerAMigrationCheck()
+      }, 2000)
+    }
   }
 
-  const runImport = async () => {
-    setStatus('Importing your data.')
-    await importProjectsData(store, migrationData, (completed, toComplete) => {
-      // percent
-      // avoid 100 % because it does green checkmark
-      let newProgress = Math.floor((completed / toComplete) * 100)
-      if (newProgress === 100) {
-        newProgress = 99.9
-      }
-      setProgress(newProgress)
-    })
-    markMigrationDone()
-    setTitle('Finished your update')
-    setStatus(
-      'Your data was imported, you are ready to go! You will be redirected in a moment.'
-    )
-    setTimeout(() => {
-      history.push('/dashboard')
-    }, 4000)
-  }
-
-  // on component mount, initiate
+  // initiation effect
   useEffect(() => {
-    if (preRestart) {
+    if (updateVersionInfo && !hasStarted) {
+      setHasStarted(true)
       // first determine, is this a 'hard update' or a 'soft update',
       // meaning does it require migrating data between different integrity versions?
       if (
         checkIfExportNeeded(
           updateVersionInfo.currentVersion,
-          updateVersionInfo.name
+          updateVersionInfo.newReleaseVersion
         )
       ) {
         runExport().then(controlDownloadNextVersion)
       } else {
         controlDownloadNextVersion()
       }
-    } else {
-      runImport()
     }
-  }, [])
+  }, [updateVersionInfo, hasStarted])
 
-  return (
-    <div className="run-update-screen-wrapper">
-      <div className="run-update-screen">
-        <div className="run-update-circle-with-logo">
-          <div className="run-update-circle">
-            <ProgressIndicator progress={progress} />
-          </div>
-          <div className="run-update-rotating-logo">
-            <img src={AcornLogo} />
-          </div>
-        </div>
-        <div className="run-update-screen-heading">
-          <Typography style={'h3'}>{title}</Typography>
-        </div>
-        <div className="run-update-screen-subheading">
-          <Typography style={'body1'}>{status}</Typography>
-        </div>
-      </div>
-    </div>
-  )
+  return <MigrationProgress title={title} status={status} progress={progress} />
 }
 
-export default RunUpdate
+export default VersionUpdateLeaving
