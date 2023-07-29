@@ -120,7 +120,9 @@ const App: React.FC<AppProps> = ({
     ViewingReleaseNotes.MainMessage
   )
   // custom hooks
-  const updateVersionInfo = useVersionChecker(true)
+  const updateVersionInfo = useVersionChecker()
+  // set true to test
+  // const updateVersionInfo = useVersionChecker(true)
   const finishMigrationChecker = useFinishMigrationChecker()
   const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
 
