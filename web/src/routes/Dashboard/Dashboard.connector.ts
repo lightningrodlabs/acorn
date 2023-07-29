@@ -10,6 +10,7 @@ import {
 import {
   simpleCreateProjectMeta,
   fetchProjectMeta,
+  updateProjectMeta,
 } from '../../redux/persistent/projects/project-meta/actions'
 import selectEntryPoints from '../../redux/persistent/projects/entry-points/select'
 
@@ -22,7 +23,7 @@ import { installProjectAppAndImport } from '../../migrating/import'
 import { openInviteMembersModal } from '../../redux/ephemeral/invite-members-modal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString } from '../../utils'
-import { AgentPubKeyB64, CellIdString } from '../../types/shared'
+import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { RootState } from '../../redux/reducer'
 import Dashboard, {
   DashboardDispatchProps,
@@ -106,7 +107,7 @@ async function deactivateApp(
 
 function mapStateToProps(state: RootState): DashboardStateProps {
   const projects = Object.keys(state.projects.projectMeta).map((cellId) => {
-    const project = state.projects.projectMeta[cellId]
+    const projectMeta = state.projects.projectMeta[cellId]
     const members = state.projects.members[cellId] || {}
     const memberProfiles = Object.keys(members).map(
       (agentAddress) => state.agents[agentAddress]
@@ -114,7 +115,7 @@ function mapStateToProps(state: RootState): DashboardStateProps {
     const entryPoints = selectEntryPoints(state, cellId)
     const presentMembers = selectProjectMembersPresent(state, cellId)
     return {
-      ...project,
+      projectMeta,
       cellId,
       presentMembers,
       members: memberProfiles,
@@ -181,6 +182,20 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
         isMigrated: null,
       }
       await createProject(passphrase, projectMeta, agentAddress, dispatch)
+    },
+    updateProjectMeta: async (
+      projectMeta: ProjectMeta,
+      actionHash: ActionHashB64,
+      cellIdString: CellIdString,
+    ) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const cellId = cellIdFromString(cellIdString)
+      const updatedProjectMeta = await projectsZomeApi.projectMeta.update(
+        cellId,
+        { entry: projectMeta, actionHash }
+      )
+      return dispatch(updateProjectMeta(cellIdString, updatedProjectMeta))
     },
     joinProject: (passphrase: string) => {
       return joinProject(passphrase, dispatch)

@@ -5,7 +5,6 @@ import {
   shell,
   autoUpdater,
   Menu,
-  dialog,
 } from 'electron'
 import * as contextMenu from 'electron-context-menu'
 import * as path from 'path'
@@ -24,25 +23,13 @@ import {
   USER_DATA_MIGRATION_FILE_PATH,
 } from './paths'
 import defaultMenu from 'electron-default-menu'
-import factoryResetVersion from './factory-reset'
+import factoryResetWithWarning from './factory-reset'
 
 // Get default menu template
 const menu = defaultMenu(app, shell)
 const newMenuItem = {
   label: 'Factory Reset',
-  click: () => {
-    // show a message box and factory reset if they confirm
-    dialog
-      .showMessageBox({
-        message: 'Factory Reset Acorn?',
-        buttons: ['Confirm', 'Cancel'],
-      })
-      .then(({ response }) => {
-        if (response === 0) {
-          factoryResetVersion()
-        }
-      })
-  },
+  click: factoryResetWithWarning,
 }
 // Add custom menu
 if (Array.isArray(menu[0].submenu)) {
@@ -56,6 +43,8 @@ Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
 contextMenu.default({
   showSaveImageAs: true,
 })
+
+
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // if (require('electron-squirrel-startup')) {
@@ -247,6 +236,13 @@ ipcMain.on('initiateUpdate', () => {
     autoUpdater.checkForUpdates()
     // once the update is downloaded, it will trigger the 'update-downloaded' event, which will be
     // separately listened for, and an event emitted to the client
+  } else {
+    // we're in development mode, so just send the event to the client
+    // as if the update was downloaded
+    const windows = BrowserWindow.getAllWindows()
+    if (windows.length > 0) {
+      windows[0].webContents.send('updateDownloaded')
+    }
   }
 })
 
@@ -271,19 +267,25 @@ ipcMain.handle('persistExportData', (event, data) => {
 
 ipcMain.handle('checkForMigrationData', (event) => {
   console.log('received checkForMigrationData')
+  // look for any migration file from an eligible previous version
+  // if it exists, we will plan to migrate from that version to this new one
   const existingMigrationPath = PREV_VER_USER_DATA_MIGRATION_FILE_PATHS.find(
     (prevPath) => {
       return fs.existsSync(prevPath)
     }
   )
+  // if we found a migration file, read it and send it to the client
   if (existingMigrationPath) {
     const prevVersionMigrationDataString = fs.readFileSync(
       existingMigrationPath,
       { encoding: 'utf-8' }
     )
-    return prevVersionMigrationDataString
+    return {
+      file: existingMigrationPath,
+      data: prevVersionMigrationDataString
+    }
   } else {
-    return ''
+    return null
   }
 })
 
@@ -295,4 +297,8 @@ ipcMain.on('markMigrationDone', () => {
       fs.unlinkSync(prevPath)
     }
   })
+})
+
+ipcMain.on('factoryResetWithWarning', () => {
+  factoryResetWithWarning()
 })

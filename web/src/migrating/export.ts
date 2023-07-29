@@ -126,54 +126,60 @@ export function collectExportProjectData(
   return data
 }
 
+export function projectDataToCsv(data: ProjectExportDataV1): string {
+  const csvRows = []
+  // const agents = Object.keys(data.agents)
+  const outcomes = Object.keys(data.outcomes)
+  const connections = Object.keys(data.connections)
+  const outcomeMembers = Object.keys(data.outcomeMembers)
+  const outcomeComments = Object.keys(data.outcomeComments)
+  const entryPoints = Object.keys(data.entryPoints)
+  const tags = Object.keys(data.tags)
+
+  const loop = (dataset, headers, data) => {
+    const csvRows = []
+
+    csvRows.push(dataset)
+    csvRows.push(Object.keys(data[headers[0]]).join(','))
+    for (const index in headers) {
+      csvRows.push(Object.values(data[headers[index]]))
+    }
+    return csvRows.join('\n')
+  }
+
+  // if (agents.length > 0) csvRows.push(loop('agents', agents, data.agents))
+  if (outcomes.length > 0)
+    csvRows.push('\n' + loop('outcomes', outcomes, data.outcomes))
+  if (connections.length > 0)
+    csvRows.push('\n' + loop('connections', connections, data.connections))
+  if (outcomeMembers.length > 0)
+    csvRows.push(
+      '\n' + loop('outcomeMembers', outcomeMembers, data.outcomeMembers)
+    )
+  if (outcomeComments.length > 0)
+    csvRows.push(
+      '\n' + loop('outcomeComments', outcomeComments, data.outcomeComments)
+    )
+  if (entryPoints.length > 0)
+    csvRows.push('\n' + loop('entryPoints', entryPoints, data.entryPoints))
+  if (tags.length > 0) csvRows.push('\n' + loop('tags', tags, data.tags))
+
+  return csvRows.join('\n')
+}
+
 export function exportDataHref(
   type: ExportType,
-  data: ProjectExportDataV1
+  data: string
 ): string {
   let blob: Blob
   if (type === 'csv') {
-    const csvRows = []
-    // const agents = Object.keys(data.agents)
-    const outcomes = Object.keys(data.outcomes)
-    const connections = Object.keys(data.connections)
-    const outcomeMembers = Object.keys(data.outcomeMembers)
-    const outcomeComments = Object.keys(data.outcomeComments)
-    const entryPoints = Object.keys(data.entryPoints)
-    const tags = Object.keys(data.tags)
-
-    const loop = (dataset, headers, data) => {
-      const csvRows = []
-
-      csvRows.push(dataset)
-      csvRows.push(Object.keys(data[headers[0]]).join(','))
-      for (const index in headers) {
-        csvRows.push(Object.values(data[headers[index]]))
-      }
-      return csvRows.join('\n')
-    }
-
-    // if (agents.length > 0) csvRows.push(loop('agents', agents, data.agents))
-    if (outcomes.length > 0)
-      csvRows.push('\n' + loop('outcomes', outcomes, data.outcomes))
-    if (connections.length > 0)
-      csvRows.push('\n' + loop('connections', connections, data.connections))
-    if (outcomeMembers.length > 0)
-      csvRows.push(
-        '\n' + loop('outcomeMembers', outcomeMembers, data.outcomeMembers)
-      )
-    if (outcomeComments.length > 0)
-      csvRows.push(
-        '\n' + loop('outcomeComments', outcomeComments, data.outcomeComments)
-      )
-    if (entryPoints.length > 0)
-      csvRows.push('\n' + loop('entryPoints', entryPoints, data.entryPoints))
-    if (tags.length > 0) csvRows.push('\n' + loop('tags', tags, data.tags))
-
-    blob = new Blob([csvRows.join('\n')], {
+    blob = new Blob([data], {
       type: 'text/csv',
     })
-  } else {
-    blob = new Blob([JSON.stringify(data, null, 2)], { type: '' })
+  } else if (type === 'json') {
+    blob = new Blob([data], {
+      type: 'application/json',
+    })
   }
   const url = window.URL.createObjectURL(blob)
   return url
