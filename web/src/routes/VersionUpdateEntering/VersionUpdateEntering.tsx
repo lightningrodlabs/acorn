@@ -85,7 +85,7 @@ const VersionUpdateEntering: React.FC<VersionUpdateEnteringProps> = ({
           console.error(e)
           setTitle('Error')
           setStatus(
-            'There was an error importing your data. Please contact support.'
+            'There was an error importing your data. Please contact support by opening a Github Issue.'
           )
         })
       }
