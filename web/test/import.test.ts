@@ -75,7 +75,7 @@ beforeEach(() => {
 })
 
 describe('importProjectsData()', () => {
-  it('should do something', async () => {
+  it('correctly calls functions with expected arguments', async () => {
     await internalImportProjectsData(
       getAppWs,
       createProfilesZomeApi,
@@ -159,7 +159,7 @@ describe('importProjectsData()', () => {
 
 describe('installProjectAppAndImport()', () => {
   const agentAddress = 'testAgentAddress'
-  it('does something else', async () => {
+  it('correctly calls functions with expected arguments', async () => {
     await internalInstallProjectAppAndImport(
       agentAddress,
       sampleGoodDataExport.projects[0],
