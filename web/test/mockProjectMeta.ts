@@ -1,20 +1,23 @@
-import { LayeringAlgorithm } from '../src/types/projectMeta'
+import { WireRecord } from '../src/api/hdkCrud'
+import { LayeringAlgorithm, ProjectMeta } from '../src/types/projectMeta'
 
-const mockProjectMeta = {
+const projectMeta: ProjectMeta = {
+  creatorAgentPubKey: 'testAgentPubKey',
+  createdAt: 1234,
+  name: 'testName',
+  image: null,
+  passphrase: 'testPassphrase',
+  isImported: false,
+  layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
+  topPriorityOutcomes: [],
+  isMigrated: null,
+}
+
+const mockUnmigratedProjectMeta: WireRecord<ProjectMeta> = {
   actionHash: 'testActionHash',
   entryHash: 'testEntryHash',
-  entry: {
-    creatorAgentPubKey: 'testAgentPubKey',
-    createdAt: 1234,
-    name: 'testName',
-    image: null,
-    passphrase: 'testPassphrase',
-    isImported: false,
-    layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
-    topPriorityOutcomes: [],
-    isMigrated: null,
-  },
+  entry: projectMeta,
   createdAt: 1234,
   updatedAt: 1234,
 }
-export default mockProjectMeta
+export default mockUnmigratedProjectMeta
