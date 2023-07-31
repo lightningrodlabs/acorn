@@ -23,21 +23,14 @@ import { setMember } from '../redux/persistent/projects/members/actions'
 import { simpleCreateProjectMeta } from '../redux/persistent/projects/project-meta/actions'
 import { installProjectApp } from '../projects/installProjectApp'
 import { joinProjectCellId } from '../redux/persistent/cells/actions'
-import { CellId } from '@holochain/client'
+import { AppWebsocket } from '@holochain/client'
 
 export async function internalImportProjectsData(
   // dependent functions
-  getAppWs: () => Promise<any>,
-  createProfilesZomeApi: (appWebsocket: any) => ProfilesZomeApi,
-  installProjectAppAndImport: (
-    agentAddress: AgentPubKeyB64,
-    projectData: ProjectExportDataV1,
-    passphrase: string,
-    dispatch: any
-  ) => Promise<void>,
-  installProjectApp: (
-    passphrase: string
-  ) => Promise<[CellIdString, CellId, string]>,
+  _getAppWs: typeof getAppWs,
+  _createProfilesZomeApi: typeof createProfilesZomeApi,
+  _installProjectAppAndImport: typeof installProjectAppAndImport,
+  _installProjectApp: typeof installProjectApp,
   store: any,
   // main input data and callbacks
   migrationData: string,
@@ -49,8 +42,8 @@ export async function internalImportProjectsData(
   const myAgentPubKey = initialState.agentAddress
 
   const profilesCellIdString = initialState.cells.profiles
-  const appWebsocket = await getAppWs()
-  const profilesZomeApi = createProfilesZomeApi(appWebsocket)
+  const appWebsocket = await _getAppWs()
+  const profilesZomeApi = _createProfilesZomeApi(appWebsocket)
   const profilesCellId = cellIdFromString(profilesCellIdString)
 
   // TODO: make a unit test to make sure a 'migrated' project
@@ -86,7 +79,7 @@ export async function internalImportProjectsData(
   // one completes
   for await (let projectData of projectsToMigrate) {
     const passphrase = projectData.projectMeta.passphrase
-    await installProjectAppAndImport(
+    await _installProjectAppAndImport(
       myAgentPubKey,
       projectData,
       passphrase,
@@ -99,17 +92,21 @@ export async function internalImportProjectsData(
   // join each project that has already been migrated by a peer
   for await (let projectData of migratedProjectsToJoin) {
     const passphrase = projectData.projectMeta.passphrase
-    const [cellIdString, _, __] = await installProjectApp(passphrase)
+    const [cellIdString, _, __] = await _installProjectApp(passphrase)
     await store.dispatch(joinProjectCellId(cellIdString))
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
   }
 }
 
-function createProfilesZomeApi(appWebsocket: any): ProfilesZomeApi {
+export function createProfilesZomeApi(
+  appWebsocket: AppWebsocket
+): ProfilesZomeApi {
   return new ProfilesZomeApi(appWebsocket)
 }
-function createProjectsZomeApi(appWebsocket: any): ProjectsZomeApi {
+export function createProjectsZomeApi(
+  appWebsocket: AppWebsocket
+): ProjectsZomeApi {
   return new ProjectsZomeApi(appWebsocket)
 }
 
@@ -134,26 +131,17 @@ export async function internalInstallProjectAppAndImport(
   projectData: ProjectExportDataV1,
   passphrase: string,
   dispatch: any,
-  installProjectApp: (
-    passphrase: string
-  ) => Promise<[CellIdString, CellId, string]>,
-  importProjectData: (
-    projectData: ProjectExportDataV1,
-    projectsCellIdString: CellIdString,
-    dispatch: any
-  ) => Promise<{ [oldActionHash: string]: string }>,
-  getAppWs: () => Promise<any>,
-  createProjectsZomeApi: (appWebsocket: any) => ProjectsZomeApi,
-  simpleCreateProjectMeta: (
-    projectsCellIdString: CellIdString,
-    projectMeta: WireRecord<ProjectMeta>
-  ) => Action<WireRecord<ProjectMeta>>
+  _installProjectApp: typeof installProjectApp,
+  _importProjectData: typeof importProjectData,
+  _getAppWs: typeof getAppWs,
+  _createProjectsZomeApi: typeof createProjectsZomeApi,
+  _simpleCreateProjectMeta: typeof simpleCreateProjectMeta
 ) {
   // first step is to install the dna
-  const [projectsCellIdString] = await installProjectApp(passphrase)
+  const [projectsCellIdString] = await _installProjectApp(passphrase)
   const cellId = cellIdFromString(projectsCellIdString)
   // next step is to import the rest of the data into that project
-  const oldToNewAddressMap = await importProjectData(
+  const oldToNewAddressMap = await _importProjectData(
     projectData,
     projectsCellIdString,
     dispatch
@@ -186,8 +174,8 @@ export async function internalInstallProjectAppAndImport(
   // needed to type-convert to any so typescript doesn't complain
   delete (projectMeta as any).actionHash
 
-  const appWebsocket = await getAppWs()
-  const projectsZomeApi = createProjectsZomeApi(appWebsocket)
+  const appWebsocket = await _getAppWs()
+  const projectsZomeApi = _createProjectsZomeApi(appWebsocket)
   await dispatch(setMember(projectsCellIdString, { agentPubKey: agentAddress }))
   try {
     const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(
@@ -195,7 +183,7 @@ export async function internalInstallProjectAppAndImport(
       projectMeta
     )
     await dispatch(
-      simpleCreateProjectMeta(projectsCellIdString, simpleCreatedProjectMeta)
+      _simpleCreateProjectMeta(projectsCellIdString, simpleCreatedProjectMeta)
     )
   } catch (e) {
     throw e
