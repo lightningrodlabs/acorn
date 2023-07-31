@@ -1,59 +1,40 @@
-import { CellId } from '@holochain/client'
-import ProfilesZomeApi from '../src/api/profilesApi'
-import { ProjectExportDataV1 } from '../src/migrating/export'
-import {
+import importProjectsData, {
+  installProjectAppAndImport as _installProjectAppAndImport,
+  importProjectData as _importProjectData,
   internalImportProjectsData,
   internalInstallProjectAppAndImport,
+  createProfilesZomeApi as _createProfilesZomeApi,
+  createProjectsZomeApi as _createProjectsZomeApi,
 } from '../src/migrating/import'
-import { Action, AgentPubKeyB64, CellIdString } from '../src/types/shared'
 import { sampleGoodDataExport } from './sample-good-data-export'
-import ProjectsZomeApi from '../src/api/projectsApi'
 import { ProjectMeta } from '../src/types'
 import { WireRecord } from '../src/api/hdkCrud'
-import mockProjectMeta from './mockProjectMeta'
-import mockWhoami from './mockWhoami'
+import mockUnmigratedProjectMeta from './mockProjectMeta'
 import mockBaseRootState from './mockBaseRootState'
+import { installProjectApp as _installProjectApp } from '../src/projects/installProjectApp'
+import { simpleCreateProjectMeta as _simpleCreateProjectMeta } from '../src/redux/persistent/projects/project-meta/actions'
+import { getAppWs as _getAppWs } from '../src/hcWebsockets'
 
-let store: any
-let getAppWs: any
-let createProfilesZomeApi: (appWebsocket: any) => ProfilesZomeApi
-let createProjectsZomeApi: (appWebsocket: any) => ProjectsZomeApi
-// let createWhoAmI: typeof ProfilesApi
+let store: any // too complex of a type to mock
 
-let installProjectAppAndImport: (
-  agentAddress: AgentPubKeyB64,
-  projectData: ProjectExportDataV1,
-  passphrase: string,
-  dispatch: any
-) => Promise<void>
+let getAppWs: typeof _getAppWs
+let createProfilesZomeApi: typeof _createProfilesZomeApi
+let createProjectsZomeApi: typeof _createProjectsZomeApi
+let installProjectAppAndImport: typeof _installProjectAppAndImport
+let installProjectApp: typeof _installProjectApp
+let importProjectData: typeof _importProjectData
+let simpleCreateProjectMeta: typeof _simpleCreateProjectMeta
+let baseRootState: typeof mockBaseRootState
+let mockGetState: typeof store.getState
 
-let installProjectApp: (
-  passphrase: string
-) => Promise<[CellIdString, CellId, string]>
-
-let importProjectData: (
-  projectData: ProjectExportDataV1,
-  projectsCellIdString: CellIdString,
-  dispatch: any
-) => Promise<{ [oldActionHash: string]: string }>
-
-let simpleCreateProjectMeta: (
-  cellId: CellIdString,
-  payload: WireRecord<ProjectMeta>
-) => Action<WireRecord<ProjectMeta>>
-
-let onStep: (completed: number, toComplete: number) => void
-
-let baseRootState: any
-let mockGetState: any
+let onStep: Parameters<typeof importProjectsData>[2]
+let mockAppWs: ReturnType<typeof getAppWs>
+let projectMeta: WireRecord<ProjectMeta>
+let mockMigrationData: string
 let mockCellIdString: string
-let mockAppWs: any
-let projectMeta: any
-
-let mockMigrationData: any
 
 beforeEach(() => {
-  mockAppWs = {}
+  mockAppWs = {} as typeof mockAppWs
   getAppWs = jest.fn().mockResolvedValue(mockAppWs)
 
   createProfilesZomeApi = jest.fn().mockReturnValue({
@@ -62,7 +43,7 @@ beforeEach(() => {
       createWhoami: jest.fn(),
     },
   })
-  projectMeta = mockProjectMeta
+  projectMeta = mockUnmigratedProjectMeta
   createProjectsZomeApi = jest.fn().mockReturnValue({
     projectMeta: {
       simpleCreateProjectMeta: jest.fn().mockResolvedValue(projectMeta),
@@ -94,12 +75,6 @@ beforeEach(() => {
 })
 
 describe('importProjectsData()', () => {
-  // if you want a quick way to get at the type expressed in the signature
-  // of a function you can use something similar to: ReturnType<typeof ProfilesApi>
-  // aah nice, whats the ReturnType<> for?
-  // it means if this is a function, what type does it return, e.g. Promise<SomeType>
-  // gotcha. nice!
-
   it('should do something', async () => {
     await internalImportProjectsData(
       getAppWs,
@@ -228,7 +203,7 @@ describe('installProjectAppAndImport()', () => {
     expect(simpleCreateProjectMeta).toHaveBeenCalledTimes(1)
     expect(simpleCreateProjectMeta).toHaveBeenCalledWith(
       mockCellIdString,
-      mockProjectMeta
+      mockUnmigratedProjectMeta
     )
   })
 })
