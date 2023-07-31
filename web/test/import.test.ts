@@ -5,16 +5,14 @@ import {
   internalImportProjectsData,
   internalInstallProjectAppAndImport,
 } from '../src/migrating/import'
-import {
-  Action,
-  AgentPubKeyB64,
-  CellIdString,
-  WithActionHash,
-} from '../src/types/shared'
+import { Action, AgentPubKeyB64, CellIdString } from '../src/types/shared'
 import { sampleGoodDataExport } from './sample-good-data-export'
 import ProjectsZomeApi from '../src/api/projectsApi'
-import { LayeringAlgorithm, ProjectMeta } from '../src/types'
+import { ProjectMeta } from '../src/types'
 import { WireRecord } from '../src/api/hdkCrud'
+import mockProjectMeta from './mockProjectMeta'
+import mockWhoami from './mockWhoami'
+import mockBaseRootState from './mockBaseRootState'
 
 let store: any
 let getAppWs: any
@@ -47,11 +45,11 @@ let simpleCreateProjectMeta: (
 let onStep: (completed: number, toComplete: number) => void
 
 let whoami: any
-let mockBaseRootState: any
+let baseRootState: any
 let mockGetState: any
 let mockCellIdString: string
 let mockAppWs: any
-let mockProjectMeta: any
+let projectMeta: any
 
 let mockMigrationData: any
 
@@ -65,26 +63,10 @@ beforeEach(() => {
       createWhoami: jest.fn(),
     },
   })
-  mockProjectMeta = {
-    actionHash: 'testActionHash',
-    entryHash: 'testEntryHash',
-    entry: {
-      creatorAgentPubKey: 'testAgentPubKey',
-      createdAt: 1234,
-      name: 'testName',
-      image: null,
-      passphrase: 'testPassphrase',
-      isImported: false,
-      layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
-      topPriorityOutcomes: [],
-      isMigrated: null,
-    },
-    createdAt: 1234,
-    updatedAt: 1234,
-  }
+  projectMeta = mockProjectMeta
   createProjectsZomeApi = jest.fn().mockReturnValue({
     projectMeta: {
-      simpleCreateProjectMeta: jest.fn().mockResolvedValue(mockProjectMeta),
+      simpleCreateProjectMeta: jest.fn().mockResolvedValue(projectMeta),
     },
   })
   installProjectAppAndImport = jest.fn()
@@ -100,37 +82,13 @@ beforeEach(() => {
 
   onStep = jest.fn()
 
-  whoami = {
-    actionHash: 'testActionHash',
-    entryHash: 'testEntryHash',
-    createdAt: 1234,
-    updatedAt: 1234,
-    entry: {
-      firstName: 'testFirstName',
-      lastName: 'testLastName',
-      handle: 'testHandle',
-      status: 'Online',
-      avatarUrl: 'testAvatarUrl',
-      agentPubKey: 'testAgentPubKey',
-      isImported: false,
-    },
-  }
+  whoami = mockWhoami
 
-  mockBaseRootState = {
-    whoami,
-    cells: {
-      profiles:
-        '132,45,36,204,129,221,8,19,206,244,229,30,210,95,157,234,241,47,13,85,105,207,55,138,160,87,204,162,244,122,186,195,125,254,5,185,165,224,66[:cell_id_divider:]132,32,36,97,138,27,24,136,8,80,164,189,194,243,82,224,72,205,215,225,2,27,126,146,190,40,102,187,244,75,191,172,155,196,247,226,220,92,1',
-      projects: [
-        '132,45,36,67,75,209,140,160,204,62,71,45,229,66,99,63,6,255,250,52,234,238,45,50,174,198,118,29,208,28,207,156,147,252,58,99,131,165,51[:cell_id_divider:]132,32,36,97,138,27,24,136,8,80,164,189,194,243,82,224,72,205,215,225,2,27,126,146,190,40,102,187,244,75,191,172,155,196,247,226,220,92,1',
-      ],
-    },
-    agentAddress: 'testAgentAddress',
-  }
+  baseRootState = mockBaseRootState
 
   mockMigrationData = JSON.stringify(sampleGoodDataExport)
 
-  mockGetState = jest.fn().mockReturnValue(mockBaseRootState)
+  mockGetState = jest.fn().mockReturnValue(baseRootState)
 
   store = {
     dispatch: jest.fn(),
