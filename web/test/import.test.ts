@@ -44,7 +44,6 @@ let simpleCreateProjectMeta: (
 
 let onStep: (completed: number, toComplete: number) => void
 
-let whoami: any
 let baseRootState: any
 let mockGetState: any
 let mockCellIdString: string
@@ -81,8 +80,6 @@ beforeEach(() => {
   simpleCreateProjectMeta = jest.fn()
 
   onStep = jest.fn()
-
-  whoami = mockWhoami
 
   baseRootState = mockBaseRootState
 
