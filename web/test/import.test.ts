@@ -14,6 +14,7 @@ import mockBaseRootState from './mockBaseRootState'
 import { installProjectApp as _installProjectApp } from '../src/projects/installProjectApp'
 import { simpleCreateProjectMeta as _simpleCreateProjectMeta } from '../src/redux/persistent/projects/project-meta/actions'
 import { getAppWs as _getAppWs } from '../src/hcWebsockets'
+import { AppWebsocket } from '@holochain/client'
 
 let store: any // too complex of a type to mock
 
@@ -28,7 +29,7 @@ let baseRootState: typeof mockBaseRootState
 let mockGetState: typeof store.getState
 
 let onStep: Parameters<typeof importProjectsData>[2]
-let mockAppWs: ReturnType<typeof getAppWs>
+let mockAppWs: AppWebsocket
 let projectMeta: WireRecord<ProjectMeta>
 let mockMigrationData: string
 let mockCellIdString: string

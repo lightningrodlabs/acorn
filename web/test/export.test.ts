@@ -1,9 +1,10 @@
-import { WireRecord } from '../src/api/hdkCrud'
 import {
   ProjectExportDataV1,
   internalExportProjectsData,
+  updateProjectMeta as _updateProjectMeta,
+  collectExportProjectData as _collectExportProjectData,
 } from '../src/migrating/export'
-import { LayeringAlgorithm, Profile } from '../src/types'
+import { LayeringAlgorithm } from '../src/types'
 import {
   testBigAchievedOutcome,
   testSmallAchievedOutcome,
@@ -18,40 +19,25 @@ import testEntryPoint from '../src/stories/testData/testEntryPoint'
 import testOutcomeMember from '../src/stories/testData/testOutcomeMember'
 import testOutcomeVote from '../src/stories/testData/testOutcomeVote'
 import testComments from '../src/stories/testData/testComments'
+import mockBaseRootState from './mockBaseRootState'
+import _constructProjectDataFetchers from '../src/api/projectDataFetchers'
+
+let mockProjectData: ProjectExportDataV1
+let projectDataFetchers: ReturnType<typeof constructProjectDataFetchers>
+let baseRootState: typeof mockBaseRootState
+let getState: typeof store.getState
+
+let constructProjectDataFetchers: typeof _constructProjectDataFetchers
+let updateProjectMeta: typeof _updateProjectMeta
+let collectExportProjectData: typeof _collectExportProjectData
+let store: any
+let toVersion: string
+let onStep: Parameters<typeof internalExportProjectsData>[5]
+let intergrityVersion: string
 
 describe('test export functionality', () => {
-  let whoami: WireRecord<Profile>
-  let mockProjectData: ProjectExportDataV1
-  let mockProjectDataFetchers
-  let mockBaseRootState
-  let mockGetState
-
-  let constructProjectDataFetchers
-  let updateProjectMeta
-  let collectExportProjectData
-  let store
-  let toVersion: string
-  let onStep
-  let intergrityVersion: string
-
   beforeEach(() => {
     intergrityVersion = '1'
-
-    whoami = {
-      actionHash: 'testActionHash',
-      entryHash: 'testEntryHash',
-      createdAt: 1234, // nanoseconds
-      updatedAt: 1234, // nanoseconds
-      entry: {
-        firstName: 'testFirstName',
-        lastName: 'testLastName',
-        handle: 'testHandle',
-        status: 'Online',
-        avatarUrl: 'testAvatarUrl',
-        agentPubKey: 'testAgentPubKey',
-        isImported: false,
-      },
-    }
 
     mockProjectData = {
       projectMeta: {
@@ -74,7 +60,7 @@ describe('test export functionality', () => {
       tags: {},
     }
 
-    mockProjectDataFetchers = {
+    projectDataFetchers = {
       fetchProjectMeta: jest.fn(),
       fetchEntryPoints: jest.fn(),
       fetchOutcomeComments: jest.fn(),
@@ -82,18 +68,16 @@ describe('test export functionality', () => {
       fetchTags: jest.fn(),
       fetchOutcomes: jest.fn(),
       fetchConnections: jest.fn(),
-    }
+      // fetchMembers: jest.fn(), // including this line will cause the test to fail, but satisfies the type
+    } as any // this is needed because the real implementation does not inclue fetchMembers()
 
-    mockBaseRootState = {
-      whoami,
-      cells: { profiles: 'testProfileCellId', projects: ['testProjectCellId'] },
-    }
+    baseRootState = mockBaseRootState
 
-    mockGetState = jest
+    getState = jest
       .fn()
-      .mockReturnValueOnce(mockBaseRootState)
+      .mockReturnValueOnce(baseRootState)
       .mockReturnValueOnce({
-        ...mockBaseRootState,
+        ...baseRootState,
         agents: testAgent,
         agentAddress: 'testAgentAddress',
         projects: {
@@ -152,14 +136,14 @@ describe('test export functionality', () => {
 
     constructProjectDataFetchers = jest
       .fn()
-      .mockReturnValue(mockProjectDataFetchers)
+      .mockReturnValue(projectDataFetchers)
 
     updateProjectMeta = jest.fn()
 
     collectExportProjectData = jest.fn().mockReturnValue(mockProjectData)
     store = {
       dispatch: jest.fn(),
-      getState: mockGetState,
+      getState: getState,
     }
 
     onStep = jest.fn()
@@ -167,11 +151,11 @@ describe('test export functionality', () => {
   })
 
   it('should return null when state.whoami is undefined', async () => {
-    mockGetState = jest.fn().mockReturnValue({
-      ...mockBaseRootState,
+    getState = jest.fn().mockReturnValue({
+      ...baseRootState,
       whoami: undefined,
     })
-    store.getState = mockGetState
+    store.getState = getState
 
     const result = await internalExportProjectsData(
       constructProjectDataFetchers,
@@ -197,7 +181,7 @@ describe('test export functionality', () => {
       intergrityVersion
     )
 
-    expect(result.myProfile).toEqual(whoami.entry)
+    expect(result.myProfile).toEqual(baseRootState.whoami.entry)
     expect(result.projects).toEqual([mockProjectData])
 
     const numProjects = result.projects.length
@@ -207,8 +191,8 @@ describe('test export functionality', () => {
     expect(updateProjectMeta).toHaveBeenCalledTimes(numProjects)
     expect(onStep).toHaveBeenCalledTimes(numProjects)
 
-    Object.keys(mockProjectDataFetchers).forEach((key) => {
-      expect(mockProjectDataFetchers[key]).toHaveBeenCalledTimes(numProjects)
+    Object.keys(projectDataFetchers).forEach((key) => {
+      expect(projectDataFetchers[key]).toHaveBeenCalledTimes(numProjects)
     })
   })
 })
