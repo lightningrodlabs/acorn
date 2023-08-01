@@ -11,7 +11,6 @@ import { createTag } from '../redux/persistent/projects/tags/actions'
 import { LayeringAlgorithm, Outcome, ProjectMeta, Tag } from '../types'
 import { WireRecord } from '../api/hdkCrud'
 import {
-  Action,
   ActionHashB64,
   AgentPubKeyB64,
   CellIdString,
@@ -29,6 +28,7 @@ export async function internalImportProjectsData(
   // dependent functions
   _getAppWs: typeof getAppWs,
   _createProfilesZomeApi: typeof createProfilesZomeApi,
+  _createProjectsZomeApi: typeof createProjectsZomeApi,
   _installProjectAppAndImport: typeof installProjectAppAndImport,
   _installProjectApp: typeof installProjectApp,
   store: any,
@@ -44,10 +44,9 @@ export async function internalImportProjectsData(
   const profilesCellIdString = initialState.cells.profiles
   const appWebsocket = await _getAppWs()
   const profilesZomeApi = _createProfilesZomeApi(appWebsocket)
+  const projectsZomeApi = _createProjectsZomeApi(appWebsocket)
   const profilesCellId = cellIdFromString(profilesCellIdString)
 
-  // TODO: make a unit test to make sure a 'migrated' project
-  // doesn't get migrated again
   // prepare a list of only the NON-migrated projects to migrate
   const projectsToMigrate = migrationDataParsed.projects.filter((project) => {
     return !project.projectMeta.isMigrated
@@ -83,7 +82,8 @@ export async function internalImportProjectsData(
       myAgentPubKey,
       projectData,
       passphrase,
-      store.dispatch
+      store.dispatch,
+      projectsZomeApi
     )
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
@@ -118,6 +118,7 @@ export default async function importProjectsData(
   await internalImportProjectsData(
     getAppWs,
     createProfilesZomeApi,
+    createProjectsZomeApi,
     installProjectAppAndImport,
     installProjectApp,
     store,
@@ -133,9 +134,8 @@ export async function internalInstallProjectAppAndImport(
   dispatch: any,
   _installProjectApp: typeof installProjectApp,
   _importProjectData: typeof importProjectData,
-  _getAppWs: typeof getAppWs,
   _createProjectsZomeApi: typeof createProjectsZomeApi,
-  _simpleCreateProjectMeta: typeof simpleCreateProjectMeta
+  projectsZomeApi: ProjectsZomeApi
 ) {
   // first step is to install the dna
   const [projectsCellIdString] = await _installProjectApp(passphrase)
@@ -174,27 +174,22 @@ export async function internalInstallProjectAppAndImport(
   // needed to type-convert to any so typescript doesn't complain
   delete (projectMeta as any).actionHash
 
-  const appWebsocket = await _getAppWs()
-  const projectsZomeApi = _createProjectsZomeApi(appWebsocket)
-  await dispatch(setMember(projectsCellIdString, { agentPubKey: agentAddress }))
-  try {
-    const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(
-      cellId,
-      projectMeta
-    )
-    await dispatch(
-      _simpleCreateProjectMeta(projectsCellIdString, simpleCreatedProjectMeta)
-    )
-  } catch (e) {
-    throw e
-  }
+  dispatch(setMember(projectsCellIdString, { agentPubKey: agentAddress }))
+
+  const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(
+    cellId,
+    projectMeta
+  )
+
+  dispatch(simpleCreateProjectMeta(projectsCellIdString, simpleCreatedProjectMeta))
 }
 
 export async function installProjectAppAndImport(
   agentAddress: AgentPubKeyB64,
   projectData: ProjectExportDataV1,
   passphrase: string,
-  dispatch: any
+  dispatch: any,
+  projectsZomeApi: ProjectsZomeApi,
 ) {
   internalInstallProjectAppAndImport(
     agentAddress,
@@ -203,9 +198,8 @@ export async function installProjectAppAndImport(
     dispatch,
     installProjectApp,
     importProjectData,
-    getAppWs,
     createProjectsZomeApi,
-    simpleCreateProjectMeta
+    projectsZomeApi
   )
 }
 
