@@ -12,36 +12,39 @@ import { WireRecord } from '../src/api/hdkCrud'
 import mockUnmigratedProjectMeta from './mockProjectMeta'
 import mockBaseRootState from './mockBaseRootState'
 import { installProjectApp as _installProjectApp } from '../src/projects/installProjectApp'
-import { simpleCreateProjectMeta as _simpleCreateProjectMeta } from '../src/redux/persistent/projects/project-meta/actions'
 import { getAppWs as _getAppWs } from '../src/hcWebsockets'
 import { AppWebsocket } from '@holochain/client'
+import { RootState } from '../src/redux/reducer'
+import ProfilesZomeApi from '../src/api/profilesApi'
+import ProjectsZomeApi from '../src/api/projectsApi'
 
 let store: any // too complex of a type to mock
 
 let getAppWs: typeof _getAppWs
 let createProfilesZomeApi: typeof _createProfilesZomeApi
 let createProjectsZomeApi: typeof _createProjectsZomeApi
+let projectsZomeApi: ProjectsZomeApi
 let installProjectAppAndImport: typeof _installProjectAppAndImport
 let installProjectApp: typeof _installProjectApp
 let importProjectData: typeof _importProjectData
-let simpleCreateProjectMeta: typeof _simpleCreateProjectMeta
 let baseRootState: typeof mockBaseRootState
-let mockGetState: typeof store.getState
+let mockGetState: () => RootState
 
 let onStep: Parameters<typeof importProjectsData>[2]
 let mockAppWs: AppWebsocket
 let projectMeta: WireRecord<ProjectMeta>
 let mockMigrationData: string
 let mockCellIdString: string
+let createWhoami: typeof ProfilesZomeApi.prototype.profile.createWhoami
 
 beforeEach(() => {
   mockAppWs = {} as typeof mockAppWs
   getAppWs = jest.fn().mockResolvedValue(mockAppWs)
+  createWhoami = jest.fn()
 
   createProfilesZomeApi = jest.fn().mockReturnValue({
     profile: {
-      // turn this jest.fn into a var that you can track and assert on
-      createWhoami: jest.fn(),
+      createWhoami,
     },
   })
   projectMeta = mockUnmigratedProjectMeta
@@ -50,6 +53,7 @@ beforeEach(() => {
       simpleCreateProjectMeta: jest.fn().mockResolvedValue(projectMeta),
     },
   })
+  projectsZomeApi = createProjectsZomeApi(mockAppWs)
   installProjectAppAndImport = jest.fn()
   mockCellIdString =
     '132,45,36,204,129,221,8,19,206,244,229,30,210,95,157,234,241,47,13,85,105,207,55,138,160,87,204,162,244,122,186,195,125,254,5,185,165,224,66[:cell_id_divider:]132,32,36,97,138,27,24,136,8,80,164,189,194,243,82,224,72,205,215,225,2,27,126,146,190,40,102,187,244,75,191,172,155,196,247,226,220,92,1'
@@ -59,7 +63,6 @@ beforeEach(() => {
     .mockResolvedValue([mockCellIdString, ['abc'], 'testString'])
 
   importProjectData = jest.fn()
-  simpleCreateProjectMeta = jest.fn()
 
   onStep = jest.fn()
 
@@ -76,10 +79,11 @@ beforeEach(() => {
 })
 
 describe('importProjectsData()', () => {
-  it('correctly calls functions with expected arguments', async () => {
+  it('successfully parses and imports project data and user profile', async () => {
     await internalImportProjectsData(
       getAppWs,
       createProfilesZomeApi,
+      createProjectsZomeApi,
       installProjectAppAndImport,
       installProjectApp,
       store,
@@ -90,7 +94,7 @@ describe('importProjectsData()', () => {
     expect(getAppWs).toHaveBeenCalledTimes(1)
 
     expect(createProfilesZomeApi).toHaveBeenCalledTimes(1)
-    expect(createProfilesZomeApi).toHaveBeenCalledWith({})
+    expect(createProfilesZomeApi).toHaveBeenCalledWith(mockAppWs)
 
     // make sure the test data is actually set up the way the test
     // expects it to be
@@ -105,13 +109,16 @@ describe('importProjectsData()', () => {
       'testAgentAddress',
       sampleGoodDataExport.projects[0],
       sampleGoodDataExport.projects[0].projectMeta.passphrase,
-      store.dispatch
+      store.dispatch,
+      projectsZomeApi
     )
 
     expect(installProjectApp).toHaveBeenCalledTimes(1)
     expect(installProjectApp).toHaveBeenCalledWith(
       sampleGoodDataExport.projects[1].projectMeta.passphrase
     )
+    
+    expect(createWhoami).toHaveBeenCalledTimes(1)
 
     expect(store.dispatch).toHaveBeenCalled()
     expect(store.getState).toHaveBeenCalledTimes(1)
@@ -127,6 +134,7 @@ describe('importProjectsData()', () => {
       await internalImportProjectsData(
         getAppWs,
         createProfilesZomeApi,
+        createProjectsZomeApi,
         installProjectAppAndImport,
         installProjectApp,
         store,
@@ -143,6 +151,7 @@ describe('importProjectsData()', () => {
       await internalImportProjectsData(
         getAppWs,
         createProfilesZomeApi,
+        createProjectsZomeApi,
         installProjectAppAndImport,
         installProjectApp,
         store,
@@ -160,7 +169,7 @@ describe('importProjectsData()', () => {
 
 describe('installProjectAppAndImport()', () => {
   const agentAddress = 'testAgentAddress'
-  it('correctly calls functions with expected arguments', async () => {
+  it('installs DNA and imports project into new cell', async () => {
     await internalInstallProjectAppAndImport(
       agentAddress,
       sampleGoodDataExport.projects[0],
@@ -168,9 +177,8 @@ describe('installProjectAppAndImport()', () => {
       store.dispatch,
       installProjectApp,
       importProjectData,
-      getAppWs,
       createProjectsZomeApi,
-      simpleCreateProjectMeta
+      projectsZomeApi
     )
 
     expect(installProjectApp).toHaveBeenCalledTimes(1)
@@ -195,16 +203,10 @@ describe('installProjectAppAndImport()', () => {
         },
       },
     })
-
-    expect(getAppWs).toHaveBeenCalledTimes(1)
-
-    expect(createProjectsZomeApi).toHaveBeenCalledTimes(1)
-    expect(createProjectsZomeApi).toHaveBeenCalledWith(mockAppWs)
-
-    expect(simpleCreateProjectMeta).toHaveBeenCalledTimes(1)
-    expect(simpleCreateProjectMeta).toHaveBeenCalledWith(
-      mockCellIdString,
-      mockUnmigratedProjectMeta
-    )
+    expect(store.dispatch).toHaveBeenCalledWith({
+      type: 'SIMPLE_CREATE_PROJECT_META',
+      payload: projectMeta,
+      meta: { cellIdString: mockCellIdString }
+    })
   })
 })

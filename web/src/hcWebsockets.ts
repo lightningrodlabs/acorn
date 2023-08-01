@@ -1,4 +1,3 @@
-// TODO: uncomment
 import { AppWebsocket, AdminWebsocket } from '@holochain/client'
 
 // export for use by holochainMiddleware (redux)
