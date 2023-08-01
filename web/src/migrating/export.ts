@@ -46,11 +46,8 @@ export async function updateProjectMeta(
 }
 
 export async function internalExportProjectsData(
-  constructProjectDataFetchersFunction: (dispatch: any, cellId: string) => any,
-  collectExportProjectDataFunction: (
-    state: RootState,
-    cellId: string
-  ) => ProjectExportDataV1,
+  constructProjectDataFetchersFunction: typeof constructProjectDataFetchers,
+  collectExportProjectDataFunction: typeof collectExportProjectData,
   updateProjectMeta: (
     newProjectMeta: ProjectMeta,
     actionHash: string,
