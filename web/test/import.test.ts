@@ -261,11 +261,23 @@ describe('importProjectData()', () => {
       createProjectsZomeApi
     )
 
-    expect(createTag).toHaveBeenCalledTimes(1)
-    expect(createOutcome).toHaveBeenCalledTimes(6)
-    expect(createConnection).toHaveBeenCalledTimes(5)
-    expect(createOutcomeMember).toHaveBeenCalledTimes(1)
-    expect(createOutcomeComment).toHaveBeenCalledTimes(1)
-    expect(createEntryPoint).toHaveBeenCalledTimes(1)
+    expect(createTag).toHaveBeenCalledTimes(
+      Object.keys(sampleGoodDataExport.projects[0].tags).length
+    )
+    expect(createOutcome).toHaveBeenCalledTimes(
+      Object.keys(sampleGoodDataExport.projects[0].outcomes).length
+    )
+    expect(createConnection).toHaveBeenCalledTimes(
+      Object.keys(sampleGoodDataExport.projects[0].connections).length
+    )
+    expect(createOutcomeMember).toHaveBeenCalledTimes(
+      Object.keys(sampleGoodDataExport.projects[0].outcomeMembers).length
+    )
+    expect(createOutcomeComment).toHaveBeenCalledTimes(
+      Object.keys(sampleGoodDataExport.projects[0].outcomeComments).length
+    )
+    expect(createEntryPoint).toHaveBeenCalledTimes(
+      Object.keys(sampleGoodDataExport.projects[0].entryPoints).length
+    )
   })
 })
