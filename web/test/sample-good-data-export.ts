@@ -2,7 +2,11 @@ import {
   AllProjectsDataExport,
   ProjectExportDataV1,
 } from '../src/migrating/export'
+import testComments from '../src/stories/testData/testComments'
+import testEntryPoint from '../src/stories/testData/testEntryPoint'
+import testOutcomeMember from '../src/stories/testData/testOutcomeMember'
 import testProfile from '../src/stories/testData/testProfile'
+import testTags from '../src/stories/testData/testTags'
 import { LayeringAlgorithm } from '../src/types'
 
 const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
@@ -177,10 +181,30 @@ const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
       actionHash: 'uhCkkWwn0Eug52wTO7dDrWyhnQgaKxiV1ki8NhpxrXzM8aP4813AF',
     },
   },
-  outcomeMembers: {},
-  outcomeComments: {},
-  entryPoints: {},
-  tags: {},
+  outcomeMembers: {
+    testOutcomeMemberActionHash: {
+      ...testOutcomeMember,
+      outcomeActionHash:
+        'uhCkkaL_X1Fjk8sSHElhijhl_vzcglx0DqlE0tGxzeNkP5-IiQl0p',
+    },
+  },
+  outcomeComments: {
+    testOutcomeCommentActionHash: {
+      ...testComments[0],
+      outcomeActionHash:
+        'uhCkk8QU4T_U2ANFLV3fhKinC-JKrl80qfeThGR2SUjCHIl6ihQjS',
+    },
+  },
+  entryPoints: {
+    testEntryPointActionHash: {
+      ...testEntryPoint,
+      outcomeActionHash:
+        'uhCkkOWAmlIrMCcxwfvGWsFry55sdG-_EU7o0SZ6I9W0ZoJ-UKnS2',
+    },
+  },
+  tags: {
+    testTagActionHash: testTags[0],
+  },
 }
 
 const sampleGoodMigratedProjectData: ProjectExportDataV1 = {
