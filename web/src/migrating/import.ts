@@ -70,7 +70,7 @@ export async function internalImportProjectsData(
     profilesCellId,
     migrationDataParsed.myProfile
   )
-  await store.dispatch(createWhoami(profilesCellIdString, importedProfile))
+  store.dispatch(createWhoami(profilesCellIdString, importedProfile))
   stepsSoFar++
   onStep(stepsSoFar, totalSteps)
 
@@ -93,7 +93,7 @@ export async function internalImportProjectsData(
   for await (let projectData of migratedProjectsToJoin) {
     const passphrase = projectData.projectMeta.passphrase
     const [cellIdString, _, __] = await _installProjectApp(passphrase)
-    await store.dispatch(joinProjectCellId(cellIdString))
+    store.dispatch(joinProjectCellId(cellIdString))
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
   }
