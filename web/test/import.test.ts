@@ -10,7 +10,7 @@ import { sampleGoodDataExport } from './sample-good-data-export'
 import { ProjectMeta } from '../src/types'
 import { WireRecord } from '../src/api/hdkCrud'
 import mockUnmigratedProjectMeta from './mockProjectMeta'
-import mockBaseRootState from './mockBaseRootState'
+import mockBaseRootState from './mockRootState'
 import { installProjectApp as _installProjectApp } from '../src/projects/installProjectApp'
 import { getAppWs as _getAppWs } from '../src/hcWebsockets'
 import { AppWebsocket } from '@holochain/client'
@@ -99,8 +99,13 @@ describe('importProjectsData()', () => {
     // make sure the test data is actually set up the way the test
     // expects it to be
     expect(sampleGoodDataExport.projects.length).toBe(2)
+
+    // we expect the first project to need to be migrated (isMigrated === null)
+    // and the 2nd project to not need to be migrated (isMigrated !== null), only joined
     expect(sampleGoodDataExport.projects[0].projectMeta.isMigrated).toBeNull()
     expect(
+      // TODO: this expectation may be incomplete. It's possible that
+      // isMigrated is not null, but is also not the same as the current version.
       sampleGoodDataExport.projects[1].projectMeta.isMigrated
     ).not.toBeNull()
 
@@ -117,7 +122,7 @@ describe('importProjectsData()', () => {
     expect(installProjectApp).toHaveBeenCalledWith(
       sampleGoodDataExport.projects[1].projectMeta.passphrase
     )
-    
+
     expect(createWhoami).toHaveBeenCalledTimes(1)
 
     expect(store.dispatch).toHaveBeenCalled()
@@ -206,7 +211,7 @@ describe('installProjectAppAndImport()', () => {
     expect(store.dispatch).toHaveBeenCalledWith({
       type: 'SIMPLE_CREATE_PROJECT_META',
       payload: projectMeta,
-      meta: { cellIdString: mockCellIdString }
+      meta: { cellIdString: mockCellIdString },
     })
   })
 })
