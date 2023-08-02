@@ -10,11 +10,7 @@ import { cellIdFromString } from '../utils'
 import { createTag } from '../redux/persistent/projects/tags/actions'
 import { LayeringAlgorithm, Outcome, ProjectMeta, Tag } from '../types'
 import { WireRecord } from '../api/hdkCrud'
-import {
-  ActionHashB64,
-  AgentPubKeyB64,
-  CellIdString,
-} from '../types/shared'
+import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../types/shared'
 import { RootState } from '../redux/reducer'
 import { AllProjectsDataExport, ProjectExportDataV1 } from './export'
 import { createWhoami } from '../redux/persistent/profiles/who-am-i/actions'
@@ -181,7 +177,9 @@ export async function internalInstallProjectAppAndImport(
     projectMeta
   )
 
-  dispatch(simpleCreateProjectMeta(projectsCellIdString, simpleCreatedProjectMeta))
+  dispatch(
+    simpleCreateProjectMeta(projectsCellIdString, simpleCreatedProjectMeta)
+  )
 }
 
 export async function installProjectAppAndImport(
@@ -189,7 +187,7 @@ export async function installProjectAppAndImport(
   projectData: ProjectExportDataV1,
   passphrase: string,
   dispatch: any,
-  projectsZomeApi: ProjectsZomeApi,
+  projectsZomeApi: ProjectsZomeApi
 ) {
   internalInstallProjectAppAndImport(
     agentAddress,
@@ -203,10 +201,12 @@ export async function installProjectAppAndImport(
   )
 }
 
-export async function importProjectData(
+export async function internalImportProjectData(
   projectData: ProjectExportDataV1,
   projectsCellIdString: CellIdString,
-  dispatch: any
+  dispatch: any,
+  _getAppWs: typeof getAppWs,
+  _createProjectsZomeApi: typeof createProjectsZomeApi
 ) {
   /*
   outcomes, connections,
@@ -214,8 +214,8 @@ export async function importProjectData(
   entryPoints, tags
   */
 
-  const appWebsocket = await getAppWs()
-  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+  const appWebsocket = await _getAppWs()
+  const projectsZomeApi = _createProjectsZomeApi(appWebsocket)
   const projectsCellId = cellIdFromString(projectsCellIdString)
 
   // Strategy: do things with no data references first
@@ -420,4 +420,18 @@ export async function importProjectData(
 
   // return the list of old addresses mapped to new addresses
   return outcomeActionHashMap
+}
+
+export async function importProjectData(
+  projectData: ProjectExportDataV1,
+  projectsCellIdString: CellIdString,
+  dispatch: any
+) {
+  internalImportProjectData(
+    projectData,
+    projectsCellIdString,
+    dispatch,
+    getAppWs,
+    createProjectsZomeApi
+  )
 }
