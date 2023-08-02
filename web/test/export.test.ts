@@ -1,28 +1,12 @@
 import {
-  ProjectExportDataV1,
   internalExportProjectsData,
   updateProjectMeta as _updateProjectMeta,
   collectExportProjectData as _collectExportProjectData,
 } from '../src/migrating/export'
-import { LayeringAlgorithm } from '../src/types'
-import {
-  testBigAchievedOutcome,
-  testSmallAchievedOutcome,
-} from '../src/stories/testData/testOutcomes'
-
-import testAgent from '../src/stories/testData/testAgent'
-import testProjectMeta from '../src/stories/testData/testProjectMeta'
-import testMember from '../src/stories/testData/testMember'
-import testTags from '../src/stories/testData/testTags'
-import testConnection from '../src/stories/testData/testConnection'
-import testEntryPoint from '../src/stories/testData/testEntryPoint'
-import testOutcomeMember from '../src/stories/testData/testOutcomeMember'
-import testOutcomeVote from '../src/stories/testData/testOutcomeVote'
-import testComments from '../src/stories/testData/testComments'
-import mockBaseRootState from './mockBaseRootState'
+import mockBaseRootState, { mockPopulatedState } from './mockRootState'
 import _constructProjectDataFetchers from '../src/api/projectDataFetchers'
+import mockProjectData from './mockProjectData'
 
-let mockProjectData: ProjectExportDataV1
 let projectDataFetchers: ReturnType<typeof constructProjectDataFetchers>
 let baseRootState: typeof mockBaseRootState
 let getState: typeof store.getState
@@ -33,32 +17,11 @@ let collectExportProjectData: typeof _collectExportProjectData
 let store: any
 let toVersion: string
 let onStep: Parameters<typeof internalExportProjectsData>[5]
-let intergrityVersion: string
+let integrityVersion: string
 
 describe('test export functionality', () => {
   beforeEach(() => {
-    intergrityVersion = '1'
-
-    mockProjectData = {
-      projectMeta: {
-        creatorAgentPubKey: 'testAgentPubKey',
-        createdAt: 1234,
-        name: 'testProjectName',
-        image: 'testProjectImage',
-        passphrase: 'testPassphrase',
-        isImported: false,
-        layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
-        topPriorityOutcomes: [],
-        isMigrated: null,
-        actionHash: 'testProjectActionHash',
-      },
-      outcomes: {},
-      connections: {},
-      outcomeMembers: {},
-      outcomeComments: {},
-      entryPoints: {},
-      tags: {},
-    }
+    integrityVersion = '1'
 
     projectDataFetchers = {
       fetchProjectMeta: jest.fn(),
@@ -76,63 +39,7 @@ describe('test export functionality', () => {
     getState = jest
       .fn()
       .mockReturnValueOnce(baseRootState)
-      .mockReturnValueOnce({
-        ...baseRootState,
-        agents: testAgent,
-        agentAddress: 'testAgentAddress',
-        projects: {
-          projectMeta: {
-            testProjectCellId: testProjectMeta,
-          },
-          members: {
-            testMemberCellId: {
-              testMemberAddress: testMember,
-            },
-          },
-          tags: {
-            testTagCellId1: {
-              testTagActionHash1: testTags[0],
-            },
-            testTagCellId2: {
-              testTagActionHash2: testTags[1],
-            },
-          },
-          outcomes: {
-            testOutcomeCellId1: {
-              testOutcome1ActionHash: testBigAchievedOutcome,
-            },
-            testOutcomeCellId2: {
-              testOutcome2ActionHash: testSmallAchievedOutcome,
-            },
-          },
-          connections: {
-            testConnectionCellId: {
-              testConnectionActionHash: testConnection,
-            },
-          },
-          entryPoints: {
-            testEntryPointCellId: {
-              testEntryPointActionHash: testEntryPoint,
-            },
-          },
-          outcomeMembers: {
-            testOutcomeMemberCellId: {
-              testOutcomeMemberActionHash: testOutcomeMember,
-            },
-          },
-          outcomeVotes: {
-            testOutcomeVoteCellId: {
-              testOutcomeVoteActionHash: testOutcomeVote,
-            },
-          },
-          outcomeComments: {
-            testOutcomeCommentCellId: {
-              testOutcomeCommentActionHash: testComments[0],
-            },
-          },
-          outcomeHistory: {},
-        },
-      })
+      .mockReturnValueOnce(mockPopulatedState)
 
     constructProjectDataFetchers = jest
       .fn()
@@ -164,7 +71,7 @@ describe('test export functionality', () => {
       store,
       toVersion,
       onStep,
-      intergrityVersion
+      integrityVersion
     )
 
     expect(result).toBeNull()
@@ -178,7 +85,7 @@ describe('test export functionality', () => {
       store,
       toVersion,
       onStep,
-      intergrityVersion
+      integrityVersion
     )
 
     expect(result.myProfile).toEqual(baseRootState.whoami.entry)
@@ -186,9 +93,31 @@ describe('test export functionality', () => {
 
     const numProjects = result.projects.length
 
+    expect(store.getState).toHaveBeenCalledTimes(numProjects + 1)
+
     expect(constructProjectDataFetchers).toHaveBeenCalledTimes(numProjects)
+    expect(constructProjectDataFetchers).toHaveBeenCalledWith(
+      store.dispatch,
+      baseRootState.cells.projects[0]
+    )
+
     expect(collectExportProjectData).toHaveBeenCalledTimes(numProjects)
+    expect(collectExportProjectData).toHaveBeenCalledWith(
+      mockPopulatedState,
+      baseRootState.cells.projects[0]
+    )
+
     expect(updateProjectMeta).toHaveBeenCalledTimes(numProjects)
+    expect(updateProjectMeta).toHaveBeenCalledWith(
+      {
+        ...mockProjectData.projectMeta,
+        actionHash: undefined, // need to remove actionHash to make the type the same
+        isMigrated: toVersion,
+      },
+      mockProjectData.projectMeta.actionHash,
+      baseRootState.cells.projects[0]
+    )
+
     expect(onStep).toHaveBeenCalledTimes(numProjects)
 
     Object.keys(projectDataFetchers).forEach((key) => {
