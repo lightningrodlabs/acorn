@@ -5,6 +5,7 @@ import importProjectsData, {
   internalInstallProjectAppAndImport,
   createProfilesZomeApi as _createProfilesZomeApi,
   createProjectsZomeApi as _createProjectsZomeApi,
+  internalImportProjectData,
 } from '../src/migrating/import'
 import { sampleGoodDataExport } from './sample-good-data-export'
 import { ProjectMeta } from '../src/types'
@@ -17,6 +18,12 @@ import { AppWebsocket } from '@holochain/client'
 import { RootState } from '../src/redux/reducer'
 import ProfilesZomeApi from '../src/api/profilesApi'
 import ProjectsZomeApi from '../src/api/projectsApi'
+import mockOutcome from './mockOutcome'
+import mockConnection from './mockConnection'
+import mockTag from './mockTag'
+import mockOutcomeMember from './mockOutcomeMember'
+import mockOutcomeComment from './mockOutcomeComment'
+import mockEntryPoint from './mockEntryPoint'
 
 let store: any // too complex of a type to mock
 
@@ -213,5 +220,52 @@ describe('installProjectAppAndImport()', () => {
       payload: projectMeta,
       meta: { cellIdString: mockCellIdString },
     })
+  })
+})
+
+describe('importProjectData()', () => {
+  const createTag = jest.fn().mockResolvedValue(mockTag)
+  const createOutcome = jest.fn().mockResolvedValue(mockOutcome)
+  const createConnection = jest.fn().mockResolvedValue(mockConnection)
+  const createOutcomeMember = jest.fn().mockResolvedValue(mockOutcomeMember)
+  const createOutcomeComment = jest.fn().mockResolvedValue(mockOutcomeComment)
+  const createEntryPoint = jest.fn().mockResolvedValue(mockEntryPoint)
+
+  it('does something', async () => {
+    createProjectsZomeApi = jest.fn().mockReturnValue({
+      tag: {
+        create: createTag,
+      },
+      outcome: {
+        create: createOutcome,
+      },
+      connection: {
+        create: createConnection,
+      },
+      outcomeMember: {
+        create: createOutcomeMember,
+      },
+      outcomeComment: {
+        create: createOutcomeComment,
+      },
+      entryPoint: {
+        create: createEntryPoint,
+      },
+    })
+
+    await internalImportProjectData(
+      sampleGoodDataExport.projects[0],
+      mockCellIdString,
+      store.dispatch,
+      getAppWs,
+      createProjectsZomeApi
+    )
+
+    expect(createTag).toHaveBeenCalledTimes(1)
+    expect(createOutcome).toHaveBeenCalledTimes(6)
+    expect(createConnection).toHaveBeenCalledTimes(5)
+    expect(createOutcomeMember).toHaveBeenCalledTimes(1)
+    expect(createOutcomeComment).toHaveBeenCalledTimes(1)
+    expect(createEntryPoint).toHaveBeenCalledTimes(1)
   })
 })
