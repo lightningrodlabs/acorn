@@ -253,31 +253,32 @@ describe('importProjectData()', () => {
       },
     })
 
-    await internalImportProjectData(
+    const result = await internalImportProjectData(
       sampleGoodDataExport.projects[0],
       mockCellIdString,
       store.dispatch,
       getAppWs,
-      createProjectsZomeApi
+      createProjectsZomeApi,
+      jest.fn() // TODO: replace with cloneDataSet()
     )
+    console.log(result)
+    const project = sampleGoodDataExport.projects[0]
 
-    expect(createTag).toHaveBeenCalledTimes(
-      Object.keys(sampleGoodDataExport.projects[0].tags).length
-    )
+    expect(createTag).toHaveBeenCalledTimes(Object.keys(project.tags).length)
     expect(createOutcome).toHaveBeenCalledTimes(
-      Object.keys(sampleGoodDataExport.projects[0].outcomes).length
+      Object.keys(project.outcomes).length
     )
     expect(createConnection).toHaveBeenCalledTimes(
-      Object.keys(sampleGoodDataExport.projects[0].connections).length
+      Object.keys(project.connections).length
     )
     expect(createOutcomeMember).toHaveBeenCalledTimes(
-      Object.keys(sampleGoodDataExport.projects[0].outcomeMembers).length
+      Object.keys(project.outcomeMembers).length
     )
     expect(createOutcomeComment).toHaveBeenCalledTimes(
-      Object.keys(sampleGoodDataExport.projects[0].outcomeComments).length
+      Object.keys(project.outcomeComments).length
     )
     expect(createEntryPoint).toHaveBeenCalledTimes(
-      Object.keys(sampleGoodDataExport.projects[0].entryPoints).length
+      Object.keys(project.entryPoints).length
     )
   })
 })

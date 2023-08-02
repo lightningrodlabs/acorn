@@ -8,9 +8,24 @@ import ProfilesZomeApi from '../api/profilesApi'
 import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { createTag } from '../redux/persistent/projects/tags/actions'
-import { LayeringAlgorithm, Outcome, ProjectMeta, Tag } from '../types'
+import {
+  Connection,
+  EntryPoint,
+  LayeringAlgorithm,
+  Outcome,
+  OutcomeComment,
+  OutcomeMember,
+  ProjectMeta,
+  Tag,
+} from '../types'
 import { WireRecord } from '../api/hdkCrud'
-import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../types/shared'
+import {
+  Action,
+  ActionHashB64,
+  AgentPubKeyB64,
+  CellIdString,
+  WithActionHash,
+} from '../types/shared'
 import { RootState } from '../redux/reducer'
 import { AllProjectsDataExport, ProjectExportDataV1 } from './export'
 import { createWhoami } from '../redux/persistent/profiles/who-am-i/actions'
@@ -18,7 +33,7 @@ import { setMember } from '../redux/persistent/projects/members/actions'
 import { simpleCreateProjectMeta } from '../redux/persistent/projects/project-meta/actions'
 import { installProjectApp } from '../projects/installProjectApp'
 import { joinProjectCellId } from '../redux/persistent/cells/actions'
-import { AppWebsocket } from '@holochain/client'
+import { AppWebsocket, CellId } from '@holochain/client'
 
 export async function internalImportProjectsData(
   // dependent functions
@@ -201,12 +216,107 @@ export async function installProjectAppAndImport(
   )
 }
 
+export type ActionHashMap = { [oldActionHash: ActionHashB64]: ActionHashB64 }
+
+/*
+  This function is an abstracted function
+  that can be used for any set of data (dataSet)
+  that should be written again to the DHT,
+  and the new actionHashes for the data (mapped)
+*/
+export async function cloneDataSet<T>(
+  dataSet: { [actionHash: string]: WithActionHash<T> },
+  cloneFn: (old: WithActionHash<T>) => WithActionHash<T>,
+  zomeCallFn: (cellId: CellId, obj: T) => Promise<WireRecord<T>>,
+  actionCreatorFn: (
+    cellIdString: CellIdString,
+    obj: WireRecord<T>
+  ) => Action<WireRecord<T>>,
+  dispatch: any,
+  projectsCellIdString: CellIdString
+) {
+  const newActionHashMap: ActionHashMap = {}
+
+  for (let address of Object.keys(dataSet)) {
+    const old = dataSet[address]
+    // NOTE: cloneFn should do a deep copy
+    // not just return the reference
+    const clone = cloneFn(old)
+    delete clone.actionHash
+
+    let newObj: WireRecord<T>
+    try {
+      newObj = await zomeCallFn(cellIdFromString(projectsCellIdString), clone)
+      dispatch(actionCreatorFn(projectsCellIdString, newObj))
+    } catch (e) {
+      console.log(`create obj error`, e)
+      throw e
+    }
+
+    let oldActionHash: ActionHashB64
+    if (old.actionHash) oldActionHash = old.actionHash
+    // TODO: fix how oldActionHash could be undefined, what
+    // should we do?
+    newActionHashMap[oldActionHash] = newObj.actionHash
+  }
+  return newActionHashMap
+}
+
+const cloneTag = (old: WithActionHash<Tag>): WithActionHash<Tag> => {
+  return {
+    ...old,
+  }
+}
+
+const cloneOutcome = (tagActionHashMap: ActionHashMap) => (
+  old: WithActionHash<Outcome>
+): WithActionHash<Outcome> => {
+  return {
+    ...old,
+    // make sure tag references hold up through the migration
+    tags: old.tags.map(
+      (oldTagHash: ActionHashB64) => tagActionHashMap[oldTagHash]
+    ),
+    isImported: true,
+  }
+}
+
+const cloneConnection = (outcomeActionHashMap: ActionHashMap) => (
+  old: WithActionHash<Connection>
+): WithActionHash<Connection> => {
+  const newParentOutcomeActionHash = outcomeActionHashMap[old.parentActionHash]
+  // v1.0.4-alpha: childActionHash
+  const newChildOutcomeActionHash = outcomeActionHashMap[old.childActionHash]
+
+  return {
+    ...old,
+    parentActionHash: newParentOutcomeActionHash,
+    childActionHash: newChildOutcomeActionHash,
+    // randomizer used to be a float, but is now an int
+    randomizer: Number(old.randomizer.toFixed()),
+    isImported: true,
+  }
+}
+
+const cloneData = <T extends { outcomeActionHash: ActionHashB64 }>(
+  outcomeActionHashMap: ActionHashMap
+) => (old: WithActionHash<T>): WithActionHash<T> => {
+  const newOutcomeActionHash = outcomeActionHashMap[old.outcomeActionHash]
+
+  return {
+    ...old,
+    outcomeActionHash: newOutcomeActionHash,
+    isImported: true,
+  }
+}
+
 export async function internalImportProjectData(
   projectData: ProjectExportDataV1,
   projectsCellIdString: CellIdString,
   dispatch: any,
   _getAppWs: typeof getAppWs,
-  _createProjectsZomeApi: typeof createProjectsZomeApi
+  _createProjectsZomeApi: typeof createProjectsZomeApi,
+  _cloneDataSet: typeof cloneDataSet
 ) {
   /*
   outcomes, connections,
@@ -216,210 +326,79 @@ export async function internalImportProjectData(
 
   const appWebsocket = await _getAppWs()
   const projectsZomeApi = _createProjectsZomeApi(appWebsocket)
-  const projectsCellId = cellIdFromString(projectsCellIdString)
 
   // Strategy: do things with no data references first
 
   // TAGS
   // do tags because outcomes reference them
-  const tagActionHashMap: {
-    [oldActionHash: ActionHashB64]: ActionHashB64
-  } = {}
-  // TAGS
-  // only v1.0.0-alpha and beyond have tags
-  for (let address of Object.keys(projectData.tags)) {
-    const old = projectData.tags[address]
-    const clone = {
-      ...old,
-    }
-    // an assigned field
-    // v1.0.4-alpha
-    delete clone.actionHash
+  const tagActionHashMap = await _cloneDataSet<Tag>(
+    projectData.tags,
+    cloneTag,
+    projectsZomeApi.tag.create,
+    createTag,
+    dispatch,
+    projectsCellIdString
+  )
 
-    let newTag: WireRecord<Tag>
-    try {
-      newTag = await projectsZomeApi.tag.create(projectsCellId, clone)
-      dispatch(createTag(projectsCellIdString, newTag))
-    } catch (e) {
-      console.log('createTag error', e)
-      throw e
-    }
+  const outcomeActionHashMap = await _cloneDataSet<Outcome>(
+    projectData.outcomes,
+    // closure in the depended upon hashmap
+    cloneOutcome(tagActionHashMap),
+    projectsZomeApi.outcome.create,
+    createOutcome,
+    dispatch,
+    projectsCellIdString
+  )
 
-    // add this new tag address to the tagActionHashMap
-    // to keep of which new addresses map to which old addresses
-    let oldTagActionHash: ActionHashB64
-    // as of v1.0.4-alpha
-    if (old.actionHash) oldTagActionHash = old.actionHash
+  const connectionsActionHashMap = await _cloneDataSet<Connection>(
+    projectData.connections,
+    // closure in the depended upon
+    cloneConnection(outcomeActionHashMap),
+    projectsZomeApi.connection.create,
+    createConnection,
+    dispatch,
+    projectsCellIdString
+  )
 
-    tagActionHashMap[oldTagActionHash] = newTag.actionHash
-  }
+  const outcomeMembersActionHashMap = await _cloneDataSet<OutcomeMember>(
+    projectData.outcomeMembers,
+    // closure in the depended upon
+    cloneData<OutcomeMember>(outcomeActionHashMap),
+    projectsZomeApi.outcomeMember.create,
+    createOutcomeMember,
+    dispatch,
+    projectsCellIdString
+  )
 
-  // OUTCOMES
-  const outcomeActionHashMap: {
-    [oldActionHash: ActionHashB64]: ActionHashB64
-  } = {}
-  // do the outcomes third, since pretty much everything else
-  // is sub-data to the outcomes
-  for (let outcomeActionHash of Object.keys(projectData.outcomes)) {
-    const oldOutcome = projectData.outcomes[outcomeActionHash]
-    const clone = {
-      ...oldOutcome,
-      // make sure tag references hold up through the migration
-      tags: oldOutcome.tags.map(
-        (oldTagHash: ActionHashB64) => tagActionHashMap[oldTagHash]
-      ),
-      isImported: true,
-    }
-    // as of v1.0.4-alpha
-    delete clone.actionHash
+  const outcomeCommentActionHashMap = await _cloneDataSet<OutcomeComment>(
+    projectData.outcomeComments,
+    // closure in the depended upon
+    cloneData<OutcomeComment>(outcomeActionHashMap),
+    projectsZomeApi.outcomeComment.create,
+    createOutcomeComment,
+    dispatch,
+    projectsCellIdString
+  )
 
-    let newOutcome: WireRecord<Outcome>
-    try {
-      newOutcome = await projectsZomeApi.outcome.create(projectsCellId, clone)
-      dispatch(createOutcome(projectsCellIdString, newOutcome))
-    } catch (e) {
-      console.log('createOutcome error', e)
-      throw e
-    }
-    // add this new outcome address to the outcomeActionHashMap
-    // to keep of which new addresses map to which old addresses
-    let oldOutcomeActionHash: ActionHashB64
-    // as of v1.0.4-alpha
-    if (oldOutcome.actionHash) oldOutcomeActionHash = oldOutcome.actionHash
-
-    outcomeActionHashMap[oldOutcomeActionHash] = newOutcome.actionHash
-  }
-
-  // CONNECTIONS
-  for (let address of Object.keys(projectData.connections)) {
-    const old = projectData.connections[address]
-    // v1.0.4-alpha: parentActionHash
-    const newParentOutcomeActionHash =
-      outcomeActionHashMap[old.parentActionHash]
-    // v1.0.4-alpha: childActionHash
-    const newChildOutcomeActionHash = outcomeActionHashMap[old.childActionHash]
-    const clone = {
-      ...old,
-      parentActionHash: newParentOutcomeActionHash,
-      childActionHash: newChildOutcomeActionHash,
-      // randomizer used to be a float, but is now an int
-      randomizer: Number(old.randomizer.toFixed()),
-      isImported: true,
-    }
-    // an assigned field
-    // as of v1.0.4-alpha
-    delete clone.actionHash
-
-    if (!clone.childActionHash || !clone.parentActionHash) {
-      console.log('weird, invalid connection:', clone)
-      continue
-    }
-    try {
-      const createdConnection = await projectsZomeApi.connection.create(
-        projectsCellId,
-        clone
-      )
-      dispatch(createConnection(projectsCellIdString, createdConnection))
-    } catch (e) {
-      console.log('createConnection error', e)
-      throw e
-    }
-  }
-
-  // OUTCOME MEMBERS
-  for (let address of Object.keys(projectData.outcomeMembers)) {
-    const old = projectData.outcomeMembers[address]
-    // v1.0.4-alpha: outcomeActionHash
-    const newOutcomeActionHash = outcomeActionHashMap[old.outcomeActionHash]
-    const clone = {
-      ...old,
-      outcomeActionHash: newOutcomeActionHash,
-      isImported: true,
-    }
-    // an assigned field
-    // as of v1.0.4-alpha
-    delete clone.actionHash
-
-    if (!clone.outcomeActionHash) {
-      console.log('weird, invalid outcomeMember:', clone)
-      continue
-    }
-    try {
-      const createdOutcomeMember = await projectsZomeApi.outcomeMember.create(
-        projectsCellId,
-        clone
-      )
-      dispatch(createOutcomeMember(projectsCellIdString, createdOutcomeMember))
-    } catch (e) {
-      console.log('createOutcomeMember error', e)
-      throw e
-    }
-  }
-
-  // OUTCOME COMMENTS
-  for (let address of Object.keys(projectData.outcomeComments)) {
-    const old = projectData.outcomeComments[address]
-    // v1.0.4-alpha: outcomeActionHash
-    const newOutcomeActionHash = outcomeActionHashMap[old.outcomeActionHash]
-    const clone = {
-      ...old,
-      outcomeActionHash: newOutcomeActionHash,
-      isImported: true,
-    }
-    // an assigned field
-    // v1.0.4-alpha
-    delete clone.actionHash
-
-    if (!clone.outcomeActionHash) {
-      console.log('weird, invalid outcomeComment:', clone)
-      continue
-    }
-    try {
-      const createdOutcomeComment = await projectsZomeApi.outcomeComment.create(
-        projectsCellId,
-        clone
-      )
-      dispatch(
-        createOutcomeComment(projectsCellIdString, createdOutcomeComment)
-      )
-    } catch (e) {
-      console.log('createOutcomeComment error', e)
-      throw e
-    }
-  }
-
-  // ENTRY POINTS
-  for (let address of Object.keys(projectData.entryPoints)) {
-    const old = projectData.entryPoints[address]
-    // v1.0.4-alpha: outcomeActionHash
-    const newOutcomeActionHash = outcomeActionHashMap[old.outcomeActionHash]
-    const clone = {
-      ...old,
-      outcomeActionHash: newOutcomeActionHash,
-      isImported: true,
-    }
-    // an assigned field
-    // v1.0.4-alpha
-    delete clone.actionHash
-
-    if (!clone.outcomeActionHash) {
-      console.log('weird, invalid entryPoint:', clone)
-      continue
-    }
-    try {
-      const createdEntryPoint = await projectsZomeApi.entryPoint.create(
-        projectsCellId,
-        clone
-      )
-      dispatch(createEntryPoint(projectsCellIdString, createdEntryPoint))
-    } catch (e) {
-      console.log('createEntryPoint error', e)
-      throw e
-    }
-  }
+  const entryPointActionHashMap = await _cloneDataSet<EntryPoint>(
+    projectData.entryPoints,
+    // closure in the depended upon
+    cloneData<EntryPoint>(outcomeActionHashMap),
+    projectsZomeApi.entryPoint.create,
+    createEntryPoint,
+    dispatch,
+    projectsCellIdString
+  )
 
   // return the list of old addresses mapped to new addresses
-  return outcomeActionHashMap
+  return {
+    tagActionHashMap,
+    outcomeActionHashMap,
+    connectionsActionHashMap,
+    outcomeMembersActionHashMap,
+    outcomeCommentActionHashMap,
+    entryPointActionHashMap,
+  }
 }
 
 export async function importProjectData(
@@ -432,6 +411,7 @@ export async function importProjectData(
     projectsCellIdString,
     dispatch,
     getAppWs,
-    createProjectsZomeApi
+    createProjectsZomeApi,
+    cloneDataSet
   )
 }
