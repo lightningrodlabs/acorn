@@ -6,7 +6,7 @@ on:
       - '*'
 
 jobs:
-  build-test:
+  unit-test:
     strategy:
       matrix:
         os:
