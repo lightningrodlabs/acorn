@@ -39,14 +39,11 @@ export async function cloneDataSet<T>(
     const clone = cloneFn(old)
     delete clone.actionHash
 
-    let newObj: WireRecord<T>
-    try {
-      newObj = await zomeCallFn(cellIdFromString(projectsCellIdString), clone)
-      dispatch(actionCreatorFn(projectsCellIdString, newObj))
-    } catch (e) {
-      console.log(`create obj error`, e)
-      throw e
-    }
+    const newObj: WireRecord<T> = await zomeCallFn(
+      cellIdFromString(projectsCellIdString),
+      clone
+    )
+    dispatch(actionCreatorFn(projectsCellIdString, newObj))
 
     let oldActionHash: ActionHashB64
     if (old.actionHash) oldActionHash = old.actionHash
