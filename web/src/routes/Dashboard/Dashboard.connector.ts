@@ -19,7 +19,7 @@ import {
   joinProjectCellId,
   removeProjectCellId,
 } from '../../redux/persistent/cells/actions'
-import { installProjectAppAndImport } from '../../migrating/import'
+import { installProjectAppAndImport } from '../../migrating/import/import'
 import { openInviteMembersModal } from '../../redux/ephemeral/invite-members-modal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString } from '../../utils'
@@ -186,7 +186,7 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
     updateProjectMeta: async (
       projectMeta: ProjectMeta,
       actionHash: ActionHashB64,
-      cellIdString: CellIdString,
+      cellIdString: CellIdString
     ) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)

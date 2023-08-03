@@ -12,7 +12,7 @@ import importProjectsData, {
   cloneConnection as _cloneConnection,
   cloneData as _cloneData,
   ActionHashMap,
-} from '../src/migrating/import'
+} from '../src/migrating/import/import'
 import { sampleGoodDataExport } from './sample-good-data-export'
 import { OutcomeMember, ProjectMeta, Tag } from '../src/types'
 import { WireRecord } from '../src/api/hdkCrud'
