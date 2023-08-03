@@ -1,17 +1,7 @@
 import importProjectsData, {
   installProjectAppAndImport as _installProjectAppAndImport,
-  importProjectData as _importProjectData,
   internalImportProjectsData,
   internalInstallProjectAppAndImport,
-  createProfilesZomeApi as _createProfilesZomeApi,
-  createProjectsZomeApi as _createProjectsZomeApi,
-  internalImportProjectData,
-  cloneDataSet as _cloneDataSet,
-  cloneTag as _cloneTag,
-  cloneOutcome as _cloneOutcome,
-  cloneConnection as _cloneConnection,
-  cloneData as _cloneData,
-  ActionHashMap,
 } from '../src/migrating/import/import'
 import { sampleGoodDataExport } from './sample-good-data-export'
 import { OutcomeMember, ProjectMeta, Tag } from '../src/types'
@@ -36,6 +26,22 @@ import { createConnection as dispatchCreateConnection } from '../src/redux/persi
 import { createOutcomeMember as dispatchCreateOutcomeMember } from '../src/redux/persistent/projects/outcome-members/actions'
 import { createOutcomeComment as dispatchCreateOutcomeComment } from '../src/redux/persistent/projects/outcome-comments/actions'
 import { createEntryPoint as dispatchCreateEntryPoint } from '../src/redux/persistent/projects/entry-points/actions'
+import {
+  createProfilesZomeApi as _createProfilesZomeApi,
+  createProjectsZomeApi as _createProjectsZomeApi,
+} from '../src/migrating/import/zomeApiCreators'
+import {
+  cloneDataSet as _cloneDataSet,
+  cloneConnection as _cloneConnection,
+  cloneOutcome as _cloneOutcome,
+  cloneTag as _cloneTag,
+  cloneData as _cloneData,
+  ActionHashMap,
+} from '../src/migrating/import/cloneFunctions'
+import {
+  createActionHashMapAndImportProjectData as _createActionHashMapAndImportProjectData,
+  internalCreateActionHashMapAndImportProjectData,
+} from '../src/migrating/import/createActionHashMapAndImportProjectData'
 
 let store: any // too complex of a type to mock
 
@@ -45,7 +51,7 @@ let createProjectsZomeApi: typeof _createProjectsZomeApi
 let projectsZomeApi: ProjectsZomeApi
 let installProjectAppAndImport: typeof _installProjectAppAndImport
 let installProjectApp: typeof _installProjectApp
-let importProjectData: typeof _importProjectData
+let createActionHashMapAndImportProjectData: typeof _createActionHashMapAndImportProjectData
 let baseRootState: typeof mockBaseRootState
 let mockGetState: () => RootState
 let cloneDataSet: typeof _cloneDataSet
@@ -109,7 +115,7 @@ beforeEach(() => {
     .fn()
     .mockResolvedValue([mockCellIdString, ['abc'], 'testString'])
 
-  importProjectData = jest.fn()
+  createActionHashMapAndImportProjectData = jest.fn()
 
   onStep = jest.fn()
 
@@ -228,7 +234,7 @@ describe('installProjectAppAndImport()', () => {
       sampleGoodDataExport.projects[0].projectMeta.passphrase,
       store.dispatch,
       installProjectApp,
-      importProjectData,
+      createActionHashMapAndImportProjectData,
       projectsZomeApi
     )
 
@@ -237,8 +243,8 @@ describe('installProjectAppAndImport()', () => {
       sampleGoodDataExport.projects[0].projectMeta.passphrase
     )
 
-    expect(importProjectData).toHaveBeenCalledTimes(1)
-    expect(importProjectData).toHaveBeenCalledWith(
+    expect(createActionHashMapAndImportProjectData).toHaveBeenCalledTimes(1)
+    expect(createActionHashMapAndImportProjectData).toHaveBeenCalledWith(
       sampleGoodDataExport.projects[0],
       mockCellIdString,
       store.dispatch
@@ -267,7 +273,7 @@ describe('importProjectData()', () => {
     let projectData = sampleGoodDataExport.projects[0]
     projectsZomeApi = createProjectsZomeApi(mockAppWs)
 
-    await internalImportProjectData(
+    await internalCreateActionHashMapAndImportProjectData(
       projectData,
       mockCellIdString,
       store.dispatch,

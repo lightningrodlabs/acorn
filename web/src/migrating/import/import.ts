@@ -35,6 +35,14 @@ import { installProjectApp } from '../../projects/installProjectApp'
 import { joinProjectCellId } from '../../redux/persistent/cells/actions'
 import { AppWebsocket, CellId } from '@holochain/client'
 import { createProfilesZomeApi, createProjectsZomeApi } from './zomeApiCreators'
+import {
+  cloneConnection,
+  cloneData,
+  cloneDataSet,
+  cloneOutcome,
+  cloneTag,
+} from './cloneFunctions'
+import { createActionHashMapAndImportProjectData } from './createActionHashMapAndImportProjectData'
 
 export async function internalImportProjectsData(
   // dependent functions
@@ -134,7 +142,7 @@ export async function internalInstallProjectAppAndImport(
   passphrase: string,
   dispatch: any,
   _installProjectApp: typeof installProjectApp,
-  _importProjectData: typeof importProjectData,
+  _importProjectData: typeof createActionHashMapAndImportProjectData,
   projectsZomeApi: ProjectsZomeApi
 ) {
   // first step is to install the dna
@@ -199,207 +207,7 @@ export async function installProjectAppAndImport(
     passphrase,
     dispatch,
     installProjectApp,
-    importProjectData,
+    createActionHashMapAndImportProjectData,
     projectsZomeApi
-  )
-}
-
-export type ActionHashMap = { [oldActionHash: ActionHashB64]: ActionHashB64 }
-
-/*
-  This function is an abstracted function
-  that can be used for any set of data (dataSet)
-  that should be written again to the DHT,
-  and the new actionHashes for the data (mapped)
-*/
-export async function cloneDataSet<T>(
-  dataSet: { [actionHash: string]: WithActionHash<T> },
-  cloneFn: (old: WithActionHash<T>) => WithActionHash<T>,
-  zomeCallFn: (cellId: CellId, obj: T) => Promise<WireRecord<T>>,
-  actionCreatorFn: (
-    cellIdString: CellIdString,
-    obj: WireRecord<T>
-  ) => Action<WireRecord<T>>,
-  dispatch: any,
-  projectsCellIdString: CellIdString
-) {
-  const newActionHashMap: ActionHashMap = {}
-
-  for (let address of Object.keys(dataSet)) {
-    const old = dataSet[address]
-    // NOTE: cloneFn should do a deep copy
-    // not just return the reference
-    const clone = cloneFn(old)
-    delete clone.actionHash
-
-    let newObj: WireRecord<T>
-    try {
-      newObj = await zomeCallFn(cellIdFromString(projectsCellIdString), clone)
-      dispatch(actionCreatorFn(projectsCellIdString, newObj))
-    } catch (e) {
-      console.log(`create obj error`, e)
-      throw e
-    }
-
-    let oldActionHash: ActionHashB64
-    if (old.actionHash) oldActionHash = old.actionHash
-    // TODO: fix how oldActionHash could be undefined, what
-    // should we do?
-    newActionHashMap[oldActionHash] = newObj.actionHash
-  }
-  return newActionHashMap
-}
-
-export const cloneTag = (old: WithActionHash<Tag>): WithActionHash<Tag> => {
-  return {
-    ...old,
-  }
-}
-
-export const cloneOutcome = (tagActionHashMap: ActionHashMap) => (
-  old: WithActionHash<Outcome>
-): WithActionHash<Outcome> => {
-  return {
-    ...old,
-    // make sure tag references hold up through the migration
-    tags: old.tags.map(
-      (oldTagHash: ActionHashB64) => tagActionHashMap[oldTagHash]
-    ),
-    isImported: true,
-  }
-}
-
-export const cloneConnection = (outcomeActionHashMap: ActionHashMap) => (
-  old: WithActionHash<Connection>
-): WithActionHash<Connection> => {
-  const newParentOutcomeActionHash = outcomeActionHashMap[old.parentActionHash]
-  // v1.0.4-alpha: childActionHash
-  const newChildOutcomeActionHash = outcomeActionHashMap[old.childActionHash]
-
-  return {
-    ...old,
-    parentActionHash: newParentOutcomeActionHash,
-    childActionHash: newChildOutcomeActionHash,
-    // randomizer used to be a float, but is now an int
-    randomizer: Number(old.randomizer.toFixed()),
-    isImported: true,
-  }
-}
-
-export const cloneData = <T extends { outcomeActionHash: ActionHashB64 }>(
-  outcomeActionHashMap: ActionHashMap
-) => (old: WithActionHash<T>): WithActionHash<T> => {
-  const newOutcomeActionHash = outcomeActionHashMap[old.outcomeActionHash]
-
-  return {
-    ...old,
-    outcomeActionHash: newOutcomeActionHash,
-    isImported: true,
-  }
-}
-
-export async function internalImportProjectData(
-  projectData: ProjectExportDataV1,
-  projectsCellIdString: CellIdString,
-  dispatch: any,
-  _getAppWs: typeof getAppWs,
-  _createProjectsZomeApi: typeof createProjectsZomeApi,
-  _cloneDataSet: typeof cloneDataSet
-) {
-  /*
-  outcomes, connections,
-  outcomeMembers, outcomeComments,
-  entryPoints, tags
-  */
-
-  const appWebsocket = await _getAppWs()
-  const projectsZomeApi = _createProjectsZomeApi(appWebsocket)
-
-  // Strategy: do things with no data references first
-
-  // TAGS
-  // do tags because outcomes reference them
-  const tagActionHashMap = await _cloneDataSet<Tag>(
-    projectData.tags,
-    cloneTag,
-    projectsZomeApi.tag.create,
-    createTag,
-    dispatch,
-    projectsCellIdString
-  )
-
-  const outcomeActionHashMap = await _cloneDataSet<Outcome>(
-    projectData.outcomes,
-    // closure in the depended upon hashmap
-    cloneOutcome(tagActionHashMap),
-    projectsZomeApi.outcome.create,
-    createOutcome,
-    dispatch,
-    projectsCellIdString
-  )
-
-  const connectionsActionHashMap = await _cloneDataSet<Connection>(
-    projectData.connections,
-    // closure in the depended upon
-    cloneConnection(outcomeActionHashMap),
-    projectsZomeApi.connection.create,
-    createConnection,
-    dispatch,
-    projectsCellIdString
-  )
-
-  const outcomeMembersActionHashMap = await _cloneDataSet<OutcomeMember>(
-    projectData.outcomeMembers,
-    // closure in the depended upon
-    cloneData<OutcomeMember>(outcomeActionHashMap),
-    projectsZomeApi.outcomeMember.create,
-    createOutcomeMember,
-    dispatch,
-    projectsCellIdString
-  )
-
-  const outcomeCommentActionHashMap = await _cloneDataSet<OutcomeComment>(
-    projectData.outcomeComments,
-    // closure in the depended upon
-    cloneData<OutcomeComment>(outcomeActionHashMap),
-    projectsZomeApi.outcomeComment.create,
-    createOutcomeComment,
-    dispatch,
-    projectsCellIdString
-  )
-
-  const entryPointActionHashMap = await _cloneDataSet<EntryPoint>(
-    projectData.entryPoints,
-    // closure in the depended upon
-    cloneData<EntryPoint>(outcomeActionHashMap),
-    projectsZomeApi.entryPoint.create,
-    createEntryPoint,
-    dispatch,
-    projectsCellIdString
-  )
-
-  // return the list of old addresses mapped to new addresses
-  return {
-    tagActionHashMap,
-    outcomeActionHashMap,
-    connectionsActionHashMap,
-    outcomeMembersActionHashMap,
-    outcomeCommentActionHashMap,
-    entryPointActionHashMap,
-  }
-}
-
-export async function importProjectData(
-  projectData: ProjectExportDataV1,
-  projectsCellIdString: CellIdString,
-  dispatch: any
-) {
-  return internalImportProjectData(
-    projectData,
-    projectsCellIdString,
-    dispatch,
-    getAppWs,
-    createProjectsZomeApi,
-    cloneDataSet
   )
 }
