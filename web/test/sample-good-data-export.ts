@@ -37,7 +37,7 @@ const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
           inBreakdown: false,
         },
       },
-      tags: [],
+      tags: ['124'],
       description: '',
       isImported: false,
       githubLink: '',

@@ -260,13 +260,13 @@ export async function cloneDataSet<T>(
   return newActionHashMap
 }
 
-const cloneTag = (old: WithActionHash<Tag>): WithActionHash<Tag> => {
+export const cloneTag = (old: WithActionHash<Tag>): WithActionHash<Tag> => {
   return {
     ...old,
   }
 }
 
-const cloneOutcome = (tagActionHashMap: ActionHashMap) => (
+export const cloneOutcome = (tagActionHashMap: ActionHashMap) => (
   old: WithActionHash<Outcome>
 ): WithActionHash<Outcome> => {
   return {
@@ -279,7 +279,7 @@ const cloneOutcome = (tagActionHashMap: ActionHashMap) => (
   }
 }
 
-const cloneConnection = (outcomeActionHashMap: ActionHashMap) => (
+export const cloneConnection = (outcomeActionHashMap: ActionHashMap) => (
   old: WithActionHash<Connection>
 ): WithActionHash<Connection> => {
   const newParentOutcomeActionHash = outcomeActionHashMap[old.parentActionHash]
@@ -296,7 +296,7 @@ const cloneConnection = (outcomeActionHashMap: ActionHashMap) => (
   }
 }
 
-const cloneData = <T extends { outcomeActionHash: ActionHashB64 }>(
+export const cloneData = <T extends { outcomeActionHash: ActionHashB64 }>(
   outcomeActionHashMap: ActionHashMap
 ) => (old: WithActionHash<T>): WithActionHash<T> => {
   const newOutcomeActionHash = outcomeActionHashMap[old.outcomeActionHash]
@@ -404,7 +404,7 @@ export async function importProjectData(
   projectsCellIdString: CellIdString,
   dispatch: any
 ) {
-  internalImportProjectData(
+  return internalImportProjectData(
     projectData,
     projectsCellIdString,
     dispatch,

@@ -6,9 +6,15 @@ import importProjectsData, {
   createProfilesZomeApi as _createProfilesZomeApi,
   createProjectsZomeApi as _createProjectsZomeApi,
   internalImportProjectData,
+  cloneDataSet as _cloneDataSet,
+  cloneTag as _cloneTag,
+  cloneOutcome as _cloneOutcome,
+  cloneConnection as _cloneConnection,
+  cloneData as _cloneData,
+  ActionHashMap,
 } from '../src/migrating/import'
 import { sampleGoodDataExport } from './sample-good-data-export'
-import { ProjectMeta } from '../src/types'
+import { OutcomeMember, ProjectMeta, Tag } from '../src/types'
 import { WireRecord } from '../src/api/hdkCrud'
 import mockUnmigratedProjectMeta from './mockProjectMeta'
 import mockBaseRootState from './mockRootState'
@@ -24,6 +30,12 @@ import mockTag from './mockTag'
 import mockOutcomeMember from './mockOutcomeMember'
 import mockOutcomeComment from './mockOutcomeComment'
 import mockEntryPoint from './mockEntryPoint'
+import { createTag as dispatchCreateTag } from '../src/redux/persistent/projects/tags/actions'
+import { createOutcome as dispatchCreateOutcome } from '../src/redux/persistent/projects/outcomes/actions'
+import { createConnection as dispatchCreateConnection } from '../src/redux/persistent/projects/connections/actions'
+import { createOutcomeMember as dispatchCreateOutcomeMember } from '../src/redux/persistent/projects/outcome-members/actions'
+import { createOutcomeComment as dispatchCreateOutcomeComment } from '../src/redux/persistent/projects/outcome-comments/actions'
+import { createEntryPoint as dispatchCreateEntryPoint } from '../src/redux/persistent/projects/entry-points/actions'
 
 let store: any // too complex of a type to mock
 
@@ -36,18 +48,28 @@ let installProjectApp: typeof _installProjectApp
 let importProjectData: typeof _importProjectData
 let baseRootState: typeof mockBaseRootState
 let mockGetState: () => RootState
-
+let cloneDataSet: typeof _cloneDataSet
 let onStep: Parameters<typeof importProjectsData>[2]
 let mockAppWs: AppWebsocket
 let projectMeta: WireRecord<ProjectMeta>
 let mockMigrationData: string
 let mockCellIdString: string
 let createWhoami: typeof ProfilesZomeApi.prototype.profile.createWhoami
+let cloneTag: typeof _cloneTag
+
+const createTag = jest.fn().mockResolvedValue(mockTag)
+const createOutcome = jest.fn().mockResolvedValue(mockOutcome)
+const createConnection = jest.fn().mockResolvedValue(mockConnection)
+const createOutcomeMember = jest.fn().mockResolvedValue(mockOutcomeMember)
+const createOutcomeComment = jest.fn().mockResolvedValue(mockOutcomeComment)
+const createEntryPoint = jest.fn().mockResolvedValue(mockEntryPoint)
 
 beforeEach(() => {
   mockAppWs = {} as typeof mockAppWs
   getAppWs = jest.fn().mockResolvedValue(mockAppWs)
   createWhoami = jest.fn()
+  cloneDataSet = jest.fn()
+  cloneTag = jest.fn().mockReturnValue({ ...mockTag })
 
   createProfilesZomeApi = jest.fn().mockReturnValue({
     profile: {
@@ -58,6 +80,24 @@ beforeEach(() => {
   createProjectsZomeApi = jest.fn().mockReturnValue({
     projectMeta: {
       simpleCreateProjectMeta: jest.fn().mockResolvedValue(projectMeta),
+    },
+    tag: {
+      create: createTag,
+    },
+    outcome: {
+      create: createOutcome,
+    },
+    connection: {
+      create: createConnection,
+    },
+    outcomeMember: {
+      create: createOutcomeMember,
+    },
+    outcomeComment: {
+      create: createOutcomeComment,
+    },
+    entryPoint: {
+      create: createEntryPoint,
     },
   })
   projectsZomeApi = createProjectsZomeApi(mockAppWs)
@@ -223,61 +263,177 @@ describe('installProjectAppAndImport()', () => {
 })
 
 describe('importProjectData()', () => {
-  const createTag = jest.fn().mockResolvedValue(mockTag)
-  const createOutcome = jest.fn().mockResolvedValue(mockOutcome)
-  const createConnection = jest.fn().mockResolvedValue(mockConnection)
-  const createOutcomeMember = jest.fn().mockResolvedValue(mockOutcomeMember)
-  const createOutcomeComment = jest.fn().mockResolvedValue(mockOutcomeComment)
-  const createEntryPoint = jest.fn().mockResolvedValue(mockEntryPoint)
+  it('creates actionHashMaps for all relevant data types', async () => {
+    let projectData = sampleGoodDataExport.projects[0]
+    projectsZomeApi = createProjectsZomeApi(mockAppWs)
 
-  it('does something', async () => {
-    createProjectsZomeApi = jest.fn().mockReturnValue({
-      tag: {
-        create: createTag,
-      },
-      outcome: {
-        create: createOutcome,
-      },
-      connection: {
-        create: createConnection,
-      },
-      outcomeMember: {
-        create: createOutcomeMember,
-      },
-      outcomeComment: {
-        create: createOutcomeComment,
-      },
-      entryPoint: {
-        create: createEntryPoint,
-      },
-    })
-
-    const result = await internalImportProjectData(
-      sampleGoodDataExport.projects[0],
+    await internalImportProjectData(
+      projectData,
       mockCellIdString,
       store.dispatch,
       getAppWs,
       createProjectsZomeApi,
-      jest.fn() // TODO: replace with cloneDataSet()
+      cloneDataSet
     )
-    console.log(result)
-    const project = sampleGoodDataExport.projects[0]
 
-    expect(createTag).toHaveBeenCalledTimes(Object.keys(project.tags).length)
-    expect(createOutcome).toHaveBeenCalledTimes(
-      Object.keys(project.outcomes).length
+    expect(cloneDataSet).toHaveBeenCalledTimes(6)
+
+    expect(cloneDataSet).toHaveBeenCalledWith(
+      projectData.tags,
+      expect.anything(), // cloneFn is not passed as a positional arg, so we can't check for it directly
+      projectsZomeApi.tag.create,
+      dispatchCreateTag,
+      store.dispatch,
+      mockCellIdString
     )
-    expect(createConnection).toHaveBeenCalledTimes(
-      Object.keys(project.connections).length
+
+    expect(cloneDataSet).toHaveBeenCalledWith(
+      projectData.outcomes,
+      expect.anything(),
+      projectsZomeApi.outcome.create,
+      dispatchCreateOutcome,
+      store.dispatch,
+      mockCellIdString
     )
-    expect(createOutcomeMember).toHaveBeenCalledTimes(
-      Object.keys(project.outcomeMembers).length
+
+    expect(cloneDataSet).toHaveBeenCalledWith(
+      projectData.connections,
+      expect.anything(),
+      projectsZomeApi.connection.create,
+      dispatchCreateConnection,
+      store.dispatch,
+      mockCellIdString
     )
-    expect(createOutcomeComment).toHaveBeenCalledTimes(
-      Object.keys(project.outcomeComments).length
+
+    expect(cloneDataSet).toHaveBeenCalledWith(
+      projectData.outcomeMembers,
+      expect.anything(),
+      projectsZomeApi.outcomeMember.create,
+      dispatchCreateOutcomeMember,
+      store.dispatch,
+      mockCellIdString
     )
-    expect(createEntryPoint).toHaveBeenCalledTimes(
-      Object.keys(project.entryPoints).length
+
+    expect(cloneDataSet).toHaveBeenCalledWith(
+      projectData.outcomeComments,
+      expect.anything(),
+      projectsZomeApi.outcomeComment.create,
+      dispatchCreateOutcomeComment,
+      store.dispatch,
+      mockCellIdString
     )
+
+    expect(cloneDataSet).toHaveBeenCalledWith(
+      projectData.entryPoints,
+      expect.anything(),
+      projectsZomeApi.entryPoint.create,
+      dispatchCreateEntryPoint,
+      store.dispatch,
+      mockCellIdString
+    )
+  })
+})
+
+describe('cloneDataSet()', () => {
+  it('returns a new actionHashMap with old actionHash as the key and new one as the value', async () => {
+    const projectData = sampleGoodDataExport.projects[0]
+    const result = await _cloneDataSet<Tag>(
+      projectData.tags,
+      cloneTag,
+      projectsZomeApi.tag.create,
+      dispatchCreateTag,
+      store.dispatch,
+      mockCellIdString
+    )
+
+    expect(Object.keys(projectData.tags).length).toBe(1)
+    expect(Object.keys(result).length).toBe(1)
+
+    const oldTagActionHash = Object.values(projectData.tags)[0].actionHash
+    expect(result).toEqual({ [oldTagActionHash]: 'testActionHash' })
+  })
+})
+
+describe('cloneTag()', () => {
+  it('creates a deep copy of the old tag', () => {
+    const oldTag = sampleGoodDataExport.projects[0].tags.testTagActionHash
+    const result = _cloneTag(oldTag)
+
+    expect(result).toEqual(oldTag)
+    expect(result).not.toBe(oldTag)
+  })
+})
+
+describe('cloneOutcome()', () => {
+  it('creates a deep copy of the old outcome', () => {
+    const oldOutcome = Object.values(
+      sampleGoodDataExport.projects[0].outcomes
+    )[0]
+    const tagActionHashMap = {
+      [sampleGoodDataExport.projects[0].tags.testTagActionHash.actionHash]:
+        'testActionHash',
+    }
+    const result = _cloneOutcome(tagActionHashMap)(oldOutcome)
+
+    expect(result).toEqual({
+      ...oldOutcome,
+      tags: ['testActionHash'],
+      isImported: true,
+    })
+  })
+})
+
+describe('cloneConnection()', () => {
+  it('creates a deep copy of the old connection', () => {
+    const oldConnection = Object.values(
+      sampleGoodDataExport.projects[0].connections
+    )[0]
+    const outcome1 = {
+      [Object.keys(
+        sampleGoodDataExport.projects[0].outcomes
+      )[0]]: Object.values(sampleGoodDataExport.projects[0].outcomes)[0]
+        .actionHash,
+    }
+    const outcome2 = {
+      [Object.keys(
+        sampleGoodDataExport.projects[0].outcomes
+      )[1]]: Object.values(sampleGoodDataExport.projects[0].outcomes)[1]
+        .actionHash,
+    }
+    const outcomeActionHashMap: ActionHashMap = {
+      ...outcome1,
+      ...outcome2,
+    }
+    const result = _cloneConnection(outcomeActionHashMap)(oldConnection)
+
+    expect(result).toEqual({
+      ...oldConnection,
+      parentActionHash: oldConnection.parentActionHash,
+      childActionHash: oldConnection.childActionHash,
+      randomizer: Number(oldConnection.randomizer.toFixed()),
+      isImported: true,
+    })
+  })
+})
+describe('cloneData()', () => {
+  it('creates a deep copy of the old data', () => {
+    // using outcome member as a generic example
+
+    const oldData = Object.values(
+      sampleGoodDataExport.projects[0].outcomeMembers
+    )[0]
+    const outcomeActionHashMap: ActionHashMap = {
+      [oldData.outcomeActionHash]: Object.values(
+        sampleGoodDataExport.projects[0].outcomes
+      )[2].actionHash,
+    }
+
+    const result = _cloneData<OutcomeMember>(outcomeActionHashMap)(oldData)
+
+    expect(result).toEqual({
+      ...oldData,
+      outcomeActionHash: outcomeActionHashMap[oldData.outcomeActionHash],
+      isImported: true,
+    })
   })
 })
