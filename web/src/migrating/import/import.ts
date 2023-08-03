@@ -34,6 +34,7 @@ import { simpleCreateProjectMeta } from '../../redux/persistent/projects/project
 import { installProjectApp } from '../../projects/installProjectApp'
 import { joinProjectCellId } from '../../redux/persistent/cells/actions'
 import { AppWebsocket, CellId } from '@holochain/client'
+import { createProfilesZomeApi, createProjectsZomeApi } from './zomeApiCreators'
 
 export async function internalImportProjectsData(
   // dependent functions
@@ -108,17 +109,6 @@ export async function internalImportProjectsData(
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
   }
-}
-
-export function createProfilesZomeApi(
-  appWebsocket: AppWebsocket
-): ProfilesZomeApi {
-  return new ProfilesZomeApi(appWebsocket)
-}
-export function createProjectsZomeApi(
-  appWebsocket: AppWebsocket
-): ProjectsZomeApi {
-  return new ProjectsZomeApi(appWebsocket)
 }
 
 export default async function importProjectsData(
