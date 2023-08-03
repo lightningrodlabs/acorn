@@ -1,7 +1,5 @@
 import importProjectsData, {
-  installProjectAppAndImport as _installProjectAppAndImport,
   internalImportProjectsData,
-  internalInstallProjectAppAndImport,
 } from '../src/migrating/import/import'
 import { sampleGoodDataExport } from './sample-good-data-export'
 import { OutcomeMember, ProjectMeta, Tag } from '../src/types'
@@ -42,6 +40,10 @@ import {
   createActionHashMapAndImportProjectData as _createActionHashMapAndImportProjectData,
   internalCreateActionHashMapAndImportProjectData,
 } from '../src/migrating/import/createActionHashMapAndImportProjectData'
+import {
+  installProjectAppAndImport as _installProjectAppAndImport,
+  internalInstallProjectAppAndImport,
+} from '../src/migrating/import/installProjectAppAndImport'
 
 let store: any // too complex of a type to mock
 
