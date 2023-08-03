@@ -1,48 +1,11 @@
-import { createOutcome } from '../../redux/persistent/projects/outcomes/actions'
-import { createConnection } from '../../redux/persistent/projects/connections/actions'
-import { createOutcomeComment } from '../../redux/persistent/projects/outcome-comments/actions'
-import { createOutcomeMember } from '../../redux/persistent/projects/outcome-members/actions'
-import { createEntryPoint } from '../../redux/persistent/projects/entry-points/actions'
-import ProjectsZomeApi from '../../api/projectsApi'
-import ProfilesZomeApi from '../../api/profilesApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
-import { createTag } from '../../redux/persistent/projects/tags/actions'
-import {
-  Connection,
-  EntryPoint,
-  LayeringAlgorithm,
-  Outcome,
-  OutcomeComment,
-  OutcomeMember,
-  ProjectMeta,
-  Tag,
-} from '../../types'
-import { WireRecord } from '../../api/hdkCrud'
-import {
-  Action,
-  ActionHashB64,
-  AgentPubKeyB64,
-  CellIdString,
-  WithActionHash,
-} from '../../types/shared'
 import { RootState } from '../../redux/reducer'
-import { AllProjectsDataExport, ProjectExportDataV1 } from '../export'
+import { AllProjectsDataExport } from '../export'
 import { createWhoami } from '../../redux/persistent/profiles/who-am-i/actions'
-import { setMember } from '../../redux/persistent/projects/members/actions'
-import { simpleCreateProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
 import { installProjectApp } from '../../projects/installProjectApp'
 import { joinProjectCellId } from '../../redux/persistent/cells/actions'
-import { AppWebsocket, CellId } from '@holochain/client'
 import { createProfilesZomeApi, createProjectsZomeApi } from './zomeApiCreators'
-import {
-  cloneConnection,
-  cloneData,
-  cloneDataSet,
-  cloneOutcome,
-  cloneTag,
-} from './cloneFunctions'
-import { createActionHashMapAndImportProjectData } from './createActionHashMapAndImportProjectData'
 import { installProjectAppAndImport } from './installProjectAppAndImport'
 
 export async function internalImportProjectsData(
