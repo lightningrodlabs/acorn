@@ -189,7 +189,6 @@ describe('installProjectAppAndImport()', () => {
       store.dispatch,
       installProjectApp,
       importProjectData,
-      createProjectsZomeApi,
       projectsZomeApi
     )
 

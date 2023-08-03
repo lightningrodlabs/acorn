@@ -145,7 +145,6 @@ export async function internalInstallProjectAppAndImport(
   dispatch: any,
   _installProjectApp: typeof installProjectApp,
   _importProjectData: typeof importProjectData,
-  _createProjectsZomeApi: typeof createProjectsZomeApi,
   projectsZomeApi: ProjectsZomeApi
 ) {
   // first step is to install the dna
@@ -211,7 +210,6 @@ export async function installProjectAppAndImport(
     dispatch,
     installProjectApp,
     importProjectData,
-    createProjectsZomeApi,
     projectsZomeApi
   )
 }
