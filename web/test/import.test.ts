@@ -44,6 +44,8 @@ import {
   installProjectAppAndImport as _installProjectAppAndImport,
   internalInstallProjectAppAndImport,
 } from '../src/migrating/import/installProjectAppAndImport'
+import mockWhoami from './mockWhoami'
+import { cellIdFromString } from '../src/utils'
 
 let store: any // too complex of a type to mock
 
@@ -75,7 +77,7 @@ const createEntryPoint = jest.fn().mockResolvedValue(mockEntryPoint)
 beforeEach(() => {
   mockAppWs = {} as typeof mockAppWs
   getAppWs = jest.fn().mockResolvedValue(mockAppWs)
-  createWhoami = jest.fn()
+  createWhoami = jest.fn().mockResolvedValue(mockWhoami)
   cloneDataSet = jest.fn()
   cloneTag = jest.fn().mockReturnValue({ ...mockTag })
 
@@ -179,8 +181,22 @@ describe('importProjectsData()', () => {
     )
 
     expect(createWhoami).toHaveBeenCalledTimes(1)
+    expect(createWhoami).toHaveBeenCalledWith(
+      cellIdFromString(baseRootState.cells.profiles),
+      sampleGoodDataExport.myProfile
+    )
 
-    expect(store.dispatch).toHaveBeenCalled()
+    expect(store.dispatch).toHaveBeenCalledTimes(2)
+    expect(store.dispatch).toHaveBeenCalledWith({
+      type: 'CREATE_WHOAMI',
+      payload: mockWhoami,
+      meta: { cellIdString: mockCellIdString },
+    })
+    expect(store.dispatch).toHaveBeenLastCalledWith({
+      type: 'JOIN_PROJECT_CELL_ID',
+      payload: mockCellIdString,
+    })
+
     expect(store.getState).toHaveBeenCalledTimes(1)
 
     expect(onStep).toHaveBeenCalledTimes(
