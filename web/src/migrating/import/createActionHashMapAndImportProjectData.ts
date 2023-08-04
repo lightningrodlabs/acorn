@@ -1,3 +1,4 @@
+import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { createConnection } from '../../redux/persistent/projects/connections/actions'
 import { createEntryPoint } from '../../redux/persistent/projects/entry-points/actions'
@@ -28,8 +29,7 @@ export async function internalCreateActionHashMapAndImportProjectData(
   projectData: ProjectExportDataV1,
   projectsCellIdString: CellIdString,
   dispatch: any,
-  _getAppWs: typeof getAppWs,
-  _createProjectsZomeApi: typeof createProjectsZomeApi,
+  projectsZomeApi: ProjectsZomeApi,
   _cloneDataSet: typeof cloneDataSet
 ) {
   /*
@@ -37,9 +37,6 @@ export async function internalCreateActionHashMapAndImportProjectData(
   outcomeMembers, outcomeComments,
   entryPoints, tags
   */
-
-  const appWebsocket = await _getAppWs()
-  const projectsZomeApi = _createProjectsZomeApi(appWebsocket)
 
   // Strategy: do things with no data references first
 
@@ -120,12 +117,13 @@ export async function createActionHashMapAndImportProjectData(
   projectsCellIdString: CellIdString,
   dispatch: any
 ) {
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = createProjectsZomeApi(appWebsocket)
   return internalCreateActionHashMapAndImportProjectData(
     projectData,
     projectsCellIdString,
     dispatch,
-    getAppWs,
-    createProjectsZomeApi,
+    projectsZomeApi,
     cloneDataSet
   )
 }

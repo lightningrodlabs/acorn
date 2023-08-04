@@ -1,4 +1,4 @@
-import { CellId } from '@holochain/client/lib/types'
+import { AgentPubKeyB64, CellId } from '@holochain/client/lib/types'
 import { WireRecord } from '../../api/hdkCrud'
 import {
   Action,
@@ -10,6 +10,7 @@ import { cellIdFromString } from '../../utils'
 import { Tag } from '../../types/tag'
 import { Outcome } from '../../types/outcome'
 import { Connection } from '../../types/connection'
+import { LayeringAlgorithm, ProjectMeta } from '../../types'
 
 export type ActionHashMap = { [oldActionHash: ActionHashB64]: ActionHashB64 }
 
@@ -87,6 +88,31 @@ export const cloneConnection = (outcomeActionHashMap: ActionHashMap) => (
     // randomizer used to be a float, but is now an int
     randomizer: Number(old.randomizer.toFixed()),
     isImported: true,
+  }
+}
+
+export const cloneProjectMeta = (
+  outcomeActionHashMap: ActionHashMap,
+  agentAddress: AgentPubKeyB64,
+  passphrase: string
+) => (old: WithActionHash<ProjectMeta>): WithActionHash<ProjectMeta> => {
+  const originalTopPriorityOutcomes = old.topPriorityOutcomes
+  return {
+    ...old,
+    // the question mark operator for backwards compatibility
+    topPriorityOutcomes: originalTopPriorityOutcomes
+      ? originalTopPriorityOutcomes
+          .map((oldAddress) => outcomeActionHashMap[oldAddress])
+          .filter((address) => address)
+      : [],
+    // add a fallback layering algorithm in case the project has none
+    layeringAlgorithm: old.layeringAlgorithm
+      ? old.layeringAlgorithm
+      : LayeringAlgorithm.LongestPath,
+    createdAt: Date.now(),
+    creatorAgentPubKey: agentAddress,
+    passphrase: passphrase,
+    isMigrated: null,
   }
 }
 
