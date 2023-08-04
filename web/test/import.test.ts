@@ -6,7 +6,7 @@ import { OutcomeMember, ProjectMeta, Tag } from '../src/types'
 import { WireRecord } from '../src/api/hdkCrud'
 import mockUnmigratedProjectMeta from './mockProjectMeta'
 import mockBaseRootState from './mockRootState'
-import { installProjectApp as _installProjectApp } from '../src/projects/installProjectApp'
+import { installProjectApp as _installProjectApp } from '../src/projects/installProject'
 import { getAppWs as _getAppWs } from '../src/hcWebsockets'
 import { AppWebsocket } from '@holochain/client'
 import { RootState } from '../src/redux/reducer'
@@ -153,7 +153,6 @@ describe('importProjectsData()', () => {
   it('successfully parses and imports project data and user profile', async () => {
     await internalImportProjectsData(
       profilesZomeApi,
-      projectsZomeApi,
       installProjectAppAndImport,
       installProjectApp,
       store,
@@ -217,7 +216,6 @@ describe('importProjectsData()', () => {
     try {
       await internalImportProjectsData(
         profilesZomeApi,
-        projectsZomeApi,
         installProjectAppAndImport,
         installProjectApp,
         store,
@@ -233,7 +231,6 @@ describe('importProjectsData()', () => {
     try {
       await internalImportProjectsData(
         profilesZomeApi,
-        projectsZomeApi,
         installProjectAppAndImport,
         installProjectApp,
         store,

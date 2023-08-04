@@ -1,5 +1,6 @@
 import ProjectsZomeApi from '../../api/projectsApi'
-import { installProjectApp } from '../../projects/installProjectApp'
+import { getAppWs } from '../../hcWebsockets'
+import { installProject } from '../../projects/installProject'
 import { setMember } from '../../redux/persistent/projects/members/actions'
 import { simpleCreateProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
 import { AgentPubKeyB64 } from '../../types/shared'
@@ -13,13 +14,13 @@ export async function internalInstallProjectAppAndImport(
   projectData: ProjectExportDataV1,
   passphrase: string,
   dispatch: any,
-  _installProjectApp: typeof installProjectApp,
+  _installProject: typeof installProject,
   _importProjectData: typeof createActionHashMapAndImportProjectData,
   projectsZomeApi: ProjectsZomeApi
 ) {
   
   // first step is to install the dna
-  const [projectsCellIdString] = await _installProjectApp(passphrase)
+  const [projectsCellIdString] = await _installProject(passphrase)
   const cellId = cellIdFromString(projectsCellIdString)
   
   // next step is to import the bulk of the data into that project
@@ -56,14 +57,15 @@ export async function installProjectAppAndImport(
   projectData: ProjectExportDataV1,
   passphrase: string,
   dispatch: any,
-  projectsZomeApi: ProjectsZomeApi
 ) {
-  internalInstallProjectAppAndImport(
+  const appWebsocket = await getAppWs()
+  const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+  return internalInstallProjectAppAndImport(
     agentAddress,
     projectData,
     passphrase,
     dispatch,
-    installProjectApp,
+    installProject,
     createActionHashMapAndImportProjectData,
     projectsZomeApi
   )

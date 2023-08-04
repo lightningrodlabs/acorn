@@ -3,17 +3,15 @@ import { cellIdFromString } from '../../utils'
 import { RootState } from '../../redux/reducer'
 import { AllProjectsDataExport } from '../export'
 import { createWhoami } from '../../redux/persistent/profiles/who-am-i/actions'
-import { installProjectApp } from '../../projects/installProjectApp'
+import { installProjectApp } from '../../projects/installProject'
 import { joinProjectCellId } from '../../redux/persistent/cells/actions'
-import { createProfilesZomeApi, createProjectsZomeApi } from './zomeApiCreators'
+import { createProfilesZomeApi } from './zomeApiCreators'
 import { installProjectAppAndImport } from './installProjectAppAndImport'
 import ProfilesZomeApi from '../../api/profilesApi'
-import ProjectsZomeApi from '../../api/projectsApi'
 
 export async function internalImportProjectsData(
   // dependencies
   profilesZomeApi: ProfilesZomeApi,
-  projectsZomeApi: ProjectsZomeApi,
   _installProjectAppAndImport: typeof installProjectAppAndImport,
   _installProjectApp: typeof installProjectApp,
   store: any,
@@ -65,7 +63,6 @@ export async function internalImportProjectsData(
       projectData,
       passphrase,
       store.dispatch,
-      projectsZomeApi
     )
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
@@ -88,10 +85,8 @@ export default async function importProjectsData(
 ) {
   const appWebsocket = await getAppWs()
   const profilesZomeApi = createProfilesZomeApi(appWebsocket)
-  const projectsZomeApi = createProjectsZomeApi(appWebsocket)
   return internalImportProjectsData(
     profilesZomeApi,
-    projectsZomeApi,
     installProjectAppAndImport,
     installProjectApp,
     store,
