@@ -12,7 +12,7 @@ import {
 import selectEntryPoints from '../../redux/persistent/projects/entry-points/select'
 
 import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
-import { installProjectAppAndImport } from '../../migrating/import/installProjectAppAndImport'
+import { installProjectAndImport } from '../../migrating/import/installProjectAndImport'
 import { openInviteMembersModal } from '../../redux/ephemeral/invite-members-modal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString } from '../../utils'
@@ -132,7 +132,7 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
       return cellIdString
     },
     installProjectAppAndImport: (agentAddress, projectData, passphrase) => {
-      return installProjectAppAndImport(
+      return installProjectAndImport(
         agentAddress,
         projectData,
         passphrase,

@@ -1,32 +1,30 @@
 import ProjectsZomeApi from '../../api/projectsApi'
+import { finalizeCreateProject } from '../../projects/createProject'
 import { getAppWs } from '../../hcWebsockets'
 import { installProject } from '../../projects/installProject'
-import { setMember } from '../../redux/persistent/projects/members/actions'
-import { simpleCreateProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
 import { AgentPubKeyB64 } from '../../types/shared'
-import { cellIdFromString } from '../../utils'
 import { ProjectExportDataV1 } from '../export'
 import { cloneProjectMeta } from './cloneFunctions'
 import { createActionHashMapAndImportProjectData } from './createActionHashMapAndImportProjectData'
 
-export async function internalInstallProjectAppAndImport(
+export async function internalInstallProjectAndImport(
   agentAddress: AgentPubKeyB64,
   projectData: ProjectExportDataV1,
   passphrase: string,
   dispatch: any,
-  _installProject: typeof installProject,
-  _importProjectData: typeof createActionHashMapAndImportProjectData,
+  iInstallProject: typeof installProject,
+  iCreateActionHashMapAndImportProjectData: typeof createActionHashMapAndImportProjectData,
+  iFinalizeCreateProject: typeof finalizeCreateProject,
   projectsZomeApi: ProjectsZomeApi
 ) {
   
   // first step is to install the dna
-  const [projectsCellIdString] = await _installProject(passphrase)
-  const cellId = cellIdFromString(projectsCellIdString)
+  const [cellIdString] = await iInstallProject(passphrase)
   
   // next step is to import the bulk of the data into that project
-  const oldToNewAddressMaps = await _importProjectData(
+  const oldToNewAddressMaps = await iCreateActionHashMapAndImportProjectData(
     projectData,
-    projectsCellIdString,
+    cellIdString,
     dispatch
   )
 
@@ -40,19 +38,16 @@ export async function internalInstallProjectAppAndImport(
     passphrase
   )(projectData.projectMeta)
   delete projectMeta.actionHash
-  const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(
-    cellId,
-    projectMeta
+  await iFinalizeCreateProject(
+    cellIdString,
+    projectMeta,
+    agentAddress,
+    dispatch,
+    projectsZomeApi
   )
-  dispatch(
-    simpleCreateProjectMeta(projectsCellIdString, simpleCreatedProjectMeta)
-  )
-  // this registers the agent to redux as a member of the project
-  dispatch(setMember(projectsCellIdString, { agentPubKey: agentAddress }))
-
 }
 
-export async function installProjectAppAndImport(
+export async function installProjectAndImport(
   agentAddress: AgentPubKeyB64,
   projectData: ProjectExportDataV1,
   passphrase: string,
@@ -60,13 +55,14 @@ export async function installProjectAppAndImport(
 ) {
   const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-  return internalInstallProjectAppAndImport(
+  return internalInstallProjectAndImport(
     agentAddress,
     projectData,
     passphrase,
     dispatch,
     installProject,
     createActionHashMapAndImportProjectData,
+    finalizeCreateProject,
     projectsZomeApi
   )
 }

@@ -5,17 +5,25 @@ import { getAgentPubKey } from '../hcWebsockets'
 import { joinProjectCellId } from '../redux/persistent/cells/actions'
 import { CellIdString } from '../types/shared'
 
-export async function joinProject(
+export async function internalJoinProject(
   passphrase: string,
   dispatch: any,
-): Promise<CellIdString> {
-  const [cellIdString, _cellId, _installedAppId] = await installProject(
+  iInstallProject: typeof installProject
+) {
+  const [cellIdString, _cellId, _installedAppId] = await iInstallProject(
     passphrase
   )
   // this will trigger the fetching of project meta
   // checks and other things
   dispatch(joinProjectCellId(cellIdString))
   return cellIdString
+}
+
+export async function joinProject(
+  passphrase: string,
+  dispatch: any
+): Promise<CellIdString> {
+  return internalJoinProject(passphrase, dispatch, installProject)
 }
 
 export function triggerJoinSignal(cellId: CellId, appWs: AppWebsocket) {
