@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import './VersionUpdateEntering.scss'
 
 import { useStore } from 'react-redux'
-import importProjectsData from '../../migrating/import'
+import importProjectsData from '../../migrating/import/import'
 import { useHistory } from 'react-router-dom'
 import MigrationProgress from '../../components/MigrationProgress/MigrationProgress'
 import { RootState } from '../../redux/reducer'
