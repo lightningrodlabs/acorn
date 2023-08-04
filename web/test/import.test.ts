@@ -50,9 +50,9 @@ import mockActionHashMap from './mockActionHashMap'
 
 let store: any // too complex of a type to mock
 
-let getAppWs: typeof _getAppWs
 let createProfilesZomeApi: typeof _createProfilesZomeApi
 let createProjectsZomeApi: typeof _createProjectsZomeApi
+let profilesZomeApi: ProfilesZomeApi
 let projectsZomeApi: ProjectsZomeApi
 let installProjectAppAndImport: typeof _installProjectAppAndImport
 let installProjectApp: typeof _installProjectApp
@@ -76,8 +76,6 @@ const createOutcomeComment = jest.fn().mockResolvedValue(mockOutcomeComment)
 const createEntryPoint = jest.fn().mockResolvedValue(mockEntryPoint)
 
 beforeEach(() => {
-  mockAppWs = {} as typeof mockAppWs
-  getAppWs = jest.fn().mockResolvedValue(mockAppWs)
   createWhoami = jest.fn().mockResolvedValue(mockWhoami)
   cloneDataSet = jest
     .fn()
@@ -118,6 +116,7 @@ beforeEach(() => {
       create: createEntryPoint,
     },
   })
+  profilesZomeApi = createProfilesZomeApi(mockAppWs)
   projectsZomeApi = createProjectsZomeApi(mockAppWs)
   installProjectAppAndImport = jest.fn()
   mockCellIdString =
@@ -127,7 +126,14 @@ beforeEach(() => {
     .fn()
     .mockResolvedValue([mockCellIdString, ['abc'], 'testString'])
 
-  createActionHashMapAndImportProjectData = jest.fn()
+  createActionHashMapAndImportProjectData = jest.fn().mockResolvedValue({
+    tagActionHashMap: {},
+    outcomeActionHashMap: {},
+    connectionsActionHashMap: {},
+    outcomeMembersActionHashMap: {},
+    outcomeCommentActionHashMap: {},
+    entryPointActionHashMap: {},
+  })
 
   onStep = jest.fn()
 
@@ -145,21 +151,16 @@ beforeEach(() => {
 
 describe('importProjectsData()', () => {
   it('successfully parses and imports project data and user profile', async () => {
+
     await internalImportProjectsData(
-      getAppWs,
-      createProfilesZomeApi,
-      createProjectsZomeApi,
+      profilesZomeApi,
+      projectsZomeApi,
       installProjectAppAndImport,
       installProjectApp,
       store,
       mockMigrationData,
       onStep
     )
-
-    expect(getAppWs).toHaveBeenCalledTimes(1)
-
-    expect(createProfilesZomeApi).toHaveBeenCalledTimes(1)
-    expect(createProfilesZomeApi).toHaveBeenCalledWith(mockAppWs)
 
     // make sure the test data is actually set up the way the test
     // expects it to be
@@ -216,9 +217,8 @@ describe('importProjectsData()', () => {
     mockMigrationData = 'invalid json'
     try {
       await internalImportProjectsData(
-        getAppWs,
-        createProfilesZomeApi,
-        createProjectsZomeApi,
+        profilesZomeApi,
+        projectsZomeApi,
         installProjectAppAndImport,
         installProjectApp,
         store,
@@ -233,9 +233,8 @@ describe('importProjectsData()', () => {
     mockMigrationData = null
     try {
       await internalImportProjectsData(
-        getAppWs,
-        createProfilesZomeApi,
-        createProjectsZomeApi,
+        profilesZomeApi,
+        projectsZomeApi,
         installProjectAppAndImport,
         installProjectApp,
         store,
@@ -277,7 +276,12 @@ describe('installProjectAppAndImport()', () => {
     )
 
     expect(store.dispatch).toHaveBeenCalledTimes(2)
-    expect(store.dispatch).toHaveBeenCalledWith({
+    expect(store.dispatch).toHaveBeenNthCalledWith(1, {
+      type: 'SIMPLE_CREATE_PROJECT_META',
+      payload: projectMeta,
+      meta: { cellIdString: mockCellIdString },
+    })
+    expect(store.dispatch).toHaveBeenNthCalledWith(2, {
       type: 'SET_MEMBER',
       payload: {
         cellIdString: mockCellIdString,
@@ -285,11 +289,6 @@ describe('installProjectAppAndImport()', () => {
           agentPubKey: 'testAgentAddress',
         },
       },
-    })
-    expect(store.dispatch).toHaveBeenCalledWith({
-      type: 'SIMPLE_CREATE_PROJECT_META',
-      payload: projectMeta,
-      meta: { cellIdString: mockCellIdString },
     })
   })
 })
@@ -303,8 +302,7 @@ describe('createActionHashMapAndImportProjectData()', () => {
       projectData,
       mockCellIdString,
       store.dispatch,
-      getAppWs,
-      createProjectsZomeApi,
+      projectsZomeApi,
       cloneDataSet
     )
 
@@ -312,7 +310,7 @@ describe('createActionHashMapAndImportProjectData()', () => {
 
     expect(cloneDataSet).toHaveBeenCalledTimes(6)
 
-    expect(cloneDataSet).toHaveBeenCalledWith(
+    expect(cloneDataSet).toHaveBeenNthCalledWith(1,
       projectData.tags,
       expect.anything(), // cloneFn is not passed as a positional arg, so we can't check for it directly
       projectsZomeApi.tag.create,
@@ -321,7 +319,7 @@ describe('createActionHashMapAndImportProjectData()', () => {
       mockCellIdString
     )
 
-    expect(cloneDataSet).toHaveBeenCalledWith(
+    expect(cloneDataSet).toHaveBeenNthCalledWith(2,
       projectData.outcomes,
       expect.anything(),
       projectsZomeApi.outcome.create,
@@ -330,7 +328,7 @@ describe('createActionHashMapAndImportProjectData()', () => {
       mockCellIdString
     )
 
-    expect(cloneDataSet).toHaveBeenCalledWith(
+    expect(cloneDataSet).toHaveBeenNthCalledWith(3,
       projectData.connections,
       expect.anything(),
       projectsZomeApi.connection.create,
@@ -339,7 +337,7 @@ describe('createActionHashMapAndImportProjectData()', () => {
       mockCellIdString
     )
 
-    expect(cloneDataSet).toHaveBeenCalledWith(
+    expect(cloneDataSet).toHaveBeenNthCalledWith(4,
       projectData.outcomeMembers,
       expect.anything(),
       projectsZomeApi.outcomeMember.create,
@@ -348,7 +346,7 @@ describe('createActionHashMapAndImportProjectData()', () => {
       mockCellIdString
     )
 
-    expect(cloneDataSet).toHaveBeenCalledWith(
+    expect(cloneDataSet).toHaveBeenNthCalledWith(5,
       projectData.outcomeComments,
       expect.anything(),
       projectsZomeApi.outcomeComment.create,
@@ -357,7 +355,7 @@ describe('createActionHashMapAndImportProjectData()', () => {
       mockCellIdString
     )
 
-    expect(cloneDataSet).toHaveBeenCalledWith(
+    expect(cloneDataSet).toHaveBeenNthCalledWith(6,
       projectData.entryPoints,
       expect.anything(),
       projectsZomeApi.entryPoint.create,

@@ -2,10 +2,10 @@ import ProjectsZomeApi from '../../api/projectsApi'
 import { installProjectApp } from '../../projects/installProjectApp'
 import { setMember } from '../../redux/persistent/projects/members/actions'
 import { simpleCreateProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
-import { LayeringAlgorithm, ProjectMeta } from '../../types/projectMeta'
 import { AgentPubKeyB64 } from '../../types/shared'
 import { cellIdFromString } from '../../utils'
 import { ProjectExportDataV1 } from '../export'
+import { cloneProjectMeta } from './cloneFunctions'
 import { createActionHashMapAndImportProjectData } from './createActionHashMapAndImportProjectData'
 
 export async function internalInstallProjectAppAndImport(
@@ -17,53 +17,38 @@ export async function internalInstallProjectAppAndImport(
   _importProjectData: typeof createActionHashMapAndImportProjectData,
   projectsZomeApi: ProjectsZomeApi
 ) {
+  
   // first step is to install the dna
   const [projectsCellIdString] = await _installProjectApp(passphrase)
   const cellId = cellIdFromString(projectsCellIdString)
-  // next step is to import the rest of the data into that project
-  const oldToNewAddressMap = await _importProjectData(
+  
+  // next step is to import the bulk of the data into that project
+  const oldToNewAddressMaps = await _importProjectData(
     projectData,
     projectsCellIdString,
     dispatch
   )
 
-  // only add the project meta after the rest has been imported
-  // so it doesn't list itself early in the process
-  // first step is to create new project
-  const originalTopPriorityOutcomes =
-    projectData.projectMeta.topPriorityOutcomes
-  const projectMeta: ProjectMeta = {
-    ...projectData.projectMeta,
-    // the question mark operator for backwards compatibility
-    topPriorityOutcomes: originalTopPriorityOutcomes
-      ? originalTopPriorityOutcomes
-          .map((oldAddress) => oldToNewAddressMap[oldAddress])
-          .filter((address) => address)
-      : [],
-    // add a fallback layering algorithm in case the project has none
-    layeringAlgorithm: projectData.projectMeta.layeringAlgorithm
-      ? projectData.projectMeta.layeringAlgorithm
-      : LayeringAlgorithm.LongestPath,
-    createdAt: Date.now(),
-    creatorAgentPubKey: agentAddress,
-    passphrase: passphrase,
-    isMigrated: null,
-  }
-  // v0.5.4-alpha
-  // not an actual field in the backend
-  // needed to type-convert to any so typescript doesn't complain
-  delete (projectMeta as any).actionHash
-
-  dispatch(setMember(projectsCellIdString, { agentPubKey: agentAddress }))
-
+  // next step is to add the project meta,
+  // which is only done after the rest has been imported
+  // so it doesn't list itself on the dashboard too
+  // early in the process
+  const projectMeta = cloneProjectMeta(
+    oldToNewAddressMaps.outcomeActionHashMap,
+    agentAddress,
+    passphrase
+  )(projectData.projectMeta)
+  delete projectMeta.actionHash
   const simpleCreatedProjectMeta = await projectsZomeApi.projectMeta.simpleCreateProjectMeta(
     cellId,
     projectMeta
   )
-
   dispatch(
     simpleCreateProjectMeta(projectsCellIdString, simpleCreatedProjectMeta)
   )
+  // this registers the agent to redux as a member of the project
+  dispatch(setMember(projectsCellIdString, { agentPubKey: agentAddress }))
+
 }
 
 export async function installProjectAppAndImport(
