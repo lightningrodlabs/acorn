@@ -2,7 +2,13 @@ import importProjectsData, {
   internalImportProjectsData,
 } from '../src/migrating/import/import'
 import { sampleGoodDataExport } from './sample-good-data-export'
-import { OutcomeMember, ProjectMeta, Tag } from '../src/types'
+import {
+  Connection,
+  Outcome,
+  OutcomeMember,
+  ProjectMeta,
+  Tag,
+} from '../src/types'
 import { WireRecord } from '../src/api/hdkCrud'
 import mockUnmigratedProjectMeta from './mockProjectMeta'
 import mockBaseRootState from './mockRootState'
@@ -47,6 +53,8 @@ import {
 import mockWhoami from './mockWhoami'
 import { cellIdFromString } from '../src/utils'
 import mockActionHashMaps from './mockActionHashMaps'
+import { WithActionHash } from '../src/types/shared'
+import { ZodError } from 'zod'
 
 let store: any // too complex of a type to mock
 
@@ -225,8 +233,8 @@ describe('importProjectsData()', () => {
         onStep
       )
     } catch (e) {
-      expect(e).toBeInstanceOf(SyntaxError)
-      expect(e.message).toBe('Unexpected token i in JSON at position 0')
+      expect(e).toBeInstanceOf(ZodError)
+      expect(e.errors[0].message).toBe('Invalid JSON')
     }
 
     mockMigrationData = null
@@ -241,10 +249,8 @@ describe('importProjectsData()', () => {
         onStep
       )
     } catch (e) {
-      expect(e).toBeInstanceOf(TypeError)
-      expect(e.message).toBe(
-        "Cannot read properties of null (reading 'projects')"
-      )
+      expect(e).toBeInstanceOf(ZodError)
+      expect(e.errors[0].message).toBe('Expected string, received null')
     }
   })
 })
@@ -386,7 +392,9 @@ describe('cloneDataSet()', () => {
     expect(Object.keys(projectData.tags).length).toBe(1)
     expect(Object.keys(result).length).toBe(1)
 
-    const oldTagActionHash = Object.values(projectData.tags)[0].actionHash
+    const oldTagActionHash = Object.values<WithActionHash<Tag>>(
+      projectData.tags
+    )[0].actionHash
     expect(result).toEqual({ [oldTagActionHash]: 'testActionHash' })
   })
 })
@@ -403,7 +411,7 @@ describe('cloneTag()', () => {
 
 describe('cloneOutcome()', () => {
   it('creates a deep copy of the old outcome', () => {
-    const oldOutcome = Object.values(
+    const oldOutcome = Object.values<WithActionHash<Outcome>>(
       sampleGoodDataExport.projects[0].outcomes
     )[0]
     const tagActionHashMap = {
@@ -422,20 +430,22 @@ describe('cloneOutcome()', () => {
 
 describe('cloneConnection()', () => {
   it('creates a deep copy of the old connection', () => {
-    const oldConnection = Object.values(
+    const oldConnection = Object.values<WithActionHash<Connection>>(
       sampleGoodDataExport.projects[0].connections
     )[0]
     const outcome1 = {
       [Object.keys(
         sampleGoodDataExport.projects[0].outcomes
-      )[0]]: Object.values(sampleGoodDataExport.projects[0].outcomes)[0]
-        .actionHash,
+      )[0]]: Object.values<WithActionHash<Outcome>>(
+        sampleGoodDataExport.projects[0].outcomes
+      )[0].actionHash,
     }
     const outcome2 = {
       [Object.keys(
         sampleGoodDataExport.projects[0].outcomes
-      )[1]]: Object.values(sampleGoodDataExport.projects[0].outcomes)[1]
-        .actionHash,
+      )[1]]: Object.values<WithActionHash<Outcome>>(
+        sampleGoodDataExport.projects[0].outcomes
+      )[1].actionHash,
     }
     const outcomeActionHashMap: ActionHashMap = {
       ...outcome1,
@@ -456,11 +466,11 @@ describe('cloneData()', () => {
   it('creates a deep copy of the old data', () => {
     // using outcome member as a generic example
 
-    const oldData = Object.values(
+    const oldData = Object.values<WithActionHash<OutcomeMember>>(
       sampleGoodDataExport.projects[0].outcomeMembers
     )[0]
     const outcomeActionHashMap: ActionHashMap = {
-      [oldData.outcomeActionHash]: Object.values(
+      [oldData.outcomeActionHash]: Object.values<WithActionHash<Outcome>>(
         sampleGoodDataExport.projects[0].outcomes
       )[2].actionHash,
     }
