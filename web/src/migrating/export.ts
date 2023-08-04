@@ -1,35 +1,14 @@
 import constructProjectDataFetchers from '../api/projectDataFetchers'
 import ProjectsZomeApi from '../api/projectsApi'
 import { getAppWs } from '../hcWebsockets'
-import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
-import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
-import { ProjectOutcomeCommentsState } from '../redux/persistent/projects/outcome-comments/reducer'
-import { ProjectOutcomeMembersState } from '../redux/persistent/projects/outcome-members/reducer'
-import { ProjectOutcomesState } from '../redux/persistent/projects/outcomes/reducer'
 import { RootState } from '../redux/reducer'
-import { Profile, ProjectMeta, Tag } from '../types'
-import { ActionHashB64, CellIdString, WithActionHash } from '../types/shared'
+import { ProjectMeta } from '../types'
+import { ActionHashB64, CellIdString } from '../types/shared'
 import { cellIdFromString } from '../utils'
+import { AllProjectsDataExport } from './model/allProjectsDataExport'
+import { ProjectExportDataV1 } from './model/projectExportData'
 
 export type ExportType = 'csv' | 'json'
-
-export type ProjectExportDataV1 = {
-  projectMeta: WithActionHash<ProjectMeta>
-  outcomes: ProjectOutcomesState
-  connections: ProjectConnectionsState
-  outcomeMembers: ProjectOutcomeMembersState
-  outcomeComments: ProjectOutcomeCommentsState
-  entryPoints: ProjectEntryPointsState
-  tags: {
-    [actionHash: string]: WithActionHash<Tag>
-  }
-}
-
-export type AllProjectsDataExport = {
-  myProfile: Profile
-  projects: ProjectExportDataV1[]
-  integrityVersion: string
-}
 
 export async function updateProjectMeta(
   projectMeta: ProjectMeta,
@@ -189,10 +168,7 @@ export function projectDataToCsv(data: ProjectExportDataV1): string {
   return csvRows.join('\n')
 }
 
-export function exportDataHref(
-  type: ExportType,
-  data: string
-): string {
+export function exportDataHref(type: ExportType, data: string): string {
   let blob: Blob
   if (type === 'csv') {
     blob = new Blob([data], {

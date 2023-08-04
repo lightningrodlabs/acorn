@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import { EntryPoint } from './entryPoint'
 import { Outcome } from './outcome'
 import { Profile } from './profile'
@@ -25,6 +26,17 @@ export enum LayeringAlgorithm {
   CoffmanGraham = 'CoffmanGraham',
 }
 
+export const ProjectMetaSchema = z.object({
+  creatorAgentPubKey: z.string(),
+  createdAt: z.number(),
+  name: z.string(),
+  image: z.string().optional(),
+  passphrase: z.string(),
+  isImported: z.boolean(),
+  layeringAlgorithm: z.nativeEnum(LayeringAlgorithm),
+  topPriorityOutcomes: z.array(z.string()),
+  isMigrated: z.string().optional(),
+})
 export interface ProjectMeta {
   creatorAgentPubKey: AgentPubKeyB64
   createdAt: number // f64

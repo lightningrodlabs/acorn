@@ -1,4 +1,4 @@
-
+import { z } from 'zod'
 import _ from 'lodash'
 
 import {
@@ -11,9 +11,28 @@ import {
 } from './actions'
 import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { Action, CellIdString, ActionHashB64, WithActionHash } from '../../../../types/shared'
-import { DeleteOutcomeFullyResponse, EntryPoint, EntryPointDetails } from '../../../../types'
+import {
+  Action,
+  CellIdString,
+  ActionHashB64,
+  WithActionHash,
+} from '../../../../types/shared'
+import {
+  DeleteOutcomeFullyResponse,
+  EntryPoint,
+  EntryPointDetails,
+  EntryPointSchema,
+} from '../../../../types'
 import { WireRecord } from '../../../../api/hdkCrud'
+
+//ProjectEntryPointsStateSchema
+export const ProjectEntryPointsStateSchema = z.record(
+  z
+    .object({
+      actionHash: z.string(),
+    })
+    .merge(EntryPointSchema)
+)
 
 // state is at the highest level an object with cellIds
 // which are like Projects... EntryPoints exist within Projects
@@ -30,7 +49,10 @@ type EntryPointsState = {
 }
 const defaultState: EntryPointsState = {}
 
-export default function (state: EntryPointsState = defaultState, action: EntryPointsAction | Action<DeleteOutcomeFullyResponse>): EntryPointsState {
+export default function (
+  state: EntryPointsState = defaultState,
+  action: EntryPointsAction | Action<DeleteOutcomeFullyResponse>
+): EntryPointsState {
   if (
     isCrud(
       action,
@@ -57,7 +79,7 @@ export default function (state: EntryPointsState = defaultState, action: EntryPo
     case FETCH_ENTRY_POINT_DETAILS:
       cellIdString = action.meta.cellIdString
       const entryPointDetails = payload as EntryPointDetails
-      const mapped = entryPointDetails.entryPoints.map(r => {
+      const mapped = entryPointDetails.entryPoints.map((r) => {
         return {
           ...r.entry,
           actionHash: r.actionHash,
@@ -83,7 +105,8 @@ export default function (state: EntryPointsState = defaultState, action: EntryPo
         ...state,
         [cellIdString]: _.pickBy(
           state[cellIdString],
-          (_value, key) => deleteOutcomeResponse.deletedEntryPoints.indexOf(key) === -1
+          (_value, key) =>
+            deleteOutcomeResponse.deletedEntryPoints.indexOf(key) === -1
         ),
       }
     default:
