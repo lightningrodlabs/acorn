@@ -46,6 +46,7 @@ import {
 } from '../src/migrating/import/installProjectAppAndImport'
 import mockWhoami from './mockWhoami'
 import { cellIdFromString } from '../src/utils'
+import mockActionHashMap from './mockActionHashMap'
 
 let store: any // too complex of a type to mock
 
@@ -78,7 +79,14 @@ beforeEach(() => {
   mockAppWs = {} as typeof mockAppWs
   getAppWs = jest.fn().mockResolvedValue(mockAppWs)
   createWhoami = jest.fn().mockResolvedValue(mockWhoami)
-  cloneDataSet = jest.fn()
+  cloneDataSet = jest
+    .fn()
+    .mockReturnValueOnce(mockActionHashMap.tagActionHashMap)
+    .mockReturnValueOnce(mockActionHashMap.outcomeActionHashMap)
+    .mockReturnValueOnce(mockActionHashMap.connectionsActionHashMap)
+    .mockReturnValueOnce(mockActionHashMap.outcomeMembersActionHashMap)
+    .mockReturnValueOnce(mockActionHashMap.outcomeCommentActionHashMap)
+    .mockReturnValueOnce(mockActionHashMap.entryPointActionHashMap)
   cloneTag = jest.fn().mockReturnValue({ ...mockTag })
 
   createProfilesZomeApi = jest.fn().mockReturnValue({
@@ -286,12 +294,12 @@ describe('installProjectAppAndImport()', () => {
   })
 })
 
-describe('importProjectData()', () => {
+describe('createActionHashMapAndImportProjectData()', () => {
   it('creates actionHashMaps for all relevant data types', async () => {
     let projectData = sampleGoodDataExport.projects[0]
     projectsZomeApi = createProjectsZomeApi(mockAppWs)
 
-    await internalCreateActionHashMapAndImportProjectData(
+    const result = await internalCreateActionHashMapAndImportProjectData(
       projectData,
       mockCellIdString,
       store.dispatch,
@@ -299,6 +307,8 @@ describe('importProjectData()', () => {
       createProjectsZomeApi,
       cloneDataSet
     )
+
+    expect(result).toEqual(mockActionHashMap)
 
     expect(cloneDataSet).toHaveBeenCalledTimes(6)
 
