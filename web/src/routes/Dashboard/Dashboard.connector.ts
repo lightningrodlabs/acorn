@@ -131,7 +131,7 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
       triggerJoinSignal(cellId, appWs)
       return cellIdString
     },
-    installProjectAppAndImport: (agentAddress, projectData, passphrase) => {
+    installProjectAndImport: (agentAddress, projectData, passphrase) => {
       return installProjectAndImport(
         agentAddress,
         projectData,

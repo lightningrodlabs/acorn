@@ -249,7 +249,7 @@ describe('importProjectsData()', () => {
   })
 })
 
-describe('installProjectAppAndImport()', () => {
+describe('installProjectAndImport()', () => {
   const agentAddress = 'testAgentAddress'
   it('installs DNA and imports project into new cell', async () => {
     // finalizeCreateProject = jest.fn().mockImplementationOnce((...args) => {
