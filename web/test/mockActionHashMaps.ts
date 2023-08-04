@@ -1,4 +1,4 @@
-const mockActionHashMap = {
+const mockActionHashMaps = {
   tagActionHashMap: { oldTagActionHash: 'newTagActionHash' },
   outcomeActionHashMap: { oldOutcomeActionHash: 'newOutcomeActionHash' },
   connectionsActionHashMap: {
@@ -15,4 +15,4 @@ const mockActionHashMap = {
   },
 }
 
-export default mockActionHashMap
+export default mockActionHashMaps

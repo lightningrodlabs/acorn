@@ -46,7 +46,7 @@ import {
 } from '../src/migrating/import/installProjectAppAndImport'
 import mockWhoami from './mockWhoami'
 import { cellIdFromString } from '../src/utils'
-import mockActionHashMap from './mockActionHashMap'
+import mockActionHashMaps from './mockActionHashMaps'
 
 let store: any // too complex of a type to mock
 
@@ -79,12 +79,12 @@ beforeEach(() => {
   createWhoami = jest.fn().mockResolvedValue(mockWhoami)
   cloneDataSet = jest
     .fn()
-    .mockReturnValueOnce(mockActionHashMap.tagActionHashMap)
-    .mockReturnValueOnce(mockActionHashMap.outcomeActionHashMap)
-    .mockReturnValueOnce(mockActionHashMap.connectionsActionHashMap)
-    .mockReturnValueOnce(mockActionHashMap.outcomeMembersActionHashMap)
-    .mockReturnValueOnce(mockActionHashMap.outcomeCommentActionHashMap)
-    .mockReturnValueOnce(mockActionHashMap.entryPointActionHashMap)
+    .mockReturnValueOnce(mockActionHashMaps.tagActionHashMap)
+    .mockReturnValueOnce(mockActionHashMaps.outcomeActionHashMap)
+    .mockReturnValueOnce(mockActionHashMaps.connectionsActionHashMap)
+    .mockReturnValueOnce(mockActionHashMaps.outcomeMembersActionHashMap)
+    .mockReturnValueOnce(mockActionHashMaps.outcomeCommentActionHashMap)
+    .mockReturnValueOnce(mockActionHashMaps.entryPointActionHashMap)
   cloneTag = jest.fn().mockReturnValue({ ...mockTag })
 
   createProfilesZomeApi = jest.fn().mockReturnValue({
@@ -151,7 +151,6 @@ beforeEach(() => {
 
 describe('importProjectsData()', () => {
   it('successfully parses and imports project data and user profile', async () => {
-
     await internalImportProjectsData(
       profilesZomeApi,
       projectsZomeApi,
@@ -306,11 +305,12 @@ describe('createActionHashMapAndImportProjectData()', () => {
       cloneDataSet
     )
 
-    expect(result).toEqual(mockActionHashMap)
+    expect(result).toEqual(mockActionHashMaps)
 
     expect(cloneDataSet).toHaveBeenCalledTimes(6)
 
-    expect(cloneDataSet).toHaveBeenNthCalledWith(1,
+    expect(cloneDataSet).toHaveBeenNthCalledWith(
+      1,
       projectData.tags,
       expect.anything(), // cloneFn is not passed as a positional arg, so we can't check for it directly
       projectsZomeApi.tag.create,
@@ -319,7 +319,8 @@ describe('createActionHashMapAndImportProjectData()', () => {
       mockCellIdString
     )
 
-    expect(cloneDataSet).toHaveBeenNthCalledWith(2,
+    expect(cloneDataSet).toHaveBeenNthCalledWith(
+      2,
       projectData.outcomes,
       expect.anything(),
       projectsZomeApi.outcome.create,
@@ -328,7 +329,8 @@ describe('createActionHashMapAndImportProjectData()', () => {
       mockCellIdString
     )
 
-    expect(cloneDataSet).toHaveBeenNthCalledWith(3,
+    expect(cloneDataSet).toHaveBeenNthCalledWith(
+      3,
       projectData.connections,
       expect.anything(),
       projectsZomeApi.connection.create,
@@ -337,7 +339,8 @@ describe('createActionHashMapAndImportProjectData()', () => {
       mockCellIdString
     )
 
-    expect(cloneDataSet).toHaveBeenNthCalledWith(4,
+    expect(cloneDataSet).toHaveBeenNthCalledWith(
+      4,
       projectData.outcomeMembers,
       expect.anything(),
       projectsZomeApi.outcomeMember.create,
@@ -346,7 +349,8 @@ describe('createActionHashMapAndImportProjectData()', () => {
       mockCellIdString
     )
 
-    expect(cloneDataSet).toHaveBeenNthCalledWith(5,
+    expect(cloneDataSet).toHaveBeenNthCalledWith(
+      5,
       projectData.outcomeComments,
       expect.anything(),
       projectsZomeApi.outcomeComment.create,
@@ -355,7 +359,8 @@ describe('createActionHashMapAndImportProjectData()', () => {
       mockCellIdString
     )
 
-    expect(cloneDataSet).toHaveBeenNthCalledWith(6,
+    expect(cloneDataSet).toHaveBeenNthCalledWith(
+      6,
       projectData.entryPoints,
       expect.anything(),
       projectsZomeApi.entryPoint.create,
