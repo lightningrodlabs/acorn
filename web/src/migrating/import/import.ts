@@ -13,7 +13,7 @@ import { internalJoinProject } from '../../projects/joinProject'
 export async function internalImportProjectsData(
   // dependencies
   profilesZomeApi: ProfilesZomeApi,
-  _installProjectAppAndImport: typeof installProjectAndImport,
+  _installProjectAndImport: typeof installProjectAndImport,
   _installProject: typeof installProject,
   store: any,
   // main input data and callbacks
@@ -59,7 +59,7 @@ export async function internalImportProjectsData(
   // one completes
   for await (let projectData of projectsToMigrate) {
     const passphrase = projectData.projectMeta.passphrase
-    await _installProjectAppAndImport(
+    await _installProjectAndImport(
       myAgentPubKey,
       projectData,
       passphrase,
