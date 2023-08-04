@@ -1,12 +1,13 @@
-import { CellId, CellType } from '@holochain/client'
+import { AdminWebsocket, CellId, CellType } from '@holochain/client'
 import { getAdminWs, getAgentPubKey } from '../hcWebsockets'
 import { PROJECT_APP_PREFIX } from '../holochainConfig'
 import { passphraseToUid } from '../secrets'
 import { CellIdString } from '../types/shared'
 import { cellIdToString } from '../utils'
 
-export async function installProject(
-  passphrase: string
+export async function internalInstallProject(
+  passphrase: string,
+  adminWs: AdminWebsocket,
 ): Promise<[CellIdString, CellId, string]> {
   const uid = passphraseToUid(passphrase)
   // add a bit of randomness so that
@@ -18,7 +19,6 @@ export async function installProject(
   const installed_app_id = `${PROJECT_APP_PREFIX}-${Math.random()
     .toString()
     .slice(-6)}-${uid}`
-  const adminWs = await getAdminWs()
   const agent_key = getAgentPubKey()
   if (!agent_key) {
     throw new Error(
@@ -50,4 +50,11 @@ export async function installProject(
   //authorize zome calls for the new cell
   await adminWs.authorizeSigningCredentials(cellId)
   return [cellIdString, cellId, installed_app_id]
+}
+
+export async function installProject(
+  passphrase: string
+): Promise<[CellIdString, CellId, string]> {
+  const adminWs = await getAdminWs()
+  return internalInstallProject(passphrase, adminWs)
 }
