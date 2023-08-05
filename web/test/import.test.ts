@@ -252,9 +252,6 @@ describe('importProjectsData()', () => {
 describe('installProjectAndImport()', () => {
   const agentAddress = 'testAgentAddress'
   it('installs DNA and imports project into new cell', async () => {
-    // finalizeCreateProject = jest.fn().mockImplementationOnce((...args) => {
-    //   console.log(...args)
-    // })
     await internalInstallProjectAndImport(
       agentAddress,
       sampleGoodDataExport.projects[0],
