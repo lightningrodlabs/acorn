@@ -32,6 +32,7 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
 }) => {
   const history = useHistory()
   const runUpdate = () => {
+    onClose()
     history.push('/run-update')
   }
 

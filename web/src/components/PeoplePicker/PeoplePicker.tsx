@@ -15,6 +15,7 @@ export type PeoplePickerProps = {
     isOutcomeMember: boolean
     outcomeMemberActionHash: ActionHashB64
   })[]
+  profilesPresent: AgentPubKeyB64[]
   outcomeActionHash: ActionHashB64
   createOutcomeMember: (
     outcomeActionHash: ActionHashB64,
@@ -27,6 +28,7 @@ export type PeoplePickerProps = {
 const PeoplePicker: React.FC<PeoplePickerProps> = ({
   activeAgentPubKey,
   people,
+  profilesPresent,
   outcomeActionHash,
   createOutcomeMember,
   deleteOutcomeMember,
@@ -97,6 +99,12 @@ const PeoplePicker: React.FC<PeoplePickerProps> = ({
                   activeAgentPubKey
                 )
             }
+            // check if the profile is in the
+            // list of present profiles
+            // (presence being "has the project open presently")
+            const isProfilePresent = !!profilesPresent.find(
+              (presentprofile) => person.agentPubKey === presentprofile
+            )
             return (
               <li
                 key={index}
@@ -109,8 +117,9 @@ const PeoplePicker: React.FC<PeoplePickerProps> = ({
                   avatarUrl={person.avatarUrl}
                   imported={person.isImported}
                   size="medium"
-                  withStatus
                   selfAssignedStatus={person.status}
+                  disconnected={!isProfilePresent}
+                  withStatus={isProfilePresent}
                 />
                 <div className="person-name-handle-wrapper">
                   <span className="person-name">

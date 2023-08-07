@@ -2,11 +2,10 @@ import React, { useEffect, useState } from 'react'
 
 import './VersionUpdateLeaving.scss'
 
-import exportProjectsData, {
-  AllProjectsDataExport,
-} from '../../migrating/export'
+import exportProjectsData from '../../migrating/export'
 import { useStore } from 'react-redux'
 import MigrationProgress from '../../components/MigrationProgress/MigrationProgress'
+import { AllProjectsDataExport } from 'zod-models'
 
 const checkIfExportNeeded = (currentVersion: string, toVersion: string) => {
   // compare
@@ -137,7 +136,13 @@ const VersionUpdateLeaving: React.FC<VersionUpdateLeavingProps> = ({
           updateVersionInfo.newReleaseVersion
         )
       ) {
-        runExport().then(controlDownloadNextVersion)
+        runExport().then(controlDownloadNextVersion).catch((e) => {
+          console.error('error running export', e)
+          setTitle('An unexpected error occurred.')
+          const message = 'You may be able to recover by quitting and restarting Acorn. Please report this issue and provide the following error to support: ' + JSON.stringify(e)
+          // throw new Error(message)
+          setStatus(message)
+        })
       } else {
         controlDownloadNextVersion()
       }

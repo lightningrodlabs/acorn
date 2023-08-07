@@ -1,6 +1,6 @@
 import { HoloHash, CellId } from '@holochain/client'
-// import BufferAll from 'buffer/'
-// const Buffer = BufferAll.Buffer
+import BufferAll from 'buffer/'
+const Buffer = BufferAll.Buffer
 
 export function hashToString(hash: HoloHash) {
   // nodejs

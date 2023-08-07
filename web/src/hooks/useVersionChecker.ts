@@ -134,7 +134,7 @@ export default function useVersionChecker(
   // to see if there is any new update available for the app
   useEffect(() => {
     if (isTest) {
-      setNewReleaseVersion('v1.0.0')
+      setNewReleaseVersion('v12.0.0')
       setReleaseNotes('release notes')
       setSizeForPlatform('1mb')
       return

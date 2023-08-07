@@ -26,6 +26,7 @@ export default function useFinishMigrationChecker(): {
       }
       setHasChecked(true)
     } else {
+      // mock here if we want to test
       setHasChecked(true)
     }
   }

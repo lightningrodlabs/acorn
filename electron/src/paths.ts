@@ -31,6 +31,7 @@ const PREV_VER_USER_DATA_MIGRATION_FILE_PATHS = [
   // Acorn 6
   path.join(USER_DATA_PATH, `${MIGRATION_FILE_NAME_PREFIX}9`),
   // uncomment the below line for development testing
+  // of migration-feature
   // path.join(USER_DATA_PATH, `${MIGRATION_FILE_NAME_PREFIX}${INTEGRITY_VERSION_NUMBER}`),
 ]
 
