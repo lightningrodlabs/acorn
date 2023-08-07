@@ -15,7 +15,7 @@ const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
     passphrase: 'daily plant employee shorten define',
     isImported: false,
     layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
-    topPriorityOutcomes: [],
+    topPriorityOutcomes: ['oldActionHash'],
     isMigrated: null,
     actionHash: 'uhCkkBzwPwj4l3XGeXJTt9mxL88LOKOm_fvh0kw6PSf5jnP_RUG14',
   },
