@@ -1,10 +1,10 @@
+import { ProjectExportDataV1 } from 'zod-models'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { installProjectApp } from '../../projects/installProjectApp'
 import { setMember } from '../../redux/persistent/projects/members/actions'
 import { simpleCreateProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
 import { AgentPubKeyB64 } from '../../types/shared'
 import { cellIdFromString } from '../../utils'
-import { ProjectExportDataV1 } from '../export'
 import { cloneProjectMeta } from './cloneFunctions'
 import { createActionHashMapAndImportProjectData } from './createActionHashMapAndImportProjectData'
 

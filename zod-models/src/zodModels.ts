@@ -1,5 +1,9 @@
 import { z } from 'zod'
 
+export const WithActionHashSchema = z.object({
+  actionHash: z.string().nonempty()
+})
+
 export const ProfileSchema = z.object({
   firstName: z.string(),
   lastName: z.string(),
@@ -10,17 +14,27 @@ export const ProfileSchema = z.object({
   isImported: z.boolean(),
 })
 
-export const ProjectMetaSchema = z.object({
+export const ProjectMetaV0Schema = z.object({
   creatorAgentPubKey: z.string(),
   createdAt: z.number(),
   name: z.string(),
   image: z.string().nullable(),
   passphrase: z.string(),
   isImported: z.boolean(),
-  layeringAlgorithm: z.enum(['LongestPath', 'CoffmanGraham']).optional(), // optional for backwards compatibility
-  topPriorityOutcomes: z.array(z.string()).optional(), // optional for backwards compatibility
   isMigrated: z.string().nullable(),
+  actionHash: z.string().nonempty()
 })
+
+export const ProjectMetaV0WithActionHashSchema = WithActionHashSchema.merge(ProjectMetaV0Schema)
+
+export const ProjectMetaV1Schema = z.object({
+  layeringAlgorithm: z.enum(['LongestPath', 'CoffmanGraham']),
+  topPriorityOutcomes: z.array(z.string())
+}).merge(ProjectMetaV0Schema)
+
+export const ProjectMetaV1WithActionHashSchema = WithActionHashSchema.merge(ProjectMetaV1Schema)
+
+export const ProjectMetaWithActionHashSchema = z.union([ProjectMetaV0WithActionHashSchema, ProjectMetaV1WithActionHashSchema])
 
 export const SmallTaskSchema = z.object({
   complete: z.boolean(),
@@ -138,9 +152,7 @@ export const ProjectTagsStateSchema = z.record(
 )
 
 export const ProjectExportDataV1Schema = z.object({
-  projectMeta: z
-    .object({ actionHash: z.string().nonempty() })
-    .merge(ProjectMetaSchema),
+  projectMeta: ProjectMetaWithActionHashSchema,
   outcomes: ProjectOutcomesStateSchema,
   connections: ProjectConnectionsStateSchema,
   outcomeMembers: ProjectOutcomeMembersStateSchema,
