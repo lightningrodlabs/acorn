@@ -39,23 +39,24 @@ function JoinProjectForm({
       <ProjectModalHeading title="Join an existing project" />
       <ProjectModalSubHeading title="You will need to sync with a peer to get started" />
       <ProjectModalContentSpacer>
-      <ProjectModalContent>
-        <ValidatingFormInput
-          value={projectSecret}
-          onChange={onSecretChange}
-          invalidInput={invalidText}
-          errorText={invalidText}
-          label="Project Invitation Secret"
-          helpText="Paste the 5 word secret you received from the project host"
-        />
-      </ProjectModalContent>
+        <ProjectModalContent>
+          {/* @ts-ignore */}
+          <ValidatingFormInput
+            value={projectSecret}
+            onChange={onSecretChange}
+            invalidInput={invalidText}
+            errorText={invalidText}
+            label="Project Invitation Secret"
+            helpText="Paste the 5 word secret you received from the project host"
+          />
+        </ProjectModalContent>
       </ProjectModalContentSpacer>
       <ProjectModalButton text={validateButtonContent} onClick={onValidate} />
     </div>
   )
 }
 
-function ProjectJoinFollowUp({ onDone, peerFound, checkDone }) {
+function ProjectJoinFollowUp({ onDone, checkDone }) {
   return (
     <div
       className={`project-join-follow-up ${
@@ -63,24 +64,16 @@ function ProjectJoinFollowUp({ onDone, peerFound, checkDone }) {
       }`}
     >
       <div>
-      <ProjectModalHeading
-        title={
-          peerFound
-            ? 'Project joined successfully'
-            : 'Project has been queued for syncing'
-        }
-      />
-      {!peerFound && (
+        <ProjectModalHeading title="Project has been queued for syncing" />
         <ProjectModalSubHeading title="In order to join this project, you and a peer must simultaneously open the app." />
-      )}
       </div>
-        <ProjectModalContent>
-          <div className="project-join-follow-up-content-wrapper">
-            {peerFound
-              ? 'Peers in this project were found so now you will get synced with them.'
-              : `If a peer is found, you are likely to be able to immediately begin to access the project, although a short sync period in the queue may be required before you can access it.`}
-          </div>
-        </ProjectModalContent>
+      <ProjectModalContent>
+        <div className="project-join-follow-up-content-wrapper">
+          If a peer is found, you are likely to be able to immediately begin to
+          access the project, although a short sync period in the queue may be
+          required before you can access it.
+        </div>
+      </ProjectModalContent>
       <ProjectModalButton text="I understand" onClick={onDone} />
     </div>
   )
@@ -95,7 +88,6 @@ export default function JoinProjectModal({
     setProjectSecret('')
     setValidatingSecret(false)
     setInvalidText('')
-    setPeerFound(false)
     setCheckDone(false)
   }
   const onValidate = async () => {
@@ -105,12 +97,12 @@ export default function JoinProjectModal({
     }
     setValidatingSecret(true)
     try {
-      const peerWasFound = await onJoinProject(projectSecret)
-      setPeerFound(peerWasFound)
+      await onJoinProject(projectSecret)
       setCheckDone(true)
       setValidatingSecret(false)
     } catch (e) {
       console.log(e)
+      // TODO: add better detail here
       setInvalidText('There was an error while joining project: ' + e.message)
     }
   }
@@ -120,7 +112,6 @@ export default function JoinProjectModal({
   }
 
   const [checkDone, setCheckDone] = useState(false)
-  const [peerFound, setPeerFound] = useState(true)
   const [projectSecret, setProjectSecret] = useState('')
   const [invalidText, setInvalidText] = useState('')
 
@@ -132,7 +123,10 @@ export default function JoinProjectModal({
     setProjectSecret(val)
     if (!val) {
       setInvalidText('')
-    } else if (val.split(' ').length !== 5 || !val.split(' ').every(word => word.length)) {
+    } else if (
+      val.split(' ').length !== 5 ||
+      !val.split(' ').every((word) => word.length)
+    ) {
       setInvalidText('Secret must be 5 words.')
     }
   }
@@ -144,14 +138,9 @@ export default function JoinProjectModal({
       onClose={onDone}
       className="join-project-modal-wrapper"
     >
-      <ProjectJoinFollowUp
-        onDone={onDone}
-        checkDone={checkDone}
-        peerFound={peerFound}
-      />
+      <ProjectJoinFollowUp onDone={onDone} checkDone={checkDone} />
       <JoinProjectForm
         checkDone={checkDone}
-        peerFound={peerFound}
         projectSecret={projectSecret}
         onSecretChange={onSecretChange}
         invalidText={invalidText}

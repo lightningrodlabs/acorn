@@ -3,19 +3,18 @@ import { cellIdFromString } from '../../utils'
 import { RootState } from '../../redux/reducer'
 import { AllProjectsDataExport } from '../export'
 import { createWhoami } from '../../redux/persistent/profiles/who-am-i/actions'
-import { installProjectApp } from '../../projects/installProjectApp'
+import { installProject } from '../../projects/installProject'
 import { joinProjectCellId } from '../../redux/persistent/cells/actions'
-import { createProfilesZomeApi, createProjectsZomeApi } from './zomeApiCreators'
-import { installProjectAppAndImport } from './installProjectAppAndImport'
+import { createProfilesZomeApi } from './zomeApiCreators'
+import { installProjectAndImport } from './installProjectAndImport'
 import ProfilesZomeApi from '../../api/profilesApi'
-import ProjectsZomeApi from '../../api/projectsApi'
+import { internalJoinProject } from '../../projects/joinProject'
 
 export async function internalImportProjectsData(
   // dependencies
   profilesZomeApi: ProfilesZomeApi,
-  projectsZomeApi: ProjectsZomeApi,
-  _installProjectAppAndImport: typeof installProjectAppAndImport,
-  _installProjectApp: typeof installProjectApp,
+  _installProjectAndImport: typeof installProjectAndImport,
+  _installProject: typeof installProject,
   store: any,
   // main input data and callbacks
   migrationData: string,
@@ -60,12 +59,11 @@ export async function internalImportProjectsData(
   // one completes
   for await (let projectData of projectsToMigrate) {
     const passphrase = projectData.projectMeta.passphrase
-    await _installProjectAppAndImport(
+    await _installProjectAndImport(
       myAgentPubKey,
       projectData,
       passphrase,
       store.dispatch,
-      projectsZomeApi
     )
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
@@ -74,8 +72,7 @@ export async function internalImportProjectsData(
   // join each project that has already been migrated by a peer
   for await (let projectData of migratedProjectsToJoin) {
     const passphrase = projectData.projectMeta.passphrase
-    const [cellIdString, _, __] = await _installProjectApp(passphrase)
-    store.dispatch(joinProjectCellId(cellIdString))
+    await internalJoinProject(passphrase, store.dispatch, _installProject)
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
   }
@@ -88,12 +85,10 @@ export default async function importProjectsData(
 ) {
   const appWebsocket = await getAppWs()
   const profilesZomeApi = createProfilesZomeApi(appWebsocket)
-  const projectsZomeApi = createProjectsZomeApi(appWebsocket)
   return internalImportProjectsData(
     profilesZomeApi,
-    projectsZomeApi,
-    installProjectAppAndImport,
-    installProjectApp,
+    installProjectAndImport,
+    installProject,
     store,
     migrationData,
     onStep

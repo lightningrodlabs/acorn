@@ -44,9 +44,9 @@ export type DashboardDispatchProps = {
     cellIdString: CellIdString
   ) => Promise<void>
   fetchEntryPointDetails: (cellIdString: CellIdString) => Promise<void>
-  joinProject: (passphrase: string) => Promise<boolean>
-  deactivateApp: (appId: string, cellId: CellIdString) => Promise<void>
-  importProject: (
+  joinProject: (passphrase: string) => Promise<CellIdString>
+  deactivateProject: (appId: string, cellId: CellIdString) => Promise<void>
+  installProjectAndImport: (
     agentAddress: AgentPubKeyB64,
     projectData: any,
     passphrase: string
@@ -57,7 +57,7 @@ export type DashboardDispatchProps = {
 export type DashboardProps = DashboardStateProps & DashboardDispatchProps
 
 const Dashboard: React.FC<DashboardProps> = ({
-  deactivateApp,
+  deactivateProject,
   agentAddress,
   cells,
   projects,
@@ -68,7 +68,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   updateProjectMeta,
   createProject,
   joinProject,
-  importProject,
+  installProjectAndImport,
   setShowInviteMembersModal,
 }) => {
   const { setShowUpdateModal } = useContext(UpdateModalContext)
@@ -114,7 +114,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   const onJoinProject = (passphrase: string) => joinProject(passphrase)
 
   const onImportProject = (projectData: any, passphrase: string) =>
-    importProject(agentAddress, projectData, passphrase)
+    installProjectAndImport(agentAddress, projectData, passphrase)
 
   const setSortBy = (sortBy) => () => {
     setSelectedSort(sortBy)
@@ -230,7 +230,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 pendingProjects={pendingProjects}
                 fetchProjectMeta={fetchProjectMeta}
                 setPendingProjects={setPendingProjects}
-                deactivateApp={deactivateApp}
+                deactivateProject={deactivateProject}
               />
             )}
             {!hasFetchedForAllProjects &&
