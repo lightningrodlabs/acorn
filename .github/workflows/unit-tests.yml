@@ -17,6 +17,7 @@ jobs:
       - name: Install nodejs dependencies
         run: |
           npm run web-install
+          npm run zod-models-install
         shell: bash
       - name: run unit tests
         run: |
