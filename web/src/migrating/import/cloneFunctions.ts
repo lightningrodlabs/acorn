@@ -78,11 +78,10 @@ export const cloneConnection = (outcomeActionHashMap: ActionHashMap) => (
   old: WithActionHash<Connection>
 ): WithActionHash<Connection> => {
   const newParentOutcomeActionHash = outcomeActionHashMap[old.parentActionHash]
-  // v1.0.4-alpha: childActionHash
   const newChildOutcomeActionHash = outcomeActionHashMap[old.childActionHash]
 
   return {
-    ...old,
+    ...old, // technically not needed, but left in case more properties are added in future
     parentActionHash: newParentOutcomeActionHash,
     childActionHash: newChildOutcomeActionHash,
     // randomizer used to be a float, but is now an int
