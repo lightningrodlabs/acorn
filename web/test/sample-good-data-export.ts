@@ -1,7 +1,4 @@
-import {
-  AllProjectsDataExport,
-  ProjectExportDataV1,
-} from '../src/migrating/export'
+import { AllProjectsDataExport, ProjectExportDataV1 } from 'zod-models'
 import testComments from '../src/stories/testData/testComments'
 import testEntryPoint from '../src/stories/testData/testEntryPoint'
 import testOutcomeMember from '../src/stories/testData/testOutcomeMember'
