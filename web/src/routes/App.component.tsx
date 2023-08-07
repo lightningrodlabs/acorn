@@ -121,7 +121,8 @@ const App: React.FC<AppProps> = ({
   )
   // custom hooks
   const updateVersionInfo = useVersionChecker()
-  // set true to test
+  // to do development testing of migration-feature
+  // uncomment the following line (and comment the one above)
   // const updateVersionInfo = useVersionChecker(true)
   const finishMigrationChecker = useFinishMigrationChecker()
   const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
