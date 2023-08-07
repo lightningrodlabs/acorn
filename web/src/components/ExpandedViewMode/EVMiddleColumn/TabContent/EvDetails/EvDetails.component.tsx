@@ -364,6 +364,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
                       projectId={projectId}
                       onClose={() => setEditAssignees(false)}
                       activeAgentPubKey={activeAgentPubKey}
+                      profilesPresent={presentMembers}
                       people={people}
                       outcomeActionHash={outcomeActionHash}
                       createOutcomeMember={createOutcomeMember}
