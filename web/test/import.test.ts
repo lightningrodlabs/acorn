@@ -4,6 +4,7 @@ import importProjectsData, {
 import { sampleGoodDataExport } from './sample-good-data-export'
 import {
   Connection,
+  LayeringAlgorithm,
   Outcome,
   OutcomeMember,
   ProjectMeta,
@@ -40,6 +41,7 @@ import {
   cloneOutcome as _cloneOutcome,
   cloneTag as _cloneTag,
   cloneData as _cloneData,
+  cloneProjectMeta as _cloneProjectMeta,
   ActionHashMap,
 } from '../src/migrating/import/cloneFunctions'
 import {
@@ -465,12 +467,46 @@ describe('cloneOutcome()', () => {
 })
 
 describe('cloneConnection()', () => {
-  // TODO: give it a float, it should still pass
-
   it('creates a deep copy of the old connection', () => {
     const oldConnection = Object.values<WithActionHash<Connection>>(
       sampleGoodDataExport.projects[0].connections
     )[0]
+    const outcome1 = {
+      [Object.keys(
+        sampleGoodDataExport.projects[0].outcomes
+      )[0]]: Object.values<WithActionHash<Outcome>>(
+        sampleGoodDataExport.projects[0].outcomes
+      )[0].actionHash,
+    }
+    const outcome2 = {
+      [Object.keys(
+        sampleGoodDataExport.projects[0].outcomes
+      )[1]]: Object.values<WithActionHash<Outcome>>(
+        sampleGoodDataExport.projects[0].outcomes
+      )[1].actionHash,
+    }
+    const outcomeActionHashMap: ActionHashMap = {
+      ...outcome1,
+      ...outcome2,
+    }
+    const result = _cloneConnection(outcomeActionHashMap)(oldConnection)
+
+    expect(result).toEqual({
+      ...oldConnection,
+      parentActionHash: oldConnection.parentActionHash,
+      childActionHash: oldConnection.childActionHash,
+      randomizer: Number(oldConnection.randomizer.toFixed()),
+      isImported: true,
+    })
+  })
+
+  it('still clones when given a float randomizer value', () => {
+    const oldConnection = {
+      ...Object.values<WithActionHash<Connection>>(
+        sampleGoodDataExport.projects[0].connections
+      )[0],
+      randomizer: 0.5,
+    }
     const outcome1 = {
       [Object.keys(
         sampleGoodDataExport.projects[0].outcomes
@@ -523,5 +559,39 @@ describe('cloneData()', () => {
   })
 })
 
-//TODO: add test for clone project meta
-// add test for no topPriorityOutcomes or layeringAlgorithm
+describe('cloneProjectMeta()', () => {
+  it('creates a deep copy of the old project meta', () => {
+    const oldData = { ...sampleGoodDataExport.projects[0].projectMeta }
+    const outcomeActionHashMap: ActionHashMap = {
+      oldActionHash: 'newActionHash',
+    }
+
+    const result = _cloneProjectMeta(
+      outcomeActionHashMap,
+      oldData.creatorAgentPubKey,
+      oldData.passphrase
+    )(oldData)
+
+    expect(result.topPriorityOutcomes).toEqual(['newActionHash'])
+    expect(result.layeringAlgorithm).toEqual(oldData['layeringAlgorithm'])
+    expect(result.createdAt).not.toEqual(oldData.createdAt)
+  })
+
+  it('when topPriorityOutcomes and layeringAlgorithm are missing, it adds default values', () => {
+    const oldData = { ...sampleGoodDataExport.projects[0].projectMeta }
+    const outcomeActionHashMap: ActionHashMap = {
+      oldActionHash: 'newActionHash',
+    }
+    delete oldData['topPriorityOutcomes']
+    delete oldData['layeringAlgorithm']
+
+    const result = _cloneProjectMeta(
+      outcomeActionHashMap,
+      oldData.creatorAgentPubKey,
+      oldData.passphrase
+    )(oldData)
+
+    expect(result.topPriorityOutcomes).toEqual([])
+    expect(result.layeringAlgorithm).toEqual(LayeringAlgorithm.LongestPath)
+  })
+})
