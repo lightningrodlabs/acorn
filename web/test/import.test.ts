@@ -252,6 +252,43 @@ describe('importProjectsData()', () => {
       expect(e).toBeInstanceOf(ZodError)
       expect(e.errors[0].message).toBe('Expected string, received null')
     }
+
+    mockMigrationData = '{"foo": "bar"}'
+    try {
+      await internalImportProjectsData(
+        profilesZomeApi,
+        projectsZomeApi,
+        installProjectAppAndImport,
+        installProjectApp,
+        store,
+        mockMigrationData,
+        onStep
+      )
+    } catch (e) {
+      expect(e.errors).toEqual([
+        {
+          code: 'invalid_type',
+          expected: 'object',
+          received: 'undefined',
+          path: ['myProfile'],
+          message: 'Required',
+        },
+        {
+          code: 'invalid_type',
+          expected: 'array',
+          received: 'undefined',
+          path: ['projects'],
+          message: 'Required',
+        },
+        {
+          code: 'invalid_type',
+          expected: 'string',
+          received: 'undefined',
+          path: ['integrityVersion'],
+          message: 'Required',
+        },
+      ])
+    }
   })
 })
 
@@ -415,8 +452,7 @@ describe('cloneOutcome()', () => {
       sampleGoodDataExport.projects[0].outcomes
     )[0]
     const tagActionHashMap = {
-      [sampleGoodDataExport.projects[0].tags.testTagActionHash.actionHash]:
-        'testActionHash',
+      '124': 'testActionHash',
     }
     const result = _cloneOutcome(tagActionHashMap)(oldOutcome)
 
@@ -429,6 +465,8 @@ describe('cloneOutcome()', () => {
 })
 
 describe('cloneConnection()', () => {
+  // TODO: give it a float, it should still pass
+
   it('creates a deep copy of the old connection', () => {
     const oldConnection = Object.values<WithActionHash<Connection>>(
       sampleGoodDataExport.projects[0].connections
@@ -484,3 +522,6 @@ describe('cloneData()', () => {
     })
   })
 })
+
+//TODO: add test for clone project meta
+// add test for no topPriorityOutcomes or layeringAlgorithm
