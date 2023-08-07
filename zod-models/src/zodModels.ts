@@ -1,0 +1,158 @@
+import { z } from 'zod'
+
+export const ProfileSchema = z.object({
+  firstName: z.string(),
+  lastName: z.string(),
+  handle: z.string(),
+  status: z.enum(['Online', 'Offline', 'Away']),
+  avatarUrl: z.string(),
+  agentPubKey: z.string(),
+  isImported: z.boolean(),
+})
+
+export const ProjectMetaSchema = z.object({
+  creatorAgentPubKey: z.string(),
+  createdAt: z.number(),
+  name: z.string(),
+  image: z.string().nullable(),
+  passphrase: z.string(),
+  isImported: z.boolean(),
+  layeringAlgorithm: z.enum(['LongestPath', 'CoffmanGraham']).optional(), // optional for backwards compatibility
+  topPriorityOutcomes: z.array(z.string()).optional(), // optional for backwards compatibility
+  isMigrated: z.string().nullable(),
+})
+
+export const SmallTaskSchema = z.object({
+  complete: z.boolean(),
+  task: z.string(),
+})
+
+export const SmallScopeSchema = z.object({
+  Small: z.object({
+    achievementStatus: z.enum(['Achieved', 'NotAchieved']),
+    targetDate: z.number().nullable(),
+    taskList: z.array(SmallTaskSchema),
+  })
+})
+
+export const SmallsEstimateSchema = z.number()
+
+export const TimeFrameSchema = z.object({
+  fromDate: z.number(),
+  toDate: z.number(),
+})
+
+export const UncertainScopeSchema = z.object({
+  Uncertain: z.object({
+    smallsEstimate: SmallsEstimateSchema.nullable(),
+    timeFrame: TimeFrameSchema.nullable(),
+    inBreakdown: z.boolean(),
+  })
+})
+
+export const ScopeSchema = z.union([SmallScopeSchema, UncertainScopeSchema])
+
+export const OutcomeSchema = z.object({
+  content: z.string(),
+  creatorAgentPubKey: z.string(),
+  editorAgentPubKey: z.string().nullable(),
+  timestampCreated: z.number().gt(0),
+  timestampUpdated: z.number().gt(0).nullable(),
+  scope: ScopeSchema,
+  tags: z.array(z.string()).nullable(),
+  description: z.string(),
+  isImported: z.boolean(),
+  githubLink: z.string().url().or(z.literal('')),
+})
+
+export const ProjectOutcomesStateSchema = z.record(
+  z
+    .object({
+      actionHash: z.string(),
+    })
+    .merge(OutcomeSchema)
+)
+
+export const ConnectionSchema = z.object({
+  parentActionHash: z.string(),
+  childActionHash: z.string(),
+  randomizer: z.number(), // needs to be broad enough to allow floats for backwards compatibility, but is now an int
+  isImported: z.boolean(),
+})
+
+export const ProjectConnectionsStateSchema = z.record(
+  z.object({ actionHash: z.string() }).merge(ConnectionSchema)
+)
+
+export const OutcomeMemberSchema = z.object({
+  outcomeActionHash: z.string(),
+  memberAgentPubKey: z.string(),
+  creatorAgentPubKey: z.string(),
+  unixTimestamp: z.number(),
+  isImported: z.boolean(),
+})
+
+export const ProjectOutcomeMembersStateSchema = z.record(
+  z.object({ actionHash: z.string() }).merge(OutcomeMemberSchema)
+)
+
+export const OutcomeCommentSchema = z.object({
+  outcomeActionHash: z.string(),
+  content: z.string(),
+  creatorAgentPubKey: z.string(),
+  unixTimestamp: z.number(),
+  isImported: z.boolean(),
+})
+
+export const ProjectOutcomeCommentsStateSchema = z.record(
+  z
+    .object({
+      actionHash: z.string(),
+    })
+    .merge(OutcomeCommentSchema)
+)
+
+export const EntryPointSchema = z.object({
+  color: z.string(),
+  creatorAgentPubKey: z.string(),
+  createdAt: z.number(),
+  outcomeActionHash: z.string(),
+  isImported: z.boolean(),
+})
+
+export const ProjectEntryPointsStateSchema = z.record(
+  z
+    .object({
+      actionHash: z.string(),
+    })
+    .merge(EntryPointSchema)
+)
+
+export const TagSchema = z.object({
+  backgroundColor: z.string(),
+  text: z.string(),
+})
+
+export const ProjectTagsStateSchema = z.record(
+  z.object({ actionHash: z.string() }).merge(TagSchema)
+)
+
+export const ProjectExportDataV1Schema = z.object({
+  projectMeta: z
+    .object({ actionHash: z.string().nonempty() })
+    .merge(ProjectMetaSchema),
+  outcomes: ProjectOutcomesStateSchema,
+  connections: ProjectConnectionsStateSchema,
+  outcomeMembers: ProjectOutcomeMembersStateSchema,
+  outcomeComments: ProjectOutcomeCommentsStateSchema,
+  entryPoints: ProjectEntryPointsStateSchema,
+  tags: ProjectTagsStateSchema,
+})
+
+export const AllProjectsDataExportSchema = z.object({
+  myProfile: ProfileSchema,
+  projects: z.array(ProjectExportDataV1Schema),
+  integrityVersion: z.string(),
+})
+
+export type AllProjectsDataExport = z.infer<typeof AllProjectsDataExportSchema>

@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    // "outDir": "./dist/",
+    "checkJs": false,
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "module": "ES6",
+    "target": "ES6",
+    "jsx": "react",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true
+  }
+  // "exclude": ["src/stories"]
+}
