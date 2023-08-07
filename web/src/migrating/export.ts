@@ -58,15 +58,30 @@ export async function internalExportProjectsData(
       store.dispatch,
       projectCellId
     )
-    await Promise.all([
-      projectDataFetchers.fetchProjectMeta(),
-      projectDataFetchers.fetchEntryPoints(),
-      projectDataFetchers.fetchOutcomeComments(),
-      projectDataFetchers.fetchOutcomeMembers(),
-      projectDataFetchers.fetchTags(),
-      projectDataFetchers.fetchOutcomes(),
-      projectDataFetchers.fetchConnections(),
-    ])
+    try {
+
+      await Promise.all([
+        projectDataFetchers.fetchProjectMeta(),
+        projectDataFetchers.fetchEntryPoints(),
+        projectDataFetchers.fetchOutcomeComments(),
+        projectDataFetchers.fetchOutcomeMembers(),
+        projectDataFetchers.fetchTags(),
+        projectDataFetchers.fetchOutcomes(),
+        projectDataFetchers.fetchConnections(),
+      ])
+    } catch (e) {
+      // fetch project meta will fail if the there IS no project meta
+      // and in that case we can just skip this project
+      // this solves for unsynced and uncanceled projects
+      if (e?.data?.data?.includes('no project meta exists')) {
+        // throw e
+        completedTracker++
+        onStep(completedTracker, projectCellIds.length)
+        continue
+      } else {
+        throw e
+      }
+    }
     // step 2: collect the data to be exported for each project
     const allDataFetchedState: RootState = store.getState()
     const exportProjectData = collectExportProjectDataFunction(
