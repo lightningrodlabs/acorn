@@ -22,7 +22,6 @@ export const ProjectMetaV0Schema = z.object({
   passphrase: z.string(),
   isImported: z.boolean(),
   isMigrated: z.string().nullable(),
-  actionHash: z.string().nonempty()
 })
 
 export const ProjectMetaV0WithActionHashSchema = WithActionHashSchema.merge(ProjectMetaV0Schema)
@@ -35,6 +34,8 @@ export const ProjectMetaV1Schema = z.object({
 export const ProjectMetaV1WithActionHashSchema = WithActionHashSchema.merge(ProjectMetaV1Schema)
 
 export const ProjectMetaWithActionHashSchema = z.union([ProjectMetaV0WithActionHashSchema, ProjectMetaV1WithActionHashSchema])
+
+export type ProjectMetaWithActionHash = z.infer<typeof ProjectMetaWithActionHashSchema>
 
 export const SmallTaskSchema = z.object({
   complete: z.boolean(),
