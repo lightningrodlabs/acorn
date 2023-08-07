@@ -9,18 +9,16 @@ import { createProfilesZomeApi, createProjectsZomeApi } from './zomeApiCreators'
 import { installProjectAppAndImport } from './installProjectAppAndImport'
 import ProfilesZomeApi from '../../api/profilesApi'
 import ProjectsZomeApi from '../../api/projectsApi'
-import { AllProjectsDataExport } from '../model/allProjectsDataExport'
+import { AllProjectsDataExport, AllProjectsDataExportSchema } from 'zod-models'
 
-const stringToJSONSchema = z.string().transform(
-  (str, ctx): AllProjectsDataExport => {
-    try {
-      return JSON.parse(str)
-    } catch (e) {
-      ctx.addIssue({ code: 'custom', message: 'Invalid JSON' })
-      return z.NEVER
-    }
+const stringToJSONSchema = z.string().transform((str, ctx): any => {
+  try {
+    return JSON.parse(str)
+  } catch (e) {
+    ctx.addIssue({ code: 'custom', message: 'Invalid JSON' })
+    return z.NEVER
   }
-)
+})
 
 export async function internalImportProjectsData(
   // dependencies
@@ -33,8 +31,8 @@ export async function internalImportProjectsData(
   migrationData: string,
   onStep: (completed: number, toComplete: number) => void
 ) {
-  const migrationDataParsed: AllProjectsDataExport = stringToJSONSchema.parse(
-    migrationData
+  const migrationDataParsed: AllProjectsDataExport = AllProjectsDataExportSchema.parse(
+    stringToJSONSchema.parse(migrationData)
   )
 
   const initialState: RootState = store.getState()
