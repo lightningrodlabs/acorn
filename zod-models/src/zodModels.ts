@@ -155,4 +155,6 @@ export const AllProjectsDataExportSchema = z.object({
   integrityVersion: z.string(),
 })
 
+export type ProjectExportDataV1 = z.infer<typeof ProjectExportDataV1Schema>
+
 export type AllProjectsDataExport = z.infer<typeof AllProjectsDataExportSchema>
