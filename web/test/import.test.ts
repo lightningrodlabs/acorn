@@ -13,7 +13,7 @@ import {
 import { WireRecord } from '../src/api/hdkCrud'
 import mockUnmigratedProjectMeta from './mockProjectMeta'
 import mockBaseRootState from './mockRootState'
-import { installProjectApp as _installProjectApp } from '../src/projects/installProjectApp'
+import { installProject as _installProject } from '../src/projects/installProject'
 import { getAppWs as _getAppWs } from '../src/hcWebsockets'
 import { AppWebsocket } from '@holochain/client'
 import { RootState } from '../src/redux/reducer'
@@ -49,14 +49,15 @@ import {
   internalCreateActionHashMapAndImportProjectData,
 } from '../src/migrating/import/createActionHashMapAndImportProjectData'
 import {
-  installProjectAppAndImport as _installProjectAppAndImport,
-  internalInstallProjectAppAndImport,
-} from '../src/migrating/import/installProjectAppAndImport'
+  installProjectAndImport as _installProjectAndImport,
+  internalInstallProjectAndImport,
+} from '../src/migrating/import/installProjectAndImport'
 import mockWhoami from './mockWhoami'
 import { cellIdFromString } from '../src/utils'
 import mockActionHashMaps from './mockActionHashMaps'
 import { WithActionHash } from '../src/types/shared'
 import { ZodError } from 'zod'
+import { finalizeCreateProject as _finalizeCreateProject } from '../src/projects/createProject'
 
 let store: any // too complex of a type to mock
 
@@ -64,8 +65,9 @@ let createProfilesZomeApi: typeof _createProfilesZomeApi
 let createProjectsZomeApi: typeof _createProjectsZomeApi
 let profilesZomeApi: ProfilesZomeApi
 let projectsZomeApi: ProjectsZomeApi
-let installProjectAppAndImport: typeof _installProjectAppAndImport
-let installProjectApp: typeof _installProjectApp
+let installProjectAndImport: typeof _installProjectAndImport
+let installProject: typeof _installProject
+let finalizeCreateProject: typeof _finalizeCreateProject
 let createActionHashMapAndImportProjectData: typeof _createActionHashMapAndImportProjectData
 let baseRootState: typeof mockBaseRootState
 let mockGetState: () => RootState
@@ -128,13 +130,15 @@ beforeEach(() => {
   })
   profilesZomeApi = createProfilesZomeApi(mockAppWs)
   projectsZomeApi = createProjectsZomeApi(mockAppWs)
-  installProjectAppAndImport = jest.fn()
+  installProjectAndImport = jest.fn()
   mockCellIdString =
     '132,45,36,204,129,221,8,19,206,244,229,30,210,95,157,234,241,47,13,85,105,207,55,138,160,87,204,162,244,122,186,195,125,254,5,185,165,224,66[:cell_id_divider:]132,32,36,97,138,27,24,136,8,80,164,189,194,243,82,224,72,205,215,225,2,27,126,146,190,40,102,187,244,75,191,172,155,196,247,226,220,92,1'
 
-  installProjectApp = jest
+  installProject = jest
     .fn()
     .mockResolvedValue([mockCellIdString, ['abc'], 'testString'])
+
+  finalizeCreateProject = jest.fn()
 
   createActionHashMapAndImportProjectData = jest.fn().mockResolvedValue({
     tagActionHashMap: {},
@@ -163,9 +167,8 @@ describe('importProjectsData()', () => {
   it('successfully parses and imports project data and user profile', async () => {
     await internalImportProjectsData(
       profilesZomeApi,
-      projectsZomeApi,
-      installProjectAppAndImport,
-      installProjectApp,
+      installProjectAndImport,
+      installProject,
       store,
       mockMigrationData,
       onStep
@@ -184,17 +187,16 @@ describe('importProjectsData()', () => {
       sampleGoodDataExport.projects[1].projectMeta.isMigrated
     ).not.toBeNull()
 
-    expect(installProjectAppAndImport).toHaveBeenCalledTimes(1)
-    expect(installProjectAppAndImport).toHaveBeenCalledWith(
+    expect(installProjectAndImport).toHaveBeenCalledTimes(1)
+    expect(installProjectAndImport).toHaveBeenCalledWith(
       'testAgentAddress',
       sampleGoodDataExport.projects[0],
       sampleGoodDataExport.projects[0].projectMeta.passphrase,
       store.dispatch,
-      projectsZomeApi
     )
 
-    expect(installProjectApp).toHaveBeenCalledTimes(1)
-    expect(installProjectApp).toHaveBeenCalledWith(
+    expect(installProject).toHaveBeenCalledTimes(1)
+    expect(installProject).toHaveBeenCalledWith(
       sampleGoodDataExport.projects[1].projectMeta.passphrase
     )
 
@@ -227,9 +229,8 @@ describe('importProjectsData()', () => {
     try {
       await internalImportProjectsData(
         profilesZomeApi,
-        projectsZomeApi,
-        installProjectAppAndImport,
-        installProjectApp,
+        installProjectAndImport,
+        installProject,
         store,
         mockMigrationData,
         onStep
@@ -243,9 +244,8 @@ describe('importProjectsData()', () => {
     try {
       await internalImportProjectsData(
         profilesZomeApi,
-        projectsZomeApi,
-        installProjectAppAndImport,
-        installProjectApp,
+        installProjectAndImport,
+        installProject,
         store,
         mockMigrationData,
         onStep
@@ -259,9 +259,8 @@ describe('importProjectsData()', () => {
     try {
       await internalImportProjectsData(
         profilesZomeApi,
-        projectsZomeApi,
-        installProjectAppAndImport,
-        installProjectApp,
+        installProjectAndImport,
+        installProject,
         store,
         mockMigrationData,
         onStep
@@ -294,21 +293,22 @@ describe('importProjectsData()', () => {
   })
 })
 
-describe('installProjectAppAndImport()', () => {
+describe('installProjectAndImport()', () => {
   const agentAddress = 'testAgentAddress'
   it('installs DNA and imports project into new cell', async () => {
-    await internalInstallProjectAppAndImport(
+    await internalInstallProjectAndImport(
       agentAddress,
       sampleGoodDataExport.projects[0],
       sampleGoodDataExport.projects[0].projectMeta.passphrase,
       store.dispatch,
-      installProjectApp,
+      installProject,
       createActionHashMapAndImportProjectData,
+      finalizeCreateProject,
       projectsZomeApi
     )
 
-    expect(installProjectApp).toHaveBeenCalledTimes(1)
-    expect(installProjectApp).toHaveBeenCalledWith(
+    expect(installProject).toHaveBeenCalledTimes(1)
+    expect(installProject).toHaveBeenCalledWith(
       sampleGoodDataExport.projects[0].projectMeta.passphrase
     )
 
@@ -319,21 +319,27 @@ describe('installProjectAppAndImport()', () => {
       store.dispatch
     )
 
-    expect(store.dispatch).toHaveBeenCalledTimes(2)
-    expect(store.dispatch).toHaveBeenNthCalledWith(1, {
-      type: 'SIMPLE_CREATE_PROJECT_META',
-      payload: projectMeta,
-      meta: { cellIdString: mockCellIdString },
-    })
-    expect(store.dispatch).toHaveBeenNthCalledWith(2, {
-      type: 'SET_MEMBER',
-      payload: {
-        cellIdString: mockCellIdString,
-        member: {
-          agentPubKey: 'testAgentAddress',
-        },
-      },
-    })
+    expect(finalizeCreateProject).toHaveBeenCalledTimes(1)
+    const expectedProjectMeta = {
+      creatorAgentPubKey: 'testAgentAddress',
+      // use expect.anything() because of Date.now()
+      // being used internally
+      createdAt: expect.anything(),
+      name: 'new project',
+      image: '',
+      passphrase: 'daily plant employee shorten define',
+      isImported: false,
+      layeringAlgorithm: 'CoffmanGraham',
+      topPriorityOutcomes: [],
+      isMigrated: null
+    }
+    expect(finalizeCreateProject).toHaveBeenCalledWith(
+      mockCellIdString,
+      expectedProjectMeta,
+      'testAgentAddress',
+      store.dispatch,
+      projectsZomeApi
+    )
   })
 })
 
