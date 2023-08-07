@@ -33,7 +33,7 @@ export const ProjectMetaV1Schema = z.object({
 
 export const ProjectMetaV1WithActionHashSchema = WithActionHashSchema.merge(ProjectMetaV1Schema)
 
-export const ProjectMetaWithActionHashSchema = z.union([ProjectMetaV0WithActionHashSchema, ProjectMetaV1WithActionHashSchema])
+export const ProjectMetaWithActionHashSchema = z.union([ProjectMetaV1WithActionHashSchema, ProjectMetaV0WithActionHashSchema])
 
 export type ProjectMetaWithActionHash = z.infer<typeof ProjectMetaWithActionHashSchema>
 
