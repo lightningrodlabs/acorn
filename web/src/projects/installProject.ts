@@ -8,6 +8,7 @@ import { cellIdToString } from '../utils'
 export async function internalInstallProject(
   passphrase: string,
   adminWs: AdminWebsocket,
+  _getAgentPubKey: typeof getAgentPubKey
 ): Promise<[CellIdString, CellId, string]> {
   const uid = passphraseToUid(passphrase)
   // add a bit of randomness so that
@@ -19,7 +20,7 @@ export async function internalInstallProject(
   const installed_app_id = `${PROJECT_APP_PREFIX}-${Math.random()
     .toString()
     .slice(-6)}-${uid}`
-  const agent_key = getAgentPubKey()
+  const agent_key = _getAgentPubKey()
   if (!agent_key) {
     throw new Error(
       'Cannot install a new project because no AgentPubKey is known locally'
@@ -27,9 +28,13 @@ export async function internalInstallProject(
   }
   // the dna hash HAS to act deterministically
   // in order for the 'joining' of Projects to work
-  const happPath = window.require
-    ? await window.require('electron').ipcRenderer.invoke('getProjectsPath')
-    : './happ/workdir/projects/projects.happ'
+  let happPath: string
+  if (typeof window !== 'undefined' && window.require)
+    happPath = await window
+      .require('electron')
+      .ipcRenderer.invoke('getProjectsPath')
+  else happPath = './happ/workdir/projects/projects.happ'
+
   // INSTALL
   const installedApp = await adminWs.installApp({
     agent_key,
@@ -56,5 +61,5 @@ export async function installProject(
   passphrase: string
 ): Promise<[CellIdString, CellId, string]> {
   const adminWs = await getAdminWs()
-  return internalInstallProject(passphrase, adminWs)
+  return internalInstallProject(passphrase, adminWs, getAgentPubKey)
 }
