@@ -31,11 +31,12 @@ export async function internalCreateProject(
   agentAddress: AgentPubKeyB64,
   dispatch: any,
   iInstallProject: typeof installProject,
+  _finalizeCreateProject: typeof finalizeCreateProject,
   projectsZomeApi: ProjectsZomeApi
 ) {
   const startTime = Date.now()
   const [cellIdString] = await iInstallProject(passphrase)
-  await finalizeCreateProject(
+  await _finalizeCreateProject(
     cellIdString,
     projectMeta,
     agentAddress,
@@ -60,6 +61,7 @@ export async function createProject(
     agentAddress,
     dispatch,
     installProject,
+    finalizeCreateProject,
     projectsZomeApi
   )
 }

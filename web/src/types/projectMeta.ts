@@ -14,3 +14,5 @@ export type ProjectAggregated = {
     outcome: WithActionHash<Outcome>
   }[]
 }
+
+export type ProjectMeta = ProjectMetaV1
