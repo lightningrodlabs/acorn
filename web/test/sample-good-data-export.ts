@@ -4,7 +4,6 @@ import testEntryPoint from '../src/stories/testData/testEntryPoint'
 import testOutcomeMember from '../src/stories/testData/testOutcomeMember'
 import testProfile from '../src/stories/testData/testProfile'
 import testTags from '../src/stories/testData/testTags'
-import { LayeringAlgorithm } from '../src/types'
 
 const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
   projectMeta: {
@@ -14,7 +13,7 @@ const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
     image: '',
     passphrase: 'daily plant employee shorten define',
     isImported: false,
-    layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
+    layeringAlgorithm: "CoffmanGraham",
     topPriorityOutcomes: ['oldActionHash'],
     isMigrated: null,
     actionHash: 'uhCkkBzwPwj4l3XGeXJTt9mxL88LOKOm_fvh0kw6PSf5jnP_RUG14',
@@ -216,7 +215,7 @@ const sampleGoodMigratedProjectData: ProjectExportDataV1 = {
 const sampleGoodDataExport: AllProjectsDataExport = {
   myProfile: testProfile,
   projects: [sampleGoodUnmigratedProjectData, sampleGoodMigratedProjectData],
-  integrityVersion: '8',
+  integrityVersion: 8,
 }
 
 export { sampleGoodDataExport }

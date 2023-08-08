@@ -98,6 +98,7 @@ export default function useVersionChecker(
   isTest?: boolean
 ): {
   currentVersion: string
+  integrityVersion: number
   platform: string
   arch: string
   newReleaseVersion: string
@@ -105,6 +106,7 @@ export default function useVersionChecker(
   sizeForPlatform: string
 } {
   const [currentVersion, setCurrentVersion] = useState('')
+  const [integrityVersion, setIntegrityVersion] = useState<number>(null)
   const [platform, setPlatform] = useState('')
   const [arch, setArch] = useState('')
   const [newReleaseVersion, setNewReleaseVersion] = useState('')
@@ -119,10 +121,12 @@ export default function useVersionChecker(
         .then(
           (currentVersionInfo: {
             version: string
+            integrityVersion: number
             platform: string
             arch: string
           }) => {
             setCurrentVersion(currentVersionInfo.version)
+            setIntegrityVersion(currentVersionInfo.integrityVersion)
             setPlatform(currentVersionInfo.platform)
             setArch(currentVersionInfo.arch)
           }
@@ -160,6 +164,7 @@ export default function useVersionChecker(
   return newReleaseVersion
     ? {
         currentVersion,
+        integrityVersion,
         platform,
         arch,
         newReleaseVersion,

@@ -4,7 +4,6 @@ import importProjectsData, {
 import { sampleGoodDataExport } from './sample-good-data-export'
 import {
   Connection,
-  LayeringAlgorithm,
   Outcome,
   OutcomeMember,
   ProjectMeta,
@@ -283,7 +282,7 @@ describe('importProjectsData()', () => {
         },
         {
           code: 'invalid_type',
-          expected: 'string',
+          expected: 'number',
           received: 'undefined',
           path: ['integrityVersion'],
           message: 'Required',
@@ -598,6 +597,6 @@ describe('cloneProjectMeta()', () => {
     )(oldData)
 
     expect(result.topPriorityOutcomes).toEqual([])
-    expect(result.layeringAlgorithm).toEqual(LayeringAlgorithm.LongestPath)
+    expect(result.layeringAlgorithm).toEqual("LongestPath")
   })
 })

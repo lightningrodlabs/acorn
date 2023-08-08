@@ -2,12 +2,18 @@ import {z} from 'zod'
 import ProfileSchema from '../profile/profileSchema'
 import ProjectExportDataV1Schema from '../projectExportData/v1/projectExportDataV1Schema'
 
-const AllProjectsDataExportSchema = z.object({
+export const BackwardsCompatibleAllProjectsExportSchema = z.object({
   myProfile: ProfileSchema,
   projects: z.array(ProjectExportDataV1Schema),
-  integrityVersion: z.string(),
 })
 
+export type BackwardsCompatibleAllProjectsExport = z.infer<typeof BackwardsCompatibleAllProjectsExportSchema>
+
+export const AllProjectsDataExportSchema = z.object({
+  myProfile: ProfileSchema,
+  projects: z.array(ProjectExportDataV1Schema),
+  integrityVersion: z.number(),
+})
 
 export type AllProjectsDataExport = z.infer<typeof AllProjectsDataExportSchema>
 

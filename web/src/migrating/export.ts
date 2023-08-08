@@ -1,3 +1,4 @@
+import { AllProjectsDataExport, ProjectExportDataV1 } from 'zod-models'
 import constructProjectDataFetchers from '../api/projectDataFetchers'
 import ProjectsZomeApi from '../api/projectsApi'
 import { getAppWs } from '../hcWebsockets'
@@ -5,8 +6,6 @@ import { RootState } from '../redux/reducer'
 import { ProjectMeta } from '../types'
 import { ActionHashB64, CellIdString } from '../types/shared'
 import { cellIdFromString } from '../utils'
-import { AllProjectsDataExport } from './model/allProjectsDataExport'
-import { ProjectExportDataV1 } from './model/projectExportData'
 
 export type ExportType = 'csv' | 'json'
 
@@ -31,7 +30,7 @@ export async function internalExportProjectsData(
   store: any,
   toVersion: string,
   onStep: (completed: number, toComplete: number) => void,
-  integrityVersion: string
+  integrityVersion: number
 ): Promise<AllProjectsDataExport | null> {
   const initialState: RootState = store.getState()
 
@@ -105,6 +104,7 @@ export async function internalExportProjectsData(
 export default async function exportProjectsData(
   store: any,
   toVersion: string,
+  fromIntegrityVersion: number,
   onStep: (completed: number, toComplete: number) => void
 ) {
   return internalExportProjectsData(
@@ -114,8 +114,7 @@ export default async function exportProjectsData(
     store,
     toVersion,
     onStep,
-    '8' // TODO: replace with INTEGRITY_VERSION_NUMBER
-    // INTEGRITY_VERSION_NUMBER
+    fromIntegrityVersion
   )
 }
 

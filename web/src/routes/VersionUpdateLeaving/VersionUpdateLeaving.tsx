@@ -50,6 +50,7 @@ export type VersionUpdateLeavingProps = {
   triggerAMigrationCheck: () => void
   updateVersionInfo?: {
     currentVersion: string
+    integrityVersion: number
     platform: string
     arch: string
     newReleaseVersion: string
@@ -76,6 +77,7 @@ const VersionUpdateLeaving: React.FC<VersionUpdateLeavingProps> = ({
     const allExportData = await exportProjectsData(
       store,
       updateVersionInfo.newReleaseVersion,
+      updateVersionInfo.integrityVersion,
       (completed, toComplete) => {
         // percent
         // the + 1 is because there's an additional step after

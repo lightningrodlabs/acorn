@@ -9,6 +9,7 @@ import {
   CellIdString,
   WithActionHash,
 } from './shared'
+import { ProjectMetaV1, ProjectMetaV1Schema } from 'zod-models'
 
 export type ProjectAggregated = {
   projectMeta: WithActionHash<ProjectMeta>
@@ -21,30 +22,4 @@ export type ProjectAggregated = {
   }[]
 }
 
-export enum LayeringAlgorithm {
-  LongestPath = 'LongestPath',
-  CoffmanGraham = 'CoffmanGraham',
-}
-
-export const ProjectMetaSchema = z.object({
-  creatorAgentPubKey: z.string(),
-  createdAt: z.number(),
-  name: z.string(),
-  image: z.string().optional(),
-  passphrase: z.string(),
-  isImported: z.boolean(),
-  layeringAlgorithm: z.nativeEnum(LayeringAlgorithm),
-  topPriorityOutcomes: z.array(z.string()),
-  isMigrated: z.string().optional(),
-})
-export interface ProjectMeta {
-  creatorAgentPubKey: AgentPubKeyB64
-  createdAt: number // f64
-  name: string
-  image: Option<string>
-  passphrase: string
-  isImported: boolean
-  layeringAlgorithm: LayeringAlgorithm
-  topPriorityOutcomes: Array<ActionHashB64>
-  isMigrated: Option<string>
-}
+export type ProjectMeta = ProjectMetaV1

@@ -16,7 +16,7 @@ export interface CollapsedOutcomesState {
 const defaultState: CollapsedOutcomesState = {
   hiddenAchievedOutcomes: [],
   hiddenSmallOutcomes: [],
-  selectedLayeringAlgo: LayeringAlgorithm.LongestPath,
+  selectedLayeringAlgo: "LongestPath",
 }
 
 export default function (

@@ -9,7 +9,7 @@ const mockProjectData: ProjectExportDataV1 = {
         image: 'testProjectImage',
         passphrase: 'testPassphrase',
         isImported: false,
-        layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
+        layeringAlgorithm: "CoffmanGraham",
         topPriorityOutcomes: [],
         isMigrated: null,
         actionHash: 'testProjectActionHash',

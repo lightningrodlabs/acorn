@@ -7,5 +7,7 @@ export const ProjectMetaV1Schema = z.object({
   topPriorityOutcomes: z.array(z.string())
 }).merge(ProjectMetaV0Schema)
 
+export type ProjectMetaV1 = z.infer<typeof ProjectMetaV1Schema>
+
 const ProjectMetaV1WithActionHashSchema = WithActionHashSchema.merge(ProjectMetaV1Schema)
 export default ProjectMetaV1WithActionHashSchema

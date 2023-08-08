@@ -108,7 +108,7 @@ export const cloneProjectMeta = (
     // add a fallback layering algorithm in case the project has none
     layeringAlgorithm: old['layeringAlgorithm']
       ? old['layeringAlgorithm']
-      : LayeringAlgorithm.LongestPath,
+      : "LongestPath",
     createdAt: Date.now(),
     creatorAgentPubKey: agentAddress,
     passphrase: passphrase,
