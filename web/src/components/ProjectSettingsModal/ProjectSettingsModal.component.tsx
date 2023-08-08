@@ -117,7 +117,7 @@ function EditProjectForm({
 export default function ProjectSettingsModal({
   showModal,
   onClose,
-  project = {} as WithActionHash<ProjectMeta>,
+  project,
   updateProjectMeta,
   openInviteMembersModal,
   cellIdString,

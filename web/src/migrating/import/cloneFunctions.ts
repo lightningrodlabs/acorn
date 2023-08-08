@@ -11,6 +11,7 @@ import { Tag } from '../../types/tag'
 import { Outcome } from '../../types/outcome'
 import { Connection } from '../../types/connection'
 import { LayeringAlgorithm, ProjectMeta } from '../../types'
+import { ProjectMetaWithActionHash } from 'zod-models'
 
 export type ActionHashMap = { [oldActionHash: ActionHashB64]: ActionHashB64 }
 
@@ -78,11 +79,10 @@ export const cloneConnection = (outcomeActionHashMap: ActionHashMap) => (
   old: WithActionHash<Connection>
 ): WithActionHash<Connection> => {
   const newParentOutcomeActionHash = outcomeActionHashMap[old.parentActionHash]
-  // v1.0.4-alpha: childActionHash
   const newChildOutcomeActionHash = outcomeActionHashMap[old.childActionHash]
 
   return {
-    ...old,
+    ...old, // technically not needed, but left in case more properties are added in future
     parentActionHash: newParentOutcomeActionHash,
     childActionHash: newChildOutcomeActionHash,
     // randomizer used to be a float, but is now an int
@@ -95,8 +95,8 @@ export const cloneProjectMeta = (
   outcomeActionHashMap: ActionHashMap,
   agentAddress: AgentPubKeyB64,
   passphrase: string
-) => (old: WithActionHash<ProjectMeta>): WithActionHash<ProjectMeta> => {
-  const originalTopPriorityOutcomes = old.topPriorityOutcomes
+) => (old: ProjectMetaWithActionHash): WithActionHash<ProjectMeta> => {
+  const originalTopPriorityOutcomes = old['topPriorityOutcomes']
   return {
     ...old,
     // the question mark operator for backwards compatibility
@@ -106,9 +106,9 @@ export const cloneProjectMeta = (
           .filter((address) => address)
       : [],
     // add a fallback layering algorithm in case the project has none
-    layeringAlgorithm: old.layeringAlgorithm
-      ? old.layeringAlgorithm
-      : LayeringAlgorithm.LongestPath,
+    layeringAlgorithm: old['layeringAlgorithm']
+      ? old['layeringAlgorithm']
+      : "LongestPath",
     createdAt: Date.now(),
     creatorAgentPubKey: agentAddress,
     passphrase: passphrase,

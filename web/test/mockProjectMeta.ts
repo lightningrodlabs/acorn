@@ -8,7 +8,7 @@ const projectMeta: ProjectMeta = {
   image: null,
   passphrase: 'testPassphrase',
   isImported: false,
-  layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
+  layeringAlgorithm: "CoffmanGraham",
   topPriorityOutcomes: [],
   isMigrated: null,
 }

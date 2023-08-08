@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import { z } from 'zod'
 
 import {
   CREATE_OUTCOME_COMMENT,
@@ -8,10 +9,26 @@ import {
 } from './actions'
 import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { Action, CellIdString, ActionHashB64, WithActionHash } from '../../../../types/shared'
+import {
+  Action,
+  CellIdString,
+  ActionHashB64,
+  WithActionHash,
+} from '../../../../types/shared'
 import { WireRecord } from '../../../../api/hdkCrud'
-import { DeleteOutcomeFullyResponse, OutcomeComment } from '../../../../types'
+import {
+  DeleteOutcomeFullyResponse,
+  OutcomeComment,
+  OutcomeCommentSchema,
+} from '../../../../types'
 
+export const ProjectOutcomeCommentsStateSchema = z.record(
+  z
+    .object({
+      actionHash: z.string(),
+    })
+    .merge(OutcomeCommentSchema)
+)
 export type ProjectOutcomeCommentsState = {
   [actionHash: ActionHashB64]: WithActionHash<OutcomeComment>
 }
@@ -21,7 +38,12 @@ export type OutcomeCommentsState = {
 }
 const defaultState: OutcomeCommentsState = {}
 
-export default function (state: OutcomeCommentsState = defaultState, action: Action<WireRecord<OutcomeComment>> | Action<DeleteOutcomeFullyResponse>): OutcomeCommentsState {
+export default function (
+  state: OutcomeCommentsState = defaultState,
+  action:
+    | Action<WireRecord<OutcomeComment>>
+    | Action<DeleteOutcomeFullyResponse>
+): OutcomeCommentsState {
   const { payload, type } = action
 
   if (
@@ -30,7 +52,7 @@ export default function (state: OutcomeCommentsState = defaultState, action: Act
       CREATE_OUTCOME_COMMENT,
       FETCH_OUTCOME_COMMENTS,
       UPDATE_OUTCOME_COMMENT,
-      DELETE_OUTCOME_COMMENT,
+      DELETE_OUTCOME_COMMENT
     )
   ) {
     const crudAction = action as Action<WireRecord<OutcomeComment>>
@@ -40,7 +62,7 @@ export default function (state: OutcomeCommentsState = defaultState, action: Act
       CREATE_OUTCOME_COMMENT,
       FETCH_OUTCOME_COMMENTS,
       UPDATE_OUTCOME_COMMENT,
-      DELETE_OUTCOME_COMMENT,
+      DELETE_OUTCOME_COMMENT
     )
   }
 
@@ -59,7 +81,8 @@ export default function (state: OutcomeCommentsState = defaultState, action: Act
         ...state,
         [cellId]: _.pickBy(
           state[cellId],
-          (_value, key) => deleteFullyResponse.deletedOutcomeComments.indexOf(key) === -1
+          (_value, key) =>
+            deleteFullyResponse.deletedOutcomeComments.indexOf(key) === -1
         ),
       }
     // DEFAULT

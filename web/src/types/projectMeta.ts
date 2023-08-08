@@ -1,16 +1,11 @@
 import { EntryPoint } from './entryPoint'
 import { Outcome } from './outcome'
 import { Profile } from './profile'
-import {
-  AgentPubKeyB64,
-  ActionHashB64,
-  Option,
-  CellIdString,
-  WithActionHash,
-} from './shared'
+import { AgentPubKeyB64, CellIdString, WithActionHash } from './shared'
+import { ProjectMetaV1 } from 'zod-models'
 
 export type ProjectAggregated = {
-  projectMeta: WithActionHash<ProjectMeta>
+  projectMeta: WithActionHash<ProjectMetaV1>
   cellId: CellIdString
   presentMembers: AgentPubKeyB64[]
   members: Profile[]
@@ -18,21 +13,4 @@ export type ProjectAggregated = {
     entryPoint: WithActionHash<EntryPoint>
     outcome: WithActionHash<Outcome>
   }[]
-}
-
-export enum LayeringAlgorithm {
-  LongestPath = 'LongestPath',
-  CoffmanGraham = 'CoffmanGraham',
-}
-
-export interface ProjectMeta {
-  creatorAgentPubKey: AgentPubKeyB64
-  createdAt: number // f64
-  name: string
-  image: Option<string>
-  passphrase: string
-  isImported: boolean
-  layeringAlgorithm: LayeringAlgorithm
-  topPriorityOutcomes: Array<ActionHashB64>
-  isMigrated: Option<string>
 }

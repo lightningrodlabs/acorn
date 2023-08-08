@@ -97,9 +97,9 @@ function layoutForGraph(
       // TODO: add back in when we figure out how to not have it crash
       // case LayeringAlgorithm.Simplex:
       // return simplex
-      case LayeringAlgorithm.LongestPath:
+      case "LongestPath":
         return longestPath
-      case LayeringAlgorithm.CoffmanGraham:
+      case "CoffmanGraham":
         return coffmanGraham
       default:
         return coffmanGraham

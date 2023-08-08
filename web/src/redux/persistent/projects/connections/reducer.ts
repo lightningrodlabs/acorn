@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import { z } from 'zod'
 
 import {
   CREATE_CONNECTION,
@@ -6,23 +7,45 @@ import {
   UPDATE_CONNECTION,
   DELETE_CONNECTION,
 } from './actions'
-import { CREATE_OUTCOME_WITH_CONNECTION, DELETE_OUTCOME_FULLY } from '../outcomes/actions'
+import {
+  CREATE_OUTCOME_WITH_CONNECTION,
+  DELETE_OUTCOME_FULLY,
+} from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 import { CellIdString, WithActionHash } from '../../../../types/shared'
-import { Connection, CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyResponse } from '../../../../types'
+import {
+  Connection,
+  ConnectionSchema,
+  CreateOutcomeWithConnectionOutput,
+  DeleteOutcomeFullyResponse,
+} from '../../../../types'
 
+export const ProjectConnectionsStateSchema = z.record(
+  z.object({ actionHash: z.string() }).merge(ConnectionSchema)
+)
 export type ProjectConnectionsState = {
   [actionHash: string]: WithActionHash<Connection>
 }
 
-export type ConnectionsState = { 
+export type ConnectionsState = {
   [cellId: CellIdString]: ProjectConnectionsState
 }
 const defaultState: ConnectionsState = {}
 
-export default function (state: ConnectionsState = defaultState, action): ConnectionsState {
+export default function (
+  state: ConnectionsState = defaultState,
+  action
+): ConnectionsState {
   // start out by checking whether this a standard CRUD operation
-  if (isCrud(action, CREATE_CONNECTION, FETCH_CONNECTIONS, UPDATE_CONNECTION, DELETE_CONNECTION)) {
+  if (
+    isCrud(
+      action,
+      CREATE_CONNECTION,
+      FETCH_CONNECTIONS,
+      UPDATE_CONNECTION,
+      DELETE_CONNECTION
+    )
+  ) {
     return crudReducer<Connection>(
       state,
       action,
@@ -49,7 +72,8 @@ export default function (state: ConnectionsState = defaultState, action): Connec
             ...state[cellId],
             [createOutcomeWithConnection.maybeConnection.actionHash]: {
               ...createOutcomeWithConnection.maybeConnection.entry,
-              actionHash: createOutcomeWithConnection.maybeConnection.actionHash,
+              actionHash:
+                createOutcomeWithConnection.maybeConnection.actionHash,
             },
           },
         }
@@ -66,7 +90,8 @@ export default function (state: ConnectionsState = defaultState, action): Connec
         ...state,
         [cellId]: _.pickBy(
           state[cellId],
-          (_value, key) => deleteOutcomeFullyResponse.deletedConnections.indexOf(key) === -1
+          (_value, key) =>
+            deleteOutcomeFullyResponse.deletedConnections.indexOf(key) === -1
         ),
       }
     default:

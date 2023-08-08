@@ -7,10 +7,12 @@
     "url": "git+https://github.com/h-be/acorn.git"
   },
   "scripts": {
-    "install-deps": "npm install && npm run web-install && npm run electron-install && npm run electron-tsc",
+    "install-deps": "npm install && npm run web-install && npm run zod-models-install && npm run electron-install && npm run electron-tsc",
     "dev": "pm2-dev pm2.config.js",
     "user-data-reset": "rm -rf user-data && mkdir user-data",
     "web-install": "cd web && npm install",
+    "zod-models-install": "cd zod-models && npm install",
+    "zod-models-build": "cd zod-models && npm run build",
     "web": "cd web && WEB_PORT=8081 ADMIN_WS_PORT=1101 APP_WS_PORT=8101 npx webpack-dev-server --config webpack.dev.js",
     "web2": "cd web && WEB_PORT=8082 ADMIN_WS_PORT=1102 APP_WS_PORT=8102 npx webpack-dev-server --config webpack.dev.js",
     "web3": "cd web && WEB_PORT=8083 ADMIN_WS_PORT=1103 APP_WS_PORT=8103 npx webpack-dev-server --config webpack.dev.js",

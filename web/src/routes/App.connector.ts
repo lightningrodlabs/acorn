@@ -74,7 +74,7 @@ function mapStateToProps(state: RootState): AppStateProps {
 
   const selectedLayeringAlgo = activeProjectMeta
     ? activeProjectMeta.layeringAlgorithm
-    : LayeringAlgorithm.LongestPath
+    : "LongestPath"
 
   return {
     profilesCellIdString,

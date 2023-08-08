@@ -1,35 +1,13 @@
+import { AllProjectsDataExport, ProjectExportDataV1 } from 'zod-models'
 import constructProjectDataFetchers from '../api/projectDataFetchers'
 import ProjectsZomeApi from '../api/projectsApi'
 import { getAppWs } from '../hcWebsockets'
-import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
-import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
-import { ProjectOutcomeCommentsState } from '../redux/persistent/projects/outcome-comments/reducer'
-import { ProjectOutcomeMembersState } from '../redux/persistent/projects/outcome-members/reducer'
-import { ProjectOutcomesState } from '../redux/persistent/projects/outcomes/reducer'
 import { RootState } from '../redux/reducer'
-import { Profile, ProjectMeta, Tag } from '../types'
-import { ActionHashB64, CellIdString, WithActionHash } from '../types/shared'
+import { ProjectMeta } from '../types'
+import { ActionHashB64, CellIdString } from '../types/shared'
 import { cellIdFromString } from '../utils'
 
 export type ExportType = 'csv' | 'json'
-
-export type ProjectExportDataV1 = {
-  projectMeta: WithActionHash<ProjectMeta>
-  outcomes: ProjectOutcomesState
-  connections: ProjectConnectionsState
-  outcomeMembers: ProjectOutcomeMembersState
-  outcomeComments: ProjectOutcomeCommentsState
-  entryPoints: ProjectEntryPointsState
-  tags: {
-    [actionHash: string]: WithActionHash<Tag>
-  }
-}
-
-export type AllProjectsDataExport = {
-  myProfile: Profile
-  projects: ProjectExportDataV1[]
-  integrityVersion: string
-}
 
 export async function updateProjectMeta(
   projectMeta: ProjectMeta,
@@ -52,7 +30,7 @@ export async function internalExportProjectsData(
   store: any,
   toVersion: string,
   onStep: (completed: number, toComplete: number) => void,
-  integrityVersion: string
+  integrityVersion: number
 ): Promise<AllProjectsDataExport | null> {
   const initialState: RootState = store.getState()
 
@@ -79,15 +57,30 @@ export async function internalExportProjectsData(
       store.dispatch,
       projectCellId
     )
-    await Promise.all([
-      projectDataFetchers.fetchProjectMeta(),
-      projectDataFetchers.fetchEntryPoints(),
-      projectDataFetchers.fetchOutcomeComments(),
-      projectDataFetchers.fetchOutcomeMembers(),
-      projectDataFetchers.fetchTags(),
-      projectDataFetchers.fetchOutcomes(),
-      projectDataFetchers.fetchConnections(),
-    ])
+    try {
+
+      await Promise.all([
+        projectDataFetchers.fetchProjectMeta(),
+        projectDataFetchers.fetchEntryPoints(),
+        projectDataFetchers.fetchOutcomeComments(),
+        projectDataFetchers.fetchOutcomeMembers(),
+        projectDataFetchers.fetchTags(),
+        projectDataFetchers.fetchOutcomes(),
+        projectDataFetchers.fetchConnections(),
+      ])
+    } catch (e) {
+      // fetch project meta will fail if the there IS no project meta
+      // and in that case we can just skip this project
+      // this solves for unsynced and uncanceled projects
+      if (e?.data?.data?.includes('no project meta exists')) {
+        // throw e
+        completedTracker++
+        onStep(completedTracker, projectCellIds.length)
+        continue
+      } else {
+        throw e
+      }
+    }
     // step 2: collect the data to be exported for each project
     const allDataFetchedState: RootState = store.getState()
     const exportProjectData = collectExportProjectDataFunction(
@@ -111,6 +104,7 @@ export async function internalExportProjectsData(
 export default async function exportProjectsData(
   store: any,
   toVersion: string,
+  fromIntegrityVersion: number,
   onStep: (completed: number, toComplete: number) => void
 ) {
   return internalExportProjectsData(
@@ -120,8 +114,7 @@ export default async function exportProjectsData(
     store,
     toVersion,
     onStep,
-    '8' // TODO: replace with INTEGRITY_VERSION_NUMBER
-    // INTEGRITY_VERSION_NUMBER
+    fromIntegrityVersion
   )
 }
 
@@ -189,10 +182,7 @@ export function projectDataToCsv(data: ProjectExportDataV1): string {
   return csvRows.join('\n')
 }
 
-export function exportDataHref(
-  type: ExportType,
-  data: string
-): string {
+export function exportDataHref(type: ExportType, data: string): string {
   let blob: Blob
   if (type === 'csv') {
     blob = new Blob([data], {

@@ -5,6 +5,8 @@ user2-data
 user-data
 electron/web
 
+zod-models/dist
+
 web/dist/fonts
 web/dist/images
 web/dist/*.js

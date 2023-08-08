@@ -1,14 +1,23 @@
+import { z } from 'zod'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 import { RootState } from '../../redux/reducer'
-import { AllProjectsDataExport } from '../export'
 import { createWhoami } from '../../redux/persistent/profiles/who-am-i/actions'
 import { installProject } from '../../projects/installProject'
-import { joinProjectCellId } from '../../redux/persistent/cells/actions'
 import { createProfilesZomeApi } from './zomeApiCreators'
 import { installProjectAndImport } from './installProjectAndImport'
 import ProfilesZomeApi from '../../api/profilesApi'
+import { AllProjectsDataExport, AllProjectsDataExportSchema } from 'zod-models'
 import { internalJoinProject } from '../../projects/joinProject'
+
+const stringToJSONSchema = z.string().transform((str, ctx): any => {
+  try {
+    return JSON.parse(str)
+  } catch (e) {
+    ctx.addIssue({ code: 'custom', message: 'Invalid JSON' })
+    return z.NEVER
+  }
+})
 
 export async function internalImportProjectsData(
   // dependencies
@@ -20,7 +29,9 @@ export async function internalImportProjectsData(
   migrationData: string,
   onStep: (completed: number, toComplete: number) => void
 ) {
-  const migrationDataParsed: AllProjectsDataExport = JSON.parse(migrationData)
+  const migrationDataParsed: AllProjectsDataExport = AllProjectsDataExportSchema.parse(
+    stringToJSONSchema.parse(migrationData)
+  )
 
   const initialState: RootState = store.getState()
   const myAgentPubKey = initialState.agentAddress

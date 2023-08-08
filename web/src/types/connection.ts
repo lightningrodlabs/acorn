@@ -1,8 +1,3 @@
-import { ActionHashB64 } from './shared'
+import { Connection as _Connection } from 'zod-models'
 
-export interface Connection {
-    parentActionHash: ActionHashB64,
-    childActionHash: ActionHashB64,
-    randomizer: number, //i64,
-    isImported: boolean,
-}
+export type Connection = _Connection

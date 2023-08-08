@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import { z } from 'zod'
 
 import {
   CREATE_OUTCOME_MEMBER,
@@ -15,8 +16,15 @@ import {
   WithActionHash,
 } from '../../../../types/shared'
 import { WireRecord } from '../../../../api/hdkCrud'
-import { DeleteOutcomeFullyResponse, OutcomeMember } from '../../../../types'
+import {
+  DeleteOutcomeFullyResponse,
+  OutcomeMember,
+  OutcomeMemberSchema,
+} from '../../../../types'
 
+export const ProjectOutcomeMembersStateSchema = z.record(
+  z.object({ actionHash: z.string() }).merge(OutcomeMemberSchema)
+)
 export type ProjectOutcomeMembersState = {
   [actionHash: ActionHashB64]: WithActionHash<OutcomeMember>
 }
@@ -28,9 +36,7 @@ const defaultState: OutcomeMembersState = {}
 
 export default function (
   state: OutcomeMembersState = defaultState,
-  action:
-    | Action<WireRecord<OutcomeMember>>
-    | Action<DeleteOutcomeFullyResponse>
+  action: Action<WireRecord<OutcomeMember>> | Action<DeleteOutcomeFullyResponse>
 ): OutcomeMembersState {
   const { payload, type } = action
 

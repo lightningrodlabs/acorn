@@ -1,9 +1,9 @@
+import { ProjectExportDataV1 } from 'zod-models'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { finalizeCreateProject } from '../../projects/createProject'
 import { getAppWs } from '../../hcWebsockets'
 import { installProject } from '../../projects/installProject'
 import { AgentPubKeyB64 } from '../../types/shared'
-import { ProjectExportDataV1 } from '../export'
 import { cloneProjectMeta } from './cloneFunctions'
 import { createActionHashMapAndImportProjectData } from './createActionHashMapAndImportProjectData'
 

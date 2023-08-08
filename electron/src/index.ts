@@ -218,6 +218,7 @@ ipcMain.handle('getVersion', () => {
     version: `v${app.getVersion()}`,
     platform: process.platform,
     arch: process.arch,
+    integrityVersion: INTEGRITY_VERSION_NUMBER,
   }
 })
 

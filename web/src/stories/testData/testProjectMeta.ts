@@ -8,7 +8,7 @@ const testProject: WithActionHash<ProjectMeta> = {
   image: null,
   passphrase: 'testPassphrase',
   isImported: false,
-  layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
+  layeringAlgorithm: "CoffmanGraham",
   topPriorityOutcomes: [],
   isMigrated: null,
   actionHash: 'testProjectActionHash',
