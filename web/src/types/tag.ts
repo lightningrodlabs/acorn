@@ -1,10 +1,3 @@
-import { z } from 'zod'
+import { Tag as _Tag } from 'zod-models'
 
-export const TagSchema = z.object({
-  backgroundColor: z.string(),
-  text: z.string(),
-})
-export interface Tag {
-  backgroundColor: string
-  text: string
-}
+export type Tag = _Tag

@@ -1,18 +1,11 @@
-import { z } from 'zod'
 import { EntryPoint } from './entryPoint'
 import { Outcome } from './outcome'
 import { Profile } from './profile'
-import {
-  AgentPubKeyB64,
-  ActionHashB64,
-  Option,
-  CellIdString,
-  WithActionHash,
-} from './shared'
-import { ProjectMetaV1, ProjectMetaV1Schema } from 'zod-models'
+import { AgentPubKeyB64, CellIdString, WithActionHash } from './shared'
+import { ProjectMetaV1 } from 'zod-models'
 
 export type ProjectAggregated = {
-  projectMeta: WithActionHash<ProjectMeta>
+  projectMeta: WithActionHash<ProjectMetaV1>
   cellId: CellIdString
   presentMembers: AgentPubKeyB64[]
   members: Profile[]
@@ -21,5 +14,3 @@ export type ProjectAggregated = {
     outcome: WithActionHash<Outcome>
   }[]
 }
-
-export type ProjectMeta = ProjectMetaV1

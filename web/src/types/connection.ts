@@ -1,15 +1,3 @@
-import { z } from 'zod'
-import { ActionHashB64 } from './shared'
+import { Connection as _Connection } from 'zod-models'
 
-export const ConnectionSchema = z.object({
-  parentActionHash: z.string(),
-  childActionHash: z.string(),
-  randomizer: z.number(),
-  isImported: z.boolean(),
-})
-export interface Connection {
-  parentActionHash: ActionHashB64
-  childActionHash: ActionHashB64
-  randomizer: number //i64,
-  isImported: boolean
-}
+export type Connection = _Connection
