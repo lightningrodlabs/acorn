@@ -11,7 +11,7 @@ import { Tag } from '../../types/tag'
 import { Outcome } from '../../types/outcome'
 import { Connection } from '../../types/connection'
 import { ProjectMeta } from '../../types'
-import { ProjectMetaWithActionHash } from 'zod-models'
+import { LayeringAlgorithm, ProjectMetaWithActionHash } from 'zod-models'
 
 export type ActionHashMap = { [oldActionHash: ActionHashB64]: ActionHashB64 }
 
@@ -108,7 +108,7 @@ export const cloneProjectMeta = (
     // add a fallback layering algorithm in case the project has none
     layeringAlgorithm: old['layeringAlgorithm']
       ? old['layeringAlgorithm']
-      : 'LongestPath',
+      : LayeringAlgorithm.LongestPath,
     createdAt: Date.now(),
     creatorAgentPubKey: agentAddress,
     passphrase: passphrase,

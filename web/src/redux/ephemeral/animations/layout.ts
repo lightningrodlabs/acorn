@@ -71,7 +71,7 @@ export default function performLayoutAnimation(
 
   const projectMeta = nextState.projects.projectMeta
   const layeringAlgorithm =
-    projectMeta[projectId]?.layeringAlgorithm || "LongestPath"
+    projectMeta[projectId]?.layeringAlgorithm || LayeringAlgorithm.LongestPath
   // this is our final destination layout
   // that we'll be animating to
   const newLayout = layoutFormula(

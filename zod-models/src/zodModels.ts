@@ -44,6 +44,7 @@ import BackwardsCompatibleProjectMetaSchema, {
   ProjectMetaV1,
   ProjectMetaV1Schema,
 } from "./projectMetaSchema/projectMetaSchema";
+import { LayeringAlgorithm, LayeringAlgorithmSchema } from "./projectMetaSchema/v1/projectMetaV1Schema";
 import ScopeSchema, { Scope } from "./scope/scopeSchema";
 import SmallScopeSchema, { SmallScope } from "./scope/small/smallScopeSchema";
 import SmallsEstimateSchema, {
@@ -72,6 +73,8 @@ export {
   ConnectionSchema,
   EntryPoint,
   EntryPointSchema,
+  LayeringAlgorithm,
+  LayeringAlgorithmSchema,
   OutcomeComment,
   OutcomeCommentSchema,
   OutcomeMember,

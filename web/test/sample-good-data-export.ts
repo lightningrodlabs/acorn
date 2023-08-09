@@ -1,4 +1,8 @@
-import { AllProjectsDataExport, ProjectExportDataV1 } from 'zod-models'
+import {
+  AllProjectsDataExport,
+  LayeringAlgorithm,
+  ProjectExportDataV1,
+} from 'zod-models'
 import testComments from '../src/stories/testData/testComments'
 import testEntryPoint from '../src/stories/testData/testEntryPoint'
 import testOutcomeMember from '../src/stories/testData/testOutcomeMember'
@@ -13,7 +17,7 @@ const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
     image: '',
     passphrase: 'daily plant employee shorten define',
     isImported: false,
-    layeringAlgorithm: "CoffmanGraham",
+    layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
     topPriorityOutcomes: ['oldActionHash'],
     isMigrated: null,
     actionHash: 'uhCkkBzwPwj4l3XGeXJTt9mxL88LOKOm_fvh0kw6PSf5jnP_RUG14',

@@ -2,9 +2,7 @@ import { connect } from 'react-redux'
 
 import { getAdminWs, getAppWs } from '../../hcWebsockets'
 import { fetchEntryPointDetails } from '../../redux/persistent/projects/entry-points/actions'
-import {
-  fetchMembers,
-} from '../../redux/persistent/projects/members/actions'
+import { fetchMembers } from '../../redux/persistent/projects/members/actions'
 import {
   fetchProjectMeta,
   updateProjectMeta,
@@ -118,11 +116,17 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
         creatorAgentPubKey: agentAddress,
         createdAt: Date.now(),
         isImported: false,
-        layeringAlgorithm: "CoffmanGraham",
+        layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
         topPriorityOutcomes: [],
         isMigrated: null,
       }
-      await createProject(passphrase, projectMeta, agentAddress, dispatch, projectsZomeApi)
+      await createProject(
+        passphrase,
+        projectMeta,
+        agentAddress,
+        dispatch,
+        projectsZomeApi
+      )
     },
     joinProject: async (passphrase: string) => {
       const appWs = await getAppWs()

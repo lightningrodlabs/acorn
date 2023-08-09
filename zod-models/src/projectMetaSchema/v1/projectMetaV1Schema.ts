@@ -2,8 +2,14 @@ import {z} from 'zod'
 import { ProjectMetaV0Schema } from '../v0/projectMetaV0Schema'
 import WithActionHashSchema from '../../withActionHashSchema'
 
+export enum LayeringAlgorithm {
+  LongestPath = 'LongestPath',
+  CoffmanGraham = 'CoffmanGraham'
+}
+export const LayeringAlgorithmSchema = z.nativeEnum(LayeringAlgorithm)
+
 export const ProjectMetaV1Schema = z.object({
-  layeringAlgorithm: z.enum(['LongestPath', 'CoffmanGraham']),
+  layeringAlgorithm: LayeringAlgorithmSchema,
   topPriorityOutcomes: z.array(z.string())
 }).merge(ProjectMetaV0Schema)
 

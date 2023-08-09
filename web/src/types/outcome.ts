@@ -11,6 +11,7 @@ import {
   Scope as _Scope,
   Outcome as _Outcome,
   AchievementStatus as _AchievementStatus,
+  OutcomeSchema as _OutcomeSchema,
 } from 'zod-models'
 
 export type AchievementStatus = _AchievementStatus
@@ -37,6 +38,7 @@ export type ComputedAchievementStatus = {
 }
 
 export type Outcome = _Outcome
+export const OutcomeSchema = _OutcomeSchema
 /*
 Uncertain
 {
