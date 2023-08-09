@@ -1,10 +1,11 @@
 
 import {z} from 'zod'
 import SmallTaskSchema from './smallTaskSchema'
+import AchievementStatusSchema from './achievementStatus'
 
 const SmallScopeSchema = z.object({
   Small: z.object({
-    achievementStatus: z.enum(['Achieved', 'NotAchieved']), // TODO: extract into a reusable enum
+    achievementStatus: AchievementStatusSchema,
     targetDate: z.number().nullable(),
     taskList: z.array(SmallTaskSchema),
   })

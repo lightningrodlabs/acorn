@@ -14,5 +14,7 @@ export {
 export type ProjectMetaV0WithActionHash = z.infer<typeof ProjectMetaV0WithActionHashSchema>
 export type ProjectMetaV1WithActionHash = z.infer<typeof ProjectMetaV1WithActionHashSchema>
 
+export type ProjectMetaWithActionHash = ProjectMetaV1WithActionHash
+
 export type BackwardsCompatibleProjectMeta = z.infer<typeof BackwardsCompatibleProjectMetaSchema>
 export default BackwardsCompatibleProjectMetaSchema

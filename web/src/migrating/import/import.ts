@@ -22,8 +22,8 @@ const stringToJSONSchema = z.string().transform((str, ctx): any => {
 export async function internalImportProjectsData(
   // dependencies
   profilesZomeApi: ProfilesZomeApi,
-  _installProjectAndImport: typeof installProjectAndImport,
-  _installProject: typeof installProject,
+  iInstallProjectAndImport: typeof installProjectAndImport,
+  iInstallProject: typeof installProject,
   store: any,
   // main input data and callbacks
   migrationData: string,
@@ -70,11 +70,11 @@ export async function internalImportProjectsData(
   // one completes
   for await (let projectData of projectsToMigrate) {
     const passphrase = projectData.projectMeta.passphrase
-    await _installProjectAndImport(
+    await iInstallProjectAndImport(
       myAgentPubKey,
       projectData,
       passphrase,
-      store.dispatch,
+      store.dispatch
     )
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
@@ -83,7 +83,7 @@ export async function internalImportProjectsData(
   // join each project that has already been migrated by a peer
   for await (let projectData of migratedProjectsToJoin) {
     const passphrase = projectData.projectMeta.passphrase
-    await internalJoinProject(passphrase, store.dispatch, _installProject)
+    await internalJoinProject(passphrase, store.dispatch, iInstallProject)
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
   }

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # assumes that 
 # dna/workdir/projects.dna
 # and
