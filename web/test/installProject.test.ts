@@ -7,7 +7,7 @@ import { passphraseToUid } from '../src/secrets'
 let mockPassphrase: string
 let mockAgentPubKey: string
 let adminWs: AdminWebsocket
-let _getAgentPubKey: typeof getAgentPubKey
+let iGetAgentPubKey: typeof getAgentPubKey
 let mockHappPath: string
 let mockCellIdString: string
 const regex = /acorn-project-\d{6}-\w+/
@@ -38,7 +38,7 @@ beforeEach(() => {
     authorizeSigningCredentials: jest.fn(),
   }
 
-  _getAgentPubKey = jest.fn().mockReturnValueOnce(mockAgentPubKey)
+  iGetAgentPubKey = jest.fn().mockReturnValueOnce(mockAgentPubKey)
 })
 
 describe('installProject()', () => {
@@ -46,7 +46,7 @@ describe('installProject()', () => {
     const result = await internalInstallProject(
       mockPassphrase,
       adminWs,
-      _getAgentPubKey
+      iGetAgentPubKey
     )
 
     expect(result[0]).toEqual(
@@ -78,16 +78,16 @@ describe('installProject()', () => {
   })
 
   it('throws error when agent_key is undefined', async () => {
-    _getAgentPubKey = jest.fn().mockReturnValue(undefined)
+    iGetAgentPubKey = jest.fn().mockReturnValue(undefined)
     try {
-      await internalInstallProject(mockPassphrase, adminWs, _getAgentPubKey)
+      await internalInstallProject(mockPassphrase, adminWs, iGetAgentPubKey)
     } catch (e) {
       expect(e.message).toEqual(
         'Cannot install a new project because no AgentPubKey is known locally'
       )
     }
 
-    expect(_getAgentPubKey).toHaveBeenCalledTimes(1)
-    expect(_getAgentPubKey).toHaveReturnedWith(undefined)
+    expect(iGetAgentPubKey).toHaveBeenCalledTimes(1)
+    expect(iGetAgentPubKey).toHaveReturnedWith(undefined)
   })
 })

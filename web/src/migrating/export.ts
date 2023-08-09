@@ -26,7 +26,7 @@ export async function updateProjectMeta(
 export async function internalExportProjectsData(
   constructProjectDataFetchersFunction: typeof constructProjectDataFetchers,
   collectExportProjectDataFunction: typeof collectExportProjectData,
-  _updateProjectMeta: typeof updateProjectMeta,
+  iUpdateProjectMeta: typeof updateProjectMeta,
   store: any,
   toVersion: string,
   onStep: (completed: number, toComplete: number) => void,
@@ -58,7 +58,6 @@ export async function internalExportProjectsData(
       projectCellId
     )
     try {
-
       await Promise.all([
         projectDataFetchers.fetchProjectMeta(),
         projectDataFetchers.fetchEntryPoints(),
@@ -94,7 +93,7 @@ export async function internalExportProjectsData(
       ...projectMetaDetails,
       isMigrated: toVersion,
     }
-    await _updateProjectMeta(newProjectMeta, actionHash, projectCellId)
+    await iUpdateProjectMeta(newProjectMeta, actionHash, projectCellId)
     completedTracker++
     onStep(completedTracker, projectCellIds.length)
   }

@@ -12,8 +12,8 @@ import {
 import { WireRecord } from '../src/api/hdkCrud'
 import mockUnmigratedProjectMeta from './mockProjectMeta'
 import mockBaseRootState from './mockRootState'
-import { installProject as _installProject } from '../src/projects/installProject'
-import { getAppWs as _getAppWs } from '../src/hcWebsockets'
+import { installProject as iInstallProject } from '../src/projects/installProject'
+import { getAppWs as iGetAppWs } from '../src/hcWebsockets'
 import { AppWebsocket } from '@holochain/client'
 import { RootState } from '../src/redux/reducer'
 import ProfilesZomeApi from '../src/api/profilesApi'
@@ -31,24 +31,24 @@ import { createOutcomeMember as dispatchCreateOutcomeMember } from '../src/redux
 import { createOutcomeComment as dispatchCreateOutcomeComment } from '../src/redux/persistent/projects/outcome-comments/actions'
 import { createEntryPoint as dispatchCreateEntryPoint } from '../src/redux/persistent/projects/entry-points/actions'
 import {
-  createProfilesZomeApi as _createProfilesZomeApi,
-  createProjectsZomeApi as _createProjectsZomeApi,
+  createProfilesZomeApi as iCreateProfilesZomeApi,
+  createProjectsZomeApi as iCreateProjectsZomeApi,
 } from '../src/migrating/import/zomeApiCreators'
 import {
-  cloneDataSet as _cloneDataSet,
-  cloneConnection as _cloneConnection,
-  cloneOutcome as _cloneOutcome,
-  cloneTag as _cloneTag,
-  cloneData as _cloneData,
-  cloneProjectMeta as _cloneProjectMeta,
+  cloneDataSet as iCloneDataSet,
+  cloneConnection as iCloneConnection,
+  cloneOutcome as iCloneOutcome,
+  cloneTag as iCloneTag,
+  cloneData as iCloneData,
+  cloneProjectMeta as iCloneProjectMeta,
   ActionHashMap,
 } from '../src/migrating/import/cloneFunctions'
 import {
-  createActionHashMapAndImportProjectData as _createActionHashMapAndImportProjectData,
+  createActionHashMapAndImportProjectData as iCreateActionHashMapAndImportProjectData,
   internalCreateActionHashMapAndImportProjectData,
 } from '../src/migrating/import/createActionHashMapAndImportProjectData'
 import {
-  installProjectAndImport as _installProjectAndImport,
+  installProjectAndImport as iInstallProjectAndImport,
   internalInstallProjectAndImport,
 } from '../src/migrating/import/installProjectAndImport'
 import mockWhoami from './mockWhoami'
@@ -56,28 +56,28 @@ import { cellIdFromString } from '../src/utils'
 import mockActionHashMaps from './mockActionHashMaps'
 import { WithActionHash } from '../src/types/shared'
 import { ZodError } from 'zod'
-import { finalizeCreateProject as _finalizeCreateProject } from '../src/projects/createProject'
+import { finalizeCreateProject as iFinalizeCreateProject } from '../src/projects/createProject'
 
 let store: any // too complex of a type to mock
 
-let createProfilesZomeApi: typeof _createProfilesZomeApi
-let createProjectsZomeApi: typeof _createProjectsZomeApi
+let createProfilesZomeApi: typeof iCreateProfilesZomeApi
+let createProjectsZomeApi: typeof iCreateProjectsZomeApi
 let profilesZomeApi: ProfilesZomeApi
 let projectsZomeApi: ProjectsZomeApi
-let installProjectAndImport: typeof _installProjectAndImport
-let installProject: typeof _installProject
-let finalizeCreateProject: typeof _finalizeCreateProject
-let createActionHashMapAndImportProjectData: typeof _createActionHashMapAndImportProjectData
+let installProjectAndImport: typeof iInstallProjectAndImport
+let installProject: typeof iInstallProject
+let finalizeCreateProject: typeof iFinalizeCreateProject
+let createActionHashMapAndImportProjectData: typeof iCreateActionHashMapAndImportProjectData
 let baseRootState: typeof mockBaseRootState
 let mockGetState: () => RootState
-let cloneDataSet: typeof _cloneDataSet
+let cloneDataSet: typeof iCloneDataSet
 let onStep: Parameters<typeof importProjectsData>[2]
 let mockAppWs: AppWebsocket
 let projectMeta: WireRecord<ProjectMeta>
 let mockMigrationData: string
 let mockCellIdString: string
 let createWhoami: typeof ProfilesZomeApi.prototype.profile.createWhoami
-let cloneTag: typeof _cloneTag
+let cloneTag: typeof iCloneTag
 
 const createTag = jest.fn().mockResolvedValue(mockTag)
 const createOutcome = jest.fn().mockResolvedValue(mockOutcome)
@@ -191,7 +191,7 @@ describe('importProjectsData()', () => {
       'testAgentAddress',
       sampleGoodDataExport.projects[0],
       sampleGoodDataExport.projects[0].projectMeta.passphrase,
-      store.dispatch,
+      store.dispatch
     )
 
     expect(installProject).toHaveBeenCalledTimes(1)
@@ -330,7 +330,7 @@ describe('installProjectAndImport()', () => {
       isImported: false,
       layeringAlgorithm: 'CoffmanGraham',
       topPriorityOutcomes: [],
-      isMigrated: null
+      isMigrated: null,
     }
     expect(finalizeCreateProject).toHaveBeenCalledWith(
       mockCellIdString,
@@ -424,7 +424,7 @@ describe('createActionHashMapAndImportProjectData()', () => {
 describe('cloneDataSet()', () => {
   it('returns a new actionHashMap with old actionHash as the key and new one as the value', async () => {
     const projectData = sampleGoodDataExport.projects[0]
-    const result = await _cloneDataSet<Tag>(
+    const result = await iCloneDataSet<Tag>(
       projectData.tags,
       cloneTag,
       projectsZomeApi.tag.create,
@@ -446,7 +446,7 @@ describe('cloneDataSet()', () => {
 describe('cloneTag()', () => {
   it('creates a deep copy of the old tag', () => {
     const oldTag = sampleGoodDataExport.projects[0].tags.testTagActionHash
-    const result = _cloneTag(oldTag)
+    const result = iCloneTag(oldTag)
 
     expect(result).toEqual(oldTag)
     expect(result).not.toBe(oldTag)
@@ -461,7 +461,7 @@ describe('cloneOutcome()', () => {
     const tagActionHashMap = {
       '124': 'testActionHash',
     }
-    const result = _cloneOutcome(tagActionHashMap)(oldOutcome)
+    const result = iCloneOutcome(tagActionHashMap)(oldOutcome)
 
     expect(result).toEqual({
       ...oldOutcome,
@@ -494,7 +494,7 @@ describe('cloneConnection()', () => {
       ...outcome1,
       ...outcome2,
     }
-    const result = _cloneConnection(outcomeActionHashMap)(oldConnection)
+    const result = iCloneConnection(outcomeActionHashMap)(oldConnection)
 
     expect(result).toEqual({
       ...oldConnection,
@@ -530,7 +530,7 @@ describe('cloneConnection()', () => {
       ...outcome1,
       ...outcome2,
     }
-    const result = _cloneConnection(outcomeActionHashMap)(oldConnection)
+    const result = iCloneConnection(outcomeActionHashMap)(oldConnection)
 
     expect(result).toEqual({
       ...oldConnection,
@@ -554,7 +554,7 @@ describe('cloneData()', () => {
       )[2].actionHash,
     }
 
-    const result = _cloneData<OutcomeMember>(outcomeActionHashMap)(oldData)
+    const result = iCloneData<OutcomeMember>(outcomeActionHashMap)(oldData)
 
     expect(result).toEqual({
       ...oldData,
@@ -571,7 +571,7 @@ describe('cloneProjectMeta()', () => {
       oldActionHash: 'newActionHash',
     }
 
-    const result = _cloneProjectMeta(
+    const result = iCloneProjectMeta(
       outcomeActionHashMap,
       oldData.creatorAgentPubKey,
       oldData.passphrase
@@ -590,13 +590,13 @@ describe('cloneProjectMeta()', () => {
     delete oldData['topPriorityOutcomes']
     delete oldData['layeringAlgorithm']
 
-    const result = _cloneProjectMeta(
+    const result = iCloneProjectMeta(
       outcomeActionHashMap,
       oldData.creatorAgentPubKey,
       oldData.passphrase
     )(oldData)
 
     expect(result.topPriorityOutcomes).toEqual([])
-    expect(result.layeringAlgorithm).toEqual("LongestPath")
+    expect(result.layeringAlgorithm).toEqual('LongestPath')
   })
 })

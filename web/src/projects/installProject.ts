@@ -8,7 +8,7 @@ import { cellIdToString } from '../utils'
 export async function internalInstallProject(
   passphrase: string,
   adminWs: AdminWebsocket,
-  _getAgentPubKey: typeof getAgentPubKey
+  iGetAgentPubKey: typeof getAgentPubKey
 ): Promise<[CellIdString, CellId, string]> {
   const uid = passphraseToUid(passphrase)
   // add a bit of randomness so that
@@ -20,7 +20,7 @@ export async function internalInstallProject(
   const installed_app_id = `${PROJECT_APP_PREFIX}-${Math.random()
     .toString()
     .slice(-6)}-${uid}`
-  const agent_key = _getAgentPubKey()
+  const agent_key = iGetAgentPubKey()
   if (!agent_key) {
     throw new Error(
       'Cannot install a new project because no AgentPubKey is known locally'

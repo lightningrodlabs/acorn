@@ -11,8 +11,8 @@ let mockCellIdString: string
 let mockAgentAddress: string
 let mockPassphrase: string
 let projectsZomeApi: ProjectsZomeApi
-let _installProject: typeof installProject
-let _finalizeCreateProject: typeof finalizeCreateProject
+let iInstallProject: typeof installProject
+let iFinalizeCreateProject: typeof finalizeCreateProject
 
 beforeEach(() => {
   dispatch = jest.fn()
@@ -30,8 +30,8 @@ beforeEach(() => {
     },
   }
 
-  _installProject = jest.fn().mockResolvedValue([mockCellIdString])
-  _finalizeCreateProject = jest.fn()
+  iInstallProject = jest.fn().mockResolvedValue([mockCellIdString])
+  iFinalizeCreateProject = jest.fn()
 })
 
 describe('finalizeCreateProject()', () => {
@@ -70,18 +70,18 @@ describe('internalCreateProject()', () => {
       mockUnmigratedProjectMeta.entry,
       mockAgentAddress,
       dispatch,
-      _installProject,
-      _finalizeCreateProject,
+      iInstallProject,
+      iFinalizeCreateProject,
       projectsZomeApi
     )
 
     expect(result).toEqual(mockCellIdString)
 
-    expect(_installProject).toHaveBeenCalledTimes(1)
-    expect(_installProject).toHaveBeenCalledWith(mockPassphrase)
+    expect(iInstallProject).toHaveBeenCalledTimes(1)
+    expect(iInstallProject).toHaveBeenCalledWith(mockPassphrase)
 
-    expect(_finalizeCreateProject).toHaveBeenCalledTimes(1)
-    expect(_finalizeCreateProject).toHaveBeenCalledWith(
+    expect(iFinalizeCreateProject).toHaveBeenCalledTimes(1)
+    expect(iFinalizeCreateProject).toHaveBeenCalledWith(
       mockCellIdString,
       mockUnmigratedProjectMeta.entry,
       mockAgentAddress,

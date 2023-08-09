@@ -1,27 +1,27 @@
 import {
   internalExportProjectsData,
-  updateProjectMeta as _updateProjectMeta,
-  collectExportProjectData as _collectExportProjectData,
+  updateProjectMeta as iUpdateProjectMeta,
+  collectExportProjectData as iCollectExportProjectData,
 } from '../src/migrating/export'
 import mockBaseRootState, { mockPopulatedState } from './mockRootState'
-import _constructProjectDataFetchers from '../src/api/projectDataFetchers'
+import iConstructProjectDataFetchers from '../src/api/projectDataFetchers'
 import mockProjectData from './mockProjectData'
 
 let projectDataFetchers: ReturnType<typeof constructProjectDataFetchers>
 let baseRootState: typeof mockBaseRootState
 let getState: typeof store.getState
 
-let constructProjectDataFetchers: typeof _constructProjectDataFetchers
-let updateProjectMeta: typeof _updateProjectMeta
-let collectExportProjectData: typeof _collectExportProjectData
+let constructProjectDataFetchers: typeof iConstructProjectDataFetchers
+let updateProjectMeta: typeof iUpdateProjectMeta
+let collectExportProjectData: typeof iCollectExportProjectData
 let store: any
 let toVersion: string
 let onStep: Parameters<typeof internalExportProjectsData>[5]
-let integrityVersion: string
+let integrityVersion: number
 
 describe('test export functionality', () => {
   beforeEach(() => {
-    integrityVersion = '1'
+    integrityVersion = 1
 
     projectDataFetchers = {
       fetchProjectMeta: jest.fn(),
