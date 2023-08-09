@@ -10,9 +10,10 @@ import {
   UncertainScope as _UncertainScope,
   Scope as _Scope,
   Outcome as _Outcome,
+  AchievementStatus as _AchievementStatus,
 } from 'zod-models'
 
-export type AchievementStatus = 'Achieved' | 'NotAchieved'
+export type AchievementStatus = _AchievementStatus
 
 export type SmallTask = _SmallTask
 export type SmallScope = _SmallScope
