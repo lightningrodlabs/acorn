@@ -36,6 +36,7 @@ jobs:
           npm install
           npm run web-install
           npm run electron-install
+          npm run zod-models-install
         shell: bash
       - name: setup for codesigning (macos only)
         if: ${{ runner.os == 'macOs' }}
