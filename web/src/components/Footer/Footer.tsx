@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
 import { useRouteMatch } from 'react-router-dom'
-import Zoom from '../Zoom/Zoom.connector'
+import Zoom from '../Zoom/Zoom.connected'
 import './Footer.scss'
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
@@ -10,6 +10,7 @@ import MapViewingOptions from '../MapViewingOptions/MapViewingOptions'
 import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { getAdminWs, getAppWs } from '../../hcWebsockets'
 import SyncingIndicator from '../SyncingIndicator/SyncingIndicator'
+import ZoomDepth from '../Zoom/ZoomDepth.connected'
 
 export type FooterProps = {
   agentAddress: AgentPubKeyB64
@@ -164,6 +165,7 @@ const Footer: React.FC<FooterProps> = ({
           )}
           {/* Map Zooming */}
           {mapPage && <Zoom />}
+          {mapPage && <ZoomDepth />}
         </div>
       )}
     </div>

@@ -460,6 +460,7 @@ export default function setupEventListeners(
         // Normalize wheel to +1 or -1.
         const wheel = event.deltaY < 0 ? -1 : 1
         store.dispatch(changeDepthPerception(depthPerception + wheel))
+        console.log('depthPerception', depthPerception + wheel)
       } else {
         // NORMAL PANNING
         // invert the pattern so that it uses new mac style
