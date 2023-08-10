@@ -441,7 +441,6 @@ export default function setupEventListeners(
         depthPerception: { value: depthPerception }
       },
     } = state
-    console.log(event)
     if (!state.ui.outcomeForm.isOpen) {
       store.dispatch(unhoverOutcome())
       store.dispatch(unsetContextMenu())
