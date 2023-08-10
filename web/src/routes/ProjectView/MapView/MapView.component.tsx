@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from 'react'
 import { useStore } from 'react-redux'
 
 import { ActionHashB64, CellIdString } from '../../../types/shared'
-import { RootState } from '../../../redux/reducer'
 import { coordsCanvasToPage } from '../../../drawing/coordinateSystems'
 import render from '../../../drawing'
 import setupEventListeners from '../../../event-listeners'
@@ -20,6 +19,8 @@ import Tooltip from '../../../components/Tooltip/Tooltip'
 import './MapView.scss'
 import MapViewContextMenu from '../../../components/MapViewContextMenu/MapViewContextMenu'
 import { useSelector } from 'react-redux'
+import ModalOutcomeNavigation from '../../../components/ModalOutcomeNavigation/ModalOutcomeNavigation'
+import { setNavModalClosed } from '../../../redux/ephemeral/navigation-modal/actions'
 
 export type MapViewDispatchProps = {
   expandOutcome: (
@@ -50,6 +51,8 @@ export type MapViewStateProps = {
   }
   zoomLevel: number
   showEmptyState: boolean
+  navigationModalIsOpen: boolean
+  nagivateToChildren: boolean
 }
 
 export type MapViewProps = MapViewDispatchProps & MapViewStateProps
@@ -71,6 +74,8 @@ const MapView: React.FC<MapViewProps> = ({
   expandOutcome,
   collapseOutcome,
   unsetContextMenu,
+  navigationModalIsOpen,
+  nagivateToChildren,
 }) => {
   const store = useStore()
   const refCanvas = useRef<HTMLCanvasElement>()
@@ -117,11 +122,14 @@ const MapView: React.FC<MapViewProps> = ({
   useEffect(() => {
     const canvas = refCanvas.current
     if (projectId && renderProps) {
-      render({
-        ...renderProps,
-        computedOutcomesKeyed,
-        computedOutcomesAsTree,
-      }, canvas)
+      render(
+        {
+          ...renderProps,
+          computedOutcomesKeyed,
+          computedOutcomesAsTree,
+        },
+        canvas
+      )
     }
   }, [renderProps, projectId, computedOutcomesAsTree, computedOutcomesKeyed])
 
@@ -177,9 +185,7 @@ const MapView: React.FC<MapViewProps> = ({
         {/* if the scale is greater than or equal to 60% (or we are creating an Outcome) */}
         {/* because otherwise the font size gets to small and the text is cut off */}
         {outcomeFormIsOpen && <MapViewOutcomeTitleForm projectId={projectId} />}
-        <CollapsedChildrenPills
-          outcomes={computedOutcomesKeyed}
-        />
+        <CollapsedChildrenPills outcomes={computedOutcomesKeyed} />
       </div>
 
       {/* below items inside 'mapview-elements-container' maintain their normal scale */}
@@ -211,9 +217,7 @@ const MapView: React.FC<MapViewProps> = ({
         {/* Outcome Connectors */}
         {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
         {refCanvas.current && zoomLevel >= 0.12 && !contextMenuCoordinate && (
-          <OutcomeConnectors
-            outcomes={computedOutcomesKeyed}
-          />
+          <OutcomeConnectors outcomes={computedOutcomesKeyed} />
         )}
         {/* CollapsedChildrenPills */}
         {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
@@ -242,6 +246,13 @@ const MapView: React.FC<MapViewProps> = ({
       <MultiEditBar
         projectId={projectId}
         hasMultiSelection={hasMultiSelection}
+      />
+      <ModalOutcomeNavigation
+        navigationModalIsOpen={navigationModalIsOpen}
+        onClose={() => {
+          store.dispatch(setNavModalClosed())
+        }}
+        navigateToOutcomeType={nagivateToChildren ? 'child' : 'parent'}
       />
     </>
   )

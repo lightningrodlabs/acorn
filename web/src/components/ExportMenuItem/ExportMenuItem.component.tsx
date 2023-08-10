@@ -2,14 +2,13 @@ import React from 'react'
 import {
   exportDataHref,
   ExportType,
-  ProjectExportDataV1,
 } from '../../migrating/export'
 
 export type ExportMenuItemProps = {
   title: string
   downloadFilename: string
   type: ExportType
-  data: ProjectExportDataV1
+  data: string
   onClick: () => void
 }
 

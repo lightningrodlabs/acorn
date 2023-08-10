@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import { z } from 'zod'
 
 import {
   CREATE_OUTCOME,
@@ -11,10 +12,28 @@ import {
 } from './actions'
 import { isCrud, crudReducer } from '../../crudRedux'
 import { FETCH_ENTRY_POINT_DETAILS } from '../entry-points/actions'
-import { Action, CellIdString, ActionHashB64, WithActionHash } from '../../../../types/shared'
-import { CreateOutcomeWithConnectionOutput, DeleteOutcomeFullyResponse, EntryPointDetails, Outcome, Scope, TimeFrame } from '../../../../types'
+import {
+  Action,
+  CellIdString,
+  ActionHashB64,
+  WithActionHash,
+} from '../../../../types/shared'
+import {
+  CreateOutcomeWithConnectionOutput,
+  DeleteOutcomeFullyResponse,
+  EntryPointDetails,
+  Outcome,
+  OutcomeSchema,
+} from '../../../../types'
 import { WireRecord } from '../../../../api/hdkCrud'
 
+export const ProjectOutcomesStateSchema = z.record(
+  z
+    .object({
+      actionHash: z.string(),
+    })
+    .merge(OutcomeSchema)
+)
 export type ProjectOutcomesState = {
   [actionHash: ActionHashB64]: WithActionHash<Outcome>
 }
@@ -23,8 +42,22 @@ export type OutcomesState = {
 }
 const defaultState: OutcomesState = {}
 
-export default function (state: OutcomesState = defaultState, action: OutcomesAction | Action<EntryPointDetails> | Action<DeleteOutcomeFullyResponse>): OutcomesState {
-  if (isCrud(action, CREATE_OUTCOME, FETCH_OUTCOMES, UPDATE_OUTCOME, DELETE_OUTCOME)) {
+export default function (
+  state: OutcomesState = defaultState,
+  action:
+    | OutcomesAction
+    | Action<EntryPointDetails>
+    | Action<DeleteOutcomeFullyResponse>
+): OutcomesState {
+  if (
+    isCrud(
+      action,
+      CREATE_OUTCOME,
+      FETCH_OUTCOMES,
+      UPDATE_OUTCOME,
+      DELETE_OUTCOME
+    )
+  ) {
     const crudAction = action as Action<WireRecord<Outcome>>
     return crudReducer(
       state,

@@ -1,6 +1,6 @@
 {
   "name": "acorn",
-  "version": "5.0.0-alpha",
+  "version": "7.0.1-alpha",
   "description": "Open source peer-to-peer project management for software teams",
   "main": "dist/index.js",
   "scripts": {
@@ -20,7 +20,10 @@
     "afterSign": "./afterSignHook.js",
     "appId": "org.lightningrodlabs.acorn",
     "copyright": "© 2020-2022 Harris-Braun Enterprises, LLC",
-    "asarUnpack": ["binaries/**/*", "web/**/*"],
+    "asarUnpack": [
+      "binaries/**/*",
+      "web/**/*"
+    ],
     "files": [
       "dist/**/*",
       "web/**/*",
@@ -50,10 +53,11 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@lightningrodlabs/electron-holochain": "0.6.1",
+    "@lightningrodlabs/electron-holochain": "=0.7.6",
     "electron-context-menu": "^3.5.0",
     "electron-log": "^4.3.5",
     "electron-notarize": "^1.0.0",
+    "electron-default-menu": "^1.0.2",
     "split": "^1.0.1"
   }
 }

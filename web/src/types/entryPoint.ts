@@ -1,9 +1,7 @@
-import { AgentPubKeyB64, ActionHashB64 } from "./shared";
+import {
+  EntryPoint as _EntryPoint,
+  EntryPointSchema as _EntryPointSchema,
+} from 'zod-models'
 
-export interface EntryPoint {
-    color: string,
-    creatorAgentPubKey: AgentPubKeyB64,
-    createdAt: number, //f64,
-    outcomeActionHash: ActionHashB64,
-    isImported: boolean,
-}
+export const EntryPointSchema = _EntryPointSchema
+export type EntryPoint = _EntryPoint

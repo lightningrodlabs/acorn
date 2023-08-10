@@ -5,6 +5,8 @@ user2-data
 user-data
 electron/web
 
+zod-models/dist
+
 web/dist/fonts
 web/dist/images
 web/dist/*.js
@@ -23,6 +25,9 @@ databases2
 keystore
 keystore2
 my-proxy-cert.cert
+
+**/*.dna
+**/*.happ
 
 **/.DS_Store
 .DS_Store

@@ -38,10 +38,6 @@ export type MapViewOutcomeTitleFormConnectorStateProps = {
   // (optional) the relation (relation_as_{child|parent}) between the two
   // in the case of creating an Outcome
   relation: RelationInput
-  // (optional) the address of an existing connection that
-  // indicates this Outcome as the child of another (a.k.a has a parent)
-  // ASSUMPTION: one parent
-  existingParentConnectionAddress: ActionHashB64
 }
 
 export type MapViewOutcomeTitleFormConnectorDispatchProps = {
@@ -65,7 +61,7 @@ const MapViewOutcomeTitleForm: React.FC<MapViewOutcomeTitleFormProps> = ({
   content,
   fromAddress,
   relation,
-  existingParentConnectionAddress,
+
   leftConnectionXPosition,
   topConnectionYPosition,
   updateContent,
@@ -121,13 +117,6 @@ const MapViewOutcomeTitleForm: React.FC<MapViewOutcomeTitleFormProps> = ({
   }
 
   const innerCreateOutcomeWithConnection = async () => {
-    // if we are replacing an connection with this one
-    // delete the existing connection first
-    // ASSUMPTION: one parent
-    if (existingParentConnectionAddress) {
-      await deleteConnection(existingParentConnectionAddress)
-    }
-
     // dispatch the action to create an Outcome
     // with the contents from the form
     // inserted into it

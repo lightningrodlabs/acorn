@@ -1,26 +1,50 @@
-import { app, BrowserWindow, ipcMain, shell, autoUpdater } from 'electron'
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  shell,
+  autoUpdater,
+  Menu,
+} from 'electron'
 import * as contextMenu from 'electron-context-menu'
 import * as path from 'path'
 import * as fs from 'fs'
-// import log from 'electron-log'
 import initAgent, {
   StateSignal,
   STATUS_EVENT,
 } from '@lightningrodlabs/electron-holochain'
 
+import { devOptions, prodOptions, stateSignalToText } from './holochain'
 import {
-  devOptions,
-  projectsHappPath,
-  prodOptions,
-  stateSignalToText,
   BINARY_PATHS,
-} from './holochain'
-import { INTEGRITY_VERSION_NUMBER, PREV_VER_USER_DATA_MIGRATION_FILE_PATH, USER_DATA_MIGRATION_FILE_PATH } from './paths'
+  INTEGRITY_VERSION_NUMBER,
+  PREV_VER_USER_DATA_MIGRATION_FILE_PATHS,
+  PROJECTS_HAPP_PATH,
+  USER_DATA_MIGRATION_FILE_PATH,
+} from './paths'
+import defaultMenu from 'electron-default-menu'
+import factoryResetWithWarning from './factory-reset'
+
+// Get default menu template
+const menu = defaultMenu(app, shell)
+const newMenuItem = {
+  label: 'Factory Reset',
+  click: factoryResetWithWarning,
+}
+// Add custom menu
+if (Array.isArray(menu[0].submenu)) {
+  menu[0].submenu.splice(1, 0, newMenuItem)
+}
+
+// Set application menu
+Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
 
 // add the right-click "context" menu
-contextMenu({
+contextMenu.default({
   showSaveImageAs: true,
 })
+
+
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // if (require('electron-squirrel-startup')) {
@@ -46,9 +70,7 @@ const LINUX_ICON_FILE = path.join(
   '../app.asar.unpacked/web/logo/acorn-app-icon-512px.png'
 )
 
-const DEVELOPMENT_UI_URL = process.env.ACORN_TEST_USER_2
-  ? 'http://localhost:8081'
-  : 'http://localhost:8080'
+const DEVELOPMENT_UI_URL = `http://localhost:${process.env.WEB_PORT}`
 
 const createMainWindow = (): BrowserWindow => {
   // Create the browser window.
@@ -187,7 +209,7 @@ app.on('activate', () => {
 })
 
 ipcMain.handle('getProjectsPath', () => {
-  return projectsHappPath
+  return PROJECTS_HAPP_PATH
 })
 
 ipcMain.handle('getVersion', () => {
@@ -196,6 +218,7 @@ ipcMain.handle('getVersion', () => {
     version: `v${app.getVersion()}`,
     platform: process.platform,
     arch: process.arch,
+    integrityVersion: INTEGRITY_VERSION_NUMBER,
   }
 })
 
@@ -214,6 +237,13 @@ ipcMain.on('initiateUpdate', () => {
     autoUpdater.checkForUpdates()
     // once the update is downloaded, it will trigger the 'update-downloaded' event, which will be
     // separately listened for, and an event emitted to the client
+  } else {
+    // we're in development mode, so just send the event to the client
+    // as if the update was downloaded
+    const windows = BrowserWindow.getAllWindows()
+    if (windows.length > 0) {
+      windows[0].webContents.send('updateDownloaded')
+    }
   }
 })
 
@@ -226,29 +256,50 @@ ipcMain.handle('persistExportData', (event, data) => {
       integrityVersion: INTEGRITY_VERSION_NUMBER,
       ...dataObj,
     }
-    fs.writeFileSync(USER_DATA_MIGRATION_FILE_PATH, JSON.stringify(modifiedData, null, 2), {
-      encoding: 'utf-8',
-    })
+    fs.writeFileSync(
+      USER_DATA_MIGRATION_FILE_PATH,
+      JSON.stringify(modifiedData, null, 2),
+      {
+        encoding: 'utf-8',
+      }
+    )
   } catch (e) {}
 })
 
 ipcMain.handle('checkForMigrationData', (event) => {
   console.log('received checkForMigrationData')
-  // INTEGRITY_VERSION_NUMBER will just be incremented one number at a time
-  if (fs.existsSync(PREV_VER_USER_DATA_MIGRATION_FILE_PATH)) {
+  // look for any migration file from an eligible previous version
+  // if it exists, we will plan to migrate from that version to this new one
+  const existingMigrationPath = PREV_VER_USER_DATA_MIGRATION_FILE_PATHS.find(
+    (prevPath) => {
+      return fs.existsSync(prevPath)
+    }
+  )
+  // if we found a migration file, read it and send it to the client
+  if (existingMigrationPath) {
     const prevVersionMigrationDataString = fs.readFileSync(
-      PREV_VER_USER_DATA_MIGRATION_FILE_PATH,
+      existingMigrationPath,
       { encoding: 'utf-8' }
     )
-    return prevVersionMigrationDataString
+    return {
+      file: existingMigrationPath,
+      data: prevVersionMigrationDataString
+    }
   } else {
-    return ''
+    return null
   }
 })
 
 ipcMain.on('markMigrationDone', () => {
   console.log('received markMigrationDone')
-  // INTEGRITY_VERSION_NUMBER will just be incremented one number at a time
-  // delete the file, thus completing the migration
-  fs.unlinkSync(PREV_VER_USER_DATA_MIGRATION_FILE_PATH)
+  // delete any migration files, thus completing the migration
+  PREV_VER_USER_DATA_MIGRATION_FILE_PATHS.forEach((prevPath) => {
+    if (fs.existsSync(prevPath)) {
+      fs.unlinkSync(prevPath)
+    }
+  })
+})
+
+ipcMain.on('factoryResetWithWarning', () => {
+  factoryResetWithWarning()
 })

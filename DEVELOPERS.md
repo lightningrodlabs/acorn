@@ -6,7 +6,7 @@
 _Prerequisites_
 
 - Have rust language (stable) installed on your system
-- Have nodejs version 16 installed on your system
+- Have nodejs version 18 installed on your system
 
 Then run
 
@@ -23,17 +23,6 @@ You can run `npm run user-data-reset` if you have user data in development, but 
 
 #### Commands that are more specific to your use case:
 
-**dna**
-
-- Have rust language (stable) installed on your system, then...
-- `npm run happ-install`: installs wasm32 compilation target for rust as well as the Holochain CLI
-- `npm run happ-pack`: compiles zomes into wasm, packages each one into a dna using Holochain CLI, and packages profiles.dna into a happ 
-- `npm run happ-reset`: runs `happ-pack` and clears user data (Run this anytime you change the code in `happ` folder during development)
-
-To test backend:
-
-- `npm run happ-test`: runs unit tests
-
 **web** (user interface)
 
 - Use nodejs version 14
@@ -48,10 +37,10 @@ To test backend:
 #### Multi-User Testing
 run the following commands in separate terminal instances (must have a running instance of acorn for the first user, either by running `npm run dev` or the below commands without the `2`):
 
-- `npm run web2`
-- `npm run electron2`
+- `npm run web(2,3,4)`
+- `npm run electron(2,3,4)`
 
-After running these commands, a `user2-data/` directory is created with user data. It too can be cleared by running `npm run user-data-reset`.
+After running these commands, a `user-data/` directory is created with user data. It too can be cleared by running `npm run user-data-reset`.
 
 ### Building / Packaging
 
@@ -61,7 +50,7 @@ To build:
 
 The packaged executables can be found in `frontend/electron/out`.
 
-In order to get cross-platform builds, just tag your repository like `v0.0.1` and push the tag to Github. CI will automatically start running a build, under the "Release" action.
+In order to get cross-platform builds, just tag your repository like `v1.0.0-alpha` and push the tag to Github. CI will automatically start running a build, under the "Release" action.
 
 > Macos: You will need to have set the following environment variables as repository secrets:
 > - APPLE_CERTIFICATE_BASE64
@@ -87,7 +76,7 @@ INTEGRITY_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER are defined in `electron/sr
 
 You can tweak INTEGRITY_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER independently. 
 
-INTEGRITY_VERSION_NUMBER should be incremented when a new DNA is in use. It will cause users to have to re-create profiles and re-instate data they've previously added.
+INTEGRITY_VERSION_NUMBER should be incremented when a new DNA is in use. This occurs when the version number of the release in [./scripts/download-happs.sh](./scripts/download-happs.sh) changes. It will cause users to have to re-create profiles and re-instate data they've previously added.
 
 KEYSTORE_VERSION_NUMBER should be incremented if the version of lair-keystore changes, and has a new key format. Or if you otherwise want users to have to switch and generate new keys.
 
@@ -96,13 +85,7 @@ KEYSTORE_VERSION_NUMBER should be incremented if the version of lair-keystore ch
 
 This project is currently using:
 
-holochain-runner [v0.5.2](https://github.com/Sprillow/holochain-runner/releases/tag/v0.5.2)
-
-which has an underlying `holochain` version of [0.1.0-beta-rc.2](https://github.com/holochain/holochain/releases/tag/holochain-0.1.0-beta-rc.2)
-
-expects an HAPP built with
-- HDK [v0.1.0-beta-rc.1](https://docs.rs/hdk/0.1.0-beta-rc.1/hdk/index.html)
-- HDI [v0.2.0-beta-rc.1](https://docs.rs/hdi/0.2.0-beta-rc.1/hdi/index.html)
+holochain-runner [v0.7.6](https://github.com/lightningrodlabs/holochain-runner/releases/tag/v0.7.6) (check the link to see the underlying `holochain` version)
 
 and [electron 20](https://www.electronjs.org/docs/latest/api/app)
 

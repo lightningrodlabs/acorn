@@ -15,56 +15,9 @@ jobs:
         env:
           # (required)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
-  # build-happ:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/cache@v2
-  #       with:
-  #         path: |
-  #           ~/.cargo/bin/
-  #           ~/.cargo/registry/index/
-  #           ~/.cargo/registry/cache/
-  #           ~/.cargo/git/db/
-  #           .cargo/bin/
-  #           .cargo/registry/index/
-  #           .cargo/registry/cache/
-  #           .cargo/git/db/
-  #           target/
-  #         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-  #     - name: Use Nix
-  #       uses: cachix/install-nix-action@v16
-  #       with:
-  #         nix_path: nixpkgs=channel:nixos-21.05
-  #     - name: Configure Nix substituters
-  #       run: |
-  #         set -xe
-  #         mkdir -p ~/.config/nix/
-  #         cp ./.github/nix.conf ~/.config/nix/
-  #     - name: Use cachix
-  #       uses: cachix/cachix-action@v10
-  #       with:
-  #         name: holochain-ci
-  #     - name: Prepare Nix environment
-  #       run: nix-shell --command "echo Completed"
-  #     # build hApp
-  #     - name: Build hApp
-  #       run: |
-  #         nix-shell --run "npm run happ-pack"
-  #     # "upload" dna as build artifact
-  #     - uses: actions/upload-artifact@master
-  #       with:
-  #         name: profiles-artifact
-  #         path: happ/workdir/profiles.happ
-  #     - uses: actions/upload-artifact@master
-  #       with:
-  #         name: projects-artifact
-  #         path: happ/workdir/projects.dna
 
   # upload the app package for each target os
   upload-assets:
-    # needs: build-happ
     strategy:
       matrix:
         os:
@@ -74,33 +27,21 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      # rm the dna files from repository
-      # - name: clearing precompiled files
-      #   run: |
-      #     rm happ/workdir/*.dna
-      #     rm happ/workdir/*.happ
-      # - uses: actions/download-artifact@master
-      #   with:
-      #     name: profiles-artifact
-      #     path: happ/workdir
-      # - uses: actions/download-artifact@master
-      #   with:
-      #     name: projects-artifact
-      #     path: happ/workdir
-      # - name: list downloads
-      #   run: ls -R
-      #   working-directory: happ/workdir
-      # depending on the windows command (when we are ready to build for it), may have to check which os currently on
+      - name: Windows only, install wget
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          choco install wget --no-progress
       - name: Install nodejs dependencies
         run: |
           npm install
           npm run web-install
           npm run electron-install
-        # if: ${{ runner.os == 'Windows' }}
-        # shell: bash
+          npm run zod-models-install
+          npm run zod-models-build
+        shell: bash
       - name: setup for codesigning (macos only)
         if: ${{ runner.os == 'macOs' }}
-        uses:  figleafteam/import-codesign-certs@v2
+        uses: figleafteam/import-codesign-certs@v2
         with:
           p12-file-base64: ${{ secrets.HBE_APPLE_CERTIFICATE_BASE64 }}
           p12-password: ${{ secrets.HBE_APPLE_CERTIFICATE_PASS }}
@@ -110,7 +51,7 @@ jobs:
           APPLE_ID_EMAIL: ${{ secrets.APPLE_ID_EMAIL }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           DEBUG: electron-osx-sign*,electron-notarize*
-        run: |    
+        run: |
           npm run build
         shell: bash
       - name: upload binary (ubuntu only)
@@ -118,16 +59,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-5.0.0-alpha.AppImage" --clobber
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-7.0.1-alpha.AppImage" --clobber
       - name: upload binary (macos only)
         if: ${{ runner.os == 'macOs' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn.5.0.0-alpha.darwin-x64.zip" --clobber
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn.7.0.1-alpha.darwin-x64.zip" --clobber
       - name: upload binary (Windows only)
         if: ${{ runner.os == 'Windows' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "electron/out/Acorn.Setup.5.0.0-alpha.exe" --clobber
+          gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "electron/out/Acorn.Setup.7.0.1-alpha.exe" --clobber

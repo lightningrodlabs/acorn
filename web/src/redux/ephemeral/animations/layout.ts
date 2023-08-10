@@ -4,8 +4,8 @@ import { updateLayout } from '../layout/actions'
 import layoutFormula from '../../../drawing/layoutFormula'
 import { RootState } from '../../reducer'
 import { LAYOUT_ANIMATION_DURATION_MS } from '../../../constants'
-import { ComputedOutcome } from '../../../types'
-import { getTreesForState } from './get-trees-for-state'
+import { ComputedOutcome, LayeringAlgorithm } from '../../../types'
+import { getGraphForState } from './getGraphForState'
 import { coordsCanvasToPage } from '../../../drawing/coordinateSystems'
 import { ActionHashB64 } from '../../../types/shared'
 import { CoordinatesState, DimensionsState } from '../layout/state-type'
@@ -55,7 +55,7 @@ export default function performLayoutAnimation(
   // called nextState because by now the
   // initial action has been integrated
   const nextState: RootState = store.getState()
-  const computedOutcomeTrees = getTreesForState(nextState)
+  const graph = getGraphForState(nextState)
   const zoomLevel = nextState.ui.viewport.scale
   const translate = nextState.ui.viewport.translate
   const depthPerception = nextState.ui.depthPerception.value
@@ -69,10 +69,15 @@ export default function performLayoutAnimation(
     nextState.ui.collapsedOutcomes.collapsedOutcomes[projectId] || {}
   const hiddenSmalls = hiddenSmallOutcomes.includes(projectId)
   const hiddenAchieved = hiddenAchievedOutcomes.includes(projectId)
+
+  const projectMeta = nextState.projects.projectMeta
+  const layeringAlgorithm =
+    projectMeta[projectId]?.layeringAlgorithm || LayeringAlgorithm.LongestPath
   // this is our final destination layout
   // that we'll be animating to
   const newLayout = layoutFormula(
-    computedOutcomeTrees,
+    graph,
+    layeringAlgorithm,
     zoomLevel,
     projectTags,
     collapsedOutcomes,

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { NavLink, Route, useLocation, useRouteMatch } from 'react-router-dom'
 import useOnClickOutside from 'use-onclickoutside'
 
@@ -15,13 +15,13 @@ import Icon from '../Icon/Icon'
 import { ENTRY_POINTS } from '../../searchParams'
 import MembersIndicator from '../MembersIndicator/MembersIndicator'
 
-// @ts-ignore
-import DoorOpen from '../../images/door-open.svg'
 import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 
 //images
 // @ts-ignore
 import triangleTopWhite from '../../images/triangle-top-white.svg'
+// @ts-ignore
+import DoorOpen from '../../images/door-open.svg'
 
 function ActiveEntryPoint({
   entryPoint,

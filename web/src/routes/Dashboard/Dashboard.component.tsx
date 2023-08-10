@@ -18,9 +18,10 @@ import PendingProjects from '../../components/PendingProjects/PendingProjects'
 
 import './Dashboard.scss'
 import Typography from '../../components/Typography/Typography'
-import { AgentPubKeyB64, CellIdString } from '../../types/shared'
-import { ProjectAggregated } from '../../types'
+import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../../types/shared'
+import { ProjectAggregated, ProjectMeta } from '../../types'
 import UpdateModalContext from '../../context/UpdateModalContext'
+import ProjectMigratedModal from '../../components/ProjectMigratedModal/ProjectMigratedModal'
 
 export type DashboardStateProps = {
   agentAddress: AgentPubKeyB64
@@ -37,10 +38,15 @@ export type DashboardDispatchProps = {
   ) => Promise<void>
   fetchMembers: (cellIdString: CellIdString) => Promise<void>
   fetchProjectMeta: (cellIdString: CellIdString) => Promise<void>
+  updateProjectMeta: (
+    projectMeta: ProjectMeta,
+    actionHash: ActionHashB64,
+    cellIdString: CellIdString
+  ) => Promise<void>
   fetchEntryPointDetails: (cellIdString: CellIdString) => Promise<void>
-  joinProject: (passphrase: string) => Promise<boolean>
-  deactivateApp: (appId: string, cellId: CellIdString) => Promise<void>
-  importProject: (
+  joinProject: (passphrase: string) => Promise<CellIdString>
+  deactivateProject: (appId: string, cellId: CellIdString) => Promise<void>
+  installProjectAndImport: (
     agentAddress: AgentPubKeyB64,
     projectData: any,
     passphrase: string
@@ -51,7 +57,7 @@ export type DashboardDispatchProps = {
 export type DashboardProps = DashboardStateProps & DashboardDispatchProps
 
 const Dashboard: React.FC<DashboardProps> = ({
-  deactivateApp,
+  deactivateProject,
   agentAddress,
   cells,
   projects,
@@ -59,9 +65,10 @@ const Dashboard: React.FC<DashboardProps> = ({
   fetchEntryPointDetails,
   fetchMembers,
   fetchProjectMeta,
+  updateProjectMeta,
   createProject,
   joinProject,
-  importProject,
+  installProjectAndImport,
   setShowInviteMembersModal,
 }) => {
   const { setShowUpdateModal } = useContext(UpdateModalContext)
@@ -75,6 +82,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [showImportModal, setShowImportModal] = useState(false)
   // will be a CellIdString if not empty
   const [showProjectSettingsModal, setShowProjectSettingsModal] = useState('')
+  const [showProjectMigratedModal, setShowProjectMigratedModal] = useState('')
   // add new modal state managers here
 
   // cells is an array of cellId strings
@@ -106,7 +114,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   const onJoinProject = (passphrase: string) => joinProject(passphrase)
 
   const onImportProject = (projectData: any, passphrase: string) =>
-    importProject(agentAddress, projectData, passphrase)
+    installProjectAndImport(agentAddress, projectData, passphrase)
 
   const setSortBy = (sortBy) => () => {
     setSelectedSort(sortBy)
@@ -116,11 +124,15 @@ const Dashboard: React.FC<DashboardProps> = ({
   let sortedProjects: Array<ProjectAggregated>
   if (selectedSort === 'createdAt') {
     // sort most recent first, oldest last
-    sortedProjects = projects.sort((a, b) => b.createdAt - a.createdAt)
+    sortedProjects = projects.sort(
+      (a, b) => b.projectMeta.createdAt - a.projectMeta.createdAt
+    )
   } else if (selectedSort === 'name') {
     // sort alphabetically ascending
     sortedProjects = projects.sort((a, b) => {
-      return a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1
+      return a.projectMeta.name.toLowerCase() > b.projectMeta.name.toLowerCase()
+        ? 1
+        : -1
     })
   }
 
@@ -128,7 +140,12 @@ const Dashboard: React.FC<DashboardProps> = ({
     ? sortedProjects.find((project) => {
         return project.cellId === showProjectSettingsModal
       })
-    : null
+    : undefined
+  const projectMigratedProject = showProjectMigratedModal
+    ? sortedProjects.find((project) => {
+        return project.cellId === showProjectMigratedModal
+      })
+    : undefined
 
   // being in 'projects' means succesful fetchProjectMeta
   // being in 'pendingProjects' means unsuccessful fetchProjectMeta
@@ -213,7 +230,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 pendingProjects={pendingProjects}
                 fetchProjectMeta={fetchProjectMeta}
                 setPendingProjects={setPendingProjects}
-                deactivateApp={deactivateApp}
+                deactivateProject={deactivateProject}
               />
             )}
             {!hasFetchedForAllProjects &&
@@ -227,11 +244,11 @@ const Dashboard: React.FC<DashboardProps> = ({
                     key={'dlp-key' + project.cellId}
                     project={project}
                     setShowInviteMembersModal={setShowInviteMembersModal}
-                    openProjectSettingsModal={(projectCellId: CellIdString) =>
-                      setShowProjectSettingsModal(projectCellId)
+                    openProjectSettingsModal={() =>
+                      setShowProjectSettingsModal(project.cellId)
                     }
-                    onClickUpdate={() => {
-                      setShowUpdateModal(true)
+                    onClickProjectMigrated={() => {
+                      setShowProjectMigratedModal(project.cellId)
                     }}
                     updateRequiredMoreInfoLink={
                       'https://docs.acorn.software/about-acorn/updating-the-app'
@@ -266,10 +283,33 @@ const Dashboard: React.FC<DashboardProps> = ({
       <ProjectSettingsModal
         showModal={showProjectSettingsModal !== ''}
         onClose={() => setShowProjectSettingsModal('')}
-        project={projectSettingsProject}
+        project={projectSettingsProject?.projectMeta}
         cellIdString={showProjectSettingsModal}
         openInviteMembersModal={() => {
-          setShowInviteMembersModal(projectSettingsProject.passphrase)
+          setShowInviteMembersModal(
+            projectSettingsProject.projectMeta.passphrase
+          )
+        }}
+      />
+      <ProjectMigratedModal
+        showModal={showProjectMigratedModal !== ''}
+        onClose={() => setShowProjectMigratedModal('')}
+        project={projectMigratedProject?.projectMeta}
+        cellIdString={showProjectMigratedModal}
+        onClickOverride={() => {
+          setShowProjectMigratedModal('')
+          updateProjectMeta(
+            {
+              ...projectMigratedProject.projectMeta,
+              isMigrated: null,
+            },
+            projectMigratedProject.projectMeta.actionHash,
+            projectMigratedProject.cellId
+          )
+        }}
+        onClickUpdateNow={() => {
+          setShowProjectMigratedModal('')
+          setShowUpdateModal(true)
         }}
       />
       {/* add new modals here */}

@@ -117,9 +117,9 @@ function EditProjectForm({
 export default function ProjectSettingsModal({
   showModal,
   onClose,
+  project,
   updateProjectMeta,
   openInviteMembersModal,
-  project = {} as WithActionHash<ProjectMeta>,
   cellIdString,
 }) {
   const [updatingProject, setUpdatingProject] = useState(false)
@@ -128,15 +128,9 @@ export default function ProjectSettingsModal({
     setUpdatingProject(true)
     await updateProjectMeta(
       {
-        // editable
+        ...project,
         name: projectName,
         image: projectCoverUrl,
-        // not editable
-        creatorAgentPubKey: project.creatorAgentPubKey,
-        createdAt: project.createdAt,
-        passphrase: project.passphrase,
-        isImported: project.isImported,
-        topPriorityOutcomes: project.topPriorityOutcomes,
       },
       project.actionHash,
       cellIdString

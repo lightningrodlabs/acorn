@@ -141,7 +141,10 @@ function getLines({
     const endofSplitWord = word.slice(wordMustBeBrokenAtIndex)
     // if its still too big, recurse, split again
     // as long as its not recursing too deep
-    if (ctx.measureText(endofSplitWord).width > maxWidth && recursions < RECURSE_MAX) {
+    if (
+      ctx.measureText(endofSplitWord).width > maxWidth &&
+      recursions < RECURSE_MAX
+    ) {
       currentLine = ''
       splitWordFit(endofSplitWord, recursions + 1)
     } else {

@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import { z } from 'zod'
 
 import { CREATE_TAG, FETCH_TAGS, UPDATE_TAG, DELETE_TAG } from './actions'
 import { isCrud, crudReducer } from '../../crudRedux'
@@ -7,7 +8,14 @@ import {
   ActionHashB64,
   WithActionHash,
 } from '../../../../types/shared'
-import { Tag } from '../../../../types'
+import { Tag, TagSchema } from '../../../../types'
+
+export const ProjectTagsStateSchema = z.record(
+  z.object({ actionHash: z.string() }).merge(TagSchema)
+)
+export type ProjectTagsState = {
+  [actionHash: ActionHashB64]: WithActionHash<Tag>
+}
 
 type TagState = {
   [cellId: CellIdString]: {

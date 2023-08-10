@@ -18,7 +18,10 @@ import * as projectMetaActions from './redux/persistent/projects/project-meta/ac
 import { setMember } from './redux/persistent/projects/members/actions'
 import { setAgent } from './redux/persistent/profiles/agents/actions'
 import { triggerUpdateLayout } from './redux/ephemeral/layout/actions'
-import { removePeerState, updatePeerState } from './redux/ephemeral/realtime-info/actions'
+import {
+  removePeerState,
+  updatePeerState,
+} from './redux/ephemeral/realtime-info/actions'
 import { cellIdToString } from './utils'
 
 // We directly use the 'success' type, since these actions
@@ -65,7 +68,7 @@ const SignalType = {
   ProjectMeta: 'ProjectMeta',
 }
 const nonEntrySignalTypes = {
-  RealtimeInfo: 'RealtimeInfo'
+  RealtimeInfo: 'RealtimeInfo',
 }
 const crudActionSets = {
   Connection: connectionActions,
@@ -112,31 +115,31 @@ const pickCrudAction = (entryTypeName, actionType) => {
   return actionSet[actionName](null, null).type
 }
 
-export default (store) => 
-{
-
+export default (store) => {
   // keep track of timer set by setTimeout for each peer sending signals to you
   // needs to be in this scope so that it is accessible each time a signal is received
   const timerIds = {}
   return (signal) => {
-    const { cellId } = signal.data
-    let { payload } = signal.data
+    let { cell_id: cellId, payload } = signal
     let waitForNextSignal = 12000
     // TODO: update holochain-conductor-api to latest
     // which should deserialize this automatically
     payload = msgpack.decode(payload)
-  
+
     if (payload.signalType === nonEntrySignalTypes.RealtimeInfo) {
       console.log('received realtime signal:', payload.data)
       // set timeout, and end any existing timeouts
       if (timerIds[payload.data.agentPubKey]) {
         clearTimeout(timerIds[payload.data.agentPubKey])
       }
-      timerIds[payload.data.agentPubKey] = setTimeout(() => store.dispatch(removePeerState(payload.data.agentPubKey)), waitForNextSignal)
+      timerIds[payload.data.agentPubKey] = setTimeout(
+        () => store.dispatch(removePeerState(payload.data.agentPubKey)),
+        waitForNextSignal
+      )
       triggerRealtimeInfoAction(store, payload.data)
       return
     }
-  
+
     const crudType = crudTypes[payload.data.entryType]
     if (crudType) {
       const action = pickCrudAction(crudType, payload.data.action)
@@ -148,8 +151,7 @@ export default (store) =>
       if (action === connectionActions.DELETE_CONNECTION) {
         store.dispatch(triggerUpdateLayout())
       }
-    }
-    else {
+    } else {
       // otherwise use non-crud actions
       switch (payload.signalType) {
         /*
@@ -169,7 +171,7 @@ export default (store) =>
           // profiles we already have, if not, then we should
           // refetch the agents list
           // TODO: re-enable this when there's a straightforward way to have the CellId
-          // for the Profiles Cell here, not the Projects CellId which it currently has access to. 
+          // for the Profiles Cell here, not the Projects CellId which it currently has access to.
           // This was the source of a breaking bug
           // if (!stateCheck.agents[payload.data.actionHash]) {
           //   store.dispatch(
@@ -186,12 +188,20 @@ export default (store) =>
         case SignalType.OutcomeWithConnection:
           console.log('check!')
           store.dispatch(
-            createSignalAction(outcomeActions.CREATE_OUTCOME_WITH_CONNECTION, cellId, payload.data.data)
+            createSignalAction(
+              outcomeActions.CREATE_OUTCOME_WITH_CONNECTION,
+              cellId,
+              payload.data.data
+            )
           )
           break
         case SignalType.DeleteOutcomeFully:
           store.dispatch(
-            createSignalAction(outcomeActions.DELETE_OUTCOME_FULLY, cellId, payload.data.data)
+            createSignalAction(
+              outcomeActions.DELETE_OUTCOME_FULLY,
+              cellId,
+              payload.data.data
+            )
           )
           break
         default:
@@ -203,8 +213,7 @@ export default (store) =>
 function triggerRealtimeInfoAction(store, payload) {
   if (payload.projectId.length === 0) {
     store.dispatch(removePeerState(payload.agentPubKey))
-  }
-  else {
+  } else {
     store.dispatch(updatePeerState(payload))
   }
 }

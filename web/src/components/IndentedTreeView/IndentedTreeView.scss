@@ -43,6 +43,7 @@
     margin-left: 0.25rem;
     font-family: var(--font-family-primary-medium);
     flex: 1;
+    overflow: hidden;
 
     &::placeholder {
       color: var(--text-color-placeholder);
@@ -88,7 +89,8 @@
     background-color: var(--bg-color-popup);
   }
 
-  &.active, &:focus {
+  &.active,
+  &:focus {
     color: var(--text-color-primary);
     background-color: var(--bg-color-popup);
     font-family: var(--font-family-primary-extrabold);
@@ -96,7 +98,6 @@
 
     > .indented-view-outcome-content-text {
       color: var(--text-color-primary);
-
     }
   }
 

@@ -1,33 +1,39 @@
 {
   "name": "acorn",
-  "version": "5.0.0-alpha",
+  "version": "7.0.1-alpha",
   "description": "Acorn is software that helps people create the future",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/h-be/acorn.git"
+    "url": "git+https://github.com/lightningrodlabs/acorn.git"
   },
   "scripts": {
-    "install-deps": "npm install && npm run happ-install && npm run web-install && npm run electron-install && npm run electron-tsc",
+    "install-deps": "npm install && npm run web-install && npm run zod-models-install && npm run zod-models-build && npm run electron-install && npm run electron-tsc",
     "dev": "pm2-dev pm2.config.js",
-    "happ-install": "bash scripts/install-hc-tools.sh",
-    "happ-test": "bash scripts/happ-test.sh",
-    "happ-pack": "bash scripts/happ-pack.sh",
-    "happ-reset": "npm run happ-pack && npm run user-data-reset",
-    "user-data-reset": "rm -rf user2-data && rm -rf user-data && mkdir user2-data user-data",
+    "user-data-reset": "rm -rf user-data && mkdir user-data",
     "web-install": "cd web && npm install",
-    "web": "cd web && ADMIN_WS_PORT=1234 APP_WS_PORT=8888 npx webpack-dev-server --config webpack.dev.js",
-    "web2": "cd web && ADMIN_WS_PORT=1236 APP_WS_PORT=8899 npx webpack-dev-server --config webpack.dev.js",
+    "zod-models-install": "cd zod-models && npm install",
+    "zod-models-build": "cd zod-models && npm run build",
+    "web": "cd web && WEB_PORT=8081 ADMIN_WS_PORT=1101 APP_WS_PORT=8101 npx webpack-dev-server --config webpack.dev.js",
+    "web2": "cd web && WEB_PORT=8082 ADMIN_WS_PORT=1102 APP_WS_PORT=8102 npx webpack-dev-server --config webpack.dev.js",
+    "web3": "cd web && WEB_PORT=8083 ADMIN_WS_PORT=1103 APP_WS_PORT=8103 npx webpack-dev-server --config webpack.dev.js",
+    "web4": "cd web && WEB_PORT=8084 ADMIN_WS_PORT=1104 APP_WS_PORT=8104 npx webpack-dev-server --config webpack.dev.js",
     "web-build": "cd web && npx webpack --config webpack.prod.js",
+    "web-test": "cd web && npm run test",
     "electron-install": "cd electron && npm install",
-    "electron": "cd electron && npm run start",
-    "electron2": "cd electron && ACORN_TEST_USER_2=1 npm run start",
+    "electron": "cd electron && WEB_PORT=8081 ACORN_AGENT_NUM=1 npm run start",
+    "electron2": "cd electron && WEB_PORT=8082 ACORN_AGENT_NUM=2 npm run start",
+    "electron3": "cd electron && WEB_PORT=8083 ACORN_AGENT_NUM=3 npm run start",
+    "electron4": "cd electron && WEB_PORT=8084 ACORN_AGENT_NUM=4 npm run start",
     "electron-tsc": "cd electron && npm run tsc",
     "build": "bash scripts/build.sh",
-    "storybook": "cd web && npm run storybook"
+    "download-happs": "bash scripts/download-happs.sh",
+    "storybook": "cd web && npm run storybook",
+    "postinstall": "npm run download-happs"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",
   "dependencies": {
-    "pm2": "^5.1.1"
+    "pm2": "^5.1.1",
+    "react-onclickoutside": "^6.12.2"
   }
 }

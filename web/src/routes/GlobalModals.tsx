@@ -34,7 +34,7 @@ export type GlobalModalsProps = {
   showUpdateModal: boolean
   onCloseUpdateModal: () => void
   updateVersionInfo: {
-    name: string
+    newReleaseVersion: string
     releaseNotes: string
     sizeForPlatform: string
   }
@@ -130,7 +130,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
       <UpdateModal
         show={showUpdateModal}
         onClose={onCloseUpdateModal}
-        releaseTag={updateVersionInfo ? updateVersionInfo.name : ''}
+        releaseTag={updateVersionInfo ? updateVersionInfo.newReleaseVersion : ''}
         releaseSize={updateVersionInfo ? updateVersionInfo.sizeForPlatform : ''}
         heading={
           viewingReleaseNotes === ViewingReleaseNotes.MainMessage

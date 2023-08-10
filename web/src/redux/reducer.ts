@@ -10,7 +10,9 @@ import { combineReducers } from 'redux'
 
 import cells from './persistent/cells/reducer'
 import agents from './persistent/profiles/agents/reducer'
-import whoami, { hasFetchedForWhoami } from './persistent/profiles/who-am-i/reducer'
+import whoami, {
+  hasFetchedForWhoami,
+} from './persistent/profiles/who-am-i/reducer'
 import agentAddress from './persistent/profiles/agent-address/reducer'
 import projects from './persistent/projects/reducer'
 import outcomeForm from './ephemeral/outcome-form/reducer'
@@ -33,6 +35,7 @@ import outcomeEditing from './ephemeral/outcome-editing/reducer'
 import realtimeInfo from './ephemeral/realtime-info/reducer'
 import collapsedOutcomes from './ephemeral/collapsed-outcomes/reducer'
 import mapViewSettings from './ephemeral/map-view-settings/reducer'
+import navigationModal from './ephemeral/navigation-modal/reducer'
 // import anotherone from './another/path'
 
 // combine reducers from each feature to create the top-level reducer
@@ -64,6 +67,7 @@ const rootReducer = combineReducers({
     realtimeInfo,
     collapsedOutcomes,
     mapViewSettings,
+    navigationModal,
   }), // ,
   // anotherone: anotherone
 })

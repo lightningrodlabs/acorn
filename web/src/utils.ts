@@ -21,6 +21,7 @@ export function hashFromString(str: string): HoloHash {
   }
   // browser
   else {
+    //@ts-ignore
     return Buffer.from(str.split(','))
   }
 }

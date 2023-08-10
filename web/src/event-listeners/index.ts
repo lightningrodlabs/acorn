@@ -64,8 +64,8 @@ import { ActionHashB64 } from '../types/shared'
 import { ComputedOutcome, RelationInput } from '../types'
 import { RootState } from '../redux/reducer'
 import {
-  findFirstChildActionHash,
-  findParentActionHash,
+  findChildrenActionHashes,
+  findParentsActionHashes,
   findSiblingActionHash,
   RightOrLeft,
 } from '../tree-logic'
@@ -74,6 +74,10 @@ import checkForOutcomeOrConnection, {
   OutcomeConnectionOrBoth,
 } from './checkForOutcomeOrConnection'
 import closestOutcomeToPageCoord from './closestOutcome'
+import {
+  setNavModalOpenChildren,
+  setNavModalOpenParents,
+} from '../redux/ephemeral/navigation-modal/actions'
 import { changeDepthPerception } from '../redux/ephemeral/depth-perception/actions'
 
 // The "modifier" key is different on Mac and non-Mac
@@ -87,21 +91,18 @@ let platform =
 const isMacish = macOsPattern.test(platform)
 const operatingSystemModifier = isMacish ? 'metaKey' : 'ctrlKey'
 
-// ASSUMPTION: one parent (existingParentConnectionAddress)
 function handleMouseUpForOutcomeForm({
   state,
   event,
   store,
   fromAddress,
   relation,
-  existingParentConnectionAddress,
 }: {
   state: RootState
   event: MouseEvent
   store: any // redux store, for the sake of dispatch
   fromAddress?: ActionHashB64
   relation?: RelationInput
-  existingParentConnectionAddress?: ActionHashB64
 }) {
   const calcedPoint = coordsPageToCanvas(
     {
@@ -112,15 +113,7 @@ function handleMouseUpForOutcomeForm({
     state.ui.viewport.scale
   )
   store.dispatch(
-    // ASSUMPTION: one parent (existingParentConnectionAddress)
-    openOutcomeForm(
-      calcedPoint.x,
-      calcedPoint.y,
-      null,
-      fromAddress,
-      relation,
-      existingParentConnectionAddress
-    )
+    openOutcomeForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation)
   )
 }
 
@@ -140,6 +133,19 @@ export default function setupEventListeners(
     store.dispatch(setScreenDimensions(rect.width * dpr, rect.height * dpr))
   }
 
+  function canPerformKeyboardAction(state: RootState): boolean {
+    return (
+      state.ui.selection.selectedOutcomes.length === 1 &&
+      !state.ui.outcomeForm.isOpen &&
+      !state.ui.expandedView.isOpen &&
+      !state.ui.navigationModal.open
+    )
+  }
+
+  function panAndZoom(actionHash: string) {
+    store.dispatch(animatePanAndZoom(actionHash, false))
+  }
+
   async function bodyKeydown(event) {
     const appWebsocket = await getAppWs()
     const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
@@ -152,61 +158,58 @@ export default function setupEventListeners(
     // event.key is keyboard layout independent, so works for Dvorak users
     switch (event.key) {
       case 'Enter':
-        if (
-          state.ui.selection.selectedOutcomes.length === 1 &&
-          !state.ui.outcomeForm.isOpen &&
-          !state.ui.expandedView.isOpen
-        ) {
+        if (canPerformKeyboardAction(state)) {
+          event.stopPropagation()
           store.dispatch(
             openExpandedView(state.ui.selection.selectedOutcomes[0])
           )
         }
+
         break
 
       // Used for navigating to a child
       case 'ArrowDown':
-        if (
-          state.ui.selection.selectedOutcomes.length === 1 &&
-          !state.ui.outcomeForm.isOpen &&
-          !state.ui.expandedView.isOpen
-        ) {
+        if (canPerformKeyboardAction(state)) {
           const selectedOutcome = state.ui.selection.selectedOutcomes[0]
-          const childActionHash = findFirstChildActionHash(
+
+          const childrenActionHashes = findChildrenActionHashes(
             selectedOutcome,
             state
           )
-          if (childActionHash) {
-            // select and pan and zoom to
-            // the parent
-            store.dispatch(animatePanAndZoom(childActionHash, false))
+          if (childrenActionHashes.length) {
+            event.stopPropagation()
+            if (childrenActionHashes.length === 1)
+              panAndZoom(childrenActionHashes[0])
+            else {
+              store.dispatch(setNavModalOpenChildren(childrenActionHashes))
+            }
           }
         }
         break
 
       // Used for navigating to a parent
       case 'ArrowUp':
-        if (
-          state.ui.selection.selectedOutcomes.length === 1 &&
-          !state.ui.outcomeForm.isOpen &&
-          !state.ui.expandedView.isOpen
-        ) {
+        if (canPerformKeyboardAction(state)) {
           const selectedOutcome = state.ui.selection.selectedOutcomes[0]
-          const parentActionHash = findParentActionHash(selectedOutcome, state)
-          if (parentActionHash) {
-            // select and pan and zoom to
-            // the parent
-            store.dispatch(animatePanAndZoom(parentActionHash, false))
+          const parentsActionHashes = findParentsActionHashes(
+            selectedOutcome,
+            state
+          )
+          if (parentsActionHashes.length) {
+            event.stopPropagation()
+            if (parentsActionHashes.length === 1)
+              panAndZoom(parentsActionHashes[0])
+            else {
+              store.dispatch(setNavModalOpenParents(parentsActionHashes))
+            }
           }
         }
+
         break
 
       // Used for navigating to the left sibling
       case 'ArrowLeft':
-        if (
-          state.ui.selection.selectedOutcomes.length === 1 &&
-          !state.ui.outcomeForm.isOpen &&
-          !state.ui.expandedView.isOpen
-        ) {
+        if (canPerformKeyboardAction(state)) {
           const selectedOutcome = state.ui.selection.selectedOutcomes[0]
           const targetActionHash = findSiblingActionHash(
             selectedOutcome,
@@ -223,11 +226,7 @@ export default function setupEventListeners(
 
       // Used for navigating to the right sibling
       case 'ArrowRight':
-        if (
-          state.ui.selection.selectedOutcomes.length === 1 &&
-          !state.ui.outcomeForm.isOpen &&
-          !state.ui.expandedView.isOpen
-        ) {
+        if (canPerformKeyboardAction(state)) {
           const selectedOutcome = state.ui.selection.selectedOutcomes[0]
           const targetActionHash = findSiblingActionHash(
             selectedOutcome,
@@ -249,7 +248,7 @@ export default function setupEventListeners(
       case 'Escape':
         // Only unselect all Outcomes if the expanded view
         // is not open
-        if (!state.ui.expandedView.isOpen) {
+        if (!state.ui.expandedView.isOpen && !state.ui.navigationModal.open) {
           store.dispatch(unselectAll())
         }
         store.dispatch(closeExpandedView())
@@ -553,13 +552,7 @@ export default function setupEventListeners(
 
   function canvasMouseup(event: MouseEvent) {
     const state = store.getState()
-    // ASSUMPTION: one parent (existingParentConnectionAddress)
-    const {
-      fromAddress,
-      relation,
-      toAddress,
-      existingParentConnectionAddress,
-    } = state.ui.outcomeConnector
+    const { fromAddress, relation, toAddress } = state.ui.outcomeConnector
     const { activeProject } = state.ui
     if (fromAddress) {
       // covers the case where we are hovered over an Outcome
@@ -570,8 +563,6 @@ export default function setupEventListeners(
         fromAddress,
         relation,
         toAddress,
-        // ASSUMPTION: one parent
-        existingParentConnectionAddress,
         activeProject,
         store.dispatch
       )
@@ -584,7 +575,6 @@ export default function setupEventListeners(
           store,
           fromAddress,
           relation,
-          existingParentConnectionAddress,
         })
       }
     }

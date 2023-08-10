@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import outcomesAsTrees from '../redux/persistent/projects/outcomes/outcomesAsTrees'
+import outcomesAsGraph from '../redux/persistent/projects/outcomes/outcomesAsGraph'
 import { RootState } from '../redux/reducer'
 
 const selectAndComputeOutcomes = createSelector(
@@ -28,7 +28,8 @@ const selectAndComputeOutcomes = createSelector(
       outcomeVotes: {},
       outcomeComments: {},
     }
-    const outcomeTrees = outcomesAsTrees(treeData, { withMembers: true })
+    const outcomeTrees = outcomesAsGraph(treeData, { withMembers: true })
+      .outcomes
     return outcomeTrees
   }
 )

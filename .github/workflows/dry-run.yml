@@ -1,0 +1,45 @@
+name: Release Dry Run
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  build-test:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Windows only, install wget
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          choco install wget --no-progress
+      - name: Install nodejs dependencies
+        run: |
+          npm install
+          npm run web-install
+          npm run electron-install
+          npm run zod-models-install
+          npm run zod-models-build
+        shell: bash
+      - name: setup for codesigning (macos only)
+        if: ${{ runner.os == 'macOs' }}
+        uses: figleafteam/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.HBE_APPLE_CERTIFICATE_BASE64 }}
+          p12-password: ${{ secrets.HBE_APPLE_CERTIFICATE_PASS }}
+      - name: build acorn (and notarize it- macos only)
+        env:
+          APPLE_DEV_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
+          APPLE_ID_EMAIL: ${{ secrets.APPLE_ID_EMAIL }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          DEBUG: electron-osx-sign*,electron-notarize*
+        run: |
+          npm run build
+        shell: bash

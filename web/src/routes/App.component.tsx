@@ -8,7 +8,13 @@ import {
   CellIdString,
   WithActionHash,
 } from '../types/shared'
-import { ProjectMeta, Profile, EntryPoint, Outcome } from '../types'
+import {
+  ProjectMeta,
+  Profile,
+  EntryPoint,
+  Outcome,
+  LayeringAlgorithm,
+} from '../types'
 
 import './App.scss'
 
@@ -21,7 +27,8 @@ import Footer from '../components/Footer/Footer'
 import CreateProfilePage from './CreateProfilePage/CreateProfilePage.connector'
 import Dashboard from './Dashboard/Dashboard.connector'
 import ProjectView from './ProjectView/ProjectView.connector'
-import RunUpdate from './RunUpdate/RunUpdate'
+import VersionUpdateLeaving from './VersionUpdateLeaving/VersionUpdateLeaving'
+import VersionUpdateEntering from './VersionUpdateEntering/VersionUpdateEntering'
 
 import IntroScreen from '../components/IntroScreen/IntroScreen.connector'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
@@ -52,6 +59,7 @@ export type AppStateProps = {
   hasMigratedSharedProject: boolean
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
+  selectedLayeringAlgo: string
 }
 
 export type AppDispatchProps = {
@@ -68,6 +76,9 @@ export type AppDispatchProps = {
 
 export type AppMergeProps = {
   updateWhoami: (entry: Profile, actionHash: ActionHashB64) => Promise<void>
+  setSelectedLayeringAlgo: (
+    layeringAlgorithm: LayeringAlgorithm
+  ) => Promise<void>
 }
 
 export type AppProps = AppStateProps & AppDispatchProps & AppMergeProps
@@ -95,6 +106,8 @@ const App: React.FC<AppProps> = ({
   hideSmallOutcomes,
   showAchievedOutcomes,
   hideAchievedOutcomes,
+  selectedLayeringAlgo,
+  setSelectedLayeringAlgo,
 }) => {
   const [exportedProjectName, setExportedProjectName] = useState('')
   const [showExportedModal, setShowExportedModal] = useState(false)
@@ -108,6 +121,9 @@ const App: React.FC<AppProps> = ({
   )
   // custom hooks
   const updateVersionInfo = useVersionChecker()
+  // to do development testing of migration-feature
+  // uncomment the following line (and comment the one above)
+  // const updateVersionInfo = useVersionChecker(true)
   const finishMigrationChecker = useFinishMigrationChecker()
   const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
 
@@ -167,6 +183,7 @@ const App: React.FC<AppProps> = ({
                 project={activeProjectMeta}
                 {...{
                   members,
+                  agentAddress,
                   presentMembers,
                   activeEntryPoints,
                   projectId,
@@ -196,14 +213,16 @@ const App: React.FC<AppProps> = ({
               <Route
                 path="/run-update"
                 render={() => (
-                  <RunUpdate preRestart updateVersionInfo={updateVersionInfo} />
+                  <VersionUpdateLeaving updateVersionInfo={updateVersionInfo} triggerAMigrationCheck={finishMigrationChecker.triggerACheck} />
                 )}
               />
               <Route
                 path="/finish-update"
                 render={() => (
-                  <RunUpdate
+                  <VersionUpdateEntering
+                    hasCheckedForMigration={finishMigrationChecker.hasChecked}
                     migrationData={finishMigrationChecker.dataForNeedsMigration}
+                    migrationDataFileName={finishMigrationChecker.migrationDataFileName}
                   />
                 )}
               />
@@ -248,12 +267,15 @@ const App: React.FC<AppProps> = ({
             {redirToFinishMigration && <Redirect to="/finish-update" />}
             {agentAddress && whoami && (
               <Footer
+                agentAddress={agentAddress}
                 hiddenAchievedOutcomes={hiddenAchievedOutcomes}
                 hiddenSmallOutcomes={hiddenSmallOutcomes}
                 showSmallOutcomes={showSmallOutcomes}
                 hideSmallOutcomes={hideSmallOutcomes}
                 showAchievedOutcomes={showAchievedOutcomes}
                 hideAchievedOutcomes={hideAchievedOutcomes}
+                selectedLayeringAlgo={selectedLayeringAlgo}
+                setSelectedLayeringAlgo={setSelectedLayeringAlgo}
               />
             )}
           </Router>

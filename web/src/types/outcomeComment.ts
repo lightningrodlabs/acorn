@@ -1,9 +1,7 @@
-import { AgentPubKeyB64, ActionHashB64 } from "./shared";
+import {
+  OutcomeComment as _OutcomeComment,
+  OutcomeCommentSchema as _OutcomeCommentSchema,
+} from 'zod-models'
 
-export interface OutcomeComment {
-    outcomeActionHash: ActionHashB64,
-    content: string,
-    creatorAgentPubKey: AgentPubKeyB64,
-    unixTimestamp: number, //f64,
-    isImported: boolean,
-}
+export const OutcomeCommentSchema = _OutcomeCommentSchema
+export type OutcomeComment = _OutcomeComment

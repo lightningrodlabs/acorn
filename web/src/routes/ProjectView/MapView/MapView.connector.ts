@@ -66,6 +66,8 @@ function mapStateToProps(state: RootState): MapViewStateProps {
     mouseIsDown: state.ui.mouse.mousedown,
     showEmptyState,
     outcomeFormIsOpen: state.ui.outcomeForm.isOpen,
+    navigationModalIsOpen: state.ui.navigationModal.open,
+    nagivateToChildren: state.ui.navigationModal.isChildren,
   }
 }
 

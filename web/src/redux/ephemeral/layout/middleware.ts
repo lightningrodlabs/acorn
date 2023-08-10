@@ -29,6 +29,11 @@ import {
   SHOW_ACHIEVED_OUTCOMES,
   SHOW_SMALL_OUTCOMES,
 } from '../map-view-settings/actions'
+import {
+  FETCH_PROJECT_META,
+  FETCH_PROJECT_METAS,
+  UPDATE_PROJECT_META,
+} from '../../persistent/projects/project-meta/actions'
 import { CHANGE_DEPTH_PERCEPTION } from '../depth-perception/actions'
 
 const isOneOfLayoutAffectingActions = (action: {
@@ -66,6 +71,8 @@ const isOneOfLayoutAffectingActions = (action: {
     type === SHOW_ACHIEVED_OUTCOMES ||
     type === HIDE_SMALL_OUTCOMES ||
     type === SHOW_SMALL_OUTCOMES ||
+    type === FETCH_PROJECT_METAS ||
+    type === UPDATE_PROJECT_META ||
     type === CHANGE_DEPTH_PERCEPTION
   )
 }
