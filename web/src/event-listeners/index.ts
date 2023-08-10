@@ -30,6 +30,7 @@ import {
   unsetContextMenu,
   setClosestOutcome,
 } from '../redux/ephemeral/mouse/actions'
+import { useNavigationPreference } from '../redux/ephemeral/keyboard-navigation/selector'
 import {
   openOutcomeForm,
   closeOutcomeForm,
@@ -78,6 +79,7 @@ import {
   setNavModalOpenChildren,
   setNavModalOpenParents,
 } from '../redux/ephemeral/navigation-modal/actions'
+import { NavigationPreference } from '../redux/ephemeral/keyboard-navigation/reducer'
 
 // The "modifier" key is different on Mac and non-Mac
 // Pattern borrowed from TinyKeys library.
@@ -141,6 +143,12 @@ export default function setupEventListeners(
     )
   }
 
+  function getKeyboardNavigationPreference(
+    state: RootState
+  ): NavigationPreference {
+    return state.ui.keyboardNavigationPreference.navigationPreference
+  }
+
   function panAndZoom(actionHash: string) {
     store.dispatch(animatePanAndZoom(actionHash, false))
   }
@@ -177,9 +185,22 @@ export default function setupEventListeners(
           )
           if (childrenActionHashes.length) {
             event.stopPropagation()
-            if (childrenActionHashes.length === 1)
+            const keyboardNavPreference = getKeyboardNavigationPreference(state)
+            if (childrenActionHashes.length === 1) {
               panAndZoom(childrenActionHashes[0])
-            else {
+            } else if (
+              keyboardNavPreference === NavigationPreference.UseCoords
+            ) {
+              // navigate to the left-most child
+              const leftMostChild = _.minBy(
+                childrenActionHashes,
+                (actionHash) => {
+                  return state.ui.layout.coordinates[actionHash].x
+                }
+              )
+
+              panAndZoom(leftMostChild)
+            } else {
               store.dispatch(setNavModalOpenChildren(childrenActionHashes))
             }
           }
@@ -196,9 +217,22 @@ export default function setupEventListeners(
           )
           if (parentsActionHashes.length) {
             event.stopPropagation()
-            if (parentsActionHashes.length === 1)
+            const keyboardNavPreference = getKeyboardNavigationPreference(state)
+            if (parentsActionHashes.length === 1) {
               panAndZoom(parentsActionHashes[0])
-            else {
+            } else if (
+              keyboardNavPreference === NavigationPreference.UseCoords
+            ) {
+              // navigate to the left most parent
+              const leftMostParent = _.minBy(
+                parentsActionHashes,
+                (actionHash) => {
+                  return state.ui.layout.coordinates[actionHash].x
+                }
+              )
+
+              panAndZoom(leftMostParent)
+            } else {
               store.dispatch(setNavModalOpenParents(parentsActionHashes))
             }
           }
