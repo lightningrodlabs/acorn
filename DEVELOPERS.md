@@ -6,7 +6,7 @@
 _Prerequisites_
 
 - Have rust language (stable) installed on your system
-- Have nodejs version 16 installed on your system
+- Have nodejs version 18 installed on your system
 
 Then run
 
@@ -85,7 +85,7 @@ KEYSTORE_VERSION_NUMBER should be incremented if the version of lair-keystore ch
 
 This project is currently using:
 
-holochain-runner [v0.7.4](https://github.com/Sprillow/holochain-runner/releases/tag/v0.7.4) (check the link to see the underlying `holochain` version)
+holochain-runner [v0.7.6](https://github.com/lightningrodlabs/holochain-runner/releases/tag/v0.7.6) (check the link to see the underlying `holochain` version)
 
 and [electron 20](https://www.electronjs.org/docs/latest/api/app)
 
