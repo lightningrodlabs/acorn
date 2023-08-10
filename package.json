@@ -4,10 +4,10 @@
   "description": "Acorn is software that helps people create the future",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/h-be/acorn.git"
+    "url": "git+https://github.com/lightningrodlabs/acorn.git"
   },
   "scripts": {
-    "install-deps": "npm install && npm run web-install && npm run zod-models-install && npm run electron-install && npm run electron-tsc",
+    "install-deps": "npm install && npm run web-install && npm run zod-models-install && npm run zod-models-build && npm run electron-install && npm run electron-tsc",
     "dev": "pm2-dev pm2.config.js",
     "user-data-reset": "rm -rf user-data && mkdir user-data",
     "web-install": "cd web && npm install",
