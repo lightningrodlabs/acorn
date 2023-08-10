@@ -49,7 +49,7 @@ const checkForGithubUpdates = async (
     }
   } catch (e) {
     console.log(
-      'could not check for updates. likely cause is no internet connectivity'
+      'could not check for updates. likely cause is no internet connectivity', e
     )
     return null
   }
