@@ -55,6 +55,7 @@ export type AppStateProps = {
   whoami: WireRecord<Profile>
   hasFetchedForWhoami: boolean
   navigationPreference: 'mouse' | 'trackpad'
+  keyboardNavigationPreference: 'coordinates' | 'modal'
   inviteMembersModalShowing: null | string // will be the passphrase if defined
   hasMigratedSharedProject: boolean
   hiddenAchievedOutcomes: CellIdString[]
@@ -65,6 +66,7 @@ export type AppStateProps = {
 export type AppDispatchProps = {
   dispatch: any
   setNavigationPreference: (preference: 'mouse' | 'trackpad') => void
+  setKeyboardNavigationPreference: (preference: 'coordinates' | 'modal') => void
   hideInviteMembersModal: () => void
   openInviteMembersModal: (passphrase: string) => void
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
@@ -95,6 +97,8 @@ const App: React.FC<AppProps> = ({
   updateWhoami,
   navigationPreference,
   setNavigationPreference,
+  keyboardNavigationPreference,
+  setKeyboardNavigationPreference,
   inviteMembersModalShowing,
   openInviteMembersModal,
   hideInviteMembersModal,
@@ -213,7 +217,12 @@ const App: React.FC<AppProps> = ({
               <Route
                 path="/run-update"
                 render={() => (
-                  <VersionUpdateLeaving updateVersionInfo={updateVersionInfo} triggerAMigrationCheck={finishMigrationChecker.triggerACheck} />
+                  <VersionUpdateLeaving
+                    updateVersionInfo={updateVersionInfo}
+                    triggerAMigrationCheck={
+                      finishMigrationChecker.triggerACheck
+                    }
+                  />
                 )}
               />
               <Route
@@ -222,7 +231,9 @@ const App: React.FC<AppProps> = ({
                   <VersionUpdateEntering
                     hasCheckedForMigration={finishMigrationChecker.hasChecked}
                     migrationData={finishMigrationChecker.dataForNeedsMigration}
-                    migrationDataFileName={finishMigrationChecker.migrationDataFileName}
+                    migrationDataFileName={
+                      finishMigrationChecker.migrationDataFileName
+                    }
                   />
                 )}
               />
@@ -237,6 +248,8 @@ const App: React.FC<AppProps> = ({
                 agentAddress,
                 navigationPreference,
                 setNavigationPreference,
+                keyboardNavigationPreference,
+                setKeyboardNavigationPreference,
                 showProfileEditForm,
                 setShowProfileEditForm,
                 showPreferences,

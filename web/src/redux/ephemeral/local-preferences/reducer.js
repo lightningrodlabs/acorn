@@ -20,7 +20,9 @@ export const MOUSE = 'mouse'
 export const TRACKPAD = 'trackpad'
 
 const defaultState = {
+  // default to trackpad navigation
   navigation: getLocalItem(NAV_KEY) || TRACKPAD,
+  // default to modal keyboard navigation
   keyboardNavigation: getLocalItem(KEYBOARD_NAV_KEY) || MODAL,
 }
 

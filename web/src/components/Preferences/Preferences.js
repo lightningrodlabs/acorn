@@ -4,7 +4,12 @@ import './Preferences.scss'
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
 import Modal from '../Modal/Modal'
-import { MOUSE, TRACKPAD } from '../../redux/ephemeral/local-preferences/reducer'
+import {
+  COORDINATES,
+  MODAL,
+  MOUSE,
+  TRACKPAD,
+} from '../../redux/ephemeral/local-preferences/reducer'
 import PreferenceSelect, {
   PreferenceSelectExtra,
   PreferenceSelectOption,
@@ -52,7 +57,7 @@ function Descriptions({ navigation }) {
   )
 }
 
-function Internal({ navigation, setNavigationSelected, save }) {
+function NavigationModeInternal({ navigation, setNavigationSelected }) {
   const options = (
     <>
       <PreferenceSelectOption
@@ -73,7 +78,6 @@ function Internal({ navigation, setNavigationSelected, save }) {
   )
   return (
     <div className="preferences-content-wrapper">
-      <div className="preferences-title">Preferences</div>
       <PreferenceSelect
         iconName="panning.svg"
         title="Navigation Mode"
@@ -82,24 +86,61 @@ function Internal({ navigation, setNavigationSelected, save }) {
         options={options}
         descriptions={<Descriptions navigation={navigation} />}
       />
-      <div className="preferences-save-button">
-        <Button onClick={save} text="Save Changes" />
-      </div>
+    </div>
+  )
+}
+
+function KeyboardNavigationModeInternal({
+  keyboardNavigation,
+  setKeyboardNavigationSelected,
+}) {
+  const options = (
+    <>
+      <PreferenceSelectOption
+        active={keyboardNavigation === MODAL}
+        onClick={() => setKeyboardNavigationSelected(MODAL)}
+        iconName="trackpad.svg"
+        iconExtraClassName="navigation-mode-option-icon-trackpad"
+        title="Use a Modal"
+      />
+      <PreferenceSelectOption
+        active={keyboardNavigation === COORDINATES}
+        onClick={() => setKeyboardNavigationSelected(COORDINATES)}
+        iconName="mouse.svg"
+        iconExtraClassName="navigation-mode-option-icon-mouse"
+        title="Use Coordinates"
+      />
+    </>
+  )
+  return (
+    <div className="preferences-content-wrapper">
+      <PreferenceSelect
+        iconName="panning.svg"
+        title="Keyboard Navigation Mode"
+        subtitle="Select your preferred method of using the keyboard to navigate from parent to child, and vice-versa"
+        options={options}
+      />
     </div>
   )
 }
 
 export default function Preferences({
   navigation,
+  keyboardNavigation,
   setNavigationPreference,
+  setKeyboardNavigationPreference,
   showPreferences,
   setShowPreferences,
 }) {
   // hold an internal version of the preferences state, so that we can toggle it, before saving it
   const [navigationSelected, setNavigationSelected] = useState(navigation)
+  const [keyboardNavigationSelected, setKeyboardNavigationSelected] = useState(
+    keyboardNavigation
+  )
 
   const save = () => {
     setNavigationPreference(navigationSelected)
+    setKeyboardNavigationPreference(keyboardNavigationSelected)
     setShowPreferences(false)
   }
   const close = () => {
@@ -107,16 +148,25 @@ export default function Preferences({
     // whatever the canonical state of navigation preference
     // is equal to
     setNavigationSelected(navigation)
+    setKeyboardNavigationSelected(keyboardNavigation)
     setShowPreferences(false)
   }
 
   return (
     <Modal white active={showPreferences} onClose={close}>
-      <Internal
+      <div className="preferences-title">Preferences</div>
+      <NavigationModeInternal
         navigation={navigationSelected}
         setNavigationSelected={setNavigationSelected}
-        save={save}
       />
+      <KeyboardNavigationModeInternal
+        keyboardNavigation={keyboardNavigationSelected}
+        setKeyboardNavigationSelected={setKeyboardNavigationSelected}
+      />
+
+      <div className="preferences-save-button">
+        <Button onClick={save} text="Save Changes" />
+      </div>
     </Modal>
   )
 }

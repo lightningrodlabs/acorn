@@ -4,7 +4,10 @@ import { ActionHashB64 } from '../types/shared'
 import { LayeringAlgorithm, Profile } from '../types'
 
 import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
-import { setNavigationPreference } from '../redux/ephemeral/local-preferences/actions'
+import {
+  setKeyboardNavigationPreference,
+  setNavigationPreference,
+} from '../redux/ephemeral/local-preferences/actions'
 import selectEntryPoints, {
   selectActiveProjectMembers,
 } from '../redux/persistent/projects/entry-points/select'
@@ -35,7 +38,7 @@ function mapStateToProps(state: RootState): AppStateProps {
       activeProject,
       activeEntryPoints,
       inviteMembersModal,
-      localPreferences: { navigation },
+      localPreferences: { navigation, keyboardNavigation },
     },
     cells: { profiles: profilesCellIdString },
   } = state
@@ -74,7 +77,7 @@ function mapStateToProps(state: RootState): AppStateProps {
 
   const selectedLayeringAlgo = activeProjectMeta
     ? activeProjectMeta.layeringAlgorithm
-    : "LongestPath"
+    : 'LongestPath'
 
   return {
     profilesCellIdString,
@@ -85,6 +88,7 @@ function mapStateToProps(state: RootState): AppStateProps {
     hasFetchedForWhoami,
     agentAddress: state.agentAddress,
     navigationPreference: navigation,
+    keyboardNavigationPreference: keyboardNavigation,
     inviteMembersModalShowing: inviteMembersModal.passphrase,
     members,
     presentMembers,
@@ -100,6 +104,9 @@ function mapDispatchToProps(dispatch): AppDispatchProps {
     dispatch,
     setNavigationPreference: (preference) => {
       return dispatch(setNavigationPreference(preference))
+    },
+    setKeyboardNavigationPreference: (preference) => {
+      return dispatch(setKeyboardNavigationPreference(preference))
     },
     goToOutcome: (outcomeActionHash) => {
       return dispatch(animatePanAndZoom(outcomeActionHash, true))
