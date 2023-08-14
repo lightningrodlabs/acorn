@@ -45,7 +45,11 @@ import {
   closeExpandedView,
   openExpandedView,
 } from '../redux/ephemeral/expanded-view/actions'
-import { MOUSE, TRACKPAD } from '../redux/ephemeral/local-preferences/reducer'
+import {
+  COORDINATES,
+  MOUSE,
+  TRACKPAD,
+} from '../redux/ephemeral/local-preferences/reducer'
 
 import { setOutcomeClone } from '../redux/ephemeral/outcome-clone/actions'
 
@@ -116,6 +120,15 @@ function handleMouseUpForOutcomeForm({
   )
 }
 
+function leftMostOutcome(
+  outcomeActionHashes: ActionHashB64[],
+  state: RootState
+): ActionHashB64 {
+  return _.minBy(outcomeActionHashes, (actionHash) => {
+    return state.ui.layout.coordinates[actionHash].x
+  })
+}
+
 // outcomes is ComputedOutcomes in an object, keyed by their actionHash
 export default function setupEventListeners(
   store: any,
@@ -139,6 +152,10 @@ export default function setupEventListeners(
       !state.ui.expandedView.isOpen &&
       !state.ui.navigationModal.open
     )
+  }
+
+  function getKeyboardNavigationPreference(state: RootState): string {
+    return state.ui.localPreferences.keyboardNavigation
   }
 
   function panAndZoom(actionHash: string) {
@@ -177,9 +194,14 @@ export default function setupEventListeners(
           )
           if (childrenActionHashes.length) {
             event.stopPropagation()
-            if (childrenActionHashes.length === 1)
+            const keyboardNavPreference = getKeyboardNavigationPreference(state)
+            if (childrenActionHashes.length === 1) {
               panAndZoom(childrenActionHashes[0])
-            else {
+            } else if (keyboardNavPreference === COORDINATES) {
+              // navigate to the left-most child
+              const leftMostChild = leftMostOutcome(childrenActionHashes, state)
+              panAndZoom(leftMostChild)
+            } else {
               store.dispatch(setNavModalOpenChildren(childrenActionHashes))
             }
           }
@@ -196,9 +218,14 @@ export default function setupEventListeners(
           )
           if (parentsActionHashes.length) {
             event.stopPropagation()
-            if (parentsActionHashes.length === 1)
+            const keyboardNavPreference = getKeyboardNavigationPreference(state)
+            if (parentsActionHashes.length === 1) {
               panAndZoom(parentsActionHashes[0])
-            else {
+            } else if (keyboardNavPreference === COORDINATES) {
+              // navigate to the left most parent
+              const leftMostParent = leftMostOutcome(parentsActionHashes, state)
+              panAndZoom(leftMostParent)
+            } else {
               store.dispatch(setNavModalOpenParents(parentsActionHashes))
             }
           }

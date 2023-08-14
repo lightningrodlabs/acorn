@@ -12,14 +12,26 @@ import { AgentPubKeyB64, CellIdString, WithActionHash } from '../types/shared'
 import UpdateModal, {
   ViewingReleaseNotes,
 } from '../components/UpdateModal/UpdateModal'
+import {
+  COORDINATES,
+  KeyboardNavigationPreference,
+  MODAL,
+  MOUSE,
+  NavigationPreference,
+  TRACKPAD,
+} from '../redux/ephemeral/local-preferences/reducer'
 
 export type GlobalModalsProps = {
   whoami: WireRecord<Profile>
   activeProjectMeta: WithActionHash<ProjectMeta>
   projectId: CellIdString
   agentAddress: AgentPubKeyB64
-  navigationPreference: 'mouse' | 'trackpad'
-  setNavigationPreference: (preference: 'mouse' | 'trackpad') => void
+  navigationPreference: NavigationPreference
+  setNavigationPreference: (preference: NavigationPreference) => void
+  keyboardNavigationPreference: KeyboardNavigationPreference
+  setKeyboardNavigationPreference: (
+    preference: KeyboardNavigationPreference
+  ) => void
   showProfileEditForm: boolean
   setShowProfileEditForm: (val: boolean) => void
   showPreferences: boolean
@@ -55,6 +67,8 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   agentAddress,
   navigationPreference,
   setNavigationPreference,
+  keyboardNavigationPreference,
+  setKeyboardNavigationPreference,
   showProfileEditForm,
   setShowProfileEditForm,
   showPreferences,
@@ -112,6 +126,8 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         setNavigationPreference={setNavigationPreference}
         showPreferences={showPreferences}
         setShowPreferences={setShowPreferences}
+        keyboardNavigation={keyboardNavigationPreference}
+        setKeyboardNavigationPreference={setKeyboardNavigationPreference}
       />
       {/* Project Settings Modal */}
       <ProjectSettingsModal
@@ -130,7 +146,9 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
       <UpdateModal
         show={showUpdateModal}
         onClose={onCloseUpdateModal}
-        releaseTag={updateVersionInfo ? updateVersionInfo.newReleaseVersion : ''}
+        releaseTag={
+          updateVersionInfo ? updateVersionInfo.newReleaseVersion : ''
+        }
         releaseSize={updateVersionInfo ? updateVersionInfo.sizeForPlatform : ''}
         heading={
           viewingReleaseNotes === ViewingReleaseNotes.MainMessage
@@ -148,7 +166,10 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
                     using your personal projects without the update.
                   </>
                 ) : (
-                  <>By updating you'll gain access to bug fixes, new features, and other improvements.</>
+                  <>
+                    By updating you'll gain access to bug fixes, new features,
+                    and other improvements.
+                  </>
                 )}{' '}
                 See{' '}
                 <a
