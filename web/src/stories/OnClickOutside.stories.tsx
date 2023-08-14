@@ -25,6 +25,6 @@ OnClickOutside.storyName = 'OnClickOutside'
 const args: OnClickOutsideProps = {
   onClickOutside: function (): void {
     throw new Error('Function not implemented.')
-  }
+  },
 }
 OnClickOutside.args = args

@@ -5,7 +5,7 @@ import { Action, CellIdString, WithActionHash } from '../../../../types/shared'
 import {
   SIMPLE_CREATE_PROJECT_META,
   FETCH_PROJECT_META,
-  UPDATE_PROJECT_META 
+  UPDATE_PROJECT_META,
 } from './actions'
 
 export type ProjectMetaState = {
@@ -13,7 +13,10 @@ export type ProjectMetaState = {
 }
 const defaultState: ProjectMetaState = {}
 
-export default function (state: ProjectMetaState = defaultState, action: Action<WireRecord<ProjectMeta>>): ProjectMetaState {
+export default function (
+  state: ProjectMetaState = defaultState,
+  action: Action<WireRecord<ProjectMeta>>
+): ProjectMetaState {
   const { payload, type } = action
   switch (type) {
     case SIMPLE_CREATE_PROJECT_META:

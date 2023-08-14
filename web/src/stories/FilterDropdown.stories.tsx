@@ -2,14 +2,15 @@ import React, { useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
-import FilterDropdown, { FilterDropdownProps } from '../components/FilterDropdown/FilterDropdown'
+import FilterDropdown, {
+  FilterDropdownProps,
+} from '../components/FilterDropdown/FilterDropdown'
 import Icon from '../components/Icon/Icon'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'Filters/FilterDropdown',
   component: FilterDropdown,
-
 } as ComponentMeta<typeof FilterDropdown>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args

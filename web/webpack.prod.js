@@ -12,7 +12,7 @@ module.exports = {
   // TODO: figure out how to re-enable this
   // or otherwise optimize the size issues.
   optimization: {
-    minimize: false
+    minimize: false,
   },
   output: {
     publicPath: './',
@@ -42,13 +42,13 @@ module.exports = {
     splash: './src/splashscreen.scss',
   },
   externals: {
-    "node:crypto": {}
+    'node:crypto': {},
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     fallback: {
-      fs: false
-    }
+      fs: false,
+    },
   },
   devServer: {
     host: 'localhost',
@@ -66,9 +66,7 @@ module.exports = {
           options: {
             sourceMaps: true,
             presets: ['@babel/preset-react', '@babel/preset-env'],
-            plugins: [
-              "transform-class-properties",
-            ],
+            plugins: ['transform-class-properties'],
           },
         },
       },
@@ -89,7 +87,7 @@ module.exports = {
             outputPath: 'fonts/',
           },
         },
-        type: 'javascript/auto'
+        type: 'javascript/auto',
       },
       // .png, .jpg, .svg images
       {
@@ -101,7 +99,7 @@ module.exports = {
             outputPath: 'images/',
           },
         },
-        type: 'javascript/auto'
+        type: 'javascript/auto',
       },
       // scss
       {

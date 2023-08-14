@@ -1,4 +1,9 @@
-import { EntryHashB64, FetchInput, ActionHashB64, UpdateInput } from '../types/shared'
+import {
+  EntryHashB64,
+  FetchInput,
+  ActionHashB64,
+  UpdateInput,
+} from '../types/shared'
 import { AppWebsocket, CellId } from '@holochain/client'
 import callZome from './callZome'
 

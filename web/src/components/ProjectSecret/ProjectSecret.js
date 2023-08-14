@@ -16,26 +16,27 @@ export default function ProjectSecret({ passphrase }) {
   }
 
   return (
-    <div className='project-secret-wrapper'>
-      <div className='project-secret-row'>
+    <div className="project-secret-wrapper">
+      <div className="project-secret-row">
         <ValidatingFormInput
           value={passphrase}
-          label='Project Invitation Secret'
-          helpText='Share this secret phrase with people you want to invite to this project.'
+          label="Project Invitation Secret"
+          helpText="Share this secret phrase with people you want to invite to this project."
         />
         <div
           onClick={copySecretToClipboard}
-          className='project-secret-copy-secret'>
+          className="project-secret-copy-secret"
+        >
           <Icon
             withTooltip
-            size='small'
-            tooltipText='Copy'
-            name='file-copy.svg'
+            size="small"
+            tooltipText="Copy"
+            name="file-copy.svg"
           />
         </div>
       </div>
       {showCopyMessage && (
-        <div className='secret-copy-message'>{copyMessage}</div>
+        <div className="secret-copy-message">{copyMessage}</div>
       )}
     </div>
   )

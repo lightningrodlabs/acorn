@@ -5,11 +5,18 @@ import Avatar from '../Avatar/Avatar'
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
 
-export default function PriorityOutcome({ whoami, outcome, votes, setPriorityPickerAddress }) {
+export default function PriorityOutcome({
+  whoami,
+  outcome,
+  votes,
+  setPriorityPickerAddress,
+}) {
   const fromDate = outcome.timeFrame
     ? moment.unix(outcome.timeFrame.fromDate)
     : null
-  const toDate = outcome.timeFrame ? moment.unix(outcome.timeFrame.toDate) : null
+  const toDate = outcome.timeFrame
+    ? moment.unix(outcome.timeFrame.toDate)
+    : null
 
   // you can use these as values for
   // testing/ development, instead of `squirrels`
@@ -28,14 +35,14 @@ export default function PriorityOutcome({ whoami, outcome, votes, setPriorityPic
   return (
     <div className="priority-quadrant-outcome-item">
       <div className="priority-quadrant-outcome-iconANDmark">
-        <div className="priority-quadrant-outcome-icon">
-          {/* TODO */}
-        </div>
+        <div className="priority-quadrant-outcome-icon">{/* TODO */}</div>
         {myVote && <div className="priority-myvote-mark" />}
       </div>
       <div className="priority-quadrant-outcome-content">
         <div className="priority-quadrant-outcome-titleANDinfo">
-          <div className="priority-quadrant-outcome-title">{outcome.content}</div>
+          <div className="priority-quadrant-outcome-title">
+            {outcome.content}
+          </div>
           <div className="priority-quadrant-outcome-info">
             {outcome.timeFrame && (
               <div className="priority-quadrant-outcome-timeframe">
@@ -58,7 +65,7 @@ export default function PriorityOutcome({ whoami, outcome, votes, setPriorityPic
                       lastName={outcomeMember.lastName}
                       avatarUrl={outcomeMember.avatarUrl}
                       imported={outcomeMember.isImported}
-                      size='small'
+                      size="small"
                     />
                   ))
                 : null}

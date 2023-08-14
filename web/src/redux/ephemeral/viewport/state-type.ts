@@ -1,9 +1,9 @@
 interface ViewportState {
-    translate: {
-      x: number
-      y: number
-    }
-    scale: number
+  translate: {
+    x: number
+    y: number
   }
-  
-  export { ViewportState }
+  scale: number
+}
+
+export { ViewportState }

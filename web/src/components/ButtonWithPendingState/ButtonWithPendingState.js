@@ -9,11 +9,8 @@ export default function ButtonWithPendingState({
   actionText,
 }) {
   return pending ? (
-    <span className='pending-acorn'>
-      <Icon
-        name='acorn-logo.svg'
-        className='white not-hoverable very-small'
-      />
+    <span className="pending-acorn">
+      <Icon name="acorn-logo.svg" className="white not-hoverable very-small" />
       <span>{pendingText}</span>
     </span>
   ) : (

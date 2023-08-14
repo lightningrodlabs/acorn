@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import { ComputedOutcome, Profile, Tag } from '../../types'
-import { ActionHashB64, AgentPubKeyB64, WithActionHash } from '../../types/shared'
+import {
+  ActionHashB64,
+  AgentPubKeyB64,
+  WithActionHash,
+} from '../../types/shared'
 import OutcomeTable from '../OutcomeTable/OutcomeTable'
 import OutcomeTableFilterSelector from '../OutcomeTableFilterSelector/OutcomeTableFilterSelector'
 import { OutcomeTableFilter } from '../OutcomeTableRow/filterMatch'

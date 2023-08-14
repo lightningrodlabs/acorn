@@ -7,7 +7,6 @@
   &.picker-popup {
     padding-bottom: 0;
   }
-
 }
 
 .people-picker-spacer {
@@ -33,13 +32,12 @@
       color: var(--text-color-placeholder);
     }
   }
-
 }
 
 ul.people-picker-list {
   max-height: 15rem;
   overflow-y: scroll;
-  padding-bottom: 1rem
+  padding-bottom: 1rem;
 }
 
 .people-picker-list {
@@ -59,7 +57,6 @@ ul.people-picker-list {
     align-items: center;
     cursor: pointer;
     transition: 0.2s all ease;
-
 
     &:hover {
       background: var(--bg-color-primary);
@@ -89,7 +86,7 @@ ul.people-picker-list {
           color: var(--text-color-dark-bg);
           font-size: 0.625rem;
           background-color: var(--shadow-color-dark);
-          width:fit-content;
+          width: fit-content;
           border-radius: 0.25rem;
           padding: 0rem 0.25rem;
         }
@@ -102,5 +99,4 @@ ul.people-picker-list {
       font-family: var(--font-family-primary-extrabold);
     }
   }
-
 }

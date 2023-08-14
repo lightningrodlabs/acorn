@@ -32,7 +32,7 @@
   display: table;
   margin: 0 auto;
   height: 100%;
-  transform: scale(0.8)
+  transform: scale(0.8);
 }
 
 .dashboard-empty-state-squirrel-middle {
@@ -287,7 +287,6 @@
 }
 
 @-webkit-keyframes animation {
-
   0%,
   4%,
   6%,
@@ -308,7 +307,6 @@
 }
 
 @keyframes animation {
-
   0%,
   4%,
   6%,

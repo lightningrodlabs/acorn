@@ -13,7 +13,8 @@ export type ProgressIndicatorCalculatedProps = {
 }
 
 const ProgressIndicatorCalculated: React.FC<ProgressIndicatorCalculatedProps> = ({
-  outcome, size = 'medium',
+  outcome,
+  size = 'medium',
 }) => {
   let progress = 0
 

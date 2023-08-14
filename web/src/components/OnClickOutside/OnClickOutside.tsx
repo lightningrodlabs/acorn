@@ -12,7 +12,8 @@ export type OnClickOutsideProps = {
   onClickOutside: () => void
 }
 const OnClickOutside: React.FC<OnClickOutsideProps> = ({
-  children, onClickOutside
+  children,
+  onClickOutside,
 }) => {
   const ref = useRef()
   useOnClickOutside(ref, onClickOutside)

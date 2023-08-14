@@ -3,7 +3,9 @@ import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
 import Icon from '../components/Icon/Icon'
-import ButtonToggleSwitch, { ButtonToggleSwitchProps} from '../components/ButtonToggleSwitch/ButtonToggleSwitch'
+import ButtonToggleSwitch, {
+  ButtonToggleSwitchProps,
+} from '../components/ButtonToggleSwitch/ButtonToggleSwitch'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -39,5 +41,5 @@ Primary.args = {
     icon: <Icon name="leaf.svg" size="small not-hoverable" />,
     text: 'State 2',
   },
-  switchState: false
+  switchState: false,
 } as ButtonToggleSwitchProps

@@ -1,5 +1,5 @@
 import { AgentPubKeyB64 } from './shared'
 
 export interface Member {
-    agentPubKey: AgentPubKeyB64,
+  agentPubKey: AgentPubKeyB64
 }

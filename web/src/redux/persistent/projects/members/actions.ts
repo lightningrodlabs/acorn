@@ -5,10 +5,9 @@
   that can be taken within that feature.
 */
 
-import { WireRecord } from "../../../../api/hdkCrud"
-import { Member } from "../../../../types"
-import { Action, CellIdString } from "../../../../types/shared"
-
+import { WireRecord } from '../../../../api/hdkCrud'
+import { Member } from '../../../../types'
+import { Action, CellIdString } from '../../../../types/shared'
 
 // SET because it could be brand new, or an update, but treat it the same way
 const SET_MEMBER = 'SET_MEMBER'
@@ -16,7 +15,10 @@ const FETCH_MEMBERS = 'FETCH_MEMBERS'
 
 /* action creator functions */
 
-const setMember = (cellIdString: CellIdString, member: Member): Action<{cellIdString: CellIdString, member: Member}> => {
+const setMember = (
+  cellIdString: CellIdString,
+  member: Member
+): Action<{ cellIdString: CellIdString; member: Member }> => {
   return {
     type: SET_MEMBER,
     payload: {
@@ -26,11 +28,14 @@ const setMember = (cellIdString: CellIdString, member: Member): Action<{cellIdSt
   }
 }
 
-const fetchMembers = (cellIdString: CellIdString, payload: Array<WireRecord<Member>>): Action<Array<WireRecord<Member>>> => {
+const fetchMembers = (
+  cellIdString: CellIdString,
+  payload: Array<WireRecord<Member>>
+): Action<Array<WireRecord<Member>>> => {
   return {
     type: FETCH_MEMBERS,
     payload,
-    meta: { cellIdString }
+    meta: { cellIdString },
   }
 }
 export { SET_MEMBER, FETCH_MEMBERS, setMember, fetchMembers }

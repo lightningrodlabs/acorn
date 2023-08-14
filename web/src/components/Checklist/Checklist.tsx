@@ -82,7 +82,6 @@ const Checklist: React.FC<ChecklistProps> = ({
             }
           }}
         />
-  
       </div>
     </div>
   )

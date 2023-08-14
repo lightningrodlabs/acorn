@@ -4,15 +4,19 @@ import makeStyles from '@material-ui/styles/makeStyles'
 import ToggleSwitchStyles from './ToggleSwitchStyles'
 
 const useToggleSwitchStyles = makeStyles(ToggleSwitchStyles, {
-    name: 'AcornToggleSwitch',
+  name: 'AcornToggleSwitch',
 })
 
-function ToggleSwitch({
-    checked,
-    onChange
-}) {
-    const ToggleSwitchStyles = useToggleSwitchStyles()
-    return <Switch classes={ToggleSwitchStyles} color="primary" checked={checked} onChange={onChange} />
+function ToggleSwitch({ checked, onChange }) {
+  const ToggleSwitchStyles = useToggleSwitchStyles()
+  return (
+    <Switch
+      classes={ToggleSwitchStyles}
+      color="primary"
+      checked={checked}
+      onChange={onChange}
+    />
+  )
 }
 
 export default ToggleSwitch

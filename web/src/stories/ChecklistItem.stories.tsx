@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
-import ChecklistItem, { ChecklistItemProps} from '../components/ChecklistItem/ChecklistItem'
+import ChecklistItem, {
+  ChecklistItemProps,
+} from '../components/ChecklistItem/ChecklistItem'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'Checkbox & Checklist/ChecklistItem',
   component: ChecklistItem,
-
 } as ComponentMeta<typeof ChecklistItem>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args

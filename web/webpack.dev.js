@@ -36,13 +36,13 @@ module.exports = {
     splash: './src/splashscreen.scss',
   },
   externals: {
-    "node:crypto": {}
+    'node:crypto': {},
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     fallback: {
-      fs: false
-    }
+      fs: false,
+    },
   },
   output: {
     filename: '[name].js',
@@ -70,7 +70,7 @@ module.exports = {
             plugins: [
               // ... other plugins
               require.resolve('react-refresh/babel'),
-              "transform-class-properties",
+              'transform-class-properties',
             ],
           },
         },
@@ -104,7 +104,7 @@ module.exports = {
             outputPath: 'fonts/',
           },
         },
-        type: 'javascript/auto'
+        type: 'javascript/auto',
       },
       // .png, .jpg, .svg images
       {
@@ -116,7 +116,7 @@ module.exports = {
             outputPath: 'images/',
           },
         },
-        type: 'javascript/auto'
+        type: 'javascript/auto',
       },
       // scss
       {

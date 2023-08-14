@@ -138,13 +138,17 @@ const VersionUpdateLeaving: React.FC<VersionUpdateLeavingProps> = ({
           updateVersionInfo.newReleaseVersion
         )
       ) {
-        runExport().then(controlDownloadNextVersion).catch((e) => {
-          console.error('error running export', e)
-          setTitle('An unexpected error occurred.')
-          const message = 'You may be able to recover by quitting and restarting Acorn. Please report this issue and provide the following error to support: ' + JSON.stringify(e)
-          // throw new Error(message)
-          setStatus(message)
-        })
+        runExport()
+          .then(controlDownloadNextVersion)
+          .catch((e) => {
+            console.error('error running export', e)
+            setTitle('An unexpected error occurred.')
+            const message =
+              'You may be able to recover by quitting and restarting Acorn. Please report this issue and provide the following error to support: ' +
+              JSON.stringify(e)
+            // throw new Error(message)
+            setStatus(message)
+          })
       } else {
         controlDownloadNextVersion()
       }

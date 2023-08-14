@@ -10,9 +10,9 @@ function PriorityQuadrant({
   setPriorityPickerAddress,
 }) {
   return (
-    <div className='priority-quadrant'>
+    <div className="priority-quadrant">
       <div className={`priority-quadrant-title ${titleClassname}`}>{title}</div>
-      <div className='priority-quadrant-outcomes'>
+      <div className="priority-quadrant-outcomes">
         {outcomes.map((outcome, index) => {
           return (
             <PriorityOutcome

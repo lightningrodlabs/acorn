@@ -12,14 +12,10 @@ const selectRenderProps = createSelector(
   (state: RootState) => state.ui.viewport.translate,
   (state: RootState) => state.ui.screensize.width,
   (state: RootState) => state.ui.screensize.height,
-  (state: RootState) =>
-    state.projects.projectMeta[state.ui.activeProject],
-  (state: RootState) =>
-    state.projects.entryPoints[state.ui.activeProject],
-  (state: RootState) =>
-    state.projects.outcomeMembers[state.ui.activeProject],
-  (state: RootState) =>
-    state.projects.connections[state.ui.activeProject],
+  (state: RootState) => state.projects.projectMeta[state.ui.activeProject],
+  (state: RootState) => state.projects.entryPoints[state.ui.activeProject],
+  (state: RootState) => state.projects.outcomeMembers[state.ui.activeProject],
+  (state: RootState) => state.projects.connections[state.ui.activeProject],
   (state: RootState) => state.ui.outcomeConnector.fromAddress,
   (state: RootState) => state.ui.outcomeConnector.toAddress,
   (state: RootState) => state.ui.outcomeConnector.relation,
@@ -63,7 +59,7 @@ const selectRenderProps = createSelector(
     mouseLiveCoordinate,
     shiftKeyDown,
     startedSelection,
-    startedSelectionCoordinate,
+    startedSelectionCoordinate
   ) => {
     return {
       activeEntryPoints,

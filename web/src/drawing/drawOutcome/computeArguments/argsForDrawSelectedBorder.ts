@@ -37,8 +37,7 @@ export const argsForDrawSelectedBorder = ({
     selectedOutlineWidth += 7
   } else if (zoomLevel < 0.45) {
     selectedOutlineWidth += 3.5
-  } 
-
+  }
 
   let xPosition =
     outcomeLeftX -

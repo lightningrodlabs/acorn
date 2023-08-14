@@ -29,11 +29,7 @@ const ChecklistItem: React.FC<ChecklistItemProps> = ({
       }
     ${size === 'small' ? 'small' : size === 'large' ? 'large' : ''}`}
     >
-      <Checkbox
-        size={size}
-        isChecked={complete}
-        onChange={onChangeComplete}
-      />
+      <Checkbox size={size} isChecked={complete} onChange={onChangeComplete} />
       <div
         className={`checklist-item-wrapper-text ${complete ? 'checked' : ''}
         ${size === 'small' ? 'small' : size === 'large' ? 'large' : ''}`}

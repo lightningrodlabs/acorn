@@ -34,7 +34,6 @@ export default function drawRoundCornerRectangle({
   glowBlur,
   glowColor,
   useGreenBoxShadow,
-
 }: drawRoundCornerRectangleInput) {
   draw(ctx, () => {
     const rightConnection = xPosition + width
@@ -42,7 +41,7 @@ export default function drawRoundCornerRectangle({
 
     ctx.beginPath()
 
-    if (useStroke) ctx.strokeStyle = color 
+    if (useStroke) ctx.strokeStyle = color
     else ctx.fillStyle = color
 
     // For In Breakdown Mode representation

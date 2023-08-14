@@ -5,7 +5,10 @@ import '../variables.scss'
 import PeoplePicker, {
   PeoplePickerProps,
 } from '../components/PeoplePicker/PeoplePicker'
-import testProfile, { testProfileIsImported, testProfileIsOffline } from './testData/testProfile'
+import testProfile, {
+  testProfileIsImported,
+  testProfileIsOffline,
+} from './testData/testProfile'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {

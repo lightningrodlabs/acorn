@@ -32,5 +32,5 @@ Primary.args = {
       icon: <Icon name="chats-circle.svg" />,
     },
   ],
-  size: 'medium'
+  size: 'medium',
 } as ReadOnlyInfoProps

@@ -18,6 +18,4 @@ const Template: ComponentStory<typeof CommentInput> = (args) => {
 export const Primary = Template.bind({})
 Primary.storyName = 'CommentInput'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
-Primary.args = {
- 
-}
+Primary.args = {}

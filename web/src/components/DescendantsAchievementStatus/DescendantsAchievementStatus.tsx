@@ -16,7 +16,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
   childrenCount,
   computedScope,
   computedAchievementStatus,
-  hideMoreInfo
+  hideMoreInfo,
 }) => {
   return (
     <div className="descendants-achievement-status">
@@ -43,29 +43,31 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
           <>
             {/* tasks */}
             <div
-              className={`descendants-wrapper tasks ${computedAchievementStatus.tasksAchieved ===
+              className={`descendants-wrapper tasks ${
+                computedAchievementStatus.tasksAchieved ===
                 computedAchievementStatus.tasksTotal
-                ? 'achieved'
-                : ''
-                }`}
+                  ? 'achieved'
+                  : ''
+              }`}
             >
               <ProgressIndicator
                 progress={Math.round(
                   (computedAchievementStatus.tasksAchieved /
                     computedAchievementStatus.tasksTotal) *
-                  100
+                    100
                 )}
               />
               {/* number of achieved and total tasks */}
               {computedAchievementStatus.tasksAchieved.toString()}/
-              {computedAchievementStatus.tasksTotal.toString()} task{computedAchievementStatus.tasksTotal !== 1 ? 's' : ''}
+              {computedAchievementStatus.tasksTotal.toString()} task
+              {computedAchievementStatus.tasksTotal !== 1 ? 's' : ''}
               {/* achievement progress percentage */}
               <div className="descendants-progress-percentage">
                 (
                 {Math.round(
                   (computedAchievementStatus.tasksAchieved /
                     computedAchievementStatus.tasksTotal) *
-                  100
+                    100
                 )}
                 %)
               </div>
@@ -79,19 +81,20 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
           {/* Small children */}
           {computedAchievementStatus.smallsTotal !== 0 && (
             <div
-              className={`descendants-wrapper smalls ${computedAchievementStatus.uncertains === 0 &&
+              className={`descendants-wrapper smalls ${
+                computedAchievementStatus.uncertains === 0 &&
                 computedAchievementStatus.smallsAchieved ===
-                computedAchievementStatus.smallsTotal
-                ? 'achieved'
-                : ''
-                }`}
+                  computedAchievementStatus.smallsTotal
+                  ? 'achieved'
+                  : ''
+              }`}
             >
               {computedAchievementStatus.uncertains === 0 && (
                 <ProgressIndicator
                   progress={Math.round(
                     (computedAchievementStatus.smallsAchieved /
                       computedAchievementStatus.smallsTotal) *
-                    100
+                      100
                   )}
                 />
               )}
@@ -109,7 +112,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
                   {Math.round(
                     (computedAchievementStatus.smallsAchieved /
                       computedAchievementStatus.smallsTotal) *
-                    100
+                      100
                   )}
                   %)
                 </div>
@@ -134,14 +137,16 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
       {computedScope !== ComputedScope.Small && !hideMoreInfo && (
         <div className="more-info-wrapper">
           <div>
-            <a href="https://docs.acorn.software/outcomes/progress-indicator" target="_blank">
+            <a
+              href="https://docs.acorn.software/outcomes/progress-indicator"
+              target="_blank"
+            >
               <Icon name="info.svg" className="light-grey" size="small" />
             </a>
           </div>
         </div>
-      )
-      }
-    </div >
+      )}
+    </div>
   )
 }
 

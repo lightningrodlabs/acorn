@@ -26,15 +26,17 @@ function EntryPointPickerItem({
   }
   const location = useLocation()
 
-  const pathWithEntryPoint = `${location.pathname
-    }?${ENTRY_POINTS}=${activeEntryPoints
-      .concat([entryPoint.actionHash])
-      .join(',')}`
+  const pathWithEntryPoint = `${
+    location.pathname
+  }?${ENTRY_POINTS}=${activeEntryPoints
+    .concat([entryPoint.actionHash])
+    .join(',')}`
 
-  const pathWithoutEntryPoint = `${location.pathname
-    }?${ENTRY_POINTS}=${activeEntryPoints
-      .filter((actionHash) => actionHash !== entryPoint.actionHash)
-      .join(',')}`
+  const pathWithoutEntryPoint = `${
+    location.pathname
+  }?${ENTRY_POINTS}=${activeEntryPoints
+    .filter((actionHash) => actionHash !== entryPoint.actionHash)
+    .join(',')}`
 
   const onClickArrow = (event) => {
     // prevent the navigation (NavLink)

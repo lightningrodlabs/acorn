@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import { ComputedOutcome, Tag } from '../../types'
-import { ActionHashB64, AgentPubKeyB64, WithActionHash } from '../../types/shared'
+import {
+  ActionHashB64,
+  AgentPubKeyB64,
+  WithActionHash,
+} from '../../types/shared'
 import { OutcomeTableFilter } from '../OutcomeTableRow/filterMatch'
 import OutcomeTableRow from '../OutcomeTableRow/OutcomeTableRow'
 import './OutcomeTable.scss'
@@ -97,7 +101,7 @@ const OutcomeTable: React.FC<OutcomeTableProps> = ({
       </div>
 
       {/* Data Rows */}
-      <div className='outcome-table-rows'>
+      <div className="outcome-table-rows">
         <div>
           {outcomeTrees.map((outcome) => (
             <OutcomeTableRow

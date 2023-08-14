@@ -16,8 +16,8 @@ const drawBackgroundColor = ({
   width: number
   height: number
   cornerRadius: number
-  backgroundColor: string,
-  useGreenBoxShadow: boolean,
+  backgroundColor: string
+  useGreenBoxShadow: boolean
   ctx: CanvasRenderingContext2D
 }) =>
   draw(ctx, () => {
@@ -28,7 +28,6 @@ const drawBackgroundColor = ({
     ctx.shadowBlur = 30
     ctx.shadowOffsetX = 0
     ctx.shadowOffsetY = 0
-
 
     drawRoundCornerRectangle({
       ctx,

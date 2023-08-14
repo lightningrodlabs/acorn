@@ -6,7 +6,7 @@ const priorityMenuItems = [
   // ['Importance', '/project/:projectId/priority/importance'],
   // ['Impact', '/project/:projectId/priority/impact'],
   // ['Effort', '/project/:projectId/priority/effort'],
-  ['Uncategorized', '/project/:projectId/priority/uncategorized']
+  ['Uncategorized', '/project/:projectId/priority/uncategorized'],
 ]
 
 export default priorityMenuItems

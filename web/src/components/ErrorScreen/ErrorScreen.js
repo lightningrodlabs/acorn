@@ -12,51 +12,56 @@ function ErrorScreen({ stackTrace }) {
   const expandClass = expanded ? 'active' : ''
 
   return (
-    <div className='error-screen-wrapper'>
-      <div className='error-screen-content-frame'>
-        <div className='error-screen-column-left'>
-          <div className='error-screen-title'>Sorry...</div>
-          <div className='error-screen-subtitle'>Acorn has crashed</div>
-          <div className='error-screen-description'>
+    <div className="error-screen-wrapper">
+      <div className="error-screen-content-frame">
+        <div className="error-screen-column-left">
+          <div className="error-screen-title">Sorry...</div>
+          <div className="error-screen-subtitle">Acorn has crashed</div>
+          <div className="error-screen-description">
             Please help us improve the app's performance by{' '}
-            <a
-              href='https://github.com/h-be/acorn/issues/new'
-              target='_blank'>
+            <a href="https://github.com/h-be/acorn/issues/new" target="_blank">
               reporting the issue
             </a>
-            . Try pressing 'Reload' and if that doesn't work, try fully restarting the application.
+            . Try pressing 'Reload' and if that doesn't work, try fully
+            restarting the application.
           </div>
-          <div className='error-screen-buttons'>
+          <div className="error-screen-buttons">
             <a
-              className='error-screen-report-issue-button'
-              href='https://github.com/h-be/acorn/issues/new'
-              target='_blank'>
-              <Button text='Report Issue' size='medium' className='green' />
+              className="error-screen-report-issue-button"
+              href="https://github.com/h-be/acorn/issues/new"
+              target="_blank"
+            >
+              <Button text="Report Issue" size="medium" className="green" />
             </a>
-            <Button text='Reload' size='medium' className='purple' onClick={() => window.location.reload()} />
+            <Button
+              text="Reload"
+              size="medium"
+              className="purple"
+              onClick={() => window.location.reload()}
+            />
           </div>
-          <div className='show-stack-trace-wrapper'>
+          <div className="show-stack-trace-wrapper">
             <div
-              className='show-stack-trace-button'
-              onClick={() => setExpanded(!expanded)}>
-              <div className='show-stack-trace-button-text'>
+              className="show-stack-trace-button"
+              onClick={() => setExpanded(!expanded)}
+            >
+              <div className="show-stack-trace-button-text">
                 {expanded ? 'Hide stack trace' : 'Show stack trace'}
               </div>
               <Icon
                 name={expanded ? 'chevron-down.svg' : 'chevron-right.svg'}
-                size='small'
-                className='grey'
+                size="small"
+                className="grey"
               />
             </div>
             {expanded && (
-              <textarea className='show-stack-trace-field'>
+              <textarea className="show-stack-trace-field">
                 {stackTrace}
               </textarea>
             )}
           </div>
-
         </div>
-        <div className='error-screen-column-right'>
+        <div className="error-screen-column-right">
           <img src={ErrorScreenImage} />
         </div>
       </div>

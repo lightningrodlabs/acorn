@@ -5,7 +5,7 @@
   that can be taken within that feature.
 */
 
-import { ActionHashB64 } from "../../../types/shared"
+import { ActionHashB64 } from '../../../types/shared'
 
 /* constants */
 const SELECT_CONNECTION = 'SELECT_CONNECTION'

@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
-import FilterSearch, { FilterSearchProps } from '../components/FilterSearch/FilterSearch'
+import FilterSearch, {
+  FilterSearchProps,
+} from '../components/FilterSearch/FilterSearch'
 import Icon from '../components/Icon/Icon'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'Filters/FilterSearch',
   component: FilterSearch,
-
 } as ComponentMeta<typeof FilterSearch>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args

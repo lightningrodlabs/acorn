@@ -17,7 +17,7 @@ const ConnectivityOverlay: React.FC<ConnectivityOverlayProps> = ({
   heading,
   content,
   buttonText,
-  onClick
+  onClick,
 }) => {
   return (
     <div className="connectivity-overlay-wrapper">
@@ -36,11 +36,7 @@ const ConnectivityOverlay: React.FC<ConnectivityOverlayProps> = ({
         </div>
         <div className="connectivity-modal-buttons-wrapper">
           <div className="connectivity-modal-button-primary">
-            <Button
-              icon="refresh.svg"
-              text={buttonText}
-              onClick={onClick}
-            />
+            <Button icon="refresh.svg" text={buttonText} onClick={onClick} />
           </div>
         </div>
       </Modal>

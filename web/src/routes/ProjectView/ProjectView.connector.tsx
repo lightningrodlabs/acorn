@@ -3,7 +3,10 @@ import { useParams, useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 // data
-import { createOutcomeWithConnection, updateOutcome } from '../../redux/persistent/projects/outcomes/actions'
+import {
+  createOutcomeWithConnection,
+  updateOutcome,
+} from '../../redux/persistent/projects/outcomes/actions'
 // ui
 import { setActiveEntryPoints } from '../../redux/ephemeral/active-entry-points/actions'
 import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
@@ -97,9 +100,14 @@ function mapDispatchToProps(
     createOutcomeWithConnection: async (outcomeWithConnection) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const outcomeWireRecord = await projectsZomeApi.outcome.createOutcomeWithConnection(cellId, outcomeWithConnection)
-      return dispatch(createOutcomeWithConnection(cellIdString, outcomeWireRecord))
-    }
+      const outcomeWireRecord = await projectsZomeApi.outcome.createOutcomeWithConnection(
+        cellId,
+        outcomeWithConnection
+      )
+      return dispatch(
+        createOutcomeWithConnection(cellIdString, outcomeWireRecord)
+      )
+    },
   }
 }
 

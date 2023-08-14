@@ -12,25 +12,26 @@ import { createCrudActionCreators } from '../../crudRedux'
 
 const FETCH_ENTRY_POINT_DETAILS = 'FETCH_ENTRY_POINT_DETAILS'
 
-const fetchEntryPointDetails = (cellIdString: CellIdString, payload: EntryPointDetails): Action<EntryPointDetails> => {
+const fetchEntryPointDetails = (
+  cellIdString: CellIdString,
+  payload: EntryPointDetails
+): Action<EntryPointDetails> => {
   return {
     type: FETCH_ENTRY_POINT_DETAILS,
     payload,
-    meta: { cellIdString }
+    meta: { cellIdString },
   }
 }
 
-const [[
-  CREATE_ENTRY_POINT,
-  FETCH_ENTRY_POINTS,
-  UPDATE_ENTRY_POINT,
-  DELETE_ENTRY_POINT
-],[
-  createEntryPoint,
-  fetchEntryPoints,
-  updateEntryPoint,
-  deleteEntryPoint,
-]] = createCrudActionCreators<EntryPoint>('ENTRY_POINT') // TODO: annotate this with a type for the EntryType generic
+const [
+  [
+    CREATE_ENTRY_POINT,
+    FETCH_ENTRY_POINTS,
+    UPDATE_ENTRY_POINT,
+    DELETE_ENTRY_POINT,
+  ],
+  [createEntryPoint, fetchEntryPoints, updateEntryPoint, deleteEntryPoint],
+] = createCrudActionCreators<EntryPoint>('ENTRY_POINT') // TODO: annotate this with a type for the EntryType generic
 
 export {
   CREATE_ENTRY_POINT,
@@ -46,4 +47,6 @@ export {
   fetchEntryPointDetails,
 }
 
-export type EntryPointsAction = Action<WireRecord<EntryPoint>> | Action<EntryPointDetails>
+export type EntryPointsAction =
+  | Action<WireRecord<EntryPoint>>
+  | Action<EntryPointDetails>

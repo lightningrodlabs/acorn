@@ -17,17 +17,21 @@ export default function PriorityPickerUniversal({
     // clone the object from state for
     // modifying it to send over the api
     const toPass = {
-      ...projectMeta
+      ...projectMeta,
     }
     let projectMetaAddress = toPass.actionHash
     delete toPass.actionHash
     if (e.target.checked) {
       setPendingState(true)
-      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.concat([outcomeActionHash])
+      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.concat([
+        outcomeActionHash,
+      ])
       await updateProjectMeta(toPass, projectMetaAddress)
     } else {
       setPendingState(false)
-      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.filter(actionHash => actionHash !== outcomeActionHash)
+      toPass.topPriorityOutcomes = toPass.topPriorityOutcomes.filter(
+        (actionHash) => actionHash !== outcomeActionHash
+      )
       await updateProjectMeta(toPass, projectMetaAddress)
     }
     setPending(false)
@@ -36,8 +40,13 @@ export default function PriorityPickerUniversal({
 
   return (
     <div className="priority-picker-universal">
-      <div className="priority-picker-universal-label">This outcome is top priority</div>
-      <ToggleSwitch checked={pending ? pendingState : isTopPriorityOutcome} onChange={onChange} />
+      <div className="priority-picker-universal-label">
+        This outcome is top priority
+      </div>
+      <ToggleSwitch
+        checked={pending ? pendingState : isTopPriorityOutcome}
+        onChange={onChange}
+      />
     </div>
   )
 }

@@ -9,7 +9,10 @@ import {
 
 import DescendantsAchievementStatus from '../DescendantsAchievementStatus/DescendantsAchievementStatus'
 import { ActionHashB64, CellIdString, WithActionHash } from '../../types/shared'
-import { CoordinatesState, DimensionsState } from '../../redux/ephemeral/layout/state-type'
+import {
+  CoordinatesState,
+  DimensionsState,
+} from '../../redux/ephemeral/layout/state-type'
 
 export type CollapsedChildrenPillProps = {
   outcome: ComputedOutcome
@@ -35,7 +38,6 @@ const CollapsedChildrenPill: React.FC<CollapsedChildrenPillProps> = ({
   activeProject,
   expandOutcome,
 }) => {
-
   // THIS IS TO DO WITH WHAT APPROACH TO RENDERING
   // THESE COLLAPSED CHILDREN PILLS COMPONENTS...
   // SCALING OR NON-SCALING

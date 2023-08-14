@@ -8,10 +8,7 @@ import {
   START_DESCRIPTION_EDIT,
   END_DESCRIPTION_EDIT,
 } from '../../../ephemeral/outcome-editing/actions'
-import {
-  SEND_REALTIME_INFO,
-  SEND_EXIT_PROJECT_SIGNAL,
-} from './actions'
+import { SEND_REALTIME_INFO, SEND_EXIT_PROJECT_SIGNAL } from './actions'
 import ProjectsZomeApi from '../../../../api/projectsApi'
 import { getAppWs } from '../../../../hcWebsockets'
 import { cellIdFromString } from '../../../../utils'
@@ -44,7 +41,10 @@ const realtimeInfoWatcher = (store) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       let result = next(action)
-      if (appWebsocket.client.socket.readyState === appWebsocket.client.socket.OPEN) {
+      if (
+        appWebsocket.client.socket.readyState ===
+        appWebsocket.client.socket.OPEN
+      ) {
         let state: RootState = store.getState()
         const payload = getRealtimeInfo(state)
         // there is a chance that the project has been exited

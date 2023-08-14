@@ -20,11 +20,12 @@ const ReadOnlyInfo: React.FC<ReadOnlyInfoProps> = ({
     >
       {infos.map((info) => {
         return (
-          <div className="read-only-info-row" key={`read-only-info-${info.text}`}>
+          <div
+            className="read-only-info-row"
+            key={`read-only-info-${info.text}`}
+          >
             <div className="read-only-info-icon">{info.icon}</div>
-            <div className="read-only-info-text">
-             {info.text}
-            </div>
+            <div className="read-only-info-text">{info.text}</div>
           </div>
         )
       })}

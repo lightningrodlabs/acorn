@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-
 import './ValidatingFormInput.scss'
 
 import ValidationCheck from '../../images/circle-check.svg'
@@ -20,7 +19,7 @@ function ValidatingFormInput({
   invalidInput,
   validInput,
 }) {
-  const innerOnChange = e => {
+  const innerOnChange = (e) => {
     e.preventDefault()
     onChange(e.target.value)
   }
@@ -34,13 +33,15 @@ function ValidatingFormInput({
   }
 
   return (
-    <div className='validating-form-input'>
-      <Typography style="label"><label htmlFor={label}>{label}</label></Typography>
+    <div className="validating-form-input">
+      <Typography style="label">
+        <label htmlFor={label}>{label}</label>
+      </Typography>
 
-      {helpText && <p className='help-text'>{helpText}</p>}
-      <div className='input-wrapper'>
+      {helpText && <p className="help-text">{helpText}</p>}
+      <div className="input-wrapper">
         <input
-          type='text'
+          type="text"
           className={inputClassName}
           name={label}
           value={value}
@@ -48,13 +49,13 @@ function ValidatingFormInput({
           placeholder={placeholder}
           readOnly={readOnly}
         />
-        {errorText && <div className='error-text'>{errorText}</div>}
-        {withAtSymbol && <div className='at-symbol'>@ </div>}
+        {errorText && <div className="error-text">{errorText}</div>}
+        {withAtSymbol && <div className="at-symbol">@ </div>}
         {invalidInput && (
-          <img src={ValidationX} className='validation-mark invalid' />
+          <img src={ValidationX} className="validation-mark invalid" />
         )}
         {validInput && (
-          <img src={ValidationCheck} className='validation-mark valid' />
+          <img src={ValidationCheck} className="validation-mark valid" />
         )}
       </div>
     </div>
@@ -68,7 +69,7 @@ ValidatingFormInput.propTypes = {
   label: PropTypes.string,
   placeholder: PropTypes.string,
   readOnly: PropTypes.bool,
-  withAtSymbol: PropTypes.bool
+  withAtSymbol: PropTypes.bool,
 }
 
 export default ValidatingFormInput

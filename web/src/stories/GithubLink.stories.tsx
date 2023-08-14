@@ -14,9 +14,7 @@ export default {
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof GithubLinkComponent> = (args) => {
-  const [inputLinkText, setInputLinkText] = useState(
-    args.githubLink
-  )
+  const [inputLinkText, setInputLinkText] = useState(args.githubLink)
   return (
     <GithubLinkComponent
       {...args}
@@ -37,5 +35,5 @@ WithLink.args = withLinkArgs
 export const WithoutLink = Template.bind({})
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 WithoutLink.args = {
-  isEditing: true
+  isEditing: true,
 }

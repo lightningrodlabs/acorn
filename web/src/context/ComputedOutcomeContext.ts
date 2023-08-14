@@ -13,7 +13,7 @@ export interface ProjectComputedOutcomes {
 const ComputedOutcomeContext = React.createContext<ProjectComputedOutcomes>({
   // default states
   computedOutcomesAsTree: [],
-  computedOutcomesKeyed: {}
+  computedOutcomesKeyed: {},
 })
 
 export default ComputedOutcomeContext

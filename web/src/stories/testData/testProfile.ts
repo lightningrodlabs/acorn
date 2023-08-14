@@ -33,9 +33,6 @@ const testProfileIsOffline: Profile = {
   isImported: false,
 }
 
-export {
-  testProfileIsImported,
-  testProfileIsOffline
-}
+export { testProfileIsImported, testProfileIsOffline }
 
 export default testProfile

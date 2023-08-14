@@ -24,7 +24,10 @@ function selectActiveProjectMembers(state: RootState, projectId: CellIdString) {
 
 export { selectActiveProjectMembers }
 
-export default function selectEntryPoints(state: RootState, projectId: CellIdString) {
+export default function selectEntryPoints(
+  state: RootState,
+  projectId: CellIdString
+) {
   const entryPoints = state.projects.entryPoints[projectId] || {}
   const outcomes = state.projects.outcomes[projectId] || {}
 
