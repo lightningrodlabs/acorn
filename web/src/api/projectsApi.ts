@@ -51,7 +51,10 @@ const OutcomeApi = (appWebsocket: AppWebsocket) => {
   )
   return {
     ...outcomeCrud,
-    createOutcomeWithConnection: async (cellId: CellId, payload: CreateOutcomeWithConnectionInput): Promise<CreateOutcomeWithConnectionOutput> => {
+    createOutcomeWithConnection: async (
+      cellId: CellId,
+      payload: CreateOutcomeWithConnectionInput
+    ): Promise<CreateOutcomeWithConnectionOutput> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -60,7 +63,10 @@ const OutcomeApi = (appWebsocket: AppWebsocket) => {
         payload
       )
     },
-    deleteOutcomeFully: async (cellId: CellId, payload: ActionHashB64): Promise<DeleteOutcomeFullyResponse> => {
+    deleteOutcomeFully: async (
+      cellId: CellId,
+      payload: ActionHashB64
+    ): Promise<DeleteOutcomeFullyResponse> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -100,7 +106,9 @@ const EntryPointApi = (appWebsocket: AppWebsocket) => {
   )
   return {
     ...entryPointCrud,
-    fetchEntryPointDetails: async (cellId: CellId): Promise<EntryPointDetails> => {
+    fetchEntryPointDetails: async (
+      cellId: CellId
+    ): Promise<EntryPointDetails> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -126,7 +134,10 @@ const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
   )
   return {
     ...projectMetaCrud,
-    simpleCreateProjectMeta: async (cellId: CellId, payload: ProjectMeta): Promise<WireRecord<ProjectMeta>> => {
+    simpleCreateProjectMeta: async (
+      cellId: CellId,
+      payload: ProjectMeta
+    ): Promise<WireRecord<ProjectMeta>> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -135,7 +146,9 @@ const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
         payload
       )
     },
-    fetchProjectMeta: async (cellId: CellId): Promise<WireRecord<ProjectMeta>> => {
+    fetchProjectMeta: async (
+      cellId: CellId
+    ): Promise<WireRecord<ProjectMeta>> => {
       return callZome(
         appWebsocket,
         cellId,

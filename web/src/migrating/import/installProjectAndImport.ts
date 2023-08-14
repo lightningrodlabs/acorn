@@ -17,10 +17,9 @@ export async function internalInstallProjectAndImport(
   iFinalizeCreateProject: typeof finalizeCreateProject,
   projectsZomeApi: ProjectsZomeApi
 ) {
-  
   // first step is to install the dna
   const [cellIdString] = await iInstallProject(passphrase)
-  
+
   // next step is to import the bulk of the data into that project
   const oldToNewAddressMaps = await iCreateActionHashMapAndImportProjectData(
     projectData,
@@ -51,7 +50,7 @@ export async function installProjectAndImport(
   agentAddress: AgentPubKeyB64,
   projectData: ProjectExportDataV1,
   passphrase: string,
-  dispatch: any,
+  dispatch: any
 ) {
   const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)

@@ -1,4 +1,3 @@
-
 import _ from 'lodash'
 import { WireRecord } from '../../../../api/hdkCrud'
 import { Profile } from '../../../../types'
@@ -9,7 +8,7 @@ import { WHOAMI, CREATE_WHOAMI, UPDATE_WHOAMI, WhoamiAction } from './actions'
 type State = Option<WireRecord<Profile>>
 const defaultState: State = null
 
-export default function(state: State = defaultState, action: WhoamiAction) {
+export default function (state: State = defaultState, action: WhoamiAction) {
   const { payload, type } = action
   switch (type) {
     case WHOAMI:

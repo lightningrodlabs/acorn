@@ -61,8 +61,15 @@ const args2: MapViewDevModeProps = {
   outcome: testSmallAchievedOutcome,
   outcomeWidth: 600,
   outcomeHeight: 420,
-  outcomeFocusedMembers: [testProfile, testProfile, testProfile, testProfile, testProfile, testProfile,
-    testProfile]
+  outcomeFocusedMembers: [
+    testProfile,
+    testProfile,
+    testProfile,
+    testProfile,
+    testProfile,
+    testProfile,
+    testProfile,
+  ],
 }
 SmallAchieved.args = args2
 

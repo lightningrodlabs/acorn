@@ -4,7 +4,7 @@ const defaultState = {
   outcomes: [],
 }
 
-export default function(state = defaultState, action) {
+export default function (state = defaultState, action) {
   const { payload, type } = action
   switch (type) {
     case SET_OUTCOME_CLONE:

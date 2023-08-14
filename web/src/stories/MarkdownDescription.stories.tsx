@@ -13,7 +13,9 @@ export default {
 } as ComponentMeta<typeof MarkdownDescriptionComponent>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof MarkdownDescriptionComponent> = (args) => {
+const Template: ComponentStory<typeof MarkdownDescriptionComponent> = (
+  args
+) => {
   return <MarkdownDescriptionComponent {...args} />
 }
 

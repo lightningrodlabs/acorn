@@ -1,4 +1,3 @@
-
 import _ from 'lodash'
 import { WireRecord } from '../../../../api/hdkCrud'
 import { Member } from '../../../../types'
@@ -15,7 +14,10 @@ type MembersState = {
 }
 const defaultState: MembersState = {}
 
-export default function (state: MembersState = defaultState, action): MembersState {
+export default function (
+  state: MembersState = defaultState,
+  action
+): MembersState {
   const { payload, type } = action
 
   let cellIdString

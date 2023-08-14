@@ -5,7 +5,6 @@
   that can be taken within that feature.
 */
 
-
 import { WireRecord } from '../../../../api/hdkCrud'
 import { PROFILES_ZOME_NAME } from '../../../../holochainConfig'
 import { Profile, WhoAmIOutput } from '../../../../types'
@@ -15,29 +14,45 @@ import { Action, CellIdString } from '../../../../types/shared'
 const WHOAMI = 'WHOAMI'
 const CREATE_WHOAMI = 'CREATE_WHOAMI'
 const UPDATE_WHOAMI = 'UPDATE_WHOAMI'
-const whoami = (cellIdString: CellIdString, payload: WhoAmIOutput): Action<WhoAmIOutput> => {
+const whoami = (
+  cellIdString: CellIdString,
+  payload: WhoAmIOutput
+): Action<WhoAmIOutput> => {
   return {
     type: WHOAMI,
     payload,
-    meta: { cellIdString }
+    meta: { cellIdString },
   }
 }
 
-const createWhoami = (cellIdString: CellIdString, payload: WireRecord<Profile>): Action<WireRecord<Profile>> => {
+const createWhoami = (
+  cellIdString: CellIdString,
+  payload: WireRecord<Profile>
+): Action<WireRecord<Profile>> => {
   return {
     type: CREATE_WHOAMI,
     payload,
-    meta: { cellIdString }
+    meta: { cellIdString },
   }
 }
 
-const updateWhoami = (cellIdString: CellIdString, payload: WireRecord<Profile>): Action<WireRecord<Profile>> => {
+const updateWhoami = (
+  cellIdString: CellIdString,
+  payload: WireRecord<Profile>
+): Action<WireRecord<Profile>> => {
   return {
     type: UPDATE_WHOAMI,
     payload,
-    meta: { cellIdString }
+    meta: { cellIdString },
   }
 }
 
-export { whoami, WHOAMI, createWhoami, CREATE_WHOAMI, updateWhoami, UPDATE_WHOAMI }
+export {
+  whoami,
+  WHOAMI,
+  createWhoami,
+  CREATE_WHOAMI,
+  updateWhoami,
+  UPDATE_WHOAMI,
+}
 export type WhoamiAction = Action<WhoAmIOutput> | Action<WireRecord<Profile>>

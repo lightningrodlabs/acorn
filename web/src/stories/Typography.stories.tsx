@@ -8,7 +8,6 @@ import Typography from '../components/Typography/Typography'
 export default {
   title: 'Typography/Typography',
   component: Typography,
-
 } as ComponentMeta<typeof Typography>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
@@ -28,7 +27,10 @@ const Template: ComponentStory<typeof Typography> = (args) => {
       <Typography style="subtitle1" text={`subtitle1: ${subtitleText}`} />
       <Typography style="subtitle2" text={`subtitle2: ${subtitleText}`} />
       <Typography style="caption1" text="caption1: 8 members" />
-      <Typography style="caption2" text="caption 2: This outcome has no children." />
+      <Typography
+        style="caption2"
+        text="caption 2: This outcome has no children."
+      />
       <Typography
         style="body1"
         text="body1: Acorn no longer uses a legacy unmaintained library and instead it is replaced with a modern typescript API definitions. "

@@ -63,16 +63,17 @@ getAppWs().then(async (client) => {
     })
 
     const cellInfo = profilesInfo.cell_info[PROFILES_ROLE_NAME][0]
-    const cellId = (CellType.Provisioned in cellInfo) ? cellInfo[CellType.Provisioned].cell_id : undefined
+    const cellId =
+      CellType.Provisioned in cellInfo
+        ? cellInfo[CellType.Provisioned].cell_id
+        : undefined
     if (cellId == undefined) {
       throw 'cellId undefined'
-    }
-    else {
+    } else {
       // authorize zome call signer
       const adminWs = await getAdminWs()
       await adminWs.authorizeSigningCredentials(cellId)
-      
-  
+
       const [_dnaHash, agentPubKey] = cellId
       // cache buffer version of agentPubKey
       setAgentPubKey(agentPubKey)
@@ -80,7 +81,7 @@ getAppWs().then(async (client) => {
       store.dispatch(setProfilesCellId(cellIdString))
       // all functions of the Profiles DNA
       const profilesZomeApi = new ProfilesZomeApi(client)
-  
+
       const profiles = await profilesZomeApi.profile.fetchAgents(cellId)
       store.dispatch(fetchAgents(cellIdString, profiles))
       const profile = await profilesZomeApi.profile.whoami(cellId)
@@ -98,16 +99,20 @@ getAppWs().then(async (client) => {
         profile.entry = nonImportedProfile
       }
       store.dispatch(whoami(cellIdString, profile))
-      const agentAddress = await profilesZomeApi.profile.fetchAgentAddress(cellId)
+      const agentAddress = await profilesZomeApi.profile.fetchAgentAddress(
+        cellId
+      )
       store.dispatch(fetchAgentAddress(cellIdString, agentAddress))
       // which projects do we have installed?
       const projectCellIds = await getProjectCellIdStrings()
-      
+
       // before any zome calls can be made, we need to gain zome call signing authorization
       // for each of the project cells that we have installed
-      await Promise.all(projectCellIds.map(async (cellId) => {
-        await adminWs.authorizeSigningCredentials(cellIdFromString(cellId))
-      }))
+      await Promise.all(
+        projectCellIds.map(async (cellId) => {
+          await adminWs.authorizeSigningCredentials(cellIdFromString(cellId))
+        })
+      )
       store.dispatch(setProjectsCellIds(projectCellIds))
     }
   } catch (e) {

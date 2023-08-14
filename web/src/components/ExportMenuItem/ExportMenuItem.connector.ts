@@ -8,7 +8,10 @@ import ExportMenuItem, { ExportMenuItemProps } from './ExportMenuItem.component'
 
 type ConnectedExportMenuItemProps = Omit<ExportMenuItemProps, 'data'>
 
-function mapStateToProps(state: RootState, ownProps: ConnectedExportMenuItemProps) {
+function mapStateToProps(
+  state: RootState,
+  ownProps: ConnectedExportMenuItemProps
+) {
   const {
     ui: { activeProject },
   } = state

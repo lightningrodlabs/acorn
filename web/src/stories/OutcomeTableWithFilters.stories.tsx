@@ -7,7 +7,10 @@ import OutcomeTableWithFiltersComponent, {
   OutcomeTableWithFiltersProps,
 } from '../components/OutcomeTableWithFilters/OutcomeTableWithFilters'
 import testProfile from './testData/testProfile'
-import { testBigAchievedOutcome, testBigPartiallyAchievedOutcome } from './testData/testOutcomes'
+import {
+  testBigAchievedOutcome,
+  testBigPartiallyAchievedOutcome,
+} from './testData/testOutcomes'
 import testTags from './testData/testTags'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -17,8 +20,14 @@ export default {
 } as ComponentMeta<typeof OutcomeTableWithFiltersComponent>
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof OutcomeTableWithFiltersComponent> = (args) => {
-  return <Router><OutcomeTableWithFiltersComponent {...args} /></Router>
+const Template: ComponentStory<typeof OutcomeTableWithFiltersComponent> = (
+  args
+) => {
+  return (
+    <Router>
+      <OutcomeTableWithFiltersComponent {...args} />
+    </Router>
+  )
 }
 
 export const OutcomeTableWithFilters = Template.bind({})
@@ -43,6 +52,6 @@ const args: OutcomeTableWithFiltersProps = {
   presentMembers: [],
   goToOutcome: function (actionHash: string): void {
     throw new Error('Function not implemented.')
-  }
+  },
 }
 OutcomeTableWithFilters.args = args

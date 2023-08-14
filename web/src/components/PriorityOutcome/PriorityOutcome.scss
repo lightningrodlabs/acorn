@@ -81,7 +81,7 @@
   display: flex;
 }
 
-.priority-quadrant-outcome-squirrels>* {
+.priority-quadrant-outcome-squirrels > * {
   margin-left: 5px;
 }
 
@@ -100,7 +100,8 @@
   float: right;
 }
 
-.priority-quadrant-outcome-view-mode-icons .icon {}
+.priority-quadrant-outcome-view-mode-icons .icon {
+}
 
 .priority-quadrant-outcome-view-mode-icons .icon:hover {
   background: white;
@@ -117,7 +118,8 @@
   transition: all 0.2s;
 }
 
-.priority-quadrant-outcome-item:hover .weigh_in_button, .priority-quadrant-outcome-item:focus .weigh_in_button {
+.priority-quadrant-outcome-item:hover .weigh_in_button,
+.priority-quadrant-outcome-item:focus .weigh_in_button {
   opacity: 1;
   transition: all 0.2s;
 }

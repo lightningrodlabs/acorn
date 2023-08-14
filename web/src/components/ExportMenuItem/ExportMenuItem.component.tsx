@@ -1,8 +1,5 @@
 import React from 'react'
-import {
-  exportDataHref,
-  ExportType,
-} from '../../migrating/export'
+import { exportDataHref, ExportType } from '../../migrating/export'
 
 export type ExportMenuItemProps = {
   title: string

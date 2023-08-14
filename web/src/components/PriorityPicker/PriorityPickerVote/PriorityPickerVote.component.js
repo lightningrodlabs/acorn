@@ -127,27 +127,27 @@ function PrioritySlider({
   withLabels,
   value,
   disabled = false,
-  onChange = () => { },
-  onChangeCommitted = () => { },
+  onChange = () => {},
+  onChangeCommitted = () => {},
 }) {
   const classes = useStyles()
   return (
-    <div className='priority-item'>
+    <div className="priority-item">
       <Icon
-        className='priority-item-icon not-hoverable grey'
+        className="priority-item-icon not-hoverable grey"
         name={icon}
-        size='very-small'
+        size="very-small"
       />
-      <div className='priority-item-title'>{title}</div>
+      <div className="priority-item-title">{title}</div>
       <Slider
         onChange={onChange}
         onChangeCommitted={onChangeCommitted}
         defaultValue={50}
         value={value}
         getAriaValueText={valuetext}
-        aria-labelledby='discrete-slider-custom'
+        aria-labelledby="discrete-slider-custom"
         step={25}
-        valueLabelDisplay='auto'
+        valueLabelDisplay="auto"
         marks={withLabels ? marksWithLabels : marksWithoutLabels}
         disabled={disabled}
         classes={{
@@ -169,7 +169,7 @@ function PrioritySlider({
 function Aggregated({ votes }) {
   let averageValues = [0, 0, 0, 0]
   if (votes.length > 0) {
-    votes.forEach(element => {
+    votes.forEach((element) => {
       averageValues[0] += element.urgency * 100
       averageValues[1] += element.importance * 100
       averageValues[2] += element.impact * 100
@@ -236,7 +236,7 @@ export default function PriorityPickerVote({
 }) {
   const [openMyVote, setOpenMyVote] = useState(openToMyVote)
 
-  const myVote = votes.find(value => {
+  const myVote = votes.find((value) => {
     return value.agentAddress === whoami.entry.actionHash
   })
 
@@ -253,7 +253,7 @@ export default function PriorityPickerVote({
       outcomeActionHash: outcomeActionHash,
       creatorAgentPubKey: whoami.entry.actionHash,
       unixTimestamp: moment().unix(),
-      isImported: false
+      isImported: false,
     }
     updateOutcomeVote(outcome_vote, myVote.actionHash)
   }
@@ -264,7 +264,7 @@ export default function PriorityPickerVote({
       outcomeActionHash: outcomeActionHash,
       creatorAgentPubKey: whoami.entry.actionHash,
       unixTimestamp: moment().unix(),
-      isImported: false
+      isImported: false,
     })
     setOpenMyVote(true)
   }
@@ -283,7 +283,7 @@ export default function PriorityPickerVote({
     aggClassName += ' active'
   }
   const handleDelete = () => {
-    const vote = votes.find(value => {
+    const vote = votes.find((value) => {
       return value.agentAddress === whoami.entry.actionHash
     })
     if (!vote) return
@@ -295,22 +295,23 @@ export default function PriorityPickerVote({
   return (
     <>
       {/* Weigh In / Vote */}
-      <div className='priority-tabs'>
-        <div className='my-vote-tab-wrapper'>
-          <div className='my-vote-tab-header'>
+      <div className="priority-tabs">
+        <div className="my-vote-tab-wrapper">
+          <div className="my-vote-tab-header">
             <div
               className={`${myVoteClassName} priority-tab-with-icon`}
-              onClick={() => setOpenMyVote(!openMyVote)}>
+              onClick={() => setOpenMyVote(!openMyVote)}
+            >
               {myVote ? 'My Vote' : 'Weigh In'}
               <Icon
-                name='arrow-right.svg'
-                size='very-small'
-                className='enter-icon'
+                name="arrow-right.svg"
+                size="very-small"
+                className="enter-icon"
               />
             </div>
             {/* my vote info */}
             {myVote && (
-              <div className='my-vote-info'>
+              <div className="my-vote-info">
                 Last Modified{' '}
                 {moment.unix((myVote || {}).unixTimestamp).calendar(null, {
                   lastDay: '[Yesterday at] LT',
@@ -327,15 +328,16 @@ export default function PriorityPickerVote({
             <>
               {/* weigh in items */}
               <WeighIn values={values} onUpdate={setValues} />
-              <div className='my-vote-buttons'>
+              <div className="my-vote-buttons">
                 <div
-                  className='save-my-vote'
-                  onClick={myVote ? onUpdateVote : createVote}>
+                  className="save-my-vote"
+                  onClick={myVote ? onUpdateVote : createVote}
+                >
                   {myVote ? 'Update' : 'Save'} my vote
                 </div>
                 {/* remove my vote */}
                 {myVote && (
-                  <div className='remove-my-vote' onClick={handleDelete}>
+                  <div className="remove-my-vote" onClick={handleDelete}>
                     Remove my vote
                   </div>
                 )}
@@ -348,28 +350,32 @@ export default function PriorityPickerVote({
       <CSSTransition
         in={!openMyVote}
         timeout={400}
-        className={`aggregated-votes-animation priority-tabs aggregated-priority-wrapper ${openMyVote ? 'closed' : ''
-          }`}>
+        className={`aggregated-votes-animation priority-tabs aggregated-priority-wrapper ${
+          openMyVote ? 'closed' : ''
+        }`}
+      >
         <div>
           <div
             className={`${aggClassName} priority-tab-with-icon`}
-            onClick={() => setOpenMyVote(!openMyVote)}>
+            onClick={() => setOpenMyVote(!openMyVote)}
+          >
             Aggregated Priority
             <Icon
-              name='arrow-right.svg'
-              size='very-small'
-              className='enter-icon'
+              name="arrow-right.svg"
+              size="very-small"
+              className="enter-icon"
             />
           </div>
-          <div className='aggregated-priority-inputs'>
+          <div className="aggregated-priority-inputs">
             {votes.length} inputs
           </div>
           {/* Aggregated Priority */}
           <CSSTransition
             in={!openMyVote}
             timeout={400}
-            className='aggregated-votes-wrapper'
-            unmountOnExit>
+            className="aggregated-votes-wrapper"
+            unmountOnExit
+          >
             <div>
               <Aggregated votes={votes} />
               {/* TODO: built this locate card on view feature */}

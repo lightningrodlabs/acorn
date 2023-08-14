@@ -40,7 +40,7 @@ const EvChildren: React.FC<EvChildrenProps> = ({
           )
         })}
       </div>
-      <div className='ev-children-add-new-child'>
+      <div className="ev-children-add-new-child">
         <AddOutcomeChildInput onCreateChildOutcome={onCreateChildOutcome} />
       </div>
     </div>

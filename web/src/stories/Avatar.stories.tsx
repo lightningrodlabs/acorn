@@ -28,5 +28,5 @@ Primary.args = {
   clickable: false,
   imported: false,
   withTooltip: true,
-  selfAssignedStatus: 'Online'
+  selfAssignedStatus: 'Online',
 }

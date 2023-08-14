@@ -29,7 +29,9 @@ const sharedOutcomeProperties = {
 
 const noChildrenSmallOutcome: ComputedOutcome = {
   ...sharedOutcomeProperties,
-  scope: { Small: { achievementStatus: 'NotAchieved', targetDate: null, taskList: [] } },
+  scope: {
+    Small: { achievementStatus: 'NotAchieved', targetDate: null, taskList: [] },
+  },
   computedScope: ComputedScope.Small,
   computedAchievementStatus: {
     uncertains: 0,
@@ -42,7 +44,9 @@ const noChildrenSmallOutcome: ComputedOutcome = {
 
 const noChildrenUncertainOutcome: ComputedOutcome = {
   ...sharedOutcomeProperties,
-  scope: { Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false } },
+  scope: {
+    Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false },
+  },
   computedScope: ComputedScope.Uncertain,
   computedAchievementStatus: {
     uncertains: 0,
@@ -55,8 +59,10 @@ const noChildrenUncertainOutcome: ComputedOutcome = {
 
 const bigUncertainOutcome: ComputedOutcome = {
   ...sharedOutcomeProperties,
-   // ignored
-  scope: { Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false } },
+  // ignored
+  scope: {
+    Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false },
+  },
   computedScope: ComputedScope.Uncertain,
   computedAchievementStatus: {
     uncertains: 2,
@@ -71,7 +77,9 @@ const bigUncertainOutcome: ComputedOutcome = {
 const bigCertainOutcome: ComputedOutcome = {
   ...sharedOutcomeProperties,
   // ignored
-  scope: { Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false } }, 
+  scope: {
+    Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false },
+  },
   computedScope: ComputedScope.Big,
   computedAchievementStatus: {
     uncertains: 0,

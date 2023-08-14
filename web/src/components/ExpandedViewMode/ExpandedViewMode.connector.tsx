@@ -60,7 +60,9 @@ export type ConnectedExpandedViewModeProps = {
   outcomeAndAncestors: ComputedOutcome[]
   onClose: () => void
   updateOutcome: (outcome: Outcome, actionHash: string) => Promise<void>
-  createOutcomeWithConnection: (outcomeWithConnection: CreateOutcomeWithConnectionInput) => Promise<void>
+  createOutcomeWithConnection: (
+    outcomeWithConnection: CreateOutcomeWithConnectionInput
+  ) => Promise<void>
 }
 
 const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
@@ -99,7 +101,9 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
         editorAgentPubKey: null,
         timestampCreated: moment().unix(),
         timestampUpdated: null,
-        scope: { Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false } },
+        scope: {
+          Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false },
+        },
         tags: [],
         description: '',
         isImported: false,
@@ -109,8 +113,8 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       // is the current Expanded View Mode outcome
       maybeLinkedOutcome: {
         outcomeActionHash: outcome.actionHash,
-        relation: RelationInput.ExistingOutcomeAsParent
-      }
+        relation: RelationInput.ExistingOutcomeAsParent,
+      },
     })
   }
 

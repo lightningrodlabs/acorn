@@ -54,7 +54,7 @@ const args: DashboardListProjectProps = {
   },
   openProjectSettingsModal: function (projectCellId: string): void {
     throw new Error('Function not implemented.')
-  }
+  },
 }
 
 DashboardListProject.args = args

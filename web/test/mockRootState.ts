@@ -5,7 +5,10 @@ import testEntryPoint from '../src/stories/testData/testEntryPoint'
 import testMember from '../src/stories/testData/testMember'
 import testOutcomeMember from '../src/stories/testData/testOutcomeMember'
 import testOutcomeVote from '../src/stories/testData/testOutcomeVote'
-import { testBigAchievedOutcome, testSmallAchievedOutcome } from '../src/stories/testData/testOutcomes'
+import {
+  testBigAchievedOutcome,
+  testSmallAchievedOutcome,
+} from '../src/stories/testData/testOutcomes'
 import testProjectMeta from '../src/stories/testData/testProjectMeta'
 import testTags from '../src/stories/testData/testTags'
 import mockWhoami from './mockWhoami'
@@ -78,6 +81,6 @@ export const mockPopulatedState = {
     },
     outcomeHistory: {},
   },
-      }
+}
 
 export default mockBaseRootState

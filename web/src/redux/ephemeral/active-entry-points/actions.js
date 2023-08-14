@@ -9,7 +9,7 @@ const SET_ACTIVE_ENTRY_POINTS = 'SET_ACTIVE_ENTRY_POINTS'
 
 /* action creator functions */
 
-const setActiveEntryPoints = entryPointAddresses => {
+const setActiveEntryPoints = (entryPointAddresses) => {
   return {
     type: SET_ACTIVE_ENTRY_POINTS,
     payload: entryPointAddresses,

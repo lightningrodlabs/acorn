@@ -69,7 +69,7 @@ const DESCENDANTS_ACHIEVEMENT_STATUS_ACHIEVED_FONT_COLOR = '#15841D'
 // canvas outcome tags
 const TAGS_TAG_FONT_COLOR = '#FFFFFF'
 
-// canvas outcome time and assignees 
+// canvas outcome time and assignees
 const TIME_ASSIGNEES_PLACEHOLDER_COLOR = '#B1B1B1'
 
 // canvas outcome avatar

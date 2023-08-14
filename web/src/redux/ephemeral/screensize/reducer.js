@@ -1,5 +1,3 @@
-
-
 import { SET_SCREEN_DIMENSIONS } from './actions'
 
 const defaultState = {
@@ -7,7 +5,7 @@ const defaultState = {
   height: 0,
 }
 
-export default function(state = defaultState, action) {
+export default function (state = defaultState, action) {
   const { payload, type } = action
   switch (type) {
     case SET_SCREEN_DIMENSIONS:

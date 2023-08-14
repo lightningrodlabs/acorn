@@ -43,4 +43,6 @@ export type Action<Payload> = {
   }
 }
 
-export type WithActionHash<EntryType> = EntryType & { actionHash: ActionHashB64 }
+export type WithActionHash<EntryType> = EntryType & {
+  actionHash: ActionHashB64
+}

@@ -1,9 +1,12 @@
 import _ from 'lodash'
 import { Action, CellIdString } from '../../../types/shared'
+import { SIMPLE_CREATE_PROJECT_META } from '../projects/project-meta/actions'
 import {
-  SIMPLE_CREATE_PROJECT_META,
-} from '../projects/project-meta/actions'
-import { SET_PROFILES_CELL_ID, SET_PROJECTS_CELL_IDS, JOIN_PROJECT_CELL_ID, REMOVE_PROJECT_CELL_ID } from './actions'
+  SET_PROFILES_CELL_ID,
+  SET_PROJECTS_CELL_IDS,
+  JOIN_PROJECT_CELL_ID,
+  REMOVE_PROJECT_CELL_ID,
+} from './actions'
 
 interface State {
   profiles: CellIdString | null
@@ -15,7 +18,10 @@ const defaultState: State = {
   projects: [],
 }
 
-export default function (state: State = defaultState, action: Action<CellIdString|Array<CellIdString>>) {
+export default function (
+  state: State = defaultState,
+  action: Action<CellIdString | Array<CellIdString>>
+) {
   const { payload, type, meta } = action
   switch (type) {
     case SET_PROFILES_CELL_ID:
@@ -36,12 +42,12 @@ export default function (state: State = defaultState, action: Action<CellIdStrin
     case JOIN_PROJECT_CELL_ID:
       return {
         ...state,
-        projects: [...state.projects, payload  as CellIdString],
+        projects: [...state.projects, payload as CellIdString],
       }
     case REMOVE_PROJECT_CELL_ID:
       return {
         ...state,
-        projects: state.projects.filter(p => p !== payload),
+        projects: state.projects.filter((p) => p !== payload),
       }
     default:
       return state

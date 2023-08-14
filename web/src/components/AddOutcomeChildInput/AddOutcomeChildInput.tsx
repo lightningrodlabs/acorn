@@ -17,9 +17,13 @@ const AddOutcomeChildInput: React.FC<AddOutcomeChildInputProps> = ({
   const [typingText, setTypingText] = useState('')
 
   return (
-    <div className='add-outcome-child-wrapper'>
+    <div className="add-outcome-child-wrapper">
       <div>
-        <Icon name="plus.svg" size='small' className='light-grey not-hoverable'/>
+        <Icon
+          name="plus.svg"
+          size="small"
+          className="light-grey not-hoverable"
+        />
       </div>
       <TextareaAutosize
         value={typingText}

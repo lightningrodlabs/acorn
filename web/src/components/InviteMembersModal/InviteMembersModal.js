@@ -20,14 +20,15 @@ export default function InviteMembersModal({ showModal, onClose, passphrase }) {
       white
       active={showModal}
       onClose={onClose}
-      className='join-project-modal-wrapper'>
-      <ProjectModalHeading title='Invite members to project' />
+      className="join-project-modal-wrapper"
+    >
+      <ProjectModalHeading title="Invite members to project" />
       <ProjectModalContent>
         <ProjectModalContentSpacer>
           <ProjectSecret passphrase={passphrase} />
         </ProjectModalContentSpacer>
       </ProjectModalContent>
-      <ProjectModalButton text='Done' onClick={onDone} />
+      <ProjectModalButton text="Done" onClick={onDone} />
     </Modal>
   )
 }

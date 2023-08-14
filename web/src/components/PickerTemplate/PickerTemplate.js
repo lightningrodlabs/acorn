@@ -10,14 +10,16 @@ export default function PickerTemplate({
   children,
   heading,
   onClose,
-  skipOnClickOutside = false
+  skipOnClickOutside = false,
 }) {
   return (
-    <OnClickOutside onClickOutside={() => {
-      if (!skipOnClickOutside) onClose()
-    }}>
+    <OnClickOutside
+      onClickOutside={() => {
+        if (!skipOnClickOutside) onClose()
+      }}
+    >
       <div className={`${className} picker-popup`}>
-        <div className='close-button'>
+        <div className="close-button">
           <ButtonClose onClick={() => onClose()} />
         </div>
         <div className="picker-popup-heading">{heading}</div>

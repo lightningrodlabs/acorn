@@ -10,7 +10,4 @@ const StatusCssColorClass = {
   [Status.Offline]: 'status-offline',
 }
 
-export {
-  Status,
-  StatusCssColorClass
-}
+export { Status, StatusCssColorClass }

@@ -1,4 +1,4 @@
-import { CellIdString } from "../../../../types/shared"
+import { CellIdString } from '../../../../types/shared'
 
 const SEND_REALTIME_INFO = 'SEND_REALTIME_INFO'
 const SEND_EXIT_PROJECT_SIGNAL = 'SEND_EXIT_PROJECT_SIGNAL'

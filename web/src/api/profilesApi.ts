@@ -16,7 +16,10 @@ const ZOME_FN_NAMES = {
 
 const ProfilesApi = (appWebsocket: AppWebsocket) => {
   return {
-    createWhoami: async (cellId: CellId, payload: Profile): Promise<WireRecord<Profile>> => {
+    createWhoami: async (
+      cellId: CellId,
+      payload: Profile
+    ): Promise<WireRecord<Profile>> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -25,7 +28,10 @@ const ProfilesApi = (appWebsocket: AppWebsocket) => {
         payload
       )
     },
-    createImportedProfile: async (cellId: CellId, payload: Profile): Promise<WireRecord<Profile>> => {
+    createImportedProfile: async (
+      cellId: CellId,
+      payload: Profile
+    ): Promise<WireRecord<Profile>> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -34,7 +40,10 @@ const ProfilesApi = (appWebsocket: AppWebsocket) => {
         payload
       )
     },
-    updateWhoami: async (cellId: CellId, payload: UpdateInput<Profile>): Promise<WireRecord<Profile>> => {
+    updateWhoami: async (
+      cellId: CellId,
+      payload: UpdateInput<Profile>
+    ): Promise<WireRecord<Profile>> => {
       return callZome(
         appWebsocket,
         cellId,

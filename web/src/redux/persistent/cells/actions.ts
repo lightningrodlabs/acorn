@@ -5,7 +5,7 @@
   that can be taken within that feature.
 */
 
-import { Action, CellIdString } from "../../../types/shared"
+import { Action, CellIdString } from '../../../types/shared'
 
 const SET_PROFILES_CELL_ID = 'SET_PROFILES_CELL_ID'
 const SET_PROJECTS_CELL_IDS = 'SET_PROJECTS_CELL_IDS'
@@ -21,7 +21,9 @@ const setProfilesCellId = (cellId: CellIdString): Action<CellIdString> => {
   }
 }
 
-const setProjectsCellIds = (cellIds: Array<CellIdString>): Action<Array<CellIdString>> => {
+const setProjectsCellIds = (
+  cellIds: Array<CellIdString>
+): Action<Array<CellIdString>> => {
   return {
     type: SET_PROJECTS_CELL_IDS,
     payload: cellIds,
@@ -50,5 +52,5 @@ export {
   setProfilesCellId,
   setProjectsCellIds,
   joinProjectCellId,
-  removeProjectCellId
+  removeProjectCellId,
 }

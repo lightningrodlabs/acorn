@@ -78,7 +78,7 @@ const PeoplePicker: React.FC<PeoplePickerProps> = ({
             const name = `${person.firstName} ${person.lastName}`
             return (
               (!filterText ||
-              name.toLowerCase().indexOf(filterText.toLowerCase()) > -1) &&
+                name.toLowerCase().indexOf(filterText.toLowerCase()) > -1) &&
               (person.isImported ? person.isOutcomeMember : true)
             )
           })

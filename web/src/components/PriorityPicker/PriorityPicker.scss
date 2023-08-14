@@ -40,7 +40,7 @@
   color: #5f65ff;
 }
 
-.priority-tab.active>.icon.very-small.enter-icon {
+.priority-tab.active > .icon.very-small.enter-icon {
   display: none;
 }
 
@@ -66,7 +66,8 @@
   padding: 0 24px 22px 24px;
 }
 
-.my-vote, .aggregated-votes-wrapper {
+.my-vote,
+.aggregated-votes-wrapper {
   -webkit-transition: transform 1s ease-in-out;
   transition: transform 1s ease-in-out;
   padding: 10px;
@@ -80,7 +81,8 @@
   transform: translateY(280px);
 }
 
-.aggregated-votes-animation.exit, .aggregated-votes-animation.enter-done {
+.aggregated-votes-animation.exit,
+.aggregated-votes-animation.enter-done {
   transform: translateY(0);
 }
 
@@ -89,7 +91,8 @@
   transition: transform 0.4s ease-out;
 }
 
-.aggregated-votes-animation.enter, .aggregated-votes-animation.exit-done {
+.aggregated-votes-animation.enter,
+.aggregated-votes-animation.exit-done {
   transform: translateY(280px);
 }
 
@@ -104,7 +107,8 @@
   margin-top: 20px;
 }
 
-.remove-my-vote, .save-my-vote {
+.remove-my-vote,
+.save-my-vote {
   cursor: pointer;
   font-family: 'gilroyextrabold', Helvetica, sans-serif;
   color: #00a599;
@@ -112,7 +116,8 @@
   padding: 4px 0;
 }
 
-.remove-my-vote:hover, .save-my-vote:hover {
+.remove-my-vote:hover,
+.save-my-vote:hover {
   color: #6600ff;
 }
 

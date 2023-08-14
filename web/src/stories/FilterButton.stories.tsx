@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 import '../variables.scss'
 
-import FilterButton, { FilterButtonProps } from '../components/FilterButton/FilterButton'
+import FilterButton, {
+  FilterButtonProps,
+} from '../components/FilterButton/FilterButton'
 import Icon from '../components/Icon/Icon'
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -33,5 +35,5 @@ Primary.args = {
   size: 'medium',
   icon: <Icon name="tag.svg" size="small not-hoverable grey" />,
   text: 'Only show my cards',
-  isSelected: true
+  isSelected: true,
 } as FilterButtonProps

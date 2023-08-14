@@ -21,7 +21,7 @@ function mapDispatchToProps(dispatch) {
   return {
     goToOutcome: (outcomeActionHash: ActionHashB64) => {
       return dispatch(animatePanAndZoom(outcomeActionHash, true))
-    }
+    },
   }
 }
 

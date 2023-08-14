@@ -29,7 +29,7 @@ const MapViewDevMode: React.FC<MapViewDevModeProps> = ({
   zoomLevel,
   isTopPriority,
   isSelected,
-  outcomeFocusedMembers
+  outcomeFocusedMembers,
 }) => {
   const refCanvas = useRef<HTMLCanvasElement>()
   useEffect(() => {

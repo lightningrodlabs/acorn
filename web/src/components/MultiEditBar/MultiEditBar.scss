@@ -14,21 +14,18 @@
   align-items: center;
   height: 50px;
   transition: bottom 0.2s ease-in-out;
-
-
 }
 
 .multi-edit-modal.modal-wrapper {
   width: 42rem;
   max-width: calc(100vw - 6rem);
-
 }
 
 .multi-edit-bar.has-selection {
   bottom: 10px;
 }
 
-.multi-edit-bar>.icon {
+.multi-edit-bar > .icon {
   padding: 0.5rem;
   width: 2.5rem;
   height: 2.5rem;

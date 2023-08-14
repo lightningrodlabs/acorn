@@ -1,20 +1,22 @@
 import { connect } from 'react-redux'
 import { RootState } from '../../redux/reducer'
-import {
-  createConnection,
-} from '../../redux/persistent/projects/connections/actions'
+import { createConnection } from '../../redux/persistent/projects/connections/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 import OutcomeConnectorPicker from './OutcomeConnectorPicker.component'
 
 function mapStateToProps(state: RootState) {
-  const selectedOutcomes = state.ui.selection.selectedOutcomes.map((actionHash) => {
-    return state.projects.outcomes[state.ui.activeProject][actionHash]
-  })
+  const selectedOutcomes = state.ui.selection.selectedOutcomes.map(
+    (actionHash) => {
+      return state.projects.outcomes[state.ui.activeProject][actionHash]
+    }
+  )
 
   // use a bit of defensive coding ( || {} ) during loading
-  const connections = Object.values(state.projects.connections[state.ui.activeProject] || {})
+  const connections = Object.values(
+    state.projects.connections[state.ui.activeProject] || {}
+  )
 
   return {
     selectedOutcomes,
@@ -25,7 +27,11 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    saveConnections: async (parentActionHash, childrenAddresses, cellIdString) => {
+    saveConnections: async (
+      parentActionHash,
+      childrenAddresses,
+      cellIdString
+    ) => {
       // loop over childrenAddresses
       // use createConnection each time
       const cellId = cellIdFromString(cellIdString)
@@ -33,15 +39,12 @@ function mapDispatchToProps(dispatch) {
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       return Promise.all(
         childrenAddresses.map(async (childActionHash) => {
-          const connection = await projectsZomeApi.connection.create(
-            cellId,
-            {
-              parentActionHash,
-              childActionHash,
-              randomizer: Date.now(),
-              isImported: false,
-            }
-          )
+          const connection = await projectsZomeApi.connection.create(cellId, {
+            parentActionHash,
+            childActionHash,
+            randomizer: Date.now(),
+            isImported: false,
+          })
           dispatch(createConnection(cellIdString, connection))
         })
       )
@@ -49,4 +52,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(OutcomeConnectorPicker)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(OutcomeConnectorPicker)

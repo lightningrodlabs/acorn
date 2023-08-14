@@ -37,7 +37,6 @@ export default function filterMatch(
       hashCodeId(outcome.actionHash).includes(filter.keywordOrId)
   }
 
-
   if ('assignees' in filter) {
     assigneesMatch = false
     for (const assignee of filter.assignees) {
@@ -53,11 +52,10 @@ export default function filterMatch(
 
   if ('highPriority' in filter) {
     highPriorityMatch = false
-    if (topPriorityOutcomes.includes(outcome.actionHash) ) {
+    if (topPriorityOutcomes.includes(outcome.actionHash)) {
       highPriorityMatch = true
     }
   }
-
 
   if ('achievementStatus' in filter) {
     achievementStatusMatch = false

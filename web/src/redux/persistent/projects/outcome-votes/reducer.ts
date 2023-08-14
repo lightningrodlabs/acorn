@@ -1,4 +1,3 @@
-
 import _ from 'lodash'
 
 import {
@@ -9,7 +8,12 @@ import {
 } from './actions'
 import { DELETE_OUTCOME_FULLY } from '../outcomes/actions'
 import { isCrud, crudReducer } from '../../crudRedux'
-import { Action, CellIdString, ActionHashB64, WithActionHash } from '../../../../types/shared'
+import {
+  Action,
+  CellIdString,
+  ActionHashB64,
+  WithActionHash,
+} from '../../../../types/shared'
 import { WireRecord } from '../../../../api/hdkCrud'
 import { DeleteOutcomeFullyResponse, OutcomeVote } from '../../../../types'
 
@@ -22,7 +26,10 @@ export type OutcomeVotesState = {
 }
 const defaultState: OutcomeVotesState = {}
 
-export default function (state: OutcomeVotesState = defaultState, action: Action<WireRecord<OutcomeVote>> | Action<DeleteOutcomeFullyResponse>): OutcomeVotesState {
+export default function (
+  state: OutcomeVotesState = defaultState,
+  action: Action<WireRecord<OutcomeVote>> | Action<DeleteOutcomeFullyResponse>
+): OutcomeVotesState {
   const { payload, type } = action
 
   if (
@@ -60,7 +67,8 @@ export default function (state: OutcomeVotesState = defaultState, action: Action
         ...state,
         [cellId]: _.pickBy(
           state[cellId],
-          (_value, key) => deleteFullyResponse.deletedOutcomeVotes.indexOf(key) === -1
+          (_value, key) =>
+            deleteFullyResponse.deletedOutcomeVotes.indexOf(key) === -1
         ),
       }
     // DEFAULT

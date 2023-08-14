@@ -33,7 +33,9 @@ const outcome1: ComputedOutcome = {
   description: 'test description',
   timeFrame: null, // { fromDate: Date.now(), toDate: Date.now() },
   isImported: false,
-  scope: { Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false } },
+  scope: {
+    Uncertain: { timeFrame: null, smallsEstimate: 0, inBreakdown: false },
+  },
   computedScope: ComputedScope.Uncertain,
   computedAchievementStatus: {
     uncertains: 2,
@@ -57,7 +59,9 @@ const outcome2: ComputedOutcome = {
   description: 'test description',
   timeFrame: null, // { fromDate: Date.now(), toDate: Date.now() },
   isImported: false,
-  scope: { Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] } },
+  scope: {
+    Small: { achievementStatus: 'Achieved', targetDate: null, taskList: [] },
+  },
   computedScope: ComputedScope.Uncertain,
   computedAchievementStatus: {
     uncertains: 2,

@@ -24,8 +24,7 @@ export const EvReadOnlyHeading = Template.bind({})
 EvReadOnlyHeading.storyName = 'EvReadOnlyHeading'
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 EvReadOnlyHeading.args = {
-  headingText:
-    'New API in typescript definitions are written and implemented',
+  headingText: 'New API in typescript definitions are written and implemented',
   // @ts-ignore
   overviewIcon: <Icon name="chats-circle.svg" className="not-hoverable" />,
   overviewText: '12 comments',

@@ -50,13 +50,17 @@ function changeTranslate(x: number, y: number) {
   }
 }
 
-function changeScale(zoom: number, pageCoord: { x: number, y: number }, instant?: boolean) {
+function changeScale(
+  zoom: number,
+  pageCoord: { x: number; y: number },
+  instant?: boolean
+) {
   return {
     type: CHANGE_SCALE,
     payload: {
       zoom,
       pageCoord,
-      instant
+      instant,
     },
   }
 }

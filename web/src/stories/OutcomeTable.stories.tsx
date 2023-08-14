@@ -17,7 +17,11 @@ export default {
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof OutcomeTableComponent> = (args) => {
-  return <Router><OutcomeTableComponent {...args} /></Router>
+  return (
+    <Router>
+      <OutcomeTableComponent {...args} />
+    </Router>
+  )
 }
 
 export const OutcomeTable = Template.bind({})
@@ -36,6 +40,6 @@ const args: OutcomeTableProps = {
   },
   goToOutcome: function (actionHash: string): void {
     throw new Error('Function not implemented.')
-  }
+  },
 }
 OutcomeTable.args = args

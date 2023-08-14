@@ -99,7 +99,7 @@ const drawTags = ({
           useBoxShadow: false,
           useGlow: false,
         })
-        // don't render the text if instructed to be in 
+        // don't render the text if instructed to be in
         // 'placeholder mode'
         // it will only render the background, which looks
         // fine when zoomed out, as opposed to text

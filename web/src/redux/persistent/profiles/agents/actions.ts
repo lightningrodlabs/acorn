@@ -5,7 +5,6 @@
   that can be taken within that feature.
 */
 
-
 import { WireRecord } from '../../../../api/hdkCrud'
 import { PROFILES_ZOME_NAME } from '../../../../holochainConfig'
 import { Profile } from '../../../../types'
@@ -26,20 +25,33 @@ const setAgent = (agent: WireRecord<Profile>): Action<WireRecord<Profile>> => {
   }
 }
 
-const createImportedProfile = (cellIdString: CellIdString, payload: WireRecord<Profile>): Action<WireRecord<Profile>> => {
+const createImportedProfile = (
+  cellIdString: CellIdString,
+  payload: WireRecord<Profile>
+): Action<WireRecord<Profile>> => {
   return {
     type: CREATE_IMPORTED_PROFILE,
     payload,
-    meta: { cellIdString }
+    meta: { cellIdString },
   }
 }
-const fetchAgents = (cellIdString: CellIdString, payload: Array<Profile>): Action<Array<Profile>> => {
+const fetchAgents = (
+  cellIdString: CellIdString,
+  payload: Array<Profile>
+): Action<Array<Profile>> => {
   return {
     type: FETCH_AGENTS,
     payload,
-    meta: { cellIdString }
+    meta: { cellIdString },
   }
 }
 
-export { SET_AGENT, setAgent, createImportedProfile, CREATE_IMPORTED_PROFILE, fetchAgents, FETCH_AGENTS }
+export {
+  SET_AGENT,
+  setAgent,
+  createImportedProfile,
+  CREATE_IMPORTED_PROFILE,
+  fetchAgents,
+  FETCH_AGENTS,
+}
 export type AgentsAction = Action<WireRecord<Profile>> | Action<Array<Profile>>

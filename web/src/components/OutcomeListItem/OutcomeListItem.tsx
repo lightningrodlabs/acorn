@@ -102,7 +102,13 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({
           openExpandedView(outcome.actionHash)
         }}
       >
-        <Icon name="enter.svg" size="small" className="light-grey" withTooltip tooltipText='Switch to' />
+        <Icon
+          name="enter.svg"
+          size="small"
+          className="light-grey"
+          withTooltip
+          tooltipText="Switch to"
+        />
       </div>
     </div>
   )

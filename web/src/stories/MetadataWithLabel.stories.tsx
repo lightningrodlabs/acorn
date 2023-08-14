@@ -22,7 +22,7 @@ export const WithIcon = Template.bind({})
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 WithIcon.args = {
   label: 'Assignees',
-  iconName: 'send-plane.svg'
+  iconName: 'send-plane.svg',
 } as MetadataWithLabelProps
 
 export const WithoutIcon = Template.bind({})

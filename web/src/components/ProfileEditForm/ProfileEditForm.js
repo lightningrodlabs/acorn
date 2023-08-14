@@ -65,7 +65,9 @@ function ProfileEditForm({
   useEffect(() => {
     // no whitespace, and no @ sign
     const isValid = /^[\S]+$/i.test(handle) && handle.indexOf('@') === -1
-    setErrorUsername(isValid ? '' : 'Username is not valid. Avoid spaces and @.')
+    setErrorUsername(
+      isValid ? '' : 'Username is not valid. Avoid spaces and @.'
+    )
     setIsValidUserName(isValid)
   }, [handle])
   useEffect(() => {

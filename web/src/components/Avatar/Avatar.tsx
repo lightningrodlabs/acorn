@@ -39,7 +39,6 @@ function Avatar({
   withTooltip,
 }: // tooltipText,
 AvatarProps) {
-
   // If it is imported avatar of a ghost member
   // don't show status circle
   if (imported) withStatus = false

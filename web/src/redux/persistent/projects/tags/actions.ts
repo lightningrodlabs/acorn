@@ -9,18 +9,10 @@ import { createCrudActionCreators } from '../../crudRedux'
 
 /* action creator functions */
 
-const [[
-  CREATE_TAG,
-  FETCH_TAGS,
-  UPDATE_TAG,
-  DELETE_TAG
-],[
-  createTag,
-  fetchTags,
-  updateTag,
-  deleteTag
-]] = createCrudActionCreators<Tag>('TAG')
-
+const [
+  [CREATE_TAG, FETCH_TAGS, UPDATE_TAG, DELETE_TAG],
+  [createTag, fetchTags, updateTag, deleteTag],
+] = createCrudActionCreators<Tag>('TAG')
 
 export {
   CREATE_TAG,
