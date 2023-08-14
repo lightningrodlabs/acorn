@@ -14,10 +14,12 @@ const setLocalItem = (key, value) => {
 const KEYBOARD_NAV_KEY = 'keyboardNavigationPreference'
 export const COORDINATES = 'coordinates'
 export const MODAL = 'modal'
+export type KeyboardNavigationPreference = typeof COORDINATES | typeof MODAL
 
 const NAV_KEY = 'navigationPreference'
 export const MOUSE = 'mouse'
 export const TRACKPAD = 'trackpad'
+export type NavigationPreference = typeof MOUSE | typeof TRACKPAD
 
 const defaultState = {
   // default to trackpad navigation

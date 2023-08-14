@@ -14,8 +14,10 @@ import UpdateModal, {
 } from '../components/UpdateModal/UpdateModal'
 import {
   COORDINATES,
+  KeyboardNavigationPreference,
   MODAL,
   MOUSE,
+  NavigationPreference,
   TRACKPAD,
 } from '../redux/ephemeral/local-preferences/reducer'
 
@@ -24,11 +26,11 @@ export type GlobalModalsProps = {
   activeProjectMeta: WithActionHash<ProjectMeta>
   projectId: CellIdString
   agentAddress: AgentPubKeyB64
-  navigationPreference: typeof MOUSE | typeof TRACKPAD
-  setNavigationPreference: (preference: typeof MOUSE | typeof TRACKPAD) => void
-  keyboardNavigationPreference: typeof COORDINATES | typeof MODAL
+  navigationPreference: NavigationPreference
+  setNavigationPreference: (preference: NavigationPreference) => void
+  keyboardNavigationPreference: KeyboardNavigationPreference
   setKeyboardNavigationPreference: (
-    preference: typeof COORDINATES | typeof MODAL
+    preference: KeyboardNavigationPreference
   ) => void
   showProfileEditForm: boolean
   setShowProfileEditForm: (val: boolean) => void
