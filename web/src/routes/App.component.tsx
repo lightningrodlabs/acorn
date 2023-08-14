@@ -40,6 +40,12 @@ import useFinishMigrationChecker from '../hooks/useFinishMigrationChecker'
 import useFileDownloaded from '../hooks/useFileDownloaded'
 import UpdateModalContext from '../context/UpdateModalContext'
 import { ViewingReleaseNotes } from '../components/UpdateModal/UpdateModal'
+import {
+  COORDINATES,
+  MODAL,
+  MOUSE,
+  TRACKPAD,
+} from '../redux/ephemeral/local-preferences/reducer.js'
 
 export type AppStateProps = {
   profilesCellIdString: string
@@ -54,8 +60,8 @@ export type AppStateProps = {
   agentAddress: AgentPubKeyB64
   whoami: WireRecord<Profile>
   hasFetchedForWhoami: boolean
-  navigationPreference: 'mouse' | 'trackpad'
-  keyboardNavigationPreference: 'coordinates' | 'modal'
+  navigationPreference: typeof MOUSE | typeof TRACKPAD
+  keyboardNavigationPreference: typeof COORDINATES | typeof MODAL
   inviteMembersModalShowing: null | string // will be the passphrase if defined
   hasMigratedSharedProject: boolean
   hiddenAchievedOutcomes: CellIdString[]
@@ -65,8 +71,10 @@ export type AppStateProps = {
 
 export type AppDispatchProps = {
   dispatch: any
-  setNavigationPreference: (preference: 'mouse' | 'trackpad') => void
-  setKeyboardNavigationPreference: (preference: 'coordinates' | 'modal') => void
+  setNavigationPreference: (preference: typeof MOUSE | typeof TRACKPAD) => void
+  setKeyboardNavigationPreference: (
+    preference: typeof COORDINATES | typeof MODAL
+  ) => void
   hideInviteMembersModal: () => void
   openInviteMembersModal: (passphrase: string) => void
   goToOutcome: (outcomeActionHash: ActionHashB64) => void

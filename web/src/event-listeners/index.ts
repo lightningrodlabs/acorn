@@ -120,6 +120,15 @@ function handleMouseUpForOutcomeForm({
   )
 }
 
+function leftMostOutcome(
+  outcomeActionHashes: ActionHashB64[],
+  state: RootState
+): ActionHashB64 {
+  return _.minBy(outcomeActionHashes, (actionHash) => {
+    return state.ui.layout.coordinates[actionHash].x
+  })
+}
+
 // outcomes is ComputedOutcomes in an object, keyed by their actionHash
 export default function setupEventListeners(
   store: any,
@@ -190,13 +199,7 @@ export default function setupEventListeners(
               panAndZoom(childrenActionHashes[0])
             } else if (keyboardNavPreference === COORDINATES) {
               // navigate to the left-most child
-              const leftMostChild = _.minBy(
-                childrenActionHashes,
-                (actionHash) => {
-                  return state.ui.layout.coordinates[actionHash].x
-                }
-              )
-
+              const leftMostChild = leftMostOutcome(childrenActionHashes, state)
               panAndZoom(leftMostChild)
             } else {
               store.dispatch(setNavModalOpenChildren(childrenActionHashes))
@@ -220,13 +223,7 @@ export default function setupEventListeners(
               panAndZoom(parentsActionHashes[0])
             } else if (keyboardNavPreference === COORDINATES) {
               // navigate to the left most parent
-              const leftMostParent = _.minBy(
-                parentsActionHashes,
-                (actionHash) => {
-                  return state.ui.layout.coordinates[actionHash].x
-                }
-              )
-
+              const leftMostParent = leftMostOutcome(parentsActionHashes, state)
               panAndZoom(leftMostParent)
             } else {
               store.dispatch(setNavModalOpenParents(parentsActionHashes))

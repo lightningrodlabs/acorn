@@ -12,16 +12,24 @@ import { AgentPubKeyB64, CellIdString, WithActionHash } from '../types/shared'
 import UpdateModal, {
   ViewingReleaseNotes,
 } from '../components/UpdateModal/UpdateModal'
+import {
+  COORDINATES,
+  MODAL,
+  MOUSE,
+  TRACKPAD,
+} from '../redux/ephemeral/local-preferences/reducer'
 
 export type GlobalModalsProps = {
   whoami: WireRecord<Profile>
   activeProjectMeta: WithActionHash<ProjectMeta>
   projectId: CellIdString
   agentAddress: AgentPubKeyB64
-  navigationPreference: 'mouse' | 'trackpad'
-  setNavigationPreference: (preference: 'mouse' | 'trackpad') => void
-  keyboardNavigationPreference: 'coordinates' | 'modal'
-  setKeyboardNavigationPreference: (preference: 'coordinates' | 'modal') => void
+  navigationPreference: typeof MOUSE | typeof TRACKPAD
+  setNavigationPreference: (preference: typeof MOUSE | typeof TRACKPAD) => void
+  keyboardNavigationPreference: typeof COORDINATES | typeof MODAL
+  setKeyboardNavigationPreference: (
+    preference: typeof COORDINATES | typeof MODAL
+  ) => void
   showProfileEditForm: boolean
   setShowProfileEditForm: (val: boolean) => void
   showPreferences: boolean
