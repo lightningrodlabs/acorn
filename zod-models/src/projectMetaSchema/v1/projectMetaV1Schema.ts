@@ -4,7 +4,8 @@ import WithActionHashSchema from '../../withActionHashSchema'
 
 export enum LayeringAlgorithm {
   LongestPath = 'LongestPath',
-  CoffmanGraham = 'CoffmanGraham'
+  CoffmanGraham = 'CoffmanGraham',
+  Classic = 'Classic'
 }
 export const LayeringAlgorithmSchema = z.nativeEnum(LayeringAlgorithm)
 
