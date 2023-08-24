@@ -20,7 +20,7 @@ import {
   unselectAll,
 } from '../../redux/ephemeral/selection/actions'
 import { animatePanAndZoom } from '../../redux/ephemeral/viewport/actions'
-import { LAYOUT_ANIMATION_DURATION_MS } from '../../constants'
+import { LAYOUT_ANIMATION_TYPICAL_MS } from '../../constants'
 
 // https://react-redux.js.org/using-react-redux/connect-mapstate
 // Designed to grab selective data off of a redux state tree in order
@@ -109,7 +109,7 @@ function mapDispatchToProps(
         dispatch(
           animatePanAndZoom(outcomeWithConnection.outcome.actionHash, false)
         )
-      }, LAYOUT_ANIMATION_DURATION_MS + ADDITIONAL_WAIT_BUFFER_MS)
+      }, LAYOUT_ANIMATION_TYPICAL_MS + ADDITIONAL_WAIT_BUFFER_MS)
     },
     closeOutcomeForm: () => {
       return dispatch(closeOutcomeForm())

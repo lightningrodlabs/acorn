@@ -3,7 +3,10 @@ import { CREATE_OUTCOME_WITH_CONNECTION } from '../../persistent/projects/outcom
 import { updateLayout } from '../layout/actions'
 import layoutFormula from '../../../drawing/layoutFormula'
 import { RootState } from '../../reducer'
-import { LAYOUT_ANIMATION_DURATION_MS } from '../../../constants'
+import {
+  LAYOUT_ANIMATION_ALGO_MS,
+  LAYOUT_ANIMATION_TYPICAL_MS,
+} from '../../../constants'
 import { ComputedOutcome, LayeringAlgorithm } from '../../../types'
 import { getGraphForState } from './getGraphForState'
 import { coordsCanvasToPage } from '../../../drawing/coordinateSystems'
@@ -11,6 +14,7 @@ import { ActionHashB64 } from '../../../types/shared'
 import { CoordinatesState, DimensionsState } from '../layout/state-type'
 import { getOutcomeHeight, getOutcomeWidth } from '../../../drawing/dimensions'
 import { getPlaceholderOutcome } from '../../../drawing/drawOutcome/placeholderOutcome'
+import { UPDATE_PROJECT_META } from '../../persistent/projects/project-meta/actions'
 
 function calcDestTranslate(
   outcomeActionHash: ActionHashB64,
@@ -174,7 +178,7 @@ export default function performLayoutAnimation(
   // we do NOT want to keep original layouts for Outcomes
   // that are no longer in the project, so those are automatically
   // ignored during this loop
-  for (const outcomeActionHash in newLayout) {
+  for (const outcomeActionHash in newLayout.coordinates) {
     // do this to override any new ones with existing ones
     // to begin with
     if (currentState.ui.layout.coordinates[outcomeActionHash]) {
@@ -189,13 +193,21 @@ export default function performLayoutAnimation(
     }
   }
 
+  // we have a custom duration length for adjustments
+  // to the layout algorithm, that's slightly longer. it's kind of fun to see it
+  // reorganize
+  const DURATION =
+    action.type === UPDATE_PROJECT_META
+      ? LAYOUT_ANIMATION_ALGO_MS
+      : LAYOUT_ANIMATION_TYPICAL_MS
+
   // transition currentLayoutTween object
   // into newLayout object
   new TWEEN.Tween(currentLayoutTween)
     .to(newLayout)
     // use this easing, adjust me to tune, see TWEEN.Easing for options
     .easing(TWEEN.Easing.Quadratic.InOut)
-    .duration(LAYOUT_ANIMATION_DURATION_MS)
+    .duration(DURATION)
     .start()
     // updatedLayout is the transitionary state between currentLayoutTween and newLayout
     .onUpdate((updatedLayout) => {
