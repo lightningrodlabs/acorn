@@ -76,9 +76,19 @@ INTEGRITY_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER are defined in `electron/sr
 
 You can tweak INTEGRITY_VERSION_NUMBER and KEYSTORE_VERSION_NUMBER independently. 
 
-INTEGRITY_VERSION_NUMBER should be incremented when a new DNA is in use. This occurs when the version number of the release in [./scripts/download-happs.sh](./scripts/download-happs.sh) changes. It will cause users to have to re-create profiles and re-instate data they've previously added.
+INTEGRITY_VERSION_NUMBER should be incremented when a new DNA is in use, or when a new version of holochain which is not backwards compatible with prior versions is bumped to. In the case of new happ files being used, this occurs when the version number of the happ release in [./scripts/download-happs.sh](./scripts/download-happs.sh) changes. It will cause users to have to go through the migration process.
 
 KEYSTORE_VERSION_NUMBER should be incremented if the version of lair-keystore changes, and has a new key format. Or if you otherwise want users to have to switch and generate new keys.
+
+## Happ Code
+
+The happ code has been separated into its own repository with its own release process. This has been done even though developing new features can sometimes involve the modification of that code, as well as the frontend and desktop wrapper code. 
+
+The repo is here: https://github.com/lightningrodlabs/acorn-happ.
+
+After making changes, and performing a release, just edit [./scripts/download-happs.sh](./scripts/download-happs.sh) to point to the new release, and then run `npm run download-happs` to download the new release.
+
+As mentioned above, INTENGIRTY_VERSION_NUMBER should be incremented when the happ release has been updated.
 
 
 ## Dependency Versions Information
@@ -96,14 +106,14 @@ Acorn functions at a high level according to these patterns:
 - an 'electron' wrapper is responsible for
   - creating a 'BrowserWindow' application window through which users interact with the HTML/JS/CSS GUI of Acorn
   - starting up and stopping background processes for Holochain related services, including the main holochain engine, and the holochain "keystore" which handles cryptographic signing functions. It is necessary for these background processes to be running while the application is open, and for them to stop when it is closed/quit, because the GUI must talk to these components in order for it to perform any of its primary functions such as reading and writing data.
-- The `holochain` binary shipped by the holochain organization is **not** directly bundled, and executed. An alternative approach is taken for the needs of Acorn. This alternative approach involves the compilation of a custom binary to run the core Holochain engine, the "conductor", which is achieved by importing shared code from the `holochain` binary source code. This is found in the [conductor](./conductor) folder. It relies on a general library that was developed with Acorn in mind, the [holochain-runner](https://github.com/Sprillow/holochain-runner/). This strategy was taken to optimize performance and cut down on cross-language (js <-> rust) complexity. Due to this architecture, the electron js code does not need to call any functions of the `admin websocket` typically exposed by `holochain` to manage the Conductor state. This also improves code development simplicity, as it minimizes the surface area/complexity of the electron side code, and keeps it "thin".
-  - This custom binary also helps the GUI / electron application know about the status of the Conductor. It does this by subscribing to events emitted from the `embedded-holochain-runner`, and forwarding those events to the GUI via electron's IPC messages.
+- The `holochain` binary shipped by the holochain organization is **not** directly bundled, and executed. An alternative approach is taken for the needs of Acorn. This alternative approach involves the compilation of a custom binary to run the core Holochain engine, the "conductor", which is achieved by importing shared code from the `holochain` binary source code. It relies on a general library that was developed with Acorn in mind, the [holochain-runner](https://github.com/lightningrodlabs/holochain-runner/). This strategy was taken to optimize performance and cut down on cross-language (js <-> rust) complexity. Due to this architecture, the electron js code does not need to call any functions of the `admin websocket` typically exposed by `holochain` to manage the Conductor state. This also improves code development simplicity, as it minimizes the surface area/complexity of the electron side code, and keeps it "thin".
+  - This custom binary also helps the GUI / electron application know about the status of the Conductor. It does this by subscribing to events emitted from the `holochain-runner`, and forwarding those events to the GUI via electron's IPC messages.
 - Within the application, here is how Acorn utilizes Holochain:
   - A new user will need a new private/public key pair to represent their unique identity within Acorn. This will be generated automatically on the first launch of Acorn. Acorn will look in the following folder on the users computer to determine whether this is the first launch or a re-launch (`-X` would be replaced by "integrity version" numbers such as `1`, and `-Y` would be replaced by "keystore version" numbers such as `1`, both are the numbers associated in the [Versioning](#versioning) section of this doc):
     - Linux: `~/.config/Acorn/databases-X` and `~/.config/Acorn/keystore-Y`
     - MacOS: `~/Library/Application Support/Acorn/databases-X` and `~/Library/Application Support/Acorn/keystore-Y`
     - Windows: coming soon...
-  - In Holochain, there is a pattern of a Conductor running 'apps', where an app is a collection of Cells (which are DNA + AGent), all configured to be running under the same Agent private keys
+  - In Holochain, there is a pattern of a Conductor running 'apps', where an app is a collection of Cells (which are DNA + Agent), all configured to be running under the same Agent private keys
     - Instead of installing many DNAs within an "app", Acorn installs many/multiple "apps" each with one Cell.
     - On initial launch, the first "app" containing a Cell is automatically installed and activated, as all users need it to operate the app and onboard themselves. It is the "profile" app. It is responsible for sharing data globally between all Acorn users to do with users profile metadata.
     - In order to create a "Project" within Acorn, a whole new "app" containing one Cell is installed and activated. _By taking the unique 5 word secret phrase generated in the UI and injecting it into the DNA as a "uid" key/value, we create a unique secure network and DHT for that Project, which is guessable/joinable only by those who know that same secret phrase, which can be shared with them via chat channels outside of Acorn._

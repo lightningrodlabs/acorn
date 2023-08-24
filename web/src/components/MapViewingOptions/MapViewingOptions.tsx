@@ -49,12 +49,16 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
           selectedOptionId={selectedLayeringAlgo}
           options={[
             {
-              id: 'LongestPath',
+              id: LayeringAlgorithm.Classic,
+              text: 'Classic',
+            },
+            {
+              id: LayeringAlgorithm.LongestPath,
               text: 'Minimum Height',
             },
             {
-              id: 'CoffmanGraham',
-              text: 'Constrained Width',
+              id: LayeringAlgorithm.CoffmanGraham,
+              text: 'Minimum Width',
             },
           ]}
           onSelect={onSelectLayeringAlgo}
