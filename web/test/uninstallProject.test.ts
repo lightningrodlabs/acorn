@@ -1,6 +1,6 @@
 import { AdminWebsocket } from '@holochain/client/lib/api/admin/websocket'
 import { CellIdString } from '../src/types/shared'
-import { deactivateProject } from '../src/projects/deactivateProject'
+import { uninstallProject } from '../src/projects/uninstallProject'
 
 let mockAdminWs: AdminWebsocket
 let mockAppId: string
@@ -11,7 +11,7 @@ let removeProjectCellIdAction: { type: string; payload: string }
 beforeEach(() => {
   // @ts-ignore
   mockAdminWs = {
-    disableApp: jest.fn(),
+    uninstallApp: jest.fn(),
   }
 
   mockAppId = 'testAppId'
@@ -25,12 +25,12 @@ beforeEach(() => {
   }
 })
 
-describe('deactivateProject()', () => {
-  it('should disable project in holochain and purge project from redux', async () => {
-    await deactivateProject(mockAppId, mockCellId, dispatch, mockAdminWs)
+describe('uninstallProject()', () => {
+  it('should uninstall app in holochain and purge project from redux', async () => {
+    await uninstallProject(mockAppId, mockCellId, dispatch, mockAdminWs)
 
-    expect(mockAdminWs.disableApp).toHaveBeenCalledTimes(1)
-    expect(mockAdminWs.disableApp).toHaveBeenCalledWith({
+    expect(mockAdminWs.uninstallApp).toHaveBeenCalledTimes(1)
+    expect(mockAdminWs.uninstallApp).toHaveBeenCalledWith({
       installed_app_id: mockAppId,
     })
 

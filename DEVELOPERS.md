@@ -90,14 +90,9 @@ After making changes, and performing a release, just edit [./scripts/download-ha
 
 As mentioned above, INTENGIRTY_VERSION_NUMBER should be incremented when the happ release has been updated.
 
+## Dependencies
 
-## Dependency Versions Information
-
-This project is currently using:
-
-holochain-runner [v0.7.6](https://github.com/lightningrodlabs/holochain-runner/releases/tag/v0.7.6) (check the link to see the underlying `holochain` version)
-
-and [electron 20](https://www.electronjs.org/docs/latest/api/app)
+This project uses [holochain-runner](https://github.com/lightningrodlabs/holochain-runner) and [electron](https://www.electronjs.org/docs/latest/api/app)
 
 ## Technical Overview
 

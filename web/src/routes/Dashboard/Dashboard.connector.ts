@@ -22,7 +22,7 @@ import Dashboard, {
 } from './Dashboard.component'
 import { LayeringAlgorithm, ProjectMeta } from '../../types'
 import selectProjectMembersPresent from '../../redux/persistent/projects/realtime-info-signal/select'
-import { deactivateProject } from '../../projects/deactivateProject'
+import { uninstallProject } from '../../projects/uninstallProject'
 import { createProject } from '../../projects/createProject'
 import { joinProject, triggerJoinSignal } from '../../projects/joinProject'
 
@@ -60,9 +60,9 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
     setShowInviteMembersModal: (passphrase: string) => {
       return dispatch(openInviteMembersModal(passphrase))
     },
-    deactivateProject: async (appId: string, cellId: CellIdString) => {
+    uninstallProject: async (appId: string, cellId: CellIdString) => {
       const adminWs = await getAdminWs()
-      return deactivateProject(appId, cellId, dispatch, adminWs)
+      return uninstallProject(appId, cellId, dispatch, adminWs)
     },
     fetchEntryPointDetails: async (cellIdString: CellIdString) => {
       const appWebsocket = await getAppWs()

@@ -45,7 +45,7 @@ export type DashboardDispatchProps = {
   ) => Promise<void>
   fetchEntryPointDetails: (cellIdString: CellIdString) => Promise<void>
   joinProject: (passphrase: string) => Promise<CellIdString>
-  deactivateProject: (appId: string, cellId: CellIdString) => Promise<void>
+  uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
   installProjectAndImport: (
     agentAddress: AgentPubKeyB64,
     projectData: any,
@@ -57,7 +57,7 @@ export type DashboardDispatchProps = {
 export type DashboardProps = DashboardStateProps & DashboardDispatchProps
 
 const Dashboard: React.FC<DashboardProps> = ({
-  deactivateProject,
+  uninstallProject,
   agentAddress,
   cells,
   projects,
@@ -230,7 +230,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 pendingProjects={pendingProjects}
                 fetchProjectMeta={fetchProjectMeta}
                 setPendingProjects={setPendingProjects}
-                deactivateProject={deactivateProject}
+                uninstallProject={uninstallProject}
               />
             )}
             {!hasFetchedForAllProjects &&

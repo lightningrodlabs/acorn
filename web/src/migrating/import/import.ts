@@ -29,9 +29,12 @@ export async function internalImportProjectsData(
   migrationData: string,
   onStep: (completed: number, toComplete: number) => void
 ) {
+  console.log('migrationData', migrationData)
   const migrationDataParsed: AllProjectsDataExport = AllProjectsDataExportSchema.parse(
     stringToJSONSchema.parse(migrationData)
   )
+
+  console.log('migrationDataParsed', migrationDataParsed)
 
   const initialState: RootState = store.getState()
   const myAgentPubKey = initialState.agentAddress

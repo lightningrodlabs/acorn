@@ -1,4 +1,4 @@
-import { CellType } from '@holochain/client'
+import { AppStatusFilter, CellType } from '@holochain/client'
 import _ from 'lodash'
 import { getAppWs, getAdminWs } from './hcWebsockets'
 import { PROJECT_APP_PREFIX } from './holochainConfig'
@@ -8,9 +8,13 @@ export async function getAllApps() {
   const adminWs = await getAdminWs()
   const appWs = await getAppWs()
   const appIds = await adminWs.listApps({})
+
+  console.log(appIds)
   // this function assumes a one-dna-per-app
   // which could become wrong at some point
-  const appProjects = appIds.map((appInfo) => {
+  const appProjects = appIds.filter(appInfo => {
+    return AppStatusFilter.Running in appInfo.status
+  }).map((appInfo) => {
     const cellInfo = Object.values(appInfo.cell_info)[0][0]
     const cellId =
       CellType.Provisioned in cellInfo

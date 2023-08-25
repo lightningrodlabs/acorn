@@ -17,12 +17,12 @@ function PendingProjects({
   pendingProjects,
   fetchProjectMeta,
   setPendingProjects,
-  deactivateProject,
+  uninstallProject,
 }: {
   pendingProjects: string[]
   fetchProjectMeta: any
   setPendingProjects: React.Dispatch<React.SetStateAction<string[]>>
-  deactivateProject: (appId: string, cellId: string) => Promise<void>
+  uninstallProject: (appId: string, cellId: string) => Promise<void>
 }) {
   const [expanded, setExpanded] = useState(false)
   const [passphrases, setPassphrases] = useState<AppInfoStore>({})
@@ -77,7 +77,7 @@ function PendingProjects({
   }, [JSON.stringify(pendingProjects)])
 
   const cancelProjectJoin = async (appId: string, cellId: string) => {
-    await deactivateProject(appId, cellId)
+    await uninstallProject(appId, cellId)
     // remove this project from pendingProjects
     setPendingProjects((pendingProjects: string[]) => {
       return pendingProjects.filter((c) => c !== cellId)
