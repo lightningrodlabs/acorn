@@ -34,6 +34,7 @@ import {
   FETCH_PROJECT_METAS,
   UPDATE_PROJECT_META,
 } from '../../persistent/projects/project-meta/actions'
+import { CHANGE_DEPTH_PERCEPTION } from '../depth-perception/actions'
 
 const isOneOfLayoutAffectingActions = (action: {
   type: string
@@ -71,7 +72,8 @@ const isOneOfLayoutAffectingActions = (action: {
     type === HIDE_SMALL_OUTCOMES ||
     type === SHOW_SMALL_OUTCOMES ||
     type === FETCH_PROJECT_METAS ||
-    type === UPDATE_PROJECT_META
+    type === UPDATE_PROJECT_META ||
+    type === CHANGE_DEPTH_PERCEPTION
   )
 }
 

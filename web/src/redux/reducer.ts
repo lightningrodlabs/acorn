@@ -24,6 +24,7 @@ import layout from './ephemeral/layout/reducer'
 import mouse from './ephemeral/mouse/reducer'
 import screensize from './ephemeral/screensize/reducer'
 import viewport from './ephemeral/viewport/reducer'
+import depthPerception from './ephemeral/depth-perception/reducer'
 import expandedView from './ephemeral/expanded-view/reducer'
 import outcomeClone from './ephemeral/outcome-clone/reducer'
 import activeProject from './ephemeral/active-project/reducer'
@@ -56,6 +57,7 @@ const rootReducer = combineReducers({
     keyboard,
     screensize,
     viewport,
+    depthPerception,
     mouse,
     expandedView,
     outcomeClone,

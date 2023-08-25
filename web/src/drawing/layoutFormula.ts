@@ -99,7 +99,8 @@ export default function layoutFormula(
     [outcomeActionHash: string]: boolean
   },
   hiddenSmalls: boolean,
-  hiddenAchieved: boolean
+  hiddenAchieved: boolean,
+  depthPerception: number
 ): LayoutState {
   // just do this for efficiency, it's not going to
   // get displayed or rendered anywhere
@@ -113,7 +114,7 @@ export default function layoutFormula(
   Object.keys(graph.outcomes.computedOutcomesKeyed).forEach(
     (outcomeActionHash) => {
       const outcome = graph.outcomes.computedOutcomesKeyed[outcomeActionHash]
-      const width = getOutcomeWidth({ outcome, zoomLevel })
+      const width = getOutcomeWidth({ outcome, zoomLevel, depthPerception })
       const height = getOutcomeHeight({
         ctx,
         outcome,

@@ -78,6 +78,7 @@ export type OptionalOutcomeData = {
   votes?: OutcomeVote[]
   // for representing this data in a nested tree structure
   children?: ComputedOutcome[]
+  depth?: number
 }
 
 // These are the things which are computed and stored within ProjectView

@@ -82,6 +82,7 @@ import {
   setNavModalOpenChildren,
   setNavModalOpenParents,
 } from '../redux/ephemeral/navigation-modal/actions'
+import { changeDepthPerception } from '../redux/ephemeral/depth-perception/actions'
 
 // The "modifier" key is different on Mac and non-Mac
 // Pattern borrowed from TinyKeys library.
@@ -460,10 +461,11 @@ export default function setupEventListeners(
   }
 
   function canvasWheel(event: WheelEvent) {
-    const state = store.getState()
+    const state: RootState = store.getState()
     const {
       ui: {
         localPreferences: { navigation },
+        depthPerception: { value: depthPerception }
       },
     } = state
     if (!state.ui.outcomeForm.isOpen) {
@@ -471,7 +473,8 @@ export default function setupEventListeners(
       store.dispatch(unsetContextMenu())
       // from https://medium.com/@auchenberg/detecting-multi-touch-trackpad-gestures-in-javascript-a2505babb10e
       // and https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-translate
-      if (navigation === MOUSE || (navigation === TRACKPAD && event.ctrlKey)) {
+      if (!event.metaKey && (navigation === MOUSE || (navigation === TRACKPAD && event.ctrlKey))) {
+        // NORMAL VIEWPORT ZOOMING
         // Normalize wheel to +1 or -1.
         const wheel = event.deltaY < 0 ? 1 : -1
         const zoomIntensity = 0.07 // 0.05
@@ -480,7 +483,13 @@ export default function setupEventListeners(
         const pageCoord = { x: event.clientX, y: event.clientY }
         const instant = true
         store.dispatch(changeScale(zoom, pageCoord, instant))
+      } else if (event.metaKey) {
+        // Normalize wheel to +1 or -1.
+        const wheel = event.deltaY < 0 ? -1 : 1
+        store.dispatch(changeDepthPerception(depthPerception + wheel))
+        console.log('depthPerception', depthPerception + wheel)
       } else {
+        // NORMAL PANNING
         // invert the pattern so that it uses new mac style
         // of panning
         store.dispatch(changeTranslate(-1 * event.deltaX, -1 * event.deltaY))
