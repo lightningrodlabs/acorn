@@ -65,9 +65,27 @@ export const cloneTag = (old: WithActionHash<Tag>): WithActionHash<Tag> => {
 export const cloneOutcome = (tagActionHashMap: ActionHashMap) => (
   old: WithActionHash<Outcome>
 ): WithActionHash<Outcome> => {
+  // make sure tag references hold up through the migration
+  const originalTags = old['tags']
+  const newTags: ActionHashB64[] = []
+  const unfoundReferences: ActionHashB64[] = []
+  for (let originalTagActionHash of originalTags) {
+    const newTagActionHash = tagActionHashMap[originalTagActionHash]
+    if (!newTagActionHash) {
+      unfoundReferences.push(originalTagActionHash)
+    } else {
+      newTags.push(newTagActionHash)
+    }
+  }
+
+  if (originalTags && unfoundReferences.length > 0) {
+    throw new Error(`Broken references within 'outcomes' for 'tags'. Unable to locate the Tags referred to by the hashes: ${unfoundReferences}.
+Please inspect your data file, look for these references, and edit it to fix the
+issue. Then try again.`)
+  }
+
   return {
     ...old,
-    // make sure tag references hold up through the migration
     tags: old.tags.map(
       (oldTagHash: ActionHashB64) => tagActionHashMap[oldTagHash]
     ),
@@ -80,6 +98,21 @@ export const cloneConnection = (outcomeActionHashMap: ActionHashMap) => (
 ): WithActionHash<Connection> => {
   const newParentOutcomeActionHash = outcomeActionHashMap[old.parentActionHash]
   const newChildOutcomeActionHash = outcomeActionHashMap[old.childActionHash]
+
+  if (!newParentOutcomeActionHash) {
+    throw new Error(
+      `Broken reference within 'connections' for 'parentActionHash'. Unable to locate the Outcome referred to by the hash: ${old.parentActionHash}.
+      Please inspect your data file, look for these references, and edit it to fix the
+      issue. Then try again.`
+    )
+  }
+  if (!newChildOutcomeActionHash) {
+    throw new Error(
+      `Broken reference within 'connections' for 'childActionHash'. Unable to locate the Outcome referred to by the hash: ${old.childActionHash}.
+      Please inspect your data file, look for these references, and edit it to fix the
+      issue. Then try again.`
+    )
+  }
 
   return {
     ...old, // technically not needed, but left in case more properties are added in future
@@ -97,21 +130,35 @@ export const cloneProjectMeta = (
   passphrase: string
 ) => (old: ProjectMetaWithActionHash): WithActionHash<ProjectMeta> => {
   const originalTopPriorityOutcomes = old['topPriorityOutcomes']
+  const topPriorityOutcomes: ActionHashB64[] = []
+  const unfoundReferences: ActionHashB64[] = []
+  for (let originalOutcomeActionHash of originalTopPriorityOutcomes) {
+    const newOutcomeActionHash = outcomeActionHashMap[originalOutcomeActionHash]
+    if (!newOutcomeActionHash) {
+      unfoundReferences.push(originalOutcomeActionHash)
+    } else {
+      topPriorityOutcomes.push(newOutcomeActionHash)
+    }
+  }
+
+  if (originalTopPriorityOutcomes && unfoundReferences.length > 0) {
+    throw new Error(
+      `Broken references within projectMeta. Unable to locate the Outcomes referred to by the hashes: ${unfoundReferences}.
+      Please inspect your data file, look for these references, and edit it to fix the
+      issue. Then try again.`
+    )
+  }
+
   return {
     ...old,
-    // the question mark operator for backwards compatibility
-    topPriorityOutcomes: originalTopPriorityOutcomes
-      ? originalTopPriorityOutcomes
-          .map((oldAddress) => outcomeActionHashMap[oldAddress])
-          .filter((address) => address)
-      : [],
+    topPriorityOutcomes,
     // add a fallback layering algorithm in case the project has none
     layeringAlgorithm: old['layeringAlgorithm']
       ? old['layeringAlgorithm']
       : LayeringAlgorithm.LongestPath,
     createdAt: Date.now(),
     creatorAgentPubKey: agentAddress,
-    passphrase: passphrase,
+    passphrase,
     isMigrated: null,
   }
 }
@@ -120,6 +167,14 @@ export const cloneData = <T extends { outcomeActionHash: ActionHashB64 }>(
   outcomeActionHashMap: ActionHashMap
 ) => (old: WithActionHash<T>): WithActionHash<T> => {
   const newOutcomeActionHash = outcomeActionHashMap[old.outcomeActionHash]
+
+  if (!newOutcomeActionHash) {
+    throw new Error(
+      `Broken reference in the data set. Unable to locate the Outcome referred to by the hash: ${old.outcomeActionHash}.
+Please inspect your data file, look for these references, and edit it to fix the
+issue. Then try again.`
+    )
+  }
 
   return {
     ...old,

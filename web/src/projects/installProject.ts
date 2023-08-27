@@ -9,7 +9,7 @@ export async function internalInstallProject(
   passphrase: string,
   adminWs: AdminWebsocket,
   iGetAgentPubKey: typeof getAgentPubKey
-): Promise<[CellIdString, CellId, string]> {
+): Promise<{ cellIdString: CellIdString; cellId: CellId; appId: string }> {
   const uid = passphraseToUid(passphrase)
   // add a bit of randomness so that
   // the same passphrase can be tried multiple different times
@@ -17,11 +17,11 @@ export async function internalInstallProject(
   // in order to eventually find their peers
   // note that this will leave a graveyard of deactivated apps for attempted
   // joins
-  const installed_app_id = `${PROJECT_APP_PREFIX}-${Math.random()
+  const installedAppId = `${PROJECT_APP_PREFIX}-${Math.random()
     .toString()
     .slice(-6)}-${uid}`
-  const agent_key = iGetAgentPubKey()
-  if (!agent_key) {
+  const agentKey = iGetAgentPubKey()
+  if (!agentKey) {
     throw new Error(
       'Cannot install a new project because no AgentPubKey is known locally'
     )
@@ -37,8 +37,8 @@ export async function internalInstallProject(
 
   // INSTALL
   const installedApp = await adminWs.installApp({
-    agent_key,
-    installed_app_id,
+    agent_key: agentKey,
+    installed_app_id: installedAppId,
     // what to do about the membrane_proof?
     membrane_proofs: {},
     path: happPath,
@@ -50,16 +50,16 @@ export async function internalInstallProject(
       ? cellInfo[CellType.Provisioned].cell_id
       : null
   const cellIdString = cellIdToString(cellId)
-  await adminWs.enableApp({ installed_app_id })
+  await adminWs.enableApp({ installed_app_id: installedAppId })
 
   //authorize zome calls for the new cell
   await adminWs.authorizeSigningCredentials(cellId)
-  return [cellIdString, cellId, installed_app_id]
+  return { cellIdString, cellId, appId: installedAppId }
 }
 
 export async function installProject(
   passphrase: string
-): Promise<[CellIdString, CellId, string]> {
+) {
   const adminWs = await getAdminWs()
   return internalInstallProject(passphrase, adminWs, getAgentPubKey)
 }

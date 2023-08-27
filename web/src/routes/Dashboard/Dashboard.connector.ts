@@ -10,7 +10,7 @@ import {
 import selectEntryPoints from '../../redux/persistent/projects/entry-points/select'
 
 import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
-import { installProjectAndImport } from '../../migrating/import/installProjectAndImport'
+import { importProject } from '../../migrating/import/importProject'
 import { openInviteMembersModal } from '../../redux/ephemeral/invite-members-modal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString } from '../../utils'
@@ -135,14 +135,15 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
       triggerJoinSignal(cellId, appWs)
       return cellIdString
     },
-    installProjectAndImport: (agentAddress, projectData, passphrase) => {
-      return installProjectAndImport(
+    importProject: (cellIdString, agentAddress, projectData, passphrase) => {
+      return importProject(
+        cellIdString,
         agentAddress,
         projectData,
         passphrase,
         dispatch
       )
-    },
+    }
   }
 }
 

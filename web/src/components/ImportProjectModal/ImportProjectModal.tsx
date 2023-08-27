@@ -12,6 +12,10 @@ import {
   ProjectModalContentSpacer,
   ProjectModalHeading,
 } from '../ProjectModal/ProjectModal'
+import { CellIdString } from '../../types/shared'
+import { installProject } from '../../projects/installProject'
+import { CellId } from '@holochain/client'
+import { BackwardsCompatibleProjectExportSchema } from 'zod-models'
 
 function ImportProjectFilePicker({ showModal, onFilePicked, onCancel }) {
   const [fileFormatInvalidMessage, setFileFormatInvalidMessage] = useState(
@@ -94,6 +98,27 @@ function ImportingProjectModal({ showModal }) {
   )
 }
 
+function FileInvalidModal({ showModal, onDone, errorMessage }) {
+  return (
+    <Modal
+      white
+      active={showModal}
+      onClose={onDone}
+      className="import-project-modal-wrapper"
+    >
+      <ProjectModalHeading title="Project not imported" />
+      <ProjectModalContentSpacer>
+        <ProjectModalContent>
+          <div className="import-project-content-wrapper">
+            {errorMessage}
+          </div>
+        </ProjectModalContent>
+      </ProjectModalContentSpacer>
+      <ProjectModalButton text="Done" onClick={onDone} />
+    </Modal>
+  )
+}
+
 function ProjectImportedModal({
   showModal,
   onDone,
@@ -124,37 +149,72 @@ function ProjectImportedModal({
 export type ImportProjectModalProps = {
   showModal: boolean
   onClose: () => void
-  onImportProject: (projectData: any, passphrase: string) => Promise<void>
+  onImportProject: (
+    cellIdString: CellIdString,
+    projectData: any,
+    passphrase: string
+  ) => Promise<void>
+  uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
 }
 
 const ImportProjectModal: React.FC<ImportProjectModalProps> = ({
   showModal,
   onClose,
   onImportProject,
+  uninstallProject,
 }) => {
   // actively importing
   const [importingProject, setImportingProject] = useState(false)
   const [projectImported, setProjectImported] = useState(false)
+  const [error, setError] = useState('')
   const [projectName, setProjectName] = useState('')
   const [outcomeCount, setOutcomeCount] = useState(0)
 
-  const onFilePicked = async (projectData) => {
-    if (!projectData.tags) {
-      alert('Cannot import projects from versions prior to v1.0.0-alpha')
-      onClose()
-      return
+  const onFilePicked = async (projectData: object) => {
+    // if (!projectData.tags) {
+    //   alert('Cannot import projects from versions prior to v1.0.0-alpha')
+    //   onClose()
+    //   return
+    // }
+    let projectIds: {
+      cellIdString: CellIdString
+      cellId: CellId
+      appId: string
     }
-    setImportingProject(true)
-    setProjectName(projectData.projectMeta.name)
-    setOutcomeCount(Object.keys(projectData.outcomes).length)
-    // keep the existing passphrase, such that other users know how
-    // to enter the new project
-    await onImportProject(projectData, projectData.projectMeta.passphrase)
-    setImportingProject(false)
-    setProjectImported(true)
+    try {
+      let projectDataParsed = BackwardsCompatibleProjectExportSchema.parse(
+        projectData
+      )
+      console.log(projectDataParsed)
+      const passphrase = projectDataParsed.projectMeta.passphrase
+      setImportingProject(true)
+      setProjectName(projectDataParsed.projectMeta.name)
+      setOutcomeCount(Object.keys(projectDataParsed.outcomes).length)
+      // first step is to install the app and DNA
+      projectIds = await installProject(passphrase)
+      // keep the existing passphrase, such that other users know how
+      // to enter the new project
+      await onImportProject(projectIds.cellIdString, projectData, passphrase)
+      setImportingProject(false)
+      setProjectImported(true)
+    } catch (e) {
+      console.error(e)
+      // if the project was installed, but then failed during import,
+      // uninstall it
+      if (projectIds) {
+        // purposefully do nothing if this fails
+        uninstallProject(
+          projectIds.appId,
+          projectIds.cellIdString
+        ).catch(() => {})
+      }
+      setImportingProject(false)
+      setError(e.message)
+    }
   }
   const onDone = () => {
     onClose()
+    setError('')
     setProjectImported(false)
   }
 
@@ -172,12 +232,11 @@ const ImportProjectModal: React.FC<ImportProjectModalProps> = ({
         projectName={projectName}
         outcomeCount={outcomeCount}
       />
-      {/* <FileInvalidModal
-        showModal={showModal && projectImported}
-        projectSecret={projectSecret}
+      <FileInvalidModal
+        errorMessage={error}
+        showModal={showModal && error !== ''}
         onDone={onDone}
-        projectImported={projectImported}
-      /> */}
+      />
     </>
   )
 }

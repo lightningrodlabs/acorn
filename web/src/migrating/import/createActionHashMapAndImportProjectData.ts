@@ -51,6 +51,7 @@ export async function internalCreateActionHashMapAndImportProjectData(
     projectsCellIdString
   )
 
+  // do outcomes because everything else references them
   const outcomeActionHashMap = await iCloneDataSet<Outcome>(
     projectData.outcomes,
     // closure in the depended upon hashmap

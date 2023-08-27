@@ -48,9 +48,9 @@ import {
   internalCreateActionHashMapAndImportProjectData,
 } from '../src/migrating/import/createActionHashMapAndImportProjectData'
 import {
-  installProjectAndImport as iInstallProjectAndImport,
-  internalInstallProjectAndImport,
-} from '../src/migrating/import/installProjectAndImport'
+  importProject as iimportProject,
+  internalImportProject,
+} from '../src/migrating/import/importProject'
 import mockWhoami from './mockWhoami'
 import { cellIdFromString } from '../src/utils'
 import mockActionHashMaps from './mockActionHashMaps'
@@ -64,7 +64,7 @@ let createProfilesZomeApi: typeof iCreateProfilesZomeApi
 let createProjectsZomeApi: typeof iCreateProjectsZomeApi
 let profilesZomeApi: ProfilesZomeApi
 let projectsZomeApi: ProjectsZomeApi
-let installProjectAndImport: typeof iInstallProjectAndImport
+let importProject: typeof iimportProject
 let installProject: typeof iInstallProject
 let finalizeCreateProject: typeof iFinalizeCreateProject
 let createActionHashMapAndImportProjectData: typeof iCreateActionHashMapAndImportProjectData
@@ -129,7 +129,7 @@ beforeEach(() => {
   })
   profilesZomeApi = createProfilesZomeApi(mockAppWs)
   projectsZomeApi = createProjectsZomeApi(mockAppWs)
-  installProjectAndImport = jest.fn()
+  importProject = jest.fn()
   mockCellIdString =
     '132,45,36,204,129,221,8,19,206,244,229,30,210,95,157,234,241,47,13,85,105,207,55,138,160,87,204,162,244,122,186,195,125,254,5,185,165,224,66[:cell_id_divider:]132,32,36,97,138,27,24,136,8,80,164,189,194,243,82,224,72,205,215,225,2,27,126,146,190,40,102,187,244,75,191,172,155,196,247,226,220,92,1'
 
@@ -166,7 +166,7 @@ describe('importProjectsData()', () => {
   it('successfully parses and imports project data and user profile', async () => {
     await internalImportProjectsData(
       profilesZomeApi,
-      installProjectAndImport,
+      importProject,
       installProject,
       store,
       mockMigrationData,
@@ -186,8 +186,8 @@ describe('importProjectsData()', () => {
       sampleGoodDataExport.projects[1].projectMeta.isMigrated
     ).not.toBeNull()
 
-    expect(installProjectAndImport).toHaveBeenCalledTimes(1)
-    expect(installProjectAndImport).toHaveBeenCalledWith(
+    expect(importProject).toHaveBeenCalledTimes(1)
+    expect(importProject).toHaveBeenCalledWith(
       'testAgentAddress',
       sampleGoodDataExport.projects[0],
       sampleGoodDataExport.projects[0].projectMeta.passphrase,
@@ -228,7 +228,7 @@ describe('importProjectsData()', () => {
     try {
       await internalImportProjectsData(
         profilesZomeApi,
-        installProjectAndImport,
+        importProject,
         installProject,
         store,
         mockMigrationData,
@@ -243,7 +243,7 @@ describe('importProjectsData()', () => {
     try {
       await internalImportProjectsData(
         profilesZomeApi,
-        installProjectAndImport,
+        importProject,
         installProject,
         store,
         mockMigrationData,
@@ -258,7 +258,7 @@ describe('importProjectsData()', () => {
     try {
       await internalImportProjectsData(
         profilesZomeApi,
-        installProjectAndImport,
+        importProject,
         installProject,
         store,
         mockMigrationData,
@@ -292,23 +292,18 @@ describe('importProjectsData()', () => {
   })
 })
 
-describe('installProjectAndImport()', () => {
+describe('importProject()', () => {
   const agentAddress = 'testAgentAddress'
-  it('installs DNA and imports project into new cell', async () => {
-    await internalInstallProjectAndImport(
+  it('imports project into a new cell', async () => {
+    await internalImportProject(
+      mockCellIdString,
       agentAddress,
       sampleGoodDataExport.projects[0],
       sampleGoodDataExport.projects[0].projectMeta.passphrase,
       store.dispatch,
-      installProject,
       createActionHashMapAndImportProjectData,
       finalizeCreateProject,
       projectsZomeApi
-    )
-
-    expect(installProject).toHaveBeenCalledTimes(1)
-    expect(installProject).toHaveBeenCalledWith(
-      sampleGoodDataExport.projects[0].projectMeta.passphrase
     )
 
     expect(createActionHashMapAndImportProjectData).toHaveBeenCalledTimes(1)

@@ -6,10 +6,8 @@ import { cellIdToString } from './utils'
 
 export async function getAllApps() {
   const adminWs = await getAdminWs()
-  const appWs = await getAppWs()
   const appIds = await adminWs.listApps({})
 
-  console.log(appIds)
   // this function assumes a one-dna-per-app
   // which could become wrong at some point
   const appProjects = appIds.filter(appInfo => {

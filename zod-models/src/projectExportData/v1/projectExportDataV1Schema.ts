@@ -7,7 +7,7 @@ import { ProjectOutcomeMembersStateSchema } from '../../outcomeMember/outcomeMem
 import BackwardsCompatibleProjectMetaSchema, { ProjectMetaV1WithActionHashSchema } from '../../projectMetaSchema/projectMetaSchema'
 import { ProjectTagsStateSchema } from '../../tag/tagSchema'
 
-const BackwardsCompatibleProjectExportSchema = z.object({
+export const BackwardsCompatibleProjectExportSchema = z.object({
   // projectMeta requires backwards compatibility
   projectMeta: BackwardsCompatibleProjectMetaSchema,
   outcomes: ProjectOutcomesStateSchema,

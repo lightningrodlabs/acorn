@@ -5,7 +5,7 @@ import { RootState } from '../../redux/reducer'
 import { createWhoami } from '../../redux/persistent/profiles/who-am-i/actions'
 import { installProject } from '../../projects/installProject'
 import { createProfilesZomeApi } from './zomeApiCreators'
-import { installProjectAndImport } from './installProjectAndImport'
+import { importProject } from './importProject'
 import ProfilesZomeApi from '../../api/profilesApi'
 import { AllProjectsDataExport, AllProjectsDataExportSchema } from 'zod-models'
 import { internalJoinProject } from '../../projects/joinProject'
@@ -22,7 +22,7 @@ const stringToJSONSchema = z.string().transform((str, ctx): any => {
 export async function internalImportProjectsData(
   // dependencies
   profilesZomeApi: ProfilesZomeApi,
-  iInstallProjectAndImport: typeof installProjectAndImport,
+  iImportProject: typeof importProject,
   iInstallProject: typeof installProject,
   store: any,
   // main input data and callbacks
@@ -73,7 +73,9 @@ export async function internalImportProjectsData(
   // one completes
   for await (let projectData of projectsToMigrate) {
     const passphrase = projectData.projectMeta.passphrase
-    await iInstallProjectAndImport(
+    const projectsIds = await iInstallProject(passphrase)
+    await iImportProject(
+      projectsIds[0],
       myAgentPubKey,
       projectData,
       passphrase,
@@ -101,7 +103,7 @@ export default async function importProjectsData(
   const profilesZomeApi = createProfilesZomeApi(appWebsocket)
   return internalImportProjectsData(
     profilesZomeApi,
-    installProjectAndImport,
+    importProject,
     installProject,
     store,
     migrationData,

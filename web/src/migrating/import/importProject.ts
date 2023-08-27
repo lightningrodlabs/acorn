@@ -2,23 +2,20 @@ import { ProjectExportDataV1 } from 'zod-models'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { finalizeCreateProject } from '../../projects/createProject'
 import { getAppWs } from '../../hcWebsockets'
-import { installProject } from '../../projects/installProject'
-import { AgentPubKeyB64 } from '../../types/shared'
+import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { cloneProjectMeta } from './cloneFunctions'
 import { createActionHashMapAndImportProjectData } from './createActionHashMapAndImportProjectData'
 
-export async function internalInstallProjectAndImport(
+export async function internalImportProject(
+  cellIdString: CellIdString,
   agentAddress: AgentPubKeyB64,
   projectData: ProjectExportDataV1,
   passphrase: string,
   dispatch: any,
-  iInstallProject: typeof installProject,
   iCreateActionHashMapAndImportProjectData: typeof createActionHashMapAndImportProjectData,
   iFinalizeCreateProject: typeof finalizeCreateProject,
   projectsZomeApi: ProjectsZomeApi
 ) {
-  // first step is to install the dna
-  const [cellIdString] = await iInstallProject(passphrase)
 
   // next step is to import the bulk of the data into that project
   const oldToNewAddressMaps = await iCreateActionHashMapAndImportProjectData(
@@ -36,7 +33,9 @@ export async function internalInstallProjectAndImport(
     agentAddress,
     passphrase
   )(projectData.projectMeta)
+  
   delete projectMeta.actionHash
+
   await iFinalizeCreateProject(
     cellIdString,
     projectMeta,
@@ -46,7 +45,8 @@ export async function internalInstallProjectAndImport(
   )
 }
 
-export async function installProjectAndImport(
+export async function importProject(
+  cellIdString: CellIdString,
   agentAddress: AgentPubKeyB64,
   projectData: ProjectExportDataV1,
   passphrase: string,
@@ -54,12 +54,12 @@ export async function installProjectAndImport(
 ) {
   const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-  return internalInstallProjectAndImport(
+  return internalImportProject(
+    cellIdString,
     agentAddress,
     projectData,
     passphrase,
     dispatch,
-    installProject,
     createActionHashMapAndImportProjectData,
     finalizeCreateProject,
     projectsZomeApi

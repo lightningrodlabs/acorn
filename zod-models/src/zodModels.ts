@@ -58,6 +58,8 @@ import UncertainScopeSchema, {
 } from "./scope/uncertain/uncertainScopeSchema";
 import ProjectExportDataV1Schema, {
   ProjectExportDataV1,
+  BackwardsCompatibleProjectExport,
+  BackwardsCompatibleProjectExportSchema,
 } from "./projectExportData/v1/projectExportDataV1Schema";
 
 export {
@@ -87,6 +89,8 @@ export {
   ProjectConnectionsStateSchema,
   ProjectEntryPointsState,
   ProjectEntryPointsStateSchema,
+  BackwardsCompatibleProjectExport,
+  BackwardsCompatibleProjectExportSchema,
   ProjectExportDataV1,
   ProjectExportDataV1Schema,
   ProjectMetaV0WithActionHash,

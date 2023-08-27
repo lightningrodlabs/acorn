@@ -46,7 +46,8 @@ export type DashboardDispatchProps = {
   fetchEntryPointDetails: (cellIdString: CellIdString) => Promise<void>
   joinProject: (passphrase: string) => Promise<CellIdString>
   uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
-  installProjectAndImport: (
+  importProject: (
+    cellIdString: CellIdString,
     agentAddress: AgentPubKeyB64,
     projectData: any,
     passphrase: string
@@ -68,7 +69,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   updateProjectMeta,
   createProject,
   joinProject,
-  installProjectAndImport,
+  importProject,
   setShowInviteMembersModal,
 }) => {
   const { setShowUpdateModal } = useContext(UpdateModalContext)
@@ -113,8 +114,8 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const onJoinProject = (passphrase: string) => joinProject(passphrase)
 
-  const onImportProject = (projectData: any, passphrase: string) =>
-    installProjectAndImport(agentAddress, projectData, passphrase)
+  const onImportProject = (cellIdString: CellIdString, projectData: any, passphrase: string) =>
+    importProject(cellIdString, agentAddress, projectData, passphrase)
 
   const setSortBy = (sortBy) => () => {
     setSelectedSort(sortBy)
@@ -277,6 +278,7 @@ const Dashboard: React.FC<DashboardProps> = ({
       />
       <ImportProjectModal
         onImportProject={onImportProject}
+        uninstallProject={uninstallProject}
         showModal={showImportModal}
         onClose={() => setShowImportModal(false)}
       />
