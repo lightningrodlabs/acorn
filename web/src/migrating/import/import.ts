@@ -72,7 +72,7 @@ export async function internalImportProjectsData(
     const passphrase = projectData.projectMeta.passphrase
     const projectsIds = await iInstallProject(passphrase)
     await iImportProject(
-      projectsIds[0],
+      projectsIds.cellIdString,
       myAgentPubKey,
       projectData,
       passphrase,

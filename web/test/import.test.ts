@@ -135,7 +135,7 @@ beforeEach(() => {
 
   installProject = jest
     .fn()
-    .mockResolvedValue([mockCellIdString, ['abc'], 'testString'])
+    .mockResolvedValue({ cellIdString: mockCellIdString })
 
   finalizeCreateProject = jest.fn()
 
