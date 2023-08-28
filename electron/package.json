@@ -19,7 +19,7 @@
     "productName": "Acorn",
     "afterSign": "./afterSignHook.js",
     "appId": "org.lightningrodlabs.acorn",
-    "copyright": "© 2020-2022 Harris-Braun Enterprises, LLC",
+    "copyright": "© 2020-2023 Harris-Braun Enterprises, LLC",
     "asarUnpack": [
       "binaries/**/*",
       "web/**/*"
