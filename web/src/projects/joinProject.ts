@@ -10,9 +10,7 @@ export async function internalJoinProject(
   dispatch: any,
   iInstallProject: typeof installProject
 ) {
-  const [cellIdString, _cellId, _installedAppId] = await iInstallProject(
-    passphrase
-  )
+  const { cellIdString } = await iInstallProject(passphrase)
   // this will trigger the fetching of project meta
   // checks and other things
   dispatch(joinProjectCellId(cellIdString))
