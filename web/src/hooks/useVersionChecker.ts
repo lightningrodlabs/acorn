@@ -36,7 +36,8 @@ const checkForGithubUpdates = async (
         findGithubAssetForPlatformArch(platform, arch)
       )
       if (!asset) {
-        throw new Error(`could not find asset for platform ${platform} + arch ${arch}`)
+        console.log(`while checking for version updates, an asset could not be found for platform ${platform} + arch ${arch}`)
+        return null
       }
       return {
         name: latestTagName,
