@@ -19,7 +19,6 @@ export default function useFinishMigrationChecker(): {
       } | null = await window
         .require('electron')
         .ipcRenderer.invoke('checkForMigrationData')
-      console.log('migrationData', migrationData)
       if (migrationData) {
         setDataForNeedsMigration(migrationData.data)
         setMigrationDataFileName(migrationData.file)

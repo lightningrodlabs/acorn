@@ -132,7 +132,8 @@ export const cloneProjectMeta = (
   const originalTopPriorityOutcomes = old['topPriorityOutcomes']
   const topPriorityOutcomes: ActionHashB64[] = []
   const unfoundReferences: ActionHashB64[] = []
-  for (let originalOutcomeActionHash of originalTopPriorityOutcomes) {
+  for (let i in originalTopPriorityOutcomes) {
+    const originalOutcomeActionHash = originalTopPriorityOutcomes[i]
     const newOutcomeActionHash = outcomeActionHashMap[originalOutcomeActionHash]
     if (!newOutcomeActionHash) {
       unfoundReferences.push(originalOutcomeActionHash)
@@ -140,7 +141,7 @@ export const cloneProjectMeta = (
       topPriorityOutcomes.push(newOutcomeActionHash)
     }
   }
-
+  
   if (originalTopPriorityOutcomes && unfoundReferences.length > 0) {
     throw new Error(
       `Broken references within projectMeta. Unable to locate the Outcomes referred to by the hashes: ${unfoundReferences}.

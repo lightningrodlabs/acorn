@@ -17,7 +17,7 @@ beforeEach(() => {
   mockAgentPubKey = 'testAgentPubKey'
   mockHappPath = './happ/workdir/projects/projects.happ'
   mockCellIdString =
-    '132,45,36,204,129,221,8,19,206,244,229,30,210,95,157,234,241,47,13,85,105,207,55,138,160,87,204,162,244,122,186,195,125,254,5,185,165,224,66[:cell_id_divider:]132,32,36,97,138,27,24,136,8,80,164,189,194,243,82,224,72,205,215,225,2,27,126,146,190,40,102,187,244,75,191,172,155,196,247,226,220,92,1 '
+    '132,45,36,204,129,221,8,19,206,244,229,30,210,95,157,234,241,47,13,85,105,207,55,138,160,87,204,162,244,122,186,195,125,254,5,185,165,224,66[:cell_id_divider:]132,32,36,97,138,27,24,136,8,80,164,189,194,243,82,224,72,205,215,225,2,27,126,146,190,40,102,187,244,75,191,172,155,196,247,226,220,92,1'
 
   //@ts-ignore
   adminWs = {
@@ -49,12 +49,11 @@ describe('installProject()', () => {
       iGetAgentPubKey
     )
 
-    expect(result[0]).toEqual(
-      // TODO: why is this necessary instead of just mockCellIdString?
-      cellIdToString(cellIdFromString(mockCellIdString))
+    expect(result.cellIdString).toEqual(
+      mockCellIdString
     )
-    expect(result[1]).toEqual(cellIdFromString(mockCellIdString))
-    expect(result[2]).toMatch(regex)
+    expect(result.cellId).toEqual(cellIdFromString(mockCellIdString))
+    expect(result.appId).toMatch(regex)
 
     expect(adminWs.installApp).toHaveBeenCalledTimes(1)
     expect(adminWs.installApp).toHaveBeenNthCalledWith(1, {

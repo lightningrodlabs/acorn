@@ -34,8 +34,7 @@ export async function internalCreateProject(
   iFinalizeCreateProject: typeof finalizeCreateProject,
   projectsZomeApi: ProjectsZomeApi
 ) {
-  const startTime = Date.now()
-  const [cellIdString] = await iInstallProject(passphrase)
+  const { cellIdString } = await iInstallProject(passphrase)
   await iFinalizeCreateProject(
     cellIdString,
     projectMeta,
@@ -43,8 +42,6 @@ export async function internalCreateProject(
     dispatch,
     projectsZomeApi
   )
-  const endTime = Date.now()
-  console.log('duration in MS over createProject ', endTime - startTime)
   return cellIdString
 }
 

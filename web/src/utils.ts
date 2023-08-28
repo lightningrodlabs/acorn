@@ -3,27 +3,13 @@ import BufferAll from 'buffer/'
 const Buffer = BufferAll.Buffer
 
 export function hashToString(hash: HoloHash) {
-  // nodejs
-  if (typeof window === 'undefined') {
-    // @ts-ignore
-    return hash.toString('hex')
-  }
-  // browser
-  else {
-    return hash.toString()
-  }
+  const bytes = Array.from(hash)
+  return bytes.join(',')
 }
 
 export function hashFromString(str: string): HoloHash {
-  // nodejs
-  if (typeof window === 'undefined') {
-    return Buffer.from(str, 'hex')
-  }
-  // browser
-  else {
-    //@ts-ignore
-    return Buffer.from(str.split(','))
-  }
+  const bytes = str.split(',').map(Number)
+  return Buffer.from(bytes)
 }
 
 const CELL_ID_DIVIDER = '[:cell_id_divider:]'

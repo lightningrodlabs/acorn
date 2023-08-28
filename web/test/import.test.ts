@@ -141,7 +141,9 @@ beforeEach(() => {
 
   createActionHashMapAndImportProjectData = jest.fn().mockResolvedValue({
     tagActionHashMap: {},
-    outcomeActionHashMap: {},
+    outcomeActionHashMap: {
+      oldActionHash: 'newActionHash',
+    },
     connectionsActionHashMap: {},
     outcomeMembersActionHashMap: {},
     outcomeCommentActionHashMap: {},
@@ -188,14 +190,18 @@ describe('importProjectsData()', () => {
 
     expect(importProject).toHaveBeenCalledTimes(1)
     expect(importProject).toHaveBeenCalledWith(
+      mockCellIdString,
       'testAgentAddress',
       sampleGoodDataExport.projects[0],
       sampleGoodDataExport.projects[0].projectMeta.passphrase,
       store.dispatch
     )
 
-    expect(installProject).toHaveBeenCalledTimes(1)
-    expect(installProject).toHaveBeenCalledWith(
+    expect(installProject).toHaveBeenCalledTimes(2)
+    expect(installProject).toHaveBeenNthCalledWith(1,
+      sampleGoodDataExport.projects[0].projectMeta.passphrase
+    )
+    expect(installProject).toHaveBeenNthCalledWith(2,
       sampleGoodDataExport.projects[1].projectMeta.passphrase
     )
 
@@ -324,7 +330,7 @@ describe('importProject()', () => {
       passphrase: 'daily plant employee shorten define',
       isImported: false,
       layeringAlgorithm: 'CoffmanGraham',
-      topPriorityOutcomes: [],
+      topPriorityOutcomes: ['newActionHash'],
       isMigrated: null,
     }
     expect(finalizeCreateProject).toHaveBeenCalledWith(

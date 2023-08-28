@@ -39,19 +39,19 @@ export async function internalInstallProject(
   const installedApp = await adminWs.installApp({
     agent_key: agentKey,
     installed_app_id: installedAppId,
-    // what to do about the membrane_proof?
     membrane_proofs: {},
     path: happPath,
     network_seed: uid,
   })
   const cellInfo = Object.values(installedApp.cell_info)[0][0]
-  const cellId =
-    CellType.Provisioned in cellInfo
-      ? cellInfo[CellType.Provisioned].cell_id
-      : null
+  let cellId: CellId
+  if (CellType.Provisioned in cellInfo) {
+    cellId = cellInfo[CellType.Provisioned].cell_id
+  } else {
+    throw new Error('Could not find a provisioned cell in the installed app')
+  }
   const cellIdString = cellIdToString(cellId)
   await adminWs.enableApp({ installed_app_id: installedAppId })
-
   //authorize zome calls for the new cell
   await adminWs.authorizeSigningCredentials(cellId)
   return { cellIdString, cellId, appId: installedAppId }

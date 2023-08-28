@@ -30,7 +30,7 @@ beforeEach(() => {
     },
   }
 
-  iInstallProject = jest.fn().mockResolvedValue([mockCellIdString])
+  iInstallProject = jest.fn().mockResolvedValue({ cellIdString: mockCellIdString })
   iFinalizeCreateProject = jest.fn()
 })
 
