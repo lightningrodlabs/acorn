@@ -5,9 +5,9 @@ const findGithubAssetForPlatformArch = (platform: string, arch: string) => (
 ) => {
   if (platform === 'darwin') {
     if (arch === 'arm64') {
-      return asset.name.includes('mac-arm64')
+      return asset.name.includes('darwin-arm64')
     } else {
-      return asset.name.includes('mac') && !asset.name.includes('arm64')
+      return asset.name.includes('darwin') && !asset.name.includes('arm64')
     }
   } else if (platform === 'win32') {
     return asset.name.includes('.exe')
@@ -36,7 +36,7 @@ const checkForGithubUpdates = async (
         findGithubAssetForPlatformArch(platform, arch)
       )
       if (!asset) {
-        throw new Error('could not find asset for platform/arch')
+        throw new Error(`could not find asset for platform ${platform} + arch ${arch}`)
       }
       return {
         name: latestTagName,
@@ -49,7 +49,7 @@ const checkForGithubUpdates = async (
     }
   } catch (e) {
     console.log(
-      'could not check for updates. likely cause is no internet connectivity',
+      'could not check for updates. likely cause is no internet connectivity. here is the error:',
       e
     )
     return null
