@@ -150,7 +150,7 @@ const App: React.FC<AppProps> = ({
 
   useEffect(() => {
     if (updateVersionInfo) {
-      setShowUpdateModal(true)
+      setShowUpdateBar(true)
     }
   }, [JSON.stringify(updateVersionInfo)])
 
