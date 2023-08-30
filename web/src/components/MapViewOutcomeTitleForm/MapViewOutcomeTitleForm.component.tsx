@@ -121,6 +121,13 @@ const MapViewOutcomeTitleForm: React.FC<MapViewOutcomeTitleFormProps> = ({
   }
 
   const innerCreateOutcomeWithConnection = async () => {
+    // if we are replacing an connection with this one
+    // delete the existing connection first
+    // ASSUMPTION: one parent
+    if (existingParentConnectionAddress) {
+      await deleteConnection(existingParentConnectionAddress)
+    }
+
     // dispatch the action to create an Outcome
     // with the contents from the form
     // inserted into it
