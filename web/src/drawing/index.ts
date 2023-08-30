@@ -62,6 +62,7 @@ export type renderProps = {
   connections: ProjectConnectionsState
   outcomeConnectorFromAddress: ActionHashB64
   outcomeConnectorToAddress: ActionHashB64
+  existingParentConnectionAddress: ActionHashB64
   outcomeConnectorRelation: RelationInput
   outcomeFormIsOpen: boolean
   outcomeFormFromActionHash: ActionHashB64
@@ -114,6 +115,7 @@ function render(
     outcomeConnectorFromAddress,
     outcomeConnectorToAddress,
     outcomeConnectorRelation,
+    existingParentConnectionAddress,
     outcomeFormIsOpen,
     outcomeFormFromActionHash,
     outcomeFormRelation,
@@ -176,13 +178,7 @@ function render(
     // if in the pending re-parenting mode for the child card of an existing connection,
     // temporarily omit/hide the existing connection from view
     // ASSUMPTION: one parent
-    const pendingReParent =
-      (outcomeConnectorFromAddress === connection.childActionHash &&
-        outcomeConnectorRelation === RELATION_AS_CHILD) ||
-      (outcomeFormIsOpen &&
-        outcomeFormFromActionHash === connection.childActionHash &&
-        outcomeFormRelation === RELATION_AS_CHILD)
-    if (pendingReParent) return
+    if (connection.actionHash === existingParentConnectionAddress) return
 
     const childCoords = coordinates[connection.childActionHash]
     const parentCoords = coordinates[connection.parentActionHash]

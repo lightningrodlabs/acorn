@@ -94,18 +94,23 @@ const OutcomeConnector = ({
     !isCollapsed
 
   // shared code for mouse event handlers
-  const connectionConnectMouseDown = (direction, validity) => () => {
+  const connectionConnectMouseDown = (direction, validity) => (event: React.MouseEvent) => {
+    console.log('event', event.shiftKey)
     if (!fromAddress) {
+      // if the action is being performed from
+      // a top port, then there's two options:
+      // 1. if shiftKey is held, then allow multi-parenting
+      // 2. if not, then override any existing connection (re-parent)
+      // if the action is a bottom port, then
+      // definitely don't override any existing connection
+      // ASSUMPTION: one parent
+      const connectionAddressToOverride = (direction === RELATION_AS_CHILD && !event.shiftKey) ? ownExistingParentConnectionAddress : undefined
+      console.log('connectionAddressToOverride', connectionAddressToOverride)
       setOutcomeConnectorFrom(
         address,
         direction,
         validity(address, connections, outcomeActionHashes),
-        // we don't think about overriding the existing
-        // parent when it comes to children, since it can have many
-        // ASSUMPTION: one parent
-        direction === RELATION_AS_CHILD
-          ? ownExistingParentConnectionAddress
-          : undefined
+        connectionAddressToOverride
       )
     }
   }
