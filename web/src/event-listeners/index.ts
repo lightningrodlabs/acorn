@@ -597,6 +597,8 @@ export default function setupEventListeners(
         fromAddress,
         relation,
         toAddress,
+        // ASSUMPTION: one parent
+        existingParentConnectionAddress,
         activeProject,
         store.dispatch
       )
