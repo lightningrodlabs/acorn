@@ -11,7 +11,7 @@ const RELATION_AS_PARENT = RelationInput.ExistingOutcomeAsParent
 const RELATION_AS_CHILD = RelationInput.ExistingOutcomeAsChild
 
 // relation should be RELATION_AS_PARENT or RELATION_AS_CHILD
-//
+// existingParentConnectionAddress is optional
 function setOutcomeConnectorFrom(
   actionHash: ActionHashB64,
   relation: RelationInput,
@@ -24,6 +24,7 @@ function setOutcomeConnectorFrom(
       address: actionHash, // TODO: rename
       relation,
       validToAddresses: validToActionHashes,
+      existingParentConnectionAddress: existingParentConnectionActionHash,
     },
   }
 }

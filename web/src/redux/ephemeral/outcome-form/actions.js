@@ -14,7 +14,8 @@ const UPDATE_CONTENT = 'UPDATE_CONTENT'
 
 // fromAddress and relation are optional
 // but should be passed together
-function openOutcomeForm(x, y, editAddress, fromAddress, relation) {
+// ASSUMPTION: one parent (existingParentConnectionAddress)
+function openOutcomeForm(x, y, editAddress, fromAddress, relation, existingParentConnectionAddress) {
   return {
     type: OPEN_OUTCOME_FORM,
     payload: {
@@ -23,6 +24,8 @@ function openOutcomeForm(x, y, editAddress, fromAddress, relation) {
       y,
       fromAddress,
       relation,
+      // ASSUMPTION: one parent (existingParentConnectionAddress)
+      existingParentConnectionAddress,
     },
   }
 }

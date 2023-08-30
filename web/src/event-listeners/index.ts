@@ -100,12 +100,14 @@ function handleMouseUpForOutcomeForm({
   store,
   fromAddress,
   relation,
+  existingParentConnectionAddress,
 }: {
   state: RootState
   event: MouseEvent
   store: any // redux store, for the sake of dispatch
   fromAddress?: ActionHashB64
   relation?: RelationInput
+  existingParentConnectionAddress?: ActionHashB64
 }) {
   const calcedPoint = coordsPageToCanvas(
     {
@@ -116,7 +118,15 @@ function handleMouseUpForOutcomeForm({
     state.ui.viewport.scale
   )
   store.dispatch(
-    openOutcomeForm(calcedPoint.x, calcedPoint.y, null, fromAddress, relation)
+    // ASSUMPTION: one parent (existingParentConnectionAddress)
+    openOutcomeForm(
+      calcedPoint.x,
+      calcedPoint.y,
+      null,
+      fromAddress,
+      relation,
+      existingParentConnectionAddress
+    )
   )
 }
 
@@ -570,7 +580,13 @@ export default function setupEventListeners(
 
   function canvasMouseup(event: MouseEvent) {
     const state = store.getState()
-    const { fromAddress, relation, toAddress } = state.ui.outcomeConnector
+    // ASSUMPTION: one parent (existingParentConnectionAddress)
+    const {
+      fromAddress,
+      relation,
+      toAddress,
+      existingParentConnectionAddress,
+    } = state.ui.outcomeConnector
     const { activeProject } = state.ui
     if (fromAddress) {
       // covers the case where we are hovered over an Outcome
@@ -593,6 +609,7 @@ export default function setupEventListeners(
           store,
           fromAddress,
           relation,
+          existingParentConnectionAddress,
         })
       }
     }
