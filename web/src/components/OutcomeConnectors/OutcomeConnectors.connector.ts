@@ -14,7 +14,7 @@ function mapStateToProps(state: RootState) {
       viewport: { translate, scale },
       layout: { coordinates, dimensions },
       hover: { hoveredOutcome: hoveredOutcomeAddress },
-      outcomeConnector: { fromAddress, relation, toAddress, validToAddresses },
+      outcomeConnector: { fromAddress, relation, toAddress, validToAddresses, existingParentConnectionAddress },
       selection: { selectedOutcomes },
     },
   } = state
@@ -55,6 +55,7 @@ function mapStateToProps(state: RootState) {
     connections: Object.values(connections), // convert from object to array
     fromAddress,
     relation,
+    existingParentConnectionAddress,
     toAddress,
     connectorAddresses,
     collapsedOutcomes,
