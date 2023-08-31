@@ -95,7 +95,6 @@ const OutcomeConnector = ({
 
   // shared code for mouse event handlers
   const connectionConnectMouseDown = (direction, validity) => (event: React.MouseEvent) => {
-    console.log('event', event.shiftKey)
     if (!fromAddress) {
       // if the action is being performed from
       // a top port, then there's two options:
@@ -105,7 +104,6 @@ const OutcomeConnector = ({
       // definitely don't override any existing connection
       // ASSUMPTION: one parent
       const connectionAddressToOverride = (direction === RELATION_AS_CHILD && !event.shiftKey) ? ownExistingParentConnectionAddress : undefined
-      console.log('connectionAddressToOverride', connectionAddressToOverride)
       setOutcomeConnectorFrom(
         address,
         direction,
