@@ -12,13 +12,8 @@ import drawConnection, {
 import drawOverlay from './drawOverlay'
 import drawSelectBox from './drawSelectBox'
 import drawEntryPoints from './drawEntryPoints'
-import {
-  RELATION_AS_CHILD,
-} from '../redux/ephemeral/outcome-connector/actions'
-import {
-  getOutcomeHeight,
-  getOutcomeWidth,
-} from './dimensions'
+import { RELATION_AS_CHILD } from '../redux/ephemeral/outcome-connector/actions'
+import { getOutcomeHeight, getOutcomeWidth } from './dimensions'
 import {
   ComputedOutcome,
   ComputedSimpleAchievementStatus,
@@ -31,7 +26,10 @@ import { ProjectConnectionsState } from '../redux/persistent/projects/connection
 import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
 import { ProjectOutcomeMembersState } from '../redux/persistent/projects/outcome-members/reducer'
 import { getPlaceholderOutcome } from './drawOutcome/placeholderOutcome'
-import { CoordinatesState, DimensionsState } from '../redux/ephemeral/layout/state-type'
+import {
+  CoordinatesState,
+  DimensionsState,
+} from '../redux/ephemeral/layout/state-type'
 
 function setupCanvas(canvas) {
   // Get the device pixel ratio, falling back to 1.
@@ -62,14 +60,15 @@ export type renderProps = {
   connections: ProjectConnectionsState
   outcomeConnectorFromAddress: ActionHashB64
   outcomeConnectorToAddress: ActionHashB64
-  existingParentConnectionAddress: ActionHashB64
   outcomeConnectorRelation: RelationInput
+  outcomeConnectorExistingParent: ActionHashB64
   outcomeFormIsOpen: boolean
   outcomeFormFromActionHash: ActionHashB64
   outcomeFormContent: string
   outcomeFormRelation: RelationInput
   outcomeFormLeftConnectionX: number
   outcomeFormTopConnectionY: number
+  outcomeFormExistingParent: ActionHashB64
   hoveredConnectionActionHash: ActionHashB64
   selectedConnections: ActionHashB64[]
   selectedOutcomes: ActionHashB64[]
@@ -115,13 +114,14 @@ function render(
     outcomeConnectorFromAddress,
     outcomeConnectorToAddress,
     outcomeConnectorRelation,
-    existingParentConnectionAddress,
+    outcomeConnectorExistingParent,
     outcomeFormIsOpen,
     outcomeFormFromActionHash,
     outcomeFormRelation,
     outcomeFormContent,
     outcomeFormLeftConnectionX,
     outcomeFormTopConnectionY,
+    outcomeFormExistingParent,
     hoveredConnectionActionHash,
     selectedConnections,
     selectedOutcomes,
@@ -178,7 +178,14 @@ function render(
     // if in the pending re-parenting mode for the child card of an existing connection,
     // temporarily omit/hide the existing connection from view
     // ASSUMPTION: one parent
-    if (connection.actionHash === existingParentConnectionAddress) return
+    if (
+      connection.actionHash === outcomeFormExistingParent ||
+      connection.actionHash === outcomeConnectorExistingParent
+    ) {
+      // do not draw, because we are pre-representing the
+      // fact that this connection will be deleted/replaced
+      return
+    }
 
     const childCoords = coordinates[connection.childActionHash]
     const parentCoords = coordinates[connection.parentActionHash]
