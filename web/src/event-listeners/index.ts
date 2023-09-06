@@ -172,7 +172,7 @@ export default function setupEventListeners(
     store.dispatch(animatePanAndZoom(actionHash, false))
   }
 
-  async function bodyKeydown(event) {
+  async function bodyKeydown(event: React.KeyboardEvent) {
     const appWebsocket = await getAppWs()
     const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
     let state: RootState = store.getState()
@@ -252,7 +252,13 @@ export default function setupEventListeners(
             state,
             RightOrLeft.Left
           )
-          if (targetActionHash) {
+          if (event.shiftKey && targetActionHash) {
+            // only do this if selected outcome has a left sibling
+            // move the selected outcome to the left side of the left sibling
+            // (swap positions with the left sibling)
+            // alert('hi left!')
+          }
+          else if (targetActionHash) {
             // select and pan and zoom to
             // the parent
             store.dispatch(animatePanAndZoom(targetActionHash, false))
@@ -269,6 +275,12 @@ export default function setupEventListeners(
             state,
             RightOrLeft.Right
           )
+          if (event.shiftKey && targetActionHash) {
+            // only do this if selected outcome has a right sibling
+            // move the selected outcome to the right side of the right sibling
+            // (swap positions with the right sibling)
+            // alert('hi right!')
+          }
           if (targetActionHash) {
             // select and pan and zoom to
             // the parent

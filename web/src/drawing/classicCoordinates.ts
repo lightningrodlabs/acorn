@@ -47,6 +47,10 @@ function layoutForTree(
           numDescendants += descendantCount + 1
         }
       })
+      // node.children.sort((a, b) => {
+      //   console.log('a', a)
+      //   return a.content < b.content ? -1 : 1
+      // })
     }
 
     const width = allOutcomeDimensions[outcome.actionHash].width
@@ -61,6 +65,7 @@ function layoutForTree(
       VERTICAL_SPACING
 
     node.actionHash = outcome.actionHash
+    // node.content = outcome.content
     node.size = [width, height]
 
     return numDescendants
