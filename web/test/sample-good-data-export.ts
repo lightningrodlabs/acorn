@@ -1,6 +1,6 @@
 import {
   AllProjectsDataExport,
-  LayeringAlgorithm,
+  LayoutAlgorithm,
   ProjectExportDataV1,
 } from 'zod-models'
 import testComments from '../src/stories/testData/testComments'
@@ -17,7 +17,7 @@ const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
     image: '',
     passphrase: 'daily plant employee shorten define',
     isImported: false,
-    layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
+    layoutAlgorithm: LayoutAlgorithm.CoffmanGraham,
     topPriorityOutcomes: ['oldActionHash'],
     isMigrated: null,
     actionHash: 'uhCkkBzwPwj4l3XGeXJTt9mxL88LOKOm_fvh0kw6PSf5jnP_RUG14',

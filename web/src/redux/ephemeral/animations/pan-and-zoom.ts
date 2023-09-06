@@ -45,8 +45,8 @@ export default function panZoomToFrame(
   const hiddenAchievedOutcomes = state.ui.mapViewSettings.hiddenAchievedOutcomes
   const hiddenSmalls = hiddenSmallOutcomes.includes(activeProject)
   const hiddenAchieved = hiddenAchievedOutcomes.includes(activeProject)
-  const layeringAlgorithm =
-    state.projects.projectMeta[activeProject].layeringAlgorithm
+  const layoutAlgorithm =
+    state.projects.projectMeta[activeProject].layoutAlgorithm
 
   const collapsedOutcomes =
     state.ui.collapsedOutcomes.collapsedOutcomes[activeProject] || {}
@@ -55,7 +55,7 @@ export default function panZoomToFrame(
   // use the target zoomLevel
   const newLayout = layoutFormula(
     graph,
-    layeringAlgorithm,
+    layoutAlgorithm,
     zoomLevel,
     projectTags,
     collapsedOutcomes,

@@ -11,7 +11,7 @@ import { Tag } from '../../types/tag'
 import { Outcome } from '../../types/outcome'
 import { Connection } from '../../types/connection'
 import { ProjectMeta } from '../../types'
-import { LayeringAlgorithm, ProjectMetaWithActionHash } from 'zod-models'
+import { LayoutAlgorithm, ProjectMetaWithActionHash } from 'zod-models'
 
 export type ActionHashMap = { [oldActionHash: ActionHashB64]: ActionHashB64 }
 
@@ -141,7 +141,7 @@ export const cloneProjectMeta = (
       topPriorityOutcomes.push(newOutcomeActionHash)
     }
   }
-  
+
   if (originalTopPriorityOutcomes && unfoundReferences.length > 0) {
     throw new Error(
       `Broken references within projectMeta. Unable to locate the Outcomes referred to by the hashes: ${unfoundReferences}.
@@ -153,10 +153,10 @@ export const cloneProjectMeta = (
   return {
     ...old,
     topPriorityOutcomes,
-    // add a fallback layering algorithm in case the project has none
-    layeringAlgorithm: old['layeringAlgorithm']
-      ? old['layeringAlgorithm']
-      : LayeringAlgorithm.LongestPath,
+    // add a fallback layout algorithm in case the project has none
+    layoutAlgorithm: old['layoutAlgorithm']
+      ? old['layoutAlgorithm']
+      : LayoutAlgorithm.LongestPath,
     createdAt: Date.now(),
     creatorAgentPubKey: agentAddress,
     passphrase,

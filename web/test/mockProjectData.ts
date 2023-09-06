@@ -1,5 +1,5 @@
 import { ProjectExportDataV1 } from 'zod-models'
-import { LayeringAlgorithm } from '../src/types'
+import { LayoutAlgorithm } from '../src/types'
 
 const mockProjectData: ProjectExportDataV1 = {
   projectMeta: {
@@ -9,7 +9,7 @@ const mockProjectData: ProjectExportDataV1 = {
     image: 'testProjectImage',
     passphrase: 'testPassphrase',
     isImported: false,
-    layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
+    layoutAlgorithm: LayoutAlgorithm.CoffmanGraham,
     topPriorityOutcomes: [],
     isMigrated: null,
     actionHash: 'testProjectActionHash',

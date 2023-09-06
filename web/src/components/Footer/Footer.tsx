@@ -15,24 +15,24 @@ export type FooterProps = {
   agentAddress: AgentPubKeyB64
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
-  selectedLayeringAlgo: string
+  selectedLayoutAlgorithm: string
   showSmallOutcomes: (projectCellId: CellIdString) => void
   hideSmallOutcomes: (projectCellId: CellIdString) => void
   showAchievedOutcomes: (projectCellId: CellIdString) => void
   hideAchievedOutcomes: (projectCellId: CellIdString) => void
-  setSelectedLayeringAlgo: (layeringAlgo: string) => void
+  setSelectedLayoutAlgorithm: (layoutAlgorithm: string) => void
 }
 
 const Footer: React.FC<FooterProps> = ({
   agentAddress,
   hiddenAchievedOutcomes,
   hiddenSmallOutcomes,
-  selectedLayeringAlgo,
+  selectedLayoutAlgorithm,
   showSmallOutcomes,
   hideSmallOutcomes,
   showAchievedOutcomes,
   hideAchievedOutcomes,
-  setSelectedLayeringAlgo,
+  setSelectedLayoutAlgorithm,
 }) => {
   const projectPage = useRouteMatch<{ projectId: CellIdString }>(
     '/project/:projectId'
@@ -140,8 +140,8 @@ const Footer: React.FC<FooterProps> = ({
                 showSmallOutcomes={showSmallOutcomesValue}
                 onChangeShowAchievedOutcomes={onChangeShowAchievedOutcomes}
                 onChangeShowSmallOutcomes={onChangeShowSmallOutcomes}
-                selectedLayeringAlgo={selectedLayeringAlgo}
-                onSelectLayeringAlgo={setSelectedLayeringAlgo}
+                selectedLayoutAlgorithm={selectedLayoutAlgorithm}
+                onSelectLayoutAlgorithm={setSelectedLayoutAlgorithm}
               />
               {/* Map Viewing Options Button */}
               <div

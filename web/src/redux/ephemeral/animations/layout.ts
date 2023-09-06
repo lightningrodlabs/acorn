@@ -7,7 +7,7 @@ import {
   LAYOUT_ANIMATION_ALGO_MS,
   LAYOUT_ANIMATION_TYPICAL_MS,
 } from '../../../constants'
-import { ComputedOutcome, LayeringAlgorithm } from '../../../types'
+import { ComputedOutcome, LayoutAlgorithm } from '../../../types'
 import { getGraphForState } from './getGraphForState'
 import { coordsCanvasToPage } from '../../../drawing/coordinateSystems'
 import { ActionHashB64 } from '../../../types/shared'
@@ -74,13 +74,13 @@ export default function performLayoutAnimation(
   const hiddenAchieved = hiddenAchievedOutcomes.includes(projectId)
 
   const projectMeta = nextState.projects.projectMeta
-  const layeringAlgorithm =
-    projectMeta[projectId]?.layeringAlgorithm || LayeringAlgorithm.LongestPath
+  const layoutAlgorithm =
+    projectMeta[projectId]?.layoutAlgorithm || LayoutAlgorithm.LongestPath
   // this is our final destination layout
   // that we'll be animating to
   const newLayout = layoutFormula(
     graph,
-    layeringAlgorithm,
+    layoutAlgorithm,
     zoomLevel,
     projectTags,
     collapsedOutcomes,

@@ -1,5 +1,5 @@
 import { WireRecord } from '../src/api/hdkCrud'
-import { LayeringAlgorithm, ProjectMeta } from '../src/types/projectMeta'
+import { LayoutAlgorithm, ProjectMeta } from '../src/types/projectMeta'
 
 const projectMeta: ProjectMeta = {
   creatorAgentPubKey: 'testAgentPubKey',
@@ -8,7 +8,7 @@ const projectMeta: ProjectMeta = {
   image: null,
   passphrase: 'testPassphrase',
   isImported: false,
-  layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
+  layoutAlgorithm: LayoutAlgorithm.CoffmanGraham,
   topPriorityOutcomes: [],
   isMigrated: null,
 }

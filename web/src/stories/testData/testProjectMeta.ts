@@ -1,4 +1,4 @@
-import { LayeringAlgorithm, ProjectMeta } from '../../types'
+import { LayoutAlgorithm, ProjectMeta } from '../../types'
 import { WithActionHash } from '../../types/shared'
 
 const testProject: WithActionHash<ProjectMeta> = {
@@ -8,7 +8,7 @@ const testProject: WithActionHash<ProjectMeta> = {
   image: null,
   passphrase: 'testPassphrase',
   isImported: false,
-  layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
+  layoutAlgorithm: LayoutAlgorithm.CoffmanGraham,
   topPriorityOutcomes: [],
   isMigrated: null,
   actionHash: 'testProjectActionHash',
