@@ -12,7 +12,7 @@ import { WithActionHash } from '../types/shared'
 
 const fl = flextree.flextree
 
-type WithConnection = { connection?: WithActionHash<Connection> }
+type ContentAndConnection = { content: string, connection: WithActionHash<Connection> }
 
 function layoutForTree(
   tree: ComputedOutcome,
@@ -50,9 +50,15 @@ function layoutForTree(
           numDescendants += descendantCount + 1
         }
       })
-      node.children.sort((a: WithConnection, b: WithConnection) => {
-        console.log('a', a)
-        return a.connection.siblingOrder < b.connection.siblingOrder ? -1 : 1
+      // important: sort the children by
+      // Connection 'siblingOrder' number
+      node.children.sort((a: ContentAndConnection, b: ContentAndConnection) => {
+        // if same siblingOrder, sort by content
+        if (a.connection.siblingOrder === b.connection.siblingOrder) {
+          return a.content < b.content ? -1 : 1
+        } else {
+          return a.connection.siblingOrder < b.connection.siblingOrder ? -1 : 1
+        }
       })
     }
 
@@ -69,6 +75,7 @@ function layoutForTree(
 
     node.actionHash = outcome.actionHash
     node.connection = outcome.connection
+    node.content = outcome.content
     node.size = [width, height]
 
     return numDescendants

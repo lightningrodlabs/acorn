@@ -3,15 +3,17 @@ import { createConnection, deleteConnection } from '../../persistent/projects/co
 import ProjectsZomeApi from '../../../api/projectsApi'
 import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
+import { ActionHashB64 } from '@holochain/client'
+import { RelationInput } from '../../../types'
+import { CellIdString } from '../../../types/shared'
 
 export default async function handleConnectionConnectMouseUp(
-  fromAddress,
-  relation,
-  toAddress,
-  // ASSUMPTION: one parent
-  existingParentConnectionAddress,
-  activeProject,
-  dispatch
+  fromAddress: ActionHashB64,
+  relation: RelationInput,
+  toAddress: ActionHashB64,
+  existingParentConnectionAddress: ActionHashB64,
+  activeProject: CellIdString,
+  dispatch: any
 ) {
   const cellId = cellIdFromString(activeProject)
   const appWebsocket = await getAppWs()
@@ -33,6 +35,7 @@ export default async function handleConnectionConnectMouseUp(
     const createdConnection = await projectsZomeApi.connection.create(cellId, {
         parentActionHash: fromAsParent ? fromAddress : toAddress,
         childActionHash: fromAsParent ? toAddress : fromAddress,
+        siblingOrder: 0,
         randomizer: Date.now(),
         isImported: false
       })

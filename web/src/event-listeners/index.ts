@@ -280,6 +280,7 @@ export default function setupEventListeners(
             // move the selected outcome to the right side of the right sibling
             // (swap positions with the right sibling)
             // alert('hi right!')
+            
           }
           if (targetActionHash) {
             // select and pan and zoom to
