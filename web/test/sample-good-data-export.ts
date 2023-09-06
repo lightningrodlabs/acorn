@@ -1,7 +1,7 @@
 import {
   AllProjectsDataExport,
   LayeringAlgorithm,
-  ProjectExportDataV1,
+  ProjectExportData,
 } from 'zod-models'
 import testComments from '../src/stories/testData/testComments'
 import testEntryPoint from '../src/stories/testData/testEntryPoint'
@@ -9,7 +9,7 @@ import testOutcomeMember from '../src/stories/testData/testOutcomeMember'
 import testProfile from '../src/stories/testData/testProfile'
 import testTags from '../src/stories/testData/testTags'
 
-const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
+const sampleGoodUnmigratedProjectData: ProjectExportData = {
   projectMeta: {
     creatorAgentPubKey: 'uhCAkXUcVBUI6zCh1nAPrFx-PpdM5mY7Lc3H7dWNskcQY3SLZF06t',
     createdAt: 1689176310504,
@@ -149,6 +149,7 @@ const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
       parentActionHash: 'uhCkkOWAmlIrMCcxwfvGWsFry55sdG-_EU7o0SZ6I9W0ZoJ-UKnS2',
       childActionHash: 'uhCkk8QU4T_U2ANFLV3fhKinC-JKrl80qfeThGR2SUjCHIl6ihQjS',
       randomizer: 1689176325335,
+      siblingOrder: 0,
       isImported: false,
       actionHash: 'uhCkklwoHZso5wivG-meTymzw7gt0aj6plv-p7Ddu7RrlJ9ogt4om',
     },
@@ -156,6 +157,7 @@ const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
       parentActionHash: 'uhCkkOWAmlIrMCcxwfvGWsFry55sdG-_EU7o0SZ6I9W0ZoJ-UKnS2',
       childActionHash: 'uhCkkaL_X1Fjk8sSHElhijhl_vzcglx0DqlE0tGxzeNkP5-IiQl0p',
       randomizer: 1689176329302,
+      siblingOrder: 0,
       isImported: false,
       actionHash: 'uhCkkH6pM9EPPn6P65AcA2hAVbgSoc1LRN-5J9dtkgeVAZW-05jb4',
     },
@@ -163,6 +165,7 @@ const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
       parentActionHash: 'uhCkkA9Ui-ZHqkg7Yi2lFFeDW0Q7WOOPC6uzzTtWAeqnTz315o-w6',
       childActionHash: 'uhCkkOWAmlIrMCcxwfvGWsFry55sdG-_EU7o0SZ6I9W0ZoJ-UKnS2',
       randomizer: 1689176486919,
+      siblingOrder: 0,
       isImported: false,
       actionHash: 'uhCkkyBZLpeLHHO0Rm_f3F1c1IRiq746hW_k4g6TttWw7b5v0Np14',
     },
@@ -170,6 +173,7 @@ const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
       parentActionHash: 'uhCkkkyAESJ5aouAXB9oHDmI3CZvN5nyDLcmbKTIZlAO9CGFy4eNK',
       childActionHash: 'uhCkk8QU4T_U2ANFLV3fhKinC-JKrl80qfeThGR2SUjCHIl6ihQjS',
       randomizer: 1689176556919,
+      siblingOrder: 0,
       isImported: false,
       actionHash: 'uhCkkqYr6rPBeYgZf19XW1BLpjiZFVd4CNALem9xVZoOjCNAvhmlZ',
     },
@@ -177,6 +181,7 @@ const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
       parentActionHash: 'uhCkkOWAmlIrMCcxwfvGWsFry55sdG-_EU7o0SZ6I9W0ZoJ-UKnS2',
       childActionHash: 'uhCkkqZwts-nOmbF3qh7CZbV3N5a837hI6iABYKDLhDzJHuF83y4B',
       randomizer: 1689176606718,
+      siblingOrder: 0,
       isImported: false,
       actionHash: 'uhCkkWwn0Eug52wTO7dDrWyhnQgaKxiV1ki8NhpxrXzM8aP4813AF',
     },
@@ -207,7 +212,7 @@ const sampleGoodUnmigratedProjectData: ProjectExportDataV1 = {
   },
 }
 
-const sampleGoodMigratedProjectData: ProjectExportDataV1 = {
+const sampleGoodMigratedProjectData: ProjectExportData = {
   ...sampleGoodUnmigratedProjectData,
   projectMeta: {
     ...sampleGoodUnmigratedProjectData.projectMeta,

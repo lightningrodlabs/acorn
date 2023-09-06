@@ -147,7 +147,7 @@ const MapViewOutcomeTitleForm: React.FC<MapViewOutcomeTitleFormProps> = ({
         isImported: false,
         githubLink: '',
       },
-      fromAddress ? { outcomeActionHash: fromAddress, relation } : null
+      fromAddress ? { outcomeActionHash: fromAddress, relation, siblingOrder: 0 } : null
     )
   }
 

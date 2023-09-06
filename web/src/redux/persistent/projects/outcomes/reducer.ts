@@ -23,9 +23,9 @@ import {
   DeleteOutcomeFullyResponse,
   EntryPointDetails,
   Outcome,
-  OutcomeSchema,
 } from '../../../../types'
 import { WireRecord } from '../../../../api/hdkCrud'
+import { OutcomeSchema } from 'zod-models'
 
 export const ProjectOutcomesStateSchema = z.record(
   z

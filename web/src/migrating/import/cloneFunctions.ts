@@ -21,9 +21,9 @@ export type ActionHashMap = { [oldActionHash: ActionHashB64]: ActionHashB64 }
   that should be written again to the DHT,
   and the new actionHashes for the data (mapped)
 */
-export async function cloneDataSet<T>(
-  dataSet: { [actionHash: string]: WithActionHash<T> },
-  cloneFn: (old: WithActionHash<T>) => WithActionHash<T>,
+export async function cloneDataSet<Old extends { actionHash: ActionHashB64 }, T>(
+  dataSet: { [actionHash: string]: Old },
+  cloneFn: (old: Old) => WithActionHash<T>,
   zomeCallFn: (cellId: CellId, obj: T) => Promise<WireRecord<T>>,
   actionCreatorFn: (
     cellIdString: CellIdString,

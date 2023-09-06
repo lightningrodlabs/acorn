@@ -2,7 +2,7 @@ import {z} from 'zod'
 import ScopeSchema from '../scope/scopeSchema'
 import WithActionHashSchema from '../withActionHashSchema'
 
-const OutcomeSchema = z.object({
+export const OutcomeSchema = z.object({
   content: z.string(),
   creatorAgentPubKey: z.string(),
   editorAgentPubKey: z.string().nullable(),
@@ -22,4 +22,3 @@ export type ProjectOutcomesState = z.infer<typeof ProjectOutcomesStateSchema>
 
 
 export type Outcome = z.infer<typeof OutcomeSchema>
-export default OutcomeSchema

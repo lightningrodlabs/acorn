@@ -172,7 +172,7 @@ export default function setupEventListeners(
     store.dispatch(animatePanAndZoom(actionHash, false))
   }
 
-  async function bodyKeydown(event: React.KeyboardEvent) {
+  async function bodyKeydown(event: KeyboardEvent) {
     const appWebsocket = await getAppWs()
     const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
     let state: RootState = store.getState()

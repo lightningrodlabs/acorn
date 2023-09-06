@@ -1,7 +1,7 @@
-import { ProjectExportDataV1 } from 'zod-models'
+import { ProjectExportData } from 'zod-models'
 import { LayeringAlgorithm } from '../src/types'
 
-const mockProjectData: ProjectExportDataV1 = {
+const mockProjectData: ProjectExportData = {
   projectMeta: {
     creatorAgentPubKey: 'testAgentPubKey',
     createdAt: 1234,

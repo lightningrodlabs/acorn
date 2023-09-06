@@ -1,4 +1,4 @@
-import { ProjectExportDataV1 } from 'zod-models'
+import { BackwardsCompatibleConnection, BackwardsCompatibleProjectExport } from 'zod-models'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { createConnection } from '../../redux/persistent/projects/connections/actions'
@@ -15,7 +15,7 @@ import {
   OutcomeComment,
   EntryPoint,
 } from '../../types'
-import { CellIdString } from '../../types/shared'
+import { CellIdString, WithActionHash } from '../../types/shared'
 import {
   cloneDataSet,
   cloneTag,
@@ -26,7 +26,7 @@ import {
 import { createProjectsZomeApi } from './zomeApiCreators'
 
 export async function internalCreateActionHashMapAndImportProjectData(
-  projectData: ProjectExportDataV1,
+  projectData: BackwardsCompatibleProjectExport,
   projectsCellIdString: CellIdString,
   dispatch: any,
   projectsZomeApi: ProjectsZomeApi,
@@ -42,7 +42,7 @@ export async function internalCreateActionHashMapAndImportProjectData(
 
   // TAGS
   // do tags because outcomes reference them
-  const tagActionHashMap = await iCloneDataSet<Tag>(
+  const tagActionHashMap = await iCloneDataSet<WithActionHash<Tag>, Tag>(
     projectData.tags,
     cloneTag,
     projectsZomeApi.tag.create,
@@ -52,7 +52,7 @@ export async function internalCreateActionHashMapAndImportProjectData(
   )
 
   // do outcomes because everything else references them
-  const outcomeActionHashMap = await iCloneDataSet<Outcome>(
+  const outcomeActionHashMap = await iCloneDataSet<WithActionHash<Outcome>, Outcome>(
     projectData.outcomes,
     // closure in the depended upon hashmap
     cloneOutcome(tagActionHashMap),
@@ -62,7 +62,7 @@ export async function internalCreateActionHashMapAndImportProjectData(
     projectsCellIdString
   )
 
-  const connectionsActionHashMap = await iCloneDataSet<Connection>(
+  const connectionsActionHashMap = await iCloneDataSet<BackwardsCompatibleConnection, Connection>(
     projectData.connections,
     // closure in the depended upon
     cloneConnection(outcomeActionHashMap),
@@ -72,7 +72,7 @@ export async function internalCreateActionHashMapAndImportProjectData(
     projectsCellIdString
   )
 
-  const outcomeMembersActionHashMap = await iCloneDataSet<OutcomeMember>(
+  const outcomeMembersActionHashMap = await iCloneDataSet<WithActionHash<OutcomeMember>, OutcomeMember>(
     projectData.outcomeMembers,
     // closure in the depended upon
     cloneData<OutcomeMember>(outcomeActionHashMap),
@@ -82,7 +82,7 @@ export async function internalCreateActionHashMapAndImportProjectData(
     projectsCellIdString
   )
 
-  const outcomeCommentActionHashMap = await iCloneDataSet<OutcomeComment>(
+  const outcomeCommentActionHashMap = await iCloneDataSet<WithActionHash<OutcomeComment>, OutcomeComment>(
     projectData.outcomeComments,
     // closure in the depended upon
     cloneData<OutcomeComment>(outcomeActionHashMap),
@@ -92,7 +92,7 @@ export async function internalCreateActionHashMapAndImportProjectData(
     projectsCellIdString
   )
 
-  const entryPointActionHashMap = await iCloneDataSet<EntryPoint>(
+  const entryPointActionHashMap = await iCloneDataSet<WithActionHash<EntryPoint>, EntryPoint>(
     projectData.entryPoints,
     // closure in the depended upon
     cloneData<EntryPoint>(outcomeActionHashMap),
@@ -114,7 +114,7 @@ export async function internalCreateActionHashMapAndImportProjectData(
 }
 
 export async function createActionHashMapAndImportProjectData(
-  projectData: ProjectExportDataV1,
+  projectData: BackwardsCompatibleProjectExport,
   projectsCellIdString: CellIdString,
   dispatch: any
 ) {

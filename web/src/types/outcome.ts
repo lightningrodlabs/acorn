@@ -2,30 +2,18 @@ import { OutcomeComment } from './outcomeComment'
 import { OutcomeVote } from './outcomeVote'
 import { Profile } from './profile'
 import { WithActionHash } from './shared'
-import {
-  SmallTask as _SmallTask,
-  SmallScope as _SmallScope,
-  TimeFrame as _TimeFrame,
-  SmallsEstimate as _SmallsEstimate,
-  UncertainScope as _UncertainScope,
-  Scope as _Scope,
-  Outcome as _Outcome,
-  AchievementStatus as _AchievementStatus,
-  OutcomeSchema as _OutcomeSchema,
+import { Outcome } from 'zod-models'
+
+export type {
+  Outcome,
+  SmallTask,
+  SmallScope,
+  TimeFrame,
+  SmallsEstimate,
+  UncertainScope,
+  Scope,
+  AchievementStatus,
 } from 'zod-models'
-
-export type AchievementStatus = _AchievementStatus
-
-export type SmallTask = _SmallTask
-export type SmallScope = _SmallScope
-export type SmallsEstimate = _SmallsEstimate
-export type ScopeSmallVariant = SmallScope
-
-export type TimeFrame = _TimeFrame
-export type UncertainScope = _UncertainScope
-export type ScopeUncertainVariant = UncertainScope
-
-export type Scope = _Scope
 
 // TODO: convert to zod schema
 export type ComputedAchievementStatus = {
@@ -37,8 +25,6 @@ export type ComputedAchievementStatus = {
   simple: ComputedSimpleAchievementStatus
 }
 
-export type Outcome = _Outcome
-export const OutcomeSchema = _OutcomeSchema
 /*
 Uncertain
 {

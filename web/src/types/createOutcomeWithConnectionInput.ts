@@ -9,6 +9,7 @@ export interface CreateOutcomeWithConnectionInput {
 export interface LinkedOutcomeDetails {
   outcomeActionHash: ActionHashB64
   relation: RelationInput
+  siblingOrder: number
 }
 
 export enum RelationInput {

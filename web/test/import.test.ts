@@ -425,7 +425,7 @@ describe('createActionHashMapAndImportProjectData()', () => {
 describe('cloneDataSet()', () => {
   it('returns a new actionHashMap with old actionHash as the key and new one as the value', async () => {
     const projectData = sampleGoodDataExport.projects[0]
-    const result = await iCloneDataSet<Tag>(
+    const result = await iCloneDataSet<WithActionHash<Tag>, Tag>(
       projectData.tags,
       cloneTag,
       projectsZomeApi.tag.create,
