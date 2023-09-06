@@ -1,6 +1,6 @@
 import {z} from 'zod'
 import ProfileSchema from '../profile/profileSchema'
-import ProjectExportDataV1Schema from '../projectExportData/v1/projectExportDataV1Schema'
+import ProjectExportDataV1Schema from '../projectExportData/projectExportDataSchema'
 
 export const BackwardsCompatibleAllProjectsExportSchema = z.object({
   myProfile: ProfileSchema,

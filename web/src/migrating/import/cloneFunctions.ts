@@ -11,7 +11,7 @@ import { Tag } from '../../types/tag'
 import { Outcome } from '../../types/outcome'
 import { Connection } from '../../types/connection'
 import { ProjectMeta } from '../../types'
-import { LayeringAlgorithm, ProjectMetaWithActionHash } from 'zod-models'
+import { BackwardsCompatibleProjectMeta, LayeringAlgorithm, ProjectMetaWithActionHash } from 'zod-models'
 
 export type ActionHashMap = { [oldActionHash: ActionHashB64]: ActionHashB64 }
 
@@ -128,7 +128,7 @@ export const cloneProjectMeta = (
   outcomeActionHashMap: ActionHashMap,
   agentAddress: AgentPubKeyB64,
   passphrase: string
-) => (old: ProjectMetaWithActionHash): WithActionHash<ProjectMeta> => {
+) => (old: BackwardsCompatibleProjectMeta): WithActionHash<ProjectMeta> => {
   const originalTopPriorityOutcomes = old['topPriorityOutcomes']
   const topPriorityOutcomes: ActionHashB64[] = []
   const unfoundReferences: ActionHashB64[] = []
