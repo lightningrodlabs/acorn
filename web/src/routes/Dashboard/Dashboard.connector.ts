@@ -20,7 +20,7 @@ import Dashboard, {
   DashboardDispatchProps,
   DashboardStateProps,
 } from './Dashboard.component'
-import { LayoutAlgorithm, ProjectMeta } from '../../types'
+import { LayeringAlgorithm, ProjectMeta } from '../../types'
 import selectProjectMembersPresent from '../../redux/persistent/projects/realtime-info-signal/select'
 import { uninstallProject } from '../../projects/uninstallProject'
 import { createProject } from '../../projects/createProject'
@@ -116,7 +116,7 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
         creatorAgentPubKey: agentAddress,
         createdAt: Date.now(),
         isImported: false,
-        layoutAlgorithm: LayoutAlgorithm.Classic, // Make the default Layout Algorithm 'Classic'
+        layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
         topPriorityOutcomes: [],
         isMigrated: null,
       }

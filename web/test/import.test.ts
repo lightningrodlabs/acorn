@@ -329,7 +329,7 @@ describe('importProject()', () => {
       image: '',
       passphrase: 'daily plant employee shorten define',
       isImported: false,
-      layoutAlgorithm: 'CoffmanGraham',
+      layeringAlgorithm: 'CoffmanGraham',
       topPriorityOutcomes: ['newActionHash'],
       isMigrated: null,
     }
@@ -579,17 +579,17 @@ describe('cloneProjectMeta()', () => {
     )(oldData)
 
     expect(result.topPriorityOutcomes).toEqual(['newActionHash'])
-    expect(result.layoutAlgorithm).toEqual(oldData['layoutAlgorithm'])
+    expect(result.layeringAlgorithm).toEqual(oldData['layeringAlgorithm'])
     expect(result.createdAt).not.toEqual(oldData.createdAt)
   })
 
-  it('when topPriorityOutcomes and layoutAlgorithm are missing, it adds default values', () => {
+  it('when topPriorityOutcomes and layeringAlgorithm are missing, it adds default values', () => {
     const oldData = { ...sampleGoodDataExport.projects[0].projectMeta }
     const outcomeActionHashMap: ActionHashMap = {
       oldActionHash: 'newActionHash',
     }
     delete oldData['topPriorityOutcomes']
-    delete oldData['layoutAlgorithm']
+    delete oldData['layeringAlgorithm']
 
     const result = iCloneProjectMeta(
       outcomeActionHashMap,
@@ -598,6 +598,6 @@ describe('cloneProjectMeta()', () => {
     )(oldData)
 
     expect(result.topPriorityOutcomes).toEqual([])
-    expect(result.layoutAlgorithm).toEqual('LongestPath')
+    expect(result.layeringAlgorithm).toEqual('LongestPath')
   })
 })

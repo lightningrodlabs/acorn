@@ -9,7 +9,7 @@ import Typography from '../Typography/Typography'
 // @ts-ignore
 import triangleBottomWhite from '../../images/triangle-bottom-white.svg'
 import SelectDropdown from '../SelectDropdown/SelectDropdown'
-import { LayoutAlgorithm } from '../../types'
+import { LayeringAlgorithm } from '../../types'
 import FilterDropdownSelect from '../FilterDropdownSelect/FilterDropdownSelect'
 
 export type MapViewingOptionsProps = {
@@ -17,10 +17,10 @@ export type MapViewingOptionsProps = {
   isOpen: boolean
   showAchievedOutcomes: boolean
   showSmallOutcomes: boolean
-  selectedLayoutAlgorithm: string
+  selectedLayeringAlgo: string
   onChangeShowAchievedOutcomes: (newState: boolean) => void
   onChangeShowSmallOutcomes: (newState: boolean) => void
-  onSelectLayoutAlgorithm: (newState: string) => void
+  onSelectLayeringAlgo: (newState: string) => void
 }
 
 const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
@@ -30,8 +30,8 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
   onChangeShowAchievedOutcomes,
   showSmallOutcomes,
   onChangeShowSmallOutcomes,
-  selectedLayoutAlgorithm,
-  onSelectLayoutAlgorithm,
+  selectedLayeringAlgo,
+  onSelectLayeringAlgo,
 }) => {
   return (
     <CSSTransition
@@ -42,26 +42,26 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
     >
       <div className="map-viewing-options-menu">
         <div className="map-viewing-option-heading">
-          <Typography style="h8">Layout Algorithm</Typography>
+          <Typography style="h8">Layering Algorithm</Typography>
         </div>
         <FilterDropdownSelect
           size={'small'}
-          selectedOptionId={selectedLayoutAlgorithm}
+          selectedOptionId={selectedLayeringAlgo}
           options={[
             {
-              id: LayoutAlgorithm.Classic,
+              id: LayeringAlgorithm.Classic,
               text: 'Classic',
             },
             {
-              id: LayoutAlgorithm.LongestPath,
+              id: LayeringAlgorithm.LongestPath,
               text: 'Minimum Height',
             },
             {
-              id: LayoutAlgorithm.CoffmanGraham,
+              id: LayeringAlgorithm.CoffmanGraham,
               text: 'Minimum Width',
             },
           ]}
-          onSelect={onSelectLayoutAlgorithm}
+          onSelect={onSelectLayeringAlgo}
         />
 
         <div className="map-viewing-option-heading">
@@ -85,7 +85,7 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
           isChecked={showSmallOutcomes}
           onChange={onChangeShowSmallOutcomes}
           icon={<Icon name="leaf.svg" className="not-hoverable" />}
-          text="Show All Smalls"
+          text="Show All Small"
         />
 
         {/* Bottom Triangle */}

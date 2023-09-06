@@ -2,7 +2,7 @@ import { ActionHashB64 } from '@holochain/client'
 import { sugiyama } from 'd3-dag'
 import { coffmanGraham } from 'd3-dag/dist/sugiyama/layering/coffman-graham'
 import { longestPath } from 'd3-dag/dist/sugiyama/layering/longest-path'
-import { LayoutAlgorithm } from 'zod-models'
+import { LayeringAlgorithm } from 'zod-models'
 import {
   DimensionsState,
   CoordinatesState,
@@ -13,7 +13,7 @@ import { connect } from 'd3-dag/dist/dag/create'
 
 export default function layoutForGraph(
   graph: Graph,
-  layoutAlgorithm: LayoutAlgorithm,
+  layeringAlgorithm: LayeringAlgorithm,
   allOutcomeDimensions: DimensionsState,
   projectCollapsedOutcomes: {
     [outcomeActionHash: ActionHashB64]: boolean
@@ -27,11 +27,11 @@ export default function layoutForGraph(
   const connections = graph.connections
   const outcomes = graph.outcomes.computedOutcomesKeyed
 
-  const layoutAlgorithmFn = (layoutAlgorithm: LayoutAlgorithm) => {
-    switch (layoutAlgorithm) {
-      case LayoutAlgorithm.LongestPath:
+  const layeringAlgo = (layeringAlgo: LayeringAlgorithm) => {
+    switch (layeringAlgo) {
+      case LayeringAlgorithm.LongestPath:
         return longestPath
-      case LayoutAlgorithm.CoffmanGraham:
+      case LayeringAlgorithm.CoffmanGraham:
         return coffmanGraham
       default:
         return coffmanGraham
@@ -95,7 +95,7 @@ export default function layoutForGraph(
 
       return [width, height]
     })
-    .layering(layoutAlgorithmFn(layoutAlgorithm)())
+    .layering(layeringAlgo(layeringAlgorithm)())
 
   dagLayout(dag)
 

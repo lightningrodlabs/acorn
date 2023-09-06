@@ -3,7 +3,7 @@ import {
   ComputedOutcome,
   ComputedScope,
   ComputedSimpleAchievementStatus,
-  LayoutAlgorithm,
+  LayeringAlgorithm,
   Tag,
 } from '../types'
 import { ActionHashB64, WithActionHash } from '../types/shared'
@@ -62,7 +62,7 @@ function getBoundingRec(
 export { getBoundingRec }
 
 const calculateCoordinatesForLayout = (
-  layoutAlgorithm: LayoutAlgorithm,
+  layeringAlgorithm: LayeringAlgorithm,
   graph: Graph,
   allOutcomeDimensions: DimensionsState,
   collapsedOutcomes: {
@@ -71,7 +71,7 @@ const calculateCoordinatesForLayout = (
   hiddenSmalls: boolean,
   hiddenAchieved: boolean
 ) => {
-  if (layoutAlgorithm === LayoutAlgorithm.Classic)
+  if (layeringAlgorithm === LayeringAlgorithm.Classic)
     return calculateCoordinatesForClassic(
       graph,
       allOutcomeDimensions,
@@ -82,7 +82,7 @@ const calculateCoordinatesForLayout = (
   else
     return layoutForGraph(
       graph,
-      layoutAlgorithm,
+      layeringAlgorithm,
       allOutcomeDimensions,
       collapsedOutcomes,
       hiddenSmalls,
@@ -92,7 +92,7 @@ const calculateCoordinatesForLayout = (
 
 export default function layoutFormula(
   graph: Graph,
-  layoutAlgorithm: LayoutAlgorithm,
+  layeringAlgorithm: LayeringAlgorithm,
   zoomLevel: number,
   projectTags: WithActionHash<Tag>[],
   collapsedOutcomes: {
@@ -129,7 +129,7 @@ export default function layoutFormula(
   )
 
   const coordinates = calculateCoordinatesForLayout(
-    layoutAlgorithm,
+    layeringAlgorithm,
     graph,
     dimensions,
     collapsedOutcomes,

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import { ActionHashB64 } from '../types/shared'
-import { LayoutAlgorithm, Profile } from '../types'
+import { LayeringAlgorithm, Profile } from '../types'
 
 import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
 import {
@@ -75,8 +75,8 @@ function mapStateToProps(state: RootState): AppStateProps {
     return members.length > 1 && projectMeta.isMigrated
   })
 
-  const selectedLayoutAlgorithm = activeProjectMeta
-    ? activeProjectMeta.layoutAlgorithm
+  const selectedLayeringAlgo = activeProjectMeta
+    ? activeProjectMeta.layeringAlgorithm
     : 'LongestPath'
 
   return {
@@ -95,7 +95,7 @@ function mapStateToProps(state: RootState): AppStateProps {
     hasMigratedSharedProject,
     hiddenAchievedOutcomes: state.ui.mapViewSettings.hiddenAchievedOutcomes,
     hiddenSmallOutcomes: state.ui.mapViewSettings.hiddenSmallOutcomes,
-    selectedLayoutAlgorithm,
+    selectedLayeringAlgo,
   }
 }
 
@@ -155,13 +155,13 @@ function mergeProps(
       })
       return dispatch(updateWhoami(profilesCellIdString, updatedWhoami))
     },
-    setSelectedLayoutAlgorithm: async (layoutAlgorithm: LayoutAlgorithm) => {
+    setSelectedLayeringAlgo: async (layeringAlgorithm: LayeringAlgorithm) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
 
       const entry = {
         ...stateProps.activeProjectMeta,
-        layoutAlgorithm,
+        layeringAlgorithm,
       }
 
       const actionHash = stateProps.activeProjectMeta.actionHash

@@ -1,4 +1,4 @@
-import { LayoutAlgorithm } from '../../../types'
+import { LayeringAlgorithm } from '../../../types'
 import { CellIdString } from '../../../types/shared'
 import {
   HIDE_ACHIEVED_OUTCOMES,
@@ -10,13 +10,13 @@ import {
 export interface CollapsedOutcomesState {
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
-  selectedLayoutAlgorithm: LayoutAlgorithm
+  selectedLayeringAlgo: LayeringAlgorithm
 }
 
 const defaultState: CollapsedOutcomesState = {
   hiddenAchievedOutcomes: [],
   hiddenSmallOutcomes: [],
-  selectedLayoutAlgorithm: LayoutAlgorithm.LongestPath,
+  selectedLayeringAlgo: LayeringAlgorithm.LongestPath,
 }
 
 export default function (

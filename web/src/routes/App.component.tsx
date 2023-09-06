@@ -13,7 +13,7 @@ import {
   Profile,
   EntryPoint,
   Outcome,
-  LayoutAlgorithm,
+  LayeringAlgorithm,
 } from '../types'
 
 import './App.scss'
@@ -68,7 +68,7 @@ export type AppStateProps = {
   hasMigratedSharedProject: boolean
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
-  selectedLayoutAlgorithm: string
+  selectedLayeringAlgo: string
 }
 
 export type AppDispatchProps = {
@@ -88,8 +88,8 @@ export type AppDispatchProps = {
 
 export type AppMergeProps = {
   updateWhoami: (entry: Profile, actionHash: ActionHashB64) => Promise<void>
-  setSelectedLayoutAlgorithm: (
-    layoutAlgorithm: LayoutAlgorithm
+  setSelectedLayeringAlgo: (
+    layeringAlgorithm: LayeringAlgorithm
   ) => Promise<void>
 }
 
@@ -120,8 +120,8 @@ const App: React.FC<AppProps> = ({
   hideSmallOutcomes,
   showAchievedOutcomes,
   hideAchievedOutcomes,
-  selectedLayoutAlgorithm,
-  setSelectedLayoutAlgorithm,
+  selectedLayeringAlgo,
+  setSelectedLayeringAlgo,
 }) => {
   const [exportedProjectName, setExportedProjectName] = useState('')
   const [showExportedModal, setShowExportedModal] = useState(false)
@@ -297,8 +297,8 @@ const App: React.FC<AppProps> = ({
                 hideSmallOutcomes={hideSmallOutcomes}
                 showAchievedOutcomes={showAchievedOutcomes}
                 hideAchievedOutcomes={hideAchievedOutcomes}
-                selectedLayoutAlgorithm={selectedLayoutAlgorithm}
-                setSelectedLayoutAlgorithm={setSelectedLayoutAlgorithm}
+                selectedLayeringAlgo={selectedLayeringAlgo}
+                setSelectedLayeringAlgo={setSelectedLayeringAlgo}
               />
             )}
           </Router>

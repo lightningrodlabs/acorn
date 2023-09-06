@@ -4,7 +4,7 @@ import { Profile } from './profile'
 import { AgentPubKeyB64, CellIdString, WithActionHash } from './shared'
 import { ProjectMetaV1 } from 'zod-models'
 
-export { LayoutAlgorithm } from 'zod-models'
+export { LayeringAlgorithm } from 'zod-models'
 export type ProjectAggregated = {
   projectMeta: WithActionHash<ProjectMetaV1>
   cellId: CellIdString

@@ -2,15 +2,15 @@ import {z} from 'zod'
 import { ProjectMetaV0Schema } from '../v0/projectMetaV0Schema'
 import WithActionHashSchema from '../../withActionHashSchema'
 
-export enum LayoutAlgorithm {
+export enum LayeringAlgorithm {
   LongestPath = 'LongestPath',
   CoffmanGraham = 'CoffmanGraham',
   Classic = 'Classic'
 }
-export const LayoutAlgorithmSchema = z.nativeEnum(LayoutAlgorithm)
+export const LayeringAlgorithmSchema = z.nativeEnum(LayeringAlgorithm)
 
 export const ProjectMetaV1Schema = z.object({
-  layoutAlgorithm: LayoutAlgorithmSchema,
+  layeringAlgorithm: LayeringAlgorithmSchema,
   topPriorityOutcomes: z.array(z.string())
 }).merge(ProjectMetaV0Schema)
 
