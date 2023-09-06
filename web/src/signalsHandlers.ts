@@ -10,7 +10,6 @@ import * as msgpack from '@msgpack/msgpack/dist'
 import * as connectionActions from './redux/persistent/projects/connections/actions'
 import * as outcomeActions from './redux/persistent/projects/outcomes/actions'
 import * as tagActions from './redux/persistent/projects/tags/actions'
-import * as outcomeVoteActions from './redux/persistent/projects/outcome-votes/actions'
 import * as outcomeMemberActions from './redux/persistent/projects/outcome-members/actions'
 import * as outcomeCommentActions from './redux/persistent/projects/outcome-comments/actions'
 import * as entryPointActions from './redux/persistent/projects/entry-points/actions'
@@ -73,7 +72,6 @@ const nonEntrySignalTypes = {
 const crudActionSets = {
   Connection: connectionActions,
   Outcome: outcomeActions,
-  OutcomeVote: outcomeVoteActions,
   OutcomeMember: outcomeMemberActions,
   OutcomeComment: outcomeCommentActions,
   EntryPoint: entryPointActions,

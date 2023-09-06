@@ -4,7 +4,6 @@ import testConnection from '../src/stories/testData/testConnection'
 import testEntryPoint from '../src/stories/testData/testEntryPoint'
 import testMember from '../src/stories/testData/testMember'
 import testOutcomeMember from '../src/stories/testData/testOutcomeMember'
-import testOutcomeVote from '../src/stories/testData/testOutcomeVote'
 import {
   testBigAchievedOutcome,
   testSmallAchievedOutcome,
@@ -67,11 +66,6 @@ export const mockPopulatedState = {
     outcomeMembers: {
       testOutcomeMemberCellId: {
         testOutcomeMemberActionHash: testOutcomeMember,
-      },
-    },
-    outcomeVotes: {
-      testOutcomeVoteCellId: {
-        testOutcomeVoteActionHash: testOutcomeVote,
       },
     },
     outcomeComments: {

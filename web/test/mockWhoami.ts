@@ -1,5 +1,5 @@
 import { WireRecord } from '../src/api/hdkCrud'
-import { Profile } from '../src/types/profile'
+import { Profile } from '../src/types'
 
 const mockProfile: Profile = {
   firstName: 'testFirstName',

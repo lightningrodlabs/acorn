@@ -9,7 +9,6 @@ import {
   Outcome,
   OutcomeComment,
   OutcomeMember,
-  OutcomeVote,
   ProjectMeta,
   RealtimeInfoInput,
   Tag,
@@ -119,13 +118,6 @@ const EntryPointApi = (appWebsocket: AppWebsocket) => {
     },
   }
 }
-const OutcomeVoteApi = (appWebsocket: AppWebsocket) => {
-  return createCrudFunctions<OutcomeVote>(
-    appWebsocket,
-    PROJECTS_ZOME_NAME,
-    ENTRY_TYPE_NAMES.OUTCOME_VOTE
-  )
-}
 const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
   const projectMetaCrud = createCrudFunctions<ProjectMeta>(
     appWebsocket,
@@ -212,7 +204,6 @@ export default class ProjectsZomeApi {
   connection: ReturnType<typeof ConnectionApi>
   outcomeComment: ReturnType<typeof OutcomeCommentApi>
   outcomeMember: ReturnType<typeof OutcomeMemberApi>
-  outcomeVote: ReturnType<typeof OutcomeVoteApi>
   tag: ReturnType<typeof TagApi>
   projectMeta: ReturnType<typeof ProjectMetaApi>
   realtimeInfoSignal: ReturnType<typeof RealtimeInfoSignalApi>
@@ -227,7 +218,6 @@ export default class ProjectsZomeApi {
     this.entryPoint = EntryPointApi(appWebsocket)
     this.connection = ConnectionApi(appWebsocket)
     this.outcomeMember = OutcomeMemberApi(appWebsocket)
-    this.outcomeVote = OutcomeVoteApi(appWebsocket)
     this.projectMeta = ProjectMetaApi(appWebsocket)
     this.member = MembersApi(appWebsocket)
     this.tag = TagApi(appWebsocket)

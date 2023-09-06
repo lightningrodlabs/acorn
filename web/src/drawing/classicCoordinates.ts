@@ -4,12 +4,15 @@ import {
   CoordinatesState,
 } from '../redux/ephemeral/layout/state-type'
 import { Graph } from '../redux/persistent/projects/outcomes/outcomesAsGraph'
-import { ComputedOutcome } from '../types'
+import { ComputedOutcome, Connection } from '../types'
 import { getBoundingRec } from './layoutFormula'
 import checkOutcomeAgainstViewingFilters from './checkOutcomeAgainstViewingFilters'
 import * as flextree from 'd3-flextree'
+import { WithActionHash } from '../types/shared'
 
 const fl = flextree.flextree
+
+type WithConnection = { connection?: WithActionHash<Connection> }
 
 function layoutForTree(
   tree: ComputedOutcome,
@@ -47,10 +50,10 @@ function layoutForTree(
           numDescendants += descendantCount + 1
         }
       })
-      // node.children.sort((a, b) => {
-      //   console.log('a', a)
-      //   return a.content < b.content ? -1 : 1
-      // })
+      node.children.sort((a: WithConnection, b: WithConnection) => {
+        console.log('a', a)
+        return a.connection.siblingOrder < b.connection.siblingOrder ? -1 : 1
+      })
     }
 
     const width = allOutcomeDimensions[outcome.actionHash].width
@@ -65,7 +68,7 @@ function layoutForTree(
       VERTICAL_SPACING
 
     node.actionHash = outcome.actionHash
-    // node.content = outcome.content
+    node.connection = outcome.connection
     node.size = [width, height]
 
     return numDescendants

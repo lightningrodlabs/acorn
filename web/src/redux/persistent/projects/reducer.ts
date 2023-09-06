@@ -6,7 +6,6 @@ import connections from './connections/reducer'
 import entryPoints from './entry-points/reducer'
 import outcomeComments from './outcome-comments/reducer'
 import outcomeMembers from './outcome-members/reducer'
-import outcomeVotes from './outcome-votes/reducer'
 import outcomeHistory from './outcome-history/reducer'
 import projectMeta from './project-meta/reducer'
 import tags from './tags/reducer'
@@ -19,7 +18,6 @@ export default combineReducers({
   connections,
   entryPoints,
   outcomeMembers,
-  outcomeVotes,
   outcomeComments,
   outcomeHistory,
 })

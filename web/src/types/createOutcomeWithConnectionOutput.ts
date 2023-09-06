@@ -1,6 +1,5 @@
+import { Connection, Outcome } from 'zod-models'
 import { WireRecord } from '../api/hdkCrud'
-import { Outcome } from './outcome'
-import { Connection } from './connection'
 import { Option } from './shared'
 
 export interface CreateOutcomeWithConnectionOutput {

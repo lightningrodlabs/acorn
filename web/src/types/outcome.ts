@@ -1,19 +1,6 @@
-import { OutcomeComment } from './outcomeComment'
-import { OutcomeVote } from './outcomeVote'
-import { Profile } from './profile'
+import { Connection, Profile } from 'zod-models'
 import { WithActionHash } from './shared'
-import { Outcome } from 'zod-models'
-
-export type {
-  Outcome,
-  SmallTask,
-  SmallScope,
-  TimeFrame,
-  SmallsEstimate,
-  UncertainScope,
-  Scope,
-  AchievementStatus,
-} from 'zod-models'
+import { Outcome, OutcomeComment } from 'zod-models'
 
 // TODO: convert to zod schema
 export type ComputedAchievementStatus = {
@@ -61,7 +48,7 @@ export enum ComputedScope {
 export type OptionalOutcomeData = {
   members?: Profile[]
   comments?: OutcomeComment[]
-  votes?: OutcomeVote[]
+  connection?: WithActionHash<Connection>
   // for representing this data in a nested tree structure
   children?: ComputedOutcome[]
 }

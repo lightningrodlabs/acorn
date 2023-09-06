@@ -1,4 +1,5 @@
-import { Outcome } from './outcome'
+
+import { Outcome } from 'zod-models'
 import { Option, ActionHashB64 } from './shared'
 
 export interface CreateOutcomeWithConnectionInput {

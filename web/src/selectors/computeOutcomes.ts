@@ -9,15 +9,11 @@ const selectAndComputeOutcomes = createSelector(
     state.projects.connections[state.ui.activeProject] || {},
   (state: RootState) =>
     state.projects.outcomeMembers[state.ui.activeProject] || {},
-  // (state: RootState) => state.projects.outcomeVotes[state.ui.activeProject],
-  // (state: RootState) => state.projects.outcomeComments[state.ui.activeProject],
   (
     agents,
     outcomes,
     connections,
     outcomeMembers
-    // outcomeVotes,
-    // outcomeComments
   ) => {
     console.log('recalculating computedOutcomes!')
     const treeData = {
@@ -25,8 +21,6 @@ const selectAndComputeOutcomes = createSelector(
       outcomes,
       connections,
       outcomeMembers,
-      outcomeVotes: {},
-      outcomeComments: {},
     }
     const outcomeTrees = outcomesAsGraph(treeData, { withMembers: true })
       .outcomes
