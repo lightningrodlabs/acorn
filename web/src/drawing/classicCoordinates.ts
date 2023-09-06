@@ -57,7 +57,9 @@ function layoutForTree(
         if (a.connection.siblingOrder === b.connection.siblingOrder) {
           return a.content < b.content ? -1 : 1
         } else {
-          return a.connection.siblingOrder < b.connection.siblingOrder ? -1 : 1
+          // this sorts them from higher values on the
+          // left to lower values on the right
+          return a.connection.siblingOrder < b.connection.siblingOrder ? 1 : -1
         }
       })
     }

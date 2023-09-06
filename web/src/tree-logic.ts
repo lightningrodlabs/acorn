@@ -151,13 +151,15 @@ function getSiblings(
   siblings = [...new Set(siblings)]
 
   // sort by x coordinate left -> right
-  return siblings.sort((a, b) => {
+  siblings.sort((a, b) => {
     const aCoords = layoutCoords[a]
     const bCoords = layoutCoords[b]
     if (aCoords && bCoords) {
       return aCoords.x - bCoords.x
     }
   })
+
+  return siblings
 }
 
 function pickSiblingIndexFromDirection(

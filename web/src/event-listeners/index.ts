@@ -1,5 +1,4 @@
 import _ from 'lodash'
-
 import { coordsPageToCanvas } from '../drawing/coordinateSystems'
 import { checkForOutcomeAtCoordinatesInBox } from '../drawing/eventDetection'
 import {
@@ -50,9 +49,7 @@ import {
   MOUSE,
   TRACKPAD,
 } from '../redux/ephemeral/local-preferences/reducer'
-
 import { setOutcomeClone } from '../redux/ephemeral/outcome-clone/actions'
-
 import cloneOutcomes from './cloneOutcomes'
 import {
   resetOutcomeConnector,
@@ -63,7 +60,10 @@ import ProjectsZomeApi from '../api/projectsApi'
 import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { triggerUpdateLayout } from '../redux/ephemeral/layout/actions'
-import { deleteConnection } from '../redux/persistent/projects/connections/actions'
+import {
+  deleteConnection,
+  updateConnection,
+} from '../redux/persistent/projects/connections/actions'
 import { ActionHashB64 } from '../types/shared'
 import { ComputedOutcome, RelationInput } from '../types'
 import { RootState } from '../redux/reducer'
@@ -137,6 +137,88 @@ function leftMostOutcome(
   return _.minBy(outcomeActionHashes, (actionHash) => {
     return state.ui.layout.coordinates[actionHash].x
   })
+}
+
+async function alterSiblingOrder(
+  store: any,
+  state: RootState,
+  selectedOutcome: ActionHashB64,
+  targetActionHash: ActionHashB64,
+  rightOrLeft: RightOrLeft
+) {
+  const {
+    ui: { activeProject },
+  } = state
+  // 1. find the common parent
+  const selectedOutcomeParentActionHashes = findParentsActionHashes(
+    selectedOutcome,
+    state
+  )
+  const targetOutcomeParentActionHashes = findParentsActionHashes(
+    targetActionHash,
+    state
+  )
+  const commonParentActionHashes = _.intersection(
+    selectedOutcomeParentActionHashes,
+    targetOutcomeParentActionHashes
+  )
+  if (!commonParentActionHashes.length) {
+    console.log('no common parent found')
+    return
+  }
+  const commonParentActionHash = commonParentActionHashes[0]
+  const connections = state.projects.connections[activeProject] || {}
+  // 2. find the Connection that connects the
+  // sibling to the parent
+  const targetConnection = Object.values(connections).find(
+    (connection) =>
+      connection.childActionHash === targetActionHash &&
+      connection.parentActionHash === commonParentActionHash
+  )
+  // 3. find the Connection that connects the selectedOutcome
+  // to the parent
+  const selectedOutcomeConnection = Object.values(connections).find(
+    (connection) =>
+      connection.childActionHash === selectedOutcome &&
+      connection.parentActionHash === commonParentActionHash
+  )
+  // 4. set the siblingOrder of the latter to a higher value
+  // than the former
+  if (targetConnection && selectedOutcomeConnection) {
+    const appWs = await getAppWs()
+    const projectsZomeApi = new ProjectsZomeApi(appWs)
+    const cellId = cellIdFromString(activeProject)
+    // left go higher, right go lower
+    const directionModifier = rightOrLeft === RightOrLeft.Left ? 1 : -1
+    const newSelectedSiblingOrder =
+      targetConnection.siblingOrder === selectedOutcomeConnection.siblingOrder
+        ? targetConnection.siblingOrder + directionModifier
+        : targetConnection.siblingOrder
+    const updatedSelectedConnection = await projectsZomeApi.connection.update(
+      cellId,
+      {
+        entry: {
+          ...selectedOutcomeConnection,
+          siblingOrder: newSelectedSiblingOrder,
+        },
+        actionHash: selectedOutcomeConnection.actionHash,
+      }
+    )
+    const updatedTargetConnection = await projectsZomeApi.connection.update(
+      cellId,
+      {
+        entry: {
+          ...targetConnection,
+          siblingOrder: selectedOutcomeConnection.siblingOrder,
+        },
+        actionHash: targetConnection.actionHash,
+      }
+    )
+    store.dispatch(updateConnection(activeProject, updatedSelectedConnection))
+    store.dispatch(updateConnection(activeProject, updatedTargetConnection))
+  } else {
+    console.log('could not find connections')
+  }
 }
 
 // outcomes is ComputedOutcomes in an object, keyed by their actionHash
@@ -256,9 +338,14 @@ export default function setupEventListeners(
             // only do this if selected outcome has a left sibling
             // move the selected outcome to the left side of the left sibling
             // (swap positions with the left sibling)
-            // alert('hi left!')
-          }
-          else if (targetActionHash) {
+            alterSiblingOrder(
+              store,
+              state,
+              selectedOutcome,
+              targetActionHash,
+              RightOrLeft.Left
+            )
+          } else if (targetActionHash) {
             // select and pan and zoom to
             // the parent
             store.dispatch(animatePanAndZoom(targetActionHash, false))
@@ -279,10 +366,14 @@ export default function setupEventListeners(
             // only do this if selected outcome has a right sibling
             // move the selected outcome to the right side of the right sibling
             // (swap positions with the right sibling)
-            // alert('hi right!')
-            
-          }
-          if (targetActionHash) {
+            alterSiblingOrder(
+              store,
+              state,
+              selectedOutcome,
+              targetActionHash,
+              RightOrLeft.Right
+            )
+          } else if (targetActionHash) {
             // select and pan and zoom to
             // the parent
             store.dispatch(animatePanAndZoom(targetActionHash, false))
