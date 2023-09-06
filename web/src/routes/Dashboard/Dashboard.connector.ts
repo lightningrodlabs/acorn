@@ -116,7 +116,7 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
         creatorAgentPubKey: agentAddress,
         createdAt: Date.now(),
         isImported: false,
-        layeringAlgorithm: LayeringAlgorithm.CoffmanGraham,
+        layeringAlgorithm: LayeringAlgorithm.Classic,
         topPriorityOutcomes: [],
         isMigrated: null,
       }

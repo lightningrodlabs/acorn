@@ -42,7 +42,7 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
     >
       <div className="map-viewing-options-menu">
         <div className="map-viewing-option-heading">
-          <Typography style="h8">Layering Algorithm</Typography>
+          <Typography style="h8">Layout Algorithm</Typography>
         </div>
         <FilterDropdownSelect
           size={'small'}
