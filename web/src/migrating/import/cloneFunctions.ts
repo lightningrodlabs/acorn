@@ -118,6 +118,7 @@ export const cloneConnection = (outcomeActionHashMap: ActionHashMap) => (
     ...old, // technically not needed, but left in case more properties are added in future
     parentActionHash: newParentOutcomeActionHash,
     childActionHash: newChildOutcomeActionHash,
+    siblingOrder: old.siblingOrder || 0, // siblingOrder is a new field, so it may not exist
     // randomizer used to be a float, but is now an int
     randomizer: Number(old.randomizer.toFixed()),
     isImported: true,
