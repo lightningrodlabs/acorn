@@ -7,11 +7,8 @@ import {
   WithActionHash,
 } from '../../types/shared'
 import { cellIdFromString } from '../../utils'
-import { Tag } from '../../types/tag'
-import { Outcome } from '../../types/outcome'
-import { Connection } from '../../types/connection'
-import { ProjectMeta } from '../../types'
-import { LayeringAlgorithm, ProjectMetaWithActionHash } from 'zod-models'
+import { Tag, Outcome, Connection, ProjectMeta } from '../../types'
+import { BackwardsCompatibleProjectMeta, LayeringAlgorithm } from 'zod-models'
 
 export type ActionHashMap = { [oldActionHash: ActionHashB64]: ActionHashB64 }
 
@@ -21,9 +18,12 @@ export type ActionHashMap = { [oldActionHash: ActionHashB64]: ActionHashB64 }
   that should be written again to the DHT,
   and the new actionHashes for the data (mapped)
 */
-export async function cloneDataSet<T>(
-  dataSet: { [actionHash: string]: WithActionHash<T> },
-  cloneFn: (old: WithActionHash<T>) => WithActionHash<T>,
+export async function cloneDataSet<
+  Old extends { actionHash: ActionHashB64 },
+  T
+>(
+  dataSet: { [actionHash: string]: Old },
+  cloneFn: (old: Old) => WithActionHash<T>,
   zomeCallFn: (cellId: CellId, obj: T) => Promise<WireRecord<T>>,
   actionCreatorFn: (
     cellIdString: CellIdString,
@@ -118,6 +118,7 @@ export const cloneConnection = (outcomeActionHashMap: ActionHashMap) => (
     ...old, // technically not needed, but left in case more properties are added in future
     parentActionHash: newParentOutcomeActionHash,
     childActionHash: newChildOutcomeActionHash,
+    siblingOrder: old.siblingOrder || 0, // siblingOrder is a new field, so it may not exist
     // randomizer used to be a float, but is now an int
     randomizer: Number(old.randomizer.toFixed()),
     isImported: true,
@@ -128,7 +129,7 @@ export const cloneProjectMeta = (
   outcomeActionHashMap: ActionHashMap,
   agentAddress: AgentPubKeyB64,
   passphrase: string
-) => (old: ProjectMetaWithActionHash): WithActionHash<ProjectMeta> => {
+) => (old: BackwardsCompatibleProjectMeta): WithActionHash<ProjectMeta> => {
   const originalTopPriorityOutcomes = old['topPriorityOutcomes']
   const topPriorityOutcomes: ActionHashB64[] = []
   const unfoundReferences: ActionHashB64[] = []
@@ -141,7 +142,7 @@ export const cloneProjectMeta = (
       topPriorityOutcomes.push(newOutcomeActionHash)
     }
   }
-  
+
   if (originalTopPriorityOutcomes && unfoundReferences.length > 0) {
     throw new Error(
       `Broken references within projectMeta. Unable to locate the Outcomes referred to by the hashes: ${unfoundReferences}.

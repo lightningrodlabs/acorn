@@ -1,5 +1,4 @@
 import _ from 'lodash'
-
 import { coordsPageToCanvas } from '../drawing/coordinateSystems'
 import { checkForOutcomeAtCoordinatesInBox } from '../drawing/eventDetection'
 import {
@@ -50,9 +49,7 @@ import {
   MOUSE,
   TRACKPAD,
 } from '../redux/ephemeral/local-preferences/reducer'
-
 import { setOutcomeClone } from '../redux/ephemeral/outcome-clone/actions'
-
 import cloneOutcomes from './cloneOutcomes'
 import {
   resetOutcomeConnector,
@@ -63,7 +60,9 @@ import ProjectsZomeApi from '../api/projectsApi'
 import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { triggerUpdateLayout } from '../redux/ephemeral/layout/actions'
-import { deleteConnection } from '../redux/persistent/projects/connections/actions'
+import {
+  deleteConnection,
+} from '../redux/persistent/projects/connections/actions'
 import { ActionHashB64 } from '../types/shared'
 import { ComputedOutcome, RelationInput } from '../types'
 import { RootState } from '../redux/reducer'
@@ -82,6 +81,9 @@ import {
   setNavModalOpenChildren,
   setNavModalOpenParents,
 } from '../redux/ephemeral/navigation-modal/actions'
+import {
+  alterSiblingOrder,
+} from '../connections'
 
 // The "modifier" key is different on Mac and non-Mac
 // Pattern borrowed from TinyKeys library.
@@ -172,7 +174,7 @@ export default function setupEventListeners(
     store.dispatch(animatePanAndZoom(actionHash, false))
   }
 
-  async function bodyKeydown(event) {
+  async function bodyKeydown(event: KeyboardEvent) {
     const appWebsocket = await getAppWs()
     const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
     let state: RootState = store.getState()
@@ -252,7 +254,18 @@ export default function setupEventListeners(
             state,
             RightOrLeft.Left
           )
-          if (targetActionHash) {
+          if (event.shiftKey && targetActionHash) {
+            // only do this if selected outcome has a left sibling
+            // move the selected outcome to the left side of the left sibling
+            // (swap positions with the left sibling)
+            alterSiblingOrder(
+              store,
+              state,
+              selectedOutcome,
+              targetActionHash,
+              RightOrLeft.Left
+            )
+          } else if (targetActionHash) {
             // select and pan and zoom to
             // the parent
             store.dispatch(animatePanAndZoom(targetActionHash, false))
@@ -269,7 +282,18 @@ export default function setupEventListeners(
             state,
             RightOrLeft.Right
           )
-          if (targetActionHash) {
+          if (event.shiftKey && targetActionHash) {
+            // only do this if selected outcome has a right sibling
+            // move the selected outcome to the right side of the right sibling
+            // (swap positions with the right sibling)
+            alterSiblingOrder(
+              store,
+              state,
+              selectedOutcome,
+              targetActionHash,
+              RightOrLeft.Right
+            )
+          } else if (targetActionHash) {
             // select and pan and zoom to
             // the parent
             store.dispatch(animatePanAndZoom(targetActionHash, false))

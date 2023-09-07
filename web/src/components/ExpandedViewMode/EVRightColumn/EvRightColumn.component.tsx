@@ -16,8 +16,8 @@ import {
   Outcome,
   ProjectMeta,
   Scope,
-  ScopeSmallVariant,
-  ScopeUncertainVariant,
+  SmallScope,
+  UncertainScope,
 } from '../../../types'
 import ButtonToggleSwitch from '../../ButtonToggleSwitch/ButtonToggleSwitch'
 import Icon from '../../Icon/Icon'
@@ -61,14 +61,14 @@ export type EvRightColumnProps = EvRightColumnOwnProps &
   EvRightColumnConnectorStateProps &
   EvRightColumnConnectorDispatchProps
 
-const defaultUncertainScope: ScopeUncertainVariant = {
+const defaultUncertainScope: UncertainScope = {
   Uncertain: {
     timeFrame: null,
     smallsEstimate: 0,
     inBreakdown: false,
   },
 }
-const defaultSmallScope: ScopeSmallVariant = {
+const defaultSmallScope: SmallScope = {
   Small: {
     achievementStatus: 'NotAchieved',
     taskList: [],
@@ -142,7 +142,7 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
         timestampUpdated: moment().unix(),
         scope: {
           Small: {
-            ...(cleanedOutcome.scope as ScopeSmallVariant).Small,
+            ...(cleanedOutcome.scope as SmallScope).Small,
             achievementStatus,
           },
         },

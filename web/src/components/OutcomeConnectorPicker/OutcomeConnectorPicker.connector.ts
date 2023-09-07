@@ -42,6 +42,7 @@ function mapDispatchToProps(dispatch) {
           const connection = await projectsZomeApi.connection.create(cellId, {
             parentActionHash,
             childActionHash,
+            siblingOrder: 0,
             randomizer: Date.now(),
             isImported: false,
           })

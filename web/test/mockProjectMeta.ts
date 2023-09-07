@@ -1,5 +1,5 @@
 import { WireRecord } from '../src/api/hdkCrud'
-import { LayeringAlgorithm, ProjectMeta } from '../src/types/projectMeta'
+import { LayeringAlgorithm, ProjectMeta } from '../src/types'
 
 const projectMeta: ProjectMeta = {
   creatorAgentPubKey: 'testAgentPubKey',

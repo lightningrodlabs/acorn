@@ -5,6 +5,7 @@ const testConnection: WithActionHash<Connection> = {
   parentActionHash: 'testConnectionParentActionHash',
   childActionHash: 'testConnectionChildActionHash',
   randomizer: 1234, //i64,
+  siblingOrder: 0,
   isImported: false,
   actionHash: 'testConnectionActionHash',
 }

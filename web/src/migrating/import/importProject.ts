@@ -1,4 +1,4 @@
-import { ProjectExportDataV1 } from 'zod-models'
+import { BackwardsCompatibleProjectExport } from 'zod-models'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { finalizeCreateProject } from '../../projects/createProject'
 import { getAppWs } from '../../hcWebsockets'
@@ -9,7 +9,7 @@ import { createActionHashMapAndImportProjectData } from './createActionHashMapAn
 export async function internalImportProject(
   cellIdString: CellIdString,
   agentAddress: AgentPubKeyB64,
-  projectData: ProjectExportDataV1,
+  projectData: BackwardsCompatibleProjectExport,
   passphrase: string,
   dispatch: any,
   iCreateActionHashMapAndImportProjectData: typeof createActionHashMapAndImportProjectData,
@@ -48,7 +48,7 @@ export async function internalImportProject(
 export async function importProject(
   cellIdString: CellIdString,
   agentAddress: AgentPubKeyB64,
-  projectData: ProjectExportDataV1,
+  projectData: BackwardsCompatibleProjectExport,
   passphrase: string,
   dispatch: any
 ) {

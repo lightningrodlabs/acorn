@@ -9,6 +9,7 @@ import {
 import {
   CREATE_CONNECTION,
   FETCH_CONNECTIONS,
+  UPDATE_CONNECTION,
 } from '../../persistent/projects/connections/actions'
 import { TRIGGER_UPDATE_LAYOUT } from './actions'
 import panZoomToFrame from '../animations/pan-and-zoom'
@@ -57,6 +58,7 @@ const isOneOfLayoutAffectingActions = (action: {
     type === CREATE_OUTCOME_WITH_CONNECTION ||
     type === FETCH_OUTCOMES ||
     type === UPDATE_OUTCOME ||
+    type === UPDATE_CONNECTION ||
     type === DELETE_OUTCOME_FULLY ||
     type === CREATE_CONNECTION ||
     type === FETCH_CONNECTIONS ||

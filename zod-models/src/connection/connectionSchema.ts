@@ -1,17 +1,48 @@
-import {z} from 'zod'
+import { z } from 'zod'
+import ConnectionV11Schema, { ConnectionV11 } from './v11/connectionV11Schema'
+import ConnectionV12Schema, { ConnectionV12 } from './v12/connectionV12Schema'
 
-const ConnectionSchema = z.object({
-  parentActionHash: z.string(),
-  childActionHash: z.string(),
-  randomizer: z.number(), // needs to be broad enough to allow floats for backwards compatibility, but is now an int
-  isImported: z.boolean(),
-})
+export const ConnectionV11SchemaWithActionHash = z
+  .object({ actionHash: z.string() })
+  .merge(ConnectionV11Schema)
 
-export const ProjectConnectionsStateSchema = z.record(
-  z.object({ actionHash: z.string() }).merge(ConnectionSchema)
+export const ConnectionV12SchemaWithActionHash = z
+  .object({ actionHash: z.string() })
+  .merge(ConnectionV12Schema)
+
+export const BackwardsCompatibleConnectionSchema = z.union([
+  ConnectionV11SchemaWithActionHash,
+  ConnectionV12SchemaWithActionHash,
+])
+
+export type BackwardsCompatibleConnection = z.infer<
+  typeof BackwardsCompatibleConnectionSchema
+>
+
+export {
+  ConnectionV11Schema,
+  ConnectionV12Schema,
+  ConnectionV11,
+  ConnectionV12,
+}
+
+// always update this to be whatever the current/latest one is
+export const ConnectionSchema = ConnectionV12Schema
+export type Connection = ConnectionV12
+
+export const BackwardsCompatibleProjectConnectionsStateSchema = z.record(
+  BackwardsCompatibleConnectionSchema
 )
 
-export type ProjectConnectionsState = z.infer<typeof ProjectConnectionsStateSchema>
-export type Connection = z.infer<typeof ConnectionSchema>
+export type BackwardsCompatibleProjectConnectionsState = z.infer<
+  typeof BackwardsCompatibleProjectConnectionsStateSchema
+>
 
-export default ConnectionSchema
+// this should always be updated to be whatever the current/latest one is
+export const ProjectConnectionsStateSchema = z.record(
+  ConnectionV12SchemaWithActionHash
+)
+
+export type ProjectConnectionsState = z.infer<
+  typeof ProjectConnectionsStateSchema
+>

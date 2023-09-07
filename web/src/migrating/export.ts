@@ -1,4 +1,4 @@
-import { AllProjectsDataExport, ProjectExportDataV1 } from 'zod-models'
+import { AllProjectsDataExport, ProjectExportData } from 'zod-models'
 import constructProjectDataFetchers from '../api/projectDataFetchers'
 import ProjectsZomeApi from '../api/projectsApi'
 import { getAppWs } from '../hcWebsockets'
@@ -120,7 +120,7 @@ export default async function exportProjectsData(
 export function collectExportProjectData(
   state: RootState,
   projectCellId: CellIdString
-): ProjectExportDataV1 {
+): ProjectExportData {
   const outcomes = state.projects.outcomes[projectCellId] || {}
   const connections = state.projects.connections[projectCellId] || {}
   const outcomeMembers = state.projects.outcomeMembers[projectCellId] || {}
@@ -140,7 +140,7 @@ export function collectExportProjectData(
   return data
 }
 
-export function projectDataToCsv(data: ProjectExportDataV1): string {
+export function projectDataToCsv(data: ProjectExportData): string {
   const csvRows = []
   // const agents = Object.keys(data.agents)
   const outcomes = Object.keys(data.outcomes)

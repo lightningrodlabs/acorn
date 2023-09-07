@@ -1,6 +1,6 @@
 import {z} from 'zod'
 
-const EntryPointSchema = z.object({
+export const EntryPointSchema = z.object({
   color: z.string(),
   creatorAgentPubKey: z.string(),
   createdAt: z.number(),
@@ -18,5 +18,3 @@ export const ProjectEntryPointsStateSchema = z.record(
 
 export type EntryPoint = z.infer<typeof EntryPointSchema>
 export type ProjectEntryPointsState = z.infer<typeof ProjectEntryPointsStateSchema>
-
-export default EntryPointSchema

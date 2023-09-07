@@ -12,7 +12,6 @@ const cleanOutcome = (computedOutcome: ComputedOutcome): Outcome => {
     children,
     members,
     comments,
-    votes,
     ...outcome
   } = computedOutcome
   return {

@@ -1,6 +1,6 @@
 import { WireRecord } from '../src/api/hdkCrud'
 import testConnection from '../src/stories/testData/testConnection'
-import { Connection } from '../src/types/connection'
+import { Connection } from '../src/types'
 
 const mockConnection: WireRecord<Connection> = {
   entry: testConnection,

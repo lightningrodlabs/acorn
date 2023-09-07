@@ -14,7 +14,7 @@ import {
   CreateOutcomeWithConnectionInput,
   RelationInput,
   Outcome,
-  ScopeSmallVariant,
+  SmallScope,
   SmallTask,
 } from '../../types'
 import EvChildren from './EVMiddleColumn/TabContent/EvChildren/EvChildren'
@@ -84,7 +84,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
         timestampUpdated: moment().unix(),
         scope: {
           Small: {
-            ...(cleanedOutcome.scope as ScopeSmallVariant).Small,
+            ...(cleanedOutcome.scope as SmallScope).Small,
             taskList,
           },
         },
@@ -114,6 +114,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       maybeLinkedOutcome: {
         outcomeActionHash: outcome.actionHash,
         relation: RelationInput.ExistingOutcomeAsParent,
+        siblingOrder: 0,
       },
     })
   }

@@ -1,6 +1,6 @@
 import { WireRecord } from '../src/api/hdkCrud'
 import { testBigAchievedOutcome } from '../src/stories/testData/testOutcomes'
-import { Outcome } from '../src/types/outcome'
+import { Outcome } from '../src/types'
 
 const mockOutcome: WireRecord<Outcome> = {
   entry: testBigAchievedOutcome,

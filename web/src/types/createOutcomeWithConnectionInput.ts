@@ -1,4 +1,5 @@
-import { Outcome } from './outcome'
+
+import { Outcome } from 'zod-models'
 import { Option, ActionHashB64 } from './shared'
 
 export interface CreateOutcomeWithConnectionInput {
@@ -9,6 +10,7 @@ export interface CreateOutcomeWithConnectionInput {
 export interface LinkedOutcomeDetails {
   outcomeActionHash: ActionHashB64
   relation: RelationInput
+  siblingOrder: number
 }
 
 export enum RelationInput {
