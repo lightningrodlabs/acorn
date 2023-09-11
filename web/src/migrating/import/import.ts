@@ -7,7 +7,10 @@ import { installProject } from '../../projects/installProject'
 import { createProfilesZomeApi } from './zomeApiCreators'
 import { importProject } from './importProject'
 import ProfilesZomeApi from '../../api/profilesApi'
-import { AllProjectsDataExport, AllProjectsDataExportSchema } from 'zod-models'
+import {
+  BackwardsCompatibleAllProjectsExport,
+  BackwardsCompatibleAllProjectsExportSchema,
+} from 'zod-models'
 import { internalJoinProject } from '../../projects/joinProject'
 
 const stringToJSONSchema = z.string().transform((str, ctx): any => {
@@ -29,7 +32,7 @@ export async function internalImportProjectsData(
   migrationData: string,
   onStep: (completed: number, toComplete: number) => void
 ) {
-  const migrationDataParsed: AllProjectsDataExport = AllProjectsDataExportSchema.parse(
+  const migrationDataParsed: BackwardsCompatibleAllProjectsExport = BackwardsCompatibleAllProjectsExportSchema.parse(
     stringToJSONSchema.parse(migrationData)
   )
 

@@ -8,7 +8,7 @@ import {
 } from '../../types/shared'
 import { cellIdFromString } from '../../utils'
 import { Tag, Outcome, Connection, ProjectMeta } from '../../types'
-import { BackwardsCompatibleProjectMeta, LayeringAlgorithm } from 'zod-models'
+import { BackwardsCompatibleConnection, BackwardsCompatibleProjectMeta, LayeringAlgorithm } from 'zod-models'
 
 export type ActionHashMap = { [oldActionHash: ActionHashB64]: ActionHashB64 }
 
@@ -94,7 +94,7 @@ issue. Then try again.`)
 }
 
 export const cloneConnection = (outcomeActionHashMap: ActionHashMap) => (
-  old: WithActionHash<Connection>
+  old: WithActionHash<BackwardsCompatibleConnection>
 ): WithActionHash<Connection> => {
   const newParentOutcomeActionHash = outcomeActionHashMap[old.parentActionHash]
   const newChildOutcomeActionHash = outcomeActionHashMap[old.childActionHash]
@@ -118,7 +118,8 @@ export const cloneConnection = (outcomeActionHashMap: ActionHashMap) => (
     ...old, // technically not needed, but left in case more properties are added in future
     parentActionHash: newParentOutcomeActionHash,
     childActionHash: newChildOutcomeActionHash,
-    siblingOrder: old.siblingOrder || 0, // siblingOrder is a new field, so it may not exist
+     // siblingOrder is a new field in Acorn v9, so it may not exist from before
+    siblingOrder: typeof old['siblingOrder'] !== "undefined" ? old['siblingOrder'] : 0,
     // randomizer used to be a float, but is now an int
     randomizer: Number(old.randomizer.toFixed()),
     isImported: true,
