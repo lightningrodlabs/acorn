@@ -11,8 +11,10 @@ export const ConnectionV12SchemaWithActionHash = z
   .merge(ConnectionV12Schema)
 
 export const BackwardsCompatibleConnectionSchema = z.union([
-  ConnectionV11SchemaWithActionHash,
+  // always list a superset FIRST
   ConnectionV12SchemaWithActionHash,
+  // this one is a subset
+  ConnectionV11SchemaWithActionHash,
 ])
 
 export type BackwardsCompatibleConnection = z.infer<

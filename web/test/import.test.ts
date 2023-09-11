@@ -48,7 +48,7 @@ import {
   internalCreateActionHashMapAndImportProjectData,
 } from '../src/migrating/import/createActionHashMapAndImportProjectData'
 import {
-  importProject as iimportProject,
+  importProject as iImportProject,
   internalImportProject,
 } from '../src/migrating/import/importProject'
 import mockWhoami from './mockWhoami'
@@ -64,7 +64,7 @@ let createProfilesZomeApi: typeof iCreateProfilesZomeApi
 let createProjectsZomeApi: typeof iCreateProjectsZomeApi
 let profilesZomeApi: ProfilesZomeApi
 let projectsZomeApi: ProjectsZomeApi
-let importProject: typeof iimportProject
+let importProject: typeof iImportProject
 let installProject: typeof iInstallProject
 let finalizeCreateProject: typeof iFinalizeCreateProject
 let createActionHashMapAndImportProjectData: typeof iCreateActionHashMapAndImportProjectData
@@ -284,13 +284,6 @@ describe('importProjectsData()', () => {
           expected: 'array',
           received: 'undefined',
           path: ['projects'],
-          message: 'Required',
-        },
-        {
-          code: 'invalid_type',
-          expected: 'number',
-          received: 'undefined',
-          path: ['integrityVersion'],
           message: 'Required',
         },
       ])
