@@ -4,8 +4,8 @@ import * as path from 'path'
 
 // see the DEVELOPERS.md about incrementing
 // these values
-export const INTEGRITY_VERSION_NUMBER = 11
-export const KEYSTORE_VERSION_NUMBER = 6
+export const INTEGRITY_VERSION_NUMBER = 12
+export const KEYSTORE_VERSION_NUMBER = 7
 
 const DEV_USER_NUMBER = process.env.ACORN_AGENT_NUM
 
@@ -34,6 +34,8 @@ const PREV_VER_USER_DATA_MIGRATION_FILE_PATHS = [
   path.join(USER_DATA_PATH, `${MIGRATION_FILE_NAME_PREFIX}9`),
   // Acorn 7
   path.join(USER_DATA_PATH, `${MIGRATION_FILE_NAME_PREFIX}10`),
+  // Acorn 8
+  path.join(USER_DATA_PATH, `${MIGRATION_FILE_NAME_PREFIX}11`),
 
   // ADD PREVIOUS VERSIONS HERE, WHEN
   // BUMPING INTEGRITY_VERSION_NUMBER

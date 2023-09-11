@@ -68,7 +68,7 @@ const VersionUpdateEntering: React.FC<VersionUpdateEnteringProps> = ({
   // initiation effect
   useEffect(() => {
     // we need to wait for the profiles cell to be known
-    if (hasFetchedForWhoami) {
+    if (hasFetchedForWhoami && !hasStarted) {
       if (whoami && migrationData) {
         setTitle('Migration warning')
         setStatus(
@@ -79,7 +79,7 @@ const VersionUpdateEntering: React.FC<VersionUpdateEnteringProps> = ({
           </>
         )
         setShowActions(true)
-      } else if (profilesCellId && migrationData && !hasStarted) {
+      } else if (profilesCellId && migrationData) {
         setHasStarted(true)
         runImport().catch((e) => {
           console.error(e)
@@ -90,7 +90,7 @@ const VersionUpdateEntering: React.FC<VersionUpdateEnteringProps> = ({
         })
       }
     }
-  }, [migrationData, profilesCellId, hasFetchedForWhoami, whoami])
+  }, [migrationData, profilesCellId, hasFetchedForWhoami, whoami, hasStarted])
 
   // if we have no migration data, we can just redirect
   useEffect(() => {

@@ -82,7 +82,10 @@ export async function alterSiblingOrder(
         actionHash: targetConnection.actionHash,
       }
     )
-    store.dispatch(updateConnection(activeProject, updatedSelectedConnection))
+    // we skip the layout animation on the first of the two
+    // since we don't want to redundantly animate the layout
+    store.dispatch(updateConnection(activeProject, updatedSelectedConnection, true))
+    // we do not skip the layout animation on the second of the two
     store.dispatch(updateConnection(activeProject, updatedTargetConnection))
   } else {
     console.log('could not find connections')

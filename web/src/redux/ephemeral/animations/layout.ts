@@ -15,6 +15,7 @@ import { CoordinatesState, DimensionsState } from '../layout/state-type'
 import { getOutcomeHeight, getOutcomeWidth } from '../../../drawing/dimensions'
 import { getPlaceholderOutcome } from '../../../drawing/drawOutcome/placeholderOutcome'
 import { UPDATE_PROJECT_META } from '../../persistent/projects/project-meta/actions'
+import { UPDATE_CONNECTION } from '../../persistent/projects/connections/actions'
 
 function calcDestTranslate(
   outcomeActionHash: ActionHashB64,
@@ -64,6 +65,7 @@ export default function performLayoutAnimation(
   const translate = nextState.ui.viewport.translate
   const projectId = nextState.ui.activeProject
   const closestOutcome = nextState.ui.mouse.closestOutcome
+  const selectedOutcomes = nextState.ui.selection.selectedOutcomes
   const hiddenSmallOutcomes = nextState.ui.mapViewSettings.hiddenSmallOutcomes
   const hiddenAchievedOutcomes =
     nextState.ui.mapViewSettings.hiddenAchievedOutcomes
@@ -91,9 +93,17 @@ export default function performLayoutAnimation(
   // in terms of 'fixing' on a given outcome
   // get the 'starting position' for that Outcome onscreen
   let originalOutcomeFixedPosition: { x: number; y: number }
-  if (closestOutcome && currentState.ui.layout.coordinates[closestOutcome]) {
+  // in a typical case, we will fixate on the Outcome that
+  // is nearest to the cursor position on screen, but in the case
+  // of re-ordering children Outcomes (via Connections) we want to
+  // fixate on the selected Outcome
+  let originalOutcomeActionHash: ActionHashB64 =
+    action.type === UPDATE_CONNECTION && selectedOutcomes.length
+      ? selectedOutcomes[0]
+      : closestOutcome
+  if (originalOutcomeActionHash && currentState.ui.layout.coordinates[originalOutcomeActionHash]) {
     originalOutcomeFixedPosition = coordsCanvasToPage(
-      currentState.ui.layout.coordinates[closestOutcome],
+      currentState.ui.layout.coordinates[originalOutcomeActionHash],
       translate,
       zoomLevel
     )
@@ -107,7 +117,7 @@ export default function performLayoutAnimation(
     // to keep that closest Outcome in a fixed position on the screen
     let translateForFixedPositionOutcome = originalOutcomeFixedPosition
       ? calcDestTranslate(
-          closestOutcome,
+        originalOutcomeActionHash,
           newLayout.coordinates,
           zoomLevel,
           originalOutcomeFixedPosition
@@ -215,7 +225,7 @@ export default function performLayoutAnimation(
       // to keep that closest Outcome in a fixed position on the screen
       let translateForFixedPositionOutcome = originalOutcomeFixedPosition
         ? calcDestTranslate(
-            closestOutcome,
+            originalOutcomeActionHash,
             updatedLayout.coordinates,
             zoomLevel,
             originalOutcomeFixedPosition
