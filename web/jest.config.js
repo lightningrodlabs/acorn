@@ -26,7 +26,7 @@ module.exports = {
   ],
   globals: {
     __MAIN_APP_ID__: 'test-main-app-id',
-    __ADMIN_PORT__: 'test-admin-port',
-    __APP_PORT__: 'test-app-port',
+    __ADMIN_PORT__: '8000',
+    __APP_PORT__: '8000',
   },
 }
