@@ -1,0 +1,18 @@
+.network-info {
+  display: flex;
+  flex-direction: column;
+  width: 20vw;
+  height: 100vh;
+  overflow-y: scroll;
+  border-left: 1px solid #999;
+  box-sizing: border-box;
+  padding: 1rem;
+
+  .network-info-context {
+    padding: 1rem;
+  }
+
+  .react-json-view {
+    width: 100%;
+  }
+}

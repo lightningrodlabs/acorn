@@ -35,6 +35,11 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
+
+  &.network-info-open {
+    width: 80vw;
+    float: left;
+  }
 }
 
 a {

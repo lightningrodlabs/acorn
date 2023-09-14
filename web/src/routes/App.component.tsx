@@ -40,13 +40,12 @@ import useFinishMigrationChecker from '../hooks/useFinishMigrationChecker'
 import useFileDownloaded from '../hooks/useFileDownloaded'
 import UpdateModalContext from '../context/UpdateModalContext'
 import { ViewingReleaseNotes } from '../components/UpdateModal/UpdateModal'
+import NetworkInfo from '../components/NetworkInfo/NetworkInfo'
 import {
   COORDINATES,
   KeyboardNavigationPreference,
   MODAL,
-  MOUSE,
   NavigationPreference,
-  TRACKPAD,
 } from '../redux/ephemeral/local-preferences/reducer.js'
 
 export type AppStateProps = {
@@ -123,6 +122,8 @@ const App: React.FC<AppProps> = ({
   selectedLayeringAlgo,
   setSelectedLayeringAlgo,
 }) => {
+  const [networkInfoOpen, setNetworkInfoOpen] = useState(false)
+
   const [exportedProjectName, setExportedProjectName] = useState('')
   const [showExportedModal, setShowExportedModal] = useState(false)
   const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
@@ -153,6 +154,20 @@ const App: React.FC<AppProps> = ({
       setShowUpdateBar(true)
     }
   }, [JSON.stringify(updateVersionInfo)])
+
+  useEffect(() => {
+    // add event listener for pressing the 'i' key with the ctrl key
+    // to open the network info modal
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 'i') {
+        setNetworkInfoOpen(!networkInfoOpen)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [networkInfoOpen, setNetworkInfoOpen])
 
   const onProfileSubmit = async (profile: Profile) => {
     await updateWhoami(profile, whoami.actionHash)
@@ -186,125 +201,134 @@ const App: React.FC<AppProps> = ({
     finishMigrationChecker.dataForNeedsMigration
 
   return (
-    <div className={`screen-wrapper`}>
-      <ErrorBoundaryScreen>
-        <UpdateModalContext.Provider
-          value={{ showUpdateModal, setShowUpdateModal }}
-        >
-          <Router>
-            {agentAddress && (
-              <Header
-                project={activeProjectMeta}
+    <>
+      <div
+        className={`screen-wrapper ${
+          networkInfoOpen ? 'network-info-open' : ''
+        }`}
+      >
+        <ErrorBoundaryScreen>
+          <UpdateModalContext.Provider
+            value={{ showUpdateModal, setShowUpdateModal }}
+          >
+            <Router>
+              {agentAddress && (
+                <Header
+                  project={activeProjectMeta}
+                  {...{
+                    members,
+                    agentAddress,
+                    presentMembers,
+                    activeEntryPoints,
+                    projectId,
+                    whoami,
+                    updateStatus,
+                    openInviteMembersModal,
+                    setShowProjectSettingsOpen,
+                    setShowProfileEditForm,
+                    setShowPreferences,
+                    goToOutcome,
+                    setShowUpdateModal,
+                    showUpdateBar,
+                    setShowUpdateBar,
+                    setExportedProjectName,
+                    showExportedModal,
+                    hasMigratedSharedProject,
+                    setViewingReleaseNotes,
+                  }}
+                />
+              )}
+              <Switch>
+                {/* Add new routes in here */}
+                <Route path="/intro" component={IntroScreen} />
+                <Route path="/register" component={CreateProfilePage} />
+                <Route path="/dashboard" component={Dashboard} />
+                <Route path="/project/:projectId" component={ProjectView} />
+                <Route
+                  path="/run-update"
+                  render={() => (
+                    <VersionUpdateLeaving
+                      updateVersionInfo={updateVersionInfo}
+                      triggerAMigrationCheck={
+                        finishMigrationChecker.triggerACheck
+                      }
+                    />
+                  )}
+                />
+                <Route
+                  path="/finish-update"
+                  render={() => (
+                    <VersionUpdateEntering
+                      hasCheckedForMigration={finishMigrationChecker.hasChecked}
+                      migrationData={
+                        finishMigrationChecker.dataForNeedsMigration
+                      }
+                      migrationDataFileName={
+                        finishMigrationChecker.migrationDataFileName
+                      }
+                    />
+                  )}
+                />
+                <Route path="/" render={() => <Redirect to="/dashboard" />} />
+              </Switch>
+
+              <GlobalModals
                 {...{
-                  members,
-                  agentAddress,
-                  presentMembers,
-                  activeEntryPoints,
-                  projectId,
                   whoami,
-                  updateStatus,
-                  openInviteMembersModal,
-                  setShowProjectSettingsOpen,
+                  activeProjectMeta,
+                  projectId,
+                  agentAddress,
+                  navigationPreference,
+                  setNavigationPreference,
+                  keyboardNavigationPreference,
+                  setKeyboardNavigationPreference,
+                  showProfileEditForm,
                   setShowProfileEditForm,
+                  showPreferences,
                   setShowPreferences,
-                  goToOutcome,
-                  setShowUpdateModal,
+                  showProjectSettingsModal,
+                  setShowProjectSettingsOpen,
+                  inviteMembersModalShowing,
+                  openInviteMembersModal,
+                  hideInviteMembersModal,
+                  onProfileSubmit,
                   showUpdateBar,
-                  setShowUpdateBar,
-                  setExportedProjectName,
+                  showUpdateModal,
+                  onCloseUpdateModal,
+                  updateVersionInfo,
+                  exportedProjectName,
                   showExportedModal,
+                  setShowExportedModal,
                   hasMigratedSharedProject,
+                  viewingReleaseNotes,
                   setViewingReleaseNotes,
                 }}
               />
-            )}
-            <Switch>
-              {/* Add new routes in here */}
-              <Route path="/intro" component={IntroScreen} />
-              <Route path="/register" component={CreateProfilePage} />
-              <Route path="/dashboard" component={Dashboard} />
-              <Route path="/project/:projectId" component={ProjectView} />
-              <Route
-                path="/run-update"
-                render={() => (
-                  <VersionUpdateLeaving
-                    updateVersionInfo={updateVersionInfo}
-                    triggerAMigrationCheck={
-                      finishMigrationChecker.triggerACheck
-                    }
-                  />
-                )}
-              />
-              <Route
-                path="/finish-update"
-                render={() => (
-                  <VersionUpdateEntering
-                    hasCheckedForMigration={finishMigrationChecker.hasChecked}
-                    migrationData={finishMigrationChecker.dataForNeedsMigration}
-                    migrationDataFileName={
-                      finishMigrationChecker.migrationDataFileName
-                    }
-                  />
-                )}
-              />
-              <Route path="/" render={() => <Redirect to="/dashboard" />} />
-            </Switch>
-
-            <GlobalModals
-              {...{
-                whoami,
-                activeProjectMeta,
-                projectId,
-                agentAddress,
-                navigationPreference,
-                setNavigationPreference,
-                keyboardNavigationPreference,
-                setKeyboardNavigationPreference,
-                showProfileEditForm,
-                setShowProfileEditForm,
-                showPreferences,
-                setShowPreferences,
-                showProjectSettingsModal,
-                setShowProjectSettingsOpen,
-                inviteMembersModalShowing,
-                openInviteMembersModal,
-                hideInviteMembersModal,
-                onProfileSubmit,
-                showUpdateBar,
-                showUpdateModal,
-                onCloseUpdateModal,
-                updateVersionInfo,
-                exportedProjectName,
-                showExportedModal,
-                setShowExportedModal,
-                hasMigratedSharedProject,
-                viewingReleaseNotes,
-                setViewingReleaseNotes,
-              }}
-            />
-            {/* Loading Screen if no user agent, and also during checking whether migration is necessary */}
-            {!(agentAddress && finishMigrationChecker.hasChecked) && (
-              <LoadingScreen />
-            )}
-            {redirToIntro && <Redirect to="/intro" />}
-            {redirToFinishMigration && <Redirect to="/finish-update" />}
-            {agentAddress && whoami && (
-              <Footer
-                agentAddress={agentAddress}
-                hiddenAchievedOutcomes={hiddenAchievedOutcomes}
-                hiddenSmallOutcomes={hiddenSmallOutcomes}
-                showSmallOutcomes={showSmallOutcomes}
-                hideSmallOutcomes={hideSmallOutcomes}
-                showAchievedOutcomes={showAchievedOutcomes}
-                hideAchievedOutcomes={hideAchievedOutcomes}
-                selectedLayeringAlgo={selectedLayeringAlgo}
-                setSelectedLayeringAlgo={setSelectedLayeringAlgo}
-              />
-            )}
-          </Router>
-        </UpdateModalContext.Provider>
-      </ErrorBoundaryScreen>
-    </div>
+              {/* Loading Screen if no user agent, and also during checking whether migration is necessary */}
+              {!(agentAddress && finishMigrationChecker.hasChecked) && (
+                <LoadingScreen />
+              )}
+              {redirToIntro && <Redirect to="/intro" />}
+              {redirToFinishMigration && <Redirect to="/finish-update" />}
+              {agentAddress && whoami && (
+                <Footer
+                  agentAddress={agentAddress}
+                  hiddenAchievedOutcomes={hiddenAchievedOutcomes}
+                  hiddenSmallOutcomes={hiddenSmallOutcomes}
+                  showSmallOutcomes={showSmallOutcomes}
+                  hideSmallOutcomes={hideSmallOutcomes}
+                  showAchievedOutcomes={showAchievedOutcomes}
+                  hideAchievedOutcomes={hideAchievedOutcomes}
+                  selectedLayeringAlgo={selectedLayeringAlgo}
+                  setSelectedLayeringAlgo={setSelectedLayeringAlgo}
+                />
+              )}
+            </Router>
+          </UpdateModalContext.Provider>
+        </ErrorBoundaryScreen>
+      </div>
+      {networkInfoOpen && <NetworkInfo />}
+    </>
   )
 }
 
