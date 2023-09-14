@@ -3,10 +3,10 @@ import { AppWebsocket, AdminWebsocket } from '@holochain/client'
 // export for use by holochainMiddleware (redux)
 
 // @ts-ignore
-export const APP_WS_URL = `ws://localhost:${__APP_PORT__}`
+export const APP_WS_URL = new URL(`ws://localhost:${__APP_PORT__}`)
 
 // @ts-ignore
-const ADMIN_WS_URL = `ws://localhost:${__ADMIN_PORT__}`
+const ADMIN_WS_URL = new URL(`ws://localhost:${__ADMIN_PORT__}`)
 
 let appWs: AppWebsocket
 let appWsPromise: Promise<AppWebsocket>
