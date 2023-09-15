@@ -149,11 +149,12 @@ const App: React.FC<AppProps> = ({
     }
   }, [fileDownloaded, setFileDownloaded])
 
+  // show the update bar if there's a new release
   useEffect(() => {
-    if (updateVersionInfo) {
+    if (updateVersionInfo.newReleaseVersion) {
       setShowUpdateBar(true)
     }
-  }, [JSON.stringify(updateVersionInfo)])
+  }, [updateVersionInfo.newReleaseVersion])
 
   useEffect(() => {
     // add event listener for pressing the 'i' key with the ctrl key
@@ -327,7 +328,7 @@ const App: React.FC<AppProps> = ({
           </UpdateModalContext.Provider>
         </ErrorBoundaryScreen>
       </div>
-      {networkInfoOpen && <NetworkInfo />}
+      {networkInfoOpen && <NetworkInfo versionInfo={updateVersionInfo} />}
     </>
   )
 }

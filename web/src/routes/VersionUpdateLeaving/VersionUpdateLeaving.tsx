@@ -6,6 +6,7 @@ import exportProjectsData from '../../migrating/export'
 import { useStore } from 'react-redux'
 import MigrationProgress from '../../components/MigrationProgress/MigrationProgress'
 import { AllProjectsDataExport } from 'zod-models'
+import { VersionInfo } from '../../hooks/useVersionChecker'
 
 const checkIfExportNeeded = (currentVersion: string, toVersion: string) => {
   // compare
@@ -48,15 +49,7 @@ export type VersionUpdateLeavingProps = {
   // this prop is for shortcutting the migration process
   // for testing purposes
   triggerAMigrationCheck: () => void
-  updateVersionInfo?: {
-    currentVersion: string
-    integrityVersion: number
-    platform: string
-    arch: string
-    newReleaseVersion: string
-    releaseNotes: string
-    sizeForPlatform: string
-  }
+  updateVersionInfo: VersionInfo
 }
 
 const VersionUpdateLeaving: React.FC<VersionUpdateLeavingProps> = ({
@@ -128,7 +121,7 @@ const VersionUpdateLeaving: React.FC<VersionUpdateLeavingProps> = ({
 
   // initiation effect
   useEffect(() => {
-    if (updateVersionInfo && !hasStarted) {
+    if (updateVersionInfo.newReleaseVersion && !hasStarted) {
       setHasStarted(true)
       // first determine, is this a 'hard update' or a 'soft update',
       // meaning does it require migrating data between different integrity versions?

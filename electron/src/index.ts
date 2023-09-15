@@ -18,6 +18,7 @@ import { devOptions, prodOptions, stateSignalToText } from './holochain'
 import {
   BINARY_PATHS,
   INTEGRITY_VERSION_NUMBER,
+  KEYSTORE_VERSION_NUMBER,
   PREV_VER_USER_DATA_MIGRATION_FILE_PATHS,
   PROJECTS_HAPP_PATH,
   USER_DATA_MIGRATION_FILE_PATH,
@@ -219,6 +220,7 @@ ipcMain.handle('getVersion', () => {
     platform: process.platform,
     arch: process.arch,
     integrityVersion: INTEGRITY_VERSION_NUMBER,
+    keystoreFolderVersion: KEYSTORE_VERSION_NUMBER,
   }
 })
 

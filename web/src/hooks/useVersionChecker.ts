@@ -36,7 +36,9 @@ const checkForGithubUpdates = async (
         findGithubAssetForPlatformArch(platform, arch)
       )
       if (!asset) {
-        console.log(`while checking for version updates, an asset could not be found for platform ${platform} + arch ${arch}`)
+        console.log(
+          `while checking for version updates, an asset could not be found for platform ${platform} + arch ${arch}`
+        )
         return null
       }
       return {
@@ -96,19 +98,23 @@ function isVersionOutOfDate(
   return false
 }
 
-export default function useVersionChecker(
-  isTest?: boolean
-): {
+export type VersionInfo = {
   currentVersion: string
   integrityVersion: number
+  keystoreFolderVersion: number
   platform: string
   arch: string
   newReleaseVersion: string
   releaseNotes: string
   sizeForPlatform: string
-} {
+}
+
+export default function useVersionChecker(
+  isTest?: boolean
+): VersionInfo {
   const [currentVersion, setCurrentVersion] = useState('')
   const [integrityVersion, setIntegrityVersion] = useState<number>(null)
+  const [keystoreFolderVersion, setKeystoreFolderVersion] = useState<number>(null)
   const [platform, setPlatform] = useState('')
   const [arch, setArch] = useState('')
   const [newReleaseVersion, setNewReleaseVersion] = useState('')
@@ -124,11 +130,13 @@ export default function useVersionChecker(
           (currentVersionInfo: {
             version: string
             integrityVersion: number
+            keystoreFolderVersion: number
             platform: string
             arch: string
           }) => {
             setCurrentVersion(currentVersionInfo.version)
             setIntegrityVersion(currentVersionInfo.integrityVersion)
+            setKeystoreFolderVersion(currentVersionInfo.keystoreFolderVersion)
             setPlatform(currentVersionInfo.platform)
             setArch(currentVersionInfo.arch)
           }
@@ -163,15 +171,14 @@ export default function useVersionChecker(
     }
   }, [isTest, currentVersion, platform, arch])
 
-  return newReleaseVersion
-    ? {
-        currentVersion,
-        integrityVersion,
-        platform,
-        arch,
-        newReleaseVersion,
-        releaseNotes,
-        sizeForPlatform,
-      }
-    : null
+  return {
+    currentVersion,
+    integrityVersion,
+    keystoreFolderVersion,
+    platform,
+    arch,
+    newReleaseVersion,
+    releaseNotes,
+    sizeForPlatform,
+  }
 }

@@ -13,13 +13,10 @@ import UpdateModal, {
   ViewingReleaseNotes,
 } from '../components/UpdateModal/UpdateModal'
 import {
-  COORDINATES,
   KeyboardNavigationPreference,
-  MODAL,
-  MOUSE,
   NavigationPreference,
-  TRACKPAD,
 } from '../redux/ephemeral/local-preferences/reducer'
+import { VersionInfo } from '../hooks/useVersionChecker'
 
 export type GlobalModalsProps = {
   whoami: WireRecord<Profile>
@@ -45,11 +42,7 @@ export type GlobalModalsProps = {
   hasMigratedSharedProject: boolean
   showUpdateModal: boolean
   onCloseUpdateModal: () => void
-  updateVersionInfo: {
-    newReleaseVersion: string
-    releaseNotes: string
-    sizeForPlatform: string
-  }
+  updateVersionInfo: VersionInfo
   // single manual project export
   exportedProjectName: string
   showExportedModal: boolean
@@ -147,9 +140,9 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         show={showUpdateModal}
         onClose={onCloseUpdateModal}
         releaseTag={
-          updateVersionInfo ? updateVersionInfo.newReleaseVersion : ''
+          updateVersionInfo.newReleaseVersion
         }
-        releaseSize={updateVersionInfo ? updateVersionInfo.sizeForPlatform : ''}
+        releaseSize={updateVersionInfo.sizeForPlatform}
         heading={
           viewingReleaseNotes === ViewingReleaseNotes.MainMessage
             ? 'Update to newest version of Acorn'
@@ -184,7 +177,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
             )}
             {viewingReleaseNotes === ViewingReleaseNotes.ReleaseNotes && (
               <ReactMarkdown>
-                {updateVersionInfo ? updateVersionInfo.releaseNotes : ''}
+                {updateVersionInfo.releaseNotes}
               </ReactMarkdown>
             )}
           </>

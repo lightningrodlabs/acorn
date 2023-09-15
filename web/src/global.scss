@@ -36,8 +36,10 @@ body {
   display: flex;
   flex-direction: column;
 
+  // corresponds with NetworkInfo component
+  // and NetworkInfo.scss
   &.network-info-open {
-    width: 80vw;
+    width: 70vw;
     float: left;
   }
 }

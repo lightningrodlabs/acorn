@@ -1,7 +1,9 @@
 .network-info {
   display: flex;
   flex-direction: column;
-  width: 20vw;
+  // corresponds with .network-info-open styling
+  // in global.scss
+  width: 30vw;
   height: 100vh;
   overflow-y: scroll;
   border-left: 1px solid #999;

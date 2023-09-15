@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react'
 import './NetworkInfo.scss'
 import { getAdminWs } from '../../hcWebsockets'
 import ReactJsonView from 'react-json-view'
+import { VersionInfo } from '../../hooks/useVersionChecker'
 
 export type NetworkInfoProps = {
-  // proptypes
+  versionInfo: VersionInfo
 }
 
 const NetworkInfo: React.FC<NetworkInfoProps> = (
   {
-    // prop declarations
+    versionInfo
   }
 ) => {
   const [networkStats, setNetworkStats] = useState({})
@@ -29,7 +30,21 @@ const NetworkInfo: React.FC<NetworkInfoProps> = (
 
   return (
     <div className="network-info">
-      <div className="network-info-context">updates every 5 seconds</div>
+      <div className="network-info-context">
+        Acorn {versionInfo.currentVersion}
+        <br />
+        Databases/integrity folder version: {versionInfo.integrityVersion}
+        <br />
+        Keystore folder version: {versionInfo.keystoreFolderVersion}
+        <br />
+        holochain version 0.2.2
+        <br />
+        bootstrap: https://bootstrap.holo.host
+        <br />
+        signal: wss://signal.holo.host
+        <br />
+        updates every 5 seconds
+      </div>
       <ReactJsonView src={networkStats} />
     </div>
   )
