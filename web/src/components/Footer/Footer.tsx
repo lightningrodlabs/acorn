@@ -92,7 +92,7 @@ const Footer: React.FC<FooterProps> = ({
       const appWs = await getAppWs()
       // TODO: check `last_time_queried` parameter to see if its useful
       const networkInfo = await appWs.networkInfo({
-        agent_pub_key: agentAddress as any,
+        // agent_pub_key: agentAddress as any,
         dnas: dnas as any,
       })
 

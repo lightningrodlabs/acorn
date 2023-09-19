@@ -15,18 +15,18 @@ const NetworkInfo: React.FC<NetworkInfoProps> = (
 ) => {
   const [networkStats, setNetworkStats] = useState({})
 
-  useEffect(() => {
-    const getNetworkStats = async () => {
-      const adminWs = await getAdminWs()
-      const stats = await adminWs.dumpNetworkStats()
-      setNetworkStats(JSON.parse(stats))
-    }
-    getNetworkStats()
+  // useEffect(() => {
+  //   const getNetworkStats = async () => {
+  //     const adminWs = await getAdminWs()
+  //     const stats = await adminWs.dumpFullState()
+  //     setNetworkStats(JSON.parse(stats))
+  //   }
+  //   getNetworkStats()
 
-    // repeat every 5 seconds
-    const interval = setInterval(() => getNetworkStats(), 5000)
-    return () => clearInterval(interval)
-  }, [])
+  //   // repeat every 5 seconds
+  //   const interval = setInterval(() => getNetworkStats(), 5000)
+  //   return () => clearInterval(interval)
+  // }, [])
 
   return (
     <div className="network-info">
@@ -37,15 +37,13 @@ const NetworkInfo: React.FC<NetworkInfoProps> = (
         <br />
         Keystore folder version: {versionInfo.keystoreFolderVersion}
         <br />
-        holochain version 0.2.2
+        holochain version 0.1.6
         <br />
         bootstrap: https://bootstrap.holo.host
         <br />
-        signal: wss://signal.holo.host
-        <br />
-        updates every 5 seconds
+        proxy:  kitsune-proxy://f3gH2VMkJ4qvZJOXx0ccL_Zo5n-s_CnBjSzAsEHHDCA/kitsune-quic/h/137.184.142.208/p/5788/--
       </div>
-      <ReactJsonView src={networkStats} />
+      {/* <ReactJsonView src={networkStats} /> */}
     </div>
   )
 }

@@ -1,9 +1,6 @@
-import * as path from 'path'
-import { app } from 'electron'
 import {
   ElectronHolochainOptions,
   StateSignal,
-  PathOptions,
 } from '@lightningrodlabs/electron-holochain'
 import { DATASTORE_PATH, KEYSTORE_PATH, PROFILES_HAPP_PATH } from './paths'
 
@@ -53,6 +50,8 @@ const devOptions: ElectronHolochainOptions = {
   keystorePath: KEYSTORE_PATH,
   passphrase: 'test-passphrase',
   bootstrapUrl: 'https://bootstrap.holo.host',
+  // given by Eric
+  proxyUrl: 'kitsune-proxy://f3gH2VMkJ4qvZJOXx0ccL_Zo5n-s_CnBjSzAsEHHDCA/kitsune-quic/h/137.184.142.208/p/5788/--',
 }
 const prodOptions: ElectronHolochainOptions = {
   happPath: PROFILES_HAPP_PATH, // preload
@@ -63,6 +62,8 @@ const prodOptions: ElectronHolochainOptions = {
   keystorePath: KEYSTORE_PATH,
   passphrase: 'test-passphrase',
   bootstrapUrl: 'https://bootstrap.holo.host',
+  // given by Eric
+  proxyUrl: 'kitsune-proxy://f3gH2VMkJ4qvZJOXx0ccL_Zo5n-s_CnBjSzAsEHHDCA/kitsune-quic/h/137.184.142.208/p/5788/--',
 }
 
 export { devOptions, prodOptions }
