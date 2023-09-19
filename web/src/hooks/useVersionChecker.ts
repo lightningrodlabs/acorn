@@ -82,8 +82,8 @@ function isVersionOutOfDate(
   )
     return false
 
-  const currentVersionParts = currentVersion.split('.')
-  const latestVersionParts = latestVersion.split('.')
+  const currentVersionParts = currentVersion.split('.').map(Number)
+  const latestVersionParts = latestVersion.split('.').map(Number)
   if (currentVersionParts[0] < latestVersionParts[0]) {
     return true
   } else if (currentVersionParts[0] === latestVersionParts[0]) {
