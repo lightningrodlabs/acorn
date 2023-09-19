@@ -1,6 +1,6 @@
 {
   "name": "acorn",
-  "version": "9.2.0-alpha",
+  "version": "10.0.0-alpha",
   "description": "Open source peer-to-peer project management for software teams",
   "main": "dist/index.js",
   "scripts": {
