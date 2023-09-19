@@ -88,7 +88,7 @@ The repo is here: https://github.com/lightningrodlabs/acorn-happ.
 
 After making changes, and performing a release, just edit [./scripts/download-happs.sh](./scripts/download-happs.sh) to point to the new release, and then run `npm run download-happs` to download the new release.
 
-As mentioned above, INTENGIRTY_VERSION_NUMBER should be incremented when the happ release has been updated.
+As mentioned above, INTEGRITY_VERSION_NUMBER should be incremented when the happ release has been updated.
 
 ## Dependencies
 
