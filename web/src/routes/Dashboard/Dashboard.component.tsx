@@ -226,14 +226,16 @@ const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           <div className="my-projects-content">
-            {pendingProjects.length > 0 && (
+            {/* {pendingProjects.length > 0 && (
               <PendingProjects
                 pendingProjects={pendingProjects}
                 fetchProjectMeta={fetchProjectMeta}
                 setPendingProjects={setPendingProjects}
                 uninstallProject={uninstallProject}
               />
-            )}
+            )} */}
+            {/* TODO: make rendering for pending projects conditional */}
+            <PendingProjects />
             {!hasFetchedForAllProjects &&
               cells.map((cellId) => (
                 <DashboardListProjectLoading key={'dlpl-key' + cellId} />

@@ -1,10 +1,13 @@
 .dashboard-list-project-wrapper {
   display: flex;
   flex-direction: column;
-  border-bottom: solid 0.15rem var(--bg-color-canvas);
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
+  // border-bottom: solid 0.15rem var(--bg-color-canvas);
+  padding: 1.25rem;
   position: relative;
+  background-color: var(--bg-color-secondary-read-only);
+  border-radius: 1.25rem;
+  margin: 0.5rem 0;
+  box-shadow: 0 0 1.25rem var(--shadow-color-read-only);
 
   // when update is required to access the shared project
   .project-access-blocked-layer {
@@ -30,9 +33,9 @@
       line-height: 68px;
 
       .dashboard-list-project-image-bg {
-        border-radius: 5px;
-        width: 68px;
-        height: 68px;
+        border-radius: 0.5rem;
+        width: 4.25rem;
+        height: 4.25rem;
         background-size: cover;
         background-repeat: no-repeat;
         font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
@@ -59,7 +62,11 @@
           color: var(--text-color-primary);
           display: block;
           cursor: pointer;
-          transition: color 0.2s ease-in;
+          transition: 0.2s color ease;
+
+          &:hover {
+            color: var(--text-color-secondary);
+          }
 
           &.placeholder {
             background-color: #f1f1f1;
@@ -199,10 +206,6 @@
       }
     }
   }
-}
-
-.dashboard-list-project-name:hover {
-  color: var(--text-color-link);
 }
 
 .dashboard-list-project-member-count {
