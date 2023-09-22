@@ -12,7 +12,6 @@ import drawConnection, {
 import drawOverlay from './drawOverlay'
 import drawSelectBox from './drawSelectBox'
 import drawEntryPoints from './drawEntryPoints'
-import { RELATION_AS_CHILD } from '../redux/ephemeral/outcome-connector/actions'
 import { getOutcomeHeight, getOutcomeWidth } from './dimensions'
 import {
   ComputedOutcome,
@@ -202,7 +201,7 @@ function render(
         allOutcomeDimensions[connection.childActionHash],
         parentCoords,
         allOutcomeDimensions[connection.parentActionHash],
-        RELATION_AS_CHILD
+        RelationInput.ExistingOutcomeAsChild
       )
       const isHovered = hoveredConnectionActionHash === connection.actionHash
       const isSelected = selectedConnections.includes(connection.actionHash)

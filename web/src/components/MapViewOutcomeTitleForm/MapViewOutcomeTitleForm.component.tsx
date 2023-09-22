@@ -26,21 +26,15 @@ export type MapViewOutcomeTitleFormOwnProps = {
 
 export type MapViewOutcomeTitleFormConnectorStateProps = {
   activeAgentPubKey: AgentPubKeyB64
-  scale
+  scale: number
   // the value of the text input
   content: string
   // coordinates in css terms for the box
   leftConnectionXPosition: number
   topConnectionYPosition: number
-  // (optional) the address of an Outcome to connect this Outcome to
-  // in the case of creating an Outcome
-  fromAddress: ActionHashB64
-  // (optional) the relation (relation_as_{child|parent}) between the two
-  // in the case of creating an Outcome
-  relation: RelationInput
+  maybeLinkedOutcome: Option<LinkedOutcomeDetails>
   // (optional) the address of an existing connection that
   // indicates this Outcome as the child of another (a.k.a has a parent)
-  // ASSUMPTION: one parent
   existingParentConnectionAddress: ActionHashB64
 }
 
@@ -63,8 +57,7 @@ const MapViewOutcomeTitleForm: React.FC<MapViewOutcomeTitleFormProps> = ({
   activeAgentPubKey,
   scale,
   content,
-  fromAddress,
-  relation,
+  maybeLinkedOutcome,
   existingParentConnectionAddress,
   leftConnectionXPosition,
   topConnectionYPosition,
@@ -147,7 +140,8 @@ const MapViewOutcomeTitleForm: React.FC<MapViewOutcomeTitleFormProps> = ({
         isImported: false,
         githubLink: '',
       },
-      fromAddress ? { outcomeActionHash: fromAddress, relation, siblingOrder: 0 } : null
+      // could be null and that's ok
+      maybeLinkedOutcome
     )
   }
 

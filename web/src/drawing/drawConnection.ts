@@ -4,10 +4,6 @@ import {
   SELECTED_COLOR,
 } from '../styles'
 import draw from './draw'
-import {
-  RELATION_AS_PARENT,
-  RELATION_AS_CHILD,
-} from '../redux/ephemeral/outcome-connector/actions'
 import { RelationInput } from '../types'
 
 export function calculateConnectionCoordsByOutcomeCoords(
@@ -23,13 +19,13 @@ export function calculateConnectionCoordsByOutcomeCoords(
     parentCoords: { x: number; y: number },
     childCoords: { x: number; y: number }
 
-  if (relationAs === RELATION_AS_CHILD) {
+  if (relationAs === RelationInput.ExistingOutcomeAsChild) {
     childCoords = fromCoords
     childOutcomeWidth = fromDimensions.width
     parentCoords = toCoords
     parentOutcomeWidth = toDimensions.width
     parentOutcomeHeight = toDimensions.height
-  } else if (relationAs === RELATION_AS_PARENT) {
+  } else if (relationAs === RelationInput.ExistingOutcomeAsParent) {
     childCoords = toCoords
     childOutcomeWidth = toDimensions.width
     parentCoords = fromCoords

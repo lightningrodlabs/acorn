@@ -1,13 +1,73 @@
 import React from 'react'
 import './OutcomeConnectors.scss'
 import { CONNECTOR_VERTICAL_SPACING } from '../../drawing/dimensions'
-import {
-  RELATION_AS_CHILD,
-  RELATION_AS_PARENT,
-} from '../../redux/ephemeral/outcome-connector/actions'
 import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import handleConnectionConnectMouseUp from '../../redux/ephemeral/outcome-connector/handler'
 import { calculateValidChildren, calculateValidParents } from '../../tree-logic'
+import {
+  ComputedOutcome,
+  Connection,
+  LinkedOutcomeDetails,
+  RelationInput,
+} from '../../types'
+import { OutcomeConnectorFromPayload } from '../../redux/ephemeral/outcome-connector/actions'
+import {
+  ActionHashB64,
+  CellIdString,
+  Option,
+  WithActionHash,
+} from '../../types/shared'
+import { ViewportState } from '../../redux/ephemeral/viewport/state-type'
+import {
+  CoordinatesState,
+  DimensionsState,
+} from '../../redux/ephemeral/layout/state-type'
+
+const { ExistingOutcomeAsChild, ExistingOutcomeAsParent } = RelationInput
+
+export type OutcomeConnectorCommonStateProps = {
+  activeProject: CellIdString
+  translate: ViewportState['translate']
+  zoomLevel: ViewportState['scale']
+  connections: WithActionHash<Connection>[]
+  maybeLinkedOutcome: Option<LinkedOutcomeDetails>
+  toAddress: ActionHashB64
+}
+
+export type OutcomeConnectorCommonDispatchProps = {
+  setOutcomeConnectorFrom: (payload: OutcomeConnectorFromPayload) => void
+  setOutcomeConnectorTo: (address: ActionHashB64) => void
+  dispatch: any
+}
+
+// Single
+export type OutcomeConnectorProps = OutcomeConnectorCommonStateProps &
+  OutcomeConnectorCommonDispatchProps & {
+    ownExistingParentConnectionAddress: ActionHashB64
+    presetExistingParentConnectionAddress: ActionHashB64
+    address: ActionHashB64
+    outcomeCoordinates: CoordinatesState[ActionHashB64]
+    outcomeDimensions: DimensionsState[ActionHashB64]
+    isCollapsed: boolean
+    outcomeActionHashes: ActionHashB64[]
+  }
+
+// Plural
+export type OutcomeConnectorsStateProps = OutcomeConnectorCommonStateProps & {
+  collapsedOutcomes: {
+    [outcomeActionHash: string]: boolean
+  }
+  coordinates: CoordinatesState
+  dimensions: DimensionsState
+  existingParentConnectionAddress: ActionHashB64
+  connectorAddresses: ActionHashB64[]
+}
+export type OutcomeConnectorsProps = OutcomeConnectorsStateProps &
+  OutcomeConnectorCommonDispatchProps & {
+    outcomes: {
+      [actionHash: ActionHashB64]: ComputedOutcome
+    }
+  }
 
 const OutcomeConnectorHtml = ({
   active,
@@ -34,23 +94,28 @@ const OutcomeConnectorHtml = ({
 
 const OutcomeConnector = ({
   activeProject,
+  maybeLinkedOutcome,
+  toAddress,
+  setOutcomeConnectorFrom,
+  setOutcomeConnectorTo,
+  connections,
+  translate,
+  zoomLevel,
+  dispatch,
+  // specific to this Outcome Connector
   ownExistingParentConnectionAddress,
   presetExistingParentConnectionAddress,
-  fromAddress,
-  relation,
-  toAddress,
   address,
   outcomeCoordinates,
   outcomeDimensions,
   isCollapsed,
-  setOutcomeConnectorFrom,
-  setOutcomeConnectorTo,
-  connections,
   outcomeActionHashes,
-  translate,
-  zoomLevel,
-  dispatch,
-}) => {
+}: OutcomeConnectorProps) => {
+  if (!maybeLinkedOutcome) {
+    return null
+  }
+  const { outcomeActionHash: fromAddress, relation } = maybeLinkedOutcome
+
   // calculate the coordinates on the page, based
   // on what the coordinates on the canvas would be
   const { x: topConnectorLeft, y: topConnectorTop } = coordsCanvasToPage(
@@ -74,27 +139,31 @@ const OutcomeConnector = ({
   )
 
   const topConnectorActive =
-    (address === fromAddress && relation === RELATION_AS_CHILD) ||
-    (toAddress && address === toAddress && relation === RELATION_AS_PARENT)
+    (address === fromAddress && relation === ExistingOutcomeAsChild) ||
+    (toAddress && address === toAddress && relation === ExistingOutcomeAsParent)
   const bottomConnectorActive =
-    (address === fromAddress && relation === RELATION_AS_PARENT) ||
-    (toAddress && address === toAddress && relation === RELATION_AS_CHILD)
+    (address === fromAddress && relation === ExistingOutcomeAsParent) ||
+    (toAddress && address === toAddress && relation === ExistingOutcomeAsChild)
 
   // a connection to this upper port would make this Outcome a child of the
   // current 'from' Outcome of the connection connector
   // if there is one
   const canShowTopConnector =
-    !bottomConnectorActive && (!relation || relation === RELATION_AS_PARENT)
+    !bottomConnectorActive &&
+    (!relation || relation === ExistingOutcomeAsParent)
 
   // a connection to this lower port would make this Outcome a parent of the current 'from' Outcome of the connection connector
   // if there is one
   const canShowBottomConnector =
     !topConnectorActive &&
-    (!relation || relation === RELATION_AS_CHILD) &&
+    (!relation || relation === ExistingOutcomeAsChild) &&
     !isCollapsed
 
-  // shared code for mouse event handlers
-  const connectionConnectMouseDown = (direction, validity) => (event: React.MouseEvent) => {
+  // generalized mouse down handler
+  const connectionConnectMouseDown = (
+    direction: RelationInput,
+    validity: typeof calculateValidParents
+  ) => (event: React.MouseEvent) => {
     if (!fromAddress) {
       // if the action is being performed from
       // a top port, then there's two options:
@@ -103,35 +172,42 @@ const OutcomeConnector = ({
       // if the action is a bottom port, then
       // definitely don't override any existing connection
       // ASSUMPTION: one parent
-      const connectionAddressToOverride = (direction === RELATION_AS_CHILD && !event.shiftKey) ? ownExistingParentConnectionAddress : undefined
-      setOutcomeConnectorFrom(
-        address,
-        direction,
-        validity(address, connections, outcomeActionHashes),
-        connectionAddressToOverride
-      )
+      const connectionAddressToOverride =
+        direction === ExistingOutcomeAsChild && !event.shiftKey
+          ? ownExistingParentConnectionAddress
+          : undefined
+      setOutcomeConnectorFrom({
+        maybeLinkedOutcome: {
+          outcomeActionHash: address,
+          relation: direction,
+          siblingOrder: 0, // TODO?
+        },
+        existingParentConnectionAddress: connectionAddressToOverride,
+        validToAddresses: validity(address, connections, outcomeActionHashes),
+      })
     }
   }
+
+  // mouse up handler
   const connectionConnectMouseUp = () => {
     handleConnectionConnectMouseUp(
-      fromAddress,
-      relation,
+      maybeLinkedOutcome,
       toAddress,
-      // ASSUMPTION: one parent
       presetExistingParentConnectionAddress,
       activeProject,
       dispatch
     )
   }
+  // spefific mousedown handlers
   const topConnectorOnMouseDown = connectionConnectMouseDown(
-    RELATION_AS_CHILD,
+    ExistingOutcomeAsChild,
     calculateValidParents
   )
   const bottomConnectorOnMouseDown = connectionConnectMouseDown(
-    RELATION_AS_PARENT,
+    ExistingOutcomeAsParent,
     calculateValidChildren
   )
-
+  // mouseovers
   const connectorOnMouseOver = () => {
     // cannot set 'to' the very same Outcome
     if (fromAddress && address !== fromAddress) setOutcomeConnectorTo(address)
@@ -179,8 +255,7 @@ const OutcomeConnectors = ({
   connections,
   coordinates,
   dimensions,
-  fromAddress,
-  relation,
+  maybeLinkedOutcome,
   toAddress,
   existingParentConnectionAddress,
   connectorAddresses,
@@ -188,48 +263,53 @@ const OutcomeConnectors = ({
   setOutcomeConnectorFrom,
   setOutcomeConnectorTo,
   dispatch,
-}) => {
+}: OutcomeConnectorsProps) => {
   // convert from object to array
   const outcomeActionHashes = Object.keys(outcomes)
-  return connectorAddresses.map((connectorAddress) => {
-    const outcomeCoordinates = coordinates[connectorAddress]
-    const outcomeDimensions = dimensions[connectorAddress]
-    const isCollapsed = collapsedOutcomes[connectorAddress]
-    // look for an existing connection that defines a parent
-    // of this Outcome, so that it can be deleted
-    // if it is to be changed and a new one added
-    const hasParent = connections.find(
-      (connection) => connection.childActionHash === connectorAddress
-    )
-    return (
-      <div key={connectorAddress}>
-        {outcomeCoordinates && outcomeDimensions && (
-          <OutcomeConnector
-            activeProject={activeProject}
-            connections={connections}
-            outcomeActionHashes={outcomeActionHashes}
-            fromAddress={fromAddress}
-            relation={relation}
-            toAddress={toAddress}
-            ownExistingParentConnectionAddress={
-              hasParent && hasParent.actionHash
-            }
-            presetExistingParentConnectionAddress={
-              existingParentConnectionAddress
-            }
-            address={connectorAddress}
-            setOutcomeConnectorFrom={setOutcomeConnectorFrom}
-            setOutcomeConnectorTo={setOutcomeConnectorTo}
-            outcomeCoordinates={outcomeCoordinates}
-            outcomeDimensions={outcomeDimensions}
-            dispatch={dispatch}
-            translate={translate}
-            zoomLevel={zoomLevel}
-            isCollapsed={isCollapsed}
-          />
-        )}
-      </div>
-    )
-  })
+  return (
+    <>
+      {connectorAddresses.map((connectorAddress) => {
+        const outcomeCoordinates = coordinates[connectorAddress]
+        const outcomeDimensions = dimensions[connectorAddress]
+        const isCollapsed = collapsedOutcomes[connectorAddress]
+        // look for an existing connection that defines a parent
+        // of this Outcome, so that it can be deleted
+        // if it is to be changed and a new one added
+        // ONLY do this if there is only one parent
+        const parents = connections.filter(
+          (connection) => connection.childActionHash === connectorAddress
+        )
+        const singularParent = parents.length === 1 ? parents[0] : undefined
+        return (
+          <div key={connectorAddress}>
+            {outcomeCoordinates && outcomeDimensions && (
+              <OutcomeConnector
+                activeProject={activeProject}
+                connections={connections}
+                outcomeActionHashes={outcomeActionHashes}
+                maybeLinkedOutcome={maybeLinkedOutcome}
+                toAddress={toAddress}
+                ownExistingParentConnectionAddress={
+                  singularParent && singularParent.actionHash
+                }
+                presetExistingParentConnectionAddress={
+                  existingParentConnectionAddress
+                }
+                address={connectorAddress}
+                setOutcomeConnectorFrom={setOutcomeConnectorFrom}
+                setOutcomeConnectorTo={setOutcomeConnectorTo}
+                outcomeCoordinates={outcomeCoordinates}
+                outcomeDimensions={outcomeDimensions}
+                dispatch={dispatch}
+                translate={translate}
+                zoomLevel={zoomLevel}
+                isCollapsed={isCollapsed}
+              />
+            )}
+          </div>
+        )
+      })}
+    </>
+  )
 }
 export default OutcomeConnectors

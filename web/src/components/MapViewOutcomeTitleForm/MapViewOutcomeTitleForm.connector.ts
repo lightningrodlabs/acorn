@@ -8,7 +8,7 @@ import {
   closeOutcomeForm,
   updateContent,
 } from '../../redux/ephemeral/outcome-form/actions'
-import MapViewOutcomeTitleForm, { MapViewOutcomeTitleFormConnectorDispatchProps, MapViewOutcomeTitleFormOwnProps } from './MapViewOutcomeTitleForm.component'
+import MapViewOutcomeTitleForm, { MapViewOutcomeTitleFormConnectorDispatchProps, MapViewOutcomeTitleFormConnectorStateProps, MapViewOutcomeTitleFormOwnProps } from './MapViewOutcomeTitleForm.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
@@ -23,7 +23,7 @@ import { LAYOUT_ANIMATION_TYPICAL_MS } from '../../constants'
 // to pass it to a component for rendering, as specific properties that
 // that component expects
 
-function mapStateToProps(state: RootState) {
+function mapStateToProps(state: RootState): MapViewOutcomeTitleFormConnectorStateProps {
   const {
     ui: {
       viewport: { scale },
@@ -32,27 +32,16 @@ function mapStateToProps(state: RootState) {
         content,
         leftConnectionXPosition,
         topConnectionYPosition,
-        // these three all relate to each other
-        fromAddress,
-        relation,
-        // ASSUMPTION: one parent
-        existingParentConnectionAddress, // this is optional though
+        maybeLinkedOutcome,
+        existingParentConnectionAddress,
       },
     },
   } = state
 
   return {
+    maybeLinkedOutcome, 
     activeAgentPubKey: state.agentAddress,
     scale,
-    // optional, the address of the Outcome that we are relating this to
-    fromAddress,
-    // optional, the relation (relation_as_{child|parent})
-    // between the potential fromAddress Outcome
-    // and a new Outcome to be created
-    relation,
-    // optional, the address of an existing connection that
-    // indicates this Outcome as the child of another (a.k.a has a parent)
-    // ASSUMPTION: one parent
     existingParentConnectionAddress,
     content,
     leftConnectionXPosition: leftConnectionXPosition,
