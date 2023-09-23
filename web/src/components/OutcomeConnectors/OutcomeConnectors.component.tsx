@@ -1,235 +1,95 @@
 import React from 'react'
 import './OutcomeConnectors.scss'
-import { CONNECTOR_VERTICAL_SPACING } from '../../drawing/dimensions'
+import { ActionHashB64 } from '../../types/shared'
 import {
-  RELATION_AS_CHILD,
-  RELATION_AS_PARENT,
-} from '../../redux/ephemeral/outcome-connector/actions'
-import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
-import handleConnectionConnectMouseUp from '../../redux/ephemeral/outcome-connector/handler'
-import { calculateValidChildren, calculateValidParents } from '../../tree-logic'
+  CoordinatesState,
+  DimensionsState,
+} from '../../redux/ephemeral/layout/state-type'
+import SmartOutcomeConnector, {
+  SmartOutcomeConnectorStateProps,
+  SmartOutcomeConnectorDispatchProps,
+} from '../SmartOutcomeConnector/SmartOutcomeConnector'
 
-const OutcomeConnectorHtml = ({
-  active,
-  pixelTop,
-  pixelLeft,
-  onMouseDown,
-  onMouseUp,
-  onMouseOver,
-  onMouseOut,
-}) => {
-  return (
-    <div
-      className={`outcome-connector ${active ? 'active' : ''}`}
-      style={{ top: `${pixelTop}px`, left: `${pixelLeft}px` }}
-      onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
-      onMouseOver={onMouseOver}
-      onMouseOut={onMouseOut}
-    >
-      <div className="outcome-connector-blue-dot" />
-    </div>
-  )
+// extends SmartOutcomeConnector
+export type OutcomeConnectorsStateProps = SmartOutcomeConnectorStateProps & {
+  collapsedOutcomes: {
+    [outcomeActionHash: string]: boolean
+  }
+  coordinates: CoordinatesState
+  dimensions: DimensionsState
+  existingParentConnectionAddress: ActionHashB64
+  visibleOutcomesAddresses: ActionHashB64[]
 }
 
-const OutcomeConnector = ({
-  activeProject,
-  ownExistingParentConnectionAddress,
-  presetExistingParentConnectionAddress,
-  fromAddress,
-  relation,
-  toAddress,
-  address,
-  outcomeCoordinates,
-  outcomeDimensions,
-  isCollapsed,
-  setOutcomeConnectorFrom,
-  setOutcomeConnectorTo,
-  connections,
-  outcomeActionHashes,
-  translate,
-  zoomLevel,
-  dispatch,
-}) => {
-  // calculate the coordinates on the page, based
-  // on what the coordinates on the canvas would be
-  const { x: topConnectorLeft, y: topConnectorTop } = coordsCanvasToPage(
-    {
-      x: outcomeCoordinates.x + outcomeDimensions.width / 2,
-      y: outcomeCoordinates.y - CONNECTOR_VERTICAL_SPACING,
-    },
-    translate,
-    zoomLevel
-  )
-  const { x: bottomConnectorLeft, y: bottomConnectorTop } = coordsCanvasToPage(
-    {
-      x: outcomeCoordinates.x + outcomeDimensions.width / 2,
-      y:
-        outcomeCoordinates.y +
-        outcomeDimensions.height +
-        CONNECTOR_VERTICAL_SPACING,
-    },
-    translate,
-    zoomLevel
-  )
+// extends SmartOutcomeConnector
+export type OutcomeConnectorsDispatchProps = SmartOutcomeConnectorDispatchProps
 
-  const topConnectorActive =
-    (address === fromAddress && relation === RELATION_AS_CHILD) ||
-    (toAddress && address === toAddress && relation === RELATION_AS_PARENT)
-  const bottomConnectorActive =
-    (address === fromAddress && relation === RELATION_AS_PARENT) ||
-    (toAddress && address === toAddress && relation === RELATION_AS_CHILD)
+export type OutcomeConnectorsProps = OutcomeConnectorsDispatchProps &
+  OutcomeConnectorsStateProps
 
-  // a connection to this upper port would make this Outcome a child of the
-  // current 'from' Outcome of the connection connector
-  // if there is one
-  const canShowTopConnector =
-    !bottomConnectorActive && (!relation || relation === RELATION_AS_PARENT)
-
-  // a connection to this lower port would make this Outcome a parent of the current 'from' Outcome of the connection connector
-  // if there is one
-  const canShowBottomConnector =
-    !topConnectorActive &&
-    (!relation || relation === RELATION_AS_CHILD) &&
-    !isCollapsed
-
-  // shared code for mouse event handlers
-  const connectionConnectMouseDown = (direction, validity) => (event: React.MouseEvent) => {
-    if (!fromAddress) {
-      // if the action is being performed from
-      // a top port, then there's two options:
-      // 1. if shiftKey is held, then allow multi-parenting
-      // 2. if not, then override any existing connection (re-parent)
-      // if the action is a bottom port, then
-      // definitely don't override any existing connection
-      // ASSUMPTION: one parent
-      const connectionAddressToOverride = (direction === RELATION_AS_CHILD && !event.shiftKey) ? ownExistingParentConnectionAddress : undefined
-      setOutcomeConnectorFrom(
-        address,
-        direction,
-        validity(address, connections, outcomeActionHashes),
-        connectionAddressToOverride
-      )
-    }
-  }
-  const connectionConnectMouseUp = () => {
-    handleConnectionConnectMouseUp(
-      fromAddress,
-      relation,
-      toAddress,
-      // ASSUMPTION: one parent
-      presetExistingParentConnectionAddress,
-      activeProject,
-      dispatch
-    )
-  }
-  const topConnectorOnMouseDown = connectionConnectMouseDown(
-    RELATION_AS_CHILD,
-    calculateValidParents
-  )
-  const bottomConnectorOnMouseDown = connectionConnectMouseDown(
-    RELATION_AS_PARENT,
-    calculateValidChildren
-  )
-
-  const connectorOnMouseOver = () => {
-    // cannot set 'to' the very same Outcome
-    if (fromAddress && address !== fromAddress) setOutcomeConnectorTo(address)
-  }
-  const connectorOnMouseOut = () => {
-    setOutcomeConnectorTo(null)
-  }
-
-  return (
-    <>
-      {/* top connector */}
-      {(canShowTopConnector || topConnectorActive) && (
-        <OutcomeConnectorHtml
-          active={topConnectorActive}
-          pixelTop={topConnectorTop}
-          pixelLeft={topConnectorLeft}
-          onMouseDown={topConnectorOnMouseDown}
-          onMouseUp={connectionConnectMouseUp}
-          onMouseOver={connectorOnMouseOver}
-          onMouseOut={connectorOnMouseOut}
-        />
-      )}
-
-      {/* bottom connector */}
-      {(canShowBottomConnector || bottomConnectorActive) && (
-        <OutcomeConnectorHtml
-          active={bottomConnectorActive}
-          pixelTop={bottomConnectorTop}
-          pixelLeft={bottomConnectorLeft}
-          onMouseDown={bottomConnectorOnMouseDown}
-          onMouseUp={connectionConnectMouseUp}
-          onMouseOver={connectorOnMouseOver}
-          onMouseOut={connectorOnMouseOut}
-        />
-      )}
-    </>
-  )
-}
-
-const OutcomeConnectors = ({
-  outcomes,
+const OutcomeConnectors: React.FC<OutcomeConnectorsProps> = ({
+  allOutcomeActionHashes,
   activeProject,
   translate,
   zoomLevel,
   connections,
   coordinates,
   dimensions,
-  fromAddress,
-  relation,
+  outcomeConnectorMaybeLinkedOutcome,
   toAddress,
   existingParentConnectionAddress,
-  connectorAddresses,
+  visibleOutcomesAddresses,
   collapsedOutcomes,
   setOutcomeConnectorFrom,
   setOutcomeConnectorTo,
   dispatch,
 }) => {
-  // convert from object to array
-  const outcomeActionHashes = Object.keys(outcomes)
-  return connectorAddresses.map((connectorAddress) => {
-    const outcomeCoordinates = coordinates[connectorAddress]
-    const outcomeDimensions = dimensions[connectorAddress]
-    const isCollapsed = collapsedOutcomes[connectorAddress]
-    // look for an existing connection that defines a parent
-    // of this Outcome, so that it can be deleted
-    // if it is to be changed and a new one added
-    const hasParent = connections.find(
-      (connection) => connection.childActionHash === connectorAddress
-    )
-    return (
-      <div key={connectorAddress}>
-        {outcomeCoordinates && outcomeDimensions && (
-          <OutcomeConnector
-            activeProject={activeProject}
-            connections={connections}
-            outcomeActionHashes={outcomeActionHashes}
-            fromAddress={fromAddress}
-            relation={relation}
-            toAddress={toAddress}
-            ownExistingParentConnectionAddress={
-              hasParent && hasParent.actionHash
-            }
-            presetExistingParentConnectionAddress={
-              existingParentConnectionAddress
-            }
-            address={connectorAddress}
-            setOutcomeConnectorFrom={setOutcomeConnectorFrom}
-            setOutcomeConnectorTo={setOutcomeConnectorTo}
-            outcomeCoordinates={outcomeCoordinates}
-            outcomeDimensions={outcomeDimensions}
-            dispatch={dispatch}
-            translate={translate}
-            zoomLevel={zoomLevel}
-            isCollapsed={isCollapsed}
-          />
-        )}
-      </div>
-    )
-  })
+  return (
+    <>
+      {visibleOutcomesAddresses.map((visibleOutcomeAddress) => {
+        const outcomeCoordinates = coordinates[visibleOutcomeAddress]
+        const outcomeDimensions = dimensions[visibleOutcomeAddress]
+        const isCollapsed = collapsedOutcomes[visibleOutcomeAddress]
+        // look for an existing connection that defines a parent
+        // of this Outcome, so that it can be deleted
+        // if it is to be changed and a new one added
+        // ONLY do this if there is only one parent
+        const parents = connections.filter(
+          (connection) => connection.childActionHash === visibleOutcomeAddress
+        )
+        const singularParent = parents.length === 1 ? parents[0] : undefined
+        return (
+          <div key={visibleOutcomeAddress}>
+            {outcomeCoordinates && outcomeDimensions && (
+              <SmartOutcomeConnector
+                activeProject={activeProject}
+                connections={connections}
+                allOutcomeActionHashes={allOutcomeActionHashes}
+                outcomeConnectorMaybeLinkedOutcome={
+                  outcomeConnectorMaybeLinkedOutcome
+                }
+                toAddress={toAddress}
+                ownExistingParentConnectionAddress={
+                  singularParent && singularParent.actionHash
+                }
+                presetExistingParentConnectionAddress={
+                  existingParentConnectionAddress
+                }
+                outcomeAddress={visibleOutcomeAddress}
+                setOutcomeConnectorFrom={setOutcomeConnectorFrom}
+                setOutcomeConnectorTo={setOutcomeConnectorTo}
+                outcomeCoordinates={outcomeCoordinates}
+                outcomeDimensions={outcomeDimensions}
+                dispatch={dispatch}
+                translate={translate}
+                zoomLevel={zoomLevel}
+                isCollapsed={isCollapsed}
+              />
+            )}
+          </div>
+        )
+      })}
+    </>
+  )
 }
 export default OutcomeConnectors

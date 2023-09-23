@@ -3,7 +3,7 @@ import {
   UPDATE_OUTCOME_COORDINATES,
   UPDATE_OUTCOME_DIMENSIONS,
 } from './actions'
-import { LayoutState } from './state-type'
+import { CoordinatesState, DimensionsState, LayoutState } from './state-type'
 
 const defaultState: LayoutState = {
   coordinates: {},
@@ -15,20 +15,16 @@ export default function (state = defaultState, action: any): LayoutState {
   switch (type) {
     case UPDATE_OUTCOME_COORDINATES:
       return {
-        coordinates: payload.coordinates,
-        dimensions: {
-          ...state.dimensions,
-        },
+        ...state,
+        coordinates: payload.coordinates as CoordinatesState,
       }
     case UPDATE_OUTCOME_DIMENSIONS:
       return {
-        coordinates: {
-          ...state.coordinates,
-        },
-        dimensions: payload.dimensions,
+        ...state,
+        dimensions: payload.dimensions as DimensionsState,
       }
     case UPDATE_LAYOUT:
-      return payload.layout
+      return payload.layout as LayoutState
     default:
       return state
   }

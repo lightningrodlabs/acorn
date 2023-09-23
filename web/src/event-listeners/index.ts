@@ -55,7 +55,6 @@ import {
   resetOutcomeConnector,
   setOutcomeConnectorTo,
 } from '../redux/ephemeral/outcome-connector/actions'
-import handleConnectionConnectMouseUp from '../redux/ephemeral/outcome-connector/handler'
 import ProjectsZomeApi from '../api/projectsApi'
 import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
@@ -63,8 +62,8 @@ import { triggerUpdateLayout } from '../redux/ephemeral/layout/actions'
 import {
   deleteConnection,
 } from '../redux/persistent/projects/connections/actions'
-import { ActionHashB64 } from '../types/shared'
-import { ComputedOutcome, RelationInput } from '../types'
+import { ActionHashB64, Option } from '../types/shared'
+import { ComputedOutcome, LinkedOutcomeDetails } from '../types'
 import { RootState } from '../redux/reducer'
 import {
   findChildrenActionHashes,
@@ -84,6 +83,7 @@ import {
 import {
   alterSiblingOrder,
 } from '../connections'
+import handleOutcomeConnectorMouseUp from '../redux/ephemeral/outcome-connector/handler'
 
 // The "modifier" key is different on Mac and non-Mac
 // Pattern borrowed from TinyKeys library.
@@ -100,15 +100,13 @@ function handleMouseUpForOutcomeForm({
   state,
   event,
   store,
-  fromAddress,
-  relation,
+  maybeLinkedOutcome,
   existingParentConnectionAddress,
 }: {
   state: RootState
   event: MouseEvent
   store: any // redux store, for the sake of dispatch
-  fromAddress?: ActionHashB64
-  relation?: RelationInput
+  maybeLinkedOutcome: Option<LinkedOutcomeDetails>
   existingParentConnectionAddress?: ActionHashB64
 }) {
   const calcedPoint = coordsPageToCanvas(
@@ -120,15 +118,13 @@ function handleMouseUpForOutcomeForm({
     state.ui.viewport.scale
   )
   store.dispatch(
-    // ASSUMPTION: one parent (existingParentConnectionAddress)
-    openOutcomeForm(
-      calcedPoint.x,
-      calcedPoint.y,
-      null,
-      fromAddress,
-      relation,
+    openOutcomeForm({
+      topConnectionYPosition: calcedPoint.y,
+      leftConnectionXPosition: calcedPoint.x,
+      editAddress: null,
+      maybeLinkedOutcome,
       existingParentConnectionAddress
-    )
+    })
   )
 }
 
@@ -480,7 +476,7 @@ export default function setupEventListeners(
       // if we are using the connection connector
       // and IMPORTANTLY if Outcome is in the list of `validToAddresses`
       if (
-        state.ui.outcomeConnector.fromAddress &&
+        state.ui.outcomeConnector.maybeLinkedOutcome &&
         state.ui.outcomeConnector.validToAddresses.includes(
           checks.outcomeActionHash
         )
@@ -603,25 +599,23 @@ export default function setupEventListeners(
   }
 
   function canvasMouseup(event: MouseEvent) {
-    const state = store.getState()
-    // ASSUMPTION: one parent (existingParentConnectionAddress)
+    const state: RootState = store.getState()
     const {
-      fromAddress,
-      relation,
+      maybeLinkedOutcome,
       toAddress,
       existingParentConnectionAddress,
     } = state.ui.outcomeConnector
     const { activeProject } = state.ui
-    if (fromAddress) {
+
+    // if we are using the Connection Connector
+    if (maybeLinkedOutcome) {
       // covers the case where we are hovered over an Outcome
       // and thus making a connection to an existing Outcome
       // AS WELL AS the case where we are not
       // (to reset the connection connector)
-      handleConnectionConnectMouseUp(
-        fromAddress,
-        relation,
+      handleOutcomeConnectorMouseUp(
+        maybeLinkedOutcome,
         toAddress,
-        // ASSUMPTION: one parent
         existingParentConnectionAddress,
         activeProject,
         store.dispatch
@@ -629,12 +623,13 @@ export default function setupEventListeners(
       // covers the case where we are not hovered over an Outcome
       // and thus making a new Outcome and connection/Connection
       if (!toAddress) {
+        // here we transfer the `maybeLinkedOutcome` from the Outcome Connector
+        // state over to the Outcome Form state
         handleMouseUpForOutcomeForm({
           state,
           event,
           store,
-          fromAddress,
-          relation,
+          maybeLinkedOutcome,
           existingParentConnectionAddress,
         })
       }
@@ -670,7 +665,13 @@ export default function setupEventListeners(
         translate,
         scale
       )
-      store.dispatch(openOutcomeForm(canvasPoint.x, canvasPoint.y))
+      store.dispatch(openOutcomeForm({
+        leftConnectionXPosition: canvasPoint.x,
+        topConnectionYPosition: canvasPoint.y,
+        editAddress: null,
+        maybeLinkedOutcome: null,
+        existingParentConnectionAddress: null,
+      }))
     }
   }
 

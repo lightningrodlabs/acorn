@@ -6,6 +6,8 @@ import { updateConnection } from '../redux/persistent/projects/connections/actio
 import { getAppWs } from '../hcWebsockets'
 import ProjectsZomeApi from '../api/projectsApi'
 import { cellIdFromString } from '../utils'
+import { WithActionHash } from '../types/shared'
+import { Connection } from 'zod-models'
 
 export async function alterSiblingOrder(
   store: any,
@@ -84,10 +86,31 @@ export async function alterSiblingOrder(
     )
     // we skip the layout animation on the first of the two
     // since we don't want to redundantly animate the layout
-    store.dispatch(updateConnection(activeProject, updatedSelectedConnection, true))
+    store.dispatch(
+      updateConnection(activeProject, updatedSelectedConnection, true)
+    )
     // we do not skip the layout animation on the second of the two
     store.dispatch(updateConnection(activeProject, updatedTargetConnection))
   } else {
     console.log('could not find connections')
   }
+}
+
+export function lowerThanLowestSiblingOrder({
+  connections,
+  parentActionHash,
+}: {
+  connections: WithActionHash<Connection>[]
+  parentActionHash: ActionHashB64
+}) {
+  // find all the existing children of the parent
+  const children = connections.filter((connection) => {
+    return connection.parentActionHash === parentActionHash
+  })
+  // find the lowest siblingOrder of the children
+  const lowestSiblingOrder = children.reduce((lowest, connection) => {
+    return connection.siblingOrder < lowest ? connection.siblingOrder : lowest
+  }, Infinity)
+  // return a lower siblingOrder than the lowest one
+  return lowestSiblingOrder === Infinity ? 0 : lowestSiblingOrder - 1
 }
