@@ -29,6 +29,8 @@ import {
   CoordinatesState,
   DimensionsState,
 } from '../redux/ephemeral/layout/state-type'
+import selectRenderProps from '../routes/ProjectView/MapView/selectRenderProps'
+import { ProjectComputedOutcomes } from '../context/ComputedOutcomeContext'
 
 function setupCanvas(canvas) {
   // Get the device pixel ratio, falling back to 1.
@@ -43,52 +45,6 @@ function setupCanvas(canvas) {
   return ctx
 }
 
-export type renderProps = {
-  projectTags: WithActionHash<Tag>[]
-  screenWidth: number
-  screenHeight: number
-  zoomLevel: number
-  translate: {
-    x: number
-    y: number
-  }
-  activeEntryPoints: ActionHashB64[]
-  projectMeta: WithActionHash<ProjectMeta>
-  entryPoints: ProjectEntryPointsState
-  outcomeMembers: ProjectOutcomeMembersState
-  connections: ProjectConnectionsState
-  outcomeConnectorFromAddress: ActionHashB64
-  outcomeConnectorToAddress: ActionHashB64
-  outcomeConnectorRelation: RelationInput
-  outcomeConnectorExistingParent: ActionHashB64
-  outcomeFormIsOpen: boolean
-  outcomeFormFromActionHash: ActionHashB64
-  outcomeFormContent: string
-  outcomeFormRelation: RelationInput
-  outcomeFormLeftConnectionX: number
-  outcomeFormTopConnectionY: number
-  outcomeFormExistingParent: ActionHashB64
-  hoveredConnectionActionHash: ActionHashB64
-  selectedConnections: ActionHashB64[]
-  selectedOutcomes: ActionHashB64[]
-  mouseLiveCoordinate: {
-    x: number
-    y: number
-  }
-  shiftKeyDown: boolean
-  startedSelection: boolean
-  startedSelectionCoordinate: {
-    x: number
-    y: number
-  }
-  coordinates: CoordinatesState
-  dimensions: DimensionsState
-  computedOutcomesKeyed: {
-    [outcomeActionHash: ActionHashB64]: ComputedOutcome
-  }
-  computedOutcomesAsTree: ComputedOutcome[]
-}
-
 // Render is responsible for painting all the existing outcomes & connections,
 // as well as the yet to be created (pending) ones (For new Outcome / new Connection / edit Connection)
 // render the state contained in store onto the canvas
@@ -96,6 +52,8 @@ export type renderProps = {
 // `canvas` is a reference to an HTML5 canvas DOM element
 function render(
   {
+    computedOutcomesKeyed,
+    // from selectRenderProps
     projectTags,
     screenWidth,
     screenHeight,
@@ -104,19 +62,15 @@ function render(
     dimensions: allOutcomeDimensions,
     translate,
     activeEntryPoints,
-    computedOutcomesKeyed,
-    computedOutcomesAsTree,
     connections,
     outcomeMembers,
     entryPoints,
     projectMeta,
-    outcomeConnectorFromAddress,
+    outcomeConnectorMaybeLinkedOutcome,
     outcomeConnectorToAddress,
-    outcomeConnectorRelation,
     outcomeConnectorExistingParent,
     outcomeFormIsOpen,
-    outcomeFormFromActionHash,
-    outcomeFormRelation,
+    outcomeFormMaybeLinkedOutcome,
     outcomeFormContent,
     outcomeFormLeftConnectionX,
     outcomeFormTopConnectionY,
@@ -128,7 +82,9 @@ function render(
     shiftKeyDown,
     startedSelection,
     startedSelectionCoordinate,
-  }: renderProps,
+  }: ReturnType<typeof selectRenderProps> & {
+    computedOutcomesKeyed: ProjectComputedOutcomes['computedOutcomesKeyed']
+  },
   canvas: HTMLCanvasElement
 ) {
   // Get the 2 dimensional drawing context of the canvas (there is also 3 dimensional, e.g.)
@@ -425,7 +381,9 @@ function render(
     */
   // render the connection that is pending to be created to the open outcome form
 
-  if (outcomeFormIsOpen && outcomeFormFromActionHash) {
+  if (outcomeFormIsOpen && outcomeFormMaybeLinkedOutcome) {
+    const outcomeFormFromActionHash = outcomeFormMaybeLinkedOutcome.outcomeActionHash
+    const outcomeFormRelation = outcomeFormMaybeLinkedOutcome.relation
     const [
       connection1port,
       connection2port,
@@ -458,7 +416,9 @@ function render(
   // as being "to", then we will be drawing the connection to its correct
   // upper or lower port
   // the opposite of whichever the "from" port is connected to
-  if (outcomeConnectorFromAddress) {
+  if (outcomeConnectorMaybeLinkedOutcome) {
+    const outcomeConnectorFromAddress = outcomeConnectorMaybeLinkedOutcome.outcomeActionHash
+    const outcomeConnectorRelation = outcomeConnectorMaybeLinkedOutcome.relation
     const fromCoords = coordinates[outcomeConnectorFromAddress]
     const [
       childCoords,

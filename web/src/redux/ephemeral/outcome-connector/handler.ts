@@ -10,7 +10,7 @@ import { ActionHashB64 } from '@holochain/client'
 import { LinkedOutcomeDetails, RelationInput } from '../../../types'
 import { CellIdString, Option } from '../../../types/shared'
 
-export default async function handleConnectionConnectMouseUp(
+export default async function handleOutcomeConnectorMouseUp(
   maybeLinkedOutcome: Option<LinkedOutcomeDetails>,
   toAddress: ActionHashB64,
   existingParentConnectionAddress: ActionHashB64,
@@ -37,6 +37,8 @@ export default async function handleConnectionConnectMouseUp(
 
     const fromAsParent =
       maybeLinkedOutcome.relation === RelationInput.ExistingOutcomeAsParent
+    // basing off of the 'relation' we establish which Outcome
+    // is the parent and which is the child
     const createdConnection = await projectsZomeApi.connection.create(cellId, {
       parentActionHash: fromAsParent
         ? maybeLinkedOutcome.outcomeActionHash
@@ -54,5 +56,6 @@ export default async function handleConnectionConnectMouseUp(
     )
     dispatch(createConnectionAction)
   }
+  // always reset the Outcome Connector
   dispatch(resetOutcomeConnector())
 }

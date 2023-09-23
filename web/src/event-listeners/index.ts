@@ -55,7 +55,6 @@ import {
   resetOutcomeConnector,
   setOutcomeConnectorTo,
 } from '../redux/ephemeral/outcome-connector/actions'
-import handleConnectionConnectMouseUp from '../redux/ephemeral/outcome-connector/handler'
 import ProjectsZomeApi from '../api/projectsApi'
 import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
@@ -64,7 +63,7 @@ import {
   deleteConnection,
 } from '../redux/persistent/projects/connections/actions'
 import { ActionHashB64, Option } from '../types/shared'
-import { ComputedOutcome, LinkedOutcomeDetails, RelationInput } from '../types'
+import { ComputedOutcome, LinkedOutcomeDetails } from '../types'
 import { RootState } from '../redux/reducer'
 import {
   findChildrenActionHashes,
@@ -84,6 +83,7 @@ import {
 import {
   alterSiblingOrder,
 } from '../connections'
+import handleOutcomeConnectorMouseUp from '../redux/ephemeral/outcome-connector/handler'
 
 // The "modifier" key is different on Mac and non-Mac
 // Pattern borrowed from TinyKeys library.
@@ -606,12 +606,14 @@ export default function setupEventListeners(
       existingParentConnectionAddress,
     } = state.ui.outcomeConnector
     const { activeProject } = state.ui
+
+    // if we are using the Connection Connector
     if (maybeLinkedOutcome) {
       // covers the case where we are hovered over an Outcome
       // and thus making a connection to an existing Outcome
       // AS WELL AS the case where we are not
       // (to reset the connection connector)
-      handleConnectionConnectMouseUp(
+      handleOutcomeConnectorMouseUp(
         maybeLinkedOutcome,
         toAddress,
         existingParentConnectionAddress,
@@ -621,6 +623,8 @@ export default function setupEventListeners(
       // covers the case where we are not hovered over an Outcome
       // and thus making a new Outcome and connection/Connection
       if (!toAddress) {
+        // here we transfer the `maybeLinkedOutcome` from the Outcome Connector
+        // state over to the Outcome Form state
         handleMouseUpForOutcomeForm({
           state,
           event,
