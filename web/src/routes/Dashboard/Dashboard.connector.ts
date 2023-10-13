@@ -1,5 +1,4 @@
 import { connect } from 'react-redux'
-
 import { getAdminWs, getAppWs } from '../../hcWebsockets'
 import { fetchEntryPointDetails } from '../../redux/persistent/projects/entry-points/actions'
 import { fetchMembers } from '../../redux/persistent/projects/members/actions'
@@ -7,52 +6,37 @@ import {
   fetchProjectMeta,
   updateProjectMeta,
 } from '../../redux/persistent/projects/project-meta/actions'
-import selectEntryPoints from '../../redux/persistent/projects/entry-points/select'
-
 import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
-import { importProject } from '../../migrating/import/importProject'
 import { openInviteMembersModal } from '../../redux/ephemeral/invite-members-modal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString } from '../../utils'
 import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { RootState } from '../../redux/reducer'
+import { createSelectProjectAggregated } from '../../redux/persistent/projects/select'
 import Dashboard, {
   DashboardDispatchProps,
   DashboardStateProps,
 } from './Dashboard.component'
 import { LayeringAlgorithm, ProjectMeta } from '../../types'
-import selectProjectMembersPresent from '../../redux/persistent/projects/realtime-info-signal/select'
+import { importProject } from '../../migrating/import/importProject'
 import { uninstallProject } from '../../projects/uninstallProject'
 import { createProject } from '../../projects/createProject'
 import { joinProject, triggerJoinSignal } from '../../projects/joinProject'
 
-// ACTUAL REDUX FUNCTIONS
-
 function mapStateToProps(state: RootState): DashboardStateProps {
-  const projects = Object.keys(state.projects.projectMeta).map((cellId) => {
-    const projectMeta = state.projects.projectMeta[cellId]
-    const members = state.projects.members[cellId] || {}
-    const memberProfiles = Object.keys(members).map(
-      (agentAddress) => state.agents[agentAddress]
-    )
-    const entryPoints = selectEntryPoints(state, cellId)
-    const presentMembers = selectProjectMembersPresent(state, cellId)
-    return {
-      projectMeta,
-      cellId,
-      presentMembers,
-      members: memberProfiles,
-      entryPoints,
-    }
-  })
+  // projects where at least the projectMeta is loaded
+  const projects = Object.keys(state.projects.projectMeta).map(
+    createSelectProjectAggregated(state)
+  )
   return {
     agentAddress: state.agentAddress,
-    cells: state.cells.projects,
+    // includes projects whose projectMeta is not loaded
+    projectCellIdStrings: state.cells.projects,
     projects,
   }
 }
 
-function mapDispatchToProps(dispatch): DashboardDispatchProps {
+function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
   return {
     setActiveProject: (projectId: CellIdString) => {
       return dispatch(setActiveProject(projectId))
@@ -143,7 +127,7 @@ function mapDispatchToProps(dispatch): DashboardDispatchProps {
         passphrase,
         dispatch
       )
-    }
+    },
   }
 }
 

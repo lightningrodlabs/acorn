@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useContext } from 'react'
 import { CSSTransition } from 'react-transition-group'
 
 import Icon from '../../components/Icon/Icon'
@@ -22,11 +22,12 @@ import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { ProjectAggregated, ProjectMeta } from '../../types'
 import UpdateModalContext from '../../context/UpdateModalContext'
 import ProjectMigratedModal from '../../components/ProjectMigratedModal/ProjectMigratedModal'
+import usePendingProjects from '../../hooks/usePendingProjects'
 
 export type DashboardStateProps = {
   agentAddress: AgentPubKeyB64
-  cells: CellIdString[]
-  projects: Array<ProjectAggregated>
+  projectCellIdStrings: CellIdString[]
+  projects: ProjectAggregated[]
 }
 
 export type DashboardDispatchProps = {
@@ -60,9 +61,10 @@ export type DashboardProps = DashboardStateProps & DashboardDispatchProps
 const Dashboard: React.FC<DashboardProps> = ({
   uninstallProject,
   agentAddress,
-  cells,
+  projectCellIdStrings,
   projects,
   setActiveProject,
+  // TODO: use these
   fetchEntryPointDetails,
   fetchMembers,
   fetchProjectMeta,
@@ -74,8 +76,6 @@ const Dashboard: React.FC<DashboardProps> = ({
 }) => {
   const { setShowUpdateModal } = useContext(UpdateModalContext)
 
-  // createdAt, name
-  const [pendingProjects, setPendingProjects] = useState([])
   const [selectedSort, setSelectedSort] = useState('createdAt')
   const [showSortPicker, setShowSortPicker] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
@@ -86,26 +86,11 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [showProjectMigratedModal, setShowProjectMigratedModal] = useState('')
   // add new modal state managers here
 
-  // cells is an array of cellId strings
-  useEffect(() => {
-    cells.forEach((cellId) => {
-      fetchProjectMeta(cellId).catch((e) => {
-        // this means 'no project meta found'
-        // so we add it to 'pending projects'
-        // because it clearly hasn't synced yet
-        setPendingProjects((pending) => {
-          // only add it if it wasn't already in the list of pending projects
-          if (!pending.includes(cellId)) {
-            return pending.concat([cellId])
-          } else {
-            return pending
-          }
-        })
-      })
-      fetchMembers(cellId)
-      fetchEntryPointDetails(cellId)
-    })
-  }, [JSON.stringify(cells)])
+  // calling this triggers the fetchProjectMeta for each project
+  const { pendingProjects, setPendingProjects } = usePendingProjects(
+    projectCellIdStrings,
+    fetchProjectMeta,
+  )
 
   const onCreateProject = (
     project: { name: string; image: string },
@@ -114,8 +99,11 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const onJoinProject = (passphrase: string) => joinProject(passphrase)
 
-  const onImportProject = (cellIdString: CellIdString, projectData: any, passphrase: string) =>
-    importProject(cellIdString, agentAddress, projectData, passphrase)
+  const onImportProject = (
+    cellIdString: CellIdString,
+    projectData: any,
+    passphrase: string
+  ) => importProject(cellIdString, agentAddress, projectData, passphrase)
 
   const setSortBy = (sortBy) => () => {
     setSelectedSort(sortBy)
@@ -153,7 +141,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   // that's why the combination of the two means that all calls to holochain
   // to check have completed
   const hasFetchedForAllProjects =
-    cells.length === projects.length + pendingProjects.length
+    projectCellIdStrings.length ===
+    projects.length + Object.keys(pendingProjects).length
 
   return (
     <>
@@ -226,18 +215,13 @@ const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
           <div className="my-projects-content">
-            {/* {pendingProjects.length > 0 && (
-              <PendingProjects
-                pendingProjects={pendingProjects}
-                fetchProjectMeta={fetchProjectMeta}
-                setPendingProjects={setPendingProjects}
-                uninstallProject={uninstallProject}
-              />
-            )} */}
-            {/* TODO: make rendering for pending projects conditional */}
-            <PendingProjects />
+            <PendingProjects
+              pendingProjects={pendingProjects}
+              setPendingProjects={setPendingProjects}
+              uninstallProject={uninstallProject}
+            />
             {!hasFetchedForAllProjects &&
-              cells.map((cellId) => (
+              projectCellIdStrings.map((cellId) => (
                 <DashboardListProjectLoading key={'dlpl-key' + cellId} />
               ))}
             {hasFetchedForAllProjects &&

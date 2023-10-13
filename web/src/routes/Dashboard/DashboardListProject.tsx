@@ -11,7 +11,6 @@ import { ENTRY_POINTS, GO_TO_OUTCOME } from '../../searchParams'
 import AvatarsList from '../../components/AvatarsList/AvatarsList'
 import { ProjectAggregated } from '../../types'
 import Button from '../../components/Button/Button'
-import { CellIdString } from '../../types/shared'
 
 function DashboardListProjectLoading() {
   return (

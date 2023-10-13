@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './NetworkInfo.scss'
-import { getAdminWs } from '../../hcWebsockets'
+import { getAdminWs, getAppWs } from '../../hcWebsockets'
 import ReactJsonView from 'react-json-view'
 import { VersionInfo } from '../../hooks/useVersionChecker'
 

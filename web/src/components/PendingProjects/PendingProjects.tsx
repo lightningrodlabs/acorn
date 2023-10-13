@@ -1,31 +1,90 @@
-import { AppInfo, CellType } from '@holochain/client'
-import React, { useEffect, useState } from 'react'
-import { getAllApps } from '../../projectAppIds'
+import React, { useState } from 'react'
 import { uidToPassphrase } from '../../secrets'
 import Icon from '../Icon/Icon'
 import './PendingProjects.scss'
+import { CellIdString } from '../../types/shared'
+import { PendingProjectInfos } from '../../hooks/usePendingProjects'
 
-type AppInfoDetails = {
-  networkSeed: string
-  appId: string
+export type PendingProjectsProps = {
+  pendingProjects: PendingProjectInfos
+  setPendingProjects: React.Dispatch<React.SetStateAction<PendingProjectInfos>>
+  uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
 }
-type AppInfoStore = {
-  [cellId: string]: AppInfoDetails
+// const pendingProjectsCellIds = ['projectCellId', 'projectCellId2']
+
+// const testAppInfo: AppInfoStore = {
+//   projectCellId: {
+//     appId: 'appid',
+//     networkSeed: 'uid-one-two-three-four-five',
+//     hasPeers: false,
+//   },
+//   projectCellId2: {
+//     appId: 'appid',
+//     networkSeed: 'uid-one-two-three-four-five',
+//     hasPeers: false,
+//   },
+// }
+
+enum OverviewPillType {
+  Syncing,
+  Waiting,
+}
+function ProjectOverviewPill({
+  count,
+  overviewPillType,
+}: {
+  count: number
+  overviewPillType: OverviewPillType
+}) {
+  const className =
+    overviewPillType === OverviewPillType.Syncing ? 'syncing' : 'waiting'
+  const iconClassname =
+    overviewPillType === OverviewPillType.Syncing
+      ? 'pending-projects-summary-icon-syncing'
+      : 'pending-projects-summary-icon-waiting'
+  const iconName =
+    overviewPillType === OverviewPillType.Syncing
+      ? 'acorn-logo-syncing.svg'
+      : 'timer.svg'
+  const text =
+    overviewPillType === OverviewPillType.Syncing
+      ? 'syncing'
+      : 'waiting to sync'
+  return (
+    <div className={`pending-projects-summary ${className}`}>
+      <div className={iconClassname}>
+        <Icon name={iconName} className="not-hoverable small" />
+      </div>
+      {count} {count === 1 ? 'project' : 'projects'} {text}
+    </div>
+  )
 }
 
-function PendingProjects({}: {}) {
-  const pendingProjectsCellIds = ['projectCellId', 'projectCellId2']
+function PendingProjects({
+  pendingProjects,
+  setPendingProjects,
+  uninstallProject,
+}: PendingProjectsProps) {
   const [expanded, setExpanded] = useState(false)
-  const [passphrases, setPassphrases] = useState<AppInfoStore>({
-    projectCellId: {
-      appId: 'appid',
-      networkSeed: 'uid-one-two-three-four-five',
-    },
-    projectCellId2: {
-      appId: 'appid',
-      networkSeed: 'uid-one-two-three-four-five',
-    },
-  })
+  const cellIds = Object.keys(pendingProjects)
+  if (cellIds.length === 0) {
+    return null
+  }
+  const syncingProjectsCount = cellIds.filter((cellId) => {
+    return pendingProjects[cellId].hasPeers
+  }).length
+  const waitingProjectsCount = cellIds.filter((cellId) => {
+    return !pendingProjects[cellId].hasPeers
+  }).length
+
+  const cancelProjectJoin = async (appId: string, cellId: string) => {
+    await uninstallProject(appId, cellId)
+    // remove this project from pendingProjects
+    setPendingProjects((pendingProjects: PendingProjectInfos) => {
+      const { [cellId]: _, ...rest } = pendingProjects
+      return rest
+    })
+  }
 
   return (
     <>
@@ -36,31 +95,18 @@ function PendingProjects({}: {}) {
       >
         <div className="pending-projects-overview">
           <div className="pending-projects-summaries">
-            <div className="pending-projects-summary syncing">
-              {/* @ts-ignore */}
-              <div className="pending-projects-summary-icon-syncing">
-                <Icon
-                  name="acorn-logo-syncing.svg"
-                  className="not-hoverable small"
-                />
-              </div>
-              {pendingProjectsCellIds.length}{' '}
-              {pendingProjectsCellIds.length === 1 ? 'project' : 'projects'}{' '}
-              syncing
-            </div>
-            <div className="pending-projects-summary waiting">
-              {/* @ts-ignore */}
-              <div className="pending-projects-summary-icon-waiting">
-                <Icon
-                  name="timer.svg"
-                  className="not-hoverable small grey"
-                />
-              </div>
-              {pendingProjectsCellIds.length}{' '}
-              {pendingProjectsCellIds.length === 1 ? 'project' : 'projects'}{' '}
-              waiting to sync
-            </div>
-
+            {syncingProjectsCount > 0 && (
+              <ProjectOverviewPill
+                count={syncingProjectsCount}
+                overviewPillType={OverviewPillType.Syncing}
+              />
+            )}
+            {waitingProjectsCount > 0 && (
+              <ProjectOverviewPill
+                count={waitingProjectsCount}
+                overviewPillType={OverviewPillType.Waiting}
+              />
+            )}
             <div className="pending-projects-more-info-icon">
               {/* More info icon */}
               <div className="more-info-wrapper">
@@ -69,7 +115,6 @@ function PendingProjects({}: {}) {
                     href="https://docs.acorn.software/projects/join-a-project"
                     target="_blank"
                   >
-                    {/* @ts-ignore */}
                     <Icon name="info.svg" className="light-grey" size="small" />
                   </a>
                 </div>
@@ -87,42 +132,43 @@ function PendingProjects({}: {}) {
         <div className="pending-projects-details-wrapper">
           {expanded && (
             <div>
-              {pendingProjectsCellIds
-                .filter((p: string) => !!passphrases[p])
-                .map((pendingProjectCellId: string) => {
-                  const appInfoDetails = passphrases[pendingProjectCellId]
-                  return (
-                    <div
-                      className="pending-projects-details-item"
-                      key={pendingProjectCellId}
-                    >
-                      <div className="pending-project-phrase-with-status">
-                        <div className="pending-project-phrase">
-                          {uidToPassphrase(appInfoDetails.networkSeed)}
-                        </div>
+              {cellIds.map((pendingProjectCellId: string) => {
+                const pendingProject = pendingProjects[pendingProjectCellId]
+                return (
+                  <div
+                    className="pending-projects-details-item"
+                    key={pendingProjectCellId}
+                  >
+                    <div className="pending-project-phrase-with-status">
+                      <div className="pending-project-phrase">
+                        {pendingProject.passphrase}
+                      </div>
+                      {pendingProject.hasPeers && (
                         <div className="pending-project-status-label peer-found">
                           syncing with found peer
                         </div>
+                      )}
+                      {!pendingProject.hasPeers && (
                         <div className="pending-project-status-label peer-not-found">
-                          no peer found
+                          no peers found
                         </div>
-                      </div>
-                      <div
-                        className="pending-project-cancel-queue-button"
-                        onClick={() => {}}
-                      >
-                        Cancel
-                      </div>
+                      )}
                     </div>
-                  )
-                })}
-
-              {/* <a
-                href="https://sprillow.gitbook.io/acorn-knowledge-base/projects/join-a-project"
-                target="_blank"
-              >
-                Having issues? Learn more about joining a project.
-              </a> */}
+                    {/* Cancel (Uninstall) */}
+                    <div
+                      className="pending-project-cancel-queue-button"
+                      onClick={() =>
+                        cancelProjectJoin(
+                          pendingProject.appId,
+                          pendingProjectCellId
+                        )
+                      }
+                    >
+                      Cancel
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           )}
         </div>
