@@ -10,20 +10,6 @@ export type PendingProjectsProps = {
   setPendingProjects: React.Dispatch<React.SetStateAction<PendingProjectInfos>>
   uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
 }
-// const pendingProjectsCellIds = ['projectCellId', 'projectCellId2']
-
-// const testAppInfo: AppInfoStore = {
-//   projectCellId: {
-//     appId: 'appid',
-//     networkSeed: 'uid-one-two-three-four-five',
-//     hasPeers: false,
-//   },
-//   projectCellId2: {
-//     appId: 'appid',
-//     networkSeed: 'uid-one-two-three-four-five',
-//     hasPeers: false,
-//   },
-// }
 
 enum OverviewPillType {
   Syncing,
