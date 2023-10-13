@@ -4,9 +4,8 @@ import {
   pathForConnection,
 } from './drawConnection'
 import { ActionHashB64 } from '../types/shared'
-import { ComputedOutcome } from '../types'
+import { ComputedOutcome, RelationInput } from '../types'
 import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
-import { RELATION_AS_CHILD } from '../redux/ephemeral/outcome-connector/actions'
 import {
   CoordinatesState,
   DimensionsState,
@@ -67,7 +66,7 @@ export function checkForConnectionAtCoordinates(
         childOutcomeDimensions,
         parentOutcomeCoords,
         parentOutcomeDimensions,
-        RELATION_AS_CHILD
+        RelationInput.ExistingOutcomeAsChild
       )
       const connectionPath = pathForConnection({
         fromPoint: childConnectionCoords,

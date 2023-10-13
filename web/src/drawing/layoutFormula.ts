@@ -1,8 +1,6 @@
 import { getOutcomeWidth, getOutcomeHeight } from './dimensions'
 import {
   ComputedOutcome,
-  ComputedScope,
-  ComputedSimpleAchievementStatus,
   LayeringAlgorithm,
   Tag,
 } from '../types'

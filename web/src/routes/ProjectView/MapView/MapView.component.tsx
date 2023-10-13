@@ -126,12 +126,11 @@ const MapView: React.FC<MapViewProps> = ({
         {
           ...renderProps,
           computedOutcomesKeyed,
-          computedOutcomesAsTree,
         },
         canvas
       )
     }
-  }, [renderProps, projectId, computedOutcomesAsTree, computedOutcomesKeyed])
+  }, [renderProps, projectId, computedOutcomesKeyed])
 
   const transform = {
     transform: `matrix(${zoomLevel}, 0, 0, ${zoomLevel}, ${translate.x}, ${translate.y})`,
@@ -217,7 +216,7 @@ const MapView: React.FC<MapViewProps> = ({
         {/* Outcome Connectors */}
         {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
         {refCanvas.current && zoomLevel >= 0.12 && !contextMenuCoordinate && (
-          <OutcomeConnectors outcomes={computedOutcomesKeyed} />
+          <OutcomeConnectors />
         )}
         {/* CollapsedChildrenPills */}
         {/* an undefined value of refCanvas.current was causing a crash, due to canvas prop being undefined */}
