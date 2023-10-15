@@ -1,7 +1,6 @@
 .dashboard-list-project-wrapper {
   display: flex;
   flex-direction: column;
-  // border-bottom: solid 0.15rem var(--bg-color-canvas);
   padding: 1.25rem;
   position: relative;
   background-color: var(--bg-color-secondary-read-only);
@@ -17,7 +16,9 @@
     background-color: var(--bg-color-primary);
     opacity: 0.75;
     top: 0;
+    left: 0;
     z-index: 2;
+    border-radius: 1rem;
   }
 
   .dashboard-list-project {
@@ -33,12 +34,13 @@
       line-height: 68px;
 
       .dashboard-list-project-image-bg {
-        border-radius: 0.5rem;
-        width: 4.25rem;
-        height: 4.25rem;
+        border-radius: 0.75rem;
+        width: 4.5rem;
+        height: 4.5rem;
         background-size: cover;
         background-repeat: no-repeat;
         font-family: 'PlusJakartaSans-bold', Helvetica, sans-serif;
+        user-select: none;
       }
     }
 
@@ -112,6 +114,11 @@
           flex-direction: row;
           align-items: center;
           z-index: 3;
+
+          .button {
+            margin-top: 0;
+            margin-bottom: 0;
+          }
         }
       }
     }
@@ -248,5 +255,40 @@
         left: 100%;
       }
     }
+  }
+}
+
+.dashboard-list-project-syncing-contents {
+  z-index: 2;
+  padding: 0.3rem 0.75rem 0.5rem 0.5rem;
+  background-color: var(--bg-color-light-green);
+  width: fit-content;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: default;
+  user-select: none;
+
+  .icon {
+    cursor: default;
+    height: 1.25rem;
+    margin-right: 0.125rem;
+    animation: spin 2s linear infinite;
+    -webkit-animation: spin 2s linear infinite;
+  }
+}
+
+// for syncing project contents indicator icon
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
   }
 }

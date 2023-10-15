@@ -11,6 +11,7 @@ import { ENTRY_POINTS, GO_TO_OUTCOME } from '../../searchParams'
 import AvatarsList from '../../components/AvatarsList/AvatarsList'
 import { ProjectAggregated } from '../../types'
 import Button from '../../components/Button/Button'
+import SyncingIndicator from '../../components/SyncingIndicator/SyncingIndicator'
 
 function DashboardListProjectLoading() {
   return (
@@ -45,6 +46,7 @@ export type DashboardListProjectProps = {
   openProjectSettingsModal: () => void
   onClickProjectMigrated?: () => void
   updateRequiredMoreInfoLink?: string
+  syncingProjectContents?: boolean
 }
 
 const DashboardListProject: React.FC<DashboardListProjectProps> = ({
@@ -53,6 +55,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
   openProjectSettingsModal,
   onClickProjectMigrated,
   updateRequiredMoreInfoLink,
+  syncingProjectContents,
 }) => {
   const [showEntryPoints, setShowEntryPoints] = useState(false)
 
@@ -72,7 +75,8 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
   return (
     <div className="dashboard-list-project-wrapper">
       {/* when update is required to access the shared project */}
-      {project.projectMeta.isMigrated && (
+      {/* or when joined project's contents are still syncing */}
+      {(project.projectMeta.isMigrated || syncingProjectContents) && (
         <>
           <div className="project-access-blocked-layer"></div>
         </>
@@ -119,10 +123,19 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
           </div>
 
           {/* Project member count */}
-          <div className={`dashboard-list-project-member-count`}>
-            {project.members.length} member
-            {project.members.length > 1 ? 's' : ''}
-          </div>
+          {!syncingProjectContents && (
+            <div className={`dashboard-list-project-member-count`}>
+              {project.members.length} member
+              {project.members.length > 1 ? 's' : ''}
+            </div>
+          )}
+          {/* Syncing project contents indicator */}
+          {syncingProjectContents && (
+            <div className="dashboard-list-project-syncing-contents">
+              <Icon name="refresh.svg" className="not-hoverable" size="small" />
+              syncing project contents
+            </div>
+          )}
         </div>
         <div className="dashboard-list-project-members-settings">
           <div className="dashboard-list-project-members">

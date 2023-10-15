@@ -3,13 +3,20 @@ import './SyncingIndicator.scss'
 import Icon from '../Icon/Icon'
 import Tooltip from '../Tooltip/Tooltip'
 
-export type SyncingIndicatorProps = {}
+export type SyncingIndicatorProps = {
+  small?: boolean
+}
 
-const SyncingIndicator: React.FC<SyncingIndicatorProps> = ({}) => {
+const SyncingIndicator: React.FC<SyncingIndicatorProps> = ({ small }) => {
   return (
     <div className="syncing-indicator">
       <Tooltip text="Syncing project data" top />
-      <Icon name="refresh.svg" className="not-hoverable" size="medium" />
+      {!small && (
+        <Icon name="refresh.svg" className="not-hoverable" size="medium" />
+      )}
+      {small && (
+        <Icon name="refresh.svg" className="not-hoverable" size="small" />
+      )}
     </div>
   )
 }
