@@ -42,17 +42,19 @@ const getNewInfos = async (
 
     // time to check network info
     let hasPeers = false
+    let isGossiping = false
     const networkInfo = networkInfos[index]
     if (networkInfo) {
       // 1 means 'only me'
       // 2 or more means currently active peers
       hasPeers = networkInfo.current_number_of_peers > 1
+      isGossiping = networkInfo.fetch_pool_info.num_ops_to_fetch > 0
     }
     newInfos[cellId] = {
       passphrase: uidToPassphrase(networkSeed),
       appId,
       hasPeers,
-      isGossiping: true,
+      isGossiping,
       hasProjectMeta,
     }
   })
