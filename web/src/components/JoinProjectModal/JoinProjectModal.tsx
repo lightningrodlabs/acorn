@@ -19,13 +19,13 @@ function JoinProjectForm({
   projectSecret,
   onSecretChange,
   invalidText,
-  validatingSecret,
-  onValidate,
+  pendingJoiningProject,
+  onClickDone,
 }) {
   const validateButtonContent = (
     <ButtonWithPendingState
-      pending={validatingSecret}
-      pendingText="Searching..."
+      pending={pendingJoiningProject}
+      pendingText="joining..."
       actionText="Join Project"
     />
   )
@@ -51,7 +51,13 @@ function JoinProjectForm({
           />
         </ProjectModalContent>
       </ProjectModalContentSpacer>
-      <ProjectModalButton text={validateButtonContent} onClick={onValidate} />
+      <ProjectModalButton
+        text={validateButtonContent}
+        onClick={onClickDone}
+        // show the button as disabled if there is a text about invalid secret input
+        // or if there is no input
+        disabled={invalidText !== '' || projectSecret === ''} 
+      />
     </div>
   )
 }
@@ -74,7 +80,11 @@ function ProjectJoinFollowUp({ onDone, checkDone }) {
           required before you can access it.
         </div>
       </ProjectModalContent>
-      <ProjectModalButton text="I understand" onClick={onDone} />
+      <ProjectModalButton
+        text="I understand"
+        onClick={onDone}
+        disabled={false}
+      />
     </div>
   )
 }
@@ -87,26 +97,22 @@ export default function JoinProjectModal({
 }) {
   const reset = () => {
     setProjectSecret('')
-    setValidatingSecret(false)
+    setPendingJoiningProject(false)
     setInvalidText('')
     setCheckDone(false)
   }
-  const onValidate = async () => {
-    // check if the sectrest is five words or not
-    if (invalidText || projectSecret.length === 0) {
-      setInvalidText('Secret must be 5 words.')
-      return
-    }
-    // Check if the secret is already joined
-    if (joinedProjectsSecrets.includes(projectSecret)) {
-      setInvalidText("You've already joined this project!")
-      return
-    }
-    setValidatingSecret(true)
+
+  const [checkDone, setCheckDone] = useState(false)
+  const [projectSecret, setProjectSecret] = useState('')
+  const [invalidText, setInvalidText] = useState('')
+  const [pendingJoiningProject, setPendingJoiningProject] = useState(false)
+
+  const onClickDone = async () => {
+    setPendingJoiningProject(true)
     try {
       await onJoinProject(projectSecret)
       setCheckDone(true)
-      setValidatingSecret(false)
+      setPendingJoiningProject(false)
     } catch (e) {
       console.log(e)
       // TODO: add better detail here
@@ -118,21 +124,17 @@ export default function JoinProjectModal({
     onClose()
   }
 
-  const [checkDone, setCheckDone] = useState(false)
-  const [projectSecret, setProjectSecret] = useState('')
-  const [invalidText, setInvalidText] = useState('')
-
-  const [validatingSecret, setValidatingSecret] = useState(false)
-
-  const onSecretChange = (val) => {
+  const onSecretChange = (userInputText: string) => {
     setInvalidText('')
-    setValidatingSecret(false)
-    setProjectSecret(val)
-    if (!val) {
+    setPendingJoiningProject(false)
+    setProjectSecret(userInputText)
+    if (!userInputText) {
       setInvalidText('')
+    } else if (joinedProjectsSecrets.includes(userInputText)) {
+      setInvalidText("You've already joined this project!")
     } else if (
-      val.split(' ').length !== 5 ||
-      !val.split(' ').every((word) => word.length)
+      userInputText.split(' ').length !== 5 ||
+      !userInputText.split(' ').every((word) => word.length)
     ) {
       setInvalidText('Secret must be 5 words.')
     }
@@ -151,8 +153,8 @@ export default function JoinProjectModal({
         projectSecret={projectSecret}
         onSecretChange={onSecretChange}
         invalidText={invalidText}
-        validatingSecret={validatingSecret}
-        onValidate={onValidate}
+        pendingJoiningProject={pendingJoiningProject}
+        onClickDone={onClickDone}
       />
     </Modal>
   )

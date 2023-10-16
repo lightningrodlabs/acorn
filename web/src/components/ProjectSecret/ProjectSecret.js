@@ -23,6 +23,7 @@ export default function ProjectSecret({ passphrase }) {
           label="Project Invitation Secret"
           helpText="Share this secret phrase with people you want to invite to this project."
         />
+        {/* copy to clipboard button */}
         <div
           onClick={copySecretToClipboard}
           className="project-secret-copy-secret"
@@ -34,10 +35,10 @@ export default function ProjectSecret({ passphrase }) {
             name="file-copy.svg"
           />
         </div>
+        {showCopyMessage && (
+          <div className="secret-copy-message">{copyMessage}</div>
+        )}
       </div>
-      {showCopyMessage && (
-        <div className="secret-copy-message">{copyMessage}</div>
-      )}
     </div>
   )
 }

@@ -24,10 +24,10 @@ function ProjectModalContent({ children }) {
   return <div className="project-modal-content">{children}</div>
 }
 
-function ProjectModalButton({ text, onClick }) {
+function ProjectModalButton({ text, onClick, disabled }) {
   return (
     <div className="project-modal-button">
-      <Button text={text} onClick={onClick} />
+      <Button text={text} onClick={onClick} disabled={disabled} />
     </div>
   )
 }
