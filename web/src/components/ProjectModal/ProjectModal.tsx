@@ -4,7 +4,7 @@ import './ProjectModal.scss'
 import Button from '../Button/Button'
 import Typography from '../Typography/Typography'
 
-function ProjectModalHeading({ title }) {
+function ProjectModalHeading({ title }: { title: string }) {
   return (
     <div className="project-modal-heading">
       <Typography style="heading-modal">{title}</Typography>
@@ -12,7 +12,7 @@ function ProjectModalHeading({ title }) {
   )
 }
 
-function ProjectModalSubHeading({ title }) {
+function ProjectModalSubHeading({ title }: { title: string }) {
   return (
     <div className="project-modal-subheading">
       <Typography style="subtitle-modal">{title}</Typography>
@@ -24,7 +24,15 @@ function ProjectModalContent({ children }) {
   return <div className="project-modal-content">{children}</div>
 }
 
-function ProjectModalButton({ text, onClick, disabled }) {
+function ProjectModalButton({
+  text,
+  onClick,
+  disabled,
+}: {
+  text: React.ReactNode
+  onClick: () => void
+  disabled?: boolean
+}) {
   return (
     <div className="project-modal-button">
       <Button text={text} onClick={onClick} disabled={disabled} />

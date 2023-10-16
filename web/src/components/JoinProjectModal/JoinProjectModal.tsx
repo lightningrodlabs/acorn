@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import './JoinProjectModal.scss'
-
-import Icon from '../Icon/Icon'
 
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import Modal from '../Modal/Modal'
@@ -13,6 +11,7 @@ import {
   ProjectModalSubHeading,
 } from '../ProjectModal/ProjectModal'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
+import { CellIdString } from '../../types/shared'
 
 function JoinProjectForm({
   checkDone,
@@ -22,7 +21,7 @@ function JoinProjectForm({
   pendingJoiningProject,
   onClickDone,
 }) {
-  const validateButtonContent = (
+  const joinProjectButtonContent = (
     <ButtonWithPendingState
       pending={pendingJoiningProject}
       pendingText="joining..."
@@ -52,11 +51,11 @@ function JoinProjectForm({
         </ProjectModalContent>
       </ProjectModalContentSpacer>
       <ProjectModalButton
-        text={validateButtonContent}
+        text={joinProjectButtonContent}
         onClick={onClickDone}
         // show the button as disabled if there is a text about invalid secret input
         // or if there is no input
-        disabled={invalidText !== '' || projectSecret === ''} 
+        disabled={invalidText !== '' || projectSecret === ''}
       />
     </div>
   )
@@ -80,11 +79,7 @@ function ProjectJoinFollowUp({ onDone, checkDone }) {
           required before you can access it.
         </div>
       </ProjectModalContent>
-      <ProjectModalButton
-        text="I understand"
-        onClick={onDone}
-        disabled={false}
-      />
+      <ProjectModalButton text="I understand" onClick={onDone} />
     </div>
   )
 }
@@ -92,8 +87,13 @@ function ProjectJoinFollowUp({ onDone, checkDone }) {
 export default function JoinProjectModal({
   showModal,
   onClose,
-  onJoinProject,
-  joinedProjectsSecrets = [], // defaulting to an empty array if not provided
+  doJoinProject,
+  joinedProjectsSecrets,
+}: {
+  showModal: boolean
+  onClose: () => void
+  doJoinProject: (projectSecret: string) => Promise<CellIdString>
+  joinedProjectsSecrets: string[]
 }) {
   const reset = () => {
     setProjectSecret('')
@@ -110,7 +110,7 @@ export default function JoinProjectModal({
   const onClickDone = async () => {
     setPendingJoiningProject(true)
     try {
-      await onJoinProject(projectSecret)
+      await doJoinProject(projectSecret)
       setCheckDone(true)
       setPendingJoiningProject(false)
     } catch (e) {

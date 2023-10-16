@@ -97,9 +97,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     project: { name: string; image: string },
     passphrase: string
   ) => createProject(agentAddress, project, passphrase)
-
-  const onJoinProject = (passphrase: string) => joinProject(passphrase)
-
+  const doJoinProject = (passphrase: string) => joinProject(passphrase)
   const onImportProject = (
     cellIdString: CellIdString,
     projectData: any,
@@ -260,7 +258,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         onClose={() => setShowCreateModal(false)}
       />
       <JoinProjectModal
-        onJoinProject={onJoinProject}
+        doJoinProject={doJoinProject}
         showModal={showJoinModal}
         onClose={() => setShowJoinModal(false)}
         joinedProjectsSecrets={joinedProjectsSecrets}

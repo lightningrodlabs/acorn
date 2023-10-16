@@ -5,7 +5,7 @@ import './Button.scss'
 
 export type ButtonProps = {
   size?: 'small' | 'medium' | 'large'
-  text: string
+  text: React.ReactNode
   onClick?: () => void
   icon?: string
   className?: string
