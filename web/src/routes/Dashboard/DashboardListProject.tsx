@@ -1,17 +1,12 @@
 import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-
-import Icon from '../../components/Icon/Icon'
-
 import './DashboardListProject.scss'
-
 import { pickColorForString } from '../../styles'
-
 import { ENTRY_POINTS, GO_TO_OUTCOME } from '../../searchParams'
+import Icon from '../../components/Icon/Icon'
 import AvatarsList from '../../components/AvatarsList/AvatarsList'
 import { ProjectAggregated } from '../../types'
 import Button from '../../components/Button/Button'
-import SyncingIndicator from '../../components/SyncingIndicator/SyncingIndicator'
 
 function DashboardListProjectLoading() {
   return (
