@@ -64,7 +64,6 @@ const Dashboard: React.FC<DashboardProps> = ({
   projectCellIdStrings,
   projects,
   setActiveProject,
-  // TODO: use these
   fetchEntryPointDetails,
   fetchMembers,
   fetchProjectMeta,
@@ -90,6 +89,8 @@ const Dashboard: React.FC<DashboardProps> = ({
   const { pendingProjects, setPendingProjects } = usePendingProjects(
     projectCellIdStrings,
     fetchProjectMeta,
+    fetchEntryPointDetails,
+    fetchMembers
   )
 
   const onCreateProject = (
@@ -110,7 +111,7 @@ const Dashboard: React.FC<DashboardProps> = ({
     setShowSortPicker(false)
   }
 
-  let sortedProjects: Array<ProjectAggregated>
+  let sortedProjects: ProjectAggregated[]
   if (selectedSort === 'createdAt') {
     // sort most recent first, oldest last
     sortedProjects = projects.sort(
@@ -136,13 +137,8 @@ const Dashboard: React.FC<DashboardProps> = ({
       })
     : undefined
 
-  // being in 'projects' means succesful fetchProjectMeta
-  // being in 'pendingProjects' means unsuccessful fetchProjectMeta
-  // that's why the combination of the two means that all calls to holochain
-  // to check have completed
   const hasFetchedForAllProjects =
-    projectCellIdStrings.length ===
-    projects.length + Object.keys(pendingProjects).length
+    projectCellIdStrings.length === Object.keys(pendingProjects).length
 
   return (
     <>
@@ -226,6 +222,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               ))}
             {hasFetchedForAllProjects &&
               sortedProjects.map((project) => {
+                const projectInfo = pendingProjects[project.cellId]
                 return (
                   <DashboardListProject
                     key={'dlp-key' + project.cellId}
@@ -240,6 +237,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                     updateRequiredMoreInfoLink={
                       'https://docs.acorn.software/about-acorn/updating-the-app'
                     }
+                    syncingProjectContents={projectInfo.isGossiping}
                   />
                 )
               })}

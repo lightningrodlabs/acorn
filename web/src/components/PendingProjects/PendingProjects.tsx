@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { uidToPassphrase } from '../../secrets'
 import Icon from '../Icon/Icon'
 import './PendingProjects.scss'
 import { CellIdString } from '../../types/shared'
@@ -57,10 +56,12 @@ function PendingProjects({
     return null
   }
   const syncingProjectsCount = cellIds.filter((cellId) => {
-    return pendingProjects[cellId].hasPeers
+    const projectInfo = pendingProjects[cellId]
+    return !projectInfo.hasProjectMeta && projectInfo.hasPeers
   }).length
   const waitingProjectsCount = cellIds.filter((cellId) => {
-    return !pendingProjects[cellId].hasPeers
+    const projectInfo = pendingProjects[cellId]
+    return !projectInfo.hasProjectMeta && !projectInfo.hasPeers
   }).length
 
   const cancelProjectJoin = async (appId: string, cellId: string) => {

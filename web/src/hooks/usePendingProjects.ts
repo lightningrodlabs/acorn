@@ -10,25 +10,29 @@ export type PendingProject = {
   passphrase: string
   appId: string
   hasPeers: boolean
+  isGossiping: boolean
+  hasProjectMeta: boolean
 }
 export type PendingProjectInfos = {
   [cellId: string]: PendingProject
 }
 
 const getNewInfos = async (
-  projectCellIdStrings: CellIdString[]
+  projects: { cellId: CellIdString; hasProjectMeta: boolean }[],
 ): Promise<PendingProjectInfos> => {
   const allApps = await getAllApps()
   const appWs = await getAppWs()
   const agentPubKey = await getAgentPubKey()
-  const networkInfos = agentPubKey ? await appWs.networkInfo({
-    agent_pub_key: agentPubKey,
-    dnas: projectCellIdStrings.map(cellIdFromString).map((cellId) => cellId[0]),
-  }) : []
+  const networkInfos = agentPubKey
+    ? await appWs.networkInfo({
+        agent_pub_key: agentPubKey,
+        dnas: projects.map(({ cellId }) => cellIdFromString(cellId)[0]),
+      })
+    : []
   const newInfos: PendingProjectInfos = {}
-  projectCellIdStrings.forEach((projectCellId, index) => {
+  projects.forEach(({ cellId, hasProjectMeta }, index) => {
     const [appId, appInfo] = Object.entries(allApps).find(
-      ([_appId, appInfo]) => appInfo.cellIdString === projectCellId
+      ([_appId, appInfo]) => appInfo.cellIdString === cellId
     )
     const cellInfo = Object.values(appInfo.cell_info)[0][0]
     const networkSeed =
@@ -42,23 +46,24 @@ const getNewInfos = async (
     if (networkInfo) {
       // 1 means 'only me'
       // 2 or more means currently active peers
-      console.log('networkInfo', networkInfo)
       hasPeers = networkInfo.current_number_of_peers > 1
     }
-
-    const appInfoForCellId = {
+    newInfos[cellId] = {
       passphrase: uidToPassphrase(networkSeed),
       appId,
-      hasPeers
+      hasPeers,
+      isGossiping: true,
+      hasProjectMeta,
     }
-    newInfos[projectCellId] = appInfoForCellId
   })
   return newInfos
 }
 
 export default function usePendingProjects(
   projectCellIdStrings: CellIdString[],
-  fetchProjectMeta: (cellIdString: CellIdString) => Promise<void>
+  fetchProjectMeta: (cellIdString: CellIdString) => Promise<void>,
+  fetchMembers: (cellIdString: CellIdString) => Promise<void>,
+  fetchEntryPointDetails: (cellIdString: CellIdString) => Promise<void>
 ): {
   pendingProjects: PendingProjectInfos
   setPendingProjects: (pendingProjects: PendingProjectInfos) => void
@@ -71,26 +76,32 @@ export default function usePendingProjects(
   // that haven't synced yet
   useEffect(() => {
     const check = async () => {
-      const stillPending = (
-        await Promise.all(
-          projectCellIdStrings.map(async (projectCellId) => {
-            try {
-              // fetchProjectMeta, if it succeeds
-              // will automatically change the redux state since this
-              // is a function wrapped in a dispatch call
-              await fetchProjectMeta(projectCellId)
-              return null
-            } catch (e) {
-              // project meta not found
-              return projectCellId
+      const withHasProjectMetas = await Promise.all(
+        projectCellIdStrings.map(async (projectCellId) => {
+          try {
+            // fetchProjectMeta, if it succeeds
+            // will automatically change the redux state since this
+            // is a function wrapped in a dispatch call
+            await fetchProjectMeta(projectCellId)
+            // if projectMeta succeeds, then also fetch members and entry points,
+            // but don't await them as they're not crucial
+            fetchEntryPointDetails(projectCellId)
+            fetchMembers(projectCellId)
+            return {
+              cellId: projectCellId,
+              hasProjectMeta: true,
             }
-          })
-        )
+          } catch (e) {
+            // project meta not found
+            return {
+              cellId: projectCellId,
+              hasProjectMeta: false,
+            }
+          }
+        })
       )
-        // only keep the ones that are still pending
-        .filter((c) => c)
-      // get the updated infos for the still pending projects
-      const newInfos = await getNewInfos(stillPending)
+      // mix in the the network infos for all projects
+      const newInfos = await getNewInfos(withHasProjectMetas)
       // return a result
       setPendingProjects(newInfos)
     }
