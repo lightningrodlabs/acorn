@@ -27,6 +27,7 @@ export type TypographyProps = {
     | 'button-text'
     | 'label'
     | 'heading-modal'
+    | 'subtitle-modal'
     | 'body-modal'
   text?: string
 }
