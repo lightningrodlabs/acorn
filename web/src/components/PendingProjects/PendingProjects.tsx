@@ -60,11 +60,11 @@ function PendingProjects({
   }
   const syncingProjectsCount = pendingCellIds.filter((cellId) => {
     const projectInfo = projectStatusInfos[cellId]
-    return projectInfo.hasPeers
+    return projectInfo.hasPeers && projectInfo.isGossiping
   }).length
   const waitingProjectsCount = pendingCellIds.filter((cellId) => {
     const projectInfo = projectStatusInfos[cellId]
-    return !projectInfo.hasPeers
+    return !projectInfo.hasPeers || !projectInfo.isGossiping
   }).length
 
   const cancelProjectJoin = async (appId: string, cellId: string) => {
@@ -133,9 +133,14 @@ function PendingProjects({
                       <div className="pending-project-phrase">
                         {pendingProject.passphrase}
                       </div>
-                      {pendingProject.hasPeers && (
+                      {pendingProject.hasPeers && pendingProject.isGossiping && (
                         <div className="pending-project-status-label peer-found">
                           syncing with found peer
+                        </div>
+                      )}
+                      {pendingProject.hasPeers && !pendingProject.isGossiping && (
+                        <div className="pending-project-status-label peer-not-found">
+                          peer found, not syncing
                         </div>
                       )}
                       {!pendingProject.hasPeers && (
