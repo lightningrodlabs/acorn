@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import Icon from '../Icon/Icon'
 import './PendingProjects.scss'
 import { CellIdString } from '../../types/shared'
-import { PendingProjectInfos } from '../../hooks/usePendingProjects'
+import { ProjectStatusInfos } from '../../hooks/useProjectStatusInfos'
 
 export type PendingProjectsProps = {
-  pendingProjects: PendingProjectInfos
-  setPendingProjects: React.Dispatch<React.SetStateAction<PendingProjectInfos>>
+  projectStatusInfos: ProjectStatusInfos
+  setProjectStatusInfos: React.Dispatch<React.SetStateAction<ProjectStatusInfos>>
   uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
 }
 
@@ -46,28 +46,31 @@ function ProjectOverviewPill({
 }
 
 function PendingProjects({
-  pendingProjects,
-  setPendingProjects,
+  projectStatusInfos,
+  setProjectStatusInfos,
   uninstallProject,
 }: PendingProjectsProps) {
   const [expanded, setExpanded] = useState(false)
-  const cellIds = Object.keys(pendingProjects)
-  if (cellIds.length === 0) {
+  const pendingCellIds = Object.keys(projectStatusInfos).filter((cellId) => {
+    const projectInfo = projectStatusInfos[cellId]
+    return !projectInfo.hasProjectMeta
+  })
+  if (pendingCellIds.length === 0) {
     return null
   }
-  const syncingProjectsCount = cellIds.filter((cellId) => {
-    const projectInfo = pendingProjects[cellId]
-    return !projectInfo.hasProjectMeta && projectInfo.hasPeers
+  const syncingProjectsCount = pendingCellIds.filter((cellId) => {
+    const projectInfo = projectStatusInfos[cellId]
+    return projectInfo.hasPeers
   }).length
-  const waitingProjectsCount = cellIds.filter((cellId) => {
-    const projectInfo = pendingProjects[cellId]
-    return !projectInfo.hasProjectMeta && !projectInfo.hasPeers
+  const waitingProjectsCount = pendingCellIds.filter((cellId) => {
+    const projectInfo = projectStatusInfos[cellId]
+    return !projectInfo.hasPeers
   }).length
 
   const cancelProjectJoin = async (appId: string, cellId: string) => {
     await uninstallProject(appId, cellId)
     // remove this project from pendingProjects
-    setPendingProjects((pendingProjects: PendingProjectInfos) => {
+    setProjectStatusInfos((pendingProjects: ProjectStatusInfos) => {
       const { [cellId]: _, ...rest } = pendingProjects
       return rest
     })
@@ -119,8 +122,8 @@ function PendingProjects({
         <div className="pending-projects-details-wrapper">
           {expanded && (
             <div>
-              {cellIds.map((pendingProjectCellId: string) => {
-                const pendingProject = pendingProjects[pendingProjectCellId]
+              {pendingCellIds.map((pendingProjectCellId) => {
+                const pendingProject = projectStatusInfos[pendingProjectCellId]
                 return (
                   <div
                     className="pending-projects-details-item"

@@ -22,7 +22,7 @@ import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { ProjectAggregated, ProjectMeta } from '../../types'
 import UpdateModalContext from '../../context/UpdateModalContext'
 import ProjectMigratedModal from '../../components/ProjectMigratedModal/ProjectMigratedModal'
-import usePendingProjects from '../../hooks/usePendingProjects'
+import useProjectStatusInfos from '../../hooks/useProjectStatusInfos'
 
 export type DashboardStateProps = {
   agentAddress: AgentPubKeyB64
@@ -86,7 +86,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   // add new modal state managers here
 
   // calling this triggers the fetchProjectMeta for each project
-  const { pendingProjects, setPendingProjects } = usePendingProjects(
+  const { projectStatusInfos, setProjectStatusInfos } = useProjectStatusInfos(
     projectCellIdStrings,
     fetchProjectMeta,
     fetchEntryPointDetails,
@@ -138,12 +138,11 @@ const Dashboard: React.FC<DashboardProps> = ({
     : undefined
 
   const hasFetchedForAllProjects =
-    projectCellIdStrings.length === Object.keys(pendingProjects).length
+    projectCellIdStrings.length === Object.keys(projectStatusInfos).length
 
-  const joinedProjectsSecrets = Object.values(pendingProjects).map(projectInfo => {
+  const joinedProjectsSecrets = Object.values(projectStatusInfos).map(projectInfo => {
     return projectInfo.passphrase
   })
-  console.log('joinedProjectsSecrets', joinedProjectsSecrets)
 
   return (
     <>
@@ -217,8 +216,8 @@ const Dashboard: React.FC<DashboardProps> = ({
           </div>
           <div className="my-projects-content">
             <PendingProjects
-              pendingProjects={pendingProjects}
-              setPendingProjects={setPendingProjects}
+              projectStatusInfos={projectStatusInfos}
+              setProjectStatusInfos={setProjectStatusInfos}
               uninstallProject={uninstallProject}
             />
             {!hasFetchedForAllProjects &&
@@ -227,7 +226,7 @@ const Dashboard: React.FC<DashboardProps> = ({
               ))}
             {hasFetchedForAllProjects &&
               sortedProjects.map((project) => {
-                const projectInfo = pendingProjects[project.cellId]
+                const projectInfo = projectStatusInfos[project.cellId]
                 return (
                   <DashboardListProject
                     key={'dlp-key' + project.cellId}

@@ -6,20 +6,20 @@ import { CellType } from '@holochain/client'
 import { getAgentPubKey, getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 
-export type PendingProject = {
+export type ProjectStatusInfo = {
   passphrase: string
   appId: string
   hasPeers: boolean
   isGossiping: boolean
   hasProjectMeta: boolean
 }
-export type PendingProjectInfos = {
-  [cellId: string]: PendingProject
+export type ProjectStatusInfos = {
+  [cellId: string]: ProjectStatusInfo
 }
 
 const getNewInfos = async (
   projects: { cellId: CellIdString; hasProjectMeta: boolean }[],
-): Promise<PendingProjectInfos> => {
+): Promise<ProjectStatusInfos> => {
   const allApps = await getAllApps()
   const appWs = await getAppWs()
   const agentPubKey = await getAgentPubKey()
@@ -29,7 +29,7 @@ const getNewInfos = async (
         dnas: projects.map(({ cellId }) => cellIdFromString(cellId)[0]),
       })
     : []
-  const newInfos: PendingProjectInfos = {}
+  const newInfos: ProjectStatusInfos = {}
   projects.forEach(({ cellId, hasProjectMeta }, index) => {
     const [appId, appInfo] = Object.entries(allApps).find(
       ([_appId, appInfo]) => appInfo.cellIdString === cellId
@@ -65,10 +65,10 @@ export default function usePendingProjects(
   fetchMembers: (cellIdString: CellIdString) => Promise<void>,
   fetchEntryPointDetails: (cellIdString: CellIdString) => Promise<void>
 ): {
-  pendingProjects: PendingProjectInfos
-  setPendingProjects: (pendingProjects: PendingProjectInfos) => void
+  projectStatusInfos: ProjectStatusInfos
+  setProjectStatusInfos: (pendingProjects: ProjectStatusInfos) => void
 } {
-  const [pendingProjects, setPendingProjects] = useState<PendingProjectInfos>(
+  const [projectStatusInfos, setProjectStatusInfos] = useState<ProjectStatusInfos>(
     {}
   )
 
@@ -103,7 +103,7 @@ export default function usePendingProjects(
       // mix in the the network infos for all projects
       const newInfos = await getNewInfos(withHasProjectMetas)
       // return a result
-      setPendingProjects(newInfos)
+      setProjectStatusInfos(newInfos)
     }
     check()
     // check every 5 seconds for project meta
@@ -114,7 +114,6 @@ export default function usePendingProjects(
   }, [JSON.stringify(projectCellIdStrings)])
 
   return {
-    pendingProjects,
-    setPendingProjects,
+    projectStatusInfos, setProjectStatusInfos
   }
 }
