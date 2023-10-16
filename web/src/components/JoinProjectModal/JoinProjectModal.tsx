@@ -83,6 +83,7 @@ export default function JoinProjectModal({
   showModal,
   onClose,
   onJoinProject,
+  joinedProjectsSecrets = [], // defaulting to an empty array if not provided
 }) {
   const reset = () => {
     setProjectSecret('')
@@ -91,8 +92,14 @@ export default function JoinProjectModal({
     setCheckDone(false)
   }
   const onValidate = async () => {
+    // check if the sectrest is five words or not
     if (invalidText || projectSecret.length === 0) {
       setInvalidText('Secret must be 5 words.')
+      return
+    }
+    // Check if the secret is already joined
+    if (joinedProjectsSecrets.includes(projectSecret)) {
+      setInvalidText("You've already joined this project!")
       return
     }
     setValidatingSecret(true)

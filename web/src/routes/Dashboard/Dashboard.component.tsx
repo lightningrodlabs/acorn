@@ -144,6 +144,11 @@ const Dashboard: React.FC<DashboardProps> = ({
     projectCellIdStrings.length ===
     projects.length + Object.keys(pendingProjects).length
 
+  const joinedProjectsSecrets = Object.values(pendingProjects).map(projectInfo => {
+    return projectInfo.passphrase
+  })
+  console.log('joinedProjectsSecrets', joinedProjectsSecrets)
+
   return (
     <>
       <div className="dashboard-background">
@@ -261,6 +266,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         onJoinProject={onJoinProject}
         showModal={showJoinModal}
         onClose={() => setShowJoinModal(false)}
+        joinedProjectsSecrets={joinedProjectsSecrets}
       />
       <ImportProjectModal
         onImportProject={onImportProject}
