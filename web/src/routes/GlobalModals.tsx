@@ -20,6 +20,7 @@ import { VersionInfo } from '../hooks/useVersionChecker'
 import DeleteProjectModal from '../components/DeleteProjectModal/DeleteProjectModal'
 import RemoveSelfProjectModal from '../components/RemoveSelfProjectModal/RemoveSelfProjectModal'
 import { ModalState, OpenModal } from '../context/ModalContexts'
+import { useHistory, useLocation } from 'react-router-dom'
 
 export type GlobalModalsProps = {
   whoami: WireRecord<Profile>
@@ -56,6 +57,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   updateVersionInfo,
   uninstallProject,
 }) => {
+  const history = useHistory()
   // profile edit modal
   const titleText = 'Profile Settings'
   const subText = ''
@@ -66,6 +68,9 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   const submitText = 'Save Changes'
 
   const setModalToNone = () => setModalState({ id: OpenModal.None })
+  const redirectToDashboard = () => {
+    history.push('/dashboard')
+  }
 
   return (
     <>
@@ -131,6 +136,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         }
         onClose={setModalToNone}
         uninstallProject={uninstallProject}
+        redirectToDashboard={redirectToDashboard}
       />
       <RemoveSelfProjectModal
         showModal={modalState.id === OpenModal.RemoveSelfProject}
@@ -147,6 +153,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         }
         onClose={setModalToNone}
         uninstallProject={uninstallProject}
+        redirectToDashboard={redirectToDashboard}
       />
 
       {/* Update Prompt Modal */}

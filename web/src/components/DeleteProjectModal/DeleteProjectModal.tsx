@@ -17,6 +17,7 @@ export type DeleteProjectModalProps = {
   projectCellId: CellIdString
   projectName: string
   onClose: () => void
+  redirectToDashboard: () => void
   uninstallProject: (appId: string, cellIdString: CellIdString) => Promise<void>
 }
 
@@ -26,9 +27,11 @@ const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
   projectCellId,
   projectName,
   onClose,
+  redirectToDashboard,
   uninstallProject,
 }) => {
   const uninstall = () => {
+    redirectToDashboard()
     uninstallProject(projectAppId, projectCellId)
     onClose()
   }

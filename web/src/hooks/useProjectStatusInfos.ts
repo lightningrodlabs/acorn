@@ -18,7 +18,7 @@ export type ProjectStatusInfos = {
 }
 
 const getNewInfos = async (
-  projects: { cellId: CellIdString; hasProjectMeta: boolean }[],
+  projects: { cellId: CellIdString; hasProjectMeta: boolean }[]
 ): Promise<ProjectStatusInfos> => {
   const allApps = await getAllApps()
   const appWs = await getAppWs()
@@ -31,12 +31,14 @@ const getNewInfos = async (
     : []
   const newInfos: ProjectStatusInfos = {}
   projects.forEach(({ cellId, hasProjectMeta }, index) => {
-    const [appId, appInfo] = Object.entries(allApps).find(
+    const app = Object.entries(allApps).find(
       ([_appId, appInfo]) => appInfo.cellIdString === cellId
     )
-    if (!appInfo) {
+    // This can happen if the project just got uninstalled
+    if (!app) {
       return
     }
+    const [appId, appInfo] = app
     const cellInfo = Object.values(appInfo.cell_info)[0][0]
     const networkSeed =
       CellType.Provisioned in cellInfo
@@ -73,42 +75,47 @@ export default function usePendingProjects(
   projectStatusInfos: ProjectStatusInfos
   setProjectStatusInfos: (pendingProjects: ProjectStatusInfos) => void
 } {
-  const [projectStatusInfos, setProjectStatusInfos] = useState<ProjectStatusInfos>(
-    {}
-  )
+  const [
+    projectStatusInfos,
+    setProjectStatusInfos,
+  ] = useState<ProjectStatusInfos>({})
 
   // handle the regular checking for those projects
   // that haven't synced yet
   useEffect(() => {
     const check = async () => {
-      const withHasProjectMetas = await Promise.all(
-        projectCellIdStrings.map(async (projectCellId) => {
-          try {
-            // fetchProjectMeta, if it succeeds
-            // will automatically change the redux state since this
-            // is a function wrapped in a dispatch call
-            await fetchProjectMeta(projectCellId)
-            // if projectMeta succeeds, then also fetch members and entry points,
-            // but don't await them as they're not crucial
-            fetchEntryPointDetails(projectCellId)
-            fetchMembers(projectCellId)
-            return {
-              cellId: projectCellId,
-              hasProjectMeta: true,
+      try {
+        const withHasProjectMetas = await Promise.all(
+          projectCellIdStrings.map(async (projectCellId) => {
+            try {
+              // fetchProjectMeta, if it succeeds
+              // will automatically change the redux state since this
+              // is a function wrapped in a dispatch call
+              await fetchProjectMeta(projectCellId)
+              // if projectMeta succeeds, then also fetch members and entry points,
+              // but don't await them as they're not crucial
+              fetchEntryPointDetails(projectCellId)
+              fetchMembers(projectCellId)
+              return {
+                cellId: projectCellId,
+                hasProjectMeta: true,
+              }
+            } catch (e) {
+              // project meta not found
+              return {
+                cellId: projectCellId,
+                hasProjectMeta: false,
+              }
             }
-          } catch (e) {
-            // project meta not found
-            return {
-              cellId: projectCellId,
-              hasProjectMeta: false,
-            }
-          }
-        })
-      )
-      // mix in the the network infos for all projects
-      const newInfos = await getNewInfos(withHasProjectMetas)
-      // return a result
-      setProjectStatusInfos(newInfos)
+          })
+        )
+        // mix in the the network infos for all projects
+        const newInfos = await getNewInfos(withHasProjectMetas)
+        // return a result
+        setProjectStatusInfos(newInfos)
+      } catch (e) {
+        console.error(e)
+      }
     }
     check()
     // check every 5 seconds for project meta
@@ -119,6 +126,7 @@ export default function usePendingProjects(
   }, [JSON.stringify(projectCellIdStrings)])
 
   return {
-    projectStatusInfos, setProjectStatusInfos
+    projectStatusInfos,
+    setProjectStatusInfos,
   }
 }
