@@ -22,6 +22,8 @@ import RemoveSelfProjectModal from '../components/RemoveSelfProjectModal/RemoveS
 import { ModalState, OpenModal } from '../context/ModalContexts'
 
 export type GlobalModalsProps = {
+  modalState: ModalState
+  setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   whoami: WireRecord<Profile>
   projectSettingsProjectMeta: WithActionHash<ProjectMeta>
   projectSettingsMemberCount: number
@@ -32,8 +34,6 @@ export type GlobalModalsProps = {
   setKeyboardNavigationPreference: (
     preference: KeyboardNavigationPreference
   ) => void
-  modalState: ModalState
-  setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   onProfileSubmit: (profile: Profile) => Promise<void>
   hasMigratedSharedProject: boolean
   updateVersionInfo: VersionInfo
@@ -112,10 +112,10 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         memberCount={projectSettingsMemberCount}
       />
       <InviteMembersModal
+        showModal={modalState.id === OpenModal.InviteMembers}
         passphrase={
           modalState.id === OpenModal.InviteMembers && modalState.passphrase
         }
-        showModal={modalState.id === OpenModal.InviteMembers}
         onClose={setModalToNone}
       />
       <DeleteProjectModal

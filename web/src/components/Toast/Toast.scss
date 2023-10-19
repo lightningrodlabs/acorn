@@ -1,0 +1,39 @@
+.toast {
+  z-index: 2;
+  width: fit-content;
+  position: absolute;
+  bottom: -3rem;
+  transform: translateX(-50%);
+  left: 50%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-family: var(--font-family-primary-medium);
+  transition: 0.5s bottom ease;
+
+  &.visible {
+    bottom: 1.25rem;
+  }
+
+  &.confirmation {
+    color: var(--text-color-toast-confirmation);
+    background-color: var(--bg-color-toast-confirmation);
+  }
+
+  &.information {
+    color: var(--text-color-toast-information);
+    background-color: var(--bg-color-toast-information);
+  }
+
+  &.warning {
+    color: var(--text-color-toast-warning);
+    background-color: var(--bg-color-toast-warning);
+  }
+
+  &.destructive {
+    color: var(--text-color-toast-destructive);
+    background-color: var(--bg-color-toast-destructive);
+  }
+}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import './RemoveSelfProjectModal.scss'
 
@@ -10,6 +10,7 @@ import {
 } from '../ProjectModal/ProjectModal'
 import Button from '../Button/Button'
 import { CellIdString } from '../../types/shared'
+import ToastContext, { ShowToast } from '../../context/ToastContext'
 
 export type RemoveSelfProjectModalProps = {
   showModal: boolean
@@ -28,9 +29,17 @@ const RemoveSelfProjectModal: React.FC<RemoveSelfProjectModalProps> = ({
   onClose,
   uninstallProject,
 }) => {
+  // pull in the toast context
+  const { setToastState } = useContext(ToastContext)
+
   const uninstall = () => {
     uninstallProject(projectAppId, projectCellId)
     onClose()
+    setToastState({
+      id: ShowToast.Yes,
+      text: 'You left a shared project.',
+      type: 'confirmation',
+    })
   }
 
   return (

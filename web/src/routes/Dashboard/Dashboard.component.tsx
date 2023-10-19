@@ -70,6 +70,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   joinProject,
   importProject,
 }) => {
+  // pull in the modal context
   const { modalState, setModalState } = useContext(ModalContexts)
 
   const [selectedSort, setSelectedSort] = useState('createdAt')

@@ -24,6 +24,7 @@ import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
 import Footer from '../components/Footer/Footer'
 import { ViewingReleaseNotes } from '../components/UpdateModal/UpdateModal'
 import NetworkInfo from '../components/NetworkInfo/NetworkInfo'
+import Toast from '../components/Toast/Toast'
 
 // import new routes here
 import CreateProfilePage from './CreateProfilePage/CreateProfilePage.connector'
@@ -44,6 +45,7 @@ import useFileDownloaded from '../hooks/useFileDownloaded'
 
 // react context
 import ModalContexts, { ModalState, OpenModal } from '../context/ModalContexts'
+import ToastContext, { ToastState, ShowToast } from '../context/ToastContext'
 
 // redux
 import {
@@ -131,9 +133,19 @@ const App: React.FC<AppProps> = ({
 }) => {
   const [networkInfoOpen, setNetworkInfoOpen] = useState(false)
 
+  // Default state for modals and their details
   const [modalState, setModalState] = useState<ModalState>({
-    id: OpenModal.None
+    id: OpenModal.None,
   })
+  // Default state for toast and its details
+  // the details are defined within toastState 
+  // which is defined inside ToastContext
+  const [toastState, setToastState] = useState<ToastState>({
+    id: ShowToast.Yes,
+    text: 'error happended',
+    type: 'warning'
+  })
+
   const setModalToNone = () => setModalState({ id: OpenModal.None })
 
   const [showUpdateBar, setShowUpdateBar] = useState(false)
@@ -198,12 +210,14 @@ const App: React.FC<AppProps> = ({
     finishMigrationChecker.hasChecked &&
     finishMigrationChecker.dataForNeedsMigration
 
-  const projectSettingsProjectMeta = modalState.id === OpenModal.ProjectSettings
-    ? projectMetas[modalState.cellId]
-    : undefined
-  const projectSettingsMemberCount = modalState.id === OpenModal.ProjectSettings
-    ? Object.keys(projectMembers[modalState.cellId]).length
-    : undefined
+  const projectSettingsProjectMeta =
+    modalState.id === OpenModal.ProjectSettings
+      ? projectMetas[modalState.cellId]
+      : undefined
+  const projectSettingsMemberCount =
+    modalState.id === OpenModal.ProjectSettings
+      ? Object.keys(projectMembers[modalState.cellId]).length
+      : undefined
 
   return (
     <>
@@ -213,103 +227,114 @@ const App: React.FC<AppProps> = ({
         }`}
       >
         <ErrorBoundaryScreen>
+          {/* Provide context for modals */}
           <ModalContexts.Provider
             // connect the modal contexts to the state
             value={{ modalState, setModalState }}
           >
-            <Router>
-              {agentAddress && (
-                <Header
-                  project={activeProjectMeta}
+            {/* Provide context for modals */}
+            <ToastContext.Provider
+              // connect the toast context to the state
+              value={{ toastState, setToastState }}
+            >
+              <Router>
+                {agentAddress && (
+                  <Header
+                    project={activeProjectMeta}
+                    {...{
+                      agentAddress,
+                      whoami,
+                      setModalState,
+                      //
+                      members,
+                      presentMembers,
+                      activeEntryPoints,
+                      projectId,
+                      updateStatus,
+                      goToOutcome,
+                      showUpdateBar,
+                      setShowUpdateBar,
+                      hasMigratedSharedProject,
+                    }}
+                  />
+                )}
+                <Switch>
+                  {/* Add new routes in here */}
+                  <Route path="/intro" component={IntroScreen} />
+                  <Route path="/register" component={CreateProfilePage} />
+                  <Route path="/dashboard" component={Dashboard} />
+                  <Route path="/project/:projectId" component={ProjectView} />
+                  <Route
+                    path="/run-update"
+                    render={() => (
+                      <VersionUpdateLeaving
+                        updateVersionInfo={updateVersionInfo}
+                        triggerAMigrationCheck={
+                          finishMigrationChecker.triggerACheck
+                        }
+                      />
+                    )}
+                  />
+                  <Route
+                    path="/finish-update"
+                    render={() => (
+                      <VersionUpdateEntering
+                        hasCheckedForMigration={
+                          finishMigrationChecker.hasChecked
+                        }
+                        migrationData={
+                          finishMigrationChecker.dataForNeedsMigration
+                        }
+                        migrationDataFileName={
+                          finishMigrationChecker.migrationDataFileName
+                        }
+                      />
+                    )}
+                  />
+                  <Route path="/" render={() => <Redirect to="/dashboard" />} />
+                </Switch>
+
+                <GlobalModals
                   {...{
-                    agentAddress,
                     whoami,
+                    projectSettingsProjectMeta,
+                    projectSettingsMemberCount,
+                    agentAddress,
+                    navigationPreference,
+                    setNavigationPreference,
+                    keyboardNavigationPreference,
+                    setKeyboardNavigationPreference,
+                    modalState,
                     setModalState,
-                    //
-                    members,
-                    presentMembers,
-                    activeEntryPoints,
-                    projectId,
-                    updateStatus,
-                    goToOutcome,
-                    showUpdateBar,
-                    setShowUpdateBar,
+                    onProfileSubmit,
+                    updateVersionInfo,
                     hasMigratedSharedProject,
+                    uninstallProject,
                   }}
                 />
-              )}
-              <Switch>
-                {/* Add new routes in here */}
-                <Route path="/intro" component={IntroScreen} />
-                <Route path="/register" component={CreateProfilePage} />
-                <Route path="/dashboard" component={Dashboard} />
-                <Route path="/project/:projectId" component={ProjectView} />
-                <Route
-                  path="/run-update"
-                  render={() => (
-                    <VersionUpdateLeaving
-                      updateVersionInfo={updateVersionInfo}
-                      triggerAMigrationCheck={
-                        finishMigrationChecker.triggerACheck
-                      }
-                    />
-                  )}
-                />
-                <Route
-                  path="/finish-update"
-                  render={() => (
-                    <VersionUpdateEntering
-                      hasCheckedForMigration={finishMigrationChecker.hasChecked}
-                      migrationData={
-                        finishMigrationChecker.dataForNeedsMigration
-                      }
-                      migrationDataFileName={
-                        finishMigrationChecker.migrationDataFileName
-                      }
-                    />
-                  )}
-                />
-                <Route path="/" render={() => <Redirect to="/dashboard" />} />
-              </Switch>
-
-              <GlobalModals
-                {...{
-                  whoami,
-                  projectSettingsProjectMeta,
-                  projectSettingsMemberCount,
-                  agentAddress,
-                  navigationPreference,
-                  setNavigationPreference,
-                  keyboardNavigationPreference,
-                  setKeyboardNavigationPreference,
-                  modalState,
-                  setModalState,
-                  onProfileSubmit,
-                  updateVersionInfo,
-                  hasMigratedSharedProject,
-                  uninstallProject
-                }}
-              />
-              {/* Loading Screen if no user agent, and also during checking whether migration is necessary */}
-              {!(agentAddress && finishMigrationChecker.hasChecked) && (
-                <LoadingScreen />
-              )}
-              {redirToIntro && <Redirect to="/intro" />}
-              {redirToFinishMigration && <Redirect to="/finish-update" />}
-              {agentAddress && whoami && (
-                <Footer
-                  agentAddress={agentAddress}
-                  hiddenAchievedOutcomes={hiddenAchievedOutcomes}
-                  hiddenSmallOutcomes={hiddenSmallOutcomes}
-                  showSmallOutcomes={showSmallOutcomes}
-                  hideSmallOutcomes={hideSmallOutcomes}
-                  showAchievedOutcomes={showAchievedOutcomes}
-                  hideAchievedOutcomes={hideAchievedOutcomes}
-                  selectedLayeringAlgo={selectedLayeringAlgo}
-                  setSelectedLayeringAlgo={setSelectedLayeringAlgo}
-                />
-              )}
-            </Router>
+                {/* Loading Screen if no user agent, and also during checking whether migration is necessary */}
+                {!(agentAddress && finishMigrationChecker.hasChecked) && (
+                  <LoadingScreen />
+                )}
+                {redirToIntro && <Redirect to="/intro" />}
+                {redirToFinishMigration && <Redirect to="/finish-update" />}
+                {agentAddress && whoami && (
+                  <Footer
+                    agentAddress={agentAddress}
+                    hiddenAchievedOutcomes={hiddenAchievedOutcomes}
+                    hiddenSmallOutcomes={hiddenSmallOutcomes}
+                    showSmallOutcomes={showSmallOutcomes}
+                    hideSmallOutcomes={hideSmallOutcomes}
+                    showAchievedOutcomes={showAchievedOutcomes}
+                    hideAchievedOutcomes={hideAchievedOutcomes}
+                    selectedLayeringAlgo={selectedLayeringAlgo}
+                    setSelectedLayeringAlgo={setSelectedLayeringAlgo}
+                  />
+                )}
+              </Router>
+              {/* Render Toast component here */}
+              <Toast toastState={toastState} setToastState={setToastState} />
+            </ToastContext.Provider>
           </ModalContexts.Provider>
         </ErrorBoundaryScreen>
       </div>

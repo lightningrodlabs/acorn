@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import './DeleteProjectModal.scss'
 
 import Modal from '../Modal/Modal'
+
 import {
   ProjectModalContent,
   ProjectModalContentSpacer,
@@ -10,6 +11,7 @@ import {
 } from '../ProjectModal/ProjectModal'
 import Button from '../Button/Button'
 import { CellIdString } from '../../types/shared'
+import ToastContext, { ShowToast } from '../../context/ToastContext'
 
 export type DeleteProjectModalProps = {
   showModal: boolean
@@ -28,9 +30,17 @@ const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
   onClose,
   uninstallProject,
 }) => {
+  // pull in the toast context
+  const { setToastState } = useContext(ToastContext)
+
   const uninstall = () => {
     uninstallProject(projectAppId, projectCellId)
     onClose()
+    setToastState({
+      id: ShowToast.Yes,
+      text: 'Project deleted.',
+      type: 'confirmation',
+    })
   }
 
   return (

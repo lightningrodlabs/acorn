@@ -38,6 +38,12 @@
   --bg-color-warning: #ffeee3;
   --bg-color-warning-hover: #ffe6d5;
   --bg-color-button-cream: #f7f5f1;
+  // background color toast
+  --bg-color-toast-confirmation: #dbe5e2;
+  --bg-color-toast-information: #dbe5e2;
+  --bg-color-toast-warning: #f1e5d8;
+  --bg-color-toast-destructive: #eedad4;
+
   // background dark
   --bg-color-primary-dark: #555555;
   --bg-color-hover-dark: #c7beb430;
@@ -79,4 +85,9 @@
   --text-color-warning: #c52700;
   // text color on dark background
   --text-color-dark-bg: #ffffff;
+  // text color toast
+  --text-color-toast-confirmation: #22796f;
+  --text-color-toast-information: #22796f;
+  --text-color-toast-warning: #bf8342;
+  --text-color-toast-destructive: #b52c0c;
 }

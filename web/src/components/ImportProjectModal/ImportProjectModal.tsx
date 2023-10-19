@@ -61,8 +61,9 @@ function ImportProjectFilePicker({ showModal, onFilePicked, onCancel }) {
           {!fileFormatInvalidMessage && (
             <div className="import-project-content-wrapper">
               Import an Acorn project from a previously exported{' '}
-              <strong>JSON</strong> formatted file. The project secret will
-              remain the same.
+              <b>JSON</b> formatted file. 
+              <p/>
+              A random new secret phrase for this project will be assigned.
             </div>
           )}
           {fileFormatInvalidMessage && (
