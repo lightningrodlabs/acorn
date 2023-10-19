@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './Toast.scss'
 import ButtonClose from '../ButtonClose/ButtonClose'
 import { ShowToast, ToastState } from '../../context/ToastContext'
@@ -13,7 +13,7 @@ const Toast: React.FC<ToastProps> = ({ toastState, setToastState }) => {
   // create a local cached state of whatever the most
   // recent text and type given is, so that we can make a nice
   // disappearing transition
-  const { recentText, recentType } = useToastStateCache(toastState)
+  const { recentText, recentType } = useToastStateCache(toastState, setToastState)
   return (
     <div className={`toast ${recentType} ${isVisible ? 'visible' : ''} `}>
       {recentText}
@@ -27,15 +27,34 @@ const Toast: React.FC<ToastProps> = ({ toastState, setToastState }) => {
 
 export default Toast
 
-function useToastStateCache(toastState: ToastState) {
+const TOAST_TIMEOUT_DELAY = 3000
+
+// 2 purposes:
+// 1. cache the most recent text and type of toast
+// 2. set a timeout-driven delay to clear the toast
+function useToastStateCache(toastState: ToastState, setToastState: React.Dispatch<React.SetStateAction<ToastState>>) {
   const [recentText, setRecentText] = useState('')
   const [recentType, setRecentType] = useState('')
+  const intervalRef = useRef<number | undefined>(undefined)
   // update whenever toast state changes to any other
   // visible ToastState
   useEffect(() => {
     if (toastState.id !== ShowToast.No) {
       setRecentText(toastState.text)
       setRecentType(toastState.type)
+      // clear any previous interval
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+      // set a new interval to clear the toast
+      intervalRef.current = window.setTimeout(() => {
+        setToastState({ id: ShowToast.No })
+      }, TOAST_TIMEOUT_DELAY)
+    }
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
     }
   }, [toastState])
   return {
