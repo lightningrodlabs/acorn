@@ -20,6 +20,7 @@ import { VersionInfo } from '../hooks/useVersionChecker'
 import DeleteProjectModal from '../components/DeleteProjectModal/DeleteProjectModal'
 import RemoveSelfProjectModal from '../components/RemoveSelfProjectModal/RemoveSelfProjectModal'
 import { ModalState, OpenModal } from '../context/ModalContexts'
+import { useHistory } from 'react-router-dom'
 
 export type GlobalModalsProps = {
   modalState: ModalState

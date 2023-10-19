@@ -141,9 +141,7 @@ const App: React.FC<AppProps> = ({
   // the details are defined within toastState 
   // which is defined inside ToastContext
   const [toastState, setToastState] = useState<ToastState>({
-    id: ShowToast.Yes,
-    text: 'error happended',
-    type: 'warning'
+    id: ShowToast.No,
   })
 
   const setModalToNone = () => setModalState({ id: OpenModal.None })
