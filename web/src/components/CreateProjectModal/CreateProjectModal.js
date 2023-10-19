@@ -125,7 +125,11 @@ function CreateProjectForm({
           </div>
         </ProjectModalContent>
       </ProjectModalContentSpacer>
-      <ProjectModalButton text={actionButtonContent} onClick={submit} />
+      <ProjectModalButton
+        text={actionButtonContent}
+        onClick={submit}
+        disabled={creatingProject || projectName.length === 0}
+      />
     </div>
   )
 }
