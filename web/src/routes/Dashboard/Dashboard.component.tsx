@@ -23,6 +23,7 @@ import { ProjectAggregated, ProjectMeta } from '../../types'
 import ModalContexts, { OpenModal } from '../../context/ModalContexts'
 import ProjectMigratedModal from '../../components/ProjectMigratedModal/ProjectMigratedModal'
 import useProjectStatusInfos from '../../hooks/useProjectStatusInfos'
+import { ViewingReleaseNotes } from '../../components/UpdateModal/UpdateModal'
 
 export type DashboardStateProps = {
   agentAddress: AgentPubKeyB64
@@ -73,11 +74,15 @@ const Dashboard: React.FC<DashboardProps> = ({
 
   const [selectedSort, setSelectedSort] = useState('createdAt')
   const [showSortPicker, setShowSortPicker] = useState(false)
+
+  // TODO: these could refactored into ModalState and
+  // the modals moved to GlobalModals and this state management
+  // deleted
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showJoinModal, setShowJoinModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
   const [showProjectMigratedModal, setShowProjectMigratedModal] = useState('')
-  // add new modal state managers here
+  // 
 
   // calling this triggers the fetchProjectMeta for each project
   const { projectStatusInfos, setProjectStatusInfos } = useProjectStatusInfos(
@@ -118,11 +123,6 @@ const Dashboard: React.FC<DashboardProps> = ({
     })
   }
 
-  // const projectSettingsProject = modalState.id === OpenModal.ProjectSettings
-  //   ? sortedProjects.find((project) => {
-  //       return project.cellId === modalState.cellId
-  //     })
-  //   : undefined
   const projectMigratedProject = showProjectMigratedModal
     ? sortedProjects.find((project) => {
         return project.cellId === showProjectMigratedModal
@@ -137,8 +137,6 @@ const Dashboard: React.FC<DashboardProps> = ({
       return projectInfo.passphrase
     }
   )
-
-  const setModalToNone = () => setModalState({ id: OpenModal.None })
 
   return (
     <>
@@ -231,7 +229,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                     updateRequiredMoreInfoLink={
                       'https://docs.acorn.software/about-acorn/updating-the-app'
                     }
-                    syncingProjectContents={projectInfo.isGossiping}
+                    syncingProjectContents={projectInfo?.isGossiping}
                   />
                 )
               })}
@@ -279,10 +277,9 @@ const Dashboard: React.FC<DashboardProps> = ({
         }}
         onClickUpdateNow={() => {
           setShowProjectMigratedModal('')
-          setModalState({ id: OpenModal.UpdateApp })
+          setModalState({ id: OpenModal.UpdateApp, section: ViewingReleaseNotes.MainMessage })
         }}
       />
-      {/* add new modals here */}
     </>
   )
 }

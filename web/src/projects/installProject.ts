@@ -11,15 +11,7 @@ export async function internalInstallProject(
   iGetAgentPubKey: typeof getAgentPubKey
 ): Promise<{ cellIdString: CellIdString; cellId: CellId; appId: string }> {
   const uid = passphraseToUid(passphrase)
-  // add a bit of randomness so that
-  // the same passphrase can be tried multiple different times
-  // without conflicting
-  // in order to eventually find their peers
-  // note that this will leave a graveyard of deactivated apps for attempted
-  // joins
-  const installedAppId = `${PROJECT_APP_PREFIX}-${Math.random()
-    .toString()
-    .slice(-6)}-${uid}`
+  const installedAppId = `${PROJECT_APP_PREFIX}-${uid}`
   const agentKey = iGetAgentPubKey()
   if (!agentKey) {
     throw new Error(

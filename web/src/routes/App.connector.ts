@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 
-import { ActionHashB64 } from '../types/shared'
+import { ActionHashB64, CellIdString } from '../types/shared'
 import { LayeringAlgorithm, Profile } from '../types'
 
 import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
@@ -12,12 +12,8 @@ import selectEntryPoints, {
   selectActiveProjectMembers,
 } from '../redux/persistent/projects/entry-points/select'
 import { animatePanAndZoom } from '../redux/ephemeral/viewport/actions'
-import {
-  closeInviteMembersModal,
-  openInviteMembersModal,
-} from '../redux/ephemeral/invite-members-modal/actions'
 import ProfilesZomeApi from '../api/profilesApi'
-import { getAppWs } from '../hcWebsockets'
+import { getAdminWs, getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { RootState } from '../redux/reducer'
 import App, { AppProps, AppStateProps, AppDispatchProps } from './App.component'
@@ -30,6 +26,7 @@ import {
 } from '../redux/ephemeral/map-view-settings/actions'
 import ProjectsZomeApi from '../api/projectsApi'
 import { updateProjectMeta } from '../redux/persistent/projects/project-meta/actions'
+import { uninstallProject } from '../projects/uninstallProject'
 
 function mapStateToProps(state: RootState): AppStateProps {
   const {
@@ -37,7 +34,6 @@ function mapStateToProps(state: RootState): AppStateProps {
       hasFetchedForWhoami,
       activeProject,
       activeEntryPoints,
-      inviteMembersModal,
       localPreferences: { navigation, keyboardNavigation },
     },
     cells: { profiles: profilesCellIdString },
@@ -91,7 +87,6 @@ function mapStateToProps(state: RootState): AppStateProps {
     agentAddress: state.agentAddress,
     navigationPreference: navigation,
     keyboardNavigationPreference: keyboardNavigation,
-    inviteMembersModalShowing: inviteMembersModal.passphrase,
     members,
     presentMembers,
     hasMigratedSharedProject,
@@ -112,12 +107,6 @@ function mapDispatchToProps(dispatch): AppDispatchProps {
     },
     goToOutcome: (outcomeActionHash) => {
       return dispatch(animatePanAndZoom(outcomeActionHash, true))
-    },
-    openInviteMembersModal: (passphrase) => {
-      return dispatch(openInviteMembersModal(passphrase))
-    },
-    hideInviteMembersModal: () => {
-      return dispatch(closeInviteMembersModal())
     },
     showSmallOutcomes: (projectCellId) => {
       return dispatch(showSmallOutcomes(projectCellId))
@@ -148,6 +137,10 @@ function mergeProps(
   return {
     ...stateProps,
     ...dispatchProps,
+    uninstallProject: async (appId: string, cellIdString: CellIdString) => {
+      const adminWs = await getAdminWs()
+      uninstallProject(appId, cellIdString, dispatch, adminWs)
+    },
     updateWhoami: async (entry: Profile, actionHash: string) => {
       const appWebsocket = await getAppWs()
       const profilesZomeApi = new ProfilesZomeApi(appWebsocket)

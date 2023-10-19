@@ -1,12 +1,11 @@
-import _ from 'lodash'
-import { WireRecord } from '../../../../api/hdkCrud'
 import { ProjectMeta } from '../../../../types'
-import { Action, CellIdString, WithActionHash } from '../../../../types/shared'
+import { CellIdString, WithActionHash } from '../../../../types/shared'
 import {
   SIMPLE_CREATE_PROJECT_META,
   FETCH_PROJECT_META,
   UPDATE_PROJECT_META,
 } from './actions'
+import { REMOVE_PROJECT_CELL_ID } from '../../cells/actions'
 
 export type ProjectMetaState = {
   [cellId: CellIdString]: WithActionHash<ProjectMeta>
@@ -15,7 +14,7 @@ const defaultState: ProjectMetaState = {}
 
 export default function (
   state: ProjectMetaState = defaultState,
-  action: Action<WireRecord<ProjectMeta>>
+  action: any
 ): ProjectMetaState {
   const { payload, type } = action
   switch (type) {
@@ -29,6 +28,9 @@ export default function (
           actionHash: payload.actionHash,
         },
       }
+    case REMOVE_PROJECT_CELL_ID:
+      const { [payload as string]: oneToDelete, ...rest } = state
+      return rest
     default:
       return state
   }

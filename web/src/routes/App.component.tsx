@@ -92,6 +92,7 @@ export type AppDispatchProps = {
 }
 
 export type AppMergeProps = {
+  uninstallProject: (appId: string, cellIdString: CellIdString) => Promise<void>
   updateWhoami: (entry: Profile, actionHash: ActionHashB64) => Promise<void>
   setSelectedLayeringAlgo: (
     layeringAlgorithm: LayeringAlgorithm
@@ -126,21 +127,14 @@ const App: React.FC<AppProps> = ({
   hideAchievedOutcomes,
   selectedLayeringAlgo,
   setSelectedLayeringAlgo,
+  uninstallProject,
 }) => {
   const [networkInfoOpen, setNetworkInfoOpen] = useState(false)
 
   const [modalState, setModalState] = useState<ModalState>({
     id: OpenModal.None
   })
-
-  // TODO: can move into ModalState and eliminate
-  // could be refactored into ModalState context
-  const [showProfileEditForm, setShowProfileEditForm] = useState(false)
-  const [showPreferences, setShowPreferences] = useState(false)
-  const [viewingReleaseNotes, setViewingReleaseNotes] = useState(
-    ViewingReleaseNotes.MainMessage
-  )
-  //
+  const setModalToNone = () => setModalState({ id: OpenModal.None })
 
   const [showUpdateBar, setShowUpdateBar] = useState(false)
   // custom hooks
@@ -180,7 +174,7 @@ const App: React.FC<AppProps> = ({
 
   const onProfileSubmit = async (profile: Profile) => {
     await updateWhoami(profile, whoami.actionHash)
-    setShowProfileEditForm(false)
+    setModalToNone()
   }
   const updateStatus = async (statusString: Profile['status']) => {
     await updateWhoami(
@@ -228,21 +222,19 @@ const App: React.FC<AppProps> = ({
                 <Header
                   project={activeProjectMeta}
                   {...{
-                    members,
                     agentAddress,
+                    whoami,
+                    setModalState,
+                    //
+                    members,
                     presentMembers,
                     activeEntryPoints,
                     projectId,
-                    whoami,
                     updateStatus,
-                    setModalState,
-                    setShowProfileEditForm,
-                    setShowPreferences,
                     goToOutcome,
                     showUpdateBar,
                     setShowUpdateBar,
                     hasMigratedSharedProject,
-                    setViewingReleaseNotes,
                   }}
                 />
               )}
@@ -282,15 +274,6 @@ const App: React.FC<AppProps> = ({
 
               <GlobalModals
                 {...{
-                  // could be refactored into ModalState context
-                  showProfileEditForm,
-                  setShowProfileEditForm,
-                  showPreferences,
-                  setShowPreferences,
-                  viewingReleaseNotes,
-                  setViewingReleaseNotes,
-
-                  //
                   whoami,
                   projectSettingsProjectMeta,
                   projectSettingsMemberCount,
@@ -304,6 +287,7 @@ const App: React.FC<AppProps> = ({
                   onProfileSubmit,
                   updateVersionInfo,
                   hasMigratedSharedProject,
+                  uninstallProject
                 }}
               />
               {/* Loading Screen if no user agent, and also during checking whether migration is necessary */}

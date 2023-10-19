@@ -6,14 +6,17 @@ import Button from '../Button/Button'
 import Modal from '../Modal/Modal'
 import {
   COORDINATES,
+  KeyboardNavigationPreference,
   MODAL,
   MOUSE,
+  NavigationPreference,
   TRACKPAD,
 } from '../../redux/ephemeral/local-preferences/reducer'
 import PreferenceSelect, {
   PreferenceSelectExtra,
   PreferenceSelectOption,
 } from '../PreferenceSelect/PreferenceSelect'
+import { ModalState, OpenModal } from '../../context/ModalContexts'
 
 function Descriptions({ navigation }) {
   return (
@@ -83,7 +86,9 @@ function NavigationModeInternal({ navigation, setNavigationSelected }) {
         title="Navigation Mode"
         subtitle="Select your preferred navigation mode on canvas based on your primary
           pointer device"
+        // @ts-ignore
         options={options}
+        // @ts-ignore
         descriptions={<Descriptions navigation={navigation} />}
       />
     </div>
@@ -118,42 +123,58 @@ function KeyboardNavigationModeInternal({
         iconName="panning.svg"
         title="Keyboard Navigation Mode"
         subtitle="Select your preferred method of using the keyboard to navigate from parent to child, and vice-versa"
+        // @ts-ignore
         options={options}
       />
     </div>
   )
 }
 
+export type PreferencesProps = {
+  navigationPreference: NavigationPreference
+  setNavigationPreference: (preference: NavigationPreference) => void
+  keyboardNavigationPreference: KeyboardNavigationPreference
+  setKeyboardNavigationPreference: (
+    preference: KeyboardNavigationPreference
+  ) => void
+  modalState: ModalState
+  setModalState: React.Dispatch<React.SetStateAction<ModalState>>
+}
+
 export default function Preferences({
-  navigation,
-  keyboardNavigation,
+  navigationPreference,
+  keyboardNavigationPreference,
   setNavigationPreference,
   setKeyboardNavigationPreference,
-  showPreferences,
-  setShowPreferences,
-}) {
+  modalState,
+  setModalState,
+}: PreferencesProps) {
   // hold an internal version of the preferences state, so that we can toggle it, before saving it
-  const [navigationSelected, setNavigationSelected] = useState(navigation)
+  const [navigationSelected, setNavigationSelected] = useState(navigationPreference)
   const [keyboardNavigationSelected, setKeyboardNavigationSelected] = useState(
-    keyboardNavigation
+    keyboardNavigationPreference
   )
 
   const save = () => {
     setNavigationPreference(navigationSelected)
     setKeyboardNavigationPreference(keyboardNavigationSelected)
-    setShowPreferences(false)
+    setModalState({ id: OpenModal.None })
   }
   const close = () => {
     // reset navigation selected to
     // whatever the canonical state of navigation preference
     // is equal to
-    setNavigationSelected(navigation)
-    setKeyboardNavigationSelected(keyboardNavigation)
-    setShowPreferences(false)
+    setNavigationSelected(navigationPreference)
+    setKeyboardNavigationSelected(keyboardNavigationPreference)
+    setModalState({ id: OpenModal.None })
   }
 
   return (
-    <Modal white active={showPreferences} onClose={close}>
+    <Modal
+      white
+      active={modalState.id === OpenModal.Preferences}
+      onClose={close}
+    >
       <div className="preferences-title">Preferences</div>
       <NavigationModeInternal
         navigation={navigationSelected}

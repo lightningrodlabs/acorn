@@ -34,6 +34,9 @@ const getNewInfos = async (
     const [appId, appInfo] = Object.entries(allApps).find(
       ([_appId, appInfo]) => appInfo.cellIdString === cellId
     )
+    if (!appInfo) {
+      return
+    }
     const cellInfo = Object.values(appInfo.cell_info)[0][0]
     const networkSeed =
       CellType.Provisioned in cellInfo

@@ -8,7 +8,7 @@ import ProjectSettingsModal from '../components/ProjectSettingsModal/ProjectSett
 import InviteMembersModal from '../components/InviteMembersModal/InviteMembersModal'
 import { WireRecord } from '../api/hdkCrud'
 import { Profile, ProjectMeta } from '../types'
-import { AgentPubKeyB64, WithActionHash } from '../types/shared'
+import { AgentPubKeyB64, CellIdString, WithActionHash } from '../types/shared'
 import UpdateModal, {
   ViewingReleaseNotes,
 } from '../components/UpdateModal/UpdateModal'
@@ -22,17 +22,6 @@ import RemoveSelfProjectModal from '../components/RemoveSelfProjectModal/RemoveS
 import { ModalState, OpenModal } from '../context/ModalContexts'
 
 export type GlobalModalsProps = {
-  // could be refactored into ModalState context
-  showProfileEditForm: boolean
-  setShowProfileEditForm: (val: boolean) => void
-  showPreferences: boolean
-  setShowPreferences: (val: boolean) => void
-  viewingReleaseNotes: ViewingReleaseNotes
-  setViewingReleaseNotes: React.Dispatch<
-    React.SetStateAction<ViewingReleaseNotes>
-  >
-
-  //
   whoami: WireRecord<Profile>
   projectSettingsProjectMeta: WithActionHash<ProjectMeta>
   projectSettingsMemberCount: number
@@ -48,15 +37,10 @@ export type GlobalModalsProps = {
   onProfileSubmit: (profile: Profile) => Promise<void>
   hasMigratedSharedProject: boolean
   updateVersionInfo: VersionInfo
+  uninstallProject: (appId: string, cellIdString: CellIdString) => Promise<void>
 }
 
 const GlobalModals: React.FC<GlobalModalsProps> = ({
-  // could be refactored into ModalState context
-  showProfileEditForm,
-  setShowProfileEditForm,
-  showPreferences,
-  setShowPreferences,
-  //
   whoami,
   projectSettingsProjectMeta,
   projectSettingsMemberCount,
@@ -70,8 +54,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   onProfileSubmit,
   hasMigratedSharedProject,
   updateVersionInfo,
-  viewingReleaseNotes,
-  setViewingReleaseNotes,
+  uninstallProject,
 }) => {
   // profile edit modal
   const titleText = 'Profile Settings'
@@ -90,8 +73,8 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
       {/* Profile Settings Modal */}
       <Modal
         white
-        active={showProfileEditForm}
-        onClose={() => setShowProfileEditForm(false)}
+        active={modalState.id === OpenModal.ProfileEditForm}
+        onClose={setModalToNone}
       >
         <ProfileEditForm
           onSubmit={onProfileSubmit}
@@ -108,11 +91,11 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
       </Modal>
       {/* Preferences Modal */}
       <Preferences
-        navigation={navigationPreference}
+        navigationPreference={navigationPreference}
         setNavigationPreference={setNavigationPreference}
-        showPreferences={showPreferences}
-        setShowPreferences={setShowPreferences}
-        keyboardNavigation={keyboardNavigationPreference}
+        modalState={modalState}
+        setModalState={setModalState}
+        keyboardNavigationPreference={keyboardNavigationPreference}
         setKeyboardNavigationPreference={setKeyboardNavigationPreference}
       />
       {/* Project Settings Modal */}
@@ -140,7 +123,14 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         projectName={
           modalState.id === OpenModal.DeleteProject && modalState.projectName
         }
+        projectAppId={
+          modalState.id === OpenModal.DeleteProject && modalState.projectAppId
+        }
+        projectCellId={
+          modalState.id === OpenModal.DeleteProject && modalState.cellId
+        }
         onClose={setModalToNone}
+        uninstallProject={uninstallProject}
       />
       <RemoveSelfProjectModal
         showModal={modalState.id === OpenModal.RemoveSelfProject}
@@ -148,7 +138,15 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
           modalState.id === OpenModal.RemoveSelfProject &&
           modalState.projectName
         }
+        projectAppId={
+          modalState.id === OpenModal.RemoveSelfProject &&
+          modalState.projectAppId
+        }
+        projectCellId={
+          modalState.id === OpenModal.RemoveSelfProject && modalState.cellId
+        }
         onClose={setModalToNone}
+        uninstallProject={uninstallProject}
       />
 
       {/* Update Prompt Modal */}
@@ -158,40 +156,46 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         releaseTag={updateVersionInfo.newReleaseVersion}
         releaseSize={updateVersionInfo.sizeForPlatform}
         heading={
-          viewingReleaseNotes === ViewingReleaseNotes.MainMessage
+          modalState.id === OpenModal.UpdateApp &&
+          modalState.section === ViewingReleaseNotes.MainMessage
             ? 'Update to newest version of Acorn'
             : 'Release Notes'
         }
         content={
           <>
-            {viewingReleaseNotes === ViewingReleaseNotes.MainMessage && (
-              <div>
-                {hasMigratedSharedProject ? (
-                  <>
-                    Update is required to access a shared project brought to the
-                    updated version by another team member. You can continue
-                    using your personal projects without the update.
-                  </>
-                ) : (
-                  <>
-                    By updating you'll gain access to bug fixes, new features,
-                    and other improvements.
-                  </>
-                )}{' '}
-                See{' '}
-                <a
-                  onClick={() =>
-                    setViewingReleaseNotes(ViewingReleaseNotes.ReleaseNotes)
-                  }
-                >
-                  Release Notes & Changelog
-                </a>
-                .
-              </div>
-            )}
-            {viewingReleaseNotes === ViewingReleaseNotes.ReleaseNotes && (
-              <ReactMarkdown>{updateVersionInfo.releaseNotes}</ReactMarkdown>
-            )}
+            {modalState.id === OpenModal.UpdateApp &&
+              modalState.section === ViewingReleaseNotes.MainMessage && (
+                <div>
+                  {hasMigratedSharedProject ? (
+                    <>
+                      Update is required to access a shared project brought to
+                      the updated version by another team member. You can
+                      continue using your personal projects without the update.
+                    </>
+                  ) : (
+                    <>
+                      By updating you'll gain access to bug fixes, new features,
+                      and other improvements.
+                    </>
+                  )}{' '}
+                  See{' '}
+                  <a
+                    onClick={() =>
+                      setModalState({
+                        id: OpenModal.UpdateApp,
+                        section: ViewingReleaseNotes.ReleaseNotes,
+                      })
+                    }
+                  >
+                    Release Notes & Changelog
+                  </a>
+                  .
+                </div>
+              )}
+            {modalState.id === OpenModal.UpdateApp &&
+              modalState.section === ViewingReleaseNotes.ReleaseNotes && (
+                <ReactMarkdown>{updateVersionInfo.releaseNotes}</ReactMarkdown>
+              )}
           </>
         }
       />

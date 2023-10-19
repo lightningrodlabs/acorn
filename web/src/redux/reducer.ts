@@ -16,7 +16,6 @@ import whoami, {
 import agentAddress from './persistent/profiles/agent-address/reducer'
 import projects from './persistent/projects/reducer'
 import outcomeForm from './ephemeral/outcome-form/reducer'
-import inviteMembersModal from './ephemeral/invite-members-modal/reducer'
 import selection from './ephemeral/selection/reducer'
 import hover from './ephemeral/hover/reducer'
 import keyboard from './ephemeral/keyboard/reducer'
@@ -46,7 +45,6 @@ const rootReducer = combineReducers({
   agentAddress,
   ui: combineReducers({
     layout,
-    inviteMembersModal,
     hasFetchedForWhoami,
     outcomeConnector,
     localPreferences,

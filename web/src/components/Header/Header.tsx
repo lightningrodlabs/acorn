@@ -1,12 +1,12 @@
 import React, { useRef, useState } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
+import { useRouteMatch } from 'react-router-dom'
 
 import { WireRecord } from '../../api/hdkCrud'
 import {
   AgentPubKeyB64,
   ActionHashB64,
   WithActionHash,
-  CellIdString,
 } from '../../types/shared'
 import { ProjectMeta, Profile, EntryPoint, Outcome } from '../../types'
 
@@ -14,20 +14,16 @@ import { Status } from './Status'
 import HeaderLeftPanel from './HeaderLeftPanel'
 import HeaderRightPanel from './HeaderRightPanel.connector'
 import UpdateBar from '../UpdateBar/UpdateBar'
-import { useRouteMatch } from 'react-router-dom'
 import { ViewingReleaseNotes } from '../UpdateModal/UpdateModal'
+import { ModalState, OpenModal } from '../../context/ModalContexts'
 
 import './Header.scss'
-import { ModalState, OpenModal } from '../../context/ModalContexts'
 
 export type HeaderProps = {
   // for update bar
   showUpdateBar: boolean
   setShowUpdateBar: React.Dispatch<React.SetStateAction<boolean>>
   hasMigratedSharedProject: boolean
-  setViewingReleaseNotes: React.Dispatch<
-    React.SetStateAction<ViewingReleaseNotes>
-  >
   // other
   whoami: WireRecord<Profile>
   activeEntryPoints: {
@@ -38,8 +34,6 @@ export type HeaderProps = {
   members: Profile[]
   presentMembers: AgentPubKeyB64[]
   setModalState: React.Dispatch<React.SetStateAction<ModalState>>
-  setShowProfileEditForm: React.Dispatch<React.SetStateAction<boolean>>
-  setShowPreferences: React.Dispatch<React.SetStateAction<boolean>>
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
   // holochain
   updateStatus: (statusString: Profile['status']) => Promise<void>
@@ -50,11 +44,8 @@ const Header: React.FC<HeaderProps> = ({
   showUpdateBar,
   setShowUpdateBar,
   hasMigratedSharedProject,
-  setViewingReleaseNotes,
   whoami,
   setModalState,
-  setShowProfileEditForm,
-  setShowPreferences,
   updateStatus,
   activeEntryPoints,
   project,
@@ -81,7 +72,9 @@ const Header: React.FC<HeaderProps> = ({
   })
   const onClickEditProfile = () => {
     setIsExportOpen(false)
-    setShowProfileEditForm(true)
+    setModalState({
+      id: OpenModal.ProfileEditForm
+    })
   }
 
   const changeStatus = (status: Status) => {
@@ -95,8 +88,9 @@ const Header: React.FC<HeaderProps> = ({
   }
   const onClickPreferences = () => {
     setIsExportOpen(false)
-    // call the prop function
-    setShowPreferences(true)
+    setModalState({
+      id: OpenModal.Preferences
+    })
   }
 
   return (
@@ -108,17 +102,17 @@ const Header: React.FC<HeaderProps> = ({
           onClose={() => setShowUpdateBar(false)}
           buttonSecondaryText={'Changelog'}
           onClickSecondaryAction={() => {
-            setViewingReleaseNotes(ViewingReleaseNotes.ReleaseNotes)
             setModalState({
-              id: OpenModal.UpdateApp
+              id: OpenModal.UpdateApp,
+              section: ViewingReleaseNotes.ReleaseNotes
             })
             setShowUpdateBar(false)
           }}
           buttonPrimaryText={'Update Now'}
           onClickPrimaryAction={() => {
-            setViewingReleaseNotes(ViewingReleaseNotes.MainMessage)
             setModalState({
-              id: OpenModal.UpdateApp
+              id: OpenModal.UpdateApp,
+              section: ViewingReleaseNotes.MainMessage
             })
             setShowUpdateBar(false)
           }}

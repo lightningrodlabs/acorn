@@ -1,5 +1,6 @@
 import React from 'react'
 import { CellIdString } from '../types/shared'
+import { ViewingReleaseNotes } from '../components/UpdateModal/UpdateModal'
 
 export enum OpenModal {
   None,
@@ -10,6 +11,8 @@ export enum OpenModal {
   InviteMembers,
   ProjectMigrated,
   ProjectExported,
+  Preferences,
+  ProfileEditForm,
 }
 
 export type ModalState =
@@ -20,14 +23,17 @@ export type ModalState =
       id: OpenModal.DeleteProject
       cellId: CellIdString
       projectName: string
+      projectAppId: string
     }
   | {
       id: OpenModal.RemoveSelfProject
       cellId: CellIdString
       projectName: string
+      projectAppId: string
     }
   | {
       id: OpenModal.UpdateApp
+      section: ViewingReleaseNotes
     }
   | {
       id: OpenModal.ProjectSettings
@@ -44,6 +50,12 @@ export type ModalState =
   | {
       id: OpenModal.ProjectExported
       projectName: string
+    }
+  | {
+      id: OpenModal.Preferences
+    }
+  | {
+      id: OpenModal.ProfileEditForm
     }
 
 export interface ModalContextsShape {

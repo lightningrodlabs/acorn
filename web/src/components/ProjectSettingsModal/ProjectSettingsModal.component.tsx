@@ -12,6 +12,8 @@ import './ProjectSettingsModal.scss'
 import { ProjectMeta } from '../../types'
 import { CellIdString, WithActionHash } from '../../types/shared'
 import { ModalState, OpenModal } from '../../context/ModalContexts'
+import { passphraseToUid } from '../../secrets'
+import { PROJECT_APP_PREFIX } from '../../holochainConfig'
 
 function ProjectDeleteButton({
   onClick,
@@ -32,6 +34,7 @@ export type EditProjectFormProps = {
   updatingProject: boolean
   onSubmit: () => void
   projectCellId: CellIdString
+  projectAppId: string
   projectName: string
   setProjectName: React.Dispatch<React.SetStateAction<string>>
   projectCoverUrl: string
@@ -45,6 +48,7 @@ function EditProjectForm({
   updatingProject,
   onSubmit,
   projectCellId,
+  projectAppId,
   projectName,
   setProjectName,
   projectCoverUrl,
@@ -155,6 +159,7 @@ function EditProjectForm({
                   : OpenModal.RemoveSelfProject,
               cellId: projectCellId,
               projectName,
+              projectAppId,
             })
           }
           text={
@@ -217,6 +222,9 @@ export default function ProjectSettingsModal({
   const [projectCoverUrl, setProjectCoverUrl] = useState('')
   const [projectPassphrase, setProjectPassphrase] = useState('')
 
+  const uid = passphraseToUid(projectPassphrase)
+  const installedAppId = `${PROJECT_APP_PREFIX}-${uid}`
+
   return (
     <Modal
       white
@@ -229,6 +237,7 @@ export default function ProjectSettingsModal({
         updatingProject={updatingProject}
         projectName={projectName}
         projectCellId={cellIdString}
+        projectAppId={installedAppId}
         setModalState={setModalState}
         projectPassphrase={projectPassphrase}
         setProjectName={setProjectName}

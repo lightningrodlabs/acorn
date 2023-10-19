@@ -6,8 +6,6 @@ import {
   fetchProjectMeta,
   updateProjectMeta,
 } from '../../redux/persistent/projects/project-meta/actions'
-import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
-import { openInviteMembersModal } from '../../redux/ephemeral/invite-members-modal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString } from '../../utils'
 import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../../types/shared'
