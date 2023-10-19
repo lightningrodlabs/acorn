@@ -35,6 +35,7 @@ export type GlobalModalsProps = {
   ) => void
   modalState: ModalState
   setModalState: React.Dispatch<React.SetStateAction<ModalState>>
+  setShowUpdateBar: React.Dispatch<React.SetStateAction<boolean>>
   onProfileSubmit: (profile: Profile) => Promise<void>
   hasMigratedSharedProject: boolean
   updateVersionInfo: VersionInfo
@@ -48,6 +49,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   agentAddress,
   modalState,
   setModalState,
+  setShowUpdateBar,
   navigationPreference,
   setNavigationPreference,
   keyboardNavigationPreference,
@@ -159,7 +161,10 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
       {/* Update Prompt Modal */}
       <UpdateModal
         show={modalState.id === OpenModal.UpdateApp}
-        onClose={setModalToNone}
+        onClose={() => {
+          setModalState({ id: OpenModal.None })
+          setShowUpdateBar(true)
+        }}
         releaseTag={updateVersionInfo.newReleaseVersion}
         releaseSize={updateVersionInfo.sizeForPlatform}
         heading={

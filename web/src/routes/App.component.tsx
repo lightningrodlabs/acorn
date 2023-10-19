@@ -284,6 +284,7 @@ const App: React.FC<AppProps> = ({
                   setKeyboardNavigationPreference,
                   modalState,
                   setModalState,
+                  setShowUpdateBar,
                   onProfileSubmit,
                   updateVersionInfo,
                   hasMigratedSharedProject,
