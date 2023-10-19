@@ -18,6 +18,7 @@ export type RemoveSelfProjectModalProps = {
   projectCellId: CellIdString
   projectName: string
   onClose: () => void
+  redirectToDashboard: () => void
   uninstallProject: (appId: string, cellIdString: CellIdString) => Promise<void>
 }
 
@@ -27,12 +28,14 @@ const RemoveSelfProjectModal: React.FC<RemoveSelfProjectModalProps> = ({
   projectCellId,
   projectName,
   onClose,
+  redirectToDashboard,
   uninstallProject,
 }) => {
   // pull in the toast context
   const { setToastState } = useContext(ToastContext)
 
   const uninstall = () => {
+    redirectToDashboard()
     uninstallProject(projectAppId, projectCellId)
     onClose()
     setToastState({

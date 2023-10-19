@@ -34,6 +34,7 @@ export type GlobalModalsProps = {
   setKeyboardNavigationPreference: (
     preference: KeyboardNavigationPreference
   ) => void
+  setShowUpdateBar: React.Dispatch<React.SetStateAction<boolean>>
   onProfileSubmit: (profile: Profile) => Promise<void>
   hasMigratedSharedProject: boolean
   updateVersionInfo: VersionInfo
@@ -47,6 +48,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   agentAddress,
   modalState,
   setModalState,
+  setShowUpdateBar,
   navigationPreference,
   setNavigationPreference,
   keyboardNavigationPreference,
@@ -56,6 +58,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   updateVersionInfo,
   uninstallProject,
 }) => {
+  const history = useHistory()
   // profile edit modal
   const titleText = 'Profile Settings'
   const subText = ''
@@ -66,6 +69,9 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   const submitText = 'Save Changes'
 
   const setModalToNone = () => setModalState({ id: OpenModal.None })
+  const redirectToDashboard = () => {
+    history.push('/dashboard')
+  }
 
   return (
     <>
@@ -131,6 +137,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         }
         onClose={setModalToNone}
         uninstallProject={uninstallProject}
+        redirectToDashboard={redirectToDashboard}
       />
       <RemoveSelfProjectModal
         showModal={modalState.id === OpenModal.RemoveSelfProject}
@@ -147,12 +154,16 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         }
         onClose={setModalToNone}
         uninstallProject={uninstallProject}
+        redirectToDashboard={redirectToDashboard}
       />
 
       {/* Update Prompt Modal */}
       <UpdateModal
         show={modalState.id === OpenModal.UpdateApp}
-        onClose={setModalToNone}
+        onClose={() => {
+          setModalState({ id: OpenModal.None })
+          setShowUpdateBar(true)
+        }}
         releaseTag={updateVersionInfo.newReleaseVersion}
         releaseSize={updateVersionInfo.sizeForPlatform}
         heading={

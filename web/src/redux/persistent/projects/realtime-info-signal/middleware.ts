@@ -51,7 +51,9 @@ const realtimeInfoWatcher = (store) => {
         // and thus this need not be fired
         if (payload.projectId) {
           const cellId = cellIdFromString(payload.projectId)
-          await projectsZomeApi.realtimeInfoSignal.send(cellId, payload)
+          projectsZomeApi.realtimeInfoSignal.send(cellId, payload).catch((e) => {
+            console.log('could not send realtime info signal due to error:', e)
+          })
         }
       }
       return result
@@ -67,7 +69,9 @@ const realtimeInfoWatcher = (store) => {
       const cellId = cellIdFromString(cellIdString)
       // TODO: catch and log error, but don't
       // await this call
-      projectsZomeApi.realtimeInfoSignal.send(cellId, payload)
+      projectsZomeApi.realtimeInfoSignal.send(cellId, payload).catch((e) => {
+        console.log('could not send realtime info signal due to error:', e)
+      })
       return next(action)
     } else {
       return next(action)
