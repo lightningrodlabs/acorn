@@ -10,7 +10,7 @@ let adminWs: AdminWebsocket
 let iGetAgentPubKey: typeof getAgentPubKey
 let mockHappPath: string
 let mockCellIdString: string
-const regex = /acorn-project-\d{6}-\w+/
+const appIdRegex = /acorn-project-\w+/
 
 beforeEach(() => {
   mockPassphrase = 'testPassphrase'
@@ -53,12 +53,12 @@ describe('installProject()', () => {
       mockCellIdString
     )
     expect(result.cellId).toEqual(cellIdFromString(mockCellIdString))
-    expect(result.appId).toMatch(regex)
+    expect(result.appId).toMatch(appIdRegex)
 
     expect(adminWs.installApp).toHaveBeenCalledTimes(1)
     expect(adminWs.installApp).toHaveBeenNthCalledWith(1, {
       agent_key: mockAgentPubKey,
-      installed_app_id: expect.stringMatching(regex),
+      installed_app_id: expect.stringMatching(appIdRegex),
       membrane_proofs: {},
       path: mockHappPath,
       network_seed: passphraseToUid(mockPassphrase),
@@ -66,7 +66,7 @@ describe('installProject()', () => {
 
     expect(adminWs.enableApp).toHaveBeenCalledTimes(1)
     expect(adminWs.enableApp).toHaveBeenNthCalledWith(1, {
-      installed_app_id: expect.stringMatching(regex),
+      installed_app_id: expect.stringMatching(appIdRegex),
     })
 
     expect(adminWs.authorizeSigningCredentials).toHaveBeenCalledTimes(1)
