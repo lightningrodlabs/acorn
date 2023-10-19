@@ -26,7 +26,7 @@ const ProjectMigratedModal: React.FC<ProjectMigratedModalProps> = ({
       white
       active={showModal}
       onClose={onClose}
-      className="edit-project-modal-wrapper"
+      className="project-settings"
     >
       <ModalContent
         content={

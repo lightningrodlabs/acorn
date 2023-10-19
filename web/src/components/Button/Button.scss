@@ -12,7 +12,7 @@
   box-sizing: border-box;
   border-radius: 0.625rem;
   cursor: pointer;
-  transition: 0.2s box-shadow ease;
+  transition: 0.2s all ease;
   -webkit-font-smoothing: antialiased;
   margin: 1rem;
   text-decoration: none;
@@ -52,6 +52,18 @@
   &.green {
     background-color: #00afa4;
     color: #ffffff;
+  }
+
+  // warning or important action button style
+  &.warning {
+    background-color: var(--bg-color-warning);
+    color: var(--text-color-warning);
+    box-shadow: 0rem 0rem 0.75rem var(--bg-color-warning);
+
+    &:hover {
+      background-color: var(--bg-color-warning-hover);
+      box-shadow: 0rem 0rem 0.75rem var(--bg-color-warning-hover);
+    }
   }
 
   // buttons sizes

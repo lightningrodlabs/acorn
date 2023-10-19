@@ -1,43 +1,40 @@
-.edit-project-modal-wrapper {
-  /* width: 550px; */
-  height: 508px;
-  // TODO: if we re-enable the
-  // priority mode selector, then this was
-  // the height we used for that
-  // height: 755px;
-  overflow: hidden;
+.project-settings {
+  max-height: calc(100vh - 10rem);
   position: relative;
   justify-content: space-between;
   align-items: center;
+  overflow-y: hidden;
+
+  .validating-form-input {
+    margin-bottom: 28px;
+  }
+
+  .project-modal-content {
+    justify-content: left;
+  }
 }
 
-.edit-project-modal-wrapper .validating-form-input {
-  margin-bottom: 28px;
-}
-
-.project-modal-content {
-  /* margin-bottom: 50px; */
-}
-
-.edit-project-image-row {
+.project-settings-image-row {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
   margin-bottom: 28px;
-}
 
-.edit-project-image-row .validating-form-input {
-  margin-bottom: 0;
-}
+  .validating-form-input {
+    margin-bottom: 0;
+  }
 
-.edit-project-image {
-  margin-left: 8px;
-  width: 38px;
-  height: 38px;
-  background-size: cover;
-  background-repeat: no-repeat;
-  border-radius: 5px;
-  border: 1.2px solid #f3efeb;
+  .project-settings-image {
+    margin-left: 8px;
+    width: 44px;
+    height: 44px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 10px;
+    border: 2px solid #f3efeb;
+    box-sizing: border-box;
+    background-color: var(--bg-color-tertiary);
+  }
 }
 
 /* create project modal animation */
@@ -47,13 +44,13 @@
   opacity: 1;
   transition: opacity 0.3s, transform 0.4s;
   width: 420px;
-}
 
-.edit-project-form.project-created {
-  /* background-color: blue; */
-  opacity: 0;
-  -webkit-transform: translateX(-300px);
-  transform: translateX(-300px);
+  &.project-created {
+    /* background-color: blue; */
+    opacity: 0;
+    -webkit-transform: translateX(-300px);
+    transform: translateX(-300px);
+  }
 }
 
 /* project created modal animation */
@@ -74,4 +71,46 @@
   opacity: 1;
   -webkit-transform: scale(1);
   transform: scale(1);
+}
+
+.project-settings-button {
+  background-color: var(--bg-color-button-cream);
+  padding: 0.5rem 0.825rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.625rem;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  font-family: var(--font-family-primary-semibold);
+  color: var(--text-color-primary);
+  transition: 0.2s all ease;
+  width: fit-content;
+
+  &:hover {
+    // color: var(--text-color-link);
+    background-color: var(--bg-color-hover);
+  }
+
+  &.invite-members {
+    border: none;
+    margin-right: 0;
+    margin-bottom: 1.25rem;
+  }
+
+  &.delete-project {
+    margin-bottom: 1.25rem;
+    color: var(--text-color-warning);
+    background-color: var(--bg-color-warning);
+
+    &:hover {
+      background-color: var(--bg-color-warning-hover);
+    }
+  }
+
+  .icon {
+    margin-right: 6px;
+  }
 }

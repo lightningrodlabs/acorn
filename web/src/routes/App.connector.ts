@@ -82,6 +82,8 @@ function mapStateToProps(state: RootState): AppStateProps {
   return {
     profilesCellIdString,
     activeEntryPoints: activeEntryPointsObjects,
+    projectMetas: state.projects.projectMeta,
+    projectMembers: state.projects.members,
     projectId: activeProject,
     activeProjectMeta,
     whoami: state.whoami,

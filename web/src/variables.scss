@@ -7,7 +7,7 @@
   --color-virtually-transaprent: #ffffff00; // when you need an element but transparent
   --color-green-shadow: #4a604392; // for achieved outcome cards
   --shadow-brown-shadow: #8377699b; // for not achieved outcome cards
-  --color-silver: #bebebe; //Silver
+  --color-silver: #757171; //Silver
   --color-green: #008414; //Green
   --color-forest-green: #15841d; //Forset green (used for achieved small)
   --color-bronze: #a89958; //Bronze (used for not achieved small)
@@ -29,11 +29,15 @@
   --bg-color-secondary-read-only: #ffffff80; //White (50%)
   --bg-color-tertiary: #fbfbf9; //Lotion
   --bg-color-hover: #f4f1ed; //Isabelline
-  --bg-color-hover-semi-transparent: #f4f1eda1; //Isabelline 8--color-silver: #bebebe; //Silver0%
+  --bg-color-hover-semi-transparent: #f4f1eda1; //Isabelline 8
+  --color-silver: #bebebe; //Silver0%
   --bg-color-canvas: #f4f2f0; //Isabelline 2
   --bg-color-popup: #ebeae7eb; //Cararra (90% opacity)
   --bg-color-achieved: #e9efe7;
   --bg-color-light-green: #e5f5e0;
+  --bg-color-warning: #ffeee3;
+  --bg-color-warning-hover: #ffe6d5;
+  --bg-color-button-cream: #f7f5f1;
   // background dark
   --bg-color-primary-dark: #555555;
   --bg-color-hover-dark: #c7beb430;
@@ -45,6 +49,7 @@
   --border-color-platinum: #ede7e7; //Platinum
   --border-color-bright-gray: #efefef; //Bright Gray
   --border-color-pale-silver: #c3bfba; //Pale Silver (100%)
+  --border-color-form-input: #f3efeb;
 
   // shadow
   --shadow-color: #c7beb472; //Pale Silver (40% opacity)
@@ -71,6 +76,7 @@
   --text-color-strikethrough: #aea49972; //Pale Silver
   --text-color-invalid: #ff5d36;
   --text-color-link: #344cff; //Ultamarine blue
+  --text-color-warning: #c52700;
   // text color on dark background
   --text-color-dark-bg: #ffffff;
 }

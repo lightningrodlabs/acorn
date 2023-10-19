@@ -48,6 +48,10 @@
   background-color: var(--text-color-link);
 }
 
+.icon.warning .inner-icon {
+  background-color: var(--text-color-warning);
+}
+
 .icon.white .inner-icon {
   background-color: #ffffff;
   cursor: pointer;
@@ -145,28 +149,6 @@
   /* background-color: rgba(173, 166, 157, 0.9); */
   background-color: #ffffff;
   padding: 8px;
-}
-
-/* Hierarchy Icons with Status Color */
-
-.icon.Uncertain .inner-icon {
-  background-color: #ff5d36;
-}
-
-.icon.Incomplete .inner-icon {
-  background-color: #ffc400;
-}
-
-.icon.InProcess .inner-icon {
-  background-color: #ff9cab;
-}
-
-.icon.InReview .inner-icon {
-  background-color: #00e2ff;
-}
-
-.icon.Complete .inner-icon {
-  background-color: #83e300;
 }
 
 /* Tooltip configuration */

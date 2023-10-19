@@ -10,18 +10,49 @@ import {
 import Icon from '../Icon/Icon'
 import './ProjectSettingsModal.scss'
 import { ProjectMeta } from '../../types'
-import { WithActionHash } from '../../types/shared'
+import { CellIdString, WithActionHash } from '../../types/shared'
+import { ModalState, OpenModal } from '../../context/ModalContexts'
+
+function ProjectDeleteButton({
+  onClick,
+  text,
+}: {
+  onClick: () => void
+  text: string
+}) {
+  return (
+    <div className="project-settings-button delete-project" onClick={onClick}>
+      <Icon name="delete-bin.svg" size="small" className="warning" />
+      {text}
+    </div>
+  )
+}
+
+export type EditProjectFormProps = {
+  updatingProject: boolean
+  onSubmit: () => void
+  projectCellId: CellIdString
+  projectName: string
+  setProjectName: React.Dispatch<React.SetStateAction<string>>
+  projectCoverUrl: string
+  setProjectCoverUrl: React.Dispatch<React.SetStateAction<string>>
+  projectPassphrase: string
+  setModalState: React.Dispatch<React.SetStateAction<ModalState>>
+  memberCount: number
+}
 
 function EditProjectForm({
   updatingProject,
   onSubmit,
+  projectCellId,
   projectName,
   setProjectName,
   projectCoverUrl,
   setProjectCoverUrl,
   projectPassphrase,
-  openInviteMembersModal,
-}) {
+  setModalState,
+  memberCount,
+}: EditProjectFormProps) {
   const [
     shouldInvalidateProjectName,
     setShouldInvalidateProjectName,
@@ -58,7 +89,7 @@ function EditProjectForm({
     // }
   }, [projectCoverUrl])
 
-  const subheading = `Any changes will apply for all team members.`
+  // const subheading = `Any changes will apply for all team members.`
 
   // validate before firing event
   const submit = () => {
@@ -70,18 +101,19 @@ function EditProjectForm({
   }
 
   return (
-    <div className="edit-project-form">
+    <div className="project-settings">
       <ProjectModalHeading title="Project Settings" />
-      <ProjectModalSubHeading title={subheading} />
+      <ProjectModalSubHeading title={''} />
       <ProjectModalContent>
         {/* Invite Members Button */}
         <div
-          className="my-projects-button invite-members"
-          onClick={() => openInviteMembersModal(projectPassphrase)}
+          className="project-settings-button invite-members"
+          onClick={() => setModalState({ id: OpenModal.InviteMembers, passphrase: projectPassphrase })}
         >
-          <Icon name="user-plus.svg" size="small" className="grey" />
+          <Icon name="user-plus.svg" size="small" className="dark-grey" />
           Invite Members
         </div>
+
         {/* project name */}
         <ValidatingFormInput
           value={projectName}
@@ -90,28 +122,61 @@ function EditProjectForm({
           validInput={projectName.length > 0 && isValidProjectName}
           errorText={errorProjectName}
           label="Project Name"
+          helpText="Changing project name will apply to all members."
           placeholder="The best project ever"
         />
         {/* project cover image */}
-        <div className="edit-project-image-row">
+        <div className="project-settings-image-row">
           <ValidatingFormInput
             value={projectCoverUrl}
             onChange={setProjectCoverUrl}
             label="Project Cover Image (optional)"
+            helpText="Changing project image will apply to all members."
             placeholder="Paste in your project image URL here"
             invalidInput={projectCoverUrl.length > 0 && !isValidProjectCoverUrl}
             validInput={projectCoverUrl.length > 0 && isValidProjectCoverUrl}
             errorText={errorProjectCoverUrl}
           />
           <div
-            className="edit-project-image"
+            className="project-settings-image"
             style={{ backgroundImage: `url(${projectCoverUrl})` }}
           />
         </div>
+
+        {/* Delete Button */}
+        {/* Show if personal project: Delete Project Button */}
+        {/* Show if shared project: Remove Yourself from Project Button */}
+        <ProjectDeleteButton
+          onClick={() =>
+            setModalState({
+              id:
+                memberCount === 1
+                  ? OpenModal.DeleteProject
+                  : OpenModal.RemoveSelfProject,
+              cellId: projectCellId,
+              projectName,
+            })
+          }
+          text={
+            memberCount === 1
+              ? 'Delete Project'
+              : 'Remove Yourself from Project'
+          }
+        />
       </ProjectModalContent>
-      <ProjectModalButton text="Update" onClick={submit} />
+      <ProjectModalButton text="Save Changes" onClick={submit} />
     </div>
   )
+}
+
+export type ProjectSettingsModalProps = {
+  showModal: boolean
+  onClose: () => void
+  project: WithActionHash<ProjectMeta>
+  memberCount: number
+  updateProjectMeta: any
+  cellIdString: CellIdString
+  setModalState: React.Dispatch<React.SetStateAction<ModalState>>
 }
 
 export default function ProjectSettingsModal({
@@ -119,9 +184,10 @@ export default function ProjectSettingsModal({
   onClose,
   project,
   updateProjectMeta,
-  openInviteMembersModal,
   cellIdString,
-}) {
+  setModalState,
+  memberCount,
+}: ProjectSettingsModalProps) {
   const [updatingProject, setUpdatingProject] = useState(false)
 
   const onSubmit = async () => {
@@ -156,17 +222,19 @@ export default function ProjectSettingsModal({
       white
       active={showModal}
       onClose={onClose}
-      className="edit-project-modal-wrapper"
+      className="project-settings"
     >
       <EditProjectForm
         onSubmit={onSubmit}
         updatingProject={updatingProject}
         projectName={projectName}
-        openInviteMembersModal={openInviteMembersModal}
+        projectCellId={cellIdString}
+        setModalState={setModalState}
         projectPassphrase={projectPassphrase}
         setProjectName={setProjectName}
         projectCoverUrl={projectCoverUrl}
         setProjectCoverUrl={setProjectCoverUrl}
+        memberCount={memberCount}
       />
     </Modal>
   )

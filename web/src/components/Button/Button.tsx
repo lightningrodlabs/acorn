@@ -13,6 +13,7 @@ export type ButtonProps = {
   stroke?: boolean
   secondary?: boolean
   disabled?: boolean
+  warning?: boolean
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -25,6 +26,7 @@ const Button: React.FC<ButtonProps> = ({
   icon,
   secondary,
   disabled,
+  warning
 }) => {
   let classNames = 'button'
   if (className) classNames += ' ' + className
@@ -33,6 +35,7 @@ const Button: React.FC<ButtonProps> = ({
   classNames += ' ' + (stroke ? 'stroke' : '')
   classNames += ' ' + (secondary ? 'secondary' : '')
   classNames += ' ' + (disabled ? 'disabled' : '')
+
 
   return (
     <button disabled={disabled} className={classNames} onClick={onClick}>

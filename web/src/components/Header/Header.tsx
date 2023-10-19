@@ -18,14 +18,12 @@ import { useRouteMatch } from 'react-router-dom'
 import { ViewingReleaseNotes } from '../UpdateModal/UpdateModal'
 
 import './Header.scss'
+import { ModalState, OpenModal } from '../../context/ModalContexts'
 
 export type HeaderProps = {
-  // for project export
-  setExportedProjectName: React.Dispatch<React.SetStateAction<string>>
   // for update bar
   showUpdateBar: boolean
   setShowUpdateBar: React.Dispatch<React.SetStateAction<boolean>>
-  setShowUpdateModal: React.Dispatch<React.SetStateAction<boolean>>
   hasMigratedSharedProject: boolean
   setViewingReleaseNotes: React.Dispatch<
     React.SetStateAction<ViewingReleaseNotes>
@@ -37,12 +35,9 @@ export type HeaderProps = {
     outcome: WithActionHash<Outcome>
   }[]
   project: WithActionHash<ProjectMeta>
-  projectId: CellIdString
   members: Profile[]
-  agentAddress: AgentPubKeyB64
   presentMembers: AgentPubKeyB64[]
-  openInviteMembersModal: (passphrase: string) => void
-  setShowProjectSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   setShowProfileEditForm: React.Dispatch<React.SetStateAction<boolean>>
   setShowPreferences: React.Dispatch<React.SetStateAction<boolean>>
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
@@ -51,26 +46,20 @@ export type HeaderProps = {
 }
 
 const Header: React.FC<HeaderProps> = ({
-  // for project export
-  setExportedProjectName,
   // for update bar
   showUpdateBar,
   setShowUpdateBar,
-  setShowUpdateModal,
   hasMigratedSharedProject,
   setViewingReleaseNotes,
   whoami,
-  openInviteMembersModal,
-  setShowProjectSettingsOpen,
+  setModalState,
   setShowProfileEditForm,
   setShowPreferences,
   updateStatus,
   activeEntryPoints,
   project,
-  projectId,
   goToOutcome,
   members,
-  agentAddress,
   presentMembers,
 }) => {
   const isDashboardMatch = useRouteMatch('/dashboard')
@@ -110,12 +99,6 @@ const Header: React.FC<HeaderProps> = ({
     setShowPreferences(true)
   }
 
-  const openInviteMembersModalForActive = () => {
-    if (project) {
-      openInviteMembersModal(project.passphrase)
-    }
-  }
-
   return (
     <div className={`header-wrapper`} ref={ref}>
       {/* Update Bar */}
@@ -126,13 +109,17 @@ const Header: React.FC<HeaderProps> = ({
           buttonSecondaryText={'Changelog'}
           onClickSecondaryAction={() => {
             setViewingReleaseNotes(ViewingReleaseNotes.ReleaseNotes)
-            setShowUpdateModal(true)
+            setModalState({
+              id: OpenModal.UpdateApp
+            })
             setShowUpdateBar(false)
           }}
           buttonPrimaryText={'Update Now'}
           onClickPrimaryAction={() => {
             setViewingReleaseNotes(ViewingReleaseNotes.MainMessage)
-            setShowUpdateModal(true)
+            setModalState({
+              id: OpenModal.UpdateApp
+            })
             setShowUpdateBar(false)
           }}
           // party popper emoji
@@ -151,14 +138,13 @@ const Header: React.FC<HeaderProps> = ({
           members={members}
           presentMembers={presentMembers}
           whoami={whoami}
-          openInviteMembersModal={openInviteMembersModalForActive}
-          setShowProjectSettingsOpen={setShowProjectSettingsOpen}
+          projectPassphrase={project ? project.passphrase : ''}
+          setModalState={setModalState}
           projectName={project ? project.name : ''}
           isExportOpen={isExportOpen}
           setIsExportOpen={setIsExportOpen}
           activeEntryPoints={activeEntryPoints}
           goToOutcome={goToOutcome}
-          setExportedProjectName={setExportedProjectName}
         />
         {whoami && (
           // add all these values as props

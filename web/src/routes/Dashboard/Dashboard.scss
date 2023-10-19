@@ -95,29 +95,29 @@
   font-family: 'PlusJakartaSans-bold';
   color: var(--text-color-primary);
   transition: 0.2s all ease;
-}
 
-.my-projects-button:hover {
-  color: var(--text-color-link);
-}
+  &:hover {
+    color: var(--text-color-link);
+  }
 
-.my-projects-button.invite-members {
-  width: 140px;
-  position: absolute;
-  top: -2px;
-  right: 0;
-  padding: 6px 16px 6px 8px;
-  background-color: #f9f8f6;
-  border: none;
-  margin-right: 0;
-}
+  &.invite-members {
+    width: 140px;
+    // position: absolute;
+    // top: -2px;
+    // right: 0;
+    padding: 6px 16px 6px 8px;
+    background-color: #f9f8f6;
+    border: none;
+    margin-right: 0;
 
-.my-projects-button .icon {
-  margin-right: 6px;
-}
+    &:hover {
+      background-color: #f5f2ef;
+    }
+  }
 
-.my-projects-button.invite-members:hover {
-  background-color: #f5f2ef;
+  .icon {
+    margin-right: 6px;
+  }
 }
 
 .my-projects-sorting {
@@ -137,26 +137,26 @@
   color: #5d5d5d;
   margin-left: 8px;
   margin-top: 1px;
-}
 
-.my-projects-sorting-selected .icon {
-  margin-left: 6px;
-  transition: transform 0.2s ease-in;
-  padding: 0px;
-  margin-top: 2px;
-}
+  .icon {
+    margin-left: 6px;
+    transition: transform 0.2s ease-in;
+    padding: 0px;
+    margin-top: 2px;
 
-.my-projects-sorting-selected:hover {
-  color: #5f65ff;
-}
+    &.active {
+      transform: rotateX(180deg);
+      -webkit-transform: rotate(180deg);
+    }
+  }
 
-.my-projects-sorting-selected:hover .icon .inner-icon {
-  background-color: #5f65ff;
-}
+  &:hover {
+    color: #5f65ff;
 
-.my-projects-sorting-selected .icon.active {
-  transform: rotateX(180deg);
-  -webkit-transform: rotate(180deg);
+    .icon .inner-icon {
+      background-color: #5f65ff;
+    }
+  }
 }
 
 .my-projects-sorting-select {
@@ -174,17 +174,14 @@
 .my-projects-sorting-select li {
   padding: 8px 20px;
   color: #535353;
+
+  &:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+  }
 }
 
-.my-projects-sorting-select li:hover {
-  color: #5f65ff;
-}
-
-.my-projects-sorting-select li:hover {
-  background-color: #f2f2f2;
-  cursor: pointer;
-}
-
+// for sorting
 .my-projects-sorting-select-enter {
   opacity: 0;
 }

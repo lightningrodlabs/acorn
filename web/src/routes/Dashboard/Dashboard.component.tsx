@@ -20,7 +20,7 @@ import './Dashboard.scss'
 import Typography from '../../components/Typography/Typography'
 import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { ProjectAggregated, ProjectMeta } from '../../types'
-import UpdateModalContext from '../../context/UpdateModalContext'
+import ModalContexts, { OpenModal } from '../../context/ModalContexts'
 import ProjectMigratedModal from '../../components/ProjectMigratedModal/ProjectMigratedModal'
 import useProjectStatusInfos from '../../hooks/useProjectStatusInfos'
 
@@ -31,7 +31,6 @@ export type DashboardStateProps = {
 }
 
 export type DashboardDispatchProps = {
-  setActiveProject: (projectId: CellIdString) => void
   createProject: (
     agentAddress: AgentPubKeyB64,
     project: { name: string; image: string },
@@ -53,7 +52,6 @@ export type DashboardDispatchProps = {
     projectData: any,
     passphrase: string
   ) => Promise<void>
-  setShowInviteMembersModal: (passphrase: string) => void
 }
 
 export type DashboardProps = DashboardStateProps & DashboardDispatchProps
@@ -63,7 +61,6 @@ const Dashboard: React.FC<DashboardProps> = ({
   agentAddress,
   projectCellIdStrings,
   projects,
-  setActiveProject,
   fetchEntryPointDetails,
   fetchMembers,
   fetchProjectMeta,
@@ -71,17 +68,14 @@ const Dashboard: React.FC<DashboardProps> = ({
   createProject,
   joinProject,
   importProject,
-  setShowInviteMembersModal,
 }) => {
-  const { setShowUpdateModal } = useContext(UpdateModalContext)
+  const { modalState, setModalState } = useContext(ModalContexts)
 
   const [selectedSort, setSelectedSort] = useState('createdAt')
   const [showSortPicker, setShowSortPicker] = useState(false)
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showJoinModal, setShowJoinModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
-  // will be a CellIdString if not empty
-  const [showProjectSettingsModal, setShowProjectSettingsModal] = useState('')
   const [showProjectMigratedModal, setShowProjectMigratedModal] = useState('')
   // add new modal state managers here
 
@@ -124,11 +118,11 @@ const Dashboard: React.FC<DashboardProps> = ({
     })
   }
 
-  const projectSettingsProject = showProjectSettingsModal
-    ? sortedProjects.find((project) => {
-        return project.cellId === showProjectSettingsModal
-      })
-    : undefined
+  // const projectSettingsProject = modalState.id === OpenModal.ProjectSettings
+  //   ? sortedProjects.find((project) => {
+  //       return project.cellId === modalState.cellId
+  //     })
+  //   : undefined
   const projectMigratedProject = showProjectMigratedModal
     ? sortedProjects.find((project) => {
         return project.cellId === showProjectMigratedModal
@@ -138,9 +132,13 @@ const Dashboard: React.FC<DashboardProps> = ({
   const hasFetchedForAllProjects =
     projectCellIdStrings.length === Object.keys(projectStatusInfos).length
 
-  const joinedProjectsSecrets = Object.values(projectStatusInfos).map(projectInfo => {
-    return projectInfo.passphrase
-  })
+  const joinedProjectsSecrets = Object.values(projectStatusInfos).map(
+    (projectInfo) => {
+      return projectInfo.passphrase
+    }
+  )
+
+  const setModalToNone = () => setModalState({ id: OpenModal.None })
 
   return (
     <>
@@ -229,13 +227,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                   <DashboardListProject
                     key={'dlp-key' + project.cellId}
                     project={project}
-                    setShowInviteMembersModal={setShowInviteMembersModal}
-                    openProjectSettingsModal={() =>
-                      setShowProjectSettingsModal(project.cellId)
-                    }
-                    onClickProjectMigrated={() => {
-                      setShowProjectMigratedModal(project.cellId)
-                    }}
+                    setModalState={setModalState}
                     updateRequiredMoreInfoLink={
                       'https://docs.acorn.software/about-acorn/updating-the-app'
                     }
@@ -269,17 +261,6 @@ const Dashboard: React.FC<DashboardProps> = ({
         showModal={showImportModal}
         onClose={() => setShowImportModal(false)}
       />
-      <ProjectSettingsModal
-        showModal={showProjectSettingsModal !== ''}
-        onClose={() => setShowProjectSettingsModal('')}
-        project={projectSettingsProject?.projectMeta}
-        cellIdString={showProjectSettingsModal}
-        openInviteMembersModal={() => {
-          setShowInviteMembersModal(
-            projectSettingsProject.projectMeta.passphrase
-          )
-        }}
-      />
       <ProjectMigratedModal
         showModal={showProjectMigratedModal !== ''}
         onClose={() => setShowProjectMigratedModal('')}
@@ -298,7 +279,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         }}
         onClickUpdateNow={() => {
           setShowProjectMigratedModal('')
-          setShowUpdateModal(true)
+          setModalState({ id: OpenModal.UpdateApp })
         }}
       />
       {/* add new modals here */}

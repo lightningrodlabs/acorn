@@ -38,12 +38,6 @@ function mapStateToProps(state: RootState): DashboardStateProps {
 
 function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
   return {
-    setActiveProject: (projectId: CellIdString) => {
-      return dispatch(setActiveProject(projectId))
-    },
-    setShowInviteMembersModal: (passphrase: string) => {
-      return dispatch(openInviteMembersModal(passphrase))
-    },
     uninstallProject: async (appId: string, cellId: CellIdString) => {
       const adminWs = await getAdminWs()
       return uninstallProject(appId, cellId, dispatch, adminWs)

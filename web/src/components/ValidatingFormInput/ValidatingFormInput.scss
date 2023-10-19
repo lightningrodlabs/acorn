@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   text-align: left;
-  font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
+  font-family: var(--font-family-primary-medium);
 
   .help-text {
     color: var(--text-color-tertiary);
@@ -26,7 +26,7 @@
 
     input {
       margin-top: 0.25rem;
-      border: 0.125rem solid #f3efeb;
+      border: 0.125rem solid var(--border-color-form-input);
       outline: none;
       font-size: 0.875rem;
       line-height: 1.3125rem;
@@ -35,16 +35,16 @@
       border-radius: 0.625rem;
       display: block;
       flex: 1;
-      font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
+      font-family: var(--font-family-primary-medium);
       height: 1rem;
       transition: border 0.1s ease-in;
 
       &.invalid-input {
-        border: 0.125rem solid #ff5d36;
+        border: 0.125rem solid var(--text-color-warning);
       }
 
       &.valid-input {
-        border: 0.125rem solid #00d6c8;
+        border: 0.125rem solid var(--color-persian-green);
       }
 
       &:focus {
@@ -72,7 +72,7 @@
   }
 
   .error-text {
-    color: #ff5d36;
+    color: var(--text-color-warning);
     font-size: 0.75rem;
     position: absolute;
     top: 3.25rem;

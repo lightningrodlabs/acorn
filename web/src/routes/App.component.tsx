@@ -22,6 +22,8 @@ import './App.scss'
 import Header from '../components/Header/Header'
 import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
 import Footer from '../components/Footer/Footer'
+import { ViewingReleaseNotes } from '../components/UpdateModal/UpdateModal'
+import NetworkInfo from '../components/NetworkInfo/NetworkInfo'
 
 // import new routes here
 import CreateProfilePage from './CreateProfilePage/CreateProfilePage.connector'
@@ -29,26 +31,33 @@ import Dashboard from './Dashboard/Dashboard.connector'
 import ProjectView from './ProjectView/ProjectView.connector'
 import VersionUpdateLeaving from './VersionUpdateLeaving/VersionUpdateLeaving'
 import VersionUpdateEntering from './VersionUpdateEntering/VersionUpdateEntering'
-
 import IntroScreen from '../components/IntroScreen/IntroScreen.connector'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
+
 // all global modals in here
 import GlobalModals from './GlobalModals'
+
 // hooks
 import useVersionChecker from '../hooks/useVersionChecker'
 import useFinishMigrationChecker from '../hooks/useFinishMigrationChecker'
 import useFileDownloaded from '../hooks/useFileDownloaded'
-import UpdateModalContext from '../context/UpdateModalContext'
-import { ViewingReleaseNotes } from '../components/UpdateModal/UpdateModal'
-import NetworkInfo from '../components/NetworkInfo/NetworkInfo'
+
+// react context
+import ModalContexts, { ModalState, OpenModal } from '../context/ModalContexts'
+
+// redux
 import {
   COORDINATES,
   KeyboardNavigationPreference,
   MODAL,
   NavigationPreference,
 } from '../redux/ephemeral/local-preferences/reducer.js'
+import { ProjectMetaState } from '../redux/persistent/projects/project-meta/reducer'
+import { MembersState } from '../redux/persistent/projects/members/reducer'
 
 export type AppStateProps = {
+  projectMetas: ProjectMetaState
+  projectMembers: MembersState
   profilesCellIdString: string
   members: Profile[]
   presentMembers: AgentPubKeyB64[]
@@ -63,7 +72,6 @@ export type AppStateProps = {
   hasFetchedForWhoami: boolean
   navigationPreference: NavigationPreference
   keyboardNavigationPreference: KeyboardNavigationPreference
-  inviteMembersModalShowing: null | string // will be the passphrase if defined
   hasMigratedSharedProject: boolean
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
@@ -76,8 +84,6 @@ export type AppDispatchProps = {
   setKeyboardNavigationPreference: (
     preference: typeof COORDINATES | typeof MODAL
   ) => void
-  hideInviteMembersModal: () => void
-  openInviteMembersModal: (passphrase: string) => void
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
   showSmallOutcomes: (projectCellId: CellIdString) => void
   hideSmallOutcomes: (projectCellId: CellIdString) => void
@@ -95,6 +101,8 @@ export type AppMergeProps = {
 export type AppProps = AppStateProps & AppDispatchProps & AppMergeProps
 
 const App: React.FC<AppProps> = ({
+  projectMetas,
+  projectMembers,
   members,
   presentMembers,
   activeEntryPoints,
@@ -108,9 +116,6 @@ const App: React.FC<AppProps> = ({
   setNavigationPreference,
   keyboardNavigationPreference,
   setKeyboardNavigationPreference,
-  inviteMembersModalShowing,
-  openInviteMembersModal,
-  hideInviteMembersModal,
   goToOutcome,
   hasMigratedSharedProject,
   hiddenAchievedOutcomes,
@@ -124,16 +129,20 @@ const App: React.FC<AppProps> = ({
 }) => {
   const [networkInfoOpen, setNetworkInfoOpen] = useState(false)
 
-  const [exportedProjectName, setExportedProjectName] = useState('')
-  const [showExportedModal, setShowExportedModal] = useState(false)
-  const [showProjectSettingsModal, setShowProjectSettingsOpen] = useState(false)
+  const [modalState, setModalState] = useState<ModalState>({
+    id: OpenModal.None
+  })
+
+  // TODO: can move into ModalState and eliminate
+  // could be refactored into ModalState context
   const [showProfileEditForm, setShowProfileEditForm] = useState(false)
   const [showPreferences, setShowPreferences] = useState(false)
-  const [showUpdateModal, setShowUpdateModal] = useState(false)
-  const [showUpdateBar, setShowUpdateBar] = useState(false)
   const [viewingReleaseNotes, setViewingReleaseNotes] = useState(
     ViewingReleaseNotes.MainMessage
   )
+  //
+
+  const [showUpdateBar, setShowUpdateBar] = useState(false)
   // custom hooks
   const updateVersionInfo = useVersionChecker()
   // to do development testing of migration-feature
@@ -145,7 +154,6 @@ const App: React.FC<AppProps> = ({
   useEffect(() => {
     if (fileDownloaded) {
       setFileDownloaded(false)
-      setShowExportedModal(true)
     }
   }, [fileDownloaded, setFileDownloaded])
 
@@ -184,11 +192,6 @@ const App: React.FC<AppProps> = ({
     )
   }
 
-  const onCloseUpdateModal = () => {
-    setShowUpdateModal(false)
-    setShowUpdateBar(true)
-  }
-
   const redirToIntro =
     agentAddress &&
     hasFetchedForWhoami &&
@@ -201,6 +204,13 @@ const App: React.FC<AppProps> = ({
     finishMigrationChecker.hasChecked &&
     finishMigrationChecker.dataForNeedsMigration
 
+  const projectSettingsProjectMeta = modalState.id === OpenModal.ProjectSettings
+    ? projectMetas[modalState.cellId]
+    : undefined
+  const projectSettingsMemberCount = modalState.id === OpenModal.ProjectSettings
+    ? Object.keys(projectMembers[modalState.cellId]).length
+    : undefined
+
   return (
     <>
       <div
@@ -209,8 +219,9 @@ const App: React.FC<AppProps> = ({
         }`}
       >
         <ErrorBoundaryScreen>
-          <UpdateModalContext.Provider
-            value={{ showUpdateModal, setShowUpdateModal }}
+          <ModalContexts.Provider
+            // connect the modal contexts to the state
+            value={{ modalState, setModalState }}
           >
             <Router>
               {agentAddress && (
@@ -224,16 +235,12 @@ const App: React.FC<AppProps> = ({
                     projectId,
                     whoami,
                     updateStatus,
-                    openInviteMembersModal,
-                    setShowProjectSettingsOpen,
+                    setModalState,
                     setShowProfileEditForm,
                     setShowPreferences,
                     goToOutcome,
-                    setShowUpdateModal,
                     showUpdateBar,
                     setShowUpdateBar,
-                    setExportedProjectName,
-                    showExportedModal,
                     hasMigratedSharedProject,
                     setViewingReleaseNotes,
                   }}
@@ -275,34 +282,28 @@ const App: React.FC<AppProps> = ({
 
               <GlobalModals
                 {...{
+                  // could be refactored into ModalState context
+                  showProfileEditForm,
+                  setShowProfileEditForm,
+                  showPreferences,
+                  setShowPreferences,
+                  viewingReleaseNotes,
+                  setViewingReleaseNotes,
+
+                  //
                   whoami,
-                  activeProjectMeta,
-                  projectId,
+                  projectSettingsProjectMeta,
+                  projectSettingsMemberCount,
                   agentAddress,
                   navigationPreference,
                   setNavigationPreference,
                   keyboardNavigationPreference,
                   setKeyboardNavigationPreference,
-                  showProfileEditForm,
-                  setShowProfileEditForm,
-                  showPreferences,
-                  setShowPreferences,
-                  showProjectSettingsModal,
-                  setShowProjectSettingsOpen,
-                  inviteMembersModalShowing,
-                  openInviteMembersModal,
-                  hideInviteMembersModal,
+                  modalState,
+                  setModalState,
                   onProfileSubmit,
-                  showUpdateBar,
-                  showUpdateModal,
-                  onCloseUpdateModal,
                   updateVersionInfo,
-                  exportedProjectName,
-                  showExportedModal,
-                  setShowExportedModal,
                   hasMigratedSharedProject,
-                  viewingReleaseNotes,
-                  setViewingReleaseNotes,
                 }}
               />
               {/* Loading Screen if no user agent, and also during checking whether migration is necessary */}
@@ -325,7 +326,7 @@ const App: React.FC<AppProps> = ({
                 />
               )}
             </Router>
-          </UpdateModalContext.Provider>
+          </ModalContexts.Provider>
         </ErrorBoundaryScreen>
       </div>
       {networkInfoOpen && <NetworkInfo versionInfo={updateVersionInfo} />}

@@ -9,7 +9,7 @@ export type ProjectMembersState = {
   [address: AgentPubKeyB64]: Member
 }
 
-type MembersState = {
+export type MembersState = {
   [cellId: CellIdString]: ProjectMembersState
 }
 const defaultState: MembersState = {}

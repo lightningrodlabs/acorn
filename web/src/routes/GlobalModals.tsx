@@ -8,7 +8,7 @@ import ProjectSettingsModal from '../components/ProjectSettingsModal/ProjectSett
 import InviteMembersModal from '../components/InviteMembersModal/InviteMembersModal'
 import { WireRecord } from '../api/hdkCrud'
 import { Profile, ProjectMeta } from '../types'
-import { AgentPubKeyB64, CellIdString, WithActionHash } from '../types/shared'
+import { AgentPubKeyB64, WithActionHash } from '../types/shared'
 import UpdateModal, {
   ViewingReleaseNotes,
 } from '../components/UpdateModal/UpdateModal'
@@ -17,11 +17,25 @@ import {
   NavigationPreference,
 } from '../redux/ephemeral/local-preferences/reducer'
 import { VersionInfo } from '../hooks/useVersionChecker'
+import DeleteProjectModal from '../components/DeleteProjectModal/DeleteProjectModal'
+import RemoveSelfProjectModal from '../components/RemoveSelfProjectModal/RemoveSelfProjectModal'
+import { ModalState, OpenModal } from '../context/ModalContexts'
 
 export type GlobalModalsProps = {
+  // could be refactored into ModalState context
+  showProfileEditForm: boolean
+  setShowProfileEditForm: (val: boolean) => void
+  showPreferences: boolean
+  setShowPreferences: (val: boolean) => void
+  viewingReleaseNotes: ViewingReleaseNotes
+  setViewingReleaseNotes: React.Dispatch<
+    React.SetStateAction<ViewingReleaseNotes>
+  >
+
+  //
   whoami: WireRecord<Profile>
-  activeProjectMeta: WithActionHash<ProjectMeta>
-  projectId: CellIdString
+  projectSettingsProjectMeta: WithActionHash<ProjectMeta>
+  projectSettingsMemberCount: number
   agentAddress: AgentPubKeyB64
   navigationPreference: NavigationPreference
   setNavigationPreference: (preference: NavigationPreference) => void
@@ -29,56 +43,33 @@ export type GlobalModalsProps = {
   setKeyboardNavigationPreference: (
     preference: KeyboardNavigationPreference
   ) => void
-  showProfileEditForm: boolean
-  setShowProfileEditForm: (val: boolean) => void
-  showPreferences: boolean
-  setShowPreferences: (val: boolean) => void
-  showProjectSettingsModal: boolean
-  setShowProjectSettingsOpen: (val: boolean) => void
-  inviteMembersModalShowing: null | string // will be the passphrase if defined
-  openInviteMembersModal: (passphrase: string) => void
-  hideInviteMembersModal: () => void
+  modalState: ModalState
+  setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   onProfileSubmit: (profile: Profile) => Promise<void>
   hasMigratedSharedProject: boolean
-  showUpdateModal: boolean
-  onCloseUpdateModal: () => void
   updateVersionInfo: VersionInfo
-  // single manual project export
-  exportedProjectName: string
-  showExportedModal: boolean
-  setShowExportedModal: (show: boolean) => void
-  viewingReleaseNotes: ViewingReleaseNotes
-  setViewingReleaseNotes: React.Dispatch<
-    React.SetStateAction<ViewingReleaseNotes>
-  >
 }
 
 const GlobalModals: React.FC<GlobalModalsProps> = ({
-  whoami,
-  activeProjectMeta,
-  projectId,
-  agentAddress,
-  navigationPreference,
-  setNavigationPreference,
-  keyboardNavigationPreference,
-  setKeyboardNavigationPreference,
+  // could be refactored into ModalState context
   showProfileEditForm,
   setShowProfileEditForm,
   showPreferences,
   setShowPreferences,
-  showProjectSettingsModal,
-  setShowProjectSettingsOpen,
-  inviteMembersModalShowing,
-  openInviteMembersModal,
-  hideInviteMembersModal,
+  //
+  whoami,
+  projectSettingsProjectMeta,
+  projectSettingsMemberCount,
+  agentAddress,
+  modalState,
+  setModalState,
+  navigationPreference,
+  setNavigationPreference,
+  keyboardNavigationPreference,
+  setKeyboardNavigationPreference,
   onProfileSubmit,
   hasMigratedSharedProject,
-  showUpdateModal,
-  onCloseUpdateModal,
   updateVersionInfo,
-  exportedProjectName,
-  showExportedModal,
-  setShowExportedModal,
   viewingReleaseNotes,
   setViewingReleaseNotes,
 }) => {
@@ -90,6 +81,8 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   const pending = false
   const pendingText = 'Submitting...'
   const submitText = 'Save Changes'
+
+  const setModalToNone = () => setModalState({ id: OpenModal.None })
 
   return (
     <>
@@ -124,24 +117,45 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
       />
       {/* Project Settings Modal */}
       <ProjectSettingsModal
-        showModal={showProjectSettingsModal}
-        onClose={() => setShowProjectSettingsOpen(false)}
-        project={activeProjectMeta}
-        cellIdString={projectId}
-        openInviteMembersModal={openInviteMembersModal}
+        showModal={modalState.id === OpenModal.ProjectSettings}
+        onClose={setModalToNone}
+        project={projectSettingsProjectMeta}
+        cellIdString={
+          modalState.id === OpenModal.ProjectSettings
+            ? modalState.cellId
+            : undefined
+        }
+        setModalState={setModalState}
+        memberCount={projectSettingsMemberCount}
       />
       <InviteMembersModal
-        passphrase={inviteMembersModalShowing}
-        showModal={inviteMembersModalShowing}
-        onClose={hideInviteMembersModal}
+        passphrase={
+          modalState.id === OpenModal.InviteMembers && modalState.passphrase
+        }
+        showModal={modalState.id === OpenModal.InviteMembers}
+        onClose={setModalToNone}
       />
+      <DeleteProjectModal
+        showModal={modalState.id === OpenModal.DeleteProject}
+        projectName={
+          modalState.id === OpenModal.DeleteProject && modalState.projectName
+        }
+        onClose={setModalToNone}
+      />
+      <RemoveSelfProjectModal
+        showModal={modalState.id === OpenModal.RemoveSelfProject}
+        projectName={
+          modalState.id === OpenModal.RemoveSelfProject &&
+          modalState.projectName
+        }
+        onClose={setModalToNone}
+      />
+
       {/* Update Prompt Modal */}
       <UpdateModal
-        show={showUpdateModal}
-        onClose={onCloseUpdateModal}
-        releaseTag={
-          updateVersionInfo.newReleaseVersion
-        }
+        show={modalState.id === OpenModal.UpdateApp}
+        onClose={setModalToNone}
+        releaseTag={updateVersionInfo.newReleaseVersion}
         releaseSize={updateVersionInfo.sizeForPlatform}
         heading={
           viewingReleaseNotes === ViewingReleaseNotes.MainMessage
@@ -176,9 +190,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
               </div>
             )}
             {viewingReleaseNotes === ViewingReleaseNotes.ReleaseNotes && (
-              <ReactMarkdown>
-                {updateVersionInfo.releaseNotes}
-              </ReactMarkdown>
+              <ReactMarkdown>{updateVersionInfo.releaseNotes}</ReactMarkdown>
             )}
           </>
         }
@@ -186,21 +198,25 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
 
       {/* Export Successful Modal */}
       <Modal
-        active={showExportedModal}
-        onClose={() => setShowExportedModal(false)}
+        active={modalState.id === OpenModal.ProjectExported}
+        onClose={setModalToNone}
       >
         <ModalContent
           heading="Exporting"
           icon="export.svg"
           content={
             <>
-              You just exported the <b>{exportedProjectName}</b> project data.
-              You can use that file to transfer the project to a different
-              owner, or archive as a backup.
+              You just exported the{' '}
+              <b>
+                {modalState.id === OpenModal.ProjectExported &&
+                  modalState.projectName}
+              </b>{' '}
+              project data. You can use that file to transfer the project to a
+              different owner, or archive as a backup.
             </>
           }
           primaryButton="Got it"
-          primaryButtonAction={() => setShowExportedModal(false)}
+          primaryButtonAction={setModalToNone}
         />
       </Modal>
     </>

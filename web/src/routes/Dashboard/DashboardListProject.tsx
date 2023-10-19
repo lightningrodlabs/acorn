@@ -7,6 +7,7 @@ import Icon from '../../components/Icon/Icon'
 import AvatarsList from '../../components/AvatarsList/AvatarsList'
 import { ProjectAggregated } from '../../types'
 import Button from '../../components/Button/Button'
+import { ModalState, OpenModal } from '../../context/ModalContexts'
 
 function DashboardListProjectLoading() {
   return (
@@ -37,20 +38,16 @@ function DashboardListProjectLoading() {
 
 export type DashboardListProjectProps = {
   project: ProjectAggregated
-  setShowInviteMembersModal: (passphrase: string) => void
-  openProjectSettingsModal: () => void
-  onClickProjectMigrated?: () => void
+  setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   updateRequiredMoreInfoLink?: string
   syncingProjectContents?: boolean
 }
 
 const DashboardListProject: React.FC<DashboardListProjectProps> = ({
   project,
-  setShowInviteMembersModal,
-  openProjectSettingsModal,
-  onClickProjectMigrated,
   updateRequiredMoreInfoLink,
   syncingProjectContents,
+  setModalState,
 }) => {
   const [showEntryPoints, setShowEntryPoints] = useState(false)
 
@@ -62,10 +59,6 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
     .split(' ')
     .map((word) => (word ? word[0].toUpperCase() : 'X'))
     .slice(0, 3)
-
-  const openInviteMembersModal = () => {
-    setShowInviteMembersModal(project.projectMeta.passphrase)
-  }
 
   return (
     <div className="dashboard-list-project-wrapper">
@@ -94,13 +87,18 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
             >
               {project.projectMeta.name}
             </NavLink>
-            {/* Update to Access button */}
+            {/* Project Migrated button */}
             {project.projectMeta.isMigrated && (
               <div className="dashboard-list-project-update-button-wrapper">
                 <Button
                   icon="arrow-circle-up.svg"
                   text={'Project Migrated'}
-                  onClick={onClickProjectMigrated}
+                  onClick={() => {
+                    setModalState({
+                      id: OpenModal.ProjectMigrated,
+                      cellId: project.cellId
+                    })
+                  }}
                 />
                 <div className="more-info-wrapper">
                   <div>
@@ -140,20 +138,26 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
               size="small-medium"
               profiles={project.members}
               showInviteButton
-              onClickButton={openInviteMembersModal}
+              onClickButton={() => {
+                setModalState({
+                  id: OpenModal.InviteMembers,
+                  passphrase: project.projectMeta.passphrase
+                })
+              }}
             />
           </div>
 
           {/* project item settings */}
           <div
             className="dashboard-list-project-settings-button"
-            onClick={openProjectSettingsModal}
+            onClick={() => {
+              setModalState({
+                id: OpenModal.ProjectSettings,
+                cellId: project.cellId
+              })
+            }}
           >
-            <Icon
-              name="dots-horizontal.svg"
-              size="medium"
-              className="light-grey"
-            />
+            <Icon name="dots-horizontal.svg" size="medium" className="light-grey" />
           </div>
         </div>
       </div>

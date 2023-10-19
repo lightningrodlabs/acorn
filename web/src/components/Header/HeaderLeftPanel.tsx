@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { NavLink, Route, useLocation, useRouteMatch } from 'react-router-dom'
 import useOnClickOutside from 'use-onclickoutside'
 
@@ -22,6 +22,7 @@ import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 import triangleTopWhite from '../../images/triangle-top-white.svg'
 // @ts-ignore
 import DoorOpen from '../../images/door-open.svg'
+import { ModalState, OpenModal } from '../../context/ModalContexts'
 
 function ActiveEntryPoint({
   entryPoint,
@@ -59,27 +60,25 @@ export type HeaderLeftPanelProps = {
   members: Profile[]
   presentMembers: AgentPubKeyB64[]
   projectName: string
+  projectPassphrase: string
   activeEntryPoints: {
     entryPoint: WithActionHash<EntryPoint>
     outcome: WithActionHash<Outcome>
   }[]
-  openInviteMembersModal: () => void
-  setShowProjectSettingsOpen: React.Dispatch<React.SetStateAction<boolean>>
+  setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
   // for project export
   isExportOpen: boolean
   setIsExportOpen: React.Dispatch<React.SetStateAction<boolean>>
-  setExportedProjectName: React.Dispatch<React.SetStateAction<string>>
 }
 
 const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
-  openInviteMembersModal,
-  setShowProjectSettingsOpen,
+  setModalState,
   whoami,
   projectName,
+  projectPassphrase,
   isExportOpen,
   setIsExportOpen,
-  setExportedProjectName,
   activeEntryPoints,
   goToOutcome,
   members,
@@ -213,7 +212,10 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                     withTooltip
                     tooltipText="Project Settings"
                     size="header"
-                    onClick={() => setShowProjectSettingsOpen(true)}
+                    onClick={() => setModalState({
+                      id: OpenModal.ProjectSettings,
+                      cellId: projectId
+                    })}
                     className="header-action-icon"
                   />
                   {/* Export */}
@@ -240,7 +242,10 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                           title="Export as JSON (Importable)"
                           downloadFilename="acorn-project.json"
                           onClick={() => {
-                            setExportedProjectName(projectName)
+                            setModalState({
+                              id: OpenModal.ProjectExported,
+                              projectName,
+                            })
                             setIsExportOpen(false)
                           }}
                         />
@@ -249,7 +254,10 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                           title="Export as CSV"
                           downloadFilename="acorn-project.csv"
                           onClick={() => {
-                            setExportedProjectName(projectName)
+                            setModalState({
+                              id: OpenModal.ProjectExported,
+                              projectName,
+                            })
                             setIsExportOpen(false)
                           }}
                         />
@@ -263,7 +271,12 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
             <MembersIndicator
               members={membersMinusMe}
               presentMembers={presentMembers}
-              onClickInviteMember={openInviteMembersModal}
+              onClickInviteMember={() => {
+                setModalState({
+                  id: OpenModal.InviteMembers,
+                  passphrase: projectPassphrase
+                })
+              }}
             />
           </Route>
         )}
