@@ -47,7 +47,7 @@
     "@types/node": "14.10.1",
     "@types/split": "^1.0.0",
     "electron": "^20.1.3",
-    "electron-builder": "^23.3.3",
+    "electron-builder": "24.8.0",
     "eslint": "^7.25.0",
     "eslint-plugin-import": "^2.22.1",
     "typescript": "^4.2.4"
@@ -56,7 +56,7 @@
     "@lightningrodlabs/electron-holochain": "=0.7.8",
     "electron-context-menu": "^3.5.0",
     "electron-log": "^4.3.5",
-    "electron-notarize": "^1.0.0",
+    "@electron/notarize": "^2.1.0",
     "electron-default-menu": "^1.0.2",
     "split": "^1.0.1"
   }
