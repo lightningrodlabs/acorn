@@ -5,7 +5,6 @@
 
 _Prerequisites_
 
-- Have rust language (stable) installed on your system
 - Have nodejs version 18 installed on your system
 
 Then run
@@ -23,15 +22,16 @@ You can run `npm run user-data-reset` if you have user data in development, but 
 
 #### Commands that are more specific to your use case:
 
+You can run the web process and the electron processes separately, instead of running `npm run dev` which combines them.
+
 **web** (user interface)
 
-- Use nodejs version 14
-- `npm run web-install`
+- `npm run web-install` (first time, or after pulling updates from Git)
 - `npm run web`
 
 **electron**
 
-- `npm run electron-install`
+- `npm run electron-install` (first time, or after pulling updates from Git)
 - `npm run electron`
 
 #### Multi-User Testing
