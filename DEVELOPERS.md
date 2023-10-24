@@ -58,6 +58,7 @@ In order to get cross-platform builds, just tag your repository like `v1.0.0-alp
 > - APPLE_DEV_IDENTITY
 > - APPLE_ID_EMAIL
 > - APPLE_ID_PASSWORD
+> - APPLE_TEAM_ID
 > 
 > The first two should be set as equivalents of `MACOS_CERTIFICATE` = `APPLE_CERTIFICATE_BASE64` and `MACOS_CERTIFICATE_PWD` = `APPLE_CERTIFICATE_PASS` as found in the following article, which also provides other instruction regarding this: https://localazy.com/blog/how-to-automatically-sign-macos-apps-using-github-actions
 
