@@ -1,23 +1,33 @@
 import React, { useState, useEffect } from 'react'
 import { useLocation, NavLink } from 'react-router-dom'
-import { ComputedScope } from '../../types'
+import { ComputedOutcome, ComputedScope, ProjectMeta } from '../../types'
 
 import Icon from '../Icon/Icon'
 
 import './IndentedTreeView.scss'
 import ExpandChevron from '../ExpandChevron/ExpandChevron'
 import ProgressIndicatorCalculated from '../ProgressIndicatorCalculated/ProgressIndicatorCalculated'
+import { ActionHashB64, WithActionHash } from '../../types/shared'
+
+export type NestedTreeOutcomeProps = {
+  outcome: ComputedOutcome
+  level: number
+  filterText: string
+  expandByDefault: boolean
+  projectMeta: WithActionHash<ProjectMeta>
+  updateProjectMeta: (entry: ProjectMeta, actionHash: ActionHashB64) => Promise<void>
+}
 
 // Recursive because we don't know
 // how deep the nesting goes
-function NestedTreeOutcome({
+const NestedTreeOutcome: React.FC<NestedTreeOutcomeProps> = ({
   outcome,
   level,
   filterText,
   projectMeta,
   updateProjectMeta,
   expandByDefault,
-}) {
+}) => {
   // set expanded open by default only if
   // at the first or second level
   const [expanded, setExpanded] = useState(expandByDefault)
@@ -160,11 +170,17 @@ const MAX_WIDTH = 600
 // associated with .indented-view-outcomes class
 const INDENTED_VIEW_OUTCOMES_MARGIN = 0
 
-export default function IndentedTreeView({
+export type IndentedTreeViewProps = {
+  outcomeTrees: ComputedOutcome[]
+  projectMeta: WithActionHash<ProjectMeta>
+  updateProjectMeta: (entry: ProjectMeta, actionHash: ActionHashB64) => Promise<void>
+}
+
+const IndentedTreeView: React.FC<IndentedTreeViewProps> = ({
   outcomeTrees,
   projectMeta,
   updateProjectMeta,
-}) {
+}) => {
   const [filterText, setFilterText] = useState('')
   const [isResizing, setIsResizing] = useState(false)
   const [width, setWidth] = useState(DEFAULT_WIDTH)
@@ -258,10 +274,10 @@ export default function IndentedTreeView({
         ))} */}
         {outcomeTrees.map((outcome, index) => (
           <NestedTreeOutcome
+            key={`nested-tree-outcome-${outcome.actionHash}`}
             level={1}
             filterText={filterText}
             outcome={outcome}
-            key={index}
             projectMeta={projectMeta}
             updateProjectMeta={updateProjectMeta}
             expandByDefault={outcomeTrees.length <= 10}
@@ -275,3 +291,5 @@ export default function IndentedTreeView({
     </div>
   )
 }
+
+export default IndentedTreeView
