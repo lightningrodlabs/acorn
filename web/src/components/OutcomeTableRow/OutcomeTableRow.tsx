@@ -55,6 +55,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
 
   const shouldRenderThisOutcome =
     (!specialFilterApplied && parentExpanded) || (specialFilterApplied && match)
+
   return (
     <>
       {shouldRenderThisOutcome && (
@@ -182,7 +183,9 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
         </div>
       )}
       {outcome.children.length > 0 &&
-        outcome.children.map((outcomeChild) => (
+        outcome.children.sort((a, b) => {
+          return b.connection.siblingOrder - a.connection.siblingOrder
+        }).map((outcomeChild) => (
           <OutcomeTableRow
             key={outcomeChild.actionHash}
             columnWidthPercentages={columnWidthPercentages}
