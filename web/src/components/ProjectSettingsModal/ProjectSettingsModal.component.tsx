@@ -14,6 +14,7 @@ import { CellIdString, WithActionHash } from '../../types/shared'
 import { ModalState, OpenModal } from '../../context/ModalContexts'
 import { passphraseToUid } from '../../secrets'
 import { PROJECT_APP_PREFIX } from '../../holochainConfig'
+import { getAllApps } from '../../projectAppIds'
 
 function ProjectDeleteButton({
   onClick,
@@ -112,7 +113,12 @@ function EditProjectForm({
         {/* Invite Members Button */}
         <div
           className="project-settings-button invite-members"
-          onClick={() => setModalState({ id: OpenModal.InviteMembers, passphrase: projectPassphrase })}
+          onClick={() =>
+            setModalState({
+              id: OpenModal.InviteMembers,
+              passphrase: projectPassphrase,
+            })
+          }
         >
           <Icon name="user-plus.svg" size="small" className="dark-grey" />
           Invite Members
@@ -194,6 +200,10 @@ export default function ProjectSettingsModal({
   memberCount,
 }: ProjectSettingsModalProps) {
   const [updatingProject, setUpdatingProject] = useState(false)
+  const [projectName, setProjectName] = useState('')
+  const [projectCoverUrl, setProjectCoverUrl] = useState('')
+  const [projectPassphrase, setProjectPassphrase] = useState('')
+  const [installedAppId, setInstalledAppId] = useState('')
 
   const onSubmit = async () => {
     setUpdatingProject(true)
@@ -218,12 +228,19 @@ export default function ProjectSettingsModal({
       setProjectPassphrase(project.passphrase)
     }
   }, [project])
-  const [projectName, setProjectName] = useState('')
-  const [projectCoverUrl, setProjectCoverUrl] = useState('')
-  const [projectPassphrase, setProjectPassphrase] = useState('')
 
-  const uid = passphraseToUid(projectPassphrase)
-  const installedAppId = `${PROJECT_APP_PREFIX}-${uid}`
+  // const uid = passphraseToUid(projectPassphrase)
+  // const installedAppId = `${PROJECT_APP_PREFIX}-${uid}`
+  useEffect(() => {
+    getAllApps().then((apps) => {
+      const appForCell = Object.entries(apps).find(([appId, appInfo]) => {
+        return appInfo.cellIdString === cellIdString
+      })
+      if (appForCell) {
+        setInstalledAppId(appForCell[0])
+      }
+    })
+  }, [cellIdString])
 
   return (
     <Modal

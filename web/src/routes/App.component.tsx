@@ -305,7 +305,7 @@ const App: React.FC<AppProps> = ({
                     modalState,
                     setModalState,
                     setShowUpdateBar,
-                  onProfileSubmit,
+                    onProfileSubmit,
                     updateVersionInfo,
                     hasMigratedSharedProject,
                     uninstallProject,
