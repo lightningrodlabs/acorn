@@ -23,16 +23,12 @@ module.exports = async function (params) {
 
   console.log(`Notarizing ${appId} found at ${appPath}`)
 
-  try {
-    await notarize({
-      appBundleId: appId,
-      appPath: appPath,
-      appleId: process.env.APPLE_ID_EMAIL,
-      appleIdPassword: process.env.APPLE_ID_PASSWORD,
-      teamId: process.env.APPLE_TEAM_ID,
-    })
-    console.log(`Done notarizing ${appId}`)
-  } catch (error) {
-    console.error('Failed to notarize:', error)
-  }
+  await notarize({
+    appBundleId: appId,
+    appPath: appPath,
+    appleId: process.env.APPLE_ID_EMAIL,
+    appleIdPassword: process.env.APPLE_ID_PASSWORD,
+    teamId: process.env.APPLE_TEAM_ID,
+  })
+  console.log(`Done notarizing ${appId}`)
 }
