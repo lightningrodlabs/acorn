@@ -5,11 +5,11 @@
 
 _Prerequisites_
 
-- Have nodejs version 18 installed on your system
+- Have nodejs installed on your system
 
 Then run
 
-- `npm run install-deps`
+- `npm install`
 - `npm run dev`
 
 In the future, just run `npm run dev` anytime to develop.
@@ -26,12 +26,10 @@ You can run the web process and the electron processes separately, instead of ru
 
 **web** (user interface)
 
-- `npm run web-install` (first time, or after pulling updates from Git)
 - `npm run web`
 
 **electron**
 
-- `npm run electron-install` (first time, or after pulling updates from Git)
 - `npm run electron`
 
 #### Multi-User Testing

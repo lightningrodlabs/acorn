@@ -22,6 +22,5 @@ npm run web-build
 cp -r web/dist electron/web
 
 # build the electron application
-cd electron
-npm run build
+npm run build -w electron
 
