@@ -16,9 +16,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install nodejs dependencies
         run: |
-          npm run web-install
-          npm run zod-models-install
-          npm run zod-models-build
+          npm install -w web
         shell: bash
       - name: run unit tests
         run: |

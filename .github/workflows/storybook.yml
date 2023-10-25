@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install web dependencies
-        run: npm run web-install
+        run: npm install -w web
       - name: Storybook static build
         run: |
           cd web

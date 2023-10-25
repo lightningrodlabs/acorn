@@ -23,10 +23,6 @@ jobs:
       - name: Install nodejs dependencies
         run: |
           npm install
-          npm run web-install
-          npm run electron-install
-          npm run zod-models-install
-          npm run zod-models-build
         shell: bash
       - name: setup for codesigning (macos only)
         if: ${{ runner.os == 'macOs' }}

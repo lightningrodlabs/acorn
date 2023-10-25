@@ -26,7 +26,7 @@
     "build": "bash scripts/build.sh",
     "download-happs": "bash scripts/download-happs.sh",
     "storybook": "npm run storybook -w web",
-    "postinstall": "npm run download-happs && npm run electron-tsc"
+    "postinstall": "npm run download-happs && npm run electron-tsc && npm run zod-models-build"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",
