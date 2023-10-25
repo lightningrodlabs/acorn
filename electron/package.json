@@ -4,9 +4,9 @@
   "description": "Open source peer-to-peer project management for software teams",
   "main": "dist/index.js",
   "scripts": {
-    "start": "tsc && electron .",
-    "build": "tsc && electron-builder build",
-    "tsc": "tsc",
+    "start": "npx electron .",
+    "build": "npx electron-builder build",
+    "tsc": "npx tsc",
     "lint": "eslint --ext .ts ."
   },
   "keywords": [],
@@ -50,8 +50,7 @@
     "electron-builder": "24.8.0",
     "@electron/notarize": "^2.1.0",
     "eslint": "^7.25.0",
-    "eslint-plugin-import": "^2.22.1",
-    "typescript": "^4.2.4"
+    "eslint-plugin-import": "^2.22.1"
   },
   "dependencies": {
     "@lightningrodlabs/electron-holochain": "=0.7.8",

@@ -1,5 +1,5 @@
 {
-  "name": "acorn",
+  "name": "acorn-workspace",
   "workspaces": ["electron", "web", "zod-models"],
   "version": "9.5.1-alpha",
   "private": true,
@@ -29,5 +29,8 @@
   "license": "CAL-1.0",
   "dependencies": {
     "pm2": "^5.1.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.6"
   }
 }
