@@ -46,7 +46,7 @@
   "devDependencies": {
     "@types/node": "20.8.9",
     "@types/split": "^1.0.0",
-    "electron": "^20.1.3",
+    "electron": "20.3.12",
     "electron-builder": "24.8.0",
     "@electron/notarize": "^2.1.0",
     "eslint": "^7.25.0",
