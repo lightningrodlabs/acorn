@@ -18,7 +18,8 @@ bash scripts/copy-binaries.sh
 
 # ui
 rm -rf electron/web
-npm run web-build
+npm run build -w zod-models
+npm run build -w web
 cp -r web/dist electron/web
 
 # build the electron application

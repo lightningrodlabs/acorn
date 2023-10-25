@@ -20,5 +20,5 @@ jobs:
         shell: bash
       - name: run unit tests
         run: |
-          npm run web-test
+          npm run test -w web
         shell: bash

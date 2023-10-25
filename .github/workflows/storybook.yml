@@ -13,8 +13,7 @@ jobs:
         run: npm install -w web
       - name: Storybook static build
         run: |
-          cd web
-          npm run build-storybook
+          npm run build-storybook -w web
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:

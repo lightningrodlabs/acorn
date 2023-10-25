@@ -7,8 +7,7 @@
     "start": "tsc && electron .",
     "build": "tsc && electron-builder build",
     "tsc": "tsc",
-    "lint": "eslint --ext .ts .",
-    "postinstall": "npm run tsc"
+    "lint": "eslint --ext .ts ."
   },
   "keywords": [],
   "author": {
