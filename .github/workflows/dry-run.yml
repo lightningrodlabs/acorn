@@ -16,13 +16,16 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
       - name: Windows only, install wget
         if: ${{ runner.os == 'Windows' }}
         run: |
           choco install wget --no-progress
       - name: Install nodejs dependencies
         run: |
-          npm install
+          npm ci
         shell: bash
       - name: setup for codesigning (macos only)
         if: ${{ runner.os == 'macOs' }}
