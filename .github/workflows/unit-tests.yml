@@ -18,6 +18,10 @@ jobs:
         run: |
           npm install -w web
         shell: bash
+      - name: Build zod-models dependency
+        run: |
+          npm run build -w zod-models
+        shell: bash
       - name: run unit tests
         run: |
           npm run test -w web
