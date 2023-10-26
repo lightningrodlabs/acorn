@@ -9,11 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install web dependencies
-        run: npm install -w web
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install # will run `yarn install` command
       - name: Storybook static build
         run: |
-          npm run build-storybook -w web
+          yarn workspace acorn-ui build-storybook
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:

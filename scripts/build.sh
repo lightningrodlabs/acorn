@@ -18,10 +18,10 @@ bash scripts/copy-binaries.sh
 
 # ui
 rm -rf electron/web
-npm run build -w zod-models
-npm run build -w web
+yarn workspace zod-models build 
+yarn workspace acorn-ui build
 cp -r web/dist electron/web
 
 # build the electron application
-npm run build -w electron
+yarn workspace acorn build
 

@@ -14,15 +14,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - name: Install nodejs dependencies
-        run: |
-          npm install -w web
-        shell: bash
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install # will run `yarn install` command
       - name: Build zod-models dependency
         run: |
-          npm run build -w zod-models
+          yarn workspace zod-models build
         shell: bash
       - name: run unit tests
         run: |
-          npm run test -w web
+          yarn workspace acorn-ui test
         shell: bash
