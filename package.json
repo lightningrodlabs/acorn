@@ -1,13 +1,16 @@
 {
   "name": "acorn-workspace",
-  "packageManager": "yarn@4.0.0",
+  "packageManager": "yarn@1.22.19",
   "version": "9.5.1-alpha",
   "private": true,
-  "workspaces": [
-    "electron",
-    "web",
-    "zod-models"
-  ],
+  "workspaces": {
+    "packages": [
+      "electron",
+      "web",
+      "zod-models"
+    ],
+    "nohoist": ["**/electron-builder", "**/electron-builder/**"]
+  },
   "description": "Acorn is software that helps people create the future",
   "repository": {
     "type": "git",

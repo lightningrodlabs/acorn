@@ -14,10 +14,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - name: Run install
-        uses: borales/actions-yarn@v4
+      - uses: actions/setup-node@v3
         with:
-          cmd: install # will run `yarn install` command
+          node-version: 20
+          cache: 'yarn'
+      - name: Run install
+        run: |
+          yarn install
       - name: Build zod-models dependency
         run: |
           yarn workspace zod-models build

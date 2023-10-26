@@ -15,9 +15,6 @@
     "email": "connor@sprillow.com"
   },
   "license": "CAL-1.0",
-  "installConfig": {
-    "hoistingLimits": "workspaces"
-  },
   "build": {
     "productName": "Acorn",
     "afterSign": "./afterSignHook.js",

@@ -27,14 +27,17 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'yarn'
       - name: Windows only, install wget
         if: ${{ runner.os == 'Windows' }}
         run: |
           choco install wget --no-progress
       - name: Run install
-        uses: borales/actions-yarn@v4
-        with:
-          cmd: install # will run `yarn install` command
+        run: |
+          yarn install
       - name: setup for codesigning (macos only)
         if: ${{ runner.os == 'macOs' }}
         uses: figleafteam/import-codesign-certs@v2
