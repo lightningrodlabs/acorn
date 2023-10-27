@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #b52c0c;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2px;
+      }
+    </style>
+  </defs>
+  <g id="x-octagon" transform="translate(-1 -1)">
+    <path id="Path_40" data-name="Path 40" class="cls-1" d="M7.86,2h8.28L22,7.86v8.28L16.14,22H7.86L2,16.14V7.86Z"/>
+    <line id="Line_29" data-name="Line 29" class="cls-1" x1="6" y2="6" transform="translate(9 9)"/>
+    <line id="Line_30" data-name="Line 30" class="cls-1" x2="6" y2="6" transform="translate(9 9)"/>
+  </g>
+</svg>

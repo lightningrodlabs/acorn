@@ -54,7 +54,7 @@
   position: absolute;
   width: 32.5rem;
   box-sizing: border-box;
-  padding: 4rem;
+ 
   background-color: #ffff;
   border-radius: 1rem;
   box-shadow: 0px 0px 1rem var(--shadow-color);
@@ -62,8 +62,13 @@
   flex-direction: column;
   justify-content: space-between;
   transition: 0.2s all;
-  overflow-y: scroll;
   max-height: calc(100vh - 2rem);
+  overflow-y: hidden;
+
+  .modal-scrollable-content {
+    padding: 4rem 4rem 3rem 4rem ;
+    overflow-y: auto;    // change to auto so the scrollbar only appears when necessary
+  }
 
   .modal-button-close {
     position: absolute;

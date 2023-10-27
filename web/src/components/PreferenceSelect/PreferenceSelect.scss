@@ -1,7 +1,7 @@
 /* PreferenceSelect */
 
 .preference-select {
-  padding: 20px 0;
+  padding: 1.5rem 0;
   /* border-bottom: 1px solid #e3e3e3; */
 }
 
@@ -39,7 +39,7 @@
 .preference-select-options-wrapper {
   display: flex;
   flex-direction: row;
-  padding: 0 30px;
+  // padding: 0 30px;
   margin-bottom: 1rem;
 }
 
@@ -51,12 +51,15 @@
   text-align: center;
   border: 1px solid #e3e3e3;
   border-radius: 10px;
-  width: 150px;
+  width: 180px;
   height: 120px;
-  margin: 0 auto;
   display: block;
   cursor: pointer;
   transition: border 0.2s ease-in-out;
+
+  &:first-child {
+    margin-right: 1rem;
+  }
 }
 
 .preference-select-option:hover,
@@ -66,7 +69,7 @@
 }
 
 .preference-select-option-content {
-  width: 150px;
+  width: 180px;
   height: 120px;
   display: table-cell;
   vertical-align: middle;

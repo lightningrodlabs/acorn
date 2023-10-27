@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 
 import Modal, { ModalContent } from '../components/Modal/Modal'
@@ -73,6 +73,23 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   const redirectToDashboard = () => {
     history.push('/dashboard')
   }
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation()
+        setModalToNone()
+      }
+    }
+
+    if (modalState.id !== OpenModal.None) {
+      window.addEventListener('keydown', handleKeyDown)
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [modalState])
 
   return (
     <>
@@ -240,3 +257,6 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
 }
 
 export default GlobalModals
+function handleKeyDown(this: Window, ev: KeyboardEvent) {
+  throw new Error('Function not implemented.')
+}

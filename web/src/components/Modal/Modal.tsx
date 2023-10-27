@@ -115,7 +115,9 @@ const Modal: React.FC<ModalProps> = ({
               <ButtonClose onClick={onClose} size="medium" />
             </div>
           )}
+          <div className='modal-scrollable-content'>
           {children}
+          </div>
         </div>
         {/* </OnClickOutside> */}
       </div>

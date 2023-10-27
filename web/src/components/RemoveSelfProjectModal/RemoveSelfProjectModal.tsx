@@ -52,7 +52,7 @@ const RemoveSelfProjectModal: React.FC<RemoveSelfProjectModalProps> = ({
         <ProjectModalContentSpacer>
           <ProjectModalContent>
             Are you sure you want to remove yourself from the shared project '
-            {projectName}'? If you remove yourself from this project you won’t
+            <b>{projectName}</b>'? If you remove yourself from this project you won’t
             have access to it anymore.
             <p />
             You can join this project again later, as long as it still has

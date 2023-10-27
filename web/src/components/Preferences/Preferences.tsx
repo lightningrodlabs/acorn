@@ -1,9 +1,8 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import './Preferences.scss'
 
 import Icon from '../Icon/Icon'
 import Button from '../Button/Button'
-import Modal from '../Modal/Modal'
 import {
   COORDINATES,
   KeyboardNavigationPreference,
@@ -17,6 +16,9 @@ import PreferenceSelect, {
   PreferenceSelectOption,
 } from '../PreferenceSelect/PreferenceSelect'
 import { ModalState, OpenModal } from '../../context/ModalContexts'
+import ButtonClose from '../ButtonClose/ButtonClose'
+import { CSSTransition } from 'react-transition-group'
+import ToastContext, { ShowToast } from '../../context/ToastContext'
 
 function Descriptions({ navigation }) {
   return (
@@ -102,18 +104,18 @@ function KeyboardNavigationModeInternal({
   const options = (
     <>
       <PreferenceSelectOption
-        active={keyboardNavigation === MODAL}
-        onClick={() => setKeyboardNavigationSelected(MODAL)}
-        iconName="trackpad.svg"
-        iconExtraClassName="navigation-mode-option-icon-trackpad"
-        title="Use a Modal"
-      />
-      <PreferenceSelectOption
         active={keyboardNavigation === COORDINATES}
         onClick={() => setKeyboardNavigationSelected(COORDINATES)}
-        iconName="mouse.svg"
+        iconName="arrow-down-left.svg"
         iconExtraClassName="navigation-mode-option-icon-mouse"
-        title="Use Coordinates"
+        title="The most left"
+      />
+      <PreferenceSelectOption
+        active={keyboardNavigation === MODAL}
+        onClick={() => setKeyboardNavigationSelected(MODAL)}
+        iconName="aspect-ratio.svg"
+        iconExtraClassName="navigation-mode-option-icon-trackpad"
+        title="Show a modal"
       />
     </>
   )
@@ -150,15 +152,25 @@ export default function Preferences({
   setModalState,
 }: PreferencesProps) {
   // hold an internal version of the preferences state, so that we can toggle it, before saving it
-  const [navigationSelected, setNavigationSelected] = useState(navigationPreference)
+  const [navigationSelected, setNavigationSelected] = useState(
+    navigationPreference
+  )
   const [keyboardNavigationSelected, setKeyboardNavigationSelected] = useState(
     keyboardNavigationPreference
   )
+
+   // pull in the toast context
+   const { setToastState } = useContext(ToastContext)
 
   const save = () => {
     setNavigationPreference(navigationSelected)
     setKeyboardNavigationPreference(keyboardNavigationSelected)
     setModalState({ id: OpenModal.None })
+    setToastState({
+      id: ShowToast.Yes,
+      text: 'Preferences saved',
+      type: 'confirmation',
+    })
   }
   const close = () => {
     // reset navigation selected to
@@ -170,24 +182,35 @@ export default function Preferences({
   }
 
   return (
-    <Modal
-      white
-      active={modalState.id === OpenModal.Preferences}
-      onClose={close}
+    <CSSTransition
+      in={modalState.id === OpenModal.Preferences}
+      timeout={100}
+      unmountOnExit
+      classNames="preferences-modal"
     >
-      <div className="preferences-title">Preferences</div>
-      <NavigationModeInternal
-        navigation={navigationSelected}
-        setNavigationSelected={setNavigationSelected}
-      />
-      <KeyboardNavigationModeInternal
-        keyboardNavigation={keyboardNavigationSelected}
-        setKeyboardNavigationSelected={setKeyboardNavigationSelected}
-      />
-
-      <div className="preferences-save-button">
-        <Button onClick={save} text="Save Changes" />
+      <div className="preferences">
+        <div className="preferences-close">
+           <ButtonClose size={'medium'} onClick={close} />
+        </div>
+        <div className="preferences-title">Preferences</div>
+        <div className="preferences-scrollable">
+          <div className="preferences-content">
+            <NavigationModeInternal
+              navigation={navigationSelected}
+              setNavigationSelected={setNavigationSelected}
+            />
+            <KeyboardNavigationModeInternal
+              keyboardNavigation={keyboardNavigationSelected}
+              setKeyboardNavigationSelected={setKeyboardNavigationSelected}
+            />
+          </div>
+        </div>
+        <div className="preferences-save-button">
+          <Button onClick={save} text="Save Changes" />
+        </div>
       </div>
-    </Modal>
+    </CSSTransition>
   )
 }
+
+

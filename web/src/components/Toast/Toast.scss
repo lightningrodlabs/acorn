@@ -13,6 +13,21 @@
   font-family: var(--font-family-primary-medium);
   transition: 0.5s bottom ease;
 
+  .toast-icon {
+    cursor: default;
+  }
+
+  .toast-text {
+    margin-right: 0.25rem;
+    margin-left: 0.25rem;
+    margin-bottom: 0.05rem;
+    cursor: default;
+  }
+
+  .toast-close {
+    margin-top: 0.125rem;
+  }
+
   &.visible {
     bottom: 1.25rem;
   }
@@ -20,20 +35,36 @@
   &.confirmation {
     color: var(--text-color-toast-confirmation);
     background-color: var(--bg-color-toast-confirmation);
+
+    .icon.toast-icon .inner-icon {
+      background-color: var(--text-color-toast-confirmation);
+    }
   }
 
   &.information {
     color: var(--text-color-toast-information);
     background-color: var(--bg-color-toast-information);
+
+    .icon.toast-icon .inner-icon {
+      background-color: var(--text-color-toast-information);
+    }
   }
 
   &.warning {
     color: var(--text-color-toast-warning);
     background-color: var(--bg-color-toast-warning);
+
+    .icon.toast-icon .inner-icon {
+      background-color: var(--text-color-toast-warning);
+    }
   }
 
   &.destructive {
     color: var(--text-color-toast-destructive);
     background-color: var(--bg-color-toast-destructive);
+
+    .icon.toast-icon .inner-icon {
+      background-color: var(--text-color-toast-destructive);
+    }
   }
 }

@@ -52,7 +52,7 @@ const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
         <ProjectModalHeading title="Delete project" />
         <ProjectModalContentSpacer>
           <ProjectModalContent>
-            Are you sure you want to delete the project '{projectName}'? This
+            Are you sure you want to delete the project <b>'{projectName}'</b>? This
             action will delete all the project data and can’t be undone.
           </ProjectModalContent>
         </ProjectModalContentSpacer>
