@@ -23,5 +23,6 @@ yarn workspace acorn-ui build
 cp -r web/dist electron/web
 
 # build the electron application
+yarn workspace acorn tsc
 yarn workspace acorn build
 
