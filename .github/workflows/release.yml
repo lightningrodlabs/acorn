@@ -37,7 +37,7 @@ jobs:
           choco install wget --no-progress
       - name: Run install
         run: |
-          yarn install
+          yarn install --frozen-lockfile
       - name: setup for codesigning (macos only)
         if: ${{ runner.os == 'macOs' }}
         uses: figleafteam/import-codesign-certs@v2

@@ -20,7 +20,7 @@ jobs:
           cache: 'yarn'
       - name: Run install
         run: |
-          yarn install
+          yarn install --frozen-lockfile
       - name: Build zod-models dependency
         run: |
           yarn workspace zod-models build
