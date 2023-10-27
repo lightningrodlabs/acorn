@@ -9,7 +9,10 @@
       "web",
       "zod-models"
     ],
-    "nohoist": ["**/electron-builder", "**/electron-builder/**"]
+    "nohoist": [
+      "**/electron-builder",
+      "**/electron-builder/**"
+    ]
   },
   "description": "Acorn is software that helps people create the future",
   "repository": {
@@ -40,5 +43,8 @@
   },
   "devDependencies": {
     "typescript": "^5.1.6"
+  },
+  "resolutions": {
+    "**/@types/react": "16.14.0"
   }
 }
