@@ -27,13 +27,11 @@
   overflow-y: hidden;
   box-sizing: border-box;
   position: absolute;
-  // left: 3rem;
-  // top: 4rem;
-  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 4;
   // border-radius: 1rem;
 
   .preferences-close {
@@ -53,17 +51,26 @@
     padding: 1rem 0 2rem 0;
   }
 
-  .preferences-scrollable {
-    overflow-y: scroll;
-    height: 100%;
-    width: 100%;
-    // max-width: 30rem;
-    // padding: 4rem 0;
-    // box-sizing: border-box;
+  .preferences-inner-wrapper {
+    overflow-y: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    .preferences-scrollable {
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+
+    .preferences-content {
+      max-width: 30rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-sizing: border-box;
+      padding: 1rem 3rem;
+    }
   }
 
   .preferences-title {
@@ -74,16 +81,6 @@
     border-bottom: 1.5px solid var(--border-color-timberwolf);
     width: 100%;
     padding: 2.75rem 0 2rem;
-  }
-
-  .preferences-content {
-    height: 100%;
-    max-width: 30rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    box-sizing: border-box;
-    padding: 0 3rem;
   }
 }
 

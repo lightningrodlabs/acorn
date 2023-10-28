@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import Modal from '../Modal/Modal'
 import {
@@ -15,6 +15,7 @@ import { ModalState, OpenModal } from '../../context/ModalContexts'
 import { passphraseToUid } from '../../secrets'
 import { PROJECT_APP_PREFIX } from '../../holochainConfig'
 import { getAllApps } from '../../projectAppIds'
+import ToastContext, { ShowToast } from '../../context/ToastContext'
 
 function ProjectDeleteButton({
   onClick,
@@ -94,7 +95,8 @@ function EditProjectForm({
     // }
   }, [projectCoverUrl])
 
-  // const subheading = `Any changes will apply for all team members.`
+  // pull in the toast context
+  const { setToastState } = useContext(ToastContext)
 
   // validate before firing event
   const submit = () => {
@@ -102,6 +104,11 @@ function EditProjectForm({
     setShouldInvalidateProjectName(true)
     if (projectName.length > 0 && !updatingProject) {
       onSubmit()
+      setToastState({
+        id: ShowToast.Yes,
+        text: 'Project settings saved',
+        type: 'confirmation',
+      })
     }
   }
 
@@ -265,3 +272,7 @@ export default function ProjectSettingsModal({
     </Modal>
   )
 }
+function setToastState(arg0: { id: any; text: string; type: string }) {
+  throw new Error('Function not implemented.')
+}
+

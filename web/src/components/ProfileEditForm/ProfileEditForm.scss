@@ -1,8 +1,9 @@
 .profile_edit_form {
   text-align: center;
-  margin: 0 auto;
-  overflow-y: scroll;
-  height: 100%;
+  overflow-y: auto;
+  // margin: 0 auto;
+  // overflow-y: scroll;
+  // height: 100%;
 
   .small-close {
     position: absolute;

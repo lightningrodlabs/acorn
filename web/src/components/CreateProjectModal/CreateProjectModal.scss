@@ -1,6 +1,5 @@
 .create-project-modal-wrapper {
-  /* width: 550px; */
-  height: 523px;
+  height: 500px;
   overflow: hidden;
   position: relative;
   justify-content: space-between;
@@ -44,13 +43,16 @@
   opacity: 1;
   transition: opacity 0.3s, transform 0.4s;
   width: 420px;
+  left: 50px;
 }
 
 .create-project-form.project-created {
-  /* background-color: blue; */
+  // background-color: blue;
   opacity: 0;
   -webkit-transform: translateX(-300px);
   transform: translateX(-300px);
+  width: 420px;
+  left: 52px;
 }
 
 /* project created modal animation */
@@ -58,7 +60,7 @@
 /* default is to be hidden */
 
 .project-created-modal {
-  /* position: absolute; */
+  position: absolute;
   opacity: 0;
   -webkit-transform: scale(0.8);
   transform: scale(0.8);
@@ -74,6 +76,6 @@
 }
 
 .project-created-modal.project-created .project-modal-content-spacer {
-  margin-bottom: 7rem;
-  margin-top: 3rem;
+  margin-bottom: 5.5rem;
+  margin-top: 4rem;
 }

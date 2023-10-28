@@ -13,7 +13,7 @@
 
   .help-text {
     color: var(--text-color-tertiary);
-    font-size: 0.875rem;
+    font-size: max(0.825rem, 11.5px);
     line-height: 1.45;
     margin: 0.125rem 0 0.375rem 0;
     flex: 1;

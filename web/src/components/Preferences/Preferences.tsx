@@ -159,8 +159,8 @@ export default function Preferences({
     keyboardNavigationPreference
   )
 
-   // pull in the toast context
-   const { setToastState } = useContext(ToastContext)
+  // pull in the toast context
+  const { setToastState } = useContext(ToastContext)
 
   const save = () => {
     setNavigationPreference(navigationSelected)
@@ -190,19 +190,21 @@ export default function Preferences({
     >
       <div className="preferences">
         <div className="preferences-close">
-           <ButtonClose size={'medium'} onClick={close} />
+          <ButtonClose size={'medium'} onClick={close} />
         </div>
         <div className="preferences-title">Preferences</div>
-        <div className="preferences-scrollable">
-          <div className="preferences-content">
-            <NavigationModeInternal
-              navigation={navigationSelected}
-              setNavigationSelected={setNavigationSelected}
-            />
-            <KeyboardNavigationModeInternal
-              keyboardNavigation={keyboardNavigationSelected}
-              setKeyboardNavigationSelected={setKeyboardNavigationSelected}
-            />
+        <div className="preferences-inner-wrapper">
+          <div className="preferences-scrollable">
+            <div className="preferences-content">
+              <NavigationModeInternal
+                navigation={navigationSelected}
+                setNavigationSelected={setNavigationSelected}
+              />
+              <KeyboardNavigationModeInternal
+                keyboardNavigation={keyboardNavigationSelected}
+                setKeyboardNavigationSelected={setKeyboardNavigationSelected}
+              />
+            </div>
           </div>
         </div>
         <div className="preferences-save-button">
@@ -212,5 +214,3 @@ export default function Preferences({
     </CSSTransition>
   )
 }
-
-

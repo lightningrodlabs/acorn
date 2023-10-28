@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 
 import './ValidatingFormInput.scss'
 
-import ValidationCheck from '../../images/circle-check.svg'
-import ValidationX from '../../images/circle-x.svg'
+import ValidationCheck from '../../images/validation-check.svg'
+import ValidationX from '../../images/validation-x.svg'
 import Typography from '../Typography/Typography'
 
 function ValidatingFormInput({

@@ -12,6 +12,8 @@ import {
 } from '../ProjectModal/ProjectModal'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
 import { CellIdString } from '../../types/shared'
+import Icon from '../Icon/Icon'
+import Typography from '../Typography/Typography'
 
 function JoinProjectForm({
   checkDone,
@@ -70,13 +72,26 @@ function ProjectJoinFollowUp({ onDone, checkDone }) {
     >
       <div>
         <ProjectModalHeading title="Project has been queued for syncing" />
-        <ProjectModalSubHeading title="In order to join this project, you and a peer must simultaneously open the app." />
+        {/* <ProjectModalSubHeading title="In order to join this project, you and a peer must simultaneously open the app." /> */}
       </div>
       <ProjectModalContent>
         <div className="project-join-follow-up-content-wrapper">
-          If a peer is found, you are likely to be able to immediately begin to
-          access the project, although a short sync period in the queue may be
-          required before you can access it.
+          <Typography style={'body1'}>
+            <div className="text-important-block">
+              <Icon
+                name="information.svg"
+                className="not-clickable"
+                size="medium"
+              />
+              In order to join this project, you and a peer must simultaneously
+              open the app.
+              <br />
+              <br />
+              If a peer is found, you are likely to be able to immediately begin
+              to access the project, although a short sync period in the queue
+              may be required before you can access it.
+            </div>
+          </Typography>
         </div>
       </ProjectModalContent>
       <ProjectModalButton text="I understand" onClick={onDone} />

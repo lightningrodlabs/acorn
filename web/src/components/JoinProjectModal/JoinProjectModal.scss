@@ -17,6 +17,7 @@
   opacity: 1;
   transition: opacity 0.3s, transform 0.4s;
   width: 420px;
+  top: 70px;
 }
 
 .join-project-form.project-join-check-is-done {
@@ -27,6 +28,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  height: 420px;
 }
 
 /* project join follow up modal animation */
@@ -50,10 +52,32 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 420px;
 }
 
 .project-join-follow-up-content-wrapper {
-  margin-bottom: 40px;
-  line-height: 1.45;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.text-important-block {
+  background-color: var(--bg-color-text-important-information);
+  color: var(--text-color-toast-information);
+  padding: 1.25rem;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  align-items: flex-start;
+
+  .icon {
+    padding-top: 0;
+    margin-right: 0.5rem;
+    width: 4rem;
+    box-sizing: border-box;
+    .inner-icon {
+      background-color: var(--text-color-toast-information);
+    }
+  }
+  
+  
 }

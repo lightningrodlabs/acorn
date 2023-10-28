@@ -1,6 +1,7 @@
 import React from 'react'
 import './PreferenceSelect.scss'
 import Icon from '../Icon/Icon'
+import Typography from '../Typography/Typography'
 
 function PreferenceSelectExtra({
   children,
@@ -61,9 +62,13 @@ function PreferenceSelect({
           // @ts-ignore
           <Icon name={iconName} size="very-small" className="not-hoverable" />
         )} */}
-        <div className="preference-select-title">{title}</div>
+        <div className="preference-select-title">
+          <Typography style={'h6'}>{title}</Typography>
+        </div>
       </div>
-      <div className="preference-select-subtitle">{subtitle}</div>
+      <div className="preference-select-subtitle">
+        <Typography style={'label-help'}>{subtitle}</Typography>
+      </div>
       <div className="preference-select-options-wrapper">{options}</div>
       {descriptions}
     </div>
