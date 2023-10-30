@@ -14,15 +14,18 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - name: Install nodejs dependencies
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'yarn'
+      - name: Run install
         run: |
-          npm install -w web
-        shell: bash
+          yarn install --frozen-lockfile
       - name: Build zod-models dependency
         run: |
-          npm run build -w zod-models
+          yarn workspace zod-models build
         shell: bash
       - name: run unit tests
         run: |
-          npm run test -w web
+          yarn workspace acorn-ui test
         shell: bash

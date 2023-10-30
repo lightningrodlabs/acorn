@@ -5,46 +5,46 @@
 
 _Prerequisites_
 
-- Have nodejs installed on your system
+- Have `nodejs` (v20) and `yarn` (v1, classic) installed on your system
 
 Then run
 
-- `npm install`
-- `npm run dev`
+- `yarn install`
+- `yarn run dev`
 
-In the future, just run `npm run dev` anytime to develop.
+In the future, just run `yarn run dev` anytime to develop.
 
-When you run `npm run dev` a `user-data/` directory is created and this is where user data including private keys, and also data generated through use of the app is stored.
+When you run `yarn run dev` a `user-data/` directory is created and this is where user data including private keys, and also data generated through use of the app is stored.
 
-You can run `npm run user-data-reset` if you have user data in development, but you want to clear it, and start over with fresh identities.
+You can run `yarn run user-data-reset` if you have user data in development, but you want to clear it, and start over with fresh identities.
 
 > NOTE: if you see a blank screen once electron launches the app, refresh the page (using View -> Reload or Cmd/Ctrl-R) to see app contents.
 
 #### Commands that are more specific to your use case:
 
-You can run the web process and the electron processes separately, instead of running `npm run dev` which combines them.
+You can run the web process and the electron processes separately, instead of running `yarn run dev` which combines them.
 
 **web** (user interface)
 
-- `npm run web`
+- `yarn run web`
 
 **electron**
 
-- `npm run electron`
+- `yarn run electron`
 
 #### Multi-User Testing
-run the following commands in separate terminal instances (must have a running instance of acorn for the first user, either by running `npm run dev` or the below commands without the `2`):
+run the following commands in separate terminal instances (must have a running instance of acorn for the first user, either by running `yarn run dev` or the below commands without the `2`):
 
-- `npm run web(2,3,4)`
-- `npm run electron(2,3,4)`
+- `yarn run web(2,3,4)`
+- `yarn run electron(2,3,4)`
 
-After running these commands, a `user-data/` directory is created with user data. It too can be cleared by running `npm run user-data-reset`.
+After running these commands, a `user-data/` directory is created with user data. It too can be cleared by running `yarn run user-data-reset`.
 
 ### Building / Packaging
 
 To build:
 
-- `npm run build`
+- `yarn run build`
 
 The packaged executables can be found in `frontend/electron/out`.
 
@@ -85,7 +85,7 @@ The happ code has been separated into its own repository with its own release pr
 
 The repo is here: https://github.com/lightningrodlabs/acorn-happ.
 
-After making changes, and performing a release, just edit [./scripts/download-happs.sh](./scripts/download-happs.sh) to point to the new release, and then run `npm run download-happs` to download the new release.
+After making changes, and performing a release, just edit [./scripts/download-happs.sh](./scripts/download-happs.sh) to point to the new release, and then run `yarn run download-happs` to download the new release.
 
 As mentioned above, INTEGRITY_VERSION_NUMBER should be incremented when the happ release has been updated.
 

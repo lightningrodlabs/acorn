@@ -9,11 +9,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install web dependencies
-        run: npm install -w web
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'yarn'
+      - name: Run install
+        run: |
+          yarn install --frozen-lockfile
       - name: Storybook static build
         run: |
-          npm run build-storybook -w web
+          yarn workspace acorn-ui build-storybook
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:

@@ -4,14 +4,11 @@
   "description": "",
   "main": "dist/zodModels.js",
   "scripts": {
-    "build": "npx tsc",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "typescript": "^5.1.6"
-  },
   "dependencies": {
     "zod": "^3.21.4"
   }
