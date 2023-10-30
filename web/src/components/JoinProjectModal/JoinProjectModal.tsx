@@ -42,7 +42,7 @@ function JoinProjectForm({
             invalidInput={invalidText}
             errorText={invalidText}
             label="Project Invitation Secret"
-            helpText="Paste the 5 word secret you received from the project host"
+            helpText="Paste the 5-word secret you received from the project host"
           />
         </ProjectModalContent>
       </ProjectModalContentSpacer>

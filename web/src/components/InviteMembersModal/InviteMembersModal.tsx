@@ -7,28 +7,26 @@ import {
   ProjectModalContent,
   ProjectModalContentSpacer,
   ProjectModalHeading,
+  ProjectModalSubHeading,
 } from '../ProjectModal/ProjectModal'
 import ProjectSecret from '../ProjectSecret/ProjectSecret'
 
 export default function InviteMembersModal({ showModal, onClose, passphrase }) {
-  const onDone = () => {
-    onClose()
-  }
-
   return (
     <Modal
       white
       active={showModal}
       onClose={onClose}
-      className="join-project-modal-wrapper"
+      className="invite-members-modal"
     >
       <ProjectModalHeading title="Invite members to project" />
+      <ProjectModalSubHeading title="Share this secret phrase with people you want to invite to this project." />
       <ProjectModalContent>
         <ProjectModalContentSpacer>
           <ProjectSecret passphrase={passphrase} />
         </ProjectModalContentSpacer>
       </ProjectModalContent>
-      <ProjectModalButton text="Done" onClick={onDone} />
+      <ProjectModalButton text="Done" onClick={onClose} />
     </Modal>
   )
 }

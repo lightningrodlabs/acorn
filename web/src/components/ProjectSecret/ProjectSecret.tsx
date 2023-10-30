@@ -24,7 +24,6 @@ export default function ProjectSecret({ passphrase }) {
         <ValidatingFormInput
           value={passphrase}
           label="Project Invitation Secret"
-          helpText="Share this secret phrase with people you want to invite to this project."
         />
         {/* copy to clipboard button */}
         <div
