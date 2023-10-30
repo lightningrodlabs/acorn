@@ -1,23 +1,26 @@
-import React, { useState } from 'react'
+import React, { useContext} from 'react'
 import './ProjectSecret.scss'
 import Icon from '../Icon/Icon'
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
+import ToastContext, { ShowToast } from '../../context/ToastContext'
 
 export default function ProjectSecret({ passphrase }) {
-  // Copied to clipboard message validation for project invitation secret
-
-  const copyMessage = 'Secret copied to clipboard'
-
-  const [showCopyMessage, setShowCopyMessage] = useState(false)
+  // pull in the toast context
+  const { setToastState } = useContext(ToastContext)
 
   const copySecretToClipboard = () => {
     navigator.clipboard.writeText(passphrase)
-    setShowCopyMessage(true)
+    setToastState({
+      id: ShowToast.Yes,
+      text: 'Project secret copied to clipboard',
+      type: 'confirmation',
+    })
   }
 
   return (
     <div className="project-secret-wrapper">
       <div className="project-secret-row">
+        {/* @ts-ignore */}
         <ValidatingFormInput
           value={passphrase}
           label="Project Invitation Secret"
@@ -35,9 +38,6 @@ export default function ProjectSecret({ passphrase }) {
             name="file-copy.svg"
           />
         </div>
-        {showCopyMessage && (
-          <div className="secret-copy-message">{copyMessage}</div>
-        )}
       </div>
     </div>
   )
