@@ -12,7 +12,7 @@
   min-width: 556px;
   box-sizing: border-box;
   padding-top: 64px;
-  overflow-y: hidden;
+  overflow-y: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,9 +20,7 @@
   .profile_edit_form {
     margin: 3rem 5rem;
     width: 100%;
-    min-height: 100%;
     max-width: 38rem;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
