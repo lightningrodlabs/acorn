@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { NavLink, Route, useLocation, useRouteMatch } from 'react-router-dom'
 import useOnClickOutside from 'use-onclickoutside'
 
@@ -23,6 +23,9 @@ import triangleTopWhite from '../../images/triangle-top-white.svg'
 // @ts-ignore
 import DoorOpen from '../../images/door-open.svg'
 import { ModalState, OpenModal } from '../../context/ModalContexts'
+import { getCurrentDateFormatted } from '../../utils'
+import useFileDownloaded from '../../hooks/useFileDownloaded'
+import ToastContext, { ShowToast } from '../../context/ToastContext'
 
 function ActiveEntryPoint({
   entryPoint,
@@ -98,6 +101,19 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
     : []
 
   const ref = useRef()
+  const { setToastState } = useContext(ToastContext)
+  const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
+
+  useEffect(() => {
+    if (fileDownloaded) {
+      setFileDownloaded(false)
+      setToastState({
+        id: ShowToast.Yes,
+        text: 'Project Exported',
+        type: 'confirmation',
+      })
+    }
+  }, [fileDownloaded, setFileDownloaded, setToastState])
 
   // map, table and priority view routes
 
@@ -110,6 +126,14 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
 
   useOnClickOutside(ref, () => setOpenEntryPointPicker(false))
   const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
+
+  // replace spaces with dashes for project name
+  // add in the export date like 2023-12-31 and make it based on the
+  // timezone of the user
+  const projectNameForExport = `${projectName.replace(
+    /\s/g,
+    '-'
+  )}-${getCurrentDateFormatted()}`
 
   return (
     <div className="header-left-panel-rows">
@@ -212,10 +236,12 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                     withTooltip
                     tooltipText="Project Settings"
                     size="header"
-                    onClick={() => setModalState({
-                      id: OpenModal.ProjectSettings,
-                      cellId: projectId
-                    })}
+                    onClick={() =>
+                      setModalState({
+                        id: OpenModal.ProjectSettings,
+                        cellId: projectId,
+                      })
+                    }
                     className="header-action-icon"
                   />
                   {/* Export */}
@@ -240,24 +266,16 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                         <ExportMenuItem
                           type="json"
                           title="Export as JSON (Importable)"
-                          downloadFilename="acorn-project.json"
+                          downloadFilename={`${projectNameForExport}.json`}
                           onClick={() => {
-                            setModalState({
-                              id: OpenModal.ProjectExported,
-                              projectName,
-                            })
                             setIsExportOpen(false)
                           }}
                         />
                         <ExportMenuItem
                           type="csv"
                           title="Export as CSV"
-                          downloadFilename="acorn-project.csv"
+                          downloadFilename={`${projectNameForExport}.csv`}
                           onClick={() => {
-                            setModalState({
-                              id: OpenModal.ProjectExported,
-                              projectName,
-                            })
                             setIsExportOpen(false)
                           }}
                         />
@@ -274,7 +292,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
               onClickInviteMember={() => {
                 setModalState({
                   id: OpenModal.InviteMembers,
-                  passphrase: projectPassphrase
+                  passphrase: projectPassphrase,
                 })
               }}
             />

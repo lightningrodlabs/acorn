@@ -23,3 +23,14 @@ export function cellIdFromString(str: string): CellId {
   const [dnahashstring, agentpubkeyhashstring] = str.split(CELL_ID_DIVIDER)
   return [hashFromString(dnahashstring), hashFromString(agentpubkeyhashstring)]
 }
+
+export function getCurrentDateFormatted() {
+  const now = new Date()
+
+  const year = now.getFullYear()
+  // getMonth() returns a zero-based month, so +1 to get the correct month number
+  const month = (now.getMonth() + 1).toString().padStart(2, '0')
+  const day = now.getDate().toString().padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}

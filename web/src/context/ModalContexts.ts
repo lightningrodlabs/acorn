@@ -10,7 +10,6 @@ export enum OpenModal {
   ProjectSettings,
   InviteMembers,
   ProjectMigrated,
-  ProjectExported,
   Preferences,
   ProfileEditForm,
 }
@@ -46,10 +45,6 @@ export type ModalState =
   | {
       id: OpenModal.ProjectMigrated
       cellId: CellIdString
-    }
-  | {
-      id: OpenModal.ProjectExported
-      projectName: string
     }
   | {
       id: OpenModal.Preferences

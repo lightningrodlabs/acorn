@@ -85,7 +85,7 @@ function NavigationModeInternal({ navigation, setNavigationSelected }) {
     <div className="preferences-content-wrapper">
       <PreferenceSelect
         iconName="panning.svg"
-        title="Navigation Mode"
+        title="Canvas Navigation"
         subtitle="Select your preferred navigation mode on canvas based on your primary
           pointer device"
         // @ts-ignore
@@ -123,7 +123,7 @@ function KeyboardNavigationModeInternal({
     <div className="preferences-content-wrapper">
       <PreferenceSelect
         iconName="panning.svg"
-        title="Keyboard Navigation Mode"
+        title="Keyboard Tree Navigation"
         subtitle="Select your preferred method of using the keyboard to navigate from parent to child, and vice-versa"
         // @ts-ignore
         options={options}

@@ -228,30 +228,6 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
           </>
         }
       />
-
-      {/* Export Successful Modal */}
-      <Modal
-        active={modalState.id === OpenModal.ProjectExported}
-        onClose={setModalToNone}
-      >
-        <ModalContent
-          heading="Exporting"
-          icon="export.svg"
-          content={
-            <>
-              You just exported the{' '}
-              <b>
-                {modalState.id === OpenModal.ProjectExported &&
-                  modalState.projectName}
-              </b>{' '}
-              project data. You can use that file to transfer the project to a
-              different owner, or archive as a backup.
-            </>
-          }
-          primaryButton="Got it"
-          primaryButtonAction={setModalToNone}
-        />
-      </Modal>
     </>
   )
 }

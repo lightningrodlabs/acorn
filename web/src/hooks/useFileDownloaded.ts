@@ -6,7 +6,7 @@ export default function useFileDownloaded() {
   const subscribeToEvent = async () => {
     if (window.require) {
       const { ipcRenderer } = window.require('electron')
-      ipcRenderer.once('exportDownloaded', () => {
+      ipcRenderer.on('exportDownloaded', () => {
         setFileDownloaded(true)
       })
     }
