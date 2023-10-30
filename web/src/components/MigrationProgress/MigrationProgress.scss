@@ -40,11 +40,8 @@
     .run-update-rotating-logo {
       width: 3.625rem;
       height: 3.625rem;
-      // line-height: 110px;
-      // margin-top: 10px;
-      // margin-left: 10px;
       position: absolute;
-      z-index: 100;
+      z-index: 6;
       transition: 0.2s linear transform;
 
       img {

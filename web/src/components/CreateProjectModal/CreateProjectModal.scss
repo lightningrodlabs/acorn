@@ -1,81 +1,32 @@
 .create-project-modal-wrapper {
-  height: 32rem;
   width: 30rem;
   overflow: auto;
   position: relative;
   justify-content: space-between;
   align-items: center;
 
-  .validating-form-input {
-    margin-bottom: 28px;
-  }
+  .create-project-form {
 
-  .project-modal-content {
-    line-height: 1.45;
-  }
+    .create-project-image-row {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
 
-  .create-project-image-row {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
+      .validating-form-input {
+        margin-bottom: 0;
+      }
 
-    .validating-form-input {
-      margin-bottom: 0;
-    }
-
-    .create-project-image {
-      margin-left: 8px;
-      width: 44px;
-      height: 44px;
-      background-size: cover;
-      background-repeat: no-repeat;
-      border-radius: 10px;
-      border: 2px solid #f3efeb;
-      box-sizing: border-box;
-      background-color: var(--bg-color-tertiary);
-    }
-  }
-}
-
-/* create project modal animation */
-
-.create-project-form {
-  position: absolute;
-  opacity: 1;
-  transition: opacity 0.3s, transform 0.4s;
-  width: 23rem;
-  left: 3.5rem;
-
-  /* project created modal animation */
-  &.project-created {
-    opacity: 0;
-    -webkit-transform: translateX(-300px);
-    transform: translateX(-300px);
-    width: 23rem;
-    left: 3.5rem;
-  }
-}
-
-/* default is to be hidden */
-
-.project-created-modal {
-  position: absolute;
-  opacity: 0;
-  -webkit-transform: scale(0.8);
-  transform: scale(0.8);
-  transition: opacity 0.3s, transform 0.4s;
-
-  /* then it shows */
-  &.project-created {
-    opacity: 1;
-    -webkit-transform: scale(1);
-    transform: scale(1);
-    width: 23rem;
-    left: 3.5rem;
-
-    .project-modal-content-spacer {
-      margin-top: 5rem;
-      margin-bottom: 5rem;
+      .create-project-image {
+        margin-left: 8px;
+        width: 44px;
+        height: 44px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        border-radius: 10px;
+        border: 2px solid #f3efeb;
+        box-sizing: border-box;
+        background-color: var(--bg-color-tertiary);
+      }
     }
   }
 }

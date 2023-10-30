@@ -3,33 +3,11 @@
   display: flex;
   flex-direction: column;
 
-  // .skip-intro-button {
-  //   position: absolute;
-  //   right: 0;
-  //   cursor: pointer;
-  //   font-size: 0.9rem;
-  //   font-family: var(--font-family-primary-medium);
-  //   padding: 1.125rem;
-  //   color: #717171;
-  //   transition: color 0.2s;
-  //   z-index: 99;
-  //   box-sizing: border-box;
-  //   height: 3rem;
-
-  //   &:hover {
-  //     color: #5f65ff;
-  //   }
-  // }
-
   .intro-screen-content-frame {
     overflow: hidden;
     margin: auto auto;
     width: 100vw;
     position: relative;
-
-    // @media (max-width: 1188px) {
-    //   width: 48rem;
-    // }
 
     .button-back {
       top: 41.2%;

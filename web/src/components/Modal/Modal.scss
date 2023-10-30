@@ -8,7 +8,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 7;
 
   .modal-content-wrapper {
     display: flex;
@@ -54,7 +54,6 @@
   position: absolute;
   width: 32.5rem;
   box-sizing: border-box;
- 
   background-color: #ffff;
   border-radius: 1rem;
   box-shadow: 0px 0px 1rem var(--shadow-color);
@@ -66,8 +65,10 @@
   overflow-y: hidden;
 
   .modal-scrollable-content {
-    padding: 4rem 4rem 3rem 4rem ;
-    overflow-y: auto;    // change to auto so the scrollbar only appears when necessary
+    padding: 4rem 4rem 3rem 4rem;
+    box-sizing: border-box;
+    width: 100%;
+    overflow-y: auto; // change to auto so the scrollbar only appears when necessary
   }
 
   .modal-button-close {

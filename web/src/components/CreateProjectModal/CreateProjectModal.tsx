@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import './CreateProjectModal.scss'
 
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
-import Modal from '../Modal/Modal'
+import Modal, { ModalContent } from '../Modal/Modal'
 import {
   ProjectModalButton,
   ProjectModalContent,
@@ -13,11 +13,11 @@ import {
 import ProjectSecret from '../ProjectSecret/ProjectSecret'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
 import { generatePassphrase } from '../../secrets'
+import ToastContext, { ShowToast } from '../../context/ToastContext'
 
 function CreateProjectForm({
   creatingProject,
   onSubmit,
-  projectCreated,
   projectName,
   setProjectName,
   projectCoverUrl,
@@ -50,9 +50,6 @@ function CreateProjectForm({
     validateProjectName()
   }, [projectName, shouldInvalidateProjectName])
 
-  const subheading =
-    'You can share the project with people or just keep it to yourself'
-
   const actionButtonContent = (
     <ButtonWithPendingState
       pending={creatingProject}
@@ -71,13 +68,8 @@ function CreateProjectForm({
   }
 
   return (
-    <div
-      className={`create-project-form ${
-        projectCreated ? 'project-created' : ''
-      }`}
-    >
+    <div className={'create-project-form'}>
       <ProjectModalHeading title="Create a new project" />
-      <ProjectModalSubHeading title={subheading} />
       <ProjectModalContentSpacer>
         <ProjectModalContent>
           {/* project name */}
@@ -118,35 +110,49 @@ function CreateProjectForm({
     </div>
   )
 }
-
-function ProjectCreatedModal({ onDone, projectCreated, projectSecret }) {
-  return (
-    <div
-      className={`project-created-modal ${
-        projectCreated ? 'project-created' : ''
-      }`}
-    >
-      <ProjectModalHeading title="New project created!" />
-      <ProjectModalContentSpacer>
-        <ProjectModalContent>
-          <ProjectSecret passphrase={projectSecret} />
-        </ProjectModalContent>
-      </ProjectModalContentSpacer>
-      <ProjectModalButton text="Done" onClick={onDone} />
-    </div>
-  )
-}
-
 export default function CreateProjectModal({
   showModal,
   onClose,
   onCreateProject,
 }) {
-  const reset = () => {
-    setProjectName('')
-    setProjectCoverUrl('')
-  }
+  // pull in the toast context
+  const { setToastState } = useContext(ToastContext)
+
   const [creatingProject, setCreatingProject] = useState(false)
+  const [projectSecret, setProjectSecret] = useState('')
+  const [projectName, setProjectName] = useState('')
+  const [projectCoverUrl, setProjectCoverUrl] = useState('')
+
+  const genAndSetPassphrase = async () => {
+    try {
+      const passphrase = await generatePassphrase()
+      if (!hasUnmounted) setProjectSecret(passphrase)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  let hasUnmounted = false
+
+  // generate a passphrase on component mount
+  useEffect(() => {
+    hasUnmounted = false
+    genAndSetPassphrase()
+    return () => {
+      hasUnmounted = true
+    }
+  }, [])
+
+  const resetCreateProjectState = () => {
+    onClose()
+    // wait for the closing of the modal animation
+    setTimeout(() => {
+      setCreatingProject(false)
+      setProjectName('')
+      setProjectCoverUrl('')
+      genAndSetPassphrase()
+    }, 100)
+  }
 
   const onSubmit = async () => {
     setCreatingProject(true)
@@ -158,61 +164,35 @@ export default function CreateProjectModal({
         },
         projectSecret
       )
-      setCreatingProject(false)
-      setProjectCreated(true)
-      reset()
+      resetCreateProjectState()
+      // if project creation is successful
+      setToastState({
+        id: ShowToast.Yes,
+        text: 'New project created',
+        type: 'confirmation',
+      })
     } catch (e) {
+      // if project creation is not successful
       console.log(e)
+      resetCreateProjectState()
+      setToastState({
+        id: ShowToast.Yes,
+        text: 'Error creating project',
+        type: 'destructive',
+      })
     }
   }
-
-  let hasUnmounted = false
-
-  const genAndSetPassphrase = async () => {
-    try {
-      const passphrase = await generatePassphrase()
-      if (!hasUnmounted) setProjectSecret(passphrase)
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  const onDone = () => {
-    onClose()
-    setProjectCreated(false)
-    genAndSetPassphrase()
-  }
-
-  const [projectSecret, setProjectSecret] = useState('')
-  const [projectCreated, setProjectCreated] = useState(false)
-  const [projectName, setProjectName] = useState('')
-  const [projectCoverUrl, setProjectCoverUrl] = useState('')
-
-  // generate a passphrase on component mount
-  useEffect(() => {
-    hasUnmounted = false
-    genAndSetPassphrase()
-    return () => {
-      hasUnmounted = true
-    }
-  }, [])
 
   return (
     <Modal
       white
       active={showModal}
-      onClose={projectCreated ? onDone : onClose}
+      onClose={onClose}
       className="create-project-modal-wrapper"
     >
-      <ProjectCreatedModal
-        projectSecret={projectSecret}
-        onDone={onDone}
-        projectCreated={projectCreated}
-      />
       <CreateProjectForm
         onSubmit={onSubmit}
         creatingProject={creatingProject}
-        projectCreated={projectCreated}
         projectName={projectName}
         setProjectName={setProjectName}
         projectCoverUrl={projectCoverUrl}
