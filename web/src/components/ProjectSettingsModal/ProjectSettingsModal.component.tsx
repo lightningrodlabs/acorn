@@ -206,6 +206,7 @@ export default function ProjectSettingsModal({
   setModalState,
   memberCount,
 }: ProjectSettingsModalProps) {
+  const [cachedProjectMetaHash, setCachedProjectMetaHash] = useState('')
   const [updatingProject, setUpdatingProject] = useState(false)
   const [projectName, setProjectName] = useState('')
   const [projectCoverUrl, setProjectCoverUrl] = useState('')
@@ -224,18 +225,28 @@ export default function ProjectSettingsModal({
       cellIdString
     )
     setUpdatingProject(false)
+    setCachedProjectMetaHash('')
+    onClose()
+  }
+
+  const onCancel = () => {
+    setCachedProjectMetaHash('')
     onClose()
   }
 
   // editable
   useEffect(() => {
-    if (project) {
+    if (project && project.actionHash !== cachedProjectMetaHash) {
+      setCachedProjectMetaHash(project.actionHash)
       setProjectName(project.name)
       setProjectCoverUrl(project.image)
       setProjectPassphrase(project.passphrase)
     }
-  }, [project])
+  }, [project, setCachedProjectMetaHash])
 
+  // TODO: once we migrate off version 9 stream, we can simplify this
+  // this commented out code, because we won't have any projects that use
+  // the old pattern which had randomness in it.
   // const uid = passphraseToUid(projectPassphrase)
   // const installedAppId = `${PROJECT_APP_PREFIX}-${uid}`
   useEffect(() => {
@@ -253,7 +264,7 @@ export default function ProjectSettingsModal({
     <Modal
       white
       active={showModal}
-      onClose={onClose}
+      onClose={onCancel}
       className="project-settings"
     >
       <EditProjectForm
