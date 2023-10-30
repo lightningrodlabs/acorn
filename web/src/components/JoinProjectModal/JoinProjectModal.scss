@@ -2,8 +2,7 @@
   overflow: hidden;
   position: relative;
   justify-content: space-between;
-  width: 34.5rem;
-  height: 27rem;
+  width: 33.5rem;
 }
 
 .project-modal-button .button.large {
@@ -16,8 +15,9 @@
   position: absolute;
   opacity: 1;
   transition: opacity 0.3s, transform 0.4s;
-  width: 420px;
-  top: 70px;
+  width: 24.5rem;
+  top: 5rem;
+  left: 4.5rem;
 }
 
 .join-project-form.project-join-check-is-done {
