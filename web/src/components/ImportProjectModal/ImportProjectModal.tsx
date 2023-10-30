@@ -16,6 +16,7 @@ import { CellIdString } from '../../types/shared'
 import { installProject } from '../../projects/installProject'
 import { CellId } from '@holochain/client'
 import { BackwardsCompatibleProjectExportSchema } from 'zod-models'
+import { generatePassphrase } from '../../secrets'
 
 function ImportProjectFilePicker({ showModal, onFilePicked, onCancel }) {
   const [fileFormatInvalidMessage, setFileFormatInvalidMessage] = useState(
@@ -172,11 +173,6 @@ const ImportProjectModal: React.FC<ImportProjectModalProps> = ({
   const [outcomeCount, setOutcomeCount] = useState(0)
 
   const onFilePicked = async (projectData: object) => {
-    // if (!projectData.tags) {
-    //   alert('Cannot import projects from versions prior to v1.0.0-alpha')
-    //   onClose()
-    //   return
-    // }
     let projectIds: {
       cellIdString: CellIdString
       cellId: CellId
@@ -186,16 +182,22 @@ const ImportProjectModal: React.FC<ImportProjectModalProps> = ({
       let projectDataParsed = BackwardsCompatibleProjectExportSchema.parse(
         projectData
       )
-      console.log(projectDataParsed)
-      const passphrase = projectDataParsed.projectMeta.passphrase
+      const newRandomPassphrase = await generatePassphrase()
+      const newProjectData = {
+        ...projectDataParsed,
+        projectMeta: {
+          ...projectDataParsed.projectMeta,
+          passphrase: newRandomPassphrase,
+        },
+      }
       setImportingProject(true)
-      setProjectName(projectDataParsed.projectMeta.name)
-      setOutcomeCount(Object.keys(projectDataParsed.outcomes).length)
+      setProjectName(newProjectData.projectMeta.name)
+      setOutcomeCount(Object.keys(newProjectData.outcomes).length)
       // first step is to install the app and DNA
-      projectIds = await installProject(passphrase)
+      projectIds = await installProject(newRandomPassphrase)
       // keep the existing passphrase, such that other users know how
       // to enter the new project
-      await onImportProject(projectIds.cellIdString, projectData, passphrase)
+      await onImportProject(projectIds.cellIdString, projectData, newRandomPassphrase)
       setImportingProject(false)
       setProjectImported(true)
     } catch (e) {

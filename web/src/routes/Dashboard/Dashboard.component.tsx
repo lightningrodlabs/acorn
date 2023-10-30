@@ -7,7 +7,6 @@ import DashboardEmptyState from '../../components/DashboardEmptyState/DashboardE
 import CreateProjectModal from '../../components/CreateProjectModal/CreateProjectModal'
 import ImportProjectModal from '../../components/ImportProjectModal/ImportProjectModal'
 import JoinProjectModal from '../../components/JoinProjectModal/JoinProjectModal'
-import ProjectSettingsModal from '../../components/ProjectSettingsModal/ProjectSettingsModal.connector'
 // import new modals here
 
 import {

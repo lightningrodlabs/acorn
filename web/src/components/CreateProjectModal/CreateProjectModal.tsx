@@ -12,13 +12,7 @@ import {
 } from '../ProjectModal/ProjectModal'
 import ProjectSecret from '../ProjectSecret/ProjectSecret'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
-
-// since this is a big wordset, dynamically import it
-// instead of including in the main bundle
-async function generatePassphrase() {
-  const { default: randomWord } = await import('diceware-word')
-  return `${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()} ${randomWord()}`
-}
+import { generatePassphrase } from '../../secrets'
 
 function CreateProjectForm({
   creatingProject,
@@ -55,15 +49,6 @@ function CreateProjectForm({
   useEffect(() => {
     validateProjectName()
   }, [projectName, shouldInvalidateProjectName])
-
-  useEffect(() => {
-    // if (projectCoverUrl.length > 0) {
-    //   setisValidProjectCoverUrl(true)
-    // } else {
-    //   setisValidProjectCoverUrl(false)
-    //   setErrorProjectCoverUrl('Project name is not... ?')
-    // }
-  }, [projectCoverUrl])
 
   const subheading =
     'You can share the project with people or just keep it to yourself'
