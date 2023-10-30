@@ -272,7 +272,4 @@ export default function ProjectSettingsModal({
     </Modal>
   )
 }
-function setToastState(arg0: { id: any; text: string; type: string }) {
-  throw new Error('Function not implemented.')
-}
 

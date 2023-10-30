@@ -72,7 +72,6 @@ function ProjectJoinFollowUp({ onDone, checkDone }) {
     >
       <div>
         <ProjectModalHeading title="Project has been queued for syncing" />
-        {/* <ProjectModalSubHeading title="In order to join this project, you and a peer must simultaneously open the app." /> */}
       </div>
       <ProjectModalContent>
         <div className="project-join-follow-up-content-wrapper">

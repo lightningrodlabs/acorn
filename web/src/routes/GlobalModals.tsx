@@ -257,6 +257,3 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
 }
 
 export default GlobalModals
-function handleKeyDown(this: Window, ev: KeyboardEvent) {
-  throw new Error('Function not implemented.')
-}
