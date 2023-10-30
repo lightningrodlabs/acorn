@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import './JoinProjectModal.scss'
 
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
@@ -12,16 +12,14 @@ import {
 } from '../ProjectModal/ProjectModal'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
 import { CellIdString } from '../../types/shared'
-import Icon from '../Icon/Icon'
-import Typography from '../Typography/Typography'
+import ToastContext, { ShowToast } from '../../context/ToastContext'
 
 function JoinProjectForm({
-  checkDone,
   projectSecret,
   onSecretChange,
   invalidText,
   pendingJoiningProject,
-  onClickDone,
+  onClickJoinProject,
 }) {
   const joinProjectButtonContent = (
     <ButtonWithPendingState
@@ -32,11 +30,7 @@ function JoinProjectForm({
   )
 
   return (
-    <div
-      className={`join-project-form ${
-        checkDone ? 'project-join-check-is-done' : ''
-      }`}
-    >
+    <div className="join-project-form">
       <ProjectModalHeading title="Join an existing project" />
       <ProjectModalSubHeading title="You will need to sync with a peer to get started" />
       <ProjectModalContentSpacer>
@@ -54,46 +48,11 @@ function JoinProjectForm({
       </ProjectModalContentSpacer>
       <ProjectModalButton
         text={joinProjectButtonContent}
-        onClick={onClickDone}
+        onClick={onClickJoinProject}
         // show the button as disabled if there is a text about invalid secret input
         // or if there is no input
         disabled={invalidText !== '' || projectSecret === ''}
       />
-    </div>
-  )
-}
-
-function ProjectJoinFollowUp({ onDone, checkDone }) {
-  return (
-    <div
-      className={`project-join-follow-up ${
-        checkDone ? 'project-join-check-is-done' : ''
-      }`}
-    >
-      <div>
-        <ProjectModalHeading title="Project has been queued for syncing" />
-      </div>
-      <ProjectModalContent>
-        <div className="project-join-follow-up-content-wrapper">
-          <Typography style={'body1'}>
-            <div className="text-important-block">
-              <Icon
-                name="information.svg"
-                className="not-clickable"
-                size="medium"
-              />
-              In order to join this project, you and a peer must simultaneously
-              open the app.
-              <br />
-              <br />
-              If a peer is found, you are likely to be able to immediately begin
-              to access the project, although a short sync period in the queue
-              may be required before you can access it.
-            </div>
-          </Typography>
-        </div>
-      </ProjectModalContent>
-      <ProjectModalButton text="I understand" onClick={onDone} />
     </div>
   )
 }
@@ -109,33 +68,50 @@ export default function JoinProjectModal({
   doJoinProject: (projectSecret: string) => Promise<CellIdString>
   joinedProjectsSecrets: string[]
 }) {
-  const reset = () => {
-    setProjectSecret('')
-    setPendingJoiningProject(false)
-    setInvalidText('')
-    setCheckDone(false)
-  }
+  // pull in the toast context
+  const { setToastState } = useContext(ToastContext)
 
   const [checkDone, setCheckDone] = useState(false)
   const [projectSecret, setProjectSecret] = useState('')
   const [invalidText, setInvalidText] = useState('')
   const [pendingJoiningProject, setPendingJoiningProject] = useState(false)
 
-  const onClickDone = async () => {
+  const resetJoinProjectState = () => {
+    onClose()
+    // wait for the closing of the modal animation
+    setTimeout(() => {
+      setProjectSecret('')
+      setPendingJoiningProject(false)
+      setInvalidText('')
+      setCheckDone(false)
+    }, 100)
+  }
+
+  const onClickJoinProject = async () => {
     setPendingJoiningProject(true)
     try {
       await doJoinProject(projectSecret)
       setCheckDone(true)
       setPendingJoiningProject(false)
+      resetJoinProjectState()
+      // if project joining is successful
+      setToastState({
+        id: ShowToast.Yes,
+        text: 'Project has been queued for syncing',
+        type: 'confirmation',
+      })
     } catch (e) {
+      // if project joining is not successful
       console.log(e)
+      resetJoinProjectState()
+      setToastState({
+        id: ShowToast.Yes,
+        text: 'Error joining the project',
+        type: 'destructive',
+      })
       // TODO: add better detail here
-      setInvalidText('There was an error while joining project: ' + e.message)
+      // setInvalidText('There was an error while joining project: ' + e.message)
     }
-  }
-  const onDone = () => {
-    reset()
-    onClose()
   }
 
   const onSecretChange = (userInputText: string) => {
@@ -158,17 +134,15 @@ export default function JoinProjectModal({
     <Modal
       white
       active={showModal}
-      onClose={onDone}
-      className="join-project-modal-wrapper"
+      onClose={onClose}
+      className="join-project-modal"
     >
-      <ProjectJoinFollowUp onDone={onDone} checkDone={checkDone} />
       <JoinProjectForm
-        checkDone={checkDone}
         projectSecret={projectSecret}
         onSecretChange={onSecretChange}
         invalidText={invalidText}
         pendingJoiningProject={pendingJoiningProject}
-        onClickDone={onClickDone}
+        onClickJoinProject={onClickJoinProject}
       />
     </Modal>
   )

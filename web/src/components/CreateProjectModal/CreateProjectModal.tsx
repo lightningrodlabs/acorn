@@ -2,15 +2,13 @@ import React, { useState, useEffect, useContext } from 'react'
 import './CreateProjectModal.scss'
 
 import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
-import Modal, { ModalContent } from '../Modal/Modal'
+import Modal from '../Modal/Modal'
 import {
   ProjectModalButton,
   ProjectModalContent,
   ProjectModalContentSpacer,
   ProjectModalHeading,
-  ProjectModalSubHeading,
 } from '../ProjectModal/ProjectModal'
-import ProjectSecret from '../ProjectSecret/ProjectSecret'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
 import { generatePassphrase } from '../../secrets'
 import ToastContext, { ShowToast } from '../../context/ToastContext'
@@ -188,7 +186,7 @@ export default function CreateProjectModal({
       white
       active={showModal}
       onClose={onClose}
-      className="create-project-modal-wrapper"
+      className="create-project-modal"
     >
       <CreateProjectForm
         onSubmit={onSubmit}
