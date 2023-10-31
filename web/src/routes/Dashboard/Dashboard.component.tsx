@@ -82,7 +82,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [showJoinModal, setShowJoinModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
   const [showProjectMigratedModal, setShowProjectMigratedModal] = useState('')
-  // 
+  //
 
   // calling this triggers the fetchProjectMeta for each project
   const { projectStatusInfos, setProjectStatusInfos } = useProjectStatusInfos(
@@ -141,20 +141,7 @@ const Dashboard: React.FC<DashboardProps> = ({
   return (
     <>
       <div className="dashboard-background">
-        <div className="dashboard-left-menu">
-          {/* TODO: decide if we want to have this menu on Dashboard page */}
-          {/* <NavLink to="/dashboard" className="dashboard-left-menu-item">
-            <Icon name="folder.svg" size="very-small" className="grey" />
-            My Projects
-          </NavLink>
-          <NavLink
-            to="/settings"
-            className="dashboard-left-menu-item feature-in-development"
-          >
-            <Icon name="settings.svg" size="very-small" className="grey" />
-            Settings
-          </NavLink> */}
-        </div>
+        <div className="dashboard-left-menu"></div>
         <div className="dashboard-my-projects">
           <div className="my-projects-heading">
             <Typography style="h1">My Projects</Typography>{' '}
@@ -192,7 +179,7 @@ const Dashboard: React.FC<DashboardProps> = ({
                 <Icon
                   name="chevron-down.svg"
                   size="very-small"
-                  className={`grey ${showSortPicker ? 'active' : ''}`}
+                  className={`light-grey ${showSortPicker ? 'active' : ''}`}
                 />
               </div>
               <CSSTransition
@@ -277,7 +264,10 @@ const Dashboard: React.FC<DashboardProps> = ({
         }}
         onClickUpdateNow={() => {
           setShowProjectMigratedModal('')
-          setModalState({ id: OpenModal.UpdateApp, section: ViewingReleaseNotes.MainMessage })
+          setModalState({
+            id: OpenModal.UpdateApp,
+            section: ViewingReleaseNotes.MainMessage,
+          })
         }}
       />
     </>
