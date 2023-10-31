@@ -452,7 +452,7 @@ function render(
     DRAW NEW OUTCOME PLACEHOLDER
   */
   // creating a new Outcome
-  if (outcomeFormIsOpen) {
+  if (false && outcomeFormIsOpen) {
     const isHovered = false
     const isSelected = false
     const isEditing = true
@@ -461,7 +461,7 @@ function render(
     drawOutcomeCard({
       // draw the Outcome with empty text
       // since the text is presented in the
-      // MapViewOutcomeTitleForm
+      // MapViewCreateOutcome
       skipStatementRender: true,
       useLineLimit: false,
       zoomLevel: zoomLevel,

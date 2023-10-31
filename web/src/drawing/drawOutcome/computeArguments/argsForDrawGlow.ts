@@ -1,4 +1,4 @@
-import { TOP_PRIORITY_GLOW_COLOR } from '../../../styles'
+import { HIGH_PRIORITY_GLOW_COLOR } from '../../../styles'
 import { borderWidth, cornerRadius } from '../../dimensions'
 import drawGlow from '../drawGlow'
 
@@ -36,7 +36,7 @@ export const argsForDrawGlow = ({
     height,
     cornerRadius: glowCornerRadius,
     useGlow,
-    glowColor: TOP_PRIORITY_GLOW_COLOR,
+    glowColor: HIGH_PRIORITY_GLOW_COLOR,
     glowBlur,
     ctx,
   }

@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { ActionHashB64, CellIdString } from '../../types/shared'
 
 import './MapViewContextMenu.scss'
 import ContextMenu from '../ContextMenu/ContextMenu'
+import ToastContext, { ShowToast } from '../../context/ToastContext'
 
 export type CheckboxProps = {
   projectCellId: CellIdString
@@ -36,6 +37,10 @@ const Checkbox: React.FC<CheckboxProps> = ({
   collapseOutcome,
   unsetContextMenu,
 }) => {
+
+// pull in the toast context
+const { setToastState } = useContext(ToastContext)
+
   const wrappedCollapseOutcome = () => {
     collapseOutcome(projectCellId, outcomeActionHash)
     unsetContextMenu()
@@ -47,6 +52,11 @@ const Checkbox: React.FC<CheckboxProps> = ({
   const copyOutcomeStatement = () => {
     navigator.clipboard.writeText(outcomeStatement)
     unsetContextMenu()
+    setToastState({
+      id: ShowToast.Yes,
+      text: 'Outcome statement copied to clipboard',
+      type: 'confirmation',
+    })
   }
 
   const actions = []

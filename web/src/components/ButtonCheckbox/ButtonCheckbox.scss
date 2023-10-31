@@ -14,7 +14,7 @@
   transition: 0.2s box-shadow ease;
   -webkit-font-smoothing: antialiased;
   user-select: none;
-  border: 0.15rem solid #ffffff00;
+  border: 0.15rem solid var(--border-color-button-checkbox);
 
   &:hover,
   &.focused {
@@ -45,6 +45,7 @@
 
     .button-checkbox-text {
       user-select: none;
+      margin-right: 0.5rem;
       /* Standard */
     }
   }

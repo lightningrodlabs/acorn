@@ -8,7 +8,7 @@ import {
   closeOutcomeForm,
   updateContent,
 } from '../../redux/ephemeral/outcome-form/actions'
-import MapViewOutcomeTitleForm, { MapViewOutcomeTitleFormConnectorDispatchProps, MapViewOutcomeTitleFormConnectorStateProps, MapViewOutcomeTitleFormOwnProps } from './MapViewOutcomeTitleForm.component'
+import MapViewCreateOutcome, { MapViewCreateOutcomeConnectorDispatchProps, MapViewCreateOutcomeConnectorStateProps, MapViewCreateOutcomeOwnProps } from './MapViewCreateOutcome.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
@@ -23,10 +23,10 @@ import { LAYOUT_ANIMATION_TYPICAL_MS } from '../../constants'
 // to pass it to a component for rendering, as specific properties that
 // that component expects
 
-function mapStateToProps(state: RootState): MapViewOutcomeTitleFormConnectorStateProps {
+function mapStateToProps(state: RootState): MapViewCreateOutcomeConnectorStateProps {
   const {
     ui: {
-      viewport: { scale },
+      viewport: { scale, translate },
       // all the state for this component is store under state->ui->outcomeForm
       outcomeForm: {
         content,
@@ -42,6 +42,7 @@ function mapStateToProps(state: RootState): MapViewOutcomeTitleFormConnectorStat
     maybeLinkedOutcome, 
     activeAgentPubKey: state.agentAddress,
     scale,
+    translate,
     existingParentConnectionAddress,
     content,
     leftConnectionXPosition: leftConnectionXPosition,
@@ -53,7 +54,7 @@ function mapStateToProps(state: RootState): MapViewOutcomeTitleFormConnectorStat
 // Designed to pass functions into components which are already wrapped as
 // action dispatchers for redux action types
 
-function mapDispatchToProps(dispatch, ownProps: MapViewOutcomeTitleFormOwnProps): MapViewOutcomeTitleFormConnectorDispatchProps {
+function mapDispatchToProps(dispatch, ownProps: MapViewCreateOutcomeOwnProps): MapViewCreateOutcomeConnectorDispatchProps {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
@@ -105,4 +106,4 @@ function mapDispatchToProps(dispatch, ownProps: MapViewOutcomeTitleFormOwnProps)
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(MapViewOutcomeTitleForm)
+)(MapViewCreateOutcome)

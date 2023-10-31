@@ -9,8 +9,9 @@
     flex-direction: column;
     justify-content: space-between;
     overflow: scroll;
-    padding: 2.5rem 3rem 0 2rem;
-    width: 11.25rem;
+    padding: 2.5rem 3rem 0 1.75rem;
+    box-sizing: border-box;
+    width: 16.25rem;
   }
 
   .ev-right-column-section {

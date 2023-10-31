@@ -13,7 +13,7 @@ import ProjectEmptyState from '../../../components/ProjectEmptyState/ProjectEmpt
 import MultiEditBar from '../../../components/MultiEditBar/MultiEditBar.connector'
 import OutcomeConnectors from '../../../components/OutcomeConnectors/OutcomeConnectors.connector'
 import CollapsedChildrenPills from '../../../components/CollapsedChildrenPills/CollapsedChildrenPills.connector'
-import MapViewOutcomeTitleForm from '../../../components/MapViewOutcomeTitleForm/MapViewOutcomeTitleForm.connector'
+import MapViewCreateOutcome from '../../../components/MapViewCreateOutcome/MapViewCreateOutcome.connector'
 import Tooltip from '../../../components/Tooltip/Tooltip'
 
 import './MapView.scss'
@@ -183,9 +183,10 @@ const MapView: React.FC<MapViewProps> = ({
 
         {/* if the scale is greater than or equal to 60% (or we are creating an Outcome) */}
         {/* because otherwise the font size gets to small and the text is cut off */}
-        {outcomeFormIsOpen && <MapViewOutcomeTitleForm projectId={projectId} />}
         <CollapsedChildrenPills outcomes={computedOutcomesKeyed} />
       </div>
+      
+        {outcomeFormIsOpen && <MapViewCreateOutcome projectId={projectId} />}
 
       {/* below items inside 'mapview-elements-container' maintain their normal scale */}
       {/* while positioning themselves absolutely (position: absolute) on the screen */}
