@@ -21,6 +21,9 @@ import DeleteProjectModal from '../components/DeleteProjectModal/DeleteProjectMo
 import RemoveSelfProjectModal from '../components/RemoveSelfProjectModal/RemoveSelfProjectModal'
 import { ModalState, OpenModal } from '../context/ModalContexts'
 import { useHistory } from 'react-router-dom'
+import CreateProjectModal from '../components/CreateProjectModal/CreateProjectModal'
+import JoinProjectModal from '../components/JoinProjectModal/JoinProjectModal'
+import ImportProjectModal from '../components/ImportProjectModal/ImportProjectModal'
 
 export type GlobalModalsProps = {
   modalState: ModalState
@@ -40,6 +43,18 @@ export type GlobalModalsProps = {
   hasMigratedSharedProject: boolean
   updateVersionInfo: VersionInfo
   uninstallProject: (appId: string, cellIdString: CellIdString) => Promise<void>
+  createProject: (
+    agentAddress: AgentPubKeyB64,
+    project: { name: string; image: string },
+    passphrase: string
+  ) => Promise<void>
+  joinProject: (passphrase: string) => Promise<CellIdString>
+  importProject: (
+    cellIdString: CellIdString,
+    agentAddress: AgentPubKeyB64,
+    projectData: any,
+    passphrase: string
+  ) => Promise<void>
 }
 
 const GlobalModals: React.FC<GlobalModalsProps> = ({
@@ -58,7 +73,30 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   hasMigratedSharedProject,
   updateVersionInfo,
   uninstallProject,
+  createProject,
+  joinProject,
+  importProject,
 }) => {
+
+  const onCreateProject = (
+    project: { name: string; image: string },
+    passphrase: string
+  ) => createProject(agentAddress, project, passphrase)
+
+  const onJoinProject = (passphrase: string) => joinProject(passphrase)
+
+  const onImportProject = (
+    cellIdString: CellIdString,
+    projectData: any,
+    passphrase: string
+  ) => importProject(cellIdString, agentAddress, projectData, passphrase)
+
+  const joinedProjectsSecrets = Object.values(projectStatusInfos).map(
+    (projectInfo) => {
+      return projectInfo.passphrase
+    }
+  )
+
   const history = useHistory()
   // profile edit modal
   const titleText = 'Profile Settings'
@@ -94,6 +132,89 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
   return (
     <>
       {/* This will only show when 'active' prop is true */}
+
+      {/* Create Project Modal */}
+      <CreateProjectModal
+        showModal={modalState.id === OpenModal.CreateProject}
+        onClose={setModalToNone}
+        onCreateProject={onCreateProject}
+      />
+
+      {/* Join Project Modal */}
+      <JoinProjectModal
+        showModal={modalState.id === OpenModal.JoinProject}
+        onClose={setModalToNone}
+        joinedProjectsSecrets={joinedProjectsSecrets}
+        onJoinProject={onJoinProject}
+      />
+
+      {/* Import Project Modal */}
+      <ImportProjectModal
+        showModal={modalState.id === OpenModal.ImportProject}
+        onImportProject={onImportProject}
+        uninstallProject={uninstallProject}
+        onClose={setModalToNone}
+      />
+
+      {/* Project Settings Modal */}
+      <ProjectSettingsModal
+        showModal={modalState.id === OpenModal.ProjectSettings}
+        onClose={setModalToNone}
+        project={projectSettingsProjectMeta}
+        cellIdString={
+          modalState.id === OpenModal.ProjectSettings
+            ? modalState.cellId
+            : undefined
+        }
+        setModalState={setModalState}
+        memberCount={projectSettingsMemberCount}
+      />
+
+      {/* Invite Members Modal */}
+      <InviteMembersModal
+        showModal={modalState.id === OpenModal.InviteMembers}
+        passphrase={
+          modalState.id === OpenModal.InviteMembers && modalState.passphrase
+        }
+        onClose={setModalToNone}
+      />
+
+      {/* Delete Project Modal */}
+      <DeleteProjectModal
+        showModal={modalState.id === OpenModal.DeleteProject}
+        projectName={
+          modalState.id === OpenModal.DeleteProject && modalState.projectName
+        }
+        projectAppId={
+          modalState.id === OpenModal.DeleteProject && modalState.projectAppId
+        }
+        projectCellId={
+          modalState.id === OpenModal.DeleteProject && modalState.cellId
+        }
+        onClose={setModalToNone}
+        uninstallProject={uninstallProject}
+        redirectToDashboard={redirectToDashboard}
+      />
+
+      {/* Remove Self from Project Modal */}
+      <RemoveSelfProjectModal
+        showModal={modalState.id === OpenModal.RemoveSelfProject}
+        projectName={
+          modalState.id === OpenModal.RemoveSelfProject &&
+          modalState.projectName
+        }
+        projectAppId={
+          modalState.id === OpenModal.RemoveSelfProject &&
+          modalState.projectAppId
+        }
+        projectCellId={
+          modalState.id === OpenModal.RemoveSelfProject && modalState.cellId
+        }
+        onClose={setModalToNone}
+        uninstallProject={uninstallProject}
+        redirectToDashboard={redirectToDashboard}
+      />
+
       {/* Profile Settings Modal */}
       <Modal
         white
@@ -113,6 +234,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
           }}
         />
       </Modal>
+
       {/* Preferences Modal */}
       <Preferences
         navigationPreference={navigationPreference}
@@ -121,58 +243,6 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         setModalState={setModalState}
         keyboardNavigationPreference={keyboardNavigationPreference}
         setKeyboardNavigationPreference={setKeyboardNavigationPreference}
-      />
-      {/* Project Settings Modal */}
-      <ProjectSettingsModal
-        showModal={modalState.id === OpenModal.ProjectSettings}
-        onClose={setModalToNone}
-        project={projectSettingsProjectMeta}
-        cellIdString={
-          modalState.id === OpenModal.ProjectSettings
-            ? modalState.cellId
-            : undefined
-        }
-        setModalState={setModalState}
-        memberCount={projectSettingsMemberCount}
-      />
-      <InviteMembersModal
-        showModal={modalState.id === OpenModal.InviteMembers}
-        passphrase={
-          modalState.id === OpenModal.InviteMembers && modalState.passphrase
-        }
-        onClose={setModalToNone}
-      />
-      <DeleteProjectModal
-        showModal={modalState.id === OpenModal.DeleteProject}
-        projectName={
-          modalState.id === OpenModal.DeleteProject && modalState.projectName
-        }
-        projectAppId={
-          modalState.id === OpenModal.DeleteProject && modalState.projectAppId
-        }
-        projectCellId={
-          modalState.id === OpenModal.DeleteProject && modalState.cellId
-        }
-        onClose={setModalToNone}
-        uninstallProject={uninstallProject}
-        redirectToDashboard={redirectToDashboard}
-      />
-      <RemoveSelfProjectModal
-        showModal={modalState.id === OpenModal.RemoveSelfProject}
-        projectName={
-          modalState.id === OpenModal.RemoveSelfProject &&
-          modalState.projectName
-        }
-        projectAppId={
-          modalState.id === OpenModal.RemoveSelfProject &&
-          modalState.projectAppId
-        }
-        projectCellId={
-          modalState.id === OpenModal.RemoveSelfProject && modalState.cellId
-        }
-        onClose={setModalToNone}
-        uninstallProject={uninstallProject}
-        redirectToDashboard={redirectToDashboard}
       />
 
       {/* Update Prompt Modal */}

@@ -31,27 +31,12 @@ export type DashboardStateProps = {
 }
 
 export type DashboardDispatchProps = {
-  createProject: (
-    agentAddress: AgentPubKeyB64,
-    project: { name: string; image: string },
-    passphrase: string
-  ) => Promise<void>
-  fetchMembers: (cellIdString: CellIdString) => Promise<void>
-  fetchProjectMeta: (cellIdString: CellIdString) => Promise<void>
   updateProjectMeta: (
     projectMeta: ProjectMeta,
     actionHash: ActionHashB64,
     cellIdString: CellIdString
   ) => Promise<void>
-  fetchEntryPointDetails: (cellIdString: CellIdString) => Promise<void>
-  joinProject: (passphrase: string) => Promise<CellIdString>
   uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
-  importProject: (
-    cellIdString: CellIdString,
-    agentAddress: AgentPubKeyB64,
-    projectData: any,
-    passphrase: string
-  ) => Promise<void>
 }
 
 export type DashboardProps = DashboardStateProps & DashboardDispatchProps
@@ -61,13 +46,9 @@ const Dashboard: React.FC<DashboardProps> = ({
   agentAddress,
   projectCellIdStrings,
   projects,
-  fetchEntryPointDetails,
-  fetchMembers,
-  fetchProjectMeta,
+  
   updateProjectMeta,
-  createProject,
-  joinProject,
-  importProject,
+
 }) => {
   // pull in the modal context
   const { modalState, setModalState } = useContext(ModalContexts)
@@ -83,25 +64,6 @@ const Dashboard: React.FC<DashboardProps> = ({
   const [showImportModal, setShowImportModal] = useState(false)
   const [showProjectMigratedModal, setShowProjectMigratedModal] = useState('')
   //
-
-  // calling this triggers the fetchProjectMeta for each project
-  const { projectStatusInfos, setProjectStatusInfos } = useProjectStatusInfos(
-    projectCellIdStrings,
-    fetchProjectMeta,
-    fetchEntryPointDetails,
-    fetchMembers
-  )
-
-  const onCreateProject = (
-    project: { name: string; image: string },
-    passphrase: string
-  ) => createProject(agentAddress, project, passphrase)
-  const doJoinProject = (passphrase: string) => joinProject(passphrase)
-  const onImportProject = (
-    cellIdString: CellIdString,
-    projectData: any,
-    passphrase: string
-  ) => importProject(cellIdString, agentAddress, projectData, passphrase)
 
   const setSortBy = (sortBy) => () => {
     setSelectedSort(sortBy)
@@ -229,13 +191,13 @@ const Dashboard: React.FC<DashboardProps> = ({
           </div>
         </div>
       </div>
-      <CreateProjectModal
+      {/* <CreateProjectModal
         onCreateProject={onCreateProject}
         showModal={showCreateModal}
         onClose={() => setShowCreateModal(false)}
       />
       <JoinProjectModal
-        doJoinProject={doJoinProject}
+        onJoinProject={doJoinProject}
         showModal={showJoinModal}
         onClose={() => setShowJoinModal(false)}
         joinedProjectsSecrets={joinedProjectsSecrets}
@@ -245,7 +207,7 @@ const Dashboard: React.FC<DashboardProps> = ({
         uninstallProject={uninstallProject}
         showModal={showImportModal}
         onClose={() => setShowImportModal(false)}
-      />
+      /> */}
       <ProjectMigratedModal
         showModal={showProjectMigratedModal !== ''}
         onClose={() => setShowProjectMigratedModal('')}

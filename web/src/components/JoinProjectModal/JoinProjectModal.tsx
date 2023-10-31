@@ -60,12 +60,12 @@ function JoinProjectForm({
 export default function JoinProjectModal({
   showModal,
   onClose,
-  doJoinProject,
+  onJoinProject,
   joinedProjectsSecrets,
 }: {
   showModal: boolean
   onClose: () => void
-  doJoinProject: (projectSecret: string) => Promise<CellIdString>
+  onJoinProject: (projectSecret: string) => Promise<CellIdString>
   joinedProjectsSecrets: string[]
 }) {
   // pull in the toast context
@@ -90,7 +90,7 @@ export default function JoinProjectModal({
   const onClickJoinProject = async () => {
     setPendingJoiningProject(true)
     try {
-      await doJoinProject(projectSecret)
+      await onJoinProject(projectSecret)
       setCheckDone(true)
       setPendingJoiningProject(false)
       resetJoinProjectState()

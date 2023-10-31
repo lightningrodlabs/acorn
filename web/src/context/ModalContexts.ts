@@ -4,19 +4,42 @@ import { ViewingReleaseNotes } from '../components/UpdateModal/UpdateModal'
 
 export enum OpenModal {
   None,
-  DeleteProject,
-  RemoveSelfProject,
-  UpdateApp,
+  CreateProject,
+  JoinProject,
+  ImportProject,
   ProjectSettings,
   InviteMembers,
-  ProjectMigrated,
+  DeleteProject,
+  RemoveSelfProject,
   Preferences,
   ProfileEditForm,
+  UpdateApp,
+  ProjectMigrated,
 }
 
 export type ModalState =
   | {
       id: OpenModal.None
+    }
+  | {
+      id: OpenModal.CreateProject
+      passphrase: string
+    }
+  | {
+      id: OpenModal.JoinProject
+      passphrase: string
+    }
+  | {
+      id: OpenModal.ImportProject
+      passphrase: string
+    }
+  | {
+      id: OpenModal.ProjectSettings
+      cellId: CellIdString
+    }
+  | {
+      id: OpenModal.InviteMembers
+      passphrase: string
     }
   | {
       id: OpenModal.DeleteProject
@@ -31,26 +54,18 @@ export type ModalState =
       projectAppId: string
     }
   | {
-      id: OpenModal.UpdateApp
-      section: ViewingReleaseNotes
+      id: OpenModal.Preferences
     }
   | {
-      id: OpenModal.ProjectSettings
-      cellId: CellIdString
-    }
-  | {
-      id: OpenModal.InviteMembers
-      passphrase: string
+      id: OpenModal.ProfileEditForm
     }
   | {
       id: OpenModal.ProjectMigrated
       cellId: CellIdString
     }
   | {
-      id: OpenModal.Preferences
-    }
-  | {
-      id: OpenModal.ProfileEditForm
+      id: OpenModal.UpdateApp
+      section: ViewingReleaseNotes
     }
 
 export interface ModalContextsShape {

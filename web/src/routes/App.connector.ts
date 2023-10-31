@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
-import { ActionHashB64, CellIdString } from '../types/shared'
-import { LayeringAlgorithm, Profile } from '../types'
+import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../types/shared'
+import { LayeringAlgorithm, Profile, ProjectMeta } from '../types'
 
 import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
 import {
@@ -25,8 +25,16 @@ import {
   showSmallOutcomes,
 } from '../redux/ephemeral/map-view-settings/actions'
 import ProjectsZomeApi from '../api/projectsApi'
-import { updateProjectMeta } from '../redux/persistent/projects/project-meta/actions'
+import {
+  fetchProjectMeta,
+  updateProjectMeta,
+} from '../redux/persistent/projects/project-meta/actions'
 import { uninstallProject } from '../projects/uninstallProject'
+import { fetchEntryPointDetails } from '../redux/persistent/projects/entry-points/actions'
+import { fetchMembers } from '../redux/persistent/projects/members/actions'
+import { importProject } from '../migrating/import/importProject'
+import { createProject } from '../projects/createProject'
+import { joinProject, triggerJoinSignal } from '../projects/joinProject'
 
 function mapStateToProps(state: RootState): AppStateProps {
   const {
@@ -93,6 +101,8 @@ function mapStateToProps(state: RootState): AppStateProps {
     hiddenAchievedOutcomes: state.ui.mapViewSettings.hiddenAchievedOutcomes,
     hiddenSmallOutcomes: state.ui.mapViewSettings.hiddenSmallOutcomes,
     selectedLayeringAlgo,
+    // includes projects whose projectMeta is not loaded
+    projectCellIdStrings: state.cells.projects,
   }
 }
 
@@ -140,6 +150,72 @@ function mergeProps(
     uninstallProject: async (appId: string, cellIdString: CellIdString) => {
       const adminWs = await getAdminWs()
       uninstallProject(appId, cellIdString, dispatch, adminWs)
+    },
+    fetchEntryPointDetails: async (cellIdString: CellIdString) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const cellId = cellIdFromString(cellIdString)
+      const entryPointDetails = await projectsZomeApi.entryPoint.fetchEntryPointDetails(
+        cellId
+      )
+      return dispatch(fetchEntryPointDetails(cellIdString, entryPointDetails))
+    },
+    fetchMembers: async (cellIdString: CellIdString) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const cellId = cellIdFromString(cellIdString)
+      const members = await projectsZomeApi.member.fetch(cellId)
+      return dispatch(fetchMembers(cellIdString, members))
+    },
+    fetchProjectMeta: async (cellIdString: CellIdString) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const cellId = cellIdFromString(cellIdString)
+      const projectMeta = await projectsZomeApi.projectMeta.fetchProjectMeta(
+        cellId
+      )
+      return dispatch(fetchProjectMeta(cellIdString, projectMeta))
+    },
+    createProject: async (
+      agentAddress: AgentPubKeyB64,
+      project: { name: string; image: string },
+      passphrase: string
+    ) => {
+      const appWs = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWs)
+      const projectMeta: ProjectMeta = {
+        ...project, // name and image
+        passphrase,
+        creatorAgentPubKey: agentAddress,
+        createdAt: Date.now(),
+        isImported: false,
+        layeringAlgorithm: LayeringAlgorithm.Classic,
+        topPriorityOutcomes: [],
+        isMigrated: null,
+      }
+      await createProject(
+        passphrase,
+        projectMeta,
+        agentAddress,
+        dispatch,
+        projectsZomeApi
+      )
+    },
+    joinProject: async (passphrase: string) => {
+      const appWs = await getAppWs()
+      const cellIdString = await joinProject(passphrase, dispatch)
+      const cellId = cellIdFromString(cellIdString)
+      triggerJoinSignal(cellId, appWs)
+      return cellIdString
+    },
+    importProject: (cellIdString, agentAddress, projectData, passphrase) => {
+      return importProject(
+        cellIdString,
+        agentAddress,
+        projectData,
+        passphrase,
+        dispatch
+      )
     },
     updateWhoami: async (entry: Profile, actionHash: string) => {
       const appWebsocket = await getAppWs()

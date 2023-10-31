@@ -56,11 +56,13 @@ import {
 } from '../redux/ephemeral/local-preferences/reducer.js'
 import { ProjectMetaState } from '../redux/persistent/projects/project-meta/reducer'
 import { MembersState } from '../redux/persistent/projects/members/reducer'
+import useProjectStatusInfos from '../hooks/useProjectStatusInfos'
 
 export type AppStateProps = {
   projectMetas: ProjectMetaState
   projectMembers: MembersState
   profilesCellIdString: string
+  projectCellIdStrings: CellIdString[]
   members: Profile[]
   presentMembers: AgentPubKeyB64[]
   activeEntryPoints: {
@@ -94,16 +96,32 @@ export type AppDispatchProps = {
 }
 
 export type AppMergeProps = {
+  createProject: (
+    agentAddress: AgentPubKeyB64,
+    project: { name: string; image: string },
+    passphrase: string
+  ) => Promise<void>
+  joinProject: (passphrase: string) => Promise<CellIdString>
+  importProject: (
+    cellIdString: CellIdString,
+    agentAddress: AgentPubKeyB64,
+    projectData: any,
+    passphrase: string
+  ) => Promise<void>
   uninstallProject: (appId: string, cellIdString: CellIdString) => Promise<void>
   updateWhoami: (entry: Profile, actionHash: ActionHashB64) => Promise<void>
   setSelectedLayeringAlgo: (
     layeringAlgorithm: LayeringAlgorithm
   ) => Promise<void>
+  fetchMembers: (cellIdString: CellIdString) => Promise<void>
+  fetchProjectMeta: (cellIdString: CellIdString) => Promise<void>
+  fetchEntryPointDetails: (cellIdString: CellIdString) => Promise<void>
 }
 
 export type AppProps = AppStateProps & AppDispatchProps & AppMergeProps
 
 const App: React.FC<AppProps> = ({
+  projectCellIdStrings,
   projectMetas,
   projectMembers,
   members,
@@ -130,6 +148,9 @@ const App: React.FC<AppProps> = ({
   selectedLayeringAlgo,
   setSelectedLayeringAlgo,
   uninstallProject,
+  fetchEntryPointDetails,
+  fetchMembers,
+  fetchProjectMeta,
 }) => {
   const [networkInfoOpen, setNetworkInfoOpen] = useState(false)
 
@@ -145,6 +166,14 @@ const App: React.FC<AppProps> = ({
   })
 
   const setModalToNone = () => setModalState({ id: OpenModal.None })
+
+    // calling this triggers the fetchProjectMeta for each project
+    const { projectStatusInfos, setProjectStatusInfos } = useProjectStatusInfos(
+      projectCellIdStrings,
+      fetchProjectMeta,
+      fetchEntryPointDetails,
+      fetchMembers
+    )
 
   const [showUpdateBar, setShowUpdateBar] = useState(false)
   // custom hooks
