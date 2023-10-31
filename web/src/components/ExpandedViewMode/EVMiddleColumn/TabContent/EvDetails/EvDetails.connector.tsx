@@ -145,15 +145,6 @@ function mapDispatchToProps(
       })
       return dispatch(updateTag(cellIdString, updatedExistingTag))
     },
-    updateOutcome: async (outcome: Outcome, actionHash: ActionHashB64) => {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const updatedOutcome = await projectsZomeApi.outcome.update(cellId, {
-        actionHash,
-        entry: outcome,
-      })
-      return dispatch(updateOutcome(cellIdString, updatedOutcome))
-    },
     createOutcomeMember: async (
       outcomeActionHash: ActionHashB64,
       memberAgentPubKey: AgentPubKeyB64,

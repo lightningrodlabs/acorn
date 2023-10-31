@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { RootState } from '../../redux/reducer'
 import ConnectedEVRightColumn from './EVRightColumn/EVRightColumn.connector'
@@ -42,6 +42,7 @@ function mapStateToProps(
   return {
     outcomeActionHash,
     commentCount: comments.length,
+    activeAgentPubKey: state.agentAddress,
   }
 }
 
@@ -75,6 +76,46 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   updateOutcome,
   createOutcomeWithConnection,
 }) => {
+  // the live editor state
+  const [content, setContent] = useState('')
+  // the live github link editor state
+  const [githubInputLinkText, setGithubInputLinkText] = useState('')
+  // the live editor state
+  const [description, setDescription] = useState('')
+
+  // close Expanded view after hitting Esc key:
+  useEffect(() => {
+    const onKeyDown = async (event) => {
+      // if we are on Map View
+      // we should let Map View handle the Escape key
+      if (event.key === 'Escape') {
+        const updateTo = localCleanOutcome()
+        await updateOutcome(updateTo, outcome.actionHash)
+
+        onClose()
+      }
+    }
+    document.body.addEventListener('keyup', onKeyDown)
+    // for teardown, unbind event listeners
+    return () => {
+      document.body.removeEventListener('keyup', onKeyDown)
+    }
+  }, [outcome, content, description, githubInputLinkText, activeAgentPubKey])
+
+  const localCleanOutcome = (): Outcome => {
+    return {
+      ...outcome,
+      editorAgentPubKey: activeAgentPubKey,
+      timestampUpdated: moment().unix(),
+      content,
+      description,
+      githubLink: githubInputLinkText,
+    }
+  }
+  const updateOutcomeWithLatest = async () => {
+    await updateOutcome(localCleanOutcome(), outcome.actionHash)
+  }
+
   const updateOutcomeTaskList = (taskList: Array<SmallTask>) => {
     const cleanedOutcome = cleanOutcome(outcome)
     return updateOutcome(
@@ -163,7 +204,23 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   }
 
   // redux connected expanded view components
-  const details = <ConnectedEvDetails projectId={projectId} outcome={outcome} />
+  const details = (
+    <ConnectedEvDetails
+      projectId={projectId}
+      outcome={outcome}
+      {...{
+        cleanOutcome: localCleanOutcome,
+        updateOutcomeWithLatest,
+        updateOutcome,
+        content,
+        setContent,
+        description,
+        setDescription,
+        githubInputLinkText,
+        setGithubInputLinkText,
+      }}
+    />
+  )
   const comments = (
     <ConnectedEvComments
       projectId={projectId}
@@ -190,6 +247,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       onClose={onClose}
       outcome={outcome}
       outcomeAndAncestors={outcomeAndAncestors}
+      updateOutcome={updateOutcome}
     />
   )
 }

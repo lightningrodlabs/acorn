@@ -307,7 +307,6 @@ export default function setupEventListeners(
         if (!state.ui.expandedView.isOpen && !state.ui.navigationModal.open) {
           store.dispatch(unselectAll())
         }
-        store.dispatch(closeExpandedView())
         store.dispatch(closeOutcomeForm())
         store.dispatch(resetOutcomeConnector())
         break

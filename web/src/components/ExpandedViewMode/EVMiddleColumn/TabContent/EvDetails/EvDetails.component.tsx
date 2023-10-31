@@ -34,6 +34,15 @@ import Icon from '../../../../Icon/Icon'
 export type EvDetailsOwnProps = {
   projectId: CellIdString
   outcome: ComputedOutcome
+  content: string
+  githubInputLinkText: string
+  description: string
+  setContent: React.Dispatch<React.SetStateAction<string>>
+  setGithubInputLinkText: React.Dispatch<React.SetStateAction<string>>
+  setDescription: React.Dispatch<React.SetStateAction<string>>
+  updateOutcome: (outcome: Outcome, actionHash: ActionHashB64) => Promise<void>
+  updateOutcomeWithLatest: () => Promise<void>
+  cleanOutcome: () => Outcome
 }
 
 export type EvDetailsConnectorStateProps = {
@@ -64,7 +73,6 @@ export type EvDetailsConnectorDispatchProps = {
     text: string,
     backgroundColor: string
   ) => Promise<void>
-  updateOutcome: (outcome: Outcome, actionHash: ActionHashB64) => Promise<void>
   createOutcomeMember: (
     outcomeActionHash: ActionHashB64,
     memberAgentPubKey: AgentPubKeyB64,
@@ -85,6 +93,14 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   // own props
   projectId,
   outcome,
+  content,
+  githubInputLinkText,
+  description,
+  setContent,
+  setGithubInputLinkText,
+  setDescription,
+  updateOutcomeWithLatest,
+  cleanOutcome,
   // state props
   activeAgentPubKey,
   projectTags,
@@ -113,31 +129,17 @@ const EvDetails: React.FC<EvDetailsProps> = ({
     }
   }, [outcomeActionHash])
 
-  const cleanOutcome = (): Outcome => {
-    return {
-      ...outcome,
-      editorAgentPubKey: activeAgentPubKey,
-      timestampUpdated: moment().unix(),
-      content,
-      description,
-      githubLink: githubInputLinkText,
-    }
-  }
-  const updateOutcomeWithLatest = async () => {
-    await updateOutcome(cleanOutcome(), outcomeActionHash)
-  }
-
   /*
     Title
   */
-  // the live editor state
-  const [content, setContent] = useState('')
+
   // handle change (or update) of outcome
   const outcomeContent = outcome ? outcome.content : ''
   useEffect(() => {
     setContent(outcomeContent)
   }, [outcomeContent])
   const onTitleBlur = () => {
+    console.log('onTitleBlur triggered')
     updateOutcomeWithLatest()
     endTitleEdit(outcomeActionHash)
   }
@@ -159,8 +161,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   /*
     Github Link
   */
-  // the live github link editor state
-  const [githubInputLinkText, setGithubInputLinkText] = useState('')
+
   const [isEditingGithubLink, setIsEditingGithubLink] = useState(false)
   const outcomeGithubLink = outcome ? outcome.githubLink : ''
   useEffect(() => {
@@ -256,8 +257,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   /* 
     Description
   */
-  // the live editor state
-  const [description, setDescription] = useState('')
+
   // the latest persisted state
   const outcomeDescription = outcome ? outcome.description : ''
   // sync the live editor state with the
