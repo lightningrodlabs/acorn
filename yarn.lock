@@ -1670,10 +1670,10 @@
   resolved "https://registry.yarnpkg.com/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz#b2ac626d6cb9c8718ab459166d4bb405b8ffa78b"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
-"@lightningrodlabs/electron-holochain@=0.7.8":
-  version "0.7.8"
-  resolved "https://registry.yarnpkg.com/@lightningrodlabs/electron-holochain/-/electron-holochain-0.7.8.tgz#7ef0ade47a720d96180ce847de9269e4f55c5b08"
-  integrity sha512-rJ3ashN7Qz6NLz/J19+O7rLDUB++4aAkBlSNI5xe9++3pLRs0WGxR8YWwiSO3FX4VsiPeTx+sZn9yLBkfiaXgQ==
+"@lightningrodlabs/electron-holochain@=0.7.12":
+  version "0.7.12"
+  resolved "https://registry.yarnpkg.com/@lightningrodlabs/electron-holochain/-/electron-holochain-0.7.12.tgz#010bf6837b738b9245800ab61220ca34da93b2a7"
+  integrity sha512-p1TKr5FYYfFlNgeeT5tCCjDPOJ9hHqUPySj7iv50bOyIe1Ch+Rq5DniJEpV9NYCcPDGfZ1eoua2EUeHML2r/4g==
   dependencies:
     request "^2.88.2"
     split "^1.0.1"

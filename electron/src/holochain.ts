@@ -1,9 +1,6 @@
-import * as path from 'path'
-import { app } from 'electron'
 import {
   ElectronHolochainOptions,
   StateSignal,
-  PathOptions,
 } from '@lightningrodlabs/electron-holochain'
 import { DATASTORE_PATH, KEYSTORE_PATH, PROFILES_HAPP_PATH } from './paths'
 
@@ -53,6 +50,7 @@ const devOptions: ElectronHolochainOptions = {
   keystorePath: KEYSTORE_PATH,
   passphrase: 'test-passphrase',
   bootstrapUrl: 'https://bootstrap.holo.host',
+  logging: 'Json',
 }
 const prodOptions: ElectronHolochainOptions = {
   happPath: PROFILES_HAPP_PATH, // preload
@@ -63,6 +61,7 @@ const prodOptions: ElectronHolochainOptions = {
   keystorePath: KEYSTORE_PATH,
   passphrase: 'test-passphrase',
   bootstrapUrl: 'https://bootstrap.holo.host',
+  logging: 'Json',
 }
 
 export { devOptions, prodOptions }

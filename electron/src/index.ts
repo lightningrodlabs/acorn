@@ -1,17 +1,13 @@
-import {
-  app,
-  BrowserWindow,
-  ipcMain,
-  shell,
-  autoUpdater,
-  Menu,
-} from 'electron'
+import { app, BrowserWindow, ipcMain, shell, autoUpdater, Menu } from 'electron'
 import * as contextMenu from 'electron-context-menu'
 import * as path from 'path'
 import * as fs from 'fs'
 import initAgent, {
+  ERROR_EVENT,
   StateSignal,
   STATUS_EVENT,
+  HOLOCHAIN_LOG_EVENT,
+  WASM_LOG_EVENT,
 } from '@lightningrodlabs/electron-holochain'
 
 import { devOptions, prodOptions, stateSignalToText } from './holochain'
@@ -44,8 +40,6 @@ Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
 contextMenu.default({
   showSaveImageAs: true,
 })
-
-
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 // if (require('electron-squirrel-startup')) {
@@ -177,17 +171,35 @@ app.on('ready', async () => {
   const splashWindow = createSplashWindow()
   const opts = app.isPackaged ? prodOptions : devOptions
   const { statusEmitter, shutdown } = await initAgent(app, opts, BINARY_PATHS)
+  let mainWindow: BrowserWindow | null = null
   statusEmitter.on(STATUS_EVENT, (state: StateSignal) => {
     switch (state) {
       case StateSignal.IsReady:
         // important that this line comes before the next one
         // otherwise this triggers the 'all-windows-closed'
         // event
-        createMainWindow()
+        mainWindow = createMainWindow()
         splashWindow.close()
         break
       default:
         splashWindow.webContents.send('status', stateSignalToText(state))
+    }
+  })
+  statusEmitter.on(ERROR_EVENT, (error: Error) => {
+    if (!error.message.includes('no project meta exists')) {
+      if (mainWindow) {
+        mainWindow.webContents.send('holochainError', error.message)
+      }
+    }
+  })
+  statusEmitter.on(HOLOCHAIN_LOG_EVENT, (log: string) => {
+    if (mainWindow) {
+      mainWindow.webContents.send('holochainLog', log)
+    }
+  })
+  statusEmitter.on(WASM_LOG_EVENT, (log: string) => {
+    if (mainWindow) {
+      mainWindow.webContents.send('wasmLog', log)
     }
   })
 })
@@ -285,7 +297,7 @@ ipcMain.handle('checkForMigrationData', (event) => {
     )
     return {
       file: existingMigrationPath,
-      data: prevVersionMigrationDataString
+      data: prevVersionMigrationDataString,
     }
   } else {
     return null

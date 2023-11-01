@@ -56,6 +56,7 @@ import {
 } from '../redux/ephemeral/local-preferences/reducer.js'
 import { ProjectMetaState } from '../redux/persistent/projects/project-meta/reducer'
 import { MembersState } from '../redux/persistent/projects/members/reducer'
+import useHolochainErrorAndLog from '../hooks/useHolochainErrorAndLog'
 
 export type AppStateProps = {
   projectMetas: ProjectMetaState
@@ -154,6 +155,7 @@ const App: React.FC<AppProps> = ({
   // const updateVersionInfo = useVersionChecker(true)
   const finishMigrationChecker = useFinishMigrationChecker()
   const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
+  const { wasmLogs, holochainLogs, errors: holochainErrors } = useHolochainErrorAndLog()
 
   useEffect(() => {
     if (fileDownloaded) {
@@ -337,7 +339,7 @@ const App: React.FC<AppProps> = ({
           </ModalContexts.Provider>
         </ErrorBoundaryScreen>
       </div>
-      {networkInfoOpen && <NetworkInfo versionInfo={updateVersionInfo} />}
+      {networkInfoOpen && <NetworkInfo versionInfo={updateVersionInfo} wasmLogs={wasmLogs} holochainLogs={holochainLogs} errors={holochainErrors} />}
     </>
   )
 }
