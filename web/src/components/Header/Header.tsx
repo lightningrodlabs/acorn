@@ -118,33 +118,6 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <div className={`header-wrapper`} ref={ref}>
-      {/* Update Bar */}
-      <div className="header-update-bar-wrapper">
-        <UpdateBar
-          active={showUpdateBar}
-          onClose={() => setShowUpdateBar(false)}
-          buttonSecondaryText={'Changelog'}
-          onClickSecondaryAction={() => {
-            setViewingReleaseNotes(ViewingReleaseNotes.ReleaseNotes)
-            setShowUpdateModal(true)
-            setShowUpdateBar(false)
-          }}
-          buttonPrimaryText={'Update Now'}
-          onClickPrimaryAction={() => {
-            setViewingReleaseNotes(ViewingReleaseNotes.MainMessage)
-            setShowUpdateModal(true)
-            setShowUpdateBar(false)
-          }}
-          // party popper emoji
-          text={<>&#x1F389; A new update for Acorn is available.</>}
-          migratedSharedProjectText={
-            hasMigratedSharedProject
-              ? ' Update is required to access a shared project brought to the updated version by another team member.'
-              : ''
-          }
-        />
-      </div>
-
       <div className="header">
         {/* Header Left Panel */}
         <HeaderLeftPanel
