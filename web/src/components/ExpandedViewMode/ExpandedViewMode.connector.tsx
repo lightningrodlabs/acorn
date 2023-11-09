@@ -95,10 +95,14 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
         onClose()
       }
     }
-    document.body.addEventListener('keyup', onKeyDown)
+    if (outcome) {
+      document.body.addEventListener('keyup', onKeyDown)
+    }
     // for teardown, unbind event listeners
     return () => {
-      document.body.removeEventListener('keyup', onKeyDown)
+      if (outcome) {
+        document.body.removeEventListener('keyup', onKeyDown)
+      }
     }
   }, [outcome, content, description, githubInputLinkText, activeAgentPubKey])
 

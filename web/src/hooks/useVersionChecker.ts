@@ -84,7 +84,9 @@ function isVersionOutOfDate(
 
   const currentVersionParts = currentVersion.split('.').map(Number)
   const latestVersionParts = latestVersion.split('.').map(Number)
-  if (currentVersionParts[0] < latestVersionParts[0]) {
+  // note, don't propose updates to version 10.x.x
+  // because that is the version with holochain 0.1.x
+  if (currentVersionParts[0] < latestVersionParts[0] && latestVersionParts[0] !== 10) {
     return true
   } else if (currentVersionParts[0] === latestVersionParts[0]) {
     if (currentVersionParts[1] < latestVersionParts[1]) {

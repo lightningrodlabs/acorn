@@ -4,13 +4,11 @@ import EVMiddleColumn from './EVMiddleColumn/EVMiddleColumn'
 import EVLeftColumn from './EVLeftColumn/EVLeftColumn'
 import { ExpandedViewTab } from './NavEnum'
 import { CellIdString, ActionHashB64, AgentPubKeyB64 } from '../../types/shared'
-import { ComputedOutcome, ComputedScope, Outcome } from '../../types'
+import { ComputedOutcome, Outcome } from '../../types'
 import './ExpandedViewMode.scss'
 import ButtonClose from '../ButtonClose/ButtonClose'
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs'
 import hashCodeId from '../../api/clientSideIdHash'
-import OnClickOutside from '../OnClickOutside/OnClickOutside'
-import moment from 'moment'
 
 // props passed to the component by the parent
 export type ExpandedViewModeOwnProps = {

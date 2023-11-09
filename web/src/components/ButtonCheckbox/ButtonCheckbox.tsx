@@ -1,6 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Checkbox from '../Checkbox/Checkbox'
-import Icon from '../Icon/Icon'
 
 import './ButtonCheckbox.scss'
 
@@ -19,8 +18,23 @@ const ButtonCheckbox: React.FC<ButtonCheckboxProps> = ({
   icon,
   text,
 }) => {
+  useEffect(() => {
+    // listen for Enter key to be pressed, but
+    // ignore if Command/Ctrl is also pressed
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' && !e.metaKey) {
+        onChange(!isChecked)
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isChecked, onChange])
   return (
     <div
+      role="button"
+      tabIndex={0}
       className={`button-checkbox-wrapper ${isChecked ? 'selected' : ''} ${
         size === 'tiny'
           ? 'tiny'

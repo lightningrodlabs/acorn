@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
 import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
@@ -76,42 +76,52 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
   closeOutcomeForm,
 }) => {
   const [isSmallScopeChecked, setIsSmallScopeChecked] = useState(false)
+  const [textIsFocused, setTextIsFocused] = useState(false)
 
   /* EVENT HANDLERS */
   // when the text value changes
   const handleChange = (event) => {
     updateContent(event.target.value)
   }
-  // when a key is pressed
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      event.preventDefault()
-      handleSubmit()
+
+  // keyboard listener
+  useEffect(() => {
+    // since Enter will be used to toggle the checkbox
+    // when that is focused, we can submit on pure Enter for the textbox
+    // but they must use Command/Ctrl-Enter to submit when the button/checkbox
+    // is focused
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (textIsFocused && e.key === 'Enter') {
+        handleSubmit()
+      } else if (!textIsFocused && e.key === 'Enter' && e.metaKey) {
+        handleSubmit()
+      }
     }
-  }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [
+    textIsFocused,
+    content,
+    activeAgentPubKey,
+    isSmallScopeChecked,
+    existingParentConnectionAddress,
+  ])
+
   // when the input comes into focus
   const handleFocus = (event) => {
     // select the text
     event.target.select()
+    setTextIsFocused(true)
   }
-  // when the input leaves focus (not focused on editing title)
-  const handleBlur = (event) => {
-    // if creating an Outcome
-    event.preventDefault()
-    // handleSubmit()
+  const handleBlur = () => {
+    setTextIsFocused(false)
   }
 
   // this can get called via keyboard events
   // or via 'onClickOutside' of the MapViewCreateOutcome component
-  const handleSubmit = async (event?) => {
-    console.log('here')
-    if (event) {
-      // this is to prevent the page from refreshing
-      // when the form is submitted, which is the
-      // default behaviour
-      event.preventDefault()
-    }
-
+  const handleSubmit = async () => {
     // do not allow submit with no content
     if (!content || content === '') {
       closeOutcomeForm()
@@ -169,18 +179,6 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
     )
   }
 
-  // the default
-  let fontSizeToUse = fontSize
-  if (scale < secondZoomThreshold) {
-    fontSizeToUse = fontSizeExtraLarge
-  } else if (scale < firstZoomThreshold) {
-    fontSizeToUse = fontSizeLarge
-  }
-  // const textStyle = {
-  //   fontSize: fontSize,
-  //   lineHeight: `${parseInt(fontSizeToUse) * lineHeightMultiplier}px`,
-  // }
-
   const ref = useRef()
   useOnClickOutside(ref, handleSubmit)
 
@@ -203,21 +201,16 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
       // ref for the sake of onClickOutside
       ref={ref}
     >
-      <form className="map-view-outcome-statement-form" onSubmit={handleSubmit}>
+      <div className="map-view-outcome-statement-form">
         <TextareaAutosize
           autoFocus
           placeholder="Add an Outcome Statement"
           value={content}
           onChange={handleChange}
-          onKeyDown={handleKeyDown}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          // style={textStyle}
         />
-
-        {/* <Checkbox size={'small'} />
-       This Outcome is Small Scope */}
-      </form>
+      </div>
       {/* small scope option checkbox */}
       <div className="map-view-outcome-statement-checkbox">
         <ButtonCheckbox

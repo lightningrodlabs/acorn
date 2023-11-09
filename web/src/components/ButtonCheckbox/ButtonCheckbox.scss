@@ -17,7 +17,7 @@
   border: 0.15rem solid var(--border-color-button-checkbox);
 
   &:hover,
-  &.focused {
+  &:focus {
     box-shadow: 0rem 0rem 1.25rem var(--shadow-color-hover);
   }
 
