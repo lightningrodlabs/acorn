@@ -1,73 +1,81 @@
 import React, { useEffect } from 'react'
-import ReactMarkdown from 'react-markdown'
+import { useHistory } from 'react-router-dom'
 
-import Modal, { ModalContent } from '../components/Modal/Modal'
-import Preferences from '../components/Preferences/Preferences'
-import ProfileEditForm from '../components/ProfileEditForm/ProfileEditForm'
-import ProjectSettingsModal from '../components/ProjectSettingsModal/ProjectSettingsModal.connector'
-import InviteMembersModal from '../components/InviteMembersModal/InviteMembersModal'
 import { WireRecord } from '../api/hdkCrud'
 import { Profile, ProjectMeta } from '../types'
-import { AgentPubKeyB64, CellIdString, WithActionHash } from '../types/shared'
-import UpdateModal, {
-  ViewingReleaseNotes,
-} from '../components/UpdateModal/UpdateModal'
+import {
+  ActionHashB64,
+  AgentPubKeyB64,
+  CellIdString,
+  WithActionHash,
+} from '../types/shared'
 import {
   KeyboardNavigationPreference,
   NavigationPreference,
 } from '../redux/ephemeral/local-preferences/reducer'
 import { VersionInfo } from '../hooks/useVersionChecker'
+import { ModalState, OpenModal } from '../context/ModalContexts'
+import Preferences from '../components/Preferences/Preferences'
+import ProjectSettingsModal from '../components/ProjectSettingsModal/ProjectSettingsModal.connector'
+import InviteMembersModal from '../components/InviteMembersModal/InviteMembersModal'
 import DeleteProjectModal from '../components/DeleteProjectModal/DeleteProjectModal'
 import RemoveSelfProjectModal from '../components/RemoveSelfProjectModal/RemoveSelfProjectModal'
-import { ModalState, OpenModal } from '../context/ModalContexts'
-import { useHistory } from 'react-router-dom'
+import ProjectMigratedModal from '../components/ProjectMigratedModal/ProjectMigratedModal'
+import ProfileEditFormModal from '../components/ProfileEditFormModal/ProfileEditFormModal'
+import UpdateModal, {
+  ViewingReleaseNotes,
+} from '../components/UpdateModal/UpdateModal'
 
 export type GlobalModalsProps = {
+  // data
   modalState: ModalState
-  setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   whoami: WireRecord<Profile>
   projectSettingsProjectMeta: WithActionHash<ProjectMeta>
   projectSettingsMemberCount: number
+  projectMigratedProjectMeta: WithActionHash<ProjectMeta>
   agentAddress: AgentPubKeyB64
   navigationPreference: NavigationPreference
-  setNavigationPreference: (preference: NavigationPreference) => void
   keyboardNavigationPreference: KeyboardNavigationPreference
+  hasMigratedSharedProject: boolean
+  updateVersionInfo: VersionInfo
+  // functions
+  setNavigationPreference: (preference: NavigationPreference) => void
   setKeyboardNavigationPreference: (
     preference: KeyboardNavigationPreference
   ) => void
+  setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   setShowUpdateBar: React.Dispatch<React.SetStateAction<boolean>>
   onProfileSubmit: (profile: Profile) => Promise<void>
-  hasMigratedSharedProject: boolean
-  updateVersionInfo: VersionInfo
   uninstallProject: (appId: string, cellIdString: CellIdString) => Promise<void>
+  updateProjectMeta: (
+    projectMeta: ProjectMeta,
+    actionHash: ActionHashB64,
+    cellIdString: CellIdString
+  ) => Promise<void>
 }
 
 const GlobalModals: React.FC<GlobalModalsProps> = ({
+  // data
   whoami,
   projectSettingsProjectMeta,
   projectSettingsMemberCount,
+  projectMigratedProjectMeta,
   agentAddress,
   modalState,
-  setModalState,
-  setShowUpdateBar,
   navigationPreference,
-  setNavigationPreference,
   keyboardNavigationPreference,
-  setKeyboardNavigationPreference,
-  onProfileSubmit,
   hasMigratedSharedProject,
   updateVersionInfo,
+  // functions
+  onProfileSubmit,
+  setKeyboardNavigationPreference,
+  setNavigationPreference,
+  setShowUpdateBar,
+  setModalState,
   uninstallProject,
+  updateProjectMeta,
 }) => {
   const history = useHistory()
-  // profile edit modal
-  const titleText = 'Profile Settings'
-  const subText = ''
-  // This is hardcoded on purpose, not a big deal because the modal closes
-  // when the user hits 'Save Changes'
-  const pending = false
-  const pendingText = 'Submitting...'
-  const submitText = 'Save Changes'
 
   const setModalToNone = () => setModalState({ id: OpenModal.None })
   const redirectToDashboard = () => {
@@ -93,27 +101,13 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
 
   return (
     <>
-      {/* This will only show when 'active' prop is true */}
-      {/* Profile Settings Modal */}
-      <Modal
-        white
+      <ProfileEditFormModal
         active={modalState.id === OpenModal.ProfileEditForm}
         onClose={setModalToNone}
-      >
-        <ProfileEditForm
-          onSubmit={onProfileSubmit}
-          whoami={whoami ? whoami.entry : null}
-          {...{
-            pending,
-            pendingText,
-            titleText,
-            subText,
-            submitText,
-            agentAddress,
-          }}
-        />
-      </Modal>
-      {/* Preferences Modal */}
+        onProfileSubmit={onProfileSubmit}
+        whoami={whoami}
+        agentAddress={agentAddress}
+      />
       <Preferences
         navigationPreference={navigationPreference}
         setNavigationPreference={setNavigationPreference}
@@ -122,7 +116,6 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         keyboardNavigationPreference={keyboardNavigationPreference}
         setKeyboardNavigationPreference={setKeyboardNavigationPreference}
       />
-      {/* Project Settings Modal */}
       <ProjectSettingsModal
         showModal={modalState.id === OpenModal.ProjectSettings}
         onClose={setModalToNone}
@@ -143,90 +136,51 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         onClose={setModalToNone}
       />
       <DeleteProjectModal
-        showModal={modalState.id === OpenModal.DeleteProject}
-        projectName={
-          modalState.id === OpenModal.DeleteProject && modalState.projectName
-        }
-        projectAppId={
-          modalState.id === OpenModal.DeleteProject && modalState.projectAppId
-        }
-        projectCellId={
-          modalState.id === OpenModal.DeleteProject && modalState.cellId
-        }
+        modalState={modalState}
         onClose={setModalToNone}
         uninstallProject={uninstallProject}
         redirectToDashboard={redirectToDashboard}
       />
       <RemoveSelfProjectModal
-        showModal={modalState.id === OpenModal.RemoveSelfProject}
-        projectName={
-          modalState.id === OpenModal.RemoveSelfProject &&
-          modalState.projectName
-        }
-        projectAppId={
-          modalState.id === OpenModal.RemoveSelfProject &&
-          modalState.projectAppId
-        }
-        projectCellId={
-          modalState.id === OpenModal.RemoveSelfProject && modalState.cellId
-        }
+        modalState={modalState}
         onClose={setModalToNone}
         uninstallProject={uninstallProject}
         redirectToDashboard={redirectToDashboard}
       />
-
-      {/* Update Prompt Modal */}
+      <ProjectMigratedModal
+        showModal={modalState.id === OpenModal.ProjectMigrated}
+        onClose={setModalToNone}
+        project={projectMigratedProjectMeta}
+        onClickOverride={() => {
+          setModalToNone()
+          updateProjectMeta(
+            {
+              ...projectMigratedProjectMeta,
+              isMigrated: null,
+            },
+            projectMigratedProjectMeta.actionHash,
+            modalState.id === OpenModal.ProjectMigrated && modalState.cellId
+          )
+        }}
+        onClickUpdateNow={() => {
+          setModalState({
+            id: OpenModal.UpdateApp,
+            section: ViewingReleaseNotes.MainMessage,
+          })
+        }}
+      />
       <UpdateModal
         show={modalState.id === OpenModal.UpdateApp}
         onClose={() => {
-          setModalState({ id: OpenModal.None })
+          setModalToNone()
           setShowUpdateBar(true)
         }}
         releaseTag={updateVersionInfo.newReleaseVersion}
         releaseSize={updateVersionInfo.sizeForPlatform}
-        heading={
-          modalState.id === OpenModal.UpdateApp &&
-          modalState.section === ViewingReleaseNotes.MainMessage
-            ? 'Update to newest version of Acorn'
-            : 'Release Notes'
-        }
-        content={
-          <>
-            {modalState.id === OpenModal.UpdateApp &&
-              modalState.section === ViewingReleaseNotes.MainMessage && (
-                <div>
-                  {hasMigratedSharedProject ? (
-                    <>
-                      Update is required to access a shared project brought to
-                      the updated version by another team member. You can
-                      continue using your personal projects without the update.
-                    </>
-                  ) : (
-                    <>
-                      By updating you'll gain access to bug fixes, new features,
-                      and other improvements.
-                    </>
-                  )}{' '}
-                  See{' '}
-                  <a
-                    onClick={() =>
-                      setModalState({
-                        id: OpenModal.UpdateApp,
-                        section: ViewingReleaseNotes.ReleaseNotes,
-                      })
-                    }
-                  >
-                    Release Notes & Changelog
-                  </a>
-                  .
-                </div>
-              )}
-            {modalState.id === OpenModal.UpdateApp &&
-              modalState.section === ViewingReleaseNotes.ReleaseNotes && (
-                <ReactMarkdown>{updateVersionInfo.releaseNotes}</ReactMarkdown>
-              )}
-          </>
-        }
+        releaseNotes={updateVersionInfo.releaseNotes}
+        modalState={modalState}
+        setModalState={setModalState}
+        hasMigratedSharedProject={hasMigratedSharedProject}
       />
     </>
   )

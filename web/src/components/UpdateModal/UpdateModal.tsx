@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import Modal from '../Modal/Modal'
+import { useHistory } from 'react-router-dom'
+import ReactMarkdown from 'react-markdown'
 import './UpdateModal.scss'
 
-import { useHistory } from 'react-router-dom'
+import Modal from '../Modal/Modal'
 import Button from '../Button/Button'
 import Typography from '../Typography/Typography'
 import Tag from '../Tag/Tag'
+import { ModalState, OpenModal } from '../../context/ModalContexts'
 
 export enum ViewingReleaseNotes {
   ReleaseNotes,
@@ -13,22 +15,75 @@ export enum ViewingReleaseNotes {
 }
 
 export type UpdateModalProps = {
-  // proptypes
   show: boolean
+  modalState: ModalState
+  setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   onClose: () => void
   releaseTag: string
   releaseSize?: string
-  heading: string
-  content: React.ReactElement
+  releaseNotes: string
+  hasMigratedSharedProject: boolean
+}
+
+const Content = ({
+  modalState,
+  releaseNotes,
+  setModalState,
+  hasMigratedSharedProject,
+}: {
+  hasMigratedSharedProject: boolean
+  modalState: ModalState
+  releaseNotes: string
+  setModalState: React.Dispatch<React.SetStateAction<ModalState>>
+}) => {
+  return (
+    <Typography style={'body-modal'}>
+      {modalState.id === OpenModal.UpdateApp &&
+        modalState.section === ViewingReleaseNotes.MainMessage && (
+          <div>
+            {hasMigratedSharedProject ? (
+              <>
+                Update is required to access a shared project brought to the
+                updated version by another team member. You can continue using
+                your personal projects without the update.
+              </>
+            ) : (
+              <>
+                By updating you'll gain access to bug fixes, new features, and
+                other improvements.
+              </>
+            )}{' '}
+            See{' '}
+            <a
+              onClick={() =>
+                setModalState({
+                  id: OpenModal.UpdateApp,
+                  section: ViewingReleaseNotes.ReleaseNotes,
+                })
+              }
+            >
+              Release Notes & Changelog
+            </a>
+            .
+          </div>
+        )}
+      {modalState.id === OpenModal.UpdateApp &&
+        modalState.section === ViewingReleaseNotes.ReleaseNotes && (
+          <ReactMarkdown>{releaseNotes}</ReactMarkdown>
+        )}
+    </Typography>
+  )
 }
 
 const UpdateModal: React.FC<UpdateModalProps> = ({
   show,
+  modalState,
+  setModalState,
   onClose,
   releaseTag,
   releaseSize,
-  heading,
-  content,
+  releaseNotes,
+  hasMigratedSharedProject,
 }) => {
   const history = useHistory()
   const runUpdate = () => {
@@ -58,7 +113,13 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
     if (contentDiv) {
       setContentHeight(contentDiv.clientHeight)
     }
-  }, [contentDiv, content])
+  }, [contentDiv, releaseNotes, modalState, hasMigratedSharedProject])
+
+  const heading =
+    modalState.id === OpenModal.UpdateApp &&
+    modalState.section === ViewingReleaseNotes.MainMessage
+      ? 'Update to newest version of Acorn'
+      : 'Release Notes'
 
   return (
     <div className="update-modal-wrapper">
@@ -91,7 +152,12 @@ const UpdateModal: React.FC<UpdateModalProps> = ({
             }`}
           >
             <div className="update-modal-content-text" ref={setContentDiv}>
-              <Typography style={'body-modal'}>{content}</Typography>
+              <Content
+                modalState={modalState}
+                releaseNotes={releaseNotes}
+                setModalState={setModalState}
+                hasMigratedSharedProject={hasMigratedSharedProject}
+              />
             </div>
           </div>
           {/* Buttons */}

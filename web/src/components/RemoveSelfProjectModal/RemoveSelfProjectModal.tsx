@@ -11,28 +11,30 @@ import {
 import Button from '../Button/Button'
 import { CellIdString } from '../../types/shared'
 import ToastContext, { ShowToast } from '../../context/ToastContext'
+import { ModalState, OpenModal } from '../../context/ModalContexts'
 
 export type RemoveSelfProjectModalProps = {
-  showModal: boolean
-  projectAppId: string
-  projectCellId: CellIdString
-  projectName: string
+  modalState: ModalState
   onClose: () => void
   redirectToDashboard: () => void
   uninstallProject: (appId: string, cellIdString: CellIdString) => Promise<void>
 }
 
 const RemoveSelfProjectModal: React.FC<RemoveSelfProjectModalProps> = ({
-  showModal,
-  projectAppId,
-  projectCellId,
-  projectName,
+  modalState,
   onClose,
   redirectToDashboard,
   uninstallProject,
 }) => {
   // pull in the toast context
   const { setToastState } = useContext(ToastContext)
+
+  const projectName =
+    modalState.id === OpenModal.RemoveSelfProject && modalState.projectName
+  const projectAppId =
+    modalState.id === OpenModal.RemoveSelfProject && modalState.projectAppId
+  const projectCellId =
+    modalState.id === OpenModal.RemoveSelfProject && modalState.cellId
 
   const uninstall = () => {
     redirectToDashboard()
@@ -47,13 +49,16 @@ const RemoveSelfProjectModal: React.FC<RemoveSelfProjectModalProps> = ({
 
   return (
     <div className="remove-self-modal">
-      <Modal active={showModal} onClose={onClose}>
+      <Modal
+        active={modalState.id === OpenModal.RemoveSelfProject}
+        onClose={onClose}
+      >
         <ProjectModalHeading title="Remove self from project" />
         <ProjectModalContentSpacer>
           <ProjectModalContent>
             Are you sure you want to remove yourself from the shared project '
-            <b>{projectName}</b>'? If you remove yourself from this project you won’t
-            have access to it anymore.
+            <b>{projectName}</b>'? If you remove yourself from this project you
+            won’t have access to it anymore.
             <p />
             You can join this project again later, as long as it still has
             active members that can be found online and if you have access to

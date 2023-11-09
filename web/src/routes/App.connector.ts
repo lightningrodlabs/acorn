@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 
 import { ActionHashB64, CellIdString } from '../types/shared'
-import { LayeringAlgorithm, Profile } from '../types'
+import { LayeringAlgorithm, Profile, ProjectMeta } from '../types'
 
 import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
 import {
@@ -149,6 +149,20 @@ function mergeProps(
         actionHash,
       })
       return dispatch(updateWhoami(profilesCellIdString, updatedWhoami))
+    },
+    updateProjectMeta: async (
+      projectMeta: ProjectMeta,
+      actionHash: ActionHashB64,
+      cellIdString: CellIdString
+    ) => {
+      const appWebsocket = await getAppWs()
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+      const cellId = cellIdFromString(cellIdString)
+      const updatedProjectMeta = await projectsZomeApi.projectMeta.update(
+        cellId,
+        { entry: projectMeta, actionHash }
+      )
+      return dispatch(updateProjectMeta(cellIdString, updatedProjectMeta))
     },
     setSelectedLayeringAlgo: async (layeringAlgorithm: LayeringAlgorithm) => {
       const appWebsocket = await getAppWs()

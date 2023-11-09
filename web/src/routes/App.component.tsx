@@ -100,11 +100,17 @@ export type AppMergeProps = {
   setSelectedLayeringAlgo: (
     layeringAlgorithm: LayeringAlgorithm
   ) => Promise<void>
+  updateProjectMeta: (
+    projectMeta: ProjectMeta,
+    actionHash: ActionHashB64,
+    cellIdString: CellIdString
+  ) => Promise<void>
 }
 
 export type AppProps = AppStateProps & AppDispatchProps & AppMergeProps
 
 const App: React.FC<AppProps> = ({
+  // data
   projectMetas,
   projectMembers,
   members,
@@ -115,20 +121,22 @@ const App: React.FC<AppProps> = ({
   agentAddress,
   whoami,
   hasFetchedForWhoami,
-  updateWhoami,
   navigationPreference,
-  setNavigationPreference,
   keyboardNavigationPreference,
-  setKeyboardNavigationPreference,
-  goToOutcome,
   hasMigratedSharedProject,
   hiddenAchievedOutcomes,
   hiddenSmallOutcomes,
+  selectedLayeringAlgo,
+  // functions
+  updateProjectMeta,
+  updateWhoami,
+  setNavigationPreference,
+  setKeyboardNavigationPreference,
+  goToOutcome,
   showSmallOutcomes,
   hideSmallOutcomes,
   showAchievedOutcomes,
   hideAchievedOutcomes,
-  selectedLayeringAlgo,
   setSelectedLayeringAlgo,
   uninstallProject,
 }) => {
@@ -139,7 +147,7 @@ const App: React.FC<AppProps> = ({
     id: OpenModal.None,
   })
   // Default state for toast and its details
-  // the details are defined within toastState 
+  // the details are defined within toastState
   // which is defined inside ToastContext
   const [toastState, setToastState] = useState<ToastState>({
     id: ShowToast.No,
@@ -155,7 +163,11 @@ const App: React.FC<AppProps> = ({
   // const updateVersionInfo = useVersionChecker(true)
   const finishMigrationChecker = useFinishMigrationChecker()
   const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
-  const { wasmLogs, holochainLogs, errors: holochainErrors } = useHolochainErrorAndLog()
+  const {
+    wasmLogs,
+    holochainLogs,
+    errors: holochainErrors,
+  } = useHolochainErrorAndLog()
 
   useEffect(() => {
     if (fileDownloaded) {
@@ -187,6 +199,11 @@ const App: React.FC<AppProps> = ({
   const onProfileSubmit = async (profile: Profile) => {
     await updateWhoami(profile, whoami.actionHash)
     setModalToNone()
+    setToastState({
+      id: ShowToast.Yes,
+      type: 'confirmation',
+      text: 'Profile saved',
+    })
   }
   const updateStatus = async (statusString: Profile['status']) => {
     await updateWhoami(
@@ -212,6 +229,10 @@ const App: React.FC<AppProps> = ({
 
   const projectSettingsProjectMeta =
     modalState.id === OpenModal.ProjectSettings
+      ? projectMetas[modalState.cellId]
+      : undefined
+  const projectMigratedProjectMeta =
+    modalState.id === OpenModal.ProjectMigrated
       ? projectMetas[modalState.cellId]
       : undefined
   const projectSettingsMemberCount =
@@ -299,6 +320,7 @@ const App: React.FC<AppProps> = ({
                     whoami,
                     projectSettingsProjectMeta,
                     projectSettingsMemberCount,
+                    projectMigratedProjectMeta,
                     agentAddress,
                     navigationPreference,
                     setNavigationPreference,
@@ -311,6 +333,7 @@ const App: React.FC<AppProps> = ({
                     updateVersionInfo,
                     hasMigratedSharedProject,
                     uninstallProject,
+                    updateProjectMeta,
                   }}
                 />
                 {/* Loading Screen if no user agent, and also during checking whether migration is necessary */}
@@ -339,7 +362,14 @@ const App: React.FC<AppProps> = ({
           </ModalContexts.Provider>
         </ErrorBoundaryScreen>
       </div>
-      {networkInfoOpen && <NetworkInfo versionInfo={updateVersionInfo} wasmLogs={wasmLogs} holochainLogs={holochainLogs} errors={holochainErrors} />}
+      {networkInfoOpen && (
+        <NetworkInfo
+          versionInfo={updateVersionInfo}
+          wasmLogs={wasmLogs}
+          holochainLogs={holochainLogs}
+          errors={holochainErrors}
+        />
+      )}
     </>
   )
 }

@@ -1,14 +1,13 @@
 import React from 'react'
 import './ProjectMigratedModal.scss'
 import Modal, { ModalContent } from '../Modal/Modal'
-import { CellIdString, WithActionHash } from '../../types/shared'
+import { WithActionHash } from '../../types/shared'
 import { ProjectMeta } from '../../types'
 
 export type ProjectMigratedModalProps = {
   showModal: boolean
   onClose: () => void
   project?: WithActionHash<ProjectMeta>
-  cellIdString: CellIdString
   onClickUpdateNow: () => void
   onClickOverride: () => void
 }
@@ -17,7 +16,6 @@ const ProjectMigratedModal: React.FC<ProjectMigratedModalProps> = ({
   showModal,
   onClose,
   project = { isMigrated: '' } as WithActionHash<ProjectMeta>,
-  cellIdString,
   onClickUpdateNow,
   onClickOverride,
 }) => {

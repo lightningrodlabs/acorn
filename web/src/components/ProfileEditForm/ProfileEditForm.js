@@ -44,10 +44,10 @@ function ProfileEditForm({
       onSubmit({
         firstName,
         lastName,
-        status: 'Online',
         avatarUrl,
-        agentPubKey: agentAddress,
         handle,
+        status: 'Online',
+        agentPubKey: agentAddress,
         isImported: false,
       })
     }

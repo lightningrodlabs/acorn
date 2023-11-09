@@ -7,7 +7,6 @@ import DashboardEmptyState from '../../components/DashboardEmptyState/DashboardE
 import CreateProjectModal from '../../components/CreateProjectModal/CreateProjectModal'
 import ImportProjectModal from '../../components/ImportProjectModal/ImportProjectModal'
 import JoinProjectModal from '../../components/JoinProjectModal/JoinProjectModal'
-// import new modals here
 
 import {
   DashboardListProject,
@@ -17,12 +16,10 @@ import PendingProjects from '../../components/PendingProjects/PendingProjects'
 
 import './Dashboard.scss'
 import Typography from '../../components/Typography/Typography'
-import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../../types/shared'
-import { ProjectAggregated, ProjectMeta } from '../../types'
-import ModalContexts, { OpenModal } from '../../context/ModalContexts'
-import ProjectMigratedModal from '../../components/ProjectMigratedModal/ProjectMigratedModal'
+import { AgentPubKeyB64, CellIdString } from '../../types/shared'
+import { ProjectAggregated } from '../../types'
+import ModalContexts from '../../context/ModalContexts'
 import useProjectStatusInfos from '../../hooks/useProjectStatusInfos'
-import { ViewingReleaseNotes } from '../../components/UpdateModal/UpdateModal'
 
 export type DashboardStateProps = {
   agentAddress: AgentPubKeyB64
@@ -38,11 +35,6 @@ export type DashboardDispatchProps = {
   ) => Promise<void>
   fetchMembers: (cellIdString: CellIdString) => Promise<void>
   fetchProjectMeta: (cellIdString: CellIdString) => Promise<void>
-  updateProjectMeta: (
-    projectMeta: ProjectMeta,
-    actionHash: ActionHashB64,
-    cellIdString: CellIdString
-  ) => Promise<void>
   fetchEntryPointDetails: (cellIdString: CellIdString) => Promise<void>
   joinProject: (passphrase: string) => Promise<CellIdString>
   uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
@@ -64,13 +56,12 @@ const Dashboard: React.FC<DashboardProps> = ({
   fetchEntryPointDetails,
   fetchMembers,
   fetchProjectMeta,
-  updateProjectMeta,
   createProject,
   joinProject,
   importProject,
 }) => {
   // pull in the modal context
-  const { modalState, setModalState } = useContext(ModalContexts)
+  const { setModalState } = useContext(ModalContexts)
 
   const [selectedSort, setSelectedSort] = useState('createdAt')
   const [showSortPicker, setShowSortPicker] = useState(false)
@@ -122,12 +113,6 @@ const Dashboard: React.FC<DashboardProps> = ({
         : -1
     })
   }
-
-  const projectMigratedProject = showProjectMigratedModal
-    ? sortedProjects.find((project) => {
-        return project.cellId === showProjectMigratedModal
-      })
-    : undefined
 
   const hasFetchedForAllProjects =
     projectCellIdStrings.length === Object.keys(projectStatusInfos).length
@@ -245,30 +230,6 @@ const Dashboard: React.FC<DashboardProps> = ({
         uninstallProject={uninstallProject}
         showModal={showImportModal}
         onClose={() => setShowImportModal(false)}
-      />
-      <ProjectMigratedModal
-        showModal={showProjectMigratedModal !== ''}
-        onClose={() => setShowProjectMigratedModal('')}
-        project={projectMigratedProject?.projectMeta}
-        cellIdString={showProjectMigratedModal}
-        onClickOverride={() => {
-          setShowProjectMigratedModal('')
-          updateProjectMeta(
-            {
-              ...projectMigratedProject.projectMeta,
-              isMigrated: null,
-            },
-            projectMigratedProject.projectMeta.actionHash,
-            projectMigratedProject.cellId
-          )
-        }}
-        onClickUpdateNow={() => {
-          setShowProjectMigratedModal('')
-          setModalState({
-            id: OpenModal.UpdateApp,
-            section: ViewingReleaseNotes.MainMessage,
-          })
-        }}
       />
     </>
   )
