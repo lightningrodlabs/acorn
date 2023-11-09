@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Checkbox from '../Checkbox/Checkbox'
 
 import './ButtonCheckbox.scss'
@@ -18,6 +18,7 @@ const ButtonCheckbox: React.FC<ButtonCheckboxProps> = ({
   icon,
   text,
 }) => {
+  const [isFocused, setIsFocused] = useState(false)
   useEffect(() => {
     // listen for Enter key to be pressed, but
     // ignore if Command/Ctrl is also pressed
@@ -26,11 +27,15 @@ const ButtonCheckbox: React.FC<ButtonCheckboxProps> = ({
         onChange(!isChecked)
       }
     }
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
+    if (isFocused) {
+      document.addEventListener('keydown', handleKeyDown)
     }
-  }, [isChecked, onChange])
+    return () => {
+      if (isFocused) {
+        document.removeEventListener('keydown', handleKeyDown)
+      }
+    }
+  }, [isFocused, isChecked, onChange])
   return (
     <div
       role="button"
@@ -45,6 +50,8 @@ const ButtonCheckbox: React.FC<ButtonCheckboxProps> = ({
           : ''
       }`}
       onClick={() => onChange(!isChecked)}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
     >
       <div className="button-checkbox-icon-text">
         <div className="button-checkbox-icon">{icon}</div>
