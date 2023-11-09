@@ -1,13 +1,13 @@
 import React from 'react'
 import './Avatar.scss'
 import { pickColorForString } from '../../styles'
-import { StatusCssColorClass, Status } from '../Header/Status'
+import { StatusCssColorClass } from '../Header/Status'
 import Tooltip from '../Tooltip/Tooltip'
 
 interface AvatarProps {
   size: 'small' | 'small-medium' | 'medium' | 'medium-large' | 'large'
-  firstName: string
-  lastName: string
+  firstName?: string
+  lastName?: string
   avatarUrl: string
   highlighted?: boolean
   disconnected?: boolean
@@ -19,7 +19,6 @@ interface AvatarProps {
   withStatusBorder?: boolean
   selfAssignedStatus?: string
   withTooltip?: boolean
-  // tooltipText?: string
 }
 
 function Avatar({
@@ -37,8 +36,7 @@ function Avatar({
   withStatusBorder,
   selfAssignedStatus,
   withTooltip,
-}: // tooltipText,
-AvatarProps) {
+}: AvatarProps) {
   // If it is imported avatar of a ghost member
   // don't show status circle
   if (imported) withStatus = false

@@ -70,9 +70,6 @@ export type HeaderLeftPanelProps = {
   }[]
   setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
-  // for project export
-  isExportOpen: boolean
-  setIsExportOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
@@ -80,13 +77,30 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   whoami,
   projectName,
   projectPassphrase,
-  isExportOpen,
-  setIsExportOpen,
   activeEntryPoints,
   goToOutcome,
   members,
   presentMembers,
 }) => {
+  const entryPointsRef = useRef()
+  const exportProjectRef = useRef()
+  const { setToastState } = useContext(ToastContext)
+  const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
+  const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
+  const [isExportOpen, setIsExportOpen] = useState(false)
+  useOnClickOutside(entryPointsRef, () => setOpenEntryPointPicker(false))
+  useOnClickOutside(exportProjectRef, () => setIsExportOpen(false))
+  useEffect(() => {
+    if (fileDownloaded) {
+      setFileDownloaded(false)
+      setToastState({
+        id: ShowToast.Yes,
+        text: 'Project Exported',
+        type: 'confirmation',
+      })
+    }
+  }, [fileDownloaded, setFileDownloaded, setToastState])
+
   const activeEntryPointAddresses = activeEntryPoints.map(
     ({ entryPoint }) => entryPoint.actionHash
   )
@@ -100,32 +114,10 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
       )
     : []
 
-  const ref = useRef()
-  const { setToastState } = useContext(ToastContext)
-  const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
-
-  useEffect(() => {
-    if (fileDownloaded) {
-      setFileDownloaded(false)
-      setToastState({
-        id: ShowToast.Yes,
-        text: 'Project Exported',
-        type: 'confirmation',
-      })
-    }
-  }, [fileDownloaded, setFileDownloaded, setToastState])
-
-  // map, table and priority view routes
-
   const projectPage = useRouteMatch<{ projectId: string }>(
     '/project/:projectId'
   )
   const projectId = projectPage ? projectPage.params.projectId : null
-
-  // for entry points
-
-  useOnClickOutside(ref, () => setOpenEntryPointPicker(false))
-  const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
 
   // replace spaces with dashes for project name
   // add in the export date like 2023-12-31 and make it based on the
@@ -137,7 +129,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
 
   return (
     <div className="header-left-panel-rows">
-      <div className="header-left-panel" ref={ref}>
+      <div className="header-left-panel">
         {/* Acorn Logo - non link */}
 
         {!whoami && (
@@ -210,7 +202,10 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
 
                 <div className="current-project-tools">
                   {/* Entry points */}
-                  <div className="entry-points-button-wrapper">
+                  <div
+                    className="entry-points-button-wrapper"
+                    ref={entryPointsRef}
+                  >
                     <Icon
                       name="door-open.svg"
                       size="view-mode"
@@ -245,7 +240,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                     className="header-action-icon"
                   />
                   {/* Export */}
-                  <div className="export-wrapper">
+                  <div className="export-wrapper" ref={exportProjectRef}>
                     <Icon
                       withTooltip
                       tooltipText="Export"

@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react'
 import useOnClickOutside from 'use-onclickoutside'
-import { useRouteMatch } from 'react-router-dom'
 
 import { WireRecord } from '../../api/hdkCrud'
 import {
@@ -53,25 +52,13 @@ const Header: React.FC<HeaderProps> = ({
   members,
   presentMembers,
 }) => {
-  const isDashboardMatch = useRouteMatch('/dashboard')
-  const isPriorityMatch = useRouteMatch('/project/:project_id/priority')
-  const isTableMatch = useRouteMatch('/project/:project_id/table')
-  // const hasBackground = isPriorityMatch || isTableMatch
-
-  const [isExportOpen, setIsExportOpen] = useState(false)
-
   const [status, setStatus] = useState<Status>(
     // @ts-ignore
     whoami ? whoami.entry.status : Status.Online
   )
 
   // click handlers
-  const ref = useRef()
-  useOnClickOutside(ref, () => {
-    setIsExportOpen(false)
-  })
   const onClickEditProfile = () => {
-    setIsExportOpen(false)
     setModalState({
       id: OpenModal.ProfileEditForm
     })
@@ -87,14 +74,13 @@ const Header: React.FC<HeaderProps> = ({
     changeStatus(status)
   }
   const onClickPreferences = () => {
-    setIsExportOpen(false)
     setModalState({
       id: OpenModal.Preferences
     })
   }
 
   return (
-    <div className={`header-wrapper`} ref={ref}>
+    <div className={`header-wrapper`}>
       {/* Update Bar */}
       <div className="header-update-bar-wrapper">
         <UpdateBar
@@ -135,8 +121,6 @@ const Header: React.FC<HeaderProps> = ({
           projectPassphrase={project ? project.passphrase : ''}
           setModalState={setModalState}
           projectName={project ? project.name : ''}
-          isExportOpen={isExportOpen}
-          setIsExportOpen={setIsExportOpen}
           activeEntryPoints={activeEntryPoints}
           goToOutcome={goToOutcome}
         />

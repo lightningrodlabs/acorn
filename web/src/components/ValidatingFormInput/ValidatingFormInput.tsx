@@ -3,22 +3,37 @@ import PropTypes from 'prop-types'
 
 import './ValidatingFormInput.scss'
 
-import ValidationCheck from '../../images/validation-check.svg'
-import ValidationX from '../../images/validation-x.svg'
 import Typography from '../Typography/Typography'
+// @ts-ignore
+import ValidationCheck from '../../images/validation-check.svg'
+// @ts-ignore
+import ValidationX from '../../images/validation-x.svg'
 
-function ValidatingFormInput({
+type ValidatingFormInputProps = {
+  value: string
+  onChange?: (value: string) => void
+  helpText?: string
+  label: string
+  placeholder?: string
+  readOnly?: boolean
+  withAtSymbol?: boolean
+  errorText?: string
+  invalidInput?: boolean
+  validInput?: boolean
+}
+
+const ValidatingFormInput: React.FC<ValidatingFormInputProps> = ({
   withAtSymbol,
   readOnly,
   placeholder,
   label,
   value,
-  onChange,
   helpText,
   errorText,
   invalidInput,
   validInput,
-}) {
+  onChange,
+}) => {
   const innerOnChange = (e) => {
     e.preventDefault()
     onChange(e.target.value)

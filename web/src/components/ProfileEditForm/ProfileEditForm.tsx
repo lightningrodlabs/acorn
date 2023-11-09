@@ -6,21 +6,34 @@ import ValidatingFormInput from '../ValidatingFormInput/ValidatingFormInput'
 import Avatar from '../Avatar/Avatar'
 import ButtonWithPendingState from '../ButtonWithPendingState/ButtonWithPendingState'
 import Typography from '../Typography/Typography'
+import { Profile } from 'zod-models'
 
+// @ts-ignore
 import AvatarPlaceholder from '../../images/avatar-placeholder.svg'
 
 const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/
 
-function ProfileEditForm({
+type ProfileEditFormProps = {
+  pending: boolean
+  pendingText: string
+  onSubmit: (profile: Profile) => Promise<void>
+  agentAddress: string
+  whoami: Profile
+  titleText: string
+  subText: string
+  submitText: string
+}
+
+const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
   pending,
   pendingText,
-  onSubmit,
   agentAddress,
   whoami,
   titleText,
   subText,
   submitText,
-}) {
+  onSubmit,
+}) => {
   const [isValidFirstName, setisValidFirstName] = useState(true)
   const [isValidLastName, setIsValidLastName] = useState(true)
   const [isValidUserName, setIsValidUserName] = useState(true)
