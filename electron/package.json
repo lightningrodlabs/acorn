@@ -34,6 +34,9 @@
     "mac": {
       "artifactName": "${productName}.${version}.${platform}-${arch}.${ext}"
     },
+    "linux": {
+      "target": "AppImage"
+    },
     "win": {
       "target": "NSIS",
       "icon": "build/icon.ico",
