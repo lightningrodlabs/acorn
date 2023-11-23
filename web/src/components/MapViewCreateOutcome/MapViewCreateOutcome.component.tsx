@@ -3,14 +3,6 @@ import useOnClickOutside from 'use-onclickoutside'
 import TextareaAutosize from 'react-textarea-autosize'
 import moment from 'moment'
 
-import {
-  firstZoomThreshold,
-  fontSize,
-  fontSizeExtraLarge,
-  fontSizeLarge,
-  lineHeightMultiplier,
-  secondZoomThreshold,
-} from '../../drawing/dimensions'
 import './MapViewCreateOutcome.scss'
 import {
   AgentPubKeyB64,
@@ -18,8 +10,7 @@ import {
   ActionHashB64,
   Option,
 } from '../../types/shared'
-import { LinkedOutcomeDetails, Outcome, RelationInput } from '../../types'
-import Checkbox from '../Checkbox/Checkbox'
+import { LinkedOutcomeDetails, Outcome } from '../../types'
 import ButtonCheckbox from '../ButtonCheckbox/ButtonCheckbox'
 import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import Icon from '../Icon/Icon'
