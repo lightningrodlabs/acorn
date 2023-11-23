@@ -84,17 +84,8 @@ import {
   alterSiblingOrder,
 } from '../connections'
 import handleOutcomeConnectorMouseUp from '../redux/ephemeral/outcome-connector/handler'
+import checkForKeyboardKeyModifier from './osPlatformHelper'
 
-// The "modifier" key is different on Mac and non-Mac
-// Pattern borrowed from TinyKeys library.
-// --
-// https://github.com/jamiebuilds/tinykeys/blob/e0d23b4f248af59ffbbe52411505c3d681c73045/src/tinykeys.ts#L50-L54
-var macOsPattern = /Mac|macOS|iPod|iPhone|iPad/
-let platform =
-  // @ts-ignore
-  navigator?.userAgentData?.platform || navigator?.platform || 'unknown'
-const isMacish = macOsPattern.test(platform)
-const operatingSystemModifier = isMacish ? 'metaKey' : 'ctrlKey'
 
 function handleMouseUpForOutcomeForm({
   state,
@@ -352,7 +343,7 @@ export default function setupEventListeners(
         break
       case 'c':
         if (
-          event[operatingSystemModifier] &&
+          checkForKeyboardKeyModifier(event) &&
           state.ui.selection.selectedOutcomes.length &&
           !state.ui.outcomeForm.isOpen &&
           !state.ui.expandedView.isOpen
@@ -362,7 +353,7 @@ export default function setupEventListeners(
         break
       case 'v':
         if (
-          event[operatingSystemModifier] &&
+          checkForKeyboardKeyModifier(event) &&
           state.ui.outcomeClone.outcomes.length &&
           !state.ui.outcomeForm.isOpen &&
           !state.ui.expandedView.isOpen
