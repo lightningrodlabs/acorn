@@ -23,6 +23,7 @@ import Checkbox from '../Checkbox/Checkbox'
 import ButtonCheckbox from '../ButtonCheckbox/ButtonCheckbox'
 import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import Icon from '../Icon/Icon'
+import checkForKeyboardKeyModifier from '../../event-listeners/osPlatformHelper'
 
 export type MapViewCreateOutcomeOwnProps = {
   projectId: CellIdString
@@ -93,7 +94,7 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (textIsFocused && e.key === 'Enter') {
         handleSubmit()
-      } else if (!textIsFocused && e.key === 'Enter' && e.metaKey) {
+      } else if (!textIsFocused && e.key === 'Enter' && checkForKeyboardKeyModifier(e)) {
         handleSubmit()
       }
     }
