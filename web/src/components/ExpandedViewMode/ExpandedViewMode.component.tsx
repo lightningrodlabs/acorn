@@ -73,6 +73,18 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
     }
   }, [outcomeActionHash])
 
+  useEffect(() => {
+    if (outcome) {
+      // make sure that a section that isn't available, based on changes
+      // to the Outcome, isn't shown
+      if ('Small' in outcome.scope && activeTab === ExpandedViewTab.ChildrenList) {
+        setActiveTab(ExpandedViewTab.TaskList)
+      } else if ('Uncertain' in outcome.scope && activeTab === ExpandedViewTab.TaskList) {
+        setActiveTab(ExpandedViewTab.ChildrenList)
+      }
+    }
+  }, [outcome, activeTab, setActiveTab])
+
   const outcomeId = hashCodeId(outcomeActionHash)
 
   // if not small, then show children list icon on left menu
