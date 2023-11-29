@@ -24,6 +24,7 @@ const Toast: React.FC<ToastProps> = ({ toastState, setToastState }) => {
       <div className="toast-text">{recentText}</div>
       <div className="toast-close">
       <ButtonClose
+        disabled={!isVisible}
         size={'small'}
         onClick={() => setToastState({ id: ShowToast.No })}
       />

@@ -2,6 +2,9 @@
   border-radius: 50%;
   width: fit-content;
   transition: 0.2s all ease;
+  border: none;
+  background: none;
+  padding: 0;
 
   &:hover {
     background-color: var(--bg-color-hover);

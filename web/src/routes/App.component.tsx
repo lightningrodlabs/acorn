@@ -92,6 +92,7 @@ export type AppDispatchProps = {
   hideSmallOutcomes: (projectCellId: CellIdString) => void
   showAchievedOutcomes: (projectCellId: CellIdString) => void
   hideAchievedOutcomes: (projectCellId: CellIdString) => void
+  unselectAll: () => void
 }
 
 export type AppMergeProps = {
@@ -139,6 +140,7 @@ const App: React.FC<AppProps> = ({
   hideAchievedOutcomes,
   setSelectedLayeringAlgo,
   uninstallProject,
+  unselectAll,
 }) => {
   const [networkInfoOpen, setNetworkInfoOpen] = useState(false)
 
@@ -181,6 +183,14 @@ const App: React.FC<AppProps> = ({
       setShowUpdateBar(true)
     }
   }, [updateVersionInfo.newReleaseVersion])
+
+  // when opening a modal, unselect any Outcomes that are selected
+  useEffect(() => {
+    if (modalState.id !== OpenModal.None) {
+      // unselect any selected outcomes
+      unselectAll()
+    }
+  }, [modalState])
 
   useEffect(() => {
     // add event listener for pressing the 'i' key with the ctrl key
@@ -276,6 +286,7 @@ const App: React.FC<AppProps> = ({
                       showUpdateBar,
                       setShowUpdateBar,
                       hasMigratedSharedProject,
+                      unselectAll,
                     }}
                   />
                 )}
@@ -353,6 +364,7 @@ const App: React.FC<AppProps> = ({
                     hideAchievedOutcomes={hideAchievedOutcomes}
                     selectedLayeringAlgo={selectedLayeringAlgo}
                     setSelectedLayeringAlgo={setSelectedLayeringAlgo}
+                    unselectAll={unselectAll}
                   />
                 )}
               </Router>

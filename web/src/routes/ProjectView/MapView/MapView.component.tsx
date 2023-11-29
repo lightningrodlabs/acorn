@@ -161,7 +161,7 @@ const MapView: React.FC<MapViewProps> = ({
   )
   // don't bother with outcome statement tooltips if the zoom level is >= 0.7
   // because it displays the full Outcome statement
-  const outcomeStatementTooltipVisible = hoveredOutcome && zoomLevel < 0.7
+  const outcomeStatementTooltipVisible = hoveredOutcome && zoomLevel < 0.5
 
   // don't display the 'collapse/expand' contextmenu item if
   // the Outcome doesn't have children

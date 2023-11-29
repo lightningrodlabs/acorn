@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { CSSTransition } from 'react-transition-group'
 
 import Icon from '../Icon/Icon'
@@ -102,9 +102,53 @@ const Modal: React.FC<ModalProps> = ({
   onClose,
   children,
 }) => {
+  const modalRef = useRef<HTMLDivElement>(null)
+
+  const trapFocus = (event: KeyboardEvent) => {
+    if (!modalRef.current || event.key !== 'Tab') {
+      return
+    }
+
+    const focusableModalElements = modalRef.current.querySelectorAll(
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    ) as NodeListOf<HTMLElement>
+
+    const firstElement = focusableModalElements[0]
+    const lastElement =
+      focusableModalElements[focusableModalElements.length - 1]
+
+    if (event.shiftKey && document.activeElement === firstElement) {
+      lastElement.focus()
+      event.preventDefault()
+    } else if (!event.shiftKey && document.activeElement === lastElement) {
+      firstElement.focus()
+      event.preventDefault()
+    }
+  }
+
+  useEffect(() => {
+    if (active) {
+      document.addEventListener('keydown', trapFocus)
+
+      // Focus the first focusable element
+      // const focusableModalElements = modalRef.current?.querySelectorAll(
+      //   'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+      // )
+      // ;(focusableModalElements?.[0] as HTMLElement)?.focus()
+    }
+
+    return () => {
+      document.removeEventListener('keydown', trapFocus)
+    }
+  }, [active])
+
+  if (!active) {
+    return null
+  }
+
   return (
     <CSSTransition in={active} timeout={100} unmountOnExit classNames="modal">
-      <div className={`modal ${white ? 'modal-white' : ''}`}>
+      <div ref={modalRef} className={`modal ${white ? 'modal-white' : ''}`}>
         {/* TODO: figure out how to implement onclickoutside */}
         {/* without imapcting the styling for the modal */}
         {/* problem seen on Profile Setting after implementation */}
@@ -115,9 +159,7 @@ const Modal: React.FC<ModalProps> = ({
               <ButtonClose onClick={onClose} size="medium" />
             </div>
           )}
-          <div className='modal-scrollable-content'>
-          {children}
-          </div>
+          <div className="modal-scrollable-content">{children}</div>
         </div>
         {/* </OnClickOutside> */}
       </div>

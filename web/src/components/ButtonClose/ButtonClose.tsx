@@ -6,22 +6,23 @@ import './ButtonClose.scss'
 export type ButtonCloseProps = {
   size: 'small' | 'medium' | 'large'
   onClick: () => void
+  disabled?: boolean
 }
 
 const ButtonClose: React.FC<ButtonCloseProps> = ({
   size = 'medium',
   onClick,
+  disabled,
 }) => {
   return (
-    <div className="button-close-wrapper">
+    <button className="button-close-wrapper" onClick={onClick} disabled={disabled}>
       {/* @ts-ignore */}
       <Icon
-        onClick={onClick}
         name="x.svg"
         size="small-close"
         className={`light-grey ${size == 'small' ? 'small' : ''}`}
       />
-    </div>
+    </button>
   )
 }
 

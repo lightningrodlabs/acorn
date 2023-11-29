@@ -34,23 +34,24 @@ export type HeaderProps = {
   presentMembers: AgentPubKeyB64[]
   setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
+  unselectAll: () => void
   // holochain
   updateStatus: (statusString: Profile['status']) => Promise<void>
 }
 
 const Header: React.FC<HeaderProps> = ({
-  // for update bar
   showUpdateBar,
-  setShowUpdateBar,
   hasMigratedSharedProject,
   whoami,
-  setModalState,
-  updateStatus,
   activeEntryPoints,
   project,
-  goToOutcome,
   members,
   presentMembers,
+  unselectAll,
+  setShowUpdateBar,
+  setModalState,
+  updateStatus,
+  goToOutcome,
 }) => {
   const [status, setStatus] = useState<Status>(
     // @ts-ignore
@@ -80,7 +81,7 @@ const Header: React.FC<HeaderProps> = ({
   }
 
   return (
-    <div className={`header-wrapper`}>
+    <div className={`header-wrapper`} onClick={() => unselectAll()}>
       {/* Update Bar */}
       <div className="header-update-bar-wrapper">
         <UpdateBar

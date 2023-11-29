@@ -17,6 +17,7 @@ export type FooterProps = {
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
   selectedLayeringAlgo: string
+  unselectAll: () => void
   showSmallOutcomes: (projectCellId: CellIdString) => void
   hideSmallOutcomes: (projectCellId: CellIdString) => void
   showAchievedOutcomes: (projectCellId: CellIdString) => void
@@ -29,6 +30,7 @@ const Footer: React.FC<FooterProps> = ({
   hiddenAchievedOutcomes,
   hiddenSmallOutcomes,
   selectedLayeringAlgo,
+  unselectAll,
   showSmallOutcomes,
   hideSmallOutcomes,
   showAchievedOutcomes,
@@ -115,7 +117,7 @@ const Footer: React.FC<FooterProps> = ({
         <div className={bottomRightPanelClassName}>
           {isSyncing && <SyncingIndicator />}
           {mapPage && (
-            <div className="map-viewing-options-button-wrapper">
+            <div className="map-viewing-options-button-wrapper" onClick={() => unselectAll()}>
               {/* If map viewing options is open */}
               <MapViewingOptions
                 isOpen={openMapViewingOptions}

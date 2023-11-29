@@ -210,7 +210,7 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
           isChecked={isSmallScopeChecked}
           onChange={(newState) => setIsSmallScopeChecked(newState)}
           icon={<Icon name="leaf.svg" className="not-hoverable" />}
-          text={'This Outcome is Small Scope'}
+          text={'Small Scope'}
         />
       </div>
     </div>

@@ -27,6 +27,7 @@ import {
 import ProjectsZomeApi from '../api/projectsApi'
 import { updateProjectMeta } from '../redux/persistent/projects/project-meta/actions'
 import { uninstallProject } from '../projects/uninstallProject'
+import { unselectAll } from '../redux/ephemeral/selection/actions'
 
 function mapStateToProps(state: RootState): AppStateProps {
   const {
@@ -120,6 +121,9 @@ function mapDispatchToProps(dispatch): AppDispatchProps {
     hideAchievedOutcomes: (projectCellId) => {
       return dispatch(hideAchievedOutcomes(projectCellId))
     },
+    unselectAll: () => {
+      return dispatch(unselectAll())
+    }
   }
 }
 
