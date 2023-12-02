@@ -6,7 +6,7 @@ Acorn is currently in **Alpha** testing phase.
 
 ## Things you can do
 
-- [**Download & install the latest Acorn release**](https://github.com/lightningrodlabs/acorn/releases/tag/v9.7.1-alpha).
+- [**Download & install the latest Acorn release**](https://github.com/lightningrodlabs/acorn/releases/tag/v9.8.1-alpha).
 
 - Check out the [Acorn Knowledge Base](https://docs.acorn.software) to learn more about Acorn, its methodology and features.
 
