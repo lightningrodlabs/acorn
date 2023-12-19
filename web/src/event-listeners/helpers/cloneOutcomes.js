@@ -1,10 +1,10 @@
-import { selectOutcome } from '../redux/ephemeral/selection/actions'
-import { createOutcome } from '../redux/persistent/projects/outcomes/actions'
-import { createOutcomeMember } from '../redux/persistent/projects/outcome-members/actions'
+import { selectOutcome } from '../../redux/ephemeral/selection/actions'
+import { createOutcome } from '../../redux/persistent/projects/outcomes/actions'
+import { createOutcomeMember } from '../../redux/persistent/projects/outcome-members/actions'
 import moment from 'moment'
-import ProjectsZomeApi from '../api/projectsApi'
-import { getAppWs } from '../hcWebsockets'
-import { cellIdFromString } from '../utils'
+import ProjectsZomeApi from '../../api/projectsApi'
+import { getAppWs } from '../../hcWebsockets'
+import { cellIdFromString } from '../../utils'
 
 export default async function cloneOutcomes(store) {
   const state = store.getState()

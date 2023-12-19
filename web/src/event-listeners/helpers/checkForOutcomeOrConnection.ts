@@ -1,10 +1,10 @@
 import {
   checkForOutcomeAtCoordinates,
   checkForConnectionAtCoordinates,
-} from '../drawing/eventDetection'
-import { RootState } from '../redux/reducer'
-import { ComputedOutcome } from '../types'
-import { ActionHashB64 } from '../types/shared'
+} from '../../drawing/eventDetection'
+import { RootState } from '../../redux/reducer'
+import { ComputedOutcome } from '../../types'
+import { ActionHashB64 } from '../../types/shared'
 
 export enum OutcomeConnectionOrBoth {
   Both,

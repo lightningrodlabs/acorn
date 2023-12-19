@@ -1,4 +1,4 @@
-import { ActionHashB64 } from '../types/shared'
+import { ActionHashB64 } from '../../types/shared'
 
 export default function closestOutcomeToPageCoord(
   canvasCoords: { x: number; y: number },

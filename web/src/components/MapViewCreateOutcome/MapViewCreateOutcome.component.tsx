@@ -14,7 +14,7 @@ import { LinkedOutcomeDetails, Outcome } from '../../types'
 import ButtonCheckbox from '../ButtonCheckbox/ButtonCheckbox'
 import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import Icon from '../Icon/Icon'
-import checkForKeyboardKeyModifier from '../../event-listeners/osPlatformHelper'
+import checkForKeyboardKeyModifier from '../../event-listeners/helpers/osPlatformHelper'
 
 export type MapViewCreateOutcomeOwnProps = {
   projectId: CellIdString
