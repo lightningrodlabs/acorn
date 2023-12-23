@@ -37,9 +37,8 @@ const Checkbox: React.FC<CheckboxProps> = ({
   collapseOutcome,
   unsetContextMenu,
 }) => {
-
-// pull in the toast context
-const { setToastState } = useContext(ToastContext)
+  // pull in the toast context
+  const { setToastState } = useContext(ToastContext)
 
   const wrappedCollapseOutcome = () => {
     collapseOutcome(projectCellId, outcomeActionHash)
@@ -60,6 +59,14 @@ const { setToastState } = useContext(ToastContext)
   }
 
   const actions = []
+
+  actions.push({
+    key: 'copy-outcome',
+    icon: 'file-copy.svg',
+    text: 'Copy Outcome',
+    onClick: copyOutcomeStatement,
+  })
+
   actions.push({
     key: 'copy-statement',
     icon: 'text-align-left.svg',
@@ -67,23 +74,46 @@ const { setToastState } = useContext(ToastContext)
     onClick: copyOutcomeStatement,
   })
 
+  // only show this if the outcome has children
+  if (hasChildren) {
+    actions.push({
+      key: 'copy-subtree',
+      icon: 'file-copy.svg',
+      text: 'Copy Subtree',
+      onClick: copyOutcomeStatement,
+    })
+  }
+
+  // only show this if the outcome has children
+  if (hasChildren) {
+    actions.push({
+      key: 'export-subtree',
+      icon: 'export.svg',
+      text: 'Export Subtree',
+      onClick: copyOutcomeStatement,
+    })
+  }
+
+  // only enable if the outcome is has children BUT
+  // children should not have multiple parents
   if (hasChildren && isCollapsed) {
     actions.push({
       key: 'expand',
-      icon: 'leaf.svg',
-      text: 'Expand Outcome',
+      icon: 'expand2.svg',
+      text: 'Expand Subtree',
       onClick: wrappedExpandOutcome,
     })
   }
-  // DISABLED: collapsing outcomes
-  // else if (hasChildren) {
-  // actions.push({
-  //   key: 'collapse',
-  //   icon: 'leaf.svg',
-  //   text: 'Collapse Outcome',
-  //   onClick: wrappedCollapseOutcome,
-  // })
-  // }
+  // only enable if the outcome is has children BUT
+  // TODO: if only children do not have multiple parents
+  else if (hasChildren) {
+    actions.push({
+      key: 'collapse',
+      icon: 'collapse.svg',
+      text: 'Collapse Subtree',
+      onClick: wrappedCollapseOutcome,
+    })
+  }
 
   return (
     <div

@@ -1,6 +1,7 @@
 import { coordsPageToCanvas } from '../drawing/coordinateSystems'
 import { unsetMousedown } from '../redux/ephemeral/mouse/actions'
 import handleOutcomeConnectorMouseUp from '../redux/ephemeral/outcome-connector/handler'
+import { nearEdgePanning } from '../redux/ephemeral/outcome-connector/actions'
 import { openOutcomeForm } from '../redux/ephemeral/outcome-form/actions'
 import { RootState } from '../redux/reducer'
 import { LinkedOutcomeDetails } from '../types'
@@ -41,6 +42,11 @@ export default function canvasMouseup(store: any, event: MouseEvent) {
         existingParentConnectionAddress,
       })
     }
+  }
+
+  if (state.ui.outcomeConnector.nearEdgePanning) {
+    window.clearInterval(state.ui.outcomeConnector.nearEdgePanning)
+    store.dispatch(nearEdgePanning())
   }
 
   // update the mouse aware state

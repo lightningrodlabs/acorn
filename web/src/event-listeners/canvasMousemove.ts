@@ -12,7 +12,10 @@ import {
   setClosestOutcome,
   setOutcomes,
 } from '../redux/ephemeral/mouse/actions'
-import { setOutcomeConnectorTo } from '../redux/ephemeral/outcome-connector/actions'
+import {
+  nearEdgePanning,
+  setOutcomeConnectorTo,
+} from '../redux/ephemeral/outcome-connector/actions'
 import { changeTranslate } from '../redux/ephemeral/viewport/actions'
 import { RootState } from '../redux/reducer'
 import { ComputedOutcome } from '../types'
@@ -76,7 +79,7 @@ export default function canvasMousemove(
     } else {
       store.dispatch(changeTranslate(event.movementX, event.movementY))
     }
-    return
+    // return
   }
 
   // for hover, we use OUTCOME_VERTICAL_HOVER_ALLOWANCE
@@ -99,6 +102,67 @@ export default function canvasMousemove(
     store.dispatch(unhoverConnection())
   }
 
+  // edge-of-screen panning, during Outcome linking user action
+
+  // check if 'near the edge of the screen', per a threshold
+  // Define the threshold in pixels
+  const threshold = 40
+  // Get mouse position
+  const mouseX = event.clientX
+  const mouseY = event.clientY
+  // Get window dimensions
+  const windowWidth = window.innerWidth
+  const windowHeight = window.innerHeight
+  // Calculate distance from each edge
+  const distanceFromLeft = mouseX
+  const distanceFromRight = windowWidth - mouseX
+  const distanceFromTop = mouseY
+  const distanceFromBottom = windowHeight - mouseY
+
+  const isNearEdge =
+    distanceFromLeft < threshold ||
+    distanceFromRight < threshold ||
+    distanceFromTop < threshold ||
+    distanceFromBottom < threshold
+  
+  console.log('isNearEdge', isNearEdge)
+  console.log('state.ui.outcomeConnector.nearEdgePanning', state.ui.outcomeConnector.nearEdgePanning)
+  
+    // if near, then start panning
+  if (
+    state.ui.outcomeConnector.maybeLinkedOutcome &&
+    !state.ui.outcomeConnector.nearEdgePanning &&
+    isNearEdge
+  ) {
+    // which direction to pan in X
+    const xSign = distanceFromLeft < threshold ? 1 : -1
+    // which direction to pan in Y
+    const ySign = distanceFromTop < threshold ? 1 : -1
+
+    // how much to pan on each repition in X (in points)
+    const xAmount =
+      distanceFromLeft < threshold || distanceFromRight < threshold ? 8 : 0
+    // how much to pan on each repition in Y (in points)
+    const yAmount =
+      distanceFromTop < threshold || distanceFromBottom < threshold ? 8 : 0
+
+    // how frequently in milliseconds to pan
+    const panFrequencyMilliseconds = 10
+    const t = window.setInterval(() => {
+      store.dispatch(changeTranslate(xSign * xAmount, ySign * yAmount))
+    }, panFrequencyMilliseconds)
+    store.dispatch(nearEdgePanning(t))
+  }
+  
+  if (state.ui.outcomeConnector.nearEdgePanning && !isNearEdge) {
+    // setting to false/undefined
+    window.clearInterval(state.ui.outcomeConnector.nearEdgePanning)
+    store.dispatch(nearEdgePanning())
+  }
+  // if was near, and now no longer, then stop panning
+
+  // outcome hover state, and unhover
+  // PLUS 'connection connector'
   if (
     checks.outcomeActionHash &&
     state.ui.hover.hoveredOutcome !== checks.outcomeActionHash
