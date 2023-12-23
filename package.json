@@ -22,7 +22,7 @@
   "scripts": {
     "dev": "pm2-dev pm2.config.js",
     "user-data-reset": "rm -rf user-data && mkdir user-data",
-    "web": "WEB_PORT=8081 ADMIN_WS_PORT=1101 APP_WS_PORT=8101 yarn workspace acorn-ui dev ",
+    "web": "WEB_PORT=8081 ADMIN_WS_PORT=1101 APP_WS_PORT=8101 yarn workspace acorn-ui dev",
     "web2": "WEB_PORT=8082 ADMIN_WS_PORT=1102 APP_WS_PORT=8102 yarn workspace acorn-ui dev",
     "web3": "WEB_PORT=8083 ADMIN_WS_PORT=1103 APP_WS_PORT=8103 yarn workspace acorn-ui dev",
     "web4": "WEB_PORT=8084 ADMIN_WS_PORT=1104 APP_WS_PORT=8104 yarn workspace acorn-ui dev",
