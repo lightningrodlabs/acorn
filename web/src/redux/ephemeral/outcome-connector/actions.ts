@@ -27,6 +27,7 @@ function setOutcomeConnectorTo(actionHash: ActionHashB64) {
 }
 
 // payload is a window.setInterval ID
+// or else is undefined
 function nearEdgePanning(payload?: number) {
   return {
     type: NEAR_EDGE_PANNING,

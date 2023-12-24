@@ -40,12 +40,13 @@ function animatePanAndZoom(
   }
 }
 
-function changeTranslate(x: number, y: number) {
+function changeTranslate(x: number, y: number, meta?: { scale: number }) {
   return {
     type: CHANGE_TRANSLATE,
     payload: {
       x,
       y,
+      meta
     },
   }
 }

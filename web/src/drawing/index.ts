@@ -14,21 +14,10 @@ import drawSelectBox from './drawSelectBox'
 import drawEntryPoints from './drawEntryPoints'
 import { getOutcomeHeight, getOutcomeWidth } from './dimensions'
 import {
-  ComputedOutcome,
   ComputedSimpleAchievementStatus,
-  ProjectMeta,
   RelationInput,
-  Tag,
 } from '../types'
-import { ActionHashB64, WithActionHash } from '../types/shared'
-import { ProjectConnectionsState } from '../redux/persistent/projects/connections/reducer'
-import { ProjectEntryPointsState } from '../redux/persistent/projects/entry-points/reducer'
-import { ProjectOutcomeMembersState } from '../redux/persistent/projects/outcome-members/reducer'
 import { getPlaceholderOutcome } from './drawOutcome/placeholderOutcome'
-import {
-  CoordinatesState,
-  DimensionsState,
-} from '../redux/ephemeral/layout/state-type'
 import selectRenderProps from '../routes/ProjectView/MapView/selectRenderProps'
 import { ProjectComputedOutcomes } from '../context/ComputedOutcomeContext'
 

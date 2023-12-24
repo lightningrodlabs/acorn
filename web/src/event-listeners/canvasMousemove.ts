@@ -124,11 +124,7 @@ export default function canvasMousemove(
     distanceFromRight < threshold ||
     distanceFromTop < threshold ||
     distanceFromBottom < threshold
-  
-  console.log('isNearEdge', isNearEdge)
-  console.log('state.ui.outcomeConnector.nearEdgePanning', state.ui.outcomeConnector.nearEdgePanning)
-  
-    // if near, then start panning
+  // if near, then start panning
   if (
     state.ui.outcomeConnector.maybeLinkedOutcome &&
     !state.ui.outcomeConnector.nearEdgePanning &&
@@ -149,11 +145,15 @@ export default function canvasMousemove(
     // how frequently in milliseconds to pan
     const panFrequencyMilliseconds = 10
     const t = window.setInterval(() => {
-      store.dispatch(changeTranslate(xSign * xAmount, ySign * yAmount))
+      store.dispatch(
+        changeTranslate(xSign * xAmount, ySign * yAmount, {
+          scale: state.ui.viewport.scale,
+        })
+      )
     }, panFrequencyMilliseconds)
     store.dispatch(nearEdgePanning(t))
   }
-  
+
   if (state.ui.outcomeConnector.nearEdgePanning && !isNearEdge) {
     // setting to false/undefined
     window.clearInterval(state.ui.outcomeConnector.nearEdgePanning)

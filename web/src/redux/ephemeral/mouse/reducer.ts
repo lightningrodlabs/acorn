@@ -1,5 +1,6 @@
+import { coordsPageToCanvas } from '../../../drawing/coordinateSystems'
 import { ActionHashB64 } from '../../../types/shared'
-import { CHANGE_SCALE } from '../viewport/actions'
+import { CHANGE_SCALE, CHANGE_TRANSLATE } from '../viewport/actions'
 import {
   SET_MOUSEDOWN,
   UNSET_MOUSEDOWN,
@@ -88,6 +89,23 @@ export default function (state = defaultState, action: any): MouseState {
       return {
         ...state,
         mousedown: false,
+      }
+    case CHANGE_TRANSLATE:
+      if (!payload.meta) {
+        return state
+      }
+      const adjusted = coordsPageToCanvas({ x: payload.x, y: payload.y }, { x: 0, y: 0 }, payload.meta.scale)
+      console.log('adjusted', adjusted)
+      return {
+        ...state,
+        liveCoordinate: {
+          // this is the opposite of what's in
+          // web/src/redux/ephemeral/viewport/reducer.ts
+          // for CHANGE_TRANSLATE
+          // because we're assuming that the mouse is not moving, but the 'background' is
+          x: state.liveCoordinate.x - adjusted.x,
+          y: state.liveCoordinate.y - adjusted.y,
+        },
       }
     case SET_LIVE_COORDINATE:
       return {

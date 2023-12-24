@@ -11,6 +11,8 @@ import canvasMouseup from './canvasMouseup'
 import canvasDoubleclick from './canvasDoubleclick'
 import canvasContextMenu from './canvasContextMenu'
 
+// This function is called within a useEffect and that's why it follows the same
+// pattern as useEffects, which is to return an unsubscribe/cleanup function.
 // outcomes is ComputedOutcomes in an object, keyed by their actionHash
 export default function setupEventListeners(
   store: any,
