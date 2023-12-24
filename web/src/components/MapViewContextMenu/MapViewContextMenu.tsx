@@ -121,7 +121,7 @@ const MapViewContextMenu: React.FC<MapViewContextMenuProps> = ({
 
   // use this hook to make sure the menu is contained within the screen
   const {
-    itemHeight: menuHeight,
+    initialized,
     setItemHeight: setMenuHeight,
     renderCoordinate,
   } = useContainWithinScreen({
@@ -137,12 +137,12 @@ const MapViewContextMenu: React.FC<MapViewContextMenuProps> = ({
         top: `${renderCoordinate.y}px`,
         left: `${renderCoordinate.x}px`,
         // make sure the menu is not visible until the height is calculated
-        visibility: menuHeight ? 'visible' : 'hidden',
+        visibility: initialized ? 'visible' : 'hidden',
       }}
     >
       <ContextMenu
         menuWidth={`${menuWidth}px`}
-        menuHeight={(height) => setMenuHeight(height)}
+        setMenuHeight={setMenuHeight}
         outcomeActionHash={outcomeActionHash}
         actions={actions}
       />

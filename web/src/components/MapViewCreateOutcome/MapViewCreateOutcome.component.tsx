@@ -15,6 +15,7 @@ import ButtonCheckbox from '../ButtonCheckbox/ButtonCheckbox'
 import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import Icon from '../Icon/Icon'
 import checkForKeyboardKeyModifier from '../../event-listeners/helpers/osPlatformHelper'
+import useContainWithinScreen from '../../hooks/useContainWithinScreen'
 
 export type MapViewCreateOutcomeOwnProps = {
   projectId: CellIdString
@@ -67,6 +68,11 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
   createOutcomeWithConnection,
   closeOutcomeForm,
 }) => {
+  // outer ref for the sake of onClickOutside
+  const outerRef = useRef<HTMLDivElement>(null)
+  const textAreaRef = useRef<HTMLTextAreaElement>(null)
+  useOnClickOutside(outerRef, handleSubmit)
+
   const [isSmallScopeChecked, setIsSmallScopeChecked] = useState(false)
   const [textIsFocused, setTextIsFocused] = useState(false)
 
@@ -85,7 +91,11 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
     const handleKeyDown = (e: KeyboardEvent) => {
       if (textIsFocused && e.key === 'Enter') {
         handleSubmit()
-      } else if (!textIsFocused && e.key === 'Enter' && checkForKeyboardKeyModifier(e)) {
+      } else if (
+        !textIsFocused &&
+        e.key === 'Enter' &&
+        checkForKeyboardKeyModifier(e)
+      ) {
         handleSubmit()
       }
     }
@@ -113,7 +123,7 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
 
   // this can get called via keyboard events
   // or via 'onClickOutside' of the MapViewCreateOutcome component
-  const handleSubmit = async () => {
+  async function handleSubmit() {
     // do not allow submit with no content
     if (!content || content === '') {
       closeOutcomeForm()
@@ -171,9 +181,6 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
     )
   }
 
-  const ref = useRef()
-  useOnClickOutside(ref, handleSubmit)
-
   const pageCoords = coordsCanvasToPage(
     {
       x: leftConnectionXPosition,
@@ -183,17 +190,50 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
     scale
   )
 
+  // set card width in pixels
+  const cardWidth = 384
+  // use this hook to make sure the card is contained within the screen
+  const {
+    initialized,
+    setItemHeight: setCardHeight,
+    renderCoordinate,
+  } = useContainWithinScreen({
+    initialWidth: cardWidth,
+    initialHeight: 0,
+    cursorCoordinate: pageCoords,
+  })
+
+  // capture card's height as rendered on the screen
+  useEffect(() => {
+    if (outerRef.current) {
+      const height = outerRef.current.offsetHeight
+      setCardHeight(height)
+    }
+  }, [outerRef.current])
+
+  useEffect(() => {
+    // focus text area
+    // after the whole thing becomes visible
+    // which is after the height is calculated
+    // this is necessary because a non visible
+    // element cannot be focused
+    if (initialized) {
+      textAreaRef.current?.focus()
+    }
+  }, [initialized])
+
   return (
     <div
-      className="map-view-outcome-statement-card"
+      className="map-view-create-outcome-statement-card"
       style={{
-        left: `${pageCoords.x}px`,
-        top: `${pageCoords.y}px`,
+        left: `${renderCoordinate.x}px`,
+        top: `${renderCoordinate.y}px`,
+        visibility: initialized ? 'visible' : 'hidden',
       }}
       // ref for the sake of onClickOutside
-      ref={ref}
+      ref={outerRef}
     >
-      <div className="map-view-outcome-statement-form">
+      <div className="create-outcome-statement-form">
         <TextareaAutosize
           autoFocus
           placeholder="Add an Outcome Statement"
@@ -201,10 +241,11 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          ref={textAreaRef}
         />
       </div>
       {/* small scope option checkbox */}
-      <div className="map-view-outcome-statement-checkbox">
+      <div className="create-outcome-statement-checkbox">
         <ButtonCheckbox
           size={'small'}
           isChecked={isSmallScopeChecked}

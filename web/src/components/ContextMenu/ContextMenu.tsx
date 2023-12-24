@@ -13,14 +13,14 @@ export type ContextMenuProps = {
     text: string
     onClick?: (outcomeActionHash: ActionHashB64) => void
   }[]
-  menuHeight: (height: number) => void
+  setMenuHeight: (height: number) => void
 }
 
 const ContextMenu: React.FC<ContextMenuProps> = ({
   menuWidth,
   actions,
   outcomeActionHash,
-  menuHeight,
+  setMenuHeight,
 }) => {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -28,17 +28,18 @@ const ContextMenu: React.FC<ContextMenuProps> = ({
     if (ref.current) {
       const height = ref.current.offsetHeight
       // send the height back to the parent
-      menuHeight(height)
+      setMenuHeight(height)
     }
-
-    // if (ref.current) {
-    //   const width = ref.current.offsetWidth
-    //   // send the width back to the parent
-    //   menuWidth(width)
-    // }
   }, [ref.current])
 
-
+  // adjust height when number of actions changes
+  useEffect(() => {
+    if (ref.current) {
+      const height = ref.current.offsetHeight
+      // send the height back to the parent
+      setMenuHeight(height)
+    }
+  }, [actions.length])
 
   return (
     <div

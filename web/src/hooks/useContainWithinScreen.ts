@@ -12,6 +12,7 @@ export default function useContainWithinScreen({
   // make the code below general purpose for any popup div that needs to be contained within the screen
   // the popup div will be rendered at the mouse click coordinate
 
+  const [initialized, setInitialized] = useState(false)
   const [itemWidth, setItemWidth] = useState(initialWidth)
   // with useState store the height of the menu
   const [itemHeight, setItemHeight] = useState(initialHeight)
@@ -27,11 +28,15 @@ export default function useContainWithinScreen({
   // if the menu will go off the screen, move it up so that it is fully visible
 
   useEffect(() => {
+    if (itemHeight === 0) {
+      return
+    }
     // if both x and y are off the screen, move the item up and left
     if (
       cursorCoordinate.y + itemHeight > window.innerHeight &&
       cursorCoordinate.x + itemWidth > window.innerWidth
     ) {
+      setInitialized(true)
       setRenderCoordinate({
         x: cursorCoordinate.x - itemWidth,
         y: cursorCoordinate.y - itemHeight,
@@ -39,20 +44,25 @@ export default function useContainWithinScreen({
     }
     // if the item will go off the screen at the bottom edge, move it up so that it is fully visible
     else if (cursorCoordinate.y + itemHeight > window.innerHeight) {
+      setInitialized(true)
       setRenderCoordinate({
         x: cursorCoordinate.x,
         y: cursorCoordinate.y - itemHeight,
       })
       // if the item will go off the screen at the right edge, move it left so that it is fully visible
     } else if (cursorCoordinate.x + itemWidth > window.innerWidth) {
+      setInitialized(true)
       setRenderCoordinate({
         x: cursorCoordinate.x - itemWidth,
         y: cursorCoordinate.y,
       })
+    } else {
+      setInitialized(true)
     }
-  }, [itemWidth, itemHeight, cursorCoordinate])
+  }, [itemWidth, itemHeight, cursorCoordinate.x, cursorCoordinate.y])
 
   return {
+    initialized,
     itemWidth,
     itemHeight,
     setItemWidth,
