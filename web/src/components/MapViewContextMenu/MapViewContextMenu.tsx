@@ -4,6 +4,7 @@ import { ActionHashB64, CellIdString } from '../../types/shared'
 import './MapViewContextMenu.scss'
 import ContextMenu from '../ContextMenu/ContextMenu'
 import ToastContext, { ShowToast } from '../../context/ToastContext'
+import useContainWithinScreen from '../../hooks/useContainWithinScreen'
 
 export type MapViewContextMenuProps = {
   projectCellId: CellIdString
@@ -114,43 +115,20 @@ const MapViewContextMenu: React.FC<MapViewContextMenuProps> = ({
       onClick: wrappedCollapseOutcome,
     })
   }
-  // with useState store the height of the menu
-  const [menuHeight, setMenuHeight] = useState(0)
-  const [renderCoordinate, setRenderCoordinate] = useState({
-    x: contextMenuClickCoordinate.x,
-    y: contextMenuClickCoordinate.y,
-  })
 
   // set menu width in pixels
   const menuWidth = 176
 
-  // when the menu height changes, deterimine weather to show the menu above or below the mouse
-  // if the menu will go off the screen, move it up so that it is fully visible
-
-  useEffect(() => {
-    // if the menu will go off the screen at the bottom edge, move it up so that it is fully visible
-    if (contextMenuClickCoordinate.y + menuHeight > window.innerHeight) {
-      setRenderCoordinate({
-        x: contextMenuClickCoordinate.x,
-        y: contextMenuClickCoordinate.y - menuHeight,
-      })
-      // if the menu will go off the screen at the right edge, move it left so that it is fully visible
-    } else if (contextMenuClickCoordinate.x + menuWidth > window.innerWidth) {
-      setRenderCoordinate({
-        x: contextMenuClickCoordinate.x - menuWidth,
-        y: contextMenuClickCoordinate.y,
-      })
-      // if both x and y are off the screen, move it up and left
-    } else if (
-      contextMenuClickCoordinate.y + menuHeight > window.innerHeight &&
-      contextMenuClickCoordinate.x + menuWidth > window.innerWidth
-    ) {
-      setRenderCoordinate({
-        x: contextMenuClickCoordinate.x - menuWidth,
-        y: contextMenuClickCoordinate.y - menuHeight,
-      })
-    }
-  }, [menuHeight, contextMenuClickCoordinate])
+  // use this hook to make sure the menu is contained within the screen
+  const {
+    itemHeight: menuHeight,
+    setItemHeight: setMenuHeight,
+    renderCoordinate,
+  } = useContainWithinScreen({
+    initialWidth: menuWidth,
+    initialHeight: 0,
+    cursorCoordinate: contextMenuClickCoordinate,
+  })
 
   return (
     <div
