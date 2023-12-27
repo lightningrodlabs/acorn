@@ -211,12 +211,12 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
     }
   }, [outerRef.current])
 
+  // focus text area
+  // after the whole thing becomes visible
+  // which is after the height is calculated
+  // this is necessary because a non visible
+  // element cannot be focused
   useEffect(() => {
-    // focus text area
-    // after the whole thing becomes visible
-    // which is after the height is calculated
-    // this is necessary because a non visible
-    // element cannot be focused
     if (initialized) {
       textAreaRef.current?.focus()
     }

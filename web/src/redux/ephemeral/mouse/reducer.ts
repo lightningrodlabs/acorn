@@ -95,7 +95,6 @@ export default function (state = defaultState, action: any): MouseState {
         return state
       }
       const adjusted = coordsPageToCanvas({ x: payload.x, y: payload.y }, { x: 0, y: 0 }, payload.meta.scale)
-      console.log('adjusted', adjusted)
       return {
         ...state,
         liveCoordinate: {

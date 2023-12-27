@@ -9,7 +9,7 @@ const NEAR_EDGE_PANNING = 'NEAR_EDGE_PANNING'
 export type OutcomeConnectorFromPayload = {
   maybeLinkedOutcome: Option<LinkedOutcomeDetails>
   validToAddresses: ActionHashB64[]
-  existingParentConnectionAddress: ActionHashB64
+  existingParentConnectionAddress: Option<ActionHashB64>
 }
 
 function setOutcomeConnectorFrom(payload: OutcomeConnectorFromPayload) {
