@@ -189,7 +189,6 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
     translate,
     scale
   )
-
   // set card width in pixels
   const cardWidth = 384
   // use this hook to make sure the card is contained within the screen
@@ -209,7 +208,9 @@ const MapViewCreateOutcome: React.FC<MapViewCreateOutcomeProps> = ({
       const height = outerRef.current.offsetHeight
       setCardHeight(height)
     }
-  }, [outerRef.current])
+    // this also fires when the `content` changes
+    // so that adjustments can be made to the height
+  }, [outerRef.current, content])
 
   // focus text area
   // after the whole thing becomes visible
