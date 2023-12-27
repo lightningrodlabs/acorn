@@ -338,9 +338,9 @@ export function getOutcomeHeight({
 
   const heightOfStatement = drawStatement(
     argsForDrawStatement({
+      onlyMeasure: true, // we don't want it actually drawn on the canvas
       useLineLimit,
       noStatementPlaceholder,
-      onlyMeasure: true, // we don't want it actually drawn on the canvas
       outcome,
       outcomeLeftX: 0, // this number doesn't matter for measuring
       outcomeTopY: 0, // this number doesn't matter for measuring

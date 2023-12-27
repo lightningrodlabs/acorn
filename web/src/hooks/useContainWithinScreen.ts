@@ -32,33 +32,15 @@ export default function useContainWithinScreen({
       return
     }
     // if both x and y are off the screen, move the item up and left
-    if (
-      cursorCoordinate.y + itemHeight > window.innerHeight &&
-      cursorCoordinate.x + itemWidth > window.innerWidth
-    ) {
-      setInitialized(true)
-      setRenderCoordinate({
-        x: cursorCoordinate.x - itemWidth,
-        y: cursorCoordinate.y - itemHeight,
-      })
-    }
-    // if the item will go off the screen at the bottom edge, move it up so that it is fully visible
-    else if (cursorCoordinate.y + itemHeight > window.innerHeight) {
-      setInitialized(true)
-      setRenderCoordinate({
-        x: cursorCoordinate.x,
-        y: cursorCoordinate.y - itemHeight,
-      })
-      // if the item will go off the screen at the right edge, move it left so that it is fully visible
-    } else if (cursorCoordinate.x + itemWidth > window.innerWidth) {
-      setInitialized(true)
-      setRenderCoordinate({
-        x: cursorCoordinate.x - itemWidth,
-        y: cursorCoordinate.y,
-      })
-    } else {
-      setInitialized(true)
-    }
+    setInitialized(true)
+    // the amount that it (maybe) exceeds the screen width
+    const overflowX = window.innerWidth - (cursorCoordinate.x + itemWidth)
+    // the amount that it (maybe) exceeds the screen height
+    const overflowY = window.innerHeight - (cursorCoordinate.y + itemHeight)
+    setRenderCoordinate({
+      x: cursorCoordinate.x + Math.min(overflowX, 0),
+      y: cursorCoordinate.y + Math.min(overflowY, 0),
+    })
   }, [itemWidth, itemHeight, cursorCoordinate.x, cursorCoordinate.y])
 
   return {

@@ -181,10 +181,9 @@ export default function render(
       ctx,
       coordinates,
       allOutcomeDimensions,
-      projectTags,
       zoomLevel,
+      translate,
       outcomeFormMaybeLinkedOutcome,
-      outcomeFormContent,
       outcomeFormLeftConnectionX,
       outcomeFormTopConnectionY,
     })
