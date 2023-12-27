@@ -2,6 +2,8 @@ import {
   CONNECTION_ACHIEVED_COLOR,
   CONNECTION_NOT_ACHIEVED_COLOR,
   SELECTED_COLOR,
+  CONNECTION_ACHIEVED_SELECTED_OUTCOME_COLOR,
+  CONNECTION_NOT_ACHIEVED_SELECTED_OUTCOME_COLOR,
 } from '../styles'
 import draw from './draw'
 import { RelationInput } from '../types'
@@ -76,6 +78,7 @@ export default function render({
   isAchieved,
   isHovered,
   isSelected,
+  connectionForSelectedOutcome,
   zoomLevel,
 }: {
   connection1port: { x: number; y: number }
@@ -84,12 +87,12 @@ export default function render({
   isAchieved: boolean
   isHovered: boolean
   isSelected: boolean
+  connectionForSelectedOutcome?: boolean
   zoomLevel: number
 }) {
   draw(ctx, () => {
     ctx.lineCap = 'round'
-
-    const DEFAULT_WIDTH = 3 // (at 100 %)
+    const DEFAULT_WIDTH = connectionForSelectedOutcome ? 4.5 : 3 // (at 100 %)
     // 0.02 < zoomLevel < 2.5
     // dont go lower than the DEFAULT_WIDTH, but go higher as the
     // zoomLevel drops
@@ -97,6 +100,18 @@ export default function render({
     // isHovered adjust
     // isSelected adjust
     ctx.lineWidth = lineWidth
+
+    // shadowColor
+    if (connectionForSelectedOutcome && isAchieved) {
+      ctx.shadowColor = CONNECTION_ACHIEVED_SELECTED_OUTCOME_COLOR
+
+    } else if (connectionForSelectedOutcome && !isAchieved) {
+      ctx.shadowColor = CONNECTION_NOT_ACHIEVED_SELECTED_OUTCOME_COLOR
+    }
+    ctx.shadowBlur = connectionForSelectedOutcome ? 15 : 0
+    ctx.shadowOffsetX = 0
+    ctx.shadowOffsetY = 0
+
     ctx.strokeStyle = isSelected
       ? SELECTED_COLOR
       : isAchieved

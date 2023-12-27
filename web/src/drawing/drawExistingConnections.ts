@@ -4,7 +4,7 @@ import selectRenderProps, {
   RenderProps,
 } from '../routes/ProjectView/MapView/selectRenderProps'
 import { RelationInput, ComputedSimpleAchievementStatus } from '../types'
-import { WithActionHash } from '../types/shared'
+import { ActionHashB64, WithActionHash } from '../types/shared'
 import drawConnection, {
   calculateConnectionCoordsByOutcomeCoords,
 } from './drawConnection'
@@ -21,6 +21,7 @@ export default function drawExistingConnections({
   outcomes,
   outcomeFormExistingParent,
   outcomeConnectorExistingParent,
+  selectedOutcomeActionHash,
 }: {
   connectionsAsArray: WithActionHash<Connection>[]
   coordinates: RenderProps['coordinates']
@@ -32,6 +33,7 @@ export default function drawExistingConnections({
   outcomeConnectorExistingParent: RenderProps['outcomeConnectorExistingParent']
   ctx: CanvasRenderingContext2D
   outcomes: ProjectComputedOutcomes['computedOutcomesKeyed']
+  selectedOutcomeActionHash: ActionHashB64 | null
 }) {
   connectionsAsArray.forEach(function (connection) {
     // if in the pending re-parenting mode for the child card of an existing connection,
@@ -64,7 +66,14 @@ export default function drawExistingConnections({
         RelationInput.ExistingOutcomeAsChild
       )
       const isHovered = hoveredConnectionActionHash === connection.actionHash
+
       const isSelected = selectedConnections.includes(connection.actionHash)
+
+      // highlight the existing connections for a selected outcome
+      const connectionForSelectedOutcome = selectedOutcomeActionHash
+        ? selectedOutcomeActionHash === connection.childActionHash ||
+          selectedOutcomeActionHash === connection.parentActionHash
+        : false
       drawConnection({
         connection1port,
         connection2port,
@@ -74,6 +83,7 @@ export default function drawExistingConnections({
           ComputedSimpleAchievementStatus.Achieved,
         isHovered,
         isSelected,
+        connectionForSelectedOutcome,
         zoomLevel,
       })
     }

@@ -118,6 +118,9 @@ export default function render(
     outcomeConnectorExistingParent,
     ctx,
     outcomes,
+    selectedOutcomeActionHash:
+      // if there is only one selected Outcome, pass it in
+      selectedOutcomes.length === 1 ? selectedOutcomes[0] : null,
   })
 
   // draw all the Outcomes that are not selected
