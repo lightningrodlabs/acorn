@@ -9,6 +9,10 @@
     margin-bottom: 0.5rem;
     transition: 0.2s background-color ease;
 
+    .comments-posted-list-item-empty {
+      color: var(--text-color-tertiary);
+    }
+
     &:first-child {
       margin-top: 1rem;
     }

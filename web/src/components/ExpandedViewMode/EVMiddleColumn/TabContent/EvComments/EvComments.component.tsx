@@ -112,6 +112,13 @@ const EvComments: React.FC<EvCommentsProps> = ({
         }`}
       />
       <div className="comments-posted-wrapper" ref={commentHistoryRef}>
+        {comments.length === 0 && (
+          <div className="comments-posted-list-item">
+            <div className="comments-posted-list-item-empty">
+              There are no comments on this outcome yet.
+            </div>
+          </div>
+        )}
         {comments
           // just in case we don't have someones profile, don't show them for now
           // so only keep ones whose profiles we have
