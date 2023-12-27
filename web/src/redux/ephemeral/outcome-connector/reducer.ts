@@ -15,11 +15,11 @@ export type ConnectionConnectorState = {
   validToAddresses: ActionHashB64[]
   // the Outcome to be linked to, if the user completes
   // the action, the "target"
-  toAddress: ActionHashB64
+  toAddress: Option<ActionHashB64>
   // existingParentConnectionAddress is the actionHash of the Connection that
   // we would delete, if any, while creating the new one
-  existingParentConnectionAddress: ActionHashB64
-  nearEdgePanning: number | undefined
+  existingParentConnectionAddress: Option<ActionHashB64>
+  nearEdgePanning: Option<number>
 }
 
 const defaultState: ConnectionConnectorState = {
@@ -27,7 +27,7 @@ const defaultState: ConnectionConnectorState = {
   validToAddresses: [],
   toAddress: null,
   existingParentConnectionAddress: null,
-  nearEdgePanning: undefined
+  nearEdgePanning: null
 }
 
 export default function reducer(state = defaultState, action: any): ConnectionConnectorState {
@@ -46,7 +46,7 @@ export default function reducer(state = defaultState, action: any): ConnectionCo
     case NEAR_EDGE_PANNING:
       return {
         ...state,
-        nearEdgePanning: payload as number | undefined
+        nearEdgePanning: payload as Option<number>
       }
     case RESET_CONNECTION_CONNECTOR:
       return defaultState

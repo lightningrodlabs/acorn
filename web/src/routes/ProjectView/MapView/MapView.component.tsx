@@ -122,13 +122,7 @@ const MapView: React.FC<MapViewProps> = ({
   useEffect(() => {
     const canvas = refCanvas.current
     if (projectId && renderProps) {
-      render(
-        {
-          ...renderProps,
-          computedOutcomesKeyed,
-        },
-        canvas
-      )
+      render(renderProps, computedOutcomesKeyed, canvas)
     }
   }, [renderProps, projectId, computedOutcomesKeyed])
 
@@ -185,8 +179,8 @@ const MapView: React.FC<MapViewProps> = ({
         {/* because otherwise the font size gets to small and the text is cut off */}
         <CollapsedChildrenPills outcomes={computedOutcomesKeyed} />
       </div>
-      
-        {outcomeFormIsOpen && <MapViewCreateOutcome projectId={projectId} />}
+
+      {outcomeFormIsOpen && <MapViewCreateOutcome projectId={projectId} />}
 
       {/* below items inside 'mapview-elements-container' maintain their normal scale */}
       {/* while positioning themselves absolutely (position: absolute) on the screen */}
