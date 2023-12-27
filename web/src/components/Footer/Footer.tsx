@@ -104,7 +104,7 @@ const Footer: React.FC<FooterProps> = ({
   return (
     <div className="footer" ref={ref}>
       {/* Report Issue Button */}
-      <div className="bottom-panel">
+      <div className="bottom-left-panel">
         <a
           href="https://github.com/lightningrodlabs/acorn/issues/new"
           target="_blank"

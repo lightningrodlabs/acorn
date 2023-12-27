@@ -5,11 +5,13 @@
   that can be taken within that feature.
 */
 
+import { ActionHashB64 } from '../../../types/shared'
+
 const SET_ACTIVE_ENTRY_POINTS = 'SET_ACTIVE_ENTRY_POINTS'
 
 /* action creator functions */
 
-const setActiveEntryPoints = (entryPointAddresses) => {
+const setActiveEntryPoints = (entryPointAddresses: ActionHashB64[]) => {
   return {
     type: SET_ACTIVE_ENTRY_POINTS,
     payload: entryPointAddresses,

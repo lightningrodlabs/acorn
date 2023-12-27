@@ -18,7 +18,8 @@ const selectRenderProps = createSelector(
   (state: RootState) => state.projects.connections[state.ui.activeProject],
   (state: RootState) => state.ui.outcomeConnector.maybeLinkedOutcome,
   (state: RootState) => state.ui.outcomeConnector.toAddress,
-  (state: RootState) => state.ui.outcomeConnector.existingParentConnectionAddress,
+  (state: RootState) =>
+    state.ui.outcomeConnector.existingParentConnectionAddress,
   (state: RootState) => state.ui.outcomeForm.maybeLinkedOutcome,
   (state: RootState) => state.ui.outcomeForm.content,
   (state: RootState) => state.ui.outcomeForm.leftConnectionXPosition,
@@ -93,5 +94,7 @@ const selectRenderProps = createSelector(
     }
   }
 )
+
+export type RenderProps = ReturnType<typeof selectRenderProps>
 
 export default selectRenderProps

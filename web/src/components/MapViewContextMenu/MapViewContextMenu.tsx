@@ -1,17 +1,18 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ActionHashB64, CellIdString } from '../../types/shared'
 
 import './MapViewContextMenu.scss'
 import ContextMenu from '../ContextMenu/ContextMenu'
 import ToastContext, { ShowToast } from '../../context/ToastContext'
+import useContainWithinScreen from '../../hooks/useContainWithinScreen'
 
-export type CheckboxProps = {
+export type MapViewContextMenuProps = {
   projectCellId: CellIdString
   outcomeActionHash: ActionHashB64
   outcomeStatement: string
   isCollapsed: boolean
   hasChildren: boolean
-  contextMenuCoordinate: {
+  contextMenuClickCoordinate: {
     x: number
     y: number
   }
@@ -26,20 +27,19 @@ export type CheckboxProps = {
   unsetContextMenu: () => void
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({
+const MapViewContextMenu: React.FC<MapViewContextMenuProps> = ({
   projectCellId,
   outcomeActionHash,
   outcomeStatement,
   isCollapsed,
   hasChildren,
-  contextMenuCoordinate,
+  contextMenuClickCoordinate,
   expandOutcome,
   collapseOutcome,
   unsetContextMenu,
 }) => {
-
-// pull in the toast context
-const { setToastState } = useContext(ToastContext)
+  // pull in the toast context
+  const { setToastState } = useContext(ToastContext)
 
   const wrappedCollapseOutcome = () => {
     collapseOutcome(projectCellId, outcomeActionHash)
@@ -60,6 +60,14 @@ const { setToastState } = useContext(ToastContext)
   }
 
   const actions = []
+
+  actions.push({
+    key: 'copy-outcome',
+    icon: 'file-copy.svg',
+    text: 'Copy Outcome',
+    onClick: copyOutcomeStatement,
+  })
+
   actions.push({
     key: 'copy-statement',
     icon: 'text-align-left.svg',
@@ -67,35 +75,79 @@ const { setToastState } = useContext(ToastContext)
     onClick: copyOutcomeStatement,
   })
 
+  // only show this if the outcome has children
+  if (hasChildren) {
+    actions.push({
+      key: 'copy-subtree',
+      icon: 'file-copy.svg',
+      text: 'Copy Subtree',
+      onClick: copyOutcomeStatement,
+    })
+  }
+
+  // only show this if the outcome has children
+  if (hasChildren) {
+    actions.push({
+      key: 'export-subtree',
+      icon: 'export.svg',
+      text: 'Export Subtree',
+      onClick: copyOutcomeStatement,
+    })
+  }
+
+  // only enable if the outcome is has children BUT
+  // children should not have multiple parents
   if (hasChildren && isCollapsed) {
     actions.push({
       key: 'expand',
-      icon: 'leaf.svg',
-      text: 'Expand Outcome',
+      icon: 'expand2.svg',
+      text: 'Expand Subtree',
       onClick: wrappedExpandOutcome,
     })
   }
-  // DISABLED: collapsing outcomes
-  // else if (hasChildren) {
-  // actions.push({
-  //   key: 'collapse',
-  //   icon: 'leaf.svg',
-  //   text: 'Collapse Outcome',
-  //   onClick: wrappedCollapseOutcome,
-  // })
-  // }
+  // only enable if the outcome is has children BUT
+  // TODO: if only children do not have multiple parents
+  else if (hasChildren) {
+    actions.push({
+      key: 'collapse',
+      icon: 'collapse.svg',
+      text: 'Collapse Subtree',
+      onClick: wrappedCollapseOutcome,
+    })
+  }
+
+  // set menu width in pixels
+  const menuWidth = 176
+
+  // use this hook to make sure the menu is contained within the screen
+  const {
+    initialized,
+    setItemHeight: setMenuHeight,
+    renderCoordinate,
+  } = useContainWithinScreen({
+    initialWidth: menuWidth,
+    initialHeight: 0,
+    cursorCoordinate: contextMenuClickCoordinate,
+  })
 
   return (
     <div
       className="map-view-context-menu"
       style={{
-        top: `${contextMenuCoordinate.y}px`,
-        left: `${contextMenuCoordinate.x}px`,
+        top: `${renderCoordinate.y}px`,
+        left: `${renderCoordinate.x}px`,
+        // make sure the menu is not visible until the height is calculated
+        visibility: initialized ? 'visible' : 'hidden',
       }}
     >
-      <ContextMenu outcomeActionHash={outcomeActionHash} actions={actions} />
+      <ContextMenu
+        menuWidth={`${menuWidth}px`}
+        setMenuHeight={setMenuHeight}
+        outcomeActionHash={outcomeActionHash}
+        actions={actions}
+      />
     </div>
   )
 }
 
-export default Checkbox
+export default MapViewContextMenu

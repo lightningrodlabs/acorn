@@ -1,4 +1,4 @@
-.map-view-outcome-statement-card {
+.map-view-create-outcome-statement-card {
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -7,10 +7,10 @@
   border-radius: 1rem;
   box-shadow: 0 0 36px var(--color-brown-shadow);
   padding: 3rem 2.75rem 2.5rem 2.75rem;
-  width: 24rem;
+  // width: 24rem;
   box-sizing: border-box;
 
-  .map-view-outcome-statement-form {
+  .create-outcome-statement-form {
     margin-bottom: 2.5rem;
     // margin: 4rem 4rem 1.5rem 4rem;
 
@@ -33,7 +33,7 @@
     }
   }
 
-  .map-view-outcome-statement-checkbox {
+  .create-outcome-statement-checkbox {
     width: 100%;
 
 

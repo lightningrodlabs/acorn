@@ -89,9 +89,9 @@ export default function layoutForGraph(
     .nodeSize((node: any) => {
       // width and height, plus some extra padding
       const width =
-        node === undefined ? 0 : allOutcomeDimensions[node.data.id].width + 200
+        node === undefined || allOutcomeDimensions[node.data.id] === undefined ? 0 : allOutcomeDimensions[node.data.id].width + 200
       const height =
-        node === undefined ? 0 : allOutcomeDimensions[node.data.id].height + 200
+        node === undefined || allOutcomeDimensions[node.data.id] === undefined ? 0 : allOutcomeDimensions[node.data.id].height + 200
 
       return [width, height]
     })
@@ -102,6 +102,8 @@ export default function layoutForGraph(
   // define the coordinates of each node
   const coordinates = {}
   for (const node of dag) {
+    const dimensions = allOutcomeDimensions[node.data.id]
+    if (dimensions === undefined) continue
     const width = allOutcomeDimensions[node.data.id].width
     const height = allOutcomeDimensions[node.data.id].height
     coordinates[node.data.id] = {

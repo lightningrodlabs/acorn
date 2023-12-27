@@ -1,11 +1,11 @@
 .footer {
   max-height: 48px;
-  z-index: 3;
+
 }
 
 /* Buttom Left Panel */
 
-.bottom-panel {
+.bottom-left-panel {
   position: fixed;
   bottom: 10px;
   left: 10px;
@@ -13,31 +13,7 @@
   align-items: center;
   flex-direction: row;
   height: 48px;
-}
-
-.bottom-panel-entry-points {
-  background: rgba(255, 255, 255, 0.9) 0% 0% no-repeat padding-box;
-  border-radius: 10px;
-  height: 46px;
-  width: 46px;
-  margin-left: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-}
-
-.bottom-panel-entry-points .icon {
-  height: 26px;
-  width: 26px;
-  padding: 2px;
-  display: inline-block;
-  position: relative;
-}
-
-/* when Entry Point Icon is open: */
-
-.bottom-panel-entry-points .icon.active .inner-icon {
-  background-color: var(--text-color-link);
+  z-index: 4;
 }
 
 /* Buttom Right Panel */
@@ -54,6 +30,7 @@
   align-items: center;
   flex-direction: row;
   height: 48px;
+  z-index: 3;
 
   .map-viewing-options-button-wrapper {
     position: relative;
