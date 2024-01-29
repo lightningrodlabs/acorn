@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# crash on error, don't continue
 set -e
 
 # assumes that 

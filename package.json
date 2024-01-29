@@ -34,6 +34,8 @@
     "download-happs": "bash scripts/download-happs.sh",
     "build": "bash scripts/build.sh",
     "storybook": "yarn workspace acorn-ui storybook",
+    "zip-we-applet": "cd web/dist && bestzip ../dist.zip *",
+    "build-webhapp": "bash scripts/build-webhapp.sh",
     "postinstall": "yarn run download-happs"
   },
   "author": "Connor Turland <connor@sprillow.com>",
@@ -42,6 +44,7 @@
     "pm2": "^5.1.1"
   },
   "devDependencies": {
+    "bestzip": "^2.2.1",
     "typescript": "^5.1.6"
   },
   "resolutions": {

@@ -9,6 +9,7 @@ electron/web
 
 zod-models/dist
 
+web/dist.zip
 web/dist/fonts
 web/dist/images
 web/dist/*.js
