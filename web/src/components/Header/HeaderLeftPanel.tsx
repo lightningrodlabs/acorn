@@ -195,6 +195,21 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                       tooltipText="Priority View"
                     />
                   </NavLink>
+                  {/* gantt view button */}
+                  <NavLink
+                    to={`/project/${projectId}/gantt`}
+                    activeClassName="view-mode-active"
+                    className="view-mode-link"
+                  >
+                    <Icon
+                      name="align-left.svg"
+                      size="view-mode"
+                      className="light-grey"
+                      withTooltip
+                      tooltipText="Gantt View"
+                    />
+                  </NavLink>
+
                   {/* <Icon name='timeline.svg' className='grey' size='view-mode' /> */}
                 </div>
                 <div className="current-project-name">{projectName}</div>

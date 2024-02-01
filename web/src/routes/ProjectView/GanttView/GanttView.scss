@@ -1,0 +1,59 @@
+.gantt-view {
+  flex: 1;
+  overflow: hidden;
+}
+
+.gantt-view-content {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100%;
+
+  .gantt-view-content-timeline {
+    flex: 1;
+    overflow: auto;
+    overflow: hidden;
+    background-color: var(--bg-color-secondary);
+  }
+}
+
+.gantt-view-timeline {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 0 0 0 0;
+  overflow: hidden;
+  background-color: var(--bg-color-secondary);
+
+  .gantt-view-time-display {
+    // overflow-x: scroll;
+    display: flex;
+    flex-direction: column;
+
+    .gantt-view-month {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      padding: var(--padding-0825rem);
+      border-bottom: var(--border-gantt);
+      font-size: var(--font-size-medium);
+      font-family: var(--font-family-primary-semibold);
+    }
+
+    .gantt-view-dates {
+      display: grid;
+      grid-auto-flow: column; // ensures the grid flows horizontally
+      overflow-x: auto;
+      border-bottom: var(--border-gantt);
+
+      .gantt-view-date {
+        width: 3rem;
+        padding: var(--padding-0825rem);
+        border-right: var(--border-gantt);
+        text-align: center;
+        font-size: var(--font-size-xsmallPlus);
+      }
+    }
+  }
+}

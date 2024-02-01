@@ -12,6 +12,7 @@ import { GO_TO_OUTCOME } from '../../searchParams'
 import MapView from './MapView/MapView.connector'
 import PriorityView from './PriorityView/PriorityView.connector'
 import TableView from './TableView/TableView.connector'
+import GanttView from './GanttView/GanttView.connector'
 import ConnectedExpandedViewMode from '../../components/ExpandedViewMode/ExpandedViewMode.connector'
 
 import ComputedOutcomeContext from '../../context/ComputedOutcomeContext'
@@ -178,6 +179,7 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
           <Route path="/project/:projectId/map" component={MapView} />
           <Route path="/project/:projectId/priority" component={PriorityView} />
           <Route path="/project/:projectId/table" component={TableView} />
+          <Route path="/project/:projectId/gantt" component={GanttView} />
           <Route exact path="/project/:projectId" component={ProjectRedirect} />
         </Switch>
         <ConnectedExpandedViewMode
