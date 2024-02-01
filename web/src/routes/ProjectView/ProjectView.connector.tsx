@@ -2,12 +2,10 @@ import React from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-// data
 import {
   createOutcomeWithConnection,
   updateOutcome,
 } from '../../redux/persistent/projects/outcomes/actions'
-// ui
 import { setActiveEntryPoints } from '../../redux/ephemeral/active-entry-points/actions'
 import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
 import { closeOutcomeForm } from '../../redux/ephemeral/outcome-form/actions'
@@ -26,18 +24,18 @@ import {
   sendExitProjectSignal,
 } from '../../redux/persistent/projects/realtime-info-signal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
-import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 import { RootState } from '../../redux/reducer'
 import { CellIdString, ActionHashB64 } from '../../types/shared'
 import { Outcome } from '../../types'
+import { triggerUpdateLayout } from '../../redux/ephemeral/layout/actions'
+import constructProjectDataFetchers from '../../api/projectDataFetchers'
+import useAppWebsocket from '../../hooks/useAppWebsocket'
 import ProjectViewInner, {
   ProjectViewInnerConnectorDispatchProps,
   ProjectViewInnerConnectorStateProps,
   ProjectViewInnerOwnProps,
 } from './ProjectView.component'
-import { triggerUpdateLayout } from '../../redux/ephemeral/layout/actions'
-import constructProjectDataFetchers from '../../api/projectDataFetchers'
 
 function mapStateToProps(
   state: RootState
@@ -54,9 +52,10 @@ function mapDispatchToProps(
   dispatch: any,
   ownProps: ProjectViewInnerOwnProps
 ): ProjectViewInnerConnectorDispatchProps {
-  const { projectId: cellIdString } = ownProps
+  const { projectId: cellIdString, appWebsocket } = ownProps
   const cellId = cellIdFromString(cellIdString)
   const projectDataFetchers = constructProjectDataFetchers(
+    appWebsocket,
     dispatch,
     cellIdString
   )
@@ -88,7 +87,6 @@ function mapDispatchToProps(
       )
     },
     updateOutcome: async (outcome: Outcome, actionHash: ActionHashB64) => {
-      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeWireRecord = await projectsZomeApi.outcome.update(cellId, {
         entry: outcome,
@@ -98,7 +96,6 @@ function mapDispatchToProps(
     },
     triggerRealtimeInfoSignal: () => dispatch(triggerRealtimeInfoSignal()),
     createOutcomeWithConnection: async (outcomeWithConnection) => {
-      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeWireRecord = await projectsZomeApi.outcome.createOutcomeWithConnection(
         cellId,
@@ -119,6 +116,7 @@ const ProjectView = connect(
 function ProjectViewWrapper() {
   const { projectId } = useParams<{ projectId: CellIdString }>()
   const location = useLocation()
+  const appWebsocket = useAppWebsocket()
   let entryPointActionHashesRaw = new URLSearchParams(location.search).get(
     ENTRY_POINTS
   )
@@ -128,6 +126,7 @@ function ProjectViewWrapper() {
   }
   return (
     <ProjectView
+      appWebsocket={appWebsocket}
       projectId={projectId}
       entryPointActionHashes={entryPointActionHashes}
     />

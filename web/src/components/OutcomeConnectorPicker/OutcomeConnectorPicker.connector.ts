@@ -2,9 +2,11 @@ import { connect } from 'react-redux'
 import { RootState } from '../../redux/reducer'
 import { createConnection } from '../../redux/persistent/projects/connections/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
-import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
-import OutcomeConnectorPicker from './OutcomeConnectorPicker.component'
+import OutcomeConnectorPicker, {
+  OutcomeConnectorPickerDispatchProps,
+  OutcomeConnectorPickerOwnProps,
+} from './OutcomeConnectorPicker.component'
 
 function mapStateToProps(state: RootState) {
   const selectedOutcomes = state.ui.selection.selectedOutcomes.map(
@@ -25,7 +27,11 @@ function mapStateToProps(state: RootState) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(
+  dispatch: any,
+  ownProps: OutcomeConnectorPickerOwnProps
+) : OutcomeConnectorPickerDispatchProps {
+  const { appWebsocket } = ownProps
   return {
     saveConnections: async (
       parentActionHash,
@@ -35,9 +41,8 @@ function mapDispatchToProps(dispatch) {
       // loop over childrenAddresses
       // use createConnection each time
       const cellId = cellIdFromString(cellIdString)
-      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      return Promise.all(
+      await Promise.all(
         childrenAddresses.map(async (childActionHash) => {
           const connection = await projectsZomeApi.connection.create(cellId, {
             parentActionHash,

@@ -5,8 +5,10 @@ import { getAppWs } from '../../hcWebsockets'
 import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { cloneProjectMeta } from './cloneFunctions'
 import { createActionHashMapAndImportProjectData } from './createActionHashMapAndImportProjectData'
+import { AppAgentClient } from '@holochain/client'
 
 export async function internalImportProject(
+  appWebsocket: AppAgentClient,
   cellIdString: CellIdString,
   agentAddress: AgentPubKeyB64,
   projectData: BackwardsCompatibleProjectExport,
@@ -19,6 +21,7 @@ export async function internalImportProject(
 
   // next step is to import the bulk of the data into that project
   const oldToNewAddressMaps = await iCreateActionHashMapAndImportProjectData(
+    appWebsocket,
     projectData,
     cellIdString,
     dispatch
@@ -46,15 +49,16 @@ export async function internalImportProject(
 }
 
 export async function importProject(
+  appWebsocket: AppAgentClient,
   cellIdString: CellIdString,
   agentAddress: AgentPubKeyB64,
   projectData: BackwardsCompatibleProjectExport,
   passphrase: string,
   dispatch: any
 ) {
-  const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return internalImportProject(
+    appWebsocket,
     cellIdString,
     agentAddress,
     projectData,

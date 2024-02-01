@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Redirect, useHistory } from 'react-router-dom'
-
-import './IntroScreen.scss'
+import { AppAgentClient } from '@holochain/client'
 
 import Button from '../Button/Button'
 import Icon from '../Icon/Icon'
@@ -10,14 +9,21 @@ import { Profile } from '../../types'
 import { WireRecord } from '../../api/hdkCrud'
 import { CellIdString } from '../../types/shared'
 
-export type StateIntroScreenProps = {
+import './IntroScreen.scss'
+
+export type IntroScreenStateProps = {
   whoami: WireRecord<Profile>
   profilesCellId: CellIdString
 }
-export type DispatchIntroScreenProps = {
+export type IntroScreenDispatchProps = {
   fetchWhoami: (profilesCellId: CellIdString) => Promise<void>
 }
-export type IntroScreenProps = StateIntroScreenProps & DispatchIntroScreenProps
+export type IntroScreenOwnProps = {
+  appWebsocket: AppAgentClient
+}
+export type IntroScreenProps = IntroScreenOwnProps &
+  IntroScreenStateProps &
+  IntroScreenDispatchProps
 
 const IntroScreen: React.FC<IntroScreenProps> = ({
   fetchWhoami,

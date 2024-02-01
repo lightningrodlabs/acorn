@@ -12,7 +12,7 @@ import 'regenerator-runtime/runtime'
 
 import { WeClient, isWeContext, initializeHotReload } from '@lightningrodlabs/we-applet'
 import createStoreAndRenderToDom, { electronInit } from './indexForElectron'
-import { getAdminWs, getAppWs, setAppWs } from './hcWebsockets'
+import { getAdminWs, getAppWs } from './hcWebsockets'
 
 console.log('HELLLLLLO')
 
@@ -40,7 +40,6 @@ if (!isWeContext) {
     const appAgentClient = weClient.renderInfo.appletClient
     const profilesClient = weClient.renderInfo.profilesClient
 
-    setAppWs(appAgentClient)
     console.log('made it here')
     const store = await createStoreAndRenderToDom(appAgentClient)
     console.log('made it here2')

@@ -1,21 +1,21 @@
 import { AllProjectsDataExport, ProjectExportData } from 'zod-models'
 import constructProjectDataFetchers from '../api/projectDataFetchers'
 import ProjectsZomeApi from '../api/projectsApi'
-import { getAppWs } from '../hcWebsockets'
 import { RootState } from '../redux/reducer'
 import { ProjectMeta } from '../types'
 import { ActionHashB64, CellIdString } from '../types/shared'
 import { cellIdFromString } from '../utils'
+import { AppAgentClient } from '@holochain/client'
 
 export type ExportType = 'csv' | 'json'
 
 export async function updateProjectMeta(
+  appWebsocket: AppAgentClient,
   projectMeta: ProjectMeta,
   actionHash: ActionHashB64,
   cellIdString: CellIdString
 ) {
   const cellId = cellIdFromString(cellIdString)
-  const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   await projectsZomeApi.projectMeta.update(cellId, {
     entry: projectMeta,
@@ -27,6 +27,7 @@ export async function internalExportProjectsData(
   constructProjectDataFetchersFunction: typeof constructProjectDataFetchers,
   collectExportProjectDataFunction: typeof collectExportProjectData,
   iUpdateProjectMeta: typeof updateProjectMeta,
+  appWebsocket: AppAgentClient,
   store: any,
   toVersion: string,
   onStep: (completed: number, toComplete: number) => void,
@@ -54,6 +55,7 @@ export async function internalExportProjectsData(
     // step 1: make sure all the data is fetched
     // and integrated into the redux store
     const projectDataFetchers = constructProjectDataFetchersFunction(
+      appWebsocket,
       store.dispatch,
       projectCellId
     )
@@ -93,7 +95,7 @@ export async function internalExportProjectsData(
       ...projectMetaDetails,
       isMigrated: toVersion,
     }
-    await iUpdateProjectMeta(newProjectMeta, actionHash, projectCellId)
+    await iUpdateProjectMeta(appWebsocket, newProjectMeta, actionHash, projectCellId)
     completedTracker++
     onStep(completedTracker, projectCellIds.length)
   }
@@ -101,6 +103,7 @@ export async function internalExportProjectsData(
 }
 
 export default async function exportProjectsData(
+  appWebsocket: AppAgentClient,
   store: any,
   toVersion: string,
   fromIntegrityVersion: number,
@@ -110,6 +113,7 @@ export default async function exportProjectsData(
     constructProjectDataFetchers,
     collectExportProjectData,
     updateProjectMeta,
+    appWebsocket,
     store,
     toVersion,
     onStep,

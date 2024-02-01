@@ -10,7 +10,6 @@ import {
 } from '../../redux/ephemeral/outcome-form/actions'
 import MapViewCreateOutcome, { MapViewCreateOutcomeConnectorDispatchProps, MapViewCreateOutcomeConnectorStateProps, MapViewCreateOutcomeOwnProps } from './MapViewCreateOutcome.component'
 import ProjectsZomeApi from '../../api/projectsApi'
-import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 import { ActionHashB64, Option } from '../../types/shared'
 import { LinkedOutcomeDetails, Outcome } from '../../types'
@@ -54,15 +53,14 @@ function mapStateToProps(state: RootState): MapViewCreateOutcomeConnectorStatePr
 // Designed to pass functions into components which are already wrapped as
 // action dispatchers for redux action types
 
-function mapDispatchToProps(dispatch, ownProps: MapViewCreateOutcomeOwnProps): MapViewCreateOutcomeConnectorDispatchProps {
-  const { projectId: cellIdString } = ownProps
+function mapDispatchToProps(dispatch: any, ownProps: MapViewCreateOutcomeOwnProps): MapViewCreateOutcomeConnectorDispatchProps {
+  const { projectId: cellIdString, appWebsocket } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
     updateContent: (content: string) => {
       return dispatch(updateContent(content))
     },
     deleteConnection: async (actionHash: ActionHashB64) => {
-      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       // we will only be archiving
       // an connection here in the context of immediately replacing
@@ -73,7 +71,6 @@ function mapDispatchToProps(dispatch, ownProps: MapViewCreateOutcomeOwnProps): M
       return dispatch(deleteConnection(cellIdString, actionHash))
     },
     createOutcomeWithConnection: async (entry: Outcome, maybeLinkedOutcome: Option<LinkedOutcomeDetails>) => {
-      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeWithConnection = await projectsZomeApi.outcome.createOutcomeWithConnection(
         cellId,

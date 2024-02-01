@@ -10,10 +10,10 @@ import {
 } from '../../../ephemeral/outcome-editing/actions'
 import { SEND_REALTIME_INFO, SEND_EXIT_PROJECT_SIGNAL } from './actions'
 import ProjectsZomeApi from '../../../../api/projectsApi'
-import { getAppWs } from '../../../../hcWebsockets'
 import { cellIdFromString } from '../../../../utils'
 import { RootState } from '../../../reducer'
 import { CellIdString } from '../../../../types/shared'
+import { AppAgentClient, AppAgentWebsocket } from '@holochain/client'
 
 const isOneOfRealtimeInfoAffectingActions = (action) => {
   const { type } = action
@@ -34,57 +34,63 @@ const isProjectExitAction = (action: { type: string }) => {
 }
 // watch for actions that will affect the realtime info state values
 
-const realtimeInfoWatcher = (store) => {
-  // return the action handler middleware
-  return (next) => async (action) => {
-    if (isOneOfRealtimeInfoAffectingActions(action)) {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      let result = next(action)
-      if (
-        appWebsocket.client.socket.readyState ===
-        appWebsocket.client.socket.OPEN
-      ) {
-        let state: RootState = store.getState()
-        const payload = getRealtimeInfo(state)
-        // there is a chance that the project has been exited
-        // and thus this need not be fired
-        if (payload.projectId) {
-          const cellId = cellIdFromString(payload.projectId)
-          projectsZomeApi.realtimeInfoSignal.send(cellId, payload).catch((e) => {
-            console.log('could not send realtime info signal due to error:', e)
-          })
+// return the action handler middleware
+const realtimeInfoWatcher =
+  // closure the appWebsocket
+  (appWebsocket: AppAgentClient) =>
+    // provide the typical redux middleware signature
+    (store: any) => (next: any) => async (action: any) => {
+      if (isOneOfRealtimeInfoAffectingActions(action)) {
+        const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+        let result = next(action)
+        if (
+          (appWebsocket as AppAgentWebsocket).appWebsocket.client.socket
+            .readyState ===
+          (appWebsocket as AppAgentWebsocket).appWebsocket.client.socket.OPEN
+        ) {
+          let state: RootState = store.getState()
+          const payload = getRealtimeInfo(state)
+          // there is a chance that the project has been exited
+          // and thus this need not be fired
+          if (payload.projectId) {
+            const cellId = cellIdFromString(payload.projectId)
+            projectsZomeApi.realtimeInfoSignal
+              .send(cellId, payload)
+              .catch((e) => {
+                console.log(
+                  'could not send realtime info signal due to error:',
+                  e
+                )
+              })
+          }
         }
+        return result
+      } else if (isProjectExitAction(action)) {
+        const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+        const payload = {
+          projectId: '',
+          outcomeBeingEdited: null,
+          outcomeExpandedView: null,
+        }
+        const cellIdString: CellIdString = action.payload
+        const cellId = cellIdFromString(cellIdString)
+        // TODO: catch and log error, but don't
+        // await this call
+        projectsZomeApi.realtimeInfoSignal.send(cellId, payload).catch((e) => {
+          console.log('could not send realtime info signal due to error:', e)
+        })
+        return next(action)
+      } else {
+        return next(action)
       }
-      return result
-    } else if (isProjectExitAction(action)) {
-      const appWebsocket = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-      const payload = {
-        projectId: '',
-        outcomeBeingEdited: null,
-        outcomeExpandedView: null,
-      }
-      const cellIdString: CellIdString = action.payload
-      const cellId = cellIdFromString(cellIdString)
-      // TODO: catch and log error, but don't
-      // await this call
-      projectsZomeApi.realtimeInfoSignal.send(cellId, payload).catch((e) => {
-        console.log('could not send realtime info signal due to error:', e)
-      })
-      return next(action)
-    } else {
-      return next(action)
     }
-  }
-}
+
 // cherry-pick the relevant state for sending as a RealtimeInfo Signal
 function getRealtimeInfo(state: RootState) {
-  let payload = {
+  return {
     projectId: state.ui.activeProject,
     outcomeBeingEdited: state.ui.outcomeEditing,
     outcomeExpandedView: state.ui.expandedView.outcomeActionHash,
   }
-  return payload
 }
 export { realtimeInfoWatcher }

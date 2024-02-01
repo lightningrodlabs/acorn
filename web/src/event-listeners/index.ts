@@ -10,24 +10,26 @@ import canvasMousedown from './canvasMousedown'
 import canvasMouseup from './canvasMouseup'
 import canvasDoubleclick from './canvasDoubleclick'
 import canvasContextMenu from './canvasContextMenu'
+import { AppAgentClient } from '@holochain/client'
 
 // This function is called within a useEffect and that's why it follows the same
 // pattern as useEffects, which is to return an unsubscribe/cleanup function.
 // outcomes is ComputedOutcomes in an object, keyed by their actionHash
 export default function setupEventListeners(
+  appWebsocket: AppAgentClient,
   store: any,
   canvas: HTMLCanvasElement,
   outcomes: { [actionHash: ActionHashB64]: ComputedOutcome }
 ) {
   // prepare the event listeners
   const onWindowResize = windowResize.bind(null, store, canvas)
-  const onBodyKeydown = bodyKeydown.bind(null, store)
+  const onBodyKeydown = bodyKeydown.bind(null, appWebsocket, store)
   const onBodyKeyup = bodyKeyup.bind(null, store)
   const onCanvasMousemove = canvasMousemove.bind(null, store, outcomes)
   const onCanvasWheel = canvasWheel.bind(null, store)
   const onCanvasClick = canvasClick.bind(null, store, outcomes)
   const onCanvasMousedown = canvasMousedown.bind(null, store)
-  const onCanvasMouseup = canvasMouseup.bind(null, store)
+  const onCanvasMouseup = canvasMouseup.bind(null, appWebsocket, store)
   const onCanvasDoubleclick = canvasDoubleclick.bind(null, store, outcomes)
   const onCanvasContextMenu = canvasContextMenu.bind(null, store, outcomes)
 

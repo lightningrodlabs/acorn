@@ -1,20 +1,37 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { AppAgentClient } from '@holochain/client'
 import { Redirect } from 'react-router-dom'
 import ProfileEditForm from '../../components/ProfileEditForm/ProfileEditForm'
 import { Profile } from '../../types'
 import { AgentPubKeyB64, CellIdString } from '../../types/shared'
+import useAppWebsocket from '../../hooks/useAppWebsocket'
 import './CreateProfilePage.scss'
 
-export type CreateProfilePageProps = {
+export type CreateProfilePageOwnProps = {
+  appWebsocket: AppAgentClient
+}
+
+export type CreateProfilePageStateProps = {
   hasProfile: boolean
   agentAddress: AgentPubKeyB64
   profilesCellIdString: CellIdString
+}
+
+export type CreateProfilePageDispatchProps = {
   createWhoami: (
+    appWebsocket: AppAgentClient,
     profile: Profile,
     profilesCellIdString: CellIdString
   ) => Promise<void>
-  fetchWhoami: (profilesCellIdString: CellIdString) => Promise<void>
+  fetchWhoami: (
+    appWebsocket: AppAgentClient,
+    profilesCellIdString: CellIdString
+  ) => Promise<void>
 }
+
+export type CreateProfilePageProps = CreateProfilePageOwnProps &
+  CreateProfilePageStateProps &
+  CreateProfilePageDispatchProps
 
 const CreateProfilePage: React.FC<CreateProfilePageProps> = ({
   hasProfile,
@@ -23,6 +40,7 @@ const CreateProfilePage: React.FC<CreateProfilePageProps> = ({
   createWhoami,
   fetchWhoami,
 }) => {
+  const appWebsocket = useAppWebsocket()
   /*
     We do this so that if/when the agents Profile gossips to them,
     having been already imported by someone else,
@@ -31,7 +49,7 @@ const CreateProfilePage: React.FC<CreateProfilePageProps> = ({
   const instance = useRef<NodeJS.Timeout>()
   useEffect(() => {
     instance.current = setInterval(() => {
-      fetchWhoami(profilesCellIdString)
+      fetchWhoami(appWebsocket, profilesCellIdString)
     }, 10000)
     return () => {
       clearInterval(instance.current)
@@ -47,7 +65,7 @@ const CreateProfilePage: React.FC<CreateProfilePageProps> = ({
 
   const innerOnSubmit = async (profile: Profile) => {
     setPending(true)
-    await createWhoami(profile, profilesCellIdString)
+    await createWhoami(appWebsocket, profile, profilesCellIdString)
   }
 
   return hasProfile ? (

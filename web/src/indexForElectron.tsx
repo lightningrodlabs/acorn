@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
+import { AdminWebsocket, AppAgentClient, CellType } from '@holochain/client'
 
 // Local Imports
 import { PROFILES_ROLE_NAME } from './holochainConfig'
@@ -25,12 +26,11 @@ import { cellIdFromString, cellIdToString } from './utils'
 // Import styles
 import './variables.scss'
 import './global.scss'
-import { AdminWebsocket, AppAgentClient, CellType } from '@holochain/client'
 
 export default async function createStoreAndRenderToDom(
   appWs: AppAgentClient
 ) {
-  const middleware = [layoutWatcher, realtimeInfoWatcher]
+  const middleware = [layoutWatcher, realtimeInfoWatcher(appWs)]
   // This enables the redux-devtools browser extension
   // which gives really awesome debugging for apps that use redux
   const composeEnhancers =
@@ -48,7 +48,7 @@ export default async function createStoreAndRenderToDom(
   // we make the state available throughout it
   ReactDOM.render(
     <Provider store={store}>
-      <App />
+      <App appWebsocket={appWs} />
     </Provider>,
     document.getElementById('react')
   )

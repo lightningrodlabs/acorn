@@ -1,14 +1,14 @@
-import { AppWebsocket } from '@holochain/client'
+import { AppAgentClient } from '@holochain/client'
 import ProfilesZomeApi from '../../api/profilesApi'
 import ProjectsZomeApi from '../../api/projectsApi'
 
 export function createProfilesZomeApi(
-  appWebsocket: AppWebsocket
+  appWebsocket: AppAgentClient
 ): ProfilesZomeApi {
   return new ProfilesZomeApi(appWebsocket)
 }
 export function createProjectsZomeApi(
-  appWebsocket: AppWebsocket
+  appWebsocket: AppAgentClient
 ): ProjectsZomeApi {
   return new ProjectsZomeApi(appWebsocket)
 }

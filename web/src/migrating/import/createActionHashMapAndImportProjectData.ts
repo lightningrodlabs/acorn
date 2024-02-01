@@ -24,6 +24,7 @@ import {
   cloneData,
 } from './cloneFunctions'
 import { createProjectsZomeApi } from './zomeApiCreators'
+import { AppAgentClient } from '@holochain/client'
 
 export async function internalCreateActionHashMapAndImportProjectData(
   projectData: BackwardsCompatibleProjectExport,
@@ -114,11 +115,11 @@ export async function internalCreateActionHashMapAndImportProjectData(
 }
 
 export async function createActionHashMapAndImportProjectData(
+  appWebsocket: AppAgentClient,
   projectData: BackwardsCompatibleProjectExport,
   projectsCellIdString: CellIdString,
   dispatch: any
 ) {
-  const appWebsocket = await getAppWs()
   const projectsZomeApi = createProjectsZomeApi(appWebsocket)
   return internalCreateActionHashMapAndImportProjectData(
     projectData,

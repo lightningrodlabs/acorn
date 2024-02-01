@@ -14,7 +14,7 @@ import mockUnmigratedProjectMeta from './mockProjectMeta'
 import mockBaseRootState from './mockRootState'
 import { installProject as iInstallProject } from '../src/projects/installProject'
 import { getAppWs as iGetAppWs } from '../src/hcWebsockets'
-import { AppWebsocket } from '@holochain/client'
+import { AppAgentClient, AppWebsocket } from '@holochain/client'
 import { RootState } from '../src/redux/reducer'
 import ProfilesZomeApi from '../src/api/profilesApi'
 import ProjectsZomeApi from '../src/api/projectsApi'
@@ -71,8 +71,10 @@ let createActionHashMapAndImportProjectData: typeof iCreateActionHashMapAndImpor
 let baseRootState: typeof mockBaseRootState
 let mockGetState: () => RootState
 let cloneDataSet: typeof iCloneDataSet
-let onStep: Parameters<typeof importProjectsData>[2]
-let mockAppWs: AppWebsocket
+// this can be brittle and break easily if the function signature changes
+// be careful with it
+let onStep: Parameters<typeof importProjectsData>[3]
+let mockAppWs: AppAgentClient
 let projectMeta: WireRecord<ProjectMeta>
 let mockMigrationData: string
 let mockCellIdString: string
@@ -295,6 +297,7 @@ describe('importProject()', () => {
   const agentAddress = 'testAgentAddress'
   it('imports project into a new cell', async () => {
     await internalImportProject(
+      mockAppWs,
       mockCellIdString,
       agentAddress,
       sampleGoodDataExport.projects[0],

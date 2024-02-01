@@ -21,6 +21,7 @@ import EvChildren from './EVMiddleColumn/TabContent/EvChildren/EvChildren'
 import EvTaskList from './EVMiddleColumn/TabContent/EvTaskList/EvTaskList'
 import cleanOutcome from '../../api/cleanOutcome'
 import moment from 'moment'
+import useAppWebsocket from '../../hooks/useAppWebsocket'
 
 function mapStateToProps(
   state: RootState,
@@ -82,6 +83,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   const [githubInputLinkText, setGithubInputLinkText] = useState('')
   // the live editor state
   const [description, setDescription] = useState('')
+  const appWebsocket = useAppWebsocket()
 
   // close Expanded view after hitting Esc key:
   useEffect(() => {
@@ -229,6 +231,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
     <ConnectedEvComments
       projectId={projectId}
       outcomeContent={outcomeContent}
+      appWebsocket={appWebsocket}
     />
   )
   const rightColumn = (

@@ -1,10 +1,31 @@
 import React, { useState, useEffect } from 'react'
+import { AppAgentClient } from '@holochain/client'
 import moment from 'moment'
+import { AgentPubKeyB64, CellIdString } from '../../types/shared'
+import { ComputedOutcome } from '../../types'
 import Icon from '../Icon/Icon'
 import OutcomeConnectorPicker from '../OutcomeConnectorPicker/OutcomeConnectorPicker.connector'
 import Modal, { ModalContent } from '../Modal/Modal'
 
 import './MultiEditBar.scss'
+
+export type MultiEditBarStateProps = {
+  agentAddress: AgentPubKeyB64
+  selectedOutcomes?: ComputedOutcome[]
+}
+
+export type MultiEditBarDispatchProps = {
+  updateOutcome: (outcome: any, actionHash: string) => void
+  deleteOutcomeFully: (actionHash: string) => Promise<void>
+}
+
+export type MultiEditBarOwnProps = {
+  projectId: CellIdString
+  hasMultiSelection: boolean
+  appWebsocket: AppAgentClient
+}
+
+export type MultiEditBarProps = MultiEditBarStateProps & MultiEditBarDispatchProps & MultiEditBarOwnProps
 
 export default function MultiEditBar({
   agentAddress,

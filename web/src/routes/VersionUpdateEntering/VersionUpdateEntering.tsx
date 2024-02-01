@@ -9,6 +9,7 @@ import MigrationProgress from '../../components/MigrationProgress/MigrationProgr
 import { RootState } from '../../redux/reducer'
 import ButtonAction from '../../components/ButtonAction/ButtonAction'
 import ExportMenuItem from '../../components/ExportMenuItem/ExportMenuItem.component'
+import useAppWebsocket from '../../hooks/useAppWebsocket'
 
 const markMigrationDone = () => {
   if (window.require) {
@@ -29,6 +30,7 @@ const VersionUpdateEntering: React.FC<VersionUpdateEnteringProps> = ({
   migrationDataFileName,
 }) => {
   const store = useStore()
+  const appWebsocket = useAppWebsocket()
   const history = useHistory()
   const state: RootState = store.getState()
   const profilesCellId = state.cells.profiles
@@ -46,7 +48,7 @@ const VersionUpdateEntering: React.FC<VersionUpdateEnteringProps> = ({
 
   const runImport = async () => {
     setStatus('Importing your data.')
-    await importProjectsData(store, migrationData, (completed, toComplete) => {
+    await importProjectsData(appWebsocket, store, migrationData, (completed, toComplete) => {
       // percent
       // avoid 100 % because it does green checkmark
       let newProgress = Math.floor((completed / toComplete) * 100)

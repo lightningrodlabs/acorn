@@ -31,8 +31,10 @@ import Typography from '../../Typography/Typography'
 import ReadOnlyInfo from '../../ReadOnlyInfo/ReadOnlyInfo'
 import cleanOutcome from '../../../api/cleanOutcome'
 import ProgressIndicator from '../../ProgressIndicator/ProgressIndicator'
+import { AppAgentClient } from '@holochain/client'
 
 export type EvRightColumnOwnProps = {
+  appWebsocket: AppAgentClient
   projectId: CellIdString
   onClose: () => void
   outcome: ComputedOutcome

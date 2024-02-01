@@ -1,14 +1,13 @@
 import { connect } from 'react-redux'
-import { getAdminWs, getAppWs } from '../../hcWebsockets'
+import { getAdminWs } from '../../hcWebsockets'
 import { fetchEntryPointDetails } from '../../redux/persistent/projects/entry-points/actions'
 import { fetchMembers } from '../../redux/persistent/projects/members/actions'
 import {
   fetchProjectMeta,
-  updateProjectMeta,
 } from '../../redux/persistent/projects/project-meta/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString } from '../../utils'
-import { ActionHashB64, AgentPubKeyB64, CellIdString } from '../../types/shared'
+import { CellIdString } from '../../types/shared'
 import { RootState } from '../../redux/reducer'
 import { createSelectProjectAggregated } from '../../redux/persistent/projects/select'
 import Dashboard, {
@@ -40,8 +39,7 @@ function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
       const adminWs = await getAdminWs()
       return uninstallProject(appId, cellId, dispatch, adminWs)
     },
-    fetchEntryPointDetails: async (cellIdString: CellIdString) => {
-      const appWebsocket = await getAppWs()
+    fetchEntryPointDetails: async (appWebsocket, cellIdString) => {
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
       const entryPointDetails = await projectsZomeApi.entryPoint.fetchEntryPointDetails(
@@ -49,15 +47,13 @@ function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
       )
       return dispatch(fetchEntryPointDetails(cellIdString, entryPointDetails))
     },
-    fetchMembers: async (cellIdString: CellIdString) => {
-      const appWebsocket = await getAppWs()
+    fetchMembers: async (appWebsocket, cellIdString) => {
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
       const members = await projectsZomeApi.member.fetch(cellId)
       return dispatch(fetchMembers(cellIdString, members))
     },
-    fetchProjectMeta: async (cellIdString: CellIdString) => {
-      const appWebsocket = await getAppWs()
+    fetchProjectMeta: async (appWebsocket, cellIdString) => {
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
       const projectMeta = await projectsZomeApi.projectMeta.fetchProjectMeta(
@@ -66,12 +62,12 @@ function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
       return dispatch(fetchProjectMeta(cellIdString, projectMeta))
     },
     createProject: async (
-      agentAddress: AgentPubKeyB64,
-      project: { name: string; image: string },
-      passphrase: string
+      appWebsocket,
+      agentAddress,
+      project,
+      passphrase
     ) => {
-      const appWs = await getAppWs()
-      const projectsZomeApi = new ProjectsZomeApi(appWs)
+      const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const projectMeta: ProjectMeta = {
         ...project, // name and image
         passphrase,
@@ -90,15 +86,15 @@ function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
         projectsZomeApi
       )
     },
-    joinProject: async (passphrase: string) => {
-      const appWs = await getAppWs()
+    joinProject: async (appWebsocket, passphrase) => {
       const cellIdString = await joinProject(passphrase, dispatch)
       const cellId = cellIdFromString(cellIdString)
-      triggerJoinSignal(cellId, appWs)
+      triggerJoinSignal(cellId, appWebsocket)
       return cellIdString
     },
-    importProject: (cellIdString, agentAddress, projectData, passphrase) => {
+    importProject: (appWebsocket, cellIdString, agentAddress, projectData, passphrase) => {
       return importProject(
+        appWebsocket,
         cellIdString,
         agentAddress,
         projectData,

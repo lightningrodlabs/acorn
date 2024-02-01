@@ -1,17 +1,20 @@
+import React from 'react'
 import { connect } from 'react-redux'
 import ProjectsZomeApi from '../../../api/projectsApi'
-import { getAppWs } from '../../../hcWebsockets'
 import { openExpandedView } from '../../../redux/ephemeral/expanded-view/actions'
 import { animatePanAndZoom } from '../../../redux/ephemeral/viewport/actions'
 import { updateProjectMeta } from '../../../redux/persistent/projects/project-meta/actions'
 import selectProjectMembersPresent from '../../../redux/persistent/projects/realtime-info-signal/select'
 import { RootState } from '../../../redux/reducer'
-import { ProjectMeta } from '../../../types'
-import { ActionHashB64, CellIdString } from '../../../types/shared'
 import { cellIdFromString } from '../../../utils'
-import PriorityView from './PriorityView.component'
+import PriorityViewInner, {
+  PriorityViewDispatchProps,
+  PriorityViewOwnProps,
+  PriorityViewStateProps,
+} from './PriorityView.component'
+import useAppWebsocket from '../../../hooks/useAppWebsocket'
 
-function mapStateToProps(state: RootState) {
+function mapStateToProps(state: RootState): PriorityViewStateProps {
   const projectId = state.ui.activeProject
   const projectMeta = state.projects.projectMeta[projectId]
   const projectTagsObject = state.projects.tags[projectId] || {}
@@ -29,20 +32,19 @@ function mapStateToProps(state: RootState) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(
+  dispatch: any,
+  ownProps: PriorityViewOwnProps
+): PriorityViewDispatchProps {
+  const { appWebsocket } = ownProps
   return {
-    openExpandedView: (outcomeActionHash: ActionHashB64) => {
+    openExpandedView: (outcomeActionHash) => {
       return dispatch(openExpandedView(outcomeActionHash))
     },
-    goToOutcome: (outcomeActionHash: ActionHashB64) => {
+    goToOutcome: (outcomeActionHash) => {
       return dispatch(animatePanAndZoom(outcomeActionHash, true))
     },
-    updateProjectMeta: async (
-      projectMeta: ProjectMeta,
-      actionHash: ActionHashB64,
-      cellIdString: CellIdString
-    ) => {
-      const appWebsocket = await getAppWs()
+    updateProjectMeta: async (projectMeta, actionHash, cellIdString) => {
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
       const updatedProjectMeta = await projectsZomeApi.projectMeta.update(
@@ -57,4 +59,12 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PriorityView)
+const PriorityView = connect(mapStateToProps, mapDispatchToProps)(PriorityViewInner)
+
+// necessary because this is rendered right inside a route
+const PriorityViewWrapper = () => {
+  const appWebsocket = useAppWebsocket()
+  return <PriorityView appWebsocket={appWebsocket} />
+}
+
+export default PriorityViewWrapper

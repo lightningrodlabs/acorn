@@ -1,25 +1,26 @@
 import React, { useState, useContext } from 'react'
 import { CSSTransition } from 'react-transition-group'
+import { AppAgentClient } from '@holochain/client'
 
-import Icon from '../../components/Icon/Icon'
-import DashboardEmptyState from '../../components/DashboardEmptyState/DashboardEmptyState'
-
-import CreateProjectModal from '../../components/CreateProjectModal/CreateProjectModal'
-import ImportProjectModal from '../../components/ImportProjectModal/ImportProjectModal'
-import JoinProjectModal from '../../components/JoinProjectModal/JoinProjectModal'
+import { AgentPubKeyB64, CellIdString } from '../../types/shared'
+import { ProjectAggregated } from '../../types'
 
 import {
   DashboardListProject,
   DashboardListProjectLoading,
 } from './DashboardListProject'
+import DashboardEmptyState from '../../components/DashboardEmptyState/DashboardEmptyState'
+import Icon from '../../components/Icon/Icon'
+import CreateProjectModal from '../../components/CreateProjectModal/CreateProjectModal'
+import ImportProjectModal from '../../components/ImportProjectModal/ImportProjectModal'
+import JoinProjectModal from '../../components/JoinProjectModal/JoinProjectModal'
 import PendingProjects from '../../components/PendingProjects/PendingProjects'
-
-import './Dashboard.scss'
 import Typography from '../../components/Typography/Typography'
-import { AgentPubKeyB64, CellIdString } from '../../types/shared'
-import { ProjectAggregated } from '../../types'
 import ModalContexts from '../../context/ModalContexts'
 import useProjectStatusInfos from '../../hooks/useProjectStatusInfos'
+import useAppWebsocket from '../../hooks/useAppWebsocket'
+
+import './Dashboard.scss'
 
 export type DashboardStateProps = {
   agentAddress: AgentPubKeyB64
@@ -28,17 +29,31 @@ export type DashboardStateProps = {
 }
 
 export type DashboardDispatchProps = {
+  uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
   createProject: (
+    appWebsocket: AppAgentClient,
     agentAddress: AgentPubKeyB64,
     project: { name: string; image: string },
     passphrase: string
   ) => Promise<void>
-  fetchMembers: (cellIdString: CellIdString) => Promise<void>
-  fetchProjectMeta: (cellIdString: CellIdString) => Promise<void>
-  fetchEntryPointDetails: (cellIdString: CellIdString) => Promise<void>
-  joinProject: (passphrase: string) => Promise<CellIdString>
-  uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
+  fetchMembers: (
+    appWebsocket: AppAgentClient,
+    cellIdString: CellIdString
+  ) => Promise<void>
+  fetchProjectMeta: (
+    appWebsocket: AppAgentClient,
+    cellIdString: CellIdString
+  ) => Promise<void>
+  fetchEntryPointDetails: (
+    appWebsocket: AppAgentClient,
+    cellIdString: CellIdString
+  ) => Promise<void>
+  joinProject: (
+    appWebsocket: AppAgentClient,
+    passphrase: string
+  ) => Promise<CellIdString>
   importProject: (
+    appWebsocket: AppAgentClient,
     cellIdString: CellIdString,
     agentAddress: AgentPubKeyB64,
     projectData: any,
@@ -62,6 +77,7 @@ const Dashboard: React.FC<DashboardProps> = ({
 }) => {
   // pull in the modal context
   const { setModalState } = useContext(ModalContexts)
+  const appWebsocket = useAppWebsocket()
 
   const [selectedSort, setSelectedSort] = useState('createdAt')
   const [showSortPicker, setShowSortPicker] = useState(false)
@@ -78,21 +94,21 @@ const Dashboard: React.FC<DashboardProps> = ({
   // calling this triggers the fetchProjectMeta for each project
   const { projectStatusInfos, setProjectStatusInfos } = useProjectStatusInfos(
     projectCellIdStrings,
-    fetchProjectMeta,
-    fetchEntryPointDetails,
-    fetchMembers
+    fetchProjectMeta.bind(null, appWebsocket),
+    fetchEntryPointDetails.bind(null, appWebsocket),
+    fetchMembers.bind(null, appWebsocket)
   )
 
   const onCreateProject = (
     project: { name: string; image: string },
     passphrase: string
-  ) => createProject(agentAddress, project, passphrase)
-  const doJoinProject = (passphrase: string) => joinProject(passphrase)
+  ) => createProject(appWebsocket, agentAddress, project, passphrase)
+  const doJoinProject = (passphrase: string) => joinProject(appWebsocket, passphrase)
   const onImportProject = (
     cellIdString: CellIdString,
     projectData: any,
     passphrase: string
-  ) => importProject(cellIdString, agentAddress, projectData, passphrase)
+  ) => importProject(appWebsocket, cellIdString, agentAddress, projectData, passphrase)
 
   const setSortBy = (sortBy) => () => {
     setSelectedSort(sortBy)

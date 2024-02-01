@@ -4,13 +4,13 @@ import {
   deleteConnection,
 } from '../../persistent/projects/connections/actions'
 import ProjectsZomeApi from '../../../api/projectsApi'
-import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
-import { ActionHashB64 } from '@holochain/client'
+import { ActionHashB64, AppAgentClient } from '@holochain/client'
 import { LinkedOutcomeDetails, RelationInput } from '../../../types'
 import { CellIdString, Option } from '../../../types/shared'
 
 export default async function handleOutcomeConnectorMouseUp(
+  appWebsocket: AppAgentClient,
   maybeLinkedOutcome: Option<LinkedOutcomeDetails>,
   toAddress: ActionHashB64,
   existingParentConnectionAddress: ActionHashB64,
@@ -18,7 +18,6 @@ export default async function handleOutcomeConnectorMouseUp(
   dispatch: any
 ) {
   const cellId = cellIdFromString(activeProject)
-  const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   if (maybeLinkedOutcome && toAddress) {
     // if we are replacing a Connection with this one

@@ -10,12 +10,13 @@ import {
 import Icon from '../Icon/Icon'
 import './ProjectSettingsModal.scss'
 import { ProjectMeta } from '../../types'
-import { CellIdString, WithActionHash } from '../../types/shared'
+import { ActionHashB64, CellIdString, WithActionHash } from '../../types/shared'
 import { ModalState, OpenModal } from '../../context/ModalContexts'
 import { passphraseToUid } from '../../secrets'
 import { PROJECT_APP_PREFIX } from '../../holochainConfig'
 import { getAllApps } from '../../projectAppIds'
 import ToastContext, { ShowToast } from '../../context/ToastContext'
+import { AppAgentClient } from '@holochain/client'
 
 function ProjectDeleteButton({
   onClick,
@@ -187,15 +188,25 @@ function EditProjectForm({
   )
 }
 
-export type ProjectSettingsModalProps = {
+export type ProjectSettingsModalDispatchProps = {
+  updateProjectMeta: (
+    projectMeta: ProjectMeta,
+    actionHash: ActionHashB64,
+    cellIdString: CellIdString
+  ) => Promise<void>
+}
+
+export type ProjectSettingsModalOwnProps = {
   showModal: boolean
   onClose: () => void
   project: WithActionHash<ProjectMeta>
   memberCount: number
-  updateProjectMeta: any
   cellIdString: CellIdString
   setModalState: React.Dispatch<React.SetStateAction<ModalState>>
+  appWebsocket: AppAgentClient
 }
+
+export type ProjectSettingsModalProps = ProjectSettingsModalDispatchProps & ProjectSettingsModalOwnProps
 
 export default function ProjectSettingsModal({
   showModal,
@@ -283,4 +294,3 @@ export default function ProjectSettingsModal({
     </Modal>
   )
 }
-

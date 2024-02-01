@@ -7,6 +7,7 @@ import { useStore } from 'react-redux'
 import MigrationProgress from '../../components/MigrationProgress/MigrationProgress'
 import { AllProjectsDataExport } from 'zod-models'
 import { VersionInfo } from '../../hooks/useVersionChecker'
+import useAppWebsocket from '../../hooks/useAppWebsocket'
 
 const checkIfExportNeeded = (currentVersion: string, toVersion: string) => {
   // compare
@@ -57,7 +58,7 @@ const VersionUpdateLeaving: React.FC<VersionUpdateLeavingProps> = ({
   updateVersionInfo,
 }) => {
   const store = useStore()
-
+  const appWebsocket = useAppWebsocket()
   const [hasStarted, setHasStarted] = useState(false)
   const [title, setTitle] = useState('Preparing your update')
   const [status, setStatus] = useState<string | React.ReactElement>('')
@@ -68,6 +69,7 @@ const VersionUpdateLeaving: React.FC<VersionUpdateLeavingProps> = ({
   const runExport = async () => {
     setStatus('Exporting your data.')
     const allExportData = await exportProjectsData(
+      appWebsocket,
       store,
       updateVersionInfo.newReleaseVersion,
       updateVersionInfo.integrityVersion,

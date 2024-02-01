@@ -5,15 +5,16 @@ import {
   whoami,
 } from '../../redux/persistent/profiles/who-am-i/actions'
 import ProfilesZomeApi from '../../api/profilesApi'
-import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 import CreateProfilePage, {
-  CreateProfilePageProps,
+  CreateProfilePageDispatchProps,
+  CreateProfilePageStateProps,
 } from './CreateProfilePage.component'
 import { Profile } from '../../types'
 import { CellIdString } from '../../types/shared'
+import { AppAgentClient } from '@holochain/client'
 
-function mapStateToProps(state: RootState) {
+function mapStateToProps(state: RootState): CreateProfilePageStateProps {
   return {
     agentAddress: state.agentAddress,
     hasProfile: !!state.whoami,
@@ -21,20 +22,22 @@ function mapStateToProps(state: RootState) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any): CreateProfilePageDispatchProps {
   return {
-    fetchWhoami: async (profilesCellIdString: CellIdString) => {
+    fetchWhoami: async (
+      appWebsocket: AppAgentClient,
+      profilesCellIdString: CellIdString
+    ) => {
       const cellId = cellIdFromString(profilesCellIdString)
-      const client = await getAppWs()
-      const profilesZomeApi = new ProfilesZomeApi(client)
+      const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
       const profile = await profilesZomeApi.profile.whoami(cellId)
       return dispatch(whoami(profilesCellIdString, profile))
     },
     createWhoami: async (
+      appWebsocket: AppAgentClient,
       profile: Profile,
       profilesCellIdString: CellIdString
     ) => {
-      const appWebsocket = await getAppWs()
       const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
       const cellId = cellIdFromString(profilesCellIdString)
       const createdWhoami = await profilesZomeApi.profile.createWhoami(

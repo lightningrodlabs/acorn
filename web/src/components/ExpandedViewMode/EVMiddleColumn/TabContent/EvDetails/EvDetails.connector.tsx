@@ -121,14 +121,13 @@ function mapStateToProps(
 }
 
 function mapDispatchToProps(
-  dispatch,
+  dispatch: any,
   ownProps: EvDetailsOwnProps
 ): EvDetailsConnectorDispatchProps {
-  const { projectId: cellIdString } = ownProps
+  const { projectId: cellIdString, appWebsocket } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
     onCreateTag: async (text: string, backgroundColor: string) => {
-      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const createdTag = await projectsZomeApi.tag.create(cellId, {
         text,
@@ -137,7 +136,6 @@ function mapDispatchToProps(
       return dispatch(createTag(cellIdString, createdTag))
     },
     onUpdateExistingTag: async (actionHash, text, backgroundColor) => {
-      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedExistingTag = await projectsZomeApi.tag.update(cellId, {
         actionHash,
@@ -150,7 +148,6 @@ function mapDispatchToProps(
       memberAgentPubKey: AgentPubKeyB64,
       creatorAgentPubKey: AgentPubKeyB64
     ) => {
-      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeMember = await projectsZomeApi.outcomeMember.create(cellId, {
         outcomeActionHash,
@@ -162,7 +159,6 @@ function mapDispatchToProps(
       return dispatch(createOutcomeMember(cellIdString, outcomeMember))
     },
     deleteOutcomeMember: async (actionHash: ActionHashB64) => {
-      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       await projectsZomeApi.outcomeMember.delete(cellId, actionHash)
       return dispatch(deleteOutcomeMember(cellIdString, actionHash))

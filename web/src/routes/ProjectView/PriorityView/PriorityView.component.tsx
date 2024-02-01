@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import _ from 'lodash'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { useHistory, useLocation } from 'react-router-dom'
+import { AppAgentClient } from '@holochain/client'
 
 import {
   ActionHashB64,
@@ -277,11 +278,15 @@ const PriorityUniversalDroppable: React.FC<PriorityUniversalDroppableProps> = ({
 }
 
 // the default export, and main high level component here
-export type PriorityViewProps = {
+
+export type PriorityViewStateProps = {
   projectId: CellIdString
   projectMeta: WithActionHash<ProjectMeta>
   projectTags: WithActionHash<Tag>[]
   presentMembers: AgentPubKeyB64[]
+}
+
+export type PriorityViewDispatchProps = {
   updateProjectMeta: (
     projectMeta: ProjectMeta,
     actionHash: ActionHashB64,
@@ -290,6 +295,15 @@ export type PriorityViewProps = {
   openExpandedView: (outcomeActionHash: ActionHashB64) => void
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
 }
+
+export type PriorityViewOwnProps = {
+  appWebsocket: AppAgentClient
+}
+
+export type PriorityViewProps = PriorityViewStateProps &
+  PriorityViewDispatchProps &
+  PriorityViewOwnProps
+
 const PriorityView: React.FC<PriorityViewProps> = ({
   projectMeta,
   projectId,
@@ -301,7 +315,7 @@ const PriorityView: React.FC<PriorityViewProps> = ({
 }) => {
   const history = useHistory()
   const location = useLocation()
-  const navAndGoToOutcome = (actionHash) => {
+  const navAndGoToOutcome = (actionHash: ActionHashB64) => {
     history.push(location.pathname.replace('priority', 'map'))
     goToOutcome(actionHash)
   }
