@@ -4,6 +4,6 @@
 set -e
 
 yarn workspace acorn-ui build
-yarn run zip-we-applet
+npx bestzip web/dist.zip web/dist/*
 cd we-applet
-hc web-app pack workdir --recursive
+hc web-app pack . --recursive

@@ -4,7 +4,7 @@ import {
   ActionHashB64,
   UpdateInput,
 } from '../types/shared'
-import { AppWebsocket, CellId } from '@holochain/client'
+import { AppAgentClient, CellId } from '@holochain/client'
 import callZome from './callZome'
 
 export interface WireRecord<EntryType> {
@@ -42,7 +42,7 @@ export function deleteEntryName(entryType: string) {
 }
 
 export function createCrudFunctions<EntryType>(
-  appWebsocket: AppWebsocket,
+  appWebsocket: AppAgentClient,
   zomeName: string,
   entryType: string
 ): EntryTypeApi<EntryType, WireRecord<EntryType>> {

@@ -1,7 +1,7 @@
-import { AppWebsocket, CellId } from '@holochain/client'
+import { AppAgentClient, CellId } from '@holochain/client'
 
 export default async function callZome<InputType, OutputType>(
-  appWebsocket: AppWebsocket,
+  appWebsocket: AppAgentClient,
   cellId: CellId,
   zomeName: string,
   fnName: string,

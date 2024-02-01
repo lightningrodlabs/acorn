@@ -1,4 +1,9 @@
-import { AppWebsocket, AdminWebsocket } from '@holochain/client'
+import {
+  AdminWebsocket,
+  AppAgentWebsocket,
+  AppAgentClient,
+} from '@holochain/client'
+import { MAIN_APP_ID } from './holochainConfig'
 
 // export for use by holochainMiddleware (redux)
 
@@ -8,8 +13,8 @@ export const APP_WS_URL = new URL(`ws://localhost:${__APP_PORT__}`)
 // @ts-ignore
 const ADMIN_WS_URL = new URL(`ws://localhost:${__ADMIN_PORT__}`)
 
-let appWs: AppWebsocket
-let appWsPromise: Promise<AppWebsocket>
+let appWs: AppAgentClient
+let appWsPromise: Promise<AppAgentClient>
 let adminWs: AdminWebsocket
 let agentPubKey
 
@@ -18,6 +23,7 @@ export async function getAdminWs(): Promise<AdminWebsocket> {
     return adminWs
   } else {
     adminWs = await AdminWebsocket.connect(ADMIN_WS_URL)
+    // keepalive
     setInterval(() => {
       if (adminWs.client.socket.readyState === adminWs.client.socket.OPEN) {
         adminWs.listDnas()
@@ -30,20 +36,27 @@ export async function getAdminWs(): Promise<AdminWebsocket> {
   }
 }
 
-export async function getAppWs(): Promise<AppWebsocket> {
+export async function getAppWs(): Promise<AppAgentClient> {
   async function connect() {
     // undefined is for default request timeout
-    appWsPromise = AppWebsocket.connect(APP_WS_URL)
+    appWsPromise = AppAgentWebsocket.connect(APP_WS_URL, MAIN_APP_ID)
     appWs = await appWsPromise
     appWsPromise = null
-    appWs.client.socket.addEventListener('close', async () => {
-      console.log('app websocket closed, trying to re-open')
-      await connect()
-      console.log('app websocket reconnected')
-    })
+    ;(appWs as AppAgentWebsocket).appWebsocket.client.socket.addEventListener(
+      'close',
+      async () => {
+        console.log('app websocket closed, trying to re-open')
+        await connect()
+        console.log('app websocket reconnected')
+      }
+    )
   }
 
-  if (appWs && appWs.client.socket.readyState === appWs.client.socket.OPEN) {
+  if (
+    appWs &&
+    (appWs as AppAgentWebsocket).appWebsocket.client.socket.readyState ===
+      (appWs as AppAgentWebsocket).appWebsocket.client.socket.OPEN
+  ) {
     return appWs
   } else if (appWsPromise) {
     // connection must have been lost
@@ -55,13 +68,15 @@ export async function getAppWs(): Promise<AppWebsocket> {
     await connect()
     // set up logic for auto-reconnection
     setInterval(async () => {
-      if (appWs.client.socket.readyState === appWs.client.socket.OPEN) {
+      if (
+        (appWs as AppAgentWebsocket).appWebsocket.client.socket.readyState ===
+        (appWs as AppAgentWebsocket).appWebsocket.client.socket.OPEN
+      ) {
         // random call just to keep the connection open
-        appWs.appInfo({
-          installed_app_id: 'test',
-        })
+        appWs.appInfo()
       } else if (
-        appWs.client.socket.readyState === appWs.client.socket.CLOSED
+        (appWs as AppAgentWebsocket).appWebsocket.client.socket.readyState ===
+        (appWs as AppAgentWebsocket).appWebsocket.client.socket.CLOSED
       ) {
         // try to reconnect
         await connect()
@@ -70,6 +85,13 @@ export async function getAppWs(): Promise<AppWebsocket> {
     }, 60000)
     return appWs
   }
+}
+
+export function setAdminWs(setAs: AdminWebsocket) {
+  adminWs = setAs
+}
+export function setAppWs(setAs: AppAgentClient) {
+  appWs = setAs
 }
 
 export function getAgentPubKey() {

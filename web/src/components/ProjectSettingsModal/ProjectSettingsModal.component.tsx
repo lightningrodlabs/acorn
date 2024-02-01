@@ -250,14 +250,14 @@ export default function ProjectSettingsModal({
   // const uid = passphraseToUid(projectPassphrase)
   // const installedAppId = `${PROJECT_APP_PREFIX}-${uid}`
   useEffect(() => {
-    getAllApps().then((apps) => {
-      const appForCell = Object.entries(apps).find(([appId, appInfo]) => {
-        return appInfo.cellIdString === cellIdString
-      })
-      if (appForCell) {
-        setInstalledAppId(appForCell[0])
-      }
-    })
+    // getAllApps().then((apps) => {
+    //   const appForCell = Object.entries(apps).find(([appId, appInfo]) => {
+    //     return appInfo.cellIdString === cellIdString
+    //   })
+    //   if (appForCell) {
+    //     setInstalledAppId(appForCell[0])
+    //   }
+    // })
   }, [cellIdString])
 
   return (

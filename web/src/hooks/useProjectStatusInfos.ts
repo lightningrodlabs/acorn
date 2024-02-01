@@ -20,6 +20,7 @@ export type ProjectStatusInfos = {
 const getNewInfos = async (
   projects: { cellId: CellIdString; hasProjectMeta: boolean }[]
 ): Promise<ProjectStatusInfos> => {
+  return {}
   const allApps = await getAllApps()
   const appWs = await getAppWs()
   const agentPubKey = await getAgentPubKey()

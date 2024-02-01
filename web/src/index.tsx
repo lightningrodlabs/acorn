@@ -10,15 +10,27 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 
-import { WeClient, isWeContext } from '@lightningrodlabs/we-applet'
-import main from './indexForElectron'
+import { WeClient, isWeContext, initializeHotReload } from '@lightningrodlabs/we-applet'
+import createStoreAndRenderToDom, { electronInit } from './indexForElectron'
+import { getAdminWs, getAppWs, setAppWs } from './hcWebsockets'
+
+console.log('HELLLLLLO')
 
 if (!isWeContext) {
   // electron
-  main()
-} else {
   ;(async () => {
+    const appWs = await getAppWs()
+    const adminWs = await getAdminWs()
+    const store = await createStoreAndRenderToDom(appWs)
+    await electronInit(store, adminWs, appWs)
+  })()
+} else {
+  console.log('hello2')
+  ;(async () => {
+    await initializeHotReload();
+    console.log('hello3')
     const weClient = await WeClient.connect()
+    console.log('hello4')
     if (
       weClient.renderInfo.type !== 'applet-view' ||
       weClient.renderInfo.view.type !== 'main'
@@ -28,6 +40,9 @@ if (!isWeContext) {
     const appAgentClient = weClient.renderInfo.appletClient
     const profilesClient = weClient.renderInfo.profilesClient
 
+    setAppWs(appAgentClient)
     console.log('made it here')
+    const store = await createStoreAndRenderToDom(appAgentClient)
+    console.log('made it here2')
   })()
 }
