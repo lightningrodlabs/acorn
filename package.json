@@ -36,7 +36,7 @@
     "storybook": "yarn workspace acorn-ui storybook",
     "zip-we-applet": "cd web/dist && bestzip ../dist.zip *",
     "build-webhapp": "bash scripts/build-webhapp.sh",
-    "postinstall": "yarn run download-happs && yarn workspace zod-models run build"
+    "postinstall": "yarn run download-happs && yarn workspace zod-models run build && yarn workspace electron run tsc"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",
