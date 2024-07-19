@@ -21,6 +21,7 @@ import MapViewContextMenu from '../../../components/MapViewContextMenu/MapViewCo
 import { useSelector } from 'react-redux'
 import ModalOutcomeNavigation from '../../../components/ModalOutcomeNavigation/ModalOutcomeNavigation'
 import { setNavModalClosed } from '../../../redux/ephemeral/navigation-modal/actions'
+import { getAppWs } from '../../../hcWebsockets'
 
 export type MapViewDispatchProps = {
   expandOutcome: (
@@ -102,17 +103,27 @@ const MapView: React.FC<MapViewProps> = ({
   // set this up newly, any time the
   // outcomes and connections change
   useEffect(() => {
-    // attach keyboard and mouse events
-    const canvas = refCanvas.current
-    const removeEventListeners = setupEventListeners(
-      store,
-      canvas,
-      computedOutcomesKeyed
-    )
-    return function cleanup() {
-      removeEventListeners()
-    }
-  }, [computedOutcomesKeyed])
+    const setupAsync = async () => {
+      const appWebsocket = await getAppWs();
+      const canvas = refCanvas.current;
+      const removeEventListeners = setupEventListeners(
+        appWebsocket,
+        store,
+        canvas,
+        computedOutcomesKeyed
+      );
+  
+      return () => {
+        removeEventListeners();
+      };
+    };
+  
+    const cleanupFn = setupAsync();
+  
+    return () => {
+      cleanupFn.then(cleanup => cleanup());
+    };
+  }, [computedOutcomesKeyed]);
 
   // using this smart selector is a performance gain
   // because renderProps value will only obtain a new reference
