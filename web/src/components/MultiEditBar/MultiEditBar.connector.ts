@@ -30,13 +30,14 @@ function mapStateToProps(state: RootState) {
 }
 
 function mapDispatchToProps(dispatch: any, ownProps: MultiEditBarOwnProps) {
-  const { projectId: cellIdString, appWebsocket } = ownProps
+  const { projectId: cellIdString, appWebsocket: _appWebsocket } = ownProps
   let cellId: CellId
   if (cellIdString) {
     cellId = cellIdFromString(cellIdString)
   }
   return {
     updateOutcome: async (entry: Outcome, outcomeActionHash: ActionHashB64) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedOutcome = await projectsZomeApi.outcome.update(cellId, {
         actionHash: outcomeActionHash,
@@ -45,6 +46,7 @@ function mapDispatchToProps(dispatch: any, ownProps: MultiEditBarOwnProps) {
       return dispatch(updateOutcome(cellIdString, updatedOutcome))
     },
     deleteOutcomeFully: async (outcomeActionHash: ActionHashB64) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const deleteOutcomeFullyResponse = await projectsZomeApi.outcome.deleteOutcomeFully(
         cellId,

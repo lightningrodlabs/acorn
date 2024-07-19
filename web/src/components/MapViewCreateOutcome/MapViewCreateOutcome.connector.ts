@@ -53,14 +53,18 @@ function mapStateToProps(state: RootState): MapViewCreateOutcomeConnectorStatePr
 // Designed to pass functions into components which are already wrapped as
 // action dispatchers for redux action types
 
-function mapDispatchToProps(dispatch: any, ownProps: MapViewCreateOutcomeOwnProps): MapViewCreateOutcomeConnectorDispatchProps {
-  const { projectId: cellIdString, appWebsocket } = ownProps
+function mapDispatchToProps(
+  dispatch: any,
+  ownProps: MapViewCreateOutcomeOwnProps
+): MapViewCreateOutcomeConnectorDispatchProps {
+  const { projectId: cellIdString, appWebsocket: _appWebsocket } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
     updateContent: (content: string) => {
       return dispatch(updateContent(content))
     },
     deleteConnection: async (actionHash: ActionHashB64) => {
+const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       // we will only be archiving
       // an connection here in the context of immediately replacing
@@ -70,7 +74,11 @@ function mapDispatchToProps(dispatch: any, ownProps: MapViewCreateOutcomeOwnProp
       await projectsZomeApi.connection.delete(cellId, actionHash)
       return dispatch(deleteConnection(cellIdString, actionHash))
     },
-    createOutcomeWithConnection: async (entry: Outcome, maybeLinkedOutcome: Option<LinkedOutcomeDetails>) => {
+    createOutcomeWithConnection: async (
+      entry: Outcome,
+      maybeLinkedOutcome: Option<LinkedOutcomeDetails>
+    ) => {
+const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeWithConnection = await projectsZomeApi.outcome.createOutcomeWithConnection(
         cellId,

@@ -7,6 +7,7 @@ import OutcomeConnectorPicker, {
   OutcomeConnectorPickerDispatchProps,
   OutcomeConnectorPickerOwnProps,
 } from './OutcomeConnectorPicker.component'
+import { getAppWs } from '../../hcWebsockets'
 
 function mapStateToProps(state: RootState) {
   const selectedOutcomes = state.ui.selection.selectedOutcomes.map(
@@ -30,8 +31,8 @@ function mapStateToProps(state: RootState) {
 function mapDispatchToProps(
   dispatch: any,
   ownProps: OutcomeConnectorPickerOwnProps
-) : OutcomeConnectorPickerDispatchProps {
-  const { appWebsocket } = ownProps
+): OutcomeConnectorPickerDispatchProps {
+  // const { appWebsocket } = ownProps
   return {
     saveConnections: async (
       parentActionHash,
@@ -41,6 +42,8 @@ function mapDispatchToProps(
       // loop over childrenAddresses
       // use createConnection each time
       const cellId = cellIdFromString(cellIdString)
+
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       await Promise.all(
         childrenAddresses.map(async (childActionHash) => {
