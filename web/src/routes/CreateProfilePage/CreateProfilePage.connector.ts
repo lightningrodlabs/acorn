@@ -12,7 +12,7 @@ import CreateProfilePage, {
 } from './CreateProfilePage.component'
 import { Profile } from '../../types'
 import { CellIdString } from '../../types/shared'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 
 function mapStateToProps(state: RootState): CreateProfilePageStateProps {
   return {
@@ -25,7 +25,7 @@ function mapStateToProps(state: RootState): CreateProfilePageStateProps {
 function mapDispatchToProps(dispatch: any): CreateProfilePageDispatchProps {
   return {
     fetchWhoami: async (
-      appWebsocket: AppAgentClient,
+      appWebsocket: AppClient,
       profilesCellIdString: CellIdString
     ) => {
       const cellId = cellIdFromString(profilesCellIdString)
@@ -34,7 +34,7 @@ function mapDispatchToProps(dispatch: any): CreateProfilePageDispatchProps {
       return dispatch(whoami(profilesCellIdString, profile))
     },
     createWhoami: async (
-      appWebsocket: AppAgentClient,
+      appWebsocket: AppClient,
       profile: Profile,
       profilesCellIdString: CellIdString
     ) => {

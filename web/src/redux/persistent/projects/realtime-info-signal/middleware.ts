@@ -13,7 +13,7 @@ import ProjectsZomeApi from '../../../../api/projectsApi'
 import { cellIdFromString } from '../../../../utils'
 import { RootState } from '../../../reducer'
 import { CellIdString } from '../../../../types/shared'
-import { AppAgentClient, AppAgentWebsocket } from '@holochain/client'
+import { AppClient, AppAgentWebsocket } from '@holochain/client'
 
 const isOneOfRealtimeInfoAffectingActions = (action) => {
   const { type } = action
@@ -37,7 +37,7 @@ const isProjectExitAction = (action: { type: string }) => {
 // return the action handler middleware
 const realtimeInfoWatcher =
   // closure the appWebsocket
-  (appWebsocket: AppAgentClient) =>
+  (appWebsocket: AppClient) =>
     // provide the typical redux middleware signature
     (store: any) => (next: any) => async (action: any) => {
       if (isOneOfRealtimeInfoAffectingActions(action)) {

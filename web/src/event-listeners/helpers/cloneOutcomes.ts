@@ -1,4 +1,4 @@
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 import moment from 'moment'
 import { selectOutcome } from '../../redux/ephemeral/selection/actions'
 import { createOutcome } from '../../redux/persistent/projects/outcomes/actions'
@@ -6,7 +6,10 @@ import { createOutcomeMember } from '../../redux/persistent/projects/outcome-mem
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString } from '../../utils'
 
-export default async function cloneOutcomes(appWebsocket: AppAgentClient, store: any) {
+export default async function cloneOutcomes(
+  appWebsocket: AppClient,
+  store: any
+) {
   const state = store.getState()
   const {
     ui: { activeProject },

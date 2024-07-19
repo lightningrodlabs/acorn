@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 import moment from 'moment'
 import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { ComputedOutcome } from '../../types'
@@ -22,7 +22,7 @@ export type MultiEditBarDispatchProps = {
 export type MultiEditBarOwnProps = {
   projectId: CellIdString
   hasMultiSelection: boolean
-  appWebsocket: AppAgentClient
+  appWebsocket: AppClient
 }
 
 export type MultiEditBarProps = MultiEditBarStateProps & MultiEditBarDispatchProps & MultiEditBarOwnProps

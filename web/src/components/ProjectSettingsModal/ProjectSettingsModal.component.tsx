@@ -16,7 +16,7 @@ import { passphraseToUid } from '../../secrets'
 import { PROJECT_APP_PREFIX } from '../../holochainConfig'
 import { getAllApps } from '../../projectAppIds'
 import ToastContext, { ShowToast } from '../../context/ToastContext'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 
 function ProjectDeleteButton({
   onClick,
@@ -203,7 +203,7 @@ export type ProjectSettingsModalOwnProps = {
   memberCount: number
   cellIdString: CellIdString
   setModalState: React.Dispatch<React.SetStateAction<ModalState>>
-  appWebsocket: AppAgentClient
+  appWebsocket: AppClient
 }
 
 export type ProjectSettingsModalProps = ProjectSettingsModalDispatchProps & ProjectSettingsModalOwnProps

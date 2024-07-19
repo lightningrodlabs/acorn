@@ -1,6 +1,6 @@
 import React from 'react'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 
-const AppWebsocketContext = React.createContext<AppAgentClient>(null)
+const AppWebsocketContext = React.createContext<AppClient>(null)
 
 export default AppWebsocketContext

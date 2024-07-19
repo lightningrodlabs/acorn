@@ -11,7 +11,7 @@ import Modal, { ModalContent } from '../Modal/Modal'
 import Typography from '../Typography/Typography'
 import { ActionHashB64, CellIdString, WithActionHash } from '../../types/shared'
 import { Connection, Outcome } from 'zod-models'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 
 export type OutcomeConnectorPickerStateProps = {
   selectedOutcomes: WithActionHash<Outcome>[]
@@ -30,7 +30,7 @@ export type OutcomeConnectorPickerDispatchProps = {
 export type OutcomeConnectorPickerOwnProps = {
   active: boolean
   onClose: () => void
-  appWebsocket: AppAgentClient
+  appWebsocket: AppClient
 }
 
 export type OutcomeConnectorPickerProps = OutcomeConnectorPickerStateProps &

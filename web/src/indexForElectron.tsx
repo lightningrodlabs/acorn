@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
-import { AdminWebsocket, AppAgentClient, CellType } from '@holochain/client'
+import { AdminWebsocket, AppClient, CellType } from '@holochain/client'
 
 // Local Imports
 import { PROFILES_ROLE_NAME } from './holochainConfig'
@@ -28,7 +28,7 @@ import './variables.scss'
 import './global.scss'
 
 export default async function createStoreAndRenderToDom(
-  appWs: AppAgentClient
+  appWs: AppClient
 ) {
   const middleware = [layoutWatcher, realtimeInfoWatcher(appWs)]
   // This enables the redux-devtools browser extension
@@ -59,7 +59,7 @@ export default async function createStoreAndRenderToDom(
 export async function electronInit(
   store: any,
   adminWs: AdminWebsocket,
-  appWs: AppAgentClient
+  appWs: AppClient
 ) {
   try {
     const profilesInfo = await appWs.appInfo()

@@ -5,12 +5,12 @@ import {
 } from '../../persistent/projects/connections/actions'
 import ProjectsZomeApi from '../../../api/projectsApi'
 import { cellIdFromString } from '../../../utils'
-import { ActionHashB64, AppAgentClient } from '@holochain/client'
+import { ActionHashB64, AppClient } from '@holochain/client'
 import { LinkedOutcomeDetails, RelationInput } from '../../../types'
 import { CellIdString, Option } from '../../../types/shared'
 
 export default async function handleOutcomeConnectorMouseUp(
-  appWebsocket: AppAgentClient,
+  appWebsocket: AppClient,
   maybeLinkedOutcome: Option<LinkedOutcomeDetails>,
   toAddress: ActionHashB64,
   existingParentConnectionAddress: ActionHashB64,

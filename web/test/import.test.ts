@@ -14,7 +14,7 @@ import mockUnmigratedProjectMeta from './mockProjectMeta'
 import mockBaseRootState from './mockRootState'
 import { installProject as iInstallProject } from '../src/projects/installProject'
 import { getAppWs as iGetAppWs } from '../src/hcWebsockets'
-import { AppAgentClient, AppWebsocket } from '@holochain/client'
+import { AppClient, AppWebsocket } from '@holochain/client'
 import { RootState } from '../src/redux/reducer'
 import ProfilesZomeApi from '../src/api/profilesApi'
 import ProjectsZomeApi from '../src/api/projectsApi'
@@ -74,7 +74,7 @@ let cloneDataSet: typeof iCloneDataSet
 // this can be brittle and break easily if the function signature changes
 // be careful with it
 let onStep: Parameters<typeof importProjectsData>[3]
-let mockAppWs: AppAgentClient
+let mockAppWs: AppClient
 let projectMeta: WireRecord<ProjectMeta>
 let mockMigrationData: string
 let mockCellIdString: string
@@ -200,10 +200,12 @@ describe('importProjectsData()', () => {
     )
 
     expect(installProject).toHaveBeenCalledTimes(2)
-    expect(installProject).toHaveBeenNthCalledWith(1,
+    expect(installProject).toHaveBeenNthCalledWith(
+      1,
       sampleGoodDataExport.projects[0].projectMeta.passphrase
     )
-    expect(installProject).toHaveBeenNthCalledWith(2,
+    expect(installProject).toHaveBeenNthCalledWith(
+      2,
       sampleGoodDataExport.projects[1].projectMeta.passphrase
     )
 

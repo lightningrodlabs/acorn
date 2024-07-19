@@ -3,7 +3,7 @@ import { CellIdString } from '../types/shared'
 import { getAllApps } from '../projectAppIds'
 import { uidToPassphrase } from '../secrets'
 import { CellType } from '@holochain/client'
-import { getAgentPubKey } from '../hcWebsockets'
+import { getAgentPubKey, getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 
 export type ProjectStatusInfo = {
@@ -21,12 +21,11 @@ const getNewInfos = async (
   projects: { cellId: CellIdString; hasProjectMeta: boolean }[]
 ): Promise<ProjectStatusInfos> => {
   // TODOOOO
-  return {}
   const allApps = await getAllApps()
   const agentPubKey = await getAgentPubKey()
+  const appWebsocket = await getAppWs()
   const networkInfos = agentPubKey
     ? await appWebsocket.networkInfo({
-        agent_pub_key: agentPubKey,
         dnas: projects.map(({ cellId }) => cellIdFromString(cellId)[0]),
       })
     : []

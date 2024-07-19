@@ -6,9 +6,13 @@ import { openOutcomeForm } from '../redux/ephemeral/outcome-form/actions'
 import { RootState } from '../redux/reducer'
 import { LinkedOutcomeDetails } from '../types'
 import { ActionHashB64, Option } from '../types/shared'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 
-export default function canvasMouseup(appWebsocket: AppAgentClient, store: any, event: MouseEvent) {
+export default function canvasMouseup(
+  appWebsocket: AppClient,
+  store: any,
+  event: MouseEvent
+) {
   const state: RootState = store.getState()
   const {
     maybeLinkedOutcome,

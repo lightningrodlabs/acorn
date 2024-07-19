@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { ActionHashB64, AppAgentClient } from '@holochain/client'
+import { ActionHashB64, AppClient } from '@holochain/client'
 import { RootState } from '../redux/reducer'
 import { RightOrLeft, findParentsActionHashes } from '../tree-logic'
 import { updateConnection } from '../redux/persistent/projects/connections/actions'
@@ -9,7 +9,7 @@ import { WithActionHash } from '../types/shared'
 import { Connection } from 'zod-models'
 
 export async function alterSiblingOrder(
-  appWebsocket: AppAgentClient,
+  appWebsocket: AppClient,
   store: any,
   state: RootState,
   selectedOutcome: ActionHashB64,

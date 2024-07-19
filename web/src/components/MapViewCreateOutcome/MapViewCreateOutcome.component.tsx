@@ -16,11 +16,11 @@ import { coordsCanvasToPage } from '../../drawing/coordinateSystems'
 import Icon from '../Icon/Icon'
 import checkForKeyboardKeyModifier from '../../event-listeners/helpers/osPlatformHelper'
 import useContainWithinScreen from '../../hooks/useContainWithinScreen'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 
 export type MapViewCreateOutcomeOwnProps = {
   projectId: CellIdString
-  appWebsocket: AppAgentClient
+  appWebsocket: AppClient
 }
 
 export type MapViewCreateOutcomeConnectorStateProps = {

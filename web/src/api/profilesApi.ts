@@ -1,4 +1,4 @@
-import { AppAgentClient, CellId } from '@holochain/client'
+import { AppClient, CellId } from '@holochain/client'
 import { PROFILES_ZOME_NAME } from '../holochainConfig'
 import { Profile, WhoAmIOutput } from '../types'
 import { AgentPubKeyB64, UpdateInput } from '../types/shared'
@@ -14,7 +14,7 @@ const ZOME_FN_NAMES = {
   FETCH_AGENT_ADDRESS: 'fetch_agent_address',
 }
 
-const ProfilesApi = (appWebsocket: AppAgentClient) => {
+const ProfilesApi = (appWebsocket: AppClient) => {
   return {
     createWhoami: async (
       cellId: CellId,
@@ -83,9 +83,9 @@ const ProfilesApi = (appWebsocket: AppAgentClient) => {
 }
 
 export default class ProfilesZomeApi {
-  appWebsocket: AppAgentClient
+  appWebsocket: AppClient
   profile: ReturnType<typeof ProfilesApi>
-  constructor(appWebsocket: AppAgentClient) {
+  constructor(appWebsocket: AppClient) {
     this.appWebsocket = appWebsocket
     this.profile = ProfilesApi(appWebsocket)
   }

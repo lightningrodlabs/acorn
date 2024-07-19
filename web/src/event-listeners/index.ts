@@ -1,5 +1,5 @@
 import { ActionHashB64 } from '../types/shared'
-import { ComputedOutcome} from '../types'
+import { ComputedOutcome } from '../types'
 import windowResize from './windowResize'
 import bodyKeydown from './bodyKeydown'
 import bodyKeyup from './bodyKeyup'
@@ -10,13 +10,13 @@ import canvasMousedown from './canvasMousedown'
 import canvasMouseup from './canvasMouseup'
 import canvasDoubleclick from './canvasDoubleclick'
 import canvasContextMenu from './canvasContextMenu'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 
 // This function is called within a useEffect and that's why it follows the same
 // pattern as useEffects, which is to return an unsubscribe/cleanup function.
 // outcomes is ComputedOutcomes in an object, keyed by their actionHash
 export default function setupEventListeners(
-  appWebsocket: AppAgentClient,
+  appWebsocket: AppClient,
   store: any,
   canvas: HTMLCanvasElement,
   outcomes: { [actionHash: ActionHashB64]: ComputedOutcome }

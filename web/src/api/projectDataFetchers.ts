@@ -1,4 +1,4 @@
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 import { fetchConnections } from '../redux/persistent/projects/connections/actions'
 import { fetchEntryPoints } from '../redux/persistent/projects/entry-points/actions'
 import { fetchMembers } from '../redux/persistent/projects/members/actions'
@@ -12,7 +12,7 @@ import { cellIdFromString } from '../utils'
 import ProjectsZomeApi from './projectsApi'
 
 export default function constructProjectDataFetchers(
-  appWebsocket: AppAgentClient,
+  appWebsocket: AppClient,
   dispatch: any,
   cellIdString: CellIdString
 ) {

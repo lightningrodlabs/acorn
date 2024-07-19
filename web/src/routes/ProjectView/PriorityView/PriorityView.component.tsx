@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import _ from 'lodash'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { useHistory, useLocation } from 'react-router-dom'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 
 import {
   ActionHashB64,
@@ -297,7 +297,7 @@ export type PriorityViewDispatchProps = {
 }
 
 export type PriorityViewOwnProps = {
-  appWebsocket: AppAgentClient
+  appWebsocket: AppClient
 }
 
 export type PriorityViewProps = PriorityViewStateProps &

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Redirect, useHistory } from 'react-router-dom'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 
 import Button from '../Button/Button'
 import Icon from '../Icon/Icon'
@@ -19,7 +19,7 @@ export type IntroScreenDispatchProps = {
   fetchWhoami: (profilesCellId: CellIdString) => Promise<void>
 }
 export type IntroScreenOwnProps = {
-  appWebsocket: AppAgentClient
+  appWebsocket: AppClient
 }
 export type IntroScreenProps = IntroScreenOwnProps &
   IntroScreenStateProps &

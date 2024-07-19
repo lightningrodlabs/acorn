@@ -58,7 +58,7 @@ import { ProjectMetaState } from '../redux/persistent/projects/project-meta/redu
 import { MembersState } from '../redux/persistent/projects/members/reducer'
 import useHolochainErrorAndLog from '../hooks/useHolochainErrorAndLog'
 import AppWebsocketContext from '../context/AppWebsocketContext'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 import { App } from 'electron'
 
 export type AppStateProps = {
@@ -112,7 +112,7 @@ export type AppMergeProps = {
 }
 
 export type AppOwnProps = {
-  appWebsocket: AppAgentClient
+  appWebsocket: AppClient
 }
 
 export type AppReduxProps = AppStateProps & AppDispatchProps & AppMergeProps

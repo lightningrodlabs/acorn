@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 import { Redirect } from 'react-router-dom'
 import ProfileEditForm from '../../components/ProfileEditForm/ProfileEditForm'
 import { Profile } from '../../types'
@@ -8,7 +8,7 @@ import useAppWebsocket from '../../hooks/useAppWebsocket'
 import './CreateProfilePage.scss'
 
 export type CreateProfilePageOwnProps = {
-  appWebsocket: AppAgentClient
+  appWebsocket: AppClient
 }
 
 export type CreateProfilePageStateProps = {
@@ -19,12 +19,12 @@ export type CreateProfilePageStateProps = {
 
 export type CreateProfilePageDispatchProps = {
   createWhoami: (
-    appWebsocket: AppAgentClient,
+    appWebsocket: AppClient,
     profile: Profile,
     profilesCellIdString: CellIdString
   ) => Promise<void>
   fetchWhoami: (
-    appWebsocket: AppAgentClient,
+    appWebsocket: AppClient,
     profilesCellIdString: CellIdString
   ) => Promise<void>
 }

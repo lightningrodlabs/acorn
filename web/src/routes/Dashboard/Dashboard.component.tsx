@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { CSSTransition } from 'react-transition-group'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 
 import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 import { ProjectAggregated } from '../../types'
@@ -21,6 +21,7 @@ import useProjectStatusInfos from '../../hooks/useProjectStatusInfos'
 import useAppWebsocket from '../../hooks/useAppWebsocket'
 
 import './Dashboard.scss'
+import { set } from 'lodash'
 
 export type DashboardStateProps = {
   agentAddress: AgentPubKeyB64
@@ -31,29 +32,29 @@ export type DashboardStateProps = {
 export type DashboardDispatchProps = {
   uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
   createProject: (
-    appWebsocket: AppAgentClient,
+    appWebsocket: AppClient,
     agentAddress: AgentPubKeyB64,
     project: { name: string; image: string },
     passphrase: string
   ) => Promise<void>
   fetchMembers: (
-    appWebsocket: AppAgentClient,
+    appWebsocket: AppClient,
     cellIdString: CellIdString
   ) => Promise<void>
   fetchProjectMeta: (
-    appWebsocket: AppAgentClient,
+    appWebsocket: AppClient,
     cellIdString: CellIdString
   ) => Promise<void>
   fetchEntryPointDetails: (
-    appWebsocket: AppAgentClient,
+    appWebsocket: AppClient,
     cellIdString: CellIdString
   ) => Promise<void>
   joinProject: (
-    appWebsocket: AppAgentClient,
+    appWebsocket: AppClient,
     passphrase: string
   ) => Promise<CellIdString>
   importProject: (
-    appWebsocket: AppAgentClient,
+    appWebsocket: AppClient,
     cellIdString: CellIdString,
     agentAddress: AgentPubKeyB64,
     projectData: any,
@@ -98,6 +99,12 @@ const Dashboard: React.FC<DashboardProps> = ({
     fetchEntryPointDetails.bind(null, appWebsocket),
     fetchMembers.bind(null, appWebsocket)
   )
+
+  console.log('useProjectStatusInfos', {
+    projectStatusInfos,
+    setProjectStatusInfos,
+    projectCellIdStrings,
+  });
 
   const onCreateProject = (
     project: { name: string; image: string },

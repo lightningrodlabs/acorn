@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.4",
-    "@holochain/client": "0.16.1",
+    "@holochain/client": "0.18.0-dev.1",
     "@lightningrodlabs/we-applet": "0.17.0-dev.1",
     "@lightningrodlabs/we-dev-cli": "0.12.0-dev.0",
     "@tweenjs/tween.js": "^18.6.4",

@@ -28,7 +28,7 @@ import { ActionHashB64 } from '../types/shared'
 import { cellIdFromString } from '../utils'
 import cloneOutcomes from './helpers/cloneOutcomes'
 import checkForKeyboardKeyModifier from './helpers/osPlatformHelper'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 
 function leftMostOutcome(
   outcomeActionHashes: ActionHashB64[],
@@ -39,7 +39,11 @@ function leftMostOutcome(
   })
 }
 
-export default async function bodyKeydown(appWebsocket: AppAgentClient, store: any, event: KeyboardEvent) {
+export default async function bodyKeydown(
+  appWebsocket: AppClient,
+  store: any,
+  event: KeyboardEvent
+) {
   function canPerformKeyboardAction(state: RootState): boolean {
     return (
       state.ui.selection.selectedOutcomes.length === 1 &&

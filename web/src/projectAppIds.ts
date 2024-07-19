@@ -10,20 +10,22 @@ export async function getAllApps() {
 
   // this function assumes a one-dna-per-app
   // which could become wrong at some point
-  const appProjects = appIds.filter(appInfo => {
-    return AppStatusFilter.Running in appInfo.status
-  }).map((appInfo) => {
-    const cellInfo = Object.values(appInfo.cell_info)[0][0]
-    const cellId =
-      CellType.Provisioned in cellInfo
-        ? cellInfo[CellType.Provisioned].cell_id
-        : undefined
+  const appProjects = appIds
+    .filter((appInfo) => {
+      return appInfo.status === 'running'
+    })
+    .map((appInfo) => {
+      const cellInfo = Object.values(appInfo.cell_info)[0][0]
+      const cellId =
+        CellType.Provisioned in cellInfo
+          ? cellInfo[CellType.Provisioned].cell_id
+          : undefined
 
-    return {
-      ...appInfo,
-      cellIdString: cellIdToString(cellId),
-    }
-  })
+      return {
+        ...appInfo,
+        cellIdString: cellIdToString(cellId),
+      }
+    })
   return _.keyBy(appProjects, 'installed_app_id')
 }
 

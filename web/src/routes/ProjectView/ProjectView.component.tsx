@@ -7,7 +7,7 @@ import {
   useLocation,
 } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 
 import { GO_TO_OUTCOME } from '../../searchParams'
 import MapView from './MapView/MapView.connector'
@@ -30,7 +30,7 @@ import { cellIdFromString } from '../../utils'
 export type ProjectViewInnerOwnProps = {
   projectId: CellIdString
   entryPointActionHashes: ActionHashB64[]
-  appWebsocket: AppAgentClient
+  appWebsocket: AppClient
 }
 
 export type ProjectViewInnerConnectorStateProps = {
