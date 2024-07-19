@@ -12,7 +12,7 @@ import {
   BackwardsCompatibleAllProjectsExportSchema,
 } from 'zod-models'
 import { internalJoinProject } from '../../projects/joinProject'
-import { AppAgentClient } from '@holochain/client'
+import { AppClient } from '@holochain/client'
 
 const stringToJSONSchema = z.string().transform((str, ctx): any => {
   try {
@@ -96,7 +96,7 @@ export async function internalImportProjectsData(
 }
 
 export default async function importProjectsData(
-  appWebsocket: AppAgentClient,
+  appWebsocket: AppClient,
   store: any,
   migrationData: string,
   onStep: (completed: number, toComplete: number) => void

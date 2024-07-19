@@ -13,7 +13,7 @@ import ProjectsZomeApi from '../../../../api/projectsApi'
 import { cellIdFromString } from '../../../../utils'
 import { RootState } from '../../../reducer'
 import { CellIdString } from '../../../../types/shared'
-import { AppClient, AppAgentWebsocket } from '@holochain/client'
+import { AppClient, AppWebsocket } from '@holochain/client'
 
 const isOneOfRealtimeInfoAffectingActions = (action) => {
   const { type } = action
@@ -44,9 +44,8 @@ const realtimeInfoWatcher =
         const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
         let result = next(action)
         if (
-          (appWebsocket as AppAgentWebsocket).appWebsocket.client.socket
-            .readyState ===
-          (appWebsocket as AppAgentWebsocket).appWebsocket.client.socket.OPEN
+          (appWebsocket as AppWebsocket).client.socket.readyState ===
+          (appWebsocket as AppWebsocket).client.socket.OPEN
         ) {
           let state: RootState = store.getState()
           const payload = getRealtimeInfo(state)
