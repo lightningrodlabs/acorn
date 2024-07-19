@@ -1,28 +1,36 @@
 import { connect } from 'react-redux'
 import { RootState } from '../../redux/reducer'
-import {
-  createOutcomeWithConnection,
-} from '../../redux/persistent/projects/outcomes/actions'
+import { createOutcomeWithConnection } from '../../redux/persistent/projects/outcomes/actions'
 import { deleteConnection } from '../../redux/persistent/projects/connections/actions'
 import {
   closeOutcomeForm,
   updateContent,
 } from '../../redux/ephemeral/outcome-form/actions'
-import MapViewCreateOutcome, { MapViewCreateOutcomeConnectorDispatchProps, MapViewCreateOutcomeConnectorStateProps, MapViewCreateOutcomeOwnProps } from './MapViewCreateOutcome.component'
+import MapViewCreateOutcome, {
+  MapViewCreateOutcomeConnectorDispatchProps,
+  MapViewCreateOutcomeConnectorStateProps,
+  MapViewCreateOutcomeOwnProps,
+} from './MapViewCreateOutcome.component'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString } from '../../utils'
 import { ActionHashB64, Option } from '../../types/shared'
 import { LinkedOutcomeDetails, Outcome } from '../../types'
-import { selectOutcome, unselectAll } from '../../redux/ephemeral/selection/actions'
+import {
+  selectOutcome,
+  unselectAll,
+} from '../../redux/ephemeral/selection/actions'
 import { animatePanAndZoom } from '../../redux/ephemeral/viewport/actions'
 import { LAYOUT_ANIMATION_TYPICAL_MS } from '../../constants'
+import { getAppWs } from '../../hcWebsockets'
 
 // https://react-redux.js.org/using-react-redux/connect-mapstate
 // Designed to grab selective data off of a redux state tree in order
 // to pass it to a component for rendering, as specific properties that
 // that component expects
 
-function mapStateToProps(state: RootState): MapViewCreateOutcomeConnectorStateProps {
+function mapStateToProps(
+  state: RootState
+): MapViewCreateOutcomeConnectorStateProps {
   const {
     ui: {
       viewport: { scale, translate },
@@ -38,7 +46,7 @@ function mapStateToProps(state: RootState): MapViewCreateOutcomeConnectorStatePr
   } = state
 
   return {
-    maybeLinkedOutcome, 
+    maybeLinkedOutcome,
     activeAgentPubKey: state.agentAddress,
     scale,
     translate,
@@ -64,7 +72,7 @@ function mapDispatchToProps(
       return dispatch(updateContent(content))
     },
     deleteConnection: async (actionHash: ActionHashB64) => {
-const appWebsocket = await getAppWs()
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       // we will only be archiving
       // an connection here in the context of immediately replacing
@@ -78,7 +86,7 @@ const appWebsocket = await getAppWs()
       entry: Outcome,
       maybeLinkedOutcome: Option<LinkedOutcomeDetails>
     ) => {
-const appWebsocket = await getAppWs()
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeWithConnection = await projectsZomeApi.outcome.createOutcomeWithConnection(
         cellId,
@@ -87,19 +95,19 @@ const appWebsocket = await getAppWs()
           maybeLinkedOutcome,
         }
       )
-      dispatch(
-        createOutcomeWithConnection(cellIdString, outcomeWithConnection)
-      )
+      dispatch(createOutcomeWithConnection(cellIdString, outcomeWithConnection))
       // Re. the timeout...
       // it is necessary because an animation
       // runs in layout.ts that initially moves the position
-      // of the Outcome itself. Before animating to the 
+      // of the Outcome itself. Before animating to the
       const ADDITIONAL_WAIT_BUFFER_MS = 40
       setTimeout(() => {
         dispatch(unselectAll())
         dispatch(selectOutcome(outcomeWithConnection.outcome.actionHash))
         // `false` here means DONT change the scale, only the translate
-        dispatch(animatePanAndZoom(outcomeWithConnection.outcome.actionHash, false))
+        dispatch(
+          animatePanAndZoom(outcomeWithConnection.outcome.actionHash, false)
+        )
       }, LAYOUT_ANIMATION_TYPICAL_MS + ADDITIONAL_WAIT_BUFFER_MS)
     },
     closeOutcomeForm: () => {
