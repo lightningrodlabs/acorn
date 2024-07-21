@@ -14,7 +14,6 @@ import { ActionHashB64, CellIdString, WithActionHash } from '../../types/shared'
 import { ModalState, OpenModal } from '../../context/ModalContexts'
 import { passphraseToUid } from '../../secrets'
 import { PROJECT_APP_PREFIX } from '../../holochainConfig'
-import { getAllApps } from '../../projectAppIds'
 import ToastContext, { ShowToast } from '../../context/ToastContext'
 import { AppClient } from '@holochain/client'
 
