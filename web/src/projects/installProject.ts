@@ -6,7 +6,7 @@ import {
   CellType,
 } from '@holochain/client'
 import { getAdminWs, getAgentPubKey, getAppWs } from '../hcWebsockets'
-import { PROJECT_APP_PREFIX } from '../holochainConfig'
+import { PROJECT_APP_PREFIX, PROJECTS_ROLE_NAME } from '../holochainConfig'
 import { passphraseToUid } from '../secrets'
 import { CellIdString } from '../types/shared'
 import { cellIdToString } from '../utils'
@@ -27,7 +27,7 @@ export async function internalInstallProject(
 
   // CLONE
   const clonedCell = await appWs.createCloneCell({
-    role_name: 'projects',
+    role_name: PROJECTS_ROLE_NAME,
     modifiers: {
       network_seed: uid,
     },
