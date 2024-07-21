@@ -13,10 +13,16 @@ import selectEntryPoints, {
 } from '../redux/persistent/projects/entry-points/select'
 import { animatePanAndZoom } from '../redux/ephemeral/viewport/actions'
 import ProfilesZomeApi from '../api/profilesApi'
-import { getAdminWs } from '../hcWebsockets'
+import { getAdminWs, getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { RootState } from '../redux/reducer'
-import App, { AppStateProps, AppDispatchProps, AppReduxProps, AppOwnProps, AppProps } from './App.component'
+import App, {
+  AppStateProps,
+  AppDispatchProps,
+  AppReduxProps,
+  AppOwnProps,
+  AppProps,
+} from './App.component'
 import selectProjectMembersPresent from '../redux/persistent/projects/realtime-info-signal/select'
 import {
   hideAchievedOutcomes,
@@ -124,7 +130,7 @@ function mapDispatchToProps(dispatch: any): AppDispatchProps {
     },
     unselectAll: () => {
       return dispatch(unselectAll())
-    }
+    },
   }
 }
 
@@ -146,7 +152,8 @@ function mergeProps(
     ...dispatchProps,
     uninstallProject: async (appId: string, cellIdString: CellIdString) => {
       const adminWs = await getAdminWs()
-      uninstallProject(appId, cellIdString, dispatch, adminWs)
+      const appWs = await getAppWs()
+      uninstallProject(appId, cellIdString, dispatch, appWs)
     },
     updateWhoami: async (entry: Profile, actionHash: string) => {
       const profilesZomeApi = new ProfilesZomeApi(appWebsocket)

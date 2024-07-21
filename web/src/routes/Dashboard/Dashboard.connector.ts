@@ -1,10 +1,8 @@
 import { connect } from 'react-redux'
-import { getAdminWs } from '../../hcWebsockets'
+import { getAdminWs, getAppWs } from '../../hcWebsockets'
 import { fetchEntryPointDetails } from '../../redux/persistent/projects/entry-points/actions'
 import { fetchMembers } from '../../redux/persistent/projects/members/actions'
-import {
-  fetchProjectMeta,
-} from '../../redux/persistent/projects/project-meta/actions'
+import { fetchProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString } from '../../utils'
 import { CellIdString } from '../../types/shared'
@@ -37,7 +35,8 @@ function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
   return {
     uninstallProject: async (appId: string, cellId: CellIdString) => {
       const adminWs = await getAdminWs()
-      return uninstallProject(appId, cellId, dispatch, adminWs)
+      const appWs = await getAppWs()
+      return uninstallProject(appId, cellId, dispatch, appWs)
     },
     fetchEntryPointDetails: async (appWebsocket, cellIdString) => {
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
@@ -61,12 +60,7 @@ function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
       )
       return dispatch(fetchProjectMeta(cellIdString, projectMeta))
     },
-    createProject: async (
-      appWebsocket,
-      agentAddress,
-      project,
-      passphrase
-    ) => {
+    createProject: async (appWebsocket, agentAddress, project, passphrase) => {
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const projectMeta: ProjectMeta = {
         ...project, // name and image
@@ -92,7 +86,13 @@ function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
       triggerJoinSignal(cellId, appWebsocket)
       return cellIdString
     },
-    importProject: (appWebsocket, cellIdString, agentAddress, projectData, passphrase) => {
+    importProject: (
+      appWebsocket,
+      cellIdString,
+      agentAddress,
+      projectData,
+      passphrase
+    ) => {
       return importProject(
         appWebsocket,
         cellIdString,
