@@ -1,5 +1,6 @@
 import { AdminWebsocket, AppWebsocket, AppClient } from '@holochain/client'
 import { MAIN_APP_ID } from './holochainConfig'
+import { isWeContext, WeaveClient } from '@lightningrodlabs/we-applet'
 
 // export for use by holochainMiddleware (redux)
 
@@ -59,6 +60,16 @@ export async function getAppWs(): Promise<AppClient> {
     (appWs as AppWebsocket).client.socket.readyState ===
       (appWs as AppWebsocket).client.socket.OPEN
   ) {
+    return appWs
+  } else if (isWeContext()) {
+    const weClient = await WeaveClient.connect()
+    if (
+      weClient.renderInfo.type !== 'applet-view' ||
+      weClient.renderInfo.view.type !== 'main'
+    )
+      throw new Error('This Applet only implements the applet main view.')
+    const appClient = weClient.renderInfo.appletClient
+    appWs = appClient
     return appWs
   } else if (appWsPromise) {
     // connection must have been lost
