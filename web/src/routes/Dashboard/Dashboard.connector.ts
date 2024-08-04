@@ -34,7 +34,6 @@ function mapStateToProps(state: RootState): DashboardStateProps {
 function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
   return {
     uninstallProject: async (appId: string, cellId: CellIdString) => {
-      const adminWs = await getAdminWs()
       const appWs = await getAppWs()
       return uninstallProject(appId, cellId, dispatch, appWs)
     },

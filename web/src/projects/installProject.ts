@@ -10,6 +10,7 @@ import { PROJECT_APP_PREFIX, PROJECTS_ROLE_NAME } from '../holochainConfig'
 import { passphraseToUid } from '../secrets'
 import { CellIdString } from '../types/shared'
 import { cellIdToString } from '../utils'
+import { isWeContext } from '@lightningrodlabs/we-applet'
 
 export async function internalInstallProject(
   passphrase: string,
@@ -36,8 +37,11 @@ export async function internalInstallProject(
   const cellIdString = cellIdToString(cellId)
   //authorize zome calls for the new cell
   // TODO: this pattern will need to change as the adminWS won't be availabe in a Moss Tool context
-  const adminWs = await getAdminWs()
-  await adminWs.authorizeSigningCredentials(cellId)
+  // if electron, send ipc message to main process to authorize, otherwise don't need to do anything
+  if (!isWeContext()) {
+    const adminWs = await getAdminWs()
+    await adminWs.authorizeSigningCredentials(cellId)
+  }
   return { cellIdString, cellId, appId: installedAppId }
 }
 

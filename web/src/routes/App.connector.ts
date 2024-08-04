@@ -151,7 +151,6 @@ function mergeProps(
     ...stateProps,
     ...dispatchProps,
     uninstallProject: async (appId: string, cellIdString: CellIdString) => {
-      const adminWs = await getAdminWs()
       const appWs = await getAppWs()
       uninstallProject(appId, cellIdString, dispatch, appWs)
     },

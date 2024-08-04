@@ -10,26 +10,25 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 
-import { WeClient, isWeContext, initializeHotReload } from '@lightningrodlabs/we-applet'
+import { WeaveClient, isWeContext } from '@lightningrodlabs/we-applet'
 import createStoreAndRenderToDom, { electronInit } from './indexForElectron'
 import { getAdminWs, getAppWs } from './hcWebsockets'
 
 console.log('HELLLLLLO')
 
-if (!isWeContext) {
+if (!isWeContext()) {
   // electron
   ;(async () => {
-    const appWs = await getAppWs()
     const adminWs = await getAdminWs()
+    const appWs = await getAppWs()
     const store = await createStoreAndRenderToDom(appWs)
     await electronInit(store, adminWs, appWs)
   })()
 } else {
   console.log('hello2')
   ;(async () => {
-    await initializeHotReload();
     console.log('hello3')
-    const weClient = await WeClient.connect()
+    const weClient = await WeaveClient.connect()
     console.log('hello4')
     if (
       weClient.renderInfo.type !== 'applet-view' ||
@@ -37,11 +36,11 @@ if (!isWeContext) {
     )
       throw new Error('This Applet only implements the applet main view.')
 
-    const appAgentClient = weClient.renderInfo.appletClient
+    const appClient = weClient.renderInfo.appletClient
     const profilesClient = weClient.renderInfo.profilesClient
 
     console.log('made it here')
-    const store = await createStoreAndRenderToDom(appAgentClient)
+    const store = await createStoreAndRenderToDom(appClient)
     console.log('made it here2')
   })()
 }

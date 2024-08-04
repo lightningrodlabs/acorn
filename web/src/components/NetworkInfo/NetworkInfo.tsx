@@ -3,6 +3,7 @@ import './NetworkInfo.scss'
 import { getAdminWs } from '../../hcWebsockets'
 import ReactJsonView from 'react-json-view'
 import { VersionInfo } from '../../hooks/useVersionChecker'
+import { isWeContext } from '@lightningrodlabs/we-applet'
 
 export type NetworkInfoProps = {
   versionInfo: VersionInfo
@@ -36,9 +37,11 @@ const NetworkInfo: React.FC<NetworkInfoProps> = ({
 
   useEffect(() => {
     const getNetworkStats = async () => {
-      const adminWs = await getAdminWs()
-      const stats = await adminWs.dumpNetworkStats()
-      setNetworkStats(JSON.parse(stats))
+      if (!isWeContext()) {
+        const adminWs = await getAdminWs()
+        const stats = await adminWs.dumpNetworkStats()
+        setNetworkStats(JSON.parse(stats))
+      }
     }
     getNetworkStats()
 
