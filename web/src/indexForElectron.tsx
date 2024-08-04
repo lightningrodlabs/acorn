@@ -5,7 +5,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { AdminWebsocket, AppClient, CellType } from '@holochain/client'
 
 // Local Imports
-import { PROFILES_ROLE_NAME } from './holochainConfig'
+import { PROFILES_ROLE_NAME, PROJECTS_ROLE_NAME } from './holochainConfig'
 import acorn from './redux/reducer'
 import signalsHandlers from './signalsHandlers'
 import {
@@ -62,17 +62,20 @@ export async function electronInit(
   appWs: AppClient
 ) {
   try {
-    const profilesInfo = await appWs.appInfo()
-    const cellInfo = profilesInfo.cell_info[PROFILES_ROLE_NAME][0]
-    const cellId =
-      CellType.Provisioned in cellInfo
-        ? cellInfo[CellType.Provisioned].cell_id
-        : undefined
-    if (cellId == undefined) {
+    const appInfo = await appWs.appInfo()
+    const { profilesCellInfo, projectsCellInfo } = { profilesCellInfo: appInfo.cell_info[PROFILES_ROLE_NAME][0], projectsCellInfo: appInfo.cell_info[PROJECTS_ROLE_NAME][0] }
+    const { cellId, projectsCellId } =
+      { cellId: CellType.Provisioned in profilesCellInfo
+        ? profilesCellInfo[CellType.Provisioned].cell_id
+        : undefined, projectsCellId: CellType.Provisioned in projectsCellInfo
+        ? projectsCellInfo[CellType.Provisioned].cell_id
+        : undefined }
+    if (cellId == undefined || projectsCellId == undefined) {
       throw 'cellId undefined'
     } else {
       // authorize zome call signer
       await adminWs.authorizeSigningCredentials(cellId)
+      await adminWs.authorizeSigningCredentials(projectsCellId)
 
       const [_dnaHash, agentPubKey] = cellId
       // cache buffer version of agentPubKey
