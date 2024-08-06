@@ -36,12 +36,14 @@
     "storybook": "yarn workspace acorn-ui storybook",
     "zip-we-applet": "cd web/dist && bestzip ../dist.zip *",
     "build-webhapp": "bash scripts/build-webhapp.sh",
-    "postinstall": "yarn run download-happs && yarn workspace zod-models run build && yarn workspace electron run tsc"
+    "postinstall": "yarn run download-happs && yarn workspace zod-models run build && yarn workspace acorn run tsc",
+    "dev-we": "we-dev-cli --agent-idx 1 --dev-config we.dev.config.ts"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",
   "dependencies": {
-    "pm2": "^5.1.1"
+    "pm2": "^5.1.1",
+    "@lightningrodlabs/we-dev-cli": "0.12.0-dev.0"
   },
   "devDependencies": {
     "bestzip": "^2.2.1",
