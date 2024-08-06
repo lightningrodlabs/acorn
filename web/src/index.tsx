@@ -10,37 +10,53 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 
-import { WeaveClient, isWeContext } from '@lightningrodlabs/we-applet'
+import {
+  WeaveClient,
+  initializeHotReload,
+  isWeContext,
+} from '@lightningrodlabs/we-applet'
 import createStoreAndRenderToDom, { electronInit } from './indexForElectron'
 import { getAdminWs, getAppWs } from './hcWebsockets'
 
-console.log('HELLLLLLO')
-
-if (!isWeContext()) {
-  // electron
-  ;(async () => {
-    const adminWs = await getAdminWs()
-    const appWs = await getAppWs()
-    const store = await createStoreAndRenderToDom(appWs)
-    await electronInit(store, adminWs, appWs)
-  })()
-} else {
-  console.log('hello2')
-  ;(async () => {
-    console.log('hello3')
-    const weClient = await WeaveClient.connect()
-    console.log('hello4')
-    if (
-      weClient.renderInfo.type !== 'applet-view' ||
-      weClient.renderInfo.view.type !== 'main'
-    )
-      throw new Error('This Applet only implements the applet main view.')
-
-    const appClient = weClient.renderInfo.appletClient
-    const profilesClient = weClient.renderInfo.profilesClient
-
-    console.log('made it here')
-    const store = await createStoreAndRenderToDom(appClient)
-    console.log('made it here2')
-  })()
+const isElectron = () => {
+  return (
+    typeof process !== 'undefined' &&
+    process.versions != null &&
+    process.versions.electron != null
+  )
 }
+
+;(async () => {
+  if (!isElectron()) {
+    await initializeHotReload()
+  }
+  if (!isWeContext()) {
+    // electron
+    ;(async () => {
+      const adminWs = await getAdminWs()
+      const appWs = await getAppWs()
+      const store = await createStoreAndRenderToDom(appWs)
+      await electronInit(store, adminWs, appWs)
+    })()
+  } else {
+    console.log('hello2')
+    ;(async () => {
+      console.log('hello3')
+      const weClient = await WeaveClient.connect()
+      console.log('hello4')
+      if (
+        weClient.renderInfo.type !== 'applet-view' ||
+        weClient.renderInfo.view.type !== 'main'
+      )
+        throw new Error('This Applet only implements the applet main view.')
+
+      const appClient = weClient.renderInfo.appletClient
+      const profilesClient = weClient.renderInfo.profilesClient
+
+      console.log('made it here')
+      const store = await createStoreAndRenderToDom(appClient)
+
+      console.log('made it here2')
+    })()
+  }
+})()
