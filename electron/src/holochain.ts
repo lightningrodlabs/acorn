@@ -2,7 +2,7 @@ import {
   ElectronHolochainOptions,
   StateSignal,
 } from '@lightningrodlabs/electron-holochain'
-import { DATASTORE_PATH, KEYSTORE_PATH, PROFILES_HAPP_PATH } from './paths'
+import { DATASTORE_PATH, KEYSTORE_PATH, ACORN_HAPP_PATH } from './paths'
 
 // these messages get seen on the splash page
 export enum StateSignalText {
@@ -42,7 +42,7 @@ const ACORN_AGENT_NUM = parseInt(process.env.ACORN_AGENT_NUM)
 console.log('ACORN_AGENT_NUM', ACORN_AGENT_NUM)
 
 const devOptions: ElectronHolochainOptions = {
-  happPath: PROFILES_HAPP_PATH, // preload
+  happPath: ACORN_HAPP_PATH, // preload
   datastorePath: DATASTORE_PATH,
   appId: MAIN_APP_ID,
   appWsPort: 8100 + ACORN_AGENT_NUM,
@@ -53,7 +53,7 @@ const devOptions: ElectronHolochainOptions = {
   logging: 'Json',
 }
 const prodOptions: ElectronHolochainOptions = {
-  happPath: PROFILES_HAPP_PATH, // preload
+  happPath: ACORN_HAPP_PATH, // preload
   datastorePath: DATASTORE_PATH,
   appId: MAIN_APP_ID,
   appWsPort: 8889,

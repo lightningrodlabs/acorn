@@ -20,9 +20,9 @@ const USER_DATA_MIGRATION_FILE_PATH = path.join(
   `${MIGRATION_FILE_NAME_PREFIX}${INTEGRITY_VERSION_NUMBER}`
 )
 
-// this array defines which previous versions of acorn it 
+// this array defines which previous versions of acorn it
 // is possible to migrate from
-// 
+//
 const PREV_VER_USER_DATA_MIGRATION_FILE_PATHS = [
   // Acorn 3
   path.join(USER_DATA_PATH, `${MIGRATION_FILE_NAME_PREFIX}5`),
@@ -45,13 +45,9 @@ const PREV_VER_USER_DATA_MIGRATION_FILE_PATHS = [
   // path.join(USER_DATA_PATH, `${MIGRATION_FILE_NAME_PREFIX}${INTEGRITY_VERSION_NUMBER}`),
 ]
 
-const PROJECTS_HAPP_PATH = app.isPackaged
+const ACORN_HAPP_PATH = app.isPackaged
   ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/projects.happ')
   : path.join(app.getAppPath(), 'binaries/projects.happ')
-
-const PROFILES_HAPP_PATH = app.isPackaged
-  ? path.join(app.getAppPath(), '../app.asar.unpacked/binaries/profiles.happ')
-  : path.join(app.getAppPath(), 'binaries/profiles.happ')
 
 const DATASTORE_PATH = path.join(
   USER_DATA_PATH,
@@ -82,8 +78,7 @@ export {
   USER_DATA_PATH,
   USER_DATA_MIGRATION_FILE_PATH,
   PREV_VER_USER_DATA_MIGRATION_FILE_PATHS,
-  PROJECTS_HAPP_PATH,
-  PROFILES_HAPP_PATH,
+  ACORN_HAPP_PATH,
   DATASTORE_PATH,
   KEYSTORE_PATH,
   BINARY_PATHS,
