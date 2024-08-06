@@ -122,6 +122,12 @@ export function setAgentPubKey(setAs) {
   agentPubKey = setAs
 }
 
+export function setWeaveClient(client: WeaveClient) {
+  weaveClient = client
+}
+export function setWeaveProfilesClient(profilesClient: ProfilesClient) {
+  weaveProfilesClient = profilesClient
+}
 export async function getWeaveProfilesClient() {
   if (!isWeContext()) {
     throw new Error('Not in Weave context')
@@ -132,7 +138,6 @@ export async function getWeaveProfilesClient() {
       if (weaveClient) return weaveClient
       return await WeaveClient.connect()
     })()
-    console.log('hello4')
     if (
       weaveClient.renderInfo.type !== 'applet-view' ||
       weaveClient.renderInfo.view.type !== 'main'

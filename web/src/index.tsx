@@ -16,7 +16,14 @@ import {
   isWeContext,
 } from '@lightningrodlabs/we-applet'
 import createStoreAndRenderToDom, { electronInit } from './indexForElectron'
-import { getAdminWs, getAppWs } from './hcWebsockets'
+import {
+  getAdminWs,
+  getAppWs,
+  setAppWs,
+  setWeaveClient,
+  setWeaveProfilesClient,
+} from './hcWebsockets'
+import { mossInit } from './indexForMoss'
 
 const isElectron = () => {
   return (
@@ -39,11 +46,9 @@ const isElectron = () => {
       await electronInit(store, adminWs, appWs)
     })()
   } else {
-    console.log('hello2')
     ;(async () => {
-      console.log('hello3')
       const weClient = await WeaveClient.connect()
-      console.log('hello4')
+      setWeaveClient(weClient)
       if (
         weClient.renderInfo.type !== 'applet-view' ||
         weClient.renderInfo.view.type !== 'main'
@@ -51,12 +56,12 @@ const isElectron = () => {
         throw new Error('This Applet only implements the applet main view.')
 
       const appClient = weClient.renderInfo.appletClient
+      setAppWs(appClient)
       const profilesClient = weClient.renderInfo.profilesClient
+      setWeaveProfilesClient(profilesClient)
 
-      console.log('made it here')
       const store = await createStoreAndRenderToDom(appClient)
-
-      console.log('made it here2')
+      await mossInit(store, profilesClient, appClient)
     })()
   }
 })()
