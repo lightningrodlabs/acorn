@@ -1,6 +1,7 @@
 import { AdminWebsocket, AppWebsocket, AppClient } from '@holochain/client'
 import { MAIN_APP_ID } from './holochainConfig'
 import { isWeContext, WeaveClient } from '@lightningrodlabs/we-applet'
+import { ProfilesClient } from '@holochain-open-dev/profiles'
 
 // export for use by holochainMiddleware (redux)
 
@@ -14,6 +15,8 @@ let appWs: AppClient
 let appWsPromise: Promise<AppClient>
 let adminWs: AdminWebsocket
 let agentPubKey
+let weaveProfilesClient: ProfilesClient
+let weaveClient: WeaveClient
 
 export async function getAdminWs(): Promise<AdminWebsocket> {
   if (adminWs) {
@@ -117,4 +120,25 @@ export function getAgentPubKey() {
 
 export function setAgentPubKey(setAs) {
   agentPubKey = setAs
+}
+
+export async function getWeaveProfilesClient() {
+  if (!isWeContext()) {
+    throw new Error('Not in Weave context')
+  } else if (weaveProfilesClient) {
+    return weaveProfilesClient
+  } else {
+    const weaveClient = await (async () => {
+      if (weaveClient) return weaveClient
+      return await WeaveClient.connect()
+    })()
+    console.log('hello4')
+    if (
+      weaveClient.renderInfo.type !== 'applet-view' ||
+      weaveClient.renderInfo.view.type !== 'main'
+    )
+      throw new Error('This Applet only implements the applet main view.')
+    weaveProfilesClient = weaveClient.renderInfo.profilesClient
+    return weaveProfilesClient
+  }
 }

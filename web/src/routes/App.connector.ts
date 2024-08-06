@@ -13,7 +13,7 @@ import selectEntryPoints, {
 } from '../redux/persistent/projects/entry-points/select'
 import { animatePanAndZoom } from '../redux/ephemeral/viewport/actions'
 import ProfilesZomeApi from '../api/profilesApi'
-import { getAdminWs, getAppWs } from '../hcWebsockets'
+import { getAdminWs, getAppWs, getWeaveProfilesClient } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { RootState } from '../redux/reducer'
 import App, {
@@ -35,6 +35,7 @@ import { updateProjectMeta } from '../redux/persistent/projects/project-meta/act
 import { uninstallProject } from '../projects/uninstallProject'
 import { unselectAll } from '../redux/ephemeral/selection/actions'
 import { CellId } from '@holochain/client'
+import { isWeContext } from '@lightningrodlabs/we-applet'
 
 function mapStateToProps(state: RootState): AppStateProps {
   const {
@@ -155,7 +156,13 @@ function mergeProps(
       uninstallProject(appId, cellIdString, dispatch, appWs)
     },
     updateWhoami: async (entry: Profile, actionHash: string) => {
-      const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+      const appWebsocket = await getAppWs()
+      const profilesZomeApi = await (async () => {
+        if (isWeContext()) {
+          const profilesClient = await getWeaveProfilesClient()
+          return new ProfilesZomeApi(appWebsocket, profilesClient)
+        } else return new ProfilesZomeApi(appWebsocket)
+      })()
       const updatedWhoami = await profilesZomeApi.profile.updateWhoami(cellId, {
         entry,
         actionHash,
