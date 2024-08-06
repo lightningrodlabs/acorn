@@ -75,7 +75,9 @@ export async function internalImportProjectsData(
   for await (let projectData of projectsToMigrate) {
     const passphrase = projectData.projectMeta.passphrase
     const projectsIds = await iInstallProject(passphrase)
+    const appWs = await getAppWs()
     await iImportProject(
+      appWs,
       projectsIds.cellIdString,
       myAgentPubKey,
       projectData,
@@ -101,7 +103,7 @@ export default async function importProjectsData(
   migrationData: string,
   onStep: (completed: number, toComplete: number) => void
 ) {
-  const profilesZomeApi = createProfilesZomeApi(appWebsocket)
+  const profilesZomeApi = await createProfilesZomeApi(appWebsocket)
   return internalImportProjectsData(
     profilesZomeApi,
     importProject,

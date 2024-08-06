@@ -48,13 +48,14 @@ export async function internalImportProject(
 }
 
 export async function importProject(
-  appWebsocket: AppClient,
+  _appWebsocket: AppClient,
   cellIdString: CellIdString,
   agentAddress: AgentPubKeyB64,
   projectData: BackwardsCompatibleProjectExport,
   passphrase: string,
   dispatch: any
 ) {
+  const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   return internalImportProject(
     appWebsocket,

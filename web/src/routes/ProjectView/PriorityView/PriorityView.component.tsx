@@ -297,7 +297,7 @@ export type PriorityViewDispatchProps = {
 }
 
 export type PriorityViewOwnProps = {
-  appWebsocket: AppClient
+  appWebsocket?: AppClient
 }
 
 export type PriorityViewProps = PriorityViewStateProps &

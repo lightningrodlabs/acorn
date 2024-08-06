@@ -141,7 +141,7 @@ function mergeProps(
 ): AppProps {
   const { profilesCellIdString, projectId } = stateProps
   const { dispatch } = dispatchProps
-  const { appWebsocket } = ownProps
+  // const { appWebsocket } = ownProps
   let cellId: CellId
   if (profilesCellIdString) {
     cellId = cellIdFromString(profilesCellIdString)
@@ -167,6 +167,7 @@ function mergeProps(
       actionHash: ActionHashB64,
       cellIdString: CellIdString
     ) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
       const updatedProjectMeta = await projectsZomeApi.projectMeta.update(
@@ -176,6 +177,7 @@ function mergeProps(
       return dispatch(updateProjectMeta(cellIdString, updatedProjectMeta))
     },
     setSelectedLayeringAlgo: async (layeringAlgorithm: LayeringAlgorithm) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const entry = {
         ...stateProps.activeProjectMeta,

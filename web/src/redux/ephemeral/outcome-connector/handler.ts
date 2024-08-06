@@ -8,9 +8,10 @@ import { cellIdFromString } from '../../../utils'
 import { ActionHashB64, AppClient } from '@holochain/client'
 import { LinkedOutcomeDetails, RelationInput } from '../../../types'
 import { CellIdString, Option } from '../../../types/shared'
+import { getAppWs } from '../../../hcWebsockets'
 
 export default async function handleOutcomeConnectorMouseUp(
-  appWebsocket: AppClient,
+  // _appWebsocket: AppClient,
   maybeLinkedOutcome: Option<LinkedOutcomeDetails>,
   toAddress: ActionHashB64,
   existingParentConnectionAddress: ActionHashB64,
@@ -18,6 +19,7 @@ export default async function handleOutcomeConnectorMouseUp(
   dispatch: any
 ) {
   const cellId = cellIdFromString(activeProject)
+  const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   if (maybeLinkedOutcome && toAddress) {
     // if we are replacing a Connection with this one

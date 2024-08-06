@@ -202,10 +202,11 @@ export type ProjectSettingsModalOwnProps = {
   memberCount: number
   cellIdString: CellIdString
   setModalState: React.Dispatch<React.SetStateAction<ModalState>>
-  appWebsocket: AppClient
+  appWebsocket?: AppClient
 }
 
-export type ProjectSettingsModalProps = ProjectSettingsModalDispatchProps & ProjectSettingsModalOwnProps
+export type ProjectSettingsModalProps = ProjectSettingsModalDispatchProps &
+  ProjectSettingsModalOwnProps
 
 export default function ProjectSettingsModal({
   showModal,

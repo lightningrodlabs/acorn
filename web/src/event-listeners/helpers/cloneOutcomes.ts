@@ -5,9 +5,10 @@ import { createOutcome } from '../../redux/persistent/projects/outcomes/actions'
 import { createOutcomeMember } from '../../redux/persistent/projects/outcome-members/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString } from '../../utils'
+import { getAppWs } from '../../hcWebsockets'
 
 export default async function cloneOutcomes(
-  appWebsocket: AppClient,
+  _appWebsocket: AppClient,
   store: any
 ) {
   const state = store.getState()
@@ -17,6 +18,7 @@ export default async function cloneOutcomes(
   const outcomesToClone = state.ui.outcomeClone.outcomes
   const outcomes = state.projects.outcomes[activeProject]
   const outcomeMembers = state.projects.outcomeMembers[activeProject]
+  const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   const cellId = cellIdFromString(activeProject)
 

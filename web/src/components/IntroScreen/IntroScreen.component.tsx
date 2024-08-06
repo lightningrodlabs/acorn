@@ -19,7 +19,7 @@ export type IntroScreenDispatchProps = {
   fetchWhoami: (profilesCellId: CellIdString) => Promise<void>
 }
 export type IntroScreenOwnProps = {
-  appWebsocket: AppClient
+  appWebsocket?: AppClient
 }
 export type IntroScreenProps = IntroScreenOwnProps &
   IntroScreenStateProps &

@@ -6,16 +6,18 @@ import { ProjectMeta } from '../types'
 import { ActionHashB64, CellIdString } from '../types/shared'
 import { cellIdFromString } from '../utils'
 import { AppClient } from '@holochain/client'
+import { getAppWs } from '../hcWebsockets'
 
 export type ExportType = 'csv' | 'json'
 
 export async function updateProjectMeta(
-  appWebsocket: AppClient,
+  _appWebsocket: AppClient,
   projectMeta: ProjectMeta,
   actionHash: ActionHashB64,
   cellIdString: CellIdString
 ) {
   const cellId = cellIdFromString(cellIdString)
+  const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   await projectsZomeApi.projectMeta.update(cellId, {
     entry: projectMeta,
@@ -55,7 +57,6 @@ export async function internalExportProjectsData(
     // step 1: make sure all the data is fetched
     // and integrated into the redux store
     const projectDataFetchers = constructProjectDataFetchersFunction(
-      appWebsocket,
       store.dispatch,
       projectCellId
     )

@@ -14,6 +14,7 @@ import { cellIdFromString } from '../../../../utils'
 import { RootState } from '../../../reducer'
 import { CellIdString } from '../../../../types/shared'
 import { AppClient, AppWebsocket } from '@holochain/client'
+import { getAppWs } from '../../../../hcWebsockets'
 
 const isOneOfRealtimeInfoAffectingActions = (action) => {
   const { type } = action
@@ -37,10 +38,11 @@ const isProjectExitAction = (action: { type: string }) => {
 // return the action handler middleware
 const realtimeInfoWatcher =
   // closure the appWebsocket
-  (appWebsocket: AppClient) =>
+  (_appWebsocket: AppClient) =>
     // provide the typical redux middleware signature
     (store: any) => (next: any) => async (action: any) => {
       if (isOneOfRealtimeInfoAffectingActions(action)) {
+        const appWebsocket = await getAppWs()
         const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
         let result = next(action)
         if (
@@ -65,6 +67,7 @@ const realtimeInfoWatcher =
         }
         return result
       } else if (isProjectExitAction(action)) {
+        const appWebsocket = await getAppWs()
         const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
         const payload = {
           projectId: '',

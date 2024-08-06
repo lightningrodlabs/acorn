@@ -133,11 +133,12 @@ export async function internalCreateActionHashMapAndImportProjectData(
 }
 
 export async function createActionHashMapAndImportProjectData(
-  appWebsocket: AppClient,
+  _appWebsocket: AppClient,
   projectData: BackwardsCompatibleProjectExport,
   projectsCellIdString: CellIdString,
   dispatch: any
 ) {
+  const appWebsocket = await getAppWs()
   const projectsZomeApi = createProjectsZomeApi(appWebsocket)
   return internalCreateActionHashMapAndImportProjectData(
     projectData,

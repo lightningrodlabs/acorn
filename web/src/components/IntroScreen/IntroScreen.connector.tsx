@@ -11,7 +11,8 @@ import IntroScreenInner, {
 } from './IntroScreen.component'
 import useAppWebsocket from '../../hooks/useAppWebsocket'
 import React from 'react'
-import { getAppWs } from '../../hcWebsockets'
+import { getAppWs, getWeaveProfilesClient } from '../../hcWebsockets'
+import { isWeContext } from '@lightningrodlabs/we-applet'
 
 function mapStateToProps(state: RootState): IntroScreenStateProps {
   return {
@@ -24,12 +25,16 @@ function mapDispatchToProps(
   dispatch: any,
   ownProps: IntroScreenOwnProps
 ): IntroScreenDispatchProps {
-  // const { appWebsocket } = ownProps
   return {
     fetchWhoami: async (profilesCellId: CellIdString) => {
-      const appWebsocket = await getAppWs();
+      const appWebsocket = await getAppWs()
       const cellId = cellIdFromString(profilesCellId)
-      const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+      const profilesZomeApi = await (async () => {
+        if (isWeContext()) {
+          const profilesClient = await getWeaveProfilesClient()
+          return new ProfilesZomeApi(appWebsocket, profilesClient)
+        } else return new ProfilesZomeApi(appWebsocket)
+      })()
       const profile = await profilesZomeApi.profile.whoami(cellId)
       dispatch(whoami(profilesCellId, profile))
     },

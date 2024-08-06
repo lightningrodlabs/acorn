@@ -22,10 +22,12 @@ export type MultiEditBarDispatchProps = {
 export type MultiEditBarOwnProps = {
   projectId: CellIdString
   hasMultiSelection: boolean
-  appWebsocket: AppClient
+  appWebsocket?: AppClient
 }
 
-export type MultiEditBarProps = MultiEditBarStateProps & MultiEditBarDispatchProps & MultiEditBarOwnProps
+export type MultiEditBarProps = MultiEditBarStateProps &
+  MultiEditBarDispatchProps &
+  MultiEditBarOwnProps
 
 export default function MultiEditBar({
   agentAddress,

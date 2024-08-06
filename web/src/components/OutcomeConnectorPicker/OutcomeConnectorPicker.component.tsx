@@ -30,7 +30,7 @@ export type OutcomeConnectorPickerDispatchProps = {
 export type OutcomeConnectorPickerOwnProps = {
   active: boolean
   onClose: () => void
-  appWebsocket: AppClient
+  appWebsocket?: AppClient
 }
 
 export type OutcomeConnectorPickerProps = OutcomeConnectorPickerStateProps &

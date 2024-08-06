@@ -40,7 +40,7 @@ function leftMostOutcome(
 }
 
 export default async function bodyKeydown(
-  appWebsocket: AppClient,
+  _appWebsocket: AppClient,
   store: any,
   event: KeyboardEvent
 ) {
@@ -61,6 +61,7 @@ export default async function bodyKeydown(
     store.dispatch(animatePanAndZoom(actionHash, false))
   }
 
+  const appWebsocket = await getAppWs()
   const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
   let state: RootState = store.getState()
   const {

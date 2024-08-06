@@ -112,7 +112,7 @@ export type AppMergeProps = {
 }
 
 export type AppOwnProps = {
-  appWebsocket: AppClient
+  appWebsocket?: AppClient
 }
 
 export type AppReduxProps = AppStateProps & AppDispatchProps & AppMergeProps

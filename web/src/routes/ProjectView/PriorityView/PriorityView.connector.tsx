@@ -13,6 +13,7 @@ import PriorityViewInner, {
   PriorityViewStateProps,
 } from './PriorityView.component'
 import useAppWebsocket from '../../../hooks/useAppWebsocket'
+import { getAppWs } from '../../../hcWebsockets'
 
 function mapStateToProps(state: RootState): PriorityViewStateProps {
   const projectId = state.ui.activeProject
@@ -45,6 +46,7 @@ function mapDispatchToProps(
       return dispatch(animatePanAndZoom(outcomeActionHash, true))
     },
     updateProjectMeta: async (projectMeta, actionHash, cellIdString) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
       const updatedProjectMeta = await projectsZomeApi.projectMeta.update(
@@ -59,7 +61,10 @@ function mapDispatchToProps(
   }
 }
 
-const PriorityView = connect(mapStateToProps, mapDispatchToProps)(PriorityViewInner)
+const PriorityView = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PriorityViewInner)
 
 // necessary because this is rendered right inside a route
 const PriorityViewWrapper = () => {

@@ -34,7 +34,7 @@ import ProgressIndicator from '../../ProgressIndicator/ProgressIndicator'
 import { AppClient } from '@holochain/client'
 
 export type EvRightColumnOwnProps = {
-  appWebsocket: AppClient
+  appWebsocket?: AppClient
   projectId: CellIdString
   onClose: () => void
   outcome: ComputedOutcome

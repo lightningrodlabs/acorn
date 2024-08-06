@@ -28,7 +28,7 @@ export default function canvasMouseup(
     // AS WELL AS the case where we are not
     // (to reset the connection connector)
     handleOutcomeConnectorMouseUp(
-      appWebsocket,
+      // appWebsocket,
       maybeLinkedOutcome,
       toAddress,
       existingParentConnectionAddress,

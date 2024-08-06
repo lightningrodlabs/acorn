@@ -37,7 +37,8 @@ function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
       const appWs = await getAppWs()
       return uninstallProject(appId, cellId, dispatch, appWs)
     },
-    fetchEntryPointDetails: async (appWebsocket, cellIdString) => {
+    fetchEntryPointDetails: async (_appWebsocket, cellIdString) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
       const entryPointDetails = await projectsZomeApi.entryPoint.fetchEntryPointDetails(
@@ -45,13 +46,15 @@ function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
       )
       return dispatch(fetchEntryPointDetails(cellIdString, entryPointDetails))
     },
-    fetchMembers: async (appWebsocket, cellIdString) => {
+    fetchMembers: async (_appWebsocket, cellIdString) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
       const members = await projectsZomeApi.member.fetch(cellId)
       return dispatch(fetchMembers(cellIdString, members))
     },
-    fetchProjectMeta: async (appWebsocket, cellIdString) => {
+    fetchProjectMeta: async (_appWebsocket, cellIdString) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
       const projectMeta = await projectsZomeApi.projectMeta.fetchProjectMeta(
@@ -59,7 +62,8 @@ function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
       )
       return dispatch(fetchProjectMeta(cellIdString, projectMeta))
     },
-    createProject: async (appWebsocket, agentAddress, project, passphrase) => {
+    createProject: async (_appWebsocket, agentAddress, project, passphrase) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const projectMeta: ProjectMeta = {
         ...project, // name and image

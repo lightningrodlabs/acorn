@@ -30,7 +30,7 @@ function mapStateToProps(state: RootState) {
 }
 
 function mapDispatchToProps(dispatch: any, ownProps: MultiEditBarOwnProps) {
-  const { projectId: cellIdString, appWebsocket: _appWebsocket } = ownProps
+  const { projectId: cellIdString } = ownProps
   let cellId: CellId
   if (cellIdString) {
     cellId = cellIdFromString(cellIdString)

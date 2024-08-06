@@ -7,9 +7,10 @@ import ProjectsZomeApi from '../api/projectsApi'
 import { cellIdFromString } from '../utils'
 import { WithActionHash } from '../types/shared'
 import { Connection } from 'zod-models'
+import { getAppWs } from '../hcWebsockets'
 
 export async function alterSiblingOrder(
-  appWebsocket: AppClient,
+  _appWebsocket: AppClient,
   store: any,
   state: RootState,
   selectedOutcome: ActionHashB64,
@@ -55,6 +56,7 @@ export async function alterSiblingOrder(
   // 4. set the siblingOrder of the latter to a higher value
   // than the former
   if (targetConnection && selectedOutcomeConnection) {
+    const appWebsocket = await getAppWs()
     const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
     const cellId = cellIdFromString(activeProject)
     // left go higher, right go lower

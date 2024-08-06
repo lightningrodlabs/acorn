@@ -41,10 +41,11 @@ function mapStateToProps(
 }
 
 function mapDispatchToProps(dispatch: any, ownProps: EvCommentsOwnProps) {
-  const { projectId: cellIdString, appWebsocket } = ownProps
+  const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
     createOutcomeComment: async (payload: OutcomeComment) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeComment = await projectsZomeApi.outcomeComment.create(
         cellId,
@@ -56,6 +57,7 @@ function mapDispatchToProps(dispatch: any, ownProps: EvCommentsOwnProps) {
       entry: OutcomeComment,
       actionHash: ActionHashB64
     ) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeComment = await projectsZomeApi.outcomeComment.update(
         cellId,
@@ -64,6 +66,7 @@ function mapDispatchToProps(dispatch: any, ownProps: EvCommentsOwnProps) {
       return dispatch(updateOutcomeComment(cellIdString, outcomeComment))
     },
     deleteOutcomeComment: async (actionHash: ActionHashB64) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       await projectsZomeApi.outcomeComment.delete(cellId, actionHash)
       return dispatch(deleteOutcomeComment(cellIdString, actionHash))

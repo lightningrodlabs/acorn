@@ -20,7 +20,7 @@ import { AppClient } from '@holochain/client'
 
 export type MapViewCreateOutcomeOwnProps = {
   projectId: CellIdString
-  appWebsocket: AppClient
+  appWebsocket?: AppClient
 }
 
 export type MapViewCreateOutcomeConnectorStateProps = {

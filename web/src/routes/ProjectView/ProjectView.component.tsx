@@ -31,7 +31,7 @@ import { isWeContext } from '@lightningrodlabs/we-applet'
 export type ProjectViewInnerOwnProps = {
   projectId: CellIdString
   entryPointActionHashes: ActionHashB64[]
-  appWebsocket: AppClient
+  appWebsocket?: AppClient
 }
 
 export type ProjectViewInnerConnectorStateProps = {

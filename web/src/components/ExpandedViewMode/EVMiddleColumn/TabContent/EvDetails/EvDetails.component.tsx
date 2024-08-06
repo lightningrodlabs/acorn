@@ -33,7 +33,7 @@ import { AppClient } from '@holochain/client'
 /* end testing data */
 
 export type EvDetailsOwnProps = {
-  appWebsocket: AppClient
+  appWebsocket?: AppClient
   projectId: CellIdString
   outcome: ComputedOutcome
   content: string

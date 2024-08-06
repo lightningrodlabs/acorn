@@ -8,7 +8,7 @@ import useAppWebsocket from '../../hooks/useAppWebsocket'
 import './CreateProfilePage.scss'
 
 export type CreateProfilePageOwnProps = {
-  appWebsocket: AppClient
+  appWebsocket?: AppClient
 }
 
 export type CreateProfilePageStateProps = {

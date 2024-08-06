@@ -36,6 +36,7 @@ import ProjectViewInner, {
   ProjectViewInnerConnectorStateProps,
   ProjectViewInnerOwnProps,
 } from './ProjectView.component'
+import { getAppWs } from '../../hcWebsockets'
 
 function mapStateToProps(
   state: RootState
@@ -52,10 +53,9 @@ function mapDispatchToProps(
   dispatch: any,
   ownProps: ProjectViewInnerOwnProps
 ): ProjectViewInnerConnectorDispatchProps {
-  const { projectId: cellIdString, appWebsocket } = ownProps
+  const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   const projectDataFetchers = constructProjectDataFetchers(
-    appWebsocket,
     dispatch,
     cellIdString
   )
@@ -87,6 +87,7 @@ function mapDispatchToProps(
       )
     },
     updateOutcome: async (outcome: Outcome, actionHash: ActionHashB64) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeWireRecord = await projectsZomeApi.outcome.update(cellId, {
         entry: outcome,
@@ -96,6 +97,7 @@ function mapDispatchToProps(
     },
     triggerRealtimeInfoSignal: () => dispatch(triggerRealtimeInfoSignal()),
     createOutcomeWithConnection: async (outcomeWithConnection) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const outcomeWireRecord = await projectsZomeApi.outcome.createOutcomeWithConnection(
         cellId,

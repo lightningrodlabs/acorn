@@ -50,10 +50,11 @@ function mapDispatchToProps(
   dispatch: any,
   ownProps: EvRightColumnOwnProps
 ): EvRightColumnConnectorDispatchProps {
-  const { projectId: cellIdString, appWebsocket } = ownProps
+  const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {
     updateOutcome: async (outcome: Outcome, actionHash: ActionHashB64) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedOutcome = await projectsZomeApi.outcome.update(cellId, {
         actionHash,
@@ -65,6 +66,7 @@ function mapDispatchToProps(
       projectMeta: ProjectMeta,
       actionHash: ActionHashB64
     ) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const updatedProjectMeta = await projectsZomeApi.projectMeta.update(
         cellId,
@@ -73,6 +75,7 @@ function mapDispatchToProps(
       return dispatch(updateProjectMeta(cellIdString, updatedProjectMeta))
     },
     createEntryPoint: async (entryPoint: EntryPoint) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const wireRecord = await projectsZomeApi.entryPoint.create(
         cellId,
@@ -81,11 +84,13 @@ function mapDispatchToProps(
       return dispatch(createEntryPoint(cellIdString, wireRecord))
     },
     deleteEntryPoint: async (actionHash: ActionHashB64) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       await projectsZomeApi.entryPoint.delete(cellId, actionHash)
       return dispatch(deleteEntryPoint(cellIdString, actionHash))
     },
     onDeleteClick: async (outcomeActionHash: ActionHashB64) => {
+      const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(
         cellId,

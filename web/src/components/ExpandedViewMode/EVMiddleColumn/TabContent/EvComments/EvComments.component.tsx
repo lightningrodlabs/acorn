@@ -18,7 +18,7 @@ import { AppClient } from '@holochain/client'
 export type EvCommentsOwnProps = {
   projectId: CellIdString
   outcomeContent: string
-  appWebsocket: AppClient
+  appWebsocket?: AppClient
 }
 
 export type EvCommentsConnectorStateProps = {
