@@ -129,7 +129,9 @@ beforeEach(() => {
       create: createEntryPoint,
     },
   })
-  profilesZomeApi = createProfilesZomeApi(mockAppWs)
+  profilesZomeApi = (createProfilesZomeApi(
+    mockAppWs
+  ) as unknown) as ProfilesZomeApi
   projectsZomeApi = createProjectsZomeApi(mockAppWs)
   importProject = jest.fn()
   mockCellIdString =
