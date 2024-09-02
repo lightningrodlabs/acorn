@@ -34,3 +34,5 @@ my-proxy-cert.cert
 
 **/.DS_Store
 .DS_Store
+.aider*
+.env
