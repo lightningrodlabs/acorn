@@ -16,6 +16,29 @@ jobs:
           # (required)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  build-and-release-webhapp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'yarn'
+      - uses: dtolnay/rust-toolchain@1.74
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Install holochain_cli
+        run: cargo install holochain_cli --version 0.4.0-dev.5 --locked
+      - name: Run install
+        run: yarn install --frozen-lockfile
+      - name: Build webhapp
+        run: yarn run build-webhapp
+      - name: Upload webhapp
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${GITHUB_REF#refs/tags/}" "we-applet/acorn.webhapp" --clobber
+
   # upload the app package for each target os
   upload-assets:
     strategy:
