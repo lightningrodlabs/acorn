@@ -12,11 +12,11 @@ import initAgent, {
 
 import { devOptions, prodOptions, stateSignalToText } from './holochain'
 import {
+  ACORN_HAPP_PATH,
   BINARY_PATHS,
   INTEGRITY_VERSION_NUMBER,
   KEYSTORE_VERSION_NUMBER,
   PREV_VER_USER_DATA_MIGRATION_FILE_PATHS,
-  PROJECTS_HAPP_PATH,
   USER_DATA_MIGRATION_FILE_PATH,
 } from './paths'
 import defaultMenu from 'electron-default-menu'
@@ -222,7 +222,7 @@ app.on('activate', () => {
 })
 
 ipcMain.handle('getProjectsPath', () => {
-  return PROJECTS_HAPP_PATH
+  return ACORN_HAPP_PATH
 })
 
 ipcMain.handle('getVersion', () => {
