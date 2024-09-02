@@ -1,4 +1,9 @@
-import { AgentPubKey, AppClient, CellId } from '@holochain/client'
+import {
+  AgentPubKey,
+  AppClient,
+  CellId,
+  encodeHashToBase64,
+} from '@holochain/client'
 import { PROFILES_ZOME_NAME } from '../holochainConfig'
 import { Profile, WhoAmIOutput } from '../types'
 import { AgentPubKeyB64, UpdateInput } from '../types/shared'
@@ -10,9 +15,7 @@ import {
 } from '@holochain-open-dev/profiles'
 import ProfileSchema from 'zod-models/dist/profile/profileSchema'
 import { Status } from '../components/Header/Status'
-import { hashToString } from '../utils'
 import { EntryRecord } from '@holochain-open-dev/utils'
-import { isWeContext } from '@lightningrodlabs/we-applet'
 
 const ZOME_FN_NAMES = {
   CREATE_WHOAMI: 'create_whoami',
@@ -182,11 +185,11 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
       const profile = acornToWeaveProfile(payload, myWeaveProfile.entry)
       const updatedProfileRecord = await profilesClient.updateProfile(profile)
       return {
-        actionHash: hashToString(updatedProfileRecord.actionHash),
-        entryHash: hashToString(updatedProfileRecord.entryHash),
+        actionHash: encodeHashToBase64(updatedProfileRecord.actionHash),
+        entryHash: encodeHashToBase64(updatedProfileRecord.entryHash),
         entry: weaveToAcornProfile(
           updatedProfileRecord.entry,
-          hashToString(myPubKey)
+          encodeHashToBase64(myPubKey)
         ),
         createdAt: updatedProfileRecord.action.timestamp,
         updatedAt: updatedProfileRecord.action.timestamp,
@@ -200,11 +203,11 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
       const profile = acornToWeaveProfile(payload, myWeaveProfile.entry)
       const updatedProfileRecord = await profilesClient.updateProfile(profile)
       return {
-        actionHash: hashToString(updatedProfileRecord.actionHash),
-        entryHash: hashToString(updatedProfileRecord.entryHash),
+        actionHash: encodeHashToBase64(updatedProfileRecord.actionHash),
+        entryHash: encodeHashToBase64(updatedProfileRecord.entryHash),
         entry: weaveToAcornProfile(
           updatedProfileRecord.entry,
-          hashToString(myPubKey)
+          encodeHashToBase64(myPubKey)
         ),
         createdAt: updatedProfileRecord.action.timestamp,
         updatedAt: updatedProfileRecord.action.timestamp,
@@ -218,11 +221,11 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
       const profile = acornToWeaveProfile(payload.entry, myWeaveProfile.entry)
       const updatedProfileRecord = await profilesClient.updateProfile(profile)
       return {
-        actionHash: hashToString(updatedProfileRecord.actionHash),
-        entryHash: hashToString(updatedProfileRecord.entryHash),
+        actionHash: encodeHashToBase64(updatedProfileRecord.actionHash),
+        entryHash: encodeHashToBase64(updatedProfileRecord.entryHash),
         entry: weaveToAcornProfile(
           updatedProfileRecord.entry,
-          hashToString(myPubKey)
+          encodeHashToBase64(myPubKey)
         ),
         createdAt: updatedProfileRecord.action.timestamp,
         updatedAt: updatedProfileRecord.action.timestamp,
@@ -231,11 +234,11 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
     whoami: async (cellId: CellId): Promise<WhoAmIOutput> => {
       let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
       return {
-        actionHash: hashToString(myWeaveProfile.actionHash),
-        entryHash: hashToString(myWeaveProfile.entryHash),
+        actionHash: encodeHashToBase64(myWeaveProfile.actionHash),
+        entryHash: encodeHashToBase64(myWeaveProfile.entryHash),
         entry: weaveToAcornProfile(
           myWeaveProfile.entry,
-          hashToString(myPubKey)
+          encodeHashToBase64(myPubKey)
         ),
         createdAt: myWeaveProfile.action.timestamp,
         updatedAt: myWeaveProfile.action.timestamp,
@@ -255,12 +258,12 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
       return weaveProfiles.map((weaveProfile) =>
         weaveToAcornProfile(
           weaveProfile[1].entry,
-          hashToString(weaveProfile[0])
+          encodeHashToBase64(weaveProfile[0])
         )
       )
     },
     fetchAgentAddress: async (cellId: CellId): Promise<AgentPubKeyB64> => {
-      return hashToString(profilesClient.client.myPubKey)
+      return encodeHashToBase64(profilesClient.client.myPubKey)
     },
   }
 }
