@@ -57,7 +57,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: {
-          and: [/node_modules/],
+          and: [/node_modules/, /test/],
         },
         use: {
           loader: 'babel-loader',
@@ -70,7 +70,7 @@ module.exports = {
       },
       {
         test: /\.(ts|tsx)$/,
-        exclude: [/node_modules/, /src\/stories/],
+        exclude: [/node_modules/, /src\/stories/, /test/],
         use: 'ts-loader',
       },
       // fonts
