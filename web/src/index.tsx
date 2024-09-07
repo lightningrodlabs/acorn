@@ -32,9 +32,12 @@ const isElectron = () => {
     process.versions.electron != null
   )
 }
+const isDevMode = () => {
+  return process.env.__DEV_MODE__
+}
 
 ;(async () => {
-  if (!isElectron()) {
+  if (!isElectron() && isDevMode()) {
     await initializeHotReload()
   }
   if (!isWeContext()) {

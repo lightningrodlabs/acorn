@@ -19,6 +19,7 @@ module.exports = {
       __MAIN_APP_ID__: JSON.stringify(mainAppId),
       __ADMIN_PORT__: process.env.ADMIN_WS_PORT,
       __APP_PORT__: process.env.APP_WS_PORT,
+      'process.env.__DEV_MODE__': JSON.stringify(true),
     }),
     new HTMLWebpackPlugin({
       template: './src/index.html', //source
