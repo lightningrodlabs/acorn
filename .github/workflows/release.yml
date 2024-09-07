@@ -89,20 +89,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-11.0.1.AppImage" --clobber
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-11.0.2.AppImage" --clobber
       - name: upload binary (macos only)
         if: ${{ runner.os == 'macOs' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [[ "${{ matrix.arch }}" == "x64" ]]; then
-            gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn.11.0.1.darwin-x64.zip" --clobber
+            gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn.11.0.2.darwin-x64.zip" --clobber
           else
-            gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn.11.0.1.darwin-arm64.zip" --clobber
+            gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn.11.0.2.darwin-arm64.zip" --clobber
           fi
       - name: upload binary (Windows only)
         if: ${{ runner.os == 'Windows' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "electron/out/Acorn.Setup.11.0.1.exe" --clobber
+          gh release upload "$($env:GITHUB_REF -replace "refs/tags/")" "electron/out/Acorn.Setup.11.0.2.exe" --clobber
