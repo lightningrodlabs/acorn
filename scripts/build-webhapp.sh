@@ -4,9 +4,7 @@
 set -e
 
 yarn workspace acorn-ui build
-cd web
-npx bestzip ./dist.zip ./dist/*
-cd ../
+yarn run zip-we-applet
 
 cd we-applet
 hc web-app pack .
