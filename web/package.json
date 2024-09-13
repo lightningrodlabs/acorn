@@ -1,6 +1,6 @@
 {
   "name": "acorn-ui",
-  "version": "11.0.4",
+  "version": "11.0.5",
   "browser": {
     "child_process": false
   },
