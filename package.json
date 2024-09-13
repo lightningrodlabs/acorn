@@ -1,7 +1,7 @@
 {
   "name": "acorn-workspace",
   "packageManager": "yarn@1.22.19",
-  "version": "11.0.2",
+  "version": "11.0.3",
   "private": true,
   "workspaces": {
     "packages": [
