@@ -16,40 +16,15 @@ jobs:
           # (required)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build-and-release-webhapp:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: 'yarn'
-      - uses: dtolnay/rust-toolchain@1.74
-        with:
-          targets: wasm32-unknown-unknown
-      - name: Install holochain_cli
-        run: cargo install holochain_cli --version 0.4.0-dev.5 --locked
-      - name: Run install
-        run: yarn install --frozen-lockfile
-      - name: Build webhapp
-        run: yarn run build-webhapp
-      - name: Upload webhapp
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release upload "${GITHUB_REF#refs/tags/}" "we-applet/acorn.webhapp" --clobber
-
   # upload the app package for each target os
   upload-assets:
     strategy:
       matrix:
         include:
           - os: ubuntu-latest
+          - os: macos-12
           - os: macos-latest
-            arch: x64
-          - os: macos-latest
-            arch: arm64
-          # - os: windows-latest
+          # - os: windows-2019
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
@@ -65,41 +40,57 @@ jobs:
         run: |
           yarn install --frozen-lockfile
       - name: setup for codesigning (macos only)
-        if: ${{ runner.os == 'macOs' }}
+        if: ${{ runner.os == 'macOS' }}
         uses: figleafteam/import-codesign-certs@v2
         with:
           p12-file-base64: ${{ secrets.HBE_APPLE_CERTIFICATE_BASE64 }}
           p12-password: ${{ secrets.HBE_APPLE_CERTIFICATE_PASS }}
-      - name: build acorn (and notarize it- macos only)
+      - name: build acorn (and notarize it- macos latest only)
+        if: ${{ matrix.os == 'macos-latest' }}
         env:
+          ARCH: arm64
           APPLE_DEV_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
           APPLE_ID_EMAIL: ${{ secrets.APPLE_ID_EMAIL }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           DEBUG: electron-osx-sign*,electron-notarize*
         run: |
-          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            yarn run build -- --arch=${{ matrix.arch }}
-          else
-            yarn run build
-          fi
+          yarn run build
         shell: bash
+      - name: build acorn (and notarize it- macos 12 only)
+        if: ${{ matrix.os == 'macos-12' }}
+        env:
+          ARCH: x64
+          APPLE_DEV_IDENTITY: ${{ secrets.APPLE_DEV_IDENTITY }}
+          APPLE_ID_EMAIL: ${{ secrets.APPLE_ID_EMAIL }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          DEBUG: electron-osx-sign*,electron-notarize*
+        run: |
+          yarn run build
+        shell: bash
+      - name: build acorn (ubuntu only)
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          yarn run build
       - name: upload binary (ubuntu only)
         if: ${{ runner.os == 'Linux' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn-11.0.2.AppImage" --clobber
-      - name: upload binary (macos only)
-        if: ${{ runner.os == 'macOs' }}
+      - name: upload binary (macos-latest only)
+        if: ${{ matrix.os == 'macos-latest' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [[ "${{ matrix.arch }}" == "x64" ]]; then
-            gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn.11.0.2.darwin-x64.zip" --clobber
-          else
-            gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn.11.0.2.darwin-arm64.zip" --clobber
-          fi
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn.11.0.2.darwin-arm64.zip" --clobber
+      - name: upload binary (macos-12 only)
+        if: ${{ matrix.os == 'macos-12' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "${GITHUB_REF#refs/tags/}" "electron/out/Acorn.11.0.2.darwin-x64.zip" --clobber
       - name: upload binary (Windows only)
         if: ${{ runner.os == 'Windows' }}
         env:

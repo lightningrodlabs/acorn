@@ -3,13 +3,10 @@
 # crash on error, don't continue
 set -e
 
-# assumes that 
-# dna/workdir/projects.dna
-# and
-# dna/workdir/profiles.happ
+# assumes that dna/workdir/projects.dna and dna/workdir/profiles.happ
 # are already pre-compiled and up to date
 # In CI this is handled via .github/workflows/release.yml
-# where it calls install-hc-tools and and happ-pack
+# where it calls install-hc-tools and happ-pack
 
 # ensure all necessary binaries are packaged in the app
 rm -rf electron/binaries
@@ -25,5 +22,17 @@ cp -r web/dist electron/web
 
 # build the electron application
 yarn workspace acorn tsc
-yarn workspace acorn build
 
+# Check if the operating system is macOS
+if [ "$(uname)" == "Darwin" ]; then
+  if [ -z "$ARCH" ]; then
+    echo "No ARCH variable set, defaulting to x64"
+    ARCH=x64
+  fi
+
+  echo "Building Electron app for architecture: $ARCH on macOS"
+  yarn workspace acorn build -- --arch=$ARCH
+else
+  echo "Building Electron app for default architecture on non-macOS"
+  yarn workspace acorn build
+fi
