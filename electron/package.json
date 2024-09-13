@@ -56,7 +56,7 @@
     "eslint-plugin-import": "^2.22.1"
   },
   "dependencies": {
-    "@lightningrodlabs/electron-holochain": "0.9.0",
+    "@lightningrodlabs/electron-holochain": "0.9.1",
     "electron-context-menu": "^3.5.0",
     "electron-default-menu": "^1.0.2",
     "electron-log": "^4.3.5",
