@@ -37,8 +37,8 @@
     "zip-we-applet": "cd web/dist && bestzip ../dist.zip *",
     "build-webhapp": "bash scripts/build-webhapp.sh",
     "postinstall": "yarn run download-happs && yarn workspace zod-models run build && yarn workspace acorn run tsc",
-    "dev-we": "we-dev-cli --agent-idx 1 --dev-config we.dev.config.ts",
-    "dev-we2": "we-dev-cli --agent-idx 2 --dev-config we.dev.config.ts"
+    "dev-we": "cd we-applet && yarn dev-we",
+    "dev-we2": "cd we-applet && yarn dev-we2"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",
