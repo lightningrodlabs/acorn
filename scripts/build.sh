@@ -31,7 +31,7 @@ if [ "$(uname)" == "Darwin" ]; then
   fi
 
   echo "Building Electron app for architecture: $ARCH on macOS"
-  yarn workspace acorn build -- --arch=$ARCH
+  yarn workspace acorn build -- --$ARCH
 else
   echo "Building Electron app for default architecture on non-macOS"
   yarn workspace acorn build
