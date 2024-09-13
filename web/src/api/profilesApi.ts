@@ -255,12 +255,14 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
           }
         )
       )
-      return weaveProfiles.map((weaveProfile) =>
-        weaveToAcornProfile(
-          weaveProfile[1].entry,
-          encodeHashToBase64(weaveProfile[0])
+      return weaveProfiles
+        .filter((weaveProfile) => weaveProfile[1]?.entry)
+        .map((weaveProfile) =>
+          weaveToAcornProfile(
+            weaveProfile[1].entry,
+            encodeHashToBase64(weaveProfile[0])
+          )
         )
-      )
     },
     fetchAgentAddress: async (cellId: CellId): Promise<AgentPubKeyB64> => {
       return encodeHashToBase64(profilesClient.client.myPubKey)
