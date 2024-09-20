@@ -248,10 +248,18 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
       const weaveProfiles = await Promise.all(
         (await profilesClient.getAgentsWithProfile()).map(
           async (agentPubKey) => {
-            return [
-              agentPubKey,
-              await profilesClient.getAgentProfile(agentPubKey),
-            ] as [AgentPubKey, EntryRecord<WeaveProfile>]
+            try {
+              return [
+                agentPubKey,
+                await profilesClient.getAgentProfile(agentPubKey),
+              ] as [AgentPubKey, EntryRecord<WeaveProfile>]
+            } catch (e) {
+              console.log('Error fetching agent profile', e)
+              return [
+                agentPubKey,
+                { entry: { nickname: 'unknown', fields: {} } },
+              ] as [AgentPubKey, EntryRecord<WeaveProfile>]
+            }
           }
         )
       )
