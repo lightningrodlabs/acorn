@@ -181,96 +181,164 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
       cellId: CellId,
       payload: Profile
     ): Promise<WireRecord<Profile>> => {
-      let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
-      const profile = acornToWeaveProfile(payload, myWeaveProfile.entry)
-      const updatedProfileRecord = await profilesClient.updateProfile(profile)
-      return {
-        actionHash: encodeHashToBase64(updatedProfileRecord.actionHash),
-        entryHash: encodeHashToBase64(updatedProfileRecord.entryHash),
-        entry: weaveToAcornProfile(
-          updatedProfileRecord.entry,
-          encodeHashToBase64(myPubKey)
-        ),
-        createdAt: updatedProfileRecord.action.timestamp,
-        updatedAt: updatedProfileRecord.action.timestamp,
+      console.log('createWhoami', payload)
+      try {
+        let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
+        console.log('myWeaveProfile', myWeaveProfile)
+        const profile = acornToWeaveProfile(payload, myWeaveProfile.entry)
+        const updatedProfileRecord = await profilesClient.updateProfile(profile)
+        return {
+          actionHash: encodeHashToBase64(updatedProfileRecord.actionHash),
+          entryHash: encodeHashToBase64(updatedProfileRecord.entryHash),
+          entry: weaveToAcornProfile(
+            updatedProfileRecord.entry,
+            encodeHashToBase64(myPubKey)
+          ),
+          createdAt: updatedProfileRecord.action.timestamp,
+          updatedAt: updatedProfileRecord.action.timestamp,
+        }
+      } catch (e) {
+        console.log('Error creating whoami', e)
+        return {
+          actionHash: '',
+          entryHash: '',
+          entry: payload,
+          createdAt: 12345,
+          updatedAt: 12345,
+        }
       }
     },
     createImportedProfile: async (
       cellId: CellId,
       payload: Profile
     ): Promise<WireRecord<Profile>> => {
-      let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
-      const profile = acornToWeaveProfile(payload, myWeaveProfile.entry)
-      const updatedProfileRecord = await profilesClient.updateProfile(profile)
-      return {
-        actionHash: encodeHashToBase64(updatedProfileRecord.actionHash),
-        entryHash: encodeHashToBase64(updatedProfileRecord.entryHash),
-        entry: weaveToAcornProfile(
-          updatedProfileRecord.entry,
-          encodeHashToBase64(myPubKey)
-        ),
-        createdAt: updatedProfileRecord.action.timestamp,
-        updatedAt: updatedProfileRecord.action.timestamp,
+      try {
+        console.log('createImportedProfile', payload)
+        let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
+        console.log('myWeaveProfile', myWeaveProfile)
+        const profile = acornToWeaveProfile(payload, myWeaveProfile.entry)
+        const updatedProfileRecord = await profilesClient.updateProfile(profile)
+        return {
+          actionHash: encodeHashToBase64(updatedProfileRecord.actionHash),
+          entryHash: encodeHashToBase64(updatedProfileRecord.entryHash),
+          entry: weaveToAcornProfile(
+            updatedProfileRecord.entry,
+            encodeHashToBase64(myPubKey)
+          ),
+          createdAt: updatedProfileRecord.action.timestamp,
+          updatedAt: updatedProfileRecord.action.timestamp,
+        }
+      } catch (e) {
+        console.log('Error creating imported profile', e)
+        return {
+          actionHash: '',
+          entryHash: '',
+          entry: payload,
+          createdAt: 12345,
+          updatedAt: 12345,
+        }
       }
     },
     updateWhoami: async (
       cellId: CellId,
       payload: UpdateInput<Profile>
     ): Promise<WireRecord<Profile>> => {
-      let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
-      const profile = acornToWeaveProfile(payload.entry, myWeaveProfile.entry)
-      const updatedProfileRecord = await profilesClient.updateProfile(profile)
-      return {
-        actionHash: encodeHashToBase64(updatedProfileRecord.actionHash),
-        entryHash: encodeHashToBase64(updatedProfileRecord.entryHash),
-        entry: weaveToAcornProfile(
-          updatedProfileRecord.entry,
-          encodeHashToBase64(myPubKey)
-        ),
-        createdAt: updatedProfileRecord.action.timestamp,
-        updatedAt: updatedProfileRecord.action.timestamp,
+      try {
+        console.log('updateWhoami', payload)
+        let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
+        console.log('myWeaveProfile', myWeaveProfile)
+        const profile = acornToWeaveProfile(payload.entry, myWeaveProfile.entry)
+        const updatedProfileRecord = await profilesClient.updateProfile(profile)
+        return {
+          actionHash: encodeHashToBase64(updatedProfileRecord.actionHash),
+          entryHash: encodeHashToBase64(updatedProfileRecord.entryHash),
+          entry: weaveToAcornProfile(
+            updatedProfileRecord.entry,
+            encodeHashToBase64(myPubKey)
+          ),
+          createdAt: updatedProfileRecord.action.timestamp,
+          updatedAt: updatedProfileRecord.action.timestamp,
+        }
+      } catch (e) {
+        console.log('Error updating whoami', e)
+        return {
+          actionHash: '',
+          entryHash: '',
+          entry: payload.entry,
+          createdAt: 12345,
+          updatedAt: 12345,
+        }
       }
     },
     whoami: async (cellId: CellId): Promise<WhoAmIOutput> => {
-      let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
-      return {
-        actionHash: encodeHashToBase64(myWeaveProfile.actionHash),
-        entryHash: encodeHashToBase64(myWeaveProfile.entryHash),
-        entry: weaveToAcornProfile(
-          myWeaveProfile.entry,
-          encodeHashToBase64(myPubKey)
-        ),
-        createdAt: myWeaveProfile.action.timestamp,
-        updatedAt: myWeaveProfile.action.timestamp,
+      try {
+        console.log('whoami')
+        let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
+        console.log('myWeaveProfile', myWeaveProfile)
+        return {
+          actionHash: encodeHashToBase64(myWeaveProfile.actionHash),
+          entryHash: encodeHashToBase64(myWeaveProfile.entryHash),
+          entry: weaveToAcornProfile(
+            myWeaveProfile.entry,
+            encodeHashToBase64(myPubKey)
+          ),
+          createdAt: myWeaveProfile.action.timestamp,
+          updatedAt: myWeaveProfile.action.timestamp,
+        }
+      } catch (e) {
+        console.log('Error fetching whoami', e)
+        return {
+          actionHash: '',
+          entryHash: '',
+          entry: {
+            agentPubKey: encodeHashToBase64(myPubKey),
+            avatarUrl: 'uknown',
+            status: 'Offline',
+            isImported: false,
+            firstName: 'unknown',
+            lastName: 'unknown',
+            handle: 'unknown',
+          },
+          createdAt: 12345,
+          updatedAt: 12345,
+        }
       }
     },
     fetchAgents: async (cellId: CellId): Promise<Array<Profile>> => {
-      const weaveProfiles = await Promise.all(
-        (await profilesClient.getAgentsWithProfile()).map(
-          async (agentPubKey) => {
-            try {
-              return [
-                agentPubKey,
-                await profilesClient.getAgentProfile(agentPubKey),
-              ] as [AgentPubKey, EntryRecord<WeaveProfile>]
-            } catch (e) {
-              console.log('Error fetching agent profile', e)
-              return [
-                agentPubKey,
-                { entry: { nickname: 'unknown', fields: {} } },
-              ] as [AgentPubKey, EntryRecord<WeaveProfile>]
+      try {
+        const weaveProfiles = await Promise.all(
+          (await profilesClient.getAgentsWithProfile()).map(
+            async (agentPubKey) => {
+              try {
+                console.log(
+                  'fetching agent profile in fetchAgents',
+                  agentPubKey
+                )
+                return [
+                  agentPubKey,
+                  await profilesClient.getAgentProfile(agentPubKey),
+                ] as [AgentPubKey, EntryRecord<WeaveProfile>]
+              } catch (e) {
+                console.log('Error fetching agent profile', e)
+                return [
+                  agentPubKey,
+                  { entry: { nickname: 'unknown', fields: {} } },
+                ] as [AgentPubKey, EntryRecord<WeaveProfile>]
+              }
             }
-          }
-        )
-      )
-      return weaveProfiles
-        .filter((weaveProfile) => weaveProfile[1]?.entry)
-        .map((weaveProfile) =>
-          weaveToAcornProfile(
-            weaveProfile[1].entry,
-            encodeHashToBase64(weaveProfile[0])
           )
         )
+        return weaveProfiles
+          .filter((weaveProfile) => weaveProfile[1]?.entry)
+          .map((weaveProfile) =>
+            weaveToAcornProfile(
+              weaveProfile[1].entry,
+              encodeHashToBase64(weaveProfile[0])
+            )
+          )
+      } catch (e) {
+        return []
+      }
     },
     fetchAgentAddress: async (cellId: CellId): Promise<AgentPubKeyB64> => {
       return encodeHashToBase64(profilesClient.client.myPubKey)
