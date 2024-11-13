@@ -3,7 +3,7 @@ import './NetworkInfo.scss'
 import { getAdminWs } from '../../hcWebsockets'
 import ReactJsonView from 'react-json-view'
 import { VersionInfo } from '../../hooks/useVersionChecker'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeContext } from '@theweave/api'
 
 export type NetworkInfoProps = {
   versionInfo: VersionInfo

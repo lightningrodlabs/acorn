@@ -1,4 +1,4 @@
-import { defineConfig } from '@lightningrodlabs/we-dev-cli'
+import { defineConfig } from '@theweave/cli'
 
 export default defineConfig({
   groups: [

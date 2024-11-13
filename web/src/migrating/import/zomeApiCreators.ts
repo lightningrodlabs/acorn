@@ -1,7 +1,7 @@
 import { AppClient } from '@holochain/client'
 import ProfilesZomeApi from '../../api/profilesApi'
 import ProjectsZomeApi from '../../api/projectsApi'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeContext } from '@theweave/api'
 import { getWeaveProfilesClient } from '../../hcWebsockets'
 
 export async function createProfilesZomeApi(

@@ -26,7 +26,7 @@ import selectAndComputeOutcomes from '../../selectors/computeOutcomes'
 import selectOutcomeAndAncestors from '../../selectors/outcomeAndAncestors'
 import { getAdminWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeContext } from '@theweave/api'
 
 export type ProjectViewInnerOwnProps = {
   projectId: CellIdString

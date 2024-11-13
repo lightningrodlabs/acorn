@@ -17,7 +17,7 @@ import { cellIdToString } from './utils'
 // Import styles
 import './variables.scss'
 import './global.scss'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeContext } from '@theweave/api'
 import { ProfilesClient } from '@holochain-open-dev/profiles'
 
 export async function mossInit(

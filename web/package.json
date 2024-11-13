@@ -15,7 +15,7 @@
     "zip:ui": "zip -r dist.zip dist",
     "build:webhapp": "hc web-app pack --output=./acorn.webhapp ./",
     "package": "npm run build:ui && npm run zip:ui && npm run build:webhapp && cp acorn.webhapp /Users/weswalla/lrl/kando/we_dev",
-    "dev:we": "we-dev-cli --agent-idx 1 --dev-config we.dev.config.ts"
+    "dev:we": "weave --agent-idx 1 --dev-config we.dev.config.ts"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
@@ -61,11 +61,11 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.4",
-    "@holochain/client": "0.18.0-dev.1",
-    "@lightningrodlabs/we-applet": "0.17.0-dev.1",
-    "@lightningrodlabs/we-dev-cli": "0.12.0-dev.0",
-    "@holochain-open-dev/profiles": "0.400.0-dev.1",
-    "@holochain-open-dev/utils": "0.300.2",
+    "@holochain/client": "0.18.0-rc.0",
+    "@theweave/api": "0.2.1",
+    "@theweave/cli": "0.13.0-gamma.6 ",
+    "@holochain-open-dev/profiles": "0.400.0-dev.4",
+    "@holochain-open-dev/utils": "0.400.0-dev.4",
     "@tweenjs/tween.js": "^18.6.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "buffer": "^6.0.3",

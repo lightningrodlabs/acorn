@@ -1,6 +1,6 @@
 import { AdminWebsocket, AppWebsocket, AppClient } from '@holochain/client'
 import { MAIN_APP_ID } from './holochainConfig'
-import { isWeContext, WeaveClient } from '@lightningrodlabs/we-applet'
+import { isWeContext, WeaveClient } from '@theweave/api'
 import { ProfilesClient } from '@holochain-open-dev/profiles'
 
 // export for use by holochainMiddleware (redux)

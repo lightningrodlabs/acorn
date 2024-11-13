@@ -12,7 +12,7 @@ import IntroScreenInner, {
 import useAppWebsocket from '../../hooks/useAppWebsocket'
 import React from 'react'
 import { getAppWs, getWeaveProfilesClient } from '../../hcWebsockets'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeContext } from '@theweave/api'
 
 function mapStateToProps(state: RootState): IntroScreenStateProps {
   return {

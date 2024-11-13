@@ -35,7 +35,7 @@ import { updateProjectMeta } from '../redux/persistent/projects/project-meta/act
 import { uninstallProject } from '../projects/uninstallProject'
 import { unselectAll } from '../redux/ephemeral/selection/actions'
 import { CellId } from '@holochain/client'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeContext } from '@theweave/api'
 
 function mapStateToProps(state: RootState): AppStateProps {
   const {

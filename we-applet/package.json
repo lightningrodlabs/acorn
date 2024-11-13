@@ -4,10 +4,10 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "dev-we": "we-dev-cli --agent-idx 1 --dev-config we.dev.config.ts",
-    "dev-we2": "we-dev-cli --agent-idx 2 --dev-config we.dev.config.ts"
+    "dev-we": "weave --agent-idx 1 --dev-config we.dev.config.ts",
+    "dev-we2": "weave --agent-idx 2 --dev-config we.dev.config.ts"
   },
   "dependencies": {
-    "@lightningrodlabs/we-dev-cli": "0.13.0-beta.5"
+    "@theweave/cli": "0.13.0-gamma.6"
   }
 }

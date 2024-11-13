@@ -14,7 +14,7 @@ import {
   WeaveClient,
   initializeHotReload,
   isWeContext,
-} from '@lightningrodlabs/we-applet'
+} from '@theweave/api'
 import createStoreAndRenderToDom, { electronInit } from './indexForElectron'
 import {
   getAdminWs,

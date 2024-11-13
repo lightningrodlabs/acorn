@@ -13,7 +13,7 @@ import CreateProfilePage, {
 import { Profile } from '../../types'
 import { CellIdString } from '../../types/shared'
 import { AppClient } from '@holochain/client'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeContext } from '@theweave/api'
 import { getWeaveProfilesClient } from '../../hcWebsockets'
 
 function mapStateToProps(state: RootState): CreateProfilePageStateProps {

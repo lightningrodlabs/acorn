@@ -10,7 +10,7 @@ import { PROJECT_APP_PREFIX, PROJECTS_ROLE_NAME } from '../holochainConfig'
 import { passphraseToUid } from '../secrets'
 import { CellIdString } from '../types/shared'
 import { cellIdToString } from '../utils'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeContext } from '@theweave/api'
 
 export async function internalInstallProject(
   passphrase: string,
