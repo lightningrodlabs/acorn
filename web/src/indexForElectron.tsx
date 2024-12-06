@@ -27,9 +27,7 @@ import { cellIdFromString, cellIdToString } from './utils'
 import './variables.scss'
 import './global.scss'
 
-export default async function createStoreAndRenderToDom(
-  appWs: AppClient
-) {
+export default async function createStoreAndRenderToDom(appWs: AppClient) {
   const middleware = [layoutWatcher, realtimeInfoWatcher(appWs)]
   // This enables the redux-devtools browser extension
   // which gives really awesome debugging for apps that use redux
@@ -62,14 +60,30 @@ export async function electronInit(
   appWs: AppClient
 ) {
   try {
+    console.log('indexing electron A', {
+      adminWs,
+      appWs,
+    })
     const appInfo = await appWs.appInfo()
-    const { profilesCellInfo, projectsCellInfo } = { profilesCellInfo: appInfo.cell_info[PROFILES_ROLE_NAME][0], projectsCellInfo: appInfo.cell_info[PROJECTS_ROLE_NAME][0] }
-    const { cellId, projectsCellId } =
-      { cellId: CellType.Provisioned in profilesCellInfo
-        ? profilesCellInfo[CellType.Provisioned].cell_id
-        : undefined, projectsCellId: CellType.Provisioned in projectsCellInfo
-        ? projectsCellInfo[CellType.Provisioned].cell_id
-        : undefined }
+    console.log('indexing electron A', {
+      adminWs,
+      appWs,
+      appInfo,
+    })
+    const { profilesCellInfo, projectsCellInfo } = {
+      profilesCellInfo: appInfo.cell_info[PROFILES_ROLE_NAME][0],
+      projectsCellInfo: appInfo.cell_info[PROJECTS_ROLE_NAME][0],
+    }
+    const { cellId, projectsCellId } = {
+      cellId:
+        CellType.Provisioned in profilesCellInfo
+          ? profilesCellInfo[CellType.Provisioned].cell_id
+          : undefined,
+      projectsCellId:
+        CellType.Provisioned in projectsCellInfo
+          ? projectsCellInfo[CellType.Provisioned].cell_id
+          : undefined,
+    }
     if (cellId == undefined || projectsCellId == undefined) {
       throw 'cellId undefined'
     } else {
@@ -84,8 +98,16 @@ export async function electronInit(
       store.dispatch(setProfilesCellId(cellIdString))
       // all functions of the Profiles DNA
       const profilesZomeApi = new ProfilesZomeApi(appWs)
+      console.log('indexing electron B', {
+        adminWs,
+        appWs,
+      })
 
       const profiles = await profilesZomeApi.profile.fetchAgents(cellId)
+      console.log('indexing electron 0', {
+        cellIdString,
+        profiles,
+      })
       store.dispatch(fetchAgents(cellIdString, profiles))
       const profile = await profilesZomeApi.profile.whoami(cellId)
       // this allows us to 'reclaim' a profile that was imported by someone else that is ours
@@ -107,6 +129,12 @@ export async function electronInit(
       )
       store.dispatch(fetchAgentAddress(cellIdString, agentAddress))
       // which projects do we have installed?
+      console.log('indexing electron 1', {
+        cellIdString,
+        profiles,
+        profile,
+        agentAddress,
+      })
       const projectCellIds = await getProjectCellIdStrings()
 
       // before any zome calls can be made, we need to gain zome call signing authorization
