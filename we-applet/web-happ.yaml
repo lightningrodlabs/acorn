@@ -4,4 +4,4 @@ name: acorn
 ui:
   bundled: '../web/dist.zip'
 happ_manifest:
-  bundled: '../electron/binaries/projects.happ'
+  bundled: './projects.happ'

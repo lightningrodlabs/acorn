@@ -5,13 +5,9 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "electron",
       "web",
-      "zod-models"
-    ],
-    "nohoist": [
-      "**/electron-builder",
-      "**/electron-builder/**"
+      "zod-models",
+      "we-applet"
     ]
   },
   "description": "Acorn is software that helps people create the future",
@@ -20,31 +16,21 @@
     "url": "git+https://github.com/lightningrodlabs/acorn.git"
   },
   "scripts": {
-    "dev": "pm2-dev pm2.config.js",
-    "user-data-reset": "rm -rf user-data && mkdir user-data",
     "web": "WEB_PORT=8081 ADMIN_WS_PORT=1101 APP_WS_PORT=8101 yarn workspace acorn-ui dev",
     "web2": "WEB_PORT=8082 ADMIN_WS_PORT=1102 APP_WS_PORT=8102 yarn workspace acorn-ui dev",
     "web3": "WEB_PORT=8083 ADMIN_WS_PORT=1103 APP_WS_PORT=8103 yarn workspace acorn-ui dev",
     "web4": "WEB_PORT=8084 ADMIN_WS_PORT=1104 APP_WS_PORT=8104 yarn workspace acorn-ui dev",
-    "electron": "WEB_PORT=8081 ACORN_AGENT_NUM=1 yarn workspace acorn start",
-    "electron2": "WEB_PORT=8082 ACORN_AGENT_NUM=2 yarn workspace acorn start",
-    "electron3": "WEB_PORT=8083 ACORN_AGENT_NUM=3 yarn workspace acorn start",
-    "electron4": "WEB_PORT=8084 ACORN_AGENT_NUM=4 yarn workspace acorn start",
-    "electron-tsc": "yarn workspace acorn tsc",
     "download-happs": "bash scripts/download-happs.sh",
-    "build": "bash scripts/build.sh",
     "storybook": "yarn workspace acorn-ui storybook",
     "zip-we-applet": "cd web/dist && bestzip ../dist.zip *",
     "build-webhapp": "bash scripts/build-webhapp.sh",
-    "postinstall": "yarn run download-happs && yarn workspace zod-models run build && yarn workspace acorn run tsc",
+    "postinstall": "yarn run download-happs && yarn workspace zod-models run build",
     "dev-we": "cd we-applet && yarn dev-we",
     "dev-we2": "cd we-applet && yarn dev-we2"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",
-  "dependencies": {
-    "pm2": "^5.1.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "bestzip": "^2.2.1",
     "typescript": "^5.1.6"
