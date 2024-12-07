@@ -14,7 +14,7 @@ import {
   Tag,
 } from '../types'
 import { createCrudFunctions, WireRecord } from './hdkCrud'
-import { AppWebsocket, CellId } from '@holochain/client'
+import { AppClient, CellId } from '@holochain/client'
 import { PROJECTS_ZOME_NAME } from '../holochainConfig'
 import callZome from './callZome'
 import { ActionHashB64 } from '../types/shared'
@@ -42,7 +42,7 @@ const ZOME_FN_NAMES = {
   FETCH_MEMBERS: 'fetch_members',
 }
 
-const OutcomeApi = (appWebsocket: AppWebsocket) => {
+const OutcomeApi = (appWebsocket: AppClient) => {
   const outcomeCrud = createCrudFunctions<Outcome>(
     appWebsocket,
     PROJECTS_ZOME_NAME,
@@ -76,28 +76,28 @@ const OutcomeApi = (appWebsocket: AppWebsocket) => {
     },
   }
 }
-const ConnectionApi = (appWebsocket: AppWebsocket) => {
+const ConnectionApi = (appWebsocket: AppClient) => {
   return createCrudFunctions<Connection>(
     appWebsocket,
     PROJECTS_ZOME_NAME,
     ENTRY_TYPE_NAMES.CONNECTION
   )
 }
-const OutcomeCommentApi = (appWebsocket: AppWebsocket) => {
+const OutcomeCommentApi = (appWebsocket: AppClient) => {
   return createCrudFunctions<OutcomeComment>(
     appWebsocket,
     PROJECTS_ZOME_NAME,
     ENTRY_TYPE_NAMES.OUTCOME_COMMENT
   )
 }
-const OutcomeMemberApi = (appWebsocket: AppWebsocket) => {
+const OutcomeMemberApi = (appWebsocket: AppClient) => {
   return createCrudFunctions<OutcomeMember>(
     appWebsocket,
     PROJECTS_ZOME_NAME,
     ENTRY_TYPE_NAMES.OUTCOME_MEMBER
   )
 }
-const EntryPointApi = (appWebsocket: AppWebsocket) => {
+const EntryPointApi = (appWebsocket: AppClient) => {
   const entryPointCrud = createCrudFunctions<EntryPoint>(
     appWebsocket,
     PROJECTS_ZOME_NAME,
@@ -118,7 +118,7 @@ const EntryPointApi = (appWebsocket: AppWebsocket) => {
     },
   }
 }
-const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
+const ProjectMetaApi = (appWebsocket: AppClient) => {
   const projectMetaCrud = createCrudFunctions<ProjectMeta>(
     appWebsocket,
     PROJECTS_ZOME_NAME,
@@ -161,7 +161,7 @@ const ProjectMetaApi = (appWebsocket: AppWebsocket) => {
   }
 }
 
-const RealtimeInfoSignalApi = (appWebsocket: AppWebsocket) => {
+const RealtimeInfoSignalApi = (appWebsocket: AppClient) => {
   return {
     send: async (cellId: CellId, payload: RealtimeInfoInput) => {
       return callZome(
@@ -175,7 +175,7 @@ const RealtimeInfoSignalApi = (appWebsocket: AppWebsocket) => {
   }
 }
 
-const MembersApi = (appWebsocket: AppWebsocket) => {
+const MembersApi = (appWebsocket: AppClient) => {
   return {
     fetch: async (cellId: CellId): Promise<Array<WireRecord<Member>>> => {
       return callZome(
@@ -189,7 +189,7 @@ const MembersApi = (appWebsocket: AppWebsocket) => {
   }
 }
 
-const TagApi = (appWebsocket: AppWebsocket) => {
+const TagApi = (appWebsocket: AppClient) => {
   return createCrudFunctions<Tag>(
     appWebsocket,
     PROJECTS_ZOME_NAME,
@@ -198,7 +198,7 @@ const TagApi = (appWebsocket: AppWebsocket) => {
 }
 
 export default class ProjectsZomeApi {
-  appWebsocket: AppWebsocket
+  appWebsocket: AppClient
   outcome: ReturnType<typeof OutcomeApi>
   entryPoint: ReturnType<typeof EntryPointApi>
   connection: ReturnType<typeof ConnectionApi>
@@ -211,7 +211,7 @@ export default class ProjectsZomeApi {
 
   // one per entry type that uses hdk_crud
   // projectMeta, realtimeInfoSignal and member don't use hdk_crud
-  constructor(appWebsocket: AppWebsocket) {
+  constructor(appWebsocket: AppClient) {
     this.appWebsocket = appWebsocket
     this.outcome = OutcomeApi(appWebsocket)
     this.outcomeComment = OutcomeCommentApi(appWebsocket)

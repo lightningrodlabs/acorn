@@ -9,16 +9,42 @@ import {
 import { calculateValidChildren } from '../../tree-logic'
 import Modal, { ModalContent } from '../Modal/Modal'
 import Typography from '../Typography/Typography'
-import { ActionHashB64 } from '../../types/shared'
+import { ActionHashB64, CellIdString, WithActionHash } from '../../types/shared'
+import { Connection, Outcome } from 'zod-models'
+import { AppClient } from '@holochain/client'
 
-export default function OutcomeConnectorPicker({
+export type OutcomeConnectorPickerStateProps = {
+  selectedOutcomes: WithActionHash<Outcome>[]
+  connections: WithActionHash<Connection>[]
+  activeProject: CellIdString
+}
+
+export type OutcomeConnectorPickerDispatchProps = {
+  saveConnections: (
+    parentActionHash: ActionHashB64,
+    childrenAddresses: ActionHashB64[],
+    activeProject: CellIdString
+  ) => Promise<void>
+}
+
+export type OutcomeConnectorPickerOwnProps = {
+  active: boolean
+  onClose: () => void
+  appWebsocket?: AppClient
+}
+
+export type OutcomeConnectorPickerProps = OutcomeConnectorPickerStateProps &
+  OutcomeConnectorPickerDispatchProps &
+  OutcomeConnectorPickerOwnProps
+
+const OutcomeConnectorPicker: React.FC<OutcomeConnectorPickerProps> = ({
   active,
-  onClose,
   selectedOutcomes,
   connections,
   activeProject,
+  onClose,
   saveConnections,
-}) {
+}) => {
   // single select
   const [
     parentActionHash,
@@ -134,3 +160,5 @@ export default function OutcomeConnectorPicker({
     </Modal>
   )
 }
+
+export default OutcomeConnectorPicker

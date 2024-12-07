@@ -64,7 +64,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
     <div className="dashboard-list-project-wrapper">
       {/* when update is required to access the shared project */}
       {/* or when joined project's contents are still syncing */}
-      {(project.projectMeta.isMigrated || syncingProjectContents) && (
+      {project.projectMeta.isMigrated && (
         <>
           <div className="project-access-blocked-layer"></div>
         </>
@@ -96,7 +96,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
                   onClick={() => {
                     setModalState({
                       id: OpenModal.ProjectMigrated,
-                      cellId: project.cellId
+                      cellId: project.cellId,
                     })
                   }}
                 />
@@ -141,7 +141,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
               onClickButton={() => {
                 setModalState({
                   id: OpenModal.InviteMembers,
-                  passphrase: project.projectMeta.passphrase
+                  passphrase: project.projectMeta.passphrase,
                 })
               }}
             />
@@ -153,11 +153,15 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
             onClick={() => {
               setModalState({
                 id: OpenModal.ProjectSettings,
-                cellId: project.cellId
+                cellId: project.cellId,
               })
             }}
           >
-            <Icon name="dots-horizontal.svg" size="medium" className="light-grey" />
+            <Icon
+              name="dots-horizontal.svg"
+              size="medium"
+              className="light-grey"
+            />
           </div>
         </div>
       </div>

@@ -9,6 +9,7 @@ electron/web
 
 zod-models/dist
 
+web/dist.zip
 web/dist/fonts
 web/dist/images
 web/dist/*.js
@@ -33,3 +34,5 @@ my-proxy-cert.cert
 
 **/.DS_Store
 .DS_Store
+.aider*
+.env

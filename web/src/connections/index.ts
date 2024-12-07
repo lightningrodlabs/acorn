@@ -1,15 +1,16 @@
 import _ from 'lodash'
-import { ActionHashB64 } from '@holochain/client'
+import { ActionHashB64, AppClient } from '@holochain/client'
 import { RootState } from '../redux/reducer'
 import { RightOrLeft, findParentsActionHashes } from '../tree-logic'
 import { updateConnection } from '../redux/persistent/projects/connections/actions'
-import { getAppWs } from '../hcWebsockets'
 import ProjectsZomeApi from '../api/projectsApi'
 import { cellIdFromString } from '../utils'
 import { WithActionHash } from '../types/shared'
 import { Connection } from 'zod-models'
+import { getAppWs } from '../hcWebsockets'
 
 export async function alterSiblingOrder(
+  _appWebsocket: AppClient,
   store: any,
   state: RootState,
   selectedOutcome: ActionHashB64,
@@ -55,8 +56,8 @@ export async function alterSiblingOrder(
   // 4. set the siblingOrder of the latter to a higher value
   // than the former
   if (targetConnection && selectedOutcomeConnection) {
-    const appWs = await getAppWs()
-    const projectsZomeApi = new ProjectsZomeApi(appWs)
+    const appWebsocket = await getAppWs()
+    const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
     const cellId = cellIdFromString(activeProject)
     // left go higher, right go lower
     const directionModifier = rightOrLeft === RightOrLeft.Left ? 1 : -1

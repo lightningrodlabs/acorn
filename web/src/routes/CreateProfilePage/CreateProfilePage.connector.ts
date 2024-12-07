@@ -5,15 +5,18 @@ import {
   whoami,
 } from '../../redux/persistent/profiles/who-am-i/actions'
 import ProfilesZomeApi from '../../api/profilesApi'
-import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 import CreateProfilePage, {
-  CreateProfilePageProps,
+  CreateProfilePageDispatchProps,
+  CreateProfilePageStateProps,
 } from './CreateProfilePage.component'
 import { Profile } from '../../types'
 import { CellIdString } from '../../types/shared'
+import { AppClient } from '@holochain/client'
+import { isWeContext } from '@lightningrodlabs/we-applet'
+import { getWeaveProfilesClient } from '../../hcWebsockets'
 
-function mapStateToProps(state: RootState) {
+function mapStateToProps(state: RootState): CreateProfilePageStateProps {
   return {
     agentAddress: state.agentAddress,
     hasProfile: !!state.whoami,
@@ -21,21 +24,33 @@ function mapStateToProps(state: RootState) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch: any): CreateProfilePageDispatchProps {
   return {
-    fetchWhoami: async (profilesCellIdString: CellIdString) => {
+    fetchWhoami: async (
+      appWebsocket: AppClient,
+      profilesCellIdString: CellIdString
+    ) => {
       const cellId = cellIdFromString(profilesCellIdString)
-      const client = await getAppWs()
-      const profilesZomeApi = new ProfilesZomeApi(client)
+      const profilesZomeApi = await (async () => {
+        if (isWeContext()) {
+          const profilesClient = await getWeaveProfilesClient()
+          return new ProfilesZomeApi(appWebsocket, profilesClient)
+        } else return new ProfilesZomeApi(appWebsocket)
+      })()
       const profile = await profilesZomeApi.profile.whoami(cellId)
       return dispatch(whoami(profilesCellIdString, profile))
     },
     createWhoami: async (
+      appWebsocket: AppClient,
       profile: Profile,
       profilesCellIdString: CellIdString
     ) => {
-      const appWebsocket = await getAppWs()
-      const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+      const profilesZomeApi = await (async () => {
+        if (isWeContext()) {
+          const profilesClient = await getWeaveProfilesClient()
+          return new ProfilesZomeApi(appWebsocket, profilesClient)
+        } else return new ProfilesZomeApi(appWebsocket)
+      })()
       const cellId = cellIdFromString(profilesCellIdString)
       const createdWhoami = await profilesZomeApi.profile.createWhoami(
         cellId,

@@ -1,32 +1,55 @@
 import { connect } from 'react-redux'
 import ProfilesZomeApi from '../../api/profilesApi'
-import { getAppWs } from '../../hcWebsockets'
 import { whoami } from '../../redux/persistent/profiles/who-am-i/actions'
 import { RootState } from '../../redux/reducer'
 import { CellIdString } from '../../types/shared'
 import { cellIdFromString } from '../../utils'
-import IntroScreen, {
-  DispatchIntroScreenProps,
-  StateIntroScreenProps,
+import IntroScreenInner, {
+  IntroScreenDispatchProps,
+  IntroScreenOwnProps,
+  IntroScreenStateProps,
 } from './IntroScreen.component'
+import useAppWebsocket from '../../hooks/useAppWebsocket'
+import React from 'react'
+import { getAppWs, getWeaveProfilesClient } from '../../hcWebsockets'
+import { isWeContext } from '@lightningrodlabs/we-applet'
 
-function mapStateToProps(state: RootState): StateIntroScreenProps {
+function mapStateToProps(state: RootState): IntroScreenStateProps {
   return {
     whoami: state.whoami,
     profilesCellId: state.cells.profiles,
   }
 }
 
-function mapDispatchToProps(dispatch): DispatchIntroScreenProps {
+function mapDispatchToProps(
+  dispatch: any,
+  ownProps: IntroScreenOwnProps
+): IntroScreenDispatchProps {
   return {
     fetchWhoami: async (profilesCellId: CellIdString) => {
+      const appWebsocket = await getAppWs()
       const cellId = cellIdFromString(profilesCellId)
-      const client = await getAppWs()
-      const profilesZomeApi = new ProfilesZomeApi(client)
+      const profilesZomeApi = await (async () => {
+        if (isWeContext()) {
+          const profilesClient = await getWeaveProfilesClient()
+          return new ProfilesZomeApi(appWebsocket, profilesClient)
+        } else return new ProfilesZomeApi(appWebsocket)
+      })()
       const profile = await profilesZomeApi.profile.whoami(cellId)
       dispatch(whoami(profilesCellId, profile))
     },
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(IntroScreen)
+const IntroScreen = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(IntroScreenInner)
+
+// done this way because this is rendered directly by a route
+const IntroScreenWrapper = () => {
+  const appWebsocket = useAppWebsocket()
+  return <IntroScreen appWebsocket={appWebsocket} />
+}
+
+export default IntroScreenWrapper

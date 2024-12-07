@@ -1,0 +1,17 @@
+---
+manifest_version: "1"
+name: projects-dna
+integrity:
+  origin_time: 1654092432130000
+  network_seed: ~
+  properties:
+    modifier: "0001"
+  zomes:
+    - name: projects_integrity
+      bundled: ../../../../target/wasm32-unknown-unknown/release/projects_integrity.wasm
+coordinator:
+  zomes:
+    - name: projects
+      bundled: ../../../../target/wasm32-unknown-unknown/release/projects.wasm
+      dependencies:
+        - name: projects_integrity

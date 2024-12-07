@@ -13,10 +13,16 @@ import selectEntryPoints, {
 } from '../redux/persistent/projects/entry-points/select'
 import { animatePanAndZoom } from '../redux/ephemeral/viewport/actions'
 import ProfilesZomeApi from '../api/profilesApi'
-import { getAdminWs, getAppWs } from '../hcWebsockets'
+import { getAdminWs, getAppWs, getWeaveProfilesClient } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { RootState } from '../redux/reducer'
-import App, { AppProps, AppStateProps, AppDispatchProps } from './App.component'
+import App, {
+  AppStateProps,
+  AppDispatchProps,
+  AppReduxProps,
+  AppOwnProps,
+  AppProps,
+} from './App.component'
 import selectProjectMembersPresent from '../redux/persistent/projects/realtime-info-signal/select'
 import {
   hideAchievedOutcomes,
@@ -28,6 +34,8 @@ import ProjectsZomeApi from '../api/projectsApi'
 import { updateProjectMeta } from '../redux/persistent/projects/project-meta/actions'
 import { uninstallProject } from '../projects/uninstallProject'
 import { unselectAll } from '../redux/ephemeral/selection/actions'
+import { CellId } from '@holochain/client'
+import { isWeContext } from '@lightningrodlabs/we-applet'
 
 function mapStateToProps(state: RootState): AppStateProps {
   const {
@@ -97,7 +105,7 @@ function mapStateToProps(state: RootState): AppStateProps {
   }
 }
 
-function mapDispatchToProps(dispatch): AppDispatchProps {
+function mapDispatchToProps(dispatch: any): AppDispatchProps {
   return {
     dispatch,
     setNavigationPreference: (preference) => {
@@ -123,31 +131,38 @@ function mapDispatchToProps(dispatch): AppDispatchProps {
     },
     unselectAll: () => {
       return dispatch(unselectAll())
-    }
+    },
   }
 }
 
 function mergeProps(
   stateProps: AppStateProps,
   dispatchProps: AppDispatchProps,
-  _ownProps: {}
+  ownProps: AppOwnProps
 ): AppProps {
   const { profilesCellIdString, projectId } = stateProps
-  let cellId
+  const { dispatch } = dispatchProps
+  // const { appWebsocket } = ownProps
+  let cellId: CellId
   if (profilesCellIdString) {
     cellId = cellIdFromString(profilesCellIdString)
   }
-  const { dispatch } = dispatchProps
   return {
+    ...ownProps,
     ...stateProps,
     ...dispatchProps,
     uninstallProject: async (appId: string, cellIdString: CellIdString) => {
-      const adminWs = await getAdminWs()
-      uninstallProject(appId, cellIdString, dispatch, adminWs)
+      const appWs = await getAppWs()
+      uninstallProject(appId, cellIdString, dispatch, appWs)
     },
     updateWhoami: async (entry: Profile, actionHash: string) => {
       const appWebsocket = await getAppWs()
-      const profilesZomeApi = new ProfilesZomeApi(appWebsocket)
+      const profilesZomeApi = await (async () => {
+        if (isWeContext()) {
+          const profilesClient = await getWeaveProfilesClient()
+          return new ProfilesZomeApi(appWebsocket, profilesClient)
+        } else return new ProfilesZomeApi(appWebsocket)
+      })()
       const updatedWhoami = await profilesZomeApi.profile.updateWhoami(cellId, {
         entry,
         actionHash,
@@ -171,14 +186,11 @@ function mergeProps(
     setSelectedLayeringAlgo: async (layeringAlgorithm: LayeringAlgorithm) => {
       const appWebsocket = await getAppWs()
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
-
       const entry = {
         ...stateProps.activeProjectMeta,
         layeringAlgorithm,
       }
-
       const actionHash = stateProps.activeProjectMeta.actionHash
-
       const updatedProjectMeta = await projectsZomeApi.projectMeta.update(
         cellIdFromString(projectId),
         {

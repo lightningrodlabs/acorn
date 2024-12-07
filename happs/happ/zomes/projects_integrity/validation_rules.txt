@@ -1,0 +1,58 @@
+
+
+goal
+- create: `creator_agent_pub_key` must be the agent committing,
+          `user_edit_hash` should be None
+- update: `creator_agent_pub_key` should be the same as author of create (meaning must resolve the original_header_address),
+          `user_edit_hash` should be Some, and match the agent committing
+- delete: allowed by anyone
+
+edge
+- create: `parent_action_hash` can't equal `child_action_hash`, no self-referential edges
+          `parent_action_hash` and `child_action_hash` depends on the `Goal`s at those addresses
+- update: not allowed
+- delete: allowed by anyone
+
+entry_point (structurally same as goal_member)
+- create: depends on goal at `goal_address` existing,
+          `creator_agent_pub_key` must match the agent committing
+- update: not allowed
+- delete: allowed by anyone
+
+goal_member (structurally same as entry_point)
+- create: depends on goal at `goal_address` existing,
+          `user_edit_hash` should match the agent committing
+          `agent_address` is not validated because the agent is not necessarily in this DNA as a member, could be over in profiles dna
+- update: not allowed
+- delete: allowed by anyone
+
+
+goal_comment
+- create: depends on goal at `goal_address` existing,
+          `agent_address` should match the agent committing
+- update: depends on goal at `goal_address` existing,
+          `agent_address` should not change from its original value,
+          AND only the original author can update
+- delete: allowed by anyone (because anyone can delete the goal itself)
+
+goal_vote (same as goal comment)
+- create: depends on goal at `goal_address` existing,
+          `agent_address` should match the agent committing
+- update: depends on goal at `goal_address` existing,
+          `agent_address` should not change from its original value,
+          AND only the original author can update
+- delete: allowed by anyone (because anyone can delete the goal itself)
+
+member
+- create: `address` field must match the agent committing
+- update: not allowed
+- delete: not allowed
+
+project_meta
+- create: `creator_agent_pub_key` should match the agent committing,
+          only ONE can/should be created
+          (can't be 100% certain but don't let one more be
+          created if another known exists already. Perform during zome call not validate hook)
+- update: anyone can update,
+          but only `name` and `image` can change from its original value
+- delete: cannot be deleted, for now

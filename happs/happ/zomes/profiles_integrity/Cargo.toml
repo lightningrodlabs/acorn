@@ -1,0 +1,13 @@
+[package]
+edition = "2021"
+name = "profiles_integrity"
+version = "0.0.1"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "profiles_integrity"
+
+[dependencies]
+hdi = { workspace = true }
+holo_hash = { workspace = true }
+serde = "*"

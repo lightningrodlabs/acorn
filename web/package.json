@@ -1,6 +1,6 @@
 {
   "name": "acorn-ui",
-  "version": "9.9.0",
+  "version": "11.0.5",
   "browser": {
     "child_process": false
   },
@@ -9,13 +9,22 @@
     "build-storybook": "storybook build",
     "test": "jest",
     "dev": "webpack-dev-server --config webpack.dev.js",
-    "build": "webpack --config webpack.prod.js"
+    "debug": "node --inspect ../node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+    "build:ui": "webpack --config webpack.dev.js",
+    "zip:ui": "zip -r dist.zip dist",
+    "build:webhapp": "hc web-app pack --output=./acorn.webhapp ./",
+    "package": "npm run build:ui && npm run zip:ui && npm run build:webhapp && cp acorn.webhapp /Users/weswalla/lrl/kando/we_dev",
+    "dev:we": "we-dev-cli --agent-idx 1 --dev-config we.dev.config.ts",
+    "hc-spin:happ": "hc-spin -n 1 --ui-port 8081 ../happs/happ/workdir/acorn.happ",
+    "hc-spin:webhapp": "hc-spin -n 1 ../happs/happ/workdir/acorn.webhapp"
   },
   "devDependencies": {
     "@babel/core": "^7.14.0",
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.21.4",
+    "@holochain/hc-spin": "^0.400.0-dev.3",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
     "@storybook/addon-actions": "^7.0.7",
     "@storybook/addon-essentials": "^7.0.7",
@@ -55,7 +64,11 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.4",
-    "@holochain/client": "0.16.1",
+    "@holochain-open-dev/profiles": "0.400.0-dev.1",
+    "@holochain-open-dev/utils": "0.300.2",
+    "@holochain/client": "0.18.0-dev.1",
+    "@lightningrodlabs/we-applet": "0.17.0-dev.1",
+    "@lightningrodlabs/we-dev-cli": "0.12.0-dev.0",
     "@tweenjs/tween.js": "^18.6.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "buffer": "^6.0.3",
@@ -63,7 +76,7 @@
     "d3-dag": "^0.11.5",
     "d3-flextree": "^2.1.2",
     "diceware-word": "^1.0.0",
-    "electron": "^20.1.3",
+    "electron": "20.3.12",
     "file-loader": "^6.2.0",
     "intersects": "^2.7.2",
     "lodash": "^4.17.19",

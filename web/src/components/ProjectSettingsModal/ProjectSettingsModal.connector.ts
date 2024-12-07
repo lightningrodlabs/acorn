@@ -1,20 +1,25 @@
 import { connect } from 'react-redux'
 import { updateProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
-import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
-import ProjectSettingsModal from './ProjectSettingsModal.component'
+import ProjectSettingsModal, {
+  ProjectSettingsModalDispatchProps,
+  ProjectSettingsModalOwnProps,
+} from './ProjectSettingsModal.component'
 import { RootState } from '../../redux/reducer'
 import { CellIdString, ActionHashB64 } from '../../types/shared'
 import { ProjectMeta } from '../../types'
+import { getAppWs } from '../../hcWebsockets'
 
 function mapStateToProps(_state: RootState) {
-  // props for the component
   return {}
 }
 
-function mapDispatchToProps(dispatch) {
-  // props for the component
+function mapDispatchToProps(
+  dispatch: any,
+  ownProps: ProjectSettingsModalOwnProps
+): ProjectSettingsModalDispatchProps {
+  // const { appWebsocket } = ownProps
   return {
     updateProjectMeta: async (
       projectMeta: ProjectMeta,
@@ -28,7 +33,7 @@ function mapDispatchToProps(dispatch) {
         cellId,
         { entry: projectMeta, actionHash }
       )
-      return dispatch(updateProjectMeta(cellIdString, updatedProjectMeta))
+      dispatch(updateProjectMeta(cellIdString, updatedProjectMeta))
     },
   }
 }

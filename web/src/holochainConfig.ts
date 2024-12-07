@@ -14,7 +14,8 @@ export const MAIN_APP_ID = __MAIN_APP_ID__
 
 // this corresponds with the `name` field of the profiles slot
 // defined in `conductor/src/main.rs`
-export const PROFILES_ROLE_NAME = 'profiles-role'
+export const PROFILES_ROLE_NAME = 'profiles'
+export const PROJECTS_ROLE_NAME = 'projects'
 
 // is used as a prefix for the creation of new Project apps/DHTs
 export const PROJECT_APP_PREFIX = 'acorn-project'

@@ -28,6 +28,7 @@ import { ActionHashB64 } from '../types/shared'
 import { cellIdFromString } from '../utils'
 import cloneOutcomes from './helpers/cloneOutcomes'
 import checkForKeyboardKeyModifier from './helpers/osPlatformHelper'
+import { AppClient } from '@holochain/client'
 
 function leftMostOutcome(
   outcomeActionHashes: ActionHashB64[],
@@ -38,7 +39,11 @@ function leftMostOutcome(
   })
 }
 
-export default async function bodyKeydown(store: any, event: KeyboardEvent) {
+export default async function bodyKeydown(
+  _appWebsocket: AppClient,
+  store: any,
+  event: KeyboardEvent
+) {
   function canPerformKeyboardAction(state: RootState): boolean {
     return (
       state.ui.selection.selectedOutcomes.length === 1 &&
@@ -138,6 +143,7 @@ export default async function bodyKeydown(store: any, event: KeyboardEvent) {
           // move the selected outcome to the left side of the left sibling
           // (swap positions with the left sibling)
           alterSiblingOrder(
+            appWebsocket,
             store,
             state,
             selectedOutcome,
@@ -166,6 +172,7 @@ export default async function bodyKeydown(store: any, event: KeyboardEvent) {
           // move the selected outcome to the right side of the right sibling
           // (swap positions with the right sibling)
           alterSiblingOrder(
+            appWebsocket,
             store,
             state,
             selectedOutcome,
@@ -248,7 +255,7 @@ export default async function bodyKeydown(store: any, event: KeyboardEvent) {
         !state.ui.outcomeForm.isOpen &&
         !state.ui.expandedView.isOpen
       ) {
-        cloneOutcomes(store)
+        cloneOutcomes(appWebsocket, store)
       }
       break
     default:

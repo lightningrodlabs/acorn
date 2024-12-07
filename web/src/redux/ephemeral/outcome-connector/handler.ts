@@ -4,13 +4,14 @@ import {
   deleteConnection,
 } from '../../persistent/projects/connections/actions'
 import ProjectsZomeApi from '../../../api/projectsApi'
-import { getAppWs } from '../../../hcWebsockets'
 import { cellIdFromString } from '../../../utils'
-import { ActionHashB64 } from '@holochain/client'
+import { ActionHashB64, AppClient } from '@holochain/client'
 import { LinkedOutcomeDetails, RelationInput } from '../../../types'
 import { CellIdString, Option } from '../../../types/shared'
+import { getAppWs } from '../../../hcWebsockets'
 
 export default async function handleOutcomeConnectorMouseUp(
+  // _appWebsocket: AppClient,
   maybeLinkedOutcome: Option<LinkedOutcomeDetails>,
   toAddress: ActionHashB64,
   existingParentConnectionAddress: ActionHashB64,
