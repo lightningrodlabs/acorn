@@ -22,6 +22,7 @@
     "download-happs": "bash scripts/download-happs.sh",
     "storybook": "yarn workspace acorn-ui storybook",
     "zip-we-applet": "cd web/dist && bestzip ../dist.zip *",
+    "pack-happs": "bash happs/scripts/install-hc-tools.sh && bash happs/scripts/happ-pack.sh",
     "build-webhapp": "bash scripts/build-webhapp.sh",
     "postinstall": "yarn workspace zod-models run build",
     "dev-we": "cd we-applet && yarn dev-we",

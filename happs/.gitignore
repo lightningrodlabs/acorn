@@ -1,0 +1,6 @@
+target/
+**/*.dna
+**/*.happ
+
+**/.DS_Store
+.DS_Store

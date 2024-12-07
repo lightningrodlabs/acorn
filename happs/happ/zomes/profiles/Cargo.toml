@@ -1,0 +1,18 @@
+[package]
+edition = "2021"
+name = "profiles"
+version = "0.0.1"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "profiles"
+
+[dependencies]
+hdk_crud = { workspace = true }
+hdk = { workspace = true }
+holo_hash = { workspace = true }
+profiles_integrity = { path = "../profiles_integrity" }
+chrono = { version = "*", default-features = false, features = ["clock", "std", "oldtime", "serde"] }
+paste = "*"
+serde = "*"
+thiserror = "=1.0.40"

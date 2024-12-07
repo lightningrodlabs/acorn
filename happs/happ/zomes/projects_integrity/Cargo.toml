@@ -1,0 +1,14 @@
+[package]
+edition = "2021"
+name = "projects_integrity"
+version = "0.0.1"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "projects_integrity"
+
+[dependencies]
+hdi = { workspace = true }
+holo_hash = { workspace = true }
+serde = "*"
+thiserror = "=1.0.40"

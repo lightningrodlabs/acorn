@@ -4,4 +4,4 @@ name: acorn
 ui:
   bundled: '../web/dist.zip'
 happ_manifest:
-  bundled: './projects.happ'
+  bundled: '../happs/happ/workdir/projects/projects.happ'
