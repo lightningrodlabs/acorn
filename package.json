@@ -21,9 +21,10 @@
     "web4": "WEB_PORT=8084 ADMIN_WS_PORT=1104 APP_WS_PORT=8104 yarn workspace acorn-ui dev",
     "download-happs": "bash scripts/download-happs.sh",
     "storybook": "yarn workspace acorn-ui storybook",
-    "zip-we-applet": "cd web/dist && bestzip ../dist.zip *",
+    "zip-ui": "cd web/dist && bestzip ../dist.zip *",
     "pack-happs": "bash happs/scripts/install-hc-tools.sh && bash happs/scripts/happ-pack.sh",
-    "build-webhapp": "bash scripts/build-webhapp.sh",
+    "moss:build-webhapp": "bash scripts/build-moss-webhapp.sh",
+    "kangaroo:build-webhapp": "bash scripts/build-kangaroo-webhapp.sh",
     "postinstall": "yarn workspace zod-models run build",
     "dev-we": "cd we-applet && yarn dev-we",
     "dev-we2": "cd we-applet && yarn dev-we2"
