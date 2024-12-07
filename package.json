@@ -6,8 +6,7 @@
   "workspaces": {
     "packages": [
       "web",
-      "zod-models",
-      "we-applet"
+      "zod-models"
     ]
   },
   "description": "Acorn is software that helps people create the future",
@@ -24,7 +23,7 @@
     "storybook": "yarn workspace acorn-ui storybook",
     "zip-we-applet": "cd web/dist && bestzip ../dist.zip *",
     "build-webhapp": "bash scripts/build-webhapp.sh",
-    "postinstall": "yarn run download-happs && yarn workspace zod-models run build",
+    "postinstall": "yarn workspace zod-models run build",
     "dev-we": "cd we-applet && yarn dev-we",
     "dev-we2": "cd we-applet && yarn dev-we2"
   },
