@@ -35,7 +35,7 @@ import { updateProjectMeta } from '../redux/persistent/projects/project-meta/act
 import { uninstallProject } from '../projects/uninstallProject'
 import { unselectAll } from '../redux/ephemeral/selection/actions'
 import { CellId } from '@holochain/client'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeaveContext } from '@theweave/api'
 
 function mapStateToProps(state: RootState): AppStateProps {
   const {
@@ -158,7 +158,7 @@ function mergeProps(
     updateWhoami: async (entry: Profile, actionHash: string) => {
       const appWebsocket = await getAppWs()
       const profilesZomeApi = await (async () => {
-        if (isWeContext()) {
+        if (isWeaveContext()) {
           const profilesClient = await getWeaveProfilesClient()
           return new ProfilesZomeApi(appWebsocket, profilesClient)
         } else return new ProfilesZomeApi(appWebsocket)

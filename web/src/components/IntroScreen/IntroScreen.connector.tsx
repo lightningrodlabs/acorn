@@ -12,7 +12,7 @@ import IntroScreenInner, {
 import useAppWebsocket from '../../hooks/useAppWebsocket'
 import React from 'react'
 import { getAppWs, getWeaveProfilesClient } from '../../hcWebsockets'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeaveContext } from '@theweave/api'
 
 function mapStateToProps(state: RootState): IntroScreenStateProps {
   return {
@@ -30,7 +30,7 @@ function mapDispatchToProps(
       const appWebsocket = await getAppWs()
       const cellId = cellIdFromString(profilesCellId)
       const profilesZomeApi = await (async () => {
-        if (isWeContext()) {
+        if (isWeaveContext()) {
           const profilesClient = await getWeaveProfilesClient()
           return new ProfilesZomeApi(appWebsocket, profilesClient)
         } else return new ProfilesZomeApi(appWebsocket)

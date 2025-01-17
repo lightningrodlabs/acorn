@@ -3,7 +3,7 @@ import './NetworkInfo.scss'
 import { getAdminWs } from '../../hcWebsockets'
 import ReactJsonView from 'react-json-view'
 import { VersionInfo } from '../../hooks/useVersionChecker'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeaveContext } from '@theweave/api'
 
 export type NetworkInfoProps = {
   versionInfo: VersionInfo
@@ -37,7 +37,7 @@ const NetworkInfo: React.FC<NetworkInfoProps> = ({
 
   useEffect(() => {
     const getNetworkStats = async () => {
-      if (!isWeContext()) {
+      if (!isWeaveContext()) {
         const adminWs = await getAdminWs()
         const stats = await adminWs.dumpNetworkStats()
         setNetworkStats(JSON.parse(stats))

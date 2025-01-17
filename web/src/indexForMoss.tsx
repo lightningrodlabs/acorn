@@ -17,7 +17,7 @@ import { cellIdToString } from './utils'
 // Import styles
 import './variables.scss'
 import './global.scss'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeaveContext } from '@theweave/api'
 import { ProfilesClient } from '@holochain-open-dev/profiles'
 
 export async function mossInit(
@@ -53,7 +53,7 @@ export async function mossInit(
       const cellIdString = cellIdToString(cellId)
       store.dispatch(setProfilesCellId(cellIdString))
       const profilesZomeApi = await (async () => {
-        if (isWeContext()) {
+        if (isWeaveContext()) {
           const profilesClient = await getWeaveProfilesClient()
           return new ProfilesZomeApi(appWs, profilesClient)
         } else {

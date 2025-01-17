@@ -1,6 +1,6 @@
 import { AdminWebsocket, AppWebsocket, AppClient } from '@holochain/client'
 import { MAIN_APP_ID } from './holochainConfig'
-import { isWeContext, WeaveClient } from '@lightningrodlabs/we-applet'
+import { isWeaveContext, WeaveClient } from '@theweave/api'
 import { ProfilesClient } from '@holochain-open-dev/profiles'
 
 // export for use by holochainMiddleware (redux)
@@ -64,7 +64,7 @@ export async function getAppWs(): Promise<AppClient> {
       (appWs as AppWebsocket).client.socket.OPEN
   ) {
     return appWs
-  } else if (isWeContext()) {
+  } else if (isWeaveContext()) {
     const weClient = await WeaveClient.connect()
     if (
       weClient.renderInfo.type !== 'applet-view' ||
@@ -129,7 +129,7 @@ export function setWeaveProfilesClient(profilesClient: ProfilesClient) {
   weaveProfilesClient = profilesClient
 }
 export async function getWeaveProfilesClient() {
-  if (!isWeContext()) {
+  if (!isWeaveContext()) {
     throw new Error('Not in Weave context')
   } else if (weaveProfilesClient) {
     return weaveProfilesClient

@@ -10,11 +10,7 @@
 import 'core-js/stable'
 import 'regenerator-runtime/runtime'
 
-import {
-  WeaveClient,
-  initializeHotReload,
-  isWeContext,
-} from '@lightningrodlabs/we-applet'
+import { WeaveClient, initializeHotReload, isWeaveContext } from '@theweave/api'
 import createStoreAndRenderToDom, { electronInit } from './indexForElectron'
 import {
   getAdminWs,
@@ -40,7 +36,7 @@ const isDevMode = () => {
   if (!isElectron() && isDevMode()) {
     await initializeHotReload()
   }
-  if (!isWeContext()) {
+  if (!isWeaveContext()) {
     // electron
     ;(async () => {
       const adminWs = await getAdminWs()

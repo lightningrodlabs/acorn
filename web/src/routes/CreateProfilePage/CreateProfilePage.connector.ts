@@ -13,7 +13,7 @@ import CreateProfilePage, {
 import { Profile } from '../../types'
 import { CellIdString } from '../../types/shared'
 import { AppClient } from '@holochain/client'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeaveContext } from '@theweave/api'
 import { getWeaveProfilesClient } from '../../hcWebsockets'
 
 function mapStateToProps(state: RootState): CreateProfilePageStateProps {
@@ -32,7 +32,7 @@ function mapDispatchToProps(dispatch: any): CreateProfilePageDispatchProps {
     ) => {
       const cellId = cellIdFromString(profilesCellIdString)
       const profilesZomeApi = await (async () => {
-        if (isWeContext()) {
+        if (isWeaveContext()) {
           const profilesClient = await getWeaveProfilesClient()
           return new ProfilesZomeApi(appWebsocket, profilesClient)
         } else return new ProfilesZomeApi(appWebsocket)
@@ -46,7 +46,7 @@ function mapDispatchToProps(dispatch: any): CreateProfilePageDispatchProps {
       profilesCellIdString: CellIdString
     ) => {
       const profilesZomeApi = await (async () => {
-        if (isWeContext()) {
+        if (isWeaveContext()) {
           const profilesClient = await getWeaveProfilesClient()
           return new ProfilesZomeApi(appWebsocket, profilesClient)
         } else return new ProfilesZomeApi(appWebsocket)
