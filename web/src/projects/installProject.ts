@@ -1,16 +1,9 @@
-import {
-  AdminWebsocket,
-  AppClient,
-  AppWebsocket,
-  CellId,
-  CellType,
-} from '@holochain/client'
-import { getAdminWs, getAgentPubKey, getAppWs } from '../hcWebsockets'
+import { AppClient, CellId } from '@holochain/client'
+import { getAgentPubKey, getAppWs } from '../hcWebsockets'
 import { PROJECT_APP_PREFIX, PROJECTS_ROLE_NAME } from '../holochainConfig'
 import { passphraseToUid } from '../secrets'
 import { CellIdString } from '../types/shared'
 import { cellIdToString } from '../utils'
-import { isWeaveContext } from '@theweave/api'
 
 export async function internalInstallProject(
   passphrase: string,
@@ -38,10 +31,6 @@ export async function internalInstallProject(
   //authorize zome calls for the new cell
   // TODO: this pattern will need to change as the adminWS won't be availabe in a Moss Tool context
   // if electron, send ipc message to main process to authorize, otherwise don't need to do anything
-  if (!isWeaveContext()) {
-    const adminWs = await getAdminWs()
-    await adminWs.authorizeSigningCredentials(cellId)
-  }
   return { cellIdString, cellId, appId: installedAppId }
 }
 

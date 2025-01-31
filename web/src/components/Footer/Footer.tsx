@@ -8,9 +8,7 @@ import Button from '../Button/Button'
 
 import MapViewingOptions from '../MapViewingOptions/MapViewingOptions'
 import { AgentPubKeyB64, CellIdString } from '../../types/shared'
-import { getAdminWs, getAppWs } from '../../hcWebsockets'
 import SyncingIndicator from '../SyncingIndicator/SyncingIndicator'
-import { cellIdFromString } from '../../utils'
 
 export type FooterProps = {
   agentAddress: AgentPubKeyB64
@@ -117,7 +115,10 @@ const Footer: React.FC<FooterProps> = ({
         <div className={bottomRightPanelClassName}>
           {isSyncing && <SyncingIndicator />}
           {mapPage && (
-            <div className="map-viewing-options-button-wrapper" onClick={() => unselectAll()}>
+            <div
+              className="map-viewing-options-button-wrapper"
+              onClick={() => unselectAll()}
+            >
               {/* If map viewing options is open */}
               <MapViewingOptions
                 isOpen={openMapViewingOptions}

@@ -24,9 +24,6 @@ import {
 } from '../../types'
 import selectAndComputeOutcomes from '../../selectors/computeOutcomes'
 import selectOutcomeAndAncestors from '../../selectors/outcomeAndAncestors'
-import { getAdminWs } from '../../hcWebsockets'
-import { cellIdFromString } from '../../utils'
-import { isWeaveContext } from '@theweave/api'
 
 export type ProjectViewInnerOwnProps = {
   projectId: CellIdString
@@ -138,11 +135,6 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
       try {
         // pushes this new projectId into the store/state
         setActiveProject(projectId)
-        if (!isWeaveContext()) {
-          // authorize zome calls on each page refresh
-          const adminWs = await getAdminWs()
-          await adminWs.authorizeSigningCredentials(cellIdFromString(projectId))
-        }
 
         triggerRealtimeInfoSignal()
         fetchProjectMeta()

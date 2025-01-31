@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { getAdminWs, getAppWs } from '../../hcWebsockets'
+import { getAppWs } from '../../hcWebsockets'
 import { fetchEntryPointDetails } from '../../redux/persistent/projects/entry-points/actions'
 import { fetchMembers } from '../../redux/persistent/projects/members/actions'
 import { fetchProjectMeta } from '../../redux/persistent/projects/project-meta/actions'

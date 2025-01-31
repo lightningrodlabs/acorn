@@ -13,7 +13,7 @@ import selectEntryPoints, {
 } from '../redux/persistent/projects/entry-points/select'
 import { animatePanAndZoom } from '../redux/ephemeral/viewport/actions'
 import ProfilesZomeApi from '../api/profilesApi'
-import { getAdminWs, getAppWs, getWeaveProfilesClient } from '../hcWebsockets'
+import { getAppWs, getWeaveProfilesClient } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { RootState } from '../redux/reducer'
 import App, {
