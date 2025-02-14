@@ -26,8 +26,8 @@
     "moss:build-webhapp": "bash scripts/build-moss-webhapp.sh",
     "kangaroo:build-webhapp": "bash scripts/build-kangaroo-webhapp.sh",
     "postinstall": "yarn workspace zod-models run build",
-    "dev-we": "cd we-applet && yarn dev-we",
-    "dev-we2": "cd we-applet && yarn dev-we2",
+    "dev-we": "cd weave-tool && yarn dev-we",
+    "dev-we2": "cd weave-tool && yarn dev-we2",
     "hc-spin:happ": "yarn workspace acorn-ui hc-spin:happ",
     "hc-spin:webhapp": "yarn workspace acorn-ui hc-spin:webhapp"
   },
