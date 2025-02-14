@@ -32,8 +32,8 @@ const isDevMode = () => {
 }
 
 ;(async () => {
-  if (!isElectron() && isDevMode()) {
-    // await initializeHotReload()
+  if (isDevMode()) {
+    await initializeHotReload()
   }
   if (!isWeaveContext()) {
     // electron

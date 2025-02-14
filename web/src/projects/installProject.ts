@@ -1,9 +1,10 @@
-import { AppClient, CellId } from '@holochain/client'
-import { getAgentPubKey, getAppWs } from '../hcWebsockets'
+import { AppClient, CellId, CreateCloneCellRequest } from '@holochain/client'
+import { getAgentPubKey, getAppWs, getWeaveClient } from '../hcWebsockets'
 import { PROJECT_APP_PREFIX, PROJECTS_ROLE_NAME } from '../holochainConfig'
 import { passphraseToUid } from '../secrets'
 import { CellIdString } from '../types/shared'
 import { cellIdToString } from '../utils'
+import { isWeaveContext } from '@theweave/api'
 
 export async function internalInstallProject(
   passphrase: string,
@@ -20,7 +21,11 @@ export async function internalInstallProject(
   }
 
   // CLONE
-  const clonedCell = await appWs.createCloneCell({
+  const createClonedCell = isWeaveContext()
+    ? (arg: CreateCloneCellRequest) =>
+        getWeaveClient().createCloneCell(arg, true)
+    : appWs.createCloneCell
+  const clonedCell = await createClonedCell({
     role_name: PROJECTS_ROLE_NAME,
     modifiers: {
       network_seed: uid,

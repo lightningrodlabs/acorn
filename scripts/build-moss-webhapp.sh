@@ -6,5 +6,5 @@ set -e
 yarn workspace acorn-ui build
 yarn run zip-ui
 
-cd we-applet
+cd weave-tool
 hc web-app pack .
