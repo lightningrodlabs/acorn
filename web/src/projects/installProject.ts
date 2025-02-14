@@ -21,16 +21,19 @@ export async function internalInstallProject(
   }
 
   // CLONE
-  const createClonedCell = isWeaveContext()
-    ? (arg: CreateCloneCellRequest) =>
-        getWeaveClient().createCloneCell(arg, true)
-    : appWs.createCloneCell
-  const clonedCell = await createClonedCell({
-    role_name: PROJECTS_ROLE_NAME,
-    modifiers: {
-      network_seed: uid,
-    },
-  })
+  const clonedCell = await (async () => {
+    const cloneConfig = {
+      role_name: PROJECTS_ROLE_NAME,
+      modifiers: {
+        network_seed: uid,
+      },
+    }
+    if (!isWeaveContext()) {
+      return await appWs.createCloneCell(cloneConfig)
+    }
+
+    return await getWeaveClient().createCloneCell(cloneConfig, true)
+  })()
   const cellId = clonedCell.cell_id
   const cellIdString = cellIdToString(cellId)
   //authorize zome calls for the new cell

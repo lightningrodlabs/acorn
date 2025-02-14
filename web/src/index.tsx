@@ -20,19 +20,12 @@ import {
 } from './hcWebsockets'
 import { mossInit } from './indexForMoss'
 
-const isElectron = () => {
-  return (
-    typeof process !== 'undefined' &&
-    process.versions != null &&
-    process.versions.electron != null
-  )
-}
-const isDevMode = () => {
-  return process.env.__DEV_MODE__
+const isWeaveDevMode = () => {
+  return process.env.__DEV_MODE__ && !process.env.KANGAROO
 }
 
 ;(async () => {
-  if (isDevMode()) {
+  if (isWeaveDevMode()) {
     await initializeHotReload()
   }
   if (!isWeaveContext()) {
