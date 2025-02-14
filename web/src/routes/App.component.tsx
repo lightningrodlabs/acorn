@@ -261,7 +261,6 @@ const App: React.FC<AppProps> = ({
       ? Object.keys(projectMembers[modalState.cellId]).length
       : undefined
 
-  console.log('appWebsocket', appWebsocket)
   return (
     <>
       <div

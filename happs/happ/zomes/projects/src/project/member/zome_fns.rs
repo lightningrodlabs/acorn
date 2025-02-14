@@ -1,5 +1,6 @@
 use super::entry::{MemberSignal, MEMBER_PATH};
 use crate::get_peers_latest;
+use crate::SignalType;
 use hdk::prelude::*;
 use hdk_crud::{
     retrieval::{fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry},
@@ -33,7 +34,7 @@ pub fn init_signal(_: ()) -> ExternResult<()> {
     let member = Member {
         agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey),
     };
-    let signal = MemberSignal::new(member.clone());
+    let signal = SignalType::Member(MemberSignal::new(member.clone()));
     let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e))?;
     let peers = get_peers_latest()?;
     send_remote_signal(payload, peers)?;

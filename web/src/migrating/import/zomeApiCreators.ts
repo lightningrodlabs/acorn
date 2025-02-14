@@ -1,14 +1,14 @@
 import { AppClient } from '@holochain/client'
 import ProfilesZomeApi from '../../api/profilesApi'
 import ProjectsZomeApi from '../../api/projectsApi'
-import { isWeContext } from '@lightningrodlabs/we-applet'
+import { isWeaveContext } from '@theweave/api'
 import { getWeaveProfilesClient } from '../../hcWebsockets'
 
 export async function createProfilesZomeApi(
   appWebsocket: AppClient
 ): Promise<ProfilesZomeApi> {
   return await (async () => {
-    if (isWeContext()) {
+    if (isWeaveContext()) {
       const profilesClient = await getWeaveProfilesClient()
       return new ProfilesZomeApi(appWebsocket, profilesClient)
     } else return new ProfilesZomeApi(appWebsocket)

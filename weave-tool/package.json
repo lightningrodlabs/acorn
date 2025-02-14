@@ -1,5 +1,5 @@
 {
-  "name": "we-applet",
+  "name": "weave-tool",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -8,6 +8,6 @@
     "dev-we2": "we-dev-cli --agent-idx 2 --dev-config we.dev.config.ts"
   },
   "dependencies": {
-    "@lightningrodlabs/we-dev-cli": "0.13.0-beta.5"
+    "@theweave/cli": "0.13.0-rc.1"
   }
 }

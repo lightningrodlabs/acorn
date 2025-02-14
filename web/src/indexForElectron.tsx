@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
-import { AdminWebsocket, AppClient, CellType } from '@holochain/client'
+import { AppClient, CellType } from '@holochain/client'
 
 // Local Imports
 import { PROFILES_ROLE_NAME, PROJECTS_ROLE_NAME } from './holochainConfig'
@@ -21,7 +21,7 @@ import App from './routes/App.connector'
 import { setAgentPubKey } from './hcWebsockets'
 import { getProjectCellIdStrings } from './projectAppIds'
 import ProfilesZomeApi from './api/profilesApi'
-import { cellIdFromString, cellIdToString } from './utils'
+import { cellIdToString } from './utils'
 
 // Import styles
 import './variables.scss'
@@ -54,43 +54,33 @@ export default async function createStoreAndRenderToDom(appWs: AppClient) {
   return store
 }
 
-export async function electronInit(
-  store: any,
-  adminWs: AdminWebsocket,
-  appWs: AppClient
-) {
+export async function electronInit(store: any, appWs: AppClient) {
   try {
     console.log('indexing electron A', {
-      adminWs,
       appWs,
     })
     const appInfo = await appWs.appInfo()
     console.log('indexing electron A', {
-      adminWs,
       appWs,
       appInfo,
     })
     const { profilesCellInfo, projectsCellInfo } = {
-      profilesCellInfo: appInfo.cell_info[PROFILES_ROLE_NAME][0],
-      projectsCellInfo: appInfo.cell_info[PROJECTS_ROLE_NAME][0],
+      profilesCellInfo: appInfo?.cell_info[PROFILES_ROLE_NAME][0],
+      projectsCellInfo: appInfo?.cell_info[PROJECTS_ROLE_NAME][0],
     }
     const { cellId, projectsCellId } = {
       cellId:
-        CellType.Provisioned in profilesCellInfo
+        profilesCellInfo && CellType.Provisioned in profilesCellInfo
           ? profilesCellInfo[CellType.Provisioned].cell_id
           : undefined,
       projectsCellId:
-        CellType.Provisioned in projectsCellInfo
+        projectsCellInfo && CellType.Provisioned in projectsCellInfo
           ? projectsCellInfo[CellType.Provisioned].cell_id
           : undefined,
     }
     if (cellId == undefined || projectsCellId == undefined) {
       throw 'cellId undefined'
     } else {
-      // authorize zome call signer
-      await adminWs.authorizeSigningCredentials(cellId)
-      await adminWs.authorizeSigningCredentials(projectsCellId)
-
       const [_dnaHash, agentPubKey] = cellId
       // cache buffer version of agentPubKey
       setAgentPubKey(agentPubKey)
@@ -99,7 +89,6 @@ export async function electronInit(
       // all functions of the Profiles DNA
       const profilesZomeApi = new ProfilesZomeApi(appWs)
       console.log('indexing electron B', {
-        adminWs,
         appWs,
       })
 
@@ -137,13 +126,6 @@ export async function electronInit(
       })
       const projectCellIds = await getProjectCellIdStrings()
 
-      // before any zome calls can be made, we need to gain zome call signing authorization
-      // for each of the project cells that we have installed
-      await Promise.all(
-        projectCellIds.map(async (cellId) => {
-          await adminWs.authorizeSigningCredentials(cellIdFromString(cellId))
-        })
-      )
       store.dispatch(setProjectsCellIds(projectCellIds))
     }
   } catch (e) {
