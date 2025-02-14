@@ -1,4 +1,4 @@
-import { AdminWebsocket, AppWebsocket, AppClient } from '@holochain/client'
+import { AppWebsocket, AppClient } from '@holochain/client'
 import { isWeaveContext, WeaveClient } from '@theweave/api'
 import { ProfilesClient } from '@holochain-open-dev/profiles'
 
@@ -9,6 +9,17 @@ let weaveClient: WeaveClient
 
 export async function getAppWs(): Promise<AppClient> {
   if (appWs) return appWs
+  if (isWeaveContext()) {
+    const weClient = weaveClient || (await WeaveClient.connect())
+    if (
+      weClient.renderInfo.type !== 'applet-view' ||
+      weClient.renderInfo.view.type !== 'main'
+    )
+      throw new Error('This Applet only implements the applet main view.')
+    const appClient = weClient.renderInfo.appletClient
+    appWs = appClient
+    return appWs
+  }
   appWs = await AppWebsocket.connect()
   return appWs
 }
@@ -27,6 +38,9 @@ export function setAgentPubKey(setAs) {
 
 export function setWeaveClient(client: WeaveClient) {
   weaveClient = client
+}
+export function getWeaveClient() {
+  return weaveClient
 }
 export function setWeaveProfilesClient(profilesClient: ProfilesClient) {
   weaveProfilesClient = profilesClient

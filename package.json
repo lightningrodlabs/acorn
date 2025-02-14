@@ -6,7 +6,8 @@
   "workspaces": {
     "packages": [
       "web",
-      "zod-models"
+      "zod-models",
+      "weave-tool"
     ]
   },
   "description": "Acorn is software that helps people create the future",
@@ -15,21 +16,21 @@
     "url": "git+https://github.com/lightningrodlabs/acorn.git"
   },
   "scripts": {
-    "web": "WEB_PORT=8081 ADMIN_WS_PORT=1101 APP_WS_PORT=8101 yarn workspace acorn-ui dev",
+    "web:kangaroo": "KANGAROO=true WEB_PORT=8081 ADMIN_WS_PORT=1101 APP_WS_PORT=8101 yarn workspace acorn-ui dev",
+    "web:weave": "WEB_PORT=8081 ADMIN_WS_PORT=1101 APP_WS_PORT=8101 yarn workspace acorn-ui dev",
     "web2": "WEB_PORT=8082 ADMIN_WS_PORT=1102 APP_WS_PORT=8102 yarn workspace acorn-ui dev",
     "web3": "WEB_PORT=8083 ADMIN_WS_PORT=1103 APP_WS_PORT=8103 yarn workspace acorn-ui dev",
     "web4": "WEB_PORT=8084 ADMIN_WS_PORT=1104 APP_WS_PORT=8104 yarn workspace acorn-ui dev",
-    "download-happs": "bash scripts/download-happs.sh",
     "storybook": "yarn workspace acorn-ui storybook",
     "zip-ui": "cd web/dist && bestzip ../dist.zip *",
     "pack-happs": "bash happs/scripts/happ-pack.sh",
     "moss:build-webhapp": "bash scripts/build-moss-webhapp.sh",
     "kangaroo:build-webhapp": "bash scripts/build-kangaroo-webhapp.sh",
     "postinstall": "yarn workspace zod-models run build",
-    "dev-we": "cd weave-tool && yarn dev-we",
-    "dev-we2": "cd weave-tool && yarn dev-we2",
-    "hc-spin:happ": "yarn workspace acorn-ui hc-spin:happ",
-    "hc-spin:webhapp": "yarn workspace acorn-ui hc-spin:webhapp"
+    "hc-spin:happ": "KANGAROO=true yarn workspace acorn-ui hc-spin:happ",
+    "hc-spin:webhapp": "KANGAROO=true yarn workspace acorn-ui hc-spin:webhapp",
+    "weave-dev:happ": "yarn workspace weave-tool dev-weave",
+    "weave-dev:happ2": "yarn workspace weave-tool dev-weave2"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",

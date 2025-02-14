@@ -1,9 +1,10 @@
-import { AppClient, CellId } from '@holochain/client'
-import { getAgentPubKey, getAppWs } from '../hcWebsockets'
+import { AppClient, CellId, CreateCloneCellRequest } from '@holochain/client'
+import { getAgentPubKey, getAppWs, getWeaveClient } from '../hcWebsockets'
 import { PROJECT_APP_PREFIX, PROJECTS_ROLE_NAME } from '../holochainConfig'
 import { passphraseToUid } from '../secrets'
 import { CellIdString } from '../types/shared'
 import { cellIdToString } from '../utils'
+import { isWeaveContext } from '@theweave/api'
 
 export async function internalInstallProject(
   passphrase: string,
@@ -20,12 +21,19 @@ export async function internalInstallProject(
   }
 
   // CLONE
-  const clonedCell = await appWs.createCloneCell({
-    role_name: PROJECTS_ROLE_NAME,
-    modifiers: {
-      network_seed: uid,
-    },
-  })
+  const clonedCell = await (async () => {
+    const cloneConfig = {
+      role_name: PROJECTS_ROLE_NAME,
+      modifiers: {
+        network_seed: uid,
+      },
+    }
+    if (!isWeaveContext()) {
+      return await appWs.createCloneCell(cloneConfig)
+    }
+
+    return await getWeaveClient().createCloneCell(cloneConfig, true)
+  })()
   const cellId = clonedCell.cell_id
   const cellIdString = cellIdToString(cellId)
   //authorize zome calls for the new cell

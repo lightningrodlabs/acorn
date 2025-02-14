@@ -13,7 +13,7 @@ export default defineConfig({
       networkSeed: '098rc1m-09384u-crm-29384u-cmkj',
       icon: {
         type: 'filesystem',
-        path: './weave-tool/lrl-icon.png',
+        path: './lrl-icon.png',
       },
       creatingAgent: {
         agentIdx: 1,
@@ -21,7 +21,7 @@ export default defineConfig({
           nickname: 'Zippy',
           avatar: {
             type: 'filesystem',
-            path: './we_dev/zippy.jpg',
+            path: './zippy.jpg',
           },
         },
       },
@@ -32,15 +32,15 @@ export default defineConfig({
             nickname: 'Zerbina',
             avatar: {
               type: 'filesystem',
-              path: './we_dev/zerbina.jpg',
+              path: './zerbina.jpg',
             },
           },
         },
       ],
       applets: [
         {
-          name: 'KanDo Hot Reload',
-          instanceName: 'KanDo Hot Reload',
+          name: 'Acorn Hot Reload',
+          instanceName: 'Acorn Hot Reload',
           registeringAgent: 1,
           joiningAgents: [2],
         },
@@ -61,17 +61,17 @@ export default defineConfig({
   ],
   applets: [
     {
-      name: 'KanDo Hot Reload',
-      subtitle: 'KanDo',
-      description: 'task it it!',
+      name: 'Acorn Hot Reload',
+      subtitle: 'Acorn',
+      description: 'State of affairs trees!',
       icon: {
         type: 'filesystem',
-        path: './we_dev/kando_icon.png',
+        path: './acorn-app-icon-512px.png',
       },
       source: {
         type: 'localhost',
-        happPath: './workdir/kando.happ',
-        uiPort: 1420,
+        happPath: '../happs/happ/workdir/projects/projects.happ',
+        uiPort: 8081,
       },
     },
     // {
