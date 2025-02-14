@@ -100,22 +100,24 @@ const Dashboard: React.FC<DashboardProps> = ({
     fetchMembers.bind(null, appWebsocket)
   )
 
-  console.log('useProjectStatusInfos', {
-    projectStatusInfos,
-    setProjectStatusInfos,
-    projectCellIdStrings,
-  });
-
   const onCreateProject = (
     project: { name: string; image: string },
     passphrase: string
   ) => createProject(appWebsocket, agentAddress, project, passphrase)
-  const doJoinProject = (passphrase: string) => joinProject(appWebsocket, passphrase)
+  const doJoinProject = (passphrase: string) =>
+    joinProject(appWebsocket, passphrase)
   const onImportProject = (
     cellIdString: CellIdString,
     projectData: any,
     passphrase: string
-  ) => importProject(appWebsocket, cellIdString, agentAddress, projectData, passphrase)
+  ) =>
+    importProject(
+      appWebsocket,
+      cellIdString,
+      agentAddress,
+      projectData,
+      passphrase
+    )
 
   const setSortBy = (sortBy) => () => {
     setSelectedSort(sortBy)
