@@ -143,7 +143,7 @@ function weaveToAcornProfile(
       // default to offline until the fields exists
       acornProfile[key] = weaveProfile.fields[key]
         ? (weaveProfile.fields[key] as Status)
-        : ('Offline' as Status)
+        : ('Online' as Status)
     } else if (key === 'agentPubKey') {
       acornProfile[key] = weaveProfile.fields[key]
         ? weaveProfile.fields[key]
