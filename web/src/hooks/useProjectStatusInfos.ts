@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react'
 import { CellIdString } from '../types/shared'
-import { getAllApps } from '../projectAppIds'
 import { uidToPassphrase } from '../secrets'
-import { CellType } from '@holochain/client'
+import { CellType, ClonedCell } from '@holochain/client'
 import { getAgentPubKey, getAppWs } from '../hcWebsockets'
-import { cellIdFromString } from '../utils'
+import { cellIdFromString, cellIdToString } from '../utils'
 
 export type ProjectStatusInfo = {
   passphrase: string
@@ -20,30 +19,29 @@ export type ProjectStatusInfos = {
 const getNewInfos = async (
   projects: { cellId: CellIdString; hasProjectMeta: boolean }[]
 ): Promise<ProjectStatusInfos> => {
-  const allApps = await getAllApps()
   const appWs = await getAppWs()
+  const appInfo = await appWs.appInfo()
   const agentPubKey = await getAgentPubKey()
   const networkInfos = agentPubKey
     ? await appWs.networkInfo({
-        agent_pub_key: agentPubKey,
         dnas: projects.map(({ cellId }) => cellIdFromString(cellId)[0]),
       })
     : []
+  const clonedProjectCells: ClonedCell[] = appInfo.cell_info['projects']
+    .filter(
+      (cellInfo) =>
+        CellType.Cloned in cellInfo && cellInfo[CellType.Cloned].enabled
+    )
+    .map((cellInfo) => cellInfo[CellType.Cloned])
+
   const newInfos: ProjectStatusInfos = {}
   projects.forEach(({ cellId, hasProjectMeta }, index) => {
-    const app = Object.entries(allApps).find(
-      ([_appId, appInfo]) => appInfo.cellIdString === cellId
+    const cellInfo = clonedProjectCells.find(
+      (clonedCell) => cellIdToString(clonedCell.cell_id) === cellId
     )
-    // This can happen if the project just got uninstalled
-    if (!app) {
+    if (!cellInfo) {
       return
     }
-    const [appId, appInfo] = app
-    const cellInfo = Object.values(appInfo.cell_info)[0][0]
-    const networkSeed =
-      CellType.Provisioned in cellInfo
-        ? cellInfo[CellType.Provisioned].dna_modifiers.network_seed
-        : ''
 
     // time to check network info
     let hasPeers = false
@@ -56,8 +54,8 @@ const getNewInfos = async (
       isGossiping = networkInfo.fetch_pool_info.num_ops_to_fetch > 0
     }
     newInfos[cellId] = {
-      passphrase: uidToPassphrase(networkSeed),
-      appId,
+      passphrase: uidToPassphrase(cellInfo.dna_modifiers.network_seed),
+      appId: appInfo.installed_app_id,
       hasPeers,
       isGossiping,
       hasProjectMeta,

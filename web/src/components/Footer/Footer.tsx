@@ -8,9 +8,7 @@ import Button from '../Button/Button'
 
 import MapViewingOptions from '../MapViewingOptions/MapViewingOptions'
 import { AgentPubKeyB64, CellIdString } from '../../types/shared'
-import { getAdminWs, getAppWs } from '../../hcWebsockets'
 import SyncingIndicator from '../SyncingIndicator/SyncingIndicator'
-import { cellIdFromString } from '../../utils'
 
 export type FooterProps = {
   agentAddress: AgentPubKeyB64
@@ -79,19 +77,19 @@ const Footer: React.FC<FooterProps> = ({
       if (!projectId) {
         return
       }
-      const appWs = await getAppWs()
+      // TODOOOOO
       // TODO: check `last_time_queried` parameter to see if its useful
-      try {
-        const dnaHash = cellIdFromString(projectId)[0]
-        const networkInfo = await appWs.networkInfo({
-          agent_pub_key: agentAddress as any,
-          dnas: [dnaHash],
-        })
-        let sum = networkInfo[0].fetch_pool_info.num_ops_to_fetch
-        setNumOpsToFetch(sum)
-      } catch (e) {
-        console.log('error during call to networkInfo', e)
-      }
+      // try {
+      //   const dnaHash = cellIdFromString(projectId)[0]
+      //   const networkInfo = await appWs.networkInfo({
+      //     agent_pub_key: agentAddress as any,
+      //     dnas: [dnaHash],
+      //   })
+      //   let sum = networkInfo[0].fetch_pool_info.num_ops_to_fetch
+      //   setNumOpsToFetch(sum)
+      // } catch (e) {
+      //   console.log('error during call to networkInfo', e)
+      // }
     }
 
     const interval = setInterval(() => fetchOpData(), 1000)
@@ -117,7 +115,10 @@ const Footer: React.FC<FooterProps> = ({
         <div className={bottomRightPanelClassName}>
           {isSyncing && <SyncingIndicator />}
           {mapPage && (
-            <div className="map-viewing-options-button-wrapper" onClick={() => unselectAll()}>
+            <div
+              className="map-viewing-options-button-wrapper"
+              onClick={() => unselectAll()}
+            >
               {/* If map viewing options is open */}
               <MapViewingOptions
                 isOpen={openMapViewingOptions}

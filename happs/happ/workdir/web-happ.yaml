@@ -1,0 +1,7 @@
+---
+manifest_version: '1'
+name: acorn
+ui:
+  bundled: '../../../web/dist.zip'
+happ_manifest:
+  bundled: './acorn.happ'

@@ -12,5 +12,5 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true
   },
-  "exclude": ["src/stories"]
+  "exclude": ["src/stories", "test"]
 }

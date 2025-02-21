@@ -25,6 +25,7 @@ module.exports = {
       __MAIN_APP_ID__: JSON.stringify(mainAppId),
       __ADMIN_PORT__: 1235,
       __APP_PORT__: 8889,
+      'process.env.__DEV_MODE__': JSON.stringify(false),
     }),
     new HTMLWebpackPlugin({
       template: './src/index.html', //source
@@ -57,7 +58,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: {
-          and: [/node_modules/],
+          and: [/node_modules/, /test/],
         },
         use: {
           loader: 'babel-loader',
@@ -70,7 +71,7 @@ module.exports = {
       },
       {
         test: /\.(ts|tsx)$/,
-        exclude: [/node_modules/, /src\/stories/],
+        exclude: [/node_modules/, /src\/stories/, /test/],
         use: 'ts-loader',
       },
       // fonts

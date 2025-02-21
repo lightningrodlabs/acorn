@@ -6,8 +6,13 @@ import { openOutcomeForm } from '../redux/ephemeral/outcome-form/actions'
 import { RootState } from '../redux/reducer'
 import { LinkedOutcomeDetails } from '../types'
 import { ActionHashB64, Option } from '../types/shared'
+import { AppClient } from '@holochain/client'
 
-export default function canvasMouseup(store: any, event: MouseEvent) {
+export default function canvasMouseup(
+  appWebsocket: AppClient,
+  store: any,
+  event: MouseEvent
+) {
   const state: RootState = store.getState()
   const {
     maybeLinkedOutcome,
@@ -23,6 +28,7 @@ export default function canvasMouseup(store: any, event: MouseEvent) {
     // AS WELL AS the case where we are not
     // (to reset the connection connector)
     handleOutcomeConnectorMouseUp(
+      // appWebsocket,
       maybeLinkedOutcome,
       toAddress,
       existingParentConnectionAddress,

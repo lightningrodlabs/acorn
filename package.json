@@ -1,17 +1,13 @@
 {
   "name": "acorn-workspace",
   "packageManager": "yarn@1.22.19",
-  "version": "9.9.0",
+  "version": "11.1.0",
   "private": true,
   "workspaces": {
     "packages": [
-      "electron",
       "web",
-      "zod-models"
-    ],
-    "nohoist": [
-      "**/electron-builder",
-      "**/electron-builder/**"
+      "zod-models",
+      "weave-tool"
     ]
   },
   "description": "Acorn is software that helps people create the future",
@@ -20,28 +16,30 @@
     "url": "git+https://github.com/lightningrodlabs/acorn.git"
   },
   "scripts": {
-    "dev": "pm2-dev pm2.config.js",
-    "user-data-reset": "rm -rf user-data && mkdir user-data",
-    "web": "WEB_PORT=8081 ADMIN_WS_PORT=1101 APP_WS_PORT=8101 yarn workspace acorn-ui dev",
+    "web:kangaroo": "KANGAROO=true WEB_PORT=8081 ADMIN_WS_PORT=1101 APP_WS_PORT=8101 yarn workspace acorn-ui dev",
+    "web:weave": "WEB_PORT=8081 ADMIN_WS_PORT=1101 APP_WS_PORT=8101 yarn workspace acorn-ui dev",
     "web2": "WEB_PORT=8082 ADMIN_WS_PORT=1102 APP_WS_PORT=8102 yarn workspace acorn-ui dev",
     "web3": "WEB_PORT=8083 ADMIN_WS_PORT=1103 APP_WS_PORT=8103 yarn workspace acorn-ui dev",
     "web4": "WEB_PORT=8084 ADMIN_WS_PORT=1104 APP_WS_PORT=8104 yarn workspace acorn-ui dev",
-    "electron": "WEB_PORT=8081 ACORN_AGENT_NUM=1 yarn workspace acorn start",
-    "electron2": "WEB_PORT=8082 ACORN_AGENT_NUM=2 yarn workspace acorn start",
-    "electron3": "WEB_PORT=8083 ACORN_AGENT_NUM=3 yarn workspace acorn start",
-    "electron4": "WEB_PORT=8084 ACORN_AGENT_NUM=4 yarn workspace acorn start",
-    "electron-tsc": "yarn workspace acorn tsc",
-    "download-happs": "bash scripts/download-happs.sh",
-    "build": "bash scripts/build.sh",
     "storybook": "yarn workspace acorn-ui storybook",
-    "postinstall": "yarn run download-happs"
+    "zip-ui": "cd web/dist && bestzip ../dist.zip *",
+    "pack-happs": "bash happs/scripts/happ-pack.sh",
+    "moss:build-webhapp": "bash scripts/build-moss-webhapp.sh",
+    "kangaroo:build-webhapp": "bash scripts/build-kangaroo-webhapp.sh",
+    "postinstall": "yarn workspace zod-models run build",
+    "hc-spin:happ": "KANGAROO=true yarn workspace acorn-ui hc-spin:happ",
+    "hc-spin:webhapp": "KANGAROO=true yarn workspace acorn-ui hc-spin:webhapp",
+    "weave-dev:happ": "yarn workspace weave-tool dev-weave",
+    "weave-dev:happ2": "yarn workspace weave-tool dev-weave2",
+    "weave-dev:webhapp": "yarn workspace weave-tool dev-weave-webhapp",
+    "weave-dev:webhapp2": "yarn workspace weave-tool dev-weave2-webhapp",
+    "weave-hash": "weave hash-webhapp ./weave-tool/acorn.webhapp"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",
-  "dependencies": {
-    "pm2": "^5.1.1"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "bestzip": "^2.2.1",
     "typescript": "^5.1.6"
   },
   "resolutions": {

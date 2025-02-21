@@ -1,15 +1,17 @@
 import { AllProjectsDataExport, ProjectExportData } from 'zod-models'
 import constructProjectDataFetchers from '../api/projectDataFetchers'
 import ProjectsZomeApi from '../api/projectsApi'
-import { getAppWs } from '../hcWebsockets'
 import { RootState } from '../redux/reducer'
 import { ProjectMeta } from '../types'
 import { ActionHashB64, CellIdString } from '../types/shared'
 import { cellIdFromString } from '../utils'
+import { AppClient } from '@holochain/client'
+import { getAppWs } from '../hcWebsockets'
 
 export type ExportType = 'csv' | 'json'
 
 export async function updateProjectMeta(
+  _appWebsocket: AppClient,
   projectMeta: ProjectMeta,
   actionHash: ActionHashB64,
   cellIdString: CellIdString
@@ -27,6 +29,7 @@ export async function internalExportProjectsData(
   constructProjectDataFetchersFunction: typeof constructProjectDataFetchers,
   collectExportProjectDataFunction: typeof collectExportProjectData,
   iUpdateProjectMeta: typeof updateProjectMeta,
+  appWebsocket: AppClient,
   store: any,
   toVersion: string,
   onStep: (completed: number, toComplete: number) => void,
@@ -93,7 +96,12 @@ export async function internalExportProjectsData(
       ...projectMetaDetails,
       isMigrated: toVersion,
     }
-    await iUpdateProjectMeta(newProjectMeta, actionHash, projectCellId)
+    await iUpdateProjectMeta(
+      appWebsocket,
+      newProjectMeta,
+      actionHash,
+      projectCellId
+    )
     completedTracker++
     onStep(completedTracker, projectCellIds.length)
   }
@@ -101,6 +109,7 @@ export async function internalExportProjectsData(
 }
 
 export default async function exportProjectsData(
+  appWebsocket: AppClient,
   store: any,
   toVersion: string,
   fromIntegrityVersion: number,
@@ -110,6 +119,7 @@ export default async function exportProjectsData(
     constructProjectDataFetchers,
     collectExportProjectData,
     updateProjectMeta,
+    appWebsocket,
     store,
     toVersion,
     onStep,

@@ -2,12 +2,10 @@ import React from 'react'
 import { useParams, useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-// data
 import {
   createOutcomeWithConnection,
   updateOutcome,
 } from '../../redux/persistent/projects/outcomes/actions'
-// ui
 import { setActiveEntryPoints } from '../../redux/ephemeral/active-entry-points/actions'
 import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
 import { closeOutcomeForm } from '../../redux/ephemeral/outcome-form/actions'
@@ -26,18 +24,19 @@ import {
   sendExitProjectSignal,
 } from '../../redux/persistent/projects/realtime-info-signal/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
-import { getAppWs } from '../../hcWebsockets'
 import { cellIdFromString } from '../../utils'
 import { RootState } from '../../redux/reducer'
 import { CellIdString, ActionHashB64 } from '../../types/shared'
 import { Outcome } from '../../types'
+import { triggerUpdateLayout } from '../../redux/ephemeral/layout/actions'
+import constructProjectDataFetchers from '../../api/projectDataFetchers'
+import useAppWebsocket from '../../hooks/useAppWebsocket'
 import ProjectViewInner, {
   ProjectViewInnerConnectorDispatchProps,
   ProjectViewInnerConnectorStateProps,
   ProjectViewInnerOwnProps,
 } from './ProjectView.component'
-import { triggerUpdateLayout } from '../../redux/ephemeral/layout/actions'
-import constructProjectDataFetchers from '../../api/projectDataFetchers'
+import { getAppWs } from '../../hcWebsockets'
 
 function mapStateToProps(
   state: RootState
@@ -119,6 +118,7 @@ const ProjectView = connect(
 function ProjectViewWrapper() {
   const { projectId } = useParams<{ projectId: CellIdString }>()
   const location = useLocation()
+  const appWebsocket = useAppWebsocket()
   let entryPointActionHashesRaw = new URLSearchParams(location.search).get(
     ENTRY_POINTS
   )
@@ -128,6 +128,7 @@ function ProjectViewWrapper() {
   }
   return (
     <ProjectView
+      appWebsocket={appWebsocket}
       projectId={projectId}
       entryPointActionHashes={entryPointActionHashes}
     />

@@ -47,7 +47,7 @@ function mapStateToProps(
 }
 
 function mapDispatchToProps(
-  dispatch,
+  dispatch: any,
   ownProps: EvRightColumnOwnProps
 ): EvRightColumnConnectorDispatchProps {
   const { projectId: cellIdString } = ownProps

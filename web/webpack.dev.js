@@ -19,6 +19,8 @@ module.exports = {
       __MAIN_APP_ID__: JSON.stringify(mainAppId),
       __ADMIN_PORT__: process.env.ADMIN_WS_PORT,
       __APP_PORT__: process.env.APP_WS_PORT,
+      'process.env.__DEV_MODE__': JSON.stringify(true),
+      'process.env.KANGAROO': process.env.KANGAROO,
     }),
     new HTMLWebpackPlugin({
       template: './src/index.html', //source
@@ -86,6 +88,9 @@ module.exports = {
               // `ts-loader` does not work with HMR unless `transpileOnly` is used.
               // If you need type checking, `ForkTsCheckerWebpackPlugin` is an alternative.
               transpileOnly: true,
+              compilerOptions: {
+                sourceMap: true, // Ensure TypeScript source maps are generated
+              },
             },
           },
         ],

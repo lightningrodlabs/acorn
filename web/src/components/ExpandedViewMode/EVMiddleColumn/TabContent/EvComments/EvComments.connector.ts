@@ -40,7 +40,7 @@ function mapStateToProps(
   }
 }
 
-function mapDispatchToProps(dispatch, ownProps) {
+function mapDispatchToProps(dispatch: any, ownProps: EvCommentsOwnProps) {
   const { projectId: cellIdString } = ownProps
   const cellId = cellIdFromString(cellIdString)
   return {

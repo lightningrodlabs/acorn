@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import './NetworkInfo.scss'
-import { getAdminWs } from '../../hcWebsockets'
 import ReactJsonView from 'react-json-view'
 import { VersionInfo } from '../../hooks/useVersionChecker'
 
@@ -35,11 +34,7 @@ const NetworkInfo: React.FC<NetworkInfoProps> = ({
   const [logsToShow, setLogsToShow] = useState<LogsToShow>(LogsToShow.Info)
 
   useEffect(() => {
-    const getNetworkStats = async () => {
-      const adminWs = await getAdminWs()
-      const stats = await adminWs.dumpNetworkStats()
-      setNetworkStats(JSON.parse(stats))
-    }
+    const getNetworkStats = async () => {}
     getNetworkStats()
 
     // repeat every 5 seconds

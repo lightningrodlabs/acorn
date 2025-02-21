@@ -1,17 +1,15 @@
-import { AdminWebsocket } from '@holochain/client'
+import { AdminWebsocket, AppClient, AppWebsocket } from '@holochain/client'
 import { removeProjectCellId } from '../redux/persistent/cells/actions'
 import { CellIdString } from '../types/shared'
+import { cellIdFromString } from '../utils'
 
 export async function uninstallProject(
   appId: string,
   cellId: CellIdString,
   dispatch: any,
-  adminWs: AdminWebsocket
+  appWs: AppClient
 ) {
-  // deactivate it in holochain
-  await adminWs.uninstallApp({
-    installed_app_id: appId,
-  })
-  // remove it from our redux state
-  dispatch(removeProjectCellId(cellId))
+  // await appWs.disableCloneCell({ clone_cell_id: cellIdFromString(cellId) })
+  // // remove it from our redux state
+  // dispatch(removeProjectCellId(cellId))
 }

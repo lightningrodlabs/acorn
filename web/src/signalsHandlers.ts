@@ -22,6 +22,12 @@ import {
   updatePeerState,
 } from './redux/ephemeral/realtime-info/actions'
 import { cellIdToString } from './utils'
+import {
+  AppSignal,
+  Signal,
+  SignalCb,
+  SignalType as HcSignalType,
+} from '@holochain/client'
 
 // We directly use the 'success' type, since these actions
 // have already succeeded on another machine, and we're just reflecting them locally
@@ -113,19 +119,22 @@ const pickCrudAction = (entryTypeName, actionType) => {
   return actionSet[actionName](null, null).type
 }
 
-export default (store) => {
+export default (store): SignalCb => {
   // keep track of timer set by setTimeout for each peer sending signals to you
   // needs to be in this scope so that it is accessible each time a signal is received
   const timerIds = {}
-  return (signal) => {
-    let { cell_id: cellId, payload } = signal
+  return (signal: Signal) => {
+    if (HcSignalType.System in signal) {
+    }
+    let { cell_id: cellId, payload: signalPayload } = (signal as {
+      App: AppSignal
+    }).App
     let waitForNextSignal = 12000
     // TODO: update holochain-conductor-api to latest
     // which should deserialize this automatically
-    payload = msgpack.decode(payload)
+    const payload: any = msgpack.decode(signalPayload as Uint8Array)
 
     if (payload.signalType === nonEntrySignalTypes.RealtimeInfo) {
-      console.log('received realtime signal:', payload.data)
       // set timeout, and end any existing timeouts
       if (timerIds[payload.data.agentPubKey]) {
         clearTimeout(timerIds[payload.data.agentPubKey])

@@ -1,4 +1,4 @@
-import { AppWebsocket, CellId } from '@holochain/client'
+import { AppClient, AppWebsocket, CellId } from '@holochain/client'
 import { installProject } from './installProject'
 import { PROJECTS_ZOME_NAME } from '../holochainConfig'
 import { getAgentPubKey } from '../hcWebsockets'
@@ -24,7 +24,7 @@ export async function joinProject(
   return internalJoinProject(passphrase, dispatch, installProject)
 }
 
-export function triggerJoinSignal(cellId: CellId, appWs: AppWebsocket) {
+export function triggerJoinSignal(cellId: CellId, appWs: AppClient) {
   // trigger a side effect...
   // this will let other project members know you're here
   // without 'blocking' the thread or the UX

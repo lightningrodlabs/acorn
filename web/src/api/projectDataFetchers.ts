@@ -1,4 +1,3 @@
-import { getAppWs } from '../hcWebsockets'
 import { fetchConnections } from '../redux/persistent/projects/connections/actions'
 import { fetchEntryPoints } from '../redux/persistent/projects/entry-points/actions'
 import { fetchMembers } from '../redux/persistent/projects/members/actions'
@@ -10,6 +9,7 @@ import { fetchTags } from '../redux/persistent/projects/tags/actions'
 import { CellIdString } from '../types/shared'
 import { cellIdFromString } from '../utils'
 import ProjectsZomeApi from './projectsApi'
+import { getAppWs } from '../hcWebsockets'
 
 export default function constructProjectDataFetchers(
   dispatch: any,

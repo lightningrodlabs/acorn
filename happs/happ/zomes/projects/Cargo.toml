@@ -1,0 +1,20 @@
+[package]
+edition = "2021"
+name = "projects"
+version = "0.0.1"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+name = "projects"
+
+[dependencies]
+hdk_crud = { workspace = true }
+hdk = { workspace = true }
+holo_hash = { workspace = true }
+projects_integrity = { path = "../projects_integrity" }
+paste = "*"
+chrono = { version = "*", default-features = false, features = ["clock", "std", "oldtime", "serde"] }
+# use whatever serde hdk uses
+serde = "*"
+thiserror = "=1.0.40"
+

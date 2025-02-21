@@ -1,0 +1,31 @@
+[package]
+name = "projects-tests"
+version = "0.0.1"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+hdk_crud = "0.5.5"
+holo_hash = { version = "=0.0.19", features = ["encoding", "fixturators"] }
+hdk = "0.0.122"
+projects = { path = "../../zomes/projects" }
+paste = "*"
+# use whatever serde hdk uses
+serde = "*"
+thiserror = "1"
+mockall = "0.9"
+assert_matches = "1.5.0"
+hdk_unit_testing = "0.1.3"
+
+[dev-dependencies]
+fixt = "0.0.8"
+holochain_types = "0.0.26"
+rand = "0.7"
+strum = "0.18.0"
+strum_macros = "0.18.0"
+chrono = { version = "=0.4.22", default-features = false, features = ["clock", "std", "oldtime", "serde"] }
+
+[features]
+default = ["mock"]
+mock = ["hdk/mock", "hdk/test_utils"]

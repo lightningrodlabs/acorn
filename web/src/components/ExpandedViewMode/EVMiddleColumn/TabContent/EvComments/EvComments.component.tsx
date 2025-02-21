@@ -13,10 +13,12 @@ import CommentPosted from '../../../../CommentPosted/CommentPosted'
 import './EvComments.scss'
 import EvReadOnlyHeading from '../../../../EvReadOnlyHeading/EvReadOnlyHeading'
 import Icon from '../../../../Icon/Icon'
+import { AppClient } from '@holochain/client'
 
 export type EvCommentsOwnProps = {
   projectId: CellIdString
   outcomeContent: string
+  appWebsocket?: AppClient
 }
 
 export type EvCommentsConnectorStateProps = {

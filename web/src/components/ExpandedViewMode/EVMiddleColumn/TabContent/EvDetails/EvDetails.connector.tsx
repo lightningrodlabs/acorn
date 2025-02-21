@@ -121,7 +121,7 @@ function mapStateToProps(
 }
 
 function mapDispatchToProps(
-  dispatch,
+  dispatch: any,
   ownProps: EvDetailsOwnProps
 ): EvDetailsConnectorDispatchProps {
   const { projectId: cellIdString } = ownProps

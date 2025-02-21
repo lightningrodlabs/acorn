@@ -1,0 +1,15 @@
+{
+  "name": "weave-tool",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev-weave": "weave --agent-idx 1 --dev-config weave.dev.config.ts",
+    "dev-weave2": "weave --agent-idx 2 --dev-config weave.dev.config.ts",
+    "dev-weave-webhapp": "weave --agent-idx 1 --dev-config weave.dev.config.webhapp.ts",
+    "dev-weave2-webhapp": "weave --agent-idx 2 --dev-config weave.dev.config.webhapp.ts"
+  },
+  "dependencies": {
+    "@theweave/cli": "0.13.0-rc.1"
+  }
+}
