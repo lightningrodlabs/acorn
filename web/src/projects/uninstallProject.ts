@@ -9,8 +9,7 @@ export async function uninstallProject(
   dispatch: any,
   appWs: AppClient
 ) {
-  await appWs.disableCloneCell({ clone_cell_id: cellIdFromString(cellId) })
-
-  // remove it from our redux state
-  dispatch(removeProjectCellId(cellId))
+  // await appWs.disableCloneCell({ clone_cell_id: cellIdFromString(cellId) })
+  // // remove it from our redux state
+  // dispatch(removeProjectCellId(cellId))
 }

@@ -44,18 +44,6 @@ export default defineConfig({
           registeringAgent: 1,
           joiningAgents: [2],
         },
-        // {
-        //   name: 'gamez',
-        //   instanceName: 'gamez',
-        //   registeringAgent: 1,
-        //   joiningAgents: [2],
-        // },
-        // {
-        //   name: 'vines',
-        //   instanceName: 'vines',
-        //   registeringAgent: 1,
-        //   joiningAgents: [2],
-        // },
       ],
     },
   ],
@@ -74,31 +62,5 @@ export default defineConfig({
         uiPort: 8081,
       },
     },
-    // {
-    //     name: 'gamez',
-    //     subtitle: 'play!',
-    //     description: 'Real-time games based on syn',
-    //     icon: {
-    //       type: "https",
-    //       url: "https://raw.githubusercontent.com/holochain-apps/gamez/main/we_dev/gamez_icon.svg"
-    //     },
-    //     source: {
-    //       type: "https",
-    //       url: "https://github.com/holochain-apps/gamez/releases/download/v0.7.3/gamez.webhapp"
-    //     },
-    //   },
-    //   {
-    //   name: 'vines',
-    //   subtitle: 'Chat',
-    //   description: 'Chat',
-    //   icon: {
-    //     type: 'https',
-    //     url: 'https://lightningrodlabs.org/projects/vines.svg',
-    //   },
-    //   source: {
-    //     type: 'https',
-    //     url: 'https://github.com/lightningrodlabs/vines/releases/download/we-applet-rc/vines-we_applet-1.9.0.webhapp',
-    //   },
-    // },
   ],
 })

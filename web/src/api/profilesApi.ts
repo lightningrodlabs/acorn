@@ -310,10 +310,6 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
           (await profilesClient.getAgentsWithProfile()).map(
             async (agentPubKey) => {
               try {
-                console.log(
-                  'fetching agent profile in fetchAgents',
-                  agentPubKey
-                )
                 return [
                   agentPubKey,
                   await profilesClient.getAgentProfile(agentPubKey),
