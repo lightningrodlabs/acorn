@@ -33,7 +33,7 @@
     "weave-dev:happ2": "yarn workspace weave-tool dev-weave2",
     "weave-dev:webhapp": "yarn workspace weave-tool dev-weave-webhapp",
     "weave-dev:webhapp2": "yarn workspace weave-tool dev-weave2-webhapp",
-    "weave-hash": "weave hash-webhapp ./weave-tool/acorn.webhapp"
+    "weave-hash": "weave hash-webhapp ./weave-tool/acorn-moss.webhapp"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",
