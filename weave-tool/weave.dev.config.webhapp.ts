@@ -58,7 +58,7 @@ export default defineConfig({
       },
       source: {
         type: 'filesystem',
-        path: './acorn.webhapp',
+        path: './acorn-moss.webhapp',
       },
     },
   ],
