@@ -44,6 +44,12 @@ export default defineConfig({
           registeringAgent: 1,
           joiningAgents: [2],
         },
+        {
+          name: 'kando',
+          instanceName: 'kando',
+          registeringAgent: 1,
+          joiningAgents: [2],
+        },
       ],
     },
   ],
@@ -60,6 +66,19 @@ export default defineConfig({
         type: 'localhost',
         happPath: '../happs/happ/workdir/projects/projects.happ',
         uiPort: 8081,
+      },
+    },
+    {
+      name: 'kando',
+      subtitle: 'kanban boards',
+      description: 'Real-time kanban based on syn',
+      icon: {
+        type: 'https',
+        url: 'https://raw.githubusercontent.com/holochain-apps/kando/main/we_dev/kando_icon.png',
+      },
+      source: {
+        type: 'https',
+        url: 'https://github.com/holochain-apps/kando/releases/download/v0.12.0-rc.1/kando.webhapp',
       },
     },
   ],
