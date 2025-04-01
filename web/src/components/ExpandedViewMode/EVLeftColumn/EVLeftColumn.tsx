@@ -4,6 +4,7 @@ import Typography from '../../Typography/Typography'
 import { ExpandedViewTab } from '../NavEnum'
 
 import './EVLeftColumn.scss'
+import { isWeaveContext } from '@theweave/api'
 
 export type EvLeftColumnProps = {
   outcomeId: string
@@ -51,6 +52,14 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
       text: `Task List (${taskListCount})`,
       icon: 'squares-check.svg',
       tab: ExpandedViewTab.TaskList,
+    })
+  }
+
+  if (isWeaveContext()) {
+    navItems.push({
+      text: `Moss Attachments`,
+      icon: 'attachment.svg',
+      tab: ExpandedViewTab.Attachments,
     })
   }
 

@@ -17,6 +17,7 @@ export type EVMiddleColumnProps = {
   comments: React.ReactElement
   childrenList?: React.ReactElement
   taskList?: React.ReactElement
+  attachments?: React.ReactElement
 }
 
 const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
@@ -26,6 +27,7 @@ const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
   childrenList,
   taskList,
   outcome,
+  attachments,
 }) => {
   // a default in case of loading/transitioning
   const computedScope = outcome ? outcome.computedScope : ComputedScope.Small
@@ -51,6 +53,7 @@ const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
       {activeTab === ExpandedViewTab.Comments && comments}
       {activeTab === ExpandedViewTab.ChildrenList && childrenList}
       {activeTab === ExpandedViewTab.TaskList && taskList}
+      {activeTab === ExpandedViewTab.Attachments && attachments}
     </div>
   )
 }

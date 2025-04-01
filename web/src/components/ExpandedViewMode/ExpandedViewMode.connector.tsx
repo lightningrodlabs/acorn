@@ -19,9 +19,11 @@ import {
 } from '../../types'
 import EvChildren from './EVMiddleColumn/TabContent/EvChildren/EvChildren'
 import EvTaskList from './EVMiddleColumn/TabContent/EvTaskList/EvTaskList'
+import EvAttachments from './EVMiddleColumn/TabContent/EvAttachments/EvAttachements'
 import cleanOutcome from '../../api/cleanOutcome'
 import moment from 'moment'
 import useAppWebsocket from '../../hooks/useAppWebsocket'
+import { isWeaveContext } from '@theweave/api'
 
 function mapStateToProps(
   state: RootState,
@@ -169,6 +171,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   const outcomeContent = outcome ? outcome.content : ''
   let childrenList: React.ReactElement
   let taskList: React.ReactElement
+  let attachments: React.ReactElement
   if (outcome && !('Small' in outcome.scope)) {
     childrenList = (
       <EvChildren
@@ -208,6 +211,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       />
     )
   }
+  attachments = <EvAttachments outcomeContent={outcomeContent} />
 
   // redux connected expanded view components
   const details = (
@@ -255,6 +259,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       outcome={outcome}
       outcomeAndAncestors={outcomeAndAncestors}
       updateOutcome={updateOutcome}
+      attachments={attachments}
     />
   )
 }
