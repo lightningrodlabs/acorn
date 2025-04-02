@@ -1,13 +1,12 @@
-import { AppClient, encodeHashToBase64 } from '@holochain/client'
+import { AppClient, decodeHashFromBase64 } from '@holochain/client'
 import { AppletServices, AssetInfo, RecordInfo, WAL } from '@theweave/api'
-import { getProjectCellIdStrings } from '../projectAppIds'
-import ProjectsZomeApi from '../api/projectsApi'
-import { cellIdFromString } from '../utils'
+
 import { WireRecord } from '../api/hdkCrud'
 import { Outcome } from 'zod-models'
-import { ProjectMeta } from '../types'
-import { WalWrallper } from '../domain/wal'
+import { WalWrapper } from '../domain/wal'
 import { CellIdWrapper } from '../domain/cellId'
+import { AcornState } from './acornState'
+import { ProjectMeta } from '../types'
 
 const appletServices: AppletServices = {
   creatables: {
@@ -32,69 +31,80 @@ const appletServices: AppletServices = {
     if (!recordInfo) {
       throw new Error('Null WAL not supported, must supply a recordInfo')
     }
-    const walWrapper = WalWrallper.fromWal(wal)
-    const projectCellIds = await getProjectCellIdStrings()
-    const projectsZomeApi = new ProjectsZomeApi(appletClient)
-    const projectMetas: [
-      CellIdWrapper,
-      WireRecord<ProjectMeta>
-    ][] = await Promise.all(
-      projectCellIds.map(async (cellId) => {
-        const cellIdWrapper = CellIdWrapper.fromCellIdString(cellId)
-        return [
-          cellIdWrapper,
-          await projectsZomeApi.projectMeta.fetchProjectMeta(
-            cellIdWrapper.getCellId()
-          ),
-        ]
-      })
-    )
+    const walWrapper = WalWrapper.fromWal(wal)
+    const acornState = await AcornState.fromAppClient(appletClient)
+
+    /** assume that no context means it is a project reference */
     if (!walWrapper.hasContext()) {
-      const matchingProjectMeta = projectMetas.find(
-        ([_, projectMeta]) =>
-          projectMeta.entryHash === walWrapper.getHrlRecordHashB64()
+      const matchingProjectMeta = acornState.findProjectMetaByEntryHashB64(
+        walWrapper.getHrlRecordHashB64()
       )
       if (!matchingProjectMeta) {
         throw new Error('No matching project meta found')
       }
       return {
         icon_src: 'hierarchy.svg',
-        name: matchingProjectMeta[1].entry.name,
+        name: matchingProjectMeta.entry.name,
       }
     }
 
-    const allOutcomes: [
-      CellIdWrapper,
-      WireRecord<Outcome>[]
-    ][] = await Promise.all(
-      projectCellIds.map(async (cellId) => {
-        const cellIdWrapper = CellIdWrapper.fromCellIdString(cellId)
-        const outcomes = await projectsZomeApi.outcome.fetch(
-          cellIdWrapper.getCellId(),
-          {
-            All: null,
-          }
-        )
-        return [cellIdWrapper, outcomes]
-      })
+    const matchingOutcome = acornState.findOutcomeByEntryHashB64(
+      walWrapper.getHrlRecordHashB64()
     )
-    for (const [cellIdWrapper, outcomes] of allOutcomes) {
-      const outcome = outcomes.find(
-        (outcome) => outcome.entryHash === encodeHashToBase64(wal.hrl[1])
-      )
-      if (outcome) {
-        const projectMeta = projectMetas.find(
-          ([projectCellId, _]) =>
-            projectCellId.getCellIdString() === cellIdWrapper.getCellIdString()
-        )
-        if (!projectMeta) {
-          throw new Error('No matching project meta found')
-        }
-        return {
-          icon_src: 'outcome.svg',
-          name: `${projectMeta[1].entry.name} - ${outcome.entry.content}`,
-        }
-      }
+    if (!matchingOutcome) {
+      throw new Error('No matching outcome found')
     }
+    const projectMeta = acornState.getProjectMetaByCellIdString(
+      matchingOutcome.cellIdWrapper.getCellIdString()
+    )
+    if (!projectMeta) {
+      throw new Error('No matching project meta found')
+    }
+    return {
+      icon_src: 'outcome.svg',
+      name: `${projectMeta.entry.name}: ${matchingOutcome.outcome.entry.content}`,
+    }
+  },
+
+  search: async (
+    appletClient,
+    appletHash,
+    weaveServices,
+    searchFilter
+  ): Promise<Array<WAL>> => {
+    const acornState = await AcornState.fromAppClient(appletClient)
+    const matchingProjectMetas: {
+      cellIdString: string
+      projectMeta: WireRecord<ProjectMeta>
+    }[] = acornState.searchProjectMetasByText(searchFilter)
+    const matchingOutcomes: {
+      cellIdString: string
+      outcome: WireRecord<Outcome>
+    }[] = acornState.searchOutcomesByText(searchFilter)
+
+    const matchingWals: WAL[] = []
+    for (const { cellIdString, projectMeta } of matchingProjectMetas) {
+      const cellIdWrapper = CellIdWrapper.fromCellIdString(cellIdString)
+      const hrl: WAL = {
+        hrl: [
+          cellIdWrapper.getDnaHash(),
+          decodeHashFromBase64(projectMeta.entryHash),
+        ],
+      }
+      matchingWals.push(hrl)
+    }
+    for (const { cellIdString, outcome } of matchingOutcomes) {
+      const cellIdWrapper = CellIdWrapper.fromCellIdString(cellIdString)
+      const hrl: WAL = {
+        hrl: [
+          cellIdWrapper.getDnaHash(),
+          decodeHashFromBase64(outcome.entryHash),
+        ],
+        context: 'outcome',
+      }
+      matchingWals.push(hrl)
+    }
+
+    return matchingWals
   },
 }
