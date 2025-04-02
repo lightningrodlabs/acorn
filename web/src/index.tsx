@@ -19,6 +19,7 @@ import {
   setWeaveProfilesClient,
 } from './hcWebsockets'
 import { mossInit } from './indexForMoss'
+import { appletServices } from './weave/appletService'
 
 const isWeaveDevMode = () => {
   return process.env.__DEV_MODE__ && !process.env.KANGAROO
@@ -39,7 +40,7 @@ const isWeaveDevMode = () => {
     })()
   } else {
     ;(async () => {
-      const weClient = await WeaveClient.connect()
+      const weClient = await WeaveClient.connect(appletServices)
       setWeaveClient(weClient)
       if (
         weClient.renderInfo.type !== 'applet-view' ||
