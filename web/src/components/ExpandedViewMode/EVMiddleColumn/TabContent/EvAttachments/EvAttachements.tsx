@@ -29,7 +29,7 @@ const EvAttachments: React.FC<EvAttachmentsProps> = ({ outcomeContent }) => {
         })}
       </div>
       <div className="ev-children-add-new-child">
-        <AddAttachment onCreateChildOutcome={async () => {}} />
+        <AddAttachment onAddAttachment={() => {}} />
       </div>
     </div>
   )

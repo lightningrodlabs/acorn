@@ -2,44 +2,32 @@
   margin-top: 0.5rem;
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: center;
   font: 1rem var(--font-family-primary-medium);
   color: var(--text-color-placeholder);
 
-  .checkbox-wrapper {
-    opacity: 0.3;
-    cursor: default;
+  .add-attachment-icon-wrapper {
+    cursor: pointer;
+    
+    .attachment-icon {
+      color: var(--text-color-placeholder);
+      
+      &:hover {
+        color: var(--color-blue);
+      }
+    }
   }
 
-  textarea {
-    resize: none;
-    width: 100%;
-    font: 1rem var(--font-family-primary-medium);
-    color: var(--text-color-primary);
+  .attachment-placeholder-text {
     margin-left: 0.625rem;
-    border: 0;
-    outline: 0;
-    background-color: transparent;
-    -webkit-font-smoothing: antialiased;
-
-    &::placeholder {
-      color: var(--text-color-placeholder);
-    }
+    color: var(--text-color-placeholder);
   }
 
   &.small {
     font: 0.825rem var(--font-family-primary-medium);
-
-    textarea {
-      font: 0.825rem var(--font-family-primary-medium);
-    }
   }
 
   &.large {
     font: 1.25rem var(--font-family-primary-medium);
-
-    textarea {
-      font: 1.25rem var(--font-family-primary-medium);
-    }
   }
 }
