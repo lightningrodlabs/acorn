@@ -1,4 +1,4 @@
-.add-outcome-child-wrapper {
+.add-attachment-wrapper {
   margin-top: 0.5rem;
   display: flex;
   flex-direction: row;
@@ -21,6 +21,7 @@
   .attachment-placeholder-text {
     margin-left: 0.625rem;
     color: var(--text-color-placeholder);
+    cursor: default;
   }
 
   &.small {
