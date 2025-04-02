@@ -13,19 +13,10 @@ const AddAttachment: React.FC<AddAttachmentProps> = ({
 }) => {
   return (
     <div className="add-outcome-child-wrapper">
-      <div 
-        className="add-attachment-icon-wrapper"
-        onClick={onAddAttachment}
-      >
-        <Icon
-          name="plus.svg"
-          size="small"
-          className="attachment-icon"
-        />
+      <div className="add-attachment-icon-wrapper" onClick={onAddAttachment}>
+        <Icon name="plus.svg" size="small" className="attachment-icon" />
       </div>
-      <div className="attachment-placeholder-text">
-        Add an attachment
-      </div>
+      <div className="attachment-placeholder-text">Add an attachment</div>
     </div>
   )
 }
