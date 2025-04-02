@@ -1,11 +1,9 @@
-import React, { useState } from 'react'
-import { ComputedOutcome } from '../../../../../types'
-import { ActionHashB64 } from '../../../../../types/shared'
-import AddOutcomeChildInput from '../../../../AddOutcomeChildInput/AddOutcomeChildInput'
+import React from 'react'
 import EvReadOnlyHeading from '../../../../EvReadOnlyHeading/EvReadOnlyHeading'
 import Icon from '../../../../Icon/Icon'
 import OutcomeListItem from '../../../../OutcomeListItem/OutcomeListItem'
 import './EvAttachments.scss'
+import AddAttachment from './AddAttachment'
 
 export type EvAttachmentsProps = {
   outcomeContent: string
@@ -31,7 +29,7 @@ const EvAttachments: React.FC<EvAttachmentsProps> = ({ outcomeContent }) => {
         })}
       </div>
       <div className="ev-children-add-new-child">
-        <AddOutcomeChildInput onCreateChildOutcome={async () => {}} />
+        <AddAttachment onCreateChildOutcome={async () => {}} />
       </div>
     </div>
   )
