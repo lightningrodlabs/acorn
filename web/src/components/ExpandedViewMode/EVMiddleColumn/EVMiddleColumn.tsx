@@ -11,6 +11,7 @@ import DescendantsAchievementStatus from '../../DescendantsAchievementStatus/Des
 import './EVMiddleColumn.scss'
 
 export type EVMiddleColumnProps = {
+  projectId: string
   activeTab: ExpandedViewTab
   outcome: ComputedOutcome
   details: React.ReactElement
@@ -21,6 +22,7 @@ export type EVMiddleColumnProps = {
 }
 
 const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
+  projectId,
   activeTab,
   details,
   comments,

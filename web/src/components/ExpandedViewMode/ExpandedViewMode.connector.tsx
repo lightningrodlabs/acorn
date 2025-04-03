@@ -211,7 +211,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       />
     )
   }
-  attachments = <EvAttachments outcomeContent={outcomeContent} />
+  attachments = <EvAttachments outcome={outcome} projectId={projectId} />
 
   // redux connected expanded view components
   const details = (

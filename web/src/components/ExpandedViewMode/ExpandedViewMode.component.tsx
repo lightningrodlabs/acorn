@@ -37,6 +37,7 @@ export type ExpandedViewModeProps = ExpandedViewModeOwnProps &
   ExpandedViewModeConnectorProps
 
 const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
+  projectId,
   outcome,
   outcomeAndAncestors,
   outcomeActionHash,
@@ -155,6 +156,7 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
             <EVMiddleColumn
               activeTab={activeTab}
               outcome={outcome}
+              projectId={projectId}
               details={details}
               comments={comments}
               childrenList={childrenList}

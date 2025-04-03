@@ -26,7 +26,7 @@ export class WalWrapper {
     return this.context
   }
   hasContext(): boolean {
-    return this.context !== undefined
+    return this.context !== undefined && this.context !== null
   }
   getHrlDnaHash(): DnaHash {
     return this.hrl[0]
