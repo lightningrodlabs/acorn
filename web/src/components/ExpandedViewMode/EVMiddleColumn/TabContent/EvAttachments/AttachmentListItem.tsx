@@ -15,19 +15,19 @@ const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
   openAsset,
 }) => {
   return (
-    <div className="outcome-list-item">
+    <div className="asset-list-item">
       {/* ID */}
-      <div className="outcome-list-item-id">
+      <div className="asset-list-item-id">
         <Typography style="caption3">{}</Typography>
       </div>
 
-      <div className="outcome-list-item-icon-wrapper uncertain">
+      <div className="asset-list-item-icon-wrapper uncertain">
         <Icon name="uncertain.svg" className="not-hoverable uncertain" />
       </div>
 
       {/* Outcome statement text */}
       <div
-        className="outcome-list-item-statement"
+        className="asset-list-item-statement"
         title={assetMeta.assetInfo.name}
       >
         <Typography style="body1">{assetMeta.assetInfo.name}</Typography>
@@ -36,7 +36,7 @@ const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
       {/* on click navigate to the Expanded View mode for that Outcome */}
       {/* Visible only while hovered on this child Outcome */}
       <div
-        className="outcome-list-item-switch-button"
+        className="asset-list-item-switch-button"
         onClick={() => {
           openAsset(assetMeta.wal)
         }}

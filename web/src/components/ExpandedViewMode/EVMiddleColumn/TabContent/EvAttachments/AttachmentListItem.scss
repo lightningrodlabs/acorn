@@ -1,4 +1,4 @@
-.outcome-list-item {
+.asset-list-item {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -10,17 +10,17 @@
     &:hover {
       background-color: var(--bg-color-hover);
   
-      .outcome-list-item-switch-button {
+      .asset-list-item-switch-button {
         display: flex;
       }
     }
   
-    .outcome-list-item-id {
+    .asset-list-item-id {
       margin-right: 0.5rem;
       width: 3.5rem;
     }
   
-    .outcome-list-item-icon-wrapper {
+    .asset-list-item-icon-wrapper {
       margin-right: 0.325rem;
       display: flex;
       flex-direction: row;
@@ -44,7 +44,7 @@
       }
     }
   
-    .outcome-list-item-statement {
+    .asset-list-item-statement {
       transition: 0.2s all ease;
       overflow: hidden;
       flex: 1;
@@ -56,7 +56,7 @@
       }
     }
   
-    .outcome-list-item-switch-button {
+    .asset-list-item-switch-button {
       display: none;
       cursor: pointer;
       background-color: var(--bg-color-secondary);
