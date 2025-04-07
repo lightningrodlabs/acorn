@@ -14,26 +14,46 @@ import AttachmentListItem from './AttachmentListItem'
 export type EvAttachmentsProps = {
   outcome: ComputedOutcome
   projectId: string
+  attachmentsInfo?: AssetMeta[]
+  addAttachment?: () => Promise<void>
 }
 
 const EvAttachments: React.FC<EvAttachmentsProps> = ({
   outcome,
   projectId,
+  attachmentsInfo: propAttachmentsInfo,
+  addAttachment: propAddAttachment,
 }) => {
   const weaveClient = getWeaveClient()
-  const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
-  const thisWal: WAL = {
-    hrl: [cellIdWrapper.getDnaHash(), decodeHashFromBase64(outcome.actionHash)],
-    context: 'outcome',
+  
+  // Use props if provided, otherwise fetch locally
+  let thisWal: WAL | null = null
+  let localAttachmentsInfo: AssetMeta[] = []
+  
+  if (!propAttachmentsInfo) {
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
+    thisWal = {
+      hrl: [cellIdWrapper.getDnaHash(), decodeHashFromBase64(outcome.actionHash)],
+      context: 'outcome',
+    }
+    const { attachmentsInfo } = useAttachments(thisWal)
+    localAttachmentsInfo = attachmentsInfo
   }
-
-  const { attachmentsInfo } = useAttachments(thisWal)
+  
+  // Use either the props or locally fetched data
+  const attachmentsInfo = propAttachmentsInfo || localAttachmentsInfo
+  
   const addAttachment = async () => {
-    const wal = await weaveClient.assets.userSelectAsset()
-    if (wal) {
-      await weaveClient.assets.addAssetRelation(thisWal, wal)
+    if (propAddAttachment) {
+      await propAddAttachment()
+    } else if (thisWal) {
+      const wal = await weaveClient.assets.userSelectAsset()
+      if (wal) {
+        await weaveClient.assets.addAssetRelation(thisWal, wal)
+      }
     }
   }
+  
   const removeAttachment = async (relationHash: EntryHash) => {
     await weaveClient.assets.removeAssetRelation(relationHash)
   }
@@ -58,6 +78,7 @@ const EvAttachments: React.FC<EvAttachmentsProps> = ({
                 openAsset={async (wal) => {
                   await weaveClient.openAsset(wal)
                 }}
+                removeAttachment={removeAttachment}
               />
             )
           })}

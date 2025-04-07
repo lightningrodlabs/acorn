@@ -81,29 +81,26 @@
       }
     }
     
-    .asset-list-item-switch-button {
-      display: none;
+    .asset-list-item-delete-button {
       cursor: pointer;
-      background-color: var(--bg-color-secondary);
-      position: absolute;
-      padding: 0.325rem;
-      right: 0.5rem;
-      border-radius: 0.25rem;
-  
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 0.5rem;
+      
       &:hover {
-        background-color: var(--bg-color-secondary);
         .icon .inner-icon {
-          background-color: var(--text-color-link);
+          background-color: var(--text-color-destructive);
         }
       }
-  
+      
       .icon {
-        height: 1.5rem;
-        width: 1.5rem;
-  
+        height: 1.25rem;
+        width: 1.25rem;
+        
         .inner-icon {
           &:hover {
-            background-color: var(--text-color-link);
+            background-color: var(--text-color-destructive);
           }
         }
       }

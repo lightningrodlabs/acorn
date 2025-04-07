@@ -4,15 +4,18 @@ import { WAL } from '@theweave/api'
 import Typography from '../../../../Typography/Typography'
 import Icon from '../../../../Icon/Icon'
 import { AssetMeta } from '../../../../../hooks/useAttachments'
+import { EntryHash } from '@holochain/client'
 
 export type AttachmentListItemProps = {
   assetMeta: AssetMeta
   openAsset: (wal: WAL) => void
+  removeAttachment: (relationHash: EntryHash) => Promise<void>
 }
 
 const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
   assetMeta,
   openAsset,
+  removeAttachment,
 }) => {
   return (
     <div 
@@ -49,20 +52,20 @@ const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
         />
       </div>
 
-      {/* Open Asset Button - Visible only while hovered */}
+      {/* Delete Asset Button */}
       <div
-        className="asset-list-item-switch-button"
+        className="asset-list-item-delete-button"
         onClick={(e) => {
           e.stopPropagation();
-          openAsset(assetMeta.wal)
+          removeAttachment(assetMeta.relationHash);
         }}
       >
         <Icon
-          name="enter.svg"
+          name="delete-bin.svg"
           size="small"
           className="light-grey"
           withTooltip
-          tooltipText="Open Asset"
+          tooltipText="Remove Attachment"
         />
       </div>
     </div>
