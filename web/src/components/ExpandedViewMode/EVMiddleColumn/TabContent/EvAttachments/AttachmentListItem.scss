@@ -15,22 +15,6 @@
       }
     }
   
-    .asset-list-item-applet-icon {
-      margin-right: 0.5rem;
-      width: 1.5rem;
-      height: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        border-radius: 0.25rem;
-      }
-    }
-  
     .asset-list-item-icon-wrapper {
       margin-right: 0.5rem;
       display: flex;
@@ -79,6 +63,23 @@
       }
     }
   
+    .asset-list-item-applet-icon {
+      margin-right: 0.5rem;
+      margin-left: 0.5rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 0.25rem;
+      }
+    }
+    
     .asset-list-item-switch-button {
       display: none;
       cursor: pointer;

@@ -16,14 +16,6 @@ const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
 }) => {
   return (
     <div className="asset-list-item">
-      {/* Applet Icon */}
-      <div className="asset-list-item-applet-icon">
-        <img 
-          src={assetMeta.appletInfo.appletIcon} 
-          alt={`${assetMeta.appletInfo.appletName} icon`}
-        />
-      </div>
-
       {/* Asset Icon */}
       <div className="asset-list-item-icon-wrapper">
         <img 
@@ -42,6 +34,14 @@ const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
         <Typography style="caption3" className="applet-name">
           {assetMeta.appletInfo.appletName}
         </Typography>
+      </div>
+
+      {/* Applet Icon */}
+      <div className="asset-list-item-applet-icon">
+        <img 
+          src={assetMeta.appletInfo.appletIcon} 
+          alt={`${assetMeta.appletInfo.appletName} icon`}
+        />
       </div>
 
       {/* Open Asset Button - Visible only while hovered */}
