@@ -19,7 +19,7 @@ import {
 } from '../../types'
 import EvChildren from './EVMiddleColumn/TabContent/EvChildren/EvChildren'
 import EvTaskList from './EVMiddleColumn/TabContent/EvTaskList/EvTaskList'
-import EvAttachments from './EVMiddleColumn/TabContent/EvAttachments/EvAttachements'
+import EvAttachments from './EVMiddleColumn/TabContent/EvAttachments/EvAttachments'
 import cleanOutcome from '../../api/cleanOutcome'
 import moment from 'moment'
 import useAppWebsocket from '../../hooks/useAppWebsocket'
