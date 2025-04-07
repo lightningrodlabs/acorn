@@ -15,7 +15,12 @@ const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
   openAsset,
 }) => {
   return (
-    <div className="asset-list-item">
+    <div 
+      className="asset-list-item"
+      onClick={() => {
+        openAsset(assetMeta.wal)
+      }}
+    >
       {/* Asset Icon */}
       <div className="asset-list-item-icon-wrapper">
         <img 
@@ -47,7 +52,8 @@ const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
       {/* Open Asset Button - Visible only while hovered */}
       <div
         className="asset-list-item-switch-button"
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
           openAsset(assetMeta.wal)
         }}
       >

@@ -6,6 +6,7 @@
     border-radius: 0.5rem;
     transition: 0.2s background-color ease;
     position: relative;
+    cursor: pointer;
   
     &:hover {
       background-color: var(--bg-color-hover);
