@@ -1,7 +1,6 @@
 import React from 'react'
 import EvReadOnlyHeading from '../../../../EvReadOnlyHeading/EvReadOnlyHeading'
 import Icon from '../../../../Icon/Icon'
-import OutcomeListItem from '../../../../OutcomeListItem/OutcomeListItem'
 import './EvAttachments.scss'
 import AddAttachment from './AddAttachment'
 import { getWeaveClient } from '../../../../../hcWebsockets'
@@ -10,6 +9,7 @@ import { WAL } from '@theweave/api'
 import { CellIdWrapper } from '../../../../../domain/cellId'
 import { decodeHashFromBase64 } from '@holochain/client'
 import { useAttachments } from '../../../../../hooks/useAttachments'
+import AttachmentListItem from './AttachmentListItem'
 
 export type EvAttachmentsProps = {
   outcome: ComputedOutcome
@@ -27,13 +27,11 @@ const EvAttachments: React.FC<EvAttachmentsProps> = ({
     context: 'outcome',
   }
 
-  const { attachments } = useAttachments(thisWal)
-  console.log('attachments', attachments)
+  const { attachmentsInfo } = useAttachments(thisWal)
   const addAttachment = async () => {
     const wal = await weaveClient.assets.userSelectAsset()
     if (wal) {
       await weaveClient.assets.addAssetRelation(thisWal, wal)
-      weaveClient.assets.assetStore(wal)
     }
   }
   return (
@@ -43,10 +41,18 @@ const EvAttachments: React.FC<EvAttachmentsProps> = ({
         overviewIcon={<Icon name="attachment.svg" className="not-hoverable" />}
         overviewText={`attachments`}
       />
-      {attachments && (
+      {attachmentsInfo && (
         <div className="ev-children-view-outcome-list">
-          {attachments.map((wal) => {
-            return <div>{JSON.stringify(wal.hrl)}</div>
+          {attachmentsInfo.map((assetInfo, i) => {
+            return (
+              <AttachmentListItem
+                key={i}
+                assetMeta={assetInfo}
+                openAsset={async (wal) => {
+                  await weaveClient.openAsset(wal)
+                }}
+              />
+            )
           })}
         </div>
       )}

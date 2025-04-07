@@ -1,9 +1,14 @@
 import { useState, useRef } from 'react'
-import { WAL } from '@theweave/api'
+import { AssetLocationAndInfo, WAL } from '@theweave/api'
 import { getWeaveClient } from '../hcWebsockets'
 
+export interface AssetMeta extends AssetLocationAndInfo {
+  wal: WAL
+}
+
 export function useAttachments(wal: WAL) {
-  const [attachments, setAttachments] = useState<WAL[] | null>(null)
+  const [attachmentWALs, setAttachmentWALs] = useState<WAL[] | null>(null)
+  const [attachmentsInfo, setAttachmentsInfo] = useState<AssetMeta[]>([])
   const [error, setError] = useState(null)
   const subscriptionRef = useRef<any>(null)
 
@@ -18,12 +23,22 @@ export function useAttachments(wal: WAL) {
     try {
       subscriptionRef.current = weaveClient.assets
         .assetStore(wal)
-        .subscribe((store) => {
+        .subscribe(async (store) => {
           if (store.status === 'complete') {
             const value = store.value
             const links = value.linkedFrom
             const wals = links.map((link) => link.wal)
-            setAttachments(wals)
+            setAttachmentWALs(wals)
+            const assetInfos: AssetMeta[] = await Promise.all(
+              wals.map(async (wal) => {
+                const assetInfo = await weaveClient.assets.assetInfo(wal)
+                return {
+                  wal,
+                  ...assetInfo,
+                }
+              })
+            )
+            setAttachmentsInfo(assetInfos)
           }
         })
     } catch (err) {
@@ -45,5 +60,5 @@ export function useAttachments(wal: WAL) {
   }
 
   // Return the cleanup function for manual control
-  return { attachments, error, cleanup }
+  return { attachmentWALs, attachmentsInfo, error, cleanup }
 }
