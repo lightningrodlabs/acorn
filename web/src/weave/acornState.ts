@@ -1,4 +1,4 @@
-import { AppClient, EntryHashB64 } from '@holochain/client'
+import { AppClient, ActionHashB64 } from '@holochain/client'
 import { CellIdWrapper } from '../domain/cellId'
 import { Outcome, ProjectMeta } from '../types'
 import { getProjectCellIdStrings } from '../projectAppIds'
@@ -65,9 +65,9 @@ export class AcornState {
     return new AcornState(projectCellIdWrappers, projectMetas, outcomes)
   }
 
-  findProjectMetaByEntryHashB64(entryHashB64: EntryHashB64) {
+  findProjectMetaByActionHashB64(actionHashB64: ActionHashB64) {
     for (const projectMeta of this.projectMetas.values()) {
-      if (projectMeta.entryHash === entryHashB64) {
+      if (projectMeta.actionHash === actionHashB64) {
         return projectMeta
       }
     }
@@ -80,12 +80,12 @@ export class AcornState {
     }
     return null
   }
-  findOutcomeByEntryHashB64(
-    entryHashB64: EntryHashB64
+  findOutcomeByActionHashB64(
+    actionHashB64: ActionHashB64
   ): { cellIdWrapper: CellIdWrapper; outcome: WireRecord<Outcome> } | null {
     for (const [cellIdString, outcomes] of this.outcomes) {
       const outcome = outcomes.find(
-        (outcome) => outcome.entryHash === entryHashB64
+        (outcome) => outcome.actionHash === actionHashB64
       )
       if (outcome) {
         return {

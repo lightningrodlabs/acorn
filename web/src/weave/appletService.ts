@@ -39,7 +39,7 @@ export const appletServices: AppletServices = {
 
     /** assume that no context means it is a project reference */
     if (!walWrapper.hasContext()) {
-      const matchingProjectMeta = acornState.findProjectMetaByEntryHashB64(
+      const matchingProjectMeta = acornState.findProjectMetaByActionHashB64(
         walWrapper.getHrlRecordHashB64()
       )
       if (!matchingProjectMeta) {
@@ -51,7 +51,7 @@ export const appletServices: AppletServices = {
       }
     }
 
-    const matchingOutcome = acornState.findOutcomeByEntryHashB64(
+    const matchingOutcome = acornState.findOutcomeByActionHashB64(
       walWrapper.getHrlRecordHashB64()
     )
     if (!matchingOutcome) {
@@ -91,7 +91,7 @@ export const appletServices: AppletServices = {
       const hrl: WAL = {
         hrl: [
           cellIdWrapper.getDnaHash(),
-          decodeHashFromBase64(projectMeta.entryHash),
+          decodeHashFromBase64(projectMeta.actionHash),
         ],
       }
       matchingWals.push(hrl)
@@ -101,7 +101,7 @@ export const appletServices: AppletServices = {
       const hrl: WAL = {
         hrl: [
           cellIdWrapper.getDnaHash(),
-          decodeHashFromBase64(outcome.entryHash),
+          decodeHashFromBase64(outcome.actionHash),
         ],
         context: 'outcome',
       }
