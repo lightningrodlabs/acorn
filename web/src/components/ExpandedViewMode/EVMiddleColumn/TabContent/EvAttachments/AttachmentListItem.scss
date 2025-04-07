@@ -15,22 +15,38 @@
       }
     }
   
-    .asset-list-item-id {
+    .asset-list-item-applet-icon {
       margin-right: 0.5rem;
-      width: 3.5rem;
+      width: 1.5rem;
+      height: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 0.25rem;
+      }
     }
   
     .asset-list-item-icon-wrapper {
-      margin-right: 0.325rem;
+      margin-right: 0.5rem;
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: center;
       width: 1.25rem;
       height: 1.25rem;
-      // aspect-ratio: 1/1;
       padding: 0.125rem;
-  
+      
+      .asset-icon {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      
       &.progress {
         .progress-ring {
           scale: 1.125;
@@ -44,15 +60,22 @@
       }
     }
   
-    .asset-list-item-statement {
+    .asset-list-item-info {
       transition: 0.2s all ease;
       overflow: hidden;
       flex: 1;
+      display: flex;
+      flex-direction: column;
   
       div {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+      }
+      
+      .applet-name {
+        color: var(--text-color-secondary);
+        margin-top: 0.125rem;
       }
     }
   

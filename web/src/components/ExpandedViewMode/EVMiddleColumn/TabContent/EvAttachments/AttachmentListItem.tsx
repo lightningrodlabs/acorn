@@ -16,25 +16,35 @@ const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
 }) => {
   return (
     <div className="asset-list-item">
-      {/* ID */}
-      <div className="asset-list-item-id">
-        <Typography style="caption3">{}</Typography>
+      {/* Applet Icon */}
+      <div className="asset-list-item-applet-icon">
+        <img 
+          src={assetMeta.appletInfo.appletIcon} 
+          alt={`${assetMeta.appletInfo.appletName} icon`}
+        />
       </div>
 
-      <div className="asset-list-item-icon-wrapper uncertain">
-        <Icon name="uncertain.svg" className="not-hoverable uncertain" />
+      {/* Asset Icon */}
+      <div className="asset-list-item-icon-wrapper">
+        <img 
+          src={assetMeta.assetInfo.icon_src} 
+          alt={`${assetMeta.assetInfo.name} icon`}
+          className="asset-icon"
+        />
       </div>
 
-      {/* Outcome statement text */}
+      {/* Asset and Applet Info */}
       <div
-        className="asset-list-item-statement"
-        title={assetMeta.assetInfo.name}
+        className="asset-list-item-info"
+        title={`${assetMeta.assetInfo.name} (${assetMeta.appletInfo.appletName})`}
       >
         <Typography style="body1">{assetMeta.assetInfo.name}</Typography>
+        <Typography style="caption3" className="applet-name">
+          {assetMeta.appletInfo.appletName}
+        </Typography>
       </div>
 
-      {/* on click navigate to the Expanded View mode for that Outcome */}
-      {/* Visible only while hovered on this child Outcome */}
+      {/* Open Asset Button - Visible only while hovered */}
       <div
         className="asset-list-item-switch-button"
         onClick={() => {
