@@ -1,9 +1,10 @@
 import { useState, useRef } from 'react'
-import { AssetLocationAndInfo, WAL } from '@theweave/api'
+import { AppletInfo, AssetLocationAndInfo, WAL } from '@theweave/api'
 import { getWeaveClient } from '../hcWebsockets'
 
-export interface AssetMeta extends AssetLocationAndInfo {
+export type AssetMeta = AssetLocationAndInfo & {
   wal: WAL
+  appletInfo: AppletInfo
 }
 
 export function useAttachments(wal: WAL) {
@@ -32,9 +33,13 @@ export function useAttachments(wal: WAL) {
             const assetInfos: AssetMeta[] = await Promise.all(
               wals.map(async (wal) => {
                 const assetInfo = await weaveClient.assets.assetInfo(wal)
+                const appletInfo = await weaveClient.appletInfo(
+                  assetInfo.appletHash
+                )
                 return {
                   wal,
                   ...assetInfo,
+                  appletInfo,
                 }
               })
             )

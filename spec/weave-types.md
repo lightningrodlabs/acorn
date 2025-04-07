@@ -12,4 +12,11 @@ export type AssetInfo = {
     name: string;
     icon_src: string;
 };
+
+export type AppletInfo = {
+    appletBundleId: string;
+    appletName: string;
+    appletIcon: string;
+    groupsHashes: Array<DnaHash>;
+};
 ```
