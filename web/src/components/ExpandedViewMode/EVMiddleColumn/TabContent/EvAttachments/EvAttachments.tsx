@@ -7,7 +7,7 @@ import { getWeaveClient } from '../../../../../hcWebsockets'
 import { ComputedOutcome } from '../../../../../types'
 import { WAL } from '@theweave/api'
 import { CellIdWrapper } from '../../../../../domain/cellId'
-import { decodeHashFromBase64 } from '@holochain/client'
+import { decodeHashFromBase64, EntryHash } from '@holochain/client'
 import { useAttachments } from '../../../../../hooks/useAttachments'
 import AttachmentListItem from './AttachmentListItem'
 
@@ -33,6 +33,9 @@ const EvAttachments: React.FC<EvAttachmentsProps> = ({
     if (wal) {
       await weaveClient.assets.addAssetRelation(thisWal, wal)
     }
+  }
+  const removeAttachment = async (relationHash: EntryHash) => {
+    await weaveClient.assets.removeAssetRelation(relationHash)
   }
   return (
     <div className="ev-children-view-wrapper">

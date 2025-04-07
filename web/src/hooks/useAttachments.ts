@@ -1,10 +1,12 @@
 import { useState, useRef } from 'react'
 import { AppletInfo, AssetLocationAndInfo, WAL } from '@theweave/api'
 import { getWeaveClient } from '../hcWebsockets'
+import { EntryHash } from '@holochain/client'
 
 export type AssetMeta = AssetLocationAndInfo & {
   wal: WAL
   appletInfo: AppletInfo
+  relationHash: EntryHash
 }
 
 export function useAttachments(wal: WAL) {
@@ -31,8 +33,8 @@ export function useAttachments(wal: WAL) {
             const wals = links.map((link) => link.wal)
             setAttachmentWALs(wals)
             const assetInfos: AssetMeta[] = await Promise.all(
-              wals.map(async (wal) => {
-                const assetInfo = await weaveClient.assets.assetInfo(wal)
+              links.map(async (link) => {
+                const assetInfo = await weaveClient.assets.assetInfo(link.wal)
                 const appletInfo = await weaveClient.appletInfo(
                   assetInfo.appletHash
                 )
@@ -40,6 +42,7 @@ export function useAttachments(wal: WAL) {
                   wal,
                   ...assetInfo,
                   appletInfo,
+                  relationHash: link.relationHash,
                 }
               })
             )
