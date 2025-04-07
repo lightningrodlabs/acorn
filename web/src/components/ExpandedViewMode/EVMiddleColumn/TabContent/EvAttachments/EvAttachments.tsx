@@ -39,7 +39,11 @@ const EvAttachments: React.FC<EvAttachmentsProps> = ({
       <EvReadOnlyHeading
         headingText={outcome.content}
         overviewIcon={<Icon name="attachment.svg" className="not-hoverable" />}
-        overviewText={`attachments`}
+        overviewText={
+          attachmentsInfo.length === 1
+            ? `1 attachment`
+            : `${attachmentsInfo.length} attachments`
+        }
       />
       {attachmentsInfo && (
         <div className="ev-children-view-outcome-list">
