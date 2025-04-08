@@ -33,13 +33,13 @@ export function useAttachments({
       const weaveClient = getWeaveClient()
 
       // Clean up any existing subscription before creating a new one
-      if (subscriptionRef.current) {
+      if (subscriptionRef.current && typeof subscriptionRef.current.unsubscribe === 'function') {
         subscriptionRef.current.unsubscribe()
-        subscriptionRef.current = null
       }
+      subscriptionRef.current = null
 
       try {
-        subscriptionRef.current = weaveClient.assets
+        const subscription = weaveClient.assets
           .assetStore(wal)
           .subscribe(async (store) => {
             if (store.status === 'complete') {
@@ -64,6 +64,9 @@ export function useAttachments({
               setAttachmentsInfo(assetInfos)
             }
           })
+        
+        // Store the subscription object properly
+        subscriptionRef.current = subscription
       } catch (err) {
         setError(err)
       }
@@ -73,10 +76,10 @@ export function useAttachments({
 
     // Cleanup function to unsubscribe when the component unmounts or dependencies change
     return () => {
-      if (subscriptionRef.current) {
+      if (subscriptionRef.current && typeof subscriptionRef.current.unsubscribe === 'function') {
         subscriptionRef.current.unsubscribe()
-        subscriptionRef.current = null
       }
+      subscriptionRef.current = null
     }
   }, [projectId, outcome.actionHash]) // Dependencies that should trigger a refetch
 
