@@ -5,10 +5,8 @@ import './EvAttachments.scss'
 import AddAttachment from './AddAttachment'
 import { getWeaveClient } from '../../../../../hcWebsockets'
 import { ComputedOutcome } from '../../../../../types'
-import { WAL } from '@theweave/api'
-import { CellIdWrapper } from '../../../../../domain/cellId'
-import { decodeHashFromBase64, EntryHash } from '@holochain/client'
-import { AssetMeta, useAttachments } from '../../../../../hooks/useAttachments'
+import { EntryHash } from '@holochain/client'
+import { AssetMeta } from '../../../../../hooks/useAttachments'
 import AttachmentListItem from './AttachmentListItem'
 
 export type EvAttachmentsProps = {
@@ -26,34 +24,12 @@ const EvAttachments: React.FC<EvAttachmentsProps> = ({
 }) => {
   const weaveClient = getWeaveClient()
 
-  // Use props if provided, otherwise fetch locally
-  let thisWal: WAL | null = null
-  let localAttachmentsInfo: AssetMeta[] = []
-
-  if (!propAttachmentsInfo) {
-    const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
-    thisWal = {
-      hrl: [
-        cellIdWrapper.getDnaHash(),
-        decodeHashFromBase64(outcome.actionHash),
-      ],
-      context: 'outcome',
-    }
-    const { attachmentsInfo } = useAttachments(thisWal)
-    localAttachmentsInfo = attachmentsInfo
-  }
-
-  // Use either the props or locally fetched data
-  const attachmentsInfo = propAttachmentsInfo || localAttachmentsInfo
+  // Use the attachments info from props
+  const attachmentsInfo = propAttachmentsInfo || []
 
   const addAttachment = async () => {
     if (propAddAttachment) {
       await propAddAttachment()
-    } else if (thisWal) {
-      const wal = await weaveClient.assets.userSelectAsset()
-      if (wal) {
-        await weaveClient.assets.addAssetRelation(thisWal, wal)
-      }
     }
   }
 
