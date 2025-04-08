@@ -18,7 +18,7 @@ const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
   removeAttachment,
 }) => {
   return (
-    <div 
+    <div
       className="asset-list-item"
       onClick={() => {
         openAsset(assetMeta.wal)
@@ -26,8 +26,8 @@ const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
     >
       {/* Asset Icon */}
       <div className="asset-list-item-icon-wrapper">
-        <img 
-          src={assetMeta.assetInfo.icon_src} 
+        <img
+          src={assetMeta.assetInfo.icon_src}
           alt={`${assetMeta.assetInfo.name} icon`}
           className="asset-icon"
         />
@@ -46,8 +46,8 @@ const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
 
       {/* Applet Icon */}
       <div className="asset-list-item-applet-icon">
-        <img 
-          src={assetMeta.appletInfo.appletIcon} 
+        <img
+          src={assetMeta.appletInfo.appletIcon}
           alt={`${assetMeta.appletInfo.appletName} icon`}
         />
       </div>
@@ -56,8 +56,8 @@ const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
       <div
         className="asset-list-item-delete-button"
         onClick={(e) => {
-          e.stopPropagation();
-          removeAttachment(assetMeta.relationHash);
+          e.stopPropagation()
+          removeAttachment(assetMeta.relationHash)
         }}
       >
         <Icon

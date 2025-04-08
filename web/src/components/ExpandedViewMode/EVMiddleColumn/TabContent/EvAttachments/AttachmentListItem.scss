@@ -90,7 +90,7 @@
       
       &:hover {
         .icon .inner-icon {
-          background-color: var(--text-color-destructive);
+          background-color: var(--text-color-link);
         }
       }
       
@@ -100,7 +100,7 @@
         
         .inner-icon {
           &:hover {
-            background-color: var(--text-color-destructive);
+            background-color: var(--text-color-link);
           }
         }
       }
