@@ -1,7 +1,9 @@
 import { useState, useRef } from 'react'
 import { AppletInfo, AssetLocationAndInfo, WAL } from '@theweave/api'
 import { getWeaveClient } from '../hcWebsockets'
-import { EntryHash } from '@holochain/client'
+import { decodeHashFromBase64, EntryHash } from '@holochain/client'
+import { CellIdWrapper } from '../domain/cellId'
+import { ComputedOutcome } from '../types'
 
 export type AssetMeta = AssetLocationAndInfo & {
   wal: WAL
@@ -9,7 +11,18 @@ export type AssetMeta = AssetLocationAndInfo & {
   relationHash: EntryHash
 }
 
-export function useAttachments(wal: WAL) {
+export function useAttachments({
+  projectId,
+  outcome,
+}: {
+  projectId: string
+  outcome: ComputedOutcome
+}) {
+  const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
+  const wal: WAL = {
+    hrl: [cellIdWrapper.getDnaHash(), decodeHashFromBase64(outcome.actionHash)],
+    context: 'outcome',
+  }
   const [attachmentWALs, setAttachmentWALs] = useState<WAL[] | null>(null)
   const [attachmentsInfo, setAttachmentsInfo] = useState<AssetMeta[]>([])
   const [error, setError] = useState(null)

@@ -8,7 +8,7 @@ import { ComputedOutcome } from '../../../../../types'
 import { WAL } from '@theweave/api'
 import { CellIdWrapper } from '../../../../../domain/cellId'
 import { decodeHashFromBase64, EntryHash } from '@holochain/client'
-import { useAttachments } from '../../../../../hooks/useAttachments'
+import { AssetMeta, useAttachments } from '../../../../../hooks/useAttachments'
 import AttachmentListItem from './AttachmentListItem'
 
 export type EvAttachmentsProps = {
@@ -25,24 +25,27 @@ const EvAttachments: React.FC<EvAttachmentsProps> = ({
   addAttachment: propAddAttachment,
 }) => {
   const weaveClient = getWeaveClient()
-  
+
   // Use props if provided, otherwise fetch locally
   let thisWal: WAL | null = null
   let localAttachmentsInfo: AssetMeta[] = []
-  
+
   if (!propAttachmentsInfo) {
     const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
     thisWal = {
-      hrl: [cellIdWrapper.getDnaHash(), decodeHashFromBase64(outcome.actionHash)],
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        decodeHashFromBase64(outcome.actionHash),
+      ],
       context: 'outcome',
     }
     const { attachmentsInfo } = useAttachments(thisWal)
     localAttachmentsInfo = attachmentsInfo
   }
-  
+
   // Use either the props or locally fetched data
   const attachmentsInfo = propAttachmentsInfo || localAttachmentsInfo
-  
+
   const addAttachment = async () => {
     if (propAddAttachment) {
       await propAddAttachment()
@@ -53,8 +56,9 @@ const EvAttachments: React.FC<EvAttachmentsProps> = ({
       }
     }
   }
-  
+
   const removeAttachment = async (relationHash: EntryHash) => {
+    console.log('Removing attachment with relation hash:', relationHash)
     await weaveClient.assets.removeAssetRelation(relationHash)
   }
   return (
