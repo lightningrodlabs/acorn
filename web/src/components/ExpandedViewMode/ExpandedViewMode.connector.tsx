@@ -82,18 +82,28 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   updateOutcome,
   createOutcomeWithConnection,
 }) => {
-  const [attachmentsInfo, setAttachmentsInfo] = useState([])
+  // Always call the hook, but only with valid data when outcome exists
+  const { attachmentsInfo } = useAttachments({
+    projectId,
+    outcome: outcome || { actionHash: '' } as ComputedOutcome,
+  })
   
-  // Only call useAttachments when outcome is available
-  useEffect(() => {
+  // Function to add attachments
+  const addAttachment = async () => {
     if (outcome) {
-      const { attachmentsInfo: fetchedAttachments } = useAttachments({
-        projectId,
-        outcome,
-      })
-      setAttachmentsInfo(fetchedAttachments)
+      const weaveClient = getWeaveClient()
+      const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
+      const thisWal: WAL = {
+        hrl: [cellIdWrapper.getDnaHash(), decodeHashFromBase64(outcome.actionHash)],
+        context: 'outcome',
+      }
+      
+      const wal = await weaveClient.assets.userSelectAsset()
+      if (wal) {
+        await weaveClient.assets.addAssetRelation(thisWal, wal)
+      }
     }
-  }, [outcome, projectId])
+  }
   // the live editor state
   const [content, setContent] = useState('')
   // the live github link editor state
