@@ -10,6 +10,7 @@ export type DescendantsAchievementStatusProps = {
   computedScope: ComputedScope
   computedAchievementStatus: ComputedAchievementStatus
   hideMoreInfo?: boolean
+  attachmentsCount?: number
 }
 
 const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> = ({
@@ -17,6 +18,7 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
   computedScope,
   computedAchievementStatus,
   hideMoreInfo,
+  attachmentsCount = 0,
 }) => {
   return (
     <div className="descendants-achievement-status">
@@ -130,6 +132,16 @@ const DescendantsAchievementStatus: React.FC<DescendantsAchievementStatusProps> 
             </div>
           )}
         </>
+      )}
+
+      {/* Attachments indicator */}
+      {attachmentsCount > 0 && (
+        <div className="descendants-wrapper attachments">
+          <div className="descendants-scope-wrapper">
+            <Icon name="attachment.svg" />
+          </div>
+          {attachmentsCount.toString()}
+        </div>
       )}
 
       {/* More info icon */}

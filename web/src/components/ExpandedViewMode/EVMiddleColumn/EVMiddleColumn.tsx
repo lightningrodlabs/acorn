@@ -44,12 +44,17 @@ const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
         simple: ComputedSimpleAchievementStatus.NotAchieved,
       }
   const childrenCount = outcome ? outcome.children.length : 0
+  // Get attachments count from the attachments component if available
+  const attachmentsCount = attachments ? 
+    (attachments.props.attachmentsInfo ? attachments.props.attachmentsInfo.length : 0) : 0
+  
   return (
     <div className="ev-middle-column-wrapper">
       <DescendantsAchievementStatus
         childrenCount={childrenCount}
         computedScope={computedScope}
         computedAchievementStatus={computedAchievementStatus}
+        attachmentsCount={attachmentsCount}
       />
       {activeTab === ExpandedViewTab.Details && details}
       {activeTab === ExpandedViewTab.Comments && comments}

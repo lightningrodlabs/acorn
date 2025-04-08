@@ -59,6 +59,12 @@
         background-color: var(--color-pumpkin);
       }
     }
+    
+    &.attachments {
+      .descendants-scope-wrapper .icon .inner-icon {
+        background-color: var(--text-color-placeholder);
+      }
+    }
   }
 }
 
