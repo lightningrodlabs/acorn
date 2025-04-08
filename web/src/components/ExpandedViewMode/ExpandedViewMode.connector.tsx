@@ -23,7 +23,10 @@ import EvAttachments from './EVMiddleColumn/TabContent/EvAttachments/EvAttachmen
 import cleanOutcome from '../../api/cleanOutcome'
 import moment from 'moment'
 import useAppWebsocket from '../../hooks/useAppWebsocket'
-import { useAttachments } from '../../hooks/useAttachments'
+import { useAttachments, AssetMeta } from '../../hooks/useAttachments'
+import { getWeaveClient } from '../../hcWebsockets'
+import { WAL } from '@theweave/api'
+import { decodeHashFromBase64 } from '@holochain/client'
 
 function mapStateToProps(
   state: RootState,
@@ -79,12 +82,18 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   updateOutcome,
   createOutcomeWithConnection,
 }) => {
-  const { attachmentsInfo } = outcome
-    ? useAttachments({
+  const [attachmentsInfo, setAttachmentsInfo] = useState([])
+  
+  // Only call useAttachments when outcome is available
+  useEffect(() => {
+    if (outcome) {
+      const { attachmentsInfo: fetchedAttachments } = useAttachments({
         projectId,
         outcome,
       })
-    : { attachmentsInfo: [] }
+      setAttachmentsInfo(fetchedAttachments)
+    }
+  }, [outcome, projectId])
   // the live editor state
   const [content, setContent] = useState('')
   // the live github link editor state
@@ -217,10 +226,14 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       />
     )
   }
-  // attachments = outcome ? (
-  //   <EvAttachments outcome={outcome} projectId={projectId} />
-  // ) : null
-  attachments = null
+  attachments = outcome ? (
+    <EvAttachments 
+      outcome={outcome} 
+      projectId={projectId} 
+      attachmentsInfo={attachmentsInfo}
+      addAttachment={addAttachment}
+    />
+  ) : null
 
   // redux connected expanded view components
   const details = (
