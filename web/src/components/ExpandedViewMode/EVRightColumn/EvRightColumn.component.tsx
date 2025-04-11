@@ -31,7 +31,10 @@ import Typography from '../../Typography/Typography'
 import ReadOnlyInfo from '../../ReadOnlyInfo/ReadOnlyInfo'
 import cleanOutcome from '../../../api/cleanOutcome'
 import ProgressIndicator from '../../ProgressIndicator/ProgressIndicator'
-import { AppClient } from '@holochain/client'
+import { AppClient, decodeHashFromBase64 } from '@holochain/client'
+import { getWeaveClient } from '../../../hcWebsockets'
+import { CellIdWrapper } from '../../../domain/cellId'
+import { isWeaveContext, WAL } from '@theweave/api'
 
 export type EvRightColumnOwnProps = {
   appWebsocket?: AppClient
@@ -80,6 +83,7 @@ const defaultSmallScope: SmallScope = {
 
 const EVRightColumn: React.FC<EvRightColumnProps> = ({
   // ownProps
+  projectId,
   onClose,
   outcome,
   // state props
@@ -252,6 +256,21 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
     await onDeleteClick(outcomeActionHash)
     onClose()
   }
+  const copyWALToPocket = async () => {
+    const weaveClient = getWeaveClient()
+    if (!weaveClient) {
+      return
+    }
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
+    const attachment: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        decodeHashFromBase64(outcomeActionHash),
+      ],
+      context: 'outcome',
+    }
+    await weaveClient.assets.assetToPocket(attachment)
+  }
 
   const readOnlyInfos: { icon: React.ReactElement; text: string }[] = [
     {
@@ -401,6 +420,14 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
             icon={<Icon name="archive.svg" className="not-hoverable" />}
             text="Archive"
           />
+          {isWeaveContext() && (
+            <ButtonAction
+              size="small"
+              onClick={copyWALToPocket}
+              icon={<Icon name="file-copy.svg" className="not-hoverable" />}
+              text="Add to Pocket"
+            />
+          )}
         </div>
       </div>
     </div>

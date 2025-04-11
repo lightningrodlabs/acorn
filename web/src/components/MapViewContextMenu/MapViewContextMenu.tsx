@@ -5,6 +5,10 @@ import './MapViewContextMenu.scss'
 import ContextMenu from '../ContextMenu/ContextMenu'
 import ToastContext, { ShowToast } from '../../context/ToastContext'
 import useContainWithinScreen from '../../hooks/useContainWithinScreen'
+import { isWeaveContext, WAL } from '@theweave/api'
+import { getWeaveClient } from '../../hcWebsockets'
+import { CellIdWrapper } from '../../domain/cellId'
+import { decodeHashFromBase64 } from '@holochain/client'
 
 export type MapViewContextMenuProps = {
   projectCellId: CellIdString
@@ -55,6 +59,28 @@ const MapViewContextMenu: React.FC<MapViewContextMenuProps> = ({
     setToastState({
       id: ShowToast.Yes,
       text: 'Outcome statement copied to clipboard',
+      type: 'confirmation',
+    })
+  }
+
+  const copyWALToPocket = async () => {
+    const weaveClient = getWeaveClient()
+    if (!weaveClient) {
+      return
+    }
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(projectCellId)
+    const attachment: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        decodeHashFromBase64(outcomeActionHash),
+      ],
+      context: 'outcome',
+    }
+    await weaveClient.assets.assetToPocket(attachment)
+    unsetContextMenu()
+    setToastState({
+      id: ShowToast.Yes,
+      text: 'Outcome WAL copied to Pocket',
       type: 'confirmation',
     })
   }
@@ -113,6 +139,14 @@ const MapViewContextMenu: React.FC<MapViewContextMenuProps> = ({
       icon: 'collapse.svg',
       text: 'Collapse Subtree',
       onClick: wrappedCollapseOutcome,
+    })
+  }
+  if (isWeaveContext()) {
+    actions.push({
+      key: 'save-to-pocket',
+      icon: 'file-copy.svg',
+      text: 'Add to Pocket',
+      onClick: copyWALToPocket,
     })
   }
 
