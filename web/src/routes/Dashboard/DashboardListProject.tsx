@@ -8,6 +8,10 @@ import AvatarsList from '../../components/AvatarsList/AvatarsList'
 import { ProjectAggregated } from '../../types'
 import Button from '../../components/Button/Button'
 import { ModalState, OpenModal } from '../../context/ModalContexts'
+import { isWeaveContext, WAL } from '@theweave/api'
+import { getWeaveClient } from '../../hcWebsockets'
+import { CellIdWrapper } from '../../domain/cellId'
+import { decodeHashFromBase64 } from '@holochain/client'
 
 function DashboardListProjectLoading() {
   return (
@@ -59,6 +63,20 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
     .split(' ')
     .map((word) => (word ? word[0].toUpperCase() : 'X'))
     .slice(0, 3)
+  const copyWALToPocket = async () => {
+    const weaveClient = getWeaveClient()
+    if (!weaveClient) {
+      return
+    }
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(project.cellId)
+    const attachment: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        decodeHashFromBase64(project.projectMeta.actionHash),
+      ],
+    }
+    await weaveClient.assets.assetToPocket(attachment)
+  }
 
   return (
     <div className="dashboard-list-project-wrapper">
@@ -145,6 +163,16 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
                 })
               }}
             />
+            {isWeaveContext() && (
+              <Icon
+                name="file-copy.svg"
+                withTooltip
+                tooltipText="Add Project to Pocket"
+                size="header"
+                onClick={copyWALToPocket}
+                className="header-action-icon"
+              />
+            )}
           </div>
 
           {/* project item settings */}

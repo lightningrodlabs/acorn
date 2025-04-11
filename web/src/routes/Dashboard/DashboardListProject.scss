@@ -134,6 +134,10 @@
         top: 42px;
       }
     }
+    .dashboard-list-project-members {
+      display: flex;
+      flex-direction: row;
+    }
   }
 
   /* dashboard project entry points section */
