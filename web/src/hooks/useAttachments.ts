@@ -1,5 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
-import { AppletInfo, AssetLocationAndInfo, WAL } from '@theweave/api'
+import {
+  AppletInfo,
+  AssetLocationAndInfo,
+  isWeaveContext,
+  WAL,
+} from '@theweave/api'
 import { getWeaveClient } from '../hcWebsockets'
 import { decodeHashFromBase64, EntryHash } from '@holochain/client'
 import { CellIdWrapper } from '../domain/cellId'
@@ -18,6 +23,13 @@ export function useAttachments({
   projectId: string
   outcome: ComputedOutcome
 }) {
+  if (!isWeaveContext()) {
+    return {
+      attachmentWALs: null,
+      attachmentsInfo: [],
+      error: null,
+    }
+  }
   const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
   const wal: WAL = {
     hrl: [cellIdWrapper.getDnaHash(), decodeHashFromBase64(outcome.actionHash)],
@@ -33,7 +45,10 @@ export function useAttachments({
       const weaveClient = getWeaveClient()
 
       // Clean up any existing subscription before creating a new one
-      if (subscriptionRef.current && typeof subscriptionRef.current.unsubscribe === 'function') {
+      if (
+        subscriptionRef.current &&
+        typeof subscriptionRef.current.unsubscribe === 'function'
+      ) {
         subscriptionRef.current.unsubscribe()
       }
       subscriptionRef.current = null
@@ -64,7 +79,7 @@ export function useAttachments({
               setAttachmentsInfo(assetInfos)
             }
           })
-        
+
         // Store the subscription object properly
         subscriptionRef.current = subscription
       } catch (err) {
@@ -76,7 +91,10 @@ export function useAttachments({
 
     // Cleanup function to unsubscribe when the component unmounts or dependencies change
     return () => {
-      if (subscriptionRef.current && typeof subscriptionRef.current.unsubscribe === 'function') {
+      if (
+        subscriptionRef.current &&
+        typeof subscriptionRef.current.unsubscribe === 'function'
+      ) {
         subscriptionRef.current.unsubscribe()
       }
       subscriptionRef.current = null

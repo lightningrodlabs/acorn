@@ -39,7 +39,7 @@ const AttachmentListItem: React.FC<AttachmentListItemProps> = ({
         title={`${assetMeta.assetInfo.name} (${assetMeta.appletInfo.appletName})`}
       >
         <Typography style="body1">{assetMeta.assetInfo.name}</Typography>
-        <Typography style="caption3" className="applet-name">
+        <Typography style="caption3">
           {assetMeta.appletInfo.appletName}
         </Typography>
       </div>

@@ -23,7 +23,7 @@ import EvAttachments from './EVMiddleColumn/TabContent/EvAttachments/EvAttachmen
 import cleanOutcome from '../../api/cleanOutcome'
 import moment from 'moment'
 import useAppWebsocket from '../../hooks/useAppWebsocket'
-import { useAttachments, AssetMeta } from '../../hooks/useAttachments'
+import { useAttachments } from '../../hooks/useAttachments'
 import { getWeaveClient } from '../../hcWebsockets'
 import { WAL } from '@theweave/api'
 import { decodeHashFromBase64 } from '@holochain/client'
