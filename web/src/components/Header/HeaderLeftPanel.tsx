@@ -8,7 +8,7 @@ import {
   ActionHashB64,
   WithActionHash,
 } from '../../types/shared'
-import { Profile, EntryPoint, Outcome } from '../../types'
+import { Profile, EntryPoint, Outcome, ProjectMeta } from '../../types'
 
 import ExportMenuItem from '../ExportMenuItem/ExportMenuItem.connector'
 import Icon from '../Icon/Icon'
@@ -26,6 +26,10 @@ import { ModalState, OpenModal } from '../../context/ModalContexts'
 import { getCurrentDateFormatted } from '../../utils'
 import useFileDownloaded from '../../hooks/useFileDownloaded'
 import ToastContext, { ShowToast } from '../../context/ToastContext'
+import { getWeaveClient } from '../../hcWebsockets'
+import { CellIdWrapper } from '../../domain/cellId'
+import { decodeHashFromBase64 } from '@holochain/client'
+import { isWeaveContext, WAL } from '@theweave/api'
 
 function ActiveEntryPoint({
   entryPoint,
@@ -70,6 +74,7 @@ export type HeaderLeftPanelProps = {
   }[]
   setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
+  projectMeta: WithActionHash<ProjectMeta>
 }
 
 const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
@@ -81,6 +86,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   goToOutcome,
   members,
   presentMembers,
+  projectMeta,
 }) => {
   const entryPointsRef = useRef()
   const exportProjectRef = useRef()
@@ -126,6 +132,21 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
     /\s/g,
     '-'
   )}-${getCurrentDateFormatted()}`
+
+  const copyWALToPocket = async () => {
+    const weaveClient = getWeaveClient()
+    if (!weaveClient) {
+      return
+    }
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
+    const attachment: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        decodeHashFromBase64(projectMeta.actionHash),
+      ],
+    }
+    await weaveClient.assets.assetToPocket(attachment)
+  }
 
   return (
     <div className="header-left-panel-rows">
@@ -277,6 +298,17 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                       </div>
                     )}
                   </div>
+                  {/* Add to Pocket */}
+                  {isWeaveContext() && (
+                    <Icon
+                      name="file-copy.svg"
+                      withTooltip
+                      tooltipText="Add Project to Pocket"
+                      size="header"
+                      onClick={copyWALToPocket}
+                      className="header-action-icon"
+                    />
+                  )}
                 </div>
               </div>
             </div>

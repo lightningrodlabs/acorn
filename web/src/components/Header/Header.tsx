@@ -61,7 +61,7 @@ const Header: React.FC<HeaderProps> = ({
   // click handlers
   const onClickEditProfile = () => {
     setModalState({
-      id: OpenModal.ProfileEditForm
+      id: OpenModal.ProfileEditForm,
     })
   }
 
@@ -76,7 +76,7 @@ const Header: React.FC<HeaderProps> = ({
   }
   const onClickPreferences = () => {
     setModalState({
-      id: OpenModal.Preferences
+      id: OpenModal.Preferences,
     })
   }
 
@@ -91,7 +91,7 @@ const Header: React.FC<HeaderProps> = ({
           onClickSecondaryAction={() => {
             setModalState({
               id: OpenModal.UpdateApp,
-              section: ViewingReleaseNotes.ReleaseNotes
+              section: ViewingReleaseNotes.ReleaseNotes,
             })
             setShowUpdateBar(false)
           }}
@@ -99,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({
           onClickPrimaryAction={() => {
             setModalState({
               id: OpenModal.UpdateApp,
-              section: ViewingReleaseNotes.MainMessage
+              section: ViewingReleaseNotes.MainMessage,
             })
             setShowUpdateBar(false)
           }}
@@ -124,6 +124,7 @@ const Header: React.FC<HeaderProps> = ({
           projectName={project ? project.name : ''}
           activeEntryPoints={activeEntryPoints}
           goToOutcome={goToOutcome}
+          projectMeta={project}
         />
         {whoami && (
           // add all these values as props
