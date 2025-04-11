@@ -15,6 +15,7 @@ export type EvLeftColumnProps = {
   showChildrenList: boolean
   taskListCount: number
   showTaskList: boolean
+  attachmentsNumber?: number
 }
 
 const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
@@ -26,6 +27,7 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
   showChildrenList,
   taskListCount,
   showTaskList,
+  attachmentsNumber,
 }) => {
   const navItems = [
     {
@@ -57,7 +59,9 @@ const EVLeftColumn: React.FC<EvLeftColumnProps> = ({
 
   if (isWeaveContext()) {
     navItems.push({
-      text: `Moss Attachments`,
+      text: `Moss Attachments${
+        attachmentsNumber ? ` (${attachmentsNumber})` : ''
+      }`,
       icon: 'attachment.svg',
       tab: ExpandedViewTab.Attachments,
     })

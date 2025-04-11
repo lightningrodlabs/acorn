@@ -151,6 +151,7 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
             showTaskList={showTaskListMenuItem}
             taskListCount={taskListCount}
             outcomeId={outcomeId}
+            attachmentsNumber={attachments?.props.attachmentsInfo.length}
           />
           <div className="expanded-view-tab-view-wrapper">
             <EVMiddleColumn
