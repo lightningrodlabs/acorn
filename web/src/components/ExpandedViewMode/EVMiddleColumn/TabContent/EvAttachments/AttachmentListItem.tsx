@@ -5,10 +5,11 @@ import Typography from '../../../../Typography/Typography'
 import Icon from '../../../../Icon/Icon'
 import { AssetMeta } from '../../../../../hooks/useAttachments'
 import { EntryHash } from '@holochain/client'
+import { ProjectAssetMeta } from '../../../../../hooks/useProjectAttachments'
 
 export type AttachmentListItemProps = {
-  assetMeta: AssetMeta
-  openAsset: (wal: WAL) => void
+  assetMeta: AssetMeta | ProjectAssetMeta
+  openAsset: (wal: WAL) => void | Promise<void>
   removeAttachment: (relationHash: EntryHash) => Promise<void>
 }
 

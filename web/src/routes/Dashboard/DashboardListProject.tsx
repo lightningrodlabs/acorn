@@ -13,6 +13,7 @@ import { getWeaveClient } from '../../hcWebsockets'
 import { CellIdWrapper } from '../../domain/cellId'
 import { decodeHashFromBase64, EntryHash } from '@holochain/client'
 import { AssetMeta } from '../../hooks/useAttachments'
+import { useProjectAttachments } from '../../hooks/useProjectAttachments'
 
 function DashboardListProjectLoading() {
   return (
@@ -46,9 +47,6 @@ export type DashboardListProjectProps = {
   setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   updateRequiredMoreInfoLink?: string
   syncingProjectContents?: boolean
-  attachmentsInfo?: AssetMeta[]
-  addAttachment?: () => Promise<void>
-  removeAttachment?: (relationHash: EntryHash) => Promise<void>
 }
 
 const DashboardListProject: React.FC<DashboardListProjectProps> = ({
@@ -56,14 +54,39 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
   updateRequiredMoreInfoLink,
   syncingProjectContents,
   setModalState,
-  attachmentsInfo = [], // Default to empty array
-  addAttachment = async () => {
-    console.warn('addAttachment prop not provided to DashboardListProject')
-  },
-  removeAttachment = async () => {
-    console.warn('removeAttachment prop not provided to DashboardListProject')
-  },
 }) => {
+  // Use the project attachments hook
+  const { attachmentsInfo } = useProjectAttachments({
+    projectId: project.cellId,
+  })
+  
+  const weaveClient = getWeaveClient()
+  
+  // Function to add project attachments
+  const addAttachment = async () => {
+    if (!weaveClient) return
+    
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(project.cellId)
+    const thisWal: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        cellIdWrapper.getAgentPubKey(),
+      ],
+      context: 'project',
+    }
+
+    const wal = await weaveClient.assets.userSelectAsset()
+    if (wal) {
+      await weaveClient.assets.addAssetRelation(thisWal, wal)
+    }
+  }
+  
+  // Function to remove project attachments
+  const removeAttachment = async (relationHash: EntryHash) => {
+    if (!weaveClient) return
+    console.log('Removing project attachment with relation hash:', relationHash)
+    await weaveClient.assets.removeAssetRelation(relationHash)
+  }
   const [showEntryPoints, setShowEntryPoints] = useState(false)
   const [showAttachments, setShowAttachments] = useState(false)
 
