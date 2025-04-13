@@ -58,21 +58,21 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
   // Use the project attachments hook
   const { attachmentsInfo } = useProjectAttachments({
     projectId: project.cellId,
+    projectMeta: project.projectMeta,
   })
-  
+
   const weaveClient = getWeaveClient()
-  
+
   // Function to add project attachments
   const addAttachment = async () => {
     if (!weaveClient) return
-    
+
     const cellIdWrapper = CellIdWrapper.fromCellIdString(project.cellId)
     const thisWal: WAL = {
       hrl: [
         cellIdWrapper.getDnaHash(),
-        cellIdWrapper.getAgentPubKey(),
+        decodeHashFromBase64(project.projectMeta.actionHash),
       ],
-      context: 'project',
     }
 
     const wal = await weaveClient.assets.userSelectAsset()
@@ -80,7 +80,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
       await weaveClient.assets.addAssetRelation(thisWal, wal)
     }
   }
-  
+
   // Function to remove project attachments
   const removeAttachment = async (relationHash: EntryHash) => {
     if (!weaveClient) return
@@ -98,7 +98,6 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
     .split(' ')
     .map((word) => (word ? word[0].toUpperCase() : 'X'))
     .slice(0, 3)
-  const weaveClient = getWeaveClient() // Get weaveClient once
 
   const copyWALToPocket = async () => {
     if (!weaveClient) {
@@ -365,23 +364,23 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
       )}
       {/* Add attachment button when there are no attachments yet */}
       {isWeaveContext() && attachmentsInfo.length === 0 && (
-         <div className="dashboard-list-project-attachments">
-           <div
-              className="dashboard-list-project-add-attachment-button only"
-              onClick={addAttachment}
-            >
-              <Icon
-                name="plus.svg"
-                size="small"
-                className="grey"
-                withTooltip
-                tooltipText="Add Attachment"
-              />
-               <div className="dashboard-list-project-attachment-button-text">
-                Add Attachment
-              </div>
+        <div className="dashboard-list-project-attachments">
+          <div
+            className="dashboard-list-project-add-attachment-button only"
+            onClick={addAttachment}
+          >
+            <Icon
+              name="plus.svg"
+              size="small"
+              className="grey"
+              withTooltip
+              tooltipText="Add Attachment"
+            />
+            <div className="dashboard-list-project-attachment-button-text">
+              Add Attachment
             </div>
-         </div>
+          </div>
+        </div>
       )}
     </div>
   )

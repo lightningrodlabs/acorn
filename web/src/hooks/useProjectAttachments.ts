@@ -8,6 +8,8 @@ import {
 import { getWeaveClient } from '../hcWebsockets'
 import { decodeHashFromBase64, EntryHash } from '@holochain/client'
 import { CellIdWrapper } from '../domain/cellId'
+import { ProjectMeta } from '../types'
+import { WithActionHash } from '../types/shared'
 
 export type ProjectAssetMeta = AssetLocationAndInfo & {
   wal: WAL
@@ -17,23 +19,27 @@ export type ProjectAssetMeta = AssetLocationAndInfo & {
 
 export function useProjectAttachments({
   projectId,
+  projectMeta,
 }: {
   projectId: string
+  projectMeta: WithActionHash<ProjectMeta>
 }) {
-  if (!isWeaveContext()) {
+  if (!isWeaveContext() || !projectMeta || !projectId) {
     return {
       attachmentWALs: null,
       attachmentsInfo: [],
       error: null,
     }
   }
-  
+
   const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
   const wal: WAL = {
-    hrl: [cellIdWrapper.getDnaHash(), cellIdWrapper.getAgentPubKey()],
-    context: 'project',
+    hrl: [
+      cellIdWrapper.getDnaHash(),
+      decodeHashFromBase64(projectMeta.actionHash),
+    ],
   }
-  
+
   const [attachmentWALs, setAttachmentWALs] = useState<WAL[] | null>(null)
   const [attachmentsInfo, setAttachmentsInfo] = useState<ProjectAssetMeta[]>([])
   const [error, setError] = useState(null)
