@@ -11,7 +11,8 @@ import { ModalState, OpenModal } from '../../context/ModalContexts'
 import { isWeaveContext, WAL } from '@theweave/api'
 import { getWeaveClient } from '../../hcWebsockets'
 import { CellIdWrapper } from '../../domain/cellId'
-import { decodeHashFromBase64 } from '@holochain/client'
+import { decodeHashFromBase64, EntryHash } from '@holochain/client'
+import { AssetMeta } from '../../hooks/useAttachments'
 
 function DashboardListProjectLoading() {
   return (
@@ -45,6 +46,9 @@ export type DashboardListProjectProps = {
   setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   updateRequiredMoreInfoLink?: string
   syncingProjectContents?: boolean
+  attachmentsInfo?: AssetMeta[]
+  addAttachment?: () => Promise<void>
+  removeAttachment?: (relationHash: EntryHash) => Promise<void>
 }
 
 const DashboardListProject: React.FC<DashboardListProjectProps> = ({
@@ -52,8 +56,16 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
   updateRequiredMoreInfoLink,
   syncingProjectContents,
   setModalState,
+  attachmentsInfo = [], // Default to empty array
+  addAttachment = async () => {
+    console.warn('addAttachment prop not provided to DashboardListProject')
+  },
+  removeAttachment = async () => {
+    console.warn('removeAttachment prop not provided to DashboardListProject')
+  },
 }) => {
   const [showEntryPoints, setShowEntryPoints] = useState(false)
+  const [showAttachments, setShowAttachments] = useState(false)
 
   const imageStyles = project.projectMeta.image
     ? { backgroundImage: `url(${project.projectMeta.image})` }
@@ -63,8 +75,9 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
     .split(' ')
     .map((word) => (word ? word[0].toUpperCase() : 'X'))
     .slice(0, 3)
+  const weaveClient = getWeaveClient() // Get weaveClient once
+
   const copyWALToPocket = async () => {
-    const weaveClient = getWeaveClient()
     if (!weaveClient) {
       return
     }
@@ -241,6 +254,112 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
           </div>
         )}
       </div>
+
+      {/* project attachments */}
+      {isWeaveContext() && attachmentsInfo.length > 0 && (
+        <div className="dashboard-list-project-attachments">
+          <div className="dashboard-list-project-attachments-header">
+            <div
+              className="dashboard-list-project-attachment-button"
+              onClick={() => setShowAttachments(!showAttachments)}
+            >
+              <Icon
+                name="attachment.svg"
+                size="small"
+                className="grey not-clickable"
+              />
+              <div className="dashboard-list-project-attachment-button-text">
+                {attachmentsInfo.length} attachment
+                {attachmentsInfo.length === 1 ? '' : 's'}
+              </div>
+              <Icon
+                name="chevron-down.svg"
+                size="small"
+                className={`grey ${showAttachments ? 'active' : ''}`}
+              />
+            </div>
+            {/* Add Attachment Button */}
+            <div
+              className="dashboard-list-project-add-attachment-button"
+              onClick={addAttachment}
+            >
+              <Icon
+                name="plus.svg"
+                size="small"
+                className="grey"
+                withTooltip
+                tooltipText="Add Attachment"
+              />
+            </div>
+          </div>
+          {showAttachments && (
+            <div className="dashboard-list-project-attachment-expanded">
+              {attachmentsInfo.map((assetMeta) => {
+                return (
+                  <div
+                    key={`attachment-${assetMeta.relationHash}`}
+                    className="attachment-item"
+                  >
+                    <div
+                      className="attachment-item-clickable-area"
+                      onClick={async () => {
+                        if (weaveClient) {
+                          await weaveClient.openAsset(assetMeta.wal)
+                        }
+                      }}
+                      title={`Open ${assetMeta.assetInfo.name} (${assetMeta.appletInfo.appletName})`}
+                    >
+                      <img
+                        src={assetMeta.assetInfo.icon_src}
+                        alt={`${assetMeta.assetInfo.name} icon`}
+                        className="attachment-icon"
+                      />
+                      <div className="attachment-name">
+                        {assetMeta.assetInfo.name}
+                      </div>
+                    </div>
+                    <div
+                      className="attachment-delete-button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        removeAttachment(assetMeta.relationHash)
+                      }}
+                    >
+                      <Icon
+                        name="delete-bin.svg"
+                        size="small"
+                        className="light-grey"
+                        withTooltip
+                        tooltipText="Remove Attachment"
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      )}
+      {/* Add attachment button when there are no attachments yet */}
+      {isWeaveContext() && attachmentsInfo.length === 0 && (
+         <div className="dashboard-list-project-attachments">
+           <div
+              className="dashboard-list-project-add-attachment-button only"
+              onClick={addAttachment}
+            >
+              <Icon
+                name="plus.svg"
+                size="small"
+                className="grey"
+                withTooltip
+                tooltipText="Add Attachment"
+              />
+               <div className="dashboard-list-project-attachment-button-text">
+                Add Attachment
+              </div>
+            </div>
+         </div>
+      )}
     </div>
   )
 }

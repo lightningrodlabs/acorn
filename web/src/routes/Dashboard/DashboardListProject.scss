@@ -217,6 +217,138 @@
       }
     }
   }
+
+  /* dashboard project attachments section */
+  .dashboard-list-project-attachments {
+    margin-top: 10px;
+    font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
+    margin-left: 82px; // align with entry points
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+
+    .dashboard-list-project-attachments-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      width: 100%; // Ensure header takes full width for spacing
+    }
+
+    .dashboard-list-project-attachment-button {
+      font-size: 16px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      transition: color 0.2s ease-in;
+      color: #9b9b9b;
+      cursor: pointer;
+      font-family: 'gilroyextrabold', Helvetica, sans-serif;
+
+      .icon {
+        transition: transform 0.2s ease-in;
+        margin-right: 4px;
+
+        &.active {
+          transform: rotateX(180deg);
+          -webkit-transform: rotate(180deg);
+        }
+      }
+
+      &:hover {
+        color: var(--text-color-link);
+
+        .inner-icon {
+          background-color: var(--text-color-link);
+        }
+      }
+    }
+
+    .dashboard-list-project-attachment-button-text {
+      margin: 0 2px 0 3px;
+    }
+
+    .dashboard-list-project-add-attachment-button {
+      margin-left: 10px; // Space between toggle and add button
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      color: #9b9b9b; // Match toggle button color
+
+      &.only {
+        // Styles when it's the only button (no attachments yet)
+        margin-left: 0; // No left margin needed
+        font-size: 16px;
+        font-family: 'gilroyextrabold', Helvetica, sans-serif;
+        .icon {
+          margin-right: 4px;
+        }
+         &:hover {
+          color: var(--text-color-link);
+          .inner-icon {
+            background-color: var(--text-color-link);
+          }
+        }
+      }
+
+      &:hover {
+        color: var(--text-color-link);
+        .inner-icon {
+          background-color: var(--text-color-link);
+        }
+      }
+    }
+
+    .dashboard-list-project-attachment-expanded {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      margin-top: 10px; // Space above the list
+    }
+
+    .attachment-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between; // Push delete button to the right
+      margin-top: 10px;
+      margin-left: 23px; // Indent like entry points
+      text-decoration: none;
+      color: var(--text-color-primary);
+      width: calc(100% - 23px); // Adjust width for indentation
+
+      .attachment-item-clickable-area {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        cursor: pointer;
+        flex-grow: 1; // Allow clickable area to grow
+        margin-right: 10px; // Space before delete button
+
+        &:hover {
+          .attachment-name {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      .attachment-icon {
+        width: 16px;
+        height: 16px;
+        margin-right: 12px;
+        aspect-ratio: 1/1;
+        object-fit: contain; // Ensure icon fits well
+      }
+
+      .attachment-name {
+        // Styles for the name if needed
+      }
+
+      .attachment-delete-button {
+        cursor: pointer;
+        // Add hover effect if desired
+      }
+    }
+  }
 }
 
 .dashboard-list-project-member-count {
