@@ -24,28 +24,42 @@ export function useProjectAttachments({
   projectId: string
   projectMeta: WithActionHash<ProjectMeta>
 }) {
-  if (!isWeaveContext() || !projectMeta || !projectId) {
-    return {
-      attachmentWALs: null,
-      attachmentsInfo: [],
-      error: null,
-    }
-  }
-
-  const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
-  const wal: WAL = {
-    hrl: [
-      cellIdWrapper.getDnaHash(),
-      decodeHashFromBase64(projectMeta.actionHash),
-    ],
-  }
-
+  // ✅ Call hooks unconditionally at the top level
   const [attachmentWALs, setAttachmentWALs] = useState<WAL[] | null>(null)
   const [attachmentsInfo, setAttachmentsInfo] = useState<ProjectAssetMeta[]>([])
   const [error, setError] = useState(null)
   const subscriptionRef = useRef<any>(null)
 
+  // Determine if the hook should run its logic
+  const shouldRun = isWeaveContext() && projectMeta && projectId
+
   useEffect(() => {
+    // Only run the effect logic if the conditions are met
+    if (!shouldRun) {
+      // Optional: Reset state if conditions become false after being true
+      setAttachmentWALs(null)
+      setAttachmentsInfo([])
+      setError(null)
+      // Ensure cleanup if subscription exists from a previous valid run
+      if (
+        subscriptionRef.current &&
+        typeof subscriptionRef.current.unsubscribe === 'function'
+      ) {
+        subscriptionRef.current.unsubscribe()
+      }
+      subscriptionRef.current = null
+      return // Exit effect early
+    }
+
+    // Conditions are met, proceed with fetching and subscription
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
+    const wal: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        decodeHashFromBase64(projectMeta.actionHash),
+      ],
+    }
+
     const fetchAssetInfo = async () => {
       const weaveClient = getWeaveClient()
 
@@ -82,6 +96,8 @@ export function useProjectAttachments({
                 })
               )
               setAttachmentsInfo(assetInfos)
+            } else if (store.status === 'error') {
+               setError(store.error) // Handle potential errors from the store
             }
           })
 
@@ -104,7 +120,17 @@ export function useProjectAttachments({
       }
       subscriptionRef.current = null
     }
-  }, [projectId]) // Only depends on projectId
+    // Include `shouldRun` in dependency array to re-run effect if conditions change
+  }, [projectId, projectMeta, shouldRun]) // Add projectMeta and shouldRun to dependencies
+
+  // Return default values if conditions aren't met, otherwise return state
+  if (!shouldRun) {
+    return {
+      attachmentWALs: null,
+      attachmentsInfo: [],
+      error: null,
+    }
+  }
 
   return { attachmentWALs, attachmentsInfo, error }
 }
