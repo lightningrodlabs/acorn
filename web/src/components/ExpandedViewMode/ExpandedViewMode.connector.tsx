@@ -77,6 +77,7 @@ export type ConnectedExpandedViewModeProps = {
   // Props for root rendering in asset view
   initialProjectId?: CellIdString
   initialOutcomeActionHash?: ActionHashB64
+  renderAsModal?: boolean // Added prop
   // appWebsocket prop is passed by createStoreAndRenderToDom
   appWebsocket?: any
 }
@@ -94,6 +95,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   // Destructure initial props
   initialProjectId,
   initialOutcomeActionHash,
+  renderAsModal, // Added prop
 }) => {
   const dispatch = useDispatch()
   const projectIdFromState = useSelector(
@@ -352,6 +354,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       outcomeAndAncestors={outcomeAndAncestors}
       updateOutcome={updateOutcome}
       attachments={attachments}
+      renderAsModal={renderAsModal} // Pass down the prop
     />
   )
 }

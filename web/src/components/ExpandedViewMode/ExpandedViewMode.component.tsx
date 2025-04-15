@@ -24,6 +24,7 @@ export type ExpandedViewModeOwnProps = {
   rightColumn: React.ReactElement
   updateOutcome: (outcome: Outcome, actionHash: ActionHashB64) => Promise<void>
   attachments?: React.ReactElement
+  renderAsModal?: boolean // Added prop
 }
 
 // redux props
@@ -50,6 +51,7 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
   rightColumn,
   onClose,
   attachments,
+  renderAsModal = true, // Default to true
 }) => {
   // Details is default tab
   const [activeTab, setActiveTab] = useState(ExpandedViewTab.Details)
@@ -109,6 +111,45 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
       ? outcome.scope.Small.taskList.length
       : 0
 
+  const interiorContent = (
+    <>
+      {renderAsModal && <ButtonClose onClick={onClose} size="medium" />}
+      <EVLeftColumn
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        commentCount={commentCount}
+        showChildrenList={showChildrenListMenuItem}
+        childrenCount={childrenCount}
+        showTaskList={showTaskListMenuItem}
+        taskListCount={taskListCount}
+        outcomeId={outcomeId}
+        attachmentsNumber={attachments?.props.attachmentsInfo.length}
+      />
+      <div className="expanded-view-tab-view-wrapper">
+        <EVMiddleColumn
+          activeTab={activeTab}
+          outcome={outcome}
+          projectId={projectId}
+          details={details}
+          comments={comments}
+          childrenList={childrenList}
+          taskList={taskList}
+          attachments={attachments}
+        />
+        {/* Only show the rightColumn while */}
+        {/* viewing Details */}
+        {activeTab === ExpandedViewTab.Details && rightColumn}
+      </div>
+    </>
+  )
+
+  if (!renderAsModal) {
+    // Render directly without modal wrappers if not rendering as modal
+    // Add a basic wrapper for potential styling needs
+    return <div className="expanded-view-interior-only">{interiorContent}</div>
+  }
+
+  // Render with modal wrappers and transitions
   return (
     <>
       <CSSTransition
@@ -140,11 +181,11 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
         unmountOnExit
         classNames="expanded-view-wrapper"
       >
-        <div className="expanded-view-wrapper">
-          <ButtonClose onClick={onClose} size="medium" />
-          <EVLeftColumn
-            activeTab={activeTab}
-            onChange={setActiveTab}
+        <div className="expanded-view-wrapper">{interiorContent}</div>
+      </CSSTransition>
+    </>
+  )
+}
             commentCount={commentCount}
             showChildrenList={showChildrenListMenuItem}
             childrenCount={childrenCount}

@@ -8,5 +8,16 @@
   .descendants-achievement-status {
     padding-left: 3rem;
     padding-bottom: 1rem;
+    // Ensure padding adjusts on smaller screens if needed
+    @media (max-width: 900px) {
+      padding-left: 1.5rem; // Example adjustment
+    }
+  }
+
+  // Ensure middle column takes full width when right column is below
+  @media (max-width: 900px) {
+    width: 100%;
+    flex: 1 1 auto; // Allow shrinking/growing but default to auto height
+    overflow-y: auto; // Allow internal scrolling if content exceeds height
   }
 }

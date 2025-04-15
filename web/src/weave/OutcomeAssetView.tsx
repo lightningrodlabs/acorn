@@ -90,6 +90,7 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
           onClose={() => console.log('Close requested in Asset View')} // Define behavior or make optional
           updateOutcome={async () => {}} // Placeholder/No-op or connect to API
           createOutcomeWithConnection={async () => {}} // Placeholder/No-op or connect to API
+          renderAsModal={false} // Tell EVM not to render modal parts
         />
       </AppWebsocketContext.Provider>
     )

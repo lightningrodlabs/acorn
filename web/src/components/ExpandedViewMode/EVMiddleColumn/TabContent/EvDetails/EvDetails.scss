@@ -56,12 +56,20 @@
     .ev-assignees-and-time-row {
       display: flex;
       flex-direction: row;
-      margin-bottom: 2rem;
+      flex-wrap: wrap; // Allow items to wrap
+      margin-bottom: 1rem; // Adjust margin for wrapped layout
 
       /* assigness section */
       .ev-assignees-wrapper {
-        width: 50%;
+        width: 100%; // Default to full width
         position: relative;
+        margin-bottom: 1.5rem; // Add space when wrapped
+
+        // Apply 50% width only on larger screens
+        @media (min-width: 700px) {
+          width: 50%;
+          margin-bottom: 0; // Remove bottom margin when side-by-side
+        }
 
         .picker-popup {
           top: 5rem;
@@ -74,7 +82,12 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        width: 50%;
+        width: 100%; // Default to full width
+
+        // Apply 50% width only on larger screens
+        @media (min-width: 700px) {
+          width: 50%;
+        }
 
         .big-scope-time-estimate-wrapper {
           display: flex;
