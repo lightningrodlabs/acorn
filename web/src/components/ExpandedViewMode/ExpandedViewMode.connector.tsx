@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { connect } from 'react-redux'
+import { connect, useSelector } from 'react-redux'
 import { RootState } from '../../redux/reducer'
 import ConnectedEVRightColumn from './EVRightColumn/EVRightColumn.connector'
 import ConnectedEvComments from './EVMiddleColumn/TabContent/EvComments/EvComments.connector'
@@ -23,14 +23,14 @@ import EvAttachments from './EVMiddleColumn/TabContent/EvAttachments/EvAttachmen
 import cleanOutcome from '../../api/cleanOutcome'
 import moment from 'moment'
 import useAppWebsocket from '../../hooks/useAppWebsocket'
-import { useAttachments, ProjectAssetMeta } from '../../hooks/useAttachments' // Import ProjectAssetMeta
+import { useAttachments } from '../../hooks/useAttachments' // Import ProjectAssetMeta
 import { getWeaveClient } from '../../hcWebsockets'
 import { WAL } from '@theweave/api'
 import { decodeHashFromBase64, EntryHash } from '@holochain/client' // Import EntryHash
 import { CellIdWrapper } from '../../domain/cellId'
 import { useDispatch } from 'react-redux' // Import useDispatch
-import { setActiveProject } from '../../redux/persistent/projects/active-project/actions' // Import action
 import { openExpandedView as openExpandedViewAction } from '../../redux/ephemeral/expanded-view/actions' // Import action
+import { setActiveProject } from '../../redux/ephemeral/active-project/actions'
 
 function mapStateToProps(
   state: RootState,
@@ -272,7 +272,10 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   const removeAttachment = async (relationHash: EntryHash) => {
     const weaveClient = getWeaveClient()
     if (!weaveClient) return
-    console.log('Removing project attachment from EVM with relation hash:', relationHash)
+    console.log(
+      'Removing project attachment from EVM with relation hash:',
+      relationHash
+    )
     await weaveClient.assets.removeAssetRelation(relationHash)
   }
 
@@ -284,15 +287,12 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
     }
   }
 
-
   attachments = outcome ? (
     <EvAttachments
       outcome={outcome}
       projectId={projectId}
       attachmentsInfo={attachmentsInfo}
       addAttachment={addAttachment}
-      removeAttachment={removeAttachment} // Pass remove function
-      openAsset={openAsset} // Pass open function
     />
   ) : null
 
@@ -336,7 +336,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   }
 
   return (
-    <ExpandedViewModeComponent // Renamed to avoid conflict
+    <ExpandedViewMode
       projectId={projectId}
       openExpandedView={openExpandedView}
       details={details}
