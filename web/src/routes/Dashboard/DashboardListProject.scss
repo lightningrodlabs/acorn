@@ -161,7 +161,7 @@
   /* Section containers for toggles + expanded lists */
   .entry-point-section,
   .attachment-section {
-    position: relative; // Establish positioning context for absolute children
+    // position: relative; // Removed: No longer needed for absolute positioning
     display: flex;
     flex-direction: column;
     align-items: flex-start; // Align toggle button to the start
@@ -239,29 +239,20 @@
   }
 
 
-  /* Expanded Entry Points List Styles (Absolutely Positioned Dropdown) */
+  /* Expanded Entry Points List Styles (Now relative to its section) */
   .dashboard-list-project-entry-points-expanded {
-    position: absolute;
-    top: 100%; // Position below the toggle button
-    left: 0; // Align with the start of the section
-    z-index: 10; // Ensure it's above other content
-    background-color: var(--bg-color-secondary-read-only); // Match card background
-    border-radius: 8px; // Optional: rounded corners
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Optional: shadow for depth
-    padding: 10px; // Add some padding
-    min-width: 200px; // Prevent it from being too narrow
-    margin-top: 5px; // Small gap below the toggle
-
     display: flex;
     flex-direction: column;
-    // width: 100%; // Width is now relative to content or min-width
+    width: 100%; // Take width of section container
+    margin-top: 15px; // Space below toggle button
 
     .entry-point-item {
-      // Adjust margin-top for items within the absolute container
-      margin-top: 10px;
+      // Restore original item styles if needed, ensure margin-top is appropriate
+      margin-top: 15px; // Keep original margin between items
       &:first-child {
-        margin-top: 0; // No top margin for the first item
+         margin-top: 0; // Adjust if needed based on visual spacing
       }
+      // Keep the rest of the .entry-point-item styles from before absolute positioning
       display: flex;
       flex-direction: row;
       align-items: flex-start; // Align items to the start for multi-line text
@@ -295,31 +286,22 @@
     }
   }
 
-  /* Expanded Attachments List Styles (Absolutely Positioned Dropdown) */
+  /* Expanded Attachments List Styles (Now relative to its section) */
   .dashboard-list-project-attachments-expanded {
-    position: absolute;
-    top: 100%; // Position below the toggle button
-    left: 0; // Align with the start of the section
-    z-index: 10; // Ensure it's above other content
-    background-color: var(--bg-color-secondary-read-only); // Match card background
-    border-radius: 8px; // Optional: rounded corners
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Optional: shadow for depth
-    padding: 10px; // Add some padding
-    min-width: 250px; // Prevent it from being too narrow, adjust as needed
-    margin-top: 5px; // Small gap below the toggle
-
     display: flex;
     flex-direction: column;
-    // width: 100%; // Width is now relative to content or min-width
+    width: 100%; // Take width of section container
+    margin-top: 15px; // Space below toggle button
 
     .attachment-item {
-      // Adjust margin/padding for items within the absolute container
-      margin-top: 10px;
-      margin-left: 0; // Reset indentation, handled by padding now
-      width: 100%; // Take full width of the padded container
+      // Restore original item styles, including indentation
+      margin-top: 15px; // Keep original margin between items
+      margin-left: 23px; // Restore indentation
+      width: calc(100% - 23px); // Restore width calculation
       &:first-child {
-        margin-top: 0; // No top margin for the first item
+         margin-top: 0; // Adjust if needed based on visual spacing
       }
+      // Keep the rest of the .attachment-item styles from before absolute positioning
       // margin-left: 23px; // Keep indentation for items within the list
       // width: calc(100% - 23px); // Adjust width for indentation
       // Keep previous item styles, just adjust container positioning
