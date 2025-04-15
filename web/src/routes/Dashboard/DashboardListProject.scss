@@ -163,7 +163,7 @@
     color: #9b9b9b;
     cursor: pointer;
     font-family: 'gilroyextrabold', Helvetica, sans-serif;
-    margin-right: 30px; // Increased space after entry points toggle
+    margin-right: 60px; // Further increased space after entry points toggle
 
     .icon {
       transition: transform 0.2s ease-in;
@@ -184,15 +184,10 @@
     }
   }
 
-  /* Specific container for the attachments toggle and add button */
-  .dashboard-list-project-attachments-toggle-wrapper {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    // Removed flex-grow and justify-content, handle add button separately
-  }
+  /* Specific container for the attachments toggle and add button - REMOVED */
 
   /* Add Attachment Button Styles */
+  /* Now a direct child of .dashboard-list-project-toggles */
   .dashboard-list-project-add-attachment-button {
     cursor: pointer;
     cursor: pointer;
@@ -228,7 +223,7 @@
     display: flex;
     flex-direction: column;
     width: calc(100% - 82px); // Adjust width
-    margin-top: 20px; // Increased space below toggles to prevent overlap
+    margin-top: 25px; // Further increased space below toggles to prevent overlap
 
     .entry-point-item {
       display: flex;
@@ -269,7 +264,7 @@
     display: flex;
     flex-direction: column;
     width: calc(100% - 82px); // Adjust width
-    margin-top: 20px; // Increased space below toggles to prevent overlap
+    margin-top: 25px; // Further increased space below toggles to prevent overlap
 
     .attachment-item {
       display: flex;

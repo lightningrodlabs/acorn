@@ -258,7 +258,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
 
         {/* Attachments Toggle & Add Button */}
         {isWeaveContext() && (
-          <div className="dashboard-list-project-attachments-toggle-wrapper">
+          <>
             {/* Attachments Toggle Button */}
             {attachmentsInfo.length > 0 && (
               <div
@@ -300,7 +300,7 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
                  </div>
               )}
             </div>
-          </div>
+          </>
         )}
       </div>
 
