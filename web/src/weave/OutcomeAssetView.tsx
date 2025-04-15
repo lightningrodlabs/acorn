@@ -13,9 +13,16 @@ import selectAndComputeOutcomes from '../selectors/computeOutcomes'
 import selectOutcomeAndAncestors from '../selectors/outcomeAndAncestors'
 import { ComputedOutcome, Outcome } from '../types'
 import { setActiveProject } from '../redux/ephemeral/active-project/actions'
+// VVV --- IMPORT NECESSARY FETCH ACTIONS --- VVV
+import {
+  fetchOutcomes,
+  updateOutcome,
+} from '../redux/persistent/projects/outcomes/actions'
+import { fetchConnections } from '../redux/persistent/projects/connections/actions'
+import { fetchOutcomeMembers } from '../redux/persistent/projects/outcome-members/actions'
+// ^^^ --- IMPORT NECESSARY FETCH ACTIONS --- ^^^
 import ProjectsZomeApi from '../api/projectsApi'
 import { cellIdFromString } from '../utils'
-import { updateOutcome } from '../redux/persistent/projects/outcomes/actions'
 
 interface OutcomeAssetViewProps {
   wal: WAL
@@ -45,68 +52,107 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
     setExpandedViewOutcomeAndAncestors,
   ] = useState<ComputedOutcome[]>([])
 
+  // Main effect for fetching initial data based on WAL
   useEffect(() => {
-    const fetchOutcomeDetails = async () => {
+    const fetchOutcomeDetailsAndProjectData = async () => { // Renamed function
       setLoading(true)
       setError(null)
       try {
+        // Use AcornState primarily to find the project ID and validate outcome existence
         // The WAL contains [DnaHash, EntryHash | ActionHash]
         // For outcomes, the second element is the ActionHash
         const [, actionHash] = wal.hrl // Assuming hrl structure [DnaHash, ActionHash]
         if (!actionHash) {
           throw new Error('Invalid WAL structure: ActionHash missing.')
         }
+        const [, actionHash] = wal.hrl // Assuming hrl structure [DnaHash, ActionHash]
+        if (!actionHash) {
+          throw new Error('Invalid WAL structure: ActionHash missing.')
+        }
         const actionHashB64 = encodeHashToBase64(actionHash)
-        if (actionHashB64) {
-          console.log('setting expanded view outcome: ', {
-            actionHashB64,
-            computedOutcomes,
-          })
-          setExpandedViewOutcome(
-            computedOutcomes.computedOutcomesKeyed[actionHashB64]
-          )
-          setExpandedViewOutcomeAndAncestors(
-            outcomeAndAncestorActionHashes.map((actionHash) => {
-              return computedOutcomes.computedOutcomesKeyed[actionHash]
-            })
-          )
-        }
 
-        // Assume getAppWs provides the necessary AppClient instance
         const appWs = await getAppWs()
-        if (!appWs) {
-          throw new Error('AppClient not available.')
-        }
+        if (!appWs) throw new Error('AppClient not available.')
         setAppWs(appWs)
-        const acornState = await AcornState.fromAppClient(appWs)
 
+        const acornState = await AcornState.fromAppClient(appWs)
         const outcomeInfo = acornState.findOutcomeByActionHashB64(actionHashB64)
 
         if (outcomeInfo) {
           const determinedProjectId = outcomeInfo.cellIdWrapper.getCellIdString()
-          setProjectId(determinedProjectId) // Keep local state if needed
-          dispatch(setActiveProject(determinedProjectId)) // Set active project in Redux
+          setProjectId(determinedProjectId)
           setOutcomeActionHash(outcomeInfo.outcome.actionHash)
+
+          // 1. Set the active project ID in Redux state
+          dispatch(setActiveProject(determinedProjectId))
+
+          // 2. Fetch the project data needed by the selector into Redux state
+          console.log(
+            `OutcomeAssetView: Fetching data for project ${determinedProjectId}`
+          )
+          await Promise.all([
+            dispatch(fetchOutcomes(determinedProjectId)),
+            dispatch(fetchConnections(determinedProjectId)),
+            dispatch(fetchOutcomeMembers(determinedProjectId)),
+            // Potentially fetch other needed data like agents if not global
+          ])
+          console.log(
+            `OutcomeAssetView: Finished fetching data for project ${determinedProjectId}`
+          )
+
+          // Data is fetched, Redux state should be updated,
+          // selector will re-run, and the other useEffect will handle setting component state.
         } else {
           throw new Error(`Outcome with ActionHash ${actionHashB64} not found.`)
         }
       } catch (e) {
-        console.error('Error fetching outcome details:', e)
-        setError(e.message || 'Failed to load outcome details.')
+        console.error('Error fetching outcome details and project data:', e)
+        setError(e.message || 'Failed to load details.')
       } finally {
         setLoading(false)
       }
     }
 
     if (wal) {
-      fetchOutcomeDetails()
+      fetchOutcomeDetailsAndProjectData() // Call the updated function
     }
-    // Add dispatch to dependency array if required by linting rules,
-    // though dispatch itself is stable.
-  }, [wal, dispatch]) // Make sure dependencies are correct
+  }, [wal, dispatch]) // Dependency array
+
+  // Effect to update component state when computedOutcomes or target actionHash changes
+  useEffect(() => {
+    if (
+      outcomeActionHash &&
+      computedOutcomes &&
+      computedOutcomes.computedOutcomesKeyed
+    ) {
+      console.log(
+        'OutcomeAssetView: computedOutcomes updated, setting expanded view state',
+        { outcomeActionHash, computedOutcomes }
+      )
+      const targetOutcome =
+        computedOutcomes.computedOutcomesKeyed[outcomeActionHash]
+      setExpandedViewOutcome(targetOutcome) // Might be undefined if action hash not in computed set yet
+
+      // Assuming outcomeAndAncestorActionHashes selector also works correctly now
+      const ancestors = outcomeAndAncestorActionHashes
+        .map((actionHash) => computedOutcomes.computedOutcomesKeyed[actionHash])
+        .filter(Boolean) // Filter out undefined if any hash not found
+      setExpandedViewOutcomeAndAncestors(ancestors)
+    } else {
+      console.log(
+        'OutcomeAssetView: computedOutcomes not ready or missing outcomeActionHash',
+        { outcomeActionHash, computedOutcomes }
+      )
+      // Reset if dependencies are not met
+      setExpandedViewOutcome(null)
+      setExpandedViewOutcomeAndAncestors([])
+    }
+    // Depend on computedOutcomes directly to react to its changes
+  }, [computedOutcomes, outcomeActionHash, outcomeAndAncestorActionHashes])
 
   if (loading) {
-    return <div>Loading Outcome...</div>
+    // Show loading indicator while fetching project data too
+    return <div>Loading Outcome and Project Data...</div>
   }
 
   if (error) {
