@@ -11,16 +11,10 @@ import selectAndComputeOutcomes from '../selectors/computeOutcomes'
 import selectOutcomeAndAncestors from '../selectors/outcomeAndAncestors'
 import { ComputedOutcome, Outcome } from '../types'
 import { setActiveProject } from '../redux/ephemeral/active-project/actions'
-// VVV --- IMPORT NECESSARY FETCH ACTIONS --- VVV
-import {
-  fetchOutcomes,
-  updateOutcome,
-} from '../redux/persistent/projects/outcomes/actions'
-import { fetchConnections } from '../redux/persistent/projects/connections/actions'
-import { fetchOutcomeMembers } from '../redux/persistent/projects/outcome-members/actions'
-// ^^^ --- IMPORT NECESSARY FETCH ACTIONS --- ^^^
+import { updateOutcome } from '../redux/persistent/projects/outcomes/actions' // Keep updateOutcome
 import ProjectsZomeApi from '../api/projectsApi'
 import { cellIdFromString } from '../utils'
+import constructProjectDataFetchers from '../api/projectDataFetchers' // Add this import
 
 interface OutcomeAssetViewProps {
   wal: WAL
