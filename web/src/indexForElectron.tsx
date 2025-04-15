@@ -17,7 +17,7 @@ import { realtimeInfoWatcher } from './redux/persistent/projects/realtime-info-s
 import { fetchAgents } from './redux/persistent/profiles/agents/actions'
 import { whoami } from './redux/persistent/profiles/who-am-i/actions'
 import { fetchAgentAddress } from './redux/persistent/profiles/agent-address/actions'
-import App from './routes/App.connector'
+// Remove direct import of App, it will be passed in: import App from './routes/App.connector'
 import { setAgentPubKey } from './hcWebsockets'
 import { getProjectCellIdStrings } from './projectAppIds'
 import ProfilesZomeApi from './api/profilesApi'
@@ -27,7 +27,12 @@ import { cellIdToString } from './utils'
 import './variables.scss'
 import './global.scss'
 
-export default async function createStoreAndRenderToDom(appWs: AppClient) {
+// Update function signature to accept RootComponent and rootProps
+export default async function createStoreAndRenderToDom(
+  appWs: AppClient,
+  RootComponent: React.ElementType,
+  rootProps: Record<string, any> = {}
+) {
   const middleware = [layoutWatcher, realtimeInfoWatcher(appWs)]
   // This enables the redux-devtools browser extension
   // which gives really awesome debugging for apps that use redux
@@ -44,9 +49,10 @@ export default async function createStoreAndRenderToDom(appWs: AppClient) {
 
   // By passing the `store` in as a wrapper around our React component
   // we make the state available throughout it
+  // Render the passed RootComponent with its props
   ReactDOM.render(
     <Provider store={store}>
-      <App appWebsocket={appWs} />
+      <RootComponent {...rootProps} appWebsocket={appWs} />
     </Provider>,
     document.getElementById('react')
   )
