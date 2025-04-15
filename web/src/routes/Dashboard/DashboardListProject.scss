@@ -143,9 +143,9 @@
   /* dashboard project entry points & attachments toggles container */
   .dashboard-list-project-toggles {
     margin-top: 10px;
-    margin-left: 82px; // align with content above
+    margin-left: 82px; // align with content above (project image + margin)
     display: flex;
-    flex-direction: row; // Place toggles side-by-side
+    flex-direction: row; // Place sections side-by-side
     align-items: center; // Vertically align items in the row
     justify-content: flex-start; // Align items to the start
     width: calc(100% - 82px); // Ensure it spans the available width
@@ -158,9 +158,24 @@
     align-items: center; // Vertically align icon, text, chevron
   }
 
-  /* Individual toggle button styles (shared between entry points and attachments) */
+  /* Section containers for toggles + expanded lists */
+  .entry-point-section,
+  .attachment-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; // Align toggle button to the start
+    margin-right: 80px; // Space between sections
+  }
+  .attachment-section {
+    margin-right: 0; // No margin needed after the last section before the add button
+  }
+
+
+  /* Individual toggle button styles (applied within sections) */
   .dashboard-list-project-entry-points-toggle,
   .dashboard-list-project-attachment-button {
+    // Remove margin-right here, handled by section container
+    margin-right: 0;
     font-size: 16px;
     display: flex;
     flex-direction: row;
@@ -169,7 +184,7 @@
     color: #9b9b9b;
     cursor: pointer;
     font-family: 'gilroyextrabold', Helvetica, sans-serif;
-    margin-right: 80px; // Even more space after entry points toggle
+    // margin-right: 80px; // Removed: Handled by section container
 
     .icon {
       transition: transform 0.2s ease-in;
@@ -223,13 +238,13 @@
   }
 
 
-  /* Expanded Entry Points List Styles */
+  /* Expanded Entry Points List Styles (Now relative to its section) */
   .dashboard-list-project-entry-points-expanded {
-    margin-left: 82px; // Keep alignment
+    // margin-left: 82px; // Removed: Positioned by section container
     display: flex;
     flex-direction: column;
-    width: calc(100% - 82px); // Adjust width
-    margin-top: 25px; // Further increased space below toggles to prevent overlap
+    width: 100%; // Take width of section container
+    margin-top: 15px; // Space below toggle button
 
     .entry-point-item {
       display: flex;
@@ -265,15 +280,18 @@
     }
   }
 
-  /* Expanded Attachments List Styles */
+  /* Expanded Attachments List Styles (Now relative to its section) */
   .dashboard-list-project-attachments-expanded {
-    margin-left: 82px; // Keep alignment
+    // margin-left: 82px; // Removed: Positioned by section container
     display: flex;
     flex-direction: column;
-    width: calc(100% - 82px); // Adjust width
-    margin-top: 25px; // Further increased space below toggles to prevent overlap
+    width: 100%; // Take width of section container
+    margin-top: 15px; // Space below toggle button
 
     .attachment-item {
+      // margin-left: 23px; // Keep indentation for items within the list
+      // width: calc(100% - 23px); // Adjust width for indentation
+      // Keep previous item styles, just adjust container positioning
       display: flex;
       flex-direction: row;
       align-items: center; // Vertically align icon, name, and delete button

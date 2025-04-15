@@ -231,11 +231,13 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
 
       {/* project entry points & attachments toggles */}
       <div className="dashboard-list-project-toggles">
-        {/* Entry Points Toggle */}
+        {/* Entry Points Section (Toggle + Expanded List) */}
         {project.entryPoints.length > 0 && (
-          <div className="dashboard-list-project-entry-points-toggle">
-            <div
-              className="dashboard-list-project-entry-point-button"
+          <div className="entry-point-section">
+            {/* Entry Points Toggle */}
+            <div className="dashboard-list-project-entry-points-toggle">
+              <div
+                className="dashboard-list-project-entry-point-button"
               onClick={() => setShowEntryPoints(!showEntryPoints)}
             >
               <Icon
@@ -250,19 +252,39 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
               <Icon
                 name="chevron-down.svg"
                 size="small"
-                className={`grey ${showEntryPoints ? 'active' : ''}`}
-              />
+                  className={`grey ${showEntryPoints ? 'active' : ''}`}
+                />
+              </div>
             </div>
+            {/* Expanded Entry Points List */}
+            {showEntryPoints && (
+              <div className="dashboard-list-project-entry-points-expanded">
+                {project.entryPoints.map(({ entryPoint, outcome }) => {
+                  const dotStyle = {
+                    backgroundColor: entryPoint.color,
+                  }
+                  return (
+                    <NavLink
+                      key={`entry-point-${entryPoint.actionHash}`}
+                      to={`/project/${project.cellId}/map?${ENTRY_POINTS}=${entryPoint.actionHash}&${GO_TO_OUTCOME}=${entryPoint.outcomeActionHash}`}
+                      className="entry-point-item"
+                    >
+                      <div className="entry-point-color-dot" style={dotStyle} />
+                      <div className="entry-point-name">{outcome.content}</div>
+                    </NavLink>
+                  )
+                })}
+              </div>
+            )}
           </div>
         )}
 
-        {/* Attachments Toggle & Add Button */}
-        {isWeaveContext() && (
-          <>
+        {/* Attachments Section (Toggle + Expanded List) */}
+        {isWeaveContext() && attachmentsInfo.length > 0 && (
+          <div className="attachment-section">
             {/* Attachments Toggle Button */}
-            {attachmentsInfo.length > 0 && (
-              <div
-                className="dashboard-list-project-attachment-button"
+            <div
+              className="dashboard-list-project-attachment-button"
                 onClick={() => setShowAttachments(!showAttachments)}
               >
                 <Icon
@@ -278,11 +300,61 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
                   name="chevron-down.svg"
                   size="small"
                   className={`grey ${showAttachments ? 'active' : ''}`}
-                />
+              />
+            </div>
+            {/* Expanded Attachments List */}
+            {showAttachments && (
+              <div className="dashboard-list-project-attachments-expanded">
+                {attachmentsInfo.map((assetMeta) => {
+                  return (
+                    <div
+                      key={`attachment-${assetMeta.relationHash}`}
+                      className="attachment-item"
+                    >
+                      <div
+                        className="attachment-item-clickable-area"
+                        onClick={async () => {
+                          if (weaveClient) {
+                            await weaveClient.openAsset(assetMeta.wal)
+                          }
+                        }}
+                        title={`Open ${assetMeta.assetInfo.name} (${assetMeta.appletInfo.appletName})`}
+                      >
+                        <img
+                          src={assetMeta.assetInfo.icon_src}
+                          alt={`${assetMeta.assetInfo.name} icon`}
+                          className="attachment-icon"
+                        />
+                        <div className="attachment-name">
+                          {assetMeta.assetInfo.name}
+                        </div>
+                      </div>
+                      <div
+                        className="attachment-delete-button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          removeAttachment(assetMeta.relationHash)
+                        }}
+                      >
+                        <Icon
+                          name="delete-bin.svg"
+                          size="small"
+                          className="light-grey"
+                          withTooltip
+                          tooltipText="Remove Attachment"
+                        />
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             )}
-            {/* Add Attachment Button (Icon only, positioned right) */}
-            <div
+          </div>
+        )}
+
+        {/* Add Attachment Button (Standalone, pushed right) */}
+        {isWeaveContext() && (
+          <div
               className="dashboard-list-project-add-attachment-button"
               onClick={addAttachment}
             >
@@ -296,83 +368,11 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
               {/* Text removed, only icon remains */}
               {attachmentsInfo.length === 0 && (
                  <div className="dashboard-list-project-attachment-button-text">
-                   Add Attachment
                  </div>
               )}
-            </div>
-          </>
+          </div>
         )}
       </div>
-
-      {/* Expanded Entry Points List */}
-      {showEntryPoints && project.entryPoints.length > 0 && (
-        <div className="dashboard-list-project-entry-points-expanded">
-            {project.entryPoints.map(({ entryPoint, outcome }) => {
-              const dotStyle = {
-                backgroundColor: entryPoint.color,
-              }
-              return (
-                <NavLink
-                  key={`entry-point-${entryPoint.actionHash}`}
-                  to={`/project/${project.cellId}/map?${ENTRY_POINTS}=${entryPoint.actionHash}&${GO_TO_OUTCOME}=${entryPoint.outcomeActionHash}`}
-                  className="entry-point-item"
-                >
-                  <div className="entry-point-color-dot" style={dotStyle} />
-                  <div className="entry-point-name">{outcome.content}</div>
-                </NavLink>
-              )
-            })}
-          </div>
-      )}
-
-      {/* Expanded Attachments List */}
-      {isWeaveContext() && showAttachments && attachmentsInfo.length > 0 && (
-        <div className="dashboard-list-project-attachments-expanded">
-              {attachmentsInfo.map((assetMeta) => {
-                return (
-                  <div
-                    key={`attachment-${assetMeta.relationHash}`}
-                    className="attachment-item"
-                  >
-                    <div
-                      className="attachment-item-clickable-area"
-                      onClick={async () => {
-                        if (weaveClient) {
-                          await weaveClient.openAsset(assetMeta.wal)
-                        }
-                      }}
-                      title={`Open ${assetMeta.assetInfo.name} (${assetMeta.appletInfo.appletName})`}
-                    >
-                      <img
-                        src={assetMeta.assetInfo.icon_src}
-                        alt={`${assetMeta.assetInfo.name} icon`}
-                        className="attachment-icon"
-                      />
-                      <div className="attachment-name">
-                        {assetMeta.assetInfo.name}
-                      </div>
-                    </div>
-                    <div
-                      className="attachment-delete-button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        removeAttachment(assetMeta.relationHash)
-                      }}
-                    >
-                      <Icon
-                        name="delete-bin.svg"
-                        size="small"
-                        className="light-grey"
-                        withTooltip
-                        tooltipText="Remove Attachment"
-                      />
-                    </div>
-                  </div>
-                )
-              })}
-        </div>
-      )}
-      {/* Standalone Add Attachment button removed from here, handled above */}
     </div>
   )
 }
