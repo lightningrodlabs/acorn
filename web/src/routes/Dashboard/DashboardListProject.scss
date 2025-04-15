@@ -209,33 +209,18 @@
   /* Specific container for the attachments toggle and add button - REMOVED */
 
   /* Add Attachment Button Styles */
-  /* Now a direct child of .dashboard-list-project-toggles */
+  /* Now located inside .dashboard-list-project-members */
   .dashboard-list-project-add-attachment-button {
     cursor: pointer;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    color: #9b9b9b; // Match toggle button color
-    margin-left: auto; // Push this button to the far right
+    display: flex; // Keep display flex for alignment if needed
+    align-items: center; // Keep alignment
+    // margin-left: auto; // Removed: No longer needs to be pushed right this way
+    // color: #9b9b9b; // Color might be inherited or set by .header-action-icon now
 
-    .icon {
-       margin-right: 4px; // Space if text exists
-    }
+    // .icon styles might be handled by .header-action-icon class now
+    // .dashboard-list-project-attachment-button-text styles are removed as text is gone
 
-    // Text part, shown only when no attachments exist
-    .dashboard-list-project-attachment-button-text {
-      font-size: 16px;
-      font-family: 'gilroyextrabold', Helvetica, sans-serif;
-      margin: 0 2px 0 3px;
-    }
-
-
-    &:hover {
-      color: var(--text-color-link);
-      .inner-icon {
-        background-color: var(--text-color-link);
-      }
-    }
+    // Hover effect might be handled by .header-action-icon class now
   }
 
 

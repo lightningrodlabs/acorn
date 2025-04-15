@@ -208,6 +208,22 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
                 className="header-action-icon"
               />
             )}
+            {/* Add Attachment Button (Moved here) */}
+            {isWeaveContext() && (
+              <div
+                className="dashboard-list-project-add-attachment-button"
+                onClick={addAttachment}
+              >
+                <Icon
+                  name="plus.svg"
+                  size="header" // Match size of adjacent icon
+                  className="header-action-icon" // Match class of adjacent icon
+                  withTooltip
+                  tooltipText="Add Attachment"
+                />
+                {/* Text removed, only icon remains */}
+              </div>
+            )}
           </div>
 
           {/* project item settings */}
@@ -352,26 +368,8 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
           </div>
         )}
 
-        {/* Add Attachment Button (Standalone, pushed right) */}
-        {isWeaveContext() && (
-          <div
-              className="dashboard-list-project-add-attachment-button"
-              onClick={addAttachment}
-            >
-              <Icon
-                name="plus.svg"
-                size="small"
-                className="grey"
-                withTooltip
-                tooltipText="Add Attachment"
-              />
-              {/* Text removed, only icon remains */}
-              {attachmentsInfo.length === 0 && (
-                 <div className="dashboard-list-project-attachment-button-text">
-                 </div>
-              )}
-          </div>
-        )}
+        {/* Add Attachment Button (Standalone, pushed right) - MOVED TO TOP RIGHT */}
+
       </div>
     </div>
   )
