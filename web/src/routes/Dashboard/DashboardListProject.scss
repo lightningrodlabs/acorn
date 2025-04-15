@@ -147,8 +147,9 @@
     display: flex;
     flex-direction: row; // Place toggles side-by-side
     align-items: center; // Vertically align items in the row
-    justify-content: space-between; // Push add button to the right
+    justify-content: flex-start; // Align items to the start
     width: calc(100% - 82px); // Ensure it spans the available width
+    position: relative; // Needed for absolute positioning if required, but flex should work
   }
 
   /* Individual toggle button styles (shared between entry points and attachments) */
@@ -162,7 +163,7 @@
     color: #9b9b9b;
     cursor: pointer;
     font-family: 'gilroyextrabold', Helvetica, sans-serif;
-    margin-right: 15px; // Space between toggles if both exist
+    margin-right: 30px; // Increased space after entry points toggle
 
     .icon {
       transition: transform 0.2s ease-in;
@@ -188,16 +189,17 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    flex-grow: 1; // Allow this section to grow and push the add button
-    justify-content: space-between; // Push add button within this wrapper if needed, but main container handles it mostly
+    // Removed flex-grow and justify-content, handle add button separately
   }
 
   /* Add Attachment Button Styles */
   .dashboard-list-project-add-attachment-button {
     cursor: pointer;
+    cursor: pointer;
     display: flex;
     align-items: center;
     color: #9b9b9b; // Match toggle button color
+    margin-left: auto; // Push this button to the far right
 
     .icon {
        margin-right: 4px; // Space if text exists
@@ -226,7 +228,7 @@
     display: flex;
     flex-direction: column;
     width: calc(100% - 82px); // Adjust width
-    margin-top: 10px; // Space below toggles
+    margin-top: 20px; // Increased space below toggles to prevent overlap
 
     .entry-point-item {
       display: flex;
@@ -267,7 +269,7 @@
     display: flex;
     flex-direction: column;
     width: calc(100% - 82px); // Adjust width
-    margin-top: 10px; // Space below toggles
+    margin-top: 20px; // Increased space below toggles to prevent overlap
 
     .attachment-item {
       display: flex;
