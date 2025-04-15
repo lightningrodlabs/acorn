@@ -46,7 +46,7 @@ export default function drawOutcomeGroup({
         isTopPriority: isTopPriorityOutcome,
         isSelected: areSelected,
         ctx,
-        attachmentsCount: attachmentCounts[outcome.actionHash] || 0,
+        // attachmentsCount: attachmentCounts[outcome.actionHash] || 0,
         // outcomeFocusedMembers: [],
         // members: membersOfOutcome,
         // isEditing: isEditing, // self
