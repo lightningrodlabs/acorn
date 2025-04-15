@@ -17,7 +17,7 @@ import MembersIndicator from '../MembersIndicator/MembersIndicator'
 
 import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 import AttachmentListItem from '../ExpandedViewMode/EVMiddleColumn/TabContent/EvAttachments/AttachmentListItem' // Import the list item
-import { useProjectAttachments } from '../../hooks/useProjectAttachments' // Import the hook
+// Remove hook import: import { useProjectAttachments } from '../../hooks/useProjectAttachments'
 
 //images
 // @ts-ignore
@@ -28,10 +28,11 @@ import { ModalState, OpenModal } from '../../context/ModalContexts'
 import { getCurrentDateFormatted } from '../../utils'
 import useFileDownloaded from '../../hooks/useFileDownloaded'
 import ToastContext, { ShowToast } from '../../context/ToastContext'
-import { getWeaveClient } from '../../hcWebsockets'
-import { CellIdWrapper } from '../../domain/cellId'
-import { decodeHashFromBase64, EntryHash } from '@holochain/client' // Add EntryHash
-import { isWeaveContext, WAL } from '@theweave/api'
+import { getWeaveClient } from '../../hcWebsockets' // Keep for copyWALToPocket
+// Remove unused imports: import { CellIdWrapper } from '../../domain/cellId'
+import { decodeHashFromBase64, EntryHash } from '@holochain/client' // Keep EntryHash for removeAttachment prop type
+import { isWeaveContext, WAL } from '@theweave/api' // Keep WAL for openAsset prop type
+import { ProjectAssetMeta } from '../../hooks/useProjectAttachments' // Import type for props
 
 function ActiveEntryPoint({
   entryPoint,
@@ -77,6 +78,11 @@ export type HeaderLeftPanelProps = {
   setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
   projectMeta: WithActionHash<ProjectMeta>
+  // Add new props for attachments
+  attachmentsInfo: ProjectAssetMeta[]
+  handleAddAttachment: () => Promise<void>
+  handleRemoveAttachment: (relationHash: EntryHash) => Promise<void>
+  openAsset: (wal: WAL) => Promise<void>
 }
 
 const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
@@ -89,6 +95,11 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   members,
   presentMembers,
   projectMeta,
+  // Destructure new props
+  attachmentsInfo,
+  handleAddAttachment,
+  handleRemoveAttachment,
+  openAsset,
 }) => {
   const entryPointsRef = useRef<HTMLDivElement>(null)
   const exportProjectRef = useRef<HTMLDivElement>(null)
@@ -130,11 +141,11 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   )
   const projectId = projectPage ? projectPage.params.projectId : null
 
-  // Fetch attachments using the hook (only need attachmentsInfo now)
-  const { attachmentsInfo } = useProjectAttachments({
-    projectId,
-    projectMeta,
-  })
+  // Remove hook usage:
+  // const { attachmentsInfo } = useProjectAttachments({
+  //   projectId,
+  //   projectMeta,
+  // })
 
   // replace spaces with dashes for project name
   // add in the export date like 2023-12-31 and make it based on the
@@ -160,42 +171,10 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
     await weaveClient.assets.assetToPocket(attachment)
   }
 
-  // Add attachment function (mirrors DashboardListProject)
-  const handleAddAttachment = async () => {
-    const weaveClient = getWeaveClient()
-    if (!weaveClient || !projectId || !projectMeta) return
-
-    const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
-    const thisWal: WAL = {
-      hrl: [
-        cellIdWrapper.getDnaHash(),
-        decodeHashFromBase64(projectMeta.actionHash),
-      ],
-    }
-
-    const wal = await weaveClient.assets.userSelectAsset()
-    if (wal) {
-      await weaveClient.assets.addAssetRelation(thisWal, wal)
-      // Optionally close picker after adding:
-      // setOpenAttachmentsPicker(false);
-    }
-  }
-
-  // Remove attachment function (mirrors DashboardListProject)
-  const handleRemoveAttachment = async (relationHash: EntryHash) => {
-    const weaveClient = getWeaveClient()
-    if (!weaveClient) return
-    console.log('Removing project attachment from header with relation hash:', relationHash)
-    await weaveClient.assets.removeAssetRelation(relationHash)
-  }
-
-  // Function to open asset (similar to DashboardListProject)
-  const openAsset = async (wal: WAL) => {
-    const weaveClient = getWeaveClient()
-    if (weaveClient) {
-      await weaveClient.openAsset(wal)
-    }
-  }
+  // Remove local attachment functions:
+  // const handleAddAttachment = async () => { ... }
+  // const handleRemoveAttachment = async (relationHash: EntryHash) => { ... }
+  // const openAsset = async (wal: WAL) => { ... }
 
 
   return (

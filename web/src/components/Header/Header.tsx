@@ -15,6 +15,11 @@ import HeaderRightPanel from './HeaderRightPanel.connector'
 import UpdateBar from '../UpdateBar/UpdateBar'
 import { ViewingReleaseNotes } from '../UpdateModal/UpdateModal'
 import { ModalState, OpenModal } from '../../context/ModalContexts'
+import { useProjectAttachments, ProjectAssetMeta } from '../../hooks/useProjectAttachments' // Import hook and type
+import { getWeaveClient } from '../../hcWebsockets' // Import weave client getter
+import { CellIdWrapper } from '../../domain/cellId' // Import CellIdWrapper
+import { decodeHashFromBase64, EntryHash } from '@holochain/client' // Import necessary types/functions
+import { isWeaveContext, WAL } from '@theweave/api' // Import WAL and context check
 
 import './Header.scss'
 
@@ -57,6 +62,47 @@ const Header: React.FC<HeaderProps> = ({
     // @ts-ignore
     whoami ? whoami.entry.status : Status.Online
   )
+
+  // Fetch attachments using the hook
+  const { attachmentsInfo } = useProjectAttachments({
+    projectId: project ? project.cellId : null,
+    projectMeta: project,
+  })
+
+  // Add attachment function (mirrors DashboardListProject)
+  const handleAddAttachment = async () => {
+    const weaveClient = getWeaveClient()
+    if (!weaveClient || !project || !project.projectMeta) return
+
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(project.cellId)
+    const thisWal: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        decodeHashFromBase64(project.projectMeta.actionHash),
+      ],
+    }
+
+    const wal = await weaveClient.assets.userSelectAsset()
+    if (wal) {
+      await weaveClient.assets.addAssetRelation(thisWal, wal)
+    }
+  }
+
+  // Remove attachment function (mirrors DashboardListProject)
+  const handleRemoveAttachment = async (relationHash: EntryHash) => {
+    const weaveClient = getWeaveClient()
+    if (!weaveClient) return
+    console.log('Removing project attachment from header with relation hash:', relationHash)
+    await weaveClient.assets.removeAssetRelation(relationHash)
+  }
+
+  // Function to open asset (similar to DashboardListProject)
+  const openAsset = async (wal: WAL) => {
+    const weaveClient = getWeaveClient()
+    if (weaveClient) {
+      await weaveClient.openAsset(wal)
+    }
+  }
 
   // click handlers
   const onClickEditProfile = () => {
@@ -125,6 +171,11 @@ const Header: React.FC<HeaderProps> = ({
           activeEntryPoints={activeEntryPoints}
           goToOutcome={goToOutcome}
           projectMeta={project}
+          // Pass attachment data and functions down
+          attachmentsInfo={attachmentsInfo}
+          handleAddAttachment={handleAddAttachment}
+          handleRemoveAttachment={handleRemoveAttachment}
+          openAsset={openAsset}
         />
         {whoami && (
           // add all these values as props
