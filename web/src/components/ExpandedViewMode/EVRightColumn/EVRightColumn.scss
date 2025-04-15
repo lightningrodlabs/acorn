@@ -46,17 +46,19 @@
     margin-bottom: 0.5rem;
   }
 
-  // Media query adjustments when stacking
+  // Media query adjustments when stacking (medium screens)
   @media (max-width: 900px) {
-    width: 100%; // Take full width when stacked
+    width: 16.25rem; // Keep original fixed width
     height: auto; // Allow height to adjust based on content
     overflow: visible; // Allow content to determine height
+    flex-shrink: 0; // Prevent shrinking
+    margin: 1rem auto 0 auto; // Add top margin and center horizontally
 
     .ev-right-column-inner-wrapper {
-      width: auto; // Adjust inner wrapper width if needed
-      padding: 1.5rem; // Adjust padding
-      overflow: visible; // Allow content flow
-      justify-content: flex-start; // Align items to start when stacked
+      width: 100%; // Inner wrapper takes full width of the column
+      padding: 1.5rem; // Keep padding adjustment
+      overflow: visible; // Keep content flow adjustment
+      justify-content: flex-start; // Keep alignment adjustment
     }
   }
 }
