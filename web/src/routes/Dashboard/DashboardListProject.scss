@@ -229,43 +229,18 @@
     margin-top: 10px; // Space below toggles
 
     .entry-point-item {
-      font-size: 16px;
       display: flex;
       flex-direction: row;
-      align-items: center;
-      transition: color 0.2s ease-in;
-      color: #9b9b9b;
-      cursor: pointer;
-      font-family: 'gilroyextrabold', Helvetica, sans-serif;
-
-      .icon {
-        transition: transform 0.2s ease-in;
-        margin-right: 12px;
-        margin-top: 3px;
-        aspect-ratio: 1/1;
-      }
-    }
-
-
-    /* Expanded Attachments List Styles */
-    .dashboard-list-project-attachments-expanded {
-      margin-left: 82px; // Keep alignment
-      display: flex;
-      flex-direction: column;
-      width: calc(100% - 82px); // Adjust width
-      margin-top: 10px; // Space below toggles
-
-      .attachment-item {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
+      align-items: flex-start; // Align items to the start for multi-line text
       margin-top: 15px;
-      margin-left: 23px;
       text-decoration: none;
       color: var(--text-color-primary);
+      cursor: pointer;
 
       &:hover {
-        text-decoration: underline;
+        .entry-point-name {
+          text-decoration: underline;
+        }
       }
 
       .entry-point-color-dot {
@@ -273,58 +248,80 @@
         height: 16px;
         border-radius: 50%;
         margin-right: 12px;
-        margin-top: 3px;
+        margin-top: 3px; // Adjust vertical alignment with text
         aspect-ratio: 1/1;
+        flex-shrink: 0; // Prevent dot from shrinking
       }
+
+      .entry-point-name {
+        font-size: 16px;
+        font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
+        color: var(--text-color-primary); // Use primary text color
+      }
+    }
+  }
+
+  /* Expanded Attachments List Styles */
+  .dashboard-list-project-attachments-expanded {
+    margin-left: 82px; // Keep alignment
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 82px); // Adjust width
+    margin-top: 10px; // Space below toggles
+
+    .attachment-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center; // Vertically align icon, name, and delete button
+      justify-content: space-between; // Push delete button to the end
+      margin-top: 15px;
       margin-left: 23px; // Indent items within the expanded list
       width: calc(100% - 23px); // Adjust width for indentation
 
       .attachment-item-clickable-area {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between; // Push delete button to the right
-      .attachment-icon {
         display: flex;
         flex-direction: row;
         align-items: center;
         cursor: pointer;
-        flex-grow: 1; // Allow clickable area to grow
+        flex-grow: 1; // Allow clickable area to take available space
         margin-right: 10px; // Space before delete button
 
         &:hover {
           .attachment-name {
             text-decoration: underline;
           }
-      .attachment-name {
-        // Styles for the name if needed
+        }
+
+        .attachment-icon {
+          width: 16px;
+          height: 16px;
+          margin-right: 12px;
+          aspect-ratio: 1/1;
+          object-fit: contain; // Ensure icon fits well
+          flex-shrink: 0;
+        }
+
+        .attachment-name {
+          font-size: 16px;
+          font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
+          color: var(--text-color-primary); // Use primary text color
+          // Prevent long names from pushing delete button off-screen
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
 
       .attachment-delete-button {
         cursor: pointer;
+        flex-shrink: 0; // Prevent delete button from shrinking
         // Add hover effect if desired
+        .icon:hover .inner-icon {
+           background-color: var(--text-color-link); // Example hover effect
+        }
       }
     }
   }
-}
-        width: 16px;
-        height: 16px;
-        margin-right: 12px;
-        aspect-ratio: 1/1;
-        object-fit: contain; // Ensure icon fits well
-      }
-
-      .attachment-name {
-        // Styles for the name if needed
-      }
-
-      .attachment-delete-button {
-        cursor: pointer;
-        // Add hover effect if desired
-      }
-    }
-  }
-}
 
 .dashboard-list-project-member-count {
   font-family: var(--font-family-primary-bold);
