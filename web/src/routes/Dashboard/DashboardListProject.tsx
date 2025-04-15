@@ -229,12 +229,11 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
         </div>
       </div>
 
-      {/* project entry points */}
-
-      <div className="dashboard-list-project-entry-points">
-        {/* only allow expanding entry points list if there are some */}
+      {/* project entry points & attachments toggles */}
+      <div className="dashboard-list-project-toggles">
+        {/* Entry Points Toggle */}
         {project.entryPoints.length > 0 && (
-          <>
+          <div className="dashboard-list-project-entry-points-toggle">
             <div
               className="dashboard-list-project-entry-point-button"
               onClick={() => setShowEntryPoints(!showEntryPoints)}
@@ -254,10 +253,60 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
                 className={`grey ${showEntryPoints ? 'active' : ''}`}
               />
             </div>
-          </>
+          </div>
         )}
-        {showEntryPoints && (
-          <div className="dashboard-list-project-entry-point-expanded">
+
+        {/* Attachments Toggle & Add Button */}
+        {isWeaveContext() && (
+          <div className="dashboard-list-project-attachments-toggle-wrapper">
+            {/* Attachments Toggle Button */}
+            {attachmentsInfo.length > 0 && (
+              <div
+                className="dashboard-list-project-attachment-button"
+                onClick={() => setShowAttachments(!showAttachments)}
+              >
+                <Icon
+                  name="attachment.svg"
+                  size="small"
+                  className="grey not-clickable"
+                />
+                <div className="dashboard-list-project-attachment-button-text">
+                  {attachmentsInfo.length} attachment
+                  {attachmentsInfo.length === 1 ? '' : 's'}
+                </div>
+                <Icon
+                  name="chevron-down.svg"
+                  size="small"
+                  className={`grey ${showAttachments ? 'active' : ''}`}
+                />
+              </div>
+            )}
+            {/* Add Attachment Button (Icon only, positioned right) */}
+            <div
+              className="dashboard-list-project-add-attachment-button"
+              onClick={addAttachment}
+            >
+              <Icon
+                name="plus.svg"
+                size="small"
+                className="grey"
+                withTooltip
+                tooltipText="Add Attachment"
+              />
+              {/* Text removed, only icon remains */}
+              {attachmentsInfo.length === 0 && (
+                 <div className="dashboard-list-project-attachment-button-text">
+                   Add Attachment
+                 </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Expanded Entry Points List */}
+      {showEntryPoints && project.entryPoints.length > 0 && (
+        <div className="dashboard-list-project-entry-points-expanded">
             {project.entryPoints.map(({ entryPoint, outcome }) => {
               const dotStyle = {
                 backgroundColor: entryPoint.color,
@@ -274,48 +323,11 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
               )
             })}
           </div>
-        )}
-      </div>
+      )}
 
-      {/* project attachments */}
-      {isWeaveContext() && attachmentsInfo.length > 0 && (
-        <div className="dashboard-list-project-attachments">
-          <div className="dashboard-list-project-attachments-header">
-            <div
-              className="dashboard-list-project-attachment-button"
-              onClick={() => setShowAttachments(!showAttachments)}
-            >
-              <Icon
-                name="attachment.svg"
-                size="small"
-                className="grey not-clickable"
-              />
-              <div className="dashboard-list-project-attachment-button-text">
-                {attachmentsInfo.length} attachment
-                {attachmentsInfo.length === 1 ? '' : 's'}
-              </div>
-              <Icon
-                name="chevron-down.svg"
-                size="small"
-                className={`grey ${showAttachments ? 'active' : ''}`}
-              />
-            </div>
-            {/* Add Attachment Button */}
-            <div
-              className="dashboard-list-project-add-attachment-button"
-              onClick={addAttachment}
-            >
-              <Icon
-                name="plus.svg"
-                size="small"
-                className="grey"
-                withTooltip
-                tooltipText="Add Attachment"
-              />
-            </div>
-          </div>
-          {showAttachments && (
-            <div className="dashboard-list-project-attachment-expanded">
+      {/* Expanded Attachments List */}
+      {isWeaveContext() && showAttachments && attachmentsInfo.length > 0 && (
+        <div className="dashboard-list-project-attachments-expanded">
               {attachmentsInfo.map((assetMeta) => {
                 return (
                   <div
@@ -358,30 +370,9 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
                   </div>
                 )
               })}
-            </div>
-          )}
         </div>
       )}
-      {/* Add attachment button when there are no attachments yet */}
-      {isWeaveContext() && attachmentsInfo.length === 0 && (
-        <div className="dashboard-list-project-attachments">
-          <div
-            className="dashboard-list-project-add-attachment-button only"
-            onClick={addAttachment}
-          >
-            <Icon
-              name="plus.svg"
-              size="small"
-              className="grey"
-              withTooltip
-              tooltipText="Add Attachment"
-            />
-            <div className="dashboard-list-project-attachment-button-text">
-              Add Attachment
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Standalone Add Attachment button removed from here, handled above */}
     </div>
   )
 }

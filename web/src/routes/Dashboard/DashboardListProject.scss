@@ -140,22 +140,95 @@
     }
   }
 
-  /* dashboard project entry points section */
-
-  .dashboard-list-project-entry-points {
+  /* dashboard project entry points & attachments toggles container */
+  .dashboard-list-project-toggles {
     margin-top: 10px;
-    font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
-    margin-left: 82px;
+    margin-left: 82px; // align with content above
     display: flex;
-    flex-direction: column;
-    align-items: start;
+    flex-direction: row; // Place toggles side-by-side
+    align-items: center; // Vertically align items in the row
+    justify-content: space-between; // Push add button to the right
+    width: calc(100% - 82px); // Ensure it spans the available width
+  }
 
-    .entry-point-button-image {
-      height: 15px;
-      margin-right: 8px;
+  /* Individual toggle button styles (shared between entry points and attachments) */
+  .dashboard-list-project-entry-points-toggle,
+  .dashboard-list-project-attachment-button {
+    font-size: 16px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    transition: color 0.2s ease-in;
+    color: #9b9b9b;
+    cursor: pointer;
+    font-family: 'gilroyextrabold', Helvetica, sans-serif;
+    margin-right: 15px; // Space between toggles if both exist
+
+    .icon {
+      transition: transform 0.2s ease-in;
+      margin-right: 4px;
+
+      &.active {
+        transform: rotateX(180deg);
+        -webkit-transform: rotate(180deg);
+      }
     }
 
-    .dashboard-list-project-entry-point-button {
+    &:hover {
+      color: var(--text-color-link);
+
+      .inner-icon {
+        background-color: var(--text-color-link);
+      }
+    }
+  }
+
+  /* Specific container for the attachments toggle and add button */
+  .dashboard-list-project-attachments-toggle-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-grow: 1; // Allow this section to grow and push the add button
+    justify-content: space-between; // Push add button within this wrapper if needed, but main container handles it mostly
+  }
+
+  /* Add Attachment Button Styles */
+  .dashboard-list-project-add-attachment-button {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: #9b9b9b; // Match toggle button color
+
+    .icon {
+       margin-right: 4px; // Space if text exists
+    }
+
+    // Text part, shown only when no attachments exist
+    .dashboard-list-project-attachment-button-text {
+      font-size: 16px;
+      font-family: 'gilroyextrabold', Helvetica, sans-serif;
+      margin: 0 2px 0 3px;
+    }
+
+
+    &:hover {
+      color: var(--text-color-link);
+      .inner-icon {
+        background-color: var(--text-color-link);
+      }
+    }
+  }
+
+
+  /* Expanded Entry Points List Styles */
+  .dashboard-list-project-entry-points-expanded {
+    margin-left: 82px; // Keep alignment
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 82px); // Adjust width
+    margin-top: 10px; // Space below toggles
+
+    .entry-point-item {
       font-size: 16px;
       display: flex;
       flex-direction: row;
@@ -167,34 +240,22 @@
 
       .icon {
         transition: transform 0.2s ease-in;
-        margin-right: 4px;
-
-        &.active {
-          transform: rotateX(180deg);
-          -webkit-transform: rotate(180deg);
-        }
-      }
-
-      &:hover {
-        color: var(--text-color-link);
-
-        .inner-icon {
-          background-color: var(--text-color-link);
-        }
+        margin-right: 12px;
+        margin-top: 3px;
+        aspect-ratio: 1/1;
       }
     }
 
-    .dashboard-list-project-entry-point-button-text {
-      margin: 0 2px 0 3px;
-    }
 
-    .dashboard-list-project-entry-point-expanded {
+    /* Expanded Attachments List Styles */
+    .dashboard-list-project-attachments-expanded {
+      margin-left: 82px; // Keep alignment
       display: flex;
       flex-direction: column;
-      width: 100%;
-    }
+      width: calc(100% - 82px); // Adjust width
+      margin-top: 10px; // Space below toggles
 
-    .entry-point-item {
+      .attachment-item {
       display: flex;
       flex-direction: row;
       align-items: flex-start;
@@ -215,108 +276,15 @@
         margin-top: 3px;
         aspect-ratio: 1/1;
       }
-    }
-  }
+      margin-left: 23px; // Indent items within the expanded list
+      width: calc(100% - 23px); // Adjust width for indentation
 
-  /* dashboard project attachments section */
-  .dashboard-list-project-attachments {
-    margin-top: 10px;
-    font-family: 'PlusJakartaSans-medium', Helvetica, sans-serif;
-    margin-left: 82px; // align with entry points
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-
-    .dashboard-list-project-attachments-header {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      width: 100%; // Ensure header takes full width for spacing
-    }
-
-    .dashboard-list-project-attachment-button {
-      font-size: 16px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      transition: color 0.2s ease-in;
-      color: #9b9b9b;
-      cursor: pointer;
-      font-family: 'gilroyextrabold', Helvetica, sans-serif;
-
-      .icon {
-        transition: transform 0.2s ease-in;
-        margin-right: 4px;
-
-        &.active {
-          transform: rotateX(180deg);
-          -webkit-transform: rotate(180deg);
-        }
-      }
-
-      &:hover {
-        color: var(--text-color-link);
-
-        .inner-icon {
-          background-color: var(--text-color-link);
-        }
-      }
-    }
-
-    .dashboard-list-project-attachment-button-text {
-      margin: 0 2px 0 3px;
-    }
-
-    .dashboard-list-project-add-attachment-button {
-      margin-left: 10px; // Space between toggle and add button
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      color: #9b9b9b; // Match toggle button color
-
-      &.only {
-        // Styles when it's the only button (no attachments yet)
-        margin-left: 0; // No left margin needed
-        font-size: 16px;
-        font-family: 'gilroyextrabold', Helvetica, sans-serif;
-        .icon {
-          margin-right: 4px;
-        }
-         &:hover {
-          color: var(--text-color-link);
-          .inner-icon {
-            background-color: var(--text-color-link);
-          }
-        }
-      }
-
-      &:hover {
-        color: var(--text-color-link);
-        .inner-icon {
-          background-color: var(--text-color-link);
-        }
-      }
-    }
-
-    .dashboard-list-project-attachment-expanded {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      margin-top: 10px; // Space above the list
-    }
-
-    .attachment-item {
+      .attachment-item-clickable-area {
       display: flex;
       flex-direction: row;
       align-items: center;
       justify-content: space-between; // Push delete button to the right
-      margin-top: 10px;
-      margin-left: 23px; // Indent like entry points
-      text-decoration: none;
-      color: var(--text-color-primary);
-      width: calc(100% - 23px); // Adjust width for indentation
-
-      .attachment-item-clickable-area {
+      .attachment-icon {
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -328,10 +296,17 @@
           .attachment-name {
             text-decoration: underline;
           }
-        }
+      .attachment-name {
+        // Styles for the name if needed
       }
 
-      .attachment-icon {
+      .attachment-delete-button {
+        cursor: pointer;
+        // Add hover effect if desired
+      }
+    }
+  }
+}
         width: 16px;
         height: 16px;
         margin-right: 12px;
