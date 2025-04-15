@@ -18,13 +18,10 @@ import {
   setWeaveClient,
   setWeaveProfilesClient,
 } from './hcWebsockets'
-import { mossInit } from './indexForMoss'
+import { getComponentAndPropsForRenderMode, mossInit } from './indexForMoss'
 import { appletServices } from './weave/appletService'
 import App from './routes/App.connector' // Import App for main view
-import ConnectedExpandedViewMode from './components/ExpandedViewMode/ExpandedViewMode.connector' // Import EVM for asset view
-import { Hrl, CellId } from '@holochain/client'
-import { cellIdToString, actionHashToString } from './utils'
-import { PROJECTS_ROLE_NAME } from './holochainConfig'
+import { WeaveClientRenderInfo } from './weave/WeaveClientRenderInfo'
 
 const isWeaveDevMode = () => {
   return process.env.__DEV_MODE__ && !process.env.KANGAROO
@@ -37,73 +34,39 @@ const isWeaveDevMode = () => {
   if (!isWeaveContext()) {
     // electron
     ;(async () => {
-      console.log('electron')
       const appWs = await getAppWs()
-      const store = await createStoreAndRenderToDom(appWs)
-      console.log('admin, appws', appWs)
+      const store = await createStoreAndRenderToDom(appWs, App)
       await electronInit(store, appWs)
     })()
   } else {
     ;(async () => {
       const weaveClient = await WeaveClient.connect(appletServices)
       setWeaveClient(weaveClient)
-      if (
-        weaveClient.renderInfo.type !== 'applet-view' ||
-        weaveClient.renderInfo.view.type !== 'main'
+      const weaveClientRenderInfo = new WeaveClientRenderInfo(
+        weaveClient.renderInfo
       )
-        throw new Error('This Applet only implements the applet main view.')
-
-      const appClient = weaveClient.renderInfo.appletClient
-      setAppWs(appClient)
-      const profilesClient = weaveClient.renderInfo.profilesClient
-      setWeaveProfilesClient(profilesClient)
-
-      let store: any
-      if (weaveClient.renderInfo.view.type === 'asset') {
-        // Asset View: Render ExpandedViewMode
-        const hrl: Hrl = weaveClient.renderInfo.view.hrl
-        const dnaHash = hrl[0]
-        const actionHash = hrl[1]
-
-        // Find the cellId for the project based on DnaHash
-        const appInfo = await appClient.appInfo()
-        const projectsCells = appInfo.cell_info[PROJECTS_ROLE_NAME]
-        const cellInfo = projectsCells.find(
-          (info) =>
-            CellType.Provisioned in info &&
-            info[CellType.Provisioned].cell_id[0].toString() ===
-              dnaHash.toString()
-        )
-
-        if (!cellInfo || !(CellType.Provisioned in cellInfo)) {
-          throw new Error(
-            `Could not find provisioned cell for DNA hash: ${dnaHash}`
-          )
-        }
-        const cellId: CellId = cellInfo[CellType.Provisioned].cell_id
-        const projectId = cellIdToString(cellId)
-        const outcomeActionHash = actionHashToString(actionHash)
-
-        const rootProps = {
-          initialProjectId: projectId,
-          initialOutcomeActionHash: outcomeActionHash,
-        }
-        store = await createStoreAndRenderToDom(
-          appClient,
-          ConnectedExpandedViewMode,
-          rootProps
-        )
-      } else if (weaveClient.renderInfo.view.type === 'main') {
-        // Main View: Render App
-        store = await createStoreAndRenderToDom(appClient, App)
-      } else {
-        throw new Error(
-          `Unsupported Weave view type: ${weaveClient.renderInfo.view.type}`
-        )
+      if (!weaveClientRenderInfo.isAppletView()) {
+        throw new Error('This Applet only implements the applet view.')
       }
 
-      // Initialize profiles and other common data regardless of view
-      await mossInit(store, profilesClient, appClient)
+      setAppWs(weaveClientRenderInfo.getAppletClient())
+      setWeaveProfilesClient(weaveClientRenderInfo.getProfilesClient())
+
+      const rootElementAndProps = getComponentAndPropsForRenderMode(
+        weaveClientRenderInfo
+      )
+      let store: any
+
+      store = await createStoreAndRenderToDom(
+        weaveClientRenderInfo.getAppletClient(),
+        rootElementAndProps.rootElement,
+        rootElementAndProps.rootProps
+      )
+      await mossInit(
+        store,
+        weaveClientRenderInfo.getProfilesClient(),
+        weaveClientRenderInfo.getAppletClient()
+      )
     })()
   }
 })()

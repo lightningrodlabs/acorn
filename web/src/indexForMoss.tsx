@@ -19,6 +19,11 @@ import './variables.scss'
 import './global.scss'
 import { isWeaveContext } from '@theweave/api'
 import { ProfilesClient } from '@holochain-open-dev/profiles'
+import { WeaveClientRenderInfo } from './weave/WeaveClientRenderInfo'
+import App from './routes/App.connector'
+import ConnectedExpandedViewMode from './components/ExpandedViewMode/ExpandedViewMode.connector'
+import OutcomeAssetView from './weave/OutcomeAssetView'
+import ProjectAssetView from './weave/ProjectAssetView'
 
 export async function mossInit(
   store: any,
@@ -92,4 +97,42 @@ export async function mossInit(
   } catch (e) {
     console.error(e)
   }
+}
+
+export function getComponentAndPropsForRenderMode(
+  renderInfo: WeaveClientRenderInfo
+): {
+  rootElement: React.ElementType
+  rootProps?: Record<string, any>
+} {
+  if (renderInfo.isMainView()) {
+    return {
+      rootElement: App,
+      rootProps: {
+        appWebsocket: renderInfo.getAppletClient(),
+      },
+    }
+  }
+  if (renderInfo.isOutcomeView()) {
+    const outcomeWal = renderInfo.getOutcomeWal()
+
+    return {
+      rootElement: OutcomeAssetView,
+      rootProps: {
+        wal: outcomeWal,
+      },
+    }
+  }
+  if (renderInfo.isProjectView()) {
+    const projectId = renderInfo.getProjectWal()
+    return {
+      rootElement: ProjectAssetView,
+      rootProps: {
+        projectId,
+      },
+    }
+  }
+  throw new Error(
+    'This Applet only implements the applet main view and the asset view.'
+  )
 }

@@ -26,6 +26,7 @@ import { cellIdToString } from './utils'
 // Import styles
 import './variables.scss'
 import './global.scss'
+import App from './routes/App.connector'
 
 // Update function signature to accept RootComponent and rootProps
 export default async function createStoreAndRenderToDom(
@@ -52,7 +53,7 @@ export default async function createStoreAndRenderToDom(
   // Render the passed RootComponent with its props
   ReactDOM.render(
     <Provider store={store}>
-      <RootComponent {...rootProps} appWebsocket={appWs} />
+      <RootComponent {...rootProps} />
     </Provider>,
     document.getElementById('react')
   )
