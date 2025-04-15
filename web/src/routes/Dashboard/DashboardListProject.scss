@@ -146,7 +146,7 @@
     margin-left: 82px; // align with content above (project image + margin)
     display: flex;
     flex-direction: row; // Place sections side-by-side
-    align-items: center; // Vertically align items in the row
+    align-items: flex-start; // Align items to the top to prevent vertical shift
     justify-content: flex-start; // Align items to the start
     width: calc(100% - 82px); // Ensure it spans the available width
     position: relative; // Needed for absolute positioning if required, but flex should work
