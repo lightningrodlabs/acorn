@@ -101,6 +101,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   )
   // Determine the definitive projectId
   const projectId = projectIdFromApp || projectIdFromState || initialProjectId
+  console.log('projectId, outcome', projectId, outcome)
 
   // Set initial state if rendered as root in asset view
   useEffect(() => {
@@ -109,7 +110,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       dispatch(openExpandedViewAction(initialOutcomeActionHash))
     }
     // Run only once on mount when initial props are provided
-  }, [initialProjectId, initialOutcomeActionHash, dispatch])
+  }, [initialProjectId, initialOutcomeActionHash, dispatch, projectId])
 
   // Always call the hook, but only with valid data when outcome exists and projectId is determined
   const { attachmentsInfo } = useAttachments({
@@ -330,10 +331,12 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   ) : null
 
   // Don't render ExpandedViewModeComponent until projectId and outcome are likely available
-  if (!projectId || !outcome) {
-    // Optionally return a loading indicator
-    return <div>Loading Asset...</div>
-  }
+  console.log('going to render loading', projectId, outcome)
+  // if (!projectId || !outcome) {
+  //   // Optionally return a loading indicator
+  //   return <div>Loading Asset...</div>
+  // }
+  console.log('going to try rendering expanded view')
 
   return (
     <ExpandedViewMode
