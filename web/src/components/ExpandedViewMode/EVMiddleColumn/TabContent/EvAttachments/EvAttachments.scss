@@ -1,0 +1,16 @@
+.ev-children-view-wrapper {
+  display: flex;
+  flex-direction: column;
+  overflow-y: hidden;
+
+  .ev-children-view-outcome-list {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 0.5rem;
+    overflow-y: scroll;
+  }
+
+  .ev-attachments-add-new {
+    padding: 0 0.5rem;
+  }
+}

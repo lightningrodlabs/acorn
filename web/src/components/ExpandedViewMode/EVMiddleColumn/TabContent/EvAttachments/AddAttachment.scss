@@ -1,0 +1,39 @@
+.add-attachment-wrapper {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font: 1rem var(--font-family-primary-medium);
+  color: var(--text-color-placeholder);
+  padding: 0.625rem 1.5rem 0.625rem 1.125rem;
+  border-radius: 0.5rem;
+  transition: 0.2s background-color ease;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--bg-color-hover);
+    
+    .attachment-icon {
+      color: var(--color-blue);
+    }
+  }
+
+  .add-attachment-icon-wrapper {
+    .attachment-icon {
+      color: var(--text-color-placeholder);
+    }
+  }
+
+  .attachment-placeholder-text {
+    margin-left: 0.625rem;
+    color: var(--text-color-placeholder);
+  }
+
+  &.small {
+    font: 0.825rem var(--font-family-primary-medium);
+  }
+
+  &.large {
+    font: 1.25rem var(--font-family-primary-medium);
+  }
+}

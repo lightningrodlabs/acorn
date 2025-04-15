@@ -1,5 +1,4 @@
-import React, { useRef, useState } from 'react'
-import useOnClickOutside from 'use-onclickoutside'
+import React, { useState } from 'react'
 
 import { WireRecord } from '../../api/hdkCrud'
 import {
@@ -15,6 +14,11 @@ import HeaderRightPanel from './HeaderRightPanel.connector'
 import UpdateBar from '../UpdateBar/UpdateBar'
 import { ViewingReleaseNotes } from '../UpdateModal/UpdateModal'
 import { ModalState, OpenModal } from '../../context/ModalContexts'
+import { useProjectAttachments } from '../../hooks/useProjectAttachments' // Import hook and type
+import { getWeaveClient } from '../../hcWebsockets' // Import weave client getter
+import { CellIdWrapper } from '../../domain/cellId' // Import CellIdWrapper
+import { decodeHashFromBase64, EntryHash } from '@holochain/client' // Import necessary types/functions
+import { WAL } from '@theweave/api' // Import WAL and context check
 
 import './Header.scss'
 
@@ -37,6 +41,7 @@ export type HeaderProps = {
   unselectAll: () => void
   // holochain
   updateStatus: (statusString: Profile['status']) => Promise<void>
+  projectId: string
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -52,16 +57,61 @@ const Header: React.FC<HeaderProps> = ({
   setModalState,
   updateStatus,
   goToOutcome,
+  projectId,
 }) => {
   const [status, setStatus] = useState<Status>(
     // @ts-ignore
     whoami ? whoami.entry.status : Status.Online
   )
 
+  // Fetch attachments using the hook
+  const { attachmentsInfo } = useProjectAttachments({
+    projectId,
+    projectMeta: project,
+  })
+
+  // Add attachment function (mirrors DashboardListProject)
+  const handleAddAttachment = async () => {
+    const weaveClient = getWeaveClient()
+    if (!weaveClient || !project || !project) return
+
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
+    const thisWal: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        decodeHashFromBase64(project.actionHash),
+      ],
+    }
+
+    const wal = await weaveClient.assets.userSelectAsset()
+    if (wal) {
+      await weaveClient.assets.addAssetRelation(thisWal, wal)
+    }
+  }
+
+  // Remove attachment function (mirrors DashboardListProject)
+  const handleRemoveAttachment = async (relationHash: EntryHash) => {
+    const weaveClient = getWeaveClient()
+    if (!weaveClient) return
+    console.log(
+      'Removing project attachment from header with relation hash:',
+      relationHash
+    )
+    await weaveClient.assets.removeAssetRelation(relationHash)
+  }
+
+  // Function to open asset (similar to DashboardListProject)
+  const openAsset = async (wal: WAL) => {
+    const weaveClient = getWeaveClient()
+    if (weaveClient) {
+      await weaveClient.openAsset(wal)
+    }
+  }
+
   // click handlers
   const onClickEditProfile = () => {
     setModalState({
-      id: OpenModal.ProfileEditForm
+      id: OpenModal.ProfileEditForm,
     })
   }
 
@@ -76,7 +126,7 @@ const Header: React.FC<HeaderProps> = ({
   }
   const onClickPreferences = () => {
     setModalState({
-      id: OpenModal.Preferences
+      id: OpenModal.Preferences,
     })
   }
 
@@ -91,7 +141,7 @@ const Header: React.FC<HeaderProps> = ({
           onClickSecondaryAction={() => {
             setModalState({
               id: OpenModal.UpdateApp,
-              section: ViewingReleaseNotes.ReleaseNotes
+              section: ViewingReleaseNotes.ReleaseNotes,
             })
             setShowUpdateBar(false)
           }}
@@ -99,7 +149,7 @@ const Header: React.FC<HeaderProps> = ({
           onClickPrimaryAction={() => {
             setModalState({
               id: OpenModal.UpdateApp,
-              section: ViewingReleaseNotes.MainMessage
+              section: ViewingReleaseNotes.MainMessage,
             })
             setShowUpdateBar(false)
           }}
@@ -124,6 +174,12 @@ const Header: React.FC<HeaderProps> = ({
           projectName={project ? project.name : ''}
           activeEntryPoints={activeEntryPoints}
           goToOutcome={goToOutcome}
+          projectMeta={project}
+          // Pass attachment data and functions down
+          attachmentsInfo={attachmentsInfo}
+          handleAddAttachment={handleAddAttachment}
+          handleRemoveAttachment={handleRemoveAttachment}
+          openAsset={openAsset}
         />
         {whoami && (
           // add all these values as props

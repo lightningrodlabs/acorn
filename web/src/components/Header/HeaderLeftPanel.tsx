@@ -8,7 +8,7 @@ import {
   ActionHashB64,
   WithActionHash,
 } from '../../types/shared'
-import { Profile, EntryPoint, Outcome } from '../../types'
+import { Profile, EntryPoint, Outcome, ProjectMeta } from '../../types'
 
 import ExportMenuItem from '../ExportMenuItem/ExportMenuItem.connector'
 import Icon from '../Icon/Icon'
@@ -16,6 +16,7 @@ import { ENTRY_POINTS } from '../../searchParams'
 import MembersIndicator from '../MembersIndicator/MembersIndicator'
 
 import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
+import AttachmentListItem from '../ExpandedViewMode/EVMiddleColumn/TabContent/EvAttachments/AttachmentListItem' // Import the list item
 
 //images
 // @ts-ignore
@@ -26,6 +27,11 @@ import { ModalState, OpenModal } from '../../context/ModalContexts'
 import { getCurrentDateFormatted } from '../../utils'
 import useFileDownloaded from '../../hooks/useFileDownloaded'
 import ToastContext, { ShowToast } from '../../context/ToastContext'
+import { getWeaveClient } from '../../hcWebsockets' // Keep for copyWALToPocket
+import { decodeHashFromBase64, EntryHash } from '@holochain/client' // Keep EntryHash for removeAttachment prop type
+import { isWeaveContext, WAL } from '@theweave/api' // Keep WAL for openAsset prop type
+import { ProjectAssetMeta } from '../../hooks/useProjectAttachments' // Import type for props
+import { CellIdWrapper } from '../../domain/cellId'
 
 function ActiveEntryPoint({
   entryPoint,
@@ -70,6 +76,12 @@ export type HeaderLeftPanelProps = {
   }[]
   setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   goToOutcome: (outcomeActionHash: ActionHashB64) => void
+  projectMeta: WithActionHash<ProjectMeta>
+  // Add new props for attachments
+  attachmentsInfo: ProjectAssetMeta[]
+  handleAddAttachment: () => Promise<void>
+  handleRemoveAttachment: (relationHash: EntryHash) => Promise<void>
+  openAsset: (wal: WAL) => Promise<void>
 }
 
 const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
@@ -81,15 +93,24 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   goToOutcome,
   members,
   presentMembers,
+  projectMeta,
+  // Destructure new props
+  attachmentsInfo,
+  handleAddAttachment,
+  handleRemoveAttachment,
+  openAsset,
 }) => {
-  const entryPointsRef = useRef()
-  const exportProjectRef = useRef()
+  const entryPointsRef = useRef<HTMLDivElement>(null)
+  const exportProjectRef = useRef<HTMLDivElement>(null)
+  const attachmentsRef = useRef<HTMLDivElement>(null) // Ref for attachments dropdown
   const { setToastState } = useContext(ToastContext)
   const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
   const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
+  const [openAttachmentsPicker, setOpenAttachmentsPicker] = useState(false) // State for attachments dropdown
   const [isExportOpen, setIsExportOpen] = useState(false)
   useOnClickOutside(entryPointsRef, () => setOpenEntryPointPicker(false))
   useOnClickOutside(exportProjectRef, () => setIsExportOpen(false))
+  useOnClickOutside(attachmentsRef, () => setOpenAttachmentsPicker(false)) // Close attachments dropdown on click outside
   useEffect(() => {
     if (fileDownloaded) {
       setFileDownloaded(false)
@@ -126,6 +147,22 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
     /\s/g,
     '-'
   )}-${getCurrentDateFormatted()}`
+
+  const copyWALToPocket = async () => {
+    const weaveClient = getWeaveClient()
+    if (!weaveClient) {
+      return
+    }
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
+    const attachment: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        decodeHashFromBase64(projectMeta.actionHash),
+      ],
+    }
+    await weaveClient.assets.assetToPocket(attachment)
+    await weaveClient.assets.assetToPocket(attachment)
+  }
 
   return (
     <div className="header-left-panel-rows">
@@ -225,6 +262,60 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                     />
                   </div>
 
+                  {/* Attachments */}
+                  {isWeaveContext() && (
+                    <div
+                      className="attachments-button-wrapper"
+                      ref={attachmentsRef}
+                    >
+                      <Icon
+                        name="attachment.svg"
+                        size="view-mode" // Match entry points icon size
+                        className={`header-action-icon ${
+                          openAttachmentsPicker ? 'active' : ''
+                        }`}
+                        withTooltip
+                        tooltipText="Attachments"
+                        onClick={() =>
+                          setOpenAttachmentsPicker(!openAttachmentsPicker)
+                        }
+                      />
+                      {/* Attachments Picker Dropdown */}
+                      {openAttachmentsPicker && (
+                        <div className="attachments-picker">
+                          <div className="attachments-picker-header">
+                            <div className="attachments-picker-title">
+                              Attachments ({attachmentsInfo.length})
+                            </div>
+                            <Icon
+                              name="plus.svg"
+                              size="small"
+                              className="grey"
+                              withTooltip
+                              tooltipText="Add Attachment"
+                              onClick={handleAddAttachment}
+                            />
+                          </div>
+                          <div className="attachments-picker-list">
+                            {attachmentsInfo.length === 0 && (
+                              <div className="attachments-picker-empty">
+                                No attachments yet.
+                              </div>
+                            )}
+                            {attachmentsInfo.map((assetMeta) => (
+                              <AttachmentListItem
+                                key={`attachment-${assetMeta.relationHash}`}
+                                assetMeta={assetMeta}
+                                openAsset={openAsset}
+                                removeAttachment={handleRemoveAttachment}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Settings */}
                   <Icon
                     name="settings.svg"
@@ -277,6 +368,17 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                       </div>
                     )}
                   </div>
+                  {/* Add to Pocket */}
+                  {isWeaveContext() && (
+                    <Icon
+                      name="file-copy.svg"
+                      withTooltip
+                      tooltipText="Add Project to Pocket"
+                      size="header"
+                      onClick={copyWALToPocket}
+                      className="header-action-icon"
+                    />
+                  )}
                 </div>
               </div>
             </div>

@@ -8,6 +8,12 @@ import AvatarsList from '../../components/AvatarsList/AvatarsList'
 import { ProjectAggregated } from '../../types'
 import Button from '../../components/Button/Button'
 import { ModalState, OpenModal } from '../../context/ModalContexts'
+import { isWeaveContext, WAL } from '@theweave/api'
+import { getWeaveClient } from '../../hcWebsockets'
+import { CellIdWrapper } from '../../domain/cellId'
+import { decodeHashFromBase64, EntryHash } from '@holochain/client'
+import { AssetMeta } from '../../hooks/useAttachments'
+import { useProjectAttachments } from '../../hooks/useProjectAttachments'
 
 function DashboardListProjectLoading() {
   return (
@@ -49,7 +55,40 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
   syncingProjectContents,
   setModalState,
 }) => {
+  // Use the project attachments hook
+  const { attachmentsInfo } = useProjectAttachments({
+    projectId: project.cellId,
+    projectMeta: project.projectMeta,
+  })
+
+  const weaveClient = getWeaveClient()
+
+  // Function to add project attachments
+  const addAttachment = async () => {
+    if (!weaveClient) return
+
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(project.cellId)
+    const thisWal: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        decodeHashFromBase64(project.projectMeta.actionHash),
+      ],
+    }
+
+    const wal = await weaveClient.assets.userSelectAsset()
+    if (wal) {
+      await weaveClient.assets.addAssetRelation(thisWal, wal)
+    }
+  }
+
+  // Function to remove project attachments
+  const removeAttachment = async (relationHash: EntryHash) => {
+    if (!weaveClient) return
+    console.log('Removing project attachment with relation hash:', relationHash)
+    await weaveClient.assets.removeAssetRelation(relationHash)
+  }
   const [showEntryPoints, setShowEntryPoints] = useState(false)
+  const [showAttachments, setShowAttachments] = useState(false)
 
   const imageStyles = project.projectMeta.image
     ? { backgroundImage: `url(${project.projectMeta.image})` }
@@ -59,6 +98,20 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
     .split(' ')
     .map((word) => (word ? word[0].toUpperCase() : 'X'))
     .slice(0, 3)
+
+  const copyWALToPocket = async () => {
+    if (!weaveClient) {
+      return
+    }
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(project.cellId)
+    const attachment: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        decodeHashFromBase64(project.projectMeta.actionHash),
+      ],
+    }
+    await weaveClient.assets.assetToPocket(attachment)
+  }
 
   return (
     <div className="dashboard-list-project-wrapper">
@@ -145,6 +198,32 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
                 })
               }}
             />
+            {isWeaveContext() && (
+              <Icon
+                name="file-copy.svg"
+                withTooltip
+                tooltipText="Add Project to Pocket"
+                size="header"
+                onClick={copyWALToPocket}
+                className="header-action-icon"
+              />
+            )}
+            {/* Add Attachment Button (Moved here) */}
+            {isWeaveContext() && (
+              <div
+                className="dashboard-list-project-add-attachment-button"
+                onClick={addAttachment}
+              >
+                <Icon
+                  name="plus.svg"
+                  size="header" // Match size of adjacent icon
+                  className="header-action-icon" // Match class of adjacent icon
+                  withTooltip
+                  tooltipText="Add Attachment"
+                />
+                {/* Text removed, only icon remains */}
+              </div>
+            )}
           </div>
 
           {/* project item settings */}
@@ -166,14 +245,15 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
         </div>
       </div>
 
-      {/* project entry points */}
-
-      <div className="dashboard-list-project-entry-points">
-        {/* only allow expanding entry points list if there are some */}
+      {/* project entry points & attachments toggles */}
+      <div className="dashboard-list-project-toggles">
+        {/* Entry Points Section (Toggle + Expanded List) */}
         {project.entryPoints.length > 0 && (
-          <>
-            <div
-              className="dashboard-list-project-entry-point-button"
+          <div className="entry-point-section">
+            {/* Entry Points Toggle */}
+            <div className="dashboard-list-project-entry-points-toggle">
+              <div
+                className="dashboard-list-project-entry-point-button"
               onClick={() => setShowEntryPoints(!showEntryPoints)}
             >
               <Icon
@@ -188,30 +268,108 @@ const DashboardListProject: React.FC<DashboardListProjectProps> = ({
               <Icon
                 name="chevron-down.svg"
                 size="small"
-                className={`grey ${showEntryPoints ? 'active' : ''}`}
-              />
+                  className={`grey ${showEntryPoints ? 'active' : ''}`}
+                />
+              </div>
             </div>
-          </>
-        )}
-        {showEntryPoints && (
-          <div className="dashboard-list-project-entry-point-expanded">
-            {project.entryPoints.map(({ entryPoint, outcome }) => {
-              const dotStyle = {
-                backgroundColor: entryPoint.color,
-              }
-              return (
-                <NavLink
-                  key={`entry-point-${entryPoint.actionHash}`}
-                  to={`/project/${project.cellId}/map?${ENTRY_POINTS}=${entryPoint.actionHash}&${GO_TO_OUTCOME}=${entryPoint.outcomeActionHash}`}
-                  className="entry-point-item"
-                >
-                  <div className="entry-point-color-dot" style={dotStyle} />
-                  <div className="entry-point-name">{outcome.content}</div>
-                </NavLink>
-              )
-            })}
+            {/* Expanded Entry Points List */}
+            {showEntryPoints && (
+              <div className="dashboard-list-project-entry-points-expanded">
+                {project.entryPoints.map(({ entryPoint, outcome }) => {
+                  const dotStyle = {
+                    backgroundColor: entryPoint.color,
+                  }
+                  return (
+                    <NavLink
+                      key={`entry-point-${entryPoint.actionHash}`}
+                      to={`/project/${project.cellId}/map?${ENTRY_POINTS}=${entryPoint.actionHash}&${GO_TO_OUTCOME}=${entryPoint.outcomeActionHash}`}
+                      className="entry-point-item"
+                    >
+                      <div className="entry-point-color-dot" style={dotStyle} />
+                      <div className="entry-point-name">{outcome.content}</div>
+                    </NavLink>
+                  )
+                })}
+              </div>
+            )}
           </div>
         )}
+
+        {/* Attachments Section (Toggle + Expanded List) */}
+        {isWeaveContext() && attachmentsInfo.length > 0 && (
+          <div className="attachment-section">
+            {/* Attachments Toggle Button */}
+            <div
+              className="dashboard-list-project-attachment-button"
+                onClick={() => setShowAttachments(!showAttachments)}
+              >
+                <Icon
+                  name="attachment.svg"
+                  size="small"
+                  className="grey not-clickable"
+                />
+                <div className="dashboard-list-project-attachment-button-text">
+                  {attachmentsInfo.length} attachment
+                  {attachmentsInfo.length === 1 ? '' : 's'}
+                </div>
+                <Icon
+                  name="chevron-down.svg"
+                  size="small"
+                  className={`grey ${showAttachments ? 'active' : ''}`}
+              />
+            </div>
+            {/* Expanded Attachments List */}
+            {showAttachments && (
+              <div className="dashboard-list-project-attachments-expanded">
+                {attachmentsInfo.map((assetMeta) => {
+                  return (
+                    <div
+                      key={`attachment-${assetMeta.relationHash}`}
+                      className="attachment-item"
+                    >
+                      <div
+                        className="attachment-item-clickable-area"
+                        onClick={async () => {
+                          if (weaveClient) {
+                            await weaveClient.openAsset(assetMeta.wal)
+                          }
+                        }}
+                        title={`Open ${assetMeta.assetInfo.name} (${assetMeta.appletInfo.appletName})`}
+                      >
+                        <img
+                          src={assetMeta.assetInfo.icon_src}
+                          alt={`${assetMeta.assetInfo.name} icon`}
+                          className="attachment-icon"
+                        />
+                        <div className="attachment-name">
+                          {assetMeta.assetInfo.name}
+                        </div>
+                      </div>
+                      <div
+                        className="attachment-delete-button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          removeAttachment(assetMeta.relationHash)
+                        }}
+                      >
+                        <Icon
+                          name="delete-bin.svg"
+                          size="small"
+                          className="light-grey"
+                          withTooltip
+                          tooltipText="Remove Attachment"
+                        />
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Add Attachment Button (Standalone, pushed right) - MOVED TO TOP RIGHT */}
+
       </div>
     </div>
   )

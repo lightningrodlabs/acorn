@@ -13,6 +13,7 @@ export default function drawOutcomeGroup({
   areSelected,
   zoomLevel,
   ctx,
+  attachmentCounts = {},
 }: {
   outcomesAsArray: ComputedOutcome[]
   coordinates: RenderProps['coordinates']
@@ -22,6 +23,7 @@ export default function drawOutcomeGroup({
   areSelected: boolean
   zoomLevel: RenderProps['zoomLevel']
   ctx: CanvasRenderingContext2D
+  attachmentCounts?: Record<ActionHashB64, number>
 }) {
   outcomesAsArray.forEach(function (outcome) {
     const coords = coordinates[outcome.actionHash]
@@ -44,6 +46,7 @@ export default function drawOutcomeGroup({
         isTopPriority: isTopPriorityOutcome,
         isSelected: areSelected,
         ctx,
+        // attachmentsCount: attachmentCounts[outcome.actionHash] || 0,
         // outcomeFocusedMembers: [],
         // members: membersOfOutcome,
         // isEditing: isEditing, // self

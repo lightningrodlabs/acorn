@@ -113,6 +113,77 @@
         }
       }
 
+      // Wrapper for attachments button and picker
+      .attachments-button-wrapper {
+        position: relative; // Context for absolute positioning of picker
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      // Attachments Picker Dropdown Styles
+      .attachments-picker {
+        position: absolute;
+        z-index: 2; // Ensure it's above other elements
+        top: 2.75rem; // Position below the icon button row
+        // Adjust left/right positioning as needed, similar to entry point picker
+        // Example: Center it relative to the button
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px; // Adjust width as needed
+        background-color: var(--bg-color-secondary);
+        border-radius: 0.625rem;
+        box-shadow: 0px 0px 1.25em var(--shadow-color);
+        padding: 0.75rem;
+        box-sizing: border-box;
+
+        .attachments-picker-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.5rem;
+          padding-bottom: 0.5rem;
+          border-bottom: 1px solid var(--border-color-timberwolf);
+
+          .attachments-picker-title {
+            font-family: var(--font-family-primary-bold);
+            font-size: 0.875rem;
+            color: var(--text-color-primary);
+          }
+
+          .icon { // Style for the add button icon
+            cursor: pointer;
+            &:hover .inner-icon {
+              background-color: var(--text-color-link);
+            }
+          }
+        }
+
+        .attachments-picker-list {
+          max-height: 300px; // Limit height and allow scrolling
+          overflow-y: auto;
+
+          // Style for empty state
+          .attachments-picker-empty {
+            color: var(--text-color-secondary);
+            font-size: 0.875rem;
+            text-align: center;
+            padding: 1rem 0;
+          }
+
+          // Styles for AttachmentListItem within the picker
+          // Leverage existing AttachmentListItem.scss if possible,
+          // or add specific overrides here. Example:
+          .asset-list-item {
+            margin-bottom: 0.5rem;
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
+
+
       .icon.header-action-icon {
         padding: 4px;
         height: 24px;

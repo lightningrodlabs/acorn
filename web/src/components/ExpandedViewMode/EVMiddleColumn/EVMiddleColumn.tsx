@@ -11,21 +11,25 @@ import DescendantsAchievementStatus from '../../DescendantsAchievementStatus/Des
 import './EVMiddleColumn.scss'
 
 export type EVMiddleColumnProps = {
+  projectId: string
   activeTab: ExpandedViewTab
   outcome: ComputedOutcome
   details: React.ReactElement
   comments: React.ReactElement
   childrenList?: React.ReactElement
   taskList?: React.ReactElement
+  attachments?: React.ReactElement
 }
 
 const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
+  projectId,
   activeTab,
   details,
   comments,
   childrenList,
   taskList,
   outcome,
+  attachments,
 }) => {
   // a default in case of loading/transitioning
   const computedScope = outcome ? outcome.computedScope : ComputedScope.Small
@@ -40,17 +44,23 @@ const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
         simple: ComputedSimpleAchievementStatus.NotAchieved,
       }
   const childrenCount = outcome ? outcome.children.length : 0
+  // Get attachments count from the attachments component if available
+  const attachmentsCount = attachments ? 
+    (attachments.props.attachmentsInfo ? attachments.props.attachmentsInfo.length : 0) : 0
+  
   return (
     <div className="ev-middle-column-wrapper">
       <DescendantsAchievementStatus
         childrenCount={childrenCount}
         computedScope={computedScope}
         computedAchievementStatus={computedAchievementStatus}
+        attachmentsCount={attachmentsCount}
       />
       {activeTab === ExpandedViewTab.Details && details}
       {activeTab === ExpandedViewTab.Comments && comments}
       {activeTab === ExpandedViewTab.ChildrenList && childrenList}
       {activeTab === ExpandedViewTab.TaskList && taskList}
+      {activeTab === ExpandedViewTab.Attachments && attachments}
     </div>
   )
 }

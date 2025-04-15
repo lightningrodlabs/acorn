@@ -23,6 +23,7 @@ export type ExpandedViewModeOwnProps = {
   taskList: React.ReactElement
   rightColumn: React.ReactElement
   updateOutcome: (outcome: Outcome, actionHash: ActionHashB64) => Promise<void>
+  attachments?: React.ReactElement
 }
 
 // redux props
@@ -36,6 +37,7 @@ export type ExpandedViewModeProps = ExpandedViewModeOwnProps &
   ExpandedViewModeConnectorProps
 
 const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
+  projectId,
   outcome,
   outcomeAndAncestors,
   outcomeActionHash,
@@ -47,6 +49,7 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
   taskList,
   rightColumn,
   onClose,
+  attachments,
 }) => {
   // Details is default tab
   const [activeTab, setActiveTab] = useState(ExpandedViewTab.Details)
@@ -77,9 +80,15 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
     if (outcome) {
       // make sure that a section that isn't available, based on changes
       // to the Outcome, isn't shown
-      if ('Small' in outcome.scope && activeTab === ExpandedViewTab.ChildrenList) {
+      if (
+        'Small' in outcome.scope &&
+        activeTab === ExpandedViewTab.ChildrenList
+      ) {
         setActiveTab(ExpandedViewTab.TaskList)
-      } else if ('Uncertain' in outcome.scope && activeTab === ExpandedViewTab.TaskList) {
+      } else if (
+        'Uncertain' in outcome.scope &&
+        activeTab === ExpandedViewTab.TaskList
+      ) {
         setActiveTab(ExpandedViewTab.ChildrenList)
       }
     }
@@ -142,15 +151,18 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
             showTaskList={showTaskListMenuItem}
             taskListCount={taskListCount}
             outcomeId={outcomeId}
+            attachmentsNumber={attachments?.props.attachmentsInfo.length}
           />
           <div className="expanded-view-tab-view-wrapper">
             <EVMiddleColumn
               activeTab={activeTab}
               outcome={outcome}
+              projectId={projectId}
               details={details}
               comments={comments}
               childrenList={childrenList}
               taskList={taskList}
+              attachments={attachments}
             />
             {/* Only show the rightColumn while */}
             {/* viewing Details */}

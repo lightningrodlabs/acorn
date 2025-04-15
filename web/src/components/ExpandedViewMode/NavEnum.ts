@@ -3,4 +3,5 @@ export enum ExpandedViewTab {
   Comments,
   ChildrenList,
   TaskList,
+  Attachments,
 }

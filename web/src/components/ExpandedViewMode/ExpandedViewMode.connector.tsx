@@ -19,9 +19,15 @@ import {
 } from '../../types'
 import EvChildren from './EVMiddleColumn/TabContent/EvChildren/EvChildren'
 import EvTaskList from './EVMiddleColumn/TabContent/EvTaskList/EvTaskList'
+import EvAttachments from './EVMiddleColumn/TabContent/EvAttachments/EvAttachments'
 import cleanOutcome from '../../api/cleanOutcome'
 import moment from 'moment'
 import useAppWebsocket from '../../hooks/useAppWebsocket'
+import { useAttachments } from '../../hooks/useAttachments'
+import { getWeaveClient } from '../../hcWebsockets'
+import { WAL } from '@theweave/api'
+import { decodeHashFromBase64 } from '@holochain/client'
+import { CellIdWrapper } from '../../domain/cellId'
 
 function mapStateToProps(
   state: RootState,
@@ -77,6 +83,31 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   updateOutcome,
   createOutcomeWithConnection,
 }) => {
+  // Always call the hook, but only with valid data when outcome exists
+  const { attachmentsInfo } = useAttachments({
+    projectId,
+    outcome: outcome || ({ actionHash: '' } as ComputedOutcome),
+  })
+
+  // Function to add attachments
+  const addAttachment = async () => {
+    if (outcome) {
+      const weaveClient = getWeaveClient()
+      const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
+      const thisWal: WAL = {
+        hrl: [
+          cellIdWrapper.getDnaHash(),
+          decodeHashFromBase64(outcome.actionHash),
+        ],
+        context: 'outcome',
+      }
+
+      const wal = await weaveClient.assets.userSelectAsset()
+      if (wal) {
+        await weaveClient.assets.addAssetRelation(thisWal, wal)
+      }
+    }
+  }
   // the live editor state
   const [content, setContent] = useState('')
   // the live github link editor state
@@ -169,6 +200,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   const outcomeContent = outcome ? outcome.content : ''
   let childrenList: React.ReactElement
   let taskList: React.ReactElement
+  let attachments: React.ReactElement
   if (outcome && !('Small' in outcome.scope)) {
     childrenList = (
       <EvChildren
@@ -208,6 +240,14 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       />
     )
   }
+  attachments = outcome ? (
+    <EvAttachments
+      outcome={outcome}
+      projectId={projectId}
+      attachmentsInfo={attachmentsInfo}
+      addAttachment={addAttachment}
+    />
+  ) : null
 
   // redux connected expanded view components
   const details = (
@@ -255,6 +295,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       outcome={outcome}
       outcomeAndAncestors={outcomeAndAncestors}
       updateOutcome={updateOutcome}
+      attachments={attachments}
     />
   )
 }
