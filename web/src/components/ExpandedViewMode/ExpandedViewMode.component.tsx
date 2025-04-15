@@ -57,6 +57,11 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
   const [activeTab, setActiveTab] = useState(ExpandedViewTab.Details)
   const [showing, setShowing] = useState(false)
 
+  console.log('expanded view info: ', {
+    outcome,
+    projectId,
+  })
+
   useEffect(() => {
     // reset
     if (!outcomeActionHash) {
@@ -182,34 +187,6 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
         classNames="expanded-view-wrapper"
       >
         <div className="expanded-view-wrapper">{interiorContent}</div>
-      </CSSTransition>
-    </>
-  )
-}
-            commentCount={commentCount}
-            showChildrenList={showChildrenListMenuItem}
-            childrenCount={childrenCount}
-            showTaskList={showTaskListMenuItem}
-            taskListCount={taskListCount}
-            outcomeId={outcomeId}
-            attachmentsNumber={attachments?.props.attachmentsInfo.length}
-          />
-          <div className="expanded-view-tab-view-wrapper">
-            <EVMiddleColumn
-              activeTab={activeTab}
-              outcome={outcome}
-              projectId={projectId}
-              details={details}
-              comments={comments}
-              childrenList={childrenList}
-              taskList={taskList}
-              attachments={attachments}
-            />
-            {/* Only show the rightColumn while */}
-            {/* viewing Details */}
-            {activeTab === ExpandedViewTab.Details && rightColumn}
-          </div>
-        </div>
       </CSSTransition>
     </>
   )

@@ -3,9 +3,16 @@ import { WAL } from '@theweave/api'
 import { encodeHashToBase64 } from '@holochain/client'
 import ConnectedExpandedViewMode from '../components/ExpandedViewMode/ExpandedViewMode.connector'
 import { AcornState } from './acornState'
-import { getAppWs } from '../hcWebsockets'
+import { getAgentPubKey, getAppWs } from '../hcWebsockets'
 import { CellIdString, ActionHashB64 } from '../types/shared'
 import AppWebsocketContext from '../context/AppWebsocketContext'
+import { useSelector } from 'react-redux'
+import selectAndComputeOutcomes from '../selectors/computeOutcomes'
+import selectOutcomeAndAncestors from '../selectors/outcomeAndAncestors'
+import { ComputedOutcome, Outcome } from '../types'
+import ProjectsZomeApi from '../api/projectsApi'
+import { cellIdFromString } from '../utils'
+import { updateOutcome } from '../redux/persistent/projects/outcomes/actions'
 
 interface OutcomeAssetViewProps {
   wal: WAL
@@ -20,6 +27,19 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [appWs, setAppWs] = useState<any>(null) // Replace with actual type if known
+  const agentPubKey = getAgentPubKey()
+  const computedOutcomes = useSelector(selectAndComputeOutcomes)
+  const outcomeAndAncestorActionHashes = useSelector(selectOutcomeAndAncestors)
+
+  const [
+    expandedViewOutcome,
+    setExpandedViewOutcome,
+  ] = useState<ComputedOutcome | null>(null)
+
+  const [
+    expandedViewOutcomeAndAncestors,
+    setExpandedViewOutcomeAndAncestors,
+  ] = useState<ComputedOutcome[]>([])
 
   useEffect(() => {
     const fetchOutcomeDetails = async () => {
@@ -33,6 +53,20 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
           throw new Error('Invalid WAL structure: ActionHash missing.')
         }
         const actionHashB64 = encodeHashToBase64(actionHash)
+        if (actionHashB64) {
+          console.log('setting expanded view outcome: ', {
+            actionHashB64,
+            computedOutcomes,
+          })
+          setExpandedViewOutcome(
+            computedOutcomes.computedOutcomesKeyed[actionHashB64]
+          )
+          setExpandedViewOutcomeAndAncestors(
+            outcomeAndAncestorActionHashes.map((actionHash) => {
+              return computedOutcomes.computedOutcomesKeyed[actionHash]
+            })
+          )
+        }
 
         // Assume getAppWs provides the necessary AppClient instance
         const appWs = await getAppWs()
@@ -70,27 +104,50 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
   if (error) {
     return <div>Error: {error}</div>
   }
+  const updateOutcomeCallback = async (
+    outcome: Outcome,
+    actionHash: ActionHashB64
+  ) => {
+    const appWebsocket = await getAppWs()
+    const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
+    const cellId = cellIdFromString(projectId)
+    const outcomeWireRecord = await projectsZomeApi.outcome.update(cellId, {
+      entry: outcome,
+      actionHash,
+    })
+    return dispatch(updateOutcome(projectId, outcomeWireRecord))
+  }
 
-  if (projectId && outcomeActionHash) {
+  if (projectId && outcomeActionHash && expandedViewOutcome) {
     // Render ConnectedExpandedViewMode with initial props
     // It will handle its internal state and data fetching based on these props
     return (
       <AppWebsocketContext.Provider value={appWs}>
         <ConnectedExpandedViewMode
-          initialProjectId={projectId}
-          initialOutcomeActionHash={outcomeActionHash}
+          activeAgentPubKey={agentPubKey}
+          projectId={projectId}
+          openExpandedView={() => {}}
+          onClose={() => {}}
+          outcome={expandedViewOutcome}
+          outcomeAndAncestors={expandedViewOutcomeAndAncestors}
+          updateOutcome={updateOutcomeCallback}
+          createOutcomeWithConnection={async () => {}} // Placeholder/No-op
+          renderAsModal={false} // Prevent modal rendering
+          // gen
+          //   initialProjectId={projectId}
+          //   initialOutcomeActionHash={outcomeActionHash}
           // The following props are managed internally by ConnectedExpandedViewMode
           // when initial props are provided, or might need context/redux setup
           // if used in a different standalone way. For now, we rely on its internal logic.
-          projectId={projectId} // Pass projectId for consistency if needed internally
-          openExpandedView={() => {}} // Placeholder/No-op for root render
-          activeAgentPubKey={''} // Placeholder, might need context/redux
-          outcome={null} // Placeholder, EVM fetches based on initialOutcomeActionHash
-          outcomeAndAncestors={[]} // Placeholder, EVM fetches based on initialOutcomeActionHash
-          onClose={() => console.log('Close requested in Asset View')} // Define behavior or make optional
-          updateOutcome={async () => {}} // Placeholder/No-op or connect to API
-          createOutcomeWithConnection={async () => {}} // Placeholder/No-op or connect to API
-          renderAsModal={false} // Tell EVM not to render modal parts
+          //   projectId={projectId} // Pass projectId for consistency if needed internally
+          //   openExpandedView={() => {}} // Placeholder/No-op for root render
+          //   activeAgentPubKey={''} // Placeholder, might need context/redux
+          //   outcome={null} // Placeholder, EVM fetches based on initialOutcomeActionHash
+          //   outcomeAndAncestors={[]} // Placeholder, EVM fetches based on initialOutcomeActionHash
+          //   onClose={() => console.log('Close requested in Asset View')} // Define behavior or make optional
+          //   updateOutcome={async () => {}} // Placeholder/No-op or connect to API
+          //   createOutcomeWithConnection={async () => {}} // Placeholder/No-op or connect to API
+          //   renderAsModal={false} // Tell EVM not to render modal parts
         />
       </AppWebsocketContext.Provider>
     )
@@ -101,3 +158,6 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
 }
 
 export default OutcomeAssetView
+function dispatch(arg0: any) {
+  throw new Error('Function not implemented.')
+}
