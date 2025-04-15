@@ -40,17 +40,17 @@ const isWeaveDevMode = () => {
     })()
   } else {
     ;(async () => {
-      const weClient = await WeaveClient.connect(appletServices)
-      setWeaveClient(weClient)
+      const weaveClient = await WeaveClient.connect(appletServices)
+      setWeaveClient(weaveClient)
       if (
-        weClient.renderInfo.type !== 'applet-view' ||
-        weClient.renderInfo.view.type !== 'main'
+        weaveClient.renderInfo.type !== 'applet-view' ||
+        weaveClient.renderInfo.view.type !== 'main'
       )
         throw new Error('This Applet only implements the applet main view.')
 
-      const appClient = weClient.renderInfo.appletClient
+      const appClient = weaveClient.renderInfo.appletClient
       setAppWs(appClient)
-      const profilesClient = weClient.renderInfo.profilesClient
+      const profilesClient = weaveClient.renderInfo.profilesClient
       setWeaveProfilesClient(profilesClient)
 
       const store = await createStoreAndRenderToDom(appClient)
