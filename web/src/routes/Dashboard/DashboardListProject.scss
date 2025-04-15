@@ -152,6 +152,12 @@
     position: relative; // Needed for absolute positioning if required, but flex should work
   }
 
+  /* Styles specific to the clickable button *inside* the entry points toggle */
+  .dashboard-list-project-entry-point-button {
+    display: flex;
+    align-items: center; // Vertically align icon, text, chevron
+  }
+
   /* Individual toggle button styles (shared between entry points and attachments) */
   .dashboard-list-project-entry-points-toggle,
   .dashboard-list-project-attachment-button {
@@ -163,7 +169,7 @@
     color: #9b9b9b;
     cursor: pointer;
     font-family: 'gilroyextrabold', Helvetica, sans-serif;
-    margin-right: 60px; // Further increased space after entry points toggle
+    margin-right: 80px; // Even more space after entry points toggle
 
     .icon {
       transition: transform 0.2s ease-in;
@@ -230,6 +236,7 @@
       flex-direction: row;
       align-items: flex-start; // Align items to the start for multi-line text
       margin-top: 15px;
+      width: 100%; // Ensure item takes full width
       text-decoration: none;
       color: var(--text-color-primary);
       cursor: pointer;
@@ -274,6 +281,7 @@
       margin-top: 15px;
       margin-left: 23px; // Indent items within the expanded list
       width: calc(100% - 23px); // Adjust width for indentation
+      // width: 100%; // Ensure item takes full width relative to its container
 
       .attachment-item-clickable-area {
         display: flex;
