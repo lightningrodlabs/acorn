@@ -17,7 +17,6 @@ import MembersIndicator from '../MembersIndicator/MembersIndicator'
 
 import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
 import AttachmentListItem from '../ExpandedViewMode/EVMiddleColumn/TabContent/EvAttachments/AttachmentListItem' // Import the list item
-// Remove hook import: import { useProjectAttachments } from '../../hooks/useProjectAttachments'
 
 //images
 // @ts-ignore
@@ -29,10 +28,10 @@ import { getCurrentDateFormatted } from '../../utils'
 import useFileDownloaded from '../../hooks/useFileDownloaded'
 import ToastContext, { ShowToast } from '../../context/ToastContext'
 import { getWeaveClient } from '../../hcWebsockets' // Keep for copyWALToPocket
-// Remove unused imports: import { CellIdWrapper } from '../../domain/cellId'
 import { decodeHashFromBase64, EntryHash } from '@holochain/client' // Keep EntryHash for removeAttachment prop type
 import { isWeaveContext, WAL } from '@theweave/api' // Keep WAL for openAsset prop type
 import { ProjectAssetMeta } from '../../hooks/useProjectAttachments' // Import type for props
+import { CellIdWrapper } from '../../domain/cellId'
 
 function ActiveEntryPoint({
   entryPoint,
@@ -141,12 +140,6 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   )
   const projectId = projectPage ? projectPage.params.projectId : null
 
-  // Remove hook usage:
-  // const { attachmentsInfo } = useProjectAttachments({
-  //   projectId,
-  //   projectMeta,
-  // })
-
   // replace spaces with dashes for project name
   // add in the export date like 2023-12-31 and make it based on the
   // timezone of the user
@@ -170,12 +163,6 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
     await weaveClient.assets.assetToPocket(attachment)
     await weaveClient.assets.assetToPocket(attachment)
   }
-
-  // Remove local attachment functions:
-  // const handleAddAttachment = async () => { ... }
-  // const handleRemoveAttachment = async (relationHash: EntryHash) => { ... }
-  // const openAsset = async (wal: WAL) => { ... }
-
 
   return (
     <div className="header-left-panel-rows">
@@ -297,7 +284,9 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                       {openAttachmentsPicker && (
                         <div className="attachments-picker">
                           <div className="attachments-picker-header">
-                            <div className="attachments-picker-title">Attachments ({attachmentsInfo.length})</div>
+                            <div className="attachments-picker-title">
+                              Attachments ({attachmentsInfo.length})
+                            </div>
                             <Icon
                               name="plus.svg"
                               size="small"
@@ -309,7 +298,9 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                           </div>
                           <div className="attachments-picker-list">
                             {attachmentsInfo.length === 0 && (
-                              <div className="attachments-picker-empty">No attachments yet.</div>
+                              <div className="attachments-picker-empty">
+                                No attachments yet.
+                              </div>
                             )}
                             {attachmentsInfo.map((assetMeta) => (
                               <AttachmentListItem

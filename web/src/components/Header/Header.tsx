@@ -1,5 +1,4 @@
-import React, { useRef, useState } from 'react'
-import useOnClickOutside from 'use-onclickoutside'
+import React, { useState } from 'react'
 
 import { WireRecord } from '../../api/hdkCrud'
 import {
@@ -15,11 +14,11 @@ import HeaderRightPanel from './HeaderRightPanel.connector'
 import UpdateBar from '../UpdateBar/UpdateBar'
 import { ViewingReleaseNotes } from '../UpdateModal/UpdateModal'
 import { ModalState, OpenModal } from '../../context/ModalContexts'
-import { useProjectAttachments, ProjectAssetMeta } from '../../hooks/useProjectAttachments' // Import hook and type
+import { useProjectAttachments } from '../../hooks/useProjectAttachments' // Import hook and type
 import { getWeaveClient } from '../../hcWebsockets' // Import weave client getter
 import { CellIdWrapper } from '../../domain/cellId' // Import CellIdWrapper
 import { decodeHashFromBase64, EntryHash } from '@holochain/client' // Import necessary types/functions
-import { isWeaveContext, WAL } from '@theweave/api' // Import WAL and context check
+import { WAL } from '@theweave/api' // Import WAL and context check
 
 import './Header.scss'
 
@@ -42,6 +41,7 @@ export type HeaderProps = {
   unselectAll: () => void
   // holochain
   updateStatus: (statusString: Profile['status']) => Promise<void>
+  projectId: string
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -57,6 +57,7 @@ const Header: React.FC<HeaderProps> = ({
   setModalState,
   updateStatus,
   goToOutcome,
+  projectId,
 }) => {
   const [status, setStatus] = useState<Status>(
     // @ts-ignore
@@ -65,20 +66,20 @@ const Header: React.FC<HeaderProps> = ({
 
   // Fetch attachments using the hook
   const { attachmentsInfo } = useProjectAttachments({
-    projectId: project ? project.cellId : null,
+    projectId,
     projectMeta: project,
   })
 
   // Add attachment function (mirrors DashboardListProject)
   const handleAddAttachment = async () => {
     const weaveClient = getWeaveClient()
-    if (!weaveClient || !project || !project.projectMeta) return
+    if (!weaveClient || !project || !project) return
 
-    const cellIdWrapper = CellIdWrapper.fromCellIdString(project.cellId)
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
     const thisWal: WAL = {
       hrl: [
         cellIdWrapper.getDnaHash(),
-        decodeHashFromBase64(project.projectMeta.actionHash),
+        decodeHashFromBase64(project.actionHash),
       ],
     }
 
@@ -92,7 +93,10 @@ const Header: React.FC<HeaderProps> = ({
   const handleRemoveAttachment = async (relationHash: EntryHash) => {
     const weaveClient = getWeaveClient()
     if (!weaveClient) return
-    console.log('Removing project attachment from header with relation hash:', relationHash)
+    console.log(
+      'Removing project attachment from header with relation hash:',
+      relationHash
+    )
     await weaveClient.assets.removeAssetRelation(relationHash)
   }
 
