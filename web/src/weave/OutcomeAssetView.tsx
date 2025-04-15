@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { WAL } from '@theweave/api'
 import { encodeHashToBase64 } from '@holochain/client'
+import { useDispatch, useSelector } from 'react-redux'
+import { WAL } from '@theweave/api'
+import { encodeHashToBase64 } from '@holochain/client'
 import ConnectedExpandedViewMode from '../components/ExpandedViewMode/ExpandedViewMode.connector'
 import { AcornState } from './acornState'
 import { getAgentPubKey, getAppWs } from '../hcWebsockets'
 import { CellIdString, ActionHashB64 } from '../types/shared'
 import AppWebsocketContext from '../context/AppWebsocketContext'
-import { useSelector } from 'react-redux'
 import selectAndComputeOutcomes from '../selectors/computeOutcomes'
 import selectOutcomeAndAncestors from '../selectors/outcomeAndAncestors'
 import { ComputedOutcome, Outcome } from '../types'
+import { setActiveProject } from '../redux/ephemeral/active-project/actions'
 import ProjectsZomeApi from '../api/projectsApi'
 import { cellIdFromString } from '../utils'
 import { updateOutcome } from '../redux/persistent/projects/outcomes/actions'
@@ -28,6 +31,7 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
   const [error, setError] = useState<string | null>(null)
   const [appWs, setAppWs] = useState<any>(null) // Replace with actual type if known
   const agentPubKey = getAgentPubKey()
+  const dispatch = useDispatch()
   const computedOutcomes = useSelector(selectAndComputeOutcomes)
   const outcomeAndAncestorActionHashes = useSelector(selectOutcomeAndAncestors)
 
@@ -79,7 +83,9 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
         const outcomeInfo = acornState.findOutcomeByActionHashB64(actionHashB64)
 
         if (outcomeInfo) {
-          setProjectId(outcomeInfo.cellIdWrapper.getCellIdString())
+          const determinedProjectId = outcomeInfo.cellIdWrapper.getCellIdString()
+          setProjectId(determinedProjectId) // Keep local state if needed
+          dispatch(setActiveProject(determinedProjectId)) // Set active project in Redux
           setOutcomeActionHash(outcomeInfo.outcome.actionHash)
         } else {
           throw new Error(`Outcome with ActionHash ${actionHashB64} not found.`)
@@ -95,7 +101,9 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
     if (wal) {
       fetchOutcomeDetails()
     }
-  }, [wal])
+    // Add dispatch to dependency array if required by linting rules,
+    // though dispatch itself is stable.
+  }, [wal, dispatch]) // Make sure dependencies are correct
 
   if (loading) {
     return <div>Loading Outcome...</div>
