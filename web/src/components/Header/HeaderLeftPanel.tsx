@@ -130,8 +130,8 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   )
   const projectId = projectPage ? projectPage.params.projectId : null
 
-  // Fetch attachments using the hook
-  const { attachmentsInfo, addAttachment: addProjectAttachment, removeAttachment: removeProjectAttachment } = useProjectAttachments({
+  // Fetch attachments using the hook (only need attachmentsInfo now)
+  const { attachmentsInfo } = useProjectAttachments({
     projectId,
     projectMeta,
   })
@@ -157,18 +157,36 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
       ],
     }
     await weaveClient.assets.assetToPocket(attachment)
+    await weaveClient.assets.assetToPocket(attachment)
   }
 
-  // Wrapper for adding attachment, potentially closing the picker
+  // Add attachment function (mirrors DashboardListProject)
   const handleAddAttachment = async () => {
-    await addProjectAttachment()
-    // Optionally close picker after adding:
-    // setOpenAttachmentsPicker(false);
+    const weaveClient = getWeaveClient()
+    if (!weaveClient || !projectId || !projectMeta) return
+
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
+    const thisWal: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        decodeHashFromBase64(projectMeta.actionHash),
+      ],
+    }
+
+    const wal = await weaveClient.assets.userSelectAsset()
+    if (wal) {
+      await weaveClient.assets.addAssetRelation(thisWal, wal)
+      // Optionally close picker after adding:
+      // setOpenAttachmentsPicker(false);
+    }
   }
 
-  // Wrapper for removing attachment
+  // Remove attachment function (mirrors DashboardListProject)
   const handleRemoveAttachment = async (relationHash: EntryHash) => {
-    await removeProjectAttachment(relationHash)
+    const weaveClient = getWeaveClient()
+    if (!weaveClient) return
+    console.log('Removing project attachment from header with relation hash:', relationHash)
+    await weaveClient.assets.removeAssetRelation(relationHash)
   }
 
   // Function to open asset (similar to DashboardListProject)
