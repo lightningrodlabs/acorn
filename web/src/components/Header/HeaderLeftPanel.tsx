@@ -16,6 +16,8 @@ import { ENTRY_POINTS } from '../../searchParams'
 import MembersIndicator from '../MembersIndicator/MembersIndicator'
 
 import EntryPointPicker from '../EntryPointPicker/EntryPointPicker.connector'
+import AttachmentListItem from '../ExpandedViewMode/EVMiddleColumn/TabContent/EvAttachments/AttachmentListItem' // Import the list item
+import { useProjectAttachments } from '../../hooks/useProjectAttachments' // Import the hook
 
 //images
 // @ts-ignore
@@ -28,7 +30,7 @@ import useFileDownloaded from '../../hooks/useFileDownloaded'
 import ToastContext, { ShowToast } from '../../context/ToastContext'
 import { getWeaveClient } from '../../hcWebsockets'
 import { CellIdWrapper } from '../../domain/cellId'
-import { decodeHashFromBase64 } from '@holochain/client'
+import { decodeHashFromBase64, EntryHash } from '@holochain/client' // Add EntryHash
 import { isWeaveContext, WAL } from '@theweave/api'
 
 function ActiveEntryPoint({
@@ -88,14 +90,17 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   presentMembers,
   projectMeta,
 }) => {
-  const entryPointsRef = useRef()
-  const exportProjectRef = useRef()
+  const entryPointsRef = useRef<HTMLDivElement>(null)
+  const exportProjectRef = useRef<HTMLDivElement>(null)
+  const attachmentsRef = useRef<HTMLDivElement>(null) // Ref for attachments dropdown
   const { setToastState } = useContext(ToastContext)
   const { fileDownloaded, setFileDownloaded } = useFileDownloaded()
   const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
+  const [openAttachmentsPicker, setOpenAttachmentsPicker] = useState(false) // State for attachments dropdown
   const [isExportOpen, setIsExportOpen] = useState(false)
   useOnClickOutside(entryPointsRef, () => setOpenEntryPointPicker(false))
   useOnClickOutside(exportProjectRef, () => setIsExportOpen(false))
+  useOnClickOutside(attachmentsRef, () => setOpenAttachmentsPicker(false)) // Close attachments dropdown on click outside
   useEffect(() => {
     if (fileDownloaded) {
       setFileDownloaded(false)
@@ -125,6 +130,12 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   )
   const projectId = projectPage ? projectPage.params.projectId : null
 
+  // Fetch attachments using the hook
+  const { attachmentsInfo, addAttachment: addProjectAttachment, removeAttachment: removeProjectAttachment } = useProjectAttachments({
+    projectId,
+    projectMeta,
+  })
+
   // replace spaces with dashes for project name
   // add in the export date like 2023-12-31 and make it based on the
   // timezone of the user
@@ -147,6 +158,27 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
     }
     await weaveClient.assets.assetToPocket(attachment)
   }
+
+  // Wrapper for adding attachment, potentially closing the picker
+  const handleAddAttachment = async () => {
+    await addProjectAttachment()
+    // Optionally close picker after adding:
+    // setOpenAttachmentsPicker(false);
+  }
+
+  // Wrapper for removing attachment
+  const handleRemoveAttachment = async (relationHash: EntryHash) => {
+    await removeProjectAttachment(relationHash)
+  }
+
+  // Function to open asset (similar to DashboardListProject)
+  const openAsset = async (wal: WAL) => {
+    const weaveClient = getWeaveClient()
+    if (weaveClient) {
+      await weaveClient.openAsset(wal)
+    }
+  }
+
 
   return (
     <div className="header-left-panel-rows">
@@ -245,6 +277,56 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                       onClose={() => setOpenEntryPointPicker(false)}
                     />
                   </div>
+
+                  {/* Attachments */}
+                  {isWeaveContext() && (
+                    <div
+                      className="attachments-button-wrapper"
+                      ref={attachmentsRef}
+                    >
+                      <Icon
+                        name="attachment.svg"
+                        size="view-mode" // Match entry points icon size
+                        className={`header-action-icon ${
+                          openAttachmentsPicker ? 'active' : ''
+                        }`}
+                        withTooltip
+                        tooltipText="Attachments"
+                        onClick={() =>
+                          setOpenAttachmentsPicker(!openAttachmentsPicker)
+                        }
+                      />
+                      {/* Attachments Picker Dropdown */}
+                      {openAttachmentsPicker && (
+                        <div className="attachments-picker">
+                          <div className="attachments-picker-header">
+                            <div className="attachments-picker-title">Attachments ({attachmentsInfo.length})</div>
+                            <Icon
+                              name="plus.svg"
+                              size="small"
+                              className="grey"
+                              withTooltip
+                              tooltipText="Add Attachment"
+                              onClick={handleAddAttachment}
+                            />
+                          </div>
+                          <div className="attachments-picker-list">
+                            {attachmentsInfo.length === 0 && (
+                              <div className="attachments-picker-empty">No attachments yet.</div>
+                            )}
+                            {attachmentsInfo.map((assetMeta) => (
+                              <AttachmentListItem
+                                key={`attachment-${assetMeta.relationHash}`}
+                                assetMeta={assetMeta}
+                                openAsset={openAsset}
+                                removeAttachment={handleRemoveAttachment}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {/* Settings */}
                   <Icon
