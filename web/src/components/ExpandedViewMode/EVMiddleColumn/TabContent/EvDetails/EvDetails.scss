@@ -5,7 +5,8 @@
   position: relative;
   overflow-y: scroll;
   box-sizing: border-box;
-  flex: 1;
+  flex: 1; // Ensure it tries to take available space
+  min-height: 0; // Prevent flexbox issues with overflowing content
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 

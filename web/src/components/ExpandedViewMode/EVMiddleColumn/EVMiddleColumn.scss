@@ -14,10 +14,13 @@
     }
   }
 
-  // Ensure middle column takes full width when right column is below
+  // Ensure middle column takes appropriate space and scrolls when stacked
   @media (max-width: 900px) {
-    width: 100%;
-    flex: 1 1 auto; // Allow shrinking/growing but default to auto height
+    width: 100%; // Take full width relative to its container
+    flex-grow: 1; // Allow it to grow
+    flex-shrink: 1; // Allow it to shrink if needed
+    flex-basis: auto; // Default height based on content initially
+    min-height: 0; // Prevent flexbox issues with overflowing content
     overflow-y: auto; // Allow internal scrolling if content exceeds height
   }
 }

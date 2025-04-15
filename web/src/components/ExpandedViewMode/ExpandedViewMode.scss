@@ -153,11 +153,24 @@
     }
   }
 
-  // Ensure left column doesn't take excessive space when stacked
-  @media (max-width: 900px) {
-    flex-direction: column; // Stack left column on top too if needed, or adjust its width/flex properties
-    // Example: Adjust left column width if needed on very small screens
-    // .expanded-view-nav-column { flex: 0 0 auto; width: 100%; border-right: none; border-bottom: 0.165rem solid var(--border-color-platinum); }
+  // Media query for very small screens where left nav becomes top bar
+  @media (max-width: 600px) {
+    flex-direction: column; // Stack left column on top
+
+    .expanded-view-nav-column {
+      flex: 0 0 auto; // Don't grow or shrink, height based on content
+      width: 100%;
+      border-right: none; // Remove right border
+      border-bottom: 0.165rem solid var(--border-color-platinum); // Add bottom border
+    }
+
+    // Ensure the main content area (middle/right) takes remaining space
+    .expanded-view-tab-view-wrapper {
+      padding-top: 0; // Remove top padding as nav is now above
+      height: auto; // Adjust height automatically
+      flex-grow: 1; // Allow it to take remaining vertical space
+      // Stacking of middle/right columns is already handled by the 900px breakpoint
+    }
   }
 }
 
