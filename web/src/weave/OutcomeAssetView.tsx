@@ -81,18 +81,30 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
           // 1. Set the active project ID in Redux state
           dispatch(setActiveProject(determinedProjectId))
 
-          // 2. Fetch the project data needed by the selector into Redux state
+          // 2. Construct fetchers for this project
+          const fetchers = constructProjectDataFetchers(dispatch, determinedProjectId)
+
+          // 3. Fetch all project data needed by selectors and the view, similar to ProjectView
           console.log(
-            `OutcomeAssetView: Fetching data for project ${determinedProjectId}`
+            `OutcomeAssetView: Fetching all data for project ${determinedProjectId}`
           )
+          // Fetch data concurrently
           await Promise.all([
-            dispatch(fetchOutcomes(determinedProjectId)),
-            dispatch(fetchConnections(determinedProjectId)),
-            dispatch(fetchOutcomeMembers(determinedProjectId)),
-            // Potentially fetch other needed data like agents if not global
+            // Data affecting layout/computation (ensure skipLayoutAnimation is true where needed in fetchers)
+            fetchers.fetchOutcomes(),
+            fetchers.fetchConnections(),
+            fetchers.fetchOutcomeMembers(),
+            fetchers.fetchTags(),
+            // Other project data
+            fetchers.fetchProjectMeta(),
+            fetchers.fetchEntryPoints(),
+            fetchers.fetchMembers(),
+            fetchers.fetchOutcomeComments(),
+            // Note: We don't call triggerUpdateLayout here as OutcomeAssetView
+            // doesn't manage the main map/table/priority views layout.
           ])
           console.log(
-            `OutcomeAssetView: Finished fetching data for project ${determinedProjectId}`
+            `OutcomeAssetView: Finished fetching all data for project ${determinedProjectId}`
           )
 
           // Data is fetched, Redux state should be updated,
