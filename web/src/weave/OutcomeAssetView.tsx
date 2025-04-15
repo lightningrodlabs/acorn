@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { WAL } from '@theweave/api'
-import { encodeHashToBase64 } from '@holochain/client'
 import { useDispatch, useSelector } from 'react-redux'
 import { WAL } from '@theweave/api'
 import { encodeHashToBase64 } from '@holochain/client'
@@ -54,17 +52,14 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
 
   // Main effect for fetching initial data based on WAL
   useEffect(() => {
-    const fetchOutcomeDetailsAndProjectData = async () => { // Renamed function
+    const fetchOutcomeDetailsAndProjectData = async () => {
+      // Renamed function
       setLoading(true)
       setError(null)
       try {
         // Use AcornState primarily to find the project ID and validate outcome existence
         // The WAL contains [DnaHash, EntryHash | ActionHash]
         // For outcomes, the second element is the ActionHash
-        const [, actionHash] = wal.hrl // Assuming hrl structure [DnaHash, ActionHash]
-        if (!actionHash) {
-          throw new Error('Invalid WAL structure: ActionHash missing.')
-        }
         const [, actionHash] = wal.hrl // Assuming hrl structure [DnaHash, ActionHash]
         if (!actionHash) {
           throw new Error('Invalid WAL structure: ActionHash missing.')
