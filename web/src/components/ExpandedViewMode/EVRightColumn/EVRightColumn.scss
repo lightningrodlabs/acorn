@@ -67,14 +67,18 @@
       justify-content: flex-start; // Align sections to the start
     }
 
-    // Make each section a flexible item
-    .ev-right-column-section {
-      // flex: 1 1 auto; // Allow sections to grow and shrink, base size on content << OLD
+    // Target the new section wrapper divs as flex items
+    .ev-right-column-section { // This class is now on the wrappers
       flex-grow: 1;    // Allow sections to grow horizontally
       flex-shrink: 1;  // Allow sections to shrink horizontally
       flex-basis: 12rem; // Set a base width (~192px) before wrapping
-      // min-width: 10rem; // Remove min-width, rely on flex-basis
       margin-bottom: 0; // Remove bottom margin, use gap instead
+
+      // Styles for subsections if needed (e.g., if we used .ev-right-column-subsection)
+      // .ev-right-column-subsection {
+      //   margin-bottom: 1rem; // Add spacing between subsections within a section wrapper
+      // }
+
       // Remove the flex rules that were applied previously for items *within* the section
       // display: flex; // << REMOVE
       // flex-wrap: wrap; // << REMOVE
