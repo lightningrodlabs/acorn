@@ -59,29 +59,38 @@
       width: 100%; // Inner wrapper takes full width of the column
       padding: 1.5rem; // Keep padding adjustment
       overflow: visible; // Keep content flow adjustment
-      justify-content: flex-start; // Keep alignment adjustment
+      // Make the inner wrapper a flex container that wraps
+      display: flex;
+      flex-direction: row; // Arrange sections horizontally first
+      flex-wrap: wrap;     // Allow sections to wrap onto the next line
+      gap: 1rem;           // Add spacing between wrapped sections
+      justify-content: flex-start; // Align sections to the start
     }
 
-    // Allow items within sections to wrap horizontally
+    // Make each section a flexible item
     .ev-right-column-section {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem; // Spacing between wrapped items
-      align-items: center; // Align items vertically
+      flex: 1 1 auto; // Allow sections to grow and shrink, base size on content
+      min-width: 10rem; // Prevent sections from becoming too narrow (~160px)
+      margin-bottom: 0; // Remove bottom margin, use gap instead
+      // Remove the flex rules that were applied previously for items *within* the section
+      // display: flex; // << REMOVE
+      // flex-wrap: wrap; // << REMOVE
+      // gap: 0.5rem; // << REMOVE
+      // align-items: center; // << REMOVE
 
       .ev-right-column-heading {
-        flex-basis: 100%; // Ensure heading takes full width before items wrap
+        // flex-basis: 100%; // No longer needed as section itself is the flex item
         margin-bottom: 0.5rem; // Keep existing margin
       }
 
-      // Adjust margin for wrapped items if needed (target specific wrappers)
+      // Ensure items *within* the section still stack vertically as before
       .read-only-info-wrapper.small,
       .select-dropdown-wrapper,
       .button-toggle-switch-wrapper,
       .button-checkbox-wrapper,
       .button-action-wrapper {
-        margin-bottom: 0; // Remove bottom margin when wrapped, rely on gap
-        // Optionally add flex-grow: 1; if you want items to fill space horizontally
+        width: 100%; // Ensure they take full width within their section
+        margin-bottom: 0.5rem; // Restore vertical spacing within the section
       }
     }
   }
