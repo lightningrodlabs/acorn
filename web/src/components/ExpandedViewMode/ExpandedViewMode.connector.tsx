@@ -340,21 +340,35 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   // }
   console.log('going to try rendering expanded view')
 
+  // Ensure all necessary props are passed to the component,
+  // which will then distribute them to the wrapper or inner component.
   return (
     <ExpandedViewMode
+      // Props needed by Inner component (passed through)
       projectId={projectId}
-      openExpandedView={openExpandedView}
-      details={details}
-      comments={comments}
-      childrenList={childrenList}
-      taskList={taskList}
-      rightColumn={rightColumn}
-      onClose={onClose}
       outcome={outcome}
+      // outcomeActionHash is derived from redux state within ExpandedViewModeComponent
+      // activeTab/setActiveTab are managed by state within ExpandedViewModeComponent
+      // commentCount is derived from redux state within ExpandedViewModeComponent
+      details={details} // React Element
+      comments={comments} // React Element
+      childrenList={childrenList} // React Element
+      taskList={taskList} // React Element
+      rightColumn={rightColumn} // React Element
+      attachments={attachments} // React Element
+
+      // Props needed by Modal Wrapper (passed through)
+      onClose={onClose}
       outcomeAndAncestors={outcomeAndAncestors}
-      updateOutcome={updateOutcome}
-      attachments={attachments}
-      renderAsModal={renderAsModal} // Pass down the prop
+      openExpandedView={openExpandedView}
+      // showing state is managed within ExpandedViewModeComponent
+
+      // Prop to control rendering mode
+      renderAsModal={renderAsModal}
+
+      // Other props (may not be directly used by component but needed by connector logic/passed down)
+      updateOutcome={updateOutcome} // Passed down
+      activeAgentPubKey={activeAgentPubKey} // Passed down (though might not be needed directly in component)
     />
   )
 }

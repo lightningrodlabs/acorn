@@ -1,0 +1,111 @@
+/* Styles specifically for the modal presentation */
+
+.expanded-view-modal-wrapper {
+  height: calc(100vh - 6.5rem); // Use vh for height relative to viewport
+  max-height: 46.5rem; // Max height remains fixed
+  box-shadow: 0 0 2.5rem var(--shadow-color-dark);
+  width: 90%; // Use percentage for width relative to parent/viewport
+  max-width: 60rem; // Max width remains fixed
+  background-color: var(--bg-color-tertiary);
+  border-radius: 16px;
+  display: flex; // Keep flex for internal layout (Left Column + Tab View Wrapper)
+  flex-direction: row;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  z-index: 4; // Ensure modal is above overlay
+
+  .button-close-wrapper {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 5; // Ensure close button is above content
+  }
+}
+
+.expanded-view-overlay {
+  background: var(--bg-color-popup);
+  height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-y: hidden;
+  position: fixed;
+  top: 0;
+  left: 0; // Ensure it covers the whole screen
+  z-index: 4; // Below modal wrapper, above page content
+}
+
+.breadcrumbs-overlay {
+  position: fixed;
+  top: 0.5rem;
+  left: 1rem;
+  z-index: 5; // Above modal wrapper and overlay
+}
+
+/* Transitions (using new prefixes) */
+
+/* breadcrumbs css transitions (animation) */
+.breadcrumbs-overlay-transition-enter {
+  opacity: 0;
+}
+.breadcrumbs-overlay-transition-enter-active {
+  opacity: 1;
+  transition: opacity 0.25s 0s;
+}
+.breadcrumbs-overlay-transition-exit {
+  opacity: 1;
+  transition: opacity 0.25s 0s;
+}
+.breadcrumbs-overlay-transition-exit-active {
+  opacity: 0;
+}
+
+/* expanded view overlay css transitions (animation) */
+.expanded-view-overlay-transition-enter {
+  opacity: 0;
+}
+.expanded-view-overlay-transition-enter-active {
+  opacity: 1;
+  transition: opacity 0.25s 0s, transform 0.25s;
+}
+.expanded-view-overlay-transition-exit {
+  opacity: 1;
+  transition: opacity 0.25s 0s, transform 0.25s;
+}
+.expanded-view-overlay-transition-exit-active {
+  opacity: 0;
+}
+
+/* expanded view wrapper css transitions (animation) */
+.expanded-view-wrapper-transition-enter {
+  -ms-transform: translate(-50%, -50%) scale(0.9);
+  transform: translate(-50%, -50%) scale(0.9);
+  opacity: 0;
+}
+.expanded-view-wrapper-transition-enter-active {
+  -ms-transform: translate(-50%, -50%) scale(1);
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  transition: opacity 0.25s 0s, transform 0.25s;
+}
+.expanded-view-wrapper-transition-exit {
+  -ms-transform: translate(-50%, -50%) scale(1);
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+.expanded-view-wrapper-transition-exit-active {
+  -ms-transform: translate(-50%, -50%) scale(0.9);
+  transform: translate(-50%, -50%) scale(0.9);
+  opacity: 0;
+  transition: opacity 0.25s 0s, transform 0.25s;
+}
+
+/* expanded view date picker positioning relative to modal */
+.expanded-view-modal-wrapper > .date_picker_wrapper {
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+}

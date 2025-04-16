@@ -186,14 +186,14 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
           projectId={projectId}
           openExpandedView={() => {}}
           onClose={() => {}}
-          outcome={expandedViewOutcome}
-          outcomeAndAncestors={expandedViewOutcomeAndAncestors}
-          updateOutcome={updateOutcomeCallback}
-          createOutcomeWithConnection={async () => {}} // Placeholder/No-op
-          renderAsModal={false} // Prevent modal rendering
-          // gen
-          //   initialProjectId={projectId}
-          //   initialOutcomeActionHash={outcomeActionHash}
+          outcome={expandedViewOutcome} // Pass the computed outcome
+          outcomeAndAncestors={expandedViewOutcomeAndAncestors} // Pass ancestors
+          updateOutcome={updateOutcomeCallback} // Pass callback
+          // createOutcomeWithConnection is handled by the connector if needed
+          renderAsModal={false} // Explicitly render without modal chrome
+          // The connector now handles initialProjectId and initialOutcomeActionHash internally
+          // initialProjectId={projectId}
+          // initialOutcomeActionHash={outcomeActionHash}
           // The following props are managed internally by ConnectedExpandedViewMode
           // when initial props are provided, or might need context/redux setup
           // if used in a different standalone way. For now, we rely on its internal logic.
