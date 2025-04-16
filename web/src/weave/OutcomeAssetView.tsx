@@ -76,7 +76,10 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
           dispatch(setActiveProject(determinedProjectId))
 
           // 2. Construct fetchers for this project
-          const fetchers = constructProjectDataFetchers(dispatch, determinedProjectId)
+          const fetchers = constructProjectDataFetchers(
+            dispatch,
+            determinedProjectId
+          )
 
           // 3. Fetch all project data needed by selectors and the view, similar to ProjectView
           console.log(
