@@ -21,6 +21,7 @@
     flex-shrink: 1; // Allow it to shrink if needed
     flex-basis: auto; // Default height based on content initially
     min-height: 0; // Prevent flexbox issues with overflowing content
-    overflow-y: auto; // Allow internal scrolling if content exceeds height
+    // Remove overflow-y: auto to allow full height display
+    // overflow-y: auto; // Allow internal scrolling if content exceeds height
   }
 }
