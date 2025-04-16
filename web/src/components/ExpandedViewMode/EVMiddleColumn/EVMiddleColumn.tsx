@@ -56,7 +56,9 @@ const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
         computedAchievementStatus={computedAchievementStatus}
         attachmentsCount={attachmentsCount}
       />
-      {activeTab === ExpandedViewTab.Details && details}
+      {/* Clone EvDetails element and pass rightColumn prop only when Details tab is active */}
+      {activeTab === ExpandedViewTab.Details &&
+        React.cloneElement(details, { rightColumn: rightColumn })}
       {activeTab === ExpandedViewTab.Comments && comments}
       {activeTab === ExpandedViewTab.ChildrenList && childrenList}
       {activeTab === ExpandedViewTab.TaskList && taskList}

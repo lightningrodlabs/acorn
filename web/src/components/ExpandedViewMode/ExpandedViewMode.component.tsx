@@ -140,10 +140,11 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
           childrenList={childrenList}
           taskList={taskList}
           attachments={attachments}
+          // Pass rightColumn down to MiddleColumn
+          rightColumn={rightColumn}
         />
-        {/* Only show the rightColumn while */}
-        {/* viewing Details */}
-        {activeTab === ExpandedViewTab.Details && rightColumn}
+        {/* rightColumn is now rendered inside EvDetails (via EVMiddleColumn) */}
+        {/* {activeTab === ExpandedViewTab.Details && rightColumn} */}
       </div>
     </>
   )

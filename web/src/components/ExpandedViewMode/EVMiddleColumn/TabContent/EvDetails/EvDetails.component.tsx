@@ -122,6 +122,8 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   startDescriptionEdit,
   endDescriptionEdit,
   editingPeers,
+  // Destructure rightColumn prop
+  rightColumn,
 }) => {
   // reset
   useEffect(() => {
@@ -296,9 +298,11 @@ const EvDetails: React.FC<EvDetailsProps> = ({
     Component
   */
   return (
-    <>
-      <div className="ev-details-wrapper">
-        {/* Expanded View Title */}
+    // No need for fragment <> </> anymore if wrapper is the top element
+    <div className="ev-details-wrapper">
+      {/* Main details content area */}
+      <div className="ev-details-main-content">
+        {/* This used to be ev-details-inner-wrapper */}
         <div className="ev-details-inner-wrapper">
           <div className="ev-title-wrapper">
             <EditingOverlay
@@ -479,8 +483,13 @@ const EvDetails: React.FC<EvDetailsProps> = ({
             value={description}
           />
         </div>
+        {/* End of ev-details-inner-wrapper */}
       </div>
-    </>
+      {/* End of ev-details-main-content */}
+
+      {/* Render the right column alongside the main content */}
+      {rightColumn}
+    </div>
   )
 }
 
