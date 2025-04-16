@@ -108,4 +108,30 @@
   transform: translate(-50%, -50%);
   top: 50%;
   left: 50%;
+
+  // Responsive adjustments for the modal container at narrow widths
+  @media (max-width: 600px) {
+    flex-direction: column; // Stack left column (nav) on top of the tab view wrapper
+    // Adjust modal size for stacked layout if needed, e.g., allow more height
+    height: calc(100vh - 2rem); // Example: Allow more vertical space
+    max-height: none; // Remove max-height constraint if it interferes
+    width: 95%; // Adjust width if needed
+
+    // Target the Left Column component when inside .expanded-view-modal-wrapper
+    // Assuming EVLeftColumn renders a div with class 'expanded-view-nav-column'
+    > .expanded-view-nav-column { // Use direct child selector '>' for specificity
+      flex: 0 0 auto; // Don't grow or shrink, height based on content
+      width: 100%;
+      border-right: none; // Remove right border
+      border-bottom: 0.165rem solid var(--border-color-platinum); // Add bottom border
+    }
+
+    // Target the tab view wrapper when inside .expanded-view-modal-wrapper
+    > .expanded-view-tab-view-wrapper { // Use direct child selector '>'
+      padding-top: 0; // Remove top padding as nav is now above
+      height: auto; // Adjust height automatically
+      flex-grow: 1; // Allow it to take remaining vertical space
+      // Stacking of middle/right columns within this wrapper is handled by its own media query in ExpandedViewMode.scss
+    }
+  }
 }
