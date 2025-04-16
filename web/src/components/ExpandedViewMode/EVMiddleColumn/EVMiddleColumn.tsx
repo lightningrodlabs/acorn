@@ -14,15 +14,19 @@ export type EVMiddleColumnProps = {
   projectId: string
   activeTab: ExpandedViewTab
   outcome: ComputedOutcome
-  details: React.ReactElement
+  details: React.ReactElement // This is EvDetails
   comments: React.ReactElement
   childrenList?: React.ReactElement
   taskList?: React.ReactElement
   attachments?: React.ReactElement
+  // Accept rightColumn prop
+  rightColumn?: React.ReactElement
 }
 
 const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
   projectId,
+  // Destructure rightColumn
+  rightColumn,
   activeTab,
   details,
   comments,
