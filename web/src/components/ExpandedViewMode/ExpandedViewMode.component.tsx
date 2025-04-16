@@ -139,7 +139,7 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
         <ExpandedViewModeInner {...innerProps} />
       </div>
     )
-  )
+  }
 }
 
 export default ExpandedViewMode

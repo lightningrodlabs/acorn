@@ -331,7 +331,9 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
             {/* We can only annotate Achievement Status if this Outcome is */}
             {/* annotated Small and has no children */}
             {isSmall && (
-              <div className="ev-right-column-subsection"> {/* Use subsection class if needed for styling */}
+              <div className="ev-right-column-subsection">
+                {' '}
+                {/* Use subsection class if needed for styling */}
                 <Typography style="h7">
                   <div className="ev-right-column-heading">
                     Achievement Status
@@ -346,7 +348,9 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
               </div>
             )}
 
-            <div className="ev-right-column-subsection"> {/* Use subsection class if needed for styling */}
+            <div className="ev-right-column-subsection">
+              {' '}
+              {/* Use subsection class if needed for styling */}
               <Typography style="h7">
                 {' '}
                 <div className="ev-right-column-heading">Scope</div>
@@ -369,7 +373,6 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
                   text: 'Uncertain',
                 }}
               />
-            </div>
             </div>
           </div>
         )}

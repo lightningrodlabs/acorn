@@ -9,13 +9,13 @@ const selectAndComputeOutcomes = createSelector(
     state.projects.connections[state.ui.activeProject] || {},
   (state: RootState) =>
     state.projects.outcomeMembers[state.ui.activeProject] || {},
-  (
-    agents,
-    outcomes,
-    connections,
-    outcomeMembers
-  ) => {
-    console.log('recalculating computedOutcomes!')
+  (agents, outcomes, connections, outcomeMembers) => {
+    console.log('recalculating computedOutcomes!', {
+      agents,
+      outcomes,
+      connections,
+      outcomeMembers,
+    })
     const treeData = {
       agents,
       outcomes,

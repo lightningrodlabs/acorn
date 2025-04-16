@@ -356,7 +356,6 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       taskList={taskList} // React Element
       rightColumn={rightColumn} // React Element
       attachments={attachments} // React Element
-
       // Props needed by Modal Wrapper (passed through)
       onClose={onClose}
       outcomeAndAncestors={outcomeAndAncestors}
@@ -365,7 +364,6 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
 
       // Prop to control rendering mode
       renderAsModal={renderAsModal}
-
       // Other props (may not be directly used by component but needed by connector logic/passed down)
       updateOutcome={updateOutcome} // Passed down
       activeAgentPubKey={activeAgentPubKey} // Passed down (though might not be needed directly in component)
