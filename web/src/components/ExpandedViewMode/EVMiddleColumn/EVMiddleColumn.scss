@@ -17,10 +17,11 @@
   // Ensure middle column takes appropriate space and scrolls when stacked
   @media (max-width: 900px) {
     width: 100%; // Take full width relative to its container
-    flex-grow: 1; // Allow it to grow
-    flex-shrink: 1; // Allow it to shrink if needed
+    // Remove flex grow/shrink properties to allow natural height
+    // flex-grow: 1;
+    flex-shrink: 0; // <<-- CHANGE THIS: Prevent shrinking
     flex-basis: auto; // Default height based on content initially
-    min-height: 0; // Prevent flexbox issues with overflowing content
+    // min-height: 0; // Might not be strictly needed if not shrinking, but harmless
     // Remove overflow-y: auto to allow full height display
     // overflow-y: auto; // Allow internal scrolling if content exceeds height
   }
