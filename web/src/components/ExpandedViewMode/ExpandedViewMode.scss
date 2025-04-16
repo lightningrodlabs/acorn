@@ -23,10 +23,20 @@
 // Styles for the container when EVM is rendered *without* the modal wrapper
 // This class is applied by ExpandedViewMode.component.tsx when renderAsModal is false
 .expanded-view-interior-only {
+  // Use absolute positioning to fill its nearest positioned ancestor.
+  // IMPORTANT: The container rendering <OutcomeAssetView> MUST have
+  // position: relative (or absolute/fixed) for this to work reliably.
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  // display: flex and flex-direction remain the same for internal layout
   display: flex;
-  flex-direction: row; // Inner components are laid out in a row (Left Column + Tab View Wrapper)
-  width: 100%;
-  height: 100%; // Take full available space of its parent (e.g., OutcomeAssetView)
+  flex-direction: row;
+  // width/height: 100% are effectively replaced by top/bottom/left/right: 0
+  // width: 100%;
+  // height: 100%;
   background-color: var(--bg-color-tertiary); // Keep consistent background
   overflow: hidden; // Prevent overflow at this top level
 
