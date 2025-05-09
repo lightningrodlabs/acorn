@@ -33,9 +33,12 @@ const isWeaveDevMode = () => {
   }
   if (!isWeaveContext()) {
     // electron
+    console.log('IS NOT WEAVE CONTEXT')
     ;(async () => {
       const appWs = await getAppWs()
-      const store = await createStoreAndRenderToDom(appWs, App)
+      const store = await createStoreAndRenderToDom(appWs, App, {
+        appWebsocket: appWs,
+      })
       await electronInit(store, appWs)
     })()
   } else {
