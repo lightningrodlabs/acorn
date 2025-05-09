@@ -151,7 +151,7 @@ pub struct EditingOutcomeDetails {
 #[hdk_extern]
 pub fn emit_realtime_info_signal(realtime_info: RealtimeInfoInput) -> ExternResult<()> {
     let realtime_info_signal = RealtimeInfoSignal {
-        agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey),
+        agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey),
         project_id: realtime_info.project_id,
         outcome_being_edited: realtime_info.outcome_being_edited,
         outcome_expanded_view: realtime_info.outcome_expanded_view,
@@ -168,7 +168,7 @@ pub fn emit_editing_outcome_signal(editing_outcome_info: EditingOutcomeInput) ->
     let editing_outcome_signal = EditingOutcomeSignal {
         outcome_field: editing_outcome_info.outcome_field,
         outcome_action_hash: editing_outcome_info.outcome_action_hash,
-        editing_agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey),
+        editing_agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey),
         is_editing: editing_outcome_info.is_editing,
     };
 
@@ -199,7 +199,7 @@ pub fn get_peers(get_options: GetOptions) -> ExternResult<Vec<AgentPubKey>> {
         None,
         get_options,
     )?;
-    let self_agent_pub_key = AgentPubKeyB64::new(agent_info()?.agent_latest_pubkey);
+    let self_agent_pub_key = AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey);
     Ok(entries
         .into_iter()
         // eliminate yourself as a peer
