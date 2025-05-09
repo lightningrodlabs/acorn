@@ -8,7 +8,7 @@ crate-type = ["cdylib", "rlib"]
 name = "profiles"
 
 [dependencies]
-hdk_crud = { workspace = true }
+hdk_crud = { path = "../../../lib/hdk_crud" }
 hdk = { workspace = true }
 holo_hash = { workspace = true }
 profiles_integrity = { path = "../profiles_integrity" }
