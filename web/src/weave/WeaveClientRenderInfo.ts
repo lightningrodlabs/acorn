@@ -40,7 +40,7 @@ export class WeaveClientRenderInfo {
     ) {
       return false
     }
-    return this.renderInfo.view.recordInfo.entryType === 'project'
+    return this.renderInfo.view.recordInfo.entryType === 'project_meta'
   }
   getAppletClient(): AppClient {
     if (this.renderInfo.type !== 'applet-view') {
@@ -69,7 +69,7 @@ export class WeaveClientRenderInfo {
     if (
       this.renderInfo.type !== 'applet-view' ||
       this.renderInfo.view.type !== 'asset' ||
-      this.renderInfo.view.recordInfo.entryType !== 'project'
+      this.renderInfo.view.recordInfo.entryType !== 'project_meta'
     ) {
       throw new Error('Not a project view')
     }
