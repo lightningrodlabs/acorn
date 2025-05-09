@@ -124,11 +124,11 @@ export function getComponentAndPropsForRenderMode(
     }
   }
   if (renderInfo.isProjectView()) {
-    const projectId = renderInfo.getProjectWal()
+    const projectWal = renderInfo.getProjectWal()
     return {
       rootElement: ProjectAssetView,
       rootProps: {
-        projectId,
+        wal: projectWal,
       },
     }
   }

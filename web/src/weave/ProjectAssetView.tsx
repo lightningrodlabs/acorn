@@ -6,11 +6,10 @@ interface ProjectAssetViewProps {
 }
 const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
   return (
-    <div>
-      {/* Render the asset view here */}
-      <h1>Asset View</h1>
-      <p>Asset ID: {wal}</p>
-      {/* Add more details as needed */}
+    <div style={{ padding: '20px', textAlign: 'center' }}>
+      <h2>Project View</h2>
+      <p>The project view has not been implemented yet.</p>
+      <p style={{ color: '#666', fontSize: '0.9em' }}>Project ID: {JSON.stringify(wal)}</p>
     </div>
   )
 }
