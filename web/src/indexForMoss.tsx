@@ -41,12 +41,12 @@ export async function mossInit(
 
     const { cellId, projectsCellId } = {
       cellId:
-        CellType.Provisioned in profilesCellInfo
-          ? profilesCellInfo[CellType.Provisioned].cell_id
+        CellType.Provisioned === profilesCellInfo.type
+          ? profilesCellInfo.value.cell_id
           : undefined,
       projectsCellId:
-        CellType.Provisioned in projectsCellInfo
-          ? projectsCellInfo[CellType.Provisioned].cell_id
+        CellType.Provisioned === projectsCellInfo.type
+          ? projectsCellInfo.value.cell_id
           : undefined,
     }
     if (cellId == undefined || projectsCellId == undefined) {

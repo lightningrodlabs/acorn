@@ -124,11 +124,9 @@ export default (store): SignalCb => {
   // needs to be in this scope so that it is accessible each time a signal is received
   const timerIds = {}
   return (signal: Signal) => {
-    if (HcSignalType.System in signal) {
+    if (signal.type === HcSignalType.System) {
     }
-    let { cell_id: cellId, payload: signalPayload } = (signal as {
-      App: AppSignal
-    }).App
+    let { cell_id: cellId, payload: signalPayload } = signal.value as AppSignal
     let waitForNextSignal = 12000
     // TODO: update holochain-conductor-api to latest
     // which should deserialize this automatically

@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
-import { AppClient, CellType } from '@holochain/client'
+import { AppClient, CellType, CellInfo } from '@holochain/client'
 
 // Local Imports
 import { PROFILES_ROLE_NAME, PROJECTS_ROLE_NAME } from './holochainConfig'
@@ -77,11 +77,11 @@ export async function electronInit(store: any, appWs: AppClient) {
     }
     const { cellId, projectsCellId } = {
       cellId:
-        profilesCellInfo && CellType.Provisioned in profilesCellInfo
-          ? profilesCellInfo[CellType.Provisioned].cell_id
+        profilesCellInfo && profilesCellInfo.type === CellType.Provisioned
+          ? profilesCellInfo.value.cell_id
           : undefined,
       projectsCellId:
-        projectsCellInfo && CellType.Provisioned in projectsCellInfo
+        projectsCellInfo && profilesCellInfo.type === CellType.Provisioned
           ? projectsCellInfo[CellType.Provisioned].cell_id
           : undefined,
     }

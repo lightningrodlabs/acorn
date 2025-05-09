@@ -11,8 +11,7 @@ export async function getProjectCellIdStrings() {
   // get only the enabled cloned cells
   const clonedProjectCells =
     appInfo?.cell_info[PROJECTS_ROLE_NAME].filter(
-      (cellInfo) =>
-        CellType.Cloned in cellInfo && cellInfo[CellType.Cloned].enabled
+      (cellInfo) => CellType.Cloned === cellInfo.type && cellInfo.value.enabled
     ) || []
   return clonedProjectCells.map((cellInfo) =>
     cellIdToString(cellInfo[CellType.Cloned].cell_id)
