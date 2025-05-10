@@ -1440,21 +1440,6 @@
     lodash-es "^4.17.21"
     sort-keys "^5.0.0"
 
-"@holochain/client@0.18.0":
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/@holochain/client/-/client-0.18.0.tgz#cf9f3d20711c3bd8e31b847a8c42292959186380"
-  integrity sha512-I+YIJ2ZeDS8HeUdRvV1Ti9O8m3YPHti8mpUoqg9GZ0A77y+3NIihsB1X8vQBRBFKwNUyZ14U/ZgWQ8/2Y0/T5w==
-  dependencies:
-    "@bitgo/blake2b" "^3.2.4"
-    "@holochain/serialization" "^0.1.0-beta-rc.3"
-    "@msgpack/msgpack" "^2.8.0"
-    emittery "^1.0.1"
-    isomorphic-ws "^5.0.0"
-    js-base64 "^3.7.5"
-    libsodium-wrappers "^0.7.13"
-    lodash-es "^4.17.21"
-    ws "^8.14.2"
-
 "@holochain/client@0.19.0", "@holochain/client@^0.19.0":
   version "0.19.0"
   resolved "https://registry.yarnpkg.com/@holochain/client/-/client-0.19.0.tgz#5bf3cf9ef58f2da9a060b31160daf197cfaf2346"
@@ -1470,58 +1455,54 @@
     lodash-es "^4.17.21"
     ws "^8.14.2"
 
-"@holochain/hc-spin-rust-utils-darwin-arm64@0.400.0":
-  version "0.400.0"
-  resolved "https://registry.yarnpkg.com/@holochain/hc-spin-rust-utils-darwin-arm64/-/hc-spin-rust-utils-darwin-arm64-0.400.0.tgz#7773c68bb0e9d040b0c08b4979fa84d04a2755d8"
-  integrity sha512-FL/pnutrsj7AfIyml4flM2FpMMjm6KCDfaR+e+xB9d4dyFxAc1h9YcuUDHZkAGBhqCiLJ5FtiIOHqu770XCQIg==
+"@holochain/hc-spin-rust-utils-darwin-arm64@0.500.0":
+  version "0.500.0"
+  resolved "https://registry.yarnpkg.com/@holochain/hc-spin-rust-utils-darwin-arm64/-/hc-spin-rust-utils-darwin-arm64-0.500.0.tgz#9023d114623fbed8be52009b32107a7abf6a2546"
+  integrity sha512-C6eI1dhHFm8veDe5rJ1dn/fD5kNh+2M4D3UVKV+cKEgd7DO823hSSC1ArV9NoK2QiSL5VFVKqVhu0aadekNHlg==
 
-"@holochain/hc-spin-rust-utils-darwin-x64@0.400.0":
-  version "0.400.0"
-  resolved "https://registry.yarnpkg.com/@holochain/hc-spin-rust-utils-darwin-x64/-/hc-spin-rust-utils-darwin-x64-0.400.0.tgz#2ae2a28e07844a74e94c41500784ba4bf146346a"
-  integrity sha512-FThpisR49A/lMFA1yv5IDrCSZQe7/s48xRf85iVNYl1aUM/ftKOcEFzwEQe+cN+nzJLhi8vJzZDAyBVdCKB7Mg==
+"@holochain/hc-spin-rust-utils-darwin-x64@0.500.0":
+  version "0.500.0"
+  resolved "https://registry.yarnpkg.com/@holochain/hc-spin-rust-utils-darwin-x64/-/hc-spin-rust-utils-darwin-x64-0.500.0.tgz#e65bf98d56091723aa599af500a1cc3acca75b56"
+  integrity sha512-qfdO9Ue0FDTueY+l96IJ/QEf6eT1ennwrJZ5jaHs32naF6IQ7bDC9wOvieFzHalMndObD6L3CyUY3DLQDEA+xQ==
 
-"@holochain/hc-spin-rust-utils-linux-x64-gnu@0.400.0":
-  version "0.400.0"
-  resolved "https://registry.yarnpkg.com/@holochain/hc-spin-rust-utils-linux-x64-gnu/-/hc-spin-rust-utils-linux-x64-gnu-0.400.0.tgz#464239e843d55eaf3bd39e4c957fe0e7cadcb248"
-  integrity sha512-13d/Wn0/73OdQ+B8Zf8xM3naiZlqIva/8rQvgUQTRQszgMrIuTz64hZ0goAG0rhxR+TzfY3MPUys17KfWIjSBw==
+"@holochain/hc-spin-rust-utils-linux-x64-gnu@0.500.0":
+  version "0.500.0"
+  resolved "https://registry.yarnpkg.com/@holochain/hc-spin-rust-utils-linux-x64-gnu/-/hc-spin-rust-utils-linux-x64-gnu-0.500.0.tgz#2146b4732b2f19f4c713ea87b6b1838f351ff813"
+  integrity sha512-7jgjwvOVfYyqp/3/rie2KvwivxboenAZFzkW8RzsRCH+h5htA+uirkuCRqJYu7IZf2ukWZwfoFQKO5qmoIxRuw==
 
-"@holochain/hc-spin-rust-utils-win32-x64-msvc@0.400.0":
-  version "0.400.0"
-  resolved "https://registry.yarnpkg.com/@holochain/hc-spin-rust-utils-win32-x64-msvc/-/hc-spin-rust-utils-win32-x64-msvc-0.400.0.tgz#735b1470e6a675f11ad8588f02b6fa42ca0e4e30"
-  integrity sha512-5/GxzAEAQyVy9ZXF6Py+jUA3d5RktjhYSWx+FF6OqOkTKmkg5e/XX8srDFWdL5GEi/gW/47NRZVqdjD3LYvjEA==
+"@holochain/hc-spin-rust-utils-win32-x64-msvc@0.500.0":
+  version "0.500.0"
+  resolved "https://registry.yarnpkg.com/@holochain/hc-spin-rust-utils-win32-x64-msvc/-/hc-spin-rust-utils-win32-x64-msvc-0.500.0.tgz#97e6568feaa6bdcba4e24de14d03ef70dd642221"
+  integrity sha512-MshgOZFjVaztX998iqP6fS4fj9jDHLm1+CCBvY5OTBpzaIw0y42C5ZTvSvuTa2mByr/LsJSwyyDLUnVYBqO9jg==
 
-"@holochain/hc-spin-rust-utils@0.400.0":
-  version "0.400.0"
-  resolved "https://registry.yarnpkg.com/@holochain/hc-spin-rust-utils/-/hc-spin-rust-utils-0.400.0.tgz#6215f2b2ff6d8e083e17d1cc248b0af210e7fc79"
-  integrity sha512-yNfrqAD3l7rgr2abhuPcb/7/zi4VR4QQCCJMvsE6rwl2D2NtFC0PMiBk34kVCdABQqJyFRgaPoDAA0ll9Yic2Q==
+"@holochain/hc-spin-rust-utils@0.500.0":
+  version "0.500.0"
+  resolved "https://registry.yarnpkg.com/@holochain/hc-spin-rust-utils/-/hc-spin-rust-utils-0.500.0.tgz#5366a60df289aaeb0c562690667e322fd12d710f"
+  integrity sha512-PvYxEZ69ZvT4DijJ8100FfuQy3qFMVSSaT/WXkhM4kOdk3LjNIVFx22bI3pcZWl/+z2Nz7fKMg7xFNN/RhLLWQ==
   optionalDependencies:
-    "@holochain/hc-spin-rust-utils-darwin-arm64" "0.400.0"
-    "@holochain/hc-spin-rust-utils-darwin-x64" "0.400.0"
-    "@holochain/hc-spin-rust-utils-linux-x64-gnu" "0.400.0"
-    "@holochain/hc-spin-rust-utils-win32-x64-msvc" "0.400.0"
+    "@holochain/hc-spin-rust-utils-darwin-arm64" "0.500.0"
+    "@holochain/hc-spin-rust-utils-darwin-x64" "0.500.0"
+    "@holochain/hc-spin-rust-utils-linux-x64-gnu" "0.500.0"
+    "@holochain/hc-spin-rust-utils-win32-x64-msvc" "0.500.0"
 
-"@holochain/hc-spin@^0.400.0":
-  version "0.400.0"
-  resolved "https://registry.yarnpkg.com/@holochain/hc-spin/-/hc-spin-0.400.0.tgz#3e30c52b3a7569f0d46c2f78550cf454dc677d34"
-  integrity sha512-KjX0L2uyTUtg9+SGNnpn8LaZXgnF0s+f8r4loUuGcwLTsRE/eATT3Z8PbCt0Pw0lQ2B5feKiaxy1vJN/XLauqA==
+"@holochain/hc-spin@^0.500.1":
+  version "0.500.1"
+  resolved "https://registry.yarnpkg.com/@holochain/hc-spin/-/hc-spin-0.500.1.tgz#67f27376c54126c41cd7aea742c73c95ff7a4a8d"
+  integrity sha512-o8zo8FliFwGT1/Pf/4PvipXmjIsLnDwLVd26n+e1M5w+pHzaBJhI/VXlIQQF0qHWaXYXrO568FV3rUPH8SLUbQ==
   dependencies:
     "@electron-toolkit/preload" "^3.0.0"
     "@electron-toolkit/utils" "^3.0.0"
-    "@holochain/client" "0.18.0"
-    "@holochain/hc-spin-rust-utils" "0.400.0"
+    "@holochain/client" "0.19.0"
+    "@holochain/hc-spin-rust-utils" "0.500.0"
     "@msgpack/msgpack" "^2.8.0"
     bufferutil "4.0.8"
     commander "11.1.0"
     electron "^29.3.1"
     electron-context-menu "3.6.1"
     get-port "7.0.0"
+    js-sha512 "^0.9.0"
     nanoid "5.0.4"
     split "1.0.1"
-
-"@holochain/serialization@^0.1.0-beta-rc.3":
-  version "0.1.0-beta-rc.3"
-  resolved "https://registry.yarnpkg.com/@holochain/serialization/-/serialization-0.1.0-beta-rc.3.tgz#787a785fa48e00f2d168c6d4b45a233c4800cccb"
-  integrity sha512-DJx4V2KXHVLciyOGjOYKTM/JLBpBEZ3RsPIRCgf7qmwhQdxXvhi2p+oFFRD51yUT5uC1/MzIVeJCl/R60PwFbw==
 
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
