@@ -1,66 +1,40 @@
 ## Developers
 
-### Managing Dependencies for Developing Acorn
+This is a monorepo that includes the frontend and backend code for Acorn.
+Note, there are two build targets and thus two development modes:
 
-There are several cargo and holochain dependencies you need to manage when you change any of the holochain aspects of Acorn:
+- Acorn Desktop (app packaging is currently managed by a separate repo [acorn-desktop](https://github.com/lightningrodlabs/acorn-desktop))
+- Acorn Moss Tool
 
-- [`holochain-runner`](https://github.com/lightningrodlabs/holochain-runner)
-  - a rust binary that bundles a preconfigured conductor to simplify the app packaging process.
-- [`electron-holochain`](https://github.com/lightningrodlabs/electron-holochain)
-  - an electron template which includes `holochain-runner`, meant to reduce boilerplate around building desktop happs. All that's required are the UI and `.happ` files.
-- [`hdk_crud`](https://github.com/lightningrodlabs/hdk_crud)
-  - a generic zome utility crate for defining entry types and automatically generating CRUD for each of them. Used by `acorn-happ`.
-- [`acorn-happ`](https://github.com/lightningrodlabs/acorn-happ)
-  - all of the zome logic lives here. Uses `hdk_crud` to define all the Acorn entry types, like outcomes, edges, etc.
+## setup
 
-### Building the frontend
+- you must have nix installed, then run `nix develop` at the root. This will setup a nix shell environment with all the required environment packages (holochain, node, etc)
+- run `yarn install`
+- build the happs by running `yarn run pack-happs`
 
-There are two build targets:
+### Acorn Desktop
 
-- desktop
-- Weave app
+When you are running the app locally for the desktop version, you need to run two separate commands.
 
-### Run Locally and Develop on your Computer
+- In the first terminal window run `yarn run desktop:ui`
+- In the second terminal window run `yarn run desktop:happ`
 
-_Prerequisites_
+This will launch the ui and a electron app with the holochain conductor preconfigured and the acorn happ loaded.
 
-- Have `nodejs` (v20) and `yarn` (v1, classic) installed on your system
+If you want multiple instances to test multi-agent scenarios run `yarn run desktop:happ -n 2` (or any number)
 
-Then run
+Alternatively, instead of launching the ui separately, you can run `yarn run desktop:build-webhapp` and then `yarn run desktop:webhapp`. This will launch a fully packaged webhapp in a preconfigured electron environment.
 
-- `yarn install`
-- `yarn run dev`
+### Acorn Moss Tool
 
-In the future, just run `yarn run dev` anytime to develop.
+- In the first terminal window run `yarn run moss:ui`
+- In the second terminal window run `yarn run moss:happ`
 
-When you run `yarn run dev` a `user-data/` directory is created and this is where user data including private keys, and also data generated through use of the app is stored.
+If you want 2 agents, open a 3rd terminal window and run `yarn run moss:happ2`
 
-You can run `yarn run user-data-reset` if you have user data in development, but you want to clear it, and start over with fresh identities.
+If you want to test the full webhapp, run `yarn run moss:build-webhapp` then run `yarn run moss:webhapp`. If you want a second agent, run `yarn run moss:webhapp2`.
 
-> NOTE: if you see a blank screen once electron launches the app, refresh the page (using View -> Reload or Cmd/Ctrl-R) to see app contents.
-
-#### Commands that are more specific to your use case:
-
-You can run the web process and the electron processes separately, instead of running `yarn run dev` which combines them.
-
-**web** (user interface)
-
-- `yarn run web`
-
-**electron**
-
-- `yarn run electron`
-
-#### Multi-User Testing
-
-run the following commands in separate terminal instances (must have a running instance of acorn for the first user, either by running `yarn run dev` or the below commands without the `2`):
-
-- `yarn run web(2,3,4)`
-- `yarn run electron(2,3,4)`
-
-After running these commands, a `user-data/` directory is created with user data. It too can be cleared by running `yarn run user-data-reset`.
-
-### Building / Packaging
+### Building / Packaging - TO BE UPDATED
 
 To build:
 
