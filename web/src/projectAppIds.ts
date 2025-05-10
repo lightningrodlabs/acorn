@@ -1,4 +1,4 @@
-import { CellType } from '@holochain/client'
+import { CellType, ClonedCell } from '@holochain/client'
 import _ from 'lodash'
 import { getAppWs } from './hcWebsockets'
 import { PROJECTS_ROLE_NAME } from './holochainConfig'
@@ -14,6 +14,6 @@ export async function getProjectCellIdStrings() {
       (cellInfo) => CellType.Cloned === cellInfo.type && cellInfo.value.enabled
     ) || []
   return clonedProjectCells.map((cellInfo) =>
-    cellIdToString(cellInfo[CellType.Cloned].cell_id)
+    cellIdToString((cellInfo.value as ClonedCell).cell_id)
   )
 }
