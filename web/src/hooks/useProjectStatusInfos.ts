@@ -83,8 +83,11 @@ export default function usePendingProjects(
   // handle the regular checking for those projects
   // that haven't synced yet
   useEffect(() => {
+    let isMounted = true
     const check = async () => {
       try {
+        if (!isMounted) return
+        
         const withHasProjectMetas = await Promise.all(
           projectCellIdStrings.map(async (projectCellId) => {
             try {
@@ -109,8 +112,14 @@ export default function usePendingProjects(
             }
           })
         )
+        
+        if (!isMounted) return
+        
         // mix in the the network infos for all projects
         const newInfos = await getNewInfos(withHasProjectMetas)
+        
+        if (!isMounted) return
+        
         // return a result
         setProjectStatusInfos(newInfos)
       } catch (e) {
@@ -121,6 +130,7 @@ export default function usePendingProjects(
     // check every 5 seconds for project meta
     const checkAgainInterval = setInterval(check, 5000)
     return () => {
+      isMounted = false
       clearInterval(checkAgainInterval)
     }
   }, [JSON.stringify(projectCellIdStrings)])
