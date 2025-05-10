@@ -29,7 +29,7 @@ const getNewInfos = async (
     .filter(
       (cellInfo) => CellType.Cloned === cellInfo.type && cellInfo.value.enabled
     )
-    .map((cellInfo) => cellInfo[CellType.Cloned])
+    .map((cellInfo) => cellInfo.value as ClonedCell)
 
   const newInfos: ProjectStatusInfos = {}
   projects.forEach(({ cellId, hasProjectMeta }, index) => {

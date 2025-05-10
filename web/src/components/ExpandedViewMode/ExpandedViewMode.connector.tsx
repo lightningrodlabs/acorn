@@ -103,7 +103,6 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   )
   // Determine the definitive projectId
   const projectId = projectIdFromApp || projectIdFromState || initialProjectId
-  console.log('projectId, outcome', projectId, outcome)
 
   // Set initial state if rendered as root in asset view
   useEffect(() => {
@@ -331,14 +330,6 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       outcome={outcome}
     />
   ) : null
-
-  // Don't render ExpandedViewModeComponent until projectId and outcome are likely available
-  console.log('going to render loading', projectId, outcome)
-  // if (!projectId || !outcome) {
-  //   // Optionally return a loading indicator
-  //   return <div>Loading Asset...</div>
-  // }
-  console.log('going to try rendering expanded view')
 
   // Ensure all necessary props are passed to the component,
   // which will then distribute them to the wrapper or inner component.

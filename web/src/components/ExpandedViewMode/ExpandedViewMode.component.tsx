@@ -58,11 +58,6 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
   const [activeTab, setActiveTab] = useState(ExpandedViewTab.Details)
   const [showing, setShowing] = useState(false)
 
-  console.log('ExpandedViewMode component rendering. Info: ', {
-    outcome,
-    projectId,
-  })
-
   useEffect(() => {
     // reset
     if (!outcomeActionHash) {

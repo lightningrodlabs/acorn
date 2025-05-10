@@ -81,8 +81,8 @@ export async function electronInit(store: any, appWs: AppClient) {
           ? profilesCellInfo.value.cell_id
           : undefined,
       projectsCellId:
-        projectsCellInfo && profilesCellInfo.type === CellType.Provisioned
-          ? projectsCellInfo[CellType.Provisioned].cell_id
+        projectsCellInfo && projectsCellInfo.type === CellType.Provisioned
+          ? projectsCellInfo.value.cell_id
           : undefined,
     }
     if (cellId == undefined || projectsCellId == undefined) {
