@@ -188,6 +188,7 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
           onClose={() => {}}
           outcome={expandedViewOutcome} // Pass the computed outcome
           outcomeAndAncestors={expandedViewOutcomeAndAncestors} // Pass ancestors
+          //@ts-ignore
           updateOutcome={updateOutcomeCallback} // Pass callback
           // createOutcomeWithConnection is handled by the connector if needed
           renderAsModal={false} // Explicitly render without modal chrome

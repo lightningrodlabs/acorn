@@ -123,7 +123,6 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   endDescriptionEdit,
   editingPeers,
   // Destructure rightColumn prop
-  rightColumn,
 }) => {
   // reset
   useEffect(() => {
@@ -488,7 +487,6 @@ const EvDetails: React.FC<EvDetailsProps> = ({
       {/* End of ev-details-main-content */}
 
       {/* Render the right column alongside the main content */}
-      {rightColumn}
     </div>
   )
 }

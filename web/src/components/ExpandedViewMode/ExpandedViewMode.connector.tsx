@@ -357,7 +357,6 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       renderAsModal={renderAsModal}
       // Other props (may not be directly used by component but needed by connector logic/passed down)
       updateOutcome={updateOutcome} // Passed down
-      activeAgentPubKey={activeAgentPubKey} // Passed down (though might not be needed directly in component)
     />
   )
 }
