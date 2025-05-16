@@ -14,15 +14,19 @@ export type EVMiddleColumnProps = {
   projectId: string
   activeTab: ExpandedViewTab
   outcome: ComputedOutcome
-  details: React.ReactElement
+  details: React.ReactElement // This is EvDetails
   comments: React.ReactElement
   childrenList?: React.ReactElement
   taskList?: React.ReactElement
   attachments?: React.ReactElement
+  // Accept rightColumn prop
+  rightColumn?: React.ReactElement
 }
 
 const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
   projectId,
+  // Destructure rightColumn
+  rightColumn,
   activeTab,
   details,
   comments,
@@ -56,7 +60,9 @@ const EVMiddleColumn: React.FC<EVMiddleColumnProps> = ({
         computedAchievementStatus={computedAchievementStatus}
         attachmentsCount={attachmentsCount}
       />
-      {activeTab === ExpandedViewTab.Details && details}
+      {/* Clone EvDetails element and pass rightColumn prop only when Details tab is active */}
+      {activeTab === ExpandedViewTab.Details &&
+        React.cloneElement(details, { rightColumn: rightColumn })}
       {activeTab === ExpandedViewTab.Comments && comments}
       {activeTab === ExpandedViewTab.ChildrenList && childrenList}
       {activeTab === ExpandedViewTab.TaskList && taskList}

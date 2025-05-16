@@ -300,8 +300,9 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
         {/* If this Outcome has children, then we can only */}
         {/* read the computed achievement status and scope, */}
         {/* not annotate them */}
+        {/* Section 1: Status/Scope (Conditional) */}
         {hasChildren && (
-          <div className="ev-right-column-section">
+          <div className="ev-right-column-section ev-right-column-section-status">
             <div className="ev-right-column-heading-more-info">
               <Typography style="h7">
                 <div className="ev-right-column-heading">This outcome is</div>
@@ -325,11 +326,14 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
         {/* We can only annotate the achievementStatus and scope */}
         {/* if this Outcome has no children */}
         {!hasChildren && (
-          <div className="ev-right-column-section">
+          // Section 1: Status/Scope (Conditional)
+          <div className="ev-right-column-section ev-right-column-section-status">
             {/* We can only annotate Achievement Status if this Outcome is */}
             {/* annotated Small and has no children */}
             {isSmall && (
-              <div className="ev-right-column-section">
+              <div className="ev-right-column-subsection">
+                {' '}
+                {/* Use subsection class if needed for styling */}
                 <Typography style="h7">
                   <div className="ev-right-column-heading">
                     Achievement Status
@@ -344,7 +348,9 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
               </div>
             )}
 
-            <div className="ev-right-column-section">
+            <div className="ev-right-column-subsection">
+              {' '}
+              {/* Use subsection class if needed for styling */}
               <Typography style="h7">
                 {' '}
                 <div className="ev-right-column-heading">Scope</div>
@@ -370,9 +376,9 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
             </div>
           </div>
         )}
-        {/* Mark As Section */}
 
-        <div className="ev-right-column-section">
+        {/* Section 2: Mark As */}
+        <div className="ev-right-column-section ev-right-column-section-markas">
           <Typography style="h7">
             <div className="ev-right-column-heading">Mark as</div>
           </Typography>
@@ -402,8 +408,9 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
             text="Entry Point"
           />
         </div>
-        {/* Actions section */}
-        <div className="ev-right-column-section">
+
+        {/* Section 3: Actions */}
+        <div className="ev-right-column-section ev-right-column-section-actions">
           <Typography style="h7">
             <div className="ev-right-column-heading">Actions</div>
           </Typography>

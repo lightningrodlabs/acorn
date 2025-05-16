@@ -12,4 +12,25 @@
   .button-tab-icon-wrapper {
     margin-bottom: 1rem;
   }
+
+  // Styles for when the left column becomes a top bar
+  @media (max-width: 600px) {
+    flex-direction: row; // Arrange items horizontally
+    align-items: center; // Center items vertically in the bar
+    justify-content: space-around; // Distribute items evenly
+    padding: 0.5rem 1rem; // Adjust padding for horizontal layout
+    height: auto; // Height based on content
+
+    .expanded-view-outcome-id {
+      display: none; // Hide the outcome ID in top bar mode (optional, could keep if desired)
+    }
+
+    .button-tab-icon-wrapper {
+      margin-bottom: 0; // Remove bottom margin
+      margin-right: 0.5rem; // Add some spacing between items
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
 }

@@ -18,8 +18,10 @@ import {
   setWeaveClient,
   setWeaveProfilesClient,
 } from './hcWebsockets'
-import { mossInit } from './indexForMoss'
+import { getComponentAndPropsForRenderMode, mossInit } from './indexForMoss'
 import { appletServices } from './weave/appletService'
+import App from './routes/App.connector' // Import App for main view
+import { WeaveClientRenderInfo } from './weave/WeaveClientRenderInfo'
 
 const isWeaveDevMode = () => {
   return process.env.__DEV_MODE__ && !process.env.KANGAROO
@@ -31,30 +33,43 @@ const isWeaveDevMode = () => {
   }
   if (!isWeaveContext()) {
     // electron
+    console.log('IS NOT WEAVE CONTEXT')
     ;(async () => {
-      console.log('electron')
       const appWs = await getAppWs()
-      const store = await createStoreAndRenderToDom(appWs)
-      console.log('admin, appws', appWs)
+      const store = await createStoreAndRenderToDom(appWs, App, {
+        appWebsocket: appWs,
+      })
       await electronInit(store, appWs)
     })()
   } else {
     ;(async () => {
-      const weClient = await WeaveClient.connect(appletServices)
-      setWeaveClient(weClient)
-      if (
-        weClient.renderInfo.type !== 'applet-view' ||
-        weClient.renderInfo.view.type !== 'main'
+      const weaveClient = await WeaveClient.connect(appletServices)
+      setWeaveClient(weaveClient)
+      const weaveClientRenderInfo = new WeaveClientRenderInfo(
+        weaveClient.renderInfo
       )
-        throw new Error('This Applet only implements the applet main view.')
+      if (!weaveClientRenderInfo.isAppletView()) {
+        throw new Error('This Applet only implements the applet view.')
+      }
 
-      const appClient = weClient.renderInfo.appletClient
-      setAppWs(appClient)
-      const profilesClient = weClient.renderInfo.profilesClient
-      setWeaveProfilesClient(profilesClient)
+      setAppWs(weaveClientRenderInfo.getAppletClient())
+      setWeaveProfilesClient(weaveClientRenderInfo.getProfilesClient())
 
-      const store = await createStoreAndRenderToDom(appClient)
-      await mossInit(store, profilesClient, appClient)
+      const rootElementAndProps = getComponentAndPropsForRenderMode(
+        weaveClientRenderInfo
+      )
+      let store: any
+
+      store = await createStoreAndRenderToDom(
+        weaveClientRenderInfo.getAppletClient(),
+        rootElementAndProps.rootElement,
+        rootElementAndProps.rootProps
+      )
+      await mossInit(
+        store,
+        weaveClientRenderInfo.getProfilesClient(),
+        weaveClientRenderInfo.getAppletClient()
+      )
     })()
   }
 })()

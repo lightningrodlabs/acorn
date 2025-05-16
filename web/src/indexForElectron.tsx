@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
-import { AppClient, CellType } from '@holochain/client'
+import { AppClient, CellType, CellInfo } from '@holochain/client'
 
 // Local Imports
 import { PROFILES_ROLE_NAME, PROJECTS_ROLE_NAME } from './holochainConfig'
@@ -17,7 +17,7 @@ import { realtimeInfoWatcher } from './redux/persistent/projects/realtime-info-s
 import { fetchAgents } from './redux/persistent/profiles/agents/actions'
 import { whoami } from './redux/persistent/profiles/who-am-i/actions'
 import { fetchAgentAddress } from './redux/persistent/profiles/agent-address/actions'
-import App from './routes/App.connector'
+// Remove direct import of App, it will be passed in: import App from './routes/App.connector'
 import { setAgentPubKey } from './hcWebsockets'
 import { getProjectCellIdStrings } from './projectAppIds'
 import ProfilesZomeApi from './api/profilesApi'
@@ -26,8 +26,14 @@ import { cellIdToString } from './utils'
 // Import styles
 import './variables.scss'
 import './global.scss'
+import App from './routes/App.connector'
 
-export default async function createStoreAndRenderToDom(appWs: AppClient) {
+// Update function signature to accept RootComponent and rootProps
+export default async function createStoreAndRenderToDom(
+  appWs: AppClient,
+  RootComponent: React.ElementType,
+  rootProps: Record<string, any> = {}
+) {
   const middleware = [layoutWatcher, realtimeInfoWatcher(appWs)]
   // This enables the redux-devtools browser extension
   // which gives really awesome debugging for apps that use redux
@@ -44,9 +50,10 @@ export default async function createStoreAndRenderToDom(appWs: AppClient) {
 
   // By passing the `store` in as a wrapper around our React component
   // we make the state available throughout it
+  // Render the passed RootComponent with its props
   ReactDOM.render(
     <Provider store={store}>
-      <App appWebsocket={appWs} />
+      <RootComponent {...rootProps} />
     </Provider>,
     document.getElementById('react')
   )
@@ -70,12 +77,12 @@ export async function electronInit(store: any, appWs: AppClient) {
     }
     const { cellId, projectsCellId } = {
       cellId:
-        profilesCellInfo && CellType.Provisioned in profilesCellInfo
-          ? profilesCellInfo[CellType.Provisioned].cell_id
+        profilesCellInfo && profilesCellInfo.type === CellType.Provisioned
+          ? profilesCellInfo.value.cell_id
           : undefined,
       projectsCellId:
-        projectsCellInfo && CellType.Provisioned in projectsCellInfo
-          ? projectsCellInfo[CellType.Provisioned].cell_id
+        projectsCellInfo && projectsCellInfo.type === CellType.Provisioned
+          ? projectsCellInfo.value.cell_id
           : undefined,
     }
     if (cellId == undefined || projectsCellId == undefined) {

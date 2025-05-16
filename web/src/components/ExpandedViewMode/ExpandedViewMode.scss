@@ -1,114 +1,7 @@
-.expanded-view-wrapper {
-  height: calc(100vh - 6.5rem);
-  max-height: 46.5rem;
-  box-shadow: 0 0 2.5rem var(--shadow-color-dark);
-  width: 60rem;
-  background-color: var(--bg-color-tertiary);
-  border-radius: 16px;
-  display: flex;
-  flex-direction: row;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  z-index: 4;
+/* Styles for the inner layout of Expanded View Mode */
+/* This file no longer contains modal-specific styles */
 
-  .button-close-wrapper {
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-  }
-}
-
-.expanded-view-overlay {
-  background: var(--bg-color-popup);
-  height: 100vh;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-y: hidden;
-  position: fixed;
-  top: 0;
-  z-index: 4;
-}
-
-.breadcrumbs-overlay {
-  position: fixed;
-  top: 0.5rem;
-  left: 1rem;
-  z-index: 5;
-}
-
-// breadcrumbs css transitions (animation)
-
-.breadcrumbs-overlay-enter {
-  opacity: 0;
-}
-
-.breadcrumbs-overlay-enter-active {
-  opacity: 1;
-  transition: opacity 0.25s 0s;
-}
-
-.breadcrumbs-overlay-exit {
-  opacity: 1;
-  transition: opacity 0.25s 0s;
-}
-
-.breadcrumbs-overlay-exit-active {
-  opacity: 0;
-}
-
-// expanded view overlay css transitions (animation)
-
-.expanded-view-overlay-enter {
-  opacity: 0;
-}
-
-.expanded-view-overlay-enter-active {
-  opacity: 1;
-  transition: opacity 0.25s 0s, transform 0.25s;
-}
-
-.expanded-view-overlay-exit {
-  opacity: 1;
-  transition: opacity 0.25s 0s, transform 0.25s;
-}
-
-.expanded-view-overlay-exit-active {
-  opacity: 0;
-}
-
-// expanded view wrapper css transitions (animation)
-
-.expanded-view-wrapper-enter {
-  -ms-transform: translate(-50%, -50%) scale(0.9);
-  transform: translate(-50%, -50%) scale(0.9);
-  opacity: 0;
-}
-
-.expanded-view-wrapper-enter-active {
-  -ms-transform: translate(-50%, -50%) scale(1);
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 1;
-  transition: opacity 0.25s 0s, transform 0.25s;
-}
-
-.expanded-view-wrapper-exit {
-  -ms-transform: translate(-50%, -50%) scale(1);
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 1;
-}
-
-.expanded-view-wrapper-exit-active {
-  -ms-transform: translate(-50%, -50%) scale(0.9);
-  transform: translate(-50%, -50%) scale(0.9);
-  opacity: 0;
-  transition: opacity 0.25s 0s, transform 0.25s;
-}
-
-// Tab view
+/* Tab view wrapper - contains Middle and Right columns */
 
 .expanded-view-tab-view-wrapper {
   display: flex;
@@ -117,21 +10,83 @@
   flex: 1;
   height: 100%;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: hidden; // Prevent content overflow issues
+
+  // Media query for smaller screens where columns stack
+  @media (max-width: 900px) {
+    flex-direction: column; // Stack middle and right columns
+    overflow-y: auto; // Allow scrolling when stacked
+    padding-top: 0; // Adjust padding when stacked
+  }
 }
 
-/* expanded view date picker */
-
-.expanded-view-wrapper > .date_picker_wrapper {
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
-}
-
-.expanded-view-main {
+// Styles for the container when EVM is rendered *without* the modal wrapper
+// This class is applied by ExpandedViewMode.component.tsx when renderAsModal is false
+.expanded-view-interior-only {
+  // Use absolute positioning to fill its nearest positioned ancestor.
+  // IMPORTANT: The container rendering <OutcomeAssetView> MUST have
+  // position: relative (or absolute/fixed) for this to work reliably.
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  // display: flex and flex-direction remain the same for internal layout
   display: flex;
   flex-direction: row;
+  // width/height: 100% are effectively replaced by top/bottom/left/right: 0
+  // width: 100%;
+  // height: 100%;
+  background-color: var(--bg-color-tertiary); // Keep consistent background
+  overflow: hidden; // Prevent overflow at this top level
+
+  // The tab view wrapper inside the non-modal container behaves the same
+  .expanded-view-tab-view-wrapper {
+    // Inherits base styles from above
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    @media (max-width: 900px) {
+      flex-direction: column;
+      overflow-y: auto;
+    }
+  }
+
+  // Responsive adjustments for the non-modal container
+  @media (max-width: 600px) {
+    flex-direction: column; // Stack left column (nav) on top of the tab view wrapper
+
+    // Target the Left Column component when inside .expanded-view-interior-only
+    > .expanded-view-nav-column { // Use direct child selector '>' for specificity
+      flex: 0 0 auto; // Don't grow or shrink, height based on content
+      width: 100%;
+      border-right: none; // Remove right border
+      border-bottom: 0.165rem solid var(--border-color-platinum); // Add bottom border
+    }
+
+    // Target the tab view wrapper when inside .expanded-view-interior-only
+    > .expanded-view-tab-view-wrapper { // Use direct child selector '>'
+      padding-top: 0; // Remove top padding as nav is now above
+      height: auto; // Adjust height automatically
+      flex-grow: 1; // Allow it to take remaining vertical space
+      // Stacking of middle/right columns within this wrapper is handled by its own media query
+    }
+  }
 }
+
+
+/* Remove date picker positioning relative to the old modal wrapper */
+/* .expanded-view-wrapper > .date_picker_wrapper { ... } */
+
+/* This seems like old/unused style? */
+/* .expanded-view-main {
+  display: flex;
+  flex-direction: row;
+}*/
 
 .outcome-form textarea {
   background-color: transparent;

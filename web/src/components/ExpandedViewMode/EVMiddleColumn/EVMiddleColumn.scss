@@ -8,5 +8,21 @@
   .descendants-achievement-status {
     padding-left: 3rem;
     padding-bottom: 1rem;
+    // Ensure padding adjusts on smaller screens if needed
+    @media (max-width: 900px) {
+      padding-left: 1.5rem; // Example adjustment
+    }
+  }
+
+  // Ensure middle column takes appropriate space and scrolls when stacked
+  @media (max-width: 900px) {
+    width: 100%; // Take full width relative to its container
+    width: 100%; // Take full width relative to its container
+    // Allow shrinking again, but ensure min-height is set
+    // flex-grow: 1; // Keep commented or remove
+    flex-shrink: 1; // <<-- REVERT THIS: Allow shrinking
+    flex-basis: auto; // Default height based on content initially
+    min-height: 0; // Ensure this is present for proper flex shrinking
+    overflow: visible; // Explicitly allow content overflow for parent scrolling
   }
 }

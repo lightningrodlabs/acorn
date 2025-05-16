@@ -45,4 +45,60 @@
     width: 100%;
     margin-bottom: 0.5rem;
   }
+
+  // Media query adjustments when stacking (medium screens)
+  @media (max-width: 900px) {
+    width: 16.25rem; // Keep original fixed width
+    height: auto; // Allow height to adjust based on content
+    overflow: visible; // Allow content to determine height
+    flex-shrink: 0; // Prevent shrinking
+    // Adjust margin for left alignment (remove 'auto' horizontal margins)
+    margin: 1rem 0 0 0; // Add top margin, align left
+
+    .ev-right-column-inner-wrapper {
+      width: 100%; // Inner wrapper takes full width of the column
+      padding: 1.5rem; // Keep padding adjustment
+      overflow: visible; // Keep content flow adjustment
+      // Make the inner wrapper a flex container that wraps
+      display: flex;
+      flex-direction: row; // Arrange sections horizontally first
+      flex-wrap: wrap;     // Allow sections to wrap onto the next line
+      gap: 1rem;           // Add spacing between wrapped sections
+      justify-content: flex-start; // Align sections to the start
+    }
+
+    // Target the new section wrapper divs as flex items
+    .ev-right-column-section { // This class is now on the wrappers
+      flex-grow: 1;    // Allow sections to grow horizontally
+      flex-shrink: 1;  // Allow sections to shrink horizontally
+      flex-basis: 12rem; // Set a base width (~192px) before wrapping
+      margin-bottom: 0; // Remove bottom margin, use gap instead
+
+      // Styles for subsections if needed (e.g., if we used .ev-right-column-subsection)
+      // .ev-right-column-subsection {
+      //   margin-bottom: 1rem; // Add spacing between subsections within a section wrapper
+      // }
+
+      // Remove the flex rules that were applied previously for items *within* the section
+      // display: flex; // << REMOVE
+      // flex-wrap: wrap; // << REMOVE
+      // gap: 0.5rem; // << REMOVE
+      // align-items: center; // << REMOVE
+
+      .ev-right-column-heading {
+        // flex-basis: 100%; // No longer needed as section itself is the flex item
+        margin-bottom: 0.5rem; // Keep existing margin
+      }
+
+      // Ensure items *within* the section still stack vertically as before
+      .read-only-info-wrapper.small,
+      .select-dropdown-wrapper,
+      .button-toggle-switch-wrapper,
+      .button-checkbox-wrapper,
+      .button-action-wrapper {
+        width: 100%; // Ensure they take full width within their section
+        margin-bottom: 0.5rem; // Restore vertical spacing within the section
+      }
+    }
+  }
 }

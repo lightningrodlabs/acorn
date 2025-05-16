@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { CSSTransition } from 'react-transition-group'
-import EVMiddleColumn from './EVMiddleColumn/EVMiddleColumn'
-import EVLeftColumn from './EVLeftColumn/EVLeftColumn'
+// CSSTransition, ButtonClose, Breadcrumbs are now in the ModalWrapper
+// import { CSSTransition } from 'react-transition-group'
+// import ButtonClose from '../ButtonClose/ButtonClose'
+// import Breadcrumbs from '../Breadcrumbs/Breadcrumbs'
+import ExpandedViewModeInner from './ExpandedViewModeInner' // Import the new inner component
+import ExpandedViewModeModalWrapper from './ExpandedViewModeModalWrapper' // Import the new wrapper component
 import { ExpandedViewTab } from './NavEnum'
 import { CellIdString, ActionHashB64, AgentPubKeyB64 } from '../../types/shared'
 import { ComputedOutcome, Outcome } from '../../types'
-import './ExpandedViewMode.scss'
-import ButtonClose from '../ButtonClose/ButtonClose'
-import Breadcrumbs from '../Breadcrumbs/Breadcrumbs'
-import hashCodeId from '../../api/clientSideIdHash'
+import './ExpandedViewMode.scss' // Styles for inner layout + non-modal container
 
-// props passed to the component by the parent
+// Props passed to the component by the parent/connector
 export type ExpandedViewModeOwnProps = {
   projectId: CellIdString
   onClose: () => void
@@ -24,13 +24,14 @@ export type ExpandedViewModeOwnProps = {
   rightColumn: React.ReactElement
   updateOutcome: (outcome: Outcome, actionHash: ActionHashB64) => Promise<void>
   attachments?: React.ReactElement
+  renderAsModal?: boolean // This prop now controls which wrapper is used
 }
 
-// redux props
+// Redux props (remain the same)
 export type ExpandedViewModeConnectorProps = {
   outcomeActionHash: ActionHashB64
   commentCount: number
-  activeAgentPubKey: AgentPubKeyB64
+  activeAgentPubKey: AgentPubKeyB64 // Although not directly used here, passed down
 }
 
 export type ExpandedViewModeProps = ExpandedViewModeOwnProps &
@@ -50,8 +51,10 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
   rightColumn,
   onClose,
   attachments,
+  renderAsModal = true, // Default to true
 }) => {
-  // Details is default tab
+  // State remains here as it controls the inner component's tab
+  // and the modal wrapper's transitions
   const [activeTab, setActiveTab] = useState(ExpandedViewTab.Details)
   const [showing, setShowing] = useState(false)
 
@@ -94,84 +97,44 @@ const ExpandedViewMode: React.FC<ExpandedViewModeProps> = ({
     }
   }, [outcome, activeTab, setActiveTab])
 
-  const outcomeId = hashCodeId(outcomeActionHash)
+  // Prepare props for the inner component
+  const innerProps = {
+    projectId,
+    outcome,
+    outcomeActionHash,
+    activeTab,
+    setActiveTab,
+    commentCount,
+    details,
+    comments,
+    childrenList,
+    taskList,
+    rightColumn,
+    attachments,
+  }
 
-  // if not small, then show children list icon on left menu
-  const showChildrenListMenuItem = outcome && !('Small' in outcome.scope)
-  const childrenCount =
-    outcome && outcome.children ? outcome.children.length : 0
-
-  // if  small, then show task list icon on left menu
-  const showTaskListMenuItem =
-    childrenCount === 0 && outcome && 'Small' in outcome.scope
-  const taskListCount =
-    childrenCount === 0 && outcome && 'Small' in outcome.scope
-      ? outcome.scope.Small.taskList.length
-      : 0
-
-  return (
-    <>
-      <CSSTransition
-        in={showing}
-        timeout={100}
-        unmountOnExit
-        classNames="expanded-view-overlay"
+  // Conditionally render based on renderAsModal
+  if (renderAsModal) {
+    return (
+      <ExpandedViewModeModalWrapper
+        showing={showing}
+        onClose={onClose}
+        outcomeAndAncestors={outcomeAndAncestors}
+        openExpandedView={openExpandedView}
       >
-        <div className="expanded-view-overlay" onClick={onClose}></div>
-      </CSSTransition>
-      <CSSTransition
-        in={showing}
-        timeout={100}
-        unmountOnExit
-        classNames="breadcrumbs-overlay"
-      >
-        <div className="breadcrumbs-overlay">
-          <Breadcrumbs
-            outcomeAndAncestors={outcomeAndAncestors}
-            onClickItem={(actionHash) => {
-              openExpandedView(actionHash)
-            }}
-          />
-        </div>
-      </CSSTransition>
-      <CSSTransition
-        in={showing}
-        timeout={100}
-        unmountOnExit
-        classNames="expanded-view-wrapper"
-      >
-        <div className="expanded-view-wrapper">
-          <ButtonClose onClick={onClose} size="medium" />
-          <EVLeftColumn
-            activeTab={activeTab}
-            onChange={setActiveTab}
-            commentCount={commentCount}
-            showChildrenList={showChildrenListMenuItem}
-            childrenCount={childrenCount}
-            showTaskList={showTaskListMenuItem}
-            taskListCount={taskListCount}
-            outcomeId={outcomeId}
-            attachmentsNumber={attachments?.props.attachmentsInfo.length}
-          />
-          <div className="expanded-view-tab-view-wrapper">
-            <EVMiddleColumn
-              activeTab={activeTab}
-              outcome={outcome}
-              projectId={projectId}
-              details={details}
-              comments={comments}
-              childrenList={childrenList}
-              taskList={taskList}
-              attachments={attachments}
-            />
-            {/* Only show the rightColumn while */}
-            {/* viewing Details */}
-            {activeTab === ExpandedViewTab.Details && rightColumn}
-          </div>
-        </div>
-      </CSSTransition>
-    </>
-  )
+        {/* Render the inner component inside the modal wrapper */}
+        <ExpandedViewModeInner {...innerProps} />
+      </ExpandedViewModeModalWrapper>
+    )
+  } else {
+    // Render the inner component directly within a simple container
+    // This container uses styles previously in ExpandedViewMode.scss
+    return (
+      <div className="expanded-view-interior-only">
+        <ExpandedViewModeInner {...innerProps} />
+      </div>
+    )
+  }
 }
 
 export default ExpandedViewMode

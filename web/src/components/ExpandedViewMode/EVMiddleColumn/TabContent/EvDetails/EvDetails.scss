@@ -1,18 +1,55 @@
+// This wrapper now contains BOTH the details form and the right column
 .ev-details-wrapper {
-  padding-right: 1.5rem;
   display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow-y: scroll;
-  box-sizing: border-box;
-  flex: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  flex-direction: row; // Side-by-side by default
+  flex: 1; // Take available space in the middle column
+  overflow: hidden; // Parent EVMiddleColumn handles scroll if needed
+  min-height: 0; // Flexbox fix
+  position: relative; // For potential absolute positioning inside
 
+  // Main content area (left side)
+  .ev-details-main-content {
+    flex: 1; // Take remaining space
+    overflow-y: auto; // Allow this part to scroll independently if needed (long forms)
+    padding-right: 1.5rem; // Keep padding from right column
+    box-sizing: border-box;
+    min-width: 0; // Flexbox fix
+
+    .ev-details-inner-wrapper {
+      padding-left: 3rem;
+      padding-bottom: 1rem;
+
+      // Title
+    }
+  }
+
+  // Right column is rendered directly as a sibling flex item
+  // Its styles come from EVRightColumn.scss
+
+  // Responsive stacking
+  @media (max-width: 900px) {
+    flex-direction: column; // Stack them
+    overflow: visible; // Let parent handle scroll
+
+    .ev-details-main-content {
+      overflow: visible; // Don't scroll independently when stacked
+      padding-right: 0; // No right padding needed when stacked
+      padding-left: 1.5rem; // Adjust left padding for smaller screens
+      padding-right: 1.5rem; // Add right padding for smaller screens
+
+      .ev-details-inner-wrapper {
+        padding-left: 0; // Remove specific inner padding when stacked
+      }
+    }
+
+    // The right column (EVRightColumn component) will handle its own
+    // width: 100% and margin adjustments via its own media query
+  }
+
+  // Styles for elements previously inside ev-details-inner-wrapper
+  // need to be checked if they rely on that structure, but most seem fine.
+  // Example:
   .ev-details-inner-wrapper {
-    padding-left: 3rem;
-    padding-bottom: 1rem;
-
     // Title
     .ev-title-wrapper {
       margin-bottom: 1.5rem;
@@ -56,12 +93,20 @@
     .ev-assignees-and-time-row {
       display: flex;
       flex-direction: row;
-      margin-bottom: 2rem;
+      flex-wrap: wrap; // Allow items to wrap
+      margin-bottom: 1rem; // Adjust margin for wrapped layout
 
       /* assigness section */
       .ev-assignees-wrapper {
-        width: 50%;
+        width: 100%; // Default to full width
         position: relative;
+        margin-bottom: 1.5rem; // Add space when wrapped
+
+        // Apply 50% width only on larger screens
+        @media (min-width: 700px) {
+          width: 50%;
+          margin-bottom: 0; // Remove bottom margin when side-by-side
+        }
 
         .picker-popup {
           top: 5rem;
@@ -74,7 +119,12 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        width: 50%;
+        width: 100%; // Default to full width
+
+        // Apply 50% width only on larger screens
+        @media (min-width: 700px) {
+          width: 50%;
+        }
 
         .big-scope-time-estimate-wrapper {
           display: flex;
