@@ -43,7 +43,7 @@ First, build the webhapp if you haven't done so yet:
 
 This will create an `[acorn-desktop.webhapp](./happs/happ/workdir/acorn-desktop.webhapp)` file. Upload this to the [Acorn release page](https://github.com/lightningrodlabs/acorn/releases) with the appropriate version tag.
 
-Then, clone the `[acorn-desktop](https://github.com/lightningrodlabs/acorn-desktop/tree/v11.1.2)` repo. Take the `acorn-desktop.webhapp` file and copy it into the `/pouch` directory. Follow the rest of the instruction in the README. This should trigger a github action which automatically builds and releases multi-platform versions of Acorn, signed and ready to download on the [release page](https://github.com/lightningrodlabs/acorn-desktop/releases)
+Then, clone the `[acorn-desktop](https://github.com/lightningrodlabs/acorn-desktop/tree/v11.1.2)` repo. Trigger a release by following the instructions in the README. This should trigger a github action which automatically fetches the webhapp from the previous step and builds and releases multi-platform versions of Acorn, signed and ready to download on the [release page](https://github.com/lightningrodlabs/acorn-desktop/releases).
 
 ### Building / Packaging Moss Tool
 
