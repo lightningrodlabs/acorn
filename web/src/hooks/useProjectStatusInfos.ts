@@ -25,6 +25,10 @@ const getNewInfos = async (
   const networkInfos = agentPubKey
     ? await appWs.dumpNetworkMetrics({ include_dht_summary: false })
     : undefined
+  console.log('getNewInfos:', {
+    appInfo: appInfo.cell_info['projects'],
+    status: appInfo.status,
+  })
   const clonedProjectCells: ClonedCell[] = appInfo.cell_info['projects']
     .filter(
       (cellInfo) => CellType.Cloned === cellInfo.type && cellInfo.value.enabled
@@ -50,7 +54,8 @@ const getNewInfos = async (
     if (networkInfo) {
       // 1 means 'only me'
       // 2 or more means currently active peers
-      hasPeers = networkInfo.local_agents.length > 1
+      hasPeers =
+        Object.keys(networkInfo.gossip_state_summary.dht_summary).length > 1
       isGossiping =
         Object.values(networkInfo.fetch_state_summary.pending_requests).flat
           .length > 0
@@ -87,7 +92,7 @@ export default function usePendingProjects(
     const check = async () => {
       try {
         if (!isMounted) return
-        
+
         const withHasProjectMetas = await Promise.all(
           projectCellIdStrings.map(async (projectCellId) => {
             try {
@@ -112,14 +117,14 @@ export default function usePendingProjects(
             }
           })
         )
-        
+
         if (!isMounted) return
-        
+
         // mix in the the network infos for all projects
         const newInfos = await getNewInfos(withHasProjectMetas)
-        
+
         if (!isMounted) return
-        
+
         // return a result
         setProjectStatusInfos(newInfos)
       } catch (e) {
