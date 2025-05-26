@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { WAL } from '@theweave/api'
 import { encodeHashToBase64 } from '@holochain/client'
 import { hrlToString } from '@holochain-open-dev/utils'
-import { CellIdString, ActionHashB64 } from '../types/shared'
+import { CellIdString } from '../types/shared'
 import { getAppWs } from '../hcWebsockets'
 import { AcornState } from './acornState'
 import { setActiveProject } from '../redux/ephemeral/active-project/actions'
@@ -41,26 +41,22 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
         setAppWs(appWs)
 
         const acornState = await AcornState.fromAppClient(appWs)
-        const projectInfo = acornState.findProjectByActionHashB64(actionHashB64)
+        const projectId = acornState.getProjectIdByActionHashB64(actionHashB64)
 
-        if (projectInfo) {
-          const determinedProjectId = projectInfo.cellIdWrapper.getCellIdString()
-          setProjectId(determinedProjectId)
+        if (projectId) {
+          setProjectId(projectId)
 
           // Set the active project ID in Redux state
-          dispatch(setActiveProject(determinedProjectId))
+          dispatch(setActiveProject(projectId))
 
           // Construct fetchers for this project
-          const fetchers = constructProjectDataFetchers(
-            dispatch,
-            determinedProjectId
-          )
+          const fetchers = constructProjectDataFetchers(dispatch, projectId)
 
           // Fetch all project data needed
           console.log(
-            `ProjectAssetView: Fetching all data for project ${determinedProjectId}`
+            `ProjectAssetView: Fetching all data for project ${projectId}`
           )
-          
+
           // Fetch data concurrently
           await Promise.all([
             fetchers.fetchProjectMeta(),
@@ -72,9 +68,9 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
             fetchers.fetchMembers(),
             fetchers.fetchOutcomeComments(),
           ])
-          
+
           console.log(
-            `ProjectAssetView: Finished fetching all data for project ${determinedProjectId}`
+            `ProjectAssetView: Finished fetching all data for project ${projectId}`
           )
         } else {
           throw new Error(`Project with ActionHash ${actionHashB64} not found.`)
