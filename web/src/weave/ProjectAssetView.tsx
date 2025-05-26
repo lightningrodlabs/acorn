@@ -10,7 +10,7 @@ import { setActiveProject } from '../redux/ephemeral/active-project/actions'
 import AppWebsocketContext from '../context/AppWebsocketContext'
 import ProjectViewWrapper from '../routes/ProjectView/ProjectView.connector'
 import constructProjectDataFetchers from '../api/projectDataFetchers'
-import { HashRouter as Router } from 'react-router-dom'
+import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 
 interface ProjectAssetViewProps {
   wal: WAL
@@ -107,10 +107,17 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
   if (projectId) {
     return (
       <AppWebsocketContext.Provider value={appWs}>
-        <div>HELLO</div>
         <Router>
-          <h2>Project View</h2>
-          <ProjectViewWrapper projectId={projectId} />
+          <Switch>
+            <Route 
+              path="/project/:projectId" 
+              render={() => <ProjectViewWrapper projectId={projectId} />} 
+            />
+            <Route 
+              path="/" 
+              render={() => <Redirect to={`/project/${projectId}`} />} 
+            />
+          </Switch>
         </Router>
       </AppWebsocketContext.Provider>
     )
