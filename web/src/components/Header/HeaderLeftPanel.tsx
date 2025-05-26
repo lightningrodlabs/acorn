@@ -394,16 +394,18 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
               </div>
             </div>
             {/* Team Members Indicator */}
-            <MembersIndicator
-              members={membersMinusMe}
-              presentMembers={presentMembers}
-              onClickInviteMember={() => {
-                setModalState({
-                  id: OpenModal.InviteMembers,
-                  passphrase: projectPassphrase,
-                })
-              }}
-            />
+            {!showOnlyProjectSection && (
+              <MembersIndicator
+                members={membersMinusMe}
+                presentMembers={presentMembers}
+                onClickInviteMember={() => {
+                  setModalState({
+                    id: OpenModal.InviteMembers,
+                    passphrase: projectPassphrase,
+                  })
+                }}
+              />
+            )}
           </Route>
         )}
       </div>
