@@ -298,6 +298,13 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
     />
   ) : null
 
+  const rightColumn = outcome ? ( // Only render if outcome exists
+    <ConnectedEVRightColumn
+      projectId={projectId}
+      onClose={onClose}
+      outcome={outcome}
+    />
+  ) : null
   // redux connected expanded view components
   const details = (
     <ConnectedEvDetails
@@ -313,6 +320,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
         setDescription,
         githubInputLinkText,
         setGithubInputLinkText,
+        rightColumn,
       }}
     />
   )
@@ -323,13 +331,6 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       appWebsocket={appWebsocket}
     />
   )
-  const rightColumn = outcome ? ( // Only render if outcome exists
-    <ConnectedEVRightColumn
-      projectId={projectId}
-      onClose={onClose}
-      outcome={outcome}
-    />
-  ) : null
 
   // Ensure all necessary props are passed to the component,
   // which will then distribute them to the wrapper or inner component.

@@ -45,6 +45,7 @@ export type EvDetailsOwnProps = {
   updateOutcome: (outcome: Outcome, actionHash: ActionHashB64) => Promise<void>
   updateOutcomeWithLatest: () => Promise<void>
   cleanOutcome: () => Outcome
+  rightColumn: React.ReactNode
 }
 
 export type EvDetailsConnectorStateProps = {
@@ -122,6 +123,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   startDescriptionEdit,
   endDescriptionEdit,
   editingPeers,
+  rightColumn,
   // Destructure rightColumn prop
 }) => {
   // reset
@@ -487,6 +489,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
       {/* End of ev-details-main-content */}
 
       {/* Render the right column alongside the main content */}
+      {rightColumn}
     </div>
   )
 }
