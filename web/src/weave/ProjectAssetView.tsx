@@ -24,6 +24,8 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
   const [error, setError] = useState<string | null>(null)
   const [appWs, setAppWs] = useState<any>(null)
   const dispatch = useDispatch()
+  // Get computed outcomes for the TableView
+  const computedOutcomes = useSelector(selectAndComputeOutcomes)
 
   // Main effect for fetching initial data based on WAL
   useEffect(() => {
@@ -105,9 +107,6 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
   if (error) {
     return <div>Error: {error}</div>
   }
-
-  // Get computed outcomes for the TableView
-  const computedOutcomes = useSelector(selectAndComputeOutcomes)
 
   if (projectId) {
     return (
