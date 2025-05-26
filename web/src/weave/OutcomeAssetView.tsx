@@ -15,6 +15,7 @@ import { updateOutcome } from '../redux/persistent/projects/outcomes/actions' //
 import ProjectsZomeApi from '../api/projectsApi'
 import { cellIdFromString } from '../utils'
 import constructProjectDataFetchers from '../api/projectDataFetchers' // Add this import
+import { openExpandedView } from '../redux/ephemeral/expanded-view/actions'
 
 interface OutcomeAssetViewProps {
   wal: WAL
@@ -74,6 +75,7 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
 
           // 1. Set the active project ID in Redux state
           dispatch(setActiveProject(determinedProjectId))
+          dispatch(openExpandedView(outcomeInfo.outcome.actionHash))
 
           // 2. Construct fetchers for this project
           const fetchers = constructProjectDataFetchers(

@@ -199,11 +199,9 @@ pub fn get_peers(get_options: GetOptions) -> ExternResult<Vec<AgentPubKey>> {
         None,
         get_options,
     )?;
-    let self_agent_pub_key = AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey);
     Ok(entries
         .into_iter()
         // eliminate yourself as a peer
-        .filter(|x| x.entry.agent_pub_key != self_agent_pub_key)
         .map(|x| AgentPubKey::from(x.entry.agent_pub_key))
         .collect::<Vec<AgentPubKey>>())
 }

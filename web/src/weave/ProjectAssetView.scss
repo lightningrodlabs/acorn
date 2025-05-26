@@ -1,0 +1,24 @@
+.project-asset-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  
+  .header-wrapper {
+    width: 100%;
+    
+    .header {
+      margin: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+  
+  /* Style for the main content area below the header */
+  .project-view-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+}

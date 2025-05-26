@@ -73,6 +73,15 @@ export class AcornState {
     }
     return null
   }
+  getProjectIdByActionHashB64(actionHashB64: ActionHashB64): string | null {
+    for (const [cellIdString, projectMeta] of this.projectMetas) {
+      if (projectMeta.actionHash === actionHashB64) {
+        return cellIdString
+      }
+    }
+    throw new Error(`No project found for action hash ${actionHashB64}`)
+  }
+
   getProjectMetaByCellIdString(cellIdString: string) {
     const projectMeta = this.projectMetas.get(cellIdString)
     if (projectMeta) {
