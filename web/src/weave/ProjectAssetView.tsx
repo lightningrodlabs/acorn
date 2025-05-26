@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { WAL } from '@theweave/api'
 import { encodeHashToBase64 } from '@holochain/client'
 import { hrlToString } from '@holochain-open-dev/utils'
@@ -8,11 +8,9 @@ import { getAppWs } from '../hcWebsockets'
 import { AcornState } from './acornState'
 import { setActiveProject } from '../redux/ephemeral/active-project/actions'
 import AppWebsocketContext from '../context/AppWebsocketContext'
-import TableView from '../routes/ProjectView/TableView/TableView.connector'
+import ProjectViewWrapper from '../routes/ProjectView/ProjectView.connector'
 import constructProjectDataFetchers from '../api/projectDataFetchers'
-import { HashRouter as Router } from 'react-router-dom'
-import ComputedOutcomeContext from '../context/ComputedOutcomeContext'
-import selectAndComputeOutcomes from '../selectors/computeOutcomes'
+import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 
 interface ProjectAssetViewProps {
   wal: WAL
@@ -24,8 +22,6 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
   const [error, setError] = useState<string | null>(null)
   const [appWs, setAppWs] = useState<any>(null)
   const dispatch = useDispatch()
-  // Get computed outcomes for the TableView
-  const computedOutcomes = useSelector(selectAndComputeOutcomes)
 
   // Main effect for fetching initial data based on WAL
   useEffect(() => {
@@ -111,14 +107,18 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
   if (projectId) {
     return (
       <AppWebsocketContext.Provider value={appWs}>
-        <ComputedOutcomeContext.Provider value={computedOutcomes}>
-          <Router>
-            <div className="table-view-container" style={{ padding: '20px' }}>
-              <h2>Project Table View</h2>
-              <TableView />
-            </div>
-          </Router>
-        </ComputedOutcomeContext.Provider>
+        <Router>
+          <Switch>
+            <Route
+              path="/project/:projectId"
+              render={() => <ProjectViewWrapper />}
+            />
+            <Route
+              path="/"
+              render={() => <Redirect to={`/project/${projectId}`} />}
+            />
+          </Switch>
+        </Router>
       </AppWebsocketContext.Provider>
     )
   }
