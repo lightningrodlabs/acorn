@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { WAL } from '@theweave/api'
 import { encodeHashToBase64 } from '@holochain/client'
 import { hrlToString } from '@holochain-open-dev/utils'
@@ -8,9 +8,11 @@ import { getAppWs } from '../hcWebsockets'
 import { AcornState } from './acornState'
 import { setActiveProject } from '../redux/ephemeral/active-project/actions'
 import AppWebsocketContext from '../context/AppWebsocketContext'
-import ProjectViewWrapper from '../routes/ProjectView/ProjectView.connector'
+import TableView from '../routes/ProjectView/TableView/TableView.connector'
 import constructProjectDataFetchers from '../api/projectDataFetchers'
-import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import { HashRouter as Router } from 'react-router-dom'
+import ComputedOutcomeContext from '../context/ComputedOutcomeContext'
+import selectAndComputeOutcomes from '../selectors/computeOutcomes'
 
 interface ProjectAssetViewProps {
   wal: WAL
@@ -104,21 +106,20 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
     return <div>Error: {error}</div>
   }
 
+  // Get computed outcomes for the TableView
+  const computedOutcomes = useSelector(selectAndComputeOutcomes)
+
   if (projectId) {
     return (
       <AppWebsocketContext.Provider value={appWs}>
-        <Router>
-          <Switch>
-            <Route
-              path="/project/:projectId"
-              render={() => <ProjectViewWrapper />}
-            />
-            <Route
-              path="/"
-              render={() => <Redirect to={`/project/${projectId}`} />}
-            />
-          </Switch>
-        </Router>
+        <ComputedOutcomeContext.Provider value={computedOutcomes}>
+          <Router>
+            <div className="table-view-container" style={{ padding: '20px' }}>
+              <h2>Project Table View</h2>
+              <TableView />
+            </div>
+          </Router>
+        </ComputedOutcomeContext.Provider>
       </AppWebsocketContext.Provider>
     )
   }
