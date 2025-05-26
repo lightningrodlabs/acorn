@@ -15,6 +15,8 @@ import HeaderLeftPanel from '../components/Header/HeaderLeftPanel'
 import { useProjectAttachments } from '../hooks/useProjectAttachments'
 import { CellIdWrapper } from '../domain/cellId'
 import './ProjectAssetView.scss'
+import { WireRecord } from '../api/hdkCrud'
+import { Profile } from 'zod-models'
 
 interface ProjectAssetViewProps {
   wal: WAL
@@ -162,7 +164,7 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
             <div className="header-wrapper">
               <div className="header">
                 <HeaderLeftPanel
-                  whoami={{}}
+                  whoami={{} as WireRecord<Profile>}
                   members={[]}
                   presentMembers={[]}
                   projectName={projectMeta ? projectMeta.entry.name : ''}
