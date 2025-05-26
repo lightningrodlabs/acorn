@@ -323,58 +323,62 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
                     </div>
                   )}
 
-                  {/* Settings */}
-                  <Icon
-                    name="settings.svg"
-                    withTooltip
-                    tooltipText="Project Settings"
-                    size="header"
-                    onClick={() =>
-                      setModalState({
-                        id: OpenModal.ProjectSettings,
-                        cellId: projectId,
-                      })
-                    }
-                    className="header-action-icon"
-                  />
-                  {/* Export */}
-                  <div className="export-wrapper" ref={exportProjectRef}>
-                    <Icon
-                      withTooltip
-                      tooltipText="Export"
-                      name="export.svg"
-                      size="header"
-                      className={`header-action-icon ${
-                        isExportOpen ? 'purple' : ''
-                      }`}
-                      onClick={() => setIsExportOpen(!isExportOpen)}
-                    />
-                    {isExportOpen && (
-                      <div className="export-list-wrapper">
-                        {/* Top Triangle */}
-                        <img
-                          className="triangle-top-white"
-                          src={triangleTopWhite}
+                  {!showOnlyProjectSection && (
+                    <>
+                      {/* Settings */}
+                      <Icon
+                        name="settings.svg"
+                        withTooltip
+                        tooltipText="Project Settings"
+                        size="header"
+                        onClick={() =>
+                          setModalState({
+                            id: OpenModal.ProjectSettings,
+                            cellId: projectId,
+                          })
+                        }
+                        className="header-action-icon"
+                      />
+                      {/* Export */}
+                      <div className="export-wrapper" ref={exportProjectRef}>
+                        <Icon
+                          withTooltip
+                          tooltipText="Export"
+                          name="export.svg"
+                          size="header"
+                          className={`header-action-icon ${
+                            isExportOpen ? 'purple' : ''
+                          }`}
+                          onClick={() => setIsExportOpen(!isExportOpen)}
                         />
-                        <ExportMenuItem
-                          type="json"
-                          title="Export as JSON (Importable)"
-                          downloadFilename={`${projectNameForExport}.json`}
-                          onClick={() => {
-                            setIsExportOpen(false)
-                          }}
-                        />
-                        <ExportMenuItem
-                          type="csv"
-                          title="Export as CSV"
-                          downloadFilename={`${projectNameForExport}.csv`}
-                          onClick={() => {
-                            setIsExportOpen(false)
-                          }}
-                        />
+                        {isExportOpen && (
+                          <div className="export-list-wrapper">
+                            {/* Top Triangle */}
+                            <img
+                              className="triangle-top-white"
+                              src={triangleTopWhite}
+                            />
+                            <ExportMenuItem
+                              type="json"
+                              title="Export as JSON (Importable)"
+                              downloadFilename={`${projectNameForExport}.json`}
+                              onClick={() => {
+                                setIsExportOpen(false)
+                              }}
+                            />
+                            <ExportMenuItem
+                              type="csv"
+                              title="Export as CSV"
+                              downloadFilename={`${projectNameForExport}.csv`}
+                              onClick={() => {
+                                setIsExportOpen(false)
+                              }}
+                            />
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
+                    </>
+                  )}
                   {/* Add to Pocket */}
                   {isWeaveContext() && (
                     <Icon
