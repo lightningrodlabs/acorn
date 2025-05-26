@@ -82,6 +82,8 @@ export type HeaderLeftPanelProps = {
   handleAddAttachment: () => Promise<void>
   handleRemoveAttachment: (relationHash: EntryHash) => Promise<void>
   openAsset: (wal: WAL) => Promise<void>
+  // New prop to control rendering
+  showOnlyProjectSection?: boolean
 }
 
 const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
@@ -99,6 +101,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   handleAddAttachment,
   handleRemoveAttachment,
   openAsset,
+  showOnlyProjectSection = false,
 }) => {
   const entryPointsRef = useRef<HTMLDivElement>(null)
   const exportProjectRef = useRef<HTMLDivElement>(null)
@@ -167,19 +170,23 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   return (
     <div className="header-left-panel-rows">
       <div className="header-left-panel">
-        {/* Acorn Logo - non link */}
+        {/* Only show logo if not in showOnlyProjectSection mode */}
+        {!showOnlyProjectSection && (
+          <>
+            {/* Acorn Logo - non link */}
+            {!whoami && (
+              <div className="logo non-link">
+                <img src="images/acorn-alpha-logo.png" className="logo-image" />
+              </div>
+            )}
 
-        {!whoami && (
-          <div className="logo non-link">
-            <img src="images/acorn-alpha-logo.png" className="logo-image" />
-          </div>
-        )}
-
-        {/* Acorn Logo - linked */}
-        {whoami && (
-          <NavLink to="/" className="logo">
-            <img src="images/acorn-alpha-logo.png" className="logo-image" />
-          </NavLink>
+            {/* Acorn Logo - linked */}
+            {whoami && (
+              <NavLink to="/" className="logo">
+                <img src="images/acorn-alpha-logo.png" className="logo-image" />
+              </NavLink>
+            )}
+          </>
         )}
 
         {whoami && (
@@ -398,7 +405,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
       </div>
       {/* Second row of the header */}
       {/* for showing active entry points tabs */}
-      {whoami && (
+      {whoami && !showOnlyProjectSection && (
         <Route path="/project">
           {/* Current Entry Points Tab */}
           <div className="header-left-panel second-row">

@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { WAL } from '@theweave/api'
-import { encodeHashToBase64 } from '@holochain/client'
+import { WAL, isWeaveContext } from '@theweave/api'
+import { encodeHashToBase64, EntryHash } from '@holochain/client'
 import { hrlToString } from '@holochain-open-dev/utils'
 import { CellIdString } from '../types/shared'
-import { getAppWs } from '../hcWebsockets'
+import { getAppWs, getWeaveClient } from '../hcWebsockets'
 import { AcornState } from './acornState'
 import { setActiveProject } from '../redux/ephemeral/active-project/actions'
 import AppWebsocketContext from '../context/AppWebsocketContext'
 import ProjectViewWrapper from '../routes/ProjectView/ProjectView.connector'
 import constructProjectDataFetchers from '../api/projectDataFetchers'
 import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import HeaderLeftPanel from '../components/Header/HeaderLeftPanel'
+import { useProjectAttachments } from '../hooks/useProjectAttachments'
+import { CellIdWrapper } from '../domain/cellId'
 
 interface ProjectAssetViewProps {
   wal: WAL
@@ -21,7 +24,14 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [appWs, setAppWs] = useState<any>(null)
+  const [projectMeta, setProjectMeta] = useState<any>(null)
   const dispatch = useDispatch()
+  
+  // Get project attachments
+  const { attachmentsInfo } = useProjectAttachments({
+    projectId,
+    projectMeta,
+  })
 
   // Main effect for fetching initial data based on WAL
   useEffect(() => {
@@ -53,6 +63,7 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
 
         if (projectId) {
           setProjectId(projectId)
+          setProjectMeta(projectMeta)
 
           // Set the active project ID in Redux state
           dispatch(setActiveProject(projectId))
@@ -104,21 +115,82 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
     return <div>Error: {error}</div>
   }
 
+  // Add attachment function
+  const handleAddAttachment = async () => {
+    if (!isWeaveContext() || !projectId || !projectMeta) return
+    
+    const weaveClient = getWeaveClient()
+    if (!weaveClient) return
+
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
+    const thisWal: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        encodeHashToBase64(projectMeta.actionHash),
+      ],
+    }
+
+    const wal = await weaveClient.assets.userSelectAsset()
+    if (wal) {
+      await weaveClient.assets.addAssetRelation(thisWal, wal)
+    }
+  }
+
+  // Remove attachment function
+  const handleRemoveAttachment = async (relationHash: EntryHash) => {
+    if (!isWeaveContext()) return
+    
+    const weaveClient = getWeaveClient()
+    if (!weaveClient) return
+    
+    await weaveClient.assets.removeAssetRelation(relationHash)
+  }
+
+  // Function to open asset
+  const openAsset = async (wal: WAL) => {
+    if (!isWeaveContext()) return
+    
+    const weaveClient = getWeaveClient()
+    if (weaveClient) {
+      await weaveClient.openAsset(wal)
+    }
+  }
+
   if (projectId) {
     return (
       <AppWebsocketContext.Provider value={appWs}>
-        <Router>
-          <Switch>
-            <Route
-              path="/project/:projectId"
-              render={() => <ProjectViewWrapper />}
+        <div className="project-asset-view">
+          <div className="project-asset-header">
+            <HeaderLeftPanel
+              whoami={null}
+              members={[]}
+              presentMembers={[]}
+              projectName={projectMeta ? projectMeta.entry.name : ''}
+              projectPassphrase={projectMeta ? projectMeta.entry.passphrase : ''}
+              activeEntryPoints={[]}
+              setModalState={() => {}}
+              goToOutcome={() => {}}
+              projectMeta={projectMeta}
+              attachmentsInfo={attachmentsInfo}
+              handleAddAttachment={handleAddAttachment}
+              handleRemoveAttachment={handleRemoveAttachment}
+              openAsset={openAsset}
+              showOnlyProjectSection={true}
             />
-            <Route
-              path="/"
-              render={() => <Redirect to={`/project/${projectId}/table`} />}
-            />
-          </Switch>
-        </Router>
+          </div>
+          <Router>
+            <Switch>
+              <Route
+                path="/project/:projectId"
+                render={() => <ProjectViewWrapper />}
+              />
+              <Route
+                path="/"
+                render={() => <Redirect to={`/project/${projectId}/table`} />}
+              />
+            </Switch>
+          </Router>
+        </div>
       </AppWebsocketContext.Provider>
     )
   }
