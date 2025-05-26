@@ -115,7 +115,7 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
             />
             <Route
               path="/"
-              render={() => <Redirect to={`/project/${projectId}`} />}
+              render={() => <Redirect to={`/project/${projectId}/table`} />}
             />
           </Switch>
         </Router>
