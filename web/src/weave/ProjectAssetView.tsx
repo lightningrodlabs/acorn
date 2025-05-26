@@ -14,6 +14,7 @@ import { HashRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import HeaderLeftPanel from '../components/Header/HeaderLeftPanel'
 import { useProjectAttachments } from '../hooks/useProjectAttachments'
 import { CellIdWrapper } from '../domain/cellId'
+import './ProjectAssetView.scss'
 
 interface ProjectAssetViewProps {
   wal: WAL
@@ -157,34 +158,33 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
     return (
       <AppWebsocketContext.Provider value={appWs}>
         <div className="project-asset-view">
-          <div className="project-asset-header"></div>
+          <div className="header-wrapper">
+            <div className="header">
+              <HeaderLeftPanel
+                whoami={{}}
+                members={[]}
+                presentMembers={[]}
+                projectName={projectMeta ? projectMeta.entry.name : ''}
+                projectPassphrase={
+                  projectMeta ? projectMeta.entry.passphrase : ''
+                }
+                activeEntryPoints={[]}
+                setModalState={() => {}}
+                goToOutcome={() => {}}
+                projectMeta={projectMeta}
+                attachmentsInfo={attachmentsInfo}
+                handleAddAttachment={handleAddAttachment}
+                handleRemoveAttachment={handleRemoveAttachment}
+                openAsset={openAsset}
+                showOnlyProjectSection={true}
+              />
+            </div>
+          </div>
           <Router>
             <Switch>
               <Route
                 path="/project/:projectId"
-                render={() => (
-                  <>
-                    <HeaderLeftPanel
-                      whoami={{}}
-                      members={[]}
-                      presentMembers={[]}
-                      projectName={projectMeta ? projectMeta.entry.name : ''}
-                      projectPassphrase={
-                        projectMeta ? projectMeta.entry.passphrase : ''
-                      }
-                      activeEntryPoints={[]}
-                      setModalState={() => {}}
-                      goToOutcome={() => {}}
-                      projectMeta={projectMeta}
-                      attachmentsInfo={attachmentsInfo}
-                      handleAddAttachment={handleAddAttachment}
-                      handleRemoveAttachment={handleRemoveAttachment}
-                      openAsset={openAsset}
-                      showOnlyProjectSection={true}
-                    />
-                    <ProjectViewWrapper />
-                  </>
-                )}
+                render={() => <ProjectViewWrapper />}
               />
               <Route
                 path="/"
