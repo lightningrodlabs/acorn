@@ -26,7 +26,7 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
   const [appWs, setAppWs] = useState<any>(null)
   const [projectMeta, setProjectMeta] = useState<any>(null)
   const dispatch = useDispatch()
-  
+
   // Get project attachments
   const { attachmentsInfo } = useProjectAttachments({
     projectId,
@@ -118,16 +118,13 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
   // Add attachment function
   const handleAddAttachment = async () => {
     if (!isWeaveContext() || !projectId || !projectMeta) return
-    
+
     const weaveClient = getWeaveClient()
     if (!weaveClient) return
 
     const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
     const thisWal: WAL = {
-      hrl: [
-        cellIdWrapper.getDnaHash(),
-        encodeHashToBase64(projectMeta.actionHash),
-      ],
+      hrl: [cellIdWrapper.getDnaHash(), projectMeta.actionHash],
     }
 
     const wal = await weaveClient.assets.userSelectAsset()
@@ -139,17 +136,17 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
   // Remove attachment function
   const handleRemoveAttachment = async (relationHash: EntryHash) => {
     if (!isWeaveContext()) return
-    
+
     const weaveClient = getWeaveClient()
     if (!weaveClient) return
-    
+
     await weaveClient.assets.removeAssetRelation(relationHash)
   }
 
   // Function to open asset
   const openAsset = async (wal: WAL) => {
     if (!isWeaveContext()) return
-    
+
     const weaveClient = getWeaveClient()
     if (weaveClient) {
       await weaveClient.openAsset(wal)
@@ -160,29 +157,34 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
     return (
       <AppWebsocketContext.Provider value={appWs}>
         <div className="project-asset-view">
-          <div className="project-asset-header">
-            <HeaderLeftPanel
-              whoami={null}
-              members={[]}
-              presentMembers={[]}
-              projectName={projectMeta ? projectMeta.entry.name : ''}
-              projectPassphrase={projectMeta ? projectMeta.entry.passphrase : ''}
-              activeEntryPoints={[]}
-              setModalState={() => {}}
-              goToOutcome={() => {}}
-              projectMeta={projectMeta}
-              attachmentsInfo={attachmentsInfo}
-              handleAddAttachment={handleAddAttachment}
-              handleRemoveAttachment={handleRemoveAttachment}
-              openAsset={openAsset}
-              showOnlyProjectSection={true}
-            />
-          </div>
+          <div className="project-asset-header"></div>
           <Router>
             <Switch>
               <Route
                 path="/project/:projectId"
-                render={() => <ProjectViewWrapper />}
+                render={() => (
+                  <>
+                    <HeaderLeftPanel
+                      whoami={{}}
+                      members={[]}
+                      presentMembers={[]}
+                      projectName={projectMeta ? projectMeta.entry.name : ''}
+                      projectPassphrase={
+                        projectMeta ? projectMeta.entry.passphrase : ''
+                      }
+                      activeEntryPoints={[]}
+                      setModalState={() => {}}
+                      goToOutcome={() => {}}
+                      projectMeta={projectMeta}
+                      attachmentsInfo={attachmentsInfo}
+                      handleAddAttachment={handleAddAttachment}
+                      handleRemoveAttachment={handleRemoveAttachment}
+                      openAsset={openAsset}
+                      showOnlyProjectSection={true}
+                    />
+                    <ProjectViewWrapper />
+                  </>
+                )}
               />
               <Route
                 path="/"
