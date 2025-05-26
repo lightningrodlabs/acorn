@@ -109,13 +109,13 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
       <AppWebsocketContext.Provider value={appWs}>
         <Router>
           <Switch>
-            <Route 
-              path="/project/:projectId" 
-              render={() => <ProjectViewWrapper projectId={projectId} />} 
+            <Route
+              path="/project/:projectId"
+              render={() => <ProjectViewWrapper />}
             />
-            <Route 
-              path="/" 
-              render={() => <Redirect to={`/project/${projectId}`} />} 
+            <Route
+              path="/"
+              render={() => <Redirect to={`/project/${projectId}`} />}
             />
           </Switch>
         </Router>
