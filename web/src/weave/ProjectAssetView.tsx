@@ -10,6 +10,7 @@ import { setActiveProject } from '../redux/ephemeral/active-project/actions'
 import AppWebsocketContext from '../context/AppWebsocketContext'
 import ProjectViewWrapper from '../routes/ProjectView/ProjectView.connector'
 import constructProjectDataFetchers from '../api/projectDataFetchers'
+import { HashRouter as Router } from 'react-router-dom'
 
 interface ProjectAssetViewProps {
   wal: WAL
@@ -42,6 +43,13 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
 
         const acornState = await AcornState.fromAppClient(appWs)
         const projectId = acornState.getProjectIdByActionHashB64(actionHashB64)
+        const projectMeta = acornState.findProjectMetaByActionHashB64(
+          actionHashB64
+        )
+        console.log(
+          `ProjectAssetView: Found project ID ${projectId} for ActionHash ${actionHashB64}`,
+          projectMeta
+        )
 
         if (projectId) {
           setProjectId(projectId)
@@ -99,7 +107,11 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
   if (projectId) {
     return (
       <AppWebsocketContext.Provider value={appWs}>
-        <ProjectViewWrapper />
+        <div>HELLO</div>
+        <Router>
+          <h2>Project View</h2>
+          <ProjectViewWrapper projectId={projectId} />
+        </Router>
       </AppWebsocketContext.Provider>
     )
   }
