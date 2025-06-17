@@ -150,8 +150,9 @@ pub struct EditingOutcomeDetails {
 }
 #[hdk_extern]
 pub fn emit_realtime_info_signal(realtime_info: RealtimeInfoInput) -> ExternResult<()> {
+    let my_pubkey = agent_info()?.agent_initial_pubkey;
     let realtime_info_signal = RealtimeInfoSignal {
-        agent_pub_key: AgentPubKeyB64::new(agent_info()?.agent_initial_pubkey),
+        agent_pub_key: AgentPubKeyB64::new(my_pubkey.clone()),
         project_id: realtime_info.project_id,
         outcome_being_edited: realtime_info.outcome_being_edited,
         outcome_expanded_view: realtime_info.outcome_expanded_view,
@@ -159,7 +160,8 @@ pub fn emit_realtime_info_signal(realtime_info: RealtimeInfoInput) -> ExternResu
 
     let signal = SignalType::RealtimeInfo(realtime_info_signal);
     let payload = ExternIO::encode(signal).map_err(|e| wasm_error!(e))?;
-    let peers = get_peers_content()?;
+    let mut peers = get_peers_content()?;
+    peers.retain(|a| a != &my_pubkey);
     send_remote_signal(payload, peers)?;
     Ok(())
 }
