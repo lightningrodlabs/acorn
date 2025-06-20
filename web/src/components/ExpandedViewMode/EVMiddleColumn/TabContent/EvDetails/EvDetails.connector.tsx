@@ -106,6 +106,7 @@ function mapStateToProps(
       (agentInfo) =>
         agentInfo.outcomeBeingEdited.outcomeActionHash === outcomeActionHash
     )
+    .filter((agentInfo) => agentInfo.agentPubKey !== state.agentAddress) // don't include self
     .map((agentInfo) => filterAndAddAgentInfo(agentInfo))
   // this should only ever by a maximum of two peers (one editing title, one editing description)
 

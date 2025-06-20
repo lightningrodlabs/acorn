@@ -29,6 +29,7 @@ keystore
 keystore2
 my-proxy-cert.cert
 
+**/.kitsune2_bootstrap_srv
 **/*.dna
 **/*.happ
 
