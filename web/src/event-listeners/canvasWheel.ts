@@ -25,8 +25,12 @@ export default function canvasWheel(store: any, event: WheelEvent) {
         const pageCoord = { x: event.clientX, y: event.clientY }
         const instant = true
         store.dispatch(changeScale(zoom, pageCoord, instant))
+      } else if (event.shiftKey) {
+        // Switch deltaX and deltaY to scroll horizontally and invert to
+        // have scroll down mean "left to right" according to reading direction
+        store.dispatch(changeTranslate(-1* event.deltaY, -1 * event.deltaX))
       } else {
-        // invert the pattern so that it uses new mac style
+        // Invert the pattern so that it uses new mac style
         // of panning
         store.dispatch(changeTranslate(-1 * event.deltaX, -1 * event.deltaY))
       }
