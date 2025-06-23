@@ -15,7 +15,7 @@ export async function internalJoinProject(
   // checks and other things
   dispatch(joinProjectCellId(cellIdString))
   dispatch(setProjectWhoami(cellIdString, whoami));
-  dispatch(setProjectMemberProfile(cellIdString, whoami));
+  dispatch(setProjectMemberProfile(cellIdString, whoami.entry));
   return cellIdString
 }
 
