@@ -47,9 +47,10 @@ export function useAttachments({
       // Clean up any existing subscription before creating a new one
       if (
         subscriptionRef.current &&
-        typeof subscriptionRef.current.unsubscribe === 'function'
+        typeof subscriptionRef.current === 'function'
       ) {
-        subscriptionRef.current.unsubscribe()
+        const unsubscribe = subscriptionRef.current;
+        unsubscribe()
       }
       subscriptionRef.current = null
 
@@ -93,9 +94,10 @@ export function useAttachments({
     return () => {
       if (
         subscriptionRef.current &&
-        typeof subscriptionRef.current.unsubscribe === 'function'
+        typeof subscriptionRef.current === 'function'
       ) {
-        subscriptionRef.current.unsubscribe()
+        const unsubscribe = subscriptionRef.current;
+        unsubscribe()
       }
       subscriptionRef.current = null
     }
