@@ -34,7 +34,7 @@ export async function mossInit(
     // cache buffer version of agentPubKey
     setAgentPubKey(appInfo.agent_pub_key)
 
-    // read the local profile from localStorage and set it in the state
+    // fetch the profile from weave profiles client
     const myLocalProfile = await fetchMyLocalProfile()
     store.dispatch(setMyLocalProfile(myLocalProfile))
 
