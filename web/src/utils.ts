@@ -69,6 +69,12 @@ export function writeMyLocalProfile(profile: Profile): void {
   setLocalItem(MY_PROFILE_KEY, JSON.stringify(profile));
 }
 
+/**
+ * Reads the profile from localStorage in the Acorn Desktop case
+ * or fetches it from Moss in the Weave case.
+ *
+ * @returns
+ */
 export async function fetchMyLocalProfile(): Promise<Option<Profile>> {
   if (isWeaveContext()) {
     const profilesClient = await getWeaveProfilesClient();
