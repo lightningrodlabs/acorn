@@ -1,9 +1,9 @@
 import { AgentPubKeyB64 } from '@holochain/client'
 import ProjectsZomeApi from '../api/projectsApi'
-import { setMember } from '../redux/persistent/projects/members/actions'
+import { setProjectMember, setProjectMemberProfile, setProjectWhoami } from '../redux/persistent/projects/members/actions'
 import { simpleCreateProjectMeta } from '../redux/persistent/projects/project-meta/actions'
 import { ProjectMeta } from '../types'
-import { cellIdFromString } from '../utils'
+import { cellIdFromString, fetchMyLocalProfile } from '../utils'
 import { installProject } from './installProject'
 import { CellIdString } from '../types/shared'
 
@@ -22,7 +22,7 @@ export async function finalizeCreateProject(
   dispatch(simpleCreateProjectMeta(cellIdString, createdProjectMeta))
   // because we are acting optimistically,
   // we will directly set ourselves as a member of this cell
-  dispatch(setMember(cellIdString, { agentPubKey: agentAddress }))
+  dispatch(setProjectMember(cellIdString, { agentPubKey: agentAddress }))
 }
 
 export async function internalCreateProject(
@@ -34,7 +34,9 @@ export async function internalCreateProject(
   iFinalizeCreateProject: typeof finalizeCreateProject,
   projectsZomeApi: ProjectsZomeApi
 ) {
-  const { cellIdString } = await iInstallProject(passphrase)
+  const { cellIdString, whoami } = await iInstallProject(passphrase)
+  dispatch(setProjectWhoami(cellIdString, whoami));
+  dispatch(setProjectMemberProfile(cellIdString, whoami ? whoami.entry : await fetchMyLocalProfile()));
   await iFinalizeCreateProject(
     cellIdString,
     projectMeta,

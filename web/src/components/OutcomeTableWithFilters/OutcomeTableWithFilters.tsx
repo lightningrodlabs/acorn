@@ -13,7 +13,7 @@ import './OutcomeTableWithFilters.scss'
 export type OutcomeTableWithFiltersProps = {
   topPriorityOutcomes: ActionHashB64[]
   projectTags: WithActionHash<Tag>[]
-  whoAmI: Profile
+  myLocalProfile: Profile
   presentMembers: AgentPubKeyB64[]
   projectMemberProfiles: Profile[]
   computedOutcomesAsTree: ComputedOutcome[]
@@ -24,7 +24,7 @@ export type OutcomeTableWithFiltersProps = {
 const OutcomeTableWithFilters: React.FC<OutcomeTableWithFiltersProps> = ({
   topPriorityOutcomes,
   projectTags,
-  whoAmI,
+  myLocalProfile,
   presentMembers,
   projectMemberProfiles,
   computedOutcomesAsTree,
@@ -36,7 +36,7 @@ const OutcomeTableWithFilters: React.FC<OutcomeTableWithFiltersProps> = ({
     <div className="outcome-table-with-filters">
       <OutcomeTableFilterSelector
         projectTags={projectTags}
-        whoAmI={whoAmI}
+        myLocalProfile={myLocalProfile}
         onApplyOutcomeTableFilter={setOutcomeTableFilter}
         filter={filter}
         projectMemberProfiles={projectMemberProfiles}

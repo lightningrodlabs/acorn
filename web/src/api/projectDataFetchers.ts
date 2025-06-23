@@ -1,6 +1,6 @@
 import { fetchConnections } from '../redux/persistent/projects/connections/actions'
 import { fetchEntryPoints } from '../redux/persistent/projects/entry-points/actions'
-import { fetchMembers } from '../redux/persistent/projects/members/actions'
+import { fetchProjectMembers } from '../redux/persistent/projects/members/actions'
 import { fetchOutcomeComments } from '../redux/persistent/projects/outcome-comments/actions'
 import { fetchOutcomeMembers } from '../redux/persistent/projects/outcome-members/actions'
 import { fetchOutcomes } from '../redux/persistent/projects/outcomes/actions'
@@ -40,7 +40,7 @@ export default function constructProjectDataFetchers(
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const members = await projectsZomeApi.member.fetch(cellId)
       // is not currently a layout affecting action
-      return dispatch(fetchMembers(cellIdString, members))
+      return dispatch(fetchProjectMembers(cellIdString, members))
     },
     fetchOutcomes: async () => {
       const appWebsocket = await getAppWs()

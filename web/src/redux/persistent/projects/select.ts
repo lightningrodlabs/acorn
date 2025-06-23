@@ -8,10 +8,10 @@ const selectProjectAggregated = (
   cellIdString: CellIdString
 ) => {
   const projectMeta = state.projects.projectMeta[cellIdString]
-  const members = state.projects.members[cellIdString] || {}
-  const memberProfiles = Object.keys(members).map(
-    (agentAddress) => state.agents[agentAddress]
-  )
+  const memberPubkeys = Object.keys(state.projects.members[cellIdString]?.members || {});
+  // Need to filter profiles by members since in Moss, profiles are not stored separately
+  // per project cell
+  const memberProfiles = state.projects.members[cellIdString]?.profiles.filter((p) => memberPubkeys.includes(p.agentPubKey)) || []
   const entryPoints = selectEntryPoints(state, cellIdString)
   const presentMembers = selectProjectMembersPresent(state, cellIdString)
   return {

@@ -14,6 +14,8 @@ import EvComments, {
   EvCommentsConnectorStateProps,
   EvCommentsOwnProps,
 } from './EvComments.component'
+import { selectMemberProfilesOfProject } from '../../../../../redux/persistent/projects/members/select'
+import _ from 'lodash'
 
 function mapStateToProps(
   state: RootState,
@@ -22,6 +24,8 @@ function mapStateToProps(
   const { projectId } = ownProps
   const outcomeActionHash = state.ui.expandedView.outcomeActionHash
   const outcomeComments = state.projects.outcomeComments[projectId] || {}
+
+  const profiles = selectMemberProfilesOfProject(state, projectId);
 
   let comments = []
   if (outcomeActionHash) {
@@ -35,7 +39,7 @@ function mapStateToProps(
   return {
     outcomeActionHash,
     activeAgentPubKey: state.agentAddress,
-    profiles: state.agents,
+    profiles: _.keyBy(profiles, 'agentPubKey'),
     comments,
   }
 }

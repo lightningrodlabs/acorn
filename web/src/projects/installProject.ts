@@ -3,21 +3,32 @@ import { getAgentPubKey, getAppWs, getWeaveClient } from '../hcWebsockets'
 import { PROJECT_APP_PREFIX, PROJECTS_ROLE_NAME } from '../holochainConfig'
 import { passphraseToUid } from '../secrets'
 import { CellIdString } from '../types/shared'
-import { cellIdToString } from '../utils'
+import { cellIdToString, fetchMyLocalProfile } from '../utils'
 import { isWeaveContext } from '@theweave/api'
+import ProfilesZomeApi from '../api/profilesApi'
+import { WireRecord } from '../api/hdkCrud'
+import { Profile } from 'zod-models'
 
 export async function internalInstallProject(
   passphrase: string,
   appWs: AppClient,
   iGetAgentPubKey: typeof getAgentPubKey
-): Promise<{ cellIdString: CellIdString; cellId: CellId; appId: string }> {
+): Promise<{
+  cellIdString: CellIdString
+  cellId: CellId
+  whoami: WireRecord<Profile>
+}> {
   const uid = passphraseToUid(passphrase)
-  const installedAppId = `${PROJECT_APP_PREFIX}-${uid}`
   const agentKey = iGetAgentPubKey()
   if (!agentKey) {
     throw new Error(
       'Cannot install a new project because no AgentPubKey is known locally'
     )
+  }
+  // Check that local profile exists before cloning cell
+  const myLocalProfile = await fetchMyLocalProfile()
+  if (!myLocalProfile) {
+    throw new Error('Cannot install new project because no Profile is set yet.')
   }
 
   // CLONE
@@ -36,12 +47,23 @@ export async function internalInstallProject(
   })()
   const cellId = clonedCell.cell_id
   const cellIdString = cellIdToString(cellId)
-  //authorize zome calls for the new cell
-  // TODO: this pattern will need to change as the adminWS won't be availabe in a Moss Tool context
-  // if electron, send ipc message to main process to authorize, otherwise don't need to do anything
-  return { cellIdString, cellId, appId: installedAppId }
+
+  // Create profile
+  const profilesApi = new ProfilesZomeApi(appWs, cellId)
+  const whoami = isWeaveContext()
+    ? null
+    : await profilesApi.profile.createWhoami(myLocalProfile)
+
+  return { cellIdString, cellId, whoami }
 }
 
+/**
+ * Installs a new project, i.e. a cloned cell of the projects dna and
+ * creates a new Profile entry
+ *
+ * @param passphrase passphrase to use as the network seed of the project cell
+ * @returns
+ */
 export async function installProject(passphrase: string) {
   const appWs = await getAppWs()
   return internalInstallProject(passphrase, appWs, getAgentPubKey)

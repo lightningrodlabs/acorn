@@ -2,33 +2,25 @@ import _ from 'lodash'
 import { Action, CellIdString } from '../../../types/shared'
 import { SIMPLE_CREATE_PROJECT_META } from '../projects/project-meta/actions'
 import {
-  SET_PROFILES_CELL_ID,
   SET_PROJECTS_CELL_IDS,
   JOIN_PROJECT_CELL_ID,
   REMOVE_PROJECT_CELL_ID,
 } from './actions'
 
-interface State {
-  profiles: CellIdString | null
+interface CellsState {
   projects: CellIdString[]
 }
 
-const defaultState: State = {
-  profiles: null,
+const defaultState: CellsState = {
   projects: [],
 }
 
 export default function (
-  state: State = defaultState,
+  state: CellsState = defaultState,
   action: Action<CellIdString | Array<CellIdString>>
 ) {
   const { payload, type, meta } = action
   switch (type) {
-    case SET_PROFILES_CELL_ID:
-      return {
-        ...state,
-        profiles: payload as CellIdString,
-      }
     case SET_PROJECTS_CELL_IDS:
       return {
         ...state,
@@ -42,7 +34,7 @@ export default function (
     case JOIN_PROJECT_CELL_ID:
       return {
         ...state,
-        projects: [...state.projects, payload as CellIdString],
+        projects: [...state.projects.filter(cellId => cellId !== payload), payload as CellIdString],
       }
     case REMOVE_PROJECT_CELL_ID:
       return {

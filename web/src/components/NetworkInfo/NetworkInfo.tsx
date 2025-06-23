@@ -33,14 +33,14 @@ const NetworkInfo: React.FC<NetworkInfoProps> = ({
   const [networkStats, setNetworkStats] = useState({})
   const [logsToShow, setLogsToShow] = useState<LogsToShow>(LogsToShow.Info)
 
-  useEffect(() => {
-    const getNetworkStats = async () => {}
-    getNetworkStats()
+  // useEffect(() => {
+  //   const getNetworkStats = async () => {}
+  //   getNetworkStats()
 
-    // repeat every 5 seconds
-    const interval = setInterval(() => getNetworkStats(), 5000)
-    return () => clearInterval(interval)
-  }, [])
+  //   // repeat every 5 seconds
+  //   const interval = setInterval(() => getNetworkStats(), 5000)
+  //   return () => clearInterval(interval)
+  // }, [])
 
   const logs =
     holochainLogs[logsToShow.toLowerCase() as keyof typeof holochainLogs]
@@ -54,11 +54,7 @@ const NetworkInfo: React.FC<NetworkInfoProps> = ({
         <br />
         Keystore folder version: {versionInfo.keystoreFolderVersion}
         <br />
-        holochain version 0.2.2
-        <br />
-        bootstrap: https://bootstrap.holo.host
-        <br />
-        signal: wss://signal.holo.host
+        holochain version 0.5.3
         <br />
         updates every 5 seconds
       </div>

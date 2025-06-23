@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Redirect, HashRouter as Router, Switch, Route } from 'react-router-dom'
 
-import { WireRecord } from '../api/hdkCrud'
 import {
   ActionHashB64,
   AgentPubKeyB64,
   CellIdString,
   WithActionHash,
+  Option
 } from '../types/shared'
 import {
   ProjectMeta,
@@ -22,7 +22,6 @@ import './App.scss'
 import Header from '../components/Header/Header'
 import LoadingScreen from '../components/LoadingScreen/LoadingScreen'
 import Footer from '../components/Footer/Footer'
-import { ViewingReleaseNotes } from '../components/UpdateModal/UpdateModal'
 import NetworkInfo from '../components/NetworkInfo/NetworkInfo'
 import Toast from '../components/Toast/Toast'
 
@@ -32,7 +31,7 @@ import Dashboard from './Dashboard/Dashboard.connector'
 import ProjectView from './ProjectView/ProjectView.connector'
 import VersionUpdateLeaving from './VersionUpdateLeaving/VersionUpdateLeaving'
 import VersionUpdateEntering from './VersionUpdateEntering/VersionUpdateEntering'
-import IntroScreen from '../components/IntroScreen/IntroScreen.connector'
+import IntroScreen from '../components/IntroScreen/IntroScreen'
 import ErrorBoundaryScreen from '../components/ErrorScreen/ErrorScreen'
 
 // all global modals in here
@@ -60,22 +59,44 @@ import useHolochainErrorAndLog from '../hooks/useHolochainErrorAndLog'
 import AppWebsocketContext from '../context/AppWebsocketContext'
 import { AppClient } from '@holochain/client'
 import { App } from 'electron'
+import { isWeaveContext } from '@theweave/api'
+import { writeMyLocalProfile } from '../utils'
+import { setMyLocalProfile } from '../redux/persistent/profiles/my-local-profile/actions'
 
 export type AppStateProps = {
+  /**
+   * Meta info for all projects, keyed by CellIds of the projects
+   */
   projectMetas: ProjectMetaState
+  /**
+   * Member info for all projects, keyed by CellIds of the projects
+   */
   projectMembers: MembersState
-  profilesCellIdString: string
-  members: Profile[]
-  presentMembers: AgentPubKeyB64[]
+  /**
+   * Cell ids of all projects
+   */
+  projects: CellIdString[]
+  /**
+   * Profiles of the currently active/selected project
+   */
+  activeProjectProfiles: Profile[]
+  activeProjectMembersPresent: AgentPubKeyB64[]
   activeEntryPoints: {
     entryPoint: WithActionHash<EntryPoint>
     outcome: WithActionHash<Outcome>
   }[]
   activeProjectMeta: WithActionHash<ProjectMeta>
+  /**
+   * The CellId of the currently active/selected project
+   */
   projectId: CellIdString
+  /**
+   * My profile as stored in localStorage or retrieved from Moss. Acts
+   * as the source of thruth for my profile in the respective projects'
+   * dnas
+   */
+  myLocalProfile: Option<Profile>
   agentAddress: AgentPubKeyB64
-  whoami: WireRecord<Profile>
-  hasFetchedForWhoami: boolean
   navigationPreference: NavigationPreference
   keyboardNavigationPreference: KeyboardNavigationPreference
   hasMigratedSharedProject: boolean
@@ -99,8 +120,8 @@ export type AppDispatchProps = {
 }
 
 export type AppMergeProps = {
-  uninstallProject: (appId: string, cellIdString: CellIdString) => Promise<void>
-  updateWhoami: (entry: Profile, actionHash: ActionHashB64) => Promise<void>
+  uninstallProject: (cellIdString: CellIdString) => Promise<void>
+  updateWhoamis: (entry: Profile) => Promise<void>
   setSelectedLayeringAlgo: (
     layeringAlgorithm: LayeringAlgorithm
   ) => Promise<void>
@@ -122,17 +143,17 @@ export type AppProps = AppOwnProps & AppReduxProps
 const App: React.FC<AppProps> = ({
   // connections
   appWebsocket,
+  dispatch,
   // data
   projectMetas,
   projectMembers,
-  members,
-  presentMembers,
+  activeProjectProfiles,
+  activeProjectMembersPresent,
   activeEntryPoints,
   activeProjectMeta,
   projectId,
   agentAddress,
-  whoami,
-  hasFetchedForWhoami,
+  myLocalProfile,
   navigationPreference,
   keyboardNavigationPreference,
   hasMigratedSharedProject,
@@ -141,7 +162,7 @@ const App: React.FC<AppProps> = ({
   selectedLayeringAlgo,
   // functions
   updateProjectMeta,
-  updateWhoami,
+  updateWhoamis,
   setNavigationPreference,
   setKeyboardNavigationPreference,
   goToOutcome,
@@ -218,7 +239,9 @@ const App: React.FC<AppProps> = ({
   }, [networkInfoOpen, setNetworkInfoOpen])
 
   const onProfileSubmit = async (profile: Profile) => {
-    await updateWhoami(profile, whoami.actionHash)
+    writeMyLocalProfile(profile)
+    dispatch(setMyLocalProfile(profile))
+    await updateWhoamis(profile)
     setModalToNone()
     setToastState({
       id: ShowToast.Yes,
@@ -227,19 +250,18 @@ const App: React.FC<AppProps> = ({
     })
   }
   const updateStatus = async (statusString: Profile['status']) => {
-    await updateWhoami(
+    await updateWhoamis(
       {
-        ...whoami.entry,
+        ...myLocalProfile,
         status: statusString,
       },
-      whoami.actionHash
     )
   }
 
   const redirToIntro =
     agentAddress &&
-    hasFetchedForWhoami &&
-    !whoami &&
+    !myLocalProfile &&
+    !isWeaveContext() &&
     finishMigrationChecker.hasChecked &&
     !finishMigrationChecker.dataForNeedsMigration
 
@@ -281,16 +303,14 @@ const App: React.FC<AppProps> = ({
             >
               <AppWebsocketContext.Provider value={appWebsocket}>
                 <Router>
-                  {agentAddress && (
+                  {(myLocalProfile &&
                     <Header
                       project={activeProjectMeta}
                       {...{
-                        agentAddress,
-                        whoami,
+                        members: activeProjectProfiles,
+                        presentMembers: activeProjectMembersPresent,
+                        myLocalProfile,
                         setModalState,
-                        //
-                        members,
-                        presentMembers,
                         activeEntryPoints,
                         projectId,
                         updateStatus,
@@ -343,7 +363,7 @@ const App: React.FC<AppProps> = ({
 
                   <GlobalModals
                     {...{
-                      whoami,
+                      myLocalProfile,
                       projectSettingsProjectMeta,
                       projectSettingsMemberCount,
                       projectMigratedProjectMeta,
@@ -368,7 +388,7 @@ const App: React.FC<AppProps> = ({
                   )}
                   {redirToIntro && <Redirect to="/intro" />}
                   {redirToFinishMigration && <Redirect to="/finish-update" />}
-                  {agentAddress && whoami && (
+                  {agentAddress && myLocalProfile && (
                     <Footer
                       agentAddress={agentAddress}
                       hiddenAchievedOutcomes={hiddenAchievedOutcomes}

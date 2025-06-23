@@ -1,12 +1,14 @@
-import { CellType, ClonedCell } from '@holochain/client'
+import { AppInfo, CellType, ClonedCell } from '@holochain/client'
 import _ from 'lodash'
 import { getAppWs } from './hcWebsockets'
 import { PROJECTS_ROLE_NAME } from './holochainConfig'
 import { cellIdToString } from './utils'
 
-export async function getProjectCellIdStrings() {
-  const appWs = await getAppWs()
-  const appInfo = await appWs.appInfo()
+export async function getProjectCellIdStrings(appInfo?: AppInfo) {
+  if (!appInfo) {
+    const appWs = await getAppWs()
+    appInfo = await appWs.appInfo()
+  }
 
   // get only the enabled cloned cells
   const clonedProjectCells =

@@ -1,18 +1,19 @@
 import { z } from 'zod'
-import { getAppWs } from '../../hcWebsockets'
-import { cellIdFromString } from '../../utils'
+import { fetchMyLocalProfile, writeMyLocalProfile } from '../../utils'
 import { RootState } from '../../redux/reducer'
-import { createWhoami } from '../../redux/persistent/profiles/who-am-i/actions'
 import { installProject } from '../../projects/installProject'
-import { createProfilesZomeApi } from './zomeApiCreators'
 import { importProject } from './importProject'
-import ProfilesZomeApi from '../../api/profilesApi'
 import {
   BackwardsCompatibleAllProjectsExport,
   BackwardsCompatibleAllProjectsExportSchema,
 } from 'zod-models'
 import { internalJoinProject } from '../../projects/joinProject'
 import { AppClient } from '@holochain/client'
+import { setMyLocalProfile } from '../../redux/persistent/profiles/my-local-profile/actions'
+import {
+  setProjectMemberProfile,
+  setProjectWhoami,
+} from '../../redux/persistent/projects/members/actions'
 
 const stringToJSONSchema = z.string().transform((str, ctx): any => {
   try {
@@ -25,7 +26,7 @@ const stringToJSONSchema = z.string().transform((str, ctx): any => {
 
 export async function internalImportProjectsData(
   // dependencies
-  profilesZomeApi: ProfilesZomeApi,
+  appWs: AppClient,
   iImportProject: typeof importProject,
   iInstallProject: typeof installProject,
   store: any,
@@ -39,9 +40,6 @@ export async function internalImportProjectsData(
 
   const initialState: RootState = store.getState()
   const myAgentPubKey = initialState.agentAddress
-
-  const profilesCellIdString = initialState.cells.profiles
-  const profilesCellId = cellIdFromString(profilesCellIdString)
 
   // prepare a list of only the NON-migrated projects to migrate
   const projectsToMigrate = migrationDataParsed.projects.filter((project) => {
@@ -61,12 +59,11 @@ export async function internalImportProjectsData(
     migratedProjectsToJoin.length // the number of projects to join
   let stepsSoFar = 0
 
-  // import active user's own profile
-  const importedProfile = await profilesZomeApi.profile.createWhoami(
-    profilesCellId,
-    migrationDataParsed.myProfile
-  )
-  store.dispatch(createWhoami(profilesCellIdString, importedProfile))
+  // write profile to localStorage (needs to happen before installing the
+  // project cells as part of that)
+  writeMyLocalProfile(migrationDataParsed.myProfile)
+  store.dispatch(setMyLocalProfile(migrationDataParsed.myProfile))
+
   stepsSoFar++
   onStep(stepsSoFar, totalSteps)
 
@@ -74,11 +71,17 @@ export async function internalImportProjectsData(
   // one completes
   for await (let projectData of projectsToMigrate) {
     const passphrase = projectData.projectMeta.passphrase
-    const projectsIds = await iInstallProject(passphrase)
-    const appWs = await getAppWs()
+    const { cellIdString, whoami } = await iInstallProject(passphrase)
+    store.dispatch(setProjectWhoami(cellIdString, whoami))
+    store.dispatch(
+      setProjectMemberProfile(
+        cellIdString,
+        whoami ? whoami.entry : await fetchMyLocalProfile()
+      )
+    )
     await iImportProject(
       appWs,
-      projectsIds.cellIdString,
+      cellIdString,
       myAgentPubKey,
       projectData,
       passphrase,
@@ -103,9 +106,8 @@ export default async function importProjectsData(
   migrationData: string,
   onStep: (completed: number, toComplete: number) => void
 ) {
-  const profilesZomeApi = await createProfilesZomeApi(appWebsocket)
   return internalImportProjectsData(
-    profilesZomeApi,
+    appWebsocket,
     importProject,
     installProject,
     store,

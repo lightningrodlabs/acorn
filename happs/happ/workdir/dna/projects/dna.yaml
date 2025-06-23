@@ -8,9 +8,15 @@ integrity:
   zomes:
     - name: projects_integrity
       bundled: ../../../../target/wasm32-unknown-unknown/release/projects_integrity.wasm
+    - name: profiles_integrity
+      bundled: ../../../../target/wasm32-unknown-unknown/release/profiles_integrity.wasm
 coordinator:
   zomes:
     - name: projects
       bundled: ../../../../target/wasm32-unknown-unknown/release/projects.wasm
       dependencies:
         - name: projects_integrity
+    - name: profiles
+      bundled: ../../../../target/wasm32-unknown-unknown/release/profiles.wasm
+      dependencies:
+        - name: profiles_integrity

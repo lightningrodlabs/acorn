@@ -18,7 +18,7 @@ type ProfileEditFormProps = {
   pendingText: string
   onSubmit: (profile: Profile) => Promise<void>
   agentAddress: string
-  whoami: Profile
+  myLocalProfile: Profile
   titleText: string
   subText: string
   submitText: string
@@ -28,7 +28,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
   pending,
   pendingText,
   agentAddress,
-  whoami,
+  myLocalProfile,
   titleText,
   subText,
   submitText,
@@ -91,13 +91,13 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({
   // initialize and update the internal state from the
   // persisted (holochain) state
   useEffect(() => {
-    if (whoami) {
-      setFirstName(whoami.firstName)
-      setLastName(whoami.lastName)
-      setHandle(whoami.handle)
-      setAvatarUrl(whoami.avatarUrl)
+    if (myLocalProfile) {
+      setFirstName(myLocalProfile.firstName)
+      setLastName(myLocalProfile.lastName)
+      setHandle(myLocalProfile.handle)
+      setAvatarUrl(myLocalProfile.avatarUrl)
     }
-  }, [whoami])
+  }, [myLocalProfile])
 
   const usernameHelp =
     'Choose something easy for your teammates to use and recall. Avoid space and @.'

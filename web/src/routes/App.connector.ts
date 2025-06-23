@@ -3,27 +3,22 @@ import { connect } from 'react-redux'
 import { ActionHashB64, CellIdString } from '../types/shared'
 import { LayeringAlgorithm, Profile, ProjectMeta } from '../types'
 
-import { updateWhoami } from '../redux/persistent/profiles/who-am-i/actions'
 import {
   setKeyboardNavigationPreference,
   setNavigationPreference,
 } from '../redux/ephemeral/local-preferences/actions'
-import selectEntryPoints, {
-  selectActiveProjectMembers,
-} from '../redux/persistent/projects/entry-points/select'
+import selectEntryPoints from '../redux/persistent/projects/entry-points/select'
 import { animatePanAndZoom } from '../redux/ephemeral/viewport/actions'
 import ProfilesZomeApi from '../api/profilesApi'
-import { getAppWs, getWeaveProfilesClient } from '../hcWebsockets'
+import { getAppWs } from '../hcWebsockets'
 import { cellIdFromString } from '../utils'
 import { RootState } from '../redux/reducer'
 import App, {
   AppStateProps,
   AppDispatchProps,
-  AppReduxProps,
   AppOwnProps,
   AppProps,
 } from './App.component'
-import selectProjectMembersPresent from '../redux/persistent/projects/realtime-info-signal/select'
 import {
   hideAchievedOutcomes,
   hideSmallOutcomes,
@@ -34,31 +29,20 @@ import ProjectsZomeApi from '../api/projectsApi'
 import { updateProjectMeta } from '../redux/persistent/projects/project-meta/actions'
 import { uninstallProject } from '../projects/uninstallProject'
 import { unselectAll } from '../redux/ephemeral/selection/actions'
-import { CellId } from '@holochain/client'
 import { isWeaveContext } from '@theweave/api'
+import { selectProjectMemberPukeys, selectMemberProfilesOfProject } from '../redux/persistent/projects/members/select'
+import selectProjectMembersPresent from '../redux/persistent/projects/realtime-info-signal/select'
 
 function mapStateToProps(state: RootState): AppStateProps {
   const {
     ui: {
-      hasFetchedForWhoami,
       activeProject,
       activeEntryPoints,
       localPreferences: { navigation, keyboardNavigation },
     },
-    cells: { profiles: profilesCellIdString },
   } = state
   // defensive coding for loading phase
   const activeProjectMeta = state.projects.projectMeta[activeProject]
-
-  // select the list of folks ("Agents in holochain") who are members
-  // of the active project, if there is one
-  const members = activeProject
-    ? selectActiveProjectMembers(state, activeProject)
-    : []
-
-  const presentMembers = activeProject
-    ? selectProjectMembersPresent(state, activeProject)
-    : []
 
   const allProjectEntryPoints = activeProject
     ? selectEntryPoints(state, activeProject)
@@ -72,11 +56,14 @@ function mapStateToProps(state: RootState): AppStateProps {
     // cut out invalid ones
     .filter((e) => e)
 
+  const activeProjectProfiles = selectMemberProfilesOfProject(state, activeProject);
+  const activeProjectMembersPresent = selectProjectMembersPresent(state, activeProject);
+
   // has any project been migrated
   const hasMigratedSharedProject = !!Object.entries(
     state.projects.projectMeta
   ).find(([cellIdString, projectMeta]) => {
-    const members = selectActiveProjectMembers(state, cellIdString)
+    const members = selectProjectMemberPukeys(state, cellIdString)
     return members.length > 1 && projectMeta.isMigrated
   })
 
@@ -85,19 +72,18 @@ function mapStateToProps(state: RootState): AppStateProps {
     : 'LongestPath'
 
   return {
-    profilesCellIdString,
-    activeEntryPoints: activeEntryPointsObjects,
     projectMetas: state.projects.projectMeta,
     projectMembers: state.projects.members,
-    projectId: activeProject,
+    projects: state.cells.projects,
+    activeProjectProfiles,
+    activeProjectMembersPresent,
+    activeEntryPoints: activeEntryPointsObjects,
     activeProjectMeta,
-    whoami: state.whoami,
-    hasFetchedForWhoami,
+    projectId: activeProject,
+    myLocalProfile: state.myLocalProfile,
     agentAddress: state.agentAddress,
     navigationPreference: navigation,
     keyboardNavigationPreference: keyboardNavigation,
-    members,
-    presentMembers,
     hasMigratedSharedProject,
     hiddenAchievedOutcomes: state.ui.mapViewSettings.hiddenAchievedOutcomes,
     hiddenSmallOutcomes: state.ui.mapViewSettings.hiddenSmallOutcomes,
@@ -140,34 +126,27 @@ function mergeProps(
   dispatchProps: AppDispatchProps,
   ownProps: AppOwnProps
 ): AppProps {
-  const { profilesCellIdString, projectId } = stateProps
+  const { projectId, myLocalProfile, projects } = stateProps
   const { dispatch } = dispatchProps
-  // const { appWebsocket } = ownProps
-  let cellId: CellId
-  if (profilesCellIdString) {
-    cellId = cellIdFromString(profilesCellIdString)
-  }
   return {
     ...ownProps,
     ...stateProps,
     ...dispatchProps,
-    uninstallProject: async (appId: string, cellIdString: CellIdString) => {
+    uninstallProject: async (cellIdString: CellIdString) => {
       const appWs = await getAppWs()
-      uninstallProject(appId, cellIdString, dispatch, appWs)
+      uninstallProject(cellIdString, dispatch, appWs)
     },
-    updateWhoami: async (entry: Profile, actionHash: string) => {
+    updateWhoamis: async (profile: Profile) => {
+      // In the Weave context we don't need to update anything, profiles
+      // are stored at the Moss level
+      if (isWeaveContext()) return
+      if (!myLocalProfile) throw new Error("Cannot update whoamis: Local profile is undefined/null.")
       const appWebsocket = await getAppWs()
-      const profilesZomeApi = await (async () => {
-        if (isWeaveContext()) {
-          const profilesClient = await getWeaveProfilesClient()
-          return new ProfilesZomeApi(appWebsocket, profilesClient)
-        } else return new ProfilesZomeApi(appWebsocket)
-      })()
-      const updatedWhoami = await profilesZomeApi.profile.updateWhoami(cellId, {
-        entry,
-        actionHash,
-      })
-      return dispatch(updateWhoami(profilesCellIdString, updatedWhoami))
+      await Promise.all(projects.map(async (cellId) => {
+        const currentWhoami = stateProps.projectMembers[cellId].whoami;
+        const profilesApi = new ProfilesZomeApi(appWebsocket, cellIdFromString(cellId));
+        await profilesApi.profile.updateWhoami({ entry: profile, actionHash: currentWhoami.actionHash });
+      }))
     },
     updateProjectMeta: async (
       projectMeta: ProjectMeta,

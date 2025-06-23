@@ -6,21 +6,37 @@
 */
 
 import { WireRecord } from '../../../../api/hdkCrud'
-import { Member } from '../../../../types'
+import { Member, Profile } from '../../../../types'
 import { Action, CellIdString } from '../../../../types/shared'
 
 // SET because it could be brand new, or an update, but treat it the same way
-const SET_MEMBER = 'SET_MEMBER'
-const FETCH_MEMBERS = 'FETCH_MEMBERS'
+const SET_PROJECT_MEMBER = 'SET_PROJECT_MEMBER'
+const FETCH_PROJECT_MEMBERS = 'FETCH_PROJECT_MEMBERS'
+const FETCH_PROJECT_PROFILES = 'FETCH_PROJECT_PROFILES'
+const SET_PROJECT_MEMBER_PROFILE = 'SET_PROJECT_MEMBER_PROFILE'
+const SET_PROJECT_WHOAMI = 'SET_PROJECT_WHOAMI'
 
 /* action creator functions */
 
-const setMember = (
+const setProjectWhoami = (
+  cellIdString: CellIdString,
+  whoami: WireRecord<Profile>
+): Action<{ cellIdString: CellIdString; whoami: WireRecord<Profile> }> => {
+  return {
+    type: SET_PROJECT_WHOAMI,
+    payload: {
+      cellIdString,
+      whoami,
+    },
+  }
+}
+
+const setProjectMember = (
   cellIdString: CellIdString,
   member: Member
 ): Action<{ cellIdString: CellIdString; member: Member }> => {
   return {
-    type: SET_MEMBER,
+    type: SET_PROJECT_MEMBER,
     payload: {
       cellIdString,
       member,
@@ -28,14 +44,57 @@ const setMember = (
   }
 }
 
-const fetchMembers = (
+const fetchProjectMembers = (
   cellIdString: CellIdString,
-  payload: Array<WireRecord<Member>>
-): Action<Array<WireRecord<Member>>> => {
+  members: Array<WireRecord<Member>>
+): Action<{
+  cellIdString: CellIdString
+  members: Array<WireRecord<Member>>
+}> => {
   return {
-    type: FETCH_MEMBERS,
-    payload,
-    meta: { cellIdString },
+    type: FETCH_PROJECT_MEMBERS,
+    payload: {
+      cellIdString,
+      members,
+    },
   }
 }
-export { SET_MEMBER, FETCH_MEMBERS, setMember, fetchMembers }
+
+const fetchProjectProfiles = (
+  cellIdString: CellIdString,
+  profiles: Array<Profile>
+): Action<{ cellIdString: CellIdString; profiles: Array<Profile> }> => {
+  return {
+    type: FETCH_PROJECT_PROFILES,
+    payload: {
+      cellIdString,
+      profiles,
+    },
+  }
+}
+
+const setProjectMemberProfile = (
+  cellIdString: CellIdString,
+  profile: Profile
+): Action<{ cellIdString: CellIdString; profile: Profile }> => {
+  return {
+    type: SET_PROJECT_MEMBER_PROFILE,
+    payload: {
+      cellIdString,
+      profile: profile,
+    },
+  }
+}
+
+export {
+  SET_PROJECT_WHOAMI,
+  SET_PROJECT_MEMBER,
+  FETCH_PROJECT_MEMBERS,
+  FETCH_PROJECT_PROFILES,
+  SET_PROJECT_MEMBER_PROFILE,
+  setProjectMember,
+  fetchProjectMembers,
+  fetchProjectProfiles,
+  setProjectMemberProfile,
+  setProjectWhoami,
+}

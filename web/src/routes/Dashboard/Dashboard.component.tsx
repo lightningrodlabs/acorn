@@ -21,7 +21,6 @@ import useProjectStatusInfos from '../../hooks/useProjectStatusInfos'
 import useAppWebsocket from '../../hooks/useAppWebsocket'
 
 import './Dashboard.scss'
-import { set } from 'lodash'
 
 export type DashboardStateProps = {
   agentAddress: AgentPubKeyB64
@@ -30,7 +29,7 @@ export type DashboardStateProps = {
 }
 
 export type DashboardDispatchProps = {
-  uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
+  uninstallProject: (cellId: CellIdString) => Promise<void>
   createProject: (
     appWebsocket: AppClient,
     agentAddress: AgentPubKeyB64,

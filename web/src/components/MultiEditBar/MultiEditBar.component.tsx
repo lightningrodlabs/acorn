@@ -222,7 +222,7 @@ export default function MultiEditBar({
           content={archiveContent}
           icon="archive.svg"
           primaryButton="Yes, Archive"
-          altButton="Nevermind"
+          altButton="Never mind"
           primaryButtonAction={deleteOutcomes}
           altButtonAction={reset}
         />
@@ -236,7 +236,7 @@ export default function MultiEditBar({
             content={modalContent}
             icon={modalIcon}
             primaryButton="Yes, Proceed"
-            altButton="Nevermind"
+            altButton="Never mind"
             primaryButtonAction={() => setPopup(false)}
             altButtonAction={reset}
           />

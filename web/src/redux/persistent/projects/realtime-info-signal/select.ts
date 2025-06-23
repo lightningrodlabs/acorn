@@ -1,6 +1,6 @@
 import { CellIdString } from '../../../../types/shared'
 import { RootState } from '../../../reducer'
-import { selectActiveProjectMembers } from '../entry-points/select'
+import { selectProjectMemberPukeys } from '../members/select'
 
 function getDnaHashFromProjectId(activeProject: CellIdString) {
   return activeProject
@@ -14,7 +14,7 @@ export default function selectProjectMembersPresent(
 ) {
   // select the list of folks ("Agents in holochain") who are members
   // of the active project, if there is one
-  const members = selectActiveProjectMembers(state, projectId)
+  const membersPubkeys = selectProjectMemberPukeys(state, projectId)
   const currentUserIsOnProject =
     state.ui.activeProject === projectId ? [state.agentAddress] : []
 
@@ -26,7 +26,7 @@ export default function selectProjectMembersPresent(
     )
     .map((agentInfo) => agentInfo.agentPubKey)
     .filter((agentPubKey) =>
-      members.find((member) => member.agentPubKey === agentPubKey)
+      membersPubkeys.includes(agentPubKey)
     )
     .concat(currentUserIsOnProject)
 }

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 import './ImportProjectModal.scss'
 
@@ -15,8 +15,15 @@ import {
 import { CellIdString } from '../../types/shared'
 import { installProject } from '../../projects/installProject'
 import { CellId } from '@holochain/client'
-import { BackwardsCompatibleProjectExportSchema } from 'zod-models'
+import { BackwardsCompatibleProjectExportSchema, Profile } from 'zod-models'
 import { generatePassphrase } from '../../secrets'
+import { WireRecord } from '../../api/hdkCrud'
+import {
+  setProjectMemberProfile,
+  setProjectWhoami,
+} from '../../redux/persistent/projects/members/actions'
+import { fetchMyLocalProfile } from '../../utils'
+import { useStore } from 'react-redux'
 
 function ImportProjectFilePicker({ showModal, onFilePicked, onCancel }) {
   const [fileFormatInvalidMessage, setFileFormatInvalidMessage] = useState(
@@ -61,10 +68,9 @@ function ImportProjectFilePicker({ showModal, onFilePicked, onCancel }) {
         <ProjectModalContent>
           {!fileFormatInvalidMessage && (
             <div className="import-project-content-wrapper">
-              Import an Acorn project from a previously exported{' '}
-              <b>JSON</b> formatted file. 
-              <p/>
-              A random new secret phrase for this project will be assigned.
+              Import an Acorn project from a previously exported <b>JSON</b>{' '}
+              formatted file.
+              <p />A random new secret phrase for this project will be assigned.
             </div>
           )}
           {fileFormatInvalidMessage && (
@@ -111,9 +117,7 @@ function FileInvalidModal({ showModal, onDone, errorMessage }) {
       <ProjectModalHeading title="Project not imported" />
       <ProjectModalContentSpacer>
         <ProjectModalContent>
-          <div className="import-project-content-wrapper">
-            {errorMessage}
-          </div>
+          <div className="import-project-content-wrapper">{errorMessage}</div>
         </ProjectModalContent>
       </ProjectModalContentSpacer>
       <ProjectModalButton text="Done" onClick={onDone} />
@@ -156,7 +160,7 @@ export type ImportProjectModalProps = {
     projectData: any,
     passphrase: string
   ) => Promise<void>
-  uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
+  uninstallProject: (cellId: CellIdString) => Promise<void>
 }
 
 const ImportProjectModal: React.FC<ImportProjectModalProps> = ({
@@ -176,7 +180,7 @@ const ImportProjectModal: React.FC<ImportProjectModalProps> = ({
     let projectIds: {
       cellIdString: CellIdString
       cellId: CellId
-      appId: string
+      whoami: WireRecord<Profile>
     }
     try {
       let projectDataParsed = BackwardsCompatibleProjectExportSchema.parse(
@@ -195,9 +199,16 @@ const ImportProjectModal: React.FC<ImportProjectModalProps> = ({
       setOutcomeCount(Object.keys(newProjectData.outcomes).length)
       // first step is to install the app and DNA
       projectIds = await installProject(newRandomPassphrase)
+      const whoami = projectIds.whoami
+        ? projectIds.whoami.entry
+        : await fetchMyLocalProfile()
       // keep the existing passphrase, such that other users know how
       // to enter the new project
-      await onImportProject(projectIds.cellIdString, projectData, newRandomPassphrase)
+      await onImportProject(
+        projectIds.cellIdString,
+        projectData,
+        newRandomPassphrase
+      )
       setImportingProject(false)
       setProjectImported(true)
     } catch (e) {
@@ -206,10 +217,7 @@ const ImportProjectModal: React.FC<ImportProjectModalProps> = ({
       // uninstall it
       if (projectIds) {
         // purposefully do nothing if this fails
-        uninstallProject(
-          projectIds.appId,
-          projectIds.cellIdString
-        ).catch(() => {})
+        uninstallProject(projectIds.cellIdString).catch(() => {})
       }
       setImportingProject(false)
       setError(e.message)

@@ -1,15 +1,10 @@
+import { getLocalItem, setLocalItem } from '../../../utils'
 import {
   SET_KEYBOARD_NAVIGATION_PREFERENCE,
   SET_NAVIGATION_PREFERENCE,
+  SET_PROFILE,
 } from './actions'
 
-const LOCAL_STORAGE_PREFIX = 'acorn-'
-const getLocalItem = (key) => {
-  return localStorage.getItem(`${LOCAL_STORAGE_PREFIX}${key}`)
-}
-const setLocalItem = (key, value) => {
-  localStorage.setItem(`${LOCAL_STORAGE_PREFIX}${key}`, value)
-}
 
 const KEYBOARD_NAV_KEY = 'keyboardNavigationPreference'
 export const COORDINATES = 'coordinates'
@@ -21,11 +16,14 @@ export const MOUSE = 'mouse'
 export const TRACKPAD = 'trackpad'
 export type NavigationPreference = typeof MOUSE | typeof TRACKPAD
 
+const PROFILE_KEY = 'profile'
+
 const defaultState = {
   // default to trackpad navigation
   navigation: getLocalItem(NAV_KEY) || TRACKPAD,
   // default to modal keyboard navigation
   keyboardNavigation: getLocalItem(KEYBOARD_NAV_KEY) || COORDINATES,
+  profile: getLocalItem(PROFILE_KEY)
 }
 
 export default function (state = defaultState, action) {
@@ -45,6 +43,12 @@ export default function (state = defaultState, action) {
       return {
         ...state,
         keyboardNavigation: payload,
+      }
+    case SET_PROFILE:
+      setLocalItem(PROFILE_KEY, payload)
+      return {
+        ...state,
+        profile: payload,
       }
     default:
       return state

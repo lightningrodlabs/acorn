@@ -14,8 +14,7 @@ import * as outcomeMemberActions from './redux/persistent/projects/outcome-membe
 import * as outcomeCommentActions from './redux/persistent/projects/outcome-comments/actions'
 import * as entryPointActions from './redux/persistent/projects/entry-points/actions'
 import * as projectMetaActions from './redux/persistent/projects/project-meta/actions'
-import { setMember } from './redux/persistent/projects/members/actions'
-import { setAgent } from './redux/persistent/profiles/agents/actions'
+import { setProjectMember, setProjectMemberProfile } from './redux/persistent/projects/members/actions'
 import { triggerUpdateLayout } from './redux/ephemeral/layout/actions'
 import {
   removePeerState,
@@ -165,9 +164,9 @@ export default (store): SignalCb => {
         case SignalType.Agent:
           // this one is different than the rest on purpose
           // there's no "local action" equivalent
-          store.dispatch(setAgent(payload.data.data))
+          store.dispatch(setProjectMemberProfile(cellIdToString(cellId), payload.data.data))
           break
-        /* 
+        /*
           PROJECTS Zomes
         */
         case SignalType.Member:
@@ -188,7 +187,7 @@ export default (store): SignalCb => {
           // }
           // this one is different than the rest on purpose
           // there's no "local action" equivalent
-          store.dispatch(setMember(cellIdToString(cellId), payload.data.data)) //payload.data.data is type Member, not WireRecord<Member>
+          store.dispatch(setProjectMember(cellIdToString(cellId), payload.data.data)) //payload.data.data is type Member, not WireRecord<Member>
           break
         case SignalType.OutcomeWithConnection:
           console.log('check!')
