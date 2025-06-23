@@ -5,7 +5,11 @@ import { setProjectsCellIds } from './redux/persistent/cells/actions'
 import { setAgentPubKey } from './hcWebsockets'
 import { getProjectCellIdStrings } from './projectAppIds'
 import ProfilesZomeApi from './api/profilesApi'
-import { cellIdFromString, fetchMyLocalProfile, readMyLocalProfile } from './utils'
+import {
+  cellIdFromString,
+  fetchMyLocalProfile,
+  readMyLocalProfile,
+} from './utils'
 
 // Import styles
 import './variables.scss'
@@ -31,19 +35,43 @@ export async function mossInit(
     setAgentPubKey(appInfo.agent_pub_key)
 
     // read the local profile from localStorage and set it in the state
-    const myLocalProfile = await fetchMyLocalProfile();
+    const myLocalProfile = await fetchMyLocalProfile()
     store.dispatch(setMyLocalProfile(myLocalProfile))
 
-    // fetch the profiles for all projects
+    // Compare our profile with the ones that we stored in each respective
+    // project dna and create or update as necessary
     const projectCellIds = await getProjectCellIdStrings(appInfo)
-    store.dispatch(setProjectsCellIds(projectCellIds))
-
     await Promise.all(
       projectCellIds.map(async (cellIdString) => {
         const profilesZomeApi = new ProfilesZomeApi(
           appWs,
-          cellIdFromString(cellIdString),
-          profilesClient
+          cellIdFromString(cellIdString)
+        )
+        const currentProfile = await profilesZomeApi.profile.whoami()
+        if (!currentProfile) {
+          await profilesZomeApi.profile.createWhoami(myLocalProfile);
+        } else if (
+          JSON.stringify(currentProfile.entry) !==
+          JSON.stringify(myLocalProfile)
+        ) {
+          await profilesZomeApi.profile.updateWhoami({
+            actionHash: currentProfile.actionHash,
+            entry: myLocalProfile,
+          })
+        }
+      })
+    )
+
+    // Fetch the profiles for all projects. Note that we still fetch them from
+    // the project dnas despite profiles being provided by Moss as well.
+    // That's so that we can also see profiles of project members using
+    // Acorn Desktop.
+    store.dispatch(setProjectsCellIds(projectCellIds))
+    await Promise.all(
+      projectCellIds.map(async (cellIdString) => {
+        const profilesZomeApi = new ProfilesZomeApi(
+          appWs,
+          cellIdFromString(cellIdString)
         )
         const profiles = await profilesZomeApi.profile.fetchAgents()
         store.dispatch(fetchProjectProfiles(cellIdString, profiles))
