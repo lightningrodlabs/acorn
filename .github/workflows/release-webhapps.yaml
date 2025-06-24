@@ -16,9 +16,6 @@ jobs:
       # Checks out a copy of your repository on the ubuntu-latest machine
       - uses: actions/checkout@v3
 
-      - name: Extend space
-        uses: ./.github/actions/extend-space
-
       - name: Install nix
         uses: cachix/install-nix-action@v20
         with:
