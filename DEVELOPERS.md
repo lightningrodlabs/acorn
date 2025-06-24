@@ -24,7 +24,7 @@ This will launch the ui and a electron app with the holochain conductor preconfi
 
 If you want multiple instances to test multi-agent scenarios run `yarn run desktop:happ -n 2` (or any number)
 
-Alternatively, instead of launching the ui separately, you can run `yarn run desktop:build-webhapp` and then `yarn run desktop:webhapp`. This will launch a fully packaged webhapp in a preconfigured electron environment.
+Alternatively, instead of launching the ui separately, you can run `yarn run build-webhapp` and then `yarn run desktop:webhapp`. This will launch a fully packaged webhapp in a preconfigured electron environment.
 
 ### Acorn Moss Tool
 
@@ -33,27 +33,29 @@ Alternatively, instead of launching the ui separately, you can run `yarn run des
 
 If you want 2 agents, open a 3rd terminal window and run `yarn run moss:happ2`
 
-If you want to test the full webhapp, run `yarn run moss:build-webhapp` then run `yarn run moss:webhapp`. If you want a second agent, run `yarn run moss:webhapp2`.
+If you want to test the full webhapp, run `yarn run build-webhapp` then run `yarn run moss:webhapp`. If you want a second agent, run `yarn run moss:webhapp2`.
 
 ### Building / Packaging Desktop App
 
-First, build the webhapp if you haven't done so yet:
+#### Step 1: Release webhapp on github
 
-- `yarn run desktop:build-webhapp`
+First, the webapp needs to be released on github from where it can later be pulled by the CI of the `[acorn-desktop](https://github.com/lightningrodlabs/acorn-desktop)` repository.
 
-This will create an `[acorn-desktop.webhapp](./happs/happ/workdir/acorn-desktop.webhapp)` file. Upload this to the [Acorn release page](https://github.com/lightningrodlabs/acorn/releases) with the appropriate version tag.
+To release the webhapp, update the version number of acorn in the project, including in the root level `package.json` (see [Versioning](#versioning) below), to the version that you want to release Acorn under. Then checkout the `release` branch, merge `main` into the `release` branch and push. This should trigger CI to build and release the webhapp file on github as a draft release. You can then double-check the draft release and if everything looks fine, publish it.
 
-Then, clone the `[acorn-desktop](https://github.com/lightningrodlabs/acorn-desktop/tree/v11.1.2)` repo. Trigger a release by following the instructions in the README. This should trigger a github action which automatically fetches the webhapp from the previous step and builds and releases multi-platform versions of Acorn, signed and ready to download on the [release page](https://github.com/lightningrodlabs/acorn-desktop/releases).
+#### Step 2: Build the Desktop App
+
+Then, clone the `[acorn-desktop](https://github.com/lightningrodlabs/acorn-desktop)` repo. Update the link to the webhapp in the `kangaroo.config.ts` file and trigger a release by following the instructions in the README. This should trigger a github action which automatically fetches the webhapp from the previous step and builds and releases multi-platform versions of Acorn, signed and ready to download on the [release page](https://github.com/lightningrodlabs/acorn-desktop/releases).
 
 ### Building / Packaging Moss Tool
 
-Build the webhapp,
+To build the Moss tool, all you need to do is building the webhapp. You can either build it locally or through CI as described [above](#step-1-release-webhapp-on-github). TO build it locally, run:
 
-- `yarn run moss:build-webhapp`
+- `yarn run build-webhapp`
 
-This will create an `[acorn-moss.webhapp](./weave-tool/acorn-moss.webhapp)` file. Upload this to the [Acorn release page](https://github.com/lightningrodlabs/acorn/releases) with the appropriate version tag.
+This will create an `acorn.webhapp` file in the `./happs/happ/workdir` directory.
 
-Publish this to the weave tool curation list, following the instruction [here](https://github.com/lightningrodlabs/weave-tool-curation/blob/main/0.13/README.md). You can view an example PR of this [here](https://github.com/lightningrodlabs/weave-tool-curation/pull/40).
+Then publish this to the weave tool curation list, following the instruction [here](https://github.com/lightningrodlabs/weave-tool-curation/blob/main/0.14/README.md). You can view an example PR of this [here](https://github.com/lightningrodlabs/weave-tool-curation/pull/40).
 
 ### Versioning
 

@@ -13,7 +13,7 @@ export default defineConfig({
       networkSeed: '098rc1m-09384u-crm-29384u-cmkj',
       icon: {
         type: 'filesystem',
-        path: './lrl-icon.png',
+        path: './icons/lrl-icon.png',
       },
       creatingAgent: {
         agentIdx: 1,
@@ -21,7 +21,7 @@ export default defineConfig({
           nickname: 'Zippy',
           avatar: {
             type: 'filesystem',
-            path: './zippy.jpg',
+            path: './icons/zippy.jpg',
           },
         },
       },
@@ -32,7 +32,7 @@ export default defineConfig({
             nickname: 'Zerbina',
             avatar: {
               type: 'filesystem',
-              path: './zerbina.jpg',
+              path: './icons/zerbina.jpg',
             },
           },
         },
@@ -60,11 +60,11 @@ export default defineConfig({
       description: 'State of affairs trees!',
       icon: {
         type: 'filesystem',
-        path: './acorn-app-icon-512px.png',
+        path: './icons/acorn-app-icon-512px.png',
       },
       source: {
         type: 'localhost',
-        happPath: '../happs/happ/workdir/projects/projects.happ',
+        happPath: './happs/happ/workdir/acorn.happ',
         uiPort: 8081,
       },
     },

@@ -31,7 +31,9 @@ jobs:
       - name: Install and build
         run: |
           nix-store --gc
-          nix develop --command bash -c "holochain --version && yarn && desktop:build-webhapp && yarn moss:build-webhapp"
+          nix develop --command bash -c "holochain --version && yarn && yarn pack-happs && yarn build-webhapp"
+          shasum -a 256 ./happs/happ/workdir/acorn.happ
+          shasum -a 256 ./happs/happ/workdir/acorn.webhapp
 
       - name: Retrieve version
         run: |
@@ -43,8 +45,8 @@ jobs:
         with:
           allowUpdates: false
           artifacts:
-            - 'happs/happ/workdir/acorn-desktop.webhapp'
-            - 'weave-tool/acorn-moss.webhapp'
+            - 'happs/happ/workdir/acorn.webhapp'
+            - 'happs/happ/workdir/acorn.happ'
           body: 'See assets below to download and install this version.'
           name: v${{ steps.version.outputs.APP_VERSION }}-alpha
           tag: v${{ steps.version.outputs.APP_VERSION }}-alpha

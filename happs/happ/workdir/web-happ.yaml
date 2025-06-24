@@ -1,6 +1,6 @@
 ---
 manifest_version: '1'
-name: acorn-desktop
+name: acorn
 ui:
   bundled: '../../../web/dist.zip'
 happ_manifest:
