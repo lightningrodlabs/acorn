@@ -50,9 +50,7 @@ export async function internalInstallProject(
 
   // Create profile
   const profilesApi = new ProfilesZomeApi(appWs, cellId)
-  const whoami = isWeaveContext()
-    ? null
-    : await profilesApi.profile.createWhoami(myLocalProfile)
+  const whoami = await profilesApi.profile.createWhoami(myLocalProfile)
 
   return { cellIdString, cellId, whoami }
 }

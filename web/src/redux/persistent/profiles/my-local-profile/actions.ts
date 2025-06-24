@@ -13,7 +13,6 @@ const SET_MY_LOCAL_PROFILE = 'SET_MY_LOCAL_PROFILE'
 
 /* action creator functions */
 
-// what type is agent here?
 const setMyLocalProfile = (
   payload: Profile
 ): Action<Profile> => {

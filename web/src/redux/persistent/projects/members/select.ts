@@ -2,7 +2,7 @@ import { Profile } from 'zod-models'
 import { RootState } from '../../../reducer'
 import { AgentPubKeyB64, CellIdString } from '../../../../types/shared'
 
-export function selectMemberProfilesOfProject(
+export function selectProjectMemberProfiles(
   state: RootState,
   projectId: CellIdString
 ): Profile[] {

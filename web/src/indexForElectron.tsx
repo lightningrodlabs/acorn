@@ -74,7 +74,6 @@ export async function electronInit(store: any, appWs: AppClient) {
     // fetch the profiles for all projects
     const projectCellIds = await getProjectCellIdStrings(appInfo)
     store.dispatch(setProjectsCellIds(projectCellIds))
-
     await Promise.all(
       projectCellIds.map(async (cellIdString) => {
         const profilesZomeApi = new ProfilesZomeApi(
@@ -82,7 +81,6 @@ export async function electronInit(store: any, appWs: AppClient) {
           cellIdFromString(cellIdString)
         )
         const profiles = await profilesZomeApi.profile.fetchAgents()
-        console.log("SETTING PROFILES IN STATE")
         store.dispatch(fetchProjectProfiles(cellIdString, profiles))
         const whoami = await profilesZomeApi.profile.whoami()
         store.dispatch(setProjectWhoami(cellIdString, whoami))

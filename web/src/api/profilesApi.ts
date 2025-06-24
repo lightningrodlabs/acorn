@@ -110,36 +110,15 @@ export function weaveToAcornProfile(
   weaveProfile: WeaveProfile,
   agentPubKey: string
 ): Profile {
-  let acornProfile = {}
-
-  // field each acorn profile field, check if it exists in the weave Profile, if it does, use that, if not, use defaults
-  acornFields.forEach((key) => {
-    if (key === 'isImported') {
-      // default to false, unless field exists, then parse into bool from string
-      acornProfile[key] = weaveProfile.fields[key]
-        ? JSON.parse(weaveProfile.fields[key])
-        : false
-    } else if (key === 'status') {
-      // default to offline until the fields exists
-      acornProfile[key] = weaveProfile.fields[key]
-        ? (weaveProfile.fields[key] as Status)
-        : ('Online' as Status)
-    } else if (key === 'agentPubKey') {
-      acornProfile[key] = weaveProfile.fields[key]
-        ? weaveProfile.fields[key]
-        : agentPubKey
-    } else if (key === 'avatarUrl') {
-      acornProfile[key] = weaveProfile.fields[key]
-        ? JSON.parse(weaveProfile.fields[key])
-        : ''
-    } else {
-      // if no first and last name and handle are given, use the nickname
-      acornProfile[key] = weaveProfile.fields[key]
-        ? weaveProfile.fields[key]
-        : weaveProfile.nickname
-    }
-  })
-  return acornProfile as Profile
+  return {
+    avatarUrl: weaveProfile.fields['avatar'],
+    agentPubKey,
+    status: "Online",
+    firstName: weaveProfile.nickname,
+    lastName: '',
+    handle: weaveProfile.nickname,
+    isImported: false,
+  }
 }
 function acornToWeaveProfile(
   acornProfile: Profile,

@@ -61,14 +61,14 @@ function Avatar({
     classes.push('initials-avatar')
     return (
       <div
-        className={`avatar-wrapper 
-        ${imported ? 'imported' : ''} 
-        ${withWhiteBorder ? 'with-border white' : ''} 
+        className={`avatar-wrapper
+        ${imported ? 'imported' : ''}
+        ${withWhiteBorder ? 'with-border white' : ''}
         ${
           withStatusBorder
             ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}`
             : ''
-        } 
+        }
         ${
           size === 'small'
             ? 'small'
@@ -84,8 +84,8 @@ function Avatar({
         }`}
       >
         <div className={classes.join(' ')} onClick={onClick} style={style}>
-          {firstName[0].toUpperCase()}
-          {lastName[0].toUpperCase()}
+          {firstName[0]?.toUpperCase()}
+          {lastName[0]?.toUpperCase()}
         </div>
         {/* TODO: Current status circle color under avatar*/}
         {withStatus && (
@@ -110,9 +110,9 @@ function Avatar({
   classes.push('avatar')
   return (
     <div
-      className={`avatar-wrapper 
-      ${imported ? 'imported' : ''} 
-      ${withWhiteBorder ? 'with-border white' : ''} 
+      className={`avatar-wrapper
+      ${imported ? 'imported' : ''}
+      ${withWhiteBorder ? 'with-border white' : ''}
       ${
         withStatusBorder
           ? `with-border status-color ${StatusCssColorClass[selfAssignedStatus]}`

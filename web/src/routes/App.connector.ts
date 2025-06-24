@@ -30,7 +30,7 @@ import { updateProjectMeta } from '../redux/persistent/projects/project-meta/act
 import { uninstallProject } from '../projects/uninstallProject'
 import { unselectAll } from '../redux/ephemeral/selection/actions'
 import { isWeaveContext } from '@theweave/api'
-import { selectProjectMemberPukeys, selectMemberProfilesOfProject } from '../redux/persistent/projects/members/select'
+import { selectProjectMemberPukeys, selectProjectMemberProfiles } from '../redux/persistent/projects/members/select'
 import selectProjectMembersPresent from '../redux/persistent/projects/realtime-info-signal/select'
 
 function mapStateToProps(state: RootState): AppStateProps {
@@ -56,7 +56,7 @@ function mapStateToProps(state: RootState): AppStateProps {
     // cut out invalid ones
     .filter((e) => e)
 
-  const activeProjectProfiles = selectMemberProfilesOfProject(state, activeProject);
+  const activeProjectProfiles = selectProjectMemberProfiles(state, activeProject);
   const activeProjectMembersPresent = selectProjectMembersPresent(state, activeProject);
 
   // has any project been migrated
@@ -137,9 +137,6 @@ function mergeProps(
       uninstallProject(cellIdString, dispatch, appWs)
     },
     updateWhoamis: async (profile: Profile) => {
-      // In the Weave context we don't need to update anything, profiles
-      // are stored at the Moss level
-      if (isWeaveContext()) return
       if (!myLocalProfile) throw new Error("Cannot update whoamis: Local profile is undefined/null.")
       const appWebsocket = await getAppWs()
       await Promise.all(projects.map(async (cellId) => {

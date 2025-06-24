@@ -37,12 +37,12 @@ export async function internalExportProjectsData(
 ): Promise<AllProjectsDataExport | null> {
   const initialState: RootState = store.getState()
 
-  if (!initialState.whoami) {
+  if (!initialState.myLocalProfile) {
     return null
   }
 
   // the profile of the current user
-  const myProfile = initialState.whoami.entry
+  const myProfile = initialState.myLocalProfile
   // this is the variable to capture the final data for export
   const allProjectsDataExport: AllProjectsDataExport = {
     myProfile,

@@ -9,8 +9,8 @@ const selectProjectAggregated = (
 ) => {
   const projectMeta = state.projects.projectMeta[cellIdString]
   const memberPubkeys = Object.keys(state.projects.members[cellIdString]?.members || {});
-  // Need to filter profiles by members since in Moss, profiles are not stored separately
-  // per project cell
+  // Filtering by members may not strictly be necessary if we also read the profiles from the project cell
+  // in Moss rather than from the Weave profiles client. But it shouldn't hurt anyway.
   const memberProfiles = state.projects.members[cellIdString]?.profiles.filter((p) => memberPubkeys.includes(p.agentPubKey)) || []
   const entryPoints = selectEntryPoints(state, cellIdString)
   const presentMembers = selectProjectMembersPresent(state, cellIdString)

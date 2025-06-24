@@ -24,7 +24,6 @@ export default function outcomesAsGraph(
   graphData: GraphData,
   { withMembers = false, withComments = false } = {}
 ): Graph {
-  console.log("@outcomesAsGraph: graphData: ", graphData);
   const {
     outcomes,
     connections,

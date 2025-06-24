@@ -33,7 +33,7 @@ const drawAvatar = ({
       const backgroundInitialsAvatarColor = pickColorForString(member.firstName)
       const initials =
         member.firstName && member.lastName
-          ? `${member.firstName[0].toUpperCase()}${member.lastName[0].toUpperCase()}`
+          ? `${member.firstName[0]?.toUpperCase()}${member.lastName[0]?.toUpperCase()}`
           : ''
       // the background for the initial avatar:
       draw(ctx, () => {

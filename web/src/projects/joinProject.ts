@@ -4,6 +4,7 @@ import { PROJECTS_ZOME_NAME } from '../holochainConfig'
 import { joinProjectCellId } from '../redux/persistent/cells/actions'
 import { CellIdString } from '../types/shared'
 import { setProjectMemberProfile, setProjectWhoami } from '../redux/persistent/projects/members/actions'
+import { fetchMyLocalProfile } from '../utils'
 
 export async function internalJoinProject(
   passphrase: string,
@@ -15,7 +16,7 @@ export async function internalJoinProject(
   // checks and other things
   dispatch(joinProjectCellId(cellIdString))
   dispatch(setProjectWhoami(cellIdString, whoami));
-  dispatch(setProjectMemberProfile(cellIdString, whoami));
+  dispatch(setProjectMemberProfile(cellIdString, whoami ? whoami.entry : await fetchMyLocalProfile()));
   return cellIdString
 }
 
