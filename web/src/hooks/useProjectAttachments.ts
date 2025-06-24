@@ -24,7 +24,7 @@ export function useProjectAttachments({
   projectId: string
   projectMeta: WithActionHash<ProjectMeta>
 }) {
-  // ✅ Call hooks unconditionally at the top level
+  // Call hooks unconditionally at the top level
   const [attachmentWALs, setAttachmentWALs] = useState<WAL[] | null>(null)
   const [attachmentsInfo, setAttachmentsInfo] = useState<ProjectAssetMeta[]>([])
   const [error, setError] = useState(null)
@@ -43,9 +43,10 @@ export function useProjectAttachments({
       // Ensure cleanup if subscription exists from a previous valid run
       if (
         subscriptionRef.current &&
-        typeof subscriptionRef.current.unsubscribe === 'function'
+        typeof subscriptionRef.current === 'function'
       ) {
-        subscriptionRef.current.unsubscribe()
+        const unsubscribe = subscriptionRef.current;
+        unsubscribe()
       }
       subscriptionRef.current = null
       return // Exit effect early
@@ -66,14 +67,15 @@ export function useProjectAttachments({
       // Clean up any existing subscription before creating a new one
       if (
         subscriptionRef.current &&
-        typeof subscriptionRef.current.unsubscribe === 'function'
+        typeof subscriptionRef.current === 'function'
       ) {
-        subscriptionRef.current.unsubscribe()
+        const unsubscribe = subscriptionRef.current;
+        unsubscribe()
       }
       subscriptionRef.current = null
 
       try {
-        const subscription = weaveClient.assets
+        const unsubscribe = weaveClient.assets
           .assetStore(wal)
           .subscribe(async (store) => {
             if (store.status === 'complete') {
@@ -102,7 +104,7 @@ export function useProjectAttachments({
           })
 
         // Store the subscription object properly
-        subscriptionRef.current = subscription
+        subscriptionRef.current = unsubscribe
       } catch (err) {
         setError(err)
       }
@@ -114,9 +116,10 @@ export function useProjectAttachments({
     return () => {
       if (
         subscriptionRef.current &&
-        typeof subscriptionRef.current.unsubscribe === 'function'
+        typeof subscriptionRef.current === 'function'
       ) {
-        subscriptionRef.current.unsubscribe()
+        const unsubscribe = subscriptionRef.current;
+        unsubscribe();
       }
       subscriptionRef.current = null
     }

@@ -59,7 +59,7 @@ function mapStateToProps(
 const ExpandedViewMode = connect(mapStateToProps)(ExpandedViewModeComponent)
 
 /*
-  We do this in order to 'connect' in the other 
+  We do this in order to 'connect' in the other
   redux connected sub-components
 */
 
@@ -113,11 +113,10 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
     // Run only once on mount when initial props are provided
   }, [initialProjectId, initialOutcomeActionHash, dispatch, projectId])
 
-  // Always call the hook, but only with valid data when outcome exists and projectId is determined
-  const { attachmentsInfo } = useAttachments({
+  const { attachmentsInfo } = outcome && projectId ? useAttachments({
     projectId: projectId, // Use the determined projectId
-    outcome: outcome || ({ actionHash: '' } as ComputedOutcome),
-  })
+    outcome: outcome,
+  }) : { attachmentsInfo: [] };
 
   // Function to add attachments
   const addAttachment = async () => {
