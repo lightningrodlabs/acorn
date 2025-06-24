@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-import { WireRecord } from '../../api/hdkCrud'
 import {
   AgentPubKeyB64,
   ActionHashB64,
@@ -28,7 +27,7 @@ export type HeaderProps = {
   setShowUpdateBar: React.Dispatch<React.SetStateAction<boolean>>
   hasMigratedSharedProject: boolean
   // other
-  whoami: WireRecord<Profile>
+  myLocalProfile: Profile
   activeEntryPoints: {
     entryPoint: WithActionHash<EntryPoint>
     outcome: WithActionHash<Outcome>
@@ -47,11 +46,11 @@ export type HeaderProps = {
 const Header: React.FC<HeaderProps> = ({
   showUpdateBar,
   hasMigratedSharedProject,
-  whoami,
-  activeEntryPoints,
-  project,
   members,
   presentMembers,
+  myLocalProfile,
+  activeEntryPoints,
+  project,
   unselectAll,
   setShowUpdateBar,
   setModalState,
@@ -61,7 +60,7 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const [status, setStatus] = useState<Status>(
     // @ts-ignore
-    whoami ? whoami.entry.status : Status.Online
+    myLocalProfile ? myLocalProfile.status : Status.Online
   )
 
   // Fetch attachments using the hook
@@ -168,7 +167,7 @@ const Header: React.FC<HeaderProps> = ({
         <HeaderLeftPanel
           members={members}
           presentMembers={presentMembers}
-          whoami={whoami}
+          myLocalProfile={myLocalProfile}
           projectPassphrase={project ? project.passphrase : ''}
           setModalState={setModalState}
           projectName={project ? project.name : ''}
@@ -181,13 +180,13 @@ const Header: React.FC<HeaderProps> = ({
           handleRemoveAttachment={handleRemoveAttachment}
           openAsset={openAsset}
         />
-        {whoami && (
+        {myLocalProfile && (
           // add all these values as props
           //  Header Left Panel
           <HeaderRightPanel
             {...{
               status,
-              whoami,
+              myLocalProfile,
               onClickEditProfile,
               onClickPreferences,
               saveStatus,

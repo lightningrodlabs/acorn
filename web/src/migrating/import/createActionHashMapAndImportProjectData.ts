@@ -26,8 +26,8 @@ import {
   cloneConnection,
   cloneData,
 } from './cloneFunctions'
-import { createProjectsZomeApi } from './zomeApiCreators'
 import { AppClient } from '@holochain/client'
+import { createProjectsZomeApi } from './zomeApiCreators'
 
 export async function internalCreateActionHashMapAndImportProjectData(
   projectData: BackwardsCompatibleProjectExport,

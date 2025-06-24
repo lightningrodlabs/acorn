@@ -29,7 +29,7 @@ import UpdateModal, {
 export type GlobalModalsProps = {
   // data
   modalState: ModalState
-  whoami: WireRecord<Profile>
+  myLocalProfile: Profile
   projectSettingsProjectMeta: WithActionHash<ProjectMeta>
   projectSettingsMemberCount: number
   projectMigratedProjectMeta: WithActionHash<ProjectMeta>
@@ -46,7 +46,7 @@ export type GlobalModalsProps = {
   setModalState: React.Dispatch<React.SetStateAction<ModalState>>
   setShowUpdateBar: React.Dispatch<React.SetStateAction<boolean>>
   onProfileSubmit: (profile: Profile) => Promise<void>
-  uninstallProject: (appId: string, cellIdString: CellIdString) => Promise<void>
+  uninstallProject: (cellIdString: CellIdString) => Promise<void>
   updateProjectMeta: (
     projectMeta: ProjectMeta,
     actionHash: ActionHashB64,
@@ -56,7 +56,7 @@ export type GlobalModalsProps = {
 
 const GlobalModals: React.FC<GlobalModalsProps> = ({
   // data
-  whoami,
+  myLocalProfile,
   projectSettingsProjectMeta,
   projectSettingsMemberCount,
   projectMigratedProjectMeta,
@@ -105,7 +105,7 @@ const GlobalModals: React.FC<GlobalModalsProps> = ({
         active={modalState.id === OpenModal.ProfileEditForm}
         onClose={setModalToNone}
         onProfileSubmit={onProfileSubmit}
-        whoami={whoami}
+        myLocalProfile={myLocalProfile}
         agentAddress={agentAddress}
       />
       <Preferences

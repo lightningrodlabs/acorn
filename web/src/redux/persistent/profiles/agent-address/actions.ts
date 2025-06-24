@@ -5,20 +5,18 @@
   that can be taken within that feature.
 */
 
-import { Action, AgentPubKeyB64, CellIdString } from '../../../../types/shared'
+import { Action, AgentPubKeyB64 } from '../../../../types/shared'
 
-const FETCH_AGENT_ADDRESS = 'FETCH_AGENT_ADDRESS'
+const SET_AGENT_ADDRESS = 'SET_AGENT_ADDRESS'
 /* action creator functions */
 
-const fetchAgentAddress = (
-  cellIdString: CellIdString,
+const setAgentAddress = (
   payload: AgentPubKeyB64
 ): Action<AgentPubKeyB64> => {
   return {
-    type: FETCH_AGENT_ADDRESS,
+    type: SET_AGENT_ADDRESS,
     payload,
-    meta: { cellIdString },
   }
 }
 
-export { fetchAgentAddress, FETCH_AGENT_ADDRESS }
+export { setAgentAddress, SET_AGENT_ADDRESS }

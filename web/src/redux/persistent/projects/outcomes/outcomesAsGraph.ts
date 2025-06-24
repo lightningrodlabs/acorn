@@ -1,8 +1,7 @@
 import _ from 'lodash'
 import { ProjectComputedOutcomes } from '../../../../context/ComputedOutcomeContext'
-import { ComputedOutcome, Connection, OptionalOutcomeData } from '../../../../types'
+import { ComputedOutcome, Connection, OptionalOutcomeData, Profile } from '../../../../types'
 import { ActionHashB64, WithActionHash } from '../../../../types/shared'
-import { AgentsState } from '../../profiles/agents/reducer'
 import { ProjectConnectionsState } from '../connections/reducer'
 import { ProjectOutcomeCommentsState } from '../outcome-comments/reducer'
 import { ProjectOutcomeMembersState } from '../outcome-members/reducer'
@@ -12,7 +11,7 @@ import { ProjectOutcomesState } from './reducer'
 export type GraphData = {
   outcomes: ProjectOutcomesState
   connections: ProjectConnectionsState
-  agents?: AgentsState
+  memberProfiles?: Profile[]
   outcomeMembers?: ProjectOutcomeMembersState
   outcomeComments?: ProjectOutcomeCommentsState
 }
@@ -30,7 +29,7 @@ export default function outcomesAsGraph(
     connections,
     outcomeMembers,
     outcomeComments,
-    agents,
+    memberProfiles,
   } = graphData
 
   // modify so that all outcomes have their related things, if in opts
@@ -41,7 +40,7 @@ export default function outcomesAsGraph(
       if (withMembers) {
         extensions.members = Object.values(outcomeMembers)
           .filter((om) => om.outcomeActionHash === outcome.actionHash)
-          .map((om) => agents[om.memberAgentPubKey])
+          .map((om) => memberProfiles.find(p => p.agentPubKey === om.memberAgentPubKey))
       }
       if (withComments) {
         extensions.comments = Object.values(outcomeComments).filter(

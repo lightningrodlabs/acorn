@@ -184,7 +184,7 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
     return (
       <AppWebsocketContext.Provider value={appWs}>
         <ConnectedExpandedViewMode
-          activeAgentPubKey={agentPubKey}
+          activeAgentPubKey={encodeHashToBase64(agentPubKey)}
           projectId={projectId}
           openExpandedView={() => {}}
           onClose={() => {}}

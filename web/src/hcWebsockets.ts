@@ -1,9 +1,9 @@
-import { AppWebsocket, AppClient } from '@holochain/client'
+import { AppWebsocket, AppClient, AgentPubKey } from '@holochain/client'
 import { isWeaveContext, WeaveClient } from '@theweave/api'
 import { ProfilesClient } from '@holochain-open-dev/profiles'
 
 let appWs: AppClient
-let agentPubKey
+let agentPubKey: AgentPubKey
 let weaveProfilesClient: ProfilesClient
 let weaveClient: WeaveClient
 
@@ -32,7 +32,7 @@ export function getAgentPubKey() {
   return agentPubKey
 }
 
-export function setAgentPubKey(setAs) {
+export function setAgentPubKey(setAs: AgentPubKey) {
   agentPubKey = setAs
 }
 

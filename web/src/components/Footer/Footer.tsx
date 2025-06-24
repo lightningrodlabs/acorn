@@ -71,33 +71,34 @@ const Footer: React.FC<FooterProps> = ({
   // for syncing a project
   const [numOpsToFetch, setNumOpsToFetch] = useState(0)
 
-  // display syncing indicator when numOpsToFetch > 0
-  useEffect(() => {
-    const fetchOpData = async () => {
-      if (!projectId) {
-        return
-      }
-      // TODOOOOO
-      // TODO: check `last_time_queried` parameter to see if its useful
-      // try {
-      //   const dnaHash = cellIdFromString(projectId)[0]
-      //   const networkInfo = await appWs.networkInfo({
-      //     agent_pub_key: agentAddress as any,
-      //     dnas: [dnaHash],
-      //   })
-      //   let sum = networkInfo[0].fetch_pool_info.num_ops_to_fetch
-      //   setNumOpsToFetch(sum)
-      // } catch (e) {
-      //   console.log('error during call to networkInfo', e)
-      // }
-    }
+  // // display syncing indicator when numOpsToFetch > 0
+  // useEffect(() => {
+  //   const fetchOpData = async () => {
+  //     if (!projectId) {
+  //       return
+  //     }
+  //     // TODOOOOO
+  //     // TODO: check `last_time_queried` parameter to see if its useful
+  //     // try {
+  //     //   const dnaHash = cellIdFromString(projectId)[0]
+  //     //   const networkInfo = await appWs.networkInfo({
+  //     //     agent_pub_key: agentAddress as any,
+  //     //     dnas: [dnaHash],
+  //     //   })
+  //     //   let sum = networkInfo[0].fetch_pool_info.num_ops_to_fetch
+  //     //   setNumOpsToFetch(sum)
+  //     // } catch (e) {
+  //     //   console.log('error during call to networkInfo', e)
+  //     // }
+  //   }
 
-    const interval = setInterval(() => fetchOpData(), 1000)
+  //   const interval = setInterval(() => fetchOpData(), 1000)
 
-    return () => clearInterval(interval)
-  }, [projectId, agentAddress])
+  //   return () => clearInterval(interval)
+  // }, [projectId, agentAddress])
 
-  const isSyncing = numOpsToFetch > 0
+  // const isSyncing = numOpsToFetch > 0
+  const isSyncing = false;
 
   return (
     <div className="footer" ref={ref}>

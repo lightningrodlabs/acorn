@@ -4,7 +4,6 @@ import { CellIdString } from '../types/shared'
 import { cellIdFromString } from '../utils'
 
 export async function uninstallProject(
-  appId: string,
   cellId: CellIdString,
   dispatch: any,
   appWs: AppClient

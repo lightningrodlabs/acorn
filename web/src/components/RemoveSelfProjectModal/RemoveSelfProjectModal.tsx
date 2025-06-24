@@ -17,7 +17,7 @@ export type RemoveSelfProjectModalProps = {
   modalState: ModalState
   onClose: () => void
   redirectToDashboard: () => void
-  uninstallProject: (appId: string, cellIdString: CellIdString) => Promise<void>
+  uninstallProject: (cellIdString: CellIdString) => Promise<void>
 }
 
 const RemoveSelfProjectModal: React.FC<RemoveSelfProjectModalProps> = ({
@@ -38,7 +38,7 @@ const RemoveSelfProjectModal: React.FC<RemoveSelfProjectModalProps> = ({
 
   const uninstall = () => {
     redirectToDashboard()
-    uninstallProject(projectAppId, projectCellId)
+    uninstallProject(projectCellId)
     onClose()
     setToastState({
       id: ShowToast.Yes,
@@ -71,7 +71,7 @@ const RemoveSelfProjectModal: React.FC<RemoveSelfProjectModalProps> = ({
             className="warning"
             onClick={uninstall}
           />
-          <Button text={'Nevermind'} onClick={onClose} />
+          <Button text={'Never mind'} onClick={onClose} />
         </div>
       </Modal>
     </div>

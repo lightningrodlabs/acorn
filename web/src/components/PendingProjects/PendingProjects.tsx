@@ -7,7 +7,7 @@ import { ProjectStatusInfos } from '../../hooks/useProjectStatusInfos'
 export type PendingProjectsProps = {
   projectStatusInfos: ProjectStatusInfos
   setProjectStatusInfos: React.Dispatch<React.SetStateAction<ProjectStatusInfos>>
-  uninstallProject: (appId: string, cellId: CellIdString) => Promise<void>
+  uninstallProject: (cellId: CellIdString) => Promise<void>
 }
 
 enum OverviewPillType {
@@ -67,8 +67,8 @@ function PendingProjects({
     return !projectInfo.hasPeers || !projectInfo.isGossiping
   }).length
 
-  const cancelProjectJoin = async (appId: string, cellId: string) => {
-    await uninstallProject(appId, cellId)
+  const cancelProjectJoin = async (cellId: string) => {
+    await uninstallProject(cellId)
     // remove this project from pendingProjects
     setProjectStatusInfos((pendingProjects: ProjectStatusInfos) => {
       const { [cellId]: _, ...rest } = pendingProjects
@@ -154,7 +154,6 @@ function PendingProjects({
                       className="pending-project-cancel-queue-button"
                       onClick={() =>
                         cancelProjectJoin(
-                          pendingProject.appId,
                           pendingProjectCellId
                         )
                       }

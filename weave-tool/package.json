@@ -10,6 +10,6 @@
     "dev-weave2-webhapp": "weave --agent-idx 2 --dev-config weave.dev.config.webhapp.ts"
   },
   "dependencies": {
-    "@theweave/cli": "0.14.0-rc.5"
+    "@theweave/cli": "0.14.0-src.0"
   }
 }

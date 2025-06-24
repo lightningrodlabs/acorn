@@ -9,11 +9,8 @@ of how ACTIONS affect STATE
 import { combineReducers } from 'redux'
 
 import cells from './persistent/cells/reducer'
-import agents from './persistent/profiles/agents/reducer'
-import whoami, {
-  hasFetchedForWhoami,
-} from './persistent/profiles/who-am-i/reducer'
 import agentAddress from './persistent/profiles/agent-address/reducer'
+import myLocalProfile from './persistent/profiles/my-local-profile/reducer'
 import projects from './persistent/projects/reducer'
 import outcomeForm from './ephemeral/outcome-form/reducer'
 import selection from './ephemeral/selection/reducer'
@@ -39,13 +36,11 @@ import navigationModal from './ephemeral/navigation-modal/reducer'
 // combine reducers from each feature to create the top-level reducer
 const rootReducer = combineReducers({
   cells,
-  agents,
   projects,
-  whoami,
   agentAddress,
+  myLocalProfile,
   ui: combineReducers({
     layout,
-    hasFetchedForWhoami,
     outcomeConnector,
     localPreferences,
     outcomeForm,
