@@ -18,7 +18,7 @@ import Typography from '../Typography/Typography'
 import './OutcomeTableFilterSelector.scss'
 
 export type OutcomeTableFilterSelectorProps = {
-  whoAmI: Profile
+  myLocalProfile: Profile
   onApplyOutcomeTableFilter: (filters: OutcomeTableFilter) => void
   filter: OutcomeTableFilter
   projectMemberProfiles: Profile[]
@@ -26,16 +26,16 @@ export type OutcomeTableFilterSelectorProps = {
 }
 
 const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
-  whoAmI,
+  myLocalProfile,
   onApplyOutcomeTableFilter,
   filter,
   projectMemberProfiles,
   projectTags,
 }) => {
-  const whoAmIFirstName = whoAmI ? whoAmI.firstName : 'J'
-  const whoAmILastName = whoAmI ? whoAmI.lastName : 'J'
-  const whoAmIAvatarUrl = whoAmI ? whoAmI.avatarUrl : ''
-  const activeAgentPubKey = whoAmI ? whoAmI.agentPubKey : ''
+  const myFirstName = myLocalProfile ? myLocalProfile.firstName : 'J'
+  const myLastName = myLocalProfile ? myLocalProfile.lastName : 'J'
+  const myAvatarUrl = myLocalProfile ? myLocalProfile.avatarUrl : ''
+  const activeAgentPubKey = myLocalProfile ? myLocalProfile.agentPubKey : ''
 
   const achievementStatusOptions = [
     {
@@ -143,9 +143,9 @@ const OutcomeTableFilterSelector: React.FC<OutcomeTableFilterSelectorProps> = ({
           icon={
             <Avatar
               size="small"
-              firstName={whoAmIFirstName}
-              lastName={whoAmILastName}
-              avatarUrl={whoAmIAvatarUrl}
+              firstName={myFirstName}
+              lastName={myLastName}
+              avatarUrl={myAvatarUrl}
               imported={false}
             />
           }

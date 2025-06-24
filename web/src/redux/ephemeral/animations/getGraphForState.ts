@@ -10,7 +10,7 @@ export function getGraphForState(state: RootState): Graph {
     outcomes: state.projects.outcomes[projectId] || {},
     connections: state.projects.connections[projectId] || {},
     outcomeMembers: state.projects.outcomeMembers[projectId] || {},
-    agents: state.agents,
+    memberProfiles: state.projects.members[projectId]?.profiles || [],
   }
   return outcomesAsGraph(graphData, { withMembers: true })
 }

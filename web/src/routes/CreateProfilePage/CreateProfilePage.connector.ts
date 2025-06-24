@@ -1,62 +1,31 @@
 import { connect } from 'react-redux'
 import { RootState } from '../../redux/reducer'
-import {
-  createWhoami,
-  whoami,
-} from '../../redux/persistent/profiles/who-am-i/actions'
-import ProfilesZomeApi from '../../api/profilesApi'
-import { cellIdFromString } from '../../utils'
+import { writeMyLocalProfile } from '../../utils'
 import CreateProfilePage, {
   CreateProfilePageDispatchProps,
   CreateProfilePageStateProps,
 } from './CreateProfilePage.component'
 import { Profile } from '../../types'
-import { CellIdString } from '../../types/shared'
-import { AppClient } from '@holochain/client'
 import { isWeaveContext } from '@theweave/api'
-import { getWeaveProfilesClient } from '../../hcWebsockets'
+import { setMyLocalProfile } from '../../redux/persistent/profiles/my-local-profile/actions'
 
 function mapStateToProps(state: RootState): CreateProfilePageStateProps {
   return {
     agentAddress: state.agentAddress,
-    hasProfile: !!state.whoami,
-    profilesCellIdString: state.cells.profiles,
+    hasProfile: !!state.myLocalProfile,
   }
 }
 
 function mapDispatchToProps(dispatch: any): CreateProfilePageDispatchProps {
   return {
-    fetchWhoami: async (
-      appWebsocket: AppClient,
-      profilesCellIdString: CellIdString
+    createMyLocalProfile: (
+      profile: Profile
     ) => {
-      const cellId = cellIdFromString(profilesCellIdString)
-      const profilesZomeApi = await (async () => {
-        if (isWeaveContext()) {
-          const profilesClient = await getWeaveProfilesClient()
-          return new ProfilesZomeApi(appWebsocket, profilesClient)
-        } else return new ProfilesZomeApi(appWebsocket)
-      })()
-      const profile = await profilesZomeApi.profile.whoami(cellId)
-      return dispatch(whoami(profilesCellIdString, profile))
-    },
-    createWhoami: async (
-      appWebsocket: AppClient,
-      profile: Profile,
-      profilesCellIdString: CellIdString
-    ) => {
-      const profilesZomeApi = await (async () => {
-        if (isWeaveContext()) {
-          const profilesClient = await getWeaveProfilesClient()
-          return new ProfilesZomeApi(appWebsocket, profilesClient)
-        } else return new ProfilesZomeApi(appWebsocket)
-      })()
-      const cellId = cellIdFromString(profilesCellIdString)
-      const createdWhoami = await profilesZomeApi.profile.createWhoami(
-        cellId,
-        profile
-      )
-      return dispatch(createWhoami(profilesCellIdString, createdWhoami))
+      if (isWeaveContext()) {
+        throw new Error("Cannot create profile in Moss. Needs to be read from WeaveClient.")
+      }
+      writeMyLocalProfile(profile);
+      return dispatch(setMyLocalProfile(profile))
     },
   }
 }

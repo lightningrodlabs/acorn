@@ -3,21 +3,21 @@ import outcomesAsGraph from '../redux/persistent/projects/outcomes/outcomesAsGra
 import { RootState } from '../redux/reducer'
 
 const selectAndComputeOutcomes = createSelector(
-  (state: RootState) => state.agents,
+  (state: RootState) => state.projects.members[state.ui.activeProject]?.profiles || [],
   (state: RootState) => state.projects.outcomes[state.ui.activeProject] || {},
   (state: RootState) =>
     state.projects.connections[state.ui.activeProject] || {},
   (state: RootState) =>
     state.projects.outcomeMembers[state.ui.activeProject] || {},
-  (agents, outcomes, connections, outcomeMembers) => {
-    console.log('recalculating computedOutcomes!', {
-      agents,
-      outcomes,
-      connections,
-      outcomeMembers,
-    })
+  (memberProfiles, outcomes, connections, outcomeMembers) => {
+    // console.log('recalculating computedOutcomes!', {
+    //   agents,
+    //   outcomes,
+    //   connections,
+    //   outcomeMembers,
+    // })
     const treeData = {
-      agents,
+      memberProfiles,
       outcomes,
       connections,
       outcomeMembers,

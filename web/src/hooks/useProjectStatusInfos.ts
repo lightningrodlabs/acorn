@@ -25,10 +25,6 @@ const getNewInfos = async (
   const networkInfos = agentPubKey
     ? await appWs.dumpNetworkMetrics({ include_dht_summary: false })
     : undefined
-  console.log('getNewInfos:', {
-    appInfo: appInfo.cell_info['projects'],
-    status: appInfo.status,
-  })
   const clonedProjectCells: ClonedCell[] = appInfo.cell_info['projects']
     .filter(
       (cellInfo) => CellType.Cloned === cellInfo.type && cellInfo.value.enabled

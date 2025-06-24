@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { getAppWs } from '../../hcWebsockets'
 import { fetchEntryPointDetails } from '../../redux/persistent/projects/entry-points/actions'
-import { fetchMembers } from '../../redux/persistent/projects/members/actions'
+import { fetchProjectMembers } from '../../redux/persistent/projects/members/actions'
 import { fetchProjectMeta } from '../../redux/persistent/projects/project-meta/actions'
 import ProjectsZomeApi from '../../api/projectsApi'
 import { cellIdFromString } from '../../utils'
@@ -33,9 +33,9 @@ function mapStateToProps(state: RootState): DashboardStateProps {
 
 function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
   return {
-    uninstallProject: async (appId: string, cellId: CellIdString) => {
+    uninstallProject: async (cellId: CellIdString) => {
       const appWs = await getAppWs()
-      return uninstallProject(appId, cellId, dispatch, appWs)
+      return uninstallProject(cellId, dispatch, appWs)
     },
     fetchEntryPointDetails: async (_appWebsocket, cellIdString) => {
       const appWebsocket = await getAppWs()
@@ -51,7 +51,7 @@ function mapDispatchToProps(dispatch: any): DashboardDispatchProps {
       const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
       const cellId = cellIdFromString(cellIdString)
       const members = await projectsZomeApi.member.fetch(cellId)
-      return dispatch(fetchMembers(cellIdString, members))
+      return dispatch(fetchProjectMembers(cellIdString, members))
     },
     fetchProjectMeta: async (_appWebsocket, cellIdString) => {
       const appWebsocket = await getAppWs()

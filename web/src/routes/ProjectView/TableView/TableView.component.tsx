@@ -12,7 +12,7 @@ import {
 import OutcomeTableWithFilters from '../../../components/OutcomeTableWithFilters/OutcomeTableWithFilters'
 
 export type TableViewConnectorStateProps = {
-  whoAmI: Profile
+  myLocalProfile: Profile
   topPriorityOutcomes: ActionHashB64[]
   presentMembers: AgentPubKeyB64[]
   projectMemberProfiles: Profile[]
@@ -28,7 +28,7 @@ export type TableViewProps = TableViewConnectorStateProps &
   TableViewConnectorDispatchProps
 
 const TableView: React.FC<TableViewProps> = ({
-  whoAmI,
+  myLocalProfile,
   topPriorityOutcomes,
   presentMembers,
   projectMemberProfiles,
@@ -43,7 +43,7 @@ const TableView: React.FC<TableViewProps> = ({
       <OutcomeTableWithFilters
         topPriorityOutcomes={topPriorityOutcomes}
         projectTags={projectTags}
-        whoAmI={whoAmI}
+        myLocalProfile={myLocalProfile}
         presentMembers={presentMembers}
         projectMemberProfiles={projectMemberProfiles}
         computedOutcomesAsTree={computedOutcomesAsTree}

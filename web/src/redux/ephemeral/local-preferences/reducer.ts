@@ -1,15 +1,9 @@
+import { getLocalItem, setLocalItem } from '../../../utils'
 import {
   SET_KEYBOARD_NAVIGATION_PREFERENCE,
   SET_NAVIGATION_PREFERENCE,
 } from './actions'
 
-const LOCAL_STORAGE_PREFIX = 'acorn-'
-const getLocalItem = (key) => {
-  return localStorage.getItem(`${LOCAL_STORAGE_PREFIX}${key}`)
-}
-const setLocalItem = (key, value) => {
-  localStorage.setItem(`${LOCAL_STORAGE_PREFIX}${key}`, value)
-}
 
 const KEYBOARD_NAV_KEY = 'keyboardNavigationPreference'
 export const COORDINATES = 'coordinates'

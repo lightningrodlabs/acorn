@@ -9,6 +9,7 @@ import { CSSTransition } from 'react-transition-group'
 import { ProjectMapViewOnly } from '../ViewFilters/ViewFilters'
 import Typography from '../Typography/Typography'
 import hashCodeId from '../../api/clientSideIdHash'
+import { isWeaveContext } from '@theweave/api'
 
 function AvatarMenuItem({
   title,
@@ -58,7 +59,7 @@ function SearchResultItem({
       {/* @ts-ignore */}
       <div className="search-result-item-buttons">
         {/* <div onClick={() => panAndZoom(outcomeActionHash)}>
-       
+
           <Icon name="enter.svg" size="small" className="light-grey" />
         </div> */}
         <div onClick={() => onExpandClick(outcomeActionHash)}>
@@ -84,7 +85,7 @@ function SearchResultsFilter({ name, filterActive, setFilter }) {
 }
 
 export default function HeaderRightPanel({
-  whoami,
+  myLocalProfile,
   onClickEditProfile,
   onClickPreferences,
   saveStatus,
@@ -138,7 +139,7 @@ export default function HeaderRightPanel({
         <div
           className={`search-button-wrapper ${
             isSearchOpen ? 'search-is-open' : ''
-          } 
+          }
         ${filterText !== '' ? 'results-dropdown-is-open' : ''}`}
         >
           <div className="search-icon-input">
@@ -285,10 +286,10 @@ export default function HeaderRightPanel({
           >
             {/* @ts-ignore */}
             <Avatar
-              firstName={whoami.entry.firstName}
-              lastName={whoami.entry.lastName}
-              avatarUrl={whoami.entry.avatarUrl}
-              imported={whoami.entry.isImported}
+              firstName={myLocalProfile.firstName}
+              lastName={myLocalProfile.lastName}
+              avatarUrl={myLocalProfile.avatarUrl}
+              imported={myLocalProfile.isImported}
               // highlighted={isAvatarMenuOpen || isAvatarHover}
               clickable
               size="small-medium"
@@ -301,12 +302,14 @@ export default function HeaderRightPanel({
         {/* Profile Menu */}
         {isAvatarMenuOpen && (
           <div className="profile-wrapper" ref={ref}>
-            <AvatarMenuItem
-              className={isStatusOpen ? 'active' : ''}
-              title="Change Status"
-              onClick={() => setIsStatusOpen(true)}
-            />
-            {isStatusOpen && (
+            {!isWeaveContext() && (
+              <AvatarMenuItem
+                className={isStatusOpen ? 'active' : ''}
+                title="Change Status"
+                onClick={() => setIsStatusOpen(true)}
+              />
+            )}
+            {!isWeaveContext() && isStatusOpen && (
               <div className="user-status-wrapper">
                 {Object.keys(Status).map((key) => (
                   <StatusMenuItem
@@ -322,13 +325,16 @@ export default function HeaderRightPanel({
                 ))}
               </div>
             )}
-            <AvatarMenuItem
-              title="Profile Settings"
-              onClick={() => {
-                onClickEditProfile()
-                setIsAvatarMenuOpen(false)
-              }}
-            />
+            {!isWeaveContext() && (
+              <AvatarMenuItem
+                title="Profile Settings"
+                onClick={() => {
+                  onClickEditProfile()
+                  setIsAvatarMenuOpen(false)
+                }}
+              />
+            )}
+
             <AvatarMenuItem
               title="Preferences"
               onClick={() => {

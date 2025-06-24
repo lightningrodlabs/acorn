@@ -7,19 +7,11 @@
 
 import { Action, CellIdString } from '../../../types/shared'
 
-const SET_PROFILES_CELL_ID = 'SET_PROFILES_CELL_ID'
 const SET_PROJECTS_CELL_IDS = 'SET_PROJECTS_CELL_IDS'
 const JOIN_PROJECT_CELL_ID = 'JOIN_PROJECT_CELL_ID'
 const REMOVE_PROJECT_CELL_ID = 'REMOVE_PROJECT_CELL_ID'
 
 /* action creator functions */
-
-const setProfilesCellId = (cellId: CellIdString): Action<CellIdString> => {
-  return {
-    type: SET_PROFILES_CELL_ID,
-    payload: cellId,
-  }
-}
 
 const setProjectsCellIds = (
   cellIds: Array<CellIdString>
@@ -45,11 +37,9 @@ const removeProjectCellId = (cellId: CellIdString): Action<CellIdString> => {
 }
 
 export {
-  SET_PROFILES_CELL_ID,
   SET_PROJECTS_CELL_IDS,
   JOIN_PROJECT_CELL_ID,
   REMOVE_PROJECT_CELL_ID,
-  setProfilesCellId,
   setProjectsCellIds,
   joinProjectCellId,
   removeProjectCellId,

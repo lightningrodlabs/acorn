@@ -27,26 +27,19 @@ const ZOME_FN_NAMES = {
 }
 interface IProfilesApi {
   createWhoami: (
-    cellId: CellId,
-    payload: Profile
-  ) => Promise<WireRecord<Profile>>
-  createImportedProfile: (
-    cellId: CellId,
     payload: Profile
   ) => Promise<WireRecord<Profile>>
   updateWhoami: (
-    cellId: CellId,
     payload: UpdateInput<Profile>
   ) => Promise<WireRecord<Profile>>
-  whoami: (cellId: CellId) => Promise<WhoAmIOutput>
-  fetchAgents: (cellId: CellId) => Promise<Array<Profile>>
-  fetchAgentAddress: (cellId: CellId) => Promise<AgentPubKeyB64>
+  whoami: () => Promise<WhoAmIOutput>
+  fetchAgents: () => Promise<Array<Profile>>
+  fetchAgentAddress: () => Promise<AgentPubKeyB64>
 }
 
-const ProfilesApi = (appWebsocket: AppClient): IProfilesApi => {
+const ProfilesApi = (appWebsocket: AppClient, cellId :CellId): IProfilesApi => {
   return {
     createWhoami: async (
-      cellId: CellId,
       payload: Profile
     ): Promise<WireRecord<Profile>> => {
       return callZome(
@@ -57,20 +50,7 @@ const ProfilesApi = (appWebsocket: AppClient): IProfilesApi => {
         payload
       )
     },
-    createImportedProfile: async (
-      cellId: CellId,
-      payload: Profile
-    ): Promise<WireRecord<Profile>> => {
-      return callZome(
-        appWebsocket,
-        cellId,
-        PROFILES_ZOME_NAME,
-        ZOME_FN_NAMES.CREATE_IMPORTED_PROFILE,
-        payload
-      )
-    },
     updateWhoami: async (
-      cellId: CellId,
       payload: UpdateInput<Profile>
     ): Promise<WireRecord<Profile>> => {
       return callZome(
@@ -81,7 +61,7 @@ const ProfilesApi = (appWebsocket: AppClient): IProfilesApi => {
         payload
       )
     },
-    whoami: async (cellId: CellId): Promise<WhoAmIOutput> => {
+    whoami: async (): Promise<WhoAmIOutput> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -90,7 +70,7 @@ const ProfilesApi = (appWebsocket: AppClient): IProfilesApi => {
         null
       )
     },
-    fetchAgents: async (cellId: CellId): Promise<Array<Profile>> => {
+    fetchAgents: async (): Promise<Array<Profile>> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -99,7 +79,7 @@ const ProfilesApi = (appWebsocket: AppClient): IProfilesApi => {
         null
       )
     },
-    fetchAgentAddress: async (cellId: CellId): Promise<AgentPubKeyB64> => {
+    fetchAgentAddress: async (): Promise<AgentPubKeyB64> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -114,11 +94,11 @@ const ProfilesApi = (appWebsocket: AppClient): IProfilesApi => {
 export default class ProfilesZomeApi {
   appWebsocket: AppClient
   profile: IProfilesApi
-  constructor(appWebsocket: AppClient, profilesClient?: ProfilesClient) {
+  constructor(appWebsocket: AppClient, cellId: CellId, profilesClient?: ProfilesClient) {
     this.appWebsocket = appWebsocket
     this.profile = profilesClient
       ? WeaveProfilesApi(profilesClient)
-      : ProfilesApi(appWebsocket)
+      : ProfilesApi(appWebsocket, cellId)
   }
 }
 
@@ -126,40 +106,19 @@ const schemaShape = ProfileSchema.shape
 
 const acornFields = Object.keys(schemaShape)
 
-function weaveToAcornProfile(
+export function weaveToAcornProfile(
   weaveProfile: WeaveProfile,
   agentPubKey: string
 ): Profile {
-  let acornProfile = {}
-
-  // field each acorn profile field, check if it exists in the weave Profile, if it does, use that, if not, use defaults
-  acornFields.forEach((key) => {
-    if (key === 'isImported') {
-      // default to false, unless field exists, then parse into bool from string
-      acornProfile[key] = weaveProfile.fields[key]
-        ? JSON.parse(weaveProfile.fields[key])
-        : false
-    } else if (key === 'status') {
-      // default to offline until the fields exists
-      acornProfile[key] = weaveProfile.fields[key]
-        ? (weaveProfile.fields[key] as Status)
-        : ('Online' as Status)
-    } else if (key === 'agentPubKey') {
-      acornProfile[key] = weaveProfile.fields[key]
-        ? weaveProfile.fields[key]
-        : agentPubKey
-    } else if (key === 'avatarUrl') {
-      acornProfile[key] = weaveProfile.fields[key]
-        ? JSON.parse(weaveProfile.fields[key])
-        : ''
-    } else {
-      // if no first and last name and handle are given, use the nickname
-      acornProfile[key] = weaveProfile.fields[key]
-        ? weaveProfile.fields[key]
-        : weaveProfile.nickname
-    }
-  })
-  return acornProfile as Profile
+  return {
+    avatarUrl: weaveProfile.fields['avatar'],
+    agentPubKey,
+    status: "Online",
+    firstName: weaveProfile.nickname,
+    lastName: '',
+    handle: weaveProfile.nickname,
+    isImported: false,
+  }
 }
 function acornToWeaveProfile(
   acornProfile: Profile,
@@ -178,99 +137,16 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
   const myPubKey = profilesClient.client.myPubKey
   return {
     createWhoami: async (
-      cellId: CellId,
-      payload: Profile
+      _payload: Profile
     ): Promise<WireRecord<Profile>> => {
-      console.log('createWhoami', payload)
-      try {
-        let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
-        console.log('myWeaveProfile', myWeaveProfile)
-        const profile = acornToWeaveProfile(payload, myWeaveProfile.entry)
-        const updatedProfileRecord = await profilesClient.updateProfile(profile)
-        return {
-          actionHash: encodeHashToBase64(updatedProfileRecord.actionHash),
-          entryHash: encodeHashToBase64(updatedProfileRecord.entryHash),
-          entry: weaveToAcornProfile(
-            updatedProfileRecord.entry,
-            encodeHashToBase64(myPubKey)
-          ),
-          createdAt: updatedProfileRecord.action.timestamp,
-          updatedAt: updatedProfileRecord.action.timestamp,
-        }
-      } catch (e) {
-        console.log('Error creating whoami', e)
-        return {
-          actionHash: '',
-          entryHash: '',
-          entry: payload,
-          createdAt: 12345,
-          updatedAt: 12345,
-        }
-      }
-    },
-    createImportedProfile: async (
-      cellId: CellId,
-      payload: Profile
-    ): Promise<WireRecord<Profile>> => {
-      try {
-        console.log('createImportedProfile', payload)
-        let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
-        console.log('myWeaveProfile', myWeaveProfile)
-        const profile = acornToWeaveProfile(payload, myWeaveProfile.entry)
-        const updatedProfileRecord = await profilesClient.updateProfile(profile)
-        return {
-          actionHash: encodeHashToBase64(updatedProfileRecord.actionHash),
-          entryHash: encodeHashToBase64(updatedProfileRecord.entryHash),
-          entry: weaveToAcornProfile(
-            updatedProfileRecord.entry,
-            encodeHashToBase64(myPubKey)
-          ),
-          createdAt: updatedProfileRecord.action.timestamp,
-          updatedAt: updatedProfileRecord.action.timestamp,
-        }
-      } catch (e) {
-        console.log('Error creating imported profile', e)
-        return {
-          actionHash: '',
-          entryHash: '',
-          entry: payload,
-          createdAt: 12345,
-          updatedAt: 12345,
-        }
-      }
+      throw new Error("Cannot create profile. Profile must be received via WeaveClient.")
     },
     updateWhoami: async (
-      cellId: CellId,
       payload: UpdateInput<Profile>
     ): Promise<WireRecord<Profile>> => {
-      try {
-        console.log('updateWhoami', payload)
-        let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
-        console.log('myWeaveProfile', myWeaveProfile)
-        const profile = acornToWeaveProfile(payload.entry, myWeaveProfile.entry)
-        const updatedProfileRecord = await profilesClient.updateProfile(profile)
-        return {
-          actionHash: encodeHashToBase64(updatedProfileRecord.actionHash),
-          entryHash: encodeHashToBase64(updatedProfileRecord.entryHash),
-          entry: weaveToAcornProfile(
-            updatedProfileRecord.entry,
-            encodeHashToBase64(myPubKey)
-          ),
-          createdAt: updatedProfileRecord.action.timestamp,
-          updatedAt: updatedProfileRecord.action.timestamp,
-        }
-      } catch (e) {
-        console.log('Error updating whoami', e)
-        return {
-          actionHash: '',
-          entryHash: '',
-          entry: payload.entry,
-          createdAt: 12345,
-          updatedAt: 12345,
-        }
-      }
+      throw new Error("Cannot update profile. Profile must be updated in the Moss group.")
     },
-    whoami: async (cellId: CellId): Promise<WhoAmIOutput> => {
+    whoami: async (): Promise<WhoAmIOutput> => {
       try {
         console.log('whoami')
         let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
@@ -304,7 +180,7 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
         }
       }
     },
-    fetchAgents: async (cellId: CellId): Promise<Array<Profile>> => {
+    fetchAgents: async (): Promise<Array<Profile>> => {
       try {
         const weaveProfiles = await Promise.all(
           (await profilesClient.getAgentsWithProfile()).map(
@@ -336,7 +212,7 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
         return []
       }
     },
-    fetchAgentAddress: async (cellId: CellId): Promise<AgentPubKeyB64> => {
+    fetchAgentAddress: async (): Promise<AgentPubKeyB64> => {
       return encodeHashToBase64(profilesClient.client.myPubKey)
     },
   }

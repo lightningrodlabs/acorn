@@ -65,7 +65,7 @@ function ActiveEntryPoint({
 }
 
 export type HeaderLeftPanelProps = {
-  whoami: WireRecord<Profile>
+  myLocalProfile: Profile
   members: Profile[]
   presentMembers: AgentPubKeyB64[]
   projectName: string
@@ -88,7 +88,7 @@ export type HeaderLeftPanelProps = {
 
 const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   setModalState,
-  whoami,
+  myLocalProfile,
   projectName,
   projectPassphrase,
   activeEntryPoints,
@@ -132,9 +132,9 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   // except your own self
   // since your own avatar and status is already showing
   // on top right side of the screen all the time!
-  const membersMinusMe = whoami
+  const membersMinusMe = myLocalProfile
     ? members.filter(
-        (member) => member.agentPubKey !== whoami.entry.agentPubKey
+        (member) => member.agentPubKey !== myLocalProfile.agentPubKey
       )
     : []
 
@@ -174,14 +174,14 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
         {!showOnlyProjectSection && (
           <>
             {/* Acorn Logo - non link */}
-            {!whoami && (
+            {!myLocalProfile && (
               <div className="logo non-link">
                 <img src="images/acorn-alpha-logo.png" className="logo-image" />
               </div>
             )}
 
             {/* Acorn Logo - linked */}
-            {whoami && (
+            {myLocalProfile && (
               <NavLink to="/" className="logo">
                 <img src="images/acorn-alpha-logo.png" className="logo-image" />
               </NavLink>
@@ -189,7 +189,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
           </>
         )}
 
-        {whoami && (
+        {myLocalProfile && (
           <Route path="/project">
             <div className="current-project-wrapper">
               {/* Project Name and Settings */}
@@ -411,7 +411,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
       </div>
       {/* Second row of the header */}
       {/* for showing active entry points tabs */}
-      {whoami && !showOnlyProjectSection && (
+      {myLocalProfile && !showOnlyProjectSection && (
         <Route path="/project">
           {/* Current Entry Points Tab */}
           <div className="header-left-panel second-row">

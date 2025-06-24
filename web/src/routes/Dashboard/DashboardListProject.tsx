@@ -12,7 +12,6 @@ import { isWeaveContext, WAL } from '@theweave/api'
 import { getWeaveClient } from '../../hcWebsockets'
 import { CellIdWrapper } from '../../domain/cellId'
 import { decodeHashFromBase64, EntryHash } from '@holochain/client'
-import { AssetMeta } from '../../hooks/useAttachments'
 import { useProjectAttachments } from '../../hooks/useProjectAttachments'
 
 function DashboardListProjectLoading() {

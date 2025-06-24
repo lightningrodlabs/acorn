@@ -18,7 +18,7 @@ export type DeleteProjectModalProps = {
   modalState: ModalState
   onClose: () => void
   redirectToDashboard: () => void
-  uninstallProject: (appId: string, cellIdString: CellIdString) => Promise<void>
+  uninstallProject: (cellIdString: CellIdString) => Promise<void>
 }
 
 const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
@@ -39,7 +39,7 @@ const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
 
   const uninstall = () => {
     redirectToDashboard()
-    uninstallProject(projectAppId, projectCellId)
+    uninstallProject(projectCellId)
     onClose()
     setToastState({
       id: ShowToast.Yes,
@@ -63,7 +63,7 @@ const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
           className="warning"
           onClick={uninstall}
         />
-        <Button text={'Nevermind'} onClick={onClose} />
+        <Button text={'Never mind'} onClick={onClose} />
       </div>
     </Modal>
   )

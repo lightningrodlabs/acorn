@@ -164,7 +164,7 @@ const ProjectAssetView: React.FC<ProjectAssetViewProps> = ({ wal }) => {
             <div className="header-wrapper">
               <div className="header">
                 <HeaderLeftPanel
-                  whoami={{} as WireRecord<Profile>}
+                  myLocalProfile={{} as Profile}
                   members={[]}
                   presentMembers={[]}
                   projectName={projectMeta ? projectMeta.entry.name : ''}
