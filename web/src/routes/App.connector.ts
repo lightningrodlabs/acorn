@@ -137,9 +137,6 @@ function mergeProps(
       uninstallProject(cellIdString, dispatch, appWs)
     },
     updateWhoamis: async (profile: Profile) => {
-      // In the Weave context we don't need to update anything, profiles
-      // are stored at the Moss level
-      if (isWeaveContext()) return
       if (!myLocalProfile) throw new Error("Cannot update whoamis: Local profile is undefined/null.")
       const appWebsocket = await getAppWs()
       await Promise.all(projects.map(async (cellId) => {
