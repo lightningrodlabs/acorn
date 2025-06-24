@@ -44,9 +44,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: false
-          artifacts:
-            - 'happs/happ/workdir/acorn.webhapp'
-            - 'happs/happ/workdir/acorn.happ'
+          artifacts: happs/happ/workdir/acorn.webhapp,happs/happ/workdir/acorn.happ
           body: 'See assets below to download and install this version.'
           name: v${{ steps.version.outputs.APP_VERSION }}-alpha
           tag: v${{ steps.version.outputs.APP_VERSION }}-alpha
