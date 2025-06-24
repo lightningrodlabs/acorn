@@ -1,8 +1,8 @@
-name: 'release-webhapps'
+name: 'release-webhapp'
 on:
   push:
     branches:
-      - release-webhapps
+      - release-webhapp
 
 jobs:
   publish-happ:
