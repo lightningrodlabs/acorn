@@ -54,11 +54,11 @@ export default defineConfig({
       description: 'State of affairs trees!',
       icon: {
         type: 'filesystem',
-        path: './acorn-app-icon-512px.png',
+        path: './icons/acorn-app-icon-512px.png',
       },
       source: {
         type: 'filesystem',
-        path: './acorn-moss.webhapp',
+        path: './acorn.webhapp',
       },
     },
   ],

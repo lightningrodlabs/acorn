@@ -1,0 +1,54 @@
+name: 'release-webhapps'
+on:
+  push:
+    branches:
+      - release-webhapps
+
+jobs:
+  publish-happ:
+    permissions:
+      contents: write
+    runs-on: ubuntu-22.04
+    outputs:
+      releaseId: ${{ steps.create-release.outputs.id }}
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Checks out a copy of your repository on the ubuntu-latest machine
+      - uses: actions/checkout@v3
+
+      - name: Extend space
+        uses: ./.github/actions/extend-space
+
+      - name: Install nix
+        uses: cachix/install-nix-action@v20
+        with:
+          install_url: https://releases.nixos.org/nix/nix-2.23.0/install
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: holochain-ci
+
+      - name: Install and build
+        run: |
+          nix-store --gc
+          nix develop --command bash -c "holochain --version && yarn && yarn pack-happs && yarn build-webhapp"
+          shasum -a 256 ./happs/happ/workdir/acorn.happ
+          shasum -a 256 ./happs/happ/workdir/acorn.webhapp
+
+      - name: Retrieve version
+        run: |
+          echo "APP_VERSION=$(cat package.json | grep -oP '(?<="version": ")[^"]*')" >> $GITHUB_OUTPUT
+        id: version
+
+      - id: create-release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: false
+          artifacts:
+            - 'happs/happ/workdir/acorn.webhapp'
+            - 'happs/happ/workdir/acorn.happ'
+          body: 'See assets below to download and install this version.'
+          name: v${{ steps.version.outputs.APP_VERSION }}-alpha
+          tag: v${{ steps.version.outputs.APP_VERSION }}-alpha
+          prerelease: true
+          draft: true
