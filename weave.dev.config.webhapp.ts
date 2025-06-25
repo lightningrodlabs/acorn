@@ -39,8 +39,8 @@ export default defineConfig({
       ],
       applets: [
         {
-          name: 'Acorn Hot Reload',
-          instanceName: 'Acorn Hot Reload',
+          name: 'Acorn',
+          instanceName: 'Acorn',
           registeringAgent: 1,
           joiningAgents: [2],
         },
@@ -49,7 +49,7 @@ export default defineConfig({
   ],
   applets: [
     {
-      name: 'Acorn Hot Reload',
+      name: 'Acorn',
       subtitle: 'Acorn',
       description: 'State of affairs trees!',
       icon: {
@@ -58,7 +58,7 @@ export default defineConfig({
       },
       source: {
         type: 'filesystem',
-        path: './acorn.webhapp',
+        path: './happs/happ/workdir/acorn.webhapp',
       },
     },
   ],
