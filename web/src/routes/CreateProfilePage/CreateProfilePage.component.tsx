@@ -24,8 +24,8 @@ const CreateProfilePage: React.FC<CreateProfilePageProps> = ({
   agentAddress,
   createMyLocalProfile,
 }) => {
-  const titleText = "First, let's set up your profile on Acorn."
-  const subText = "You'll be able to edit them later in your Profile Settings."
+  const titleText = "First, let's set up your profile for Acorn."
+  const subText = "You'll be able to edit it later in your Profile Settings."
   const pendingText = 'Setting you up...'
   const submitText = 'Ready to Start'
   const canClose = false
