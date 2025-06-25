@@ -19,9 +19,11 @@ export type AssetMeta = AssetLocationAndInfo & {
 export function useAttachments({
   projectId,
   outcome,
+  useFallback,
 }: {
   projectId: string
   outcome: ComputedOutcome
+  useFallback: boolean
 }) {
   if (!isWeaveContext()) {
     return {
@@ -30,17 +32,25 @@ export function useAttachments({
       error: null,
     }
   }
-  const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
-  const wal: WAL = {
-    hrl: [cellIdWrapper.getDnaHash(), decodeHashFromBase64(outcome.actionHash)],
-    context: 'outcome',
-  }
   const [attachmentWALs, setAttachmentWALs] = useState<WAL[] | null>(null)
   const [attachmentsInfo, setAttachmentsInfo] = useState<AssetMeta[]>([])
   const [error, setError] = useState(null)
   const subscriptionRef = useRef<any>(null)
 
   useEffect(() => {
+    if (useFallback) {
+      setAttachmentWALs([])
+      setAttachmentsInfo([])
+      return
+    }
+    const cellIdWrapper = CellIdWrapper.fromCellIdString(projectId)
+    const wal: WAL = {
+      hrl: [
+        cellIdWrapper.getDnaHash(),
+        decodeHashFromBase64(outcome.actionHash),
+      ],
+      context: 'outcome',
+    }
     const fetchAssetInfo = async () => {
       const weaveClient = getWeaveClient()
 
@@ -49,7 +59,7 @@ export function useAttachments({
         subscriptionRef.current &&
         typeof subscriptionRef.current === 'function'
       ) {
-        const unsubscribe = subscriptionRef.current;
+        const unsubscribe = subscriptionRef.current
         unsubscribe()
       }
       subscriptionRef.current = null
@@ -96,12 +106,12 @@ export function useAttachments({
         subscriptionRef.current &&
         typeof subscriptionRef.current === 'function'
       ) {
-        const unsubscribe = subscriptionRef.current;
+        const unsubscribe = subscriptionRef.current
         unsubscribe()
       }
       subscriptionRef.current = null
     }
-  }, [projectId, outcome.actionHash]) // Dependencies that should trigger a refetch
+  }, [projectId, outcome?.actionHash]) // Dependencies that should trigger a refetch
 
   return { attachmentWALs, attachmentsInfo, error }
 }

@@ -113,10 +113,11 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
     // Run only once on mount when initial props are provided
   }, [initialProjectId, initialOutcomeActionHash, dispatch, projectId])
 
-  const { attachmentsInfo } = outcome && projectId ? useAttachments({
+  const { attachmentsInfo } = useAttachments({
     projectId: projectId, // Use the determined projectId
     outcome: outcome,
-  }) : { attachmentsInfo: [] };
+    useFallback: !outcome || !projectId // if this is true it will return an empty default value
+  });
 
   // Function to add attachments
   const addAttachment = async () => {
