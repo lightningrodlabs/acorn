@@ -26,22 +26,16 @@ const ZOME_FN_NAMES = {
   FETCH_AGENT_ADDRESS: 'fetch_agent_address',
 }
 interface IProfilesApi {
-  createWhoami: (
-    payload: Profile
-  ) => Promise<WireRecord<Profile>>
-  updateWhoami: (
-    payload: UpdateInput<Profile>
-  ) => Promise<WireRecord<Profile>>
+  createWhoami: (payload: Profile) => Promise<WireRecord<Profile>>
+  updateWhoami: (payload: UpdateInput<Profile>) => Promise<WireRecord<Profile>>
   whoami: () => Promise<WhoAmIOutput>
   fetchAgents: () => Promise<Array<Profile>>
   fetchAgentAddress: () => Promise<AgentPubKeyB64>
 }
 
-const ProfilesApi = (appWebsocket: AppClient, cellId :CellId): IProfilesApi => {
+const ProfilesApi = (appWebsocket: AppClient, cellId: CellId): IProfilesApi => {
   return {
-    createWhoami: async (
-      payload: Profile
-    ): Promise<WireRecord<Profile>> => {
+    createWhoami: async (payload: Profile): Promise<WireRecord<Profile>> => {
       return callZome(
         appWebsocket,
         cellId,
@@ -94,7 +88,11 @@ const ProfilesApi = (appWebsocket: AppClient, cellId :CellId): IProfilesApi => {
 export default class ProfilesZomeApi {
   appWebsocket: AppClient
   profile: IProfilesApi
-  constructor(appWebsocket: AppClient, cellId: CellId, profilesClient?: ProfilesClient) {
+  constructor(
+    appWebsocket: AppClient,
+    cellId: CellId,
+    profilesClient?: ProfilesClient
+  ) {
     this.appWebsocket = appWebsocket
     this.profile = profilesClient
       ? WeaveProfilesApi(profilesClient)
@@ -111,9 +109,9 @@ export function weaveToAcornProfile(
   agentPubKey: string
 ): Profile {
   return {
-    avatarUrl: weaveProfile.fields['avatar'],
+    avatarUrl: weaveProfile.fields['avatar'] || '',
     agentPubKey,
-    status: "Online",
+    status: 'Online',
     firstName: weaveProfile.nickname,
     lastName: '',
     handle: weaveProfile.nickname,
@@ -136,15 +134,17 @@ function acornToWeaveProfile(
 const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
   const myPubKey = profilesClient.client.myPubKey
   return {
-    createWhoami: async (
-      _payload: Profile
-    ): Promise<WireRecord<Profile>> => {
-      throw new Error("Cannot create profile. Profile must be received via WeaveClient.")
+    createWhoami: async (_payload: Profile): Promise<WireRecord<Profile>> => {
+      throw new Error(
+        'Cannot create profile. Profile must be received via WeaveClient.'
+      )
     },
     updateWhoami: async (
       payload: UpdateInput<Profile>
     ): Promise<WireRecord<Profile>> => {
-      throw new Error("Cannot update profile. Profile must be updated in the Moss group.")
+      throw new Error(
+        'Cannot update profile. Profile must be updated in the Moss group.'
+      )
     },
     whoami: async (): Promise<WhoAmIOutput> => {
       try {
