@@ -28,7 +28,7 @@ import { ActionHashB64 } from '../types/shared'
 import { cellIdFromString } from '../utils'
 import cloneOutcomes from './helpers/cloneOutcomes'
 import checkForKeyboardKeyModifier from './helpers/osPlatformHelper'
-import { AppClient } from '@holochain/client'
+import { CellId } from '@holochain/client'
 
 function leftMostOutcome(
   outcomeActionHashes: ActionHashB64[],
@@ -39,11 +39,7 @@ function leftMostOutcome(
   })
 }
 
-export default async function bodyKeydown(
-  _appWebsocket: AppClient,
-  store: any,
-  event: KeyboardEvent
-) {
+export default async function bodyKeydown(store: any, event: KeyboardEvent) {
   function canPerformKeyboardAction(state: RootState): boolean {
     return (
       state.ui.selection.selectedOutcomes.length === 1 &&
@@ -201,42 +197,10 @@ export default async function bodyKeydown(
       store.dispatch(resetOutcomeConnector())
       break
     case 'Backspace':
-      let selection = state.ui.selection
-      // only dispatch if something's selected and the OutcomeForm and ExpandedView are
-      // not open
-      if (
-        selection.selectedConnections.length > 0 &&
-        !state.ui.outcomeForm.isOpen &&
-        !state.ui.expandedView.isOpen
-      ) {
-        // if on firefox, and matched this case
-        // prevent the browser from navigating back to the last page
-        event.preventDefault()
-        for await (const connection of selection.selectedConnections) {
-          await projectsZomeApi.connection.delete(cellId, connection)
-          store.dispatch(deleteConnection(activeProject, connection))
-          // this action will trigger a recalc
-          // and layout animation update, which is natural in this context.
-          // we have to trigger it manually because there is a scenario where
-          // deleteConnection should NOT trigger a layout recalc
-          store.dispatch(triggerUpdateLayout())
-        }
-      } else if (
-        selection.selectedOutcomes.length > 0 &&
-        !state.ui.outcomeForm.isOpen &&
-        !state.ui.expandedView.isOpen
-      ) {
-        // if on firefox, and matched this case
-        // prevent the browser from navigating back to the last page
-        event.preventDefault()
-        for await (const outcome of selection.selectedOutcomes) {
-          const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(
-            cellId,
-            outcome
-          )
-          store.dispatch(deleteOutcomeFully(activeProject, fullyDeletedOutcome))
-        }
-      }
+      handleDelete(store, state, projectsZomeApi, activeProject, cellId, event);
+      break
+    case 'Delete':
+      handleDelete(store, state, projectsZomeApi, activeProject, cellId, event);
       break
     case 'c':
       if (
@@ -263,4 +227,50 @@ export default async function bodyKeydown(
       break
   }
   // console.log(event)
+}
+
+async function handleDelete(
+  store: any,
+  state: RootState,
+  projectsZomeApi: ProjectsZomeApi,
+  activeProject: string,
+  cellId: CellId,
+  event: KeyboardEvent
+) {
+  let selection = state.ui.selection
+  // only dispatch if something's selected and the OutcomeForm and ExpandedView are
+  // not open
+  if (
+    selection.selectedConnections.length > 0 &&
+    !state.ui.outcomeForm.isOpen &&
+    !state.ui.expandedView.isOpen
+  ) {
+    // if on firefox, and matched this case
+    // prevent the browser from navigating back to the last page
+    event.preventDefault()
+    for await (const connection of selection.selectedConnections) {
+      await projectsZomeApi.connection.delete(cellId, connection)
+      store.dispatch(deleteConnection(activeProject, connection))
+      // this action will trigger a recalc
+      // and layout animation update, which is natural in this context.
+      // we have to trigger it manually because there is a scenario where
+      // deleteConnection should NOT trigger a layout recalc
+      store.dispatch(triggerUpdateLayout())
+    }
+  } else if (
+    selection.selectedOutcomes.length > 0 &&
+    !state.ui.outcomeForm.isOpen &&
+    !state.ui.expandedView.isOpen
+  ) {
+    // if on firefox, and matched this case
+    // prevent the browser from navigating back to the last page
+    event.preventDefault()
+    for await (const outcome of selection.selectedOutcomes) {
+      const fullyDeletedOutcome = await projectsZomeApi.outcome.deleteOutcomeFully(
+        cellId,
+        outcome
+      )
+      store.dispatch(deleteOutcomeFully(activeProject, fullyDeletedOutcome))
+    }
+  }
 }
