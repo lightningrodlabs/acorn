@@ -23,7 +23,7 @@ export default function setupEventListeners(
 ) {
   // prepare the event listeners
   const onWindowResize = windowResize.bind(null, store, canvas)
-  const onBodyKeydown = bodyKeydown.bind(null, appWebsocket, store)
+  const onBodyKeydown = bodyKeydown.bind(null, store)
   const onBodyKeyup = bodyKeyup.bind(null, store)
   const onCanvasMousemove = canvasMousemove.bind(null, store, outcomes)
   const onCanvasWheel = canvasWheel.bind(null, store)
