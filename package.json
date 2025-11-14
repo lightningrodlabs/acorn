@@ -1,7 +1,7 @@
 {
   "name": "acorn-workspace",
   "packageManager": "yarn@1.22.19",
-  "version": "11.3.3",
+  "version": "11.3.4",
   "private": true,
   "workspaces": {
     "packages": [
@@ -38,7 +38,7 @@
   "license": "CAL-1.0",
   "dependencies": {},
   "devDependencies": {
-    "@theweave/cli": "0.14.1",
+    "@theweave/cli": "0.14.4",
     "bestzip": "^2.2.1",
     "typescript": "^5.1.6"
   },
