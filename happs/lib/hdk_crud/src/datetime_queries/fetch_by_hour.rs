@@ -28,6 +28,7 @@ impl FetchByHour {
         day: u32,
         hour: u32,
         base_component: String,
+        get_strategy: GetStrategy,
     ) -> Result<Vec<WireRecord<EntryType>>, WasmError>
     where
         ScopedLinkType: TryFrom<TY, Error = E>,
@@ -35,8 +36,8 @@ impl FetchByHour {
         WasmError: From<E>,
     {
         let path = hour_path_from_date(link_type, base_component.clone(), year, month, day, hour)?;
-        let input = GetLinksInputBuilder::try_new(path.path_entry_hash()?, link_type_filter)?;
-        let links = get_links(input.build())?;
+        let query = LinkQuery::new(path.path_entry_hash()?, link_type_filter);
+        let links = get_links(query, get_strategy)?;
 
         let entries: Vec<WireRecord<EntryType>> = links
             .into_iter()

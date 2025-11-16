@@ -1,4 +1,4 @@
-manifest_version: "1"
+manifest_version: "0"
 name: acorn
 description: productivity tool for distributed software teams
 roles:
@@ -7,5 +7,5 @@ roles:
       strategy: create
       deferred: true
     dna:
-      bundled: "./projects.dna"
+      path: "./projects.dna"
       clone_limit: 999

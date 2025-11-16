@@ -11,6 +11,7 @@ name = "projects"
 hdk_crud = { path = "../../../lib/hdk_crud", features = ["no_example"] }
 hdk = { workspace = true }
 holo_hash = { workspace = true }
+holochain_serialized_bytes = { workspace = true }
 projects_integrity = { path = "../projects_integrity" }
 paste = "*"
 chrono = { version = "*", default-features = false, features = ["clock", "std", "oldtime", "serde"] }

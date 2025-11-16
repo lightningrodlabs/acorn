@@ -5,6 +5,7 @@ use crate::retrieval::get_latest_for_entry::MockGetLatestEntry as GetLatestEntry
 
 use crate::wire_record::WireRecord;
 use hdk::prelude::*;
+use mockall::predicate::ge;
 use std::convert::identity;
 
 #[cfg(feature = "mock")]
@@ -27,11 +28,11 @@ impl FetchLinks {
         link_tag: Option<LinkTag>,
         get_options: GetOptions,
     ) -> Result<Vec<WireRecord<EntryType>>, WasmError> {
-        let mut input = GetLinksInputBuilder::try_new(entry_hash, link_type)?;
+        let mut input = LinkQuery::new(entry_hash, link_type);
         if let Some(link_tag_inner) = link_tag {
             input = input.tag_prefix(link_tag_inner);
         }
-        Ok(get_links(input.build())?
+        Ok(get_links(input, get_options.strategy)?
             .into_iter()
             .map(|link: Link| {
                 get_latest.get_latest_for_entry::<EntryType>(

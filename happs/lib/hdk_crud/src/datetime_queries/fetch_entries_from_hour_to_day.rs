@@ -24,6 +24,7 @@ impl FetchByHourDay {
         start: FetchEntriesTime,
         end: FetchEntriesTime,
         base_component: String,
+        get_strategy: GetStrategy,
     ) -> Result<Vec<WireRecord<EntryType>>, WasmError>
     where
         ScopedLinkType: TryFrom<TY, Error = E>,
@@ -44,6 +45,7 @@ impl FetchByHourDay {
                 dt.day(),
                 dt.hour(),
                 base_component.clone(),
+                get_strategy,
             ));
             dt = dt + Duration::hours(1);
         }
@@ -55,6 +57,7 @@ impl FetchByHourDay {
                 link_type.clone(),
                 FetchEntriesTime::from_date_time(dt.clone()),
                 base_component.clone(),
+                get_strategy,
             ));
             dt = dt + Duration::days(1);
         }

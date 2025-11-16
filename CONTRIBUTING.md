@@ -22,7 +22,7 @@ It can also be a good space to connect with other Acorn users, and hear about ho
 
 If you are interested to contribute to Acorn's development, welcome! Acorn is written in languages such as Rust and Typescript, and frameworks such as Holochain, and React.
 If you have proficiency in either Typescript and React for writing frontend code, or Rust for writing backend code, or both, then you may find it intuitive to contribute.
-Generally, new features come through a design -> development pipeline defined by the workflows of the [Sprillow](https://sprillow.com) team, but these workflows could be adapted to more 'open' workflows
+Generally, new features come through a design -> development pipeline defined by the workflows of the [Lighningrod Labs](https://lightningrodlabs.org/) team, but these workflows could be adapted to more 'open' workflows
 if the right opportunity presented itself. Otherwise, contributions may remain more-so in the space of bug fixes and other technical-first features, such as algorithms or scripts.
 
 It should be noted that while the Rust code has unit tests, the frontend code does not. That is another area for potential improvement (front end testing).

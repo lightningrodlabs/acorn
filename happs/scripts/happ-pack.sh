@@ -1,6 +1,6 @@
 #!/bin/bash
 # Compile the WASM
-cargo build --release --target-dir happs/target --target wasm32-unknown-unknown --manifest-path happs/Cargo.toml
+RUSTFLAGS='--cfg getrandom_backend="custom"' cargo build --release --target-dir happs/target --target wasm32-unknown-unknown --manifest-path happs/Cargo.toml
 
 # Pack DNAs
 hc dna pack --output=happs/happ/workdir/projects.dna happs/happ/workdir/dna/projects

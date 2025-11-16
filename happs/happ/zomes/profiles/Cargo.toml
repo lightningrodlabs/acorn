@@ -11,6 +11,7 @@ name = "profiles"
 hdk_crud = { path = "../../../lib/hdk_crud", features = ["no_example"] }
 hdk = { workspace = true }
 holo_hash = { workspace = true }
+holochain_serialized_bytes = { workspace = true }
 profiles_integrity = { path = "../profiles_integrity" }
 chrono = { version = "*", default-features = false, features = ["clock", "std", "oldtime", "serde"] }
 paste = "*"

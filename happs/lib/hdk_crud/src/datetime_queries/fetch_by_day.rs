@@ -32,6 +32,7 @@ impl FetchByDay {
         link_type: TY,
         time: FetchEntriesTime,
         base_component: String,
+        get_strategy: GetStrategy,
     ) -> Result<Vec<WireRecord<EntryType>>, WasmError>
     where
         ScopedLinkType: TryFrom<TY, Error = E>,
@@ -61,6 +62,7 @@ impl FetchByDay {
                     time.day,
                     hour,
                     base_component.clone(),
+                    get_strategy,
                 )
             })
             .filter_map(Result::ok)

@@ -17,6 +17,7 @@ pub fn fetch_entries_in_time_range<
     start_time: FetchEntriesTime,
     end_time: FetchEntriesTime,
     base_component: String,
+    get_strategy: GetStrategy,
 ) -> Result<Vec<WireRecord<EntryType>>, WasmError>
 where
     ScopedLinkType: TryFrom<TY, Error = E>,
@@ -36,6 +37,7 @@ where
                         start_time.clone(),
                         end_time.clone(),
                         base_component,
+                        get_strategy,
                     ),
                 Some(_) => {
                     //day to hour: loop from 1st day to 2nd last day, then loop through hours in last day
@@ -48,6 +50,7 @@ where
                             start_time.clone(),
                             end_time.clone(),
                             base_component,
+                            get_strategy,
                         )
                 }
             }
@@ -65,6 +68,7 @@ where
                             start_time.clone(),
                             end_time.clone(),
                             base_component,
+                            get_strategy,
                         )
                 }
                 Some(_) => {
@@ -78,6 +82,7 @@ where
                             start_time.clone(),
                             end_time.clone(),
                             base_component,
+                            get_strategy,
                         )
                 }
             }

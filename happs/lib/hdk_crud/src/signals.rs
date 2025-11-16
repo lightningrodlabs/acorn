@@ -45,7 +45,7 @@ impl fmt::Display for ActionType {
 /// calls to its `recv_remote_signal` endpoint via others
 /// calling `remote_signal`
 pub fn create_receive_signal_cap_grant() -> ExternResult<()> {
-    let mut functions = BTreeSet::new();
+    let mut functions = HashSet::new();
     functions.insert((zome_info()?.name, "recv_remote_signal".into()));
 
     create_cap_grant(CapGrantEntry {

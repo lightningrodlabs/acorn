@@ -29,6 +29,7 @@ pub fn fetch_entries_by_time<
     link_type: TY,
     time: FetchEntriesTime,
     base_component: String,
+    get_strategy: GetStrategy,
 ) -> Result<Vec<WireRecord<EntryType>>, WasmError>
 where
     ScopedLinkType: TryFrom<TY, Error = E>,
@@ -43,6 +44,7 @@ where
             link_type,
             time,
             base_component,
+            get_strategy,
         ),
         Some(h) => fetch_by_hour.fetch_entries_by_hour(
             &get_latest_entry,
@@ -53,6 +55,7 @@ where
             time.day,
             h,
             base_component,
+            get_strategy,
         ),
     }?)
 }

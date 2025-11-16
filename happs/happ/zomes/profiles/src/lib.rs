@@ -156,8 +156,8 @@ pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
     let agent_pubkey = agent_info()?.agent_initial_pubkey;
     let agent_entry_hash = EntryHash::from(agent_pubkey);
 
-    let input = GetLinksInputBuilder::try_new(agent_entry_hash, LinkTypes::Profile)?;
-    let all_profiles = get_links(input.build())?;
+    let input = LinkQuery::try_new(agent_entry_hash, LinkTypes::Profile)?;
+    let all_profiles = get_links(input,GetStrategy::Local)?;
 
     // fetch all profile entries from the link targets
     let all_fetched_maybe_profiles = all_profiles
