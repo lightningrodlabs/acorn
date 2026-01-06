@@ -134,7 +134,7 @@ macro_rules! crud {
                 &fetch_links,
                 &get_latest,
                 fetch_options,
-                GetOptions::network(),
+                GetOptions::local(),
                 link_type_filter,
                 None, // link_tag
                 [< get_ $i _path >]($link_type)?,

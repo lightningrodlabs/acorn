@@ -32,6 +32,10 @@ import { decodeHashFromBase64, EntryHash } from '@holochain/client' // Keep Entr
 import { isWeaveContext, WAL } from '@theweave/api' // Keep WAL for openAsset prop type
 import { ProjectAssetMeta } from '../../hooks/useProjectAttachments' // Import type for props
 import { CellIdWrapper } from '../../domain/cellId'
+import Tooltip from '../Tooltip/Tooltip'
+
+// Get version from package.json
+const APP_VERSION = '12.0.0'
 
 function ActiveEntryPoint({
   entryPoint,
@@ -175,15 +179,17 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
           <>
             {/* Acorn Logo - non link */}
             {!myLocalProfile && (
-              <div className="logo non-link">
+              <div className="logo non-link withTooltip">
                 <img src="images/acorn-alpha-logo.png" className="logo-image" />
+                <Tooltip text={`Version ${APP_VERSION}`} />
               </div>
             )}
 
             {/* Acorn Logo - linked */}
             {myLocalProfile && (
-              <NavLink to="/" className="logo">
+              <NavLink to="/" className="logo withTooltip">
                 <img src="images/acorn-alpha-logo.png" className="logo-image" />
+                <Tooltip text={`Version ${APP_VERSION}`} />
               </NavLink>
             )}
           </>

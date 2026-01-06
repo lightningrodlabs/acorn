@@ -41,7 +41,7 @@ pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireRecord
             &fetch_links,
             &get_latest,
             FetchOptions::All,
-            GetOptions::network(),
+            GetOptions::local(),
             link_type_filter,
             None,
             get_project_meta_path(LinkTypes::All)?,
@@ -91,7 +91,7 @@ pub fn fetch_project_meta(_: ()) -> ExternResult<WireRecord<ProjectMeta>> {
             &fetch_links,
             &get_latest,
             FetchOptions::All,
-            GetOptions::network(),
+            GetOptions::local(),
             link_type_filter,
             None,
             get_project_meta_path(LinkTypes::All)?,
@@ -105,11 +105,9 @@ pub fn fetch_project_meta(_: ()) -> ExternResult<WireRecord<ProjectMeta>> {
     }
 }
 
-// Since get_links can't be controlled with GetOptions right
-// now, we need to check the Path instead, and use GetOptions::network
 // this is used while trying to join a project
 #[hdk_extern]
 pub fn check_project_meta_exists(_: ()) -> ExternResult<bool> {
     let path = Path::from(PROJECT_META_PATH);
-    Ok(get(path.path_entry_hash()?, GetOptions::network())?.is_some())
+    Ok(get(path.path_entry_hash()?, GetOptions::local())?.is_some())
 }

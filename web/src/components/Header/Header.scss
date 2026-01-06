@@ -51,6 +51,7 @@
           align-items: center;
           margin-right: 5px;
           height: 3rem;
+          position: relative;
 
           &.non-link {
             background-color: unset;
@@ -58,6 +59,17 @@
 
           .logo-image {
             height: 1.05rem;
+          }
+
+          // Version tooltip on hover
+          &.withTooltip .tooltip-wrapper {
+            visibility: hidden;
+          }
+
+          &.withTooltip:hover .tooltip-wrapper {
+            visibility: visible;
+            transition-delay: 0.5s;
+            transition-property: visibility;
           }
         }
       }

@@ -180,7 +180,7 @@ pub fn emit_editing_outcome_signal(editing_outcome_info: EditingOutcomeInput) ->
 }
 
 pub fn get_peers_latest() -> ExternResult<Vec<AgentPubKey>> {
-    get_peers(GetOptions::network())
+    get_peers(GetOptions::local())
 }
 pub fn get_peers_content() -> ExternResult<Vec<AgentPubKey>> {
     get_peers(GetOptions::local())

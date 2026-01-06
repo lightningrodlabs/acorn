@@ -268,7 +268,7 @@ fn get_peers() -> ExternResult<Vec<AgentPubKey>> {
         path_hash,
         link_type_filter,
         None,
-        GetOptions::network(),
+        GetOptions::local(),
     )?;
     let self_agent_pub_key = AgentPubKeyB64::from(agent_info()?.agent_initial_pubkey);
     Ok(entries

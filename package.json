@@ -1,7 +1,7 @@
 {
   "name": "acorn-workspace",
   "packageManager": "yarn@1.22.19",
-  "version": "12.0.0-rc.0",
+  "version": "12.0.0",
   "private": true,
   "workspaces": {
     "packages": [
@@ -32,17 +32,19 @@
     "moss:happ2": "weave --agent-idx 2 --dev-config weave.dev.config.ts",
     "moss:webhapp": "weave --agent-idx 1 --dev-config weave.dev.config.webhapp.ts",
     "moss:webhapp2": "weave --agent-idx 2 --dev-config weave.dev.config.webhapp.ts",
-    "weave-hash": "weave hash-webhapp ./weave-tool/acorn-moss.webhapp"
+    "weave-hash": "weave hash-webhapp 12.0.0 ./happs/happ/workdir/acorn.webhapp",
+    "weave-help": "weave --help"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",
   "dependencies": {},
   "devDependencies": {
-    "@theweave/cli": "0.15.4",
+    "@theweave/cli": "0.15.11",
     "bestzip": "^2.2.1",
     "typescript": "^5.1.6"
   },
   "resolutions": {
-    "**/@types/react": "16.14.0"
+    "**/@types/react": "16.14.0",
+    "**/libsodium-wrappers": "0.7.15"
   }
 }

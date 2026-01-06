@@ -46,7 +46,7 @@ impl FetchByHour {
                     link.target.try_into().map_err(|_| {
                         wasm_error!(WasmErrorInner::Guest("Target is not an entry".to_string()))
                     })?,
-                    GetOptions::network(),
+                    GetOptions::local(),
                 )
             })
             .filter_map(Result::ok)
