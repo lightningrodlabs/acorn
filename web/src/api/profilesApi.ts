@@ -6,7 +6,7 @@ import {
 } from '@holochain/client'
 import { PROFILES_ZOME_NAME } from '../holochainConfig'
 import { Profile, WhoAmIOutput } from '../types'
-import { AgentPubKeyB64, UpdateInput } from '../types/shared'
+import { AgentPubKeyB64, UpdateInput, ZomeFnInput } from '../types/shared'
 import callZome from './callZome'
 import { WireRecord } from './hdkCrud'
 import {
@@ -28,8 +28,8 @@ const ZOME_FN_NAMES = {
 interface IProfilesApi {
   createWhoami: (payload: Profile) => Promise<WireRecord<Profile>>
   updateWhoami: (payload: UpdateInput<Profile>) => Promise<WireRecord<Profile>>
-  whoami: () => Promise<WhoAmIOutput>
-  fetchAgents: () => Promise<Array<Profile>>
+  whoami: (local?: boolean) => Promise<WhoAmIOutput>
+  fetchAgents: (local?: boolean) => Promise<Array<Profile>>
   fetchAgentAddress: () => Promise<AgentPubKeyB64>
 }
 
@@ -55,22 +55,24 @@ const ProfilesApi = (appWebsocket: AppClient, cellId: CellId): IProfilesApi => {
         payload
       )
     },
-    whoami: async (): Promise<WhoAmIOutput> => {
+    whoami: async (local?: boolean): Promise<WhoAmIOutput> => {
+      const zomeFnInput: ZomeFnInput<null> = { input: null, local: local ?? true }
       return callZome(
         appWebsocket,
         cellId,
         PROFILES_ZOME_NAME,
         ZOME_FN_NAMES.WHOAMI,
-        null
+        zomeFnInput
       )
     },
-    fetchAgents: async (): Promise<Array<Profile>> => {
+    fetchAgents: async (local?: boolean): Promise<Array<Profile>> => {
+      const zomeFnInput: ZomeFnInput<null> = { input: null, local: local ?? true }
       return callZome(
         appWebsocket,
         cellId,
         PROFILES_ZOME_NAME,
         ZOME_FN_NAMES.FETCH_AGENTS,
-        null
+        zomeFnInput
       )
     },
     fetchAgentAddress: async (): Promise<AgentPubKeyB64> => {
@@ -146,7 +148,7 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
         'Cannot update profile. Profile must be updated in the Moss group.'
       )
     },
-    whoami: async (): Promise<WhoAmIOutput> => {
+    whoami: async (_local?: boolean): Promise<WhoAmIOutput> => {
       try {
         console.log('whoami')
         let myWeaveProfile = await profilesClient.getAgentProfile(myPubKey)
@@ -180,7 +182,7 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
         }
       }
     },
-    fetchAgents: async (): Promise<Array<Profile>> => {
+    fetchAgents: async (_local?: boolean): Promise<Array<Profile>> => {
       try {
         const weaveProfiles = await Promise.all(
           (await profilesClient.getAgentsWithProfile()).map(

@@ -1,6 +1,6 @@
 use crate::{get_peers_content, project::outcome::crud::fetch_outcomes, SignalType};
 use hdk::prelude::*;
-use hdk_crud::{crud, retrieval::inputs::FetchOptions, wire_record::WireRecord};
+use hdk_crud::{crud, helper::ZomeFnInput, retrieval::inputs::FetchOptions, wire_record::WireRecord};
 use holo_hash::EntryHashB64;
 
 use projects_integrity::{
@@ -28,9 +28,10 @@ pub struct EntryPointDetails {
 }
 
 #[hdk_extern]
-pub fn fetch_entry_point_details(_: ()) -> ExternResult<EntryPointDetails> {
+pub fn fetch_entry_point_details(input: ZomeFnInput<()>) -> ExternResult<EntryPointDetails> {
     // get the list of entry points
-    let entry_points = fetch_entry_points(FetchOptions::All)?;
+    let get_options = input.get_options();
+    let entry_points = fetch_entry_points(ZomeFnInput { input: FetchOptions::All, local: input.local })?;
 
     // convert from header addresses to entry addresses
     let outcome_entry_addresses = entry_points
@@ -39,7 +40,7 @@ pub fn fetch_entry_point_details(_: ()) -> ExternResult<EntryPointDetails> {
         .map(|e| {
             let element = get(
                 ActionHash::from(e.entry.outcome_action_hash.clone()),
-                GetOptions::local(),
+                get_options.clone(),
             )?;
             match element {
                 Some(element) => match element.action().entry_hash() {
@@ -70,7 +71,7 @@ pub fn fetch_entry_point_details(_: ()) -> ExternResult<EntryPointDetails> {
                 .filter_map(Result::ok)
                 .collect::<Vec<EntryHashB64>>();
             // use the fetch_outcomes specific to get only these outcomes
-            let outcomes = fetch_outcomes(FetchOptions::Specific(actual_addresses))?;
+            let outcomes = fetch_outcomes(ZomeFnInput { input: FetchOptions::Specific(actual_addresses), local: input.local })?;
             Ok(EntryPointDetails {
                 entry_points,
                 outcomes,

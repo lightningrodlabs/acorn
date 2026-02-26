@@ -25,7 +25,7 @@ crud!(
 
 // DELETE
 // clear all members
-pub fn delete_outcome_members(address: ActionHashB64) -> ExternResult<Vec<ActionHashB64>> {
+pub fn delete_outcome_members(address: ActionHashB64, get_options: GetOptions) -> ExternResult<Vec<ActionHashB64>> {
     let do_fetch = DoFetch {};
     let do_delete = DoDelete {};
     let fetch_entries = FetchEntries {};
@@ -38,7 +38,7 @@ pub fn delete_outcome_members(address: ActionHashB64) -> ExternResult<Vec<Action
             &fetch_links,
             &get_latest,
             FetchOptions::All,
-            GetOptions::local(),
+            get_options,
             link_type_filter,
             None,
             get_outcome_member_path(LinkTypes::All)?,

@@ -29,6 +29,11 @@ export interface FetchInputSome {
 }
 export type FetchInput = FetchInputAll | FetchInputSome
 
+export interface ZomeFnInput<T> {
+  input: T
+  local?: boolean
+}
+
 export type HcActionCreator<Payload> = (
   cellIdString: string,
   payload: Payload,

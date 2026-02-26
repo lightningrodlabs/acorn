@@ -2,6 +2,7 @@ use std::collections::BTreeMap;
 
 use hdk::prelude::*;
 use hdk_crud::{
+    helper::ZomeFnInput,
     retrieval::{fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry},
     signals::{create_receive_signal_cap_grant, ActionType},
     wire_record::WireRecord,
@@ -152,14 +153,15 @@ pub fn inner_update_whoami(
 
 /// Get all profiles that are linked to this agent's pubkey. If a non-imported profile exists, return the first one of these found, otherwise return the last profile.
 #[hdk_extern]
-pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
+pub fn whoami(input: ZomeFnInput<()>) -> ExternResult<WhoAmIOutput> {
     let agent_pubkey = agent_info()?.agent_initial_pubkey;
     let agent_entry_hash = EntryHash::from(agent_pubkey);
 
-    let input = LinkQuery::try_new(agent_entry_hash, LinkTypes::Profile)?;
-    let all_profiles = get_links(input,GetStrategy::Local)?;
+    let link_query = LinkQuery::try_new(agent_entry_hash, LinkTypes::Profile)?;
+    let all_profiles = get_links(link_query, input.get_strategy())?;
 
     // fetch all profile entries from the link targets
+    let get_options = input.get_options();
     let all_fetched_maybe_profiles = all_profiles
         .into_iter()
         .map(|link| {
@@ -168,7 +170,7 @@ pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
                 link.target.try_into().map_err(|_| {
                     wasm_error!(WasmErrorInner::Guest("Target is not an entry".to_string()))
                 })?,
-                GetOptions::local(),
+                get_options.clone(),
             )
         })
         .collect::<ExternResult<Vec<Option<WireRecord<Profile>>>>>()?;
@@ -195,7 +197,7 @@ pub fn whoami(_: ()) -> ExternResult<WhoAmIOutput> {
 
 /// Fetch a list of all agent profiles, returning only one profile per agent pub key. If a non-imported profile exists, return that one, otherwise return the imported profile.
 #[hdk_extern]
-pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
+pub fn fetch_agents(input: ZomeFnInput<()>) -> ExternResult<Vec<Profile>> {
     let path_hash = Path::from(AGENTS_PATH).path_entry_hash()?;
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
@@ -207,7 +209,7 @@ pub fn fetch_agents(_: ()) -> ExternResult<Vec<Profile>> {
             path_hash,
             link_type_filter,
             None,
-            GetOptions::local(),
+            input.get_options(),
         )?
         .into_iter()
         .map(|wire_record| wire_record.entry)

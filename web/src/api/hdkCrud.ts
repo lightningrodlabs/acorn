@@ -3,6 +3,7 @@ import {
   FetchInput,
   ActionHashB64,
   UpdateInput,
+  ZomeFnInput,
 } from '../types/shared'
 import { AppClient, CellId } from '@holochain/client'
 import callZome from './callZome'
@@ -19,7 +20,8 @@ export interface EntryTypeApi<ToCommitType, CommittedType> {
   create: (cellId: CellId, entry: ToCommitType) => Promise<CommittedType>
   fetch: (
     cellId: CellId,
-    fetchInput: FetchInput
+    fetchInput: FetchInput,
+    local?: boolean
   ) => Promise<Array<CommittedType>>
   update: (
     cellId: CellId,
@@ -56,13 +58,14 @@ export function createCrudFunctions<EntryType>(
         payload
       )
     },
-    fetch: async (cellId, payload) => {
+    fetch: async (cellId, payload, local?) => {
+      const zomeFnInput: ZomeFnInput<FetchInput> = { input: payload, local: local ?? true }
       return callZome(
         appWebsocket,
         cellId,
         zomeName,
         fetchEntryName(entryType),
-        payload
+        zomeFnInput
       )
     },
     update: async (cellId, payload) => {

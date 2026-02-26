@@ -2,6 +2,7 @@ use crate::{get_peers_content, project::error::Error, SignalType};
 use hdk::prelude::*;
 use hdk_crud::{
     crud,
+    helper::ZomeFnInput,
     modify_chain::do_fetch::DoFetch,
     retrieval::{
         fetch_entries::FetchEntries, fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry,
@@ -27,7 +28,9 @@ crud!(
 );
 
 #[hdk_extern]
-pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireRecord<ProjectMeta>> {
+pub fn simple_create_project_meta(input: ZomeFnInput<ProjectMeta>) -> ExternResult<WireRecord<ProjectMeta>> {
+    let get_options = input.get_options();
+    let entry = input.input;
     // no project_meta entry should exist at least
     // that we can know about
     let do_fetch = DoFetch {};
@@ -41,7 +44,7 @@ pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireRecord
             &fetch_links,
             &get_latest,
             FetchOptions::All,
-            GetOptions::local(),
+            get_options,
             link_type_filter,
             None,
             get_project_meta_path(LinkTypes::All)?,
@@ -79,7 +82,7 @@ pub fn simple_create_project_meta(entry: ProjectMeta) -> ExternResult<WireRecord
 
 // READ
 #[hdk_extern]
-pub fn fetch_project_meta(_: ()) -> ExternResult<WireRecord<ProjectMeta>> {
+pub fn fetch_project_meta(input: ZomeFnInput<()>) -> ExternResult<WireRecord<ProjectMeta>> {
     let do_fetch = DoFetch {};
     let fetch_entries = FetchEntries {};
     let fetch_links = FetchLinks {};
@@ -91,7 +94,7 @@ pub fn fetch_project_meta(_: ()) -> ExternResult<WireRecord<ProjectMeta>> {
             &fetch_links,
             &get_latest,
             FetchOptions::All,
-            GetOptions::local(),
+            input.get_options(),
             link_type_filter,
             None,
             get_project_meta_path(LinkTypes::All)?,
@@ -107,7 +110,7 @@ pub fn fetch_project_meta(_: ()) -> ExternResult<WireRecord<ProjectMeta>> {
 
 // this is used while trying to join a project
 #[hdk_extern]
-pub fn check_project_meta_exists(_: ()) -> ExternResult<bool> {
+pub fn check_project_meta_exists(input: ZomeFnInput<()>) -> ExternResult<bool> {
     let path = Path::from(PROJECT_META_PATH);
-    Ok(get(path.path_entry_hash()?, GetOptions::local())?.is_some())
+    Ok(get(path.path_entry_hash()?, input.get_options())?.is_some())
 }

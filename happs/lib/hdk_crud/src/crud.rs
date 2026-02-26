@@ -123,7 +123,8 @@ macro_rules! crud {
           /// No signals will be sent as a result of calling this.
           /// Notice that it pluralizes the value of `$i`, the second argument to the crud! macro call.
           #[hdk_extern]
-          pub fn [<fetch_ $i s>](fetch_options: $crate::retrieval::inputs::FetchOptions) -> ExternResult<Vec<$crate::wire_record::WireRecord<[<$crud_type>]>>> {
+          pub fn [<fetch_ $i s>](input: $crate::helper::ZomeFnInput<$crate::retrieval::inputs::FetchOptions>) -> ExternResult<Vec<$crate::wire_record::WireRecord<[<$crud_type>]>>> {
+            let get_options = input.get_options();
             let do_fetch = $crate::modify_chain::do_fetch::DoFetch {};
             let fetch_entries = $crate::retrieval::fetch_entries::FetchEntries {};
             let fetch_links = $crate::retrieval::fetch_links::FetchLinks {};
@@ -133,8 +134,8 @@ macro_rules! crud {
                 &fetch_entries,
                 &fetch_links,
                 &get_latest,
-                fetch_options,
-                GetOptions::local(),
+                input.input,
+                get_options,
                 link_type_filter,
                 None, // link_tag
                 [< get_ $i _path >]($link_type)?,

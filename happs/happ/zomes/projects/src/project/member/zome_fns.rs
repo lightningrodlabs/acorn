@@ -3,6 +3,7 @@ use crate::get_peers_latest;
 use crate::SignalType;
 use hdk::prelude::*;
 use hdk_crud::{
+    helper::ZomeFnInput,
     retrieval::{fetch_links::FetchLinks, get_latest_for_entry::GetLatestEntry},
     wire_record::WireRecord,
 };
@@ -12,7 +13,7 @@ use projects_integrity::{project::member::entry::Member, LinkTypes};
 // returns a list of the agent addresses of those who
 // are "members" of this project, as in, they have joined the project
 #[hdk_extern]
-pub fn fetch_members(_: ()) -> ExternResult<Vec<WireRecord<Member>>> {
+pub fn fetch_members(input: ZomeFnInput<()>) -> ExternResult<Vec<WireRecord<Member>>> {
     let path_hash = Path::from(MEMBER_PATH).path_entry_hash()?;
     let get_latest = GetLatestEntry {};
     let fetch_links = FetchLinks {};
@@ -22,7 +23,7 @@ pub fn fetch_members(_: ()) -> ExternResult<Vec<WireRecord<Member>>> {
         path_hash,
         link_type_filter,
         None,
-        GetOptions::local(),
+        input.get_options(),
     )?;
     Ok(entries)
 }

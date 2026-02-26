@@ -7,7 +7,7 @@ use crate::ui_enum::UIEnum;
 use crate::{get_peers_content, SignalType};
 use hdk::prelude::*;
 use hdk_crud::{
-    crud, retrieval::inputs::FetchOptions, signals::ActionType, wire_record::WireRecord,
+    crud, helper::ZomeFnInput, retrieval::inputs::FetchOptions, signals::ActionType, wire_record::WireRecord,
 };
 use hdk_crud::{
     modify_chain::{
@@ -199,7 +199,9 @@ pub struct DeleteOutcomeFullySignal {
 }
 
 #[hdk_extern]
-pub fn delete_outcome_fully(address: ActionHashB64) -> ExternResult<DeleteOutcomeFullyResponse> {
+pub fn delete_outcome_fully(input: ZomeFnInput<ActionHashB64>) -> ExternResult<DeleteOutcomeFullyResponse> {
+    let get_options = input.get_options();
+    let address = input.input;
     let do_delete = DoDelete {};
     do_delete.do_delete::<Outcome, WasmError, SignalType>(
         address.clone(),
@@ -217,7 +219,7 @@ pub fn delete_outcome_fully(address: ActionHashB64) -> ExternResult<DeleteOutcom
             &fetch_links,
             &get_latest,
             FetchOptions::All,
-            GetOptions::local(),
+            get_options.clone(),
             link_type_filter.clone(),
             None,
             get_connection_path(LinkTypes::All)?,
@@ -244,7 +246,7 @@ pub fn delete_outcome_fully(address: ActionHashB64) -> ExternResult<DeleteOutcom
         .filter_map(Result::ok)
         .collect();
 
-    let deleted_outcome_members = delete_outcome_members(address.clone())?;
+    let deleted_outcome_members = delete_outcome_members(address.clone(), get_options.clone())?;
 
     let deleted_outcome_votes = do_fetch
         .do_fetch::<OutcomeVote, WasmError>(
@@ -252,7 +254,7 @@ pub fn delete_outcome_fully(address: ActionHashB64) -> ExternResult<DeleteOutcom
             &fetch_links,
             &get_latest,
             FetchOptions::All,
-            GetOptions::local(),
+            get_options.clone(),
             link_type_filter.clone(),
             None,
             get_outcome_vote_path(LinkTypes::All)?,
@@ -275,13 +277,12 @@ pub fn delete_outcome_fully(address: ActionHashB64) -> ExternResult<DeleteOutcom
         .collect();
 
     let deleted_outcome_comments =
-        // inner_fetch_outcome_comments(FetchOptions::All, GetOptions::local())?
         do_fetch.do_fetch::<OutcomeComment, WasmError>(
             &fetch_entries,
             &fetch_links,
             &get_latest,
             FetchOptions::All,
-            GetOptions::local(),
+            get_options.clone(),
             link_type_filter.clone(),
             None,
             get_outcome_comment_path(LinkTypes::All)?,
@@ -309,7 +310,7 @@ pub fn delete_outcome_fully(address: ActionHashB64) -> ExternResult<DeleteOutcom
             &fetch_links,
             &get_latest,
             FetchOptions::All,
-            GetOptions::local(),
+            get_options,
             link_type_filter,
             None,
             get_entry_point_path(LinkTypes::All)?,

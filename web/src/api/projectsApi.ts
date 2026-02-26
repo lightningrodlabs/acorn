@@ -17,7 +17,7 @@ import { createCrudFunctions, WireRecord } from './hdkCrud'
 import { AppClient, CellId } from '@holochain/client'
 import { PROJECTS_ZOME_NAME } from '../holochainConfig'
 import callZome from './callZome'
-import { ActionHashB64 } from '../types/shared'
+import { ActionHashB64, ZomeFnInput } from '../types/shared'
 
 const ENTRY_TYPE_NAMES = {
   OUTCOME: 'outcome',
@@ -64,14 +64,16 @@ const OutcomeApi = (appWebsocket: AppClient) => {
     },
     deleteOutcomeFully: async (
       cellId: CellId,
-      payload: ActionHashB64
+      payload: ActionHashB64,
+      local?: boolean
     ): Promise<DeleteOutcomeFullyResponse> => {
+      const zomeFnInput: ZomeFnInput<ActionHashB64> = { input: payload, local: local ?? true }
       return callZome(
         appWebsocket,
         cellId,
         PROJECTS_ZOME_NAME,
         ZOME_FN_NAMES.DELETE_OUTCOME_FULLY,
-        payload
+        zomeFnInput
       )
     },
   }
@@ -106,14 +108,16 @@ const EntryPointApi = (appWebsocket: AppClient) => {
   return {
     ...entryPointCrud,
     fetchEntryPointDetails: async (
-      cellId: CellId
+      cellId: CellId,
+      local?: boolean
     ): Promise<EntryPointDetails> => {
+      const zomeFnInput: ZomeFnInput<null> = { input: null, local: local ?? true }
       return callZome(
         appWebsocket,
         cellId,
         PROJECTS_ZOME_NAME,
         ZOME_FN_NAMES.FETCH_ENTRY_POINT_DETAILS,
-        null
+        zomeFnInput
       )
     },
   }
@@ -128,34 +132,39 @@ const ProjectMetaApi = (appWebsocket: AppClient) => {
     ...projectMetaCrud,
     simpleCreateProjectMeta: async (
       cellId: CellId,
-      payload: ProjectMeta
+      payload: ProjectMeta,
+      local?: boolean
     ): Promise<WireRecord<ProjectMeta>> => {
+      const zomeFnInput: ZomeFnInput<ProjectMeta> = { input: payload, local: local ?? true }
       return callZome(
         appWebsocket,
         cellId,
         PROJECTS_ZOME_NAME,
         ZOME_FN_NAMES.SIMPLE_CREATE_PROJECT_META,
-        payload
+        zomeFnInput
       )
     },
     fetchProjectMeta: async (
-      cellId: CellId
+      cellId: CellId,
+      local?: boolean
     ): Promise<WireRecord<ProjectMeta>> => {
+      const zomeFnInput: ZomeFnInput<null> = { input: null, local: local ?? true }
       return callZome(
         appWebsocket,
         cellId,
         PROJECTS_ZOME_NAME,
         ZOME_FN_NAMES.FETCH_PROJECT_META,
-        null
+        zomeFnInput
       )
     },
-    checkProjectMetaExists: async (cellId: CellId): Promise<boolean> => {
+    checkProjectMetaExists: async (cellId: CellId, local?: boolean): Promise<boolean> => {
+      const zomeFnInput: ZomeFnInput<null> = { input: null, local: local ?? true }
       return callZome(
         appWebsocket,
         cellId,
         PROJECTS_ZOME_NAME,
         ZOME_FN_NAMES.CHECK_PROJECT_META_EXISTS,
-        null
+        zomeFnInput
       )
     },
   }
@@ -177,13 +186,14 @@ const RealtimeInfoSignalApi = (appWebsocket: AppClient) => {
 
 const MembersApi = (appWebsocket: AppClient) => {
   return {
-    fetch: async (cellId: CellId): Promise<Array<WireRecord<Member>>> => {
+    fetch: async (cellId: CellId, local?: boolean): Promise<Array<WireRecord<Member>>> => {
+      const zomeFnInput: ZomeFnInput<null> = { input: null, local: local ?? true }
       return callZome(
         appWebsocket,
         cellId,
         PROJECTS_ZOME_NAME,
         ZOME_FN_NAMES.FETCH_MEMBERS,
-        null
+        zomeFnInput
       )
     },
   }
