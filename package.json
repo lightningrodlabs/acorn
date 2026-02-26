@@ -39,7 +39,7 @@
   "license": "CAL-1.0",
   "dependencies": {},
   "devDependencies": {
-    "@theweave/cli": "0.15.11",
+    "@theweave/cli": "0.15.16",
     "bestzip": "^2.2.1",
     "typescript": "^5.1.6"
   },
