@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
+import { safeSetInterval } from '../../utils'
 import {
   Redirect,
   Route,
@@ -96,7 +97,6 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   const goToOutcomeActionHash = searchParams.get(GO_TO_OUTCOME)
 
   const sendRealtimeInfoFrequency = 10000
-  const instance = useRef<NodeJS.Timeout>()
 
   // we use useSelector + createSelector here
   // to prevent inefficient CPU expensive calls to outcomesAsTrees
@@ -118,16 +118,16 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
     )
   }
 
-  // this useEffect is called when the ProjectView component is first mounted, and returns when it is dismounted
-  // it sets an interval which calls triggerRealTimeInfoSignal at a fixed rate, until the component is dismounted
+  // Send realtime info signals on a recurring basis while this component is mounted.
   useEffect(() => {
-    instance.current = setInterval(
-      () => triggerRealtimeInfoSignal(),
-      sendRealtimeInfoFrequency
-    )
-    return () => {
-      clearInterval(instance.current)
-    }
+    const handle = safeSetInterval({
+      name: 'realtimeInfoSignal',
+      intervalMs: sendRealtimeInfoFrequency,
+      fn: async () => {
+        triggerRealtimeInfoSignal()
+      },
+    })
+    return () => handle.cancel()
   }, [])
 
   useEffect(() => {

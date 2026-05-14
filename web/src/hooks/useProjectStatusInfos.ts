@@ -3,7 +3,7 @@ import { CellIdString } from '../types/shared'
 import { uidToPassphrase } from '../secrets'
 import { CellType, ClonedCell, encodeHashToBase64 } from '@holochain/client'
 import { getAgentPubKey, getAppWs } from '../hcWebsockets'
-import { cellIdFromString, cellIdToString } from '../utils'
+import { cellIdToString, safeSetInterval } from '../utils'
 
 export type ProjectStatusInfo = {
   passphrase: string
@@ -81,12 +81,14 @@ export default function usePendingProjects(
     setProjectStatusInfos,
   ] = useState<ProjectStatusInfos>({})
 
-  // handle the regular checking for those projects
-  // that haven't synced yet
   useEffect(() => {
     let isMounted = true
-    const check = async () => {
-      try {
+
+    const handle = safeSetInterval({
+      name: 'projectStatusCheck',
+      intervalMs: 5000,
+      runOnNextTick: true,
+      fn: async () => {
         if (!isMounted) return
 
         const withHasProjectMetas = await Promise.all(
@@ -116,23 +118,17 @@ export default function usePendingProjects(
 
         if (!isMounted) return
 
-        // mix in the the network infos for all projects
         const newInfos = await getNewInfos(withHasProjectMetas)
 
         if (!isMounted) return
 
-        // return a result
         setProjectStatusInfos(newInfos)
-      } catch (e) {
-        console.error(e)
-      }
-    }
-    check()
-    // check every 5 seconds for project meta
-    const checkAgainInterval = setInterval(check, 5000)
+      },
+    })
+
     return () => {
       isMounted = false
-      clearInterval(checkAgainInterval)
+      handle.cancel()
     }
   }, [JSON.stringify(projectCellIdStrings)])
 
