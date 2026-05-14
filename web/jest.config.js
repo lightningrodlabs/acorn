@@ -22,7 +22,7 @@ module.exports = {
     ],
   },
   transformIgnorePatterns: [
-    'node_modules/(?!((@holochain/(client|serialization))|@noble/ed25519|emittery|lodash-es).*)',
+    'node_modules/(?!((@holochain/(client|serialization))|@theweave/api|@noble/ed25519|emittery|lodash-es).*)',
   ],
   globals: {
     __MAIN_APP_ID__: 'test-main-app-id',
