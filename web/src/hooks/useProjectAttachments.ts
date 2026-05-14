@@ -123,8 +123,7 @@ export function useProjectAttachments({
       }
       subscriptionRef.current = null
     }
-    // Include `shouldRun` in dependency array to re-run effect if conditions change
-  }, [projectId, projectMeta, shouldRun]) // Add projectMeta and shouldRun to dependencies
+  }, [projectId, projectMeta?.actionHash, shouldRun])
 
   // Return default values if conditions aren't met, otherwise return state
   if (!shouldRun) {

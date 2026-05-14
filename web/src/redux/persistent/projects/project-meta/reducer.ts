@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { ProjectMeta } from '../../../../types'
 import { CellIdString, WithActionHash } from '../../../../types/shared'
 import {
@@ -18,8 +19,24 @@ export default function (
 ): ProjectMetaState {
   const { payload, type } = action
   switch (type) {
+    case FETCH_PROJECT_META: {
+      const cellIdString = action.meta.cellIdString
+      const incoming = {
+        ...payload.entry,
+        actionHash: payload.actionHash,
+      }
+      // The dashboard polls FETCH_PROJECT_META every 5s per project. Preserve
+      // the existing reference when nothing changed so downstream useEffect
+      // deps (e.g. assetStore subscriptions) don't churn.
+      if (state[cellIdString] && _.isEqual(state[cellIdString], incoming)) {
+        return state
+      }
+      return {
+        ...state,
+        [cellIdString]: incoming,
+      }
+    }
     case SIMPLE_CREATE_PROJECT_META:
-    case FETCH_PROJECT_META:
     case UPDATE_PROJECT_META:
       return {
         ...state,
