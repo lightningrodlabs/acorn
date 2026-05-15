@@ -16,7 +16,6 @@ import { installProject as iInstallProject } from '../src/projects/installProjec
 import { getAppWs as iGetAppWs } from '../src/hcWebsockets'
 import { AppClient, AppWebsocket } from '@holochain/client'
 import { RootState } from '../src/redux/reducer'
-import ProfilesZomeApi from '../src/api/profilesApi'
 import ProjectsZomeApi from '../src/api/projectsApi'
 import mockOutcome from './mockOutcome'
 import mockConnection from './mockConnection'
@@ -30,10 +29,7 @@ import { createConnection as dispatchCreateConnection } from '../src/redux/persi
 import { createOutcomeMember as dispatchCreateOutcomeMember } from '../src/redux/persistent/projects/outcome-members/actions'
 import { createOutcomeComment as dispatchCreateOutcomeComment } from '../src/redux/persistent/projects/outcome-comments/actions'
 import { createEntryPoint as dispatchCreateEntryPoint } from '../src/redux/persistent/projects/entry-points/actions'
-import {
-  createProfilesZomeApi as iCreateProfilesZomeApi,
-  createProjectsZomeApi as iCreateProjectsZomeApi,
-} from '../src/migrating/import/zomeApiCreators'
+import { createProjectsZomeApi as iCreateProjectsZomeApi } from '../src/migrating/import/zomeApiCreators'
 import {
   cloneDataSet as iCloneDataSet,
   cloneConnection as iCloneConnection,
@@ -51,7 +47,6 @@ import {
   importProject as iImportProject,
   internalImportProject,
 } from '../src/migrating/import/importProject'
-import mockWhoami from './mockWhoami'
 import { cellIdFromString } from '../src/utils'
 import mockActionHashMaps from './mockActionHashMaps'
 import { WithActionHash } from '../src/types/shared'
@@ -60,9 +55,7 @@ import { finalizeCreateProject as iFinalizeCreateProject } from '../src/projects
 
 let store: any // too complex of a type to mock
 
-let createProfilesZomeApi: typeof iCreateProfilesZomeApi
 let createProjectsZomeApi: typeof iCreateProjectsZomeApi
-let profilesZomeApi: ProfilesZomeApi
 let projectsZomeApi: ProjectsZomeApi
 let importProject: typeof iImportProject
 let installProject: typeof iInstallProject
@@ -78,7 +71,6 @@ let mockAppWs: AppClient
 let projectMeta: WireRecord<ProjectMeta>
 let mockMigrationData: string
 let mockCellIdString: string
-let createWhoami: typeof ProfilesZomeApi.prototype.profile.createWhoami
 let cloneTag: typeof iCloneTag
 
 const createTag = jest.fn().mockResolvedValue(mockTag)
@@ -89,7 +81,6 @@ const createOutcomeComment = jest.fn().mockResolvedValue(mockOutcomeComment)
 const createEntryPoint = jest.fn().mockResolvedValue(mockEntryPoint)
 
 beforeEach(() => {
-  createWhoami = jest.fn().mockResolvedValue(mockWhoami)
   cloneDataSet = jest
     .fn()
     .mockReturnValueOnce(mockActionHashMaps.tagActionHashMap)
@@ -100,11 +91,6 @@ beforeEach(() => {
     .mockReturnValueOnce(mockActionHashMaps.entryPointActionHashMap)
   cloneTag = jest.fn().mockReturnValue({ ...mockTag })
 
-  createProfilesZomeApi = jest.fn().mockReturnValue({
-    profile: {
-      createWhoami,
-    },
-  })
   projectMeta = mockUnmigratedProjectMeta
   createProjectsZomeApi = jest.fn().mockReturnValue({
     projectMeta: {
@@ -129,13 +115,14 @@ beforeEach(() => {
       create: createEntryPoint,
     },
   })
-  profilesZomeApi = (createProfilesZomeApi(
-    mockAppWs
-  ) as unknown) as ProfilesZomeApi
   projectsZomeApi = createProjectsZomeApi(mockAppWs)
   importProject = jest.fn()
   mockCellIdString =
     '132,45,36,204,129,221,8,19,206,244,229,30,210,95,157,234,241,47,13,85,105,207,55,138,160,87,204,162,244,122,186,195,125,254,5,185,165,224,66[:cell_id_divider:]132,32,36,97,138,27,24,136,8,80,164,189,194,243,82,224,72,205,215,225,2,27,126,146,190,40,102,187,244,75,191,172,155,196,247,226,220,92,1'
+
+  // @ts-ignore - only needs to be a referenceable value; it is passed through
+  // to mocked dependencies and never exercised directly
+  mockAppWs = {}
 
   installProject = jest
     .fn()
@@ -171,7 +158,7 @@ beforeEach(() => {
 describe('importProjectsData()', () => {
   it('successfully parses and imports project data and user profile', async () => {
     await internalImportProjectsData(
-      profilesZomeApi,
+      mockAppWs,
       importProject,
       installProject,
       store,
@@ -194,6 +181,7 @@ describe('importProjectsData()', () => {
 
     expect(importProject).toHaveBeenCalledTimes(1)
     expect(importProject).toHaveBeenCalledWith(
+      mockAppWs,
       mockCellIdString,
       'testAgentAddress',
       sampleGoodDataExport.projects[0],
@@ -211,21 +199,18 @@ describe('importProjectsData()', () => {
       sampleGoodDataExport.projects[1].projectMeta.passphrase
     )
 
-    expect(createWhoami).toHaveBeenCalledTimes(1)
-    expect(createWhoami).toHaveBeenCalledWith(
-      cellIdFromString(baseRootState.cells.profiles),
-      sampleGoodDataExport.myProfile
-    )
-
-    expect(store.dispatch).toHaveBeenCalledTimes(2)
+    // the imported user profile is persisted to the redux store
     expect(store.dispatch).toHaveBeenCalledWith({
-      type: 'CREATE_WHOAMI',
-      payload: mockWhoami,
-      meta: { cellIdString: mockCellIdString },
+      type: 'SET_MY_LOCAL_PROFILE',
+      payload: sampleGoodDataExport.myProfile,
     })
+    // the already-migrated 2nd project is joined
     expect(store.dispatch).toHaveBeenLastCalledWith({
-      type: 'JOIN_PROJECT_CELL_ID',
-      payload: mockCellIdString,
+      type: 'SET_PROJECT_MEMBER_PROFILE',
+      payload: {
+        cellIdString: mockCellIdString,
+        profile: sampleGoodDataExport.myProfile,
+      },
     })
 
     expect(store.getState).toHaveBeenCalledTimes(1)
@@ -239,7 +224,7 @@ describe('importProjectsData()', () => {
     mockMigrationData = 'invalid json'
     try {
       await internalImportProjectsData(
-        profilesZomeApi,
+        mockAppWs,
         importProject,
         installProject,
         store,
@@ -254,7 +239,7 @@ describe('importProjectsData()', () => {
     mockMigrationData = null
     try {
       await internalImportProjectsData(
-        profilesZomeApi,
+        mockAppWs,
         importProject,
         installProject,
         store,
@@ -269,7 +254,7 @@ describe('importProjectsData()', () => {
     mockMigrationData = '{"foo": "bar"}'
     try {
       await internalImportProjectsData(
-        profilesZomeApi,
+        mockAppWs,
         importProject,
         installProject,
         store,
@@ -314,6 +299,7 @@ describe('importProject()', () => {
 
     expect(createActionHashMapAndImportProjectData).toHaveBeenCalledTimes(1)
     expect(createActionHashMapAndImportProjectData).toHaveBeenCalledWith(
+      mockAppWs,
       sampleGoodDataExport.projects[0],
       mockCellIdString,
       store.dispatch

@@ -52,7 +52,7 @@ describe('finalizeCreateProject()', () => {
     })
 
     expect(dispatch).toHaveBeenNthCalledWith(2, {
-      type: 'SET_MEMBER',
+      type: 'SET_PROJECT_MEMBER',
       payload: {
         cellIdString: mockCellIdString,
         member: {

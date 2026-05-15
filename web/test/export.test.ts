@@ -1,3 +1,4 @@
+import { AppClient } from '@holochain/client'
 import {
   internalExportProjectsData,
   updateProjectMeta as iUpdateProjectMeta,
@@ -6,17 +7,19 @@ import {
 import mockBaseRootState, { mockPopulatedState } from './mockRootState'
 import iConstructProjectDataFetchers from '../src/api/projectDataFetchers'
 import mockProjectData from './mockProjectData'
+import mockWhoami from './mockWhoami'
 
 let projectDataFetchers: ReturnType<typeof constructProjectDataFetchers>
-let baseRootState: typeof mockBaseRootState
+let baseRootState: typeof mockBaseRootState & { myLocalProfile: any }
 let getState: typeof store.getState
 
 let constructProjectDataFetchers: typeof iConstructProjectDataFetchers
 let updateProjectMeta: typeof iUpdateProjectMeta
 let collectExportProjectData: typeof iCollectExportProjectData
 let store: any
+let appWebsocket: AppClient
 let toVersion: string
-let onStep: Parameters<typeof internalExportProjectsData>[5]
+let onStep: Parameters<typeof internalExportProjectsData>[6]
 let integrityVersion: number
 
 describe('test export functionality', () => {
@@ -34,7 +37,8 @@ describe('test export functionality', () => {
       // fetchMembers: jest.fn(), // including this line will cause the test to fail, but satisfies the type
     } as any // this is needed because the real implementation does not inclue fetchMembers()
 
-    baseRootState = mockBaseRootState
+    // the export flow reads the current user's profile from state.myLocalProfile
+    baseRootState = { ...mockBaseRootState, myLocalProfile: mockWhoami.entry }
 
     getState = jest
       .fn()
@@ -53,14 +57,17 @@ describe('test export functionality', () => {
       getState: getState,
     }
 
+    // @ts-ignore
+    appWebsocket = {}
+
     onStep = jest.fn()
     toVersion = 'test'
   })
 
-  it('should return null when state.whoami is undefined', async () => {
+  it('should return null when state.myLocalProfile is undefined', async () => {
     getState = jest.fn().mockReturnValue({
       ...baseRootState,
-      whoami: undefined,
+      myLocalProfile: undefined,
     })
     store.getState = getState
 
@@ -68,6 +75,7 @@ describe('test export functionality', () => {
       constructProjectDataFetchers,
       collectExportProjectData,
       updateProjectMeta,
+      appWebsocket,
       store,
       toVersion,
       onStep,
@@ -77,18 +85,19 @@ describe('test export functionality', () => {
     expect(result).toBeNull()
   })
 
-  it('should return projects data when state.whoami is defined', async () => {
+  it('should return projects data when state.myLocalProfile is defined', async () => {
     const result = await internalExportProjectsData(
       constructProjectDataFetchers,
       collectExportProjectData,
       updateProjectMeta,
+      appWebsocket,
       store,
       toVersion,
       onStep,
       integrityVersion
     )
 
-    expect(result.myProfile).toEqual(baseRootState.whoami.entry)
+    expect(result.myProfile).toEqual(baseRootState.myLocalProfile)
     expect(result.projects).toEqual([mockProjectData])
 
     const numProjects = result.projects.length
@@ -109,6 +118,7 @@ describe('test export functionality', () => {
 
     expect(updateProjectMeta).toHaveBeenCalledTimes(numProjects)
     expect(updateProjectMeta).toHaveBeenCalledWith(
+      appWebsocket,
       {
         ...mockProjectData.projectMeta,
         actionHash: undefined, // need to remove actionHash to make the type the same

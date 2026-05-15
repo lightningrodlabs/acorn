@@ -24,6 +24,7 @@ module.exports = {
   transformIgnorePatterns: [
     'node_modules/(?!((@holochain/(client|serialization))|@theweave/api|@noble/ed25519|emittery|lodash-es).*)',
   ],
+  setupFiles: ['<rootDir>/test/jest.setup.ts'],
   globals: {
     __MAIN_APP_ID__: 'test-main-app-id',
     __ADMIN_PORT__: '8000',
