@@ -53,9 +53,11 @@ export const argsForDrawStatement = ({
       (outcome.computedScope !== ComputedScope.Small && zoomLevel <= 0.2)
     : false
 
+  // noStatementPlaceholder means the real text is wanted no matter
+  // what (e.g. focus+context rendering), so don't skip it either
   skipRender =
     skipRender ||
-    (outcome
+    (outcome && !noStatementPlaceholder
       ? outcome.computedScope === ComputedScope.Small && zoomLevel <= 0.25
       : false)
 

@@ -24,6 +24,8 @@ import {
   hideSmallOutcomes,
   showAchievedOutcomes,
   showSmallOutcomes,
+  enableFocusMode,
+  disableFocusMode,
 } from '../redux/ephemeral/map-view-settings/actions'
 import ProjectsZomeApi from '../api/projectsApi'
 import { updateProjectMeta } from '../redux/persistent/projects/project-meta/actions'
@@ -87,6 +89,7 @@ function mapStateToProps(state: RootState): AppStateProps {
     hasMigratedSharedProject,
     hiddenAchievedOutcomes: state.ui.mapViewSettings.hiddenAchievedOutcomes,
     hiddenSmallOutcomes: state.ui.mapViewSettings.hiddenSmallOutcomes,
+    focusModeProjects: state.ui.mapViewSettings.focusModeProjects,
     selectedLayeringAlgo,
   }
 }
@@ -114,6 +117,12 @@ function mapDispatchToProps(dispatch: any): AppDispatchProps {
     },
     hideAchievedOutcomes: (projectCellId) => {
       return dispatch(hideAchievedOutcomes(projectCellId))
+    },
+    enableFocusMode: (projectCellId) => {
+      return dispatch(enableFocusMode(projectCellId))
+    },
+    disableFocusMode: (projectCellId) => {
+      return dispatch(disableFocusMode(projectCellId))
     },
     unselectAll: () => {
       return dispatch(unselectAll())

@@ -29,7 +29,10 @@ import {
   HIDE_SMALL_OUTCOMES,
   SHOW_ACHIEVED_OUTCOMES,
   SHOW_SMALL_OUTCOMES,
+  ENABLE_FOCUS_MODE,
+  DISABLE_FOCUS_MODE,
 } from '../map-view-settings/actions'
+import { SELECT_OUTCOME } from '../selection/actions'
 import {
   FETCH_PROJECT_META,
   FETCH_PROJECT_METAS,
@@ -72,8 +75,26 @@ const isOneOfLayoutAffectingActions = (action: {
     type === SHOW_ACHIEVED_OUTCOMES ||
     type === HIDE_SMALL_OUTCOMES ||
     type === SHOW_SMALL_OUTCOMES ||
+    type === ENABLE_FOCUS_MODE ||
+    type === DISABLE_FOCUS_MODE ||
     type === FETCH_PROJECT_METAS ||
     type === UPDATE_PROJECT_META
+  )
+}
+
+// selecting an Outcome moves the focus point of focus mode, so it
+// affects the layout, but only when focus mode is switched on for the
+// active project, and only if the focus is actually changing
+const isFocusMoveAction = (
+  action: { type: string; payload?: any },
+  state: RootState
+) => {
+  return (
+    action.type === SELECT_OUTCOME &&
+    state.ui.mapViewSettings.focusModeProjects.includes(
+      state.ui.activeProject
+    ) &&
+    state.ui.mapViewSettings.focusOutcome !== action.payload
   )
 }
 
@@ -105,11 +126,14 @@ const layoutWatcher = (store) => {
     // from the current layout to the new layout, by using the TWEENJS library
 
     let currentState: RootState
-    const shouldReLayout = isOneOfLayoutAffectingActions(action)
+    let shouldReLayout = isOneOfLayoutAffectingActions(action)
     const shouldAnimateViewport = isOneOfViewportAffectingActions(action)
     // don't call and getState if we don't have to
     if (shouldReLayout) {
       currentState = store.getState()
+    } else if (action.type === SELECT_OUTCOME) {
+      currentState = store.getState()
+      shouldReLayout = isFocusMoveAction(action, currentState)
     }
     // perform the usual (next) action ->
     // first integrate the new data

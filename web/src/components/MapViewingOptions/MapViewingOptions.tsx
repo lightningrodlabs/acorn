@@ -17,9 +17,11 @@ export type MapViewingOptionsProps = {
   isOpen: boolean
   showAchievedOutcomes: boolean
   showSmallOutcomes: boolean
+  focusMode: boolean
   selectedLayeringAlgo: string
   onChangeShowAchievedOutcomes: (newState: boolean) => void
   onChangeShowSmallOutcomes: (newState: boolean) => void
+  onChangeFocusMode: (newState: boolean) => void
   onSelectLayeringAlgo: (newState: string) => void
 }
 
@@ -30,6 +32,8 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
   onChangeShowAchievedOutcomes,
   showSmallOutcomes,
   onChangeShowSmallOutcomes,
+  focusMode,
+  onChangeFocusMode,
   selectedLayeringAlgo,
   onSelectLayeringAlgo,
 }) => {
@@ -86,6 +90,17 @@ const MapViewingOptions: React.FC<MapViewingOptionsProps> = ({
           onChange={onChangeShowSmallOutcomes}
           icon={<Icon name="leaf.svg" className="not-hoverable" />}
           text="Show All Small"
+        />
+
+        <div className="map-viewing-option-heading">
+          <Typography style="h8">Detail</Typography>
+        </div>
+        <ButtonCheckbox
+          size="tiny"
+          isChecked={focusMode}
+          onChange={onChangeFocusMode}
+          icon={<Icon name="zoom-in.svg" className="not-hoverable" />}
+          text="Focus Mode"
         />
 
         {/* Bottom Triangle */}

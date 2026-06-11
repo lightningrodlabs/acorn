@@ -102,6 +102,7 @@ export type AppStateProps = {
   hasMigratedSharedProject: boolean
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
+  focusModeProjects: CellIdString[]
   selectedLayeringAlgo: string
 }
 
@@ -116,6 +117,8 @@ export type AppDispatchProps = {
   hideSmallOutcomes: (projectCellId: CellIdString) => void
   showAchievedOutcomes: (projectCellId: CellIdString) => void
   hideAchievedOutcomes: (projectCellId: CellIdString) => void
+  enableFocusMode: (projectCellId: CellIdString) => void
+  disableFocusMode: (projectCellId: CellIdString) => void
   unselectAll: () => void
 }
 
@@ -159,6 +162,7 @@ const App: React.FC<AppProps> = ({
   hasMigratedSharedProject,
   hiddenAchievedOutcomes,
   hiddenSmallOutcomes,
+  focusModeProjects,
   selectedLayeringAlgo,
   // functions
   updateProjectMeta,
@@ -170,6 +174,8 @@ const App: React.FC<AppProps> = ({
   hideSmallOutcomes,
   showAchievedOutcomes,
   hideAchievedOutcomes,
+  enableFocusMode,
+  disableFocusMode,
   setSelectedLayeringAlgo,
   uninstallProject,
   unselectAll,
@@ -393,10 +399,13 @@ const App: React.FC<AppProps> = ({
                       agentAddress={agentAddress}
                       hiddenAchievedOutcomes={hiddenAchievedOutcomes}
                       hiddenSmallOutcomes={hiddenSmallOutcomes}
+                      focusModeProjects={focusModeProjects}
                       showSmallOutcomes={showSmallOutcomes}
                       hideSmallOutcomes={hideSmallOutcomes}
                       showAchievedOutcomes={showAchievedOutcomes}
                       hideAchievedOutcomes={hideAchievedOutcomes}
+                      enableFocusMode={enableFocusMode}
+                      disableFocusMode={disableFocusMode}
                       selectedLayeringAlgo={selectedLayeringAlgo}
                       setSelectedLayeringAlgo={setSelectedLayeringAlgo}
                       unselectAll={unselectAll}

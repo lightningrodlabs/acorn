@@ -78,6 +78,16 @@ export default function performLayoutAnimation(
   const projectMeta = nextState.projects.projectMeta
   const layeringAlgorithm =
     projectMeta[projectId]?.layeringAlgorithm || LayeringAlgorithm.LongestPath
+
+  // focus+context (Degree-of-Interest based) rendering: active when
+  // switched on for this project, and there is a focus Outcome
+  const focusModeActive = nextState.ui.mapViewSettings.focusModeProjects.includes(
+    projectId
+  )
+  const focusOutcomeActionHash = focusModeActive
+    ? nextState.ui.mapViewSettings.focusOutcome
+    : undefined
+
   // this is our final destination layout
   // that we'll be animating to
   const newLayout = layoutFormula(
@@ -87,8 +97,12 @@ export default function performLayoutAnimation(
     projectTags,
     collapsedOutcomes,
     hiddenSmalls,
-    hiddenAchieved
+    hiddenAchieved,
+    focusOutcomeActionHash
   )
+  // the detail bands are discrete (not interpolatable), so they are
+  // held out of the tween and re-attached to each dispatched update
+  const { detailBands, ...newLayoutTweenTarget } = newLayout
 
   // in terms of 'fixing' on a given outcome
   // get the 'starting position' for that Outcome onscreen
@@ -214,7 +228,7 @@ export default function performLayoutAnimation(
   // transition currentLayoutTween object
   // into newLayout object
   new TWEEN.Tween(currentLayoutTween)
-    .to(newLayout)
+    .to(newLayoutTweenTarget)
     // use this easing, adjust me to tune, see TWEEN.Easing for options
     .easing(TWEEN.Easing.Quadratic.InOut)
     .duration(DURATION)
@@ -238,6 +252,7 @@ export default function performLayoutAnimation(
         updateLayout(
           {
             ...updatedLayout,
+            detailBands,
           },
           translateForFixedPositionOutcome
         )

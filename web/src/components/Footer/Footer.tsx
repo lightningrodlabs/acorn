@@ -14,12 +14,15 @@ export type FooterProps = {
   agentAddress: AgentPubKeyB64
   hiddenAchievedOutcomes: CellIdString[]
   hiddenSmallOutcomes: CellIdString[]
+  focusModeProjects: CellIdString[]
   selectedLayeringAlgo: string
   unselectAll: () => void
   showSmallOutcomes: (projectCellId: CellIdString) => void
   hideSmallOutcomes: (projectCellId: CellIdString) => void
   showAchievedOutcomes: (projectCellId: CellIdString) => void
   hideAchievedOutcomes: (projectCellId: CellIdString) => void
+  enableFocusMode: (projectCellId: CellIdString) => void
+  disableFocusMode: (projectCellId: CellIdString) => void
   setSelectedLayeringAlgo: (layeringAlgo: string) => void
 }
 
@@ -27,12 +30,15 @@ const Footer: React.FC<FooterProps> = ({
   agentAddress,
   hiddenAchievedOutcomes,
   hiddenSmallOutcomes,
+  focusModeProjects,
   selectedLayeringAlgo,
   unselectAll,
   showSmallOutcomes,
   hideSmallOutcomes,
   showAchievedOutcomes,
   hideAchievedOutcomes,
+  enableFocusMode,
+  disableFocusMode,
   setSelectedLayeringAlgo,
 }) => {
   const projectPage = useRouteMatch<{ projectId: CellIdString }>(
@@ -65,6 +71,14 @@ const Footer: React.FC<FooterProps> = ({
       showSmallOutcomes(projectId)
     } else {
       hideSmallOutcomes(projectId)
+    }
+  }
+  const focusModeValue = focusModeProjects.includes(projectId)
+  const onChangeFocusMode = (newValue: boolean) => {
+    if (newValue) {
+      enableFocusMode(projectId)
+    } else {
+      disableFocusMode(projectId)
     }
   }
 
@@ -125,8 +139,10 @@ const Footer: React.FC<FooterProps> = ({
                 isOpen={openMapViewingOptions}
                 showAchievedOutcomes={showAchievedOutcomesValue}
                 showSmallOutcomes={showSmallOutcomesValue}
+                focusMode={focusModeValue}
                 onChangeShowAchievedOutcomes={onChangeShowAchievedOutcomes}
                 onChangeShowSmallOutcomes={onChangeShowSmallOutcomes}
+                onChangeFocusMode={onChangeFocusMode}
                 selectedLayeringAlgo={selectedLayeringAlgo}
                 onSelectLayeringAlgo={setSelectedLayeringAlgo}
               />

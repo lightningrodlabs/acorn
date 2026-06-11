@@ -1,6 +1,7 @@
 import { getOutcomeWidth, getOutcomeHeight } from './dimensions'
 import {
   ComputedOutcome,
+  ComputedScope,
   LayeringAlgorithm,
   Tag,
 } from '../types'
@@ -13,6 +14,11 @@ import {
 import { Graph } from '../redux/persistent/projects/outcomes/outcomesAsGraph'
 import calculateCoordinatesForClassic from './classicCoordinates'
 import layoutForGraph from './graphCoordinates'
+import computeDetailBands, {
+  bandCanvasScale,
+  bandEffectiveZoom,
+  collapsedByDetailBands,
+} from './detailBands'
 
 function getBoundingRec(
   outcome: ComputedOutcome,
@@ -97,11 +103,19 @@ export default function layoutFormula(
     [outcomeActionHash: string]: boolean
   },
   hiddenSmalls: boolean,
-  hiddenAchieved: boolean
+  hiddenAchieved: boolean,
+  // when set, perform focus+context (Degree-of-Interest based)
+  // sizing and elision, relative to this Outcome
+  focusOutcomeActionHash?: ActionHashB64
 ): LayoutState {
   // just do this for efficiency, it's not going to
   // get displayed or rendered anywhere
   const ctx = document.createElement('canvas').getContext('2d')
+
+  // can be null, when the focus Outcome isn't in this graph
+  const detailBands = focusOutcomeActionHash
+    ? computeDetailBands(graph, focusOutcomeActionHash)
+    : null
 
   // determine what the dimensions of each outcome will be
   const dimensions: {
@@ -111,32 +125,64 @@ export default function layoutFormula(
   Object.keys(graph.outcomes.computedOutcomesKeyed).forEach(
     (outcomeActionHash) => {
       const outcome = graph.outcomes.computedOutcomesKeyed[outcomeActionHash]
-      const width = getOutcomeWidth({ outcome, zoomLevel })
+      // when focus+context is active, each Outcome is measured at the
+      // effective zoom level of its detail band, instead of the real
+      // zoom level, so that nearer-to-focus Outcomes carry more
+      // content. cards always show their real statement text in this
+      // mode, never the placeholder bars. on top of that, cards are
+      // scaled up in canvas space as the user zooms out, to hold a
+      // band-dependent minimum readable on-screen size
+      const band = detailBands ? detailBands[outcomeActionHash] : undefined
+      const effectiveZoomLevel = detailBands
+        ? bandEffectiveZoom(
+            band,
+            zoomLevel,
+            outcome.computedScope === ComputedScope.Small
+          )
+        : zoomLevel
+      const canvasScale = detailBands ? bandCanvasScale(band, zoomLevel) : 1
+      const width = getOutcomeWidth({ outcome, zoomLevel: effectiveZoomLevel })
       const height = getOutcomeHeight({
         ctx,
         outcome,
-        zoomLevel,
+        zoomLevel: effectiveZoomLevel,
         width,
         projectTags,
+        noStatementPlaceholder: !!detailBands,
       })
       dimensions[outcomeActionHash] = {
-        width,
-        height,
+        width: width * canvasScale,
+        height: height * canvasScale,
       }
     }
   )
+
+  // Outcomes whose children all fall below the detail threshold are
+  // laid out as if collapsed, eliding their subtrees
+  const effectiveCollapsedOutcomes = detailBands
+    ? {
+        ...collapsedOutcomes,
+        ...collapsedByDetailBands(graph, detailBands),
+      }
+    : collapsedOutcomes
 
   const coordinates = calculateCoordinatesForLayout(
     layeringAlgorithm,
     graph,
     dimensions,
-    collapsedOutcomes,
+    effectiveCollapsedOutcomes,
     hiddenSmalls,
     hiddenAchieved
   )
 
-  return {
-    coordinates,
-    dimensions,
-  }
+  return detailBands
+    ? {
+        coordinates,
+        dimensions,
+        detailBands,
+      }
+    : {
+        coordinates,
+        dimensions,
+      }
 }

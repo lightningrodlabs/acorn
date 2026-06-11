@@ -1,5 +1,4 @@
 import TWEEN from '@tweenjs/tween.js'
-import { getOutcomeHeight, getOutcomeWidth } from '../../../drawing/dimensions'
 import layoutFormula from '../../../drawing/layoutFormula'
 import { ActionHashB64 } from '../../../types/shared'
 import { RootState } from '../../reducer'
@@ -50,18 +49,6 @@ export default function panZoomToFrame(
 
   const collapsedOutcomes =
     state.ui.collapsedOutcomes.collapsedOutcomes[activeProject] || {}
-  // this is our final destination layout
-  // that we'll be animating to
-  // use the target zoomLevel
-  const newLayout = layoutFormula(
-    graph,
-    layeringAlgorithm,
-    zoomLevel,
-    projectTags,
-    collapsedOutcomes,
-    hiddenSmalls,
-    hiddenAchieved
-  )
 
   // this accounts for a special case where the caller doesn't
   // provide the intended Outcome ActionHash, but instead expects this
@@ -72,7 +59,30 @@ export default function panZoomToFrame(
       .actionHash
   }
 
-  const outcome = graph.outcomes.computedOutcomesKeyed[outcomeActionHash]
+  // when focus mode is on, the Outcome we are panning to will become
+  // the focus Outcome (via the selectOutcome below), so compute the
+  // layout relative to it
+  const focusModeActive = state.ui.mapViewSettings.focusModeProjects.includes(
+    activeProject
+  )
+  const focusOutcomeActionHash = focusModeActive
+    ? outcomeActionHash
+    : undefined
+
+  // this is our final destination layout
+  // that we'll be animating to
+  // use the target zoomLevel
+  const newLayout = layoutFormula(
+    graph,
+    layeringAlgorithm,
+    zoomLevel,
+    projectTags,
+    collapsedOutcomes,
+    hiddenSmalls,
+    hiddenAchieved,
+    focusOutcomeActionHash
+  )
+
   // important, for the outcomeCoordinates we should
   // definitely choose them from the new intended layout,
   // not the existing one
@@ -97,17 +107,13 @@ export default function panZoomToFrame(
   const halfScreenWidth = width / (2 * dpr)
   const halfScreenHeight = height / (2 * dpr)
 
-  const outcomeWidth = getOutcomeWidth({
-    outcome,
-    zoomLevel, // use the target scale
-  })
-  const outcomeHeight = getOutcomeHeight({
-    outcome,
-    projectTags,
-    zoomLevel, // use the target scale
+  // use the dimensions from the new intended layout, which were
+  // measured at the target scale (and, in focus mode, at the detail
+  // band of the Outcome)
+  const {
     width: outcomeWidth,
-    useLineLimit: true,
-  })
+    height: outcomeHeight,
+  } = newLayout.dimensions[outcomeActionHash]
   const newViewport = {
     scale: zoomLevel,
     translate: {

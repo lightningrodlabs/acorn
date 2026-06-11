@@ -7,6 +7,7 @@ const selectRenderProps = createSelector(
   (state: RootState) => state.ui.outcomeForm.isOpen,
   (state: RootState) => state.ui.layout.coordinates,
   (state: RootState) => state.ui.layout.dimensions,
+  (state: RootState) => state.ui.layout.detailBands,
   (state: RootState) =>
     Object.values(state.projects.tags[state.ui.activeProject] || {}),
   (state: RootState) => state.ui.viewport.translate,
@@ -38,6 +39,7 @@ const selectRenderProps = createSelector(
     outcomeFormIsOpen,
     coordinates,
     dimensions,
+    detailBands,
     projectTags,
     translate,
     screenWidth,
@@ -71,6 +73,7 @@ const selectRenderProps = createSelector(
       translate,
       coordinates,
       dimensions,
+      detailBands,
       projectMeta,
       entryPoints,
       outcomeMembers,

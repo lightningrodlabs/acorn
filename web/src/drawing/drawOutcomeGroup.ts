@@ -1,13 +1,19 @@
 import { ProjectComputedOutcomes } from '../context/ComputedOutcomeContext'
 import { RenderProps } from '../routes/ProjectView/MapView/selectRenderProps'
 import drawOutcome from './drawOutcome'
-import { ComputedOutcome } from '../types'
+import { ComputedOutcome, ComputedScope } from '../types'
 import { ActionHashB64 } from '@holochain/client'
+import {
+  bandCanvasScale,
+  bandEffectiveZoom,
+  DetailBand,
+} from './detailBands'
 
 export default function drawOutcomeGroup({
   outcomesAsArray,
   coordinates,
   allOutcomeDimensions,
+  detailBands,
   projectTags,
   topPriorityOutcomes,
   areSelected,
@@ -18,6 +24,7 @@ export default function drawOutcomeGroup({
   outcomesAsArray: ComputedOutcome[]
   coordinates: RenderProps['coordinates']
   allOutcomeDimensions: RenderProps['dimensions']
+  detailBands?: RenderProps['detailBands']
   projectTags: RenderProps['projectTags']
   topPriorityOutcomes: ActionHashB64[]
   areSelected: boolean
@@ -31,18 +38,44 @@ export default function drawOutcomeGroup({
     const isTopPriorityOutcome = !!topPriorityOutcomes.find(
       (actionHash) => actionHash === outcome.actionHash
     )
+    // when focus+context rendering is active, each Outcome renders its
+    // content AS IF the canvas were at the effective zoom level of its
+    // detail band, carrying more detail near the focus and less detail
+    // (but kept readable) further away. Hidden ones aren't drawn at all.
+    // when zoomed out, cards are also scaled up in canvas space (the
+    // layout has allocated them that extra room) so they hold a
+    // band-dependent minimum readable on-screen size: the card is drawn
+    // at its base size under a canvas scale transform
+    const band = detailBands ? detailBands[outcome.actionHash] : undefined
+    if (band === DetailBand.Hidden) {
+      return
+    }
+    const effectiveZoomLevel = detailBands
+      ? bandEffectiveZoom(
+          band,
+          zoomLevel,
+          outcome.computedScope === ComputedScope.Small
+        )
+      : zoomLevel
+    const canvasScale = detailBands ? bandCanvasScale(band, zoomLevel) : 1
     // we can only render this outcome
     // if we know its coordinates
     if (coords) {
+      if (canvasScale !== 1) {
+        ctx.save()
+        ctx.translate(coords.x, coords.y)
+        ctx.scale(canvasScale, canvasScale)
+      }
       drawOutcome({
         outcome,
-        zoomLevel,
-        outcomeLeftX: coords.x,
-        outcomeTopY: coords.y,
-        outcomeHeight: outcomeDimensions.height,
-        outcomeWidth: outcomeDimensions.width,
+        zoomLevel: effectiveZoomLevel,
+        outcomeLeftX: canvasScale !== 1 ? 0 : coords.x,
+        outcomeTopY: canvasScale !== 1 ? 0 : coords.y,
+        outcomeHeight: outcomeDimensions.height / canvasScale,
+        outcomeWidth: outcomeDimensions.width / canvasScale,
         projectTags,
         useLineLimit: true,
+        noStatementPlaceholder: !!detailBands,
         isTopPriority: isTopPriorityOutcome,
         isSelected: areSelected,
         ctx,
@@ -56,6 +89,9 @@ export default function drawOutcomeGroup({
         // isBeingEditedBy: isBeingEditedBy, // other
         // allMembersActiveOnOutcome: allMembersActiveOnOutcome,
       })
+      if (canvasScale !== 1) {
+        ctx.restore()
+      }
     }
   })
 }

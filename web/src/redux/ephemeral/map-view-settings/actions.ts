@@ -12,6 +12,8 @@ const SHOW_ACHIEVED_OUTCOMES = 'SHOW_ACHIEVED_OUTCOMES'
 const HIDE_ACHIEVED_OUTCOMES = 'HIDE_ACHIEVED_OUTCOMES'
 const SHOW_SMALL_OUTCOMES = 'SHOW_SMALL_OUTCOMES'
 const HIDE_SMALL_OUTCOMES = 'HIDE_SMALL_OUTCOMES'
+const ENABLE_FOCUS_MODE = 'ENABLE_FOCUS_MODE'
+const DISABLE_FOCUS_MODE = 'DISABLE_FOCUS_MODE'
 
 /* action creator functions */
 
@@ -41,13 +43,31 @@ function hideSmallOutcomes(projectCellId: CellIdString) {
   }
 }
 
+function enableFocusMode(projectCellId: CellIdString) {
+  return {
+    type: ENABLE_FOCUS_MODE,
+    payload: projectCellId,
+  }
+}
+
+function disableFocusMode(projectCellId: CellIdString) {
+  return {
+    type: DISABLE_FOCUS_MODE,
+    payload: projectCellId,
+  }
+}
+
 export {
   SHOW_ACHIEVED_OUTCOMES,
   HIDE_ACHIEVED_OUTCOMES,
   SHOW_SMALL_OUTCOMES,
   HIDE_SMALL_OUTCOMES,
+  ENABLE_FOCUS_MODE,
+  DISABLE_FOCUS_MODE,
   showAchievedOutcomes,
   hideAchievedOutcomes,
   showSmallOutcomes,
   hideSmallOutcomes,
+  enableFocusMode,
+  disableFocusMode,
 }
