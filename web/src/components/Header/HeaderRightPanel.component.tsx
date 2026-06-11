@@ -9,6 +9,7 @@ import { CSSTransition } from 'react-transition-group'
 import { ProjectMapViewOnly } from '../ViewFilters/ViewFilters'
 import Typography from '../Typography/Typography'
 import hashCodeId from '../../api/clientSideIdHash'
+import { getOutcomeStatement } from '../../outcomeFields'
 import { isWeaveContext } from '@theweave/api'
 
 function AvatarMenuItem({
@@ -227,11 +228,13 @@ export default function HeaderRightPanel({
                 {(!noFilters || isDescriptionFilter) &&
                   outcomeList
                     .filter((outcome) =>
-                      outcome.description.toLowerCase().includes(filterText)
+                      getOutcomeStatement(outcome.description)
+                        .toLowerCase()
+                        .includes(filterText)
                     )
                     .map((outcome) => (
                       <SearchResultItem
-                        text={outcome.description}
+                        text={getOutcomeStatement(outcome.description)}
                         name="text-align-left.svg"
                         onExpandClick={openExpandedView}
                         panAndZoom={animatePanAndZoom}

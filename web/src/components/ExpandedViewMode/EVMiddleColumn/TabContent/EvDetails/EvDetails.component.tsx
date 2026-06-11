@@ -23,7 +23,7 @@ import TagsList from '../../../../TagsList/TagsList'
 import MetadataWithLabel from '../../../../MetadataWithLabel/MetadataWithLabel'
 import GithubLink from '../../../../GithubLink/GithubLink'
 import AvatarsList from '../../../../AvatarsList/AvatarsList'
-import MarkdownDescription from '../../../../MarkdownDescription/MarkdownDescription'
+import OutcomeFieldsEditor from '../../../../OutcomeFieldsEditor/OutcomeFieldsEditor'
 import EditingOverlay from '../../../../EditingOverlay/EditingOverlay'
 import DateRangePicker, { DatePicker } from '../../../../DatePicker/DatePicker'
 import Typography from '../../../../Typography/Typography'
@@ -281,9 +281,6 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   const onDescriptionFocus = () => {
     startDescriptionEdit(outcomeActionHash)
   }
-  const handleOnChangeDescription = (value: string) => {
-    setDescription(value)
-  }
   // is someone else editing it?
   // if so, local person can't
   const editingDescriptionPeer = editingPeers.find(
@@ -474,14 +471,14 @@ const EvDetails: React.FC<EvDetailsProps> = ({
             </div>
           </div>
 
-          {/* Description */}
-          <MarkdownDescription
+          {/* Typed clarity fields (outcome statement, spec, criteria, artifacts…) */}
+          <OutcomeFieldsEditor
+            description={description}
+            onChange={setDescription}
             isBeingEditedByOther={!!editingDescriptionPeer}
             personEditing={descriptionEditor}
-            onBlur={onDescriptionBlur}
-            onFocus={onDescriptionFocus}
-            onChange={handleOnChangeDescription}
-            value={description}
+            onFieldBlur={onDescriptionBlur}
+            onFieldFocus={onDescriptionFocus}
           />
         </div>
         {/* End of ev-details-inner-wrapper */}

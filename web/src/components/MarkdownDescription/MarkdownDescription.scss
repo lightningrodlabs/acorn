@@ -20,5 +20,40 @@
         color: var(--text-color-placeholder);
       }
     }
+
+    // rendered markdown (display mode); click to edit
+    .markdown-description-rendered {
+      cursor: text;
+      font: 1.05rem var(--font-family-primary-medium);
+      line-height: 1.45;
+
+      // tighten default markdown element spacing
+      p,
+      ul,
+      ol,
+      blockquote,
+      pre,
+      h1,
+      h2,
+      h3,
+      h4 {
+        margin: 0 0 0.5rem;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+      ul,
+      ol {
+        padding-left: 1.25rem;
+      }
+      code {
+        font-family: monospace;
+        font-size: 0.95em;
+      }
+
+      .markdown-description-placeholder {
+        color: var(--text-color-placeholder);
+      }
+    }
   }
 }
