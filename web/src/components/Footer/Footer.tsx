@@ -9,6 +9,7 @@ import Button from '../Button/Button'
 import MapViewingOptions from '../MapViewingOptions/MapViewingOptions'
 import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 import SyncingIndicator from '../SyncingIndicator/SyncingIndicator'
+import AgentDiffTools from '../AgentDiffTools/AgentDiffTools'
 
 export type FooterProps = {
   agentAddress: AgentPubKeyB64
@@ -102,7 +103,7 @@ const Footer: React.FC<FooterProps> = ({
 
   return (
     <div className="footer" ref={ref}>
-      {/* Report Issue Button */}
+      {/* Report Issue Button + temporary agent diff tools */}
       <div className="bottom-left-panel">
         <a
           href="https://github.com/lightningrodlabs/acorn/issues/new"
@@ -110,6 +111,7 @@ const Footer: React.FC<FooterProps> = ({
         >
           <Button text="Report Issue" size="small" className="green" />
         </a>
+        <AgentDiffTools />
       </div>
       {/* Zooming and Viewing Options on Map View */}
       {projectPage && (

@@ -143,7 +143,7 @@ function node(key: string, parent: string | null, content: string, tags: string[
 // ROOT ------------------------------------------------------------------------
 node('root', null,
   'Acorn renders clarity trees whose every node guides an agent toward production-ready software',
-  [], uncertain(33),
+  [], uncertain(37),
   fields({
     outcome:
       'Acorn renders clarity trees: every node is a positive target-state outcome carrying typed clarity ' +
@@ -156,6 +156,128 @@ node('root', null,
       "Humans author intent; agents execute, evaluate, and propose, but never silently rewrite a node's " +
       'outcome or spec. Any flow that lets an agent commit intent without a human decision falsifies this.',
     artifacts: [artifact('doc', 'clarity-notions.md', 'clarity-engine/clarity-notions.md')],
+  }))
+
+// BRANCH I: low-friction diff workflow with an LLM agent (interim accelerator) --
+// Placed FIRST (leftmost = do-next): it removes the full export/import round-trip
+// friction we hit while building everything else.
+node('i0', 'root',
+  'Working with an LLM agent uses low-friction diff export/import, not full-tree round-trips',
+  [], uncertain(4),
+  fields({
+    outcome:
+      'While the rest of the feature set is being built, a human collaborates with an LLM agent on a clarity ' +
+      'tree through lightweight diffs rather than exporting and importing whole trees. A human exports the ' +
+      'changes since the last export, hands them to an agent, and imports the agent-generated diffs back into ' +
+      'the existing tree — with the changed nodes lit up so it is obvious what was worked on. Triggering the ' +
+      'agent and seeing what it did is a single click against a known location. (Interim: a lighter-weight ' +
+      'form of branch D export + D3/F2 agent proposals.)',
+    completionCriteria: [
+      // branch integration criterion (dogfoods b5): the whole loop works end to end
+      crit('A full loop — export diff, agent edits, import diff, tree lights up — runs end to end with single ' +
+        'clicks', 'human'),
+    ],
+    artifacts: [
+      artifact('workproduct', 'AgentDiffTools.tsx — floating Export tree / Apply update buttons (diff vs current, apply, light up)',
+        'web/src/components/AgentDiffTools/AgentDiffTools.tsx'),
+    ],
+  }))
+
+node('i1', 'i0',
+  'A human can export the changes since the last export as a diff',
+  ['Spec', 'Completion'], small([
+    { task: "Persist a 'last export' snapshot at a known location", complete: true },
+    { task: 'Compute the delta (added / changed / removed nodes, connections, fields) since the snapshot', complete: true },
+    'Write the diff to the known location',
+  ]),
+  fields({
+    outcome:
+      'Instead of exporting the whole tree, a human exports only what changed since the previous export — a ' +
+      'compact diff of added, modified, and removed nodes, connections, and fields — ready to hand to an agent.',
+    spec:
+      "Track a 'last export' snapshot; export-diff computes the delta against it and writes the diff out. The " +
+      'diff is self-describing enough for an agent to read and for import-diff to apply. DECISION: operate in ' +
+      "the live project's hash space (diff live-vs-saved-snapshot, edit that export), so no generator-hash <-> " +
+      'live-hash remapping is needed; the generator is only the initial seed.',
+    completionCriteria: [
+      crit('A human clicks once and gets a diff of only what changed since the last export', 'human'),
+      crit('Applying the exported diff to the prior snapshot reproduces the current tree (round-trip)',
+        'executable'),
+    ],
+    artifacts: [
+      artifact('workproduct', 'projectDiff.ts — compute/apply diffs + touched-set (pure, 7 tests)',
+        'web/src/migrating/projectDiff.ts'),
+    ],
+  }))
+
+node('i2', 'i0',
+  'A human can import LLM-generated diffs into an existing tree',
+  ['Spec', 'Completion'], small([
+    { task: 'Parse the diff format (shared with export-diff)', complete: true },
+    'Resolve node references against the existing tree; report unresolved',
+    { task: 'Apply adds / updates / removes in place (zome create/update/delete + ref remap)', complete: true },
+  ]),
+  fields({
+    outcome:
+      "An agent's proposed changes arrive as a diff and are applied onto the existing tree in place — adding, " +
+      'updating, and removing the referenced nodes, connections, and fields — without recreating the project.',
+    spec:
+      'Import-diff reads the same format export-diff produces, resolves references against the existing tree, ' +
+      'and applies the changes idempotently. Unresolved references are reported, never silently dropped. The ' +
+      'executor is dependency-injected so its ordering + remapping logic is unit-tested without a conductor.',
+    completionCriteria: [
+      crit("A human clicks once to apply an agent's diff and the existing tree updates in place", 'human'),
+      crit('Applying a diff to the tree it was generated against is idempotent and yields the expected nodes',
+        'executable'),
+    ],
+    artifacts: [
+      artifact('workproduct', 'applyProjectDiff.ts — zome-level diff executor (create/update/delete + remap), DI + 7 tests',
+        'web/src/migrating/applyProjectDiff.ts'),
+    ],
+  }))
+
+node('i3', 'i0',
+  'Imported diffs light up the tree where changes happened',
+  ['Spec', 'Completion'], small([
+    { task: 'Mark the nodes / connections touched by an applied diff', complete: true },
+    { task: 'Render the touched set as a transient highlight on the map', complete: true },
+    { task: 'Provide a clear / acknowledge affordance', complete: true },
+  ], true),
+  fields({
+    outcome:
+      'After importing a diff, the nodes and connections that changed are highlighted on the map, so a human ' +
+      'sees at a glance what the agent worked on; the highlight can be acknowledged or cleared once reviewed.',
+    spec:
+      'Record the set of nodes/connections an applied diff touched and render them in a transient "changed" ' +
+      'state on the map, with a way to clear it.',
+    completionCriteria: [
+      crit('After an import, the changed nodes are clearly highlighted and the human can tell what changed',
+        'human'),
+      crit('The set of highlighted nodes equals the set of nodes the diff touched', 'executable'),
+    ],
+  }))
+
+node('i4', 'i0',
+  'Export and import are single-click against a known location',
+  ['Spec', 'Completion'], small([
+    'Define a known, configurable location for the diff + last-export snapshot',
+    { task: 'Single-click export-diff and import-diff buttons', complete: true },
+    'No file picker on the common path',
+  ]),
+  fields({
+    outcome:
+      'Export-diff and import-diff each happen with a single click, reading and writing a known location, so a ' +
+      'human can advance the loop repeatedly — export, run the agent, import — without dialogs or manual file ' +
+      'wrangling.',
+    spec:
+      'A fixed, configurable known location holds the latest diff and the last-export snapshot. Export and ' +
+      'import are single buttons; the common path needs no file picker.',
+    completionCriteria: [
+      crit('A human advances the agent loop by clicking export, running the agent, clicking import — no file ' +
+        'dialogs', 'human'),
+      crit('Export and import resolve the known location without prompting; the round-trip works headlessly',
+        'executable'),
+    ],
   }))
 
 // BRANCH A: typed fields (modifications #4, #5) -------------------------------
