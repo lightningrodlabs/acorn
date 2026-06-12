@@ -1,17 +1,21 @@
 // Temporary floating diff tools, bottom-left next to "Report Issue".
 .agent-diff-tools {
+  position: relative;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.4rem;
-  flex-wrap: nowrap;
 
-  // status sits to the RIGHT of the buttons, not underneath them
+  // status floats ABOVE the buttons (absolute) so it never displaces them
   .agent-diff-status {
-    margin-left: 0.25rem;
-    max-width: 20rem;
-    padding: 0.4rem 0.5rem;
-    border-radius: 0.25rem;
-    background: rgba(0, 0, 0, 0.04);
+    position: absolute;
+    bottom: calc(100% + 0.4rem);
+    left: 0;
+    max-width: 24rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.35rem;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     font-size: 0.78rem;
     line-height: 1.35;
     white-space: pre-wrap;

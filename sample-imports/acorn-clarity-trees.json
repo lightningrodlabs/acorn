@@ -20,7 +20,7 @@
       "timestampUpdated": null,
       "scope": {
         "Uncertain": {
-          "smallsEstimate": 37,
+          "smallsEstimate": 40,
           "timeFrame": null,
           "inBreakdown": true
         }
@@ -93,7 +93,7 @@
       "timestampUpdated": null,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
           "taskList": [
             {
@@ -101,7 +101,7 @@
               "task": "Parse the diff format (shared with export-diff)"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Resolve node references against the existing tree; report unresolved"
             },
             {
@@ -127,36 +127,20 @@
       "timestampCreated": 1772322004,
       "timestampUpdated": null,
       "scope": {
-        "Small": {
-          "achievementStatus": "Achieved",
-          "targetDate": null,
-          "taskList": [
-            {
-              "complete": true,
-              "task": "Mark the nodes / connections touched by an applied diff"
-            },
-            {
-              "complete": true,
-              "task": "Render the touched set as a transient highlight on the map"
-            },
-            {
-              "complete": true,
-              "task": "Provide a clear / acknowledge affordance"
-            }
-          ]
+        "Uncertain": {
+          "smallsEstimate": 3,
+          "timeFrame": null,
+          "inBreakdown": true
         }
       },
-      "tags": [
-        "uhCEkuxepvqx-daFJn_hrWfLU_E0FvJ6ZP6e9QYGKa9Cjag951BAO",
-        "uhCEkYNGQNbdm7E-tNFTCLGvF3Y-gBlnFtboQuEG5t5ZpLQhAF7sb"
-      ],
-      "description": "{\n  \"outcome\": \"After importing a diff, the nodes and connections that changed are highlighted on the map, so a human sees at a glance what the agent worked on; the highlight can be acknowledged or cleared once reviewed.\",\n  \"spec\": \"Record the set of nodes/connections an applied diff touched and render them in a transient \\\"changed\\\" state on the map, with a way to clear it.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"After an import, the changed nodes are clearly highlighted and the human can tell what changed\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"The set of highlighted nodes equals the set of nodes the diff touched\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
+      "tags": [],
+      "description": "{\n  \"outcome\": \"After importing a diff, the nodes that changed are highlighted on the map so a human sees at a glance what the agent worked on. Highlighting means making the applied differences visible: a glowy outline marks which nodes changed; a +/- green/red badge shows counts of additions, edits, and deletions; the view fits ALL changed nodes with no particular node selected; and both field changes and leaf checklist changes count. (Right-sized into separate leaves so each is built and verified on its own.)\"\n}",
       "isImported": true,
       "githubLink": "",
       "actionHash": "uhCEkjkWOnQo0SS3r_e_sUP1-gj4HcnvY0GTpgm_KO5881DDodyQ6"
     },
-    "uhCEky7BIR1FLkNFivC2Ae_p9dsHLMUuz2UuSWmutCqP9R3R6YnWe": {
-      "content": "Export and import are single-click against a known location",
+    "uhCEkrkvuEyfGiHjJks95NttfXDE4kN0QJssF2n1ysLY58iHndgok": {
+      "content": "Changed nodes show a glowy outline, distinct from selection",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
       "timestampCreated": 1772322005,
@@ -168,6 +152,134 @@
           "taskList": [
             {
               "complete": false,
+              "task": "Add a 'recently changed' ephemeral set (separate from selection)"
+            },
+            {
+              "complete": false,
+              "task": "Render a glow outline for changed nodes in drawOutcome"
+            },
+            {
+              "complete": false,
+              "task": "Clear it on acknowledge / background click"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCEkuxepvqx-daFJn_hrWfLU_E0FvJ6ZP6e9QYGKa9Cjag951BAO",
+        "uhCEkYNGQNbdm7E-tNFTCLGvF3Y-gBlnFtboQuEG5t5ZpLQhAF7sb"
+      ],
+      "description": "{\n  \"outcome\": \"After a diff is applied, each touched node renders a transient glowy outline — visually distinct from the normal selection border — so a human sees which nodes the agent changed, with no selection side-effects (no greying, no lingering selection).\",\n  \"spec\": \"A dedicated ephemeral set of changed outcome hashes, threaded through selectRenderProps into drawOutcome as a distinct glow (not the selection border), cleared on acknowledge.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Changed nodes glow distinctly; unchanged nodes are unaffected; acknowledging clears it\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
+      "isImported": true,
+      "githubLink": "",
+      "actionHash": "uhCEkrkvuEyfGiHjJks95NttfXDE4kN0QJssF2n1ysLY58iHndgok"
+    },
+    "uhCEkaikMGqxOCdorIQzz8I0Bpa_Wo5S600w1V6whEGCRyuTbOkhy": {
+      "content": "A +/- badge shows how many additions, edits, and deletions a diff made",
+      "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
+      "editorAgentPubKey": null,
+      "timestampCreated": 1772322006,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Compute add / edit / delete counts from the diff"
+            },
+            {
+              "complete": false,
+              "task": "Render a +/- green/red badge"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCEkuxepvqx-daFJn_hrWfLU_E0FvJ6ZP6e9QYGKa9Cjag951BAO",
+        "uhCEkYNGQNbdm7E-tNFTCLGvF3Y-gBlnFtboQuEG5t5ZpLQhAF7sb"
+      ],
+      "description": "{\n  \"outcome\": \"The applied diff's change counts render as a +/- green/red badge (e.g. +2 ~1 -0), so the human sees the scale of the change, not just where.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"The badge shows correct +/~/- counts after an apply\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
+      "isImported": true,
+      "githubLink": "",
+      "actionHash": "uhCEkaikMGqxOCdorIQzz8I0Bpa_Wo5S600w1V6whEGCRyuTbOkhy"
+    },
+    "uhCEk1avTL7kZKpTn4IAb2BOSoHOdGX-fRQizlwyKSvInBmiZdaRG": {
+      "content": "The view zooms to fit all changed nodes, with none selected",
+      "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
+      "editorAgentPubKey": null,
+      "timestampCreated": 1772322007,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Compute the bounding box of the changed nodes from the layout"
+            },
+            {
+              "complete": false,
+              "task": "Set the viewport to fit that box with padding"
+            },
+            {
+              "complete": false,
+              "task": "Select no single node"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCEkuxepvqx-daFJn_hrWfLU_E0FvJ6ZP6e9QYGKa9Cjag951BAO",
+        "uhCEkYNGQNbdm7E-tNFTCLGvF3Y-gBlnFtboQuEG5t5ZpLQhAF7sb"
+      ],
+      "description": "{\n  \"outcome\": \"After a diff is applied, the viewport zooms/pans to fit ALL changed nodes (their bounding box), with no particular node selected — replacing the pan-to-one that jumped to blank space.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"All changed nodes are framed in view; nothing is singled out / selected\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
+      "isImported": true,
+      "githubLink": "",
+      "actionHash": "uhCEk1avTL7kZKpTn4IAb2BOSoHOdGX-fRQizlwyKSvInBmiZdaRG"
+    },
+    "uhCEkoe0xV-HbOMDZVx-xNGnKh2eVXg1D7HCuuIkCz_o40eaFPjyO": {
+      "content": "Field changes and leaf checklist changes both count as changed",
+      "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
+      "editorAgentPubKey": null,
+      "timestampCreated": 1772322008,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "Achieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": true,
+              "task": "computeProjectDiff compares the whole outcome (fields + taskList)"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCEkuxepvqx-daFJn_hrWfLU_E0FvJ6ZP6e9QYGKa9Cjag951BAO",
+        "uhCEkYNGQNbdm7E-tNFTCLGvF3Y-gBlnFtboQuEG5t5ZpLQhAF7sb"
+      ],
+      "description": "{\n  \"outcome\": \"A node counts as changed whether its fields changed or its leaf checklist (tasks) changed — the diff compares the whole outcome, so both register.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Flipping a task's complete flag registers the node as changed\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
+      "isImported": true,
+      "githubLink": "",
+      "actionHash": "uhCEkoe0xV-HbOMDZVx-xNGnKh2eVXg1D7HCuuIkCz_o40eaFPjyO"
+    },
+    "uhCEky7BIR1FLkNFivC2Ae_p9dsHLMUuz2UuSWmutCqP9R3R6YnWe": {
+      "content": "Export and import are single-click against a known location",
+      "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
+      "editorAgentPubKey": null,
+      "timestampCreated": 1772322009,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "Achieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": true,
               "task": "Define a known, configurable location for the diff + last-export snapshot"
             },
             {
@@ -175,7 +287,7 @@
               "task": "Single-click export-diff and import-diff buttons"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "No file picker on the common path"
             }
           ]
@@ -190,11 +302,46 @@
       "githubLink": "",
       "actionHash": "uhCEky7BIR1FLkNFivC2Ae_p9dsHLMUuz2UuSWmutCqP9R3R6YnWe"
     },
+    "uhCEkNBxVJKIBPKsHpGypkxFM5Q4f_SziV7sV_5zm8kw3wBXmCtES": {
+      "content": "Applying a diff never deletes a node the agent didn't explicitly mark for removal",
+      "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
+      "editorAgentPubKey": null,
+      "timestampCreated": 1772322010,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Apply a handed diff directly (explicit adds/updates/removes); never infer deletions"
+            },
+            {
+              "complete": false,
+              "task": "For a full-tree apply, confirm each deletion separately before removing"
+            },
+            {
+              "complete": false,
+              "task": "The agent works in diffs from the latest export, not a stale full tree"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCEkuxepvqx-daFJn_hrWfLU_E0FvJ6ZP6e9QYGKa9Cjag951BAO",
+        "uhCEkYNGQNbdm7E-tNFTCLGvF3Y-gBlnFtboQuEG5t5ZpLQhAF7sb"
+      ],
+      "description": "{\n  \"outcome\": \"Applying never silently destroys work: a diff is applied exactly as written (only the nodes it names as removed are removed), and a full-tree apply surfaces every implied deletion for explicit confirmation. The agent edits from the latest export, so it never reintroduces stale state. (Learned the hard way: editing a stale full tree once deleted human-added nodes.)\",\n  \"spec\": \"Prefer applying handed diffs (explicit deltas). When diffing a full tree against current, treat missing nodes as needing per-deletion confirmation, not automatic removal.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Applying a no-removal diff cannot delete any node; a full-tree apply lists deletions for explicit confirmation\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
+      "isImported": true,
+      "githubLink": "",
+      "actionHash": "uhCEkNBxVJKIBPKsHpGypkxFM5Q4f_SziV7sV_5zm8kw3wBXmCtES"
+    },
     "uhCEkM3zC7hyRuHY6-pOPEIO1HB76wR94bKiwDUGmUWXf5BFsh3yO": {
       "content": "Every node's content is stored as an extensible set of typed clarity fields",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322006,
+      "timestampCreated": 1772322011,
       "timestampUpdated": null,
       "scope": {
         "Uncertain": {
@@ -215,7 +362,7 @@
       "content": "A node's detailed outcome statement is a field distinct from its one-line name",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322007,
+      "timestampCreated": 1772322012,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -250,7 +397,7 @@
       "content": "The outcome editor renders an editable widget for each clarity field",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322008,
+      "timestampCreated": 1772322013,
       "timestampUpdated": null,
       "scope": {
         "Uncertain": {
@@ -272,7 +419,7 @@
       "content": "The editor binds a markdown widget to each text field, with a registry composing the other field widgets",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322009,
+      "timestampCreated": 1772322014,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -311,7 +458,7 @@
       "content": "Unknown field types fall back to a raw-JSON widget so nothing is lost",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322010,
+      "timestampCreated": 1772322015,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -342,7 +489,7 @@
       "content": "A node carries a functional spec field describing required shape, not just the outcome",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322011,
+      "timestampCreated": 1772322016,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -372,7 +519,7 @@
       "content": "Completion criteria attached at any node level determine that node's achievement",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322012,
+      "timestampCreated": 1772322017,
       "timestampUpdated": null,
       "scope": {
         "Uncertain": {
@@ -391,7 +538,7 @@
       "content": "Every completion criterion names an evaluator: human, executable, or LLM",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322013,
+      "timestampCreated": 1772322018,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -430,7 +577,7 @@
       "content": "A leaf becomes Achieved as the recorded consequence of meeting a completion criterion, not a bare human toggle",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322014,
+      "timestampCreated": 1772322019,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -465,7 +612,7 @@
       "content": "A Small's achievement follows from its tasks being checked and its criteria met, not an independent toggle",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322015,
+      "timestampCreated": 1772322020,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -500,7 +647,7 @@
       "content": "Branch nodes carry integration-test completion criteria that ground their achievement, not just propagation",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322016,
+      "timestampCreated": 1772322021,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -535,7 +682,7 @@
       "content": "Executable completion criteria re-run to keep prior outcomes provably intact",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322017,
+      "timestampCreated": 1772322022,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -569,7 +716,7 @@
       "content": "Each node displays its completion verdicts, which roll up into computed achievement",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322018,
+      "timestampCreated": 1772322023,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -600,7 +747,7 @@
       "content": "A node stores computed evaluation results separately from its authored fields, and they drive its color",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322019,
+      "timestampCreated": 1772322024,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -635,7 +782,7 @@
       "content": "Every dependency declares which of three relation types it is",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322020,
+      "timestampCreated": 1772322025,
       "timestampUpdated": null,
       "scope": {
         "Uncertain": {
@@ -656,7 +803,7 @@
       "content": "Assembly is expressed as a constituted-from relation between a parent and its children",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322021,
+      "timestampCreated": 1772322026,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -686,7 +833,7 @@
       "content": "Conformance to an external standard is expressed as an informational reliance relation",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322022,
+      "timestampCreated": 1772322027,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -716,7 +863,7 @@
       "content": "Runtime carriers a node needs are expressed as embodied reliance relations",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322023,
+      "timestampCreated": 1772322028,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -747,7 +894,7 @@
       "content": "Adding a second parent to a node is the moment Acorn asks: composed-of or relies-on?",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322024,
+      "timestampCreated": 1772322029,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -783,7 +930,7 @@
       "content": "Agents build from the exported clarity tree and their results return into it",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322025,
+      "timestampCreated": 1772322030,
       "timestampUpdated": null,
       "scope": {
         "Uncertain": {
@@ -802,7 +949,7 @@
       "content": "Acorn exports a clarity tree as a deterministic, agent-consumable specification",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322026,
+      "timestampCreated": 1772322031,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -837,7 +984,7 @@
       "content": "Agents post completion verdicts with evidence back onto the nodes they worked",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322027,
+      "timestampCreated": 1772322032,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -867,7 +1014,7 @@
       "content": "Agents propose new typed outcomes and fields that humans approve in Acorn",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322028,
+      "timestampCreated": 1772322033,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -898,7 +1045,7 @@
       "content": "Every node holds a list of typed artifacts in place of a single GitHub link",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322029,
+      "timestampCreated": 1772322034,
       "timestampUpdated": null,
       "scope": {
         "Uncertain": {
@@ -919,7 +1066,7 @@
       "content": "Clarity-input artifacts such as designs, docs, and references attach to any node",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322030,
+      "timestampCreated": 1772322035,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -949,7 +1096,7 @@
       "content": "Agents attach their workproduct to nodes as output artifacts",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322031,
+      "timestampCreated": 1772322036,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -980,7 +1127,7 @@
       "content": "An in-app AI chat panel lets people build and refine clarity trees in conversation",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322032,
+      "timestampCreated": 1772322037,
       "timestampUpdated": null,
       "scope": {
         "Uncertain": {
@@ -999,7 +1146,7 @@
       "content": "The chat assistant sees the live tree as context on every exchange",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322033,
+      "timestampCreated": 1772322038,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -1030,7 +1177,7 @@
       "content": "The assistant drafts and applies typed tree edits from the conversation, pending human approval",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322034,
+      "timestampCreated": 1772322039,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -1065,7 +1212,7 @@
       "content": "The conversation that shaped a branch is retained as an artifact on that branch",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322035,
+      "timestampCreated": 1772322040,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -1096,7 +1243,7 @@
       "content": "A leaf's readiness to be a Small is computed from its clarity signals, not declared by hand",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322036,
+      "timestampCreated": 1772322041,
       "timestampUpdated": null,
       "scope": {
         "Uncertain": {
@@ -1115,7 +1262,7 @@
       "content": "Each leaf's smallness readiness is a cached gradient, recomputed from its signals and rendered as the leaf's color",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322037,
+      "timestampCreated": 1772322042,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -1150,7 +1297,7 @@
       "content": "A leaf's complexity estimate is a gradient input to its readiness",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322038,
+      "timestampCreated": 1772322043,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -1181,7 +1328,7 @@
       "content": "The spread of the change a building agent would make is a gradient input to readiness",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322039,
+      "timestampCreated": 1772322044,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -1211,7 +1358,7 @@
       "content": "The size of the human review surface is a gradient input to readiness",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322040,
+      "timestampCreated": 1772322045,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -1241,7 +1388,7 @@
       "content": "How much design latitude is still open in the spec is a gradient input to readiness",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322041,
+      "timestampCreated": 1772322046,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -1272,7 +1419,7 @@
       "content": "The absence of any evaluable completion criterion is a binary blocker on readiness",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322042,
+      "timestampCreated": 1772322047,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -1302,7 +1449,7 @@
       "content": "An unresolved open unknown is a binary blocker on readiness",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322043,
+      "timestampCreated": 1772322048,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -1332,7 +1479,7 @@
       "content": "When a leaf's readiness is low or blocked, the assistant proposes a decomposition into smaller outcomes",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322044,
+      "timestampCreated": 1772322049,
       "timestampUpdated": null,
       "scope": {
         "Small": {
@@ -1367,7 +1514,7 @@
       "content": "Multi-user co-editing works seamlessly across all changes",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
-      "timestampCreated": 1772322045,
+      "timestampCreated": 1772322050,
       "timestampUpdated": null,
       "scope": {
         "Uncertain": {
@@ -1459,7 +1606,7 @@
     "uhCEk_oHin4glJcH2QeiLTT39T8Mr1XcTL9EoTjRnguyUNRmq7vUr": {
       "parentActionHash": "uhCEkLI746hkaUxjd9kez7_Sf3oBFpHU_f7LZNvClQh8fBBTpjtr1",
       "childActionHash": "uhCEkpY8Q6BL7PMIhFiUv5AG0-KkPxFp7y0JWJBsc8xlFUyga9oMq",
-      "siblingOrder": 3,
+      "siblingOrder": 4,
       "randomizer": 1772322000009,
       "isImported": true,
       "actionHash": "uhCEk_oHin4glJcH2QeiLTT39T8Mr1XcTL9EoTjRnguyUNRmq7vUr"
@@ -1467,7 +1614,7 @@
     "uhCEk4jHRmDYWGNnXEzjhMqsxQLzLIY-JvbRltmk8blTGcgXNbVWJ": {
       "parentActionHash": "uhCEkLI746hkaUxjd9kez7_Sf3oBFpHU_f7LZNvClQh8fBBTpjtr1",
       "childActionHash": "uhCEk57Hqc9nCJCqP7iyCXeIoqnf0nW4WLbMkWs2lu6irA31qDxvp",
-      "siblingOrder": 2,
+      "siblingOrder": 3,
       "randomizer": 1772322000010,
       "isImported": true,
       "actionHash": "uhCEk4jHRmDYWGNnXEzjhMqsxQLzLIY-JvbRltmk8blTGcgXNbVWJ"
@@ -1475,7 +1622,7 @@
     "uhCEkLnbALMzq__H-rML9JyLnFCZI0nZjKhAdvb27RJABkqz6k29A": {
       "parentActionHash": "uhCEkLI746hkaUxjd9kez7_Sf3oBFpHU_f7LZNvClQh8fBBTpjtr1",
       "childActionHash": "uhCEkjkWOnQo0SS3r_e_sUP1-gj4HcnvY0GTpgm_KO5881DDodyQ6",
-      "siblingOrder": 1,
+      "siblingOrder": 2,
       "randomizer": 1772322000011,
       "isImported": true,
       "actionHash": "uhCEkLnbALMzq__H-rML9JyLnFCZI0nZjKhAdvb27RJABkqz6k29A"
@@ -1483,16 +1630,56 @@
     "uhCEkfGCki6nNX_blkJx55jUbNR-SVUW3S_PkcHsbpUtGEq1QV6_E": {
       "parentActionHash": "uhCEkLI746hkaUxjd9kez7_Sf3oBFpHU_f7LZNvClQh8fBBTpjtr1",
       "childActionHash": "uhCEky7BIR1FLkNFivC2Ae_p9dsHLMUuz2UuSWmutCqP9R3R6YnWe",
-      "siblingOrder": 0,
+      "siblingOrder": 1,
       "randomizer": 1772322000012,
       "isImported": true,
       "actionHash": "uhCEkfGCki6nNX_blkJx55jUbNR-SVUW3S_PkcHsbpUtGEq1QV6_E"
+    },
+    "uhCEkMfRo5KgsJ7PFsbralpadHSxi6xr-WH0k3VMtnTTE0I9ldzHj": {
+      "parentActionHash": "uhCEkLI746hkaUxjd9kez7_Sf3oBFpHU_f7LZNvClQh8fBBTpjtr1",
+      "childActionHash": "uhCEkNBxVJKIBPKsHpGypkxFM5Q4f_SziV7sV_5zm8kw3wBXmCtES",
+      "siblingOrder": 0,
+      "randomizer": 1772322000013,
+      "isImported": true,
+      "actionHash": "uhCEkMfRo5KgsJ7PFsbralpadHSxi6xr-WH0k3VMtnTTE0I9ldzHj"
+    },
+    "uhCEkd4b6a-2e_pKp-daipvE8mH2JwMYBLcLwihJ3qMRtJ-MQFH9K": {
+      "parentActionHash": "uhCEkjkWOnQo0SS3r_e_sUP1-gj4HcnvY0GTpgm_KO5881DDodyQ6",
+      "childActionHash": "uhCEkrkvuEyfGiHjJks95NttfXDE4kN0QJssF2n1ysLY58iHndgok",
+      "siblingOrder": 3,
+      "randomizer": 1772322000014,
+      "isImported": true,
+      "actionHash": "uhCEkd4b6a-2e_pKp-daipvE8mH2JwMYBLcLwihJ3qMRtJ-MQFH9K"
+    },
+    "uhCEkBGDFwaHzLbZfJ2JNTvXRtV1JSesjy_mqBGHp9L3wwsKNBVb6": {
+      "parentActionHash": "uhCEkjkWOnQo0SS3r_e_sUP1-gj4HcnvY0GTpgm_KO5881DDodyQ6",
+      "childActionHash": "uhCEkaikMGqxOCdorIQzz8I0Bpa_Wo5S600w1V6whEGCRyuTbOkhy",
+      "siblingOrder": 2,
+      "randomizer": 1772322000015,
+      "isImported": true,
+      "actionHash": "uhCEkBGDFwaHzLbZfJ2JNTvXRtV1JSesjy_mqBGHp9L3wwsKNBVb6"
+    },
+    "uhCEkGPllcwmhQP9kEiM83t_S4KtwjVt-x96M7T8QJlv8f2u5Ftb5": {
+      "parentActionHash": "uhCEkjkWOnQo0SS3r_e_sUP1-gj4HcnvY0GTpgm_KO5881DDodyQ6",
+      "childActionHash": "uhCEk1avTL7kZKpTn4IAb2BOSoHOdGX-fRQizlwyKSvInBmiZdaRG",
+      "siblingOrder": 1,
+      "randomizer": 1772322000016,
+      "isImported": true,
+      "actionHash": "uhCEkGPllcwmhQP9kEiM83t_S4KtwjVt-x96M7T8QJlv8f2u5Ftb5"
+    },
+    "uhCEkdognOmf-gCQbMd1QV8jN_NezwDw5I-w9PZh5T9AvGAoAv-aq": {
+      "parentActionHash": "uhCEkjkWOnQo0SS3r_e_sUP1-gj4HcnvY0GTpgm_KO5881DDodyQ6",
+      "childActionHash": "uhCEkoe0xV-HbOMDZVx-xNGnKh2eVXg1D7HCuuIkCz_o40eaFPjyO",
+      "siblingOrder": 0,
+      "randomizer": 1772322000017,
+      "isImported": true,
+      "actionHash": "uhCEkdognOmf-gCQbMd1QV8jN_NezwDw5I-w9PZh5T9AvGAoAv-aq"
     },
     "uhCEkyok4fKZsKOjlwvnPXs12L6iBDJ8fclyr2WO7b3-3DH22QjIR": {
       "parentActionHash": "uhCEkM3zC7hyRuHY6-pOPEIO1HB76wR94bKiwDUGmUWXf5BFsh3yO",
       "childActionHash": "uhCEkOeH80HSeE8nopz4ZGxgk_qg-DHR3aUaLU92re6fxcoGmkA-n",
       "siblingOrder": 2,
-      "randomizer": 1772322000013,
+      "randomizer": 1772322000018,
       "isImported": true,
       "actionHash": "uhCEkyok4fKZsKOjlwvnPXs12L6iBDJ8fclyr2WO7b3-3DH22QjIR"
     },
@@ -1500,7 +1687,7 @@
       "parentActionHash": "uhCEkM3zC7hyRuHY6-pOPEIO1HB76wR94bKiwDUGmUWXf5BFsh3yO",
       "childActionHash": "uhCEkWFlcKYfXzDGgF9WvK25sZSsS9brFd1c7daX-qCbfFQa8f3_a",
       "siblingOrder": 1,
-      "randomizer": 1772322000014,
+      "randomizer": 1772322000019,
       "isImported": true,
       "actionHash": "uhCEkgmD8ptmofK_esxiRuvTzSIiXbxSDHVAWE0Pzxqno5ExuV0uh"
     },
@@ -1508,7 +1695,7 @@
       "parentActionHash": "uhCEkM3zC7hyRuHY6-pOPEIO1HB76wR94bKiwDUGmUWXf5BFsh3yO",
       "childActionHash": "uhCEku_NNzG3NZFRZ4cTt2v4dZd4AjSzcprMW5C43aZ7SYaUWJnq1",
       "siblingOrder": 0,
-      "randomizer": 1772322000015,
+      "randomizer": 1772322000020,
       "isImported": true,
       "actionHash": "uhCEkWzzqlsQDlKJQdkBbIPWuMnjECOJ7Zlr_qRtptGsGk3kbaGzS"
     },
@@ -1516,7 +1703,7 @@
       "parentActionHash": "uhCEkWFlcKYfXzDGgF9WvK25sZSsS9brFd1c7daX-qCbfFQa8f3_a",
       "childActionHash": "uhCEkH7bt5Q2f1q0DMXZKrqxadSnQbg0si60i_d3nkPNnMRkTk0CP",
       "siblingOrder": 1,
-      "randomizer": 1772322000016,
+      "randomizer": 1772322000021,
       "isImported": true,
       "actionHash": "uhCEkmFKw0sg2JisLIk2ctdd5CuDikljKY0IIliu3IYciBNJkSWaw"
     },
@@ -1524,7 +1711,7 @@
       "parentActionHash": "uhCEkWFlcKYfXzDGgF9WvK25sZSsS9brFd1c7daX-qCbfFQa8f3_a",
       "childActionHash": "uhCEk1EkM6egXVB-G0B4BI3h2L2aDDn5wIjQqCNT21g7fDd59HX2m",
       "siblingOrder": 0,
-      "randomizer": 1772322000017,
+      "randomizer": 1772322000022,
       "isImported": true,
       "actionHash": "uhCEkc1cxAQ6bILoHvNXcCaSzX6GMmsqnYC5j-zM-uFar1L2TutpH"
     },
@@ -1532,7 +1719,7 @@
       "parentActionHash": "uhCEkubfmi2dKigGifr3bKiOaoZgC33Z56btKYZp03UFt1blmBiiE",
       "childActionHash": "uhCEklYaUoL6aBihgsjgjIYkq2vd2FBRhVqRSNAhMshcgWgqdRjvF",
       "siblingOrder": 6,
-      "randomizer": 1772322000018,
+      "randomizer": 1772322000023,
       "isImported": true,
       "actionHash": "uhCEkkk-tGQkkHd4TCJY6tPOzhWt9aAh0YOvxHrU1FR_Oy-xMyHDD"
     },
@@ -1540,7 +1727,7 @@
       "parentActionHash": "uhCEkubfmi2dKigGifr3bKiOaoZgC33Z56btKYZp03UFt1blmBiiE",
       "childActionHash": "uhCEkDANpYz4vdTXSy6N1_9h7siSMw9j5icT01OcyKzLm_3TUeb12",
       "siblingOrder": 5,
-      "randomizer": 1772322000019,
+      "randomizer": 1772322000024,
       "isImported": true,
       "actionHash": "uhCEkpSGVh18nZsVkBQsn0nrBHZCTLStJVJDVqdgqX-Iacx4wCRf4"
     },
@@ -1548,7 +1735,7 @@
       "parentActionHash": "uhCEkubfmi2dKigGifr3bKiOaoZgC33Z56btKYZp03UFt1blmBiiE",
       "childActionHash": "uhCEkBdkxZ6g2Dr5IUXhzblrbYfV-Mk6HLZsGBu-F3Qb51GGSYC-c",
       "siblingOrder": 4,
-      "randomizer": 1772322000020,
+      "randomizer": 1772322000025,
       "isImported": true,
       "actionHash": "uhCEkkVFrFaxPxaU5pFpYL1qnmqRkqU4scduBwbzC9bsUK5fUsvQ2"
     },
@@ -1556,7 +1743,7 @@
       "parentActionHash": "uhCEkubfmi2dKigGifr3bKiOaoZgC33Z56btKYZp03UFt1blmBiiE",
       "childActionHash": "uhCEkSPOeNgzPHckRmH1P44qa61Fz646ksRrKC_JPG03Qk61Tqu5t",
       "siblingOrder": 3,
-      "randomizer": 1772322000021,
+      "randomizer": 1772322000026,
       "isImported": true,
       "actionHash": "uhCEkj_XmyFUhQOZeP77Mle0tyhmpoZnZDKlYpoHW70YRlqCUeKLy"
     },
@@ -1564,7 +1751,7 @@
       "parentActionHash": "uhCEkubfmi2dKigGifr3bKiOaoZgC33Z56btKYZp03UFt1blmBiiE",
       "childActionHash": "uhCEkwXS03lXAIb4W2DxnXnCzAkORjvi3LxP46zR0FvhE1mamCeHI",
       "siblingOrder": 2,
-      "randomizer": 1772322000022,
+      "randomizer": 1772322000027,
       "isImported": true,
       "actionHash": "uhCEkUZ5ZNedCheBW8imHMBBvNUEiJy1ZtCapWn9R8qpx2jZAysxi"
     },
@@ -1572,7 +1759,7 @@
       "parentActionHash": "uhCEkubfmi2dKigGifr3bKiOaoZgC33Z56btKYZp03UFt1blmBiiE",
       "childActionHash": "uhCEk6YIduSUC1SIFSvuKqVuLFIhTYi94Ko1gkGTOhB8jaNrH_wcj",
       "siblingOrder": 1,
-      "randomizer": 1772322000023,
+      "randomizer": 1772322000028,
       "isImported": true,
       "actionHash": "uhCEk5kMulZgRdAhTSUV5IdkECxLm7sYoTGCFLoGfV4rlSm7--j-Q"
     },
@@ -1580,7 +1767,7 @@
       "parentActionHash": "uhCEkubfmi2dKigGifr3bKiOaoZgC33Z56btKYZp03UFt1blmBiiE",
       "childActionHash": "uhCEkieAibYGMcvtn1lyRf_1msc9edH-g4BWyAF5Pfme3R8ymqLFD",
       "siblingOrder": 0,
-      "randomizer": 1772322000024,
+      "randomizer": 1772322000029,
       "isImported": true,
       "actionHash": "uhCEkKxb1gc3q28HsYG1b6oBlPXcEVQcg8WZpUex3SWZb6QVFpdZt"
     },
@@ -1588,7 +1775,7 @@
       "parentActionHash": "uhCEkBPTJb73-OqxC2VjRK9YXI2utRetaba9YAedylZ0iuigEx1kE",
       "childActionHash": "uhCEk8bxglFhjBpQ_GFBS_hvEOEAR0gLC7aHpBs_KSM6xJXalrc15",
       "siblingOrder": 3,
-      "randomizer": 1772322000025,
+      "randomizer": 1772322000030,
       "isImported": true,
       "actionHash": "uhCEkYe5xFwDi4Trf-tz2UFWPDmjG07GZQQVsP9TxjW1Kbj3gjwGp"
     },
@@ -1596,7 +1783,7 @@
       "parentActionHash": "uhCEkBPTJb73-OqxC2VjRK9YXI2utRetaba9YAedylZ0iuigEx1kE",
       "childActionHash": "uhCEkfaM_7AVsyA137xP7ZD3jrSUiEFviPY3BLICdZJXBbj8ZgyrD",
       "siblingOrder": 2,
-      "randomizer": 1772322000026,
+      "randomizer": 1772322000031,
       "isImported": true,
       "actionHash": "uhCEkwtWDZzg6GYkPWpYaS3VJdmK1jf-ZJQbmFBPKrnhM9ktDnKgB"
     },
@@ -1604,7 +1791,7 @@
       "parentActionHash": "uhCEkBPTJb73-OqxC2VjRK9YXI2utRetaba9YAedylZ0iuigEx1kE",
       "childActionHash": "uhCEkRMdCYEIMTKZxRCnqcWlk01Zgh5n9q7ogxP7rloxb3StIX18s",
       "siblingOrder": 1,
-      "randomizer": 1772322000027,
+      "randomizer": 1772322000032,
       "isImported": true,
       "actionHash": "uhCEk5lfnjxUQVz4act9Y9PfInfVqvItsr1c-NE904Mpgktc0UBxv"
     },
@@ -1612,7 +1799,7 @@
       "parentActionHash": "uhCEkBPTJb73-OqxC2VjRK9YXI2utRetaba9YAedylZ0iuigEx1kE",
       "childActionHash": "uhCEkysNzgdb5hWzDyHHTWWHrRQXPmU3SvZPBn5mWH_--W0DCqYGJ",
       "siblingOrder": 0,
-      "randomizer": 1772322000028,
+      "randomizer": 1772322000033,
       "isImported": true,
       "actionHash": "uhCEkMplf4CNQUNvaGv_jIB-e6cgcgU-OPY_Jm_GxO-RHcjs3zMgr"
     },
@@ -1620,7 +1807,7 @@
       "parentActionHash": "uhCEkPA8j-8QAQbe93fp7y07_Mge2fOjSt6D6cx967whw1gG1dSlU",
       "childActionHash": "uhCEk99qiDBvARFAXLlUODKDs-CRela7JvKBVmw741yOiP_Dt9o4c",
       "siblingOrder": 2,
-      "randomizer": 1772322000029,
+      "randomizer": 1772322000034,
       "isImported": true,
       "actionHash": "uhCEkmQmaPR5oMcj0Qo3_7ipsjw4Rod33TSHzM45tkMDZaXxQOWZO"
     },
@@ -1628,7 +1815,7 @@
       "parentActionHash": "uhCEkPA8j-8QAQbe93fp7y07_Mge2fOjSt6D6cx967whw1gG1dSlU",
       "childActionHash": "uhCEkhYaq6lXWDI5QgOx5t447WCC2uPGtAV0KGwe7bPsh4FsuJSxh",
       "siblingOrder": 1,
-      "randomizer": 1772322000030,
+      "randomizer": 1772322000035,
       "isImported": true,
       "actionHash": "uhCEkyQnw7RaRlNyuXWhxYyzbcIVI20EDDuWnWB8i3JBtyRMvb9R6"
     },
@@ -1636,7 +1823,7 @@
       "parentActionHash": "uhCEkPA8j-8QAQbe93fp7y07_Mge2fOjSt6D6cx967whw1gG1dSlU",
       "childActionHash": "uhCEkRH7FthePVkDWxCMJ2ofyus-MEDdr_iqZHv8beqxezWJ5X7Wn",
       "siblingOrder": 0,
-      "randomizer": 1772322000031,
+      "randomizer": 1772322000036,
       "isImported": true,
       "actionHash": "uhCEkkLYfrh40HljOZ0ppGS6v5Ns5t97o8yepmQJIEiEHdTrcv2GV"
     },
@@ -1644,7 +1831,7 @@
       "parentActionHash": "uhCEkaRKR2Pl0wKGbpNrlPl9eYcjBsKclEvATONmdzF55erhK-3pX",
       "childActionHash": "uhCEk-d_L6WKleHwE6PjE4GYrg24p9NMXxtVWsO62tqbTQBd2jD1o",
       "siblingOrder": 1,
-      "randomizer": 1772322000032,
+      "randomizer": 1772322000037,
       "isImported": true,
       "actionHash": "uhCEkPmu5wxmEsH0hs3tvBsSxGv10D2CAlYlMs6oAOvlYFZ4nuXCY"
     },
@@ -1652,7 +1839,7 @@
       "parentActionHash": "uhCEkaRKR2Pl0wKGbpNrlPl9eYcjBsKclEvATONmdzF55erhK-3pX",
       "childActionHash": "uhCEkT6D8SJj-ayVNKe8zGRW49hnXu8pisQCz9uakySgdpYcu8TD5",
       "siblingOrder": 0,
-      "randomizer": 1772322000033,
+      "randomizer": 1772322000038,
       "isImported": true,
       "actionHash": "uhCEkCOBfwKXMMwY72V9cyrB2Qep7yxw1LWbaHhFegySk1WfEuI9v"
     },
@@ -1660,7 +1847,7 @@
       "parentActionHash": "uhCEk4djd7_xa2zHs-GGsN9Q0psY1ilPq_ph27tRdfEi_b4SRH3lp",
       "childActionHash": "uhCEkff_BY27vLf3lifIvNTbVRokR5i4LJn97p83Ukyoxb8etEZmz",
       "siblingOrder": 2,
-      "randomizer": 1772322000034,
+      "randomizer": 1772322000039,
       "isImported": true,
       "actionHash": "uhCEkdv5H-IwXl0U_jAMKxhCbZAXbPtjkqpKN6ijjA9SeY6IDEi_H"
     },
@@ -1668,7 +1855,7 @@
       "parentActionHash": "uhCEk4djd7_xa2zHs-GGsN9Q0psY1ilPq_ph27tRdfEi_b4SRH3lp",
       "childActionHash": "uhCEkHyfFw_3txiZd4sBlUyg1fjDOC1vtd1GtkOGrbA3U6Ny-u1Lo",
       "siblingOrder": 1,
-      "randomizer": 1772322000035,
+      "randomizer": 1772322000040,
       "isImported": true,
       "actionHash": "uhCEkwXqPTseVocAc7D7VwGKsPNUfkH1G4wT4ywcoQ5CFnFtd_WQw"
     },
@@ -1676,7 +1863,7 @@
       "parentActionHash": "uhCEk4djd7_xa2zHs-GGsN9Q0psY1ilPq_ph27tRdfEi_b4SRH3lp",
       "childActionHash": "uhCEkhWZJAzmDX4u0kE_MBw1ujvTsdU0aSJ4CPIArHkksiEFpdIcF",
       "siblingOrder": 0,
-      "randomizer": 1772322000036,
+      "randomizer": 1772322000041,
       "isImported": true,
       "actionHash": "uhCEkY4_65ynqJXI2dR11V5roNudyKI46BgcjZ3WlLH5JBhaxb78n"
     },
@@ -1684,7 +1871,7 @@
       "parentActionHash": "uhCEkGP279L7-haknjUEaxsng5UHWFj22FZxkNF-EnQkSMvIzdLuW",
       "childActionHash": "uhCEkzSpWIwi3KvfNSrdO_115eBMGfJHXuM_fFUddg1P0VJjDX7t-",
       "siblingOrder": 7,
-      "randomizer": 1772322000037,
+      "randomizer": 1772322000042,
       "isImported": true,
       "actionHash": "uhCEkopnav4ukXJ326BQ6GCYjZqj7qKa9hATfosbDvc56oJMOTbhf"
     },
@@ -1692,7 +1879,7 @@
       "parentActionHash": "uhCEkGP279L7-haknjUEaxsng5UHWFj22FZxkNF-EnQkSMvIzdLuW",
       "childActionHash": "uhCEkYY5ant3n7uWFTe2za4BtwHhNk3GrmUCuhkN1DFeYF5-r45PJ",
       "siblingOrder": 6,
-      "randomizer": 1772322000038,
+      "randomizer": 1772322000043,
       "isImported": true,
       "actionHash": "uhCEk8mejRbdu8A5F1GkDl31gwyhd5Zrhivxu2RDMW64bnnZ3lTW2"
     },
@@ -1700,7 +1887,7 @@
       "parentActionHash": "uhCEkGP279L7-haknjUEaxsng5UHWFj22FZxkNF-EnQkSMvIzdLuW",
       "childActionHash": "uhCEkJPJRXJNVN2zv8s6T6Q2vNsOypb9mO8Cfu7Ceg5P2E15UqCL3",
       "siblingOrder": 5,
-      "randomizer": 1772322000039,
+      "randomizer": 1772322000044,
       "isImported": true,
       "actionHash": "uhCEkYkHh75qQ6iEolaW7lQG_JSywJaIxtUlTc_0w50gsnjvfcvwi"
     },
@@ -1708,7 +1895,7 @@
       "parentActionHash": "uhCEkGP279L7-haknjUEaxsng5UHWFj22FZxkNF-EnQkSMvIzdLuW",
       "childActionHash": "uhCEkMTOdlAVYQXYisrEL41YyRHxqrJhxHkiHN52K6_oLoTANjjEL",
       "siblingOrder": 4,
-      "randomizer": 1772322000040,
+      "randomizer": 1772322000045,
       "isImported": true,
       "actionHash": "uhCEkfUB7FWBrvGxjMIp0QWk6SzASzhyCCAgj4bBBqYeifad58tGt"
     },
@@ -1716,7 +1903,7 @@
       "parentActionHash": "uhCEkGP279L7-haknjUEaxsng5UHWFj22FZxkNF-EnQkSMvIzdLuW",
       "childActionHash": "uhCEks53FXXbQuuefsyYmdzSmIMBQ4HlLPUfvpvo4o-Tkw7eT-mFM",
       "siblingOrder": 3,
-      "randomizer": 1772322000041,
+      "randomizer": 1772322000046,
       "isImported": true,
       "actionHash": "uhCEkjKTNgf60jYVe0pPfgWWmh4BbixZtkbNFfKtf1a-1DHm_ob0Z"
     },
@@ -1724,7 +1911,7 @@
       "parentActionHash": "uhCEkGP279L7-haknjUEaxsng5UHWFj22FZxkNF-EnQkSMvIzdLuW",
       "childActionHash": "uhCEk6_FZzxbcRcG0GVSr-RU_C9Z6zY0s33YKbXLNSJvSe6AsxAp8",
       "siblingOrder": 2,
-      "randomizer": 1772322000042,
+      "randomizer": 1772322000047,
       "isImported": true,
       "actionHash": "uhCEk1pE_ZptT-4oR3k5Tb8wJZFvLbZfwDyId7AbYCqAweztjo3b7"
     },
@@ -1732,7 +1919,7 @@
       "parentActionHash": "uhCEkGP279L7-haknjUEaxsng5UHWFj22FZxkNF-EnQkSMvIzdLuW",
       "childActionHash": "uhCEkLdUxthmdE5RQaq6fXV6bsEEDvtFY0-_exhHJUCzCu9VtY7e6",
       "siblingOrder": 1,
-      "randomizer": 1772322000043,
+      "randomizer": 1772322000048,
       "isImported": true,
       "actionHash": "uhCEkIPIwuMb49FkPmwPU7DhHsQHdtawLknLNU5DcupeJtCnVAhGz"
     },
@@ -1740,7 +1927,7 @@
       "parentActionHash": "uhCEkGP279L7-haknjUEaxsng5UHWFj22FZxkNF-EnQkSMvIzdLuW",
       "childActionHash": "uhCEkY8iQ_pjfYOJiAqdT6-sewt0OiERrd7Aaxr6PeOFUk1gu3Uif",
       "siblingOrder": 0,
-      "randomizer": 1772322000044,
+      "randomizer": 1772322000049,
       "isImported": true,
       "actionHash": "uhCEkuMkKeEqxeQ7cbZ3_VZYEsXnAjj5cswV8M1l2L2YBH37l4_Id"
     }

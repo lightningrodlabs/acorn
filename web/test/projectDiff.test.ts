@@ -4,6 +4,7 @@ import {
   isEmptyDiff,
   diffStats,
   touchedOutcomeHashes,
+  findUnresolvedReferences,
   ProjectSnapshot,
 } from '../src/migrating/projectDiff'
 
@@ -86,6 +87,28 @@ describe('projectDiff', () => {
     const diff = computeProjectDiff(prev, current)
     const touched = touchedOutcomeHashes(diff).sort()
     expect(touched).toEqual(['a', 'b']) // b added; a + b are the new connection endpoints
+  })
+
+  test('findUnresolvedReferences flags connection endpoints that point nowhere', () => {
+    const base = snapshot({ outcomes: { a: outcome('a', 'A') } })
+    const current = snapshot({
+      outcomes: { a: outcome('a', 'A'), b: outcome('b', 'B') }, // b added
+      connections: {
+        ok: connection('ok', 'a', 'b'), // both resolve (a in base, b added)
+        bad: connection('bad', 'a', 'ghost'), // ghost resolves to nothing
+      },
+    })
+    const diff = computeProjectDiff(base, current)
+    expect(findUnresolvedReferences(diff, base)).toEqual(['ghost'])
+  })
+
+  test('findUnresolvedReferences returns empty for a clean diff', () => {
+    const base = snapshot({ outcomes: { a: outcome('a', 'A'), b: outcome('b', 'B') } })
+    const current = snapshot({
+      outcomes: { a: outcome('a', 'A'), b: outcome('b', 'B'), c: outcome('c', 'C') },
+      connections: { x: connection('x', 'a', 'c') },
+    })
+    expect(findUnresolvedReferences(computeProjectDiff(base, current), base)).toEqual([])
   })
 
   test('diffStats reports per-collection counts', () => {

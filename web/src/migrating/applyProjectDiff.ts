@@ -16,11 +16,7 @@ import { getAppWs } from '../hcWebsockets'
 import { createProjectsZomeApi } from './import/zomeApiCreators'
 import { cellIdFromString } from '../utils'
 import { ActionHashB64, CellIdString } from '../types/shared'
-import {
-  ProjectDiff,
-  DiffCollection,
-  touchedOutcomeHashes,
-} from './projectDiff'
+import { ProjectDiff, DiffCollection } from './projectDiff'
 
 import {
   createOutcome,
@@ -103,6 +99,17 @@ export async function internalApplyProjectDiffToCell(
   projectsZomeApi: ProjectsZomeApi
 ): Promise<ApplyDiffResult> {
   const hashMap: HashMap = {}
+  // POST-apply outcome hashes we touched, for the "light up" highlight. Built from
+  // the hashes the zome actually returns (not the pre-apply diff hashes), so an
+  // updated node highlights at its real current hash.
+  const touched = new Set<ActionHashB64>()
+  const collectTouched = (key: DiffCollection, wire: any, payload: any) => {
+    if (key === 'outcomes') touched.add(wire.actionHash)
+    else if (key === 'connections') {
+      if (payload?.parentActionHash) touched.add(payload.parentActionHash)
+      if (payload?.childActionHash) touched.add(payload.childActionHash)
+    }
+  }
 
   // 1) CREATE added, dependencies first; record placeholder -> live for remapping.
   for (const c of COLLECTIONS) {
@@ -114,6 +121,7 @@ export async function internalApplyProjectDiffToCell(
       const wire = await (projectsZomeApi as any)[c.api].create(cellId, payload)
       dispatch(c.create(cellIdString, wire))
       hashMap[oldHash] = wire.actionHash
+      collectTouched(c.key, wire, payload)
     }
   }
 
@@ -129,6 +137,7 @@ export async function internalApplyProjectDiffToCell(
         actionHash: hash,
       })
       dispatch(c.update(cellIdString, wire))
+      collectTouched(c.key, wire, payload)
     }
   }
 
@@ -140,9 +149,7 @@ export async function internalApplyProjectDiffToCell(
     }
   }
 
-  // touched outcomes, remapped to their live hashes, for the highlight
-  const touchedOutcomes = touchedOutcomeHashes(diff).map((h) => hashMap[h] ?? h)
-  return { hashMap, touchedOutcomes }
+  return { hashMap, touchedOutcomes: [...touched] }
 }
 
 export async function applyProjectDiffToCell(

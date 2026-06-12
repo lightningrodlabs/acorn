@@ -54,6 +54,58 @@ module.exports = {
     allowedHosts: 'all',
     static: './dist',
     hot: true, // hot module reloading
+    // dev-only file bridge for the agent diff tools (branch I): read/write the
+    // exchange file under <tmp>/acorn-clarity so the renderer needs no fs or File
+    // System Access API (both blocked in the dev iframe context).
+    setupMiddlewares: (middlewares, devServer) => {
+      const fs = require('fs')
+      const path = require('path')
+      // fixed path (NOT os.tmpdir(): under `nix develop` TMPDIR is per-session)
+      const dir = '/tmp/acorn-clarity'
+      const fileFor = (name) =>
+        path.join(dir, path.basename(String(name)).replace(/[^a-z0-9._-]/gi, '_'))
+      const json = (res, code, obj) => {
+        res.statusCode = code
+        res.setHeader('content-type', 'application/json')
+        res.end(JSON.stringify(obj))
+      }
+      // unshift so it runs BEFORE the SPA history-fallback (which would otherwise
+      // serve index.html for the GET). Raw req/res — no express route ordering.
+      middlewares.unshift({
+        name: 'acorn-diff-bridge',
+        middleware: (req, res, next) => {
+          const m = req.url.match(/^\/__acorn_diff\/([^/?#]+)/)
+          if (!m) return next()
+          const file = fileFor(decodeURIComponent(m[1]))
+          if (req.method === 'GET') {
+            try {
+              if (!fs.existsSync(file)) return json(res, 404, { error: 'not found' })
+              res.setHeader('content-type', 'application/json')
+              return res.end(fs.readFileSync(file, 'utf8'))
+            } catch (e) {
+              return json(res, 500, { error: String(e) })
+            }
+          }
+          if (req.method === 'POST') {
+            let body = ''
+            req.setEncoding('utf8')
+            req.on('data', (c) => (body += c))
+            req.on('end', () => {
+              try {
+                fs.mkdirSync(dir, { recursive: true })
+                fs.writeFileSync(file, body)
+                json(res, 200, { ok: true, path: file })
+              } catch (e) {
+                json(res, 500, { error: String(e) })
+              }
+            })
+            return
+          }
+          next()
+        },
+      })
+      return middlewares
+    },
   },
   module: {
     rules: [

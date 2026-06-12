@@ -143,7 +143,7 @@ function node(key: string, parent: string | null, content: string, tags: string[
 // ROOT ------------------------------------------------------------------------
 node('root', null,
   'Acorn renders clarity trees whose every node guides an agent toward production-ready software',
-  [], uncertain(37),
+  [], uncertain(40),
   fields({
     outcome:
       'Acorn renders clarity trees: every node is a positive target-state outcome carrying typed clarity ' +
@@ -214,9 +214,9 @@ node('i2', 'i0',
   'A human can import LLM-generated diffs into an existing tree',
   ['Spec', 'Completion'], small([
     { task: 'Parse the diff format (shared with export-diff)', complete: true },
-    'Resolve node references against the existing tree; report unresolved',
+    { task: 'Resolve node references against the existing tree; report unresolved', complete: true },
     { task: 'Apply adds / updates / removes in place (zome create/update/delete + ref remap)', complete: true },
-  ]),
+  ], true),
   fields({
     outcome:
       "An agent's proposed changes arrive as a diff and are applied onto the existing tree in place — adding, " +
@@ -236,34 +236,91 @@ node('i2', 'i0',
     ],
   }))
 
+// i3 right-sized into a branch over four independently-built/verified leaves
 node('i3', 'i0',
   'Imported diffs light up the tree where changes happened',
+  [], uncertain(3),
+  fields({
+    outcome:
+      'After importing a diff, the nodes that changed are highlighted on the map so a human sees at a glance ' +
+      'what the agent worked on. Highlighting means making the applied differences visible: a glowy outline ' +
+      'marks which nodes changed; a +/- green/red badge shows counts of additions, edits, and deletions; the ' +
+      'view fits ALL changed nodes with no particular node selected; and both field changes and leaf checklist ' +
+      'changes count. (Right-sized into separate leaves so each is built and verified on its own.)',
+  }))
+
+node('i3a', 'i3',
+  'Changed nodes show a glowy outline, distinct from selection',
   ['Spec', 'Completion'], small([
-    { task: 'Mark the nodes / connections touched by an applied diff', complete: true },
-    { task: 'Render the touched set as a transient highlight on the map', complete: true },
-    { task: 'Provide a clear / acknowledge affordance', complete: true },
+    "Add a 'recently changed' ephemeral set (separate from selection)",
+    'Render a glow outline for changed nodes in drawOutcome',
+    'Clear it on acknowledge / background click',
+  ]),
+  fields({
+    outcome:
+      'After a diff is applied, each touched node renders a transient glowy outline — visually distinct from the ' +
+      'normal selection border — so a human sees which nodes the agent changed, with no selection side-effects ' +
+      '(no greying, no lingering selection).',
+    spec:
+      'A dedicated ephemeral set of changed outcome hashes, threaded through selectRenderProps into drawOutcome ' +
+      'as a distinct glow (not the selection border), cleared on acknowledge.',
+    completionCriteria: [
+      crit('Changed nodes glow distinctly; unchanged nodes are unaffected; acknowledging clears it', 'human'),
+    ],
+  }))
+
+node('i3b', 'i3',
+  'A +/- badge shows how many additions, edits, and deletions a diff made',
+  ['Spec', 'Completion'], small([
+    'Compute add / edit / delete counts from the diff',
+    'Render a +/- green/red badge',
+  ]),
+  fields({
+    outcome:
+      "The applied diff's change counts render as a +/- green/red badge (e.g. +2 ~1 -0), so the human sees the " +
+      'scale of the change, not just where.',
+    completionCriteria: [
+      crit('The badge shows correct +/~/- counts after an apply', 'human'),
+    ],
+  }))
+
+node('i3c', 'i3',
+  'The view zooms to fit all changed nodes, with none selected',
+  ['Spec', 'Completion'], small([
+    'Compute the bounding box of the changed nodes from the layout',
+    'Set the viewport to fit that box with padding',
+    'Select no single node',
+  ]),
+  fields({
+    outcome:
+      'After a diff is applied, the viewport zooms/pans to fit ALL changed nodes (their bounding box), with no ' +
+      'particular node selected — replacing the pan-to-one that jumped to blank space.',
+    completionCriteria: [
+      crit('All changed nodes are framed in view; nothing is singled out / selected', 'human'),
+    ],
+  }))
+
+node('i3d', 'i3',
+  'Field changes and leaf checklist changes both count as changed',
+  ['Spec', 'Completion'], small([
+    { task: 'computeProjectDiff compares the whole outcome (fields + taskList)', complete: true },
   ], true),
   fields({
     outcome:
-      'After importing a diff, the nodes and connections that changed are highlighted on the map, so a human ' +
-      'sees at a glance what the agent worked on; the highlight can be acknowledged or cleared once reviewed.',
-    spec:
-      'Record the set of nodes/connections an applied diff touched and render them in a transient "changed" ' +
-      'state on the map, with a way to clear it.',
+      'A node counts as changed whether its fields changed or its leaf checklist (tasks) changed — the diff ' +
+      'compares the whole outcome, so both register.',
     completionCriteria: [
-      crit('After an import, the changed nodes are clearly highlighted and the human can tell what changed',
-        'human'),
-      crit('The set of highlighted nodes equals the set of nodes the diff touched', 'executable'),
+      crit("Flipping a task's complete flag registers the node as changed", 'executable'),
     ],
   }))
 
 node('i4', 'i0',
   'Export and import are single-click against a known location',
   ['Spec', 'Completion'], small([
-    'Define a known, configurable location for the diff + last-export snapshot',
+    { task: 'Define a known, configurable location for the diff + last-export snapshot', complete: true },
     { task: 'Single-click export-diff and import-diff buttons', complete: true },
-    'No file picker on the common path',
-  ]),
+    { task: 'No file picker on the common path', complete: true },
+  ], true),
   fields({
     outcome:
       'Export-diff and import-diff each happen with a single click, reading and writing a known location, so a ' +
@@ -277,6 +334,28 @@ node('i4', 'i0',
         'dialogs', 'human'),
       crit('Export and import resolve the known location without prompting; the round-trip works headlessly',
         'executable'),
+    ],
+  }))
+
+node('i5', 'i0',
+  "Applying a diff never deletes a node the agent didn't explicitly mark for removal",
+  ['Spec', 'Completion'], small([
+    'Apply a handed diff directly (explicit adds/updates/removes); never infer deletions',
+    'For a full-tree apply, confirm each deletion separately before removing',
+    'The agent works in diffs from the latest export, not a stale full tree',
+  ]),
+  fields({
+    outcome:
+      'Applying never silently destroys work: a diff is applied exactly as written (only the nodes it names as ' +
+      'removed are removed), and a full-tree apply surfaces every implied deletion for explicit confirmation. ' +
+      'The agent edits from the latest export, so it never reintroduces stale state. (Learned the hard way: ' +
+      'editing a stale full tree once deleted human-added nodes.)',
+    spec:
+      'Prefer applying handed diffs (explicit deltas). When diffing a full tree against current, treat missing ' +
+      'nodes as needing per-deletion confirmation, not automatic removal.',
+    completionCriteria: [
+      crit('Applying a no-removal diff cannot delete any node; a full-tree apply lists deletions for explicit ' +
+        'confirmation', 'human'),
     ],
   }))
 

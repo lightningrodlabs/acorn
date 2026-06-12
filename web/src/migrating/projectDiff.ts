@@ -121,6 +121,43 @@ export function diffStats(
 }
 
 /**
+ * References in a diff that resolve to no outcome — neither present in the base
+ * snapshot (minus what the diff removes) nor newly added by the diff. These are the
+ * "unresolved references" that would otherwise produce a dangling/failed apply, so
+ * the caller can report them and refuse instead.
+ */
+export function findUnresolvedReferences(
+  diff: ProjectDiff,
+  base: ProjectSnapshot
+): ActionHash[] {
+  const removed = new Set(diff.outcomes.removed)
+  const known = new Set<ActionHash>([
+    ...Object.keys(base.outcomes ?? {}).filter((h) => !removed.has(h)),
+    ...Object.keys(diff.outcomes.added),
+  ])
+  const missing = new Set<ActionHash>()
+  const check = (hash?: ActionHash) => {
+    if (hash && !known.has(hash)) missing.add(hash)
+  }
+  for (const conn of [
+    ...Object.values(diff.connections.added),
+    ...Object.values(diff.connections.updated),
+  ]) {
+    check(conn?.parentActionHash)
+    check(conn?.childActionHash)
+  }
+  for (const collection of ['outcomeMembers', 'outcomeComments', 'entryPoints'] as const) {
+    for (const entry of [
+      ...Object.values(diff[collection].added),
+      ...Object.values(diff[collection].updated),
+    ]) {
+      check(entry?.outcomeActionHash)
+    }
+  }
+  return [...missing]
+}
+
+/**
  * The set of outcome action-hashes a diff touched — used to "light up" the tree
  * after an import. Includes outcomes added/updated directly, plus the endpoints of
  * any added/updated connections (so a re-parented or newly-linked node lights up
