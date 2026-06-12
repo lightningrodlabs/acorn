@@ -55,10 +55,10 @@
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "timestampCreated": 1772322002,
-      "timestampUpdated": 1781296242,
+      "timestampUpdated": 1781303039,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
           "taskList": [
             {
@@ -70,7 +70,7 @@
               "task": "Compute the delta (added / changed / removed nodes, connections, fields) since the snapshot"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Write the diff to the known location"
             }
           ]
@@ -125,7 +125,7 @@
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "timestampCreated": 1772322004,
-      "timestampUpdated": 1781290359,
+      "timestampUpdated": 1781302255,
       "scope": {
         "Uncertain": {
           "smallsEstimate": 3,
@@ -137,7 +137,7 @@
         "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
         "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
       ],
-      "description": "{\n  \"outcome\": \"After importing a diff, the nodes and connections that changed are highlighted on the map, so a human sees at a glance what the agent worked on; the highlight can be acknowledged or cleared once reviewed.\",\n  \"spec\": \"Record the set of nodes/connections an applied diff touched and render them in a transient \\\"changed\\\" state on the map, with a way to clear it.\\n\\nhighlighted means making the differences applied to be made visible:\\n1. there should be a \\\"glowy outline\\\" to indicate which nodes changed.\\n2. There is a +- green/red bubble with a number indicating  how many additions and deletions and edits.\\n3. the zoom level should go to the size that encompases all changed nodes, with no particular node selected.\\n4. changes to the fields AND changes to the checklish for leafs, should both count.\\n\\nAdditional requirements (restored):\\n5. For clarity, change the export/apply buttons to a different color and code them as sending the diff to the LLM and receiving changes back. Have an area [LLM:  <export icon>  <import icon>] with hover text \\\"export tree diff\\\" / \\\"import changes diff\\\".\\n6. \\\"import changes\\\" when clicked deselects any node and renders the diff. If you click and move (removing diff mode), clicking the button again re-renders the last diff highlight unless there have been new changes.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"After an import, the changed nodes are clearly highlighted and the human can tell what changed\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"The set of highlighted nodes equals the set of nodes the diff touched\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
+      "description": "{\n  \"outcome\": \"After importing a diff, the nodes and connections that changed are highlighted on the map, so a human sees at a glance what the agent worked on; the highlight can be acknowledged or cleared once reviewed.\",\n  \"spec\": \"Record the set of nodes/connections an applied diff touched and render them in a transient \\\"changed\\\" state on the map, with a way to clear it.\\n\\nhighlighted means making the differences applied to be made visible:\\n1. there should be a \\\"glowy outline\\\" to indicate which nodes changed.\\n2. There is a +- green/red bubble with a number indicating  how many additions and deletions and edits.\\n3. the zoom level should go to the size that encompases all changed nodes, with no particular node selected.\\n4. changes to the fields AND changes to the checklish for leafs, should both count.\\n5. \\\"import changes\\\" when clicked deselects any node and renders the diff. If you click and move (removing diff mode), clicking the button again re-renders the last diff highlight unless there have been new changes.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"After an import, the changed nodes are clearly highlighted and the human can tell what changed\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"The set of highlighted nodes equals the set of nodes the diff touched\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
       "actionHash": "uhCkkaZy_sVSfnFUefGLinR1qc4oUT-ANLTse28PRtdCgJ7UCgjDL"
@@ -164,6 +164,14 @@
             {
               "complete": true,
               "task": "No file picker on the common path"
+            },
+            {
+              "complete": true,
+              "task": "Separate -apply.json channel: agent diffs never overwrite the export baseline"
+            },
+            {
+              "complete": true,
+              "task": "Buttons regrouped as an [LLM: export / import] icon area with hover text, violet to read as the agent channel"
             }
           ]
         }
@@ -172,7 +180,7 @@
         "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
         "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
       ],
-      "description": "{\n  \"outcome\": \"Export-diff and import-diff each happen with a single click, reading and writing a known location, so a human can advance the loop repeatedly — export, run the agent, import — without dialogs or manual file wrangling.\",\n  \"spec\": \"A fixed, configurable known location holds the latest diff and the last-export snapshot. Export and import are single buttons; the common path needs no file picker.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A human advances the agent loop by clicking export, running the agent, clicking import — no file dialogs\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"Export and import resolve the known location without prompting; the round-trip works headlessly\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
+      "description": "{\n  \"outcome\": \"Export-diff and import-diff each happen with a single click, reading and writing a known location, so a human can advance the loop repeatedly — export, run the agent, import — without dialogs or manual file wrangling.\",\n  \"spec\": \"A fixed known location (/tmp/acorn-clarity) holds three channels per project: <name>-tree.json (full baseline written on export; the agent reads it for current state), <name>-diff.json (the human's changes since the last export, written on export), and <name>-apply.json (the agent's handed changes, read by Apply). Keeping the agent's channel separate from the baseline prevents a stale or agent-written tree file from corrupting the next export's diff. The controls read as a conversation with the LLM: an [LLM: export / import] icon area with hover text; the common path needs no file picker.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A human advances the agent loop by clicking export, running the agent, clicking import — no file dialogs\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"Export and import resolve the known location without prompting; the round-trip works headlessly\",\n      \"evaluator\": \"executable\"\n    },\n    {\n      \"statement\": \"An export performed immediately after applying an agent diff produces a -diff.json containing exactly the agent's changes — never a whole-tree-as-added diff\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
       "actionHash": "uhCkkRN9Osvw1YMRVgiEJ0zDSzv9SvLfYA-FNCwwHt_NiNnHKMj-U"
@@ -1377,38 +1385,72 @@
       "timestampUpdated": null,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
-          "taskList": []
+          "taskList": [
+            {
+              "complete": true,
+              "task": "Amber (#FF9500) glow on each touched node after apply, distinct from blue selection"
+            },
+            {
+              "complete": true,
+              "task": "No selection side-effects; clicking the background clears the glow"
+            },
+            {
+              "complete": true,
+              "task": "Verified live by Eric; committed 309bfd37"
+            }
+          ]
         }
       },
       "tags": [
         "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
         "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
       ],
-      "description": "{\n  \"outcome\": \"After a diff is applied, each touched node renders a transient glowy outline — visually distinct from the normal selection border — so a human sees which nodes the agent changed, with no selection side-effects.\"\n}",
+      "description": "{\n  \"outcome\": \"After a diff is applied, each touched node renders a transient glowy outline — visually distinct from the normal selection border — so a human sees which nodes the agent changed, with no selection side-effects.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Applying a diff renders an amber glow on every touched node, visibly distinct from the blue selection outline, and clicking the background clears it\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
       "actionHash": "uhCkkMUPsRWA54n-dpG6YBtM9MMauFkHpS7xg33TPv90Ui---zRY_"
     },
     "uhCkkm_dt8G-5w6emjLZTLa8rsUY1GZvTunZmPPU9sC8HhDNjQq6P": {
-      "content": "A +/- badge shows how many additions, edits, and deletions a diff made",
+      "content": "+/- badges on each changed node show how many additions, edits, and deletions a diff made",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
-      "editorAgentPubKey": null,
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "timestampCreated": 1772322000,
-      "timestampUpdated": null,
+      "timestampUpdated": 1781303025,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
-          "taskList": []
+          "taskList": [
+            {
+              "complete": true,
+              "task": "Outcome-level +/~/− chips (green/amber/red) in the apply status popup, from diffStats"
+            },
+            {
+              "complete": true,
+              "task": "Badge clears on export and on dismissing the popup"
+            },
+            {
+              "complete": true,
+              "task": "Per-node chips on each changed node's top-right corner: +N / ~N / −N for what the diff did to THAT node; brand-new nodes get a green 'new' chip"
+            },
+            {
+              "complete": true,
+              "task": "Deletions badge the surviving parent (red −N), since the deleted node is gone; unit-tested in perOutcomeChangeStats"
+            },
+            {
+              "complete": true,
+              "task": "Verify live: this apply should badge this node +3 ~4 −1"
+            }
+          ]
         }
       },
       "tags": [
         "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
         "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
       ],
-      "description": "{\n  \"outcome\": \"The applied diff's change counts render as a +/- green/red badge (e.g. +2 ~1 -0), so the human sees the scale of the change, not just where.\"\n}",
+      "description": "{\n  \"outcome\": \"The applied diff's change counts render as +/~/− badges on each changed node, so the human sees the scale and location of every change at a glance.\",\n  \"spec\": \"Each changed node renders chips overlapping its top-right corner while diff-review mode (the glow) is active: green +N (items added to the node — tasks, clarity fields, new children), amber ~N (items edited — statement, status, fields, task toggles; matches the glow color), red −N (items removed, including deleted children: a deleted node badges its surviving parent). A brand-new node gets a single green 'new' chip. The popup chips remain as the whole-diff outcome-level summary.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"After Apply, every changed node carries +/~/− chips at its top-right whose counts match what the diff did to that node\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"A deleted node's surviving parent shows a red −N chip\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"perOutcomeChangeStats unit tests cover task, field, statement, status, child-add and child-delete counting\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
       "actionHash": "uhCkkm_dt8G-5w6emjLZTLa8rsUY1GZvTunZmPPU9sC8HhDNjQq6P"
@@ -1416,21 +1458,30 @@
     "uhCkkg3FvYn7BJueAd_nbwqkz2TjJhwWEJIOdICER9b2ZaaqTN1K-": {
       "content": "The view zooms to fit all changed nodes, with none selected",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
-      "editorAgentPubKey": null,
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "timestampCreated": 1772322000,
-      "timestampUpdated": null,
+      "timestampUpdated": 1781300762,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
-          "taskList": []
+          "taskList": [
+            {
+              "complete": true,
+              "task": "fitToChanged: bbox of all touched nodes, 30% margin, scale clamped to 0.7, dispatched after layout settles"
+            },
+            {
+              "complete": true,
+              "task": "Verify live: applying THIS diff should frame these three changed nodes"
+            }
+          ]
         }
       },
       "tags": [
         "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
         "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
       ],
-      "description": "{\n  \"outcome\": \"After a diff is applied, the viewport zooms/pans to fit ALL changed nodes (their bounding box), with no particular node selected — replacing the pan-to-one that jumped to blank space.\"\n}",
+      "description": "{\n  \"outcome\": \"After a diff is applied, the viewport zooms/pans to fit ALL changed nodes (their bounding box), with no particular node selected — replacing the pan-to-one that jumped to blank space.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"After Apply, every changed node is on screen at once with comfortable margin, nothing selected, glow visible on each\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
       "actionHash": "uhCkkg3FvYn7BJueAd_nbwqkz2TjJhwWEJIOdICER9b2ZaaqTN1K-"
@@ -1467,16 +1518,29 @@
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "timestampCreated": 1781296319,
-      "timestampUpdated": 1781296456,
+      "timestampUpdated": 1781303063,
       "scope": {
         "Small": {
           "achievementStatus": "NotAchieved",
           "targetDate": null,
-          "taskList": []
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Three-way merge in Apply: agent diff vs live tree vs the last-export baseline snapshot"
+            },
+            {
+              "complete": false,
+              "task": "Conflict surfacing: flagged nodes never silently overwritten; both versions visible for the human to choose"
+            },
+            {
+              "complete": false,
+              "task": "Unit tests for the merge matrix: agent-only applies, human-only persists, both-changed flags conflict"
+            }
+          ]
         }
       },
       "tags": [],
-      "description": "{\n  \"outcome\": \"Between last export to llm a human may have made changes.  Importing an LLM's changes should not override them.  If there are merge conflicts this should be flagged.   i.e. it should not just be importing a whole tree, it should be integrating the specific changes of the diff.\"\n}",
+      "description": "{\n  \"outcome\": \"Between last export to llm a human may have made changes.  Importing an LLM's changes should not override them.  If there are merge conflicts this should be flagged.   i.e. it should not just be importing a whole tree, it should be integrating the specific changes of the diff.\",\n  \"spec\": \"Apply performs a three-way merge: the agent's diff is compared against both the live tree and the last-export baseline (the snapshot saved when the human exported). For each node the agent updates — if the human also changed it since the export (live differs from baseline) and the agent's value differs from the live value, that node is a conflict: flagged for review, never silently overwritten. Non-conflicting agent changes apply normally.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A node edited by the human after export and also updated by the agent's diff is flagged as a conflict, and the human's live value is not silently overwritten\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"Merge logic is pure and unit-tested: agent-only change applies; human-only change persists; both-changed flags a conflict\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": false,
       "githubLink": "",
       "actionHash": "uhCkkk-XZ5bPGtcqrvopSoPZGc2uKuQAj1f-U3GVs_Vm0_QiADJpG"
@@ -1505,16 +1569,25 @@
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "timestampCreated": 1781297821,
-      "timestampUpdated": 1781297865,
+      "timestampUpdated": 1781301539,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
-          "taskList": []
+          "taskList": [
+            {
+              "complete": true,
+              "task": "✕ close button on the status popup; dismissing also clears the badge"
+            },
+            {
+              "complete": true,
+              "task": "Verify live: dismiss the popup after this apply"
+            }
+          ]
         }
       },
       "tags": [],
-      "description": "{\n  \"outcome\": \"There should be a close button on the notification popup that's displayed after import or export.\"\n}",
+      "description": "{\n  \"outcome\": \"There should be a close button on the notification popup that's displayed after import or export.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"The status popup shown after export or apply has a ✕ button that dismisses it (and the badge with it)\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": false,
       "githubLink": "",
       "actionHash": "uhCkkPTm2FP7nHsMjruTZaHy7Va6qTZOO50Qlff0aIjQ4TefnBelG"
