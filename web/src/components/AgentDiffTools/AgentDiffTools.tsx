@@ -19,6 +19,7 @@ import {
   setChangedOutcomes,
   unselectAll,
 } from '../../redux/ephemeral/selection/actions'
+import { changeAllDirect } from '../../redux/ephemeral/viewport/actions'
 
 // Temporary floating tools (sits with "Report Issue" / the eye button) for the
 // low-friction LLM-agent diff loop — branch I. Folds into the AI chat panel later.
@@ -102,12 +103,55 @@ const AgentDiffTools: React.FC = () => {
 
   const projectName = (): string =>
     store.getState().projects.projectMeta[projectId]?.name || projectId
-  // the full-tree baseline (what the agent edits + what Apply reads) and the diff
-  // since the last export (so the agent sees what changed without searching)
+  // Export writes the full-tree baseline (-tree.json, the agent reads it to know
+  // current state) + the diff since last export (-diff.json, so the agent sees
+  // what the human changed). Apply reads a SEPARATE -apply.json (the agent's
+  // handed changes) so the agent's diffs never corrupt the export baseline.
   const treeName = (): string => `${sanitize(projectName())}-tree.json`
   const diffName = (): string => `${sanitize(projectName())}-diff.json`
+  const applyName = (): string => `${sanitize(projectName())}-apply.json`
   const currentSnapshot = (): ProjectSnapshot =>
     collectExportProjectData(store.getState(), projectId) as ProjectSnapshot
+
+  // i3c — fit the viewport to the bounding box of all changed nodes (no node
+  // selected), so "what changed" is framed automatically. Mirrors the transform
+  // math in panZoomToFrame (screen_pos = coord*scale + translate, dpr-adjusted)
+  // but for a SET of nodes rather than one. Reads the settled layout, so call it
+  // after the layout animation rather than synchronously on apply.
+  const fitToChanged = (touched: string[]) => {
+    if (!touched.length) return
+    const s: any = store.getState()
+    const coords = s.ui.layout.coordinates || {}
+    const dims = s.ui.layout.dimensions || {}
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity
+    let found = false
+    for (const h of touched) {
+      const c = coords[h]
+      const d = dims[h]
+      if (!c || !d) continue
+      found = true
+      minX = Math.min(minX, c.x)
+      minY = Math.min(minY, c.y)
+      maxX = Math.max(maxX, c.x + d.width)
+      maxY = Math.max(maxY, c.y + d.height)
+    }
+    if (!found) return
+    const dpr = window.devicePixelRatio || 1
+    const screenW = s.ui.screensize.width / dpr
+    const screenH = s.ui.screensize.height / dpr
+    const bboxW = Math.max((maxX - minX) * 1.3, 1) // 30% margin
+    const bboxH = Math.max((maxY - minY) * 1.3, 1)
+    let scale = Math.min(screenW / bboxW, screenH / bboxH)
+    scale = Math.max(0.1, Math.min(scale, 0.7)) // don't over-zoom a lone node
+    const cx = (minX + maxX) / 2
+    const cy = (minY + maxY) / 2
+    store.dispatch(
+      changeAllDirect({
+        scale,
+        translate: { x: screenW / 2 - cx * scale, y: screenH / 2 - cy * scale },
+      })
+    )
+  }
 
   const onExportTree = async () => {
     const current = currentSnapshot()
@@ -161,6 +205,8 @@ const AgentDiffTools: React.FC = () => {
       // background (unselectAll) clears the glow / exits diff-review mode.
       store.dispatch(unselectAll())
       store.dispatch(setChangedOutcomes(result.touchedOutcomes))
+      // i3c — fit the view to all changed nodes once the layout animation settles
+      setTimeout(() => fitToChanged(result.touchedOutcomes), 800)
       setStatus(`Applied. Lit up ${result.touchedOutcomes.length} node(s).\n${summary(diff)}`)
     } finally {
       setBusy(false)
@@ -169,9 +215,9 @@ const AgentDiffTools: React.FC = () => {
 
   const onApplyClick = async () => {
     if (busy) return
-    const data = await bridgeRead(treeName())
+    const data = await bridgeRead(applyName())
     if (data && data.__missing) {
-      setStatus('No exported tree yet — click "Export tree" first.')
+      setStatus(`No agent changes to apply yet (no ${applyName()}).`)
       return
     }
     if (data) {
