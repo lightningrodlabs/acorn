@@ -89,6 +89,10 @@ export interface ApplyDiffResult {
   hashMap: HashMap
   // live outcome hashes the diff touched, for "lighting up" the map (i3)
   touchedOutcomes: ActionHashB64[]
+  // diff (pre-apply) outcome hash -> live post-apply hash, covering creates AND
+  // updates (updating an entry assigns a new actionHash) — lets per-node change
+  // stats keyed by diff hashes follow their nodes onto the live map (i3b)
+  outcomeHashMap: HashMap
 }
 
 export async function internalApplyProjectDiffToCell(
@@ -99,6 +103,7 @@ export async function internalApplyProjectDiffToCell(
   projectsZomeApi: ProjectsZomeApi
 ): Promise<ApplyDiffResult> {
   const hashMap: HashMap = {}
+  const outcomeHashMap: HashMap = {}
   // POST-apply outcome hashes we touched, for the "light up" highlight. Built from
   // the hashes the zome actually returns (not the pre-apply diff hashes), so an
   // updated node highlights at its real current hash.
@@ -121,6 +126,7 @@ export async function internalApplyProjectDiffToCell(
       const wire = await (projectsZomeApi as any)[c.api].create(cellId, payload)
       dispatch(c.create(cellIdString, wire))
       hashMap[oldHash] = wire.actionHash
+      if (c.key === 'outcomes') outcomeHashMap[oldHash] = wire.actionHash
       collectTouched(c.key, wire, payload)
     }
   }
@@ -137,6 +143,7 @@ export async function internalApplyProjectDiffToCell(
         actionHash: hash,
       })
       dispatch(c.update(cellIdString, wire))
+      if (c.key === 'outcomes') outcomeHashMap[hash] = wire.actionHash
       collectTouched(c.key, wire, payload)
     }
   }
@@ -149,7 +156,7 @@ export async function internalApplyProjectDiffToCell(
     }
   }
 
-  return { hashMap, touchedOutcomes: [...touched] }
+  return { hashMap, touchedOutcomes: [...touched], outcomeHashMap }
 }
 
 export async function applyProjectDiffToCell(

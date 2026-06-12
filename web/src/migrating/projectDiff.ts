@@ -158,6 +158,146 @@ export function findUnresolvedReferences(
 }
 
 /**
+ * Per-node change counts for a diff (i3b) — what the diff did TO each outcome,
+ * rendered as +/~/− badges on the changed nodes themselves. Counts are item-level
+ * within the node: clarity fields (description JSON keys), checklist tasks, the
+ * statement, scope, and tags. A brand-new node is flagged isNew instead of counted.
+ * Node deletions can't badge the deleted node, so they count as removals on its
+ * parent(s), resolved from the base snapshot's connections.
+ *
+ * Keys are the diff's (pre-apply) hashes — the live applier remaps updated nodes
+ * to their post-apply hashes.
+ */
+export interface OutcomeChangeStats {
+  isNew: boolean
+  added: number
+  updated: number
+  removed: number
+}
+export type OutcomeChangeStatsMap = { [hash: string]: OutcomeChangeStats }
+
+// description holds the node's clarity fields as a JSON object string
+function parseClarityFields(description: unknown): { [k: string]: any } | null {
+  if (typeof description !== 'string') return null
+  try {
+    const parsed = JSON.parse(description)
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+      ? parsed
+      : null
+  } catch {
+    return null
+  }
+}
+
+export function perOutcomeChangeStats(
+  diff: ProjectDiff,
+  base: ProjectSnapshot
+): OutcomeChangeStatsMap {
+  const stats: OutcomeChangeStatsMap = {}
+  const get = (hash: ActionHash): OutcomeChangeStats => {
+    if (!stats[hash]) stats[hash] = { isNew: false, added: 0, updated: 0, removed: 0 }
+    return stats[hash]
+  }
+  const baseOutcomes = base.outcomes ?? {}
+  const baseConnections = base.connections ?? {}
+  const removedSet = new Set(diff.outcomes.removed)
+
+  for (const hash of Object.keys(diff.outcomes.added)) get(hash).isNew = true
+
+  for (const hash of Object.keys(diff.outcomes.updated)) {
+    const prev = baseOutcomes[hash]
+    const next = diff.outcomes.updated[hash]
+    const s = get(hash)
+    if (!prev) {
+      s.updated++
+      continue
+    }
+    if (prev.content !== next.content) s.updated++
+    if (!equal(prev.tags, next.tags)) s.updated++
+    // scope minus the taskList (achievement status, target date, Small/Uncertain)
+    const scopeSansTasks = (entry: any) => {
+      const small = entry?.scope?.Small
+      if (!small) return entry?.scope
+      const { taskList, ...rest } = small
+      return { Small: rest }
+    }
+    if (!equal(scopeSansTasks(prev), scopeSansTasks(next))) s.updated++
+    // checklist tasks, matched by their text (they carry no ids)
+    const prevTasks: any[] = prev?.scope?.Small?.taskList ?? []
+    const nextTasks: any[] = next?.scope?.Small?.taskList ?? []
+    const prevByText = new Map(prevTasks.map((t) => [t.task, t]))
+    const nextByText = new Map(nextTasks.map((t) => [t.task, t]))
+    for (const [text, task] of nextByText) {
+      if (!prevByText.has(text)) s.added++
+      else if (!equal(prevByText.get(text), task)) s.updated++
+    }
+    for (const text of prevByText.keys()) {
+      if (!nextByText.has(text)) s.removed++
+    }
+    // clarity fields: per-key add/edit/remove; opaque change if unparseable
+    const prevFields = parseClarityFields(prev.description)
+    const nextFields = parseClarityFields(next.description)
+    if (prevFields && nextFields) {
+      for (const key of Object.keys(nextFields)) {
+        if (!(key in prevFields)) s.added++
+        else if (!equal(prevFields[key], nextFields[key])) s.updated++
+      }
+      for (const key of Object.keys(prevFields)) {
+        if (!(key in nextFields)) s.removed++
+      }
+    } else if (!equal(prev.description, next.description)) {
+      s.updated++
+    }
+    // the entries differ somewhere we don't itemize (timestamps aside) — still
+    // show the node as edited rather than badging nothing
+    if (!s.added && !s.updated && !s.removed && !equal(prev, next)) s.updated++
+  }
+
+  // a deleted node shows as a removal on its surviving parent(s)
+  for (const hash of diff.outcomes.removed) {
+    for (const conn of Object.values(baseConnections)) {
+      if (
+        conn?.childActionHash === hash &&
+        conn?.parentActionHash &&
+        !removedSet.has(conn.parentActionHash)
+      ) {
+        get(conn.parentActionHash).removed++
+      }
+    }
+  }
+
+  // connection changes: a new child counts as an addition on its parent; a
+  // relink counts as an edit on both surviving endpoints
+  const connChanges = {
+    ...diff.connections.added,
+    ...diff.connections.updated,
+  }
+  for (const conn of Object.values(connChanges)) {
+    const parent = conn?.parentActionHash
+    const child = conn?.childActionHash
+    if (parent && !removedSet.has(parent)) {
+      if (child && diff.outcomes.added[child]) get(parent).added++
+      else get(parent).updated++
+    }
+    if (child && !removedSet.has(child) && !diff.outcomes.added[child]) {
+      get(child).updated++
+    }
+  }
+  for (const connHash of diff.connections.removed) {
+    const conn = baseConnections[connHash]
+    if (!conn) continue
+    // a connection removed because its child was deleted is already counted above
+    if (conn.childActionHash && removedSet.has(conn.childActionHash)) continue
+    if (conn.parentActionHash && !removedSet.has(conn.parentActionHash)) {
+      get(conn.parentActionHash).removed++
+    }
+    if (conn.childActionHash) get(conn.childActionHash).updated++
+  }
+
+  return stats
+}
+
+/**
  * The set of outcome action-hashes a diff touched — used to "light up" the tree
  * after an import. Includes outcomes added/updated directly, plus the endpoints of
  * any added/updated connections (so a re-parented or newly-linked node lights up

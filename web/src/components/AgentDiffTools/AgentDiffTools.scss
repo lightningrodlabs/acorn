@@ -5,6 +5,32 @@
   align-items: center;
   gap: 0.4rem;
 
+  // the LLM exchange area: [LLM: <export> <import>] — violet, distinct from
+  // the green action buttons elsewhere, since this talks to the agent loop
+  .agent-llm-area {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 1.2rem;
+    background: rgba(122, 79, 211, 0.1);
+    border: 1px solid rgba(122, 79, 211, 0.35);
+
+    .agent-llm-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #7a4fd3;
+      margin-right: 0.25rem;
+    }
+
+    .agent-llm-icon .inner-icon {
+      background-color: #7a4fd3;
+    }
+    .agent-llm-icon:hover .inner-icon {
+      background-color: #4f2e96;
+    }
+  }
+
   // status floats ABOVE the buttons (absolute) so it never displaces them
   .agent-diff-status {
     position: absolute;

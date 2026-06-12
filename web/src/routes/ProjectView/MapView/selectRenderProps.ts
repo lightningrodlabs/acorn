@@ -33,6 +33,7 @@ const selectRenderProps = createSelector(
   (state: RootState) => state.ui.mouse.mousedown,
   (state: RootState) => state.ui.mouse.coordinate,
   (state: RootState) => state.ui.selection.changedOutcomes,
+  (state: RootState) => state.ui.selection.changedOutcomeStats,
   (
     activeEntryPoints,
     zoomLevel,
@@ -62,7 +63,8 @@ const selectRenderProps = createSelector(
     shiftKeyDown,
     startedSelection,
     startedSelectionCoordinate,
-    changedOutcomes
+    changedOutcomes,
+    changedOutcomeStats
   ) => {
     return {
       activeEntryPoints,
@@ -94,6 +96,7 @@ const selectRenderProps = createSelector(
       startedSelection,
       startedSelectionCoordinate,
       changedOutcomes,
+      changedOutcomeStats,
     }
   }
 )

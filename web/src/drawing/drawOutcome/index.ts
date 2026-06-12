@@ -1,6 +1,8 @@
 import { ComputedOutcome, Profile, Tag } from '../../types'
 import { WithActionHash } from '../../types/shared'
+import { OutcomeChangeStats } from '../../migrating/projectDiff'
 import draw from '../draw'
+import drawChangeBadge from './drawChangeBadge'
 import {
   argsForDrawBackgroundColor,
   argsForDrawBeingEdited,
@@ -43,6 +45,7 @@ const drawOutcome = ({
   isTopPriority,
   isSelected,
   isChanged = false,
+  changeStats,
   outcomeFocusedMembers = [],
   // canvas context
   ctx,
@@ -60,6 +63,7 @@ const drawOutcome = ({
   isTopPriority: boolean
   isSelected: boolean
   isChanged?: boolean
+  changeStats?: OutcomeChangeStats
   outcomeFocusedMembers?: Profile[]
   // canvas context
   ctx: CanvasRenderingContext2D
@@ -213,6 +217,16 @@ const drawOutcome = ({
     drawPeopleActive(
       argsForDrawPeopleActive({ outcome, ctx, outcomeFocusedMembers })
     )
+    // i3b — per-node +/~/− diff badge, on top of everything else
+    if (isChanged && changeStats) {
+      drawChangeBadge({
+        changeStats,
+        outcomeLeftX,
+        outcomeTopY,
+        outcomeWidth,
+        ctx,
+      })
+    }
     // TODO (later)
     // drawBeingEdited(argsForDrawBeingEdited({ outcome, ctx }))
   })

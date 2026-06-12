@@ -10,18 +10,22 @@ import {
 import { DELETE_OUTCOME_FULLY } from '../../persistent/projects/outcomes/actions'
 import { DELETE_CONNECTION } from '../../persistent/projects/connections/actions'
 import { ActionHashB64 } from '../../../types/shared'
+import { OutcomeChangeStatsMap } from '../../../migrating/projectDiff'
 
 export interface SelectionState {
   selectedOutcomes: ActionHashB64[]
   selectedConnections: ActionHashB64[]
   // outcomes an applied diff changed (i3a) — drawn with a distinct glow
   changedOutcomes: ActionHashB64[]
+  // per-node +/~/− counts for those outcomes (i3b) — drawn as badges
+  changedOutcomeStats: OutcomeChangeStatsMap
 }
 
 const defaultState: SelectionState = {
   selectedOutcomes: [],
   selectedConnections: [],
   changedOutcomes: [],
+  changedOutcomeStats: {},
 }
 
 // removes an item from an array without mutating original array
@@ -97,11 +101,16 @@ export default function (state = defaultState, action: any): SelectionState {
         selectedOutcomes: [],
         selectedConnections: [],
         changedOutcomes: [],
+        changedOutcomeStats: {},
       }
     case SET_CHANGED_OUTCOMES:
-      return { ...state, changedOutcomes: payload }
+      return {
+        ...state,
+        changedOutcomes: payload.addresses,
+        changedOutcomeStats: payload.stats || {},
+      }
     case CLEAR_CHANGED_OUTCOMES:
-      return { ...state, changedOutcomes: [] }
+      return { ...state, changedOutcomes: [], changedOutcomeStats: {} }
     default:
       return state
   }

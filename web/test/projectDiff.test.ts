@@ -5,6 +5,7 @@ import {
   diffStats,
   touchedOutcomeHashes,
   findUnresolvedReferences,
+  perOutcomeChangeStats,
   ProjectSnapshot,
 } from '../src/migrating/projectDiff'
 
@@ -109,6 +110,100 @@ describe('projectDiff', () => {
       connections: { x: connection('x', 'a', 'c') },
     })
     expect(findUnresolvedReferences(computeProjectDiff(base, current), base)).toEqual([])
+  })
+
+  describe('perOutcomeChangeStats (the i3b per-node badge)', () => {
+    const small = (taskList: any[], achievementStatus = 'NotAchieved') => ({
+      Small: { achievementStatus, targetDate: null, taskList },
+    })
+
+    test('a brand-new node is flagged isNew', () => {
+      const base = snapshot({ outcomes: { a: outcome('a', 'A') } })
+      const current = snapshot({
+        outcomes: { a: outcome('a', 'A'), b: outcome('b', 'B') },
+      })
+      const stats = perOutcomeChangeStats(computeProjectDiff(base, current), base)
+      expect(stats['b'].isNew).toBe(true)
+    })
+
+    test('counts task additions, edits (toggles), and removals by task text', () => {
+      const prev = {
+        ...outcome('a', 'A'),
+        scope: small([
+          { complete: false, task: 'keep' },
+          { complete: false, task: 'toggle me' },
+          { complete: false, task: 'drop me' },
+        ]),
+      }
+      const next = {
+        ...outcome('a', 'A'),
+        scope: small([
+          { complete: false, task: 'keep' },
+          { complete: true, task: 'toggle me' },
+          { complete: false, task: 'brand new' },
+        ]),
+      }
+      const base = snapshot({ outcomes: { a: prev } })
+      const diff = computeProjectDiff(base, snapshot({ outcomes: { a: next } }))
+      expect(perOutcomeChangeStats(diff, base)['a']).toEqual({
+        isNew: false,
+        added: 1,
+        updated: 1,
+        removed: 1,
+      })
+    })
+
+    test('counts clarity-field (description JSON key) changes individually', () => {
+      const prev = {
+        ...outcome('a', 'A'),
+        description: JSON.stringify({ outcome: 'o', spec: 'old', gone: 1 }),
+      }
+      const next = {
+        ...outcome('a', 'A'),
+        description: JSON.stringify({ outcome: 'o', spec: 'new', criteria: [] }),
+      }
+      const base = snapshot({ outcomes: { a: prev } })
+      const diff = computeProjectDiff(base, snapshot({ outcomes: { a: next } }))
+      expect(perOutcomeChangeStats(diff, base)['a']).toEqual({
+        isNew: false,
+        added: 1, // criteria
+        updated: 1, // spec
+        removed: 1, // gone
+      })
+    })
+
+    test('statement and achievement-status changes each count as one edit', () => {
+      const prev = { ...outcome('a', 'A'), scope: small([]) }
+      const next = {
+        ...outcome('a', 'A renamed'),
+        scope: small([], 'Achieved'),
+      }
+      const base = snapshot({ outcomes: { a: prev } })
+      const diff = computeProjectDiff(base, snapshot({ outcomes: { a: next } }))
+      expect(perOutcomeChangeStats(diff, base)['a'].updated).toBe(2)
+    })
+
+    test('a deleted node counts as a removal on its surviving parent', () => {
+      const base = snapshot({
+        outcomes: { p: outcome('p', 'parent'), c: outcome('c', 'child') },
+        connections: { x: connection('x', 'p', 'c') },
+      })
+      const current = snapshot({ outcomes: { p: outcome('p', 'parent') } })
+      const stats = perOutcomeChangeStats(computeProjectDiff(base, current), base)
+      expect(stats['p']).toEqual({ isNew: false, added: 0, updated: 0, removed: 1 })
+      expect(stats['c']).toBeUndefined() // nothing left to badge
+    })
+
+    test('a new child counts as an addition on its parent', () => {
+      const base = snapshot({ outcomes: { p: outcome('p', 'parent') } })
+      const current = snapshot({
+        outcomes: { p: outcome('p', 'parent'), c: outcome('c', 'child') },
+        connections: { x: connection('x', 'p', 'c') },
+      })
+      const stats = perOutcomeChangeStats(computeProjectDiff(base, current), base)
+      expect(stats['p'].added).toBe(1)
+      expect(stats['c'].isNew).toBe(true)
+    })
   })
 
   test('diffStats reports per-collection counts', () => {

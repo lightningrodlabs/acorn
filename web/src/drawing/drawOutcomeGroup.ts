@@ -3,6 +3,7 @@ import { RenderProps } from '../routes/ProjectView/MapView/selectRenderProps'
 import drawOutcome from './drawOutcome'
 import { ComputedOutcome } from '../types'
 import { ActionHashB64 } from '@holochain/client'
+import { OutcomeChangeStatsMap } from '../migrating/projectDiff'
 
 export default function drawOutcomeGroup({
   outcomesAsArray,
@@ -12,6 +13,7 @@ export default function drawOutcomeGroup({
   topPriorityOutcomes,
   areSelected,
   changedOutcomes = [],
+  changedOutcomeStats = {},
   zoomLevel,
   ctx,
   attachmentCounts = {},
@@ -23,6 +25,7 @@ export default function drawOutcomeGroup({
   topPriorityOutcomes: ActionHashB64[]
   areSelected: boolean
   changedOutcomes?: ActionHashB64[]
+  changedOutcomeStats?: OutcomeChangeStatsMap
   zoomLevel: RenderProps['zoomLevel']
   ctx: CanvasRenderingContext2D
   attachmentCounts?: Record<ActionHashB64, number>
@@ -49,6 +52,7 @@ export default function drawOutcomeGroup({
         isTopPriority: isTopPriorityOutcome,
         isSelected: areSelected,
         isChanged,
+        changeStats: changedOutcomeStats[outcome.actionHash],
         ctx,
         // attachmentsCount: attachmentCounts[outcome.actionHash] || 0,
         // outcomeFocusedMembers: [],

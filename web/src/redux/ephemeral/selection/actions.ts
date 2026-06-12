@@ -6,6 +6,7 @@
 */
 
 import { ActionHashB64 } from '../../../types/shared'
+import { OutcomeChangeStatsMap } from '../../../migrating/projectDiff'
 
 /* constants */
 const SELECT_CONNECTION = 'SELECT_CONNECTION'
@@ -20,10 +21,14 @@ const CLEAR_CHANGED_OUTCOMES = 'CLEAR_CHANGED_OUTCOMES'
 
 /* action creator functions */
 
-function setChangedOutcomes(addresses: ActionHashB64[]) {
+function setChangedOutcomes(
+  addresses: ActionHashB64[],
+  // per-node +/~/− counts keyed by the same (live) hashes (i3b badges)
+  stats: OutcomeChangeStatsMap = {}
+) {
   return {
     type: SET_CHANGED_OUTCOMES,
-    payload: addresses,
+    payload: { addresses, stats },
   }
 }
 
