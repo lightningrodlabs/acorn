@@ -20,5 +20,49 @@
     line-height: 1.35;
     white-space: pre-wrap;
     color: var(--text-color-secondary, #555);
+    // room for the close button so text never sits under it
+    padding-right: 1.6rem;
+
+    .agent-diff-status-close {
+      position: absolute;
+      top: 0.15rem;
+      right: 0.25rem;
+      border: none;
+      background: none;
+      padding: 0 0.2rem;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--text-color-secondary, #888);
+
+      &:hover {
+        color: var(--text-color, #222);
+      }
+    }
+
+    // i3b — outcome-level change counts of the last applied diff
+    .agent-diff-badge {
+      display: flex;
+      gap: 0.3rem;
+      margin-bottom: 0.3rem;
+
+      .chip {
+        padding: 0.05rem 0.4rem;
+        border-radius: 0.6rem;
+        font-weight: 600;
+        font-family: monospace;
+        color: #fff;
+
+        &.added {
+          background: #2eb648;
+        }
+        &.updated {
+          background: #ff9500; // matches the changed-node glow
+        }
+        &.removed {
+          background: #e94e3c;
+        }
+      }
+    }
   }
 }

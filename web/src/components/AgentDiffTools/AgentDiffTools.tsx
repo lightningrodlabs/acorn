@@ -97,6 +97,14 @@ const AgentDiffTools: React.FC = () => {
   const store = useStore()
   const fileInput = useRef<HTMLInputElement>(null)
   const [status, setStatus] = useState('')
+  // i3b — outcome-level counts of the last applied diff, rendered as +/~/− chips.
+  // Outcomes are the unit a human thinks in; the per-collection detail stays in
+  // the status text. Deletions only surface here — removed nodes can't glow.
+  const [badge, setBadge] = useState<{
+    added: number
+    updated: number
+    removed: number
+  } | null>(null)
   const [busy, setBusy] = useState(false)
 
   if (!projectId) return null
@@ -155,6 +163,7 @@ const AgentDiffTools: React.FC = () => {
 
   const onExportTree = async () => {
     const current = currentSnapshot()
+    setBadge(null)
     localStorage.setItem(SNAPSHOT_KEY(projectId), JSON.stringify(current))
     // read the previous exported tree (the baseline) BEFORE overwriting it
     const prev = await bridgeRead(treeName())
@@ -207,6 +216,7 @@ const AgentDiffTools: React.FC = () => {
       store.dispatch(setChangedOutcomes(result.touchedOutcomes))
       // i3c — fit the view to all changed nodes once the layout animation settles
       setTimeout(() => fitToChanged(result.touchedOutcomes), 800)
+      setBadge(diffStats(diff).outcomes)
       setStatus(`Applied. Lit up ${result.touchedOutcomes.length} node(s).\n${summary(diff)}`)
     } finally {
       setBusy(false)
@@ -261,7 +271,28 @@ const AgentDiffTools: React.FC = () => {
         className="green"
         onClick={onApplyClick}
       />
-      {status && <div className="agent-diff-status">{status}</div>}
+      {status && (
+        <div className="agent-diff-status">
+          <button
+            className="agent-diff-status-close"
+            aria-label="Dismiss"
+            onClick={() => {
+              setStatus('')
+              setBadge(null)
+            }}
+          >
+            ×
+          </button>
+          {badge && (
+            <div className="agent-diff-badge">
+              <span className="chip added">+{badge.added}</span>
+              <span className="chip updated">~{badge.updated}</span>
+              <span className="chip removed">−{badge.removed}</span>
+            </div>
+          )}
+          {status}
+        </div>
+      )}
     </div>
   )
 }
