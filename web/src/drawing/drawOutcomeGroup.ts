@@ -11,6 +11,7 @@ export default function drawOutcomeGroup({
   projectTags,
   topPriorityOutcomes,
   areSelected,
+  changedOutcomes = [],
   zoomLevel,
   ctx,
   attachmentCounts = {},
@@ -21,6 +22,7 @@ export default function drawOutcomeGroup({
   projectTags: RenderProps['projectTags']
   topPriorityOutcomes: ActionHashB64[]
   areSelected: boolean
+  changedOutcomes?: ActionHashB64[]
   zoomLevel: RenderProps['zoomLevel']
   ctx: CanvasRenderingContext2D
   attachmentCounts?: Record<ActionHashB64, number>
@@ -31,6 +33,7 @@ export default function drawOutcomeGroup({
     const isTopPriorityOutcome = !!topPriorityOutcomes.find(
       (actionHash) => actionHash === outcome.actionHash
     )
+    const isChanged = changedOutcomes.indexOf(outcome.actionHash) > -1
     // we can only render this outcome
     // if we know its coordinates
     if (coords) {
@@ -45,6 +48,7 @@ export default function drawOutcomeGroup({
         useLineLimit: true,
         isTopPriority: isTopPriorityOutcome,
         isSelected: areSelected,
+        isChanged,
         ctx,
         // attachmentsCount: attachmentCounts[outcome.actionHash] || 0,
         // outcomeFocusedMembers: [],

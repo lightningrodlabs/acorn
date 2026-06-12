@@ -42,6 +42,7 @@ const drawOutcome = ({
   zoomLevel,
   isTopPriority,
   isSelected,
+  isChanged = false,
   outcomeFocusedMembers = [],
   // canvas context
   ctx,
@@ -58,6 +59,7 @@ const drawOutcome = ({
   zoomLevel: number
   isTopPriority: boolean
   isSelected: boolean
+  isChanged?: boolean
   outcomeFocusedMembers?: Profile[]
   // canvas context
   ctx: CanvasRenderingContext2D
@@ -84,6 +86,20 @@ const drawOutcome = ({
         outcomeWidth,
         outcomeHeight,
         useGlow: isTopPriority,
+        zoomLevel,
+        ctx,
+      })
+    )
+    // changed-by-diff glow (i3a) — a distinct amber glow, separate from selection
+    // and from the top-priority glow
+    drawGlow(
+      argsForDrawGlow({
+        outcomeLeftX,
+        outcomeTopY,
+        outcomeWidth,
+        outcomeHeight,
+        useGlow: isChanged,
+        glowColor: '#FF9500',
         zoomLevel,
         ctx,
       })

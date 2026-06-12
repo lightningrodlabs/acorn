@@ -16,7 +16,7 @@ import {
 } from '../../migrating/projectDiff'
 import { applyProjectDiffToCell } from '../../migrating/applyProjectDiff'
 import {
-  selectOutcome,
+  setChangedOutcomes,
   unselectAll,
 } from '../../redux/ephemeral/selection/actions'
 
@@ -157,10 +157,10 @@ const AgentDiffTools: React.FC = () => {
     setStatus('Applying update…')
     try {
       const result = await applyProjectDiffToCell(diff, projectId, store.dispatch)
-      // interim highlight: select all changed nodes (no single-node pan — that
-      // jumped to blank space). The proper glow + fit-to-all viewport is i3.
+      // deselect everything and glow the changed nodes (i3a). Clicking the
+      // background (unselectAll) clears the glow / exits diff-review mode.
       store.dispatch(unselectAll())
-      result.touchedOutcomes.forEach((hash) => store.dispatch(selectOutcome(hash)))
+      store.dispatch(setChangedOutcomes(result.touchedOutcomes))
       setStatus(`Applied. Lit up ${result.touchedOutcomes.length} node(s).\n${summary(diff)}`)
     } finally {
       setBusy(false)

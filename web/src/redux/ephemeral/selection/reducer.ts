@@ -4,6 +4,8 @@ import {
   SELECT_OUTCOME,
   UNSELECT_OUTCOME,
   UNSELECT_ALL,
+  SET_CHANGED_OUTCOMES,
+  CLEAR_CHANGED_OUTCOMES,
 } from './actions'
 import { DELETE_OUTCOME_FULLY } from '../../persistent/projects/outcomes/actions'
 import { DELETE_CONNECTION } from '../../persistent/projects/connections/actions'
@@ -12,11 +14,14 @@ import { ActionHashB64 } from '../../../types/shared'
 export interface SelectionState {
   selectedOutcomes: ActionHashB64[]
   selectedConnections: ActionHashB64[]
+  // outcomes an applied diff changed (i3a) — drawn with a distinct glow
+  changedOutcomes: ActionHashB64[]
 }
 
 const defaultState: SelectionState = {
   selectedOutcomes: [],
   selectedConnections: [],
+  changedOutcomes: [],
 }
 
 // removes an item from an array without mutating original array
@@ -86,11 +91,17 @@ export default function (state = defaultState, action: any): SelectionState {
         ),
       }
     case UNSELECT_ALL:
+      // clicking the background exits diff-review mode too (clears the glow)
       return {
         ...state,
         selectedOutcomes: [],
         selectedConnections: [],
+        changedOutcomes: [],
       }
+    case SET_CHANGED_OUTCOMES:
+      return { ...state, changedOutcomes: payload }
+    case CLEAR_CHANGED_OUTCOMES:
+      return { ...state, changedOutcomes: [] }
     default:
       return state
   }

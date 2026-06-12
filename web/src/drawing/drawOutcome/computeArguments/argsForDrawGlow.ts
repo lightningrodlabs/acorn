@@ -13,6 +13,7 @@ export const argsForDrawGlow = ({
   outcomeHeight,
   zoomLevel,
   ctx,
+  glowColor = HIGH_PRIORITY_GLOW_COLOR,
 }: {
   outcomeLeftX: number
   outcomeTopY: number
@@ -21,6 +22,7 @@ export const argsForDrawGlow = ({
   useGlow: boolean
   zoomLevel: number
   ctx: CanvasRenderingContext2D
+  glowColor?: string
 }): Parameters<typeof drawGlow>[0] => {
   const twiceBorder = borderWidth * 2
   const xPosition = outcomeLeftX + borderWidth
@@ -36,7 +38,7 @@ export const argsForDrawGlow = ({
     height,
     cornerRadius: glowCornerRadius,
     useGlow,
-    glowColor: HIGH_PRIORITY_GLOW_COLOR,
+    glowColor,
     glowBlur,
     ctx,
   }

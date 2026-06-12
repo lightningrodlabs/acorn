@@ -252,10 +252,10 @@ node('i3', 'i0',
 node('i3a', 'i3',
   'Changed nodes show a glowy outline, distinct from selection',
   ['Spec', 'Completion'], small([
-    "Add a 'recently changed' ephemeral set (separate from selection)",
-    'Render a glow outline for changed nodes in drawOutcome',
-    'Clear it on acknowledge / background click',
-  ]),
+    { task: "Add a 'recently changed' ephemeral set (separate from selection)", complete: true },
+    { task: 'Render a glow outline for changed nodes in drawOutcome (distinct amber)', complete: true },
+    { task: 'Clear it on acknowledge / background click', complete: true },
+  ], true),
   fields({
     outcome:
       'After a diff is applied, each touched node renders a transient glowy outline — visually distinct from the ' +

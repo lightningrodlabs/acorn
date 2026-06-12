@@ -147,19 +147,19 @@
       "timestampUpdated": null,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
           "taskList": [
             {
-              "complete": false,
+              "complete": true,
               "task": "Add a 'recently changed' ephemeral set (separate from selection)"
             },
             {
-              "complete": false,
-              "task": "Render a glow outline for changed nodes in drawOutcome"
+              "complete": true,
+              "task": "Render a glow outline for changed nodes in drawOutcome (distinct amber)"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Clear it on acknowledge / background click"
             }
           ]

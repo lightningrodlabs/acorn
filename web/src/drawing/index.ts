@@ -50,6 +50,7 @@ export default function render(
     shiftKeyDown,
     startedSelection,
     startedSelectionCoordinate,
+    changedOutcomes,
   }: ReturnType<typeof selectRenderProps>,
   computedOutcomesKeyed: ProjectComputedOutcomes['computedOutcomesKeyed'],
   canvas: HTMLCanvasElement
@@ -131,6 +132,7 @@ export default function render(
     projectTags,
     topPriorityOutcomes,
     areSelected: false,
+    changedOutcomes,
     zoomLevel,
     ctx,
   })
@@ -170,6 +172,7 @@ export default function render(
     projectTags,
     topPriorityOutcomes,
     areSelected: true,
+    changedOutcomes,
     zoomLevel,
     ctx,
   })
