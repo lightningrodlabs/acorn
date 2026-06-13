@@ -5,6 +5,143 @@
   gap: 1rem;
 }
 
+// Each section wraps its widget so a remove control can sit at the top-right
+// without the widget components needing to know about it.
+.outcome-field-section {
+  position: relative;
+
+  .outcome-field-remove {
+    position: absolute;
+    top: -0.25rem;
+    right: -0.25rem;
+    border: none;
+    background: transparent;
+    padding: 0 0.3rem;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--text-color-secondary, #9a9a9a);
+    opacity: 0;
+    transition: opacity 0.15s ease, color 0.15s ease;
+  }
+  &:hover .outcome-field-remove {
+    opacity: 1;
+  }
+  .outcome-field-remove:hover {
+    color: var(--text-color-error, #c0392b);
+  }
+}
+
+// "Add section" affordance (132188): grow a node beyond its Outcome with the other
+// known sections, or a free-form section whose render-widget the author chooses.
+.outcome-add-section {
+  .outcome-add-section-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    align-self: flex-start;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    border: 0;
+    background: transparent;
+    color: var(--text-color-link, #4d7cfe);
+    font: 0.9rem var(--font-family-primary-medium);
+
+    .icon {
+      width: 18px;
+      height: 18px;
+      padding: 0;
+    }
+    .inner-icon {
+      background-color: var(--text-color-link, #4d7cfe);
+    }
+  }
+
+  .outcome-add-section-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.6rem;
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 0.35rem;
+  }
+
+  .outcome-add-section-known {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .outcome-add-section-chip {
+    cursor: pointer;
+    padding: 0.25rem 0.6rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border-color, #e0e0e0);
+    background: transparent;
+    color: var(--text-color-primary);
+    font: 0.85rem var(--font-family-primary-medium);
+
+    &:hover {
+      border-color: var(--text-color-link, #4d7cfe);
+      color: var(--text-color-link, #4d7cfe);
+    }
+  }
+
+  .outcome-add-section-custom {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    align-items: center;
+
+    .outcome-add-section-name {
+      flex: 1 1 8rem;
+      min-width: 0;
+      padding: 0.3rem 0.4rem;
+      outline: none;
+      border: 1px solid var(--border-color, #e0e0e0);
+      border-radius: 0.25rem;
+      background-color: transparent;
+      font: 0.9rem var(--font-family-primary-medium);
+
+      &::placeholder {
+        color: var(--text-color-placeholder);
+      }
+    }
+    .outcome-add-section-widget {
+      padding: 0.3rem 0.4rem;
+      border: 1px solid var(--border-color, #e0e0e0);
+      border-radius: 0.25rem;
+      background-color: transparent;
+      font: 0.9rem var(--font-family-primary-medium);
+      cursor: pointer;
+    }
+    .outcome-add-section-confirm {
+      cursor: pointer;
+      padding: 0.3rem 0.7rem;
+      border: 0;
+      border-radius: 0.25rem;
+      background: var(--text-color-link, #4d7cfe);
+      color: #fff;
+      font: 0.85rem var(--font-family-primary-medium);
+
+      &:disabled {
+        opacity: 0.45;
+        cursor: default;
+      }
+    }
+  }
+
+  .outcome-add-section-cancel {
+    align-self: flex-start;
+    cursor: pointer;
+    border: 0;
+    background: transparent;
+    padding: 0.15rem 0;
+    color: var(--text-color-secondary, #888);
+    font: 0.82rem var(--font-family-primary-medium);
+  }
+}
+
 .outcome-rawjson-field {
   margin-top: 0.25rem;
 

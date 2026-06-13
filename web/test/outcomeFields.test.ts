@@ -4,7 +4,11 @@ import {
   getOutcomeStatement,
   setOutcomeStatement,
   setField,
+  addField,
+  removeField,
   orderedFieldKeys,
+  fieldWidgetRegistry,
+  WIDGET_REGISTRY_KEY,
   OutcomeFields,
 } from '../src/outcomeFields'
 
@@ -115,5 +119,46 @@ describe('outcomeFields representation', () => {
     const f = parseFields(desc)
     expect(f.outcome).toBe('o')
     expect(f.completionCriteria?.[0].evaluator).toBe('human')
+  })
+
+  describe('add/remove section (132188 — choose a render-widget)', () => {
+    test('addField adds a known section with its empty value, no widget recorded', () => {
+      const desc = serializeFields({ outcome: 'o' })
+      const next = parseFields(addField(desc, 'spec', ''))
+      expect(next.spec).toBe('')
+      expect(next[WIDGET_REGISTRY_KEY]).toBeUndefined()
+    })
+
+    test('addField records the chosen widget for a custom (free-form) section', () => {
+      const desc = serializeFields({ outcome: 'o' })
+      const next = parseFields(addField(desc, 'reviewNotes', '', 'markdown'))
+      expect(next.reviewNotes).toBe('')
+      expect(fieldWidgetRegistry(next)).toEqual({ reviewNotes: 'markdown' })
+    })
+
+    test('the widget registry is hidden from rendered section keys', () => {
+      const desc = addField(serializeFields({ outcome: 'o' }), 'links', [], 'artifacts')
+      expect(orderedFieldKeys(parseFields(desc))).toEqual(['outcome', 'links'])
+    })
+
+    test('addField never clobbers an existing section value', () => {
+      const desc = serializeFields({ outcome: 'o', spec: 'already here' })
+      expect(parseFields(addField(desc, 'spec', '')).spec).toBe('already here')
+    })
+
+    test('removeField drops the section and its widget-registry entry', () => {
+      let desc = addField(serializeFields({ outcome: 'o' }), 'links', [], 'artifacts')
+      desc = removeField(desc, 'links')
+      const f = parseFields(desc)
+      expect(f.links).toBeUndefined()
+      expect(f[WIDGET_REGISTRY_KEY]).toBeUndefined() // last custom widget cleared
+    })
+
+    test('removeField keeps other custom widgets when one is removed', () => {
+      let desc = addField(serializeFields({ outcome: 'o' }), 'a', '', 'markdown')
+      desc = addField(desc, 'b', {}, 'rawjson')
+      desc = removeField(desc, 'a')
+      expect(fieldWidgetRegistry(parseFields(desc))).toEqual({ b: 'rawjson' })
+    })
   })
 })

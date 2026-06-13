@@ -54,6 +54,14 @@ const KNOWN_KEY_ORDER = [
   'artifacts',
 ] as const
 
+/**
+ * Reserved field key: a map of fieldKey -> chosen render-widget, recorded only for
+ * custom (free-form) sections whose widget can't be inferred from a known key. It is
+ * hidden from the editor's rendered sections but preserved through serialize like any
+ * other field, so a custom section re-renders with the widget the author chose.
+ */
+export const WIDGET_REGISTRY_KEY = '_widgets'
+
 function isPlainObject(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v)
 }
@@ -126,11 +134,53 @@ export function setField(description: string, key: string, value: unknown): stri
 
 /**
  * The present field keys in canonical (widget) order — known keys first in the order
- * the editor renders them, then any extra/future keys. Drives the per-field editor.
+ * the editor renders them, then any extra/future keys. The reserved widget-registry
+ * key is never a rendered section, so it is excluded. Drives the per-field editor.
  */
 export function orderedFieldKeys(fields: OutcomeFields): string[] {
   const order = KNOWN_KEY_ORDER as readonly string[]
   const known = order.filter((k) => fields[k] !== undefined)
-  const extra = Object.keys(fields).filter((k) => !order.includes(k))
+  const extra = Object.keys(fields).filter(
+    (k) => !order.includes(k) && k !== WIDGET_REGISTRY_KEY
+  )
   return [...known, ...extra]
+}
+
+/** The recorded render-widget choices for custom sections (see WIDGET_REGISTRY_KEY). */
+export function fieldWidgetRegistry(fields: OutcomeFields): Record<string, string> {
+  const reg = fields[WIDGET_REGISTRY_KEY]
+  return isPlainObject(reg) ? (reg as Record<string, string>) : {}
+}
+
+/**
+ * Add a section: set `key` to `initialValue` (unless it is already present, in which
+ * case it is left untouched), optionally recording a chosen render-`widget` so a
+ * custom/free-form section re-renders correctly. Returns the new stored description.
+ */
+export function addField(
+  description: string,
+  key: string,
+  initialValue: unknown,
+  widget?: string
+): string {
+  const fields = parseFields(description)
+  const next: OutcomeFields = { ...fields, [key]: fields[key] ?? initialValue }
+  if (widget) {
+    next[WIDGET_REGISTRY_KEY] = { ...fieldWidgetRegistry(fields), [key]: widget }
+  }
+  return serializeFields(next)
+}
+
+/** Remove a section and any widget-registry entry it carried. */
+export function removeField(description: string, key: string): string {
+  const fields = parseFields(description)
+  const next: OutcomeFields = { ...fields }
+  delete next[key]
+  const reg = { ...fieldWidgetRegistry(fields) }
+  if (key in reg) {
+    delete reg[key]
+    if (Object.keys(reg).length) next[WIDGET_REGISTRY_KEY] = reg
+    else delete next[WIDGET_REGISTRY_KEY]
+  }
+  return serializeFields(next)
 }
