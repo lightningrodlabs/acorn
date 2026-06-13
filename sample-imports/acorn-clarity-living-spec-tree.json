@@ -333,36 +333,6 @@
       "githubLink": "",
       "actionHash": "uhCkkPVxhypE6BXGh3JilD1LEq3LCL7Mc47kxonkchKdO_I0PflPV"
     },
-    "uhCkkU1CjPqcEn5sXQPC9F5YN3g-NUuBYhx4HFahvQBqgeyNo_THF": {
-      "content": "A node carries a functional spec field describing required shape, not just the outcome",
-      "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
-      "editorAgentPubKey": null,
-      "timestampCreated": 1772322011,
-      "timestampUpdated": null,
-      "scope": {
-        "Small": {
-          "achievementStatus": "NotAchieved",
-          "targetDate": null,
-          "taskList": [
-            {
-              "complete": false,
-              "task": "Add optional fields.spec (text)"
-            },
-            {
-              "complete": false,
-              "task": "Add an optional latitude marker {design | specification | implementation}"
-            }
-          ]
-        }
-      },
-      "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy"
-      ],
-      "description": "{\n  \"outcome\": \"A node can declare a functional spec — the required shape or means — alongside its outcome. The spec sits on a latitude gradient from design through specification to implementation, giving the builder exactly as much freedom as intended. A spec hardened enough to rely on is a standard.\",\n  \"spec\": \"Add optional fields.spec (markdown text) plus an optional latitude marker in {design, specification, implementation}, rendered so a reader sees how much freedom the builder is given. Spec text is markdown, like the outcome statement.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A reviewer confirms the spec constrains the means at the intended latitude without over-determining it\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
-      "isImported": true,
-      "githubLink": "",
-      "actionHash": "uhCkkU1CjPqcEn5sXQPC9F5YN3g-NUuBYhx4HFahvQBqgeyNo_THF"
-    },
     "uhCkkHX0rpHu_GqtJO4Femh906LZJ75UT3ttZppPofjS7lEjPo8vZ": {
       "content": "Completion criteria attached at any node level determine that node's achievement",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
@@ -777,9 +747,9 @@
     "uhCkkJMdKInTNY-666P_wlr4bOfAKk1x_fWcreaUuINdU4xIqRhnU": {
       "content": "Agents build from the exported clarity tree and their results return into it",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
-      "editorAgentPubKey": null,
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "timestampCreated": 1772322025,
-      "timestampUpdated": null,
+      "timestampUpdated": 1781303467,
       "scope": {
         "Uncertain": {
           "smallsEstimate": 4,
@@ -1553,13 +1523,41 @@
       "timestampUpdated": null,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
-          "taskList": []
+          "taskList": [
+            {
+              "complete": true,
+              "task": "\"Add section\" control under the fields editor adds any known section not yet present (Spec, Completion criteria, Principle, Artifacts)"
+            },
+            {
+              "complete": true,
+              "task": "Free-form custom section: name a key + choose its render-widget (Markdown / Artifacts list / Raw JSON)"
+            },
+            {
+              "complete": true,
+              "task": "Chosen widget for a custom section persists via a hidden _widgets registry in the fields, so it re-renders correctly"
+            },
+            {
+              "complete": true,
+              "task": "Each non-Outcome section has a remove (×) control; removing a section with real contents asks for confirmation first"
+            },
+            {
+              "complete": true,
+              "task": "addField / removeField are pure + unit-tested (add/remove/clobber-guard/registry)"
+            },
+            {
+              "complete": true,
+              "task": "Verified live by Eric"
+            }
+          ]
         }
       },
-      "tags": [],
-      "description": "{\n  \"outcome\": \"Currently the only section that appears on a new node is \\\"Outcome\\\" we have to be able to add all the other types (and new free-form section types)\"\n}",
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
+        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      ],
+      "description": "{\"outcome\":\"Currently the only section that appears on a new node is \\\"Outcome\\\"; we have to be able to add the other section types (Spec, Completion criteria, Principle, Artifacts) and new free-form section types, choosing each one's render-widget.\",\"spec\":\"The outcome fields editor renders one widget per PRESENT field, so a fresh node (only `outcome`) shows just the Outcome section. An \\\"Add section\\\" affordance under the sections offers: (1) a chip per known section not yet present, added with its registered widget; (2) a free-form path — type a section name and pick a render-widget (Markdown text / Artifacts list / Raw JSON) — which adds the key with the empty value that widget reads. A custom section's chosen widget is recorded in a reserved `_widgets` map inside the fields (hidden from rendered sections, preserved through serialize) so it re-renders with the author's choice. Known keys resolve their widget from the editor registry; unknown keys with no recorded choice fall back to Raw JSON. Each section except Outcome carries a remove (×) control; removing a section that still holds content asks for confirmation before discarding it. (signalType is a specialized branch-G classifier and is intentionally not offered in the generic add menu.)\",\"completionCriteria\":[{\"statement\":\"On a fresh node a human adds Spec, a custom Markdown section, and Artifacts; after reload each renders with its chosen widget. Removing an empty section is silent; removing one with content asks to confirm\",\"evaluator\":\"human\"},{\"statement\":\"addField/removeField round-trip: a custom section records its widget in _widgets, the registry is excluded from rendered keys, and removeField clears the field and its registry entry\",\"evaluator\":\"executable\"}],\"artifacts\":[{\"type\":\"workproduct\",\"label\":\"OutcomeFieldsEditor.tsx — add-section affordance, per-section remove with confirm-on-content, registry-aware widget resolution\",\"uri\":\"web/src/components/OutcomeFieldsEditor/OutcomeFieldsEditor.tsx\"},{\"type\":\"workproduct\",\"label\":\"outcomeFields.ts — addField / removeField / fieldWidgetRegistry / WIDGET_REGISTRY_KEY\",\"uri\":\"web/src/outcomeFields.ts\"},{\"type\":\"workproduct\",\"label\":\"outcomeFields.test.ts — add/remove section + widget-registry tests\",\"uri\":\"web/test/outcomeFields.test.ts\"}]}",
       "isImported": true,
       "githubLink": "",
       "actionHash": "uhCkkVnL4kGtgH8k4PFNdxdauLlrYjDFsMnCaa-VfVSr6lSiBLUEE"
@@ -1591,6 +1589,82 @@
       "isImported": false,
       "githubLink": "",
       "actionHash": "uhCkkPTm2FP7nHsMjruTZaHy7Va6qTZOO50Qlff0aIjQ4TefnBelG"
+    },
+    "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI": {
+      "content": "LLM can interact directly with the tree via an API",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781303135,
+      "timestampUpdated": 1781380855,
+      "scope": {
+        "Uncertain": {
+          "smallsEstimate": 0,
+          "timeFrame": null,
+          "inBreakdown": false
+        }
+      },
+      "tags": [],
+      "description": "",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI"
+    },
+    "uhCkki1JOpngyrgopLu0N65EqsgscUe49-Nq06jj6q6zVvSVs_bRp": {
+      "content": "LLMs can read and modify the tree via an  MCP like interface",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781303191,
+      "timestampUpdated": 1781305156,
+      "scope": {
+        "Uncertain": {
+          "smallsEstimate": 0,
+          "timeFrame": null,
+          "inBreakdown": false
+        }
+      },
+      "tags": [],
+      "description": "{\n  \"outcome\": \"TODO: specify the actual supported  api  surface\\n\"\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkki1JOpngyrgopLu0N65EqsgscUe49-Nq06jj6q6zVvSVs_bRp"
+    },
+    "uhCkkYWWEULBb1wngo4UzMNfqebxV1c1nAKNlmqC-AI4V-4aAEYbc": {
+      "content": "An LLM can perform the work specified by a leaf when manually triggered",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781303215,
+      "timestampUpdated": 1781380552,
+      "scope": {
+        "Uncertain": {
+          "smallsEstimate": 0,
+          "timeFrame": null,
+          "inBreakdown": false
+        }
+      },
+      "tags": [],
+      "description": "{\n  \"outcome\": \"The difference between working on improving the clarity of the tree itself, vs doing the work clarified by the tree in unambiguous and easy to direct.  This is the \\\"prototype\\\" level before we have the readiness assessments refined.\"\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkYWWEULBb1wngo4UzMNfqebxV1c1nAKNlmqC-AI4V-4aAEYbc"
+    },
+    "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq": {
+      "content": "User can direct tree changes to LLM via in-acorn chat UI ",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781304236,
+      "timestampUpdated": 1781380799,
+      "scope": {
+        "Uncertain": {
+          "smallsEstimate": 0,
+          "timeFrame": null,
+          "inBreakdown": true
+        }
+      },
+      "tags": [],
+      "description": "{\n  \"outcome\": \"Adds ACP for Acorn to connect to local LLM harness. \"\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq"
     }
   },
   "connections": {
@@ -1605,7 +1679,7 @@
     "uhCkk6VaS7eyZwk4sukneIybH6Uc3f7AwuOu4hhq5juwdpTfqzuPZ": {
       "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
       "childActionHash": "uhCkkmh_Lo7OKZIaVR5kgxTCPgfllqknMiOOvlzgE_L8ncKXHBtjz",
-      "siblingOrder": 7,
+      "siblingOrder": 6,
       "randomizer": 1772322000001,
       "isImported": true,
       "actionHash": "uhCkk6VaS7eyZwk4sukneIybH6Uc3f7AwuOu4hhq5juwdpTfqzuPZ"
@@ -1613,7 +1687,7 @@
     "uhCkkg4kKKK9-1CgJo0mJ5HlsGf-cXXWpC1NuS5LvBJ6KZ7MfOEpF": {
       "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
       "childActionHash": "uhCkkHX0rpHu_GqtJO4Femh906LZJ75UT3ttZppPofjS7lEjPo8vZ",
-      "siblingOrder": 5,
+      "siblingOrder": 4,
       "randomizer": 1772322000002,
       "isImported": true,
       "actionHash": "uhCkkg4kKKK9-1CgJo0mJ5HlsGf-cXXWpC1NuS5LvBJ6KZ7MfOEpF"
@@ -1621,7 +1695,7 @@
     "uhCkkmjoCB3NG731Nvxzi0Dlkg1PRwUs0zRVw1lGhPp54fbPID9HO": {
       "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
       "childActionHash": "uhCkk8UhcJn2kbwWmU6C4xNzo8L5cEP4BZkLrkO2uxo6od5NZ2pN5",
-      "siblingOrder": 4,
+      "siblingOrder": 3,
       "randomizer": 1772322000003,
       "isImported": true,
       "actionHash": "uhCkkmjoCB3NG731Nvxzi0Dlkg1PRwUs0zRVw1lGhPp54fbPID9HO"
@@ -1629,7 +1703,7 @@
     "uhCkk1_ko8cUDg7o_rTk1XetYFaQJE9tDbYK3yrvLCo4bfTkaEn8q": {
       "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
       "childActionHash": "uhCkkJMdKInTNY-666P_wlr4bOfAKk1x_fWcreaUuINdU4xIqRhnU",
-      "siblingOrder": 3,
+      "siblingOrder": 2,
       "randomizer": 1772322000004,
       "isImported": true,
       "actionHash": "uhCkk1_ko8cUDg7o_rTk1XetYFaQJE9tDbYK3yrvLCo4bfTkaEn8q"
@@ -1637,7 +1711,7 @@
     "uhCkkmEYVnpVaDZOIsZE0udq1tXhgVdnpKaNPYrRY2lzuGvj45HBx": {
       "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
       "childActionHash": "uhCkkvhUiUxC00IiPH7cHnenahYKqi8js7UZIYeB9nLnDA_4SAgZy",
-      "siblingOrder": 6,
+      "siblingOrder": 5,
       "randomizer": 1772322000005,
       "isImported": true,
       "actionHash": "uhCkkmEYVnpVaDZOIsZE0udq1tXhgVdnpKaNPYrRY2lzuGvj45HBx"
@@ -1645,7 +1719,7 @@
     "uhCkkXCwETcyx-ZWfPCLM1qLcVqXfJ8dVtMCS3d9NefDX_fmccM_w": {
       "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
       "childActionHash": "uhCkkNEmcuM7dbErjmtyI89hKqZ8_7lYCtJj3FTTfYmp52RiD76y0",
-      "siblingOrder": 2,
+      "siblingOrder": 1,
       "randomizer": 1772322000006,
       "isImported": true,
       "actionHash": "uhCkkXCwETcyx-ZWfPCLM1qLcVqXfJ8dVtMCS3d9NefDX_fmccM_w"
@@ -1653,7 +1727,7 @@
     "uhCkkzLnhxgeYKTWrTYT9-BxoRYLmsgrzgYrCmVQIKjcwwR8OBEmi": {
       "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
       "childActionHash": "uhCkkoD7Un4Cba51-fT7VEJvsQjP1gYdTgjzhkEEcbCfei7kIZDLV",
-      "siblingOrder": 1,
+      "siblingOrder": 0,
       "randomizer": 1772322000007,
       "isImported": true,
       "actionHash": "uhCkkzLnhxgeYKTWrTYT9-BxoRYLmsgrzgYrCmVQIKjcwwR8OBEmi"
@@ -1661,7 +1735,7 @@
     "uhCkkPnfa0aWFeEe2KgwBB3KNHARvDLqaNKChMNuANef-eukGMR-9": {
       "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
       "childActionHash": "uhCkkmprPa_t9Q9OmWULQYFsCOolgZjxW2GNE7EWE7c91CjVvhR-O",
-      "siblingOrder": 0,
+      "siblingOrder": -1,
       "randomizer": 1772322000008,
       "isImported": true,
       "actionHash": "uhCkkPnfa0aWFeEe2KgwBB3KNHARvDLqaNKChMNuANef-eukGMR-9"
@@ -1713,14 +1787,6 @@
       "randomizer": 1772322000014,
       "isImported": true,
       "actionHash": "uhCkkeuZ49YRG9ni75jJyPQ9ljoMYW2tLyvw_TeZS55qFHfKxzpoA"
-    },
-    "uhCkkvdXnwj5-xqddbK_dvGso62aVxb6IFy4kr5_ceH00wXgtbX_H": {
-      "parentActionHash": "uhCkkmh_Lo7OKZIaVR5kgxTCPgfllqknMiOOvlzgE_L8ncKXHBtjz",
-      "childActionHash": "uhCkkU1CjPqcEn5sXQPC9F5YN3g-NUuBYhx4HFahvQBqgeyNo_THF",
-      "siblingOrder": 0,
-      "randomizer": 1772322000015,
-      "isImported": true,
-      "actionHash": "uhCkkvdXnwj5-xqddbK_dvGso62aVxb6IFy4kr5_ceH00wXgtbX_H"
     },
     "uhCkkbrZIekz6np8l-g137h5wtYQfJNApA3HJ71gf2Bs4lSriN3I2": {
       "parentActionHash": "uhCkk3upmjCg7ZP_pz8bs_JBGlPwrrVwqJsjOLapDoWXXtfS-myhM",
@@ -1997,7 +2063,7 @@
     "uhCkkf0UKqc4H8X3JUfYzMxuV77cw4yDSyy8KChWcJ6ag_bLC6rmX": {
       "parentActionHash": "uhCkkmh_Lo7OKZIaVR5kgxTCPgfllqknMiOOvlzgE_L8ncKXHBtjz",
       "childActionHash": "uhCkkVnL4kGtgH8k4PFNdxdauLlrYjDFsMnCaa-VfVSr6lSiBLUEE",
-      "siblingOrder": -1,
+      "siblingOrder": 0,
       "randomizer": 1772322050001,
       "isImported": true,
       "actionHash": "uhCkkf0UKqc4H8X3JUfYzMxuV77cw4yDSyy8KChWcJ6ag_bLC6rmX"
@@ -2009,6 +2075,38 @@
       "randomizer": 1781297821605,
       "isImported": false,
       "actionHash": "uhCkkWuF_I3BGCBfWIA-5hoQluTxpil2d3HoR2sGttfjb1E1UHmRj"
+    },
+    "uhCkkKewLqo6rYMUkelziLeZbSMduipOQqnLKgR6ZMkLjPTgUt18G": {
+      "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
+      "childActionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI",
+      "siblingOrder": 7,
+      "randomizer": 1781303135313,
+      "isImported": false,
+      "actionHash": "uhCkkKewLqo6rYMUkelziLeZbSMduipOQqnLKgR6ZMkLjPTgUt18G"
+    },
+    "uhCkkvkrcLA7XbYQ2_dyhN2Nuec6haxrzIxbnl0kt9h-xfnG5E7sd": {
+      "parentActionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI",
+      "childActionHash": "uhCkki1JOpngyrgopLu0N65EqsgscUe49-Nq06jj6q6zVvSVs_bRp",
+      "siblingOrder": 0,
+      "randomizer": 1781303191314,
+      "isImported": false,
+      "actionHash": "uhCkkvkrcLA7XbYQ2_dyhN2Nuec6haxrzIxbnl0kt9h-xfnG5E7sd"
+    },
+    "uhCkkL8ITHlS3WRuG1HaeCd5e1B0UyTjFZd6Ccr0bHD9GSO2ASkP3": {
+      "parentActionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI",
+      "childActionHash": "uhCkkYWWEULBb1wngo4UzMNfqebxV1c1nAKNlmqC-AI4V-4aAEYbc",
+      "siblingOrder": -2,
+      "randomizer": 1781303215297,
+      "isImported": false,
+      "actionHash": "uhCkkL8ITHlS3WRuG1HaeCd5e1B0UyTjFZd6Ccr0bHD9GSO2ASkP3"
+    },
+    "uhCkkT2mf_ggYdfhNb02754AISCNzk6JsU4Jx7SHcZI4R44Y2x7BZ": {
+      "parentActionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI",
+      "childActionHash": "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq",
+      "siblingOrder": -1,
+      "randomizer": 1781304236855,
+      "isImported": false,
+      "actionHash": "uhCkkT2mf_ggYdfhNb02754AISCNzk6JsU4Jx7SHcZI4R44Y2x7BZ"
     }
   },
   "outcomeMembers": {},
