@@ -1488,7 +1488,7 @@
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "timestampCreated": 1781296319,
-      "timestampUpdated": 1781303063,
+      "timestampUpdated": 1781387916,
       "scope": {
         "Small": {
           "achievementStatus": "NotAchieved",
@@ -1595,35 +1595,57 @@
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "timestampCreated": 1781303135,
-      "timestampUpdated": 1781380855,
+      "timestampUpdated": 1781459083,
       "scope": {
         "Uncertain": {
-          "smallsEstimate": 0,
+          "smallsEstimate": 12,
           "timeFrame": null,
-          "inBreakdown": false
+          "inBreakdown": true
         }
       },
-      "tags": [],
-      "description": "",
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy"
+      ],
+      "description": "{\n  \"outcome\": \"An LLM works with the live clarity tree through a direct, in-app API — reading current state and proposing typed edits — instead of the file-based diff round-trip (branch I export/import). Because it reads and proposes against the live tree, the tolerant-merge import (branch I, \\\"tolerant to changes since last export\\\") becomes redundant: there is no stale export to reconcile.\",\n  \"spec\": \"A flow view of the live loop belongs here (a diagram, not a list): the LLM reads the tree for context, proposes typed edits, the human reviews and commits them, and the LLM executes the work a ready leaf specifies. The detailed specs live on the leaves below.\",\n  \"principle\": \"The human is the only committer. The LLM reads and proposes; it never writes to the DHT directly.\",\n  \"artifacts\": [\n    {\n      \"type\": \"reference\",\n      \"label\": \"flow diagram: the live LLM↔tree loop (placeholder)\",\n      \"uri\": \"\"\n    }\n  ]\n}",
       "isImported": false,
       "githubLink": "",
       "actionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI"
     },
     "uhCkki1JOpngyrgopLu0N65EqsgscUe49-Nq06jj6q6zVvSVs_bRp": {
-      "content": "LLMs can read and modify the tree via an  MCP like interface",
+      "content": "An LLM can read the live tree through the API",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "timestampCreated": 1781303191,
-      "timestampUpdated": 1781305156,
+      "timestampUpdated": null,
       "scope": {
-        "Uncertain": {
-          "smallsEstimate": 0,
-          "timeFrame": null,
-          "inBreakdown": false
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Define read_tree over the live project snapshot"
+            },
+            {
+              "complete": false,
+              "task": "Return typed fields + computed achievement/readiness"
+            },
+            {
+              "complete": false,
+              "task": "Version + type the read surface so the harness targets it without scraping the UI"
+            },
+            {
+              "complete": false,
+              "task": "Reuse the branch-D agent-consumable export shape"
+            }
+          ]
         }
       },
-      "tags": [],
-      "description": "{\n  \"outcome\": \"TODO: specify the actual supported  api  surface\\n\"\n}",
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
+        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      ],
+      "description": "{\n  \"outcome\": \"The LLM reads the live tree through a read tool (read_tree): nodes, typed fields, connections, and computed achievement/readiness. This is the read half of the MCP-style tool surface; the propose/write half lives in the conversational-editing branch's draft pipeline, so reads are a general capability while writes always go through review. The read shape reuses the agent-consumable export (branch D).\",\n  \"spec\": \"read_tree() -> the live project snapshot (outcomes, typed fields, connections, computed status), versioned and typed so the harness targets it without scraping the UI. (read_tree and propose_edits together form the MCP-style surface; propose_edits is specified under the draft pipeline.)\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"The harness calls read_tree and receives the live project's nodes, fields, connections and computed status\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": false,
       "githubLink": "",
       "actionHash": "uhCkki1JOpngyrgopLu0N65EqsgscUe49-Nq06jj6q6zVvSVs_bRp"
@@ -1633,7 +1655,499 @@
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "timestampCreated": 1781303215,
-      "timestampUpdated": 1781380552,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "A manual 'Do this leaf' trigger hands the leaf's clarity fields to the harness as the work spec"
+            },
+            {
+              "complete": false,
+              "task": "The harness's produced artifacts attach to the node as workproduct (branch E)"
+            },
+            {
+              "complete": false,
+              "task": "The harness posts a completion verdict (pass/fail + evidence) back to the node (branch D2)"
+            },
+            {
+              "complete": false,
+              "task": "Gate behind \"sufficiently clear\" once readiness (branch G) lands — manual for now"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
+        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      ],
+      "description": "{\n  \"outcome\": \"Distinct from improving the clarity OF the tree, this is doing the work the tree clarifies: when a human manually triggers a ready leaf, the LLM reads that leaf's outcome, spec and completion criteria, performs the work (e.g. writes the code), then posts results — completion verdicts and produced artifacts — back onto the node (relies on branches D and E). Manual trigger is the prototype step before readiness assessment (branch G) gates it automatically. A clear, unambiguous leaf is exactly what makes this easy to direct.\",\n  \"spec\": \"A 'Do this leaf' action on a sufficiently-clear leaf hands its clarity fields to the harness as the work spec; the harness executes and returns artifacts + verdicts, which attach to the node (relies on branches D2/D3, E). No automatic triggering yet — the human picks the leaf.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A human triggers a ready leaf; the LLM performs the work and posts at least one artifact and a completion verdict back to that node\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkYWWEULBb1wngo4UzMNfqebxV1c1nAKNlmqC-AI4V-4aAEYbc"
+    },
+    "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq": {
+      "content": "A human directs tree edits in conversation, reviewed in a draft before they commit",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781304236,
+      "timestampUpdated": null,
+      "scope": {
+        "Uncertain": {
+          "smallsEstimate": 6,
+          "timeFrame": null,
+          "inBreakdown": true
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy"
+      ],
+      "description": "{\n  \"outcome\": \"A human directs tree edits by conversing with the LLM and reviewing what it proposes before anything commits — the same conversation that built this tree, now happening inside Acorn against the live tree, with a human-approved commit gate.\",\n  \"spec\": \"A flow view of the conversation-to-commit path belongs here: a request reaches the harness, its proposed edits open a draft, the human reviews and edits, and confirmation commits. The detailed specs live on the leaves below.\",\n  \"principle\": \"Proposed edits are inert until the human confirms them (plan-mode contract).\",\n  \"artifacts\": [\n    {\n      \"type\": \"reference\",\n      \"label\": \"flow diagram: conversation → draft → commit (placeholder)\",\n      \"uri\": \"\"\n    }\n  ]\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq"
+    },
+    "uhCkk4GLeRcIVU19qegtS6OAk__aPP02tV7BkNn9SG8HeukbhKhNY": {
+      "content": "Acorn connects to a local LLM harness over ACP, driven from an in-app chat",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781310000,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Embed an ACP client connecting to a local LLM harness"
+            },
+            {
+              "complete": false,
+              "task": "Chat panel sends user message + live tree context (branch F2)"
+            },
+            {
+              "complete": false,
+              "task": "Render the harness reply; pass any proposed edits to the draft pipeline"
+            },
+            {
+              "complete": false,
+              "task": "Reuse the branch F chat panel UI"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
+        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      ],
+      "description": "{\n  \"outcome\": \"Acorn embeds an ACP (Agent Client Protocol) client that connects to a local LLM harness (e.g. a local Claude Code / agent process). An in-app chat panel (branch F) sends the human's message plus the live tree context to the harness and shows its reply. When the reply includes proposed edits, they are handed off to the draft pipeline (a relied-on sibling); this node is responsible only for the conversation and transport.\",\n  \"spec\": \"Embed an ACP client; the chat panel sends {user message + live tree context (branch F2)} to the harness and renders the reply. Proposed edits in the reply are passed to the draft pipeline, not applied here. Reuses branch F's chat panel.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A human sends a message in the in-app chat and sees the harness's reply; any proposed edits in it are handed to the draft pipeline\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkk4GLeRcIVU19qegtS6OAk__aPP02tV7BkNn9SG8HeukbhKhNY"
+    },
+    "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG": {
+      "content": "LLM-proposed edits are reviewed in a non-committed draft layer before they touch the DHT",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781310010,
+      "timestampUpdated": null,
+      "scope": {
+        "Uncertain": {
+          "smallsEstimate": 5,
+          "timeFrame": null,
+          "inBreakdown": true
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy"
+      ],
+      "description": "{\n  \"outcome\": \"Proposed tree edits are reviewed in a non-committed draft before they touch the DHT — the tree-editing analogue of an agent's PLAN MODE (propose → review/edit → approve → execute). A draft is an uncommitted overlay on the live tree; nothing persists until the human confirms.\",\n  \"spec\": \"A flow view of the draft lifecycle belongs here: a proposed edit set opens the draft, it renders in glow-mode, the human edits or rejects, and confirm commits (or discard drops). It reuses branch I's glow + diff executor; where the ACP harness has a native plan mode, surface its proposals as the draft. The detailed specs live on the leaves below.\",\n  \"principle\": \"Proposed edits are inert until a human confirms them; the draft never persists on its own (the agent plan-mode contract).\",\n  \"artifacts\": [\n    {\n      \"type\": \"reference\",\n      \"label\": \"agent plan mode (propose → approve → execute); flow diagram of the draft lifecycle (placeholder)\",\n      \"uri\": \"\"\n    }\n  ]\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG"
+    },
+    "uhCkk9xX_0m2hkguQ2eTmZ79ng-m9gNXTOGqhM052L7rn88VXpGW5": {
+      "content": "The LLM proposes a typed edit set through the API, opening a draft",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781310011,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Define propose_edits(diff) that opens/updates the ephemeral draft"
+            },
+            {
+              "complete": false,
+              "task": "Accept the branch-I ProjectDiff edit shape"
+            },
+            {
+              "complete": false,
+              "task": "Guarantee no DHT write on propose"
+            },
+            {
+              "complete": false,
+              "task": "Callable by the harness over ACP"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
+        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      ],
+      "description": "{\n  \"outcome\": \"The propose half of the MCP-style tool surface: the LLM submits a typed edit set (add / update / remove of outcomes, fields, connections) via propose_edits, which opens a draft rather than writing to the DHT. The edit shape reuses branch I's ProjectDiff. This is the single entry point by which any proposed change becomes a reviewable draft.\",\n  \"spec\": \"propose_edits(diff: ProjectDiff) -> opens or updates the ephemeral draft, never a direct write. The edit shape is branch I's ProjectDiff. Called by the harness over ACP.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"propose_edits opens a draft and writes nothing to the DHT\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkk9xX_0m2hkguQ2eTmZ79ng-m9gNXTOGqhM052L7rn88VXpGW5"
+    },
+    "uhCkkRLlJL3YET6l1TCHX14JUkij6W_Z4OcJZF9KPq2He6MMUmfat": {
+      "content": "A proposed edit set renders in diff glow-mode as a draft overlay",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781310012,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Hold the proposed ProjectDiff in ephemeral draft state"
+            },
+            {
+              "complete": false,
+              "task": "Overlay added/updated/removed nodes onto the render set, flagged as draft"
+            },
+            {
+              "complete": false,
+              "task": "Drive glow + per-node badges + fit-to-changed (branch I i3) from the draft diff"
+            },
+            {
+              "complete": false,
+              "task": "Verify nothing is persisted to cells while a draft is open"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
+        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      ],
+      "description": "{\n  \"outcome\": \"The open draft renders using the existing glow-mode — changed nodes glow amber, each carries its +/~/- badge, and the view fits to the changed set (branch I i3a/i3b/i3c) — but driven by the UNCOMMITTED draft diff layered over the live tree. Added nodes show as draft (ghost) nodes, updated nodes show their proposed values, removed nodes are marked. Nothing is written to cells; this is a live preview.\",\n  \"spec\": \"Render the tree with the draft diff overlaid: merge the draft's added/updated outcomes into the render set (flagged as draft), mark removed ones, and reuse setChangedOutcomes + perOutcomeChangeStats so glow and badges show the proposed deltas. The draft diff lives in ephemeral state, not in the persisted project.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"An open draft lights the affected nodes in glow-mode with correct +/~/- badges and fits them in view, with nothing written to the DHT\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkRLlJL3YET6l1TCHX14JUkij6W_Z4OcJZF9KPq2He6MMUmfat"
+    },
+    "uhCkkJv0KWx5f9EoQu4VrWp4aBmZHgaymirUl8e-4xB3ytYVclLlN": {
+      "content": "A human can edit or reject individual proposed changes within the draft",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781310013,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Per-node accept/reject in draft mode"
+            },
+            {
+              "complete": false,
+              "task": "Inline edit of a proposed node's content/fields, written into the draft diff"
+            },
+            {
+              "complete": false,
+              "task": "Re-render glow + badges as the draft changes"
+            },
+            {
+              "complete": false,
+              "task": "Rejected changes are excluded from the eventual commit"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
+        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      ],
+      "description": "{\n  \"outcome\": \"While a draft is open, the human refines it before committing: edit a proposed node's content or fields, and accept or reject individual proposed changes. Edits mutate the in-memory draft diff — not the DHT — so the human shapes the final edit set. Rejecting a change drops it from the draft; editing a proposed value updates it in place.\",\n  \"spec\": \"Per-change controls: accept/reject per node and inline editing that writes back into the draft ProjectDiff (added/updated entries). The draft diff is recomputed and re-rendered as the human edits, keeping glow + badges in sync. No cell writes until confirm.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A human edits a proposed node and rejects another within the draft; the committed result reflects exactly the accepted + edited set\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkJv0KWx5f9EoQu4VrWp4aBmZHgaymirUl8e-4xB3ytYVclLlN"
+    },
+    "uhCkkMoHdnzQVtSAFOeE8zSHCvyegAl0-XfcTQZ7sUq_tTJmKRhgV": {
+      "content": "Confirming a draft commits the accepted edits to the DHT at once; discarding drops them",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781310014,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Confirm runs applyProjectDiffToCell over the accepted subset"
+            },
+            {
+              "complete": false,
+              "task": "Confirm clears the draft and lights the committed nodes (branch I post-apply)"
+            },
+            {
+              "complete": false,
+              "task": "Discard clears the draft with no DHT write"
+            },
+            {
+              "complete": false,
+              "task": "Both paths exit draft mode"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
+        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      ],
+      "description": "{\n  \"outcome\": \"A single 'Confirm' commits the draft's accepted edits to the DHT in one step — reusing the branch I diff executor (applyProjectDiffToCell) — and clears the draft. 'Discard' drops the draft with no trace. Until one of these, nothing the LLM proposed has persisted. After commit, the just-committed nodes stay glowing (branch I) so the human sees what landed.\",\n  \"spec\": \"Confirm: run applyProjectDiffToCell over the accepted subset of the draft diff, then clear ephemeral draft state and light the committed nodes via the normal post-apply path. Discard: clear the draft state only. Both exit draft mode.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Confirming a draft persists exactly the accepted edits and they survive reload; discarding leaves the tree unchanged\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkMoHdnzQVtSAFOeE8zSHCvyegAl0-XfcTQZ7sUq_tTJmKRhgV"
+    },
+    "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm": {
+      "content": "LLMs have a well-tuned skills file for building effective clarity trees",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781400000,
+      "timestampUpdated": null,
+      "scope": {
+        "Uncertain": {
+          "smallsEstimate": 5,
+          "timeFrame": null,
+          "inBreakdown": true
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy"
+      ],
+      "description": "{\n  \"outcome\": \"An LLM that reads, proposes, or builds out a clarity tree works from a tuned skills file, so the trees it produces are sound by construction. The skill makes the LLM fluent in what a clarity tree IS and in the craft of growing one well — it is the competence the agent loads whenever it touches a tree, distinct from any single Acorn feature.\",\n  \"spec\": \"A skills file the harness loads on every tree-editing request; a high-level map of how its parts relate belongs here, with the substance on the sections below. It is a direct candidate to extract from the composition guidance already being used in practice.\",\n  \"principle\": \"The skill encodes craft, not Acorn features, and must stay true to the tree ontology as that ontology evolves.\",\n  \"artifacts\": [\n    {\n      \"type\": \"reference\",\n      \"label\": \"map of the skill (placeholder); seed: the composition-invariant guidance in use\",\n      \"uri\": \"\"\n    }\n  ]\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm"
+    },
+    "uhCkkEpCJlxfVYFcrJeNZVWBAckveEEbCIexk-pjiHGI3UnvPjObg": {
+      "content": "The skill defines the clarity-tree ontology",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781400001,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Node = a positive target-state outcome carrying typed fields (outcome, spec, criteria, dependencies, artifacts)"
+            },
+            {
+              "complete": false,
+              "task": "Scope: Uncertain (a branch still being decomposed) vs Small (a buildable leaf)"
+            },
+            {
+              "complete": false,
+              "task": "Achievement is computed from criteria + children, never a hand-set flag"
+            },
+            {
+              "complete": false,
+              "task": "Dependencies are typed: constituted-from vs relies-on"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
+        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      ],
+      "description": "{\n  \"outcome\": \"The skill states the vocabulary an LLM must use correctly: a node is a positive target-state outcome carrying typed fields; scope is Uncertain (a branch still decomposing) or Small (a buildable leaf); achievement is computed, not toggled; and dependencies are typed (constituted-from vs relies-on). Fluency in the ontology is what lets the LLM emit well-formed nodes.\"\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkEpCJlxfVYFcrJeNZVWBAckveEEbCIexk-pjiHGI3UnvPjObg"
+    },
+    "uhCkkQ4wHzAMhE7Unhx3k9yDgkt11BhsWWArT-NVDKez-NG9fOEde": {
+      "content": "The skill states the structural invariants that keep a tree sound",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781400002,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Composed-of is an explicit parent→child edge, never a prose reference to a sibling"
+            },
+            {
+              "complete": false,
+              "task": "Each node is self-contained and reads on its own"
+            },
+            {
+              "complete": false,
+              "task": "A parent never restates or counts its children — the children ARE the decomposition"
+            },
+            {
+              "complete": false,
+              "task": "Relies-on is a typed edge, not hierarchy"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
+        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      ],
+      "description": "{\n  \"outcome\": \"The skill encodes the rules that make a tree's structure meaningful: a composed-of dependency is an explicit parent→child edge, never prose; each node is self-contained; a parent never restates or counts its children; relies-on is a typed edge, not hierarchy. When these hold, prioritization and achievement roll up correctly.\"\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkQ4wHzAMhE7Unhx3k9yDgkt11BhsWWArT-NVDKez-NG9fOEde"
+    },
+    "uhCkkH92Soyvp-6DuHOmYkvbtrnrVHeNHG4Dm_2Pfis-T_yk7jUxm": {
+      "content": "The skill guides decomposition into children that make the parent possible",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781400003,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Each child is something the parent NEEDS in order to be possible"
+            },
+            {
+              "complete": false,
+              "task": "The children together are sufficient for the parent"
+            },
+            {
+              "complete": false,
+              "task": "Decompose when readiness is low or an unknown is open (branch G)"
+            },
+            {
+              "complete": false,
+              "task": "Stop when a leaf is a clear, buildable Small"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
+        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      ],
+      "description": "{\n  \"outcome\": \"The skill guides breaking an unclear or too-large outcome into children, where each child is something the parent needs in order to be possible and the children together are sufficient for it. It ties the decision to readiness signals (branch G): low readiness or an open unknown is the cue to decompose.\"\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkH92Soyvp-6DuHOmYkvbtrnrVHeNHG4Dm_2Pfis-T_yk7jUxm"
+    },
+    "uhCkkVHEBGHybzrxeIIB225pBmrnIrYaDcYZIGTnWVh-Y53CICDKl": {
+      "content": "The skill places specs and criteria where they belong",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781400004,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Detailed specs live on the Small leaves that will actually be built"
+            },
+            {
+              "complete": false,
+              "task": "A branch spec shows how its parts interact (e.g. a flow diagram), not a list of them"
+            },
+            {
+              "complete": false,
+              "task": "Completion criteria attach wherever they can be evaluated"
+            },
+            {
+              "complete": false,
+              "task": "High-level nodes stay self-contained, not manifests of their subtree"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
+        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      ],
+      "description": "{\n  \"outcome\": \"The skill places detail correctly: most specs live low, on the Small leaves that will be built; a branch's spec is not a restatement of its children but a higher-level view — often a flow or interaction diagram — of how the parts below it fit together. Completion criteria attach wherever they can be evaluated.\"\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkVHEBGHybzrxeIIB225pBmrnIrYaDcYZIGTnWVh-Y53CICDKl"
+    },
+    "uhCkkWDa0otL1gs74mNP3IM4e6317xtH_77A97gG2IHzNxxi4-CYK": {
+      "content": "The skill describes the agent's working loop against a live tree",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781400005,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": [
+            {
+              "complete": false,
+              "task": "Read the live tree for context before proposing"
+            },
+            {
+              "complete": false,
+              "task": "Propose typed edits as a draft, never a direct write"
+            },
+            {
+              "complete": false,
+              "task": "Leave the commit to the human (plan-mode contract)"
+            },
+            {
+              "complete": false,
+              "task": "Record results and artifacts back onto the nodes worked"
+            }
+          ]
+        }
+      },
+      "tags": [
+        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
+        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      ],
+      "description": "{\n  \"outcome\": \"The skill describes how the LLM works a tree in practice: read the live tree for context, propose typed edits that open a draft for the human to review and commit, and never write to the DHT directly. It is the LLM-facing companion to the human-approved draft flow.\"\n}",
+      "isImported": false,
+      "githubLink": "",
+      "actionHash": "uhCkkWDa0otL1gs74mNP3IM4e6317xtH_77A97gG2IHzNxxi4-CYK"
+    },
+    "uhCkk-zEaHGuNIqgR_MFfbR2n5qpb-sajeX1QAcmBaSR5ar97dcZI": {
+      "content": "A node has a stable, human-usable reference that survives rearrangement",
+      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "timestampCreated": 1781410000,
+      "timestampUpdated": null,
       "scope": {
         "Uncertain": {
           "smallsEstimate": 0,
@@ -1642,29 +2156,10 @@
         }
       },
       "tags": [],
-      "description": "{\n  \"outcome\": \"The difference between working on improving the clarity of the tree itself, vs doing the work clarified by the tree in unambiguous and easy to direct.  This is the \\\"prototype\\\" level before we have the readiness assessments refined.\"\n}",
+      "description": "{\n  \"outcome\": \"To talk together about nodes — in chat, in proposals, across sessions — humans and LLMs need an unambiguous way to refer to a specific node that survives the tree being rearranged. Positional or semantic labels (\\\"i3c\\\", \\\"branch L\\\") break the moment the tree changes; the actionHash is stable but not human-usable; the current 6-digit hashCodeId is stable but opaque and derived from the hash. What the right referent is — a stable id, a human-memorable handle, or both, and how it is displayed and resolved — still needs discussion. (No leaf yet: open for decomposition.)\"\n}",
       "isImported": false,
       "githubLink": "",
-      "actionHash": "uhCkkYWWEULBb1wngo4UzMNfqebxV1c1nAKNlmqC-AI4V-4aAEYbc"
-    },
-    "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq": {
-      "content": "User can direct tree changes to LLM via in-acorn chat UI ",
-      "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
-      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
-      "timestampCreated": 1781304236,
-      "timestampUpdated": 1781380799,
-      "scope": {
-        "Uncertain": {
-          "smallsEstimate": 0,
-          "timeFrame": null,
-          "inBreakdown": true
-        }
-      },
-      "tags": [],
-      "description": "{\n  \"outcome\": \"Adds ACP for Acorn to connect to local LLM harness. \"\n}",
-      "isImported": false,
-      "githubLink": "",
-      "actionHash": "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq"
+      "actionHash": "uhCkk-zEaHGuNIqgR_MFfbR2n5qpb-sajeX1QAcmBaSR5ar97dcZI"
     }
   },
   "connections": {
@@ -2087,7 +2582,7 @@
     "uhCkkvkrcLA7XbYQ2_dyhN2Nuec6haxrzIxbnl0kt9h-xfnG5E7sd": {
       "parentActionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI",
       "childActionHash": "uhCkki1JOpngyrgopLu0N65EqsgscUe49-Nq06jj6q6zVvSVs_bRp",
-      "siblingOrder": 0,
+      "siblingOrder": 2,
       "randomizer": 1781303191314,
       "isImported": false,
       "actionHash": "uhCkkvkrcLA7XbYQ2_dyhN2Nuec6haxrzIxbnl0kt9h-xfnG5E7sd"
@@ -2103,10 +2598,114 @@
     "uhCkkT2mf_ggYdfhNb02754AISCNzk6JsU4Jx7SHcZI4R44Y2x7BZ": {
       "parentActionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI",
       "childActionHash": "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq",
-      "siblingOrder": -1,
+      "siblingOrder": 1,
       "randomizer": 1781304236855,
       "isImported": false,
       "actionHash": "uhCkkT2mf_ggYdfhNb02754AISCNzk6JsU4Jx7SHcZI4R44Y2x7BZ"
+    },
+    "uhCkkCIwwnJdQumob1pWMIKYWvZPv_i5L_YLXRmfJfq4SKzpYzsyL": {
+      "parentActionHash": "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq",
+      "childActionHash": "uhCkk4GLeRcIVU19qegtS6OAk__aPP02tV7BkNn9SG8HeukbhKhNY",
+      "siblingOrder": 0,
+      "randomizer": 1781310000001,
+      "isImported": false,
+      "actionHash": "uhCkkCIwwnJdQumob1pWMIKYWvZPv_i5L_YLXRmfJfq4SKzpYzsyL"
+    },
+    "uhCkk5G4_aMMlsWqtW6Bfsnef2uZ52WCYg9AakPALbcEhQWa3mI65": {
+      "parentActionHash": "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq",
+      "childActionHash": "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG",
+      "siblingOrder": -1,
+      "randomizer": 1781310000002,
+      "isImported": false,
+      "actionHash": "uhCkk5G4_aMMlsWqtW6Bfsnef2uZ52WCYg9AakPALbcEhQWa3mI65"
+    },
+    "uhCkkutaaFcVlEm5DWCR7adcBaT75FuUts-ZdOCP0EbNo8gAaetfN": {
+      "parentActionHash": "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG",
+      "childActionHash": "uhCkk9xX_0m2hkguQ2eTmZ79ng-m9gNXTOGqhM052L7rn88VXpGW5",
+      "siblingOrder": 0,
+      "randomizer": 1781310000003,
+      "isImported": false,
+      "actionHash": "uhCkkutaaFcVlEm5DWCR7adcBaT75FuUts-ZdOCP0EbNo8gAaetfN"
+    },
+    "uhCkkMlw0qQWx4JN_DPmy6Kxe_Qd268kXAyCISooNJjDEFHYFt7Hz": {
+      "parentActionHash": "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG",
+      "childActionHash": "uhCkkRLlJL3YET6l1TCHX14JUkij6W_Z4OcJZF9KPq2He6MMUmfat",
+      "siblingOrder": -1,
+      "randomizer": 1781310000004,
+      "isImported": false,
+      "actionHash": "uhCkkMlw0qQWx4JN_DPmy6Kxe_Qd268kXAyCISooNJjDEFHYFt7Hz"
+    },
+    "uhCkkrmUV79u1NcdgLdrLj-Xr3EalFH75dbC7vSNGFWd_aFdRLCKw": {
+      "parentActionHash": "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG",
+      "childActionHash": "uhCkkJv0KWx5f9EoQu4VrWp4aBmZHgaymirUl8e-4xB3ytYVclLlN",
+      "siblingOrder": -2,
+      "randomizer": 1781310000005,
+      "isImported": false,
+      "actionHash": "uhCkkrmUV79u1NcdgLdrLj-Xr3EalFH75dbC7vSNGFWd_aFdRLCKw"
+    },
+    "uhCkkBLE8331CGfiCBqfaz9VYzNNCSNAZnbm-U_icFPxX6cqe2Kbw": {
+      "parentActionHash": "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG",
+      "childActionHash": "uhCkkMoHdnzQVtSAFOeE8zSHCvyegAl0-XfcTQZ7sUq_tTJmKRhgV",
+      "siblingOrder": -3,
+      "randomizer": 1781310000006,
+      "isImported": false,
+      "actionHash": "uhCkkBLE8331CGfiCBqfaz9VYzNNCSNAZnbm-U_icFPxX6cqe2Kbw"
+    },
+    "uhCkkU2KsjyHgf3WlP4tF-maTkKyd05HSjDs4l4DKXGs_ZnQ5BBDn": {
+      "parentActionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm",
+      "childActionHash": "uhCkkEpCJlxfVYFcrJeNZVWBAckveEEbCIexk-pjiHGI3UnvPjObg",
+      "siblingOrder": 0,
+      "randomizer": 1781400000002,
+      "isImported": false,
+      "actionHash": "uhCkkU2KsjyHgf3WlP4tF-maTkKyd05HSjDs4l4DKXGs_ZnQ5BBDn"
+    },
+    "uhCkkno_7CUe3wIcBdpYLs76zDyOlEkHtj3XiWNprpDOSLVJ08yaV": {
+      "parentActionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm",
+      "childActionHash": "uhCkkQ4wHzAMhE7Unhx3k9yDgkt11BhsWWArT-NVDKez-NG9fOEde",
+      "siblingOrder": -1,
+      "randomizer": 1781400000003,
+      "isImported": false,
+      "actionHash": "uhCkkno_7CUe3wIcBdpYLs76zDyOlEkHtj3XiWNprpDOSLVJ08yaV"
+    },
+    "uhCkkZsDdzk03VMsTjjJLQKT6VzD02sV4EcFYWiIh55G6m0tO4tBA": {
+      "parentActionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm",
+      "childActionHash": "uhCkkH92Soyvp-6DuHOmYkvbtrnrVHeNHG4Dm_2Pfis-T_yk7jUxm",
+      "siblingOrder": -2,
+      "randomizer": 1781400000004,
+      "isImported": false,
+      "actionHash": "uhCkkZsDdzk03VMsTjjJLQKT6VzD02sV4EcFYWiIh55G6m0tO4tBA"
+    },
+    "uhCkkpKkfVIBQ4ENp0_Eq8zLHHzc67y93hlk2F6TbxC5wwfccLVjx": {
+      "parentActionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm",
+      "childActionHash": "uhCkkVHEBGHybzrxeIIB225pBmrnIrYaDcYZIGTnWVh-Y53CICDKl",
+      "siblingOrder": -3,
+      "randomizer": 1781400000005,
+      "isImported": false,
+      "actionHash": "uhCkkpKkfVIBQ4ENp0_Eq8zLHHzc67y93hlk2F6TbxC5wwfccLVjx"
+    },
+    "uhCkkoeHsGI8DNMW6jppLICIJ7S22VwS9s49uK6s_eNHbxCVeiQ0A": {
+      "parentActionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm",
+      "childActionHash": "uhCkkWDa0otL1gs74mNP3IM4e6317xtH_77A97gG2IHzNxxi4-CYK",
+      "siblingOrder": -4,
+      "randomizer": 1781400000006,
+      "isImported": false,
+      "actionHash": "uhCkkoeHsGI8DNMW6jppLICIJ7S22VwS9s49uK6s_eNHbxCVeiQ0A"
+    },
+    "uhCkkWuPH-7K9xNx05KmNlDPEsineNRweD5ePSKiLykkhMbd4dUE4": {
+      "parentActionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI",
+      "childActionHash": "uhCkk-zEaHGuNIqgR_MFfbR2n5qpb-sajeX1QAcmBaSR5ar97dcZI",
+      "siblingOrder": 0,
+      "randomizer": 1781410000002,
+      "isImported": false,
+      "actionHash": "uhCkkWuPH-7K9xNx05KmNlDPEsineNRweD5ePSKiLykkhMbd4dUE4"
+    },
+    "uhCkk87NwQkQA1M6VuJrpAX8VGg0KeiyC0qFxEs8jZSnsBn4EGU5j": {
+      "parentActionHash": "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq",
+      "childActionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm",
+      "siblingOrder": -5,
+      "randomizer": 1781461136551,
+      "isImported": false,
+      "actionHash": "uhCkk87NwQkQA1M6VuJrpAX8VGg0KeiyC0qFxEs8jZSnsBn4EGU5j"
     }
   },
   "outcomeMembers": {},
