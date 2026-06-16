@@ -1,0 +1,202 @@
+.harness-chat-launch {
+  // start on the RIGHT, above the zoom/map controls (which sit bottom:10px)
+  position: fixed;
+  right: 10px;
+  bottom: 5rem;
+  z-index: 1000;
+  padding: 0.35rem 0.7rem;
+  border: none;
+  border-radius: 0.4rem;
+  background: #6a3df5;
+  color: #fff;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.harness-chat {
+  // default placement: right side, above the zoom controls. On first open this
+  // is converted to an explicit left/top (inline style) so dragging + native
+  // resize behave predictably.
+  position: fixed;
+  right: 10px;
+  bottom: 5rem;
+  width: 22rem;
+  height: 30rem;
+  min-width: 16rem;
+  min-height: 14rem;
+  max-width: 92vw;
+  max-height: 88vh;
+  resize: both; // draggable corner — width & height
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 0.6rem;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  z-index: 1000;
+  overflow: hidden;
+  font-size: 0.85rem;
+  border: 2px solid transparent;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+
+  // Clear, distinct state: the chat owns the keyboard, tree shortcuts are paused.
+  &.keyboard-owned {
+    border-color: #6a3df5;
+    box-shadow: 0 0 0 3px rgba(106, 61, 245, 0.25), 0 6px 24px rgba(0, 0, 0, 0.18);
+  }
+}
+
+.harness-chat-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move;
+  user-select: none;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #6a3df5;
+  color: #fff;
+  font-weight: 600;
+
+  .harness-chat-mode {
+    flex: 1;
+    text-align: right;
+    margin-right: 0.25rem;
+    font-weight: 500;
+    font-size: 0.7rem;
+    opacity: 0.85;
+    white-space: nowrap;
+  }
+
+  .harness-chat-close {
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+}
+
+.harness-chat-selection {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.75rem;
+  background: #f6f3ff;
+  border-bottom: 1px solid #ece7fe;
+  color: #5a32d0;
+  font-size: 0.75rem;
+  min-width: 0;
+
+  .dot {
+    flex: none;
+    font-size: 0.6rem;
+  }
+  // the selected node's name — truncates with an ellipsis when it doesn't fit
+  .name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .more {
+    flex: none;
+    opacity: 0.75;
+  }
+}
+
+.harness-chat-status {
+  padding: 0.75rem;
+  color: #555;
+
+  &.error {
+    color: #b00020;
+    white-space: pre-wrap;
+  }
+}
+
+.harness-chat-transcript {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.harness-msg {
+  padding: 0.4rem 0.55rem;
+  border-radius: 0.4rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+
+  &.user {
+    align-self: flex-end;
+    background: #ece7fe;
+  }
+  &.agent {
+    align-self: flex-start;
+    background: #f3f3f3;
+  }
+  &.thought {
+    align-self: flex-start;
+    color: #888;
+    font-style: italic;
+    background: transparent;
+  }
+  &.system {
+    align-self: center;
+    color: #6a3df5;
+    background: transparent;
+    font-size: 0.72rem;
+    opacity: 0.8;
+    padding: 0.1rem 0;
+  }
+}
+
+.harness-plan {
+  margin: 0.25rem 0 0;
+  padding-left: 1.1rem;
+  color: #555;
+
+  .plan-completed {
+    text-decoration: line-through;
+    color: #999;
+  }
+  .plan-in_progress {
+    font-weight: 600;
+  }
+}
+
+.harness-chat-input {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.5rem;
+  border-top: 1px solid #eee;
+
+  textarea {
+    flex: 1;
+    resize: none;
+    height: 2.2rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.4rem;
+    font-family: inherit;
+    font-size: 0.85rem;
+  }
+
+  button {
+    border: none;
+    border-radius: 0.4rem;
+    background: #6a3df5;
+    color: #fff;
+    padding: 0 0.8rem;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+  }
+}

@@ -10,6 +10,7 @@ import MapViewingOptions from '../MapViewingOptions/MapViewingOptions'
 import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 import SyncingIndicator from '../SyncingIndicator/SyncingIndicator'
 import AgentDiffTools from '../AgentDiffTools/AgentDiffTools'
+import HarnessChat from '../HarnessChat/HarnessChat'
 
 export type FooterProps = {
   agentAddress: AgentPubKeyB64
@@ -112,6 +113,7 @@ const Footer: React.FC<FooterProps> = ({
           <Button text="Report Issue" size="small" className="green" />
         </a>
         <AgentDiffTools />
+        <HarnessChat />
       </div>
       {/* Zooming and Viewing Options on Map View */}
       {projectPage && (

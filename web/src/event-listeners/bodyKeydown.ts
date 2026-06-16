@@ -28,6 +28,7 @@ import { ActionHashB64 } from '../types/shared'
 import { cellIdFromString } from '../utils'
 import cloneOutcomes from './helpers/cloneOutcomes'
 import checkForKeyboardKeyModifier from './helpers/osPlatformHelper'
+import isEditableTarget from './helpers/isEditableTarget'
 import { CellId } from '@holochain/client'
 
 function leftMostOutcome(
@@ -40,6 +41,16 @@ function leftMostOutcome(
 }
 
 export default async function bodyKeydown(store: any, event: KeyboardEvent) {
+  // While a text field owns the keyboard (e.g. the harness chat), suppress ALL
+  // tree directives so a keystroke can't both type a character and open/move/
+  // delete a node. Two signals: the focused element is editable (general safety
+  // net) and the explicit chat-focus flag (drives the visible mode indicator).
+  // Returns before any async work or dispatch.
+  {
+    const s: RootState = store.getState()
+    if (isEditableTarget(event) || s.ui.keyboard.textInputFocused) return
+  }
+
   function canPerformKeyboardAction(state: RootState): boolean {
     return (
       state.ui.selection.selectedOutcomes.length === 1 &&

@@ -4,6 +4,7 @@ const HTMLWebpackPlugin = require('html-webpack-plugin')
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
+const { attachHarnessSidecar } = require('./dev-harness/sidecar')
 const mainAppId = fs.readFileSync(
   path.join(__dirname, '../config-main-app-id'),
   'utf-8'
@@ -54,6 +55,12 @@ module.exports = {
     allowedHosts: 'all',
     static: './dist',
     hot: true, // hot module reloading
+    // LLM-direct-API branch: attach the harness sidecar (ACP client + agent
+    // spawn) to the dev server's HTTP server. Renderer talks to it over a
+    // WebSocket at /__acorn_harness. onListening is where the http server exists.
+    onListening: (devServer) => {
+      attachHarnessSidecar(devServer && devServer.server)
+    },
     // dev-only file bridge for the agent diff tools (branch I): read/write the
     // exchange file under <tmp>/acorn-clarity so the renderer needs no fs or File
     // System Access API (both blocked in the dev iframe context).
