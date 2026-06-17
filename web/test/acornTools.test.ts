@@ -73,6 +73,25 @@ describe('handleAcornToolCall', () => {
     expect(store.getState().ui.draft.diff).not.toBeNull()
   })
 
+  test('propose_edits tolerates a PARTIAL diff (only the collections it touched)', async () => {
+    const store = makeStore()
+    // an LLM commonly sends just { outcomes: { added: {...} } } with no other
+    // collections and no removed[] — this must not crash effectiveDiff/overlay
+    const partial: any = {
+      outcomes: { added: { 'draft:9': { actionHash: 'draft:9', content: 'X' } } },
+    }
+    const res = await handleAcornToolCall(store, PROJECT, {
+      tool: 'propose_edits',
+      args: { diff: partial },
+    })
+    expect(res.ok).toBe(true)
+    const draft = store.getState().ui.draft.diff
+    // normalized to the full shape
+    expect(draft!.connections.added).toEqual({})
+    expect(draft!.outcomes.removed).toEqual([])
+    expect(Object.keys(draft!.outcomes.added)).toEqual(['draft:9'])
+  })
+
   test('propose_edits rejects a non-ProjectDiff payload', async () => {
     const store = makeStore()
     const res = await handleAcornToolCall(store, PROJECT, {

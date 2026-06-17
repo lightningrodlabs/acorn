@@ -6,7 +6,7 @@ import {
   CLEAR_DRAFT,
 } from './actions'
 import { CellIdString } from '../../../types/shared'
-import { ProjectDiff } from '../../../migrating/projectDiff'
+import { ProjectDiff, normalizeDiff } from '../../../migrating/projectDiff'
 import { DecisionMap } from './changes'
 
 export interface DraftState {
@@ -30,8 +30,9 @@ export default function (state = defaultState, action: any): DraftState {
 
   switch (type) {
     case OPEN_DRAFT:
+      // normalize: an LLM-proposed diff may omit collections it didn't touch
       return {
-        diff: payload.diff,
+        diff: normalizeDiff(payload.diff),
         projectId: payload.projectId,
         decisions: {},
       }
@@ -39,7 +40,7 @@ export default function (state = defaultState, action: any): DraftState {
       // keep the project + any still-relevant decisions; swap the diff
       return {
         ...state,
-        diff: payload.diff,
+        diff: normalizeDiff(payload.diff),
       }
     case SET_CHANGE_DECISION:
       if (!state.diff) return state

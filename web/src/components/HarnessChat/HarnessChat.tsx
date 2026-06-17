@@ -14,7 +14,7 @@ import remarkGfm from 'remark-gfm'
 import './HarnessChat.scss'
 import { CellIdString } from '../../types/shared'
 import { readTree, readSelection, SelectedNode } from '../../harness/readTree'
-import { handleAcornToolCall } from '../../harness/acornTools'
+import { handleAcornToolCall, isAcornToolTitle } from '../../harness/acornTools'
 import {
   ChatMessage,
   deleteSession,
@@ -105,6 +105,13 @@ const selectionNote = (selected: SelectedNode[]): string =>
 async function decidePermission(
   req: HarnessPermissionRequest
 ): Promise<HarnessPermissionDecision> {
+  // Acorn's own hosted tools (read_tree / propose_edits) are non-destructive, so
+  // auto-allow them instead of prompting — propose_edits only opens an inert
+  // draft a human still has to Confirm before anything reaches the DHT.
+  if (isAcornToolTitle(req.toolCall.title)) {
+    const auto = req.options.find((o) => o.kind.startsWith('allow'))
+    if (auto) return { outcome: 'selected', optionId: auto.optionId }
+  }
   const ok = window.confirm(
     `The agent is requesting permission to: ${req.toolCall.title || 'act'}\n\nAllow?`
   )

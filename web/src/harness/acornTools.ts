@@ -17,7 +17,7 @@ import { Store } from 'redux'
 import { RootState } from '../redux/reducer'
 import { CellIdString } from '../types/shared'
 import { readTree } from './readTree'
-import { ProjectDiff, diffStats } from '../migrating/projectDiff'
+import { ProjectDiff, diffStats, normalizeDiff } from '../migrating/projectDiff'
 import { HarnessToolCall, HarnessToolResult } from './types'
 import {
   enterDraftReview,
@@ -28,8 +28,22 @@ import {
 // descriptions in its tools/list; keep the two in sync.
 export const ACORN_TOOL_NAMES = ['read_tree', 'propose_edits'] as const
 
-const isProjectDiff = (d: any): d is ProjectDiff =>
-  !!d && !!d.outcomes && 'added' in d.outcomes && 'removed' in d.outcomes
+// Loose guard: a diff-shaped object with an `outcomes` collection. Partial diffs
+// (collections/fields omitted) are fine — normalizeDiff fills them in.
+const isProjectDiff = (d: any): boolean =>
+  !!d && typeof d === 'object' && !!d.outcomes && typeof d.outcomes === 'object'
+
+/**
+ * Whether an ACP permission request is for one of Acorn's own hosted tools.
+ * These are non-destructive — read_tree only reads; propose_edits only opens an
+ * inert draft (no DHT write) — so the human shouldn't be prompted to approve
+ * each call. Matched by the tool name appearing in the request title (the
+ * agent's titles include the tool/server name; "acorn" covers the server label).
+ */
+export function isAcornToolTitle(title: string | undefined): boolean {
+  const t = (title || '').toLowerCase()
+  return t.includes('acorn') || ACORN_TOOL_NAMES.some((n) => t.includes(n))
+}
 
 /**
  * Run one hosted tool call against the store for `projectId`. Pure dispatch +
@@ -49,13 +63,15 @@ export async function handleAcornToolCall(
       }
       case 'propose_edits': {
         // accept either { diff: {...} } or the diff object directly
-        const diff = call.args && call.args.diff ? call.args.diff : call.args
-        if (!isProjectDiff(diff))
+        const raw = call.args && call.args.diff ? call.args.diff : call.args
+        if (!isProjectDiff(raw))
           return {
             ok: false,
             error:
               'propose_edits expects a ProjectDiff ({ outcomes:{added,updated,removed}, … })',
           }
+        // an LLM diff may omit collections/fields it didn't touch — fill them in
+        const diff = normalizeDiff(raw)
         const state = store.getState() as RootState
         const alreadyOpen =
           !!state.ui.draft.diff && state.ui.draft.projectId === projectId

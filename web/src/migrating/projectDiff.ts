@@ -72,6 +72,26 @@ export function computeProjectDiff(
   return diff
 }
 
+/**
+ * Coerce a possibly-partial diff (e.g. one an LLM proposed with only the
+ * collections it touched, or a delta missing `removed`) into a full ProjectDiff
+ * with every collection present and every `{added,updated,removed}` field set.
+ * Pure; safe on null/garbage input. Callers that store or iterate a diff should
+ * normalize first so downstream code can assume the complete shape.
+ */
+export function normalizeDiff(partial: any): ProjectDiff {
+  const out = {} as ProjectDiff
+  for (const c of DIFF_COLLECTIONS) {
+    const d = (partial && partial[c]) || {}
+    out[c] = {
+      added: d.added && typeof d.added === 'object' ? d.added : {},
+      updated: d.updated && typeof d.updated === 'object' ? d.updated : {},
+      removed: Array.isArray(d.removed) ? d.removed : [],
+    }
+  }
+  return out
+}
+
 /** True when a diff carries no changes at all. */
 export function isEmptyDiff(diff: ProjectDiff): boolean {
   return DIFF_COLLECTIONS.every((c) => {
