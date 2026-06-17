@@ -127,6 +127,10 @@ const HarnessChat: React.FC = () => {
   // per-project by default; switching projects resets the panel (the store stays
   // keyed by project, leaving room for a future cross-project mode).
   const projectRef = useRef(projectId)
+  // connection is driven by an effect (open + idle); these let the effect call
+  // the latest connect() without forward-reference issues, and dedupe calls.
+  const connectingRef = useRef(false)
+  const connectRef = useRef<() => void>(() => {})
   // current session id, persisted so a reload can resume (see resume effect)
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
@@ -252,14 +256,16 @@ const HarnessChat: React.FC = () => {
     persistTurn(projectId, sessionId, messages, Date.now())
   }, [projectId, sessionId, messages])
 
-  // Switching projects: tear down the previous project's in-memory chat and
-  // collapse to the launcher. Reopening loads the new project's own session
-  // (its transcript is stored per-project), so streams never cross over.
+  // Switching projects: tear down the previous project's in-memory chat back to
+  // idle. If the panel was open it stays open and the auto-connect effect below
+  // reconnects to the NEW project's own session (transcript stored per-project),
+  // so streams never cross over but the chat follows the project.
   useEffect(() => {
     if (projectRef.current === projectId) return
     projectRef.current = projectId
     sessionRef.current = null
     lastTreeRef.current = null
+    connectingRef.current = false
     setSessionId(null)
     setMessages([])
     setPlan([])
@@ -268,10 +274,15 @@ const HarnessChat: React.FC = () => {
     setError('')
     setShowHistory(false)
     setKeyboardOwnership(false)
-    setPhase('idle')
-    setOpen(false)
+    setPhase('idle') // open is left as-is; auto-connect picks up the new project
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId])
+
+  // Connect whenever the panel is open but not yet connected — on first open and
+  // after a project switch resets to idle. connectRef holds the latest connect().
+  useEffect(() => {
+    if (open && phase === 'idle' && projectId) connectRef.current()
+  }, [open, phase, projectId])
 
   // While a turn is in flight, tick "seconds since last update" so the UI can
   // show progress and flag a stall (no built-in ACP heartbeat to lean on).
@@ -329,8 +340,8 @@ const HarnessChat: React.FC = () => {
   }
 
   const connect = async () => {
-    setOpen(true)
-    if (phase === 'ready' || phase === 'connecting') return
+    if (connectingRef.current || phase === 'ready') return
+    connectingRef.current = true
     setPhase('connecting')
     setError('')
     try {
@@ -342,8 +353,12 @@ const HarnessChat: React.FC = () => {
     } catch (e: any) {
       setPhase('error')
       setError(e?.message || String(e))
+    } finally {
+      connectingRef.current = false
     }
   }
+  // expose the latest connect to the auto-connect effect
+  connectRef.current = connect
 
   // --- header history picker ---
   const toggleHistory = () => {
@@ -459,7 +474,7 @@ const HarnessChat: React.FC = () => {
 
   if (!open) {
     return (
-      <button className="harness-chat-launch" onClick={connect}>
+      <button className="harness-chat-launch" onClick={() => setOpen(true)}>
         Chat with tree
       </button>
     )
