@@ -1,5 +1,9 @@
 import { createSelector } from 'reselect'
 import { RootState } from '../../../redux/reducer'
+import {
+  activeEffectiveDiff,
+  overlayCollection,
+} from '../../../redux/ephemeral/draft/changes'
 
 const selectRenderProps = createSelector(
   (state: RootState) => state.ui.activeEntryPoints,
@@ -16,6 +20,10 @@ const selectRenderProps = createSelector(
   (state: RootState) => state.projects.entryPoints[state.ui.activeProject],
   (state: RootState) => state.projects.outcomeMembers[state.ui.activeProject],
   (state: RootState) => state.projects.connections[state.ui.activeProject],
+  // draft overlay inputs (clarity-tree draft pipeline L2) — merged into the
+  // rendered connections below so proposed edges draw without a DHT write
+  (state: RootState) => state.ui.draft,
+  (state: RootState) => state.ui.activeProject,
   (state: RootState) => state.ui.outcomeConnector.maybeLinkedOutcome,
   (state: RootState) => state.ui.outcomeConnector.toAddress,
   (state: RootState) =>
@@ -47,7 +55,9 @@ const selectRenderProps = createSelector(
     projectMeta,
     entryPoints,
     outcomeMembers,
-    connections,
+    connectionsRaw,
+    draft,
+    activeProject,
     outcomeConnectorMaybeLinkedOutcome,
     outcomeConnectorToAddress,
     outcomeConnectorExistingParent,
@@ -66,6 +76,10 @@ const selectRenderProps = createSelector(
     changedOutcomes,
     changedOutcomeStats
   ) => {
+    const draftDiff = activeEffectiveDiff(draft, activeProject)
+    const connections = draftDiff
+      ? overlayCollection(connectionsRaw || {}, draftDiff.connections)
+      : connectionsRaw
     return {
       activeEntryPoints,
       zoomLevel,

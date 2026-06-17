@@ -1,0 +1,114 @@
+// Floating draft-review panel — bottom-right of the map, above the viewing
+// options. Violet accent ties it to the LLM agent loop (matches AgentDiffTools).
+.draft-review-panel {
+  position: fixed;
+  right: 1rem;
+  bottom: 5.5rem;
+  z-index: 20;
+  width: 17rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.5rem;
+  background: #fff;
+  border: 1px solid rgba(122, 79, 211, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14);
+  font-size: 0.8rem;
+  color: var(--text-color, #222);
+
+  .draft-review-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+
+    .draft-review-title {
+      font-weight: 700;
+      color: #7a4fd3;
+    }
+    .draft-review-subtitle {
+      font-size: 0.7rem;
+      color: var(--text-color-secondary, #888);
+    }
+  }
+
+  .draft-review-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 0.6rem;
+
+    .draft-review-empty {
+      font-size: 0.75rem;
+      color: var(--text-color-secondary, #888);
+    }
+
+    .draft-review-line {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+
+      .draft-review-collection {
+        flex: 1;
+        text-transform: capitalize;
+      }
+
+      .chip {
+        padding: 0.05rem 0.4rem;
+        border-radius: 0.6rem;
+        font-weight: 600;
+        font-family: monospace;
+        font-size: 0.72rem;
+        color: #fff;
+
+        &.added {
+          background: #2eb648;
+        }
+        &.updated {
+          background: #ff9500; // matches the changed-node glow
+        }
+        &.removed {
+          background: #e94e3c;
+        }
+      }
+    }
+  }
+
+  .draft-review-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+
+    .draft-review-button {
+      padding: 0.3rem 0.8rem;
+      border-radius: 0.35rem;
+      border: 1px solid transparent;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+
+      &.discard {
+        background: #fff;
+        border-color: rgba(0, 0, 0, 0.15);
+        color: var(--text-color-secondary, #555);
+
+        &:hover {
+          border-color: #e94e3c;
+          color: #e94e3c;
+        }
+      }
+
+      &.confirm {
+        background: #7a4fd3;
+        color: #fff;
+
+        &:hover {
+          background: #4f2e96;
+        }
+
+        &:disabled {
+          background: rgba(122, 79, 211, 0.4);
+          cursor: default;
+        }
+      }
+    }
+  }
+}

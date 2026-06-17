@@ -88,6 +88,36 @@ export function overlayCollection(
   return { ...base, ...delta.added, ...delta.updated }
 }
 
+/**
+ * The active draft's diff with decisions applied, or null when no draft is open
+ * for the given project. The overlay/glow paths key off this so a draft scoped to
+ * one project never bleeds into another.
+ */
+export function activeEffectiveDiff(
+  draft: { diff: ProjectDiff | null; decisions: DecisionMap; projectId: string | null },
+  activeProject: string
+): ProjectDiff | null {
+  if (!draft.diff || draft.projectId !== activeProject) return null
+  return effectiveDiff(draft.diff, draft.decisions)
+}
+
+/**
+ * Merge a draft (already effective) over a project's persisted outcomes &
+ * connections, for rendering only. Returns the inputs unchanged when there is no
+ * draft, so callers can wire it in unconditionally.
+ */
+export function overlayProject(
+  outcomes: EntityMap,
+  connections: EntityMap,
+  diff: ProjectDiff | null
+): { outcomes: EntityMap; connections: EntityMap } {
+  if (!diff) return { outcomes, connections }
+  return {
+    outcomes: overlayCollection(outcomes, diff.outcomes),
+    connections: overlayCollection(connections, diff.connections),
+  }
+}
+
 /** True when the diff carries no surviving change (after decisions applied). */
 export function isEmptyEffective(diff: ProjectDiff): boolean {
   return DIFF_COLLECTIONS.every((c) => {

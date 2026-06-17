@@ -22,6 +22,7 @@ import {
   unselectAll,
 } from '../../redux/ephemeral/selection/actions'
 import { fitToChanged } from '../diffReview/fitToChanged'
+import { enterDraftReview } from '../diffReview/draftReview'
 
 // Temporary floating tools (sits with "Report Issue" / the eye button) for the
 // low-friction LLM-agent diff loop — branch I. Folds into the AI chat panel later.
@@ -98,6 +99,7 @@ const AgentDiffTools: React.FC = () => {
   const projectId = projectPage ? projectPage.params.projectId : null
   const store = useStore()
   const fileInput = useRef<HTMLInputElement>(null)
+  const draftInput = useRef<HTMLInputElement>(null)
   const [status, setStatus] = useState('')
   // i3b — outcome-level counts of the last applied diff, rendered as +/~/− chips.
   // Outcomes are the unit a human thinks in; the per-collection detail stays in
@@ -120,6 +122,9 @@ const AgentDiffTools: React.FC = () => {
   const treeName = (): string => `${sanitize(projectName())}-tree.json`
   const diffName = (): string => `${sanitize(projectName())}-diff.json`
   const applyName = (): string => `${sanitize(projectName())}-apply.json`
+  // a ProjectDiff to open as a draft overlay (review, not apply) — dev affordance
+  // to verify the draft pipeline (L2) end-to-end with no agent
+  const draftName = (): string => `${sanitize(projectName())}-draft.json`
   const currentSnapshot = (): ProjectSnapshot =>
     collectExportProjectData(store.getState(), projectId) as ProjectSnapshot
 
@@ -217,6 +222,45 @@ const AgentDiffTools: React.FC = () => {
     fileInput.current?.click()
   }
 
+  // Open a ProjectDiff as a draft overlay (review mode) rather than applying it.
+  // Reads <name>-draft.json via the dev bridge, falling back to a file picker.
+  // Nothing is written to the DHT — the draft is inert until Confirm.
+  const onLoadDraftClick = async () => {
+    if (busy) return
+    const data = await bridgeRead(draftName())
+    if (data && data.__missing) {
+      setStatus(`No draft to load yet (no ${draftName()}).`)
+      return
+    }
+    if (data) {
+      if (!isProjectDiff(data)) {
+        setStatus(`${draftName()} is not a ProjectDiff.`)
+        return
+      }
+      enterDraftReview(store, data, projectId)
+      setStatus(`Draft opened for review.\n${summary(data)}`)
+      return
+    }
+    draftInput.current?.click()
+  }
+
+  const onDraftFilePicked = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    try {
+      const parsed = JSON.parse(await file.text())
+      if (!isProjectDiff(parsed)) {
+        setStatus('Picked file is not a ProjectDiff.')
+        return
+      }
+      enterDraftReview(store, parsed, projectId)
+      setStatus(`Draft opened for review.\n${summary(parsed)}`)
+    } catch (err: any) {
+      setStatus(`Load draft failed: ${err?.message || err}`)
+    }
+  }
+
   const onApplyFilePicked = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     e.target.value = ''
@@ -238,6 +282,13 @@ const AgentDiffTools: React.FC = () => {
         style={{ display: 'none' }}
         onChange={onApplyFilePicked}
       />
+      <input
+        ref={draftInput}
+        type="file"
+        accept="application/json,.json"
+        style={{ display: 'none' }}
+        onChange={onDraftFilePicked}
+      />
       {/* the loop reads as a conversation with the LLM: send it the tree
           (export) and receive its changes back (import) */}
       <div className="agent-llm-area">
@@ -257,6 +308,14 @@ const AgentDiffTools: React.FC = () => {
           withTooltipTop
           tooltipText={busy ? 'applying…' : 'import changes diff'}
           onClick={onApplyClick}
+        />
+        <Icon
+          name="eye.svg"
+          size="small"
+          className="agent-llm-icon"
+          withTooltipTop
+          tooltipText="load draft (review, no commit)"
+          onClick={onLoadDraftClick}
         />
       </div>
       {status && (

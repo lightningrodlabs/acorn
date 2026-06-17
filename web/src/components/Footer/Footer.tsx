@@ -11,6 +11,7 @@ import { AgentPubKeyB64, CellIdString } from '../../types/shared'
 import SyncingIndicator from '../SyncingIndicator/SyncingIndicator'
 import AgentDiffTools from '../AgentDiffTools/AgentDiffTools'
 import HarnessChat from '../HarnessChat/HarnessChat'
+import DraftReviewPanel from '../DraftReviewPanel/DraftReviewPanel'
 
 export type FooterProps = {
   agentAddress: AgentPubKeyB64
@@ -115,6 +116,8 @@ const Footer: React.FC<FooterProps> = ({
         <AgentDiffTools />
         <HarnessChat />
       </div>
+      {/* LLM-proposed draft layer — reviewed before it touches the DHT */}
+      <DraftReviewPanel />
       {/* Zooming and Viewing Options on Map View */}
       {projectPage && (
         <div className={bottomRightPanelClassName}>
