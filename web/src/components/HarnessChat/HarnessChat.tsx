@@ -50,6 +50,36 @@ import {
 // no heartbeat, so this is the best signal that the agent has gone quiet.
 const STALL_SECS = 20
 
+// Persisted panel geometry (a UI preference, shared across projects). Native
+// CSS resize lives on the DOM element, which is lost when the panel unmounts on
+// close — so we persist it and reapply on open.
+const FRAME_KEY = 'acorn:harnessChat:frame'
+type Frame = { width: number; height: number; left: number; top: number }
+const loadFrame = (): Frame | null => {
+  try {
+    const raw = localStorage.getItem(FRAME_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch (_) {
+    return null
+  }
+}
+const saveFrame = (f: Frame) => {
+  try {
+    localStorage.setItem(FRAME_KEY, JSON.stringify(f))
+  } catch (_) {}
+}
+const clampNum = (v: number, min: number, max: number) =>
+  Math.max(min, Math.min(v, max))
+// Keep the panel on-screen (e.g. if the window was resized smaller while closed):
+// at least `keep` px stays visible horizontally, and the header stays reachable.
+const clampToViewport = (left: number, top: number, w: number, h: number) => {
+  const keep = 80
+  return {
+    left: clampNum(left, keep - w, window.innerWidth - keep),
+    top: clampNum(top, 0, Math.max(0, window.innerHeight - 40)),
+  }
+}
+
 // Compact relative time for the history picker.
 const relativeTime = (then: number, now: number): string => {
   const s = Math.max(0, Math.floor((now - then) / 1000))
@@ -158,14 +188,39 @@ const HarnessChat: React.FC = () => {
     atBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 40
   }
 
-  // On first open, convert the default (right-anchored) CSS placement to an
-  // explicit left/top so dragging + resize behave consistently.
+  // On open, restore the saved size (or measure the default right-anchored
+  // placement) and pin an explicit, on-screen left/top. Runs on every open so a
+  // window shrink while closed can't leave the panel off-screen.
   useLayoutEffect(() => {
-    if (open && pos === null && panelRef.current) {
-      const r = panelRef.current.getBoundingClientRect()
-      setPos({ left: r.left, top: r.top })
+    if (!open) return
+    const el = panelRef.current
+    if (!el) return
+    const saved = loadFrame()
+    let w = el.offsetWidth
+    let h = el.offsetHeight
+    if (saved) {
+      w = clampNum(saved.width, 200, window.innerWidth)
+      h = clampNum(saved.height, 160, window.innerHeight)
+      el.style.width = `${w}px`
+      el.style.height = `${h}px`
     }
-  }, [open, pos])
+    const base = pos || (saved ? { left: saved.left, top: saved.top } : el.getBoundingClientRect())
+    setPos(clampToViewport(base.left, base.top, w, h))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open])
+
+  // Persist size as the user resizes (native resize writes to the DOM element).
+  useEffect(() => {
+    if (!open) return
+    const el = panelRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(() => {
+      const r = el.getBoundingClientRect()
+      saveFrame({ width: el.offsetWidth, height: el.offsetHeight, left: r.left, top: r.top })
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [open])
 
   // Keep pinned to the bottom as content streams in (only if already at bottom).
   useLayoutEffect(() => {
@@ -362,6 +417,11 @@ const HarnessChat: React.FC = () => {
     const up = () => {
       window.removeEventListener('mousemove', move)
       window.removeEventListener('mouseup', up)
+      const el = panelRef.current
+      if (el) {
+        const rr = el.getBoundingClientRect()
+        saveFrame({ width: el.offsetWidth, height: el.offsetHeight, left: rr.left, top: rr.top })
+      }
     }
     window.addEventListener('mousemove', move)
     window.addEventListener('mouseup', up)
