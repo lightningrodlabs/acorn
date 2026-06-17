@@ -72,6 +72,86 @@
     }
   }
 
+  .draft-review-changes {
+    max-height: 16rem;
+    overflow-y: auto;
+    margin-bottom: 0.6rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.07);
+
+    .draft-change {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      padding: 0.3rem 0;
+
+      &.rejected {
+        opacity: 0.45;
+        .draft-change-label {
+          text-decoration: line-through;
+        }
+      }
+
+      .draft-change-row {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .draft-change-op {
+        font-family: monospace;
+        font-weight: 700;
+        width: 0.9rem;
+        text-align: center;
+
+        &.added {
+          color: #2eb648;
+        }
+        &.updated {
+          color: #ff9500;
+        }
+        &.removed {
+          color: #e94e3c;
+        }
+      }
+
+      .draft-change-label {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 0.78rem;
+      }
+
+      .draft-change-edit {
+        border: none;
+        background: none;
+        color: #7a4fd3;
+        font-size: 0.72rem;
+        cursor: pointer;
+        padding: 0 0.2rem;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .draft-change-accept {
+        cursor: pointer;
+      }
+
+      .draft-change-editor {
+        padding: 0.4rem 0.2rem 0.2rem 1.3rem;
+
+        .draft-change-content {
+          width: 100%;
+          margin-bottom: 0.4rem;
+          padding: 0.25rem 0.4rem;
+          border: 1px solid rgba(0, 0, 0, 0.15);
+          border-radius: 0.25rem;
+          font-size: 0.8rem;
+        }
+      }
+    }
+  }
+
   .draft-review-actions {
     display: flex;
     justify-content: flex-end;

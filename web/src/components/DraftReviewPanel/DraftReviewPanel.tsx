@@ -1,31 +1,77 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector, useStore } from 'react-redux'
 
 import './DraftReviewPanel.scss'
 import { RootState } from '../../redux/reducer'
-import { activeEffectiveDiff } from '../../redux/ephemeral/draft/changes'
+import {
+  effectiveDiff,
+  enumerateChanges,
+  isAccepted,
+  ChangeRow,
+} from '../../redux/ephemeral/draft/changes'
 import { diffStats } from '../../migrating/projectDiff'
-import { exitDraftReview } from '../diffReview/draftReview'
+import {
+  setChangeDecision,
+  updateDraftEntry,
+} from '../../redux/ephemeral/draft/actions'
+import { exitDraftReview, refreshDraftGlow } from '../diffReview/draftReview'
+import OutcomeFieldsEditor from '../OutcomeFieldsEditor/OutcomeFieldsEditor'
 
-// The draft review panel — visible whenever an LLM-proposed draft is open for the
-// active project (clarity-tree draft pipeline). It is the human gate: the proposed
-// edits glow on the map as an overlay and stay inert here until Confirm (L4).
-// Discard drops them with no DHT write.
-//
-// Phase 1 (L2) shows the proposed-change summary + Discard. Per-change
-// accept/reject + inline edit (L3) and Confirm (L4) extend this panel.
+// The draft review panel — the human gate over an LLM-proposed draft (clarity-tree
+// draft pipeline). Proposed edits glow on the map as an inert overlay; here the
+// human accepts/rejects and inline-edits each change (L3). Confirm (L4) commits the
+// surviving subset; Discard drops everything with no DHT write.
+const opSymbol: Record<ChangeRow['op'], string> = {
+  added: '+',
+  updated: '~',
+  removed: '−',
+}
+
 const DraftReviewPanel: React.FC = () => {
   const store = useStore()
   const draft = useSelector((s: RootState) => s.ui.draft)
   const activeProject = useSelector((s: RootState) => s.ui.activeProject)
+  const liveOutcomes = useSelector(
+    (s: RootState) => s.projects.outcomes[activeProject] || {}
+  )
+  const [expanded, setExpanded] = useState<string | null>(null)
 
-  const effective = activeEffectiveDiff(draft, activeProject)
-  if (!effective) return null
+  // only show for an open draft scoped to the project on screen
+  if (!draft.diff || draft.projectId !== activeProject) return null
 
+  const rows = enumerateChanges(draft.diff)
+  const effective = effectiveDiff(draft.diff, draft.decisions)
   const stats = diffStats(effective)
-  const lines = (Object.keys(stats) as Array<keyof typeof stats>).filter(
+  const summaryLines = (Object.keys(stats) as Array<keyof typeof stats>).filter(
     (k) => stats[k].added || stats[k].updated || stats[k].removed
   )
+
+  // a human label for a change row
+  const labelFor = (row: ChangeRow): string => {
+    if (row.collection === 'outcomes') {
+      if (row.op === 'removed')
+        return liveOutcomes[row.hash]?.content || row.hash.slice(0, 8) + '…'
+      return row.entry?.content || '(untitled)'
+    }
+    return `${row.collection} ${row.hash.slice(0, 8)}…`
+  }
+
+  const toggle = (row: ChangeRow, accepted: boolean) => {
+    store.dispatch(setChangeDecision(row.key, accepted))
+    refreshDraftGlow(store, activeProject)
+  }
+
+  // inline-edit a proposed outcome (its content/name and its typed fields),
+  // writing back into the draft diff entry — never the live outcome
+  const patchEntry = (row: ChangeRow, patch: Record<string, any>) => {
+    store.dispatch(
+      updateDraftEntry(row.collection, row.op, row.hash, { ...row.entry, ...patch })
+    )
+    refreshDraftGlow(store, activeProject)
+  }
+
+  const editableOutcome = (row: ChangeRow) =>
+    row.collection === 'outcomes' && row.op !== 'removed'
 
   return (
     <div className="draft-review-panel">
@@ -33,13 +79,14 @@ const DraftReviewPanel: React.FC = () => {
         <span className="draft-review-title">Proposed changes</span>
         <span className="draft-review-subtitle">review before confirming</span>
       </div>
+
       <div className="draft-review-summary">
-        {lines.length === 0 ? (
+        {summaryLines.length === 0 ? (
           <div className="draft-review-empty">
-            No changes selected — every proposed edit was rejected.
+            Nothing selected — every change is rejected.
           </div>
         ) : (
-          lines.map((k) => (
+          summaryLines.map((k) => (
             <div className="draft-review-line" key={k}>
               <span className="draft-review-collection">{k}</span>
               <span className="chip added">+{stats[k].added}</span>
@@ -49,6 +96,62 @@ const DraftReviewPanel: React.FC = () => {
           ))
         )}
       </div>
+
+      <div className="draft-review-changes">
+        {rows.map((row) => {
+          const accepted = isAccepted(draft.decisions, row.key)
+          const isOpen = expanded === row.key
+          return (
+            <div
+              className={`draft-change ${accepted ? '' : 'rejected'} op-${row.op}`}
+              key={row.key}
+            >
+              <div className="draft-change-row">
+                <span className={`draft-change-op ${row.op}`}>
+                  {opSymbol[row.op]}
+                </span>
+                <span className="draft-change-label" title={labelFor(row)}>
+                  {labelFor(row)}
+                </span>
+                {editableOutcome(row) && (
+                  <button
+                    className="draft-change-edit"
+                    onClick={() => setExpanded(isOpen ? null : row.key)}
+                  >
+                    {isOpen ? 'done' : 'edit'}
+                  </button>
+                )}
+                <input
+                  type="checkbox"
+                  className="draft-change-accept"
+                  title={accepted ? 'reject this change' : 'accept this change'}
+                  checked={accepted}
+                  onChange={(e) => toggle(row, e.target.checked)}
+                />
+              </div>
+              {isOpen && editableOutcome(row) && (
+                <div className="draft-change-editor">
+                  <input
+                    className="draft-change-content"
+                    value={row.entry?.content || ''}
+                    placeholder="Outcome name"
+                    onChange={(e) => patchEntry(row, { content: e.target.value })}
+                  />
+                  <OutcomeFieldsEditor
+                    description={row.entry?.description || ''}
+                    onChange={(description) => patchEntry(row, { description })}
+                    isBeingEditedByOther={false}
+                    personEditing={null as any}
+                    onFieldBlur={() => {}}
+                    onFieldFocus={() => {}}
+                  />
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
       <div className="draft-review-actions">
         <button
           className="draft-review-button discard"

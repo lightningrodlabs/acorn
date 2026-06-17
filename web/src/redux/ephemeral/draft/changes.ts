@@ -33,6 +33,31 @@ export function changeKey(
 
 export type DecisionMap = { [key: string]: boolean }
 
+/** One reviewable change within a draft, for listing in the review panel (L3). */
+export interface ChangeRow {
+  key: string
+  collection: DiffCollection
+  op: ChangeOp
+  hash: string
+  // the proposed entry for added/updated; null for removed (it lives in the base)
+  entry: any | null
+}
+
+/** Flatten a draft diff into per-change rows the human reviews one by one. */
+export function enumerateChanges(diff: ProjectDiff): ChangeRow[] {
+  const rows: ChangeRow[] = []
+  for (const collection of DIFF_COLLECTIONS) {
+    const d = diff[collection]
+    for (const hash of Object.keys(d.added))
+      rows.push({ key: changeKey(collection, 'added', hash), collection, op: 'added', hash, entry: d.added[hash] })
+    for (const hash of Object.keys(d.updated))
+      rows.push({ key: changeKey(collection, 'updated', hash), collection, op: 'updated', hash, entry: d.updated[hash] })
+    for (const hash of d.removed)
+      rows.push({ key: changeKey(collection, 'removed', hash), collection, op: 'removed', hash, entry: null })
+  }
+  return rows
+}
+
 // A change is accepted unless a decision explicitly rejects it (default-accept).
 export function isAccepted(decisions: DecisionMap, key: string): boolean {
   return decisions[key] !== false
