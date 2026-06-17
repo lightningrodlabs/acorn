@@ -1,18 +1,18 @@
 {
   "projectMeta": {
-    "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
-    "createdAt": 1781288077640,
+    "creatorAgentPubKey": "uhCAkwU9wSAp5q5H37O710BlrKWfmJxL8xFMj4bFBOnuLIox96Sk6",
+    "createdAt": 1781661000268,
     "name": "Acorn → Clarity Trees (living spec)",
     "image": "",
-    "passphrase": "precook disposal paralegal pretended remold",
+    "passphrase": "plaything riverside decent precook glandular",
     "isImported": true,
     "layeringAlgorithm": "Classic",
     "topPriorityOutcomes": [],
     "isMigrated": null,
-    "actionHash": "uhCkkJr2ltNgbeTMgz8N-Arld34y8zQTGK6ps8ePb2zqb4bJR0rt-"
+    "actionHash": "uhCkkL8STqtYdqIy5XWNOBmkj3eVRabRjUnb34dTWeVxCvcYWwsCX"
   },
   "outcomes": {
-    "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp": {
+    "uhCkkxbCIf5_aFBtScQTnT7iIn4fOiz7d-U5qMNH_RiOZTsg8LrPN": {
       "content": "Acorn renders clarity trees whose every node guides an agent toward production-ready software",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -29,9 +29,9 @@
       "description": "{\n  \"outcome\": \"Acorn renders clarity trees: every node is a positive target-state outcome carrying typed clarity fields — a detailed outcome statement, an optional functional spec, completion criteria, typed dependencies, and artifacts. An agent consumes the exported tree to build software, and completion verdicts and produced artifacts flow back onto the nodes. The tree is a living specification that stays in sync with the work. (A node is a convergence of typed fields: one built thing satisfies many intents at once.)\",\n  \"principle\": \"Humans author intent; agents execute, evaluate, and propose, but never silently rewrite a node's outcome or spec. Any flow that lets an agent commit intent without a human decision falsifies this.\",\n  \"artifacts\": [\n    {\n      \"type\": \"doc\",\n      \"label\": \"clarity-notions.md\",\n      \"uri\": \"clarity-engine/clarity-notions.md\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp"
+      "actionHash": "uhCkkxbCIf5_aFBtScQTnT7iIn4fOiz7d-U5qMNH_RiOZTsg8LrPN"
     },
-    "uhCkkE17lr2PkxLoRdPB1kayY1io1EwKelzCvPskck0KSslkXI4eL": {
+    "uhCkksFZ8BhZQdNaViETjWugeOIO8yKQ3EDv_7FFXN_xPBuQ7O_Kc": {
       "content": "Working with an LLM agent uses low-friction diff export/import, not full-tree round-trips",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -48,9 +48,9 @@
       "description": "{\n  \"outcome\": \"While the rest of the feature set is being built, a human collaborates with an LLM agent on a clarity tree through lightweight diffs rather than exporting and importing whole trees. A human exports the changes since the last export, hands them to an agent, and imports the agent-generated diffs back into the existing tree — with the changed nodes lit up so it is obvious what was worked on. Triggering the agent and seeing what it did is a single click against a known location. (Interim: a lighter-weight form of branch D export + D3/F2 agent proposals.)\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A full loop — export diff, agent edits, import diff, tree lights up — runs end to end with single clicks\",\n      \"evaluator\": \"human\"\n    }\n  ],\n  \"artifacts\": [\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"AgentDiffTools.tsx — floating Export tree / Apply update buttons (diff vs current, apply, light up)\",\n      \"uri\": \"web/src/components/AgentDiffTools/AgentDiffTools.tsx\"\n    },\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"projectDiff.ts — compute/apply diffs + touched-set + findUnresolvedReferences (pure, tested)\",\n      \"uri\": \"web/src/migrating/projectDiff.ts\"\n    },\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"applyProjectDiff.ts — zome-level diff executor (create/update/delete + remap)\",\n      \"uri\": \"web/src/migrating/applyProjectDiff.ts\"\n    },\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"webpack.dev.js — dev-server file bridge to a fixed /tmp/acorn-clarity path\",\n      \"uri\": \"web/webpack.dev.js\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkE17lr2PkxLoRdPB1kayY1io1EwKelzCvPskck0KSslkXI4eL"
+      "actionHash": "uhCkksFZ8BhZQdNaViETjWugeOIO8yKQ3EDv_7FFXN_xPBuQ7O_Kc"
     },
-    "uhCkk5yULspckAl-auSdERFhLAEIpjV7bJgcNncoHF6kw7a0JeAgb": {
+    "uhCkkda03BPlmeJQLSuPso_LyviYZvsFARyeFG-bxYfQi3kV5P9En": {
       "content": "A human can export the changes since the last export as a diff",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -77,15 +77,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"Instead of exporting the whole tree, a human exports only what changed since the previous export — a compact diff of added, modified, and removed nodes, connections, and fields — ready to hand to an agent.\",\n  \"spec\": \"Track a 'last export' snapshot; export-diff computes the delta against it and writes the diff out. The diff is self-describing enough for an agent to read and for import-diff to apply. DECISION: operate in the live project's hash space (diff live-vs-saved-snapshot, edit that export), so no generator-hash <-> live-hash remapping is needed; the generator is only the initial seed.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A human clicks once and gets a diff of only what changed since the last export\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"Applying the exported diff to the prior snapshot reproduces the current tree (round-trip)\",\n      \"evaluator\": \"executable\"\n    }\n  ],\n  \"artifacts\": [\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"projectDiff.ts — compute/apply diffs + touched-set (pure, 7 tests)\",\n      \"uri\": \"web/src/migrating/projectDiff.ts\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk5yULspckAl-auSdERFhLAEIpjV7bJgcNncoHF6kw7a0JeAgb"
+      "actionHash": "uhCkkda03BPlmeJQLSuPso_LyviYZvsFARyeFG-bxYfQi3kV5P9En"
     },
-    "uhCkk1T6OA72LHCg3bjXMlg5Gk3uWEpUxE4Pht3JtwknP4jplFHMn": {
+    "uhCkkIXthPj9Zn-hb7QUczRXi-C1Qx5UXuj0ZCTvFvWIvHypgqxlQ": {
       "content": "A human can import LLM-generated diffs into an existing tree",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -112,15 +112,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"An agent's proposed changes arrive as a diff and are applied onto the existing tree in place — adding, updating, and removing the referenced nodes, connections, and fields — without recreating the project.\",\n  \"spec\": \"Import-diff reads the same format export-diff produces, resolves references against the existing tree, and applies the changes idempotently. Unresolved references are reported, never silently dropped. The executor is dependency-injected so its ordering + remapping logic is unit-tested without a conductor.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A human clicks once to apply an agent's diff and the existing tree updates in place\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"Applying a diff to the tree it was generated against is idempotent and yields the expected nodes\",\n      \"evaluator\": \"executable\"\n    }\n  ],\n  \"artifacts\": [\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"applyProjectDiff.ts — zome-level diff executor (create/update/delete + remap), DI + 7 tests\",\n      \"uri\": \"web/src/migrating/applyProjectDiff.ts\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk1T6OA72LHCg3bjXMlg5Gk3uWEpUxE4Pht3JtwknP4jplFHMn"
+      "actionHash": "uhCkkIXthPj9Zn-hb7QUczRXi-C1Qx5UXuj0ZCTvFvWIvHypgqxlQ"
     },
-    "uhCkkaZy_sVSfnFUefGLinR1qc4oUT-ANLTse28PRtdCgJ7UCgjDL": {
+    "uhCkkTRI2cNxE1t-4MUjTB8seX36uXn5VvNwf2LX6c1dbvzfnTyFl": {
       "content": "Imported diffs light up the tree where changes happened",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -134,15 +134,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"After importing a diff, the nodes and connections that changed are highlighted on the map, so a human sees at a glance what the agent worked on; the highlight can be acknowledged or cleared once reviewed.\",\n  \"spec\": \"Record the set of nodes/connections an applied diff touched and render them in a transient \\\"changed\\\" state on the map, with a way to clear it.\\n\\nhighlighted means making the differences applied to be made visible:\\n1. there should be a \\\"glowy outline\\\" to indicate which nodes changed.\\n2. There is a +- green/red bubble with a number indicating  how many additions and deletions and edits.\\n3. the zoom level should go to the size that encompases all changed nodes, with no particular node selected.\\n4. changes to the fields AND changes to the checklish for leafs, should both count.\\n5. \\\"import changes\\\" when clicked deselects any node and renders the diff. If you click and move (removing diff mode), clicking the button again re-renders the last diff highlight unless there have been new changes.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"After an import, the changed nodes are clearly highlighted and the human can tell what changed\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"The set of highlighted nodes equals the set of nodes the diff touched\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkaZy_sVSfnFUefGLinR1qc4oUT-ANLTse28PRtdCgJ7UCgjDL"
+      "actionHash": "uhCkkTRI2cNxE1t-4MUjTB8seX36uXn5VvNwf2LX6c1dbvzfnTyFl"
     },
-    "uhCkkRN9Osvw1YMRVgiEJ0zDSzv9SvLfYA-FNCwwHt_NiNnHKMj-U": {
+    "uhCkkcaqQ017jKqwPJH5woF4pXi6XwkuRz3IDUf8xQ1vDjeIPEWUA": {
       "content": "Export and import are single-click against a known location",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -177,15 +177,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"Export-diff and import-diff each happen with a single click, reading and writing a known location, so a human can advance the loop repeatedly — export, run the agent, import — without dialogs or manual file wrangling.\",\n  \"spec\": \"A fixed known location (/tmp/acorn-clarity) holds three channels per project: <name>-tree.json (full baseline written on export; the agent reads it for current state), <name>-diff.json (the human's changes since the last export, written on export), and <name>-apply.json (the agent's handed changes, read by Apply). Keeping the agent's channel separate from the baseline prevents a stale or agent-written tree file from corrupting the next export's diff. The controls read as a conversation with the LLM: an [LLM: export / import] icon area with hover text; the common path needs no file picker.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A human advances the agent loop by clicking export, running the agent, clicking import — no file dialogs\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"Export and import resolve the known location without prompting; the round-trip works headlessly\",\n      \"evaluator\": \"executable\"\n    },\n    {\n      \"statement\": \"An export performed immediately after applying an agent diff produces a -diff.json containing exactly the agent's changes — never a whole-tree-as-added diff\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkRN9Osvw1YMRVgiEJ0zDSzv9SvLfYA-FNCwwHt_NiNnHKMj-U"
+      "actionHash": "uhCkkcaqQ017jKqwPJH5woF4pXi6XwkuRz3IDUf8xQ1vDjeIPEWUA"
     },
-    "uhCkkmh_Lo7OKZIaVR5kgxTCPgfllqknMiOOvlzgE_L8ncKXHBtjz": {
+    "uhCkkLrAyBKTRXAJ2ptZH-ShvwFamv_COSp8yziDUqqx5oDT1SLDS": {
       "content": "Every node's content is stored as an extensible set of typed clarity fields",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -199,14 +199,14 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d"
       ],
       "description": "{\n  \"outcome\": \"Every node holds its content in an extensible 'fields' object instead of one prose blob. The object carries the detailed outcome statement and, as the typology grows, a spec, completion criteria, typed dependencies, and artifacts. A single node legitimately carries several typed fields at once.\",\n  \"spec\": \"Introduce a low-level, schema-based, extensible 'fields' JSON object on each node. The current single description field is migrated to hold this object. Each field has a type; the schema is open so new field types can be added without changing the node data model.\",\n  \"artifacts\": [\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"outcomeFields.ts — fields representation: parseFields / serializeFields with legacy fallback\",\n      \"uri\": \"web/src/outcomeFields.ts\"\n    },\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"outcomeFields.test.ts — round-trip + legacy + extensibility (9 passing)\",\n      \"uri\": \"web/test/outcomeFields.test.ts\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkmh_Lo7OKZIaVR5kgxTCPgfllqknMiOOvlzgE_L8ncKXHBtjz"
+      "actionHash": "uhCkkLrAyBKTRXAJ2ptZH-ShvwFamv_COSp8yziDUqqx5oDT1SLDS"
     },
-    "uhCkk5ibaNbS6sbCEDSfgoj_L37jzOG_3k4RfZnOgrfkzGy95y1MV": {
+    "uhCkkjdg1W4yop7X0QR__587eoFBlzyVqrsVQS4-Nrq5jAwK2m1eK": {
       "content": "A node's detailed outcome statement is a field distinct from its one-line name",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -233,15 +233,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"A node's one-sentence name states the high-level outcome; a separate outcome field holds the fuller target-state statement. The map shows the headline; opening the node shows the full statement; the two never collapse into each other. Realized on the OutcomeFields representation (web/src/outcomeFields.ts).\",\n  \"spec\": \"content = one-sentence outcome (unchanged). fields.outcome = the detailed target-state statement, read and written through parseFields/serializeFields. Legacy plain-text descriptions migrate to fields.outcome on first parse (handled by parseFields). Other fields are preserved across an outcome edit.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"An imported legacy node shows its name on the map and its (migrated) long text as its outcome statement\",\n      \"evaluator\": \"executable\"\n    },\n    {\n      \"statement\": \"Editing the outcome statement round-trips: parseFields(description).outcome returns the edited value\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk5ibaNbS6sbCEDSfgoj_L37jzOG_3k4RfZnOgrfkzGy95y1MV"
+      "actionHash": "uhCkkjdg1W4yop7X0QR__587eoFBlzyVqrsVQS4-Nrq5jAwK2m1eK"
     },
-    "uhCkk3upmjCg7ZP_pz8bs_JBGlPwrrVwqJsjOLapDoWXXtfS-myhM": {
+    "uhCkkCazEKtqhgfhG26EZvZb7_I_zMu5XG-84nhqqjXOJzBX74w1-": {
       "content": "The outcome editor renders an editable widget for each clarity field",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -255,15 +255,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"Opening a node shows a distinct, editable widget for each field — the outcome statement as rich text, the spec as text, completion criteria as a list editor, artifacts as an attachment list. Registering a new field type makes its widget appear with no change to the editor core.\",\n  \"spec\": \"The fields object is the OutcomeFields shape (web/src/outcomeFields.ts), parsed from and serialized to the description string via parseFields/serializeFields. A field-type registry maps each OutcomeFields key to a widget component; the editor looks up each field's type and renders the matching widget, with unknown keys falling back to a raw-JSON widget so nothing is lost.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Opening a node with several populated fields shows a correct widget for each, and editing any field round-trips through description\",\n      \"evaluator\": \"human\"\n    }\n  ],\n  \"artifacts\": [\n    {\n      \"type\": \"design\",\n      \"label\": \"field-widget mockups\",\n      \"uri\": \"\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk3upmjCg7ZP_pz8bs_JBGlPwrrVwqJsjOLapDoWXXtfS-myhM"
+      "actionHash": "uhCkkCazEKtqhgfhG26EZvZb7_I_zMu5XG-84nhqqjXOJzBX74w1-"
     },
-    "uhCkkg2rYEXaxojnyRAK2qgegsSCbKAK0_LFWEcKVhk4qmNQqUeaS": {
+    "uhCkkCsz-TcIv09dtWKcQIaegEPdasMERW1kPljjPQTi04rb81MEI": {
       "content": "The editor binds a markdown widget to each text field, with a registry composing the other field widgets",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -294,15 +294,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"Opening a node renders a markdown editor with preview for each text field (outcome, spec) — markdown is the text form across the tree — while a field-type registry maps the remaining keys to their widgets: artifacts to the list editor (branch E), and anything else to the raw-JSON fallback. EvDetails parses description once with parseFields and serializes on change.\",\n  \"spec\": \"A field-type registry maps each OutcomeFields key to a widget: text → markdown editor/preview; artifacts → the artifacts list editor (branch E / e1); unknown → raw-JSON fallback (a1b). Markdown is the only text editor needed now; other editing types can be registered later.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Editing a text field round-trips through description (parseFields returns the edited markdown)\",\n      \"evaluator\": \"executable\"\n    },\n    {\n      \"statement\": \"A description containing '# Heading' and '**bold**' displays a rendered heading and bold text, not literal markdown characters\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"Outcome and spec each render and edit as their own markdown widget\",\n      \"evaluator\": \"human\"\n    }\n  ],\n  \"artifacts\": [\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"OutcomeFieldsEditor.tsx — per-field registry + markdown widgets + raw-JSON fallback\",\n      \"uri\": \"web/src/components/OutcomeFieldsEditor/OutcomeFieldsEditor.tsx\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkg2rYEXaxojnyRAK2qgegsSCbKAK0_LFWEcKVhk4qmNQqUeaS"
+      "actionHash": "uhCkkCsz-TcIv09dtWKcQIaegEPdasMERW1kPljjPQTi04rb81MEI"
     },
-    "uhCkkPVxhypE6BXGh3JilD1LEq3LCL7Mc47kxonkchKdO_I0PflPV": {
+    "uhCkkLPTjyPn9uByl3XhI0aSrFjuLbmQ91FcjB0qKnjbg7BKupaZL": {
       "content": "Unknown field types fall back to a raw-JSON widget so nothing is lost",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -325,15 +325,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"A field key with no registered widget renders in a raw-JSON editor bound through serializeFields, so future or unrecognized field types — including completion criteria for now, until a richer criteria editor is registered — stay fully editable and are never dropped.\",\n  \"spec\": \"Unknown OutcomeFields keys (and, for now, completionCriteria) fall back to a JSON textarea. Edits serialize back via serializeFields, preserving the extensibility guaranteed by the OutcomeFields index signature.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A node carrying an unrecognized field key shows a raw-JSON widget that round-trips edits\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkPVxhypE6BXGh3JilD1LEq3LCL7Mc47kxonkchKdO_I0PflPV"
+      "actionHash": "uhCkkLPTjyPn9uByl3XhI0aSrFjuLbmQ91FcjB0qKnjbg7BKupaZL"
     },
-    "uhCkkHX0rpHu_GqtJO4Femh906LZJ75UT3ttZppPofjS7lEjPo8vZ": {
+    "uhCkkrcs_3PPWHljSspZc06huMsWes429l3nVkkAZAsJGlFNQUGET": {
       "content": "Completion criteria attached at any node level determine that node's achievement",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -350,9 +350,9 @@
       "description": "{\n  \"outcome\": \"Any node — leaf, mid-level, or root — carries completion criteria, and a node's achievement is the consequence of those criteria being met (an executable check, a human stamp, or an LLM judgement), not a bare flag set by hand. At a branch the criteria act as integration tests over its children, so achievement at every level is bounded in reality, not merely propagated up from the bottom.\"\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkHX0rpHu_GqtJO4Femh906LZJ75UT3ttZppPofjS7lEjPo8vZ"
+      "actionHash": "uhCkkrcs_3PPWHljSspZc06huMsWes429l3nVkkAZAsJGlFNQUGET"
     },
-    "uhCkkxwx1Cl0nJSqQzBA2-LwzaDPGqIlbzy5oPvJCnZnJbuPt8RX_": {
+    "uhCkkqwjYqtGU-_vfwLfpAcQpFFgiSu193Rdx3DwK8X9lXpbkEt_h": {
       "content": "Every completion criterion names an evaluator: human, executable, or LLM",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -383,15 +383,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"Each completion criterion records who or what judges it — a human with a stamp, an executable check, or an LLM — so anyone reading the node knows exactly how it will be verified. Executable criteria are the ones an agent can run unattended.\",\n  \"spec\": \"fields.completionCriteria = list of {statement, evaluator ∈ {human, executable, llm}, evidence?}. Executable criteria carry enough detail (command or url + expected result) to run without a human.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"An agent reads a leaf's executable criterion, runs it, and reports pass/fail with captured evidence\",\n      \"evaluator\": \"executable\"\n    },\n    {\n      \"statement\": \"A human-evaluator criterion presents a stamp/approve affordance\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkxwx1Cl0nJSqQzBA2-LwzaDPGqIlbzy5oPvJCnZnJbuPt8RX_"
+      "actionHash": "uhCkkqwjYqtGU-_vfwLfpAcQpFFgiSu193Rdx3DwK8X9lXpbkEt_h"
     },
-    "uhCkknCIEYVylemapJIHp8itNcdQFohI6b8eoApJB5E_AY3drL29e": {
+    "uhCkkid9RrEg0-m698qrSsm2OFazKioryW3hdi_WkRRuCeunByde3": {
       "content": "A leaf becomes Achieved as the recorded consequence of meeting a completion criterion, not a bare human toggle",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -418,15 +418,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"A leaf is Achieved because a completion criterion was met — an executable check passed, a human stamped a manual-review criterion, or an LLM judged it — and the achievement is the recorded consequence of that evaluation, carrying its evidence. The old bare 'achieved' flag, set by hand with nothing behind it, is replaced: marking a leaf done means satisfying at least one criterion, so achievement is bounded in reality rather than asserted.\",\n  \"spec\": \"Achievement is derived: status becomes Achieved only when >=1 completion criterion is met, and stores a reference to the grounding criterion plus its evidence. A human stamp is the human-evaluator path of a criterion, not a separate flag.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A leaf with no met completion criterion cannot be shown Achieved\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkknCIEYVylemapJIHp8itNcdQFohI6b8eoApJB5E_AY3drL29e"
+      "actionHash": "uhCkkid9RrEg0-m698qrSsm2OFazKioryW3hdi_WkRRuCeunByde3"
     },
-    "uhCkk1rSHIgeA0v-viWIs87mNHbIDUZygzM_pD_HPb2ehv_j5TDkd": {
+    "uhCkk1NIu8ilnPvk9ujVbZSsR7fTc-1LLwKZnP6BtnjimdOMZMFvi": {
       "content": "A Small's achievement follows from its tasks being checked and its criteria met, not an independent toggle",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -453,15 +453,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"A Small's task list is its working breakdown — the path to completion, maintained like a todo list and checked off as the work lands. Achievement is not an independent flag: a Small reaches Achieved only when its tasks are all checked and its completion criteria are met. Tasks are the path, completion criteria are the proof, achievement is the result of both.\",\n  \"spec\": \"Couple the three facets: taskList (the breakdown), completionCriteria (the proof), and achievementStatus (the result). A Small becomes Achieved when all its tasks are complete AND its criteria pass — derived from those inputs rather than set directly (ties to b4 and the computed results in b6).\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A Small with unchecked tasks or an unmet criterion cannot be shown Achieved\",\n      \"evaluator\": \"executable\"\n    },\n    {\n      \"statement\": \"Checking the last task and meeting the criteria flips the Small to Achieved with no separate toggle\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk1rSHIgeA0v-viWIs87mNHbIDUZygzM_pD_HPb2ehv_j5TDkd"
+      "actionHash": "uhCkk1NIu8ilnPvk9ujVbZSsR7fTc-1LLwKZnP6BtnjimdOMZMFvi"
     },
-    "uhCkkqOqOrY717VXGHcAl3NC0v8gHVRPK-89Cb-QEJfmGx4tNp9f1": {
+    "uhCkkpJ8LogG4Rqb1g5VESZpeIXNYLQ9x3q-g8f4RKlDKsGFx2XY_": {
       "content": "Branch nodes carry integration-test completion criteria that ground their achievement, not just propagation",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -488,15 +488,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"A branch node is not Achieved merely because all its children are. It carries its own completion criteria — integration tests over the children's combined result — that must also pass. Achievement at a branch is bounded in reality by these integration criteria in addition to upward propagation, catching the case where every child is individually done but the assembled whole does not yet work.\",\n  \"spec\": \"Computed achievement at a branch = (all children achieved) AND (the branch's own completion criteria pass). Integration criteria are ordinary completion criteria authored at the branch, usually executable.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A branch with all children achieved but a failing integration criterion is not shown achieved\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkqOqOrY717VXGHcAl3NC0v8gHVRPK-89Cb-QEJfmGx4tNp9f1"
+      "actionHash": "uhCkkpJ8LogG4Rqb1g5VESZpeIXNYLQ9x3q-g8f4RKlDKsGFx2XY_"
     },
-    "uhCkkdnd8Xk5Zrj719P_n6Rka9RK_73_KGN73vFKTi8B8Ma2ktZk_": {
+    "uhCkkiDjhrEKpq3T44xNCH5TXzEv-tAfq8FGeC9eSMy5tmDt13Icv": {
       "content": "Executable completion criteria re-run to keep prior outcomes provably intact",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -523,14 +523,14 @@
         }
       },
       "tags": [
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"Executable completion criteria are re-run as the work evolves, so an outcome once achieved stays provably intact. When a later change breaks a previously-passing criterion, its node surfaces red. Invariance is not a separate declaration — it is the standing guarantee the re-run completion tests provide.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A previously-passing executable criterion fails after a breaking change and its node surfaces red up the branch\",\n      \"evaluator\": \"executable\"\n    },\n    {\n      \"statement\": \"Re-running all criteria after an unrelated change leaves green nodes green\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkdnd8Xk5Zrj719P_n6Rka9RK_73_KGN73vFKTi8B8Ma2ktZk_"
+      "actionHash": "uhCkkiDjhrEKpq3T44xNCH5TXzEv-tAfq8FGeC9eSMy5tmDt13Icv"
     },
-    "uhCkkNx9xWmIt7WSPlrB6ig8pCNQjCl8URmg0B54ECiUCEC2lS1kh": {
+    "uhCkkx9sJQbEEpwmNs-1so_OYW4HBt9DpBz8R70hw9OUrqXVfbYt4": {
       "content": "Each node displays its completion verdicts, which roll up into computed achievement",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -553,15 +553,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"Every node shows its current completion verdicts on the map, and those verdicts compose with Acorn's existing achievement propagation so a parent's status reflects both its children and its own criteria.\",\n  \"spec\": \"Render each criterion's verdict on the node. Fold criterion pass/fail into the computed-achievement calculation already used for Small/Uncertain scopes.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Map view shows each node's criteria with current verdict; a failing criterion is visible at a glance\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkNx9xWmIt7WSPlrB6ig8pCNQjCl8URmg0B54ECiUCEC2lS1kh"
+      "actionHash": "uhCkkx9sJQbEEpwmNs-1so_OYW4HBt9DpBz8R70hw9OUrqXVfbYt4"
     },
-    "uhCkkuUs1NfCLPOljlpRIGhEs8yL7PDLgbWDTtRz51IYp8hFwsg7u": {
+    "uhCkkeMkhJMjX6o6UpLR8swE84_oBgjxQa4RAjxgkP5M8Nf7w6R0E": {
       "content": "A node stores computed evaluation results separately from its authored fields, and they drive its color",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -588,15 +588,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"A node stores two separable things: its authored fields — outcome, spec, completion criteria, dependencies, artifacts, the things people and agents set — and its computed evaluation results: achievement, completion verdicts, and smallness readiness, which are cached values recomputed from those inputs. The computed results drive the node's color; no one sets them by hand.\",\n  \"spec\": \"Alongside fields.* (authored), a node caches computed.* (derived). Computed values are read-only to the editor, recomputed when their inputs change, and mapped to color/visual state rather than to widgets.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Editing an authored field recomputes the dependent computed values; computed values are not user-editable\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkuUs1NfCLPOljlpRIGhEs8yL7PDLgbWDTtRz51IYp8hFwsg7u"
+      "actionHash": "uhCkkeMkhJMjX6o6UpLR8swE84_oBgjxQa4RAjxgkP5M8Nf7w6R0E"
     },
-    "uhCkk8UhcJn2kbwWmU6C4xNzo8L5cEP4BZkLrkO2uxo6od5NZ2pN5": {
+    "uhCkk_muNFcTpRom4q80j1iLkCsBdMQTs8PbY5DBk6vZbakynMxkf": {
       "content": "Every dependency declares which of three relation types it is",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -610,14 +610,14 @@
         }
       },
       "tags": [
-        "uhCkkAtkaEN3EP3UYQ777e6XDK9Tz9ZNeJXKvLptdwVCqZm0B9_g4"
+        "uhCkku4LcxxWu1NsZMy6EXalljhcHkTgK3LxmLsIHdeFHe-dy1Qqo"
       ],
       "description": "{\n  \"outcome\": \"Every connection in the tree declares its relation type, so a reader or agent can tell assembly from reliance at a glance. The three types are constituted-from, informational reliance, and embodied reliance.\",\n  \"spec\": \"A connection gains a relationType ∈ {constituted-from, relies-on-informational, relies-on-embodied}. The three render distinctly on the map and are independently queryable.\"\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk8UhcJn2kbwWmU6C4xNzo8L5cEP4BZkLrkO2uxo6od5NZ2pN5"
+      "actionHash": "uhCkk_muNFcTpRom4q80j1iLkCsBdMQTs8PbY5DBk6vZbakynMxkf"
     },
-    "uhCkk63jrC4_lyhFTKkqUi5Pdog1SKXbRu36qmFPgzXEXzc2TMWEw": {
+    "uhCkkHVFLYzYmO4vX_Uu30bhciT400xiRybtqAb3l98Ka_0oQX4Uk": {
       "content": "Assembly is expressed as a constituted-from relation between a parent and its children",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -640,14 +640,14 @@
         }
       },
       "tags": [
-        "uhCkkAtkaEN3EP3UYQ777e6XDK9Tz9ZNeJXKvLptdwVCqZm0B9_g4"
+        "uhCkku4LcxxWu1NsZMy6EXalljhcHkTgK3LxmLsIHdeFHe-dy1Qqo"
       ],
       "description": "{\n  \"outcome\": \"A parent built out of its children declares a constituted-from relation. This is the assembly relation today's outcome tree already encodes; it becomes one explicit, named relation type rather than the only possible meaning of an edge.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Every existing connection imports as a constituted-from relation\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk63jrC4_lyhFTKkqUi5Pdog1SKXbRu36qmFPgzXEXzc2TMWEw"
+      "actionHash": "uhCkkHVFLYzYmO4vX_Uu30bhciT400xiRybtqAb3l98Ka_0oQX4Uk"
     },
-    "uhCkkyzLmGS5dsExV8Ojph9UDXtS8YoD4gcEmAYLQ_nQeqG4RiLt0": {
+    "uhCkkvnOc37xJxmG6_YYDcLS4aVHH_OJ9UepULbqOazUW4nCZwMYh": {
       "content": "Conformance to an external standard is expressed as an informational reliance relation",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -670,14 +670,14 @@
         }
       },
       "tags": [
-        "uhCkkAtkaEN3EP3UYQ777e6XDK9Tz9ZNeJXKvLptdwVCqZm0B9_g4"
+        "uhCkku4LcxxWu1NsZMy6EXalljhcHkTgK3LxmLsIHdeFHe-dy1Qqo"
       ],
       "description": "{\n  \"outcome\": \"A node that must conform to a standard, protocol, or spec it does not itself contain declares an informational reliance on it. The referenced standard may live outside this tree, and the relation renders distinctly from assembly.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A node declares an informational reliance on a spec node (in- or cross-tree) and the edge renders distinctly\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkyzLmGS5dsExV8Ojph9UDXtS8YoD4gcEmAYLQ_nQeqG4RiLt0"
+      "actionHash": "uhCkkvnOc37xJxmG6_YYDcLS4aVHH_OJ9UepULbqOazUW4nCZwMYh"
     },
-    "uhCkkApZLtP9Vid304N0HQJDK5D-ynPbohBwGcQgKmY64xpdsi_MA": {
+    "uhCkkNykQGM52WdXzF_V-J5Eq5atSx6IycpUZdy93QDdqe2nukjyC": {
       "content": "Runtime carriers a node needs are expressed as embodied reliance relations",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -700,15 +700,15 @@
         }
       },
       "tags": [
-        "uhCkkAtkaEN3EP3UYQ777e6XDK9Tz9ZNeJXKvLptdwVCqZm0B9_g4",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkku4LcxxWu1NsZMy6EXalljhcHkTgK3LxmLsIHdeFHe-dy1Qqo",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"A node that needs a live carrier to function — a running service, a network, a Holo-fuel instance — declares an embodied reliance on it. This is the relation an agent checks at runtime rather than build time.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"An agent queries a node's embodied reliances and health-checks each carrier, reporting which are live\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkApZLtP9Vid304N0HQJDK5D-ynPbohBwGcQgKmY64xpdsi_MA"
+      "actionHash": "uhCkkNykQGM52WdXzF_V-J5Eq5atSx6IycpUZdy93QDdqe2nukjyC"
     },
-    "uhCkkHcjYa8XF6YE_8V33l6ba9eBCS0Gicl4DER5S-9UT5nVGk3dh": {
+    "uhCkktJG2BzNW-T0MuZ48BaPmVPOmgGADH2vhYucEs7vZ8Whtch32": {
       "content": "Adding a second parent to a node is the moment Acorn asks: composed-of or relies-on?",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -735,16 +735,16 @@
         }
       },
       "tags": [
-        "uhCkkAtkaEN3EP3UYQ777e6XDK9Tz9ZNeJXKvLptdwVCqZm0B9_g4",
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkku4LcxxWu1NsZMy6EXalljhcHkTgK3LxmLsIHdeFHe-dy1Qqo",
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"When a node gains an additional parent — a multi-parent connection — the act of creating that edge is the moment Acorn asks whether the new parent composes the node (constituted-from) or the node relies on it (a reliance, informational or embodied). The relation type is captured at creation, not inferred later, so multi-parent structure carries its meaning from the start.\",\n  \"spec\": \"On creating a connection that gives a child more than one parent, present a relation-type choice: composed-of vs relies-on; if relies-on, informational vs embodied. The primary/assembly parent defaults to composed-of (branch C1).\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Adding a second parent surfaces the relation-type prompt and the chosen type is stored on the connection\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkHcjYa8XF6YE_8V33l6ba9eBCS0Gicl4DER5S-9UT5nVGk3dh"
+      "actionHash": "uhCkktJG2BzNW-T0MuZ48BaPmVPOmgGADH2vhYucEs7vZ8Whtch32"
     },
-    "uhCkkJMdKInTNY-666P_wlr4bOfAKk1x_fWcreaUuINdU4xIqRhnU": {
+    "uhCkkubCgEskU33RgHN39gIC7cwJvSG6hery-KERco5zTDy0Tskch": {
       "content": "Agents build from the exported clarity tree and their results return into it",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -761,9 +761,9 @@
       "description": "{\n  \"outcome\": \"Humans think in the clarity tree; agents read the exported specification, build against it, and post completion verdicts and produced artifacts back onto the nodes. The loop between deliberation and execution is tight and visible — the tree stays alive.\"\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkJMdKInTNY-666P_wlr4bOfAKk1x_fWcreaUuINdU4xIqRhnU"
+      "actionHash": "uhCkkubCgEskU33RgHN39gIC7cwJvSG6hery-KERco5zTDy0Tskch"
     },
-    "uhCkkLLkvz3ZvmI-icG8VbkqShXIHF8bwQbCMHJcYs6rFvaV-9T7m": {
+    "uhCkkYthYX6cxcb0mAYkt7Bkndf04GRgo4XhRUHy4h-PX_EnvA1_n": {
       "content": "Acorn exports a clarity tree as a deterministic, agent-consumable specification",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -790,15 +790,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"Acorn produces a deterministic export that flattens each node's typed fields — outcome, spec, completion criteria, typed dependencies, and artifacts — into a specification document an agent consumes directly and round-trips back.\",\n  \"spec\": \"Export validates against a published clarity-spec schema and round-trips to an equivalent tree. Field types unknown to the exporter are passed through verbatim.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Export is valid against the clarity-spec schema and round-trips to an equivalent tree\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkLLkvz3ZvmI-icG8VbkqShXIHF8bwQbCMHJcYs6rFvaV-9T7m"
+      "actionHash": "uhCkkYthYX6cxcb0mAYkt7Bkndf04GRgo4XhRUHy4h-PX_EnvA1_n"
     },
-    "uhCkkBzX2z22ptIhXtdUBFKoK_dvH5pD_MIXOEv_vSpWFDroKEj00": {
+    "uhCkkxb5NgaQjpx3A-U0V0u78-3gf1oe-1O7vVJWVxTn9qFslYuqn": {
       "content": "Agents post completion verdicts with evidence back onto the nodes they worked",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -821,14 +821,14 @@
         }
       },
       "tags": [
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"An agent that finishes work on a node runs that node's machine-evaluable criteria and writes back {pass/fail, evidence}; the node's status flips on a passing executable criterion. The agent is the fly on the wall.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"For a sample leaf, an agent returns pass with captured command output and the node flips to achieved\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkBzX2z22ptIhXtdUBFKoK_dvH5pD_MIXOEv_vSpWFDroKEj00"
+      "actionHash": "uhCkkxb5NgaQjpx3A-U0V0u78-3gf1oe-1O7vVJWVxTn9qFslYuqn"
     },
-    "uhCkkGJ40dQJzxxBjFO-ODxyxdByFxmAJCWiiM317X424GtggD-BA": {
+    "uhCkkNQwMgXtBxAmkwc8QvtsgfrZqCTWziV_UTMLs_xerlK4fZVty": {
       "content": "Agents propose new typed outcomes and fields that humans approve in Acorn",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -851,15 +851,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"When an agent discovers a missing outcome, spec, dependency, or criterion during execution, it proposes a typed node or field; a human approves, modifies, or rejects it in Acorn. The locus of decision stays human.\",\n  \"spec\": \"Agent proposals appear as pending typed nodes/fields and a human resolves each through the Acorn UI.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"An agent-proposed spec node appears as a pending suggestion and a human resolves it\",\n      \"evaluator\": \"human\"\n    }\n  ],\n  \"principle\": \"Humans author intent; agent proposals are inert until a human accepts them. A proposal that merges without human review falsifies this.\"\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkGJ40dQJzxxBjFO-ODxyxdByFxmAJCWiiM317X424GtggD-BA"
+      "actionHash": "uhCkkNQwMgXtBxAmkwc8QvtsgfrZqCTWziV_UTMLs_xerlK4fZVty"
     },
-    "uhCkkvhUiUxC00IiPH7cHnenahYKqi8js7UZIYeB9nLnDA_4SAgZy": {
+    "uhCkkQp7VTb_tj8OoZzD3PXMaUXTpId9-4G-X7_BA6mf6EDehub2M": {
       "content": "Every node can hold a list of attachments",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -873,14 +873,14 @@
         }
       },
       "tags": [
-        "uhCkk08ESwGwhu9Z_05KSNtr86EV132YPgbDzW_ZXiO57wDwbXR4w"
+        "uhCkkstKSI-DQlNYXXVXNUIxaVBQYqRbCxa9Dbt1yCA1KvBuhGu2c"
       ],
       "description": "{\n  \"outcome\": \"Each node carries a list of typed attached artifacts serving multiple purposes: clarity inputs (designs, reference docs, mock ups, links) that sharpen the outcome, and work-product outputs (files, PRs, build logs) that agents produce; Contextual references that aid implementation; visual design sketches, etc.\",\n  \"spec\": \"attachments = list of {MIME/type (describes content); section that this artifacts serves; unique-reference-slug, target: url/moss-asset/path/other-reference-type; role: input, output (i.e. work-product), executable completion test , resource (eg. flow diagram or wikipedia page}. \\n\\nUse the moss \\\"attachments\\\" section to display the  list.  Currently that section is only activated in the Moss context.  now it can be always active.  With the difference that a moss WAL should be indicated as such and event be rendered embedded.\"\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkvhUiUxC00IiPH7cHnenahYKqi8js7UZIYeB9nLnDA_4SAgZy"
+      "actionHash": "uhCkkQp7VTb_tj8OoZzD3PXMaUXTpId9-4G-X7_BA6mf6EDehub2M"
     },
-    "uhCkkFmWXhFZGzt_v8G6LGWVTVY1mR6tkgS9pmjOCIDRu_l47vWm5": {
+    "uhCkkimFgkDq6h6vtDrNPsq-vsVpWzHOkKltKn3tFOitUM9n1wtRY": {
       "content": "Clarity-input artifacts such as designs, docs, and references attach to any node",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -903,14 +903,14 @@
         }
       },
       "tags": [
-        "uhCkk08ESwGwhu9Z_05KSNtr86EV132YPgbDzW_ZXiO57wDwbXR4w"
+        "uhCkkstKSI-DQlNYXXVXNUIxaVBQYqRbCxa9Dbt1yCA1KvBuhGu2c"
       ],
       "description": "{\n  \"outcome\": \"Any node can hold reference artifacts that increase its clarity — a design file, a spec document, a mockup, an external link — each typed and labelled, and rendered as an attachment list in the node editor.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A user attaches a design and a reference URL to a node and both render as typed artifacts\",\n      \"evaluator\": \"human\"\n    }\n  ],\n  \"artifacts\": [\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"ArtifactsField.tsx — typed artifacts list editor (add/edit/remove, openable links)\",\n      \"uri\": \"web/src/components/OutcomeFieldsEditor/ArtifactsField.tsx\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkFmWXhFZGzt_v8G6LGWVTVY1mR6tkgS9pmjOCIDRu_l47vWm5"
+      "actionHash": "uhCkkimFgkDq6h6vtDrNPsq-vsVpWzHOkKltKn3tFOitUM9n1wtRY"
     },
-    "uhCkkkpUxtmvqKm1F0DD2PVAnjF560EyV2ftG017r7KJ8X59lS3-r": {
+    "uhCkk9VCmmJ-4GY2BehTPvOrosiJlqC7g-Dte8xXiWUym4d91dZwN": {
       "content": "Agents attach their workproduct to nodes as output artifacts",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -933,15 +933,15 @@
         }
       },
       "tags": [
-        "uhCkk08ESwGwhu9Z_05KSNtr86EV132YPgbDzW_ZXiO57wDwbXR4w",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkstKSI-DQlNYXXVXNUIxaVBQYqRbCxa9Dbt1yCA1KvBuhGu2c",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"An agent that produces work — a file, a pull request, a build log — attaches it to the relevant node as an output artifact, so the node holds both the clarity that guided the work and the evidence of the work itself.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"An agent attaches a produced file or PR url to a node as a workproduct artifact and it renders in the UI\",\n      \"evaluator\": \"executable\"\n    }\n  ],\n  \"artifacts\": [\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"example: PR link produced by an agent\",\n      \"uri\": \"\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkkpUxtmvqKm1F0DD2PVAnjF560EyV2ftG017r7KJ8X59lS3-r"
+      "actionHash": "uhCkk9VCmmJ-4GY2BehTPvOrosiJlqC7g-Dte8xXiWUym4d91dZwN"
     },
-    "uhCkkNEmcuM7dbErjmtyI89hKqZ8_7lYCtJj3FTTfYmp52RiD76y0": {
+    "uhCkk8TBS4QTkGn8i0WUWjS0gWN_vsajuA4K24IZENwet1HcQ7lSK": {
       "content": "An in-app AI chat panel lets people build and refine clarity trees in conversation",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -958,9 +958,9 @@
       "description": "{\n  \"outcome\": \"Acorn includes an AI-assisted chat panel where a person and an assistant converse to construct and refine a clarity tree — the very conversation that produced this tree, now happening inside the app. Deliberation, drafting, and editing all occur in one place, against the live tree.\"\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkNEmcuM7dbErjmtyI89hKqZ8_7lYCtJj3FTTfYmp52RiD76y0"
+      "actionHash": "uhCkk8TBS4QTkGn8i0WUWjS0gWN_vsajuA4K24IZENwet1HcQ7lSK"
     },
-    "uhCkk2Rtp29QeSTvqEcYCbNgQmLXKe4NwWKkgrUCPn5_bDw5MR05p": {
+    "uhCkkRnqhLLC5DOxv8G5OmI3k1xFSG_4Lq1MTqvlWGYeh4E5YGLh5": {
       "content": "The chat assistant sees the live tree as context on every exchange",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -983,15 +983,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"Every message the assistant receives includes the current project's tree — nodes, fields, typed dependencies, and achievement — so its suggestions are grounded in the actual state rather than a stale copy.\",\n  \"spec\": \"The chat injects the queryable/exported tree state (branch D) into the assistant's context on each turn, refreshed after any edit.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"After a human edits the tree, the assistant's next turn reflects the change\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk2Rtp29QeSTvqEcYCbNgQmLXKe4NwWKkgrUCPn5_bDw5MR05p"
+      "actionHash": "uhCkkRnqhLLC5DOxv8G5OmI3k1xFSG_4Lq1MTqvlWGYeh4E5YGLh5"
     },
-    "uhCkkBS34nLJgm-aaP0JMlUtl2rGUr2Zirymv_WQMg3c7CunXcap4": {
+    "uhCkk5nlDpqsY3BsLhUmmBRtVl6jMwyrQ9SuqiGwsDpOkr-LB5cKK": {
       "content": "The assistant drafts and applies typed tree edits from the conversation, pending human approval",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1018,15 +1018,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"From the conversation the assistant drafts concrete edits — new outcomes, field values, typed dependencies — and applies them on human approval, reusing the same proposal/approval path that execution agents use.\",\n  \"spec\": \"Chat-proposed edits surface as pending typed nodes/fields; the human accepts, modifies, or rejects each inline. Accepted edits are written to the tree like any other proposal.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A user asks for a new branch in chat, approves it, and it appears in the tree\",\n      \"evaluator\": \"human\"\n    }\n  ],\n  \"principle\": \"Humans author intent; assistant-drafted edits are inert until a human accepts them.\"\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkBS34nLJgm-aaP0JMlUtl2rGUr2Zirymv_WQMg3c7CunXcap4"
+      "actionHash": "uhCkk5nlDpqsY3BsLhUmmBRtVl6jMwyrQ9SuqiGwsDpOkr-LB5cKK"
     },
-    "uhCkkK3NVmhiJOU9HtfdTiML-Vk3OtFDGXwOM-sm9XfrJGrd91GwW": {
+    "uhCkkt-oGYpwRLLpsZmE38uMEkaLtxIO4OZFaZyxhxDzwMnIWmmtS": {
       "content": "The conversation that shaped a branch is retained as an artifact on that branch",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1049,15 +1049,15 @@
         }
       },
       "tags": [
-        "uhCkk08ESwGwhu9Z_05KSNtr86EV132YPgbDzW_ZXiO57wDwbXR4w",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkstKSI-DQlNYXXVXNUIxaVBQYqRbCxa9Dbt1yCA1KvBuhGu2c",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"The chat transcript that produced or refined a branch is attached to that branch as a clarity-input artifact, so the reasoning behind the outcomes stays with them and is available to later readers and agents.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Attaching a conversation to a node produces an artifact of type conversation that renders in the UI\",\n      \"evaluator\": \"executable\"\n    }\n  ],\n  \"artifacts\": [\n    {\n      \"type\": \"conversation\",\n      \"label\": \"this tree-construction conversation\",\n      \"uri\": \"\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkK3NVmhiJOU9HtfdTiML-Vk3OtFDGXwOM-sm9XfrJGrd91GwW"
+      "actionHash": "uhCkkt-oGYpwRLLpsZmE38uMEkaLtxIO4OZFaZyxhxDzwMnIWmmtS"
     },
-    "uhCkkoD7Un4Cba51-fT7VEJvsQjP1gYdTgjzhkEEcbCfei7kIZDLV": {
+    "uhCkkZYzp1aUOYocsylZjuASHAeI3Dg4H7nbWnTFSKGRxDXd8yn90": {
       "content": "A leaf's readiness to be a Small is computed from its clarity signals, not declared by hand",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1074,9 +1074,9 @@
       "description": "{\n  \"outcome\": \"Smallness is a clarity threshold, not a guess and not something a person sets by hand. A leaf's readiness to be a Small is computed from multiple signals and cached on the node, because the more complex a bottom-level item is, the less likely anyone is clear about it. Most signals are genuine gradients — how complex, how wide the agent's change, how large the review surface, how much design latitude is still open. A few are binary blockers — an unresolved unknown, no evaluable criterion — that veto readiness outright. Reaching small-enough leaves is itself part of achieving clarity.\"\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkoD7Un4Cba51-fT7VEJvsQjP1gYdTgjzhkEEcbCfei7kIZDLV"
+      "actionHash": "uhCkkZYzp1aUOYocsylZjuASHAeI3Dg4H7nbWnTFSKGRxDXd8yn90"
     },
-    "uhCkk6fd8t-_p8BTd75xom2E07TdpJSGX9swp2nT4-gTwpvxg_5--": {
+    "uhCkkQ4Lz8ot2yKApFIeo5ZrkkZWFG4U3_TS3TsfGal9U-1btLLYB": {
       "content": "Each leaf's smallness readiness is a cached gradient, recomputed from its signals and rendered as the leaf's color",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1103,15 +1103,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"A leaf's smallness readiness is a single cached value on the node — an instance of the node's computed results (the computed-results outcome b6 in branch B), not an authored field. It aggregates the readiness signals into a gradient and is rendered as the leaf's color, so one glance across the map shows which leaves are clear enough to build and which still need breakdown. Any active binary blocker clamps the gradient to not-ready regardless of the other signals.\",\n  \"spec\": \"computed.smallReadiness = aggregate(gradient signals) in 0..1, clamped to 0 by any active binary blocker. Recomputed when its input fields/verdicts change and mapped to a color ramp on the leaf.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Changing a signal recomputes the cached readiness and updates the leaf color; an active binary blocker forces the not-ready color\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk6fd8t-_p8BTd75xom2E07TdpJSGX9swp2nT4-gTwpvxg_5--"
+      "actionHash": "uhCkkQ4Lz8ot2yKApFIeo5ZrkkZWFG4U3_TS3TsfGal9U-1btLLYB"
     },
-    "uhCkkfm5jyNenalefTT5lC9_Q5vm3B3GyhcVm_dO5PzChsTzchKVn": {
+    "uhCkkQyPf2sAERBbQdF-BebJajqV0xSPwRXh6UR5LULAdRefyd6xr": {
       "content": "A leaf's complexity estimate is a gradient input to its readiness",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1134,15 +1134,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"Every leaf shows a complexity/uncertainty estimate — the agile-style signal — as a real gradient. A higher estimate lowers readiness and, past the breakdown threshold, pushes the leaf toward decomposition; a low estimate, roughly one small unit, raises readiness.\",\n  \"signalType\": \"gradient\",\n  \"spec\": \"Extend smallsEstimate into a continuous contribution to computed.smallReadiness; surface the estimate and the breakdown threshold on the leaf.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A higher complexity estimate measurably lowers the cached readiness gradient\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkfm5jyNenalefTT5lC9_Q5vm3B3GyhcVm_dO5PzChsTzchKVn"
+      "actionHash": "uhCkkQyPf2sAERBbQdF-BebJajqV0xSPwRXh6UR5LULAdRefyd6xr"
     },
-    "uhCkkN97SgIKBuqFztNHYCVR7Km57nF4GAtN9R4p0x9zKPoSOV1L7": {
+    "uhCkkXCCwBWL8rgt6KAAnZGnzaqho4LMLdBXTLMs9D11N-0vZ4JSm": {
       "content": "The spread of the change a building agent would make is a gradient input to readiness",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1165,14 +1165,14 @@
         }
       },
       "tags": [
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"The estimated spread of the change a building agent would make is a gradient input to readiness: a tightly-scoped single change set reads as ready; a change spanning many unrelated areas lowers readiness and suggests a split.\",\n  \"signalType\": \"gradient\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"An agent's scope-spread assessment contributes proportionally to the readiness gradient\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkN97SgIKBuqFztNHYCVR7Km57nF4GAtN9R4p0x9zKPoSOV1L7"
+      "actionHash": "uhCkkXCCwBWL8rgt6KAAnZGnzaqho4LMLdBXTLMs9D11N-0vZ4JSm"
     },
-    "uhCkkQGHi5L_muYbJxQ1MJFiHwtIrUrPJLbJFtfr-pJZsMX1ehAdM": {
+    "uhCkkUuz493aiuDNofM_GBtcWcqh3zu5yJC9NFP09eAzdiinba9Ue": {
       "content": "The size of the human review surface is a gradient input to readiness",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1195,14 +1195,14 @@
         }
       },
       "tags": [
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"The size of the review surface — how much a reviewer must hold in mind to verify the finished leaf against its criteria — is a gradient input to readiness. A leaf reviewable in one sitting reads as ready; a larger surface lowers readiness.\",\n  \"signalType\": \"gradient\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A reviewer's single-sitting assessment maps onto the readiness gradient\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkQGHi5L_muYbJxQ1MJFiHwtIrUrPJLbJFtfr-pJZsMX1ehAdM"
+      "actionHash": "uhCkkUuz493aiuDNofM_GBtcWcqh3zu5yJC9NFP09eAzdiinba9Ue"
     },
-    "uhCkk-OqEkFqEOTHztlg0FjdiAWzqDN8mw3JZYDE6J-EllWw5lDdX": {
+    "uhCkkQgan-vby6qDT9Sfx53kQpc_vFmmO2DQ5NKAEtemQGYf09m_x": {
       "content": "How much design latitude is still open in the spec is a gradient input to readiness",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1225,15 +1225,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"How much design latitude remains open in the leaf's spec is a gradient input to readiness: a spec at implementation latitude with no open choices reads as ready; each unresolved design decision lowers readiness, because open design hides decomposition.\",\n  \"signalType\": \"gradient\",\n  \"spec\": \"Map the spec's latitude marker and its count of open decisions (branch A3) to a readiness contribution.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Reviewer-confirmed open design decisions lower the readiness gradient\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk-OqEkFqEOTHztlg0FjdiAWzqDN8mw3JZYDE6J-EllWw5lDdX"
+      "actionHash": "uhCkkQgan-vby6qDT9Sfx53kQpc_vFmmO2DQ5NKAEtemQGYf09m_x"
     },
-    "uhCkk8hQBC1st1ybhojMZdyQSy7pPDEPl2YLJoWNDRpbg7lsubkVH": {
+    "uhCkkoSZXUs7cgNjLY1ASN2PwMxEuY9q02ZTGDFaFeRDbEzw8KVE1": {
       "content": "The absence of any evaluable completion criterion is a binary blocker on readiness",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1256,14 +1256,14 @@
         }
       },
       "tags": [
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"A leaf with no completion criterion concrete enough to evaluate is, by definition, not yet clear — so the absence of any evaluable criterion is a binary blocker that clamps readiness to not-ready, whatever the gradient signals say.\",\n  \"signalType\": \"binary blocker\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A leaf with zero evaluable criteria shows the not-ready color until a concrete criterion is added\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk8hQBC1st1ybhojMZdyQSy7pPDEPl2YLJoWNDRpbg7lsubkVH"
+      "actionHash": "uhCkkoSZXUs7cgNjLY1ASN2PwMxEuY9q02ZTGDFaFeRDbEzw8KVE1"
     },
-    "uhCkkt_P9cypG2t_SyY5EdtCHQMUHWjdqno0tMQTXxSB8Qt4XMelq": {
+    "uhCkkXKanBOTs6CeR7nnIhsIG6P2BJYUfQZC2JpwS6qfofIwvl_lo": {
       "content": "An unresolved open unknown is a binary blocker on readiness",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1286,14 +1286,14 @@
         }
       },
       "tags": [
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"An unresolved open unknown is exactly where clarity is missing, so any unresolved known-unknown on a leaf is a binary blocker: readiness is clamped to not-ready until the unknown is resolved or moved into a child outcome. (Room remains to flag suspected unknown-unknowns.)\",\n  \"signalType\": \"binary blocker\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A leaf with a recorded open unknown stays not-ready until it is resolved or pushed into a child outcome\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkt_P9cypG2t_SyY5EdtCHQMUHWjdqno0tMQTXxSB8Qt4XMelq"
+      "actionHash": "uhCkkXKanBOTs6CeR7nnIhsIG6P2BJYUfQZC2JpwS6qfofIwvl_lo"
     },
-    "uhCkkXXS9jGaptWmiW6SIve3C58U9_4zpggtkyWsV2s29mxVULqit": {
+    "uhCkk39RoUj4FnFVNpOrkzo-UlYb_u4-tO60X0GbvtLogIvcq5ehO": {
       "content": "When a leaf's readiness is low or blocked, the assistant proposes a decomposition into smaller outcomes",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1320,15 +1320,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"When a leaf's readiness is low or a binary blocker is active, the AI assistant proposes a concrete decomposition — child outcomes that each look more likely to be ready — for the human to approve. Reaching small-enough leaves becomes a guided, conversational step of achieving clarity.\",\n  \"spec\": \"On low readiness or an active blocker, the assistant (branch F) drafts child outcomes and surfaces them via the proposal/approval path (branches D3/F2).\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A low-readiness or blocked leaf yields an assistant-proposed breakdown the human can accept, modify, or reject\",\n      \"evaluator\": \"human\"\n    }\n  ],\n  \"principle\": \"Humans author intent; proposed decompositions are inert until a human accepts them.\"\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkXXS9jGaptWmiW6SIve3C58U9_4zpggtkyWsV2s29mxVULqit"
+      "actionHash": "uhCkk39RoUj4FnFVNpOrkzo-UlYb_u4-tO60X0GbvtLogIvcq5ehO"
     },
-    "uhCkkmprPa_t9Q9OmWULQYFsCOolgZjxW2GNE7EWE7c91CjVvhR-O": {
+    "uhCkkW31bGOjYH90oWlODHoSefA4ZVLQo24OwqLz38acq1JfVmiQ7": {
       "content": "Multi-user co-editing works seamlessly across all changes",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1345,9 +1345,9 @@
       "description": "{\n  \"outcome\": \"Every change a person can make to a clarity tree — editing any field, restructuring nodes, attaching artifacts, marking completion — works under real-time multi-user co-editing without clobbering, lost updates, or stale views. Held high-level and low-priority for now: a standing concern, not yet decomposed into smalls. Today's per-description editing presence is the seed to generalize across every field and edit.\"\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkmprPa_t9Q9OmWULQYFsCOolgZjxW2GNE7EWE7c91CjVvhR-O"
+      "actionHash": "uhCkkW31bGOjYH90oWlODHoSefA4ZVLQo24OwqLz38acq1JfVmiQ7"
     },
-    "uhCkkMUPsRWA54n-dpG6YBtM9MMauFkHpS7xg33TPv90Ui---zRY_": {
+    "uhCkkMjHpoBM4Wp7PfbPw2H-60uIhEE95PcKouFryuzLvKZkocYjk": {
       "content": "Changed nodes show a glowy outline, distinct from selection",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1374,15 +1374,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"After a diff is applied, each touched node renders a transient glowy outline — visually distinct from the normal selection border — so a human sees which nodes the agent changed, with no selection side-effects.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Applying a diff renders an amber glow on every touched node, visibly distinct from the blue selection outline, and clicking the background clears it\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkMUPsRWA54n-dpG6YBtM9MMauFkHpS7xg33TPv90Ui---zRY_"
+      "actionHash": "uhCkkMjHpoBM4Wp7PfbPw2H-60uIhEE95PcKouFryuzLvKZkocYjk"
     },
-    "uhCkkm_dt8G-5w6emjLZTLa8rsUY1GZvTunZmPPU9sC8HhDNjQq6P": {
+    "uhCkk3eA78Ww7xEbKb7-JGd4RSFkkRNDzFho9CchVn889TMdswmHm": {
       "content": "+/- badges on each changed node show how many additions, edits, and deletions a diff made",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1417,15 +1417,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"The applied diff's change counts render as +/~/− badges on each changed node, so the human sees the scale and location of every change at a glance.\",\n  \"spec\": \"Each changed node renders chips overlapping its top-right corner while diff-review mode (the glow) is active: green +N (items added to the node — tasks, clarity fields, new children), amber ~N (items edited — statement, status, fields, task toggles; matches the glow color), red −N (items removed, including deleted children: a deleted node badges its surviving parent). A brand-new node gets a single green 'new' chip. The popup chips remain as the whole-diff outcome-level summary.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"After Apply, every changed node carries +/~/− chips at its top-right whose counts match what the diff did to that node\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"A deleted node's surviving parent shows a red −N chip\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"perOutcomeChangeStats unit tests cover task, field, statement, status, child-add and child-delete counting\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkm_dt8G-5w6emjLZTLa8rsUY1GZvTunZmPPU9sC8HhDNjQq6P"
+      "actionHash": "uhCkk3eA78Ww7xEbKb7-JGd4RSFkkRNDzFho9CchVn889TMdswmHm"
     },
-    "uhCkkg3FvYn7BJueAd_nbwqkz2TjJhwWEJIOdICER9b2ZaaqTN1K-": {
+    "uhCkkLKd42fyNMtuO44X7Vx9Zack3oK4n5d6gy_3-L72-jvzeKjdH": {
       "content": "The view zooms to fit all changed nodes, with none selected",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1448,15 +1448,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"After a diff is applied, the viewport zooms/pans to fit ALL changed nodes (their bounding box), with no particular node selected — replacing the pan-to-one that jumped to blank space.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"After Apply, every changed node is on screen at once with comfortable margin, nothing selected, glow visible on each\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkg3FvYn7BJueAd_nbwqkz2TjJhwWEJIOdICER9b2ZaaqTN1K-"
+      "actionHash": "uhCkkLKd42fyNMtuO44X7Vx9Zack3oK4n5d6gy_3-L72-jvzeKjdH"
     },
-    "uhCkk_p0pH0YaPFTGY3VXzUEGz0bVQ9Lhi7j-qnbfdA16HkoHpzFV": {
+    "uhCkkZ67uW2zH-5wuk9Cz5qSztQ0SsmjSfQTgWJLT2UjEGrSX8vi7": {
       "content": "Field changes and leaf checklist changes both count as changed",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1475,15 +1475,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"A node counts as changed whether its fields changed or its leaf checklist (tasks) changed — the diff compares the whole outcome, so both register.\"\n}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk_p0pH0YaPFTGY3VXzUEGz0bVQ9Lhi7j-qnbfdA16HkoHpzFV"
+      "actionHash": "uhCkkZ67uW2zH-5wuk9Cz5qSztQ0SsmjSfQTgWJLT2UjEGrSX8vi7"
     },
-    "uhCkkk-XZ5bPGtcqrvopSoPZGc2uKuQAj1f-U3GVs_Vm0_QiADJpG": {
+    "uhCkkrA2WRE-ASYilKgqRoH9w38GpUFHc4umETwm0IFgOj5V7r7cF": {
       "content": "Importing llm diff is tolerant to changes having been made since last export",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1511,11 +1511,11 @@
       },
       "tags": [],
       "description": "{\n  \"outcome\": \"Between last export to llm a human may have made changes.  Importing an LLM's changes should not override them.  If there are merge conflicts this should be flagged.   i.e. it should not just be importing a whole tree, it should be integrating the specific changes of the diff.\",\n  \"spec\": \"Apply performs a three-way merge: the agent's diff is compared against both the live tree and the last-export baseline (the snapshot saved when the human exported). For each node the agent updates — if the human also changed it since the export (live differs from baseline) and the agent's value differs from the live value, that node is a conflict: flagged for review, never silently overwritten. Non-conflicting agent changes apply normally.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A node edited by the human after export and also updated by the agent's diff is flagged as a conflict, and the human's live value is not silently overwritten\",\n      \"evaluator\": \"human\"\n    },\n    {\n      \"statement\": \"Merge logic is pure and unit-tested: agent-only change applies; human-only change persists; both-changed flags a conflict\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkk-XZ5bPGtcqrvopSoPZGc2uKuQAj1f-U3GVs_Vm0_QiADJpG"
+      "actionHash": "uhCkkrA2WRE-ASYilKgqRoH9w38GpUFHc4umETwm0IFgOj5V7r7cF"
     },
-    "uhCkkVnL4kGtgH8k4PFNdxdauLlrYjDFsMnCaa-VfVSr6lSiBLUEE": {
+    "uhCkkU9z4mqMCN6RMDHpPcZd0Au2Fl_HKRN4K3j5J1TVA8T6Bpksj": {
       "content": "There is a way to add a new fields section and choose its render-widget",
       "creatorAgentPubKey": "uhCAkCNTp2r_VzOl-MFWDtx0eaP6enod2KsJmwnRx1BwxLXqgLntO",
       "editorAgentPubKey": null,
@@ -1554,15 +1554,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\"outcome\":\"Currently the only section that appears on a new node is \\\"Outcome\\\"; we have to be able to add the other section types (Spec, Completion criteria, Principle, Artifacts) and new free-form section types, choosing each one's render-widget.\",\"spec\":\"The outcome fields editor renders one widget per PRESENT field, so a fresh node (only `outcome`) shows just the Outcome section. An \\\"Add section\\\" affordance under the sections offers: (1) a chip per known section not yet present, added with its registered widget; (2) a free-form path — type a section name and pick a render-widget (Markdown text / Artifacts list / Raw JSON) — which adds the key with the empty value that widget reads. A custom section's chosen widget is recorded in a reserved `_widgets` map inside the fields (hidden from rendered sections, preserved through serialize) so it re-renders with the author's choice. Known keys resolve their widget from the editor registry; unknown keys with no recorded choice fall back to Raw JSON. Each section except Outcome carries a remove (×) control; removing a section that still holds content asks for confirmation before discarding it. (signalType is a specialized branch-G classifier and is intentionally not offered in the generic add menu.)\",\"completionCriteria\":[{\"statement\":\"On a fresh node a human adds Spec, a custom Markdown section, and Artifacts; after reload each renders with its chosen widget. Removing an empty section is silent; removing one with content asks to confirm\",\"evaluator\":\"human\"},{\"statement\":\"addField/removeField round-trip: a custom section records its widget in _widgets, the registry is excluded from rendered keys, and removeField clears the field and its registry entry\",\"evaluator\":\"executable\"}],\"artifacts\":[{\"type\":\"workproduct\",\"label\":\"OutcomeFieldsEditor.tsx — add-section affordance, per-section remove with confirm-on-content, registry-aware widget resolution\",\"uri\":\"web/src/components/OutcomeFieldsEditor/OutcomeFieldsEditor.tsx\"},{\"type\":\"workproduct\",\"label\":\"outcomeFields.ts — addField / removeField / fieldWidgetRegistry / WIDGET_REGISTRY_KEY\",\"uri\":\"web/src/outcomeFields.ts\"},{\"type\":\"workproduct\",\"label\":\"outcomeFields.test.ts — add/remove section + widget-registry tests\",\"uri\":\"web/test/outcomeFields.test.ts\"}]}",
       "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkVnL4kGtgH8k4PFNdxdauLlrYjDFsMnCaa-VfVSr6lSiBLUEE"
+      "actionHash": "uhCkkU9z4mqMCN6RMDHpPcZd0Au2Fl_HKRN4K3j5J1TVA8T6Bpksj"
     },
-    "uhCkkPTm2FP7nHsMjruTZaHy7Va6qTZOO50Qlff0aIjQ4TefnBelG": {
+    "uhCkko-u_nXH4AUaeAMtm7EgvQIL_KdcbwkCLAHPqMdblQO0z3VPG": {
       "content": "Notification on import and export should not clutter the window for ever",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1586,11 +1586,11 @@
       },
       "tags": [],
       "description": "{\n  \"outcome\": \"There should be a close button on the notification popup that's displayed after import or export.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"The status popup shown after export or apply has a ✕ button that dismisses it (and the badge with it)\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkPTm2FP7nHsMjruTZaHy7Va6qTZOO50Qlff0aIjQ4TefnBelG"
+      "actionHash": "uhCkko-u_nXH4AUaeAMtm7EgvQIL_KdcbwkCLAHPqMdblQO0z3VPG"
     },
-    "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI": {
+    "uhCkklRklYcbdsRxSaOhGRqucGmTMoc6jbrzCyBdKgfuP-9vHUqiX": {
       "content": "LLM can interact directly with the tree via an API",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1604,14 +1604,14 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d"
       ],
       "description": "{\n  \"outcome\": \"An LLM works with the live clarity tree through a direct, in-app API — reading current state and proposing typed edits — instead of the file-based diff round-trip (branch I export/import). Because it reads and proposes against the live tree, the tolerant-merge import (branch I, \\\"tolerant to changes since last export\\\") becomes redundant: there is no stale export to reconcile.\",\n  \"spec\": \"A flow view of the live loop belongs here (a diagram, not a list): the LLM reads the tree for context, proposes typed edits, the human reviews and commits them, and the LLM executes the work a ready leaf specifies. The detailed specs live on the leaves below.\",\n  \"principle\": \"The human is the only committer. The LLM reads and proposes; it never writes to the DHT directly.\",\n  \"artifacts\": [\n    {\n      \"type\": \"reference\",\n      \"label\": \"flow diagram: the live LLM↔tree loop (placeholder)\",\n      \"uri\": \"\"\n    }\n  ]\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI"
+      "actionHash": "uhCkklRklYcbdsRxSaOhGRqucGmTMoc6jbrzCyBdKgfuP-9vHUqiX"
     },
-    "uhCkki1JOpngyrgopLu0N65EqsgscUe49-Nq06jj6q6zVvSVs_bRp": {
+    "uhCkkTRpwnJg9ruwBrSJVKtAtRXfhg3l2KvwSClkLQhJxTyS_tJhk": {
       "content": "An LLM can read the live tree through the API",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1642,15 +1642,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"The LLM reads the live tree through a read tool (read_tree): nodes, typed fields, connections, and computed achievement/readiness. This is the read half of the MCP-style tool surface; the propose/write half lives in the conversational-editing branch's draft pipeline, so reads are a general capability while writes always go through review. The read shape reuses the agent-consumable export (branch D).\",\n  \"spec\": \"read_tree() -> the live project snapshot (outcomes, typed fields, connections, computed status), versioned and typed so the harness targets it without scraping the UI. (read_tree and propose_edits together form the MCP-style surface; propose_edits is specified under the draft pipeline.)\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"The harness calls read_tree and receives the live project's nodes, fields, connections and computed status\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkki1JOpngyrgopLu0N65EqsgscUe49-Nq06jj6q6zVvSVs_bRp"
+      "actionHash": "uhCkkTRpwnJg9ruwBrSJVKtAtRXfhg3l2KvwSClkLQhJxTyS_tJhk"
     },
-    "uhCkkYWWEULBb1wngo4UzMNfqebxV1c1nAKNlmqC-AI4V-4aAEYbc": {
+    "uhCkkCla2s6lv5S09XvzIjHToxmtKRwnbhQQMbYn_bhIqS7nCxHsl": {
       "content": "An LLM can perform the work specified by a leaf when manually triggered",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1681,15 +1681,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"Distinct from improving the clarity OF the tree, this is doing the work the tree clarifies: when a human manually triggers a ready leaf, the LLM reads that leaf's outcome, spec and completion criteria, performs the work (e.g. writes the code), then posts results — completion verdicts and produced artifacts — back onto the node (relies on branches D and E). Manual trigger is the prototype step before readiness assessment (branch G) gates it automatically. A clear, unambiguous leaf is exactly what makes this easy to direct.\",\n  \"spec\": \"A 'Do this leaf' action on a sufficiently-clear leaf hands its clarity fields to the harness as the work spec; the harness executes and returns artifacts + verdicts, which attach to the node (relies on branches D2/D3, E). No automatic triggering yet — the human picks the leaf.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A human triggers a ready leaf; the LLM performs the work and posts at least one artifact and a completion verdict back to that node\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkYWWEULBb1wngo4UzMNfqebxV1c1nAKNlmqC-AI4V-4aAEYbc"
+      "actionHash": "uhCkkCla2s6lv5S09XvzIjHToxmtKRwnbhQQMbYn_bhIqS7nCxHsl"
     },
-    "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq": {
+    "uhCkkPHIm7qWGRfG1TpUGXcpmIKJOxR0dE9rdaZKuu3Q0Qih-Edib": {
       "content": "A human directs tree edits in conversation, reviewed in a draft before they commit",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1703,53 +1703,53 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d"
       ],
       "description": "{\n  \"outcome\": \"A human directs tree edits by conversing with the LLM and reviewing what it proposes before anything commits — the same conversation that built this tree, now happening inside Acorn against the live tree, with a human-approved commit gate.\",\n  \"spec\": \"A flow view of the conversation-to-commit path belongs here: a request reaches the harness, its proposed edits open a draft, the human reviews and edits, and confirmation commits. The detailed specs live on the leaves below.\",\n  \"principle\": \"Proposed edits are inert until the human confirms them (plan-mode contract).\",\n  \"artifacts\": [\n    {\n      \"type\": \"reference\",\n      \"label\": \"flow diagram: conversation → draft → commit (placeholder)\",\n      \"uri\": \"\"\n    }\n  ]\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq"
+      "actionHash": "uhCkkPHIm7qWGRfG1TpUGXcpmIKJOxR0dE9rdaZKuu3Q0Qih-Edib"
     },
-    "uhCkk4GLeRcIVU19qegtS6OAk__aPP02tV7BkNn9SG8HeukbhKhNY": {
+    "uhCkkRcJuqggo9veFW-mFGr7La_kE20NPMcBucdvUOyiJxkcAfNxx": {
       "content": "Acorn connects to a local LLM harness over ACP, driven from an in-app chat",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "timestampCreated": 1781310000,
-      "timestampUpdated": null,
+      "timestampUpdated": 1781769600,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
           "taskList": [
             {
-              "complete": false,
+              "complete": true,
               "task": "Embed an ACP client connecting to a local LLM harness"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Chat panel sends user message + live tree context (branch F2)"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Render the harness reply; pass any proposed edits to the draft pipeline"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Reuse the branch F chat panel UI"
             }
           ]
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
-      "description": "{\n  \"outcome\": \"Acorn embeds an ACP (Agent Client Protocol) client that connects to a local LLM harness (e.g. a local Claude Code / agent process). An in-app chat panel (branch F) sends the human's message plus the live tree context to the harness and shows its reply. When the reply includes proposed edits, they are handed off to the draft pipeline (a relied-on sibling); this node is responsible only for the conversation and transport.\",\n  \"spec\": \"Embed an ACP client; the chat panel sends {user message + live tree context (branch F2)} to the harness and renders the reply. Proposed edits in the reply are passed to the draft pipeline, not applied here. Reuses branch F's chat panel.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A human sends a message in the in-app chat and sees the harness's reply; any proposed edits in it are handed to the draft pipeline\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
-      "isImported": false,
+      "description": "{\n  \"outcome\": \"Acorn embeds an ACP (Agent Client Protocol) client that connects to a local LLM harness (e.g. a local Claude Code / agent process). An in-app chat panel sends the human's message plus the live tree context to the harness and shows its reply. When the reply includes proposed edits, the permission seams are plumbed to hand them to the draft pipeline; this node is responsible for the conversation and transport.\",\n  \"spec\": \"Embed an ACP client; the chat panel sends {user message + live tree context} to the harness and renders the reply (message, thought, plan, and tool_call streams). Proposed edits in the reply are passed to the draft pipeline via plumbed permission seams. Transport is abstracted: DevSidecarHarnessClient (WebSocket over dev-server) for development, MossHarnessClient (Weave host API) for production.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A human sends a message in the in-app chat and sees the harness's reply; any proposed edits in it are handed to the draft pipeline\",\n      \"evaluator\": \"human\"\n    }\n  ],\n  \"artifacts\": [\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"HarnessChat.tsx — in-app chat panel with streaming updates, tree context injection, selection context\",\n      \"uri\": \"web/src/components/HarnessChat/HarnessChat.tsx\"\n    },\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"devSidecarClient.ts — WebSocket ACP client (session lifecycle, streaming, permission callbacks)\",\n      \"uri\": \"web/src/harness/devSidecarClient.ts\"\n    },\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"sidecar.js — ACP host bridge (stdio JSON-RPC to WebSocket, spawns agent subprocess)\",\n      \"uri\": \"web/dev-harness/sidecar.js\"\n    },\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"harness/types.ts — transport-neutral HarnessClient interface + protocol types\",\n      \"uri\": \"web/src/harness/types.ts\"\n    },\n    {\n      \"type\": \"workproduct\",\n      \"label\": \"bodyKeydown.ts — keyboard safety: suppress tree directives while typing in chat\",\n      \"uri\": \"web/src/event-listeners/bodyKeydown.ts\"\n    }\n  ]\n}",
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk4GLeRcIVU19qegtS6OAk__aPP02tV7BkNn9SG8HeukbhKhNY"
+      "actionHash": "uhCkkRcJuqggo9veFW-mFGr7La_kE20NPMcBucdvUOyiJxkcAfNxx"
     },
-    "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG": {
+    "uhCkkP_aCCs5N7SJGhcoA8EYSV1JTO_UHBFJ_IlRkElJNMwRcS3Az": {
       "content": "LLM-proposed edits are reviewed in a non-committed draft layer before they touch the DHT",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1763,14 +1763,14 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d"
       ],
       "description": "{\n  \"outcome\": \"Proposed tree edits are reviewed in a non-committed draft before they touch the DHT — the tree-editing analogue of an agent's PLAN MODE (propose → review/edit → approve → execute). A draft is an uncommitted overlay on the live tree; nothing persists until the human confirms.\",\n  \"spec\": \"A flow view of the draft lifecycle belongs here: a proposed edit set opens the draft, it renders in glow-mode, the human edits or rejects, and confirm commits (or discard drops). It reuses branch I's glow + diff executor; where the ACP harness has a native plan mode, surface its proposals as the draft. The detailed specs live on the leaves below.\",\n  \"principle\": \"Proposed edits are inert until a human confirms them; the draft never persists on its own (the agent plan-mode contract).\",\n  \"artifacts\": [\n    {\n      \"type\": \"reference\",\n      \"label\": \"agent plan mode (propose → approve → execute); flow diagram of the draft lifecycle (placeholder)\",\n      \"uri\": \"\"\n    }\n  ]\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG"
+      "actionHash": "uhCkkP_aCCs5N7SJGhcoA8EYSV1JTO_UHBFJ_IlRkElJNMwRcS3Az"
     },
-    "uhCkk9xX_0m2hkguQ2eTmZ79ng-m9gNXTOGqhM052L7rn88VXpGW5": {
+    "uhCkktMhcigqUwKDisJzLhciutCRiuQ3xQnkNdU-QC4kg6QjrYFH8": {
       "content": "The LLM proposes a typed edit set through the API, opening a draft",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1801,15 +1801,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"The propose half of the MCP-style tool surface: the LLM submits a typed edit set (add / update / remove of outcomes, fields, connections) via propose_edits, which opens a draft rather than writing to the DHT. The edit shape reuses branch I's ProjectDiff. This is the single entry point by which any proposed change becomes a reviewable draft.\",\n  \"spec\": \"propose_edits(diff: ProjectDiff) -> opens or updates the ephemeral draft, never a direct write. The edit shape is branch I's ProjectDiff. Called by the harness over ACP.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"propose_edits opens a draft and writes nothing to the DHT\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkk9xX_0m2hkguQ2eTmZ79ng-m9gNXTOGqhM052L7rn88VXpGW5"
+      "actionHash": "uhCkktMhcigqUwKDisJzLhciutCRiuQ3xQnkNdU-QC4kg6QjrYFH8"
     },
-    "uhCkkRLlJL3YET6l1TCHX14JUkij6W_Z4OcJZF9KPq2He6MMUmfat": {
+    "uhCkkjGdAG1dCZOqv8afx3vWBtf_stLSLh5J-P14HEmEgU__l0-Bh": {
       "content": "A proposed edit set renders in diff glow-mode as a draft overlay",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1840,15 +1840,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"The open draft renders using the existing glow-mode — changed nodes glow amber, each carries its +/~/- badge, and the view fits to the changed set (branch I i3a/i3b/i3c) — but driven by the UNCOMMITTED draft diff layered over the live tree. Added nodes show as draft (ghost) nodes, updated nodes show their proposed values, removed nodes are marked. Nothing is written to cells; this is a live preview.\",\n  \"spec\": \"Render the tree with the draft diff overlaid: merge the draft's added/updated outcomes into the render set (flagged as draft), mark removed ones, and reuse setChangedOutcomes + perOutcomeChangeStats so glow and badges show the proposed deltas. The draft diff lives in ephemeral state, not in the persisted project.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"An open draft lights the affected nodes in glow-mode with correct +/~/- badges and fits them in view, with nothing written to the DHT\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkRLlJL3YET6l1TCHX14JUkij6W_Z4OcJZF9KPq2He6MMUmfat"
+      "actionHash": "uhCkkjGdAG1dCZOqv8afx3vWBtf_stLSLh5J-P14HEmEgU__l0-Bh"
     },
-    "uhCkkJv0KWx5f9EoQu4VrWp4aBmZHgaymirUl8e-4xB3ytYVclLlN": {
+    "uhCkk2dF5_rJkH4fis3hwlNb4V4smx2BwrwMl2BvzYG2GKZAHaiiA": {
       "content": "A human can edit or reject individual proposed changes within the draft",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1879,15 +1879,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"While a draft is open, the human refines it before committing: edit a proposed node's content or fields, and accept or reject individual proposed changes. Edits mutate the in-memory draft diff — not the DHT — so the human shapes the final edit set. Rejecting a change drops it from the draft; editing a proposed value updates it in place.\",\n  \"spec\": \"Per-change controls: accept/reject per node and inline editing that writes back into the draft ProjectDiff (added/updated entries). The draft diff is recomputed and re-rendered as the human edits, keeping glow + badges in sync. No cell writes until confirm.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"A human edits a proposed node and rejects another within the draft; the committed result reflects exactly the accepted + edited set\",\n      \"evaluator\": \"human\"\n    }\n  ]\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkJv0KWx5f9EoQu4VrWp4aBmZHgaymirUl8e-4xB3ytYVclLlN"
+      "actionHash": "uhCkk2dF5_rJkH4fis3hwlNb4V4smx2BwrwMl2BvzYG2GKZAHaiiA"
     },
-    "uhCkkMoHdnzQVtSAFOeE8zSHCvyegAl0-XfcTQZ7sUq_tTJmKRhgV": {
+    "uhCkk5j2tMuRUQdY2r6YixOJW4UuiZGhnILrcpB_Hdoi_XR2TsEP6": {
       "content": "Confirming a draft commits the accepted edits to the DHT at once; discarding drops them",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1918,15 +1918,15 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"A single 'Confirm' commits the draft's accepted edits to the DHT in one step — reusing the branch I diff executor (applyProjectDiffToCell) — and clears the draft. 'Discard' drops the draft with no trace. Until one of these, nothing the LLM proposed has persisted. After commit, the just-committed nodes stay glowing (branch I) so the human sees what landed.\",\n  \"spec\": \"Confirm: run applyProjectDiffToCell over the accepted subset of the draft diff, then clear ephemeral draft state and light the committed nodes via the normal post-apply path. Discard: clear the draft state only. Both exit draft mode.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"Confirming a draft persists exactly the accepted edits and they survive reload; discarding leaves the tree unchanged\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkMoHdnzQVtSAFOeE8zSHCvyegAl0-XfcTQZ7sUq_tTJmKRhgV"
+      "actionHash": "uhCkk5j2tMuRUQdY2r6YixOJW4UuiZGhnILrcpB_Hdoi_XR2TsEP6"
     },
-    "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm": {
+    "uhCkkxow-qC5wEGEWU4NLRIn_5IOBNZKTelsS_i_VBD03l7UDAMVo": {
       "content": "LLMs have a well-tuned skills file for building effective clarity trees",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1940,14 +1940,14 @@
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d"
       ],
-      "description": "{\n  \"outcome\": \"An LLM that reads, proposes, or builds out a clarity tree works from a tuned skills file, so the trees it produces are sound by construction. The skill makes the LLM fluent in what a clarity tree IS and in the craft of growing one well — it is the competence the agent loads whenever it touches a tree, distinct from any single Acorn feature.\",\n  \"spec\": \"A skills file the harness loads on every tree-editing request; a high-level map of how its parts relate belongs here, with the substance on the sections below. It is a direct candidate to extract from the composition guidance already being used in practice.\",\n  \"principle\": \"The skill encodes craft, not Acorn features, and must stay true to the tree ontology as that ontology evolves.\",\n  \"artifacts\": [\n    {\n      \"type\": \"reference\",\n      \"label\": \"map of the skill (placeholder); seed: the composition-invariant guidance in use\",\n      \"uri\": \"\"\n    }\n  ]\n}",
-      "isImported": false,
+      "description": "{\"outcome\": \"An LLM that reads, proposes, or builds out a clarity tree works from a tuned skills file, so the trees it produces are sound by construction. The skill makes the LLM fluent in what a clarity tree IS and in the craft of growing one well — it is the competence the agent loads whenever it touches a tree, distinct from any single Acorn feature.\", \"spec\": \"A skills file the harness loads on every tree-editing request; a high-level map of how its parts relate belongs here, with the substance on the sections below. It is a direct candidate to extract from the composition guidance already being used in practice.\", \"principle\": \"The skill encodes craft, not Acorn features, and must stay true to the tree ontology as that ontology evolves.\", \"artifacts\": [{\"type\": \"workproduct\", \"label\": \"clarity-tree-skill.md — the clarity-trees skill (ontology, structural invariants, decomposition, spec placement, working loop)\", \"uri\": \"clarity-engine/clarity-tree-skill.md\"}, {\"type\": \"workproduct\", \"label\": \"skill.js — sidecar loader that injects the skill on a session's first prompt (pure, unit-tested)\", \"uri\": \"web/dev-harness/skill.js\"}, {\"type\": \"workproduct\", \"label\": \"sidecar.js — seeds the clarity-trees skill once per harness session\", \"uri\": \"web/dev-harness/sidecar.js\"}]}",
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm"
+      "actionHash": "uhCkkxow-qC5wEGEWU4NLRIn_5IOBNZKTelsS_i_VBD03l7UDAMVo"
     },
-    "uhCkkEpCJlxfVYFcrJeNZVWBAckveEEbCIexk-pjiHGI3UnvPjObg": {
+    "uhCkkjaBx1oIE4-j-Bnowiuiq7oR9BSA8UWzaDL73DHSj0Fm7grIM": {
       "content": "The skill defines the clarity-tree ontology",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1955,38 +1955,38 @@
       "timestampUpdated": null,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
           "taskList": [
             {
-              "complete": false,
+              "complete": true,
               "task": "Node = a positive target-state outcome carrying typed fields (outcome, spec, criteria, dependencies, artifacts)"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Scope: Uncertain (a branch still being decomposed) vs Small (a buildable leaf)"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Achievement is computed from criteria + children, never a hand-set flag"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Dependencies are typed: constituted-from vs relies-on"
             }
           ]
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"The skill states the vocabulary an LLM must use correctly: a node is a positive target-state outcome carrying typed fields; scope is Uncertain (a branch still decomposing) or Small (a buildable leaf); achievement is computed, not toggled; and dependencies are typed (constituted-from vs relies-on). Fluency in the ontology is what lets the LLM emit well-formed nodes.\"\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkEpCJlxfVYFcrJeNZVWBAckveEEbCIexk-pjiHGI3UnvPjObg"
+      "actionHash": "uhCkkjaBx1oIE4-j-Bnowiuiq7oR9BSA8UWzaDL73DHSj0Fm7grIM"
     },
-    "uhCkkQ4wHzAMhE7Unhx3k9yDgkt11BhsWWArT-NVDKez-NG9fOEde": {
+    "uhCkk9dyp5ScEdRLxKiA9OumgiiC54jbWmUaRbUEwYLnpAsS3bRgz": {
       "content": "The skill states the structural invariants that keep a tree sound",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -1994,38 +1994,38 @@
       "timestampUpdated": null,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
           "taskList": [
             {
-              "complete": false,
+              "complete": true,
               "task": "Composed-of is an explicit parent→child edge, never a prose reference to a sibling"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Each node is self-contained and reads on its own"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "A parent never restates or counts its children — the children ARE the decomposition"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Relies-on is a typed edge, not hierarchy"
             }
           ]
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"The skill encodes the rules that make a tree's structure meaningful: a composed-of dependency is an explicit parent→child edge, never prose; each node is self-contained; a parent never restates or counts its children; relies-on is a typed edge, not hierarchy. When these hold, prioritization and achievement roll up correctly.\"\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkQ4wHzAMhE7Unhx3k9yDgkt11BhsWWArT-NVDKez-NG9fOEde"
+      "actionHash": "uhCkk9dyp5ScEdRLxKiA9OumgiiC54jbWmUaRbUEwYLnpAsS3bRgz"
     },
-    "uhCkkH92Soyvp-6DuHOmYkvbtrnrVHeNHG4Dm_2Pfis-T_yk7jUxm": {
+    "uhCkkc6fZHgX5zGkPI5W9DVunm7NOfPCmtUbPCBlX1v1Dn97UxBaS": {
       "content": "The skill guides decomposition into children that make the parent possible",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -2033,38 +2033,38 @@
       "timestampUpdated": null,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
           "taskList": [
             {
-              "complete": false,
+              "complete": true,
               "task": "Each child is something the parent NEEDS in order to be possible"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "The children together are sufficient for the parent"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Decompose when readiness is low or an unknown is open (branch G)"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Stop when a leaf is a clear, buildable Small"
             }
           ]
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"The skill guides breaking an unclear or too-large outcome into children, where each child is something the parent needs in order to be possible and the children together are sufficient for it. It ties the decision to readiness signals (branch G): low readiness or an open unknown is the cue to decompose.\"\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkH92Soyvp-6DuHOmYkvbtrnrVHeNHG4Dm_2Pfis-T_yk7jUxm"
+      "actionHash": "uhCkkc6fZHgX5zGkPI5W9DVunm7NOfPCmtUbPCBlX1v1Dn97UxBaS"
     },
-    "uhCkkVHEBGHybzrxeIIB225pBmrnIrYaDcYZIGTnWVh-Y53CICDKl": {
+    "uhCkkL0DkP-CoGx6_Jzsw90KIt-c5iYP-1jHS62wtyKNHB42YiA_P": {
       "content": "The skill places specs and criteria where they belong",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -2072,38 +2072,38 @@
       "timestampUpdated": null,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
           "taskList": [
             {
-              "complete": false,
+              "complete": true,
               "task": "Detailed specs live on the Small leaves that will actually be built"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "A branch spec shows how its parts interact (e.g. a flow diagram), not a list of them"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Completion criteria attach wherever they can be evaluated"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "High-level nodes stay self-contained, not manifests of their subtree"
             }
           ]
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"The skill places detail correctly: most specs live low, on the Small leaves that will be built; a branch's spec is not a restatement of its children but a higher-level view — often a flow or interaction diagram — of how the parts below it fit together. Completion criteria attach wherever they can be evaluated.\"\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkVHEBGHybzrxeIIB225pBmrnIrYaDcYZIGTnWVh-Y53CICDKl"
+      "actionHash": "uhCkkL0DkP-CoGx6_Jzsw90KIt-c5iYP-1jHS62wtyKNHB42YiA_P"
     },
-    "uhCkkWDa0otL1gs74mNP3IM4e6317xtH_77A97gG2IHzNxxi4-CYK": {
+    "uhCkktepnjIU5xA_Vc29afoJxdyqP9hbH_GpgU0EaZFEx_yQEQL2v": {
       "content": "The skill describes the agent's working loop against a live tree",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -2111,38 +2111,38 @@
       "timestampUpdated": null,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
           "taskList": [
             {
-              "complete": false,
+              "complete": true,
               "task": "Read the live tree for context before proposing"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Propose typed edits as a draft, never a direct write"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Leave the commit to the human (plan-mode contract)"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Record results and artifacts back onto the nodes worked"
             }
           ]
         }
       },
       "tags": [
-        "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy",
-        "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+        "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
+        "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
       "description": "{\n  \"outcome\": \"The skill describes how the LLM works a tree in practice: read the live tree for context, propose typed edits that open a draft for the human to review and commit, and never write to the DHT directly. It is the LLM-facing companion to the human-approved draft flow.\"\n}",
-      "isImported": false,
+      "isImported": true,
       "githubLink": "",
-      "actionHash": "uhCkkWDa0otL1gs74mNP3IM4e6317xtH_77A97gG2IHzNxxi4-CYK"
+      "actionHash": "uhCkktepnjIU5xA_Vc29afoJxdyqP9hbH_GpgU0EaZFEx_yQEQL2v"
     },
-    "uhCkk-zEaHGuNIqgR_MFfbR2n5qpb-sajeX1QAcmBaSR5ar97dcZI": {
+    "uhCkk0ZVQBP7RIyxcSZ6Lh5GFTOK5A3yvQlYm2fdne_G5Ft9wvHQN": {
       "content": "A node has a stable, human-usable reference that survives rearrangement",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
       "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
@@ -2157,580 +2157,607 @@
       },
       "tags": [],
       "description": "{\n  \"outcome\": \"To talk together about nodes — in chat, in proposals, across sessions — humans and LLMs need an unambiguous way to refer to a specific node that survives the tree being rearranged. Positional or semantic labels (\\\"i3c\\\", \\\"branch L\\\") break the moment the tree changes; the actionHash is stable but not human-usable; the current 6-digit hashCodeId is stable but opaque and derived from the hash. What the right referent is — a stable id, a human-memorable handle, or both, and how it is displayed and resolved — still needs discussion. (No leaf yet: open for decomposition.)\"\n}",
+      "isImported": true,
+      "githubLink": "",
+      "actionHash": "uhCkk0ZVQBP7RIyxcSZ6Lh5GFTOK5A3yvQlYm2fdne_G5Ft9wvHQN"
+    },
+    "uhCkkdk25ApbS-B2X7AuQFtxPRKeapcROvD21sE2fRhkQBTsUJu3d": {
+      "content": "API include a working example of connecting to a fully locally running LLM",
+      "creatorAgentPubKey": "uhCAkwU9wSAp5q5H37O710BlrKWfmJxL8xFMj4bFBOnuLIox96Sk6",
+      "editorAgentPubKey": null,
+      "timestampCreated": 1781721612,
+      "timestampUpdated": null,
+      "scope": {
+        "Small": {
+          "achievementStatus": "NotAchieved",
+          "targetDate": null,
+          "taskList": []
+        }
+      },
+      "tags": [],
+      "description": "",
       "isImported": false,
       "githubLink": "",
-      "actionHash": "uhCkk-zEaHGuNIqgR_MFfbR2n5qpb-sajeX1QAcmBaSR5ar97dcZI"
+      "actionHash": "uhCkkdk25ApbS-B2X7AuQFtxPRKeapcROvD21sE2fRhkQBTsUJu3d"
     }
   },
   "connections": {
-    "uhCkkbjCYWZcCeQC4XtYPkQoA_lbsfKbtI5sj7On_t89n6sZFKEoA": {
-      "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
-      "childActionHash": "uhCkkE17lr2PkxLoRdPB1kayY1io1EwKelzCvPskck0KSslkXI4eL",
+    "uhCkkjMNb1LYeKE-yfz-qIOfr0Dmmy2oPn15vblf6zQ-yA-TaLqQR": {
+      "parentActionHash": "uhCkkxbCIf5_aFBtScQTnT7iIn4fOiz7d-U5qMNH_RiOZTsg8LrPN",
+      "childActionHash": "uhCkksFZ8BhZQdNaViETjWugeOIO8yKQ3EDv_7FFXN_xPBuQ7O_Kc",
       "siblingOrder": 8,
       "randomizer": 1772322000000,
       "isImported": true,
-      "actionHash": "uhCkkbjCYWZcCeQC4XtYPkQoA_lbsfKbtI5sj7On_t89n6sZFKEoA"
+      "actionHash": "uhCkkjMNb1LYeKE-yfz-qIOfr0Dmmy2oPn15vblf6zQ-yA-TaLqQR"
     },
-    "uhCkk6VaS7eyZwk4sukneIybH6Uc3f7AwuOu4hhq5juwdpTfqzuPZ": {
-      "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
-      "childActionHash": "uhCkkmh_Lo7OKZIaVR5kgxTCPgfllqknMiOOvlzgE_L8ncKXHBtjz",
+    "uhCkk_t_uvdd33M_QVMF4F1g1NbyQWdGj-LY6KNhVoJUb0ygv7h4j": {
+      "parentActionHash": "uhCkkxbCIf5_aFBtScQTnT7iIn4fOiz7d-U5qMNH_RiOZTsg8LrPN",
+      "childActionHash": "uhCkkLrAyBKTRXAJ2ptZH-ShvwFamv_COSp8yziDUqqx5oDT1SLDS",
       "siblingOrder": 6,
       "randomizer": 1772322000001,
       "isImported": true,
-      "actionHash": "uhCkk6VaS7eyZwk4sukneIybH6Uc3f7AwuOu4hhq5juwdpTfqzuPZ"
+      "actionHash": "uhCkk_t_uvdd33M_QVMF4F1g1NbyQWdGj-LY6KNhVoJUb0ygv7h4j"
     },
-    "uhCkkg4kKKK9-1CgJo0mJ5HlsGf-cXXWpC1NuS5LvBJ6KZ7MfOEpF": {
-      "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
-      "childActionHash": "uhCkkHX0rpHu_GqtJO4Femh906LZJ75UT3ttZppPofjS7lEjPo8vZ",
+    "uhCkkxv0pIwmXhodqEB6R9eMJ7qlX3loGuzRfnfpDO-OZMUvtKY3y": {
+      "parentActionHash": "uhCkkxbCIf5_aFBtScQTnT7iIn4fOiz7d-U5qMNH_RiOZTsg8LrPN",
+      "childActionHash": "uhCkkrcs_3PPWHljSspZc06huMsWes429l3nVkkAZAsJGlFNQUGET",
       "siblingOrder": 4,
       "randomizer": 1772322000002,
       "isImported": true,
-      "actionHash": "uhCkkg4kKKK9-1CgJo0mJ5HlsGf-cXXWpC1NuS5LvBJ6KZ7MfOEpF"
+      "actionHash": "uhCkkxv0pIwmXhodqEB6R9eMJ7qlX3loGuzRfnfpDO-OZMUvtKY3y"
     },
-    "uhCkkmjoCB3NG731Nvxzi0Dlkg1PRwUs0zRVw1lGhPp54fbPID9HO": {
-      "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
-      "childActionHash": "uhCkk8UhcJn2kbwWmU6C4xNzo8L5cEP4BZkLrkO2uxo6od5NZ2pN5",
+    "uhCkk_rUZ1QOf5loyIX_BN7IW5V0NfQZ3xH0F6bkf9YkkSPDulpRg": {
+      "parentActionHash": "uhCkkxbCIf5_aFBtScQTnT7iIn4fOiz7d-U5qMNH_RiOZTsg8LrPN",
+      "childActionHash": "uhCkk_muNFcTpRom4q80j1iLkCsBdMQTs8PbY5DBk6vZbakynMxkf",
       "siblingOrder": 3,
       "randomizer": 1772322000003,
       "isImported": true,
-      "actionHash": "uhCkkmjoCB3NG731Nvxzi0Dlkg1PRwUs0zRVw1lGhPp54fbPID9HO"
+      "actionHash": "uhCkk_rUZ1QOf5loyIX_BN7IW5V0NfQZ3xH0F6bkf9YkkSPDulpRg"
     },
-    "uhCkk1_ko8cUDg7o_rTk1XetYFaQJE9tDbYK3yrvLCo4bfTkaEn8q": {
-      "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
-      "childActionHash": "uhCkkJMdKInTNY-666P_wlr4bOfAKk1x_fWcreaUuINdU4xIqRhnU",
+    "uhCkkJEqZb57nmAwBohI17cqh32vMRSxrDZBQs3PiFvxezycLWSO1": {
+      "parentActionHash": "uhCkkxbCIf5_aFBtScQTnT7iIn4fOiz7d-U5qMNH_RiOZTsg8LrPN",
+      "childActionHash": "uhCkkubCgEskU33RgHN39gIC7cwJvSG6hery-KERco5zTDy0Tskch",
       "siblingOrder": 2,
       "randomizer": 1772322000004,
       "isImported": true,
-      "actionHash": "uhCkk1_ko8cUDg7o_rTk1XetYFaQJE9tDbYK3yrvLCo4bfTkaEn8q"
+      "actionHash": "uhCkkJEqZb57nmAwBohI17cqh32vMRSxrDZBQs3PiFvxezycLWSO1"
     },
-    "uhCkkmEYVnpVaDZOIsZE0udq1tXhgVdnpKaNPYrRY2lzuGvj45HBx": {
-      "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
-      "childActionHash": "uhCkkvhUiUxC00IiPH7cHnenahYKqi8js7UZIYeB9nLnDA_4SAgZy",
+    "uhCkk1gucd3hUzBsEzWN6sekwsqtS4KO3LxR8OBbshQO1DhDTEO2g": {
+      "parentActionHash": "uhCkkxbCIf5_aFBtScQTnT7iIn4fOiz7d-U5qMNH_RiOZTsg8LrPN",
+      "childActionHash": "uhCkkQp7VTb_tj8OoZzD3PXMaUXTpId9-4G-X7_BA6mf6EDehub2M",
       "siblingOrder": 5,
       "randomizer": 1772322000005,
       "isImported": true,
-      "actionHash": "uhCkkmEYVnpVaDZOIsZE0udq1tXhgVdnpKaNPYrRY2lzuGvj45HBx"
+      "actionHash": "uhCkk1gucd3hUzBsEzWN6sekwsqtS4KO3LxR8OBbshQO1DhDTEO2g"
     },
-    "uhCkkXCwETcyx-ZWfPCLM1qLcVqXfJ8dVtMCS3d9NefDX_fmccM_w": {
-      "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
-      "childActionHash": "uhCkkNEmcuM7dbErjmtyI89hKqZ8_7lYCtJj3FTTfYmp52RiD76y0",
+    "uhCkkdR85dHvIzlV6eKli3LSggzrjt1zHez74po7uyqUkBUVlIcfA": {
+      "parentActionHash": "uhCkkxbCIf5_aFBtScQTnT7iIn4fOiz7d-U5qMNH_RiOZTsg8LrPN",
+      "childActionHash": "uhCkk8TBS4QTkGn8i0WUWjS0gWN_vsajuA4K24IZENwet1HcQ7lSK",
       "siblingOrder": 1,
       "randomizer": 1772322000006,
       "isImported": true,
-      "actionHash": "uhCkkXCwETcyx-ZWfPCLM1qLcVqXfJ8dVtMCS3d9NefDX_fmccM_w"
+      "actionHash": "uhCkkdR85dHvIzlV6eKli3LSggzrjt1zHez74po7uyqUkBUVlIcfA"
     },
-    "uhCkkzLnhxgeYKTWrTYT9-BxoRYLmsgrzgYrCmVQIKjcwwR8OBEmi": {
-      "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
-      "childActionHash": "uhCkkoD7Un4Cba51-fT7VEJvsQjP1gYdTgjzhkEEcbCfei7kIZDLV",
+    "uhCkkcPrRxzkqkWlRL2O62RPqwR95GgNn0Jc6BGxM3M40aLrpjfYD": {
+      "parentActionHash": "uhCkkxbCIf5_aFBtScQTnT7iIn4fOiz7d-U5qMNH_RiOZTsg8LrPN",
+      "childActionHash": "uhCkkZYzp1aUOYocsylZjuASHAeI3Dg4H7nbWnTFSKGRxDXd8yn90",
       "siblingOrder": 0,
       "randomizer": 1772322000007,
       "isImported": true,
-      "actionHash": "uhCkkzLnhxgeYKTWrTYT9-BxoRYLmsgrzgYrCmVQIKjcwwR8OBEmi"
+      "actionHash": "uhCkkcPrRxzkqkWlRL2O62RPqwR95GgNn0Jc6BGxM3M40aLrpjfYD"
     },
-    "uhCkkPnfa0aWFeEe2KgwBB3KNHARvDLqaNKChMNuANef-eukGMR-9": {
-      "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
-      "childActionHash": "uhCkkmprPa_t9Q9OmWULQYFsCOolgZjxW2GNE7EWE7c91CjVvhR-O",
+    "uhCkk49eUYle7-8j1-tvFD3cVBAyMSyym6eaxaDJdGqSL-JNZLj2x": {
+      "parentActionHash": "uhCkkxbCIf5_aFBtScQTnT7iIn4fOiz7d-U5qMNH_RiOZTsg8LrPN",
+      "childActionHash": "uhCkkW31bGOjYH90oWlODHoSefA4ZVLQo24OwqLz38acq1JfVmiQ7",
       "siblingOrder": -1,
       "randomizer": 1772322000008,
       "isImported": true,
-      "actionHash": "uhCkkPnfa0aWFeEe2KgwBB3KNHARvDLqaNKChMNuANef-eukGMR-9"
+      "actionHash": "uhCkk49eUYle7-8j1-tvFD3cVBAyMSyym6eaxaDJdGqSL-JNZLj2x"
     },
-    "uhCkkr-17F-W4VMGa_VZhxxGmmyS8TnmW2caVAucefM80NRb6Py1z": {
-      "parentActionHash": "uhCkkE17lr2PkxLoRdPB1kayY1io1EwKelzCvPskck0KSslkXI4eL",
-      "childActionHash": "uhCkk5yULspckAl-auSdERFhLAEIpjV7bJgcNncoHF6kw7a0JeAgb",
+    "uhCkkxjYyWS9pKvXJ6CqeaCsHwWb1__osFeQgvg1mJK9KqmULkfcv": {
+      "parentActionHash": "uhCkksFZ8BhZQdNaViETjWugeOIO8yKQ3EDv_7FFXN_xPBuQ7O_Kc",
+      "childActionHash": "uhCkkda03BPlmeJQLSuPso_LyviYZvsFARyeFG-bxYfQi3kV5P9En",
       "siblingOrder": 0,
       "randomizer": 1772322000009,
       "isImported": true,
-      "actionHash": "uhCkkr-17F-W4VMGa_VZhxxGmmyS8TnmW2caVAucefM80NRb6Py1z"
+      "actionHash": "uhCkkxjYyWS9pKvXJ6CqeaCsHwWb1__osFeQgvg1mJK9KqmULkfcv"
     },
-    "uhCkkritIY92n1GRf6RUSPpq0CKlm_l0aXSZQ9Znm30D7mSGExlUT": {
-      "parentActionHash": "uhCkkE17lr2PkxLoRdPB1kayY1io1EwKelzCvPskck0KSslkXI4eL",
-      "childActionHash": "uhCkk1T6OA72LHCg3bjXMlg5Gk3uWEpUxE4Pht3JtwknP4jplFHMn",
+    "uhCkkuNsTb1Veivuvv_QsTZMQRhG4wIUOcJaN1rRC7tneZVx5fdoz": {
+      "parentActionHash": "uhCkksFZ8BhZQdNaViETjWugeOIO8yKQ3EDv_7FFXN_xPBuQ7O_Kc",
+      "childActionHash": "uhCkkIXthPj9Zn-hb7QUczRXi-C1Qx5UXuj0ZCTvFvWIvHypgqxlQ",
       "siblingOrder": 2,
       "randomizer": 1772322000010,
       "isImported": true,
-      "actionHash": "uhCkkritIY92n1GRf6RUSPpq0CKlm_l0aXSZQ9Znm30D7mSGExlUT"
+      "actionHash": "uhCkkuNsTb1Veivuvv_QsTZMQRhG4wIUOcJaN1rRC7tneZVx5fdoz"
     },
-    "uhCkkomaXVnbgaK29r59KpTXx0s_2017DQ9t6UH6wYr8a2jTygRfm": {
-      "parentActionHash": "uhCkkE17lr2PkxLoRdPB1kayY1io1EwKelzCvPskck0KSslkXI4eL",
-      "childActionHash": "uhCkkaZy_sVSfnFUefGLinR1qc4oUT-ANLTse28PRtdCgJ7UCgjDL",
+    "uhCkkF22ZSfo4dfZLgEXCP2MmkqrI24sDchlm8LwhuiXGtTJSDXFm": {
+      "parentActionHash": "uhCkksFZ8BhZQdNaViETjWugeOIO8yKQ3EDv_7FFXN_xPBuQ7O_Kc",
+      "childActionHash": "uhCkkTRI2cNxE1t-4MUjTB8seX36uXn5VvNwf2LX6c1dbvzfnTyFl",
       "siblingOrder": 1,
       "randomizer": 1772322000011,
       "isImported": true,
-      "actionHash": "uhCkkomaXVnbgaK29r59KpTXx0s_2017DQ9t6UH6wYr8a2jTygRfm"
+      "actionHash": "uhCkkF22ZSfo4dfZLgEXCP2MmkqrI24sDchlm8LwhuiXGtTJSDXFm"
     },
-    "uhCkktYwP-baK1zOibUeRJceXElPTQ6oKKGJpVdKKmmfZmfLM68EZ": {
-      "parentActionHash": "uhCkkE17lr2PkxLoRdPB1kayY1io1EwKelzCvPskck0KSslkXI4eL",
-      "childActionHash": "uhCkkRN9Osvw1YMRVgiEJ0zDSzv9SvLfYA-FNCwwHt_NiNnHKMj-U",
+    "uhCkkocJwuGa0taQbYLGmGaA7sTh7YCzUaRrIVI6WcdXAzZYA0xRg": {
+      "parentActionHash": "uhCkksFZ8BhZQdNaViETjWugeOIO8yKQ3EDv_7FFXN_xPBuQ7O_Kc",
+      "childActionHash": "uhCkkcaqQ017jKqwPJH5woF4pXi6XwkuRz3IDUf8xQ1vDjeIPEWUA",
       "siblingOrder": 3,
       "randomizer": 1772322000012,
       "isImported": true,
-      "actionHash": "uhCkktYwP-baK1zOibUeRJceXElPTQ6oKKGJpVdKKmmfZmfLM68EZ"
+      "actionHash": "uhCkkocJwuGa0taQbYLGmGaA7sTh7YCzUaRrIVI6WcdXAzZYA0xRg"
     },
-    "uhCkkadYv2bFlrW5R6c8R-i-cnOmmPusY5jixkO3n9dg9uri7fHSR": {
-      "parentActionHash": "uhCkkmh_Lo7OKZIaVR5kgxTCPgfllqknMiOOvlzgE_L8ncKXHBtjz",
-      "childActionHash": "uhCkk5ibaNbS6sbCEDSfgoj_L37jzOG_3k4RfZnOgrfkzGy95y1MV",
+    "uhCkkrHO0OkDFWyjW7QybkFiygfV6S0tK4ararGPeRGIO2i4vSfOI": {
+      "parentActionHash": "uhCkkLrAyBKTRXAJ2ptZH-ShvwFamv_COSp8yziDUqqx5oDT1SLDS",
+      "childActionHash": "uhCkkjdg1W4yop7X0QR__587eoFBlzyVqrsVQS4-Nrq5jAwK2m1eK",
       "siblingOrder": 2,
       "randomizer": 1772322000013,
       "isImported": true,
-      "actionHash": "uhCkkadYv2bFlrW5R6c8R-i-cnOmmPusY5jixkO3n9dg9uri7fHSR"
+      "actionHash": "uhCkkrHO0OkDFWyjW7QybkFiygfV6S0tK4ararGPeRGIO2i4vSfOI"
     },
-    "uhCkkeuZ49YRG9ni75jJyPQ9ljoMYW2tLyvw_TeZS55qFHfKxzpoA": {
-      "parentActionHash": "uhCkkmh_Lo7OKZIaVR5kgxTCPgfllqknMiOOvlzgE_L8ncKXHBtjz",
-      "childActionHash": "uhCkk3upmjCg7ZP_pz8bs_JBGlPwrrVwqJsjOLapDoWXXtfS-myhM",
+    "uhCkkYgXV1pHs0UHfT7LOhPtVX8gJ62Q_WflKdooK7FWE8_Mh0Hp9": {
+      "parentActionHash": "uhCkkLrAyBKTRXAJ2ptZH-ShvwFamv_COSp8yziDUqqx5oDT1SLDS",
+      "childActionHash": "uhCkkCazEKtqhgfhG26EZvZb7_I_zMu5XG-84nhqqjXOJzBX74w1-",
       "siblingOrder": 1,
       "randomizer": 1772322000014,
       "isImported": true,
-      "actionHash": "uhCkkeuZ49YRG9ni75jJyPQ9ljoMYW2tLyvw_TeZS55qFHfKxzpoA"
+      "actionHash": "uhCkkYgXV1pHs0UHfT7LOhPtVX8gJ62Q_WflKdooK7FWE8_Mh0Hp9"
     },
-    "uhCkkbrZIekz6np8l-g137h5wtYQfJNApA3HJ71gf2Bs4lSriN3I2": {
-      "parentActionHash": "uhCkk3upmjCg7ZP_pz8bs_JBGlPwrrVwqJsjOLapDoWXXtfS-myhM",
-      "childActionHash": "uhCkkg2rYEXaxojnyRAK2qgegsSCbKAK0_LFWEcKVhk4qmNQqUeaS",
+    "uhCkkjNV6cx9Fjk9lL9LXez0wWW6OaQT3U7juMwXFz-5QfVnUUCOj": {
+      "parentActionHash": "uhCkkCazEKtqhgfhG26EZvZb7_I_zMu5XG-84nhqqjXOJzBX74w1-",
+      "childActionHash": "uhCkkCsz-TcIv09dtWKcQIaegEPdasMERW1kPljjPQTi04rb81MEI",
       "siblingOrder": 1,
       "randomizer": 1772322000016,
       "isImported": true,
-      "actionHash": "uhCkkbrZIekz6np8l-g137h5wtYQfJNApA3HJ71gf2Bs4lSriN3I2"
+      "actionHash": "uhCkkjNV6cx9Fjk9lL9LXez0wWW6OaQT3U7juMwXFz-5QfVnUUCOj"
     },
-    "uhCkkaEQ3A6ClO0LnmKFL216dng0BxpzAh_n2Nq5ZmGmSANK4A2Rc": {
-      "parentActionHash": "uhCkk3upmjCg7ZP_pz8bs_JBGlPwrrVwqJsjOLapDoWXXtfS-myhM",
-      "childActionHash": "uhCkkPVxhypE6BXGh3JilD1LEq3LCL7Mc47kxonkchKdO_I0PflPV",
+    "uhCkkirWXpWl2Uzd9EBiGHT4mkIBx787jczYeHZplxNuXVpd9jTHz": {
+      "parentActionHash": "uhCkkCazEKtqhgfhG26EZvZb7_I_zMu5XG-84nhqqjXOJzBX74w1-",
+      "childActionHash": "uhCkkLPTjyPn9uByl3XhI0aSrFjuLbmQ91FcjB0qKnjbg7BKupaZL",
       "siblingOrder": 0,
       "randomizer": 1772322000017,
       "isImported": true,
-      "actionHash": "uhCkkaEQ3A6ClO0LnmKFL216dng0BxpzAh_n2Nq5ZmGmSANK4A2Rc"
+      "actionHash": "uhCkkirWXpWl2Uzd9EBiGHT4mkIBx787jczYeHZplxNuXVpd9jTHz"
     },
-    "uhCkkDhzEfintI-Jrnl3puqFjfVJx58L8LEaF5c5PcdNv5pVUuMwO": {
-      "parentActionHash": "uhCkkHX0rpHu_GqtJO4Femh906LZJ75UT3ttZppPofjS7lEjPo8vZ",
-      "childActionHash": "uhCkkxwx1Cl0nJSqQzBA2-LwzaDPGqIlbzy5oPvJCnZnJbuPt8RX_",
+    "uhCkkwaGMVXAhzNMF6odSCMhGq4beNJQe8lSnvs7UTqL-9d3HtGZS": {
+      "parentActionHash": "uhCkkrcs_3PPWHljSspZc06huMsWes429l3nVkkAZAsJGlFNQUGET",
+      "childActionHash": "uhCkkqwjYqtGU-_vfwLfpAcQpFFgiSu193Rdx3DwK8X9lXpbkEt_h",
       "siblingOrder": 6,
       "randomizer": 1772322000018,
       "isImported": true,
-      "actionHash": "uhCkkDhzEfintI-Jrnl3puqFjfVJx58L8LEaF5c5PcdNv5pVUuMwO"
+      "actionHash": "uhCkkwaGMVXAhzNMF6odSCMhGq4beNJQe8lSnvs7UTqL-9d3HtGZS"
     },
-    "uhCkk6eRVSp6Jh7H2CSPxeLRyBtXtEyCMydYt4q5SpoTPgku1Y1Bt": {
-      "parentActionHash": "uhCkkHX0rpHu_GqtJO4Femh906LZJ75UT3ttZppPofjS7lEjPo8vZ",
-      "childActionHash": "uhCkknCIEYVylemapJIHp8itNcdQFohI6b8eoApJB5E_AY3drL29e",
+    "uhCkk9ZKVgS7WVmF1n980pu9xG_ueBX1zMKqrduKRrvwKkeHSH8uJ": {
+      "parentActionHash": "uhCkkrcs_3PPWHljSspZc06huMsWes429l3nVkkAZAsJGlFNQUGET",
+      "childActionHash": "uhCkkid9RrEg0-m698qrSsm2OFazKioryW3hdi_WkRRuCeunByde3",
       "siblingOrder": 5,
       "randomizer": 1772322000019,
       "isImported": true,
-      "actionHash": "uhCkk6eRVSp6Jh7H2CSPxeLRyBtXtEyCMydYt4q5SpoTPgku1Y1Bt"
+      "actionHash": "uhCkk9ZKVgS7WVmF1n980pu9xG_ueBX1zMKqrduKRrvwKkeHSH8uJ"
     },
-    "uhCkknXblqMInyH6fGtie4uZ-h8xkSPO5m7tcPmgfYpRDk1JyJ3PV": {
-      "parentActionHash": "uhCkkHX0rpHu_GqtJO4Femh906LZJ75UT3ttZppPofjS7lEjPo8vZ",
-      "childActionHash": "uhCkk1rSHIgeA0v-viWIs87mNHbIDUZygzM_pD_HPb2ehv_j5TDkd",
+    "uhCkkTb_1B45daatglvZfSuxKzAk1X5MyduPCQeHU9S2TmN4FYzL_": {
+      "parentActionHash": "uhCkkrcs_3PPWHljSspZc06huMsWes429l3nVkkAZAsJGlFNQUGET",
+      "childActionHash": "uhCkk1NIu8ilnPvk9ujVbZSsR7fTc-1LLwKZnP6BtnjimdOMZMFvi",
       "siblingOrder": 4,
       "randomizer": 1772322000020,
       "isImported": true,
-      "actionHash": "uhCkknXblqMInyH6fGtie4uZ-h8xkSPO5m7tcPmgfYpRDk1JyJ3PV"
+      "actionHash": "uhCkkTb_1B45daatglvZfSuxKzAk1X5MyduPCQeHU9S2TmN4FYzL_"
     },
-    "uhCkkAyUT2xX3c-TmGkxJPPVD_MZKo4gX-ItcYRuFBX10iT8bFLu9": {
-      "parentActionHash": "uhCkkHX0rpHu_GqtJO4Femh906LZJ75UT3ttZppPofjS7lEjPo8vZ",
-      "childActionHash": "uhCkkqOqOrY717VXGHcAl3NC0v8gHVRPK-89Cb-QEJfmGx4tNp9f1",
+    "uhCkk6MWnFY8whlOWcOu_0J4ELZfPy1_3MdYO2fsHYgRv9SS0Kyjo": {
+      "parentActionHash": "uhCkkrcs_3PPWHljSspZc06huMsWes429l3nVkkAZAsJGlFNQUGET",
+      "childActionHash": "uhCkkpJ8LogG4Rqb1g5VESZpeIXNYLQ9x3q-g8f4RKlDKsGFx2XY_",
       "siblingOrder": 3,
       "randomizer": 1772322000021,
       "isImported": true,
-      "actionHash": "uhCkkAyUT2xX3c-TmGkxJPPVD_MZKo4gX-ItcYRuFBX10iT8bFLu9"
+      "actionHash": "uhCkk6MWnFY8whlOWcOu_0J4ELZfPy1_3MdYO2fsHYgRv9SS0Kyjo"
     },
-    "uhCkkfF2eSehz6_gn15aTdaHN3m4C4mUS0BXQjUOrZ8AdRNzMnRPA": {
-      "parentActionHash": "uhCkkHX0rpHu_GqtJO4Femh906LZJ75UT3ttZppPofjS7lEjPo8vZ",
-      "childActionHash": "uhCkkdnd8Xk5Zrj719P_n6Rka9RK_73_KGN73vFKTi8B8Ma2ktZk_",
+    "uhCkk0sFDztl4xt5KZct9l6ZCSkQndeu-AvVlr-3Y94v7RnN-3KjJ": {
+      "parentActionHash": "uhCkkrcs_3PPWHljSspZc06huMsWes429l3nVkkAZAsJGlFNQUGET",
+      "childActionHash": "uhCkkiDjhrEKpq3T44xNCH5TXzEv-tAfq8FGeC9eSMy5tmDt13Icv",
       "siblingOrder": 2,
       "randomizer": 1772322000022,
       "isImported": true,
-      "actionHash": "uhCkkfF2eSehz6_gn15aTdaHN3m4C4mUS0BXQjUOrZ8AdRNzMnRPA"
+      "actionHash": "uhCkk0sFDztl4xt5KZct9l6ZCSkQndeu-AvVlr-3Y94v7RnN-3KjJ"
     },
-    "uhCkkrhX8Vc3jh9M1kDLI--047rtnhPPkERp-MUrwTkwBJngUQqaA": {
-      "parentActionHash": "uhCkkHX0rpHu_GqtJO4Femh906LZJ75UT3ttZppPofjS7lEjPo8vZ",
-      "childActionHash": "uhCkkNx9xWmIt7WSPlrB6ig8pCNQjCl8URmg0B54ECiUCEC2lS1kh",
+    "uhCkkBlpusduQWFEct0YpmfDGnQSazMxUHwPtMtvHe4MKNwEKxtEU": {
+      "parentActionHash": "uhCkkrcs_3PPWHljSspZc06huMsWes429l3nVkkAZAsJGlFNQUGET",
+      "childActionHash": "uhCkkx9sJQbEEpwmNs-1so_OYW4HBt9DpBz8R70hw9OUrqXVfbYt4",
       "siblingOrder": 1,
       "randomizer": 1772322000023,
       "isImported": true,
-      "actionHash": "uhCkkrhX8Vc3jh9M1kDLI--047rtnhPPkERp-MUrwTkwBJngUQqaA"
+      "actionHash": "uhCkkBlpusduQWFEct0YpmfDGnQSazMxUHwPtMtvHe4MKNwEKxtEU"
     },
-    "uhCkkMrh2r9VW8vYJqzu6CiHMPYx0ZVFmMMRvwC80eMSPEOHyFLGk": {
-      "parentActionHash": "uhCkkHX0rpHu_GqtJO4Femh906LZJ75UT3ttZppPofjS7lEjPo8vZ",
-      "childActionHash": "uhCkkuUs1NfCLPOljlpRIGhEs8yL7PDLgbWDTtRz51IYp8hFwsg7u",
+    "uhCkkLceyvPh9xvNLzofnvMlzNk6vSaLtvvrOopWw90cihsLS3DXQ": {
+      "parentActionHash": "uhCkkrcs_3PPWHljSspZc06huMsWes429l3nVkkAZAsJGlFNQUGET",
+      "childActionHash": "uhCkkeMkhJMjX6o6UpLR8swE84_oBgjxQa4RAjxgkP5M8Nf7w6R0E",
       "siblingOrder": 0,
       "randomizer": 1772322000024,
       "isImported": true,
-      "actionHash": "uhCkkMrh2r9VW8vYJqzu6CiHMPYx0ZVFmMMRvwC80eMSPEOHyFLGk"
+      "actionHash": "uhCkkLceyvPh9xvNLzofnvMlzNk6vSaLtvvrOopWw90cihsLS3DXQ"
     },
-    "uhCkkRVRdBFXxpsG6dee7K9T5JCQhs39hvMWddZSwJkp2YROKd8E1": {
-      "parentActionHash": "uhCkk8UhcJn2kbwWmU6C4xNzo8L5cEP4BZkLrkO2uxo6od5NZ2pN5",
-      "childActionHash": "uhCkk63jrC4_lyhFTKkqUi5Pdog1SKXbRu36qmFPgzXEXzc2TMWEw",
+    "uhCkkEzzzVFb9vLzHwcg2y0RhFx6m2OEGsPExFC9YzJxpwNt5nEjP": {
+      "parentActionHash": "uhCkk_muNFcTpRom4q80j1iLkCsBdMQTs8PbY5DBk6vZbakynMxkf",
+      "childActionHash": "uhCkkHVFLYzYmO4vX_Uu30bhciT400xiRybtqAb3l98Ka_0oQX4Uk",
       "siblingOrder": 3,
       "randomizer": 1772322000025,
       "isImported": true,
-      "actionHash": "uhCkkRVRdBFXxpsG6dee7K9T5JCQhs39hvMWddZSwJkp2YROKd8E1"
+      "actionHash": "uhCkkEzzzVFb9vLzHwcg2y0RhFx6m2OEGsPExFC9YzJxpwNt5nEjP"
     },
-    "uhCkkgYW1TLs7BGk-qKucreFKvvj57Q00rsvJaWRngj8mBwk4VooN": {
-      "parentActionHash": "uhCkk8UhcJn2kbwWmU6C4xNzo8L5cEP4BZkLrkO2uxo6od5NZ2pN5",
-      "childActionHash": "uhCkkyzLmGS5dsExV8Ojph9UDXtS8YoD4gcEmAYLQ_nQeqG4RiLt0",
+    "uhCkk-kNdORkF05LLFrJXhURaipDS-eZOahWUnPIyyFbv1yNuI0O7": {
+      "parentActionHash": "uhCkk_muNFcTpRom4q80j1iLkCsBdMQTs8PbY5DBk6vZbakynMxkf",
+      "childActionHash": "uhCkkvnOc37xJxmG6_YYDcLS4aVHH_OJ9UepULbqOazUW4nCZwMYh",
       "siblingOrder": 2,
       "randomizer": 1772322000026,
       "isImported": true,
-      "actionHash": "uhCkkgYW1TLs7BGk-qKucreFKvvj57Q00rsvJaWRngj8mBwk4VooN"
+      "actionHash": "uhCkk-kNdORkF05LLFrJXhURaipDS-eZOahWUnPIyyFbv1yNuI0O7"
     },
-    "uhCkkBZQ_vTlaZRyoDv53yPViMfYGMy-5o_fMbB2RmlF9IJfXCcdA": {
-      "parentActionHash": "uhCkk8UhcJn2kbwWmU6C4xNzo8L5cEP4BZkLrkO2uxo6od5NZ2pN5",
-      "childActionHash": "uhCkkApZLtP9Vid304N0HQJDK5D-ynPbohBwGcQgKmY64xpdsi_MA",
+    "uhCkk9FQwzx2RA0NtDB_RbikA3njyELi982wgTrZht8daILuNXIDv": {
+      "parentActionHash": "uhCkk_muNFcTpRom4q80j1iLkCsBdMQTs8PbY5DBk6vZbakynMxkf",
+      "childActionHash": "uhCkkNykQGM52WdXzF_V-J5Eq5atSx6IycpUZdy93QDdqe2nukjyC",
       "siblingOrder": 1,
       "randomizer": 1772322000027,
       "isImported": true,
-      "actionHash": "uhCkkBZQ_vTlaZRyoDv53yPViMfYGMy-5o_fMbB2RmlF9IJfXCcdA"
+      "actionHash": "uhCkk9FQwzx2RA0NtDB_RbikA3njyELi982wgTrZht8daILuNXIDv"
     },
-    "uhCkkKqNyzEYt3iTczcItRxADPrG_y6N0aGcq_M-lpxPD5zm_HdY5": {
-      "parentActionHash": "uhCkk8UhcJn2kbwWmU6C4xNzo8L5cEP4BZkLrkO2uxo6od5NZ2pN5",
-      "childActionHash": "uhCkkHcjYa8XF6YE_8V33l6ba9eBCS0Gicl4DER5S-9UT5nVGk3dh",
+    "uhCkkDquqNQg-rfZyAAXXhyPVKsVCf6AY81Li1N0xGF-amgpne4w8": {
+      "parentActionHash": "uhCkk_muNFcTpRom4q80j1iLkCsBdMQTs8PbY5DBk6vZbakynMxkf",
+      "childActionHash": "uhCkktJG2BzNW-T0MuZ48BaPmVPOmgGADH2vhYucEs7vZ8Whtch32",
       "siblingOrder": 0,
       "randomizer": 1772322000028,
       "isImported": true,
-      "actionHash": "uhCkkKqNyzEYt3iTczcItRxADPrG_y6N0aGcq_M-lpxPD5zm_HdY5"
+      "actionHash": "uhCkkDquqNQg-rfZyAAXXhyPVKsVCf6AY81Li1N0xGF-amgpne4w8"
     },
-    "uhCkkHlT3rskysPbTSiaFbx9BgU4ZBqJbRTgiXHtrqlo25I7ugmJz": {
-      "parentActionHash": "uhCkkJMdKInTNY-666P_wlr4bOfAKk1x_fWcreaUuINdU4xIqRhnU",
-      "childActionHash": "uhCkkLLkvz3ZvmI-icG8VbkqShXIHF8bwQbCMHJcYs6rFvaV-9T7m",
+    "uhCkkdCw74tbGRLSi5PtPbdcCt1kZ3QYGFQIQ1jECjxlBXHo3DZQy": {
+      "parentActionHash": "uhCkkubCgEskU33RgHN39gIC7cwJvSG6hery-KERco5zTDy0Tskch",
+      "childActionHash": "uhCkkYthYX6cxcb0mAYkt7Bkndf04GRgo4XhRUHy4h-PX_EnvA1_n",
       "siblingOrder": 2,
       "randomizer": 1772322000029,
       "isImported": true,
-      "actionHash": "uhCkkHlT3rskysPbTSiaFbx9BgU4ZBqJbRTgiXHtrqlo25I7ugmJz"
+      "actionHash": "uhCkkdCw74tbGRLSi5PtPbdcCt1kZ3QYGFQIQ1jECjxlBXHo3DZQy"
     },
-    "uhCkkQiQEUcDtd0pKZdp5JJJla7xZemIJTOy2-nQoumHtrH1TB3Az": {
-      "parentActionHash": "uhCkkJMdKInTNY-666P_wlr4bOfAKk1x_fWcreaUuINdU4xIqRhnU",
-      "childActionHash": "uhCkkBzX2z22ptIhXtdUBFKoK_dvH5pD_MIXOEv_vSpWFDroKEj00",
+    "uhCkkIq7NwCIIXGaCAP27ZCtnF_lgY8AqKxDEAF17RuBNISiSObVG": {
+      "parentActionHash": "uhCkkubCgEskU33RgHN39gIC7cwJvSG6hery-KERco5zTDy0Tskch",
+      "childActionHash": "uhCkkxb5NgaQjpx3A-U0V0u78-3gf1oe-1O7vVJWVxTn9qFslYuqn",
       "siblingOrder": 1,
       "randomizer": 1772322000030,
       "isImported": true,
-      "actionHash": "uhCkkQiQEUcDtd0pKZdp5JJJla7xZemIJTOy2-nQoumHtrH1TB3Az"
+      "actionHash": "uhCkkIq7NwCIIXGaCAP27ZCtnF_lgY8AqKxDEAF17RuBNISiSObVG"
     },
-    "uhCkkcLu8w6_G3iIdpRhGtC9tJtN2Wq4Ih1zfCKgBZcGgh9oXLPvq": {
-      "parentActionHash": "uhCkkJMdKInTNY-666P_wlr4bOfAKk1x_fWcreaUuINdU4xIqRhnU",
-      "childActionHash": "uhCkkGJ40dQJzxxBjFO-ODxyxdByFxmAJCWiiM317X424GtggD-BA",
+    "uhCkkqwXQi3n8XGMnoZjzxC1sIFFOKW_fArOtifkoDjYHxbIUf_vj": {
+      "parentActionHash": "uhCkkubCgEskU33RgHN39gIC7cwJvSG6hery-KERco5zTDy0Tskch",
+      "childActionHash": "uhCkkNQwMgXtBxAmkwc8QvtsgfrZqCTWziV_UTMLs_xerlK4fZVty",
       "siblingOrder": 0,
       "randomizer": 1772322000031,
       "isImported": true,
-      "actionHash": "uhCkkcLu8w6_G3iIdpRhGtC9tJtN2Wq4Ih1zfCKgBZcGgh9oXLPvq"
+      "actionHash": "uhCkkqwXQi3n8XGMnoZjzxC1sIFFOKW_fArOtifkoDjYHxbIUf_vj"
     },
-    "uhCkkfcSWBlfmQql1f5jNOkD0RvaQ8krOyDUN2qNIQEHTEFcvFM1F": {
-      "parentActionHash": "uhCkkvhUiUxC00IiPH7cHnenahYKqi8js7UZIYeB9nLnDA_4SAgZy",
-      "childActionHash": "uhCkkFmWXhFZGzt_v8G6LGWVTVY1mR6tkgS9pmjOCIDRu_l47vWm5",
+    "uhCkk2NMOSvMqs5gldyh8Y6CFj8D2EA9EWsm8lQhDw9vE2Its0h4f": {
+      "parentActionHash": "uhCkkQp7VTb_tj8OoZzD3PXMaUXTpId9-4G-X7_BA6mf6EDehub2M",
+      "childActionHash": "uhCkkimFgkDq6h6vtDrNPsq-vsVpWzHOkKltKn3tFOitUM9n1wtRY",
       "siblingOrder": 1,
       "randomizer": 1772322000032,
       "isImported": true,
-      "actionHash": "uhCkkfcSWBlfmQql1f5jNOkD0RvaQ8krOyDUN2qNIQEHTEFcvFM1F"
+      "actionHash": "uhCkk2NMOSvMqs5gldyh8Y6CFj8D2EA9EWsm8lQhDw9vE2Its0h4f"
     },
-    "uhCkkm5dOchEET3zqfNoAliVMScFAIIgaFDlodELty-pfd9SQYfQz": {
-      "parentActionHash": "uhCkkvhUiUxC00IiPH7cHnenahYKqi8js7UZIYeB9nLnDA_4SAgZy",
-      "childActionHash": "uhCkkkpUxtmvqKm1F0DD2PVAnjF560EyV2ftG017r7KJ8X59lS3-r",
+    "uhCkkx9OdZbVSfvdWz0CBNusjJht5FYscjoT5AXmnxkFHoL2qr9UV": {
+      "parentActionHash": "uhCkkQp7VTb_tj8OoZzD3PXMaUXTpId9-4G-X7_BA6mf6EDehub2M",
+      "childActionHash": "uhCkk9VCmmJ-4GY2BehTPvOrosiJlqC7g-Dte8xXiWUym4d91dZwN",
       "siblingOrder": 0,
       "randomizer": 1772322000033,
       "isImported": true,
-      "actionHash": "uhCkkm5dOchEET3zqfNoAliVMScFAIIgaFDlodELty-pfd9SQYfQz"
+      "actionHash": "uhCkkx9OdZbVSfvdWz0CBNusjJht5FYscjoT5AXmnxkFHoL2qr9UV"
     },
-    "uhCkk8WbNrkpyx6wZLwU80lMd3bOFgt1GGX-q43LgHwL9hhHHsBTj": {
-      "parentActionHash": "uhCkkNEmcuM7dbErjmtyI89hKqZ8_7lYCtJj3FTTfYmp52RiD76y0",
-      "childActionHash": "uhCkk2Rtp29QeSTvqEcYCbNgQmLXKe4NwWKkgrUCPn5_bDw5MR05p",
+    "uhCkkTLlt8-k6Qw8_sKCeIKTwdVpK2vW4tSZNt5pH2FFcB7MpKswO": {
+      "parentActionHash": "uhCkk8TBS4QTkGn8i0WUWjS0gWN_vsajuA4K24IZENwet1HcQ7lSK",
+      "childActionHash": "uhCkkRnqhLLC5DOxv8G5OmI3k1xFSG_4Lq1MTqvlWGYeh4E5YGLh5",
       "siblingOrder": 2,
       "randomizer": 1772322000034,
       "isImported": true,
-      "actionHash": "uhCkk8WbNrkpyx6wZLwU80lMd3bOFgt1GGX-q43LgHwL9hhHHsBTj"
+      "actionHash": "uhCkkTLlt8-k6Qw8_sKCeIKTwdVpK2vW4tSZNt5pH2FFcB7MpKswO"
     },
-    "uhCkkLhJMEpAk3der3f7MfkGnjCCP5ymgnQd34txb8Pimggdz0e5b": {
-      "parentActionHash": "uhCkkNEmcuM7dbErjmtyI89hKqZ8_7lYCtJj3FTTfYmp52RiD76y0",
-      "childActionHash": "uhCkkBS34nLJgm-aaP0JMlUtl2rGUr2Zirymv_WQMg3c7CunXcap4",
+    "uhCkkfzyoHJoWrs2GT64bmRtEawqOdRsxnIswnSPQQMtfS5vh36Am": {
+      "parentActionHash": "uhCkk8TBS4QTkGn8i0WUWjS0gWN_vsajuA4K24IZENwet1HcQ7lSK",
+      "childActionHash": "uhCkk5nlDpqsY3BsLhUmmBRtVl6jMwyrQ9SuqiGwsDpOkr-LB5cKK",
       "siblingOrder": 1,
       "randomizer": 1772322000035,
       "isImported": true,
-      "actionHash": "uhCkkLhJMEpAk3der3f7MfkGnjCCP5ymgnQd34txb8Pimggdz0e5b"
+      "actionHash": "uhCkkfzyoHJoWrs2GT64bmRtEawqOdRsxnIswnSPQQMtfS5vh36Am"
     },
-    "uhCkkxdBf-ycM0Smf25zRaKp6iS1YR2VHheAFnqksVHB29eMEt3D6": {
-      "parentActionHash": "uhCkkNEmcuM7dbErjmtyI89hKqZ8_7lYCtJj3FTTfYmp52RiD76y0",
-      "childActionHash": "uhCkkK3NVmhiJOU9HtfdTiML-Vk3OtFDGXwOM-sm9XfrJGrd91GwW",
+    "uhCkkV6EgfBfnzKFqgpnGgCuNypVmuXDMOpv_aODB70V_1r7aMuaQ": {
+      "parentActionHash": "uhCkk8TBS4QTkGn8i0WUWjS0gWN_vsajuA4K24IZENwet1HcQ7lSK",
+      "childActionHash": "uhCkkt-oGYpwRLLpsZmE38uMEkaLtxIO4OZFaZyxhxDzwMnIWmmtS",
       "siblingOrder": 0,
       "randomizer": 1772322000036,
       "isImported": true,
-      "actionHash": "uhCkkxdBf-ycM0Smf25zRaKp6iS1YR2VHheAFnqksVHB29eMEt3D6"
+      "actionHash": "uhCkkV6EgfBfnzKFqgpnGgCuNypVmuXDMOpv_aODB70V_1r7aMuaQ"
     },
-    "uhCkkxnppIjv3O4EBPpRLvD1Z8Keudewkxnt_VsQhtAKBfVu_d3fp": {
-      "parentActionHash": "uhCkkoD7Un4Cba51-fT7VEJvsQjP1gYdTgjzhkEEcbCfei7kIZDLV",
-      "childActionHash": "uhCkk6fd8t-_p8BTd75xom2E07TdpJSGX9swp2nT4-gTwpvxg_5--",
+    "uhCkkn1EPpB7MYvVeWomhuV0wbRhlP9g29oFWuBkxOeDvjOeQOvMs": {
+      "parentActionHash": "uhCkkZYzp1aUOYocsylZjuASHAeI3Dg4H7nbWnTFSKGRxDXd8yn90",
+      "childActionHash": "uhCkkQ4Lz8ot2yKApFIeo5ZrkkZWFG4U3_TS3TsfGal9U-1btLLYB",
       "siblingOrder": 7,
       "randomizer": 1772322000037,
       "isImported": true,
-      "actionHash": "uhCkkxnppIjv3O4EBPpRLvD1Z8Keudewkxnt_VsQhtAKBfVu_d3fp"
+      "actionHash": "uhCkkn1EPpB7MYvVeWomhuV0wbRhlP9g29oFWuBkxOeDvjOeQOvMs"
     },
-    "uhCkkCGJPkIgVTCJvwdMVTmZ7lZOzVLZoca8PXZSbNHz234-cInnz": {
-      "parentActionHash": "uhCkkoD7Un4Cba51-fT7VEJvsQjP1gYdTgjzhkEEcbCfei7kIZDLV",
-      "childActionHash": "uhCkkfm5jyNenalefTT5lC9_Q5vm3B3GyhcVm_dO5PzChsTzchKVn",
+    "uhCkk9R_4gtIe37shusk7zOFMhQ3GprRMncQSIk0L4o7onnQpa7uL": {
+      "parentActionHash": "uhCkkZYzp1aUOYocsylZjuASHAeI3Dg4H7nbWnTFSKGRxDXd8yn90",
+      "childActionHash": "uhCkkQyPf2sAERBbQdF-BebJajqV0xSPwRXh6UR5LULAdRefyd6xr",
       "siblingOrder": 6,
       "randomizer": 1772322000038,
       "isImported": true,
-      "actionHash": "uhCkkCGJPkIgVTCJvwdMVTmZ7lZOzVLZoca8PXZSbNHz234-cInnz"
+      "actionHash": "uhCkk9R_4gtIe37shusk7zOFMhQ3GprRMncQSIk0L4o7onnQpa7uL"
     },
-    "uhCkkVxL1b7aYeyyVSMamcqCXEgAEL3KCJQVsCJR-a_tA2qfG_V6j": {
-      "parentActionHash": "uhCkkoD7Un4Cba51-fT7VEJvsQjP1gYdTgjzhkEEcbCfei7kIZDLV",
-      "childActionHash": "uhCkkN97SgIKBuqFztNHYCVR7Km57nF4GAtN9R4p0x9zKPoSOV1L7",
+    "uhCkk-SwZ-gAiWgYTCzKrVzXMeTPPg13SJcXdTwhsExwKhfruh5DG": {
+      "parentActionHash": "uhCkkZYzp1aUOYocsylZjuASHAeI3Dg4H7nbWnTFSKGRxDXd8yn90",
+      "childActionHash": "uhCkkXCCwBWL8rgt6KAAnZGnzaqho4LMLdBXTLMs9D11N-0vZ4JSm",
       "siblingOrder": 5,
       "randomizer": 1772322000039,
       "isImported": true,
-      "actionHash": "uhCkkVxL1b7aYeyyVSMamcqCXEgAEL3KCJQVsCJR-a_tA2qfG_V6j"
+      "actionHash": "uhCkk-SwZ-gAiWgYTCzKrVzXMeTPPg13SJcXdTwhsExwKhfruh5DG"
     },
-    "uhCkkAbzvRz6tXGJn-UYG5bFH1wOJ3Y7AmW9w0D0dxvvilf3M6E2p": {
-      "parentActionHash": "uhCkkoD7Un4Cba51-fT7VEJvsQjP1gYdTgjzhkEEcbCfei7kIZDLV",
-      "childActionHash": "uhCkkQGHi5L_muYbJxQ1MJFiHwtIrUrPJLbJFtfr-pJZsMX1ehAdM",
+    "uhCkkt3GbUifGfUIzumJNZaybamSRaqfX7eIUzWZl0xSnIbuIFDdV": {
+      "parentActionHash": "uhCkkZYzp1aUOYocsylZjuASHAeI3Dg4H7nbWnTFSKGRxDXd8yn90",
+      "childActionHash": "uhCkkUuz493aiuDNofM_GBtcWcqh3zu5yJC9NFP09eAzdiinba9Ue",
       "siblingOrder": 4,
       "randomizer": 1772322000040,
       "isImported": true,
-      "actionHash": "uhCkkAbzvRz6tXGJn-UYG5bFH1wOJ3Y7AmW9w0D0dxvvilf3M6E2p"
+      "actionHash": "uhCkkt3GbUifGfUIzumJNZaybamSRaqfX7eIUzWZl0xSnIbuIFDdV"
     },
-    "uhCkkxrJRSSuMs2SrYS_d4Y4kMC8brq0e6bIFAr6k2oITua9bOCa_": {
-      "parentActionHash": "uhCkkoD7Un4Cba51-fT7VEJvsQjP1gYdTgjzhkEEcbCfei7kIZDLV",
-      "childActionHash": "uhCkk-OqEkFqEOTHztlg0FjdiAWzqDN8mw3JZYDE6J-EllWw5lDdX",
+    "uhCkkYr2WsvGnpv_rDRxOO6LB81JZi9nPwrvjtFJ71IaHg2FzV7u3": {
+      "parentActionHash": "uhCkkZYzp1aUOYocsylZjuASHAeI3Dg4H7nbWnTFSKGRxDXd8yn90",
+      "childActionHash": "uhCkkQgan-vby6qDT9Sfx53kQpc_vFmmO2DQ5NKAEtemQGYf09m_x",
       "siblingOrder": 3,
       "randomizer": 1772322000041,
       "isImported": true,
-      "actionHash": "uhCkkxrJRSSuMs2SrYS_d4Y4kMC8brq0e6bIFAr6k2oITua9bOCa_"
+      "actionHash": "uhCkkYr2WsvGnpv_rDRxOO6LB81JZi9nPwrvjtFJ71IaHg2FzV7u3"
     },
-    "uhCkkbh38_XgBpidk99qm6RL5nMqXUXjNblxf7_HRlIh4i1xYWPTc": {
-      "parentActionHash": "uhCkkoD7Un4Cba51-fT7VEJvsQjP1gYdTgjzhkEEcbCfei7kIZDLV",
-      "childActionHash": "uhCkk8hQBC1st1ybhojMZdyQSy7pPDEPl2YLJoWNDRpbg7lsubkVH",
+    "uhCkkYLtcSw5ftoJdr-OMkYAvHbNSkrYzvCIxdSvkU5JtsWN8mepC": {
+      "parentActionHash": "uhCkkZYzp1aUOYocsylZjuASHAeI3Dg4H7nbWnTFSKGRxDXd8yn90",
+      "childActionHash": "uhCkkoSZXUs7cgNjLY1ASN2PwMxEuY9q02ZTGDFaFeRDbEzw8KVE1",
       "siblingOrder": 2,
       "randomizer": 1772322000042,
       "isImported": true,
-      "actionHash": "uhCkkbh38_XgBpidk99qm6RL5nMqXUXjNblxf7_HRlIh4i1xYWPTc"
+      "actionHash": "uhCkkYLtcSw5ftoJdr-OMkYAvHbNSkrYzvCIxdSvkU5JtsWN8mepC"
     },
-    "uhCkk_MJhjU14aB846Y1Ea_ecTw6tl9jMD3k5iW_urDoFEGG17u3-": {
-      "parentActionHash": "uhCkkoD7Un4Cba51-fT7VEJvsQjP1gYdTgjzhkEEcbCfei7kIZDLV",
-      "childActionHash": "uhCkkt_P9cypG2t_SyY5EdtCHQMUHWjdqno0tMQTXxSB8Qt4XMelq",
+    "uhCkksuXinj1GJ9-ipkKGCUhq6ipmX08X652euvn4iUNoIqyIPKFE": {
+      "parentActionHash": "uhCkkZYzp1aUOYocsylZjuASHAeI3Dg4H7nbWnTFSKGRxDXd8yn90",
+      "childActionHash": "uhCkkXKanBOTs6CeR7nnIhsIG6P2BJYUfQZC2JpwS6qfofIwvl_lo",
       "siblingOrder": 1,
       "randomizer": 1772322000043,
       "isImported": true,
-      "actionHash": "uhCkk_MJhjU14aB846Y1Ea_ecTw6tl9jMD3k5iW_urDoFEGG17u3-"
+      "actionHash": "uhCkksuXinj1GJ9-ipkKGCUhq6ipmX08X652euvn4iUNoIqyIPKFE"
     },
-    "uhCkkBgXROaJyfw-GBaVoaLXnhlbyiLc_AmsoWJCg5-JqrWUcjNWO": {
-      "parentActionHash": "uhCkkoD7Un4Cba51-fT7VEJvsQjP1gYdTgjzhkEEcbCfei7kIZDLV",
-      "childActionHash": "uhCkkXXS9jGaptWmiW6SIve3C58U9_4zpggtkyWsV2s29mxVULqit",
+    "uhCkki7JbRtILcPT-knFkIeQ7TqFy5wJfyuh-4edvwFAq-F0t6Gc2": {
+      "parentActionHash": "uhCkkZYzp1aUOYocsylZjuASHAeI3Dg4H7nbWnTFSKGRxDXd8yn90",
+      "childActionHash": "uhCkk39RoUj4FnFVNpOrkzo-UlYb_u4-tO60X0GbvtLogIvcq5ehO",
       "siblingOrder": 0,
       "randomizer": 1772322000044,
       "isImported": true,
-      "actionHash": "uhCkkBgXROaJyfw-GBaVoaLXnhlbyiLc_AmsoWJCg5-JqrWUcjNWO"
+      "actionHash": "uhCkki7JbRtILcPT-knFkIeQ7TqFy5wJfyuh-4edvwFAq-F0t6Gc2"
     },
-    "uhCkkADinE0NCa9AXYBwskiphlHzAThmuTPNhDXJPx9TIpCDNmvG7": {
-      "parentActionHash": "uhCkkaZy_sVSfnFUefGLinR1qc4oUT-ANLTse28PRtdCgJ7UCgjDL",
-      "childActionHash": "uhCkkMUPsRWA54n-dpG6YBtM9MMauFkHpS7xg33TPv90Ui---zRY_",
+    "uhCkkQuwL5oxMHGTQsqiI5Y1BfJPWKpU-_c_z2JrgCQq59R4nweBI": {
+      "parentActionHash": "uhCkkTRI2cNxE1t-4MUjTB8seX36uXn5VvNwf2LX6c1dbvzfnTyFl",
+      "childActionHash": "uhCkkMjHpoBM4Wp7PfbPw2H-60uIhEE95PcKouFryuzLvKZkocYjk",
       "siblingOrder": 3,
       "randomizer": 1772322000100,
       "isImported": true,
-      "actionHash": "uhCkkADinE0NCa9AXYBwskiphlHzAThmuTPNhDXJPx9TIpCDNmvG7"
+      "actionHash": "uhCkkQuwL5oxMHGTQsqiI5Y1BfJPWKpU-_c_z2JrgCQq59R4nweBI"
     },
-    "uhCkk0ZRiqkR6jLgWAmNitJ5KCdT7q4SolFTezYcHtXJtDtGTbu4u": {
-      "parentActionHash": "uhCkkaZy_sVSfnFUefGLinR1qc4oUT-ANLTse28PRtdCgJ7UCgjDL",
-      "childActionHash": "uhCkkm_dt8G-5w6emjLZTLa8rsUY1GZvTunZmPPU9sC8HhDNjQq6P",
+    "uhCkk9LwKJfzM-2-dhX2wBDzqkdPe_29MfJgK1BH13fQa209Mv6ee": {
+      "parentActionHash": "uhCkkTRI2cNxE1t-4MUjTB8seX36uXn5VvNwf2LX6c1dbvzfnTyFl",
+      "childActionHash": "uhCkk3eA78Ww7xEbKb7-JGd4RSFkkRNDzFho9CchVn889TMdswmHm",
       "siblingOrder": 2,
       "randomizer": 1772322000101,
       "isImported": true,
-      "actionHash": "uhCkk0ZRiqkR6jLgWAmNitJ5KCdT7q4SolFTezYcHtXJtDtGTbu4u"
+      "actionHash": "uhCkk9LwKJfzM-2-dhX2wBDzqkdPe_29MfJgK1BH13fQa209Mv6ee"
     },
-    "uhCkklwAImCdY5g0U4-gqOoDNMoFJhC5PetoCQVXGoSZ6aGHIbqWx": {
-      "parentActionHash": "uhCkkaZy_sVSfnFUefGLinR1qc4oUT-ANLTse28PRtdCgJ7UCgjDL",
-      "childActionHash": "uhCkkg3FvYn7BJueAd_nbwqkz2TjJhwWEJIOdICER9b2ZaaqTN1K-",
+    "uhCkkJIRX9bwfXO_ve-CgA4KFPrVojkB6sFeiq8ipGS-ve6Wr0ovM": {
+      "parentActionHash": "uhCkkTRI2cNxE1t-4MUjTB8seX36uXn5VvNwf2LX6c1dbvzfnTyFl",
+      "childActionHash": "uhCkkLKd42fyNMtuO44X7Vx9Zack3oK4n5d6gy_3-L72-jvzeKjdH",
       "siblingOrder": 1,
       "randomizer": 1772322000102,
       "isImported": true,
-      "actionHash": "uhCkklwAImCdY5g0U4-gqOoDNMoFJhC5PetoCQVXGoSZ6aGHIbqWx"
+      "actionHash": "uhCkkJIRX9bwfXO_ve-CgA4KFPrVojkB6sFeiq8ipGS-ve6Wr0ovM"
     },
-    "uhCkkX3ihSr_GrK866Y0M30vFqaofmP9admg0G7IFpzErTjpY1i8L": {
-      "parentActionHash": "uhCkkaZy_sVSfnFUefGLinR1qc4oUT-ANLTse28PRtdCgJ7UCgjDL",
-      "childActionHash": "uhCkk_p0pH0YaPFTGY3VXzUEGz0bVQ9Lhi7j-qnbfdA16HkoHpzFV",
+    "uhCkk5DnTjkXeg9jZ0eIs2j_Qwa_NsAqpchMVcLIpasZSfX4iVXyA": {
+      "parentActionHash": "uhCkkTRI2cNxE1t-4MUjTB8seX36uXn5VvNwf2LX6c1dbvzfnTyFl",
+      "childActionHash": "uhCkkZ67uW2zH-5wuk9Cz5qSztQ0SsmjSfQTgWJLT2UjEGrSX8vi7",
       "siblingOrder": 0,
       "randomizer": 1772322000103,
       "isImported": true,
-      "actionHash": "uhCkkX3ihSr_GrK866Y0M30vFqaofmP9admg0G7IFpzErTjpY1i8L"
+      "actionHash": "uhCkk5DnTjkXeg9jZ0eIs2j_Qwa_NsAqpchMVcLIpasZSfX4iVXyA"
     },
-    "uhCkkR1tBkfTmXgaEUMGQrFzbl4al7NUuATRMlfDtJuCE2igHRDgY": {
-      "parentActionHash": "uhCkkE17lr2PkxLoRdPB1kayY1io1EwKelzCvPskck0KSslkXI4eL",
-      "childActionHash": "uhCkkk-XZ5bPGtcqrvopSoPZGc2uKuQAj1f-U3GVs_Vm0_QiADJpG",
+    "uhCkk3kX_IabAUwjpx-IiGsZS07JSXnaK-je7KUoY2G4QJ2UQW-TU": {
+      "parentActionHash": "uhCkksFZ8BhZQdNaViETjWugeOIO8yKQ3EDv_7FFXN_xPBuQ7O_Kc",
+      "childActionHash": "uhCkkrA2WRE-ASYilKgqRoH9w38GpUFHc4umETwm0IFgOj5V7r7cF",
       "siblingOrder": -1,
       "randomizer": 1781296319950,
-      "isImported": false,
-      "actionHash": "uhCkkR1tBkfTmXgaEUMGQrFzbl4al7NUuATRMlfDtJuCE2igHRDgY"
+      "isImported": true,
+      "actionHash": "uhCkk3kX_IabAUwjpx-IiGsZS07JSXnaK-je7KUoY2G4QJ2UQW-TU"
     },
-    "uhCkkf0UKqc4H8X3JUfYzMxuV77cw4yDSyy8KChWcJ6ag_bLC6rmX": {
-      "parentActionHash": "uhCkkmh_Lo7OKZIaVR5kgxTCPgfllqknMiOOvlzgE_L8ncKXHBtjz",
-      "childActionHash": "uhCkkVnL4kGtgH8k4PFNdxdauLlrYjDFsMnCaa-VfVSr6lSiBLUEE",
+    "uhCkkJ2Kq2gpSLPl83J4OGX0DjxOVrxLapIeAMGOTsp4YKozErVrT": {
+      "parentActionHash": "uhCkkLrAyBKTRXAJ2ptZH-ShvwFamv_COSp8yziDUqqx5oDT1SLDS",
+      "childActionHash": "uhCkkU9z4mqMCN6RMDHpPcZd0Au2Fl_HKRN4K3j5J1TVA8T6Bpksj",
       "siblingOrder": 0,
       "randomizer": 1772322050001,
       "isImported": true,
-      "actionHash": "uhCkkf0UKqc4H8X3JUfYzMxuV77cw4yDSyy8KChWcJ6ag_bLC6rmX"
+      "actionHash": "uhCkkJ2Kq2gpSLPl83J4OGX0DjxOVrxLapIeAMGOTsp4YKozErVrT"
     },
-    "uhCkkWuF_I3BGCBfWIA-5hoQluTxpil2d3HoR2sGttfjb1E1UHmRj": {
-      "parentActionHash": "uhCkkE17lr2PkxLoRdPB1kayY1io1EwKelzCvPskck0KSslkXI4eL",
-      "childActionHash": "uhCkkPTm2FP7nHsMjruTZaHy7Va6qTZOO50Qlff0aIjQ4TefnBelG",
+    "uhCkk1gLYoHsGZCXX17i65SIfbFiMFgXjinBsney1vASekAwMnLuf": {
+      "parentActionHash": "uhCkksFZ8BhZQdNaViETjWugeOIO8yKQ3EDv_7FFXN_xPBuQ7O_Kc",
+      "childActionHash": "uhCkko-u_nXH4AUaeAMtm7EgvQIL_KdcbwkCLAHPqMdblQO0z3VPG",
       "siblingOrder": -2,
       "randomizer": 1781297821605,
-      "isImported": false,
-      "actionHash": "uhCkkWuF_I3BGCBfWIA-5hoQluTxpil2d3HoR2sGttfjb1E1UHmRj"
+      "isImported": true,
+      "actionHash": "uhCkk1gLYoHsGZCXX17i65SIfbFiMFgXjinBsney1vASekAwMnLuf"
     },
-    "uhCkkKewLqo6rYMUkelziLeZbSMduipOQqnLKgR6ZMkLjPTgUt18G": {
-      "parentActionHash": "uhCkkXRSungEvwsshJtYPcJvdbxUUWs5Y7QIlcNZDjy4Wr4Ms_CCp",
-      "childActionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI",
+    "uhCkk1qtu9iIdTJiuCSHP9-TvP4S49Jrt42wCEQfz7TT3ZPfS-2TN": {
+      "parentActionHash": "uhCkkxbCIf5_aFBtScQTnT7iIn4fOiz7d-U5qMNH_RiOZTsg8LrPN",
+      "childActionHash": "uhCkklRklYcbdsRxSaOhGRqucGmTMoc6jbrzCyBdKgfuP-9vHUqiX",
       "siblingOrder": 7,
       "randomizer": 1781303135313,
-      "isImported": false,
-      "actionHash": "uhCkkKewLqo6rYMUkelziLeZbSMduipOQqnLKgR6ZMkLjPTgUt18G"
+      "isImported": true,
+      "actionHash": "uhCkk1qtu9iIdTJiuCSHP9-TvP4S49Jrt42wCEQfz7TT3ZPfS-2TN"
     },
-    "uhCkkvkrcLA7XbYQ2_dyhN2Nuec6haxrzIxbnl0kt9h-xfnG5E7sd": {
-      "parentActionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI",
-      "childActionHash": "uhCkki1JOpngyrgopLu0N65EqsgscUe49-Nq06jj6q6zVvSVs_bRp",
+    "uhCkkJCER0hlLPCtZJA3M9qNR6Nda1rJl5UfIf8v7NExEnvTUiUaf": {
+      "parentActionHash": "uhCkklRklYcbdsRxSaOhGRqucGmTMoc6jbrzCyBdKgfuP-9vHUqiX",
+      "childActionHash": "uhCkkTRpwnJg9ruwBrSJVKtAtRXfhg3l2KvwSClkLQhJxTyS_tJhk",
       "siblingOrder": 2,
       "randomizer": 1781303191314,
-      "isImported": false,
-      "actionHash": "uhCkkvkrcLA7XbYQ2_dyhN2Nuec6haxrzIxbnl0kt9h-xfnG5E7sd"
+      "isImported": true,
+      "actionHash": "uhCkkJCER0hlLPCtZJA3M9qNR6Nda1rJl5UfIf8v7NExEnvTUiUaf"
     },
-    "uhCkkL8ITHlS3WRuG1HaeCd5e1B0UyTjFZd6Ccr0bHD9GSO2ASkP3": {
-      "parentActionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI",
-      "childActionHash": "uhCkkYWWEULBb1wngo4UzMNfqebxV1c1nAKNlmqC-AI4V-4aAEYbc",
+    "uhCkk4epPT7tuts4ZKe2S2XRZ9GOQ_BVogwaWQm70BQwuEnvd4WAv": {
+      "parentActionHash": "uhCkklRklYcbdsRxSaOhGRqucGmTMoc6jbrzCyBdKgfuP-9vHUqiX",
+      "childActionHash": "uhCkkCla2s6lv5S09XvzIjHToxmtKRwnbhQQMbYn_bhIqS7nCxHsl",
       "siblingOrder": -2,
       "randomizer": 1781303215297,
-      "isImported": false,
-      "actionHash": "uhCkkL8ITHlS3WRuG1HaeCd5e1B0UyTjFZd6Ccr0bHD9GSO2ASkP3"
+      "isImported": true,
+      "actionHash": "uhCkk4epPT7tuts4ZKe2S2XRZ9GOQ_BVogwaWQm70BQwuEnvd4WAv"
     },
-    "uhCkkT2mf_ggYdfhNb02754AISCNzk6JsU4Jx7SHcZI4R44Y2x7BZ": {
-      "parentActionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI",
-      "childActionHash": "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq",
+    "uhCkkjs9yVgaaP2Zj9RBPR8hbxetAS4ZLPtuWEbWDTOY_KIOIWs3T": {
+      "parentActionHash": "uhCkklRklYcbdsRxSaOhGRqucGmTMoc6jbrzCyBdKgfuP-9vHUqiX",
+      "childActionHash": "uhCkkPHIm7qWGRfG1TpUGXcpmIKJOxR0dE9rdaZKuu3Q0Qih-Edib",
       "siblingOrder": 1,
       "randomizer": 1781304236855,
-      "isImported": false,
-      "actionHash": "uhCkkT2mf_ggYdfhNb02754AISCNzk6JsU4Jx7SHcZI4R44Y2x7BZ"
+      "isImported": true,
+      "actionHash": "uhCkkjs9yVgaaP2Zj9RBPR8hbxetAS4ZLPtuWEbWDTOY_KIOIWs3T"
     },
-    "uhCkkCIwwnJdQumob1pWMIKYWvZPv_i5L_YLXRmfJfq4SKzpYzsyL": {
-      "parentActionHash": "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq",
-      "childActionHash": "uhCkk4GLeRcIVU19qegtS6OAk__aPP02tV7BkNn9SG8HeukbhKhNY",
+    "uhCkkrIi9P5T6MjSC4P9WDGzfYrKSy0K0OmFj8-kM8whdNK0GTsbn": {
+      "parentActionHash": "uhCkkPHIm7qWGRfG1TpUGXcpmIKJOxR0dE9rdaZKuu3Q0Qih-Edib",
+      "childActionHash": "uhCkkRcJuqggo9veFW-mFGr7La_kE20NPMcBucdvUOyiJxkcAfNxx",
       "siblingOrder": 0,
       "randomizer": 1781310000001,
-      "isImported": false,
-      "actionHash": "uhCkkCIwwnJdQumob1pWMIKYWvZPv_i5L_YLXRmfJfq4SKzpYzsyL"
+      "isImported": true,
+      "actionHash": "uhCkkrIi9P5T6MjSC4P9WDGzfYrKSy0K0OmFj8-kM8whdNK0GTsbn"
     },
-    "uhCkk5G4_aMMlsWqtW6Bfsnef2uZ52WCYg9AakPALbcEhQWa3mI65": {
-      "parentActionHash": "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq",
-      "childActionHash": "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG",
+    "uhCkk_hwG87yCmn8A3zRxIebpxeAoC99RUYC9zkiSzDOLs_IolwTu": {
+      "parentActionHash": "uhCkkPHIm7qWGRfG1TpUGXcpmIKJOxR0dE9rdaZKuu3Q0Qih-Edib",
+      "childActionHash": "uhCkkP_aCCs5N7SJGhcoA8EYSV1JTO_UHBFJ_IlRkElJNMwRcS3Az",
       "siblingOrder": -1,
       "randomizer": 1781310000002,
-      "isImported": false,
-      "actionHash": "uhCkk5G4_aMMlsWqtW6Bfsnef2uZ52WCYg9AakPALbcEhQWa3mI65"
+      "isImported": true,
+      "actionHash": "uhCkk_hwG87yCmn8A3zRxIebpxeAoC99RUYC9zkiSzDOLs_IolwTu"
     },
-    "uhCkkutaaFcVlEm5DWCR7adcBaT75FuUts-ZdOCP0EbNo8gAaetfN": {
-      "parentActionHash": "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG",
-      "childActionHash": "uhCkk9xX_0m2hkguQ2eTmZ79ng-m9gNXTOGqhM052L7rn88VXpGW5",
+    "uhCkkiFjXCAXmoyXzKxihLuS3w6ZBctEBGJUyRfYbAHUnYmdgTxkZ": {
+      "parentActionHash": "uhCkkP_aCCs5N7SJGhcoA8EYSV1JTO_UHBFJ_IlRkElJNMwRcS3Az",
+      "childActionHash": "uhCkktMhcigqUwKDisJzLhciutCRiuQ3xQnkNdU-QC4kg6QjrYFH8",
       "siblingOrder": 0,
       "randomizer": 1781310000003,
-      "isImported": false,
-      "actionHash": "uhCkkutaaFcVlEm5DWCR7adcBaT75FuUts-ZdOCP0EbNo8gAaetfN"
+      "isImported": true,
+      "actionHash": "uhCkkiFjXCAXmoyXzKxihLuS3w6ZBctEBGJUyRfYbAHUnYmdgTxkZ"
     },
-    "uhCkkMlw0qQWx4JN_DPmy6Kxe_Qd268kXAyCISooNJjDEFHYFt7Hz": {
-      "parentActionHash": "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG",
-      "childActionHash": "uhCkkRLlJL3YET6l1TCHX14JUkij6W_Z4OcJZF9KPq2He6MMUmfat",
+    "uhCkkkqjgemrhgIA8NRaTdzTHNh2mnSp5Y4ahIe83jBV3UBxATMtx": {
+      "parentActionHash": "uhCkkP_aCCs5N7SJGhcoA8EYSV1JTO_UHBFJ_IlRkElJNMwRcS3Az",
+      "childActionHash": "uhCkkjGdAG1dCZOqv8afx3vWBtf_stLSLh5J-P14HEmEgU__l0-Bh",
       "siblingOrder": -1,
       "randomizer": 1781310000004,
-      "isImported": false,
-      "actionHash": "uhCkkMlw0qQWx4JN_DPmy6Kxe_Qd268kXAyCISooNJjDEFHYFt7Hz"
+      "isImported": true,
+      "actionHash": "uhCkkkqjgemrhgIA8NRaTdzTHNh2mnSp5Y4ahIe83jBV3UBxATMtx"
     },
-    "uhCkkrmUV79u1NcdgLdrLj-Xr3EalFH75dbC7vSNGFWd_aFdRLCKw": {
-      "parentActionHash": "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG",
-      "childActionHash": "uhCkkJv0KWx5f9EoQu4VrWp4aBmZHgaymirUl8e-4xB3ytYVclLlN",
+    "uhCkkj48Vrftd1sf7VNl8OSJWC3ICSjfaBRqS3E_bhimwFcqmX4b_": {
+      "parentActionHash": "uhCkkP_aCCs5N7SJGhcoA8EYSV1JTO_UHBFJ_IlRkElJNMwRcS3Az",
+      "childActionHash": "uhCkk2dF5_rJkH4fis3hwlNb4V4smx2BwrwMl2BvzYG2GKZAHaiiA",
       "siblingOrder": -2,
       "randomizer": 1781310000005,
-      "isImported": false,
-      "actionHash": "uhCkkrmUV79u1NcdgLdrLj-Xr3EalFH75dbC7vSNGFWd_aFdRLCKw"
+      "isImported": true,
+      "actionHash": "uhCkkj48Vrftd1sf7VNl8OSJWC3ICSjfaBRqS3E_bhimwFcqmX4b_"
     },
-    "uhCkkBLE8331CGfiCBqfaz9VYzNNCSNAZnbm-U_icFPxX6cqe2Kbw": {
-      "parentActionHash": "uhCkke2B_Bcj6awm3DhPuElV9i3KyUizZxMJls5xbmXIBu1trtWaG",
-      "childActionHash": "uhCkkMoHdnzQVtSAFOeE8zSHCvyegAl0-XfcTQZ7sUq_tTJmKRhgV",
+    "uhCkkZ1gUKD3yIpxzt16bf2f0dW04HjyhTPhRza4oWTgXguURs3cq": {
+      "parentActionHash": "uhCkkP_aCCs5N7SJGhcoA8EYSV1JTO_UHBFJ_IlRkElJNMwRcS3Az",
+      "childActionHash": "uhCkk5j2tMuRUQdY2r6YixOJW4UuiZGhnILrcpB_Hdoi_XR2TsEP6",
       "siblingOrder": -3,
       "randomizer": 1781310000006,
-      "isImported": false,
-      "actionHash": "uhCkkBLE8331CGfiCBqfaz9VYzNNCSNAZnbm-U_icFPxX6cqe2Kbw"
+      "isImported": true,
+      "actionHash": "uhCkkZ1gUKD3yIpxzt16bf2f0dW04HjyhTPhRza4oWTgXguURs3cq"
     },
-    "uhCkkU2KsjyHgf3WlP4tF-maTkKyd05HSjDs4l4DKXGs_ZnQ5BBDn": {
-      "parentActionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm",
-      "childActionHash": "uhCkkEpCJlxfVYFcrJeNZVWBAckveEEbCIexk-pjiHGI3UnvPjObg",
+    "uhCkkRIWKyRG9CLymD8ETItqQn4lvhFBbJeLPsawvZHNqJgt7z6zu": {
+      "parentActionHash": "uhCkkxow-qC5wEGEWU4NLRIn_5IOBNZKTelsS_i_VBD03l7UDAMVo",
+      "childActionHash": "uhCkkjaBx1oIE4-j-Bnowiuiq7oR9BSA8UWzaDL73DHSj0Fm7grIM",
       "siblingOrder": 0,
       "randomizer": 1781400000002,
-      "isImported": false,
-      "actionHash": "uhCkkU2KsjyHgf3WlP4tF-maTkKyd05HSjDs4l4DKXGs_ZnQ5BBDn"
+      "isImported": true,
+      "actionHash": "uhCkkRIWKyRG9CLymD8ETItqQn4lvhFBbJeLPsawvZHNqJgt7z6zu"
     },
-    "uhCkkno_7CUe3wIcBdpYLs76zDyOlEkHtj3XiWNprpDOSLVJ08yaV": {
-      "parentActionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm",
-      "childActionHash": "uhCkkQ4wHzAMhE7Unhx3k9yDgkt11BhsWWArT-NVDKez-NG9fOEde",
+    "uhCkkswXkiF021_uGT0qPIDyHWojApA9oBc_WxJJgz9umBeEH9ch1": {
+      "parentActionHash": "uhCkkxow-qC5wEGEWU4NLRIn_5IOBNZKTelsS_i_VBD03l7UDAMVo",
+      "childActionHash": "uhCkk9dyp5ScEdRLxKiA9OumgiiC54jbWmUaRbUEwYLnpAsS3bRgz",
       "siblingOrder": -1,
       "randomizer": 1781400000003,
-      "isImported": false,
-      "actionHash": "uhCkkno_7CUe3wIcBdpYLs76zDyOlEkHtj3XiWNprpDOSLVJ08yaV"
+      "isImported": true,
+      "actionHash": "uhCkkswXkiF021_uGT0qPIDyHWojApA9oBc_WxJJgz9umBeEH9ch1"
     },
-    "uhCkkZsDdzk03VMsTjjJLQKT6VzD02sV4EcFYWiIh55G6m0tO4tBA": {
-      "parentActionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm",
-      "childActionHash": "uhCkkH92Soyvp-6DuHOmYkvbtrnrVHeNHG4Dm_2Pfis-T_yk7jUxm",
+    "uhCkkKeSBYUcrdnsZ5UpL5nfLVRS-HYzHlltm25X644pcrgNzfwsN": {
+      "parentActionHash": "uhCkkxow-qC5wEGEWU4NLRIn_5IOBNZKTelsS_i_VBD03l7UDAMVo",
+      "childActionHash": "uhCkkc6fZHgX5zGkPI5W9DVunm7NOfPCmtUbPCBlX1v1Dn97UxBaS",
       "siblingOrder": -2,
       "randomizer": 1781400000004,
-      "isImported": false,
-      "actionHash": "uhCkkZsDdzk03VMsTjjJLQKT6VzD02sV4EcFYWiIh55G6m0tO4tBA"
+      "isImported": true,
+      "actionHash": "uhCkkKeSBYUcrdnsZ5UpL5nfLVRS-HYzHlltm25X644pcrgNzfwsN"
     },
-    "uhCkkpKkfVIBQ4ENp0_Eq8zLHHzc67y93hlk2F6TbxC5wwfccLVjx": {
-      "parentActionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm",
-      "childActionHash": "uhCkkVHEBGHybzrxeIIB225pBmrnIrYaDcYZIGTnWVh-Y53CICDKl",
+    "uhCkkBOLkH0rRhIk5CgnSyBRLRHoyBSWYGV8-vCCn-bai_SEdR53E": {
+      "parentActionHash": "uhCkkxow-qC5wEGEWU4NLRIn_5IOBNZKTelsS_i_VBD03l7UDAMVo",
+      "childActionHash": "uhCkkL0DkP-CoGx6_Jzsw90KIt-c5iYP-1jHS62wtyKNHB42YiA_P",
       "siblingOrder": -3,
       "randomizer": 1781400000005,
-      "isImported": false,
-      "actionHash": "uhCkkpKkfVIBQ4ENp0_Eq8zLHHzc67y93hlk2F6TbxC5wwfccLVjx"
+      "isImported": true,
+      "actionHash": "uhCkkBOLkH0rRhIk5CgnSyBRLRHoyBSWYGV8-vCCn-bai_SEdR53E"
     },
-    "uhCkkoeHsGI8DNMW6jppLICIJ7S22VwS9s49uK6s_eNHbxCVeiQ0A": {
-      "parentActionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm",
-      "childActionHash": "uhCkkWDa0otL1gs74mNP3IM4e6317xtH_77A97gG2IHzNxxi4-CYK",
+    "uhCkk7ZhDCazv7U7xBnxWpIozTfpD7a4MQQAHKWIWZoc0CbYQhgWU": {
+      "parentActionHash": "uhCkkxow-qC5wEGEWU4NLRIn_5IOBNZKTelsS_i_VBD03l7UDAMVo",
+      "childActionHash": "uhCkktepnjIU5xA_Vc29afoJxdyqP9hbH_GpgU0EaZFEx_yQEQL2v",
       "siblingOrder": -4,
       "randomizer": 1781400000006,
-      "isImported": false,
-      "actionHash": "uhCkkoeHsGI8DNMW6jppLICIJ7S22VwS9s49uK6s_eNHbxCVeiQ0A"
+      "isImported": true,
+      "actionHash": "uhCkk7ZhDCazv7U7xBnxWpIozTfpD7a4MQQAHKWIWZoc0CbYQhgWU"
     },
-    "uhCkkWuPH-7K9xNx05KmNlDPEsineNRweD5ePSKiLykkhMbd4dUE4": {
-      "parentActionHash": "uhCkkEIxzOiV2suhXa91dNleSFc6kMa3CD6c2_dCZ8I6zzQR8RjcI",
-      "childActionHash": "uhCkk-zEaHGuNIqgR_MFfbR2n5qpb-sajeX1QAcmBaSR5ar97dcZI",
+    "uhCkkWTlkuRrb8Uw3cM5jJifffooF6OlbSCm506-XtIbxrgPcLhg5": {
+      "parentActionHash": "uhCkklRklYcbdsRxSaOhGRqucGmTMoc6jbrzCyBdKgfuP-9vHUqiX",
+      "childActionHash": "uhCkk0ZVQBP7RIyxcSZ6Lh5GFTOK5A3yvQlYm2fdne_G5Ft9wvHQN",
       "siblingOrder": 0,
       "randomizer": 1781410000002,
-      "isImported": false,
-      "actionHash": "uhCkkWuPH-7K9xNx05KmNlDPEsineNRweD5ePSKiLykkhMbd4dUE4"
+      "isImported": true,
+      "actionHash": "uhCkkWTlkuRrb8Uw3cM5jJifffooF6OlbSCm506-XtIbxrgPcLhg5"
     },
-    "uhCkk87NwQkQA1M6VuJrpAX8VGg0KeiyC0qFxEs8jZSnsBn4EGU5j": {
-      "parentActionHash": "uhCkkvprB9ksFv20XbAnZIP6o93uK4dAXi3II1wWNCbMGnAe0-lGq",
-      "childActionHash": "uhCkkLzEh_xYoni2rcMrH8wgRxujN348_ioQK0NYwvfKR8667BBSm",
+    "uhCkkxKfIXD81ChCSl5pFBnRZtlmUkdMN1IV_fWIIL3Bo412B_vxu": {
+      "parentActionHash": "uhCkkPHIm7qWGRfG1TpUGXcpmIKJOxR0dE9rdaZKuu3Q0Qih-Edib",
+      "childActionHash": "uhCkkxow-qC5wEGEWU4NLRIn_5IOBNZKTelsS_i_VBD03l7UDAMVo",
       "siblingOrder": -5,
       "randomizer": 1781461136551,
+      "isImported": true,
+      "actionHash": "uhCkkxKfIXD81ChCSl5pFBnRZtlmUkdMN1IV_fWIIL3Bo412B_vxu"
+    },
+    "uhCkkeQobLZcIVTrdavSj8vY8wkDxcwrX-FZOZdlW4xD6tH12CMaa": {
+      "parentActionHash": "uhCkklRklYcbdsRxSaOhGRqucGmTMoc6jbrzCyBdKgfuP-9vHUqiX",
+      "childActionHash": "uhCkkdk25ApbS-B2X7AuQFtxPRKeapcROvD21sE2fRhkQBTsUJu3d",
+      "siblingOrder": -3,
+      "randomizer": 1781721612994,
       "isImported": false,
-      "actionHash": "uhCkk87NwQkQA1M6VuJrpAX8VGg0KeiyC0qFxEs8jZSnsBn4EGU5j"
+      "actionHash": "uhCkkeQobLZcIVTrdavSj8vY8wkDxcwrX-FZOZdlW4xD6tH12CMaa"
     }
   },
   "outcomeMembers": {},
   "outcomeComments": {},
   "entryPoints": {},
   "tags": {
-    "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy": {
+    "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d": {
       "backgroundColor": "#0652DD",
       "text": "Spec",
-      "actionHash": "uhCkkwKh0lC-PzWriZRXXa5hKwW44bA6yp4vx_sa-ZgDRLZEbmqhy"
+      "actionHash": "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d"
     },
-    "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq": {
+    "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80": {
       "backgroundColor": "#009432",
       "text": "Completion",
-      "actionHash": "uhCkkhRMC7bEaGKXD2pmO-1LOrlv8e279mERH3z5FwYiI0GDDyQLq"
+      "actionHash": "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
     },
-    "uhCkkAtkaEN3EP3UYQ777e6XDK9Tz9ZNeJXKvLptdwVCqZm0B9_g4": {
+    "uhCkku4LcxxWu1NsZMy6EXalljhcHkTgK3LxmLsIHdeFHe-dy1Qqo": {
       "backgroundColor": "#7f8c8d",
       "text": "Dependency",
-      "actionHash": "uhCkkAtkaEN3EP3UYQ777e6XDK9Tz9ZNeJXKvLptdwVCqZm0B9_g4"
+      "actionHash": "uhCkku4LcxxWu1NsZMy6EXalljhcHkTgK3LxmLsIHdeFHe-dy1Qqo"
     },
-    "uhCkk08ESwGwhu9Z_05KSNtr86EV132YPgbDzW_ZXiO57wDwbXR4w": {
+    "uhCkkstKSI-DQlNYXXVXNUIxaVBQYqRbCxa9Dbt1yCA1KvBuhGu2c": {
       "backgroundColor": "#D980FA",
       "text": "Artifact",
-      "actionHash": "uhCkk08ESwGwhu9Z_05KSNtr86EV132YPgbDzW_ZXiO57wDwbXR4w"
+      "actionHash": "uhCkkstKSI-DQlNYXXVXNUIxaVBQYqRbCxa9Dbt1yCA1KvBuhGu2c"
     }
   }
 }
