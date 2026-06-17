@@ -25,6 +25,7 @@ const { spawn } = require('child_process')
 const { Readable, Writable } = require('node:stream')
 const { WebSocketServer } = require('ws')
 const { loadMcpServers, toAcpServers } = require('./mcpConfig')
+const { skillPromptBlocks } = require('./skill')
 
 const HARNESS_PATH = '/__acorn_harness'
 
@@ -182,6 +183,10 @@ async function getAgent() {
     mcpServers: loadMcpServers(),
     acpMcpServers: [],
 
+    // sessions that have already been seeded with the clarity-trees skill (we
+    // inject it once on a session's first prompt, not every turn).
+    skillSentSessions: new Set(),
+
     nextPermissionId: 1,
     pendingPermissions: new Map(),
     activePromptIds: new Set(),
@@ -293,6 +298,12 @@ async function handleFrame(ws, frame) {
       }
       case 'prompt': {
         const blocks = (frame.blocks || []).map(toAcpBlock)
+        // Seed the clarity-trees skill once per session, ahead of the turn's
+        // own blocks, so it grounds every tree-editing request in the session.
+        if (!state.skillSentSessions.has(frame.sessionId)) {
+          state.skillSentSessions.add(frame.sessionId)
+          blocks.unshift(...skillPromptBlocks())
+        }
         state.activePromptIds.add(frame.id)
         try {
           const res = await state.agent.prompt({
