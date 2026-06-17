@@ -126,6 +126,14 @@ const HarnessChat: React.FC = () => {
   // the tree snapshot last handed to the agent — used to resend only on change
   const lastTreeRef = useRef<ProjectSnapshot | null>(null)
   const msgId = useRef(0)
+  // the session id the in-memory `messages` array currently belongs to. Set
+  // synchronously *before* setMessages so the persist effect can tell a coherent
+  // (sessionId, messages) pair from the transient mismatch during a session swap:
+  // React 16 commits setMessages and setSessionId in separate renders, so there's
+  // a frame where `messages` is the new chat's but `sessionId` is still the old
+  // one — persisting then would overwrite the old chat with the new chat's
+  // messages (lost chat + duplicate title in the picker).
+  const messagesSessionRef = useRef<string | null>(null)
   // the project the in-memory session/transcript belongs to. Chats are
   // per-project by default; switching projects resets the panel (the store stays
   // keyed by project, leaving room for a future cross-project mode).
@@ -256,6 +264,10 @@ const HarnessChat: React.FC = () => {
     // guard against persisting the previous project's messages under the new
     // project's key during a project switch (before the reset effect runs)
     if (!projectId || !sessionId || projectRef.current !== projectId) return
+    // mid-swap: `messages` belong to a different session than `sessionId` (see
+    // messagesSessionRef) — don't persist this incoherent pair, or we'd clobber
+    // one chat's record with another chat's messages.
+    if (messagesSessionRef.current !== sessionId) return
     persistTurn(projectId, sessionId, messages, Date.now())
   }, [projectId, sessionId, messages])
 
@@ -268,6 +280,7 @@ const HarnessChat: React.FC = () => {
     projectRef.current = projectId
     sessionRef.current = null
     lastTreeRef.current = null
+    messagesSessionRef.current = null
     connectingRef.current = false
     setSessionId(null)
     setMessages([])
@@ -325,6 +338,8 @@ const HarnessChat: React.FC = () => {
       try {
         session = await client.resumeSession(target)
         const restored = getSessionMessages(projectId, target)
+        // bind messages to this session before the setMessages commit (see ref)
+        messagesSessionRef.current = session.id
         setMessages(restored)
         msgId.current = restored.reduce((m, x) => Math.max(m, x.id), 0)
       } catch (_) {
@@ -333,6 +348,8 @@ const HarnessChat: React.FC = () => {
     }
     if (!session) {
       session = await client.newSession({})
+      // bind messages to this session before the setMessages commit (see ref)
+      messagesSessionRef.current = session.id
       setMessages([])
       msgId.current = 0
     }
@@ -421,6 +438,12 @@ const HarnessChat: React.FC = () => {
       blocks.push({ type: 'text', text: selectionNote(selected) })
     blocks.push({ type: 'text', text })
     const agentId = appendMessage('agent', '')
+    // The agent text streamed so far this turn. Some ACP gateways (any where the
+    // stream's message id doesn't match the final one — e.g. non-native-Anthropic
+    // proxies) deliver the answer twice: once as live chunks, then again as a
+    // consolidated copy the adapter's own streamed-vs-final dedupe failed to drop.
+    // Guard here — skip a chunk that verbatim repeats the whole accumulation.
+    let agentText = ''
     // every update is a heartbeat — reset the idle clock and label what's happening
     const beat = (label: string) => {
       activityAtRef.current = Date.now()
@@ -429,8 +452,10 @@ const HarnessChat: React.FC = () => {
     }
     const unsub = session.on('update', (u) => {
       if (u.type === 'message') {
-        updateMessage(agentId, (p) => p + u.text)
         beat('Responding…')
+        if (agentText && u.text === agentText) return // consolidated duplicate
+        agentText += u.text
+        updateMessage(agentId, (p) => p + u.text)
       } else if (u.type === 'thought') {
         setThought((t) => t + u.text)
         beat('Thinking…')
