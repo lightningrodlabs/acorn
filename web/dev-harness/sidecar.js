@@ -30,8 +30,7 @@ const HARNESS_PATH = '/__acorn_harness'
 // The ACP SDK is ESM-only; load it once via dynamic import from this CJS module.
 let acpPromise = null
 const loadAcp = () => {
-  if (!acpPromise)
-    acpPromise = import('@zed-industries/agent-client-protocol')
+  if (!acpPromise) acpPromise = import('@agentclientprotocol/sdk')
   return acpPromise
 }
 

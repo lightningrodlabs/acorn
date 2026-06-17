@@ -41,8 +41,8 @@
     "@types/react-dates": "^21.8.3",
     "@types/react-dom": "16.9.8",
     "@types/react-router-dom": "^5.1.7",
+    "@agentclientprotocol/sdk": "^0.26.0",
     "@types/ws": "^8.18.1",
-    "@zed-industries/agent-client-protocol": "^0.4.5",
     "babel-jest": "^29.6.1",
     "babel-loader": "^8.2.5",
     "css-loader": "^3.2.0",
@@ -91,6 +91,7 @@
     "react-json-view": "^1.21.3",
     "react-markdown": "^8.0.4",
     "react-onclickoutside": "^6.9.0",
+    "remark-gfm": "^3.0.1",
     "react-redux": "^7.1.0",
     "react-router-dom": "^5.1.2",
     "react-textarea-autosize": "^8.3.3",
@@ -101,7 +102,7 @@
     "resolve-url-loader": "^5.0.0",
     "type-fest": "^0.17.0",
     "use-onclickoutside": "^0.3.1",
-    "zod": "^3.21.4",
+    "zod": "^3.25.0",
     "zod-models": "1.0.0"
   }
 }
