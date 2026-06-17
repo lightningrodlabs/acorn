@@ -30,11 +30,10 @@ const Checklist: React.FC<ChecklistProps> = ({
   // internal state is just
   // to track the keyboard input for the 'new checklist item'
   const [typingText, setTypingText] = useState('')
-  console.log('typingText', typingText.length)
   return (
     <div className="checklist-wrapper">
       {listItems.map((listItem, index) => (
-        <div className="checklist-item-row">
+        <div className="checklist-item-row" key={index}>
           <ChecklistItem
             withStrikethrough
             size={size}
