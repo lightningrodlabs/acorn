@@ -1614,28 +1614,28 @@
     "uhCkkTRpwnJg9ruwBrSJVKtAtRXfhg3l2KvwSClkLQhJxTyS_tJhk": {
       "content": "An LLM can read the live tree through the API",
       "creatorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
-      "editorAgentPubKey": "uhCAkjHBXhoOCrmBF8cexyfXza58fXhwLXOoKGgfnl8kb5Zay-WYc",
+      "editorAgentPubKey": "uhCAkwU9wSAp5q5H37O710BlrKWfmJxL8xFMj4bFBOnuLIox96Sk6",
       "timestampCreated": 1781303191,
-      "timestampUpdated": null,
+      "timestampUpdated": 1781725553250,
       "scope": {
         "Small": {
-          "achievementStatus": "NotAchieved",
+          "achievementStatus": "Achieved",
           "targetDate": null,
           "taskList": [
             {
-              "complete": false,
+              "complete": true,
               "task": "Define read_tree over the live project snapshot"
             },
             {
-              "complete": false,
-              "task": "Return typed fields + computed achievement/readiness"
+              "complete": true,
+              "task": "Return typed fields + authored achievement status (computed achievement/readiness relies on branch B, not built here)"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Version + type the read surface so the harness targets it without scraping the UI"
             },
             {
-              "complete": false,
+              "complete": true,
               "task": "Reuse the branch-D agent-consumable export shape"
             }
           ]
@@ -1645,7 +1645,7 @@
         "uhCkkakh39x_vAFxnSGVFJAB2YnmoIG1ZF9DsqtdXJ2qIgseGDu0d",
         "uhCkk3u9kRhuz_HPf5V6AmhfVfhr6NDujUQQ5_61QPGHj8xPcVm80"
       ],
-      "description": "{\n  \"outcome\": \"The LLM reads the live tree through a read tool (read_tree): nodes, typed fields, connections, and computed achievement/readiness. This is the read half of the MCP-style tool surface; the propose/write half lives in the conversational-editing branch's draft pipeline, so reads are a general capability while writes always go through review. The read shape reuses the agent-consumable export (branch D).\",\n  \"spec\": \"read_tree() -> the live project snapshot (outcomes, typed fields, connections, computed status), versioned and typed so the harness targets it without scraping the UI. (read_tree and propose_edits together form the MCP-style surface; propose_edits is specified under the draft pipeline.)\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"The harness calls read_tree and receives the live project's nodes, fields, connections and computed status\",\n      \"evaluator\": \"executable\"\n    }\n  ]\n}",
+      "description": "{\n  \"outcome\": \"The LLM reads the live tree through a read tool (read_tree): nodes, typed fields, connections, and authored achievement status. This is the read half of the MCP-style tool surface; the propose/write half lives in the conversational-editing branch's draft pipeline, so reads are a general capability while writes always go through review. The read shape reuses the agent-consumable export (branch D). Computed achievement/readiness is surfaced here once branch B's computed layer exists — read_tree exposes whatever the snapshot holds; today that is authored scope/achievementStatus.\",\n  \"spec\": \"read_tree() -> the live project snapshot (outcomes with their typed fields, connections, tags, authored scope/achievementStatus), typed so the harness targets it without scraping the UI. (read_tree and propose_edits together form the MCP-style surface; propose_edits is specified under the draft pipeline.) Computed achievement/readiness appears here once branch B produces it — a relies-on, not built in this leaf.\",\n  \"completionCriteria\": [\n    {\n      \"statement\": \"The harness calls read_tree and receives the live project's nodes, typed fields, connections and authored status\",\n      \"evaluator\": \"executable\",\n      \"evidence\": \"2026-06-17: harness called mcp__acorn__read_tree and received the live ProjectSnapshot — 70 outcomes, 69 connections, 4 tags; top-level keys {projectMeta, outcomes, connections, outcomeMembers, outcomeComments, entryPoints, tags}. Each outcome carries its typed fields in the description (parseable OutcomeFields) plus scope.achievementStatus. Result was 137,556 chars — too large for the harness context window in one piece, but fully received and parsed.\"\n    }\n  ]\n}",
       "isImported": true,
       "githubLink": "",
       "actionHash": "uhCkkTRpwnJg9ruwBrSJVKtAtRXfhg3l2KvwSClkLQhJxTyS_tJhk"

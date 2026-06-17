@@ -19,6 +19,7 @@ import Tooltip from '../../../components/Tooltip/Tooltip'
 import './MapView.scss'
 import MapViewContextMenu from '../../../components/MapViewContextMenu/MapViewContextMenu'
 import { useSelector } from 'react-redux'
+import { selectComputedOutcomesKeyedForRender } from '../../../selectors/computeOutcomes'
 import ModalOutcomeNavigation from '../../../components/ModalOutcomeNavigation/ModalOutcomeNavigation'
 import { setNavModalClosed } from '../../../redux/ephemeral/navigation-modal/actions'
 import { getAppWs } from '../../../hcWebsockets'
@@ -129,13 +130,17 @@ const MapView: React.FC<MapViewProps> = ({
   // because renderProps value will only obtain a new reference
   // when the output changes
   const renderProps = useSelector(selectRenderProps)
+  // The canvas draws from the DRAFT-OVERLAID set so proposed/ghost nodes show
+  // (clarity-tree draft pipeline L2). This is render-only — ComputedOutcomeContext
+  // (what editors read) stays committed, so a draft can never reach a write path.
+  const renderOutcomesKeyed = useSelector(selectComputedOutcomesKeyedForRender)
 
   useEffect(() => {
     const canvas = refCanvas.current
     if (projectId && renderProps) {
-      render(renderProps, computedOutcomesKeyed, canvas)
+      render(renderProps, renderOutcomesKeyed, canvas)
     }
-  }, [renderProps, projectId, computedOutcomesKeyed])
+  }, [renderProps, projectId, renderOutcomesKeyed])
 
   const transform = {
     transform: `matrix(${zoomLevel}, 0, 0, ${zoomLevel}, ${translate.x}, ${translate.y})`,

@@ -102,6 +102,36 @@ describe('handleAcornToolCall', () => {
     expect(store.getState().ui.draft.diff).toBeNull()
   })
 
+  test('a proposed added outcome is completed to a zome-valid Outcome', async () => {
+    const store = makeStore()
+    // an LLM minimal entry — missing the fields the integrity zome requires
+    const minimal: any = {
+      outcomes: {
+        added: {
+          'draft:1': {
+            actionHash: 'draft:1',
+            content: 'New node',
+            description: '{"outcome":"do it"}',
+          },
+        },
+      },
+    }
+    await handleAcornToolCall(store, PROJECT, {
+      tool: 'propose_edits',
+      args: { diff: minimal },
+    })
+    const entry = store.getState().ui.draft.diff!.outcomes.added['draft:1']
+    // every required Outcome field is now present (else Confirm's zome call fails)
+    expect(entry.creatorAgentPubKey).toBeDefined()
+    expect(entry).toHaveProperty('editorAgentPubKey')
+    expect(typeof entry.timestampCreated).toBe('number')
+    expect(entry).toHaveProperty('timestampUpdated')
+    expect(typeof entry.isImported).toBe('boolean')
+    expect(entry.githubLink).toBe('')
+    expect(entry.scope).toBeDefined()
+    expect(Array.isArray(entry.tags)).toBe(true)
+  })
+
   test('an unknown tool is reported, not thrown', async () => {
     const store = makeStore()
     const res = await handleAcornToolCall(store, PROJECT, {

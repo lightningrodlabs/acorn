@@ -16,6 +16,7 @@ import {
   perOutcomeChangeStats,
   touchedOutcomeHashes,
   findUnresolvedReferences,
+  normalizeDiff,
   OutcomeChangeStatsMap,
 } from '../../migrating/projectDiff'
 import { applyProjectDiffToCell } from '../../migrating/applyProjectDiff'
@@ -34,6 +35,60 @@ import {
   unselectAll,
 } from '../../redux/ephemeral/selection/actions'
 import { fitToChanged } from './fitToChanged'
+
+// A scope an added node can default to when the proposal omits one — a valid
+// (empty, unachieved) Small scope, so the Outcome entry passes the zome's schema.
+const DEFAULT_SCOPE = {
+  Small: { achievementStatus: 'NotAchieved', targetDate: null, taskList: [] },
+}
+
+// Fill an outcome entry out to the full Outcome the zome requires (clarity-tree
+// draft pipeline). An LLM proposes minimal entries (often just content / scope /
+// description), but the integrity zome demands every field — creatorAgentPubKey,
+// timestamps, isImported, githubLink, editorAgentPubKey. For an UPDATE we layer
+// the proposal over the committed outcome so its required fields survive; for an
+// ADD we supply sane defaults. Without this, applyProjectDiffToCell sends a
+// partial entry the zome can't deserialize (the Confirm crash).
+function completeOutcome(entry: any, me: string, now: number, base: any | null) {
+  const e = entry || {}
+  const b = base || {}
+  return {
+    ...e,
+    content: e.content ?? b.content ?? '',
+    creatorAgentPubKey: e.creatorAgentPubKey ?? b.creatorAgentPubKey ?? me,
+    editorAgentPubKey: me,
+    timestampCreated: e.timestampCreated ?? b.timestampCreated ?? now,
+    timestampUpdated: now,
+    scope: e.scope ?? b.scope ?? DEFAULT_SCOPE,
+    tags: e.tags ?? b.tags ?? [],
+    description: e.description ?? b.description ?? '',
+    isImported: e.isImported ?? b.isImported ?? false,
+    githubLink: e.githubLink ?? b.githubLink ?? '',
+  }
+}
+
+// Complete every proposed outcome entry in a diff against the live tree + the
+// committing agent, so the draft holds full entries (overlay renders, the diff
+// view compares cleanly, and Confirm commits a zome-valid payload).
+function completeProposedDiff(
+  store: Store,
+  projectId: CellIdString,
+  diff: ProjectDiff
+): ProjectDiff {
+  const state = store.getState() as RootState
+  const live = state.projects.outcomes[projectId] || {}
+  const me = (state as any).agentAddress || ''
+  // Date.now is unavailable in some sandboxes but fine in the renderer
+  const now = Date.now()
+  const norm = normalizeDiff(diff)
+  const added: { [h: string]: any } = {}
+  for (const h of Object.keys(norm.outcomes.added))
+    added[h] = completeOutcome(norm.outcomes.added[h], me, now, null)
+  const updated: { [h: string]: any } = {}
+  for (const h of Object.keys(norm.outcomes.updated))
+    updated[h] = completeOutcome(norm.outcomes.updated[h], me, now, live[h])
+  return { ...norm, outcomes: { ...norm.outcomes, added, updated } }
+}
 
 // Light the glow + badges for the effective draft of `projectId`. Computes the
 // per-node +/~/− stats against the live tree (the base snapshot) so the badges
@@ -59,13 +114,14 @@ export function refreshDraftGlow(store: Store, projectId: CellIdString): void {
   setTimeout(() => fitToChanged(store, touched), 800)
 }
 
-// Open a brand-new draft for review and light it up.
+// Open a brand-new draft for review and light it up. The proposed outcomes are
+// completed against the live tree first, so the draft is committable.
 export function enterDraftReview(
   store: Store,
   diff: ProjectDiff,
   projectId: CellIdString
 ): void {
-  store.dispatch(openDraft(diff, projectId))
+  store.dispatch(openDraft(completeProposedDiff(store, projectId, diff), projectId))
   refreshDraftGlow(store, projectId)
 }
 
@@ -76,7 +132,7 @@ export function updateDraftReview(
   diff: ProjectDiff,
   projectId: CellIdString
 ): void {
-  store.dispatch(updateDraft(diff))
+  store.dispatch(updateDraft(completeProposedDiff(store, projectId, diff)))
   refreshDraftGlow(store, projectId)
 }
 

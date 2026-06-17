@@ -20,15 +20,22 @@ import {
   refreshDraftGlow,
 } from '../diffReview/draftReview'
 import OutcomeFieldsEditor from '../OutcomeFieldsEditor/OutcomeFieldsEditor'
+import { outcomeFieldChanges } from './outcomeDiff'
 
 // The draft review panel — the human gate over an LLM-proposed draft (clarity-tree
 // draft pipeline). Proposed edits glow on the map as an inert overlay; here the
-// human accepts/rejects and inline-edits each change (L3). Confirm (L4) commits the
-// surviving subset; Discard drops everything with no DHT write.
+// human reviews a PR-style field-level diff, accepts/rejects each change, and
+// optionally edits it. Confirm (L4) commits the surviving subset; Discard drops
+// everything. NOTHING reaches the DHT until Confirm.
 const opSymbol: Record<ChangeRow['op'], string> = {
   added: '+',
   updated: '~',
   removed: '−',
+}
+const opWord: Record<ChangeRow['op'], string> = {
+  added: 'New',
+  updated: 'Edit',
+  removed: 'Remove',
 }
 
 const DraftReviewPanel: React.FC = () => {
@@ -38,37 +45,26 @@ const DraftReviewPanel: React.FC = () => {
   const liveOutcomes = useSelector(
     (s: RootState) => s.projects.outcomes[activeProject] || {}
   )
-  const [expanded, setExpanded] = useState<string | null>(null)
+  const [editing, setEditing] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
-  // only show for an open draft scoped to the project on screen
   if (!draft.diff || draft.projectId !== activeProject) return null
 
   const rows = enumerateChanges(draft.diff)
+  const outcomeRows = rows.filter((r) => r.collection === 'outcomes')
+  const otherRows = rows.filter((r) => r.collection !== 'outcomes')
   const effective = effectiveDiff(draft.diff, draft.decisions)
   const stats = diffStats(effective)
-  const summaryLines = (Object.keys(stats) as Array<keyof typeof stats>).filter(
-    (k) => stats[k].added || stats[k].updated || stats[k].removed
+  const totalOut = stats.outcomes
+  const nothingAccepted = (Object.keys(stats) as Array<keyof typeof stats>).every(
+    (k) => !stats[k].added && !stats[k].updated && !stats[k].removed
   )
-
-  // a human label for a change row
-  const labelFor = (row: ChangeRow): string => {
-    if (row.collection === 'outcomes') {
-      if (row.op === 'removed')
-        return liveOutcomes[row.hash]?.content || row.hash.slice(0, 8) + '…'
-      return row.entry?.content || '(untitled)'
-    }
-    return `${row.collection} ${row.hash.slice(0, 8)}…`
-  }
 
   const toggle = (row: ChangeRow, accepted: boolean) => {
     store.dispatch(setChangeDecision(row.key, accepted))
     refreshDraftGlow(store, activeProject)
   }
-
-  // inline-edit a proposed outcome (its content/name and its typed fields),
-  // writing back into the draft diff entry — never the live outcome
   const patchEntry = (row: ChangeRow, patch: Record<string, any>) => {
     store.dispatch(
       updateDraftEntry(row.collection, row.op, row.hash, { ...row.entry, ...patch })
@@ -76,10 +72,25 @@ const DraftReviewPanel: React.FC = () => {
     refreshDraftGlow(store, activeProject)
   }
 
-  const editableOutcome = (row: ChangeRow) =>
-    row.collection === 'outcomes' && row.op !== 'removed'
-
-  const nothingAccepted = summaryLines.length === 0
+  // committed value of an outcome row (for the before-side of the diff)
+  const committed = (row: ChangeRow) => liveOutcomes[row.hash] || null
+  const nameOf = (row: ChangeRow): string => {
+    if (row.op === 'removed') return committed(row)?.content || row.hash.slice(0, 8) + '…'
+    return row.entry?.content || committed(row)?.content || '(untitled)'
+  }
+  // resolve a node name for connection endpoints (committed or proposed-added)
+  const resolveName = (hash: string): string =>
+    liveOutcomes[hash]?.content ||
+    draft.diff!.outcomes.added[hash]?.content ||
+    hash.slice(0, 8) + '…'
+  const otherLabel = (row: ChangeRow): string => {
+    if (row.collection === 'connections') {
+      const c = row.entry || {}
+      if (row.op === 'removed') return 'connection removed'
+      return `${resolveName(c.parentActionHash)} → ${resolveName(c.childActionHash)}`
+    }
+    return `${row.collection} ${row.hash.slice(0, 8)}…`
+  }
 
   const onConfirm = async () => {
     if (busy) return
@@ -103,58 +114,90 @@ const DraftReviewPanel: React.FC = () => {
       </div>
 
       <div className="draft-review-summary">
-        {summaryLines.length === 0 ? (
-          <div className="draft-review-empty">
-            Nothing selected — every change is rejected.
-          </div>
-        ) : (
-          summaryLines.map((k) => (
-            <div className="draft-review-line" key={k}>
-              <span className="draft-review-collection">{k}</span>
-              <span className="chip added">+{stats[k].added}</span>
-              <span className="chip updated">~{stats[k].updated}</span>
-              <span className="chip removed">−{stats[k].removed}</span>
-            </div>
-          ))
-        )}
+        <span className="draft-review-count">
+          {totalOut.added + totalOut.updated + totalOut.removed} node change(s)
+        </span>
+        <span className="chip added">+{totalOut.added}</span>
+        <span className="chip updated">~{totalOut.updated}</span>
+        <span className="chip removed">−{totalOut.removed}</span>
       </div>
 
       <div className="draft-review-changes">
-        {rows.map((row) => {
+        {outcomeRows.map((row) => {
           const accepted = isAccepted(draft.decisions, row.key)
-          const isOpen = expanded === row.key
+          const isEditing = editing === row.key
+          const changes =
+            row.op === 'removed'
+              ? []
+              : outcomeFieldChanges(committed(row), row.entry)
           return (
             <div
-              className={`draft-change ${accepted ? '' : 'rejected'} op-${row.op}`}
+              className={`draft-card ${accepted ? '' : 'rejected'} op-${row.op}`}
               key={row.key}
             >
-              <div className="draft-change-row">
-                <span className={`draft-change-op ${row.op}`}>
-                  {opSymbol[row.op]}
+              <div className="draft-card-head">
+                <span className={`draft-card-op ${row.op}`}>{opWord[row.op]}</span>
+                <span className="draft-card-name" title={nameOf(row)}>
+                  {nameOf(row)}
                 </span>
-                <span className="draft-change-label" title={labelFor(row)}>
-                  {labelFor(row)}
-                </span>
-                {editableOutcome(row) && (
+                {row.op !== 'removed' && (
                   <button
-                    className="draft-change-edit"
-                    onClick={() => setExpanded(isOpen ? null : row.key)}
+                    className="draft-card-editbtn"
+                    onClick={() => setEditing(isEditing ? null : row.key)}
                   >
-                    {isOpen ? 'done' : 'edit'}
+                    {isEditing ? 'done' : 'edit'}
                   </button>
                 )}
-                <input
-                  type="checkbox"
-                  className="draft-change-accept"
-                  title={accepted ? 'reject this change' : 'accept this change'}
-                  checked={accepted}
-                  onChange={(e) => toggle(row, e.target.checked)}
-                />
-              </div>
-              {isOpen && editableOutcome(row) && (
-                <div className="draft-change-editor">
+                <label className="draft-card-accept" title="include this change">
                   <input
-                    className="draft-change-content"
+                    type="checkbox"
+                    checked={accepted}
+                    onChange={(e) => toggle(row, e.target.checked)}
+                  />
+                </label>
+              </div>
+
+              {/* PR-style field diff */}
+              {!isEditing && row.op !== 'removed' && (
+                <div className="draft-card-diff">
+                  {changes.length === 0 ? (
+                    <div className="draft-diff-none">no field-level changes</div>
+                  ) : (
+                    changes.map((c, i) => (
+                      <div className="draft-diff-field" key={i}>
+                        <div className="draft-diff-label">{c.label}</div>
+                        {c.before !== '' && (
+                          <div className="draft-diff-line before">
+                            <span className="gutter">−</span>
+                            <span className="text">{c.before}</span>
+                          </div>
+                        )}
+                        {c.after !== '' && (
+                          <div className="draft-diff-line after">
+                            <span className="gutter">+</span>
+                            <span className="text">{c.after}</span>
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+
+              {!isEditing && row.op === 'removed' && (
+                <div className="draft-card-diff">
+                  <div className="draft-diff-line before">
+                    <span className="gutter">−</span>
+                    <span className="text">this node will be removed</span>
+                  </div>
+                </div>
+              )}
+
+              {/* inline edit writes back into the draft (never the live node) */}
+              {isEditing && (
+                <div className="draft-card-editor">
+                  <input
+                    className="draft-card-content"
                     value={row.entry?.content || ''}
                     placeholder="Outcome name"
                     onChange={(e) => patchEntry(row, { content: e.target.value })}
@@ -172,6 +215,33 @@ const DraftReviewPanel: React.FC = () => {
             </div>
           )
         })}
+
+        {otherRows.length > 0 && (
+          <div className="draft-other">
+            <div className="draft-other-title">Structure</div>
+            {otherRows.map((row) => {
+              const accepted = isAccepted(draft.decisions, row.key)
+              return (
+                <div
+                  className={`draft-other-row ${accepted ? '' : 'rejected'}`}
+                  key={row.key}
+                >
+                  <span className={`draft-card-op ${row.op}`}>
+                    {opSymbol[row.op]}
+                  </span>
+                  <span className="draft-other-label" title={otherLabel(row)}>
+                    {otherLabel(row)}
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={accepted}
+                    onChange={(e) => toggle(row, e.target.checked)}
+                  />
+                </div>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       {error && <div className="draft-review-error">{error}</div>}

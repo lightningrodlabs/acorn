@@ -28,9 +28,12 @@ const GithubLink: React.FC<GithubLinkProps> = ({
   const [isInvalidLink, setIsInvalidLink] = useState(false)
 
   const validateAndSubmit = () => {
-    if (!inputLinkText.trim()) return
+    // inputLinkText can be undefined (e.g. a node with no existing github link,
+    // or after Escape restores an undefined githubLink) — guard before trimming
+    const text = (inputLinkText || '').trim()
+    if (!text) return
 
-    if (!githubLinkRegex.test(inputLinkText.trim())) {
+    if (!githubLinkRegex.test(text)) {
       setIsInvalidLink(true)
       return
     }
@@ -97,7 +100,7 @@ const GithubLink: React.FC<GithubLinkProps> = ({
                   validateAndSubmit()
                 } else if (keyboardEvent.key === 'Escape') {
                   setIsEditing(false)
-                  setInputLinkText(githubLink)
+                  setInputLinkText(githubLink || '')
                 }
               }}
             />
