@@ -15,10 +15,15 @@ import {
   ProjectDiff,
   perOutcomeChangeStats,
   touchedOutcomeHashes,
+  findUnresolvedReferences,
   OutcomeChangeStatsMap,
 } from '../../migrating/projectDiff'
+import { applyProjectDiffToCell } from '../../migrating/applyProjectDiff'
 import { readTree } from '../../harness/readTree'
-import { activeEffectiveDiff } from '../../redux/ephemeral/draft/changes'
+import {
+  activeEffectiveDiff,
+  isEmptyEffective,
+} from '../../redux/ephemeral/draft/changes'
 import {
   openDraft,
   updateDraft,
@@ -80,4 +85,62 @@ export function updateDraftReview(
 export function exitDraftReview(store: Store): void {
   store.dispatch(clearDraft())
   store.dispatch(unselectAll())
+}
+
+export type ConfirmResult =
+  | { ok: true; committed: number; empty?: boolean }
+  | { ok: false; error: string }
+
+/**
+ * Confirm a draft (L4): commit the ACCEPTED + EDITED subset to the DHT in one go,
+ * then clear the draft and light the committed nodes via the normal post-apply
+ * path (the AgentDiffTools sequence). This is the ONLY draft path that writes to
+ * the DHT — it runs applyProjectDiffToCell over the effective diff. A draft with
+ * everything rejected commits nothing and just exits.
+ *
+ * Refuses (without writing) if the effective diff has unresolved references,
+ * mirroring AgentDiffTools.
+ */
+export async function confirmDraft(
+  store: Store,
+  projectId: CellIdString
+): Promise<ConfirmResult> {
+  const state = store.getState() as RootState
+  const draftDiff: ProjectDiff | null = activeEffectiveDiff(
+    state.ui.draft,
+    projectId
+  )
+  if (!draftDiff) return { ok: false, error: 'No draft open.' }
+  if (isEmptyEffective(draftDiff)) {
+    // nothing accepted — discard semantics, no DHT write
+    exitDraftReview(store)
+    return { ok: true, committed: 0, empty: true }
+  }
+  const base = readTree(state, projectId)
+  const unresolved = findUnresolvedReferences(draftDiff, base)
+  if (unresolved.length) {
+    return {
+      ok: false,
+      error: `Cannot commit — ${unresolved.length} reference(s) point to missing nodes.`,
+    }
+  }
+  // per-node stats against the pre-commit tree (keyed by diff hashes; remapped to
+  // live post-apply hashes below)
+  const stats: OutcomeChangeStatsMap = perOutcomeChangeStats(draftDiff, base)
+  const result = await applyProjectDiffToCell(draftDiff, projectId, store.dispatch)
+  // the live nodes now exist in projects.* — drop the draft so the overlay stops
+  // rendering the synthetic draft:* nodes and the real ones show through
+  store.dispatch(clearDraft())
+  // remap stats keys (pre-apply diff hashes) onto the live post-apply hashes
+  const liveStats: OutcomeChangeStatsMap = {}
+  for (const hash of Object.keys(stats)) {
+    liveStats[result.outcomeHashMap[hash] ?? hash] = stats[hash]
+  }
+  const touched = [
+    ...new Set([...result.touchedOutcomes, ...Object.keys(liveStats)]),
+  ]
+  store.dispatch(unselectAll())
+  store.dispatch(setChangedOutcomes(touched, liveStats))
+  setTimeout(() => fitToChanged(store, touched), 800)
+  return { ok: true, committed: touched.length }
 }

@@ -152,6 +152,16 @@
     }
   }
 
+  .draft-review-error {
+    margin-bottom: 0.5rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.3rem;
+    background: rgba(233, 78, 60, 0.1);
+    border: 1px solid rgba(233, 78, 60, 0.4);
+    color: #c0392b;
+    font-size: 0.74rem;
+  }
+
   .draft-review-actions {
     display: flex;
     justify-content: flex-end;

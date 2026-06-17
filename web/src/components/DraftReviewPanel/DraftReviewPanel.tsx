@@ -14,7 +14,11 @@ import {
   setChangeDecision,
   updateDraftEntry,
 } from '../../redux/ephemeral/draft/actions'
-import { exitDraftReview, refreshDraftGlow } from '../diffReview/draftReview'
+import {
+  confirmDraft,
+  exitDraftReview,
+  refreshDraftGlow,
+} from '../diffReview/draftReview'
 import OutcomeFieldsEditor from '../OutcomeFieldsEditor/OutcomeFieldsEditor'
 
 // The draft review panel — the human gate over an LLM-proposed draft (clarity-tree
@@ -35,6 +39,8 @@ const DraftReviewPanel: React.FC = () => {
     (s: RootState) => s.projects.outcomes[activeProject] || {}
   )
   const [expanded, setExpanded] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
 
   // only show for an open draft scoped to the project on screen
   if (!draft.diff || draft.projectId !== activeProject) return null
@@ -72,6 +78,22 @@ const DraftReviewPanel: React.FC = () => {
 
   const editableOutcome = (row: ChangeRow) =>
     row.collection === 'outcomes' && row.op !== 'removed'
+
+  const nothingAccepted = summaryLines.length === 0
+
+  const onConfirm = async () => {
+    if (busy) return
+    setBusy(true)
+    setError('')
+    try {
+      const res = await confirmDraft(store, activeProject)
+      if (res.ok === false) setError(res.error)
+    } catch (err: any) {
+      setError(err?.message || String(err))
+    } finally {
+      setBusy(false)
+    }
+  }
 
   return (
     <div className="draft-review-panel">
@@ -152,12 +174,22 @@ const DraftReviewPanel: React.FC = () => {
         })}
       </div>
 
+      {error && <div className="draft-review-error">{error}</div>}
+
       <div className="draft-review-actions">
         <button
           className="draft-review-button discard"
+          disabled={busy}
           onClick={() => exitDraftReview(store)}
         >
           Discard
+        </button>
+        <button
+          className="draft-review-button confirm"
+          disabled={busy || nothingAccepted}
+          onClick={onConfirm}
+        >
+          {busy ? 'Committing…' : 'Confirm'}
         </button>
       </div>
     </div>
