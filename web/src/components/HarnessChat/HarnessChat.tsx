@@ -8,6 +8,8 @@ import React, {
 import { useRouteMatch } from 'react-router-dom'
 import { useSelector, useStore } from 'react-redux'
 import useOnClickOutside from 'use-onclickoutside'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 import './HarnessChat.scss'
 import { CellIdString } from '../../types/shared'
@@ -481,7 +483,13 @@ const HarnessChat: React.FC = () => {
           >
             {messages.map((m) => (
               <div key={m.id} className={`harness-msg ${m.role}`}>
-                {m.text}
+                {m.role === 'agent' ? (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {m.text}
+                  </ReactMarkdown>
+                ) : (
+                  m.text
+                )}
               </div>
             ))}
             {busy && thought && (

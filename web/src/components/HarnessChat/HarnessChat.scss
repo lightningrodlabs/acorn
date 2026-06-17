@@ -243,6 +243,71 @@
   &.agent {
     align-self: flex-start;
     background: #f3f3f3;
+    white-space: normal; // markdown block elements handle spacing
+
+    // compact markdown rendering inside the bubble
+    p {
+      margin: 0 0 0.4rem;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    ul,
+    ol {
+      margin: 0.2rem 0;
+      padding-left: 1.1rem;
+    }
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-size: 0.9rem;
+      margin: 0.45rem 0 0.2rem;
+    }
+    a {
+      color: #6a3df5;
+    }
+    code {
+      background: #e6e6e6;
+      padding: 0 0.2rem;
+      border-radius: 0.2rem;
+      font-size: 0.8rem;
+    }
+    pre {
+      background: #e6e6e6;
+      padding: 0.4rem 0.5rem;
+      border-radius: 0.3rem;
+      overflow-x: auto;
+      margin: 0.3rem 0;
+      code {
+        background: transparent;
+        padding: 0;
+      }
+    }
+    blockquote {
+      margin: 0.3rem 0;
+      padding-left: 0.6rem;
+      border-left: 3px solid #d6ccff;
+      color: #555;
+    }
+    table {
+      border-collapse: collapse;
+      margin: 0.3rem 0;
+      font-size: 0.78rem;
+      display: block;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 0.2rem 0.4rem;
+      text-align: left;
+    }
+    th {
+      background: #ececec;
+      font-weight: 600;
+    }
   }
   &.thought {
     align-self: flex-start;
