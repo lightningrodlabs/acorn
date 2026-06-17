@@ -1,8 +1,10 @@
 import {
   ChatMessage,
   deriveTitle,
+  emptySessionId,
   emptyStore,
   listSessions,
+  pruneEmpty,
   removeSession,
   upsertSession,
 } from '../src/harness/chatHistory'
@@ -56,5 +58,23 @@ describe('chatHistory transforms', () => {
     store = upsertSession(store, 'b', [msg(1, 'user', 'b')], 300)
     store = upsertSession(store, 'c', [msg(1, 'user', 'c')], 200)
     expect(listSessions(store).map((s) => s.id)).toEqual(['b', 'c', 'a'])
+  })
+
+  it('emptySessionId finds an unused (message-less) session', () => {
+    let store = emptyStore()
+    store = upsertSession(store, 'a', [msg(1, 'user', 'a')], 100)
+    expect(emptySessionId(store)).toBeNull()
+    store = upsertSession(store, 'b', [], 200)
+    expect(emptySessionId(store)).toBe('b')
+  })
+
+  it('pruneEmpty drops unused sessions except the kept one', () => {
+    let store = emptyStore()
+    store = upsertSession(store, 'a', [msg(1, 'user', 'real')], 100) // has content
+    store = upsertSession(store, 'b', [], 200) // empty, to keep
+    store = upsertSession(store, 'c', [], 300) // empty, should be dropped
+    const pruned = pruneEmpty(store, 'b')
+    expect(pruned.sessions.map((s) => s.id).sort()).toEqual(['a', 'b'])
+    expect(pruned.currentId).toBe('b') // current 'c' was dropped → falls back to keepId
   })
 })

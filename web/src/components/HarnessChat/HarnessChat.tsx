@@ -22,6 +22,8 @@ import {
   listSessions,
   loadStore,
   persistTurn,
+  pruneEmptySessions,
+  reusableEmptySessionId,
   SessionRecord,
 } from '../../harness/chatHistory'
 import {
@@ -337,6 +339,8 @@ const HarnessChat: React.FC = () => {
     setSessionId(session.id)
     // (re)attached ⇒ the next turn re-sends the full current tree (read_tree)
     lastTreeRef.current = null
+    // keep at most one empty chat — discard any unused ones we left behind
+    pruneEmptySessions(projectId, session.id)
   }
 
   const connect = async () => {
@@ -371,7 +375,10 @@ const HarnessChat: React.FC = () => {
   }
   const newChat = async () => {
     setShowHistory(false)
-    await openSession(null)
+    // already sitting in an unused chat — nothing to create
+    if (sessionRef.current && messages.length === 0) return
+    // reuse an existing empty chat if there is one, else start fresh
+    await openSession(reusableEmptySessionId(projectId))
   }
   const removeChat = async (id: string) => {
     deleteSession(projectId, id)

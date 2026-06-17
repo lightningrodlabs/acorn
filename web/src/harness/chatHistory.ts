@@ -69,6 +69,24 @@ export function listSessions(store: ChatStore): SessionRecord[] {
   return [...store.sessions].sort((a, b) => b.updatedAt - a.updatedAt)
 }
 
+/** An unused (message-less) session that can be reused instead of a fresh one. */
+export function emptySessionId(store: ChatStore): string | null {
+  const empty = store.sessions.find((s) => s.messages.length === 0)
+  return empty ? empty.id : null
+}
+
+/** Drop unused (message-less) sessions except `keepId`, so empties don't pile up. */
+export function pruneEmpty(store: ChatStore, keepId: string | null): ChatStore {
+  const sessions = store.sessions.filter(
+    (s) => s.messages.length > 0 || s.id === keepId
+  )
+  if (sessions.length === store.sessions.length) return store
+  const currentId = sessions.some((s) => s.id === store.currentId)
+    ? store.currentId
+    : keepId
+  return { currentId, sessions }
+}
+
 // --- localStorage I/O ---
 
 const keyFor = (projectId: string) => `acorn:harnessChat:v1:${projectId}`
@@ -114,6 +132,16 @@ export function getSessionMessages(
 
 export function getCurrentId(projectId: string): string | null {
   return loadStore(projectId).currentId
+}
+
+/** An existing empty session to reuse instead of creating another, or null. */
+export function reusableEmptySessionId(projectId: string): string | null {
+  return emptySessionId(loadStore(projectId))
+}
+
+/** Keep at most one empty chat — drop other unused sessions. */
+export function pruneEmptySessions(projectId: string, keepId: string): void {
+  saveStore(projectId, pruneEmpty(loadStore(projectId), keepId))
 }
 
 export function deleteSession(projectId: string, id: string): void {
