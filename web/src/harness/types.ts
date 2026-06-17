@@ -78,6 +78,8 @@ export type Unsubscribe = () => void
 export interface HarnessInfo {
   protocolVersion: number
   agentName?: string
+  /** agent advertises ACP session/load — sessions resume across a full restart */
+  canLoadSession?: boolean
 }
 
 export interface HarnessSession {
@@ -104,6 +106,12 @@ export interface HarnessClient {
     cwd?: string
     treeContext?: HarnessContentBlock
   }): Promise<HarnessSession>
+  /**
+   * Reattach to an existing session by id (e.g. after a renderer reload). Rejects
+   * if the host no longer holds that session. Optional — a provider that can't
+   * persist sessions across reloads simply omits it.
+   */
+  resumeSession?(sessionId: string): Promise<HarnessSession>
   /** Register the handler the host calls when the agent requests permission. */
   onPermissionRequest(
     handler: (

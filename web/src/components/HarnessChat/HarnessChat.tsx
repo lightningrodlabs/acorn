@@ -39,6 +39,10 @@ type ChatMessage = {
   text: string
 }
 
+// Seconds without any session/update before we flag a possible stall. ACP has
+// no heartbeat, so this is the best signal that the agent has gone quiet.
+const STALL_SECS = 20
+
 // A concise note naming the selected node(s), prepended to a turn so the agent
 // can resolve "this"/"these". Ids match what the human sees in the UI sidebar.
 const selectionNote = (selected: SelectedNode[]): string =>
@@ -71,6 +75,8 @@ const HarnessChat: React.FC = () => {
   // the tree snapshot last handed to the agent — used to resend only on change
   const lastTreeRef = useRef<ProjectSnapshot | null>(null)
   const msgId = useRef(0)
+  // current session id, persisted so a reload can resume (see resume effect)
+  const [sessionId, setSessionId] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
   const [phase, setPhase] = useState<'idle' | 'connecting' | 'ready' | 'error'>(
     'idle'
@@ -81,6 +87,13 @@ const HarnessChat: React.FC = () => {
   const [plan, setPlan] = useState<HarnessPlanEntry[]>([])
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
+  // Liveness: ACP has no heartbeat, so "moving" = session/update notifications
+  // arriving. We track the time of the last update and surface a stall hint when
+  // the agent has gone quiet mid-turn. `activity` is a human label for the most
+  // recent update kind.
+  const activityAtRef = useRef(0)
+  const [idleSecs, setIdleSecs] = useState(0)
+  const [activity, setActivity] = useState('')
   // whether the chat textarea owns the keyboard — when true, the tree's global
   // shortcuts (Enter/arrows/Backspace) are suppressed so typing never disturbs
   // the tree. Mirrored into redux so the suppression is enforced globally.
@@ -141,6 +154,30 @@ const HarnessChat: React.FC = () => {
     if (el) el.scrollTop = el.scrollHeight
   }, [open])
 
+  // Persist session id + transcript so a renderer reload can resume: the sidecar
+  // keeps the agent + ACP session alive across the WS drop, so on reopen we
+  // reattach by id and restore the visible history.
+  useEffect(() => {
+    if (!projectId || !sessionId) return
+    try {
+      localStorage.setItem(
+        `acorn:harnessChat:${projectId}`,
+        JSON.stringify({ sessionId, messages })
+      )
+    } catch (_) {}
+  }, [projectId, sessionId, messages])
+
+  // While a turn is in flight, tick "seconds since last update" so the UI can
+  // show progress and flag a stall (no built-in ACP heartbeat to lean on).
+  useEffect(() => {
+    if (!busy) return
+    const id = setInterval(
+      () => setIdleSecs(Math.floor((Date.now() - activityAtRef.current) / 1000)),
+      1000
+    )
+    return () => clearInterval(id)
+  }, [busy])
+
   if (!projectId) return null
   const client = getHarnessClient()
   // No harness host in this context (prod build / Moss without the affordance).
@@ -167,9 +204,34 @@ const HarnessChat: React.FC = () => {
     try {
       client.onPermissionRequest(decidePermission)
       await client.initialize()
-      const session = await client.newSession({})
+      const key = `acorn:harnessChat:${projectId}`
+      // Resume the prior session if the host still holds it (survives a reload).
+      let session: HarnessSession | null = null
+      let saved: { sessionId?: string; messages?: ChatMessage[] } | null = null
+      try {
+        const raw = localStorage.getItem(key)
+        saved = raw ? JSON.parse(raw) : null
+      } catch (_) {}
+      if (saved?.sessionId && client.resumeSession) {
+        try {
+          session = await client.resumeSession(saved.sessionId)
+          const restored = saved.messages || []
+          setMessages(restored)
+          msgId.current = restored.reduce((m, x) => Math.max(m, x.id), 0)
+        } catch (_) {
+          session = null
+        }
+      }
+      if (!session) {
+        session = await client.newSession({})
+        setMessages([])
+        try {
+          localStorage.removeItem(key)
+        } catch (_) {}
+      }
       sessionRef.current = session
-      // fresh session ⇒ the next turn sends the full current tree (read_tree)
+      setSessionId(session.id)
+      // (re)attached ⇒ the next turn re-sends the full current tree (read_tree)
       lastTreeRef.current = null
       setPhase('ready')
     } catch (e: any) {
@@ -209,15 +271,28 @@ const HarnessChat: React.FC = () => {
       blocks.push({ type: 'text', text: selectionNote(selected) })
     blocks.push({ type: 'text', text })
     const agentId = appendMessage('agent', '')
+    // every update is a heartbeat — reset the idle clock and label what's happening
+    const beat = (label: string) => {
+      activityAtRef.current = Date.now()
+      setIdleSecs(0)
+      setActivity(label)
+    }
     const unsub = session.on('update', (u) => {
-      if (u.type === 'message') updateMessage(agentId, (p) => p + u.text)
-      else if (u.type === 'thought') setThought((t) => t + u.text)
-      else if (u.type === 'plan') setPlan(u.entries)
-      else if (u.type === 'tool_call')
-        updateMessage(agentId, (p) =>
-          p === '' ? `⚙ ${u.title} (${u.status})` : p
-        )
+      if (u.type === 'message') {
+        updateMessage(agentId, (p) => p + u.text)
+        beat('Responding…')
+      } else if (u.type === 'thought') {
+        setThought((t) => t + u.text)
+        beat('Thinking…')
+      } else if (u.type === 'plan') {
+        setPlan(u.entries)
+        beat('Planning…')
+      } else if (u.type === 'tool_call') {
+        updateMessage(agentId, (p) => (p === '' ? `⚙ ${u.title} (${u.status})` : p))
+        beat(`Running ${u.title || 'tool'}…`)
+      }
     })
+    beat('Thinking…')
     setBusy(true)
     try {
       const result = await session.prompt(blocks)
@@ -229,6 +304,7 @@ const HarnessChat: React.FC = () => {
       unsub()
       setBusy(false)
       setThought('')
+      setActivity('')
     }
   }
 
@@ -334,6 +410,22 @@ const HarnessChat: React.FC = () => {
               </ul>
             )}
           </div>
+          {busy && (
+            <div
+              className={`harness-chat-thinking${
+                idleSecs >= STALL_SECS ? ' stalled' : ''
+              }`}
+            >
+              <span className="spinner" />
+              <span className="label">
+                {idleSecs >= STALL_SECS
+                  ? `No updates for ${idleSecs}s — still working, or stalled. Stop to cancel.`
+                  : `${activity || 'Thinking…'}${
+                      idleSecs >= 3 ? ` (${idleSecs}s)` : ''
+                    }`}
+              </span>
+            </div>
+          )}
           <div className="harness-chat-input">
             <textarea
               value={input}

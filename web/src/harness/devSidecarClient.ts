@@ -97,6 +97,18 @@ export class DevSidecarHarnessClient implements HarnessClient {
     return new SidecarSession(reply.sessionId, this)
   }
 
+  async resumeSession(sessionId: string): Promise<HarnessSession> {
+    await this._connect()
+    const reply = await this._request({
+      t: 'resumeSession',
+      id: this._id(),
+      sessionId,
+    })
+    if (reply.t !== 'sessionResumed')
+      throw new Error('session no longer available')
+    return new SidecarSession(reply.sessionId, this)
+  }
+
   onPermissionRequest(
     handler: (
       req: HarnessPermissionRequest

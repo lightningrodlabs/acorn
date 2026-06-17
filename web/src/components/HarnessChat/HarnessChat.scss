@@ -169,6 +169,46 @@
   }
 }
 
+.harness-chat-thinking {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem 0.75rem;
+  border-top: 1px solid #eee;
+  color: #6a3df5;
+  font-size: 0.76rem;
+
+  .spinner {
+    flex: none;
+    width: 0.7rem;
+    height: 0.7rem;
+    border: 2px solid rgba(106, 61, 245, 0.3);
+    border-top-color: #6a3df5;
+    border-radius: 50%;
+    animation: harness-spin 0.7s linear infinite;
+  }
+  .label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // gone quiet long enough to worry — amber, and stop pulsing the calm color
+  &.stalled {
+    color: #b26a00;
+    .spinner {
+      border-color: rgba(178, 106, 0, 0.3);
+      border-top-color: #b26a00;
+    }
+  }
+}
+
+@keyframes harness-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .harness-chat-input {
   display: flex;
   gap: 0.4rem;

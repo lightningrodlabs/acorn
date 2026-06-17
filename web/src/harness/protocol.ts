@@ -24,6 +24,7 @@ export type ClientFrame =
       treeContext?: HarnessContentBlock
     }
   | { t: 'prompt'; id: number; sessionId: string; blocks: HarnessContentBlock[] }
+  | { t: 'resumeSession'; id: number; sessionId: string }
   | { t: 'cancel'; sessionId: string }
   | {
       t: 'permissionDecision'
@@ -36,6 +37,8 @@ export type ServerFrame =
   // replies (correlated by id)
   | { t: 'initialized'; id: number; info: HarnessInfo }
   | { t: 'sessionCreated'; id: number; sessionId: string }
+  | { t: 'sessionResumed'; id: number; sessionId: string }
+  | { t: 'sessionResumeFailed'; id: number }
   | { t: 'turnEnd'; id: number; stopReason: HarnessStopReason }
   | { t: 'error'; id: number; message: string }
   // unsolicited

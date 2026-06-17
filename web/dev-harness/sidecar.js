@@ -6,8 +6,13 @@
  *
  *     renderer  <--WS frames-->  sidecar  <--ACP JSON-RPC/stdio-->  agent
  *
- * Per renderer connection it lazily spawns ONE agent (ACORN_HARNESS_CMD) and
- * drives it via @zed-industries/agent-client-protocol's ClientSideConnection.
+ * The agent (ACORN_HARNESS_CMD) is spawned once and kept alive at MODULE scope —
+ * it is a child of the long-lived dev server, so it (and its ACP sessions)
+ * SURVIVE a renderer reload. On reconnect the renderer reattaches to its session
+ * by id (resumeSession) instead of losing context. Frames pushed to the renderer
+ * (updates / permission requests) go through the "current binding" (the live WS)
+ * and are queued while no renderer is attached, then flushed on reattach.
+ *
  * It is plain Node CommonJS (never bundled into the renderer); the WS frame
  * shapes mirror web/src/harness/protocol.ts.
  *
@@ -28,6 +33,11 @@ const loadAcp = () => {
   if (!acpPromise)
     acpPromise = import('@zed-industries/agent-client-protocol')
   return acpPromise
+}
+
+const configuredCmd = () => {
+  const c = process.env.ACORN_HARNESS_CMD
+  return c && c.trim() ? c : null
 }
 
 // ACP ContentBlock (agent->client text extraction) -> plain string.
@@ -80,154 +90,247 @@ const toHarnessUpdate = (u) => {
   }
 }
 
-/**
- * Drives one agent process + ACP connection for one renderer WebSocket.
- */
-class HarnessConnection {
-  constructor(ws) {
-    this.ws = ws
-    this.child = null
-    this.agent = null // ClientSideConnection (implements the ACP Agent role)
-    this.nextPermissionId = 1
-    this.pendingPermissions = new Map() // requestId -> resolve
-    this.treeContextBySession = new Map() // sessionId -> ACP ContentBlock (seed once)
-  }
+const wsSend = (ws, frame) => {
+  if (ws && ws.readyState === ws.OPEN) ws.send(JSON.stringify(frame))
+}
 
-  send(frame) {
-    if (this.ws.readyState === this.ws.OPEN) this.ws.send(JSON.stringify(frame))
-  }
+// ---------------------------------------------------------------------------
+// The persistent agent. One ACP connection for the lifetime of the dev server,
+// reattached to whichever renderer WS is currently connected.
+// ---------------------------------------------------------------------------
+let agent = null // the singleton state, or null until first spawned / after exit
 
-  // Build the ACP Client handler the agent calls back into.
-  makeClient() {
-    return {
-      sessionUpdate: async (params) => {
-        const update = toHarnessUpdate(params.update)
-        if (update) this.send({ t: 'update', sessionId: params.sessionId, update })
-      },
-      requestPermission: async (params) => {
-        const requestId = this.nextPermissionId++
-        const tc = params.toolCall || {}
-        this.send({
-          t: 'permissionRequest',
-          requestId,
-          sessionId: params.sessionId,
-          request: {
-            toolCall: { toolCallId: tc.toolCallId, title: tc.title || '', kind: tc.kind },
-            options: params.options || [],
-          },
-        })
-        const decision = await new Promise((resolve) =>
-          this.pendingPermissions.set(requestId, resolve)
-        )
-        return { outcome: decision }
-      },
-      readTextFile: async (params) => {
-        const content = fs.readFileSync(params.path, 'utf8')
-        return { content }
-      },
-      writeTextFile: async (params) => {
-        fs.writeFileSync(params.path, params.content)
-        return null
-      },
-    }
-  }
+// Push a frame to the attached renderer; queue it if none is attached right now
+// (e.g. mid-reload) so it can be flushed when the renderer reattaches.
+function pushToBinding(state, frame) {
+  if (state.binding && state.binding.readyState === state.binding.OPEN)
+    state.binding.send(JSON.stringify(frame))
+  else state.pendingFrames.push(frame)
+}
 
-  async ensureAgent() {
-    if (this.agent) return this.agent
-    const cmd = process.env.ACORN_HARNESS_CMD
-    if (!cmd || !cmd.trim()) {
-      throw new Error(
-        'No LLM harness configured. Set ACORN_HARNESS_CMD (or run yarn harness:claude / harness:gemini / harness:openrouter).'
+function bindAndFlush(state, ws) {
+  state.binding = ws
+  if (state.pendingFrames.length) {
+    const queued = state.pendingFrames
+    state.pendingFrames = []
+    for (const f of queued) wsSend(ws, f)
+  }
+}
+
+// The ACP Client handler the agent calls back into. Routes to the current
+// binding (and queues while detached) rather than any one WS, so callbacks keep
+// working across reloads.
+function makeClient(state) {
+  return {
+    sessionUpdate: async (params) => {
+      // During loadSession the agent replays the whole history as updates; we
+      // restore the transcript from the renderer's own store instead, so drop them.
+      if (state.replaying) return
+      const update = toHarnessUpdate(params.update)
+      if (update)
+        pushToBinding(state, { t: 'update', sessionId: params.sessionId, update })
+    },
+    requestPermission: async (params) => {
+      const requestId = state.nextPermissionId++
+      const tc = params.toolCall || {}
+      pushToBinding(state, {
+        t: 'permissionRequest',
+        requestId,
+        sessionId: params.sessionId,
+        request: {
+          toolCall: { toolCallId: tc.toolCallId, title: tc.title || '', kind: tc.kind },
+          options: params.options || [],
+        },
+      })
+      const decision = await new Promise((resolve) =>
+        state.pendingPermissions.set(requestId, resolve)
       )
-    }
-    const acp = await loadAcp()
-    // shell:true so ACORN_HARNESS_CMD can be a full command line with args.
-    this.child = spawn(cmd, { shell: true, stdio: ['pipe', 'pipe', 'inherit'] })
-    this.child.on('error', (e) =>
-      this.send({ t: 'unavailable', reason: `failed to spawn agent: ${e.message}` })
-    )
-    this.child.on('exit', () => {
-      this.agent = null
-    })
-    const input = Readable.toWeb(this.child.stdout)
-    const output = Writable.toWeb(this.child.stdin)
-    const stream = acp.ndJsonStream(output, input)
-    this.agent = new acp.ClientSideConnection(() => this.makeClient(), stream)
-    this.acp = acp
-    return this.agent
+      return { outcome: decision }
+    },
+    readTextFile: async (params) => ({ content: fs.readFileSync(params.path, 'utf8') }),
+    writeTextFile: async (params) => {
+      fs.writeFileSync(params.path, params.content)
+      return null
+    },
   }
+}
 
-  async handle(frame) {
-    try {
-      switch (frame.t) {
-        case 'initialize': {
-          const agent = await this.ensureAgent()
-          const res = await agent.initialize({
-            protocolVersion: this.acp.PROTOCOL_VERSION,
+async function getAgent() {
+  if (agent) return agent
+  const cmd = configuredCmd()
+  if (!cmd)
+    throw new Error(
+      'No LLM harness configured. Set ACORN_HARNESS_CMD (or run yarn harness:claude / harness:gemini / harness:openrouter).'
+    )
+  const acp = await loadAcp()
+  // shell:true so ACORN_HARNESS_CMD can be a full command line with args.
+  const child = spawn(cmd, { shell: true, stdio: ['pipe', 'pipe', 'inherit'] })
+  const state = {
+    acp,
+    child,
+    agent: null, // ClientSideConnection (the ACP Agent role)
+    binding: null, // the currently attached renderer WS
+    pendingFrames: [], // frames buffered while no renderer is attached
+    sessions: new Set(), // session ids this agent currently holds
+    initialized: false,
+    info: null,
+    canLoadSession: false, // agent advertises ACP session/load (the --resume analog)
+    replaying: false, // true while loadSession streams history we DON'T re-show
+
+    nextPermissionId: 1,
+    pendingPermissions: new Map(),
+    activePromptIds: new Set(),
+  }
+  child.on('error', (e) =>
+    pushToBinding(state, { t: 'unavailable', reason: `failed to spawn agent: ${e.message}` })
+  )
+  child.on('exit', (code, signal) => {
+    // No turnEnd will arrive for an in-flight turn — fail it (ACP has no
+    // heartbeat; process death is the host's signal). Drop the singleton so the
+    // next request respawns.
+    const reason = `agent process exited${
+      code != null ? ` (code ${code})` : signal ? ` (${signal})` : ''
+    }`
+    for (const id of state.activePromptIds)
+      pushToBinding(state, { t: 'error', id, message: reason })
+    if (agent === state) agent = null
+  })
+  const input = Readable.toWeb(child.stdout)
+  const output = Writable.toWeb(child.stdin)
+  state.agent = new acp.ClientSideConnection(
+    () => makeClient(state),
+    acp.ndJsonStream(output, input)
+  )
+  agent = state
+  return state
+}
+
+// Handle one frame from a renderer WS. Correlated replies go straight back to
+// the requesting ws; streamed updates/permissions go through the binding.
+async function handleFrame(ws, frame) {
+  try {
+    const state = await getAgent()
+    bindAndFlush(state, ws)
+    switch (frame.t) {
+      case 'initialize': {
+        if (!state.initialized) {
+          const res = await state.agent.initialize({
+            protocolVersion: state.acp.PROTOCOL_VERSION,
             clientCapabilities: {
               fs: { readTextFile: true, writeTextFile: true },
               terminal: false,
             },
           })
-          this.send({
-            t: 'initialized',
-            id: frame.id,
-            info: {
-              protocolVersion: res.protocolVersion,
-              agentName: res.agentInfo && res.agentInfo.name,
-            },
-          })
-          return
-        }
-        case 'newSession': {
-          const agent = await this.ensureAgent()
-          const res = await agent.newSession({ cwd: frame.cwd || process.cwd(), mcpServers: [] })
-          if (frame.treeContext)
-            this.treeContextBySession.set(res.sessionId, toAcpBlock(frame.treeContext))
-          this.send({ t: 'sessionCreated', id: frame.id, sessionId: res.sessionId })
-          return
-        }
-        case 'prompt': {
-          const blocks = (frame.blocks || []).map(toAcpBlock)
-          // Seed the live tree as the first turn's leading context, once.
-          const seed = this.treeContextBySession.get(frame.sessionId)
-          if (seed) {
-            blocks.unshift(seed)
-            this.treeContextBySession.delete(frame.sessionId)
+          state.initialized = true
+          state.canLoadSession = !!(
+            res.agentCapabilities && res.agentCapabilities.loadSession
+          )
+          state.info = {
+            protocolVersion: res.protocolVersion,
+            agentName: res.agentInfo && res.agentInfo.name,
+            canLoadSession: state.canLoadSession,
           }
-          const res = await this.agent.prompt({ sessionId: frame.sessionId, prompt: blocks })
-          this.send({ t: 'turnEnd', id: frame.id, stopReason: res.stopReason })
-          return
         }
-        case 'cancel': {
-          if (this.agent) this.agent.cancel({ sessionId: frame.sessionId })
-          return
-        }
-        case 'permissionDecision': {
-          const resolve = this.pendingPermissions.get(frame.requestId)
-          if (resolve) {
-            this.pendingPermissions.delete(frame.requestId)
-            resolve(frame.decision)
-          }
-          return
-        }
+        wsSend(ws, { t: 'initialized', id: frame.id, info: state.info })
+        return
       }
-    } catch (e) {
-      if (frame && frame.id != null)
-        this.send({ t: 'error', id: frame.id, message: String((e && e.message) || e) })
-      else this.send({ t: 'unavailable', reason: String((e && e.message) || e) })
+      case 'newSession': {
+        const res = await state.agent.newSession({
+          cwd: frame.cwd || process.cwd(),
+          mcpServers: [],
+        })
+        state.sessions.add(res.sessionId)
+        wsSend(ws, { t: 'sessionCreated', id: frame.id, sessionId: res.sessionId })
+        return
+      }
+      case 'resumeSession': {
+        // Fast path: the agent outlived the renderer reload, so the session is
+        // still in memory — reattaching the WS is the whole resume.
+        if (state.sessions.has(frame.sessionId)) {
+          wsSend(ws, { t: 'sessionResumed', id: frame.id, sessionId: frame.sessionId })
+          return
+        }
+        // Durable path (the --resume analog): a fresh agent reloads the session
+        // from its own on-disk history via ACP session/load. Replay is suppressed
+        // (the renderer restores the visible transcript from its store).
+        if (state.canLoadSession && state.agent.loadSession) {
+          state.replaying = true
+          try {
+            await state.agent.loadSession({
+              sessionId: frame.sessionId,
+              cwd: frame.cwd || process.cwd(),
+              mcpServers: [],
+            })
+            state.sessions.add(frame.sessionId)
+            wsSend(ws, { t: 'sessionResumed', id: frame.id, sessionId: frame.sessionId })
+          } catch (_) {
+            wsSend(ws, { t: 'sessionResumeFailed', id: frame.id })
+          } finally {
+            state.replaying = false
+          }
+          return
+        }
+        wsSend(ws, { t: 'sessionResumeFailed', id: frame.id })
+        return
+      }
+      case 'prompt': {
+        const blocks = (frame.blocks || []).map(toAcpBlock)
+        state.activePromptIds.add(frame.id)
+        try {
+          const res = await state.agent.prompt({
+            sessionId: frame.sessionId,
+            prompt: blocks,
+          })
+          pushToBinding(state, {
+            t: 'turnEnd',
+            id: frame.id,
+            stopReason: res.stopReason,
+          })
+        } finally {
+          state.activePromptIds.delete(frame.id)
+        }
+        return
+      }
+      case 'cancel': {
+        if (state.agent) state.agent.cancel({ sessionId: frame.sessionId })
+        return
+      }
+      case 'permissionDecision': {
+        const resolve = state.pendingPermissions.get(frame.requestId)
+        if (resolve) {
+          state.pendingPermissions.delete(frame.requestId)
+          resolve(frame.decision)
+        }
+        return
+      }
     }
+  } catch (e) {
+    const message = String((e && e.message) || e)
+    if (frame && frame.id != null) wsSend(ws, { t: 'error', id: frame.id, message })
+    else wsSend(ws, { t: 'unavailable', reason: message })
   }
+}
 
-  dispose() {
-    for (const resolve of this.pendingPermissions.values()) resolve({ outcome: 'cancelled' })
-    this.pendingPermissions.clear()
-    if (this.child) {
+let cleanupHooked = false
+function hookProcessCleanup() {
+  if (cleanupHooked) return
+  cleanupHooked = true
+  const killChild = () => {
+    if (agent && agent.child) {
       try {
-        this.child.kill()
+        agent.child.kill()
       } catch (_) {}
     }
   }
+  process.on('exit', killChild)
+  process.on('SIGINT', () => {
+    killChild()
+    process.exit()
+  })
+  process.on('SIGTERM', () => {
+    killChild()
+    process.exit()
+  })
 }
 
 /**
@@ -237,6 +340,7 @@ class HarnessConnection {
 function attachHarnessSidecar(server) {
   if (!server || server.__acornHarnessAttached) return
   server.__acornHarnessAttached = true
+  hookProcessCleanup()
   // Share the http server with webpack-dev-server's HMR socket. We MUST use
   // noServer + a path-guarded upgrade handler that RETURNS on mismatch: a
   // {server,path}-bound ws server aborts (destroys) non-matching upgrades, which
@@ -253,9 +357,8 @@ function attachHarnessSidecar(server) {
     wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws, req))
   })
   wss.on('connection', (ws) => {
-    const conn = new HarnessConnection(ws)
-    if (!process.env.ACORN_HARNESS_CMD || !process.env.ACORN_HARNESS_CMD.trim()) {
-      conn.send({
+    if (!configuredCmd()) {
+      wsSend(ws, {
         t: 'unavailable',
         reason: 'No LLM harness configured (ACORN_HARNESS_CMD unset).',
       })
@@ -267,15 +370,20 @@ function attachHarnessSidecar(server) {
       } catch (_) {
         return
       }
-      conn.handle(frame)
+      handleFrame(ws, frame)
     })
-    ws.on('close', () => conn.dispose())
+    // Renderer reload / disconnect: just detach — DON'T kill the agent, so the
+    // session survives for resumeSession. Resolve any pending permission so the
+    // agent isn't wedged waiting on a UI that's gone.
+    ws.on('close', () => {
+      if (agent && agent.binding === ws) agent.binding = null
+    })
   })
   // eslint-disable-next-line no-console
   console.log(
     `[acorn-harness] WebSocket on ${HARNESS_PATH}` +
-      (process.env.ACORN_HARNESS_CMD
-        ? ` (agent: ${process.env.ACORN_HARNESS_CMD})`
+      (configuredCmd()
+        ? ` (agent: ${configuredCmd()})`
         : ' (no ACORN_HARNESS_CMD — harness unavailable)')
   )
 }
