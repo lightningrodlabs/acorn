@@ -75,6 +75,21 @@ export type HarnessPermissionDecision =
 
 export type Unsubscribe = () => void
 
+/**
+ * A call the agent makes into an ACORN-HOSTED tool (the draft pipeline L1 +
+ * the read leaf): the renderer is where the live tree + redux store live, so the
+ * hosted MCP server bridges `tools/call` back here. `read_tree` returns the
+ * current ProjectSnapshot; `propose_edits` opens a draft from a ProjectDiff
+ * (inert — no DHT write).
+ */
+export interface HarnessToolCall {
+  tool: string
+  args: any
+}
+export type HarnessToolResult =
+  | { ok: true; result: any }
+  | { ok: false; error: string }
+
 export interface HarnessInfo {
   protocolVersion: number
   agentName?: string
@@ -119,5 +134,13 @@ export interface HarnessClient {
     handler: (
       req: HarnessPermissionRequest
     ) => Promise<HarnessPermissionDecision>
+  ): void
+  /**
+   * Register the handler the host calls when the agent invokes an Acorn-hosted
+   * tool (read_tree / propose_edits). Optional — a provider without the hosted
+   * callable-tool channel simply omits it.
+   */
+  onToolCall?(
+    handler: (call: HarnessToolCall) => Promise<HarnessToolResult>
   ): void
 }

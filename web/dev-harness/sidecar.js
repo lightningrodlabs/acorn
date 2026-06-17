@@ -21,6 +21,7 @@
  * harness:openrouter dev scripts set that env.
  */
 const fs = require('fs')
+const path = require('path')
 const { spawn } = require('child_process')
 const { Readable, Writable } = require('node:stream')
 const { WebSocketServer } = require('ws')
@@ -28,6 +29,25 @@ const { loadMcpServers, toAcpServers } = require('./mcpConfig')
 const { skillPromptBlocks } = require('./skill')
 
 const HARNESS_PATH = '/__acorn_harness'
+
+// How long the sidecar waits for the renderer to run a hosted tool (read_tree /
+// propose_edits) before failing the call back to the agent.
+const TOOL_TIMEOUT_MS = 120000
+
+// The ACORN-HOSTED MCP server, attached to every agent session so the agent can
+// call read_tree / propose_edits (clarity-tree draft pipeline L1 + the read leaf).
+// It is a stdio child that bridges tools/call back to THIS sidecar over HTTP
+// (/__acorn_tool), which relays to the renderer where the store lives. Spawned
+// with the same node binary; the dev-server port is handed in so it can reach us.
+function acornToolsServerEntry() {
+  return {
+    name: 'acorn',
+    type: 'stdio',
+    command: process.execPath,
+    args: [path.join(__dirname, 'acornToolsServer.js')],
+    env: [{ name: 'ACORN_WEB_PORT', value: String(process.env.WEB_PORT || '') }],
+  }
+}
 
 // The ACP SDK is ESM-only; load it once via dynamic import from this CJS module.
 let acpPromise = null
@@ -180,7 +200,8 @@ async function getAgent() {
     // MCP servers attached to this agent's sessions. The config list is read once
     // (agent-agnostic); acpMcpServers is the wire shape, resolved at initialize
     // once the agent's http/sse mcpCapabilities are known (native vs mcp-remote).
-    mcpServers: loadMcpServers(),
+    // the hosted Acorn tools server FIRST, then any user-configured servers
+    mcpServers: [acornToolsServerEntry(), ...loadMcpServers()],
     acpMcpServers: [],
 
     // sessions that have already been seeded with the clarity-trees skill (we
@@ -190,6 +211,9 @@ async function getAgent() {
     nextPermissionId: 1,
     pendingPermissions: new Map(),
     activePromptIds: new Set(),
+    // hosted tool calls (read_tree / propose_edits) awaiting a renderer reply
+    nextToolId: 1,
+    pendingToolCalls: new Map(),
   }
   child.on('error', (e) =>
     pushToBinding(state, { t: 'unavailable', reason: `failed to spawn agent: ${e.message}` })
@@ -332,12 +356,84 @@ async function handleFrame(ws, frame) {
         }
         return
       }
+      case 'toolResult': {
+        const resolve = state.pendingToolCalls.get(frame.requestId)
+        if (resolve) {
+          state.pendingToolCalls.delete(frame.requestId)
+          resolve(frame.result)
+        }
+        return
+      }
     }
   } catch (e) {
     const message = String((e && e.message) || e)
     if (frame && frame.id != null) wsSend(ws, { t: 'error', id: frame.id, message })
     else wsSend(ws, { t: 'unavailable', reason: message })
   }
+}
+
+/**
+ * Relay a hosted tool call to the attached renderer and await its result. Called
+ * by the /__acorn_tool HTTP bridge, which the hosted MCP server POSTs to. Returns
+ * a HarnessToolResult ({ ok, result } | { ok:false, error }). Fails fast (rather
+ * than hanging the agent) when no renderer is attached.
+ */
+function callRendererTool(tool, args) {
+  return new Promise((resolve) => {
+    const state = agent
+    if (
+      !state ||
+      !state.binding ||
+      state.binding.readyState !== state.binding.OPEN
+    ) {
+      resolve({
+        ok: false,
+        error: 'Acorn is not connected — open the app and the chat panel first.',
+      })
+      return
+    }
+    const requestId = state.nextToolId++
+    const timer = setTimeout(() => {
+      if (state.pendingToolCalls.has(requestId)) {
+        state.pendingToolCalls.delete(requestId)
+        resolve({ ok: false, error: 'Acorn tool call timed out.' })
+      }
+    }, TOOL_TIMEOUT_MS)
+    state.pendingToolCalls.set(requestId, (result) => {
+      clearTimeout(timer)
+      resolve(result)
+    })
+    pushToBinding(state, { t: 'toolCall', requestId, call: { tool, args } })
+  })
+}
+
+/**
+ * An http middleware (req,res,next) bridging the hosted MCP server's POSTs to
+ * callRendererTool. Mirrors the /__acorn_diff bridge; wired in webpack.dev.js.
+ */
+function toolBridgeMiddleware(req, res, next) {
+  if (!req.url || !req.url.startsWith('/__acorn_tool')) return next()
+  if (req.method !== 'POST') {
+    res.statusCode = 405
+    return res.end('method not allowed')
+  }
+  let body = ''
+  req.setEncoding('utf8')
+  req.on('data', (c) => (body += c))
+  req.on('end', async () => {
+    let parsed
+    try {
+      parsed = JSON.parse(body || '{}')
+    } catch (e) {
+      res.statusCode = 400
+      res.setHeader('content-type', 'application/json')
+      return res.end(JSON.stringify({ ok: false, error: 'invalid JSON' }))
+    }
+    const result = await callRendererTool(parsed.tool, parsed.args)
+    res.statusCode = 200
+    res.setHeader('content-type', 'application/json')
+    res.end(JSON.stringify(result))
+  })
 }
 
 let cleanupHooked = false
@@ -417,4 +513,9 @@ function attachHarnessSidecar(server) {
   )
 }
 
-module.exports = { attachHarnessSidecar, HARNESS_PATH }
+module.exports = {
+  attachHarnessSidecar,
+  HARNESS_PATH,
+  callRendererTool,
+  toolBridgeMiddleware,
+}

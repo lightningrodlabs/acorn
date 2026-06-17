@@ -14,6 +14,7 @@ import remarkGfm from 'remark-gfm'
 import './HarnessChat.scss'
 import { CellIdString } from '../../types/shared'
 import { readTree, readSelection, SelectedNode } from '../../harness/readTree'
+import { handleAcornToolCall } from '../../harness/acornTools'
 import {
   ChatMessage,
   deleteSession,
@@ -350,6 +351,9 @@ const HarnessChat: React.FC = () => {
     setError('')
     try {
       client.onPermissionRequest(decidePermission)
+      // hosted callable tools (read_tree / propose_edits). propose_edits opens an
+      // inert draft for human review — it never writes to the DHT (L1).
+      client.onToolCall?.((call) => handleAcornToolCall(store, projectId, call))
       const info = await client.initialize()
       setMcpServers(info.mcpServers || [])
       await openSession(getCurrentId(projectId)) // resume the last chat

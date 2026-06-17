@@ -19,6 +19,8 @@ import {
   HarnessPermissionDecision,
   HarnessPermissionRequest,
   HarnessSession,
+  HarnessToolCall,
+  HarnessToolResult,
   HarnessTurnResult,
   HarnessUpdate,
   Unsubscribe,
@@ -65,6 +67,9 @@ export class DevSidecarHarnessClient implements HarnessClient {
   private updateSubs = new Map<string, Set<(u: HarnessUpdate) => void>>()
   private permissionHandler:
     | ((req: HarnessPermissionRequest) => Promise<HarnessPermissionDecision>)
+    | null = null
+  private toolHandler:
+    | ((call: HarnessToolCall) => Promise<HarnessToolResult>)
     | null = null
   private unavailableReason: string | null = null
 
@@ -115,6 +120,12 @@ export class DevSidecarHarnessClient implements HarnessClient {
     ) => Promise<HarnessPermissionDecision>
   ): void {
     this.permissionHandler = handler
+  }
+
+  onToolCall(
+    handler: (call: HarnessToolCall) => Promise<HarnessToolResult>
+  ): void {
+    this.toolHandler = handler
   }
 
   // --- internals used by SidecarSession ---
@@ -215,6 +226,13 @@ export class DevSidecarHarnessClient implements HarnessClient {
           requestId: frame.requestId,
           decision,
         })
+        return
+      }
+      case 'toolCall': {
+        const result: HarnessToolResult = this.toolHandler
+          ? await this.toolHandler(frame.call)
+          : { ok: false, error: 'no Acorn tool handler registered' }
+        this._send({ t: 'toolResult', requestId: frame.requestId, result })
         return
       }
       default: {

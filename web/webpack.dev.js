@@ -4,7 +4,10 @@ const HTMLWebpackPlugin = require('html-webpack-plugin')
 const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
-const { attachHarnessSidecar } = require('./dev-harness/sidecar')
+const {
+  attachHarnessSidecar,
+  toolBridgeMiddleware,
+} = require('./dev-harness/sidecar')
 const mainAppId = fs.readFileSync(
   path.join(__dirname, '../config-main-app-id'),
   'utf-8'
@@ -76,6 +79,13 @@ module.exports = {
         res.setHeader('content-type', 'application/json')
         res.end(JSON.stringify(obj))
       }
+      // hosted-tool bridge (clarity-tree draft pipeline L1): the Acorn MCP server
+      // POSTs read_tree / propose_edits here; the sidecar relays to the renderer.
+      // unshift so it precedes the SPA history-fallback.
+      middlewares.unshift({
+        name: 'acorn-tool-bridge',
+        middleware: toolBridgeMiddleware,
+      })
       // unshift so it runs BEFORE the SPA history-fallback (which would otherwise
       // serve index.html for the GET). Raw req/res — no express route ordering.
       middlewares.unshift({

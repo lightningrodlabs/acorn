@@ -11,6 +11,8 @@ import {
   HarnessPermissionDecision,
   HarnessPermissionRequest,
   HarnessStopReason,
+  HarnessToolCall,
+  HarnessToolResult,
   HarnessUpdate,
 } from './types'
 
@@ -31,6 +33,12 @@ export type ClientFrame =
       requestId: number
       decision: HarnessPermissionDecision
     }
+  // reply to a hosted tool call (read_tree / propose_edits), correlated by requestId
+  | {
+      t: 'toolResult'
+      requestId: number
+      result: HarnessToolResult
+    }
 
 /** sidecar → renderer */
 export type ServerFrame =
@@ -48,5 +56,12 @@ export type ServerFrame =
       requestId: number
       sessionId: string
       request: HarnessPermissionRequest
+    }
+  // the agent invoked an Acorn-hosted tool; the renderer runs it and replies
+  // with a toolResult carrying the same requestId
+  | {
+      t: 'toolCall'
+      requestId: number
+      call: HarnessToolCall
     }
   | { t: 'unavailable'; reason: string }
