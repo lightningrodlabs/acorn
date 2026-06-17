@@ -7,10 +7,21 @@ import React, {
 } from 'react'
 import { useRouteMatch } from 'react-router-dom'
 import { useSelector, useStore } from 'react-redux'
+import useOnClickOutside from 'use-onclickoutside'
 
 import './HarnessChat.scss'
 import { CellIdString } from '../../types/shared'
 import { readTree, readSelection, SelectedNode } from '../../harness/readTree'
+import {
+  ChatMessage,
+  deleteSession,
+  getCurrentId,
+  getSessionMessages,
+  listSessions,
+  loadStore,
+  persistTurn,
+  SessionRecord,
+} from '../../harness/chatHistory'
 import {
   computeProjectDiff,
   isEmptyDiff,
@@ -33,15 +44,20 @@ import {
 // EDITS yet — the propose→draft→commit pipeline is the next branch; the ACP
 // plan / permission seams are already plumbed for it.
 
-type ChatMessage = {
-  id: number
-  role: 'user' | 'agent' | 'system'
-  text: string
-}
-
 // Seconds without any session/update before we flag a possible stall. ACP has
 // no heartbeat, so this is the best signal that the agent has gone quiet.
 const STALL_SECS = 20
+
+// Compact relative time for the history picker.
+const relativeTime = (then: number, now: number): string => {
+  const s = Math.max(0, Math.floor((now - then) / 1000))
+  if (s < 60) return 'just now'
+  const m = Math.floor(s / 60)
+  if (m < 60) return `${m}m ago`
+  const h = Math.floor(m / 60)
+  if (h < 24) return `${h}h ago`
+  return `${Math.floor(h / 24)}d ago`
+}
 
 // A concise note naming the selected node(s), prepended to a turn so the agent
 // can resolve "this"/"these". Ids match what the human sees in the UI sidebar.
@@ -98,6 +114,9 @@ const HarnessChat: React.FC = () => {
   // shortcuts (Enter/arrows/Backspace) are suppressed so typing never disturbs
   // the tree. Mirrored into redux so the suppression is enforced globally.
   const [focused, setFocused] = useState(false)
+  // header history picker
+  const [showHistory, setShowHistory] = useState(false)
+  const [sessions, setSessions] = useState<SessionRecord[]>([])
 
   const setKeyboardOwnership = (own: boolean) => {
     setFocused(own)
@@ -121,6 +140,12 @@ const HarnessChat: React.FC = () => {
   // Draggable position — null until first opened, then pinned (starts right).
   const panelRef = useRef<HTMLDivElement>(null)
   const [pos, setPos] = useState<{ left: number; top: number } | null>(null)
+
+  // Close the history picker on any click outside it (transcript, textbox, the
+  // map — anywhere). Clicks on the toggle/dropdown are inside this ref, so the
+  // toggle button keeps handling its own open/close.
+  const histRef = useRef<HTMLDivElement>(null)
+  useOnClickOutside(histRef, () => setShowHistory(false))
 
   // Auto-scroll: stick to the bottom unless the user has scrolled up.
   const transcriptRef = useRef<HTMLDivElement>(null)
@@ -159,12 +184,7 @@ const HarnessChat: React.FC = () => {
   // reattach by id and restore the visible history.
   useEffect(() => {
     if (!projectId || !sessionId) return
-    try {
-      localStorage.setItem(
-        `acorn:harnessChat:${projectId}`,
-        JSON.stringify({ sessionId, messages })
-      )
-    } catch (_) {}
+    persistTurn(projectId, sessionId, messages, Date.now())
   }, [projectId, sessionId, messages])
 
   // While a turn is in flight, tick "seconds since last update" so the UI can
@@ -196,6 +216,32 @@ const HarnessChat: React.FC = () => {
       prev.map((m) => (m.id === id ? { ...m, text: fn(m.text) } : m))
     )
 
+  // Attach to a session: resume `target` if given and the host still has it
+  // (live reattach, or ACP session/load across a restart), else start fresh.
+  // Restores that session's transcript from the local store.
+  const openSession = async (target: string | null) => {
+    let session: HarnessSession | null = null
+    if (target && client.resumeSession) {
+      try {
+        session = await client.resumeSession(target)
+        const restored = getSessionMessages(projectId, target)
+        setMessages(restored)
+        msgId.current = restored.reduce((m, x) => Math.max(m, x.id), 0)
+      } catch (_) {
+        session = null
+      }
+    }
+    if (!session) {
+      session = await client.newSession({})
+      setMessages([])
+      msgId.current = 0
+    }
+    sessionRef.current = session
+    setSessionId(session.id)
+    // (re)attached ⇒ the next turn re-sends the full current tree (read_tree)
+    lastTreeRef.current = null
+  }
+
   const connect = async () => {
     setOpen(true)
     if (phase === 'ready' || phase === 'connecting') return
@@ -204,40 +250,31 @@ const HarnessChat: React.FC = () => {
     try {
       client.onPermissionRequest(decidePermission)
       await client.initialize()
-      const key = `acorn:harnessChat:${projectId}`
-      // Resume the prior session if the host still holds it (survives a reload).
-      let session: HarnessSession | null = null
-      let saved: { sessionId?: string; messages?: ChatMessage[] } | null = null
-      try {
-        const raw = localStorage.getItem(key)
-        saved = raw ? JSON.parse(raw) : null
-      } catch (_) {}
-      if (saved?.sessionId && client.resumeSession) {
-        try {
-          session = await client.resumeSession(saved.sessionId)
-          const restored = saved.messages || []
-          setMessages(restored)
-          msgId.current = restored.reduce((m, x) => Math.max(m, x.id), 0)
-        } catch (_) {
-          session = null
-        }
-      }
-      if (!session) {
-        session = await client.newSession({})
-        setMessages([])
-        try {
-          localStorage.removeItem(key)
-        } catch (_) {}
-      }
-      sessionRef.current = session
-      setSessionId(session.id)
-      // (re)attached ⇒ the next turn re-sends the full current tree (read_tree)
-      lastTreeRef.current = null
+      await openSession(getCurrentId(projectId)) // resume the last chat
       setPhase('ready')
     } catch (e: any) {
       setPhase('error')
       setError(e?.message || String(e))
     }
+  }
+
+  // --- header history picker ---
+  const toggleHistory = () => {
+    setSessions(listSessions(loadStore(projectId)))
+    setShowHistory((s) => !s)
+  }
+  const pickSession = async (id: string) => {
+    setShowHistory(false)
+    if (id !== sessionId) await openSession(id)
+  }
+  const newChat = async () => {
+    setShowHistory(false)
+    await openSession(null)
+  }
+  const removeChat = async (id: string) => {
+    deleteSession(projectId, id)
+    setSessions(listSessions(loadStore(projectId)))
+    if (id === sessionId) await openSession(null) // dropped the open one
   }
 
   const send = async () => {
@@ -351,6 +388,56 @@ const HarnessChat: React.FC = () => {
         <span className="harness-chat-mode">
           {focused ? '⌨ chat — tree keys paused' : 'tree keys active'}
         </span>
+        <div
+          className="harness-chat-history-wrap"
+          ref={histRef}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
+          <button
+            className="harness-chat-icon-btn"
+            aria-label="Chat history"
+            title="Resume a chat"
+            disabled={busy || phase !== 'ready'}
+            onClick={toggleHistory}
+          >
+            ≡
+          </button>
+          {showHistory && (
+            <div className="harness-chat-history">
+              <button className="hist-row hist-new" onClick={newChat}>
+                ＋ New chat
+              </button>
+              {sessions.length === 0 && (
+                <div className="hist-empty">No saved chats yet</div>
+              )}
+              {sessions.map((s) => (
+                <div
+                  key={s.id}
+                  className={`hist-row${s.id === sessionId ? ' current' : ''}`}
+                >
+                  <button
+                    className="hist-pick"
+                    title={s.title}
+                    onClick={() => pickSession(s.id)}
+                  >
+                    <span className="hist-title">{s.title}</span>
+                    <span className="hist-time">
+                      {relativeTime(s.updatedAt, Date.now())}
+                    </span>
+                  </button>
+                  <button
+                    className="hist-del"
+                    aria-label="Delete chat"
+                    title="Delete"
+                    onClick={() => removeChat(s.id)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
         <button
           className="harness-chat-close"
           aria-label="Close"
