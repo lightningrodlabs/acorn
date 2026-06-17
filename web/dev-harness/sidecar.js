@@ -24,6 +24,7 @@ const fs = require('fs')
 const { spawn } = require('child_process')
 const { Readable, Writable } = require('node:stream')
 const { WebSocketServer } = require('ws')
+const { loadMcpServers, toAcpServers } = require('./mcpConfig')
 
 const HARNESS_PATH = '/__acorn_harness'
 
@@ -175,6 +176,11 @@ async function getAgent() {
     info: null,
     canLoadSession: false, // agent advertises ACP session/load (the --resume analog)
     replaying: false, // true while loadSession streams history we DON'T re-show
+    // MCP servers attached to this agent's sessions. The config list is read once
+    // (agent-agnostic); acpMcpServers is the wire shape, resolved at initialize
+    // once the agent's http/sse mcpCapabilities are known (native vs mcp-remote).
+    mcpServers: loadMcpServers(),
+    acpMcpServers: [],
 
     nextPermissionId: 1,
     pendingPermissions: new Map(),
@@ -224,10 +230,23 @@ async function handleFrame(ws, frame) {
           state.canLoadSession = !!(
             res.agentCapabilities && res.agentCapabilities.loadSession
           )
+          // Resolve MCP servers now that we know the agent's http/sse support:
+          // natively-forwarded servers vs ones bridged through stdio mcp-remote.
+          const mcpCaps =
+            (res.agentCapabilities && res.agentCapabilities.mcpCapabilities) || {}
+          state.acpMcpServers = toAcpServers(state.mcpServers, mcpCaps)
+          if (state.mcpServers.length)
+            // eslint-disable-next-line no-console
+            console.log(
+              `[acorn-harness] MCP servers attached: ${state.mcpServers
+                .map((s) => s.name)
+                .join(', ')}`
+            )
           state.info = {
             protocolVersion: res.protocolVersion,
             agentName: res.agentInfo && res.agentInfo.name,
             canLoadSession: state.canLoadSession,
+            mcpServers: state.mcpServers.map((s) => s.name),
           }
         }
         wsSend(ws, { t: 'initialized', id: frame.id, info: state.info })
@@ -236,7 +255,7 @@ async function handleFrame(ws, frame) {
       case 'newSession': {
         const res = await state.agent.newSession({
           cwd: frame.cwd || process.cwd(),
-          mcpServers: [],
+          mcpServers: state.acpMcpServers,
         })
         state.sessions.add(res.sessionId)
         wsSend(ws, { t: 'sessionCreated', id: frame.id, sessionId: res.sessionId })
@@ -258,7 +277,7 @@ async function handleFrame(ws, frame) {
             await state.agent.loadSession({
               sessionId: frame.sessionId,
               cwd: frame.cwd || process.cwd(),
-              mcpServers: [],
+              mcpServers: state.acpMcpServers,
             })
             state.sessions.add(frame.sessionId)
             wsSend(ws, { t: 'sessionResumed', id: frame.id, sessionId: frame.sessionId })

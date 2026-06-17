@@ -38,3 +38,6 @@ my-proxy-cert.cert
 .DS_Store
 .aider*
 .env
+
+# Local harness MCP server config — may hold secrets; commit only the .example
+web/dev-harness/mcp-servers.json

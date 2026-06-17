@@ -80,6 +80,8 @@ export interface HarnessInfo {
   agentName?: string
   /** agent advertises ACP session/load — sessions resume across a full restart */
   canLoadSession?: boolean
+  /** names of MCP servers attached to the agent's sessions (for display) */
+  mcpServers?: string[]
 }
 
 export interface HarnessSession {

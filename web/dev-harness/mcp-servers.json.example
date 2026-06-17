@@ -1,0 +1,22 @@
+{
+  "//": "Copy this file to mcp-servers.json (same dir) to attach MCP servers to",
+  "//2": "whichever ACP agent the harness runs (harness:claude / harness:gemini /",
+  "//3": "harness:openrouter). ${VAR} is read from the environment so secrets stay",
+  "//4": "out of the file — e.g. run: LINEAR_API_KEY=lin_api_xxx yarn harness:claude.",
+  "//5": "Override the path with ACORN_MCP_CONFIG. Edits take effect on restart.",
+  "servers": [
+    {
+      "name": "linear",
+      "type": "http",
+      "url": "https://mcp.linear.app/mcp",
+      "headers": { "Authorization": "Bearer ${LINEAR_API_KEY}" }
+    },
+    {
+      "name": "example-stdio-server",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "some-mcp-package"],
+      "env": { "SOME_TOKEN": "${SOME_TOKEN}" }
+    }
+  ]
+}

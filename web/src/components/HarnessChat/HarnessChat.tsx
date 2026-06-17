@@ -149,6 +149,8 @@ const HarnessChat: React.FC = () => {
   // header history picker
   const [showHistory, setShowHistory] = useState(false)
   const [sessions, setSessions] = useState<SessionRecord[]>([])
+  // MCP servers the agent can reach this session (e.g. "linear"), from initialize
+  const [mcpServers, setMcpServers] = useState<string[]>([])
 
   const setKeyboardOwnership = (own: boolean) => {
     setFocused(own)
@@ -306,7 +308,8 @@ const HarnessChat: React.FC = () => {
     setError('')
     try {
       client.onPermissionRequest(decidePermission)
-      await client.initialize()
+      const info = await client.initialize()
+      setMcpServers(info.mcpServers || [])
       await openSession(getCurrentId(projectId)) // resume the last chat
       setPhase('ready')
     } catch (e: any) {
@@ -524,6 +527,19 @@ const HarnessChat: React.FC = () => {
           {selectedNodes.length > 1 && (
             <span className="more">&nbsp;(+{selectedNodes.length - 1} more)</span>
           )}
+        </div>
+      )}
+
+      {phase === 'ready' && mcpServers.length > 0 && (
+        <div
+          className="harness-chat-mcp"
+          title="MCP servers the agent can use this session"
+        >
+          {mcpServers.map((name) => (
+            <span key={name} className="mcp-chip">
+              🔌 {name}
+            </span>
+          ))}
         </div>
       )}
 
