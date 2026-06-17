@@ -8837,29 +8837,17 @@ leven@^3.1.0:
   resolved "https://registry.yarnpkg.com/leven/-/leven-3.1.0.tgz#77891de834064cccba82ae7842bb6b14a13ed7f2"
   integrity sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==
 
-libsodium-wrappers@^0.7.15:
+libsodium-wrappers@0.7.15, libsodium-wrappers@^0.7.15, libsodium-wrappers@^0.8:
   version "0.7.15"
   resolved "https://registry.yarnpkg.com/libsodium-wrappers/-/libsodium-wrappers-0.7.15.tgz#53f13e483820272a3d55b23be2e34402ac988055"
   integrity sha512-E4anqJQwcfiC6+Yrl01C1m8p99wEhLmJSs0VQqST66SbQXXBoaJY0pF4BNjRYa/sOQAxx6lXAaAFIlx+15tXJQ==
   dependencies:
     libsodium "^0.7.15"
 
-libsodium-wrappers@^0.8:
-  version "0.8.4"
-  resolved "https://registry.yarnpkg.com/libsodium-wrappers/-/libsodium-wrappers-0.8.4.tgz#c9953edc16f2f40f1f4d2580147b8de775fb901c"
-  integrity sha512-mu8aAWucZjTB5O/BtGXtW4e1agy7uHxNYG7zPthmmD1jU43LCDmSWZLN4JhflbdPXj3yDO4lxM1O9hLDgIOXDw==
-  dependencies:
-    libsodium "^0.8.0"
-
 libsodium@^0.7.15:
   version "0.7.16"
   resolved "https://registry.yarnpkg.com/libsodium/-/libsodium-0.7.16.tgz#3d4f9d68ed887bb8bf2e76bb3ba231265eae58a0"
   integrity sha512-3HrzSPuzm6Yt9aTYCDxYEG8x8/6C0+ag655Y7rhhWZM9PT4NpdnbqlzXhGZlDnkgR6MeSTnOt/VIyHLs9aSf+Q==
-
-libsodium@^0.8.0:
-  version "0.8.4"
-  resolved "https://registry.yarnpkg.com/libsodium/-/libsodium-0.8.4.tgz#a61393dad8c25e0fda129e3fdf85b3baee2d456f"
-  integrity sha512-lMcYaRi0zcs7tarATsQUYC7rstliIXZuoq0c6zXSgNtSNtdvBgkSegjWhpMJAXzKX3SUSwIp7+zEsob+j3LuRw==
 
 lines-and-columns@^1.1.6:
   version "1.2.4"
