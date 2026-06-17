@@ -123,6 +123,10 @@ const HarnessChat: React.FC = () => {
   // the tree snapshot last handed to the agent — used to resend only on change
   const lastTreeRef = useRef<ProjectSnapshot | null>(null)
   const msgId = useRef(0)
+  // the project the in-memory session/transcript belongs to. Chats are
+  // per-project by default; switching projects resets the panel (the store stays
+  // keyed by project, leaving room for a future cross-project mode).
+  const projectRef = useRef(projectId)
   // current session id, persisted so a reload can resume (see resume effect)
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
@@ -242,9 +246,32 @@ const HarnessChat: React.FC = () => {
   // keeps the agent + ACP session alive across the WS drop, so on reopen we
   // reattach by id and restore the visible history.
   useEffect(() => {
-    if (!projectId || !sessionId) return
+    // guard against persisting the previous project's messages under the new
+    // project's key during a project switch (before the reset effect runs)
+    if (!projectId || !sessionId || projectRef.current !== projectId) return
     persistTurn(projectId, sessionId, messages, Date.now())
   }, [projectId, sessionId, messages])
+
+  // Switching projects: tear down the previous project's in-memory chat and
+  // collapse to the launcher. Reopening loads the new project's own session
+  // (its transcript is stored per-project), so streams never cross over.
+  useEffect(() => {
+    if (projectRef.current === projectId) return
+    projectRef.current = projectId
+    sessionRef.current = null
+    lastTreeRef.current = null
+    setSessionId(null)
+    setMessages([])
+    setPlan([])
+    setThought('')
+    setBusy(false)
+    setError('')
+    setShowHistory(false)
+    setKeyboardOwnership(false)
+    setPhase('idle')
+    setOpen(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId])
 
   // While a turn is in flight, tick "seconds since last update" so the UI can
   // show progress and flag a stall (no built-in ACP heartbeat to lean on).
