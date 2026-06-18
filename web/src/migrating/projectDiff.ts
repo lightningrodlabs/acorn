@@ -178,6 +178,105 @@ export function findUnresolvedReferences(
 }
 
 /**
+ * The zome Connection entry requires five fields:
+ *   { parentActionHash, childActionHash, siblingOrder:i32, randomizer:i64, isImported:bool }
+ * An agent proposing a connection through the API only knows the meaningful three —
+ * parent, child, sibling order — and has no way to supply a randomizer or the
+ * isImported flag. The two functions below close that gap so a propose→confirm
+ * round-trip can never fail at the Ribosome with an opaque Deserialize error:
+ * completeConnection fills the system-known fields; validateConnections rejects the
+ * truly malformed (a connection with no parent or child can't be defaulted) so it
+ * is surfaced to the human up front rather than reaching create_connection.
+ */
+
+/**
+ * Fill an agent-authored connection out to the full zome Connection shape. The
+ * caller supplies a `randomizer` to use when the connection omits one (the system
+ * value an agent can't know); `isImported` defaults to false and `siblingOrder` to
+ * 0 when absent. Any value the agent did supply is preserved. Pure.
+ */
+export function completeConnection(entry: any, randomizer: number): any {
+  const e = entry || {}
+  return {
+    ...e,
+    siblingOrder: typeof e.siblingOrder === 'number' ? e.siblingOrder : 0,
+    randomizer: typeof e.randomizer === 'number' ? e.randomizer : randomizer,
+    isImported: typeof e.isImported === 'boolean' ? e.isImported : false,
+  }
+}
+
+/**
+ * Complete every added/updated connection in a diff (see completeConnection),
+ * giving each connection that needs a randomizer a distinct one derived from
+ * `seed` + an offset so sibling connections in one proposal never collide. Pure;
+ * returns a new diff, idempotent (a connection already carrying a randomizer keeps
+ * it). Callers in the renderer pass a time-based seed for cross-proposal
+ * distinctness; tests pass a fixed seed for determinism.
+ */
+export function completeConnectionsInDiff(
+  diff: ProjectDiff,
+  seed: number
+): ProjectDiff {
+  let offset = 0
+  const fill = (m: EntityMap): EntityMap => {
+    const out: EntityMap = {}
+    for (const k of Object.keys(m)) out[k] = completeConnection(m[k], seed + offset++)
+    return out
+  }
+  return {
+    ...diff,
+    connections: {
+      added: fill(diff.connections.added),
+      updated: fill(diff.connections.updated),
+      removed: diff.connections.removed,
+    },
+  }
+}
+
+export interface ConnectionIssue {
+  /** the diff's key for the offending connection */
+  key: string
+  message: string
+}
+
+/**
+ * Validate that every added/updated connection in a diff carries the fields that
+ * cannot be defaulted — a non-empty parentActionHash and childActionHash. These
+ * are the meaningful references only the agent can supply; without them the
+ * connection is malformed and would fail opaquely at the zome. Returns a clear
+ * issue per offending connection so the human is told up front. Pure.
+ *
+ * The defaultable fields (randomizer / isImported / siblingOrder) are NOT required
+ * here — completeConnectionsInDiff fills them — so this is safe to run on a raw,
+ * under-specified diff straight from the agent.
+ */
+export function validateConnections(diff: ProjectDiff): ConnectionIssue[] {
+  const issues: ConnectionIssue[] = []
+  const nonEmptyString = (v: any): boolean => typeof v === 'string' && v.length > 0
+  const check = (key: string, conn: any) => {
+    if (!conn || typeof conn !== 'object') {
+      issues.push({ key, message: `Connection "${key}" is not a valid object.` })
+      return
+    }
+    if (!nonEmptyString(conn.parentActionHash))
+      issues.push({
+        key,
+        message: `Connection "${key}" is missing a parent node (parentActionHash).`,
+      })
+    if (!nonEmptyString(conn.childActionHash))
+      issues.push({
+        key,
+        message: `Connection "${key}" is missing a child node (childActionHash).`,
+      })
+  }
+  for (const k of Object.keys(diff.connections.added))
+    check(k, diff.connections.added[k])
+  for (const k of Object.keys(diff.connections.updated))
+    check(k, diff.connections.updated[k])
+  return issues
+}
+
+/**
  * Per-node change counts for a diff (i3b) — what the diff did TO each outcome,
  * rendered as +/~/− badges on the changed nodes themselves. Counts are item-level
  * within the node: clarity fields (description JSON keys), checklist tasks, the

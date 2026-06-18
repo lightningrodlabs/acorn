@@ -17,6 +17,8 @@ import {
   touchedOutcomeHashes,
   findUnresolvedReferences,
   normalizeDiff,
+  completeConnectionsInDiff,
+  validateConnections,
   OutcomeChangeStatsMap,
 } from '../../migrating/projectDiff'
 import { applyProjectDiffToCell } from '../../migrating/applyProjectDiff'
@@ -87,7 +89,11 @@ function completeProposedDiff(
   const updated: { [h: string]: any } = {}
   for (const h of Object.keys(norm.outcomes.updated))
     updated[h] = completeOutcome(norm.outcomes.updated[h], me, now, live[h])
-  return { ...norm, outcomes: { ...norm.outcomes, added, updated } }
+  // Complete agent-authored connections too: fill the randomizer/isImported the
+  // agent can't know, so the draft holds zome-valid connections and Confirm can't
+  // crash at the Ribosome (the connection analogue of completeOutcome).
+  const completed = { ...norm, outcomes: { ...norm.outcomes, added, updated } }
+  return completeConnectionsInDiff(completed, now)
 }
 
 // Light the glow + badges for the effective draft of `projectId`. Computes the
@@ -173,6 +179,17 @@ export async function confirmDraft(
     return { ok: true, committed: 0, empty: true }
   }
   const base = readTree(state, projectId)
+  // malformed connections (no parent/child) can't be defaulted — refuse with a
+  // clear message rather than letting them fail opaquely at create_connection
+  const badConnections = validateConnections(draftDiff)
+  if (badConnections.length) {
+    return {
+      ok: false,
+      error: `Cannot commit — ${badConnections.length} invalid connection(s):\n${badConnections
+        .map((i) => `• ${i.message}`)
+        .join('\n')}`,
+    }
+  }
   const unresolved = findUnresolvedReferences(draftDiff, base)
   if (unresolved.length) {
     return {

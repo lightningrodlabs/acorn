@@ -6,7 +6,12 @@ import {
   touchedOutcomeHashes,
   findUnresolvedReferences,
   perOutcomeChangeStats,
+  completeConnection,
+  completeConnectionsInDiff,
+  validateConnections,
+  normalizeDiff,
   ProjectSnapshot,
+  ProjectDiff,
 } from '../src/migrating/projectDiff'
 
 // minimal snapshot helpers
@@ -212,5 +217,101 @@ describe('projectDiff', () => {
       snapshot({ outcomes: { a: outcome('a', 'A2'), c: outcome('c', 'C') } })
     )
     expect(diffStats(diff).outcomes).toEqual({ added: 1, updated: 1, removed: 1 })
+  })
+
+  // Agent-authored connection hardening: the agent supplies parent/child/sibling
+  // order; the system fills randomizer + isImported and rejects the malformed.
+  describe('connection normalization + validation', () => {
+    const diffWithConns = (added: any): ProjectDiff =>
+      normalizeDiff({ connections: { added } })
+
+    test('completeConnection fills the system-known fields, preserves supplied ones', () => {
+      const out = completeConnection(
+        { parentActionHash: 'p', childActionHash: 'c', siblingOrder: 3 },
+        999
+      )
+      expect(out).toEqual({
+        parentActionHash: 'p',
+        childActionHash: 'c',
+        siblingOrder: 3,
+        randomizer: 999,
+        isImported: false,
+      })
+    })
+
+    test('completeConnection preserves an agent-supplied randomizer/isImported', () => {
+      const out = completeConnection(
+        { parentActionHash: 'p', childActionHash: 'c', randomizer: 7, isImported: true },
+        999
+      )
+      expect(out.randomizer).toBe(7)
+      expect(out.isImported).toBe(true)
+      expect(out.siblingOrder).toBe(0) // defaulted when omitted
+    })
+
+    test('completeConnectionsInDiff gives each connection a distinct randomizer', () => {
+      const diff = diffWithConns({
+        x: { parentActionHash: 'p', childActionHash: 'a', siblingOrder: 0 },
+        y: { parentActionHash: 'p', childActionHash: 'b', siblingOrder: 1 },
+      })
+      const out = completeConnectionsInDiff(diff, 1000)
+      const rx = out.connections.added.x.randomizer
+      const ry = out.connections.added.y.randomizer
+      expect(typeof rx).toBe('number')
+      expect(typeof ry).toBe('number')
+      expect(rx).not.toBe(ry)
+    })
+
+    test('completeConnectionsInDiff is idempotent on an already-completed diff', () => {
+      const once = completeConnectionsInDiff(
+        diffWithConns({ x: { parentActionHash: 'p', childActionHash: 'c', siblingOrder: 0 } }),
+        1000
+      )
+      const twice = completeConnectionsInDiff(once, 5555)
+      expect(twice.connections.added.x).toEqual(once.connections.added.x)
+    })
+
+    test('an under-specified connection passes validation and completes to zome-valid shape', () => {
+      // the executable criterion: a connection with only parent/child/siblingOrder
+      const raw = diffWithConns({
+        x: { parentActionHash: 'p', childActionHash: 'c', siblingOrder: 2 },
+      })
+      expect(validateConnections(raw)).toEqual([])
+      const completed = completeConnectionsInDiff(raw, 1234)
+      const conn = completed.connections.added.x
+      // all five zome Connection fields present and well-typed
+      expect(typeof conn.parentActionHash).toBe('string')
+      expect(typeof conn.childActionHash).toBe('string')
+      expect(typeof conn.siblingOrder).toBe('number')
+      expect(typeof conn.randomizer).toBe('number')
+      expect(typeof conn.isImported).toBe('boolean')
+    })
+
+    test('a connection missing its parent is rejected with a clear message', () => {
+      const issues = validateConnections(
+        diffWithConns({ x: { childActionHash: 'c', siblingOrder: 0 } })
+      )
+      expect(issues).toHaveLength(1)
+      expect(issues[0].key).toBe('x')
+      expect(issues[0].message).toMatch(/parent/i)
+    })
+
+    test('a connection missing its child is rejected', () => {
+      const issues = validateConnections(
+        diffWithConns({ x: { parentActionHash: 'p', siblingOrder: 0 } })
+      )
+      expect(issues.some((i) => /child/i.test(i.message))).toBe(true)
+    })
+
+    test('validation covers updated connections too', () => {
+      const diff = normalizeDiff({
+        connections: { updated: { u: { parentActionHash: 'p', siblingOrder: 0 } } },
+      })
+      expect(validateConnections(diff).some((i) => /child/i.test(i.message))).toBe(true)
+    })
+
+    test('a diff with no connections is valid', () => {
+      expect(validateConnections(normalizeDiff({}))).toEqual([])
+    })
   })
 })

@@ -132,6 +132,52 @@ describe('handleAcornToolCall', () => {
     expect(Array.isArray(entry.tags)).toBe(true)
   })
 
+  test('propose_edits accepts an under-specified connection (parent/child/siblingOrder only)', async () => {
+    const store = makeStore()
+    // the agent supplies only the meaningful fields; randomizer/isImported are
+    // filled by the draft completion step so the draft is committable
+    const withConn: any = {
+      outcomes: {
+        added: { 'draft:1': { actionHash: 'draft:1', content: 'Parent' } },
+      },
+      connections: {
+        added: {
+          'draft:c': {
+            parentActionHash: 'draft:1',
+            childActionHash: 'draft:1',
+            siblingOrder: 0,
+          },
+        },
+      },
+    }
+    const res = await handleAcornToolCall(store, PROJECT, {
+      tool: 'propose_edits',
+      args: { diff: withConn },
+    })
+    expect(res.ok).toBe(true)
+    const conn = store.getState().ui.draft.diff!.connections.added['draft:c']
+    expect(typeof conn.randomizer).toBe('number')
+    expect(conn.isImported).toBe(false)
+  })
+
+  test('propose_edits rejects a malformed connection (missing parent/child) up front', async () => {
+    const store = makeStore()
+    const bad: any = {
+      outcomes: { added: { 'draft:1': { actionHash: 'draft:1', content: 'P' } } },
+      connections: {
+        added: { 'draft:c': { childActionHash: 'draft:1', siblingOrder: 0 } },
+      },
+    }
+    const res = await handleAcornToolCall(store, PROJECT, {
+      tool: 'propose_edits',
+      args: { diff: bad },
+    })
+    expect(res.ok).toBe(false)
+    if (!res.ok) expect(res.error).toMatch(/parent/i)
+    // no draft opened — nothing reaches the zome
+    expect(store.getState().ui.draft.diff).toBeNull()
+  })
+
   test('an unknown tool is reported, not thrown', async () => {
     const store = makeStore()
     const res = await handleAcornToolCall(store, PROJECT, {

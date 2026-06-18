@@ -16,7 +16,12 @@ import { getAppWs } from '../hcWebsockets'
 import { createProjectsZomeApi } from './import/zomeApiCreators'
 import { cellIdFromString } from '../utils'
 import { ActionHashB64, CellIdString } from '../types/shared'
-import { ProjectDiff, DiffCollection } from './projectDiff'
+import {
+  ProjectDiff,
+  DiffCollection,
+  completeConnectionsInDiff,
+  validateConnections,
+} from './projectDiff'
 
 import {
   createOutcome,
@@ -102,6 +107,19 @@ export async function internalApplyProjectDiffToCell(
   dispatch: any,
   projectsZomeApi: ProjectsZomeApi
 ): Promise<ApplyDiffResult> {
+  // Last line of defense before the zome (covers both the draft-commit path and
+  // the file-import path): reject malformed connections with a clear error rather
+  // than an opaque Ribosome Deserialize, and fill the system-known fields
+  // (randomizer/isImported/siblingOrder) an agent can't supply. Idempotent — a
+  // connection already completed upstream keeps its values.
+  const badConnections = validateConnections(diff)
+  if (badConnections.length)
+    throw new Error(
+      `Invalid connection(s) — refusing to commit:\n${badConnections
+        .map((i) => `• ${i.message}`)
+        .join('\n')}`
+    )
+  diff = completeConnectionsInDiff(diff, Date.now())
   const hashMap: HashMap = {}
   const outcomeHashMap: HashMap = {}
   // POST-apply outcome hashes we touched, for the "light up" highlight. Built from

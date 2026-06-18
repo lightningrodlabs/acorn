@@ -17,7 +17,12 @@ import { Store } from 'redux'
 import { RootState } from '../redux/reducer'
 import { CellIdString } from '../types/shared'
 import { readTree } from './readTree'
-import { ProjectDiff, diffStats, normalizeDiff } from '../migrating/projectDiff'
+import {
+  ProjectDiff,
+  diffStats,
+  normalizeDiff,
+  validateConnections,
+} from '../migrating/projectDiff'
 import { HarnessToolCall, HarnessToolResult } from './types'
 import {
   enterDraftReview,
@@ -72,6 +77,18 @@ export async function handleAcornToolCall(
           }
         // an LLM diff may omit collections/fields it didn't touch — fill them in
         const diff = normalizeDiff(raw)
+        // Reject malformed connections (no parent/child) up front, with a clear
+        // message, rather than opening a draft that would fail opaquely at the
+        // zome on Confirm. The defaultable fields (randomizer/isImported) are
+        // filled later by the draft completion step, so they aren't required here.
+        const badConnections = validateConnections(diff)
+        if (badConnections.length)
+          return {
+            ok: false,
+            error: `propose_edits rejected ${badConnections.length} invalid connection(s):\n${badConnections
+              .map((i) => `• ${i.message}`)
+              .join('\n')}`,
+          }
         const state = store.getState() as RootState
         const alreadyOpen =
           !!state.ui.draft.diff && state.ui.draft.projectId === projectId

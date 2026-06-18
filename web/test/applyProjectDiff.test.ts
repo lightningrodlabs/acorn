@@ -126,3 +126,40 @@ describe('applyProjectDiffToCell', () => {
     expect(dispatch).toHaveBeenCalledTimes(5)
   })
 })
+
+// Last line of defense before the zome: agent-authored connections are completed
+// (randomizer/isImported filled) and the malformed are rejected with a clear error
+// rather than an opaque Ribosome Deserialize.
+describe('applyProjectDiffToCell — connection hardening', () => {
+  const diffWith = (conns: any) => ({
+    outcomes: { added: {}, updated: {}, removed: [] },
+    connections: { added: conns, updated: {}, removed: [] },
+    tags: { added: {}, updated: {}, removed: [] },
+    outcomeMembers: { added: {}, updated: {}, removed: [] },
+    outcomeComments: { added: {}, updated: {}, removed: [] },
+    entryPoints: { added: {}, updated: {}, removed: [] },
+  })
+
+  test('an under-specified connection commits with randomizer/isImported defaulted', async () => {
+    const api = mockApi()
+    const diff = diffWith({
+      c1: { parentActionHash: 'liveA', childActionHash: 'liveB', siblingOrder: 0 },
+    })
+    await internalApplyProjectDiffToCell(diff, 'cell', [] as any, jest.fn(), api)
+    expect(api.connection.create).toHaveBeenCalledTimes(1)
+    const [, conn] = api.connection.create.mock.calls[0]
+    expect(typeof conn.randomizer).toBe('number') // system-supplied, agent can't know it
+    expect(conn.isImported).toBe(false)
+    expect(conn.parentActionHash).toBe('liveA')
+    expect(conn.childActionHash).toBe('liveB')
+  })
+
+  test('a malformed connection (no child) is rejected before reaching the zome', async () => {
+    const api = mockApi()
+    const diff = diffWith({ c1: { parentActionHash: 'liveA', siblingOrder: 0 } })
+    await expect(
+      internalApplyProjectDiffToCell(diff, 'cell', [] as any, jest.fn(), api)
+    ).rejects.toThrow(/child/i)
+    expect(api.connection.create).not.toHaveBeenCalled()
+  })
+})
