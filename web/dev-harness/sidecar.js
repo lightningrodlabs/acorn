@@ -61,6 +61,51 @@ const configuredCmd = () => {
   return c && c.trim() ? c : null
 }
 
+// System-prompt control. claude-agent-acp defaults to the `claude_code` preset
+// (the "You are Claude Code…" identity + tool-use/tone sections + dynamic
+// working-dir/memory/git context). We override it per-session via ACP
+// `_meta.systemPrompt`, which the agent maps onto the Claude Agent SDK:
+//   - a STRING fully REPLACES the preset (no Claude identity, no tool-use prose)
+//   - an OBJECT is locked to {type:preset, preset:claude_code} but forwards
+//     `append` / `excludeDynamicSections`, i.e. augments rather than replaces.
+// Config (checked in order; unset = leave the default preset untouched):
+//   ACORN_SYSTEM_PROMPT_FILE  path whose contents become the full prompt
+//   ACORN_SYSTEM_PROMPT       inline full-replacement prompt
+//   ACORN_SYSTEM_PROMPT_APPEND  extra text appended to the claude_code preset
+function resolveSystemPrompt() {
+  const file = process.env.ACORN_SYSTEM_PROMPT_FILE
+  if (file && file.trim()) return withModelNote(fs.readFileSync(file.trim(), 'utf8'))
+  const inline = process.env.ACORN_SYSTEM_PROMPT
+  if (inline && inline.trim()) return withModelNote(inline)
+  // NOTE: appending to the claude_code preset can ADD facts but does NOT reliably
+  // override the preset's authoritative "You are Claude Code" opening — the model
+  // keeps claiming to be Claude Code. Use a full-replacement prompt (the FILE /
+  // inline paths above) when the identity must actually change.
+  const append = process.env.ACORN_SYSTEM_PROMPT_APPEND
+  if (append && append.trim())
+    return { type: 'preset', preset: 'claude_code', append: withModelNote(append) }
+  return null
+}
+
+// The model backing this session, for the identity line. Picked up from the
+// harness call: ANTHROPIC_MODEL (set by harness:openrouter et al.), overridable
+// with ACORN_MODEL_LABEL for a friendlier name or for backends (e.g. OpenCode)
+// that configure the model outside the environment. null = unknown, so we omit
+// the claim rather than assert a wrong one.
+function harnessModelLabel() {
+  const v = process.env.ACORN_MODEL_LABEL || process.env.ANTHROPIC_MODEL
+  return v && v.trim() ? v.trim() : null
+}
+
+// Fold a "backed by <model>" sentence into the appended identity text, so the
+// assistant can state what powers it. Returns the text unchanged when the model
+// is unknown.
+function withModelNote(append) {
+  const model = harnessModelLabel()
+  if (!model) return append
+  return `${append}\n\nYou are backed by the model \`${model}\`; if asked what powers you, you may say so.`
+}
+
 // ACP ContentBlock (agent->client text extraction) -> plain string.
 const blockToText = (block) => {
   if (!block) return ''
@@ -282,9 +327,11 @@ async function handleFrame(ws, frame) {
         return
       }
       case 'newSession': {
+        const systemPrompt = resolveSystemPrompt()
         const res = await state.agent.newSession({
           cwd: frame.cwd || process.cwd(),
           mcpServers: state.acpMcpServers,
+          ...(systemPrompt != null ? { _meta: { systemPrompt } } : {}),
         })
         state.sessions.add(res.sessionId)
         wsSend(ws, { t: 'sessionCreated', id: frame.id, sessionId: res.sessionId })
