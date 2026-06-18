@@ -74,7 +74,7 @@ const configuredCmd = () => {
 //   ACORN_SYSTEM_PROMPT_APPEND  extra text appended to the claude_code preset
 function resolveSystemPrompt() {
   const file = process.env.ACORN_SYSTEM_PROMPT_FILE
-  if (file && file.trim()) return withModelNote(fs.readFileSync(file.trim(), 'utf8'))
+  if (file && file.trim()) return withModelNote(readPromptFile(file.trim()))
   const inline = process.env.ACORN_SYSTEM_PROMPT
   if (inline && inline.trim()) return withModelNote(inline)
   // NOTE: appending to the claude_code preset can ADD facts but does NOT reliably
@@ -85,6 +85,23 @@ function resolveSystemPrompt() {
   if (append && append.trim())
     return { type: 'preset', preset: 'claude_code', append: withModelNote(append) }
   return null
+}
+
+// Read ACORN_SYSTEM_PROMPT_FILE. The dev server's cwd is the web/ workspace
+// (yarn workspace acorn-ui dev), NOT the repo root, so a relative path would
+// resolve wrong — fall back to resolving it against the repo root (two levels
+// up from this file: web/dev-harness/ -> repo root). Throws a clear error rather
+// than a bare ENOENT when neither location has the file.
+function readPromptFile(file) {
+  const candidates = path.isAbsolute(file)
+    ? [file]
+    : [path.resolve(process.cwd(), file), path.resolve(__dirname, '..', '..', file)]
+  for (const p of candidates) {
+    if (fs.existsSync(p)) return fs.readFileSync(p, 'utf8')
+  }
+  throw new Error(
+    `ACORN_SYSTEM_PROMPT_FILE not found: "${file}" (looked in ${candidates.join(', ')})`
+  )
 }
 
 // The model backing this session, for the identity line. Picked up from the
