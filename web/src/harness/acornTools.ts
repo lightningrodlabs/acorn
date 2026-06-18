@@ -23,6 +23,7 @@ import {
   normalizeDiff,
   validateConnections,
 } from '../migrating/projectDiff'
+import { buildNodeRefs, remapDiffRefs } from '../nodeRef'
 import { HarnessToolCall, HarnessToolResult } from './types'
 import {
   enterDraftReview,
@@ -64,7 +65,11 @@ export async function handleAcornToolCall(
     switch (call.tool) {
       case 'read_tree': {
         const snapshot = readTree(store.getState() as RootState, projectId)
-        return { ok: true, result: snapshot }
+        // Expose each node's stable referents {actionHash, hashCodeId, handle?}
+        // alongside the snapshot, so the agent can name nodes by handle / short id
+        // without scraping. Kept separate from the outcome entries so the canonical
+        // (diffable) snapshot is unchanged.
+        return { ok: true, result: { ...snapshot, nodeRefs: buildNodeRefs(snapshot) } }
       }
       case 'propose_edits': {
         // accept either { diff: {...} } or the diff object directly
@@ -76,7 +81,13 @@ export async function handleAcornToolCall(
               'propose_edits expects a ProjectDiff ({ outcomes:{added,updated,removed}, … })',
           }
         // an LLM diff may omit collections/fields it didn't touch — fill them in
-        const diff = normalizeDiff(raw)
+        const normalized = normalizeDiff(raw)
+        // Route node references through resolveRef: the agent may target an existing
+        // node by handle / hashCodeId / casual path instead of its raw actionHash.
+        // Conservative — keys already pointing at a real or just-added node are left
+        // untouched; only an alias that resolves is remapped to the canonical hash.
+        const liveTree = readTree(store.getState() as RootState, projectId)
+        const { diff } = remapDiffRefs(liveTree, normalized)
         // Reject malformed connections (no parent/child) up front, with a clear
         // message, rather than opening a draft that would fail opaquely at the
         // zome on Confirm. The defaultable fields (randomizer/isImported) are

@@ -66,6 +66,9 @@ export type EvDetailsConnectorStateProps = {
   })[]
   // TODO: fix this type
   editingPeers: {}[]
+  // map of handle -> actionHash for every OTHER node in the project, for
+  // enforcing handle uniqueness on assignment
+  takenHandles: Record<string, string>
 }
 
 export type EvDetailsConnectorDispatchProps = {
@@ -123,6 +126,7 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   startDescriptionEdit,
   endDescriptionEdit,
   editingPeers,
+  takenHandles,
   rightColumn,
   // Destructure rightColumn prop
 }) => {
@@ -479,6 +483,9 @@ const EvDetails: React.FC<EvDetailsProps> = ({
             personEditing={descriptionEditor}
             onFieldBlur={onDescriptionBlur}
             onFieldFocus={onDescriptionFocus}
+            takenHandles={takenHandles}
+            selfActionHash={outcomeActionHash}
+            currentUserId={activeAgentPubKey}
           />
         </div>
         {/* End of ev-details-inner-wrapper */}

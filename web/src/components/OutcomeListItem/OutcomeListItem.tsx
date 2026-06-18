@@ -1,5 +1,5 @@
 import React from 'react'
-import hashCodeId from '../../api/clientSideIdHash'
+import { nodeDisplayLabel } from '../../nodeRef'
 import {
   ComputedOutcome,
   ComputedScope,
@@ -56,7 +56,7 @@ const OutcomeListItem: React.FC<OutcomeListItemProps> = ({
       {/* ID */}
       <div className="outcome-list-item-id">
         <Typography style="caption3">
-          {hashCodeId(outcome.actionHash)}
+          {nodeDisplayLabel(outcome)}
         </Typography>
       </div>
 

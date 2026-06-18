@@ -13,6 +13,7 @@ import {
   deleteOutcomeMember,
 } from '../../../../../redux/persistent/projects/outcome-members/actions'
 import { updateOutcome } from '../../../../../redux/persistent/projects/outcomes/actions'
+import { getHandle } from '../../../../../outcomeFields'
 import {
   createTag,
   updateTag,
@@ -110,6 +111,15 @@ function mapStateToProps(
     .map((agentInfo) => filterAndAddAgentInfo(agentInfo))
   // this should only ever by a maximum of two peers (one editing title, one editing description)
 
+  // handle -> actionHash for every node in the project that carries a handle, for
+  // enforcing per-project handle uniqueness when this node is assigned one
+  const projectOutcomes = state.projects.outcomes[projectId] || {}
+  const takenHandles: Record<string, string> = {}
+  for (const [hash, outcome] of Object.entries(projectOutcomes)) {
+    const handle = getHandle((outcome as any).description || '')
+    if (handle && !(handle in takenHandles)) takenHandles[handle] = hash
+  }
+
   return {
     outcomeActionHash,
     projectTags,
@@ -118,6 +128,7 @@ function mapStateToProps(
     editingPeers,
     assignees,
     people,
+    takenHandles,
   }
 }
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import hashCodeId from '../../api/clientSideIdHash'
+import { nodeDisplayLabel } from '../../nodeRef'
 import { ComputedOutcome, ComputedScope, Tag } from '../../types'
 import {
   ActionHashB64,
@@ -68,7 +68,7 @@ const OutcomeTableRow: React.FC<OutcomeTableRowProps> = ({
               minWidth: columnWidthPercentages[0],
             }}
           >
-            {hashCodeId(outcome.actionHash)}
+            {nodeDisplayLabel(outcome)}
           </div>
 
           {/* Outcome statement & progress indicator metadata */}

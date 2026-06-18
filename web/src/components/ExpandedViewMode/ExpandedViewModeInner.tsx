@@ -4,7 +4,7 @@ import EVLeftColumn from './EVLeftColumn/EVLeftColumn'
 import { ExpandedViewTab } from './NavEnum'
 import { CellIdString, ActionHashB64 } from '../../types/shared'
 import { ComputedOutcome } from '../../types'
-import hashCodeId from '../../api/clientSideIdHash'
+import { nodeDisplayLabel } from '../../nodeRef'
 
 // Props needed specifically by the inner layout
 export type ExpandedViewModeInnerProps = {
@@ -39,7 +39,11 @@ const ExpandedViewModeInner: React.FC<ExpandedViewModeInnerProps> = ({
   rightColumn,
   attachments,
 }) => {
-  const outcomeId = hashCodeId(outcomeActionHash)
+  // handle when present, else the 6-digit hashCodeId (stable, human-readable label)
+  const outcomeId = nodeDisplayLabel({
+    actionHash: outcomeActionHash,
+    description: outcome ? outcome.description : '',
+  })
 
   // if not small, then show children list icon on left menu
   const showChildrenListMenuItem = outcome && !('Small' in outcome.scope)

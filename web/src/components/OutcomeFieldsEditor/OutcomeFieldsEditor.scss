@@ -5,6 +5,42 @@
   gap: 1rem;
 }
 
+// Handle — a compact, id-styled slug input above the content sections.
+.outcome-field-handle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+
+  .outcome-field-handle-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--text-color-secondary, #898989);
+    font: 0.85rem var(--font-family-primary-medium);
+  }
+
+  .outcome-field-handle-input {
+    flex: 0 1 16rem;
+    padding: 0.2rem 0.45rem;
+    border: 1px solid var(--border-color, #e6e6e6);
+    border-radius: 0.25rem;
+    background: transparent;
+    color: var(--text-color-primary, #3a3a3a);
+    font: 0.85rem var(--font-family-mono, monospace);
+
+    &::placeholder {
+      color: var(--text-color-tertiary, #b3b3b3);
+    }
+  }
+
+  .outcome-field-handle-error {
+    flex: 1 0 100%;
+    color: var(--color-red, #d0021b);
+    font: 0.78rem var(--font-family-primary-regular);
+  }
+}
+
 // Each section wraps its widget so a remove control can sit at the top-right
 // without the widget components needing to know about it.
 .outcome-field-section {
@@ -211,6 +247,95 @@
   }
 
   .artifact-add {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    align-self: flex-start;
+    padding: 0.25rem 0.5rem;
+    cursor: pointer;
+    border: 0;
+    background: transparent;
+    color: var(--text-color-link, #4d7cfe);
+    font: 0.9rem var(--font-family-primary-medium);
+  }
+}
+
+// Completion-criteria checklist (loop-eval-signal): one row per criterion —
+// confirm checkbox + evaluator stacked on the LEFT, a wide resizable statement
+// textarea on the RIGHT (so the criterion text is actually readable).
+.completion-criteria-field {
+  margin-top: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  .criterion-row {
+    display: flex;
+    // top-align so the controls sit beside the first line of a multi-line statement
+    align-items: flex-start;
+    gap: 0.5rem;
+
+    // left column: checkbox above the evaluator select
+    .criterion-controls {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.35rem;
+      padding-top: 0.2rem;
+    }
+    .criterion-checkbox {
+      width: 1.15rem;
+      height: 1.15rem;
+      cursor: pointer;
+      accent-color: #c77a93;
+
+      &:disabled {
+        cursor: default;
+      }
+    }
+    .criterion-statement {
+      // the readable part: take all remaining width, grow with content, and let
+      // the user drag-resize taller
+      flex: 1 1 auto;
+      min-width: 0;
+      width: 100%;
+      resize: vertical;
+      padding: 0.4rem 0.5rem;
+      outline: none;
+      border: 1px solid var(--border-color, #e0e0e0);
+      border-radius: 0.25rem;
+      background-color: transparent;
+      font: 0.9rem var(--font-family-primary-medium);
+      line-height: 1.4;
+
+      &::placeholder {
+        color: var(--text-color-placeholder);
+      }
+    }
+    .criterion-evaluator {
+      width: 5.5rem;
+      max-width: 5.5rem;
+      padding: 0.2rem 0.25rem;
+      border: 1px solid var(--border-color, #e0e0e0);
+      border-radius: 0.25rem;
+      background-color: transparent;
+      font: 0.72rem var(--font-family-primary-medium);
+      cursor: pointer;
+    }
+    .criterion-remove {
+      cursor: pointer;
+      flex: 0 0 auto;
+      margin-top: 0.3rem;
+    }
+    // a confirmed criterion reads done — muted + struck statement
+    &.criterion-met .criterion-statement {
+      color: var(--text-color-tertiary, #9a9a9a);
+      text-decoration: line-through;
+    }
+  }
+
+  .criterion-add {
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;

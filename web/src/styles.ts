@@ -54,6 +54,14 @@ const STATEMENT_PLACEHOLDER_COLOR = '#CECECE'
 const DEFAULT_OUTCOME_BACKGROUND_COLOR = '#FFFFFF'
 const NOT_ACHIEVED_BACKGROUND_COLOR = '#F7F5EF'
 const ACHIEVED_BACKGROUND_COLOR = '#E9EFE7'
+// a leaf whose build work is done but is waiting on a human verdict: the tan
+// NOT_ACHIEVED colour shifted toward pink, so "this needs you" reads at a glance
+const AWAITING_EVAL_BACKGROUND_COLOR = '#F7E4EA'
+const AWAITING_EVAL_BORDER_COLOR = '#C77A93'
+// a leaf whose criteria are ALL met but is not yet marked Achieved: a warm gold
+// "ripe / ready for final sign-off" — between awaiting-eval (pink) and achieved (green)
+const READY_SIGNOFF_BACKGROUND_COLOR = '#F6EBC2'
+const READY_SIGNOFF_BORDER_COLOR = '#C9A24B'
 
 // canvas outcome border
 const DEFAULT_OUTCOME_BORDER_COLOR = '#FFFFFF'
@@ -104,6 +112,10 @@ export {
   DEFAULT_OUTCOME_BACKGROUND_COLOR,
   NOT_ACHIEVED_BACKGROUND_COLOR,
   ACHIEVED_BACKGROUND_COLOR,
+  AWAITING_EVAL_BACKGROUND_COLOR,
+  AWAITING_EVAL_BORDER_COLOR,
+  READY_SIGNOFF_BACKGROUND_COLOR,
+  READY_SIGNOFF_BORDER_COLOR,
   DEFAULT_OUTCOME_BORDER_COLOR,
   NOT_ACHIEVED_BORDER_COLOR,
   ACHIEVED_BORDER_COLOR,

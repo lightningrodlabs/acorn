@@ -1,6 +1,8 @@
 import {
   ACHIEVED_BORDER_COLOR,
   NOT_ACHIEVED_BORDER_COLOR,
+  AWAITING_EVAL_BORDER_COLOR,
+  READY_SIGNOFF_BORDER_COLOR,
   ACHIEVED_BACKGROUND_COLOR,
   DEFAULT_OUTCOME_BORDER_COLOR,
   IN_BREAKDOWN_BORDER_COLOR,
@@ -10,6 +12,10 @@ import {
   ComputedScope,
   ComputedSimpleAchievementStatus,
 } from '../../../types'
+import {
+  isAwaitingHumanEvaluation,
+  isReadyForSignoff,
+} from '../../../awaitingEval'
 import {
   borderWidth,
   cornerRadiusBorder,
@@ -65,7 +71,13 @@ export const argsForDrawColoredBorder = ({
     outcome.computedAchievementStatus.simple !==
       ComputedSimpleAchievementStatus.Achieved
   ) {
-    borderColor = NOT_ACHIEVED_BORDER_COLOR
+    // gold when all criteria are met (ready to finalize); pink when a human verdict
+    // is still pending; otherwise tan
+    borderColor = isReadyForSignoff(outcome)
+      ? READY_SIGNOFF_BORDER_COLOR
+      : isAwaitingHumanEvaluation(outcome)
+      ? AWAITING_EVAL_BORDER_COLOR
+      : NOT_ACHIEVED_BORDER_COLOR
   } else if (
     outcome.computedScope === ComputedScope.Big &&
     outcome.computedAchievementStatus.simple ===

@@ -10,12 +10,17 @@ import {
   removeField,
   orderedFieldKeys,
   fieldWidgetRegistry,
+  getHandle,
+  setHandle,
+  validateHandle,
   OutcomeArtifact,
+  CompletionCriterion,
 } from '../../outcomeFields'
 import Icon from '../Icon/Icon'
 import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 import MetadataWithLabel from '../MetadataWithLabel/MetadataWithLabel'
 import ArtifactsField from './ArtifactsField'
+import CompletionCriteriaField from './CompletionCriteriaField'
 import './OutcomeFieldsEditor.scss'
 
 // --- field-type registry -----------------------------------------------------
@@ -24,12 +29,13 @@ import './OutcomeFieldsEditor.scss'
 // falls back to a raw-JSON editor, so new/structured field types are never lost.
 // A custom (free-form) section records its chosen widget in the fields' widget
 // registry, so its key resolves to that widget rather than the raw-JSON default.
-type WidgetKind = 'markdown' | 'artifacts' | 'rawjson'
+type WidgetKind = 'markdown' | 'artifacts' | 'criteria' | 'rawjson'
 const FIELD_WIDGET: Record<string, WidgetKind> = {
   outcome: 'markdown',
   spec: 'markdown',
   principle: 'markdown',
   artifacts: 'artifacts',
+  completionCriteria: 'criteria',
 }
 
 // The widget choices offered for a custom section, and the empty value each starts
@@ -37,11 +43,13 @@ const FIELD_WIDGET: Record<string, WidgetKind> = {
 const WIDGET_CHOICES: { kind: WidgetKind; label: string }[] = [
   { kind: 'markdown', label: 'Markdown text' },
   { kind: 'artifacts', label: 'Artifacts list' },
+  { kind: 'criteria', label: 'Completion criteria' },
   { kind: 'rawjson', label: 'Raw JSON' },
 ]
 const EMPTY_VALUE_FOR: Record<WidgetKind, unknown> = {
   markdown: '',
   artifacts: [],
+  criteria: [],
   rawjson: {},
 }
 
@@ -78,6 +86,7 @@ const labelFor = (key: string): string => FIELD_LABELS[key] ?? key
 const WIDGET_ICON: Record<WidgetKind, string> = {
   markdown: 'text-align-left.svg',
   artifacts: 'attachment.svg',
+  criteria: 'square-check.svg',
   rawjson: 'file-copy.svg',
 }
 const FIELD_ICON: Record<string, string> = {
@@ -97,6 +106,13 @@ export type OutcomeFieldsEditorProps = {
   personEditing: WithActionHash<Profile>
   onFieldBlur: React.FocusEventHandler<HTMLElement>
   onFieldFocus: React.FocusEventHandler<HTMLElement>
+  // handle uniqueness: map of handle -> actionHash for OTHER nodes in the project,
+  // and this node's own actionHash (excluded from the conflict check). Optional —
+  // when omitted, only slug-format validation is enforced.
+  takenHandles?: Record<string, string>
+  selfActionHash?: string
+  // current agent pub key — recorded as the `by` on a confirmed criterion
+  currentUserId?: string
 }
 
 // Renders one widget per present field, looked up through the registry. The
@@ -109,6 +125,9 @@ const OutcomeFieldsEditor: React.FC<OutcomeFieldsEditorProps> = ({
   personEditing,
   onFieldBlur,
   onFieldFocus,
+  takenHandles,
+  selfActionHash,
+  currentUserId,
 }) => {
   const fields = parseFields(description)
   const keys = orderedFieldKeys(fields)
@@ -122,6 +141,48 @@ const OutcomeFieldsEditor: React.FC<OutcomeFieldsEditorProps> = ({
   const [adding, setAdding] = useState(false)
   const [customKey, setCustomKey] = useState('')
   const [customWidget, setCustomWidget] = useState<WidgetKind>('markdown')
+
+  // --- handle (stable human-usable reference) --------------------------------
+  // Local input mirrors the stored handle; it is committed to the fields only when
+  // it passes slug validation AND is unique within the project, so an invalid or
+  // colliding handle never persists. Clearing it removes the handle (revert to id).
+  const storedHandle = getHandle(description) ?? ''
+  const [handleInput, setHandleInput] = useState(storedHandle)
+  useEffect(() => {
+    setHandleInput(getHandle(description) ?? '')
+  }, [description])
+  const handleTrimmed = handleInput.trim()
+  const formatCheck = validateHandle(handleTrimmed)
+  const conflictHash =
+    handleTrimmed && takenHandles ? takenHandles[handleTrimmed] : undefined
+  const handleCollision = !!conflictHash && conflictHash !== selfActionHash
+  const handleError = !formatCheck.valid
+    ? formatCheck.message
+    : handleCollision
+    ? 'Another node in this project already uses that handle.'
+    : undefined
+  // Commit the handle into `description` LIVE as the user types (only when the
+  // value is a valid, non-colliding slug). Committing on change — not on blur —
+  // matches the markdown widgets and is what makes a single blur (clicking
+  // outside the node) save: by the time the blur fires updateOutcomeWithLatest,
+  // `description` state already carries the handle. Computed fresh from the raw
+  // value because React state (handleInput) hasn't flushed yet inside onChange.
+  const onHandleChange = (raw: string) => {
+    setHandleInput(raw)
+    const next = raw.trim()
+    const conflict = next && takenHandles ? takenHandles[next] : undefined
+    const invalid =
+      !validateHandle(next).valid || (!!conflict && conflict !== selfActionHash)
+    if (!invalid && next !== storedHandle) {
+      onChange(setHandle(description, next || undefined))
+    }
+  }
+  // On blur, if the field was left holding an invalid/colliding value, revert the
+  // input to the last committed handle so the box never shows an unsaved value.
+  const onHandleBlur = (e: React.FocusEvent<HTMLElement>) => {
+    if (handleError) setHandleInput(storedHandle)
+    onFieldBlur(e)
+  }
 
   const present = (key: string) => fields[key] !== undefined
   const addableKnown = ADDABLE_KNOWN.filter((s) => !present(s.key))
@@ -193,6 +254,22 @@ const OutcomeFieldsEditor: React.FC<OutcomeFieldsEditorProps> = ({
         />
       )
     }
+    if (kind === 'criteria') {
+      return (
+        <CompletionCriteriaField
+          label={labelFor(key)}
+          iconName={iconFor(key, kind)}
+          disabled={isBeingEditedByOther}
+          currentUserId={currentUserId}
+          value={
+            Array.isArray(fields[key]) ? (fields[key] as CompletionCriterion[]) : []
+          }
+          onBlur={onFieldBlur}
+          onFocus={onFieldFocus}
+          onChange={(value) => onChange(setField(description, key, value))}
+        />
+      )
+    }
     return (
       <RawJsonField
         label={labelFor(key)}
@@ -208,6 +285,30 @@ const OutcomeFieldsEditor: React.FC<OutcomeFieldsEditorProps> = ({
 
   return (
     <div className="outcome-fields-editor">
+      {/* Handle — an optional, project-unique slug that names this node stably
+          across rearrangement. Shown in the node's header in place of its id. */}
+      {!isBeingEditedByOther && (
+        <div className="outcome-field-handle">
+          <label className="outcome-field-handle-label" htmlFor="outcome-handle-input">
+            <Icon name="link.svg" size="small" className="not-hoverable" />
+            Handle
+          </label>
+          <input
+            id="outcome-handle-input"
+            className="outcome-field-handle-input"
+            type="text"
+            value={handleInput}
+            placeholder="optional id, e.g. read-tree"
+            spellCheck={false}
+            onChange={(e) => onHandleChange(e.target.value)}
+            onFocus={onFieldFocus}
+            onBlur={onHandleBlur}
+          />
+          {handleError && (
+            <div className="outcome-field-handle-error">{handleError}</div>
+          )}
+        </div>
+      )}
       {keys.map((key) => (
         <div className="outcome-field-section" key={key}>
           {/* every section but the always-present Outcome can be removed */}

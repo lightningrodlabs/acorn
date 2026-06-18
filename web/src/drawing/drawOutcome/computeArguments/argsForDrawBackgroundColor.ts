@@ -1,6 +1,8 @@
 import {
   ACHIEVED_BACKGROUND_COLOR,
   NOT_ACHIEVED_BACKGROUND_COLOR,
+  AWAITING_EVAL_BACKGROUND_COLOR,
+  READY_SIGNOFF_BACKGROUND_COLOR,
   DEFAULT_OUTCOME_BACKGROUND_COLOR,
 } from '../../../styles'
 import {
@@ -8,6 +10,10 @@ import {
   ComputedSimpleAchievementStatus,
   ComputedScope,
 } from '../../../types'
+import {
+  isAwaitingHumanEvaluation,
+  isReadyForSignoff,
+} from '../../../awaitingEval'
 import { borderWidth, cornerRadius } from '../../dimensions'
 import drawBackgroundColor from '../drawBackgroundColor'
 
@@ -44,7 +50,13 @@ export const argsForDrawBackgroundColor = ({
     backgroundColor = ACHIEVED_BACKGROUND_COLOR
     useGreenBoxShadow = true
   } else if (outcome.computedScope === ComputedScope.Small) {
-    backgroundColor = NOT_ACHIEVED_BACKGROUND_COLOR
+    // ramp: all criteria met → gold (ready to finalize); a human criterion still
+    // pending → pink ("evaluate me"); otherwise tan (in progress)
+    backgroundColor = isReadyForSignoff(outcome)
+      ? READY_SIGNOFF_BACKGROUND_COLOR
+      : isAwaitingHumanEvaluation(outcome)
+      ? AWAITING_EVAL_BACKGROUND_COLOR
+      : NOT_ACHIEVED_BACKGROUND_COLOR
   } else {
     backgroundColor = DEFAULT_OUTCOME_BACKGROUND_COLOR
   }

@@ -9,6 +9,14 @@ import {
   orderedFieldKeys,
   fieldWidgetRegistry,
   WIDGET_REGISTRY_KEY,
+  validateHandle,
+  getHandle,
+  setHandle,
+  criterionMet,
+  getCompletionCriteria,
+  setCriterionVerdict,
+  hasUnconfirmedHumanCriterion,
+  allCriteriaMet,
   OutcomeFields,
 } from '../src/outcomeFields'
 
@@ -159,6 +167,170 @@ describe('outcomeFields representation', () => {
       desc = addField(desc, 'b', {}, 'rawjson')
       desc = removeField(desc, 'a')
       expect(fieldWidgetRegistry(parseFields(desc))).toEqual({ b: 'rawjson' })
+    })
+  })
+
+  describe('handle (stable human-usable reference)', () => {
+    test('validateHandle accepts a lowercase slug', () => {
+      expect(validateHandle('read-tree')).toEqual({ valid: true })
+      expect(validateHandle('draft-glow-9')).toEqual({ valid: true })
+    })
+
+    test('validateHandle treats empty / undefined as valid (no handle)', () => {
+      expect(validateHandle('')).toEqual({ valid: true })
+      expect(validateHandle(undefined)).toEqual({ valid: true })
+      expect(validateHandle(null)).toEqual({ valid: true })
+    })
+
+    test('validateHandle rejects uppercase, spaces, and punctuation with a message', () => {
+      for (const bad of ['ReadTree', 'read tree', 'read_tree', 'café', 'a/b']) {
+        const v = validateHandle(bad)
+        expect(v.valid).toBe(false)
+        expect(typeof v.message).toBe('string')
+      }
+    })
+
+    test('setHandle stores a handle that round-trips through getHandle', () => {
+      const desc = setHandle(serializeFields({ outcome: 'o' }), 'read-tree')
+      expect(getHandle(desc)).toBe('read-tree')
+      // and it survives a parse/serialize round-trip
+      expect(getHandle(serializeFields(parseFields(desc)))).toBe('read-tree')
+    })
+
+    test('setHandle preserves other fields', () => {
+      const desc = setHandle(
+        serializeFields({ outcome: 'o', spec: 'keep me' }),
+        'h1'
+      )
+      const f = parseFields(desc)
+      expect(f.outcome).toBe('o')
+      expect(f.spec).toBe('keep me')
+      expect(f.handle).toBe('h1')
+    })
+
+    test('clearing the handle removes the key (falls back to id)', () => {
+      let desc = setHandle(serializeFields({ outcome: 'o' }), 'h1')
+      desc = setHandle(desc, undefined)
+      expect(getHandle(desc)).toBeUndefined()
+      expect(parseFields(desc).handle).toBeUndefined()
+    })
+
+    test('the handle is NOT rendered as its own content section', () => {
+      const desc = setHandle(
+        serializeFields({ outcome: 'o', spec: 's' }),
+        'h1'
+      )
+      // handle round-trips in the fields but never appears among rendered sections
+      expect(parseFields(desc).handle).toBe('h1')
+      expect(orderedFieldKeys(parseFields(desc))).toEqual(['outcome', 'spec'])
+    })
+
+    test('getHandle returns undefined for a legacy / blank description', () => {
+      expect(getHandle('')).toBeUndefined()
+      expect(getHandle('some legacy prose')).toBeUndefined()
+    })
+  })
+
+  describe('completion-criterion verdicts (loop-eval-signal)', () => {
+    const desc = (criteria: OutcomeFields['completionCriteria']) =>
+      serializeFields({ outcome: 'o', completionCriteria: criteria })
+
+    test('a per-criterion verdict {met, evaluator, by, at} round-trips', () => {
+      const stored = desc([
+        { statement: 's', evaluator: 'human', met: true, by: 'agent1', at: 123 },
+      ])
+      const back = parseFields(stored).completionCriteria
+      expect(back).toEqual([
+        { statement: 's', evaluator: 'human', met: true, by: 'agent1', at: 123 },
+      ])
+    })
+
+    test('criterionMet reads the verdict', () => {
+      expect(criterionMet({ statement: 's', evaluator: 'human', met: true })).toBe(true)
+      expect(criterionMet({ statement: 's', evaluator: 'human' })).toBe(false)
+      expect(criterionMet({ statement: 's', evaluator: 'human', met: false })).toBe(false)
+    })
+
+    test('setCriterionVerdict stamps met:true with by/at and round-trips', () => {
+      const stored = desc([
+        { statement: 'a', evaluator: 'human' },
+        { statement: 'b', evaluator: 'executable' },
+      ])
+      const updated = setCriterionVerdict(stored, 0, true, 'me', 999)
+      const cc = getCompletionCriteria(updated)
+      expect(cc[0]).toEqual({ statement: 'a', evaluator: 'human', met: true, by: 'me', at: 999 })
+      // the sibling criterion is untouched
+      expect(cc[1]).toEqual({ statement: 'b', evaluator: 'executable' })
+    })
+
+    test('un-confirming a criterion clears its by/at stamp', () => {
+      let stored = desc([{ statement: 'a', evaluator: 'human' }])
+      stored = setCriterionVerdict(stored, 0, true, 'me', 1)
+      stored = setCriterionVerdict(stored, 0, false)
+      expect(getCompletionCriteria(stored)[0]).toEqual({
+        statement: 'a',
+        evaluator: 'human',
+        met: false,
+      })
+    })
+
+    test('setCriterionVerdict ignores an out-of-range index', () => {
+      const stored = desc([{ statement: 'a', evaluator: 'human' }])
+      expect(setCriterionVerdict(stored, 5, true)).toBe(stored)
+    })
+
+    test('hasUnconfirmedHumanCriterion: true only when a human criterion is unmet', () => {
+      expect(
+        hasUnconfirmedHumanCriterion({
+          outcome: 'o',
+          completionCriteria: [{ statement: 's', evaluator: 'human' }],
+        })
+      ).toBe(true)
+      // a met human criterion does not count
+      expect(
+        hasUnconfirmedHumanCriterion({
+          outcome: 'o',
+          completionCriteria: [{ statement: 's', evaluator: 'human', met: true }],
+        })
+      ).toBe(false)
+      // unmet but non-human criteria do not count
+      expect(
+        hasUnconfirmedHumanCriterion({
+          outcome: 'o',
+          completionCriteria: [
+            { statement: 's', evaluator: 'executable' },
+            { statement: 't', evaluator: 'llm' },
+          ],
+        })
+      ).toBe(false)
+      // no criteria at all
+      expect(hasUnconfirmedHumanCriterion({ outcome: 'o' })).toBe(false)
+    })
+
+    test('allCriteriaMet: true only when every criterion is met and there is ≥1', () => {
+      // every criterion met (mixed evaluators)
+      expect(
+        allCriteriaMet({
+          outcome: 'o',
+          completionCriteria: [
+            { statement: 'a', evaluator: 'human', met: true },
+            { statement: 'b', evaluator: 'executable', met: true },
+          ],
+        })
+      ).toBe(true)
+      // one still unmet
+      expect(
+        allCriteriaMet({
+          outcome: 'o',
+          completionCriteria: [
+            { statement: 'a', evaluator: 'human', met: true },
+            { statement: 'b', evaluator: 'executable' },
+          ],
+        })
+      ).toBe(false)
+      // empty / absent counts as NOT all-met (there is nothing satisfied)
+      expect(allCriteriaMet({ outcome: 'o', completionCriteria: [] })).toBe(false)
+      expect(allCriteriaMet({ outcome: 'o' })).toBe(false)
     })
   })
 })

@@ -1,4 +1,5 @@
 import hashCodeId from '../../api/clientSideIdHash'
+import { getHandle } from '../../outcomeFields'
 import {
   ComputedOutcome,
   ComputedScope,
@@ -34,7 +35,10 @@ export default function filterMatch(
         outcome.content
           .toLowerCase()
           .includes(filter.keywordOrId.toLowerCase())) ||
-      hashCodeId(outcome.actionHash).includes(filter.keywordOrId)
+      hashCodeId(outcome.actionHash).includes(filter.keywordOrId) ||
+      (getHandle(outcome.description || '') || '').includes(
+        filter.keywordOrId.toLowerCase()
+      )
   }
 
   if ('assignees' in filter) {
