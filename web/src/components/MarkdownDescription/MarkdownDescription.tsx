@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
-import ReactMarkdown from 'react-markdown'
+import RichText from '../RichText/RichText'
 import { Profile } from '../../types'
 import { WithActionHash } from '../../types/shared'
 
@@ -66,7 +66,7 @@ const MarkdownDescription: React.FC<MarkdownDescriptionProps> = ({
                 onClick={() => !isBeingEditedByOther && setIsEditing(true)}
               >
                 {value ? (
-                  <ReactMarkdown>{value}</ReactMarkdown>
+                  <RichText source={value} />
                 ) : (
                   <span className="markdown-description-placeholder">
                     {placeholder}

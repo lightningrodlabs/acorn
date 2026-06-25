@@ -1,0 +1,29 @@
+/* Handle references ([[handle]]) rendered inside markdown/chat text. */
+
+.handle-ref {
+  color: #4d63dd;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border-bottom: 1px dashed rgba(77, 99, 221, 0.5);
+  white-space: nowrap;
+
+  &::before {
+    content: '⛬ ';
+    opacity: 0.7;
+    font-weight: 400;
+  }
+
+  &:hover {
+    border-bottom-style: solid;
+  }
+}
+
+/* An unknown handle: legible but plainly not a working link. */
+.handle-ref--unresolved {
+  color: inherit;
+  font-weight: 600;
+  opacity: 0.6;
+  cursor: default;
+  border-bottom: none;
+}
