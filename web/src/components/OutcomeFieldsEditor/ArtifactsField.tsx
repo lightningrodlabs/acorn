@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Icon from '../Icon/Icon'
 import MetadataWithLabel from '../MetadataWithLabel/MetadataWithLabel'
 import { OutcomeArtifact } from '../../outcomeFields'
+import { groupArtifacts, IndexedArtifact } from '../../artifactGroups'
 import {
   conversationTranscript,
   isConversationArtifact,
@@ -55,8 +56,11 @@ const ArtifactsField: React.FC<ArtifactsFieldProps> = ({
     onChange(items)
     onBlur(e)
   }
-  const addArtifact = () => {
-    const next = [...items, { type: '', label: '', uri: '' }]
+  // Two add paths so the human picks the group at add time (the row no longer shows
+  // the `type` field). An input artifact gets an empty type (→ Clarity inputs group);
+  // an output gets 'workproduct' (→ Workproduct group). A human may add either.
+  const addArtifactOfGroup = (type: string) => {
+    const next = [...items, { type, label: '', uri: '' }]
     setItems(next)
     onChange(next)
   }
@@ -66,10 +70,7 @@ const ArtifactsField: React.FC<ArtifactsFieldProps> = ({
     onChange(next)
   }
 
-  return (
-    <MetadataWithLabel label={label} iconName={iconName}>
-      <div className="artifacts-field">
-        {items.map((artifact, index) => {
+  const renderRow = (artifact: OutcomeArtifact, index: number) => {
           // A conversation artifact carries a captured transcript as its value —
           // render it as a readable thread, not the editable type/label/uri row.
           // Detect by TYPE (not by a successful parse) so an empty/placeholder or
@@ -117,18 +118,9 @@ const ArtifactsField: React.FC<ArtifactsFieldProps> = ({
           return (
           <div className="artifact-row" key={index}>
             <input
-              className="artifact-type"
-              disabled={disabled}
-              placeholder="type"
-              value={artifact.type}
-              onChange={(e) => editField(index, 'type', e.target.value)}
-              onBlur={commit}
-              onFocus={onFocus}
-            />
-            <input
               className="artifact-label"
               disabled={disabled}
-              placeholder="label"
+              placeholder="kind — e.g. PR / modified-code / doc"
               value={artifact.label}
               onChange={(e) => editField(index, 'label', e.target.value)}
               onBlur={commit}
@@ -158,12 +150,51 @@ const ArtifactsField: React.FC<ArtifactsFieldProps> = ({
             )}
           </div>
           )
-        })}
+  }
+
+  // Group into clarity INPUTS vs agent-produced work-product OUTPUTS, each rendered
+  // as its own titled SUBSECTION (a bounded block, not a bare label). The Workproduct
+  // subsection appears whenever there are any outputs; the Clarity-inputs heading
+  // appears only alongside it, so a node carrying only inputs stays clean (no lone
+  // header) and reads exactly as before.
+  const { input, output } = groupArtifacts(items)
+  const hasOutputs = output.length > 0
+  const renderGroup = (
+    rows: IndexedArtifact[],
+    groupKey: string,
+    groupLabel: string,
+    showLabel: boolean
+  ) => {
+    if (rows.length === 0) return null
+    return (
+      <div className={`artifact-group artifact-group--${groupKey}`}>
+        {showLabel && <div className="artifact-group-label">{groupLabel}</div>}
+        {rows.map(({ artifact, index }) => renderRow(artifact, index))}
+      </div>
+    )
+  }
+
+  return (
+    <MetadataWithLabel label={label} iconName={iconName}>
+      <div className="artifacts-field">
+        {/* inputs are labelled only when there is also a workproduct group to distinguish from */}
+        {renderGroup(input, 'input', 'Clarity inputs', hasOutputs)}
+        {renderGroup(output, 'output', 'Workproduct', true)}
         {!disabled && (
-          <button type="button" className="artifact-add" onClick={addArtifact}>
-            <Icon name="plus.svg" size="small" className="not-hoverable" />
-            <span>Add artifact</span>
-          </button>
+          <div className="artifact-add-row">
+            <button type="button" className="artifact-add" onClick={() => addArtifactOfGroup('')}>
+              <Icon name="plus.svg" size="small" className="not-hoverable" />
+              <span>Add input</span>
+            </button>
+            <button
+              type="button"
+              className="artifact-add"
+              onClick={() => addArtifactOfGroup('workproduct')}
+            >
+              <Icon name="plus.svg" size="small" className="not-hoverable" />
+              <span>Add output</span>
+            </button>
+          </div>
         )}
       </div>
     </MetadataWithLabel>

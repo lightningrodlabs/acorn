@@ -246,6 +246,36 @@
     }
   }
 
+  // A titled artifacts SUBSECTION — clarity inputs vs work-product outputs — that
+  // reads as its own bounded area rather than a bare tag/label.
+  .artifact-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    .artifact-group-label {
+      font: 0.75rem var(--font-family-primary-bold, var(--font-family-primary-medium));
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.6;
+    }
+  }
+  // The work-product subsection is visually distinct: a tinted, left-accented block
+  // grouping the agent-produced outputs together.
+  .artifact-group--output {
+    border-left: 3px solid var(--text-color-link, #4d7cfe);
+    background: rgba(77, 124, 254, 0.05);
+    border-radius: 0 6px 6px 0;
+    padding: 0.4rem 0.6rem;
+  }
+
+  // Two add paths — input vs output — so the group is chosen at add time.
+  .artifact-add-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
   .artifact-add {
     display: inline-flex;
     align-items: center;
