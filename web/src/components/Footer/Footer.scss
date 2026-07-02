@@ -21,7 +21,8 @@
 .bottom-right-panel {
   position: fixed;
   bottom: 10px;
-  right: 10px;
+  // keep the zoom / view controls clear of the docked tree-chat panel (0 when closed)
+  right: calc(10px + var(--acorn-chat-width, 0px));
   // border-radius: 10px;
   max-height: 50px;
   padding: 12px 0px;

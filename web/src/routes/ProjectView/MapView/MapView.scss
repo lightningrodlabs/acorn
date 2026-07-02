@@ -1,5 +1,10 @@
 canvas {
   position: absolute;
+  left: 0;
+  // Shrink the drawable area by the docked tree-chat panel's width (0 when the
+  // panel is closed) so the tree reflows to its left and is never hidden behind
+  // it. setupCanvas reads this via getBoundingClientRect on the next `resize`.
+  width: calc(100vw - var(--acorn-chat-width, 0px));
 
   &.grabbing {
     cursor: grabbing;
