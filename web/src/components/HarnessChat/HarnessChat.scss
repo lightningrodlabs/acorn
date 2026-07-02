@@ -14,34 +14,45 @@
 }
 
 .harness-chat {
-  // default placement: right side, above the zoom controls. On first open this
-  // is converted to an explicit left/top (inline style) so dragging + native
-  // resize behave predictably.
+  // Docked to the right edge, dropped below the app header so its controls stay
+  // reachable. The width is inline (set by the component, drag-resizable via the
+  // left-edge grip); the map subtracts this same width from its canvas so the
+  // panel never overlaps the tree.
   position: fixed;
-  right: 10px;
-  bottom: 5rem;
-  width: 22rem;
-  height: 30rem;
-  min-width: 16rem;
-  min-height: 14rem;
-  max-width: 92vw;
-  max-height: 88vh;
-  resize: both; // draggable corner — width & height
+  top: 4rem; // clear the header (≈3rem tall + margins)
+  right: 0;
+  bottom: 0;
+  width: 22rem; // fallback; real width comes from the inline style
   display: flex;
   flex-direction: column;
   background: #fff;
-  border-radius: 0.6rem;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  border-top-left-radius: 0.6rem;
+  box-shadow: -6px 0 24px rgba(0, 0, 0, 0.14);
   z-index: 1000;
   overflow: hidden;
   font-size: 0.85rem;
-  border: 2px solid transparent;
-  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+  border-left: 2px solid transparent;
+  transition: border-color 0.12s ease;
 
   // Clear, distinct state: the chat owns the keyboard, tree shortcuts are paused.
   &.keyboard-owned {
-    border-color: #6a3df5;
-    box-shadow: 0 0 0 3px rgba(106, 61, 245, 0.25), 0 6px 24px rgba(0, 0, 0, 0.18);
+    border-left-color: #6a3df5;
+    box-shadow: -3px 0 0 0 rgba(106, 61, 245, 0.35), -6px 0 24px rgba(0, 0, 0, 0.14);
+  }
+}
+
+// Left-edge grip for resizing the docked panel.
+.harness-chat-resize {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: col-resize;
+  z-index: 2;
+
+  &:hover {
+    background: rgba(106, 61, 245, 0.18);
   }
 }
 
@@ -49,7 +60,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: move;
   user-select: none;
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
@@ -180,6 +190,91 @@
       color: #b00020;
     }
   }
+  // Each backend's chats are grouped under a label. The attached agent's group
+  // is resumable; others are shown read-only (greyed, with a tag).
+  .hist-group + .hist-group {
+    border-top: 1px solid #eee;
+    margin-top: 0.2rem;
+    padding-top: 0.2rem;
+  }
+  .hist-group-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.4rem;
+    padding: 0.3rem 0.5rem 0.15rem;
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #9a9a9a;
+  }
+  .hist-readonly-tag {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.62rem;
+    color: #b07a1e;
+    background: #fdf3df;
+    border-radius: 0.25rem;
+    padding: 0.02rem 0.3rem;
+  }
+  // Other agents' rows read as secondary — legible but clearly not the live chat.
+  .hist-group:not(.current-agent) .hist-title {
+    color: #777;
+  }
+  // "Move chat to another agent" control + its little submenu.
+  .hist-move-wrap {
+    position: relative;
+    flex: none;
+  }
+  .hist-move {
+    border: none;
+    background: transparent;
+    color: #bbb;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0 0.3rem;
+    &:hover {
+      color: #6a3df5;
+    }
+  }
+  .hist-move-menu {
+    position: absolute;
+    right: 0;
+    top: 1.4rem;
+    z-index: 6;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.3rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+    padding: 0.15rem;
+    min-width: 8rem;
+
+    button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      padding: 0.3rem 0.45rem;
+      font-size: 0.76rem;
+      color: #333;
+      border-radius: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      &:hover {
+        background: #f3f0ff;
+        color: #5a32d0;
+      }
+    }
+    .hist-move-empty {
+      display: block;
+      padding: 0.3rem 0.45rem;
+      font-size: 0.72rem;
+      color: #999;
+    }
+  }
 }
 
 .harness-chat-selection {
@@ -234,11 +329,6 @@
 .harness-chat-status {
   padding: 0.75rem;
   color: #555;
-
-  &.error {
-    color: #b00020;
-    white-space: pre-wrap;
-  }
 }
 
 .harness-chat-transcript {
@@ -329,11 +419,37 @@
       font-weight: 600;
     }
   }
+  // The agent's reasoning ("Thinking") stream — a collapsible disclosure that
+  // sits just above its answer bubble. Persisted with the message, so it stays
+  // re-readable after the turn instead of disappearing.
   &.thought {
     align-self: flex-start;
-    color: #888;
-    font-style: italic;
+    max-width: 100%;
+    padding: 0.1rem 0 0;
     background: transparent;
+
+    .thought-toggle {
+      border: none;
+      background: transparent;
+      color: #999;
+      font-size: 0.72rem;
+      cursor: pointer;
+      padding: 0.1rem 0;
+      letter-spacing: 0.02em;
+      &:hover {
+        color: #6a3df5;
+      }
+    }
+    .thought-body {
+      margin-top: 0.15rem;
+      padding-left: 0.5rem;
+      border-left: 2px solid #e3dcff;
+      color: #888;
+      font-style: italic;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 0.78rem;
+    }
   }
   &.system {
     align-self: center;
@@ -401,9 +517,35 @@
 
 .harness-chat-input {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.4rem;
   padding: 0.5rem;
   border-top: 1px solid #eee;
+
+  // Harness-unreachable banner: sits on its own line above the (disabled) text
+  // box so the saved chat stays readable behind it.
+  .harness-chat-input-error {
+    flex-basis: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 0.4rem;
+    background: #fdecef;
+    border: 1px solid #f3c2cc;
+    color: #b00020;
+
+    .error-text {
+      flex: 1;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+    }
+
+    button.reconnect {
+      flex: none;
+      background: #b00020;
+    }
+  }
 
   textarea {
     flex: 1;
@@ -428,5 +570,59 @@
       opacity: 0.5;
       cursor: default;
     }
+  }
+}
+
+// Attach-conversation control + inline target picker (replaces window.prompt).
+.harness-chat-attach {
+  margin-bottom: 6px;
+
+  .harness-chat-attach-btn {
+    font-size: 12px;
+    padding: 3px 8px;
+    cursor: pointer;
+  }
+
+  .harness-chat-attach-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    border: 1px solid rgba(127, 127, 127, 0.35);
+    border-radius: 6px;
+
+    .attach-target {
+      font-size: 12px;
+      strong { font-weight: 600; }
+      .attach-why { opacity: 0.7; }
+    }
+    .attach-override {
+      font-size: 12px;
+      padding: 4px 6px;
+    }
+    .attach-error {
+      font-size: 12px;
+      color: #c0392b;
+    }
+    .attach-actions {
+      display: flex;
+      gap: 6px;
+      button { font-size: 12px; padding: 3px 10px; cursor: pointer; }
+    }
+  }
+}
+
+// Dedup note inside the attach picker: session already retained elsewhere.
+.harness-chat-attach .attach-dedup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  opacity: 0.85;
+
+  .attach-copyanyway {
+    display: flex;
+    align-items: center;
+    gap: 6px;
   }
 }

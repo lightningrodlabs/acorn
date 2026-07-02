@@ -348,3 +348,128 @@
     font: 0.9rem var(--font-family-primary-medium);
   }
 }
+
+/* Conversation artifact — a captured chat transcript rendered as a readable
+   thread, visually distinct from the input/output reference-artifact rows. */
+.artifact-row--conversation {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  // Pin the delete control to the TOP-right of the (possibly very long) thread
+  // so it's always reachable, not buried mid-stream.
+  position: relative;
+  .artifact-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 1;
+  }
+}
+// A reference to a conversation held elsewhere — compact, not a full thread.
+.artifact-row--conversation-ref {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  .conversation-ref-note {
+    flex: 1;
+    font-size: 0.85rem;
+    opacity: 0.85;
+  }
+}
+.conversation-artifact {
+  flex: 1;
+  border-left: 3px solid var(--text-color-link, #4d7cfe);
+  background: rgba(77, 124, 254, 0.05);
+  border-radius: 0 6px 6px 0;
+  padding: 0.5rem 0.7rem;
+}
+.conversation-artifact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.35rem;
+}
+.conversation-artifact-title {
+  font: 0.95rem var(--font-family-primary-bold, sans-serif);
+}
+.conversation-artifact-count {
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+.conversation-artifact-anchor {
+  font-size: 0.75rem;
+  opacity: 0.65;
+  margin-bottom: 0.4rem;
+  font-style: italic;
+}
+.conversation-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.conversation-turn {
+  display: flex;
+  gap: 0.45rem;
+}
+.conversation-turn-role {
+  flex: 0 0 3.2rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.7;
+  padding-top: 0.1rem;
+}
+.conversation-turn.role-user .conversation-turn-role {
+  color: var(--text-color-link, #4d7cfe);
+}
+.conversation-turn-body {
+  flex: 1;
+}
+.conversation-turn-content {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.conversation-turn-thinking {
+  font-size: 0.8rem;
+  opacity: 0.6;
+  font-style: italic;
+  white-space: pre-wrap;
+  margin-bottom: 0.2rem;
+}
+.conversation-turn-tools {
+  margin: 0.2rem 0 0;
+  padding-left: 0.9rem;
+  font-size: 0.78rem;
+  opacity: 0.75;
+}
+.conversation-plan {
+  margin-top: 0.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 0.35rem;
+}
+.conversation-plan-toggle {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.78rem;
+  opacity: 0.7;
+  padding: 0;
+}
+.conversation-plan-entries {
+  margin: 0.25rem 0 0;
+  padding-left: 1rem;
+  font-size: 0.82rem;
+}
+.conversation-plan-entries .plan-completed {
+  opacity: 0.55;
+  text-decoration: line-through;
+}
+
+.conversation-artifact--empty {
+  opacity: 0.8;
+}
+.conversation-artifact-emptynote {
+  font-size: 0.82rem;
+  opacity: 0.6;
+  font-style: italic;
+}

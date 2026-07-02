@@ -2,6 +2,16 @@ import React, { useEffect, useState } from 'react'
 import Icon from '../Icon/Icon'
 import MetadataWithLabel from '../MetadataWithLabel/MetadataWithLabel'
 import { OutcomeArtifact } from '../../outcomeFields'
+import {
+  conversationTranscript,
+  isConversationArtifact,
+} from '../../harness/conversationArtifact'
+import {
+  isConversationRef,
+  conversationRefTarget,
+} from '../../harness/conversationDedup'
+import ConversationArtifact from './ConversationArtifact'
+import RichText from '../RichText/RichText'
 
 // The artifacts list editor (branch E / e1): a node's typed artifacts — the
 // clarity inputs (designs, docs, links) and agent workproduct outputs — each with
@@ -59,7 +69,52 @@ const ArtifactsField: React.FC<ArtifactsFieldProps> = ({
   return (
     <MetadataWithLabel label={label} iconName={iconName}>
       <div className="artifacts-field">
-        {items.map((artifact, index) => (
+        {items.map((artifact, index) => {
+          // A conversation artifact carries a captured transcript as its value —
+          // render it as a readable thread, not the editable type/label/uri row.
+          // Detect by TYPE (not by a successful parse) so an empty/placeholder or
+          // malformed one still reads as a conversation, with an empty state.
+          if (isConversationRef(artifact)) {
+            // A pointer to a conversation held on another node — a clickable
+            // [[ref]] link, never a copy of the transcript.
+            const ref = conversationRefTarget(artifact)
+            return (
+              <div className="artifact-row artifact-row--conversation-ref" key={index}>
+                <RichText
+                  className="conversation-ref-note"
+                  source={`↪ Conversation retained on [[${ref}]] — open it there.`}
+                />
+                {!disabled && (
+                  <Icon
+                    name="delete-bin.svg"
+                    size="small"
+                    className="light-grey artifact-remove"
+                    onClick={() => removeArtifact(index)}
+                  />
+                )}
+              </div>
+            )
+          }
+          if (isConversationArtifact(artifact)) {
+            const transcript = conversationTranscript(artifact)
+            return (
+              // position:relative + .artifact-remove absolute top-right (SCSS) so
+              // the delete control sits at the TOP of a long thread, not buried
+              // in the middle of it.
+              <div className="artifact-row artifact-row--conversation" key={index}>
+                {!disabled && (
+                  <Icon
+                    name="delete-bin.svg"
+                    size="small"
+                    className="light-grey artifact-remove"
+                    onClick={() => removeArtifact(index)}
+                  />
+                )}
+                <ConversationArtifact label={artifact.label} transcript={transcript} />
+              </div>
+            )
+          }
+          return (
           <div className="artifact-row" key={index}>
             <input
               className="artifact-type"
@@ -102,7 +157,8 @@ const ArtifactsField: React.FC<ArtifactsFieldProps> = ({
               />
             )}
           </div>
-        ))}
+          )
+        })}
         {!disabled && (
           <button type="button" className="artifact-add" onClick={addArtifact}>
             <Icon name="plus.svg" size="small" className="not-hoverable" />

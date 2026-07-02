@@ -15,6 +15,13 @@ class MemoryStorage {
   clear(): void {
     this.store.clear()
   }
+  // enumeration API (used by listScopedSessions to find every agent's scope)
+  get length(): number {
+    return this.store.size
+  }
+  key(i: number): string | null {
+    return [...this.store.keys()][i] ?? null
+  }
 }
 
 const g = globalThis as any
