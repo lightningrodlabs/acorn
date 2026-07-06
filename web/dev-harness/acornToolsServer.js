@@ -175,21 +175,28 @@ async function handle(msg) {
   }
 }
 
-const rl = readline.createInterface({ input: process.stdin })
-rl.on('line', (line) => {
-  const trimmed = line.trim()
-  if (!trimmed) return
-  let msg
-  try {
-    msg = JSON.parse(trimmed)
-  } catch (e) {
-    log('parse error:', e.message)
-    return
-  }
-  Promise.resolve(handle(msg)).catch((e) => {
-    log('handler error:', e && e.message)
-    if (msg && msg.id != null) replyError(msg.id, -32603, String(e && e.message))
+// Run the stdio JSON-RPC server only when invoked as a script (the ACP agent
+// spawns it). When `require`d (e.g. the direct backend needs the TOOLS schemas),
+// just export and do NOT touch stdin.
+if (require.main === module) {
+  const rl = readline.createInterface({ input: process.stdin })
+  rl.on('line', (line) => {
+    const trimmed = line.trim()
+    if (!trimmed) return
+    let msg
+    try {
+      msg = JSON.parse(trimmed)
+    } catch (e) {
+      log('parse error:', e.message)
+      return
+    }
+    Promise.resolve(handle(msg)).catch((e) => {
+      log('handler error:', e && e.message)
+      if (msg && msg.id != null) replyError(msg.id, -32603, String(e && e.message))
+    })
   })
-})
 
-log(`ready (bridge → http://127.0.0.1:${WEB_PORT}/__acorn_tool)`)
+  log(`ready (bridge → http://127.0.0.1:${WEB_PORT}/__acorn_tool)`)
+}
+
+module.exports = { TOOLS, PROJECT_DIFF_SCHEMA }

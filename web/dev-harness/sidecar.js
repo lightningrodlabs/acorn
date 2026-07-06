@@ -22,11 +22,16 @@
  */
 const fs = require('fs')
 const path = require('path')
+const os = require('os')
 const { spawn } = require('child_process')
 const { Readable, Writable } = require('node:stream')
 const { WebSocketServer } = require('ws')
 const { loadMcpServers, toAcpServers } = require('./mcpConfig')
-const { skillPromptBlocks } = require('./skill')
+const { skillPromptBlocks, loadSkill } = require('./skill')
+const { composeFirstPrompt, composeTurn } = require('./promptContext')
+const { prepareSystemSlot } = require('./systemSlot')
+const { makeDirectAgent, makeHttpChat } = require('./directBackend')
+const { TOOLS: ACORN_TOOLS } = require('./acornToolsServer')
 
 const HARNESS_PATH = '/__acorn_harness'
 
@@ -84,6 +89,22 @@ function resolveSystemPrompt() {
   const append = process.env.ACORN_SYSTEM_PROMPT_APPEND
   if (append && append.trim())
     return { type: 'preset', preset: 'claude_code', append: withModelNote(append) }
+  return null
+}
+
+// The Acorn system prompt as plain TEXT, for inline delivery on a session's first
+// turn — the universal channel every ACP backend forwards to its model (see
+// promptContext.js). Same env as resolveSystemPrompt, but ALWAYS a string: even
+// the APPEND case is inlined as text (every backend should see that guidance),
+// whereas resolveSystemPrompt keeps APPEND as a claude-preset object for `_meta`.
+// null when nothing is configured.
+function systemPromptText() {
+  const file = process.env.ACORN_SYSTEM_PROMPT_FILE
+  if (file && file.trim()) return withModelNote(readPromptFile(file.trim()))
+  const inline = process.env.ACORN_SYSTEM_PROMPT
+  if (inline && inline.trim()) return withModelNote(inline)
+  const append = process.env.ACORN_SYSTEM_PROMPT_APPEND
+  if (append && append.trim()) return withModelNote(append)
   return null
 }
 
@@ -238,16 +259,114 @@ function makeClient(state) {
   }
 }
 
+// Direct OpenAI-compatible backend config — selected when a base URL + model are
+// set (yarn harness:ollama), in preference to spawning an ACP agent. Talks
+// straight to the model (no OpenCode/ACP in between); see directBackend.js.
+function directConfig() {
+  const baseURL = process.env.ACORN_OPENAI_BASE_URL
+  const model = process.env.ACORN_OPENAI_MODEL
+  if (!baseURL || !model) return null
+  return {
+    baseURL,
+    model,
+    apiKey: process.env.ACORN_OPENAI_API_KEY || '',
+    modelLabel: process.env.ACORN_MODEL_LABEL || model,
+  }
+}
+
+// Build the singleton state around a direct backend (no child process / ACP).
+function makeDirectState(cfg) {
+  let seq = 0
+  const state = {
+    direct: true,
+    agent: null,
+    binding: null,
+    pendingFrames: [],
+    sessions: new Set(),
+    initialized: false,
+    info: null,
+    canLoadSession: false,
+    replaying: false,
+    // The hosted Acorn tools are delivered to the model in-process (as OpenAI
+    // tools), so the chip still shows "acorn" but there's no ACP attachment.
+    mcpServers: [{ name: 'acorn' }],
+    acpMcpServers: [],
+    skillSentSessions: new Set(),
+    nextPermissionId: 1,
+    pendingPermissions: new Map(),
+    activePromptIds: new Set(),
+    nextToolId: 1,
+    pendingToolCalls: new Map(),
+  }
+  state.agent = makeDirectAgent({
+    model: cfg.model,
+    modelLabel: cfg.modelLabel,
+    systemText: systemPromptText(),
+    skillText: loadSkill(),
+    tools: ACORN_TOOLS,
+    chat: makeHttpChat({
+      baseURL: cfg.baseURL,
+      model: cfg.model,
+      apiKey: cfg.apiKey,
+    }),
+    callTool: (name, args) => callRendererTool(name, args),
+    pushUpdate: (sessionId, update) =>
+      pushToBinding(state, { t: 'update', sessionId, update }),
+    genSessionId: () => `direct-${++seq}`,
+  })
+  return state
+}
+
 async function getAgent() {
   if (agent) return agent
+  const direct = directConfig()
+  if (direct) {
+    // eslint-disable-next-line no-console
+    console.log(
+      `[acorn-harness] direct backend → ${direct.baseURL} model=${direct.model} (no ACP/OpenCode)`
+    )
+    agent = makeDirectState(direct)
+    return agent
+  }
   const cmd = configuredCmd()
   if (!cmd)
     throw new Error(
       'No LLM harness configured. Set ACORN_HARNESS_CMD (or run yarn harness:claude / harness:gemini / harness:openrouter).'
     )
   const acp = await loadAcp()
+  // Seat the Acorn system prompt in the backend's authoritative system slot when
+  // we have an adapter for it (claude uses _meta on newSession; OpenCode needs its
+  // config patched BEFORE spawn — see systemSlot.js). Inline delivery remains the
+  // universal floor regardless. Generated configs go under a FIXED temp dir (NOT
+  // os.tmpdir(): under `nix develop` TMPDIR is per-session, so the path would be
+  // unpredictable — matches the /tmp/acorn-clarity convention in webpack.dev.js).
+  const slotTmp = '/tmp/acorn-harness'
+  try {
+    fs.mkdirSync(slotTmp, { recursive: true })
+  } catch (_) {}
+  const slot = prepareSystemSlot({
+    cmd,
+    env: process.env,
+    systemText: systemPromptText(),
+    tmpdir: slotTmp,
+    // OpenCode ignores ACP session/new mcpServers, so also register Acorn's tool
+    // server in its config — with an ABSOLUTE command so it actually spawns.
+    opencodeAcornMcp: {
+      type: 'local',
+      command: [process.execPath, path.join(__dirname, 'acornToolsServer.js')],
+      environment: { ACORN_WEB_PORT: String(process.env.WEB_PORT || '') },
+      enabled: true,
+    },
+  })
+  if (slot.note)
+    // eslint-disable-next-line no-console
+    console.log(`[acorn-harness] ${slot.note}`)
   // shell:true so ACORN_HARNESS_CMD can be a full command line with args.
-  const child = spawn(cmd, { shell: true, stdio: ['pipe', 'pipe', 'inherit'] })
+  const child = spawn(cmd, {
+    shell: true,
+    stdio: ['pipe', 'pipe', 'inherit'],
+    env: slot.env,
+  })
   const state = {
     acp,
     child,
@@ -325,7 +444,27 @@ async function handleFrame(ws, frame) {
           // natively-forwarded servers vs ones bridged through stdio mcp-remote.
           const mcpCaps =
             (res.agentCapabilities && res.agentCapabilities.mcpCapabilities) || {}
-          state.acpMcpServers = toAcpServers(state.mcpServers, mcpCaps)
+          // The direct backend has no ACP transport — its tools are delivered
+          // in-process — so there's nothing to map to ACP servers.
+          state.acpMcpServers = state.direct
+            ? []
+            : toAcpServers(state.mcpServers, mcpCaps)
+          // Whether the agent CLAIMS to forward embedded `resource` blocks. Kept
+          // for diagnostics only — we no longer branch on it: OpenCode advertises
+          // embeddedContext yet drops both resources and _meta.systemPrompt, so
+          // context is delivered uniformly as inline text for every backend (see
+          // promptContext.js). The flag just helps spot a lying agent in the log.
+          state.embeddedContext = !!(
+            res.agentCapabilities &&
+            res.agentCapabilities.promptCapabilities &&
+            res.agentCapabilities.promptCapabilities.embeddedContext
+          )
+          // eslint-disable-next-line no-console
+          console.log(
+            `[acorn-harness] agent=${
+              res.agentInfo && res.agentInfo.name
+            } claimsEmbeddedContext=${state.embeddedContext} (context delivered inline for all)`
+          )
           if (state.mcpServers.length)
             // eslint-disable-next-line no-console
             console.log(
@@ -385,13 +524,38 @@ async function handleFrame(ws, frame) {
         return
       }
       case 'prompt': {
-        const blocks = (frame.blocks || []).map(toAcpBlock)
-        // Seed the clarity-trees skill once per session, ahead of the turn's
-        // own blocks, so it grounds every tree-editing request in the session.
-        if (!state.skillSentSessions.has(frame.sessionId)) {
+        const userBlocks = (frame.blocks || []).map(toAcpBlock)
+        // Uniform delivery for EVERY backend (see promptContext.js): on a session's
+        // first prompt, fold the Acorn system prompt + skill into the leading
+        // blocks; on every prompt, flatten embedded resources to text. We do NOT
+        // branch on the agent's advertised capabilities — OpenCode claims
+        // _meta/embeddedContext support but forwards neither, so trusting the flag
+        // leaves it with no Acorn context. `_meta.systemPrompt` on newSession is
+        // kept as an extra identity override for agents that honor it (claude).
+        const firstTurn = !state.skillSentSessions.has(frame.sessionId)
+        let blocks
+        if (state.direct) {
+          // The direct backend seats the system prompt + skill in the system
+          // message (see directBackend.js), so hand it the raw turn blocks
+          // (tree snapshot / selection / user text) — no inline preamble.
           state.skillSentSessions.add(frame.sessionId)
-          blocks.unshift(...skillPromptBlocks())
+          blocks = userBlocks
+        } else if (firstTurn) {
+          state.skillSentSessions.add(frame.sessionId)
+          blocks = composeFirstPrompt({
+            userBlocks,
+            skillBlocks: skillPromptBlocks(),
+            systemText: systemPromptText(),
+          })
+        } else {
+          blocks = composeTurn(userBlocks)
         }
+        // eslint-disable-next-line no-console
+        console.log(
+          `[acorn-harness] prompt session=${frame.sessionId} backend=${
+            state.direct ? 'direct' : 'acp'
+          } firstTurn=${firstTurn} blocks=${blocks.length}`
+        )
         state.activePromptIds.add(frame.id)
         try {
           const res = await state.agent.prompt({
@@ -546,10 +710,11 @@ function attachHarnessSidecar(server) {
     wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws, req))
   })
   wss.on('connection', (ws) => {
-    if (!configuredCmd()) {
+    if (!configuredCmd() && !directConfig()) {
       wsSend(ws, {
         t: 'unavailable',
-        reason: 'No LLM harness configured (ACORN_HARNESS_CMD unset).',
+        reason:
+          'No LLM harness configured (set ACORN_HARNESS_CMD, or ACORN_OPENAI_BASE_URL + ACORN_OPENAI_MODEL for the direct backend).',
       })
     }
     ws.on('message', (data) => {
@@ -571,9 +736,11 @@ function attachHarnessSidecar(server) {
   // eslint-disable-next-line no-console
   console.log(
     `[acorn-harness] WebSocket on ${HARNESS_PATH}` +
-      (configuredCmd()
+      (directConfig()
+        ? ` (direct backend: ${directConfig().model})`
+        : configuredCmd()
         ? ` (agent: ${configuredCmd()})`
-        : ' (no ACORN_HARNESS_CMD — harness unavailable)')
+        : ' (no harness configured — unavailable)')
   )
 }
 

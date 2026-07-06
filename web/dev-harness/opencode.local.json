@@ -1,0 +1,26 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "acorn": {
+      "type": "local",
+      "command": ["node", "web/dev-harness/acornToolsServer.js"],
+      "environment": { "ACORN_WEB_PORT": "8081" },
+      "enabled": true
+    }
+  },
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "lfm2.5:8b-a1b-q4_K_M": {
+          "name": "LFM2.5-8B-A1B (local, Q4_K_M)"
+        }
+      }
+    }
+  },
+  "model": "ollama/lfm2.5:8b-a1b-q4_K_M"
+}

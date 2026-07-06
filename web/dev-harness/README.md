@@ -51,14 +51,80 @@ ANTHROPIC_MODEL='openai/gpt-4o' yarn harness:openrouter
 - Confirm which model actually served a turn at <https://openrouter.ai/activity>
   — don't trust the assistant's self-report (see the system-prompt note below).
 
-## System prompt
+## System prompt & context delivery (uniform across backends)
+
+**How every backend gets the same Acorn context.** ACP offers two *optional*
+channels for out-of-band context — `_meta.systemPrompt` on `session/new` and
+embedded `resource` content blocks — but agents disagree on, and sometimes
+misreport, support for them. OpenCode advertises `embeddedContext` and accepts
+`_meta`, yet forwards **neither** to its model — so a session that relied on them
+got no Acorn context at all (the model answered "who are you?" as a generic
+assistant). The one channel every ACP agent reliably forwards is ordinary user
+prompt **text**.
+
+So the sidecar delivers the Acorn preamble — **system prompt + clarity-trees
+skill** — plus per-turn context (tree snapshot, selection) as **inline text on
+each session's first prompt, identically for all backends** (claude, OpenCode,
+Gemini, …). Embedded resources are flattened to text too. This composition lives
+in [promptContext.js](./promptContext.js) (`composeFirstPrompt` / `composeTurn`)
+and is unit-tested. The sidecar no longer branches on advertised capabilities.
+
+### System slot, when possible (the better channel)
+
+Inline text is the floor — it always lands, but in the *user* slot, which a small
+model weighs below its built-in identity and below whatever system prompt the
+backend injects (OpenCode runs its own coding-agent persona). So on top of the
+floor, the sidecar **seats the Acorn prompt in the backend's authoritative system
+slot whenever it has an adapter for that backend** — [systemSlot.js](./systemSlot.js):
+
+| Backend | System-slot channel | When it's wired |
+| --- | --- | --- |
+| claude-agent-acp | ACP `_meta.systemPrompt` on `session/new` (full preset replace) | per-session, in [sidecar.js](./sidecar.js) `newSession` |
+| OpenCode | its config — we **replace the primary agent's `prompt`** with the Acorn prompt | pre-spawn: a generated config |
+| others / future | *(none yet)* | inline floor only — no regression |
+
+There's no ACP standard for a system prompt, and agents misreport capabilities,
+so adapters are **explicit**, matched by the harness command (config-based
+backends must be configured *before* spawn, before `agentInfo.name` is known).
+Adding a backend is one entry in `ADAPTERS`.
+
+For OpenCode the sidecar reads the config at `OPENCODE_CONFIG`, writes the Acorn
+prompt to an absolute temp file, builds an *effective* config carrying it through
+**two levers**, writes that next to it, and points `OPENCODE_CONFIG` there before
+spawning:
+
+1. `instructions: [<abs prompt file>]` — **the primary lever.** OpenCode's ACP
+   mode has a bug ([sst/opencode#8680](https://github.com/anomalyco/opencode/issues/8680)):
+   it ignores the configured default agent and runs whatever agent is first in
+   state (often a *subagent*), so an `agent.*.prompt` override may never be the
+   agent in play. Top-level `instructions` apply to the model regardless of
+   agent, so they survive the bug. (Absolute path ⇒ no dependence on the agent's
+   `web/` cwd — the old committed relative path misresolved to `web/web/…` and
+   loaded nothing.)
+2. `agent.build.prompt` = the prompt — secondary insurance for when ACP honors
+   the primary agent (or #8680 is fixed): a full system-prompt replace.
+
+Confirm it fired via the startup log line `OpenCode system slot: instructions=[…]
++ agent.build.prompt via generated config <path>`, and inspect the generated
+files under `/tmp/acorn-harness/`. The committed
+[opencode.local.json](./opencode.local.json) no longer carries an `instructions`
+key — the sidecar owns system-slot seating. *(Caveat: `instructions` **appends**
+to OpenCode's own agent prompt rather than replacing it, and a tiny local model
+weighs identity weakly, so on `harness:local` identity may still wobble even with
+the prompt in the system slot — the tool/skill behaviour is the real signal.)*
+
+`_meta.systemPrompt` is **still sent** on `session/new` for agents that honor it
+(claude), but no backend depends on it for the working *context* — the inline copy
+is authoritative there. For identity to stick on an agent with no system-slot
+adapter, the prompt file must assert it plainly ("You are Acorn, not Claude" —
+see [acorn-system-prompt.md](./acorn-system-prompt.md)).
 
 `claude-agent-acp` defaults every session to the Claude Agent SDK's `claude_code`
 preset — the "You are Claude Code…" identity plus tool-use/tone sections and
 dynamic working-dir/memory/git context. (This is why a non-Anthropic model still
 says "I am Claude": the preset's identity overrides the weights.) Override it via
-these env vars, read in [sidecar.js](./sidecar.js) and passed per-session over
-ACP `_meta.systemPrompt`:
+these env vars, read in [sidecar.js](./sidecar.js) — sent over ACP
+`_meta.systemPrompt` **and** inlined into the first prompt:
 
 | Env var | Effect |
 | --- | --- |
@@ -162,11 +228,15 @@ per-session over ACP `session/new` — the same path the sidecar uses to attach
 fallback ACP agent: Ollama via `OLLAMA_HOST`.)
 
 ```sh
-# 1. Pull the model under Ollama
-ollama pull lfm2.5:8b-a1b          # or: ollama run lfm2.5:8b-a1b-q4_K_M
+# 1. Pull the model under Ollama. NOTE: the bare `lfm2.5:8b-a1b` tag does NOT
+#    exist (manifest 404) — every 8b-a1b variant is quant-suffixed. Q4_K_M is the
+#    ~5.16 GB build the spec intends.
+ollama pull lfm2.5:8b-a1b-q4_K_M
+#    (or pull the GGUF straight from HuggingFace, per Liquid's model card:
+#     ollama pull hf.co/LiquidAI/LFM2.5-8B-A1B-GGUF:Q4_K_M)
 # 2. Give it enough context (the default 4096 is too small for read_tree)
 export OLLAMA_CONTEXT_LENGTH=32768
-# 3. Launch — OPENCODE_CONFIG points at opencode.local.json (provider=ollama, model=lfm2.5:8b-a1b)
+# 3. Launch — OPENCODE_CONFIG points at opencode.local.json (provider=ollama, model=lfm2.5:8b-a1b-q4_K_M)
 yarn harness:local
 ```
 
@@ -174,7 +244,32 @@ The model/provider live in [opencode.local.json](./opencode.local.json); edit th
 `model` / `baseURL` there to try a different local model or server (LM Studio,
 llama.cpp, vLLM — all OpenAI-compatible at a `/v1` base URL).
 
-Two things to know:
+### OpenCode config specifics
+
+[opencode.local.json](./opencode.local.json) differs from the other backends in
+two ways that are easy to trip over:
+
+- **No comments — strict schema.** OpenCode validates the config against its JSON
+  schema and **rejects any unrecognized key**, including the `"//": "…"` comment
+  convention (it fails with `Configuration is invalid … Unrecognized keys: //`).
+  Keep all annotations here in the README, not in the JSON.
+- **OpenCode ignores the ACP `_meta.systemPrompt`** the sidecar sends per session
+  (that's a `claude-agent-acp` convention). This used to mean OpenCode got no
+  Acorn prompt — now fixed: the prompt (and skill) are delivered as **inline
+  text** on the first turn for every backend (see *System prompt & context
+  delivery* above), so `ACORN_SYSTEM_PROMPT_FILE` reaches OpenCode the same way it
+  reaches claude. The top-level `instructions:
+  ["web/dev-harness/acorn-system-prompt.md"]` key in the config is now an
+  *optional* extra: it also seeds the prompt into OpenCode's own system slot
+  (path resolves from the git root). Harmless redundancy — the inline copy is what
+  guarantees parity; you can drop the key without losing the Acorn context.
+- **MCP fallback registered up front.** For the known "`session/new` `mcpServers`
+  don't attach in ACP mode" OpenCode bug, the `acorn` stdio server
+  ([acornToolsServer.js](./acornToolsServer.js), bridging back to the sidecar over
+  HTTP via `ACORN_WEB_PORT`, default `8081` to match `harness:local`'s `WEB_PORT`)
+  is registered directly under `mcp` rather than relying on ACP attachment.
+
+Two more things to know:
 
 - **Use a small project.** `read_tree` on a large tree can be tens of thousands of
   tokens — past a small model's window. Run the demo against a tiny (3–6 node)
