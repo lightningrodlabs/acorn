@@ -183,6 +183,17 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
     await updateOutcome(localCleanOutcome(), outcome.actionHash)
   }
 
+  // Save the whole edit box on close. The expanded-view editor is the unit of
+  // deferral: every field edit accumulates in local state (content / description /
+  // githubLink) and is committed in ONE write when the box closes — never per-field
+  // mid-edit, which is what let an earlier field's async write echo back and clobber
+  // a later, still-uncommitted edit (the criteria-checkbox bug). Every close path
+  // (the ✕, clicking away, Esc) goes through here.
+  const closeWithSave = () => {
+    updateOutcome(localCleanOutcome(), outcome.actionHash)
+    onClose()
+  }
+
   const updateOutcomeTaskList = (taskList: Array<SmallTask>) => {
     const cleanedOutcome = cleanOutcome(outcome)
     return updateOutcome(
@@ -301,7 +312,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
   const rightColumn = outcome ? ( // Only render if outcome exists
     <ConnectedEVRightColumn
       projectId={projectId}
-      onClose={onClose}
+      onClose={closeWithSave}
       outcome={outcome}
     />
   ) : null
@@ -349,7 +360,7 @@ const ConnectedExpandedViewMode: React.FC<ConnectedExpandedViewModeProps> = ({
       rightColumn={rightColumn} // React Element
       attachments={attachments} // React Element
       // Props needed by Modal Wrapper (passed through)
-      onClose={onClose}
+      onClose={closeWithSave}
       outcomeAndAncestors={outcomeAndAncestors}
       openExpandedView={openExpandedView}
       // showing state is managed within ExpandedViewModeComponent

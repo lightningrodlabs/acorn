@@ -148,8 +148,9 @@ const EvDetails: React.FC<EvDetailsProps> = ({
     setContent(outcomeContent)
   }, [outcomeContent])
   const onTitleBlur = () => {
-    console.log('onTitleBlur triggered')
-    updateOutcomeWithLatest()
+    // Defer the save: edits accumulate in local state and commit once when the
+    // whole edit box closes (ExpandedViewMode.connector closeWithSave). Blur only
+    // ends the co-editing presence; it no longer writes mid-edit.
     endTitleEdit(outcomeActionHash)
   }
   const onTitleFocus = () => {
@@ -279,7 +280,9 @@ const EvDetails: React.FC<EvDetailsProps> = ({
   // then take the profile metadata from that and
   // use to feed into avatar
   const onDescriptionBlur = () => {
-    updateOutcomeWithLatest()
+    // Defer the save to box-close (see onTitleBlur). Leaving a field — including a
+    // criteria checkbox — only ends presence; the commit happens once on close, so
+    // an earlier field's write can't echo back and clobber a later uncommitted edit.
     endDescriptionEdit(outcomeActionHash)
   }
   const onDescriptionFocus = () => {
