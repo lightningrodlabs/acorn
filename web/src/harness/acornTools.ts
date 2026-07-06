@@ -16,7 +16,7 @@
 import { Store } from 'redux'
 import { RootState } from '../redux/reducer'
 import { CellIdString } from '../types/shared'
-import { readTree } from './readTree'
+import { readTree, preserveConversationArtifacts } from './readTree'
 import {
   ProjectDiff,
   diffStats,
@@ -88,6 +88,24 @@ export async function handleAcornToolCall(
         // untouched; only an alias that resolves is remapped to the canonical hash.
         const liveTree = readTree(store.getState() as RootState, projectId)
         const { diff } = remapDiffRefs(liveTree, normalized)
+        // Conversation artifacts are hidden from the agent (read_tree strips them)
+        // and human-owned, so re-graft each edited node's live conversations back
+        // into the proposal — Confirm replaces the outcome wholesale, so without
+        // this an agent edit would silently drop every attached transcript.
+        const liveOutcomes = readTree(store.getState() as RootState, projectId, {
+          includeConversations: true,
+        }).outcomes as Record<string, any>
+        const updatedOutcomes = (diff.outcomes && diff.outcomes.updated) || {}
+        for (const hash of Object.keys(updatedOutcomes)) {
+          const live = liveOutcomes[hash]
+          if (!live) continue
+          const merged = preserveConversationArtifacts(
+            live.description,
+            updatedOutcomes[hash].description
+          )
+          if (merged !== updatedOutcomes[hash].description)
+            updatedOutcomes[hash] = { ...updatedOutcomes[hash], description: merged }
+        }
         // Reject malformed connections (no parent/child) up front, with a clear
         // message, rather than opening a draft that would fail opaquely at the
         // zome on Confirm. The defaultable fields (randomizer/isImported) are

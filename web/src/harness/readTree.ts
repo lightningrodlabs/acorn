@@ -16,6 +16,77 @@ import { collectExportProjectData } from '../migrating/export'
 import { ProjectSnapshot } from '../migrating/projectDiff'
 import { RootState } from '../redux/reducer'
 import { ActionHashB64, CellIdString } from '../types/shared'
+import { parseFields, serializeFields } from '../outcomeFields'
+import { isConversationArtifact } from './conversationArtifact'
+
+/**
+ * Drop captured conversation artifacts from one node's `description`.
+ *
+ * A conversation artifact carries an ENTIRE serialized transcript in its value,
+ * so leaving them in the snapshot re-ships every attached conversation on every
+ * tree read — huge, and almost never relevant to the current ask. Other artifact
+ * types (input/output links) and every other field are preserved.
+ *
+ * Only re-serializes when a conversation artifact was actually present, so nodes
+ * without one keep their exact description bytes (no lossy round-trip — which
+ * also keeps the send-time change-detection diff stable).
+ */
+function stripConversationArtifacts(description: string): string {
+  // Cheap guard: the type token is always present in a serialized conversation
+  // artifact, so skip parsing descriptions that can't contain one.
+  if (!description || description.indexOf('conversation') === -1)
+    return description
+  const fields = parseFields(description)
+  const artifacts = fields.artifacts
+  if (!artifacts || !artifacts.some(isConversationArtifact)) return description
+  const kept = artifacts.filter((a) => !isConversationArtifact(a))
+  const next = { ...fields }
+  if (kept.length) next.artifacts = kept
+  else delete next.artifacts
+  return serializeFields(next)
+}
+
+/**
+ * Re-insert the live node's conversation artifacts into an agent-proposed
+ * description. Conversations are stripped from what the agent reads and are
+ * human-owned, so an agent's edit to a node must not drop them — the wholesale
+ * outcome replacement on Confirm would otherwise lose every attached transcript.
+ * The proposed description is otherwise left exactly as the agent wrote it.
+ */
+export function preserveConversationArtifacts(
+  liveDescription: string,
+  proposedDescription: string
+): string {
+  if (typeof proposedDescription !== 'string') return proposedDescription
+  const liveConvos = (parseFields(liveDescription).artifacts || []).filter(
+    isConversationArtifact
+  )
+  if (!liveConvos.length) return proposedDescription
+  const fields = parseFields(proposedDescription)
+  // The agent never saw conversation artifacts, so any in its proposal are
+  // spurious — drop them before re-adding the live ones so none duplicate.
+  const nonConvo = (fields.artifacts || []).filter((a) => !isConversationArtifact(a))
+  return serializeFields({ ...fields, artifacts: [...nonConvo, ...liveConvos] })
+}
+
+/** Strip conversation artifacts from every node in a snapshot (structurally
+ * shared when nothing changed, so the result diffs cleanly against a prior one). */
+function stripConversations(snapshot: ProjectSnapshot): ProjectSnapshot {
+  const outcomes = (snapshot.outcomes || {}) as Record<string, any>
+  let changed = false
+  const next: Record<string, any> = {}
+  for (const hash of Object.keys(outcomes)) {
+    const outcome = outcomes[hash]
+    const stripped = stripConversationArtifacts(outcome.description)
+    if (stripped !== outcome.description) {
+      changed = true
+      next[hash] = { ...outcome, description: stripped }
+    } else {
+      next[hash] = outcome
+    }
+  }
+  return changed ? { ...snapshot, outcomes: next } : snapshot
+}
 
 /**
  * Read the current tree for `projectId` as a ProjectSnapshot.
@@ -27,12 +98,22 @@ import { ActionHashB64, CellIdString } from '../types/shared'
  *
  * v1 hands back the raw hash-keyed snapshot. A future LLM-friendly view (a
  * flattened parent→child tree) can wrap this without changing call sites.
+ *
+ * Captured conversation artifacts are stripped by default (they carry whole
+ * transcripts and bloat every read); pass `includeConversations` to keep them,
+ * e.g. when the agent explicitly wants to read a branch's conversation history.
  */
+export interface ReadTreeOptions {
+  includeConversations?: boolean
+}
+
 export function readTree(
   state: RootState,
-  projectId: CellIdString
+  projectId: CellIdString,
+  opts: ReadTreeOptions = {}
 ): ProjectSnapshot {
-  return collectExportProjectData(state, projectId) as ProjectSnapshot
+  const snapshot = collectExportProjectData(state, projectId) as ProjectSnapshot
+  return opts.includeConversations ? snapshot : stripConversations(snapshot)
 }
 
 /** A node the human has selected in the tree, for grounding chat references. */

@@ -1,8 +1,10 @@
 import { createStore } from 'redux'
 import rootReducer from '../src/redux/reducer'
 import { setActiveProject } from '../src/redux/ephemeral/active-project/actions'
+import { createOutcome } from '../src/redux/persistent/projects/outcomes/actions'
 import { handleAcornToolCall } from '../src/harness/acornTools'
 import { ProjectDiff } from '../src/migrating/projectDiff'
+import { parseFields, serializeFields } from '../src/outcomeFields'
 
 // L1 (executable) — the renderer-side tool handler. propose_edits opens an inert
 // draft (no DHT write); read_tree reads the live snapshot. The handler dispatches
@@ -176,6 +178,73 @@ describe('handleAcornToolCall', () => {
     if (!res.ok) expect(res.error).toMatch(/parent/i)
     // no draft opened — nothing reaches the zome
     expect(store.getState().ui.draft.diff).toBeNull()
+  })
+
+  // Conversation artifacts (whole transcripts embedded in a node's description)
+  // are hidden from the agent on read and re-grafted on write, so an agent edit
+  // can never drop a human-attached conversation.
+  describe('conversation artifacts across the tool surface', () => {
+    const convo = {
+      type: 'conversation',
+      label: 'Chat',
+      uri: '{"sessionId":"s1","messages":[]}',
+    }
+    const liveDescription = serializeFields({
+      outcome: 'the target state',
+      artifacts: [convo],
+    })
+    const seed = (store: ReturnType<typeof makeStore>) =>
+      store.dispatch(
+        createOutcome(PROJECT, {
+          actionHash: 'o1',
+          entryHash: 'e1',
+          createdAt: 1,
+          updatedAt: 1,
+          entry: { content: 'Node', description: liveDescription } as any,
+        })
+      )
+
+    test('read_tree strips conversation artifacts from the snapshot', async () => {
+      const store = makeStore()
+      seed(store)
+      const res = await handleAcornToolCall(store, PROJECT, {
+        tool: 'read_tree',
+        args: {},
+      })
+      expect(res.ok).toBe(true)
+      if (res.ok) {
+        const desc = (res.result as any).outcomes.o1.description
+        expect(parseFields(desc).artifacts).toBeUndefined()
+      }
+    })
+
+    test('propose_edits re-grafts the live conversations onto an updated node', async () => {
+      const store = makeStore()
+      seed(store)
+      const agentEdit: any = {
+        outcomes: {
+          updated: {
+            o1: {
+              actionHash: 'o1',
+              content: 'Node (refined)',
+              // what the agent proposes, built from the STRIPPED view it read
+              description: serializeFields({ outcome: 'refined target state' }),
+            },
+          },
+        },
+      }
+      const res = await handleAcornToolCall(store, PROJECT, {
+        tool: 'propose_edits',
+        args: { diff: agentEdit },
+      })
+      expect(res.ok).toBe(true)
+      const updated = store.getState().ui.draft.diff!.outcomes.updated['o1']
+      const fields = parseFields(updated.description)
+      // the agent's edit survives…
+      expect(fields.outcome).toBe('refined target state')
+      // …and the human's conversation artifact was not dropped
+      expect(fields.artifacts).toEqual([convo])
+    })
   })
 
   test('an unknown tool is reported, not thrown', async () => {

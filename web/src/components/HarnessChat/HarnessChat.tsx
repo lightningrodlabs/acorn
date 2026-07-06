@@ -736,7 +736,12 @@ const HarnessChat: React.FC = () => {
       },
       Date.now()
     )
-    const tree = readTree(store.getState() as any, projectId)
+    // Keep conversation artifacts here: we're upserting one INTO a node's
+    // artifacts, so the read must see the node's existing conversations (a
+    // stripped read would append a duplicate and drop the prior ones on write).
+    const tree = readTree(store.getState() as any, projectId, {
+      includeConversations: true,
+    })
     const anchor = anchorSelection(transcript)[0]?.actionHash || null
     const { target, reason } = computeAttachTarget({
       tree: tree as any,
