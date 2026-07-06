@@ -153,7 +153,20 @@ Detail has an altitude. Put it at the right one.
 
 ---
 
-## 5. Your working loop against a live tree
+## 5. Referring to nodes in prose
+
+Whenever you mention another node in any prose that will be rendered — an `outcome`,
+a `spec`, a completion criterion, a chat message, a proposal description — wrap its
+referent in double square brackets: `[[read-tree]]` (handle) or `[[200172]]` (6-digit
+hashCodeId). Acorn linkifies these tokens into navigable links to the node; a bare
+handle or number is just inert text. Use the handle when the node has one, the
+hashCodeId otherwise. (Full referent semantics — actionHash / hashCodeId / handle and
+the ephemeral path form — are in `node-references.md`; only stable referents belong
+inside `[[ ]]`.)
+
+---
+
+## 6. Your working loop against a live tree
 
 You work the tree through a human-approved gate. The loop is plan-mode for tree edits:
 

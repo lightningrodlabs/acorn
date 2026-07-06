@@ -26,6 +26,16 @@ refs are reported, never silently mismatched). `read_tree` exposes each node's
 `{ actionHash, hashCodeId, handle? }` under `nodeRefs`, so an agent can name a node by
 whichever referent is convenient.
 
+## In-prose links: `[[handle]]` / `[[hashCodeId]]`
+
+In any rendered prose (outcome/spec markdown, completion criteria, chat messages),
+refer to a node by wrapping its handle or hashCodeId in double square brackets —
+`[[read-tree]]`, `[[200172]]`. Acorn detects these tokens (`web/src/handleLinks.ts`)
+and renders them as navigable links to the node; an unresolved token falls back to
+plain text, never a broken link. Always use this notation when mentioning a node in
+prose — a bare handle or number is inert. Only stable referents go inside the
+brackets; the path form below does not.
+
 ## Casual reference — the relative path (ephemeral)
 
 For in-the-moment conversation a node can be named by a **relative path** from a known
