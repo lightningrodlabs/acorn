@@ -25,11 +25,22 @@ function Icon({
   let unmounted = false
 
   useEffect(() => {
+    // Guard against empty / extension-only names (e.g. `.svg` when a caller
+    // interpolates an undefined value). The dynamic import below compiles to a
+    // webpack context module, and a missing key throws an uncaught rejection.
+    if (!name || name.startsWith('.')) {
+      setIcon('')
+      return
+    }
     ;(async () => {
-      // @ts-ignore
-      let importedIcon = await import(`../../images/${name}`)
-      if (!unmounted) {
-        setIcon(importedIcon.default)
+      try {
+        // @ts-ignore
+        let importedIcon = await import(`../../images/${name}`)
+        if (!unmounted) {
+          setIcon(importedIcon.default)
+        }
+      } catch (e) {
+        console.warn(`Icon: could not load image "${name}"`, e)
       }
     })()
   }, [name])

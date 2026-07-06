@@ -20,7 +20,9 @@ const Toast: React.FC<ToastProps> = ({ toastState, setToastState }) => {
   )
   return (
     <div className={`toast ${recentType} ${isVisible ? 'visible' : ''} `}>
-      <Icon name={`${recentType}.svg`} className='toast-icon not-clickable' size='small'/>
+      {recentType && (
+        <Icon name={`${recentType}.svg`} className='toast-icon not-clickable' size='small'/>
+      )}
       <div className="toast-text">{recentText}</div>
       <div className="toast-close">
       <ButtonClose
