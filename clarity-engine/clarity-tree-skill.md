@@ -55,6 +55,13 @@ that ontology evolves — when the tree's own definitions change, this changes w
 - A *branch* is Achieved when all children are achieved AND its own criteria pass —
   branch criteria act as integration tests over the children, catching "every child is
   individually done but the assembled whole doesn't work."
+- **HARD RULE: never propose `achievementStatus: 'Achieved'` on a node unless every
+  one of its completion criteria is already recorded `met: true`.** The order is
+  always: evaluate the criteria, post the verdicts (`met`, with `evidence`), THEN —
+  and only then — propose Achieved (in the same edit set is fine, but the verdicts
+  must be in it). An Achieved node with an unmet criterion is a *regression* — the UI
+  renders it in a warning colour, not green — so proposing that state directly is
+  proposing a broken invariant.
 
 **Dependencies are typed — assembly is not the only meaning of an edge:**
 - `constituted-from` (composed-of) — the parent is built out of this child. This is the
