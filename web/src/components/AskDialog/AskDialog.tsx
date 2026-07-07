@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { useStore } from 'react-redux'
+import remarkGfm from 'remark-gfm'
 
 import Modal from '../Modal/Modal'
 import Button from '../Button/Button'
 import Typography from '../Typography/Typography'
+import RichText from '../RichText/RichText'
 import { setTextInputFocused } from '../../redux/ephemeral/keyboard/actions'
 
 import './AskDialog.scss'
 
 // In-app, awaitable replacements for window.prompt / confirm / alert — none of
 // which can be relied on here (Electron refuses prompt() outright; the Weave
-// webview lacks all three). Call from ANYWHERE (components or plain modules):
+// webview lacks all three). `message` is rendered as MARKDOWN (fence command /
+// data payloads so they read as code). Call from ANYWHERE (components or plain
+// modules):
 //
 //   const name = await askText({ heading: 'Name it', defaultValue: 'x' })
 //   if (await askConfirm({ heading: 'Apply?', message: summary })) { … }
@@ -235,7 +239,14 @@ export const AskDialogHost: React.FC = () => {
         </div>
         {'message' in current && current.message && (
           <div className="ask-dialog-message">
-            <Typography style="body-modal">{current.message}</Typography>
+            {/* markdown (incl. fenced code + [[handle]] links), so callers can
+                format payloads like shell commands readably */}
+            <Typography style="body-modal">
+              <RichText
+                source={current.message}
+                remarkPlugins={[remarkGfm]}
+              />
+            </Typography>
           </div>
         )}
         {current.kind === 'text' && (

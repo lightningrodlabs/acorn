@@ -268,7 +268,11 @@ const AgentDiffTools: React.FC = () => {
     }
     const confirmed = await askConfirm({
       heading: 'Apply this update?',
-      message: `Apply this update to the current project?\n\n${summary(diff)}`,
+      // fenced: the dialog renders markdown, and the summary's +/~/− lines
+      // would otherwise collapse into one paragraph (or strike through on ~)
+      message: `Apply this update to the current project?\n\n\`\`\`\n${summary(
+        diff
+      )}\n\`\`\``,
       confirmLabel: 'Apply',
     })
     if (!confirmed) {

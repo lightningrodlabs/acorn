@@ -9,8 +9,34 @@
   gap: 0.9rem;
   padding: 0.5rem 0.25rem;
 
+  // message body is rendered markdown (RichText)
   .ask-dialog-message {
-    white-space: pre-wrap;
+    p {
+      margin: 0 0 0.5em;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    pre {
+      margin: 0.25em 0;
+      padding: 0.5rem 0.6rem;
+      border-radius: 0.3rem;
+      background: rgba(0, 0, 0, 0.05);
+      overflow-x: auto;
+
+      code {
+        // long one-line shell commands should wrap, not force a scrollbar
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    }
+
+    code {
+      font-family: monospace;
+      font-size: 0.82rem;
+    }
   }
 
   .ask-dialog-input {

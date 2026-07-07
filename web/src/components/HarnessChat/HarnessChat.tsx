@@ -146,9 +146,11 @@ async function decidePermission(
   }
   const ok = await askConfirm({
     heading: 'Agent permission request',
-    message: `The agent is requesting permission to: ${
-      req.toolCall.title || 'act'
-    }\n\nAllow?`,
+    // the dialog renders markdown — fence the command so it reads as code
+    message:
+      'The agent is requesting permission to:\n\n```\n' +
+      (req.toolCall.title || 'act') +
+      '\n```',
     confirmLabel: 'Allow',
     cancelLabel: 'Reject',
   })
