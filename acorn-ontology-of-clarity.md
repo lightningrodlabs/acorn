@@ -53,10 +53,9 @@ you — approached, reached, and then done. A commitment sits beneath you — he
 moment, never finished. That difference is why each needs its own kind of verification,
 which is where invariance and falsifiability come in below.
 
-Intent, in both kinds, is the one thing only humans author. Everything else in the
-system can be proposed, computed, or evaluated by machines; aims and commitments
-cannot, because they answer "what do we want, and how do we want to be while getting
-it?" — and those questions have no technical answer. Writing them into the tree is
+Everything else in the system can be proposed, computed, or evaluated by machines;
+aims and commitments cannot, because they answer "what do we want, and how do we want
+to be while getting it?" — and those questions have no technical answer. Writing them into the tree is
 exactly what lets others serve them: an agent holds no aims or commitments of its own —
 it works from ours.
 
@@ -79,12 +78,10 @@ inadmissible, however well it serves the aim.
 
 ### 3. Invariance — *how do we know an aim is achieved, and stays achieved?*
 
-**Completion criteria** are statements of invariance: each one a statement, an evaluator
-(a human, an executable check, or an LLM judgment), and — once evaluated — evidence.
-A criterion is *how the outcome is judged done*, never a description of the work.
-
-A criterion is an invariant you can actually **write down and measure**. That's what
-makes it powerful, in two tenses:
+**Completion criteria** are statements of invariance — invariants you can actually
+**write down and measure**. Each carries an evaluator (a human, an executable check,
+or an LLM judgment) and, once evaluated, evidence. A criterion is *how the outcome is
+judged done*, never a description of the work — and it's powerful in two tenses:
 
 - **At achievement time, it's the measurement.** A leaf is achieved as the recorded
   consequence of a criterion passing, with the evidence attached. Achievement is
@@ -113,28 +110,20 @@ A commitment can't be verified the way an aim can. "The test suite passes" is
 measurable. "Humans author intent; agents propose, evaluate, and build — but never
 silently commit" is not — **the cases are infinite**. You can't enumerate every flow,
 every future feature, every interaction that might break it, so no check can ever
-prove it's being kept.
+prove it's being kept. But the moment a flow appears that lets an agent commit intent
+without a human decision, everyone knows it on sight.
 
-What you *can* do is recognize a break the moment you see one. That is falsifiability
-in the strict sense: a claim that can never be proven true, only shown false. A
-principle is a commitment written down for exactly this mode of guarding — placed on
-the node where it must hold, so that everyone working the subtree, human or agent,
-knows what a violation would look like. (The pattern is old: no one has ever produced
-a complete definition of justice, yet everyone recognizes injustice on sight.)
-
-The fundamental commitment of this work is the example: no test can certify that
-every flow honors "agents never silently commit intent." But the moment a flow appears
-that lets an agent commit intent without a human decision, the commitment has been
-broken — and you know it on sight.
+That is falsifiability in the strict sense: a claim that can never be proven true,
+only shown false. A principle is a commitment written down for exactly this mode of
+guarding — placed on the node where it must hold, so that everyone working the
+subtree, human or agent, knows what a violation would look like. (The pattern is old:
+no one has ever produced a complete definition of justice, yet everyone recognizes
+injustice on sight.)
 
 A falsified principle is not a breakdown of the model; it's the model working. It's the
 strongest signal the tree can produce: either the offending work must change, or the
 commitment itself must be renegotiated — and renegotiating a commitment is authoring
 intent, which is humans' alone.
-
-So the two verification modes divide the territory between them: **invariance for
-aims — written down, measured, and guaranteed; falsifiability for commitments — never
-proven kept, only caught broken.**
 
 ---
 
@@ -219,10 +208,9 @@ Walking it:
 2. **Test its readiness.** Is this clear enough to build? The signals are concrete:
    open unknowns, unresolved design latitude, no evaluable criterion, a change that
    sprawls across unrelated areas. Any of these means *no*.
-3. **Decompose while unclear.** Break the outcome into children — each one something
-   the parent *needs* in order to be possible, all of them together *sufficient* for it.
-   Reaching small-enough, buildable leaves is not preparation for clarity work; it **is**
-   clarity work. Open unknowns are exactly where decomposition is still hiding.
+3. **Decompose while unclear.** Break the outcome into children. Reaching small-enough,
+   buildable leaves is not preparation for clarity work; it **is** clarity work — open
+   unknowns are exactly where decomposition is still hiding.
 4. **Specify at the leaf.** Once a leaf is tightly scoped with an evaluable criterion,
    give it the precise spec it needs to be built from.
 5. **Build, then evaluate.** Do the work, run the criteria, record `{pass/fail,
@@ -250,17 +238,13 @@ stale documentation the moment it stops being tested against the world.
 For the loop to work, the tree's *structure* has to keep meaning what it says. A few
 craft rules do that work:
 
-- **Composition is an explicit parent→child edge, never prose.** If a node's text
-  describes a capability that actually lives in another node, that's a broken
-  dependency, not a wording problem — make it a child (composition) or a typed
-  reliance edge, never narration.
 - **Every node is self-contained** — a sensible target-state on its own, without its
   parent or siblings present.
 - **A parent never restates or counts its children.** The children *are* the
   decomposition; the edges carry it.
-- **Reliances are typed edges** — on a standard or spec the node must conform to
-  (informational), or on a live carrier it needs at runtime (embodied) — not buried
-  assumptions.
+- **If a node's prose describes a capability that lives in another node**, that's a
+  broken dependency, not a wording problem — make it a child or a typed reliance
+  edge, never narration.
 
 One convention worth naming for what it is: **left-to-right sibling order is how
 temporal prioritization is expressed in a tree structure** — leftmost is most
@@ -313,7 +297,7 @@ running the loop, *stays* clear.
 
 The ontology above is what the work embodies *so far*. Several extensions are already
 articulated — some as uncompleted outcomes in the tree itself, some in the surrounding
-thinking — and each one is best understood as deepening one of the four elements:
+thinking:
 
 **Closing the loop at machine speed** *(invariance)*
 
@@ -327,6 +311,19 @@ thinking — and each one is best understood as deepening one of the four elemen
 - **Build events feed the tree.** Hooks from the development environment (e.g. "the
   test suite went green") update the relevant outcome's criteria — invariance checked
   continuously rather than episodically.
+
+**From a single builder to a build process** *(commitments, held in balance)*
+
+- **Selectable multi-agent builds.** Today the build step of the loop is one local
+  agent modifying code. The aspiration: a choice of build processes — ensembles of
+  agents building, reviewing, and corroborating each other's work — selected to match
+  how a given outcome can be *well* achieved, not merely achieved.
+- **Different capacities and foci, deliberately in tension.** Commitments pull against
+  each other — quality against speed against cost, the old iron triangle. A single
+  builder strikes that balance silently, and silence is where commitments get broken.
+  Give each commitment its advocate: agents with different capacities and different
+  foci, aligning with one another so the balance is negotiated in the open — and any
+  break is caught by an agent whose whole focus is the commitment it guards.
 
 **One clarity surface, many transports** *(specification)*
 
@@ -365,8 +362,9 @@ thinking — and each one is best understood as deepening one of the four elemen
   pool their own inference the way they pool the tree itself.
 
 None of these change the ontology. They extend its reach: more of the loop running at
-machine speed, more surfaces speaking to the same structure, more contexts where the
-four elements can do their work.
+machine speed, more agents holding the build to its commitments, more surfaces
+speaking to the same structure, more contexts where the four elements can do their
+work.
 
 ---
 
