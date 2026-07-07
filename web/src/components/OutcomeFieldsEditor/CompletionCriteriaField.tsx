@@ -6,7 +6,8 @@ import { CompletionCriterion, Evaluator } from '../../outcomeFields'
 
 // The completion-criteria checklist (loop-eval-signal): one row per criterion —
 // the confirm checkbox + evaluator on the LEFT, an auto-growing/resizable statement
-// textarea on the RIGHT — replacing the raw-JSON fallback for completionCriteria.
+// textarea with the evidence line under it on the RIGHT — replacing the raw-JSON
+// fallback for completionCriteria.
 //
 // Saving follows the editor's DEFERRED model, not a per-change zome call: every
 // change (checkbox, evaluator, statement, add/remove) is batched into the node's
@@ -64,6 +65,20 @@ const CompletionCriteriaField: React.FC<CompletionCriteriaFieldProps> = ({
   }
   const setEvaluator = (index: number, evaluator: Evaluator) => {
     batch(items.map((c, i) => (i === index ? { ...c, evaluator } : c)))
+  }
+  // evidence backs the verdict; clearing the text removes the key entirely so an
+  // evidence-less criterion serializes without an empty-string field
+  const editEvidence = (index: number, evidence: string) => {
+    batch(
+      items.map((c, i) => {
+        if (i !== index) return c
+        if (!evidence) {
+          const { evidence: _e, ...rest } = c
+          return rest
+        }
+        return { ...c, evidence }
+      })
+    )
   }
   const toggleMet = (index: number) => {
     batch(
@@ -126,16 +141,28 @@ const CompletionCriteriaField: React.FC<CompletionCriteriaFieldProps> = ({
                   ))}
                 </select>
               </div>
-              <TextareaAutosize
-                className="criterion-statement"
-                minRows={2}
-                disabled={disabled}
-                placeholder="criterion (how this is judged done)"
-                value={c.statement}
-                onChange={(e) => editText(index, e.target.value)}
-                onBlur={onBlur}
-                onFocus={onFocus}
-              />
+              <div className="criterion-texts">
+                <TextareaAutosize
+                  className="criterion-statement"
+                  minRows={2}
+                  disabled={disabled}
+                  placeholder="criterion (how this is judged done)"
+                  value={c.statement}
+                  onChange={(e) => editText(index, e.target.value)}
+                  onBlur={onBlur}
+                  onFocus={onFocus}
+                />
+                <TextareaAutosize
+                  className="criterion-evidence"
+                  minRows={1}
+                  disabled={disabled}
+                  placeholder="evidence (what backs the verdict — link, log, note)"
+                  value={c.evidence || ''}
+                  onChange={(e) => editEvidence(index, e.target.value)}
+                  onBlur={onBlur}
+                  onFocus={onFocus}
+                />
+              </div>
               {!disabled && (
                 <Icon
                   name="delete-bin.svg"

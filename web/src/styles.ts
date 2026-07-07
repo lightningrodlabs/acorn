@@ -62,6 +62,11 @@ const AWAITING_EVAL_BORDER_COLOR = '#C77A93'
 // "ripe / ready for final sign-off" — between awaiting-eval (pink) and achieved (green)
 const READY_SIGNOFF_BACKGROUND_COLOR = '#F6EBC2'
 const READY_SIGNOFF_BORDER_COLOR = '#C9A24B'
+// marked Achieved but a completion criterion is no longer met (a human un-checked
+// a verdict, or an executable re-ran and failed): the green is stale, so the node
+// warns in a red-orange instead of quietly staying green
+const CRITERIA_REGRESSION_BACKGROUND_COLOR = '#F6DCD2'
+const CRITERIA_REGRESSION_BORDER_COLOR = '#C0532F'
 
 // canvas outcome border
 const DEFAULT_OUTCOME_BORDER_COLOR = '#FFFFFF'
@@ -116,6 +121,8 @@ export {
   AWAITING_EVAL_BORDER_COLOR,
   READY_SIGNOFF_BACKGROUND_COLOR,
   READY_SIGNOFF_BORDER_COLOR,
+  CRITERIA_REGRESSION_BACKGROUND_COLOR,
+  CRITERIA_REGRESSION_BORDER_COLOR,
   DEFAULT_OUTCOME_BORDER_COLOR,
   NOT_ACHIEVED_BORDER_COLOR,
   ACHIEVED_BORDER_COLOR,

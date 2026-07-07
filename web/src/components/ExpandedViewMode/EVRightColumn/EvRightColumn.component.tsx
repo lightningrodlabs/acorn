@@ -30,6 +30,8 @@ import './EVRightColumn.scss'
 import Typography from '../../Typography/Typography'
 import ReadOnlyInfo from '../../ReadOnlyInfo/ReadOnlyInfo'
 import cleanOutcome from '../../../api/cleanOutcome'
+import { getCompletionCriteria } from '../../../outcomeFields'
+import { tellUser } from '../../AskDialog/AskDialog'
 import ProgressIndicator from '../../ProgressIndicator/ProgressIndicator'
 import { AppClient, decodeHashFromBase64 } from '@holochain/client'
 import { getWeaveClient } from '../../../hcWebsockets'
@@ -140,6 +142,24 @@ const EVRightColumn: React.FC<EvRightColumnProps> = ({
     },
   ]
   const onAchievementStatusSelect = (achievementStatus: AchievementStatus) => {
+    // criteria gate: a node is not a candidate for Achieved while any completion
+    // criterion is unmet — the criteria being met is what MAKES it achieved, the
+    // toggle only records that. (An already-Achieved node whose criterion later
+    // un-meets renders the criteria-regression warning colour instead of green.)
+    if (achievementStatus === 'Achieved') {
+      const unmet = getCompletionCriteria(outcome?.description || '').filter(
+        (c) => c.met !== true
+      ).length
+      if (unmet > 0) {
+        tellUser({
+          heading: 'Completion criteria not met',
+          message: `This outcome has ${unmet} unmet completion criteri${
+            unmet === 1 ? 'on' : 'a'
+          }.\n\nConfirm the criteria (check them off, with evidence) first — then the outcome can be marked Achieved.`,
+        })
+        return
+      }
+    }
     const cleanedOutcome = cleanOutcome(outcome)
     return updateOutcome(
       {

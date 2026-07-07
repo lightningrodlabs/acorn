@@ -48,6 +48,29 @@ export function isAwaitingHumanEvaluation(outcome: AwaitingEvalInput): boolean {
 }
 
 /**
+ * Regression warning: the node is marked Achieved but at least one completion
+ * criterion is not currently met — a human un-checked a verdict, or an executable
+ * re-ran and the invariant no longer holds. The green would be a lie, so the node
+ * renders in a warning colour until the criteria are green again (or it is
+ * demoted). Deliberately NOT scope-gated: a branch's own (integration) criteria
+ * can regress exactly the way a leaf's can.
+ */
+export function hasCriteriaRegression(outcome: {
+  description?: string
+  computedAchievementStatus: { simple: ComputedSimpleAchievementStatus }
+}): boolean {
+  if (
+    outcome.computedAchievementStatus.simple !==
+    ComputedSimpleAchievementStatus.Achieved
+  ) {
+    return false
+  }
+  const cc = parseFields(outcome.description || '').completionCriteria
+  if (!Array.isArray(cc) || cc.length === 0) return false
+  return cc.some((c) => c.met !== true)
+}
+
+/**
  * Ready for final sign-off: the build work is done (Small leaf, not yet Achieved,
  * all tasks checked) and EVERY completion criterion is met — all the evidence is in,
  * the leaf just hasn't been marked Achieved. This is the gap between "criteria all

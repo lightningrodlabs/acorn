@@ -292,7 +292,8 @@
 
 // Completion-criteria checklist (loop-eval-signal): one row per criterion —
 // confirm checkbox + evaluator stacked on the LEFT, a wide resizable statement
-// textarea on the RIGHT (so the criterion text is actually readable).
+// textarea with its evidence line beneath on the RIGHT (so the criterion text
+// is actually readable).
 .completion-criteria-field {
   margin-top: 0.25rem;
   display: flex;
@@ -324,10 +325,17 @@
         cursor: default;
       }
     }
+    // right column: the statement with its evidence line beneath
+    .criterion-texts {
+      flex: 1 1 auto;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
     .criterion-statement {
       // the readable part: take all remaining width, grow with content, and let
       // the user drag-resize taller
-      flex: 1 1 auto;
       min-width: 0;
       width: 100%;
       resize: vertical;
@@ -337,6 +345,24 @@
       border-radius: 0.25rem;
       background-color: transparent;
       font: 0.9rem var(--font-family-primary-medium);
+      line-height: 1.4;
+
+      &::placeholder {
+        color: var(--text-color-placeholder);
+      }
+    }
+    .criterion-evidence {
+      // quieter than the statement — it backs the verdict rather than defining it
+      min-width: 0;
+      width: 100%;
+      resize: vertical;
+      padding: 0.3rem 0.5rem;
+      outline: none;
+      border: 1px dashed var(--border-color, #e0e0e0);
+      border-radius: 0.25rem;
+      background-color: transparent;
+      color: var(--text-color-secondary, #6a6a6a);
+      font: 0.8rem var(--font-family-primary-medium);
       line-height: 1.4;
 
       &::placeholder {

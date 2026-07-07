@@ -1,6 +1,7 @@
 import {
   isAwaitingHumanEvaluation,
   isReadyForSignoff,
+  hasCriteriaRegression,
 } from '../src/awaitingEval'
 import { serializeFields } from '../src/outcomeFields'
 import {
@@ -120,5 +121,54 @@ describe('isReadyForSignoff', () => {
     expect(
       isReadyForSignoff(node({ criteria: allMet, scope: ComputedScope.Big }))
     ).toBe(false)
+  })
+})
+
+describe('hasCriteriaRegression', () => {
+  const oneUnmet = [
+    { statement: 'a', evaluator: 'human', met: true },
+    { statement: 'b', evaluator: 'executable', met: false },
+  ]
+  const allMet = [{ statement: 's', evaluator: 'human', met: true }]
+
+  test('Achieved with an unmet criterion is a regression', () => {
+    expect(
+      hasCriteriaRegression(node({ simple: Achieved, criteria: oneUnmet }))
+    ).toBe(true)
+  })
+
+  test('a never-recorded verdict (met absent) also regresses an Achieved node', () => {
+    expect(
+      hasCriteriaRegression(
+        node({
+          simple: Achieved,
+          criteria: [{ statement: 's', evaluator: 'human' }],
+        })
+      )
+    ).toBe(true)
+  })
+
+  test('Achieved with every criterion met is not a regression', () => {
+    expect(
+      hasCriteriaRegression(node({ simple: Achieved, criteria: allMet }))
+    ).toBe(false)
+  })
+
+  test('not a regression when the node is not Achieved', () => {
+    expect(hasCriteriaRegression(node({ criteria: oneUnmet }))).toBe(false)
+  })
+
+  test('an Achieved node with no criteria at all does not warn', () => {
+    expect(
+      hasCriteriaRegression(node({ simple: Achieved, criteria: [] }))
+    ).toBe(false)
+  })
+
+  test('applies to branch (Big) nodes too — integration criteria can regress', () => {
+    expect(
+      hasCriteriaRegression(
+        node({ simple: Achieved, scope: ComputedScope.Big, criteria: oneUnmet })
+      )
+    ).toBe(true)
   })
 })

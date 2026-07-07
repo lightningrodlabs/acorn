@@ -3,6 +3,8 @@ import {
   NOT_ACHIEVED_BORDER_COLOR,
   AWAITING_EVAL_BORDER_COLOR,
   READY_SIGNOFF_BORDER_COLOR,
+  CRITERIA_REGRESSION_BACKGROUND_COLOR,
+  CRITERIA_REGRESSION_BORDER_COLOR,
   ACHIEVED_BACKGROUND_COLOR,
   DEFAULT_OUTCOME_BORDER_COLOR,
   IN_BREAKDOWN_BORDER_COLOR,
@@ -15,6 +17,7 @@ import {
 import {
   isAwaitingHumanEvaluation,
   isReadyForSignoff,
+  hasCriteriaRegression,
 } from '../../../awaitingEval'
 import {
   borderWidth,
@@ -65,7 +68,10 @@ export const argsForDrawColoredBorder = ({
     outcome.computedAchievementStatus.simple ===
       ComputedSimpleAchievementStatus.Achieved
   ) {
-    borderColor = ACHIEVED_BORDER_COLOR
+    // Achieved with an unmet criterion is a regression — warn, don't stay green
+    borderColor = hasCriteriaRegression(outcome)
+      ? CRITERIA_REGRESSION_BORDER_COLOR
+      : ACHIEVED_BORDER_COLOR
   } else if (
     outcome.computedScope === ComputedScope.Small &&
     outcome.computedAchievementStatus.simple !==
@@ -85,8 +91,10 @@ export const argsForDrawColoredBorder = ({
   ) {
     // it is supposed to look borderless, and so
     // it has to match the background color of
-    // achieved
-    borderColor = ACHIEVED_BACKGROUND_COLOR
+    // achieved (or of the criteria-regression warning)
+    borderColor = hasCriteriaRegression(outcome)
+      ? CRITERIA_REGRESSION_BACKGROUND_COLOR
+      : ACHIEVED_BACKGROUND_COLOR
   } else if (
     outcome.computedScope === ComputedScope.Uncertain &&
     'Uncertain' in outcome.scope &&

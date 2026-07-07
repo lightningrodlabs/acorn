@@ -3,6 +3,7 @@ import {
   NOT_ACHIEVED_BACKGROUND_COLOR,
   AWAITING_EVAL_BACKGROUND_COLOR,
   READY_SIGNOFF_BACKGROUND_COLOR,
+  CRITERIA_REGRESSION_BACKGROUND_COLOR,
   DEFAULT_OUTCOME_BACKGROUND_COLOR,
 } from '../../../styles'
 import {
@@ -13,6 +14,7 @@ import {
 import {
   isAwaitingHumanEvaluation,
   isReadyForSignoff,
+  hasCriteriaRegression,
 } from '../../../awaitingEval'
 import { borderWidth, cornerRadius } from '../../dimensions'
 import drawBackgroundColor from '../drawBackgroundColor'
@@ -47,8 +49,13 @@ export const argsForDrawBackgroundColor = ({
     outcome.computedAchievementStatus.simple ===
     ComputedSimpleAchievementStatus.Achieved
   ) {
-    backgroundColor = ACHIEVED_BACKGROUND_COLOR
-    useGreenBoxShadow = true
+    // Achieved with an unmet criterion is a regression — warn, don't stay green
+    if (hasCriteriaRegression(outcome)) {
+      backgroundColor = CRITERIA_REGRESSION_BACKGROUND_COLOR
+    } else {
+      backgroundColor = ACHIEVED_BACKGROUND_COLOR
+      useGreenBoxShadow = true
+    }
   } else if (outcome.computedScope === ComputedScope.Small) {
     // ramp: all criteria met → gold (ready to finalize); a human criterion still
     // pending → pink ("evaluate me"); otherwise tan (in progress)
