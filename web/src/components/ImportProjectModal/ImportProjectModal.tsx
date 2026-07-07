@@ -30,17 +30,18 @@ function ImportProjectFilePicker({ showModal, onFilePicked, onCancel }) {
     false
   )
   const handleFilePicked = (e) => {
+    const file = e.target.files[0]
     const reader = new FileReader()
     reader.onload = async (e) => {
       const text = e.target.result as string
       try {
         const parsed = JSON.parse(text)
-        onFilePicked(parsed)
+        onFilePicked(parsed, file)
       } catch (e) {
         setFileFormatInvalidMessage(true)
       }
     }
-    reader.readAsText(e.target.files[0])
+    reader.readAsText(file)
   }
 
   // browse files button
@@ -176,7 +177,7 @@ const ImportProjectModal: React.FC<ImportProjectModalProps> = ({
   const [projectName, setProjectName] = useState('')
   const [outcomeCount, setOutcomeCount] = useState(0)
 
-  const onFilePicked = async (projectData: object) => {
+  const onFilePicked = async (projectData: object, sourceFile?: File) => {
     let projectIds: {
       cellIdString: CellIdString
       cellId: CellId
@@ -199,6 +200,23 @@ const ImportProjectModal: React.FC<ImportProjectModalProps> = ({
       setOutcomeCount(Object.keys(newProjectData.outcomes).length)
       // first step is to install the app and DNA
       projectIds = await installProject(newRandomPassphrase)
+      // remember where this tree came from, so the LLM-panel diff exports can land
+      // next to the original file instead of tmpfs (which a reboot wipes). Browser
+      // file inputs only expose the name; Electron also gives the absolute path.
+      try {
+        const src = {
+          name: sourceFile?.name,
+          path: (sourceFile as any)?.path,
+        }
+        if (src.name || src.path) {
+          localStorage.setItem(
+            `acorn:importSource:${projectIds.cellIdString}`,
+            JSON.stringify(src)
+          )
+        }
+      } catch (e) {
+        // localStorage full/unavailable — provenance is a nicety, not a blocker
+      }
       const whoami = projectIds.whoami
         ? projectIds.whoami.entry
         : await fetchMyLocalProfile()

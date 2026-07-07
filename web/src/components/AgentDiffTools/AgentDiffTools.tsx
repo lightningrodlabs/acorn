@@ -23,31 +23,68 @@ import {
 } from '../../redux/ephemeral/selection/actions'
 import { fitToChanged } from '../diffReview/fitToChanged'
 import { enterDraftReview } from '../diffReview/draftReview'
+import { askDirectory, askConfirm } from '../AskDialog/AskDialog'
 
 // Temporary floating tools (sits with "Report Issue" / the eye button) for the
 // low-friction LLM-agent diff loop — branch I. Folds into the AI chat panel later.
 //
-// In dev, Export/Apply hit a tiny dev-server bridge that reads/writes a
-// deterministic file under <tmp>/acorn-clarity (the renderer can't touch the
-// filesystem directly — no Node, and the File System Access API is blocked in the
-// dev iframe context). The agent edits that exact file in place. Outside dev (no
-// bridge) it falls back to a browser download + file picker.
+// In dev, Export/Apply hit a tiny dev-server bridge that reads/writes deterministic
+// exchange files (the renderer can't touch the filesystem directly — no Node, and
+// the File System Access API is blocked in the dev iframe context). The agent edits
+// those exact files in place. The files live NEXT TO the originally imported tree
+// file when the project was imported (located via the bridge by the file name
+// recorded at import), so a reboot doesn't wipe them the way tmpfs does; for a
+// project born in Acorn, a one-time prompt asks where they should go, and the
+// answer is remembered per project. Outside dev (no bridge) it falls back to a
+// browser download + file picker, with no prompt.
 
 const SNAPSHOT_KEY = (projectId: string) => `acorn:lastDiffSnapshot:${projectId}`
+// per-project directory the exchange files live in (resolved once, remembered)
+const EXCHANGE_DIR_KEY = (projectId: string) => `acorn:exchangeDir:${projectId}`
+// {name, path?} of the originally imported file (written by ImportProjectModal)
+const IMPORT_SOURCE_KEY = (projectId: string) => `acorn:importSource:${projectId}`
 
 const sanitize = (name: string): string =>
   name.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '').toLowerCase() || 'tree'
 
-const bridgeUrl = (name: string) => `/__acorn_diff/${encodeURIComponent(name)}`
+const bridgeUrl = (name: string, dir?: string) =>
+  `/__acorn_diff/${encodeURIComponent(name)}` +
+  (dir ? `?dir=${encodeURIComponent(dir)}` : '')
 const isJson = (res: Response) =>
   (res.headers.get('content-type') || '').includes('application/json')
+
+// Whether the dev bridge exists at all (a production build has none), so the
+// fallback path never bothers the user with prompts. Probes the diff endpoint
+// itself — it answers JSON whether or not the file exists (404 {error} when
+// missing), while a bridgeless build serves HTML (SPA fallback) or errors.
+async function bridgeAlive(): Promise<boolean> {
+  try {
+    const res = await fetch(bridgeUrl('__probe__.json'))
+    return isJson(res)
+  } catch {
+    return false
+  }
+}
+
+// Ask the bridge to find a file by basename under the repo root. Returns the
+// absolute paths of matches (empty when none / ambiguous handling is the caller's).
+async function bridgeLocate(name: string): Promise<string[]> {
+  try {
+    const res = await fetch(`/__acorn_diff_locate?name=${encodeURIComponent(name)}`)
+    if (!res.ok || !isJson(res)) return []
+    const j = await res.json()
+    return Array.isArray(j.matches) ? j.matches : []
+  } catch {
+    return []
+  }
+}
 
 // Read the exchange file via the dev bridge. Returns the parsed tree, the marker
 // {__missing:true} if the bridge is up but the file isn't there yet, or null if
 // there is no bridge (e.g. a production build).
-async function bridgeRead(name: string): Promise<any | null> {
+async function bridgeRead(name: string, dir?: string): Promise<any | null> {
   try {
-    const res = await fetch(bridgeUrl(name))
+    const res = await fetch(bridgeUrl(name, dir))
     if (res.status === 404 && isJson(res)) return { __missing: true }
     if (res.ok && isJson(res)) return await res.json()
     return null
@@ -57,9 +94,13 @@ async function bridgeRead(name: string): Promise<any | null> {
 }
 
 // Write via the dev bridge; returns the on-disk path, or null if no bridge.
-async function bridgeWrite(name: string, data: object): Promise<string | null> {
+async function bridgeWrite(
+  name: string,
+  data: object,
+  dir?: string
+): Promise<string | null> {
   try {
-    const res = await fetch(bridgeUrl(name), {
+    const res = await fetch(bridgeUrl(name, dir), {
       method: 'POST',
       body: JSON.stringify(data, null, 2),
     })
@@ -128,27 +169,83 @@ const AgentDiffTools: React.FC = () => {
   const currentSnapshot = (): ProjectSnapshot =>
     collectExportProjectData(store.getState(), projectId) as ProjectSnapshot
 
+  // Where this project's exchange files live (assumes the bridge is up — callers
+  // check bridgeAlive() first). Resolution order, cached in localStorage:
+  //   1. the remembered per-project directory
+  //   2. an imported tree: the directory of the original file — by its recorded
+  //      absolute path (Electron) or located by name via the bridge (dev iframe)
+  //   3. a one-time prompt (project born in Acorn, or the original wasn't found)
+  // Returns null only when the user cancels the prompt.
+  const resolveExchangeDir = async (): Promise<string | null> => {
+    const stored = localStorage.getItem(EXCHANGE_DIR_KEY(projectId))
+    if (stored) return stored
+    const remember = (dir: string) => {
+      localStorage.setItem(EXCHANGE_DIR_KEY(projectId), dir)
+      return dir
+    }
+    const rawSrc = localStorage.getItem(IMPORT_SOURCE_KEY(projectId))
+    if (rawSrc) {
+      try {
+        const src = JSON.parse(rawSrc)
+        if (typeof src.path === 'string' && src.path.includes('/')) {
+          return remember(src.path.slice(0, src.path.lastIndexOf('/')) || '/')
+        }
+        if (typeof src.name === 'string' && src.name) {
+          const matches = await bridgeLocate(src.name)
+          // only trust an unambiguous hit; 0 or many falls through to the prompt
+          if (matches.length === 1) {
+            const m = matches[0]
+            return remember(m.slice(0, m.lastIndexOf('/')) || '/')
+          }
+        }
+      } catch {
+        // unparseable provenance — fall through to the prompt
+      }
+    }
+    const dir = await askDirectory({
+      heading: 'LLM exchange directory',
+      message:
+        "Where should this project's LLM exchange files (tree/diff/apply/draft) live?\n" +
+        'Pick somewhere durable — /tmp is wiped on reboot.',
+      defaultValue: '/tmp/acorn-clarity',
+    })
+    return dir && dir.trim() ? remember(dir.trim()) : null
+  }
+
   const onExportTree = async () => {
     const current = currentSnapshot()
     setBadge(null)
     localStorage.setItem(SNAPSHOT_KEY(projectId), JSON.stringify(current))
-    // read the previous exported tree (the baseline) BEFORE overwriting it
-    const prev = await bridgeRead(treeName())
-    const treePath = await bridgeWrite(treeName(), current)
-    if (!treePath) {
+    if (!(await bridgeAlive())) {
       // no dev bridge — fall back to a plain download of the full tree
       download(treeName(), current)
       setStatus('Exported full tree (download). No dev bridge, so no diff file.')
       return
     }
+    const dir = await resolveExchangeDir()
+    if (!dir) {
+      setStatus('Export cancelled — no directory chosen.')
+      return
+    }
+    // read the previous exported tree (the baseline) BEFORE overwriting it
+    const prev = await bridgeRead(treeName(), dir)
+    const treePath = await bridgeWrite(treeName(), current, dir)
+    if (!treePath) {
+      setStatus(`Export failed — could not write to ${dir}.`)
+      return
+    }
     if (prev && !prev.__missing && prev.outcomes) {
       // the export IS a diff: write only what changed since the last export
       const diff = computeProjectDiff(prev, current)
-      await bridgeWrite(diffName(), diff)
+      await bridgeWrite(diffName(), diff, dir)
       const s = summary(diff)
       setStatus(`Exported.\ntree:  ${treePath}\ndiff since last export:${s ? '\n' + s : ' (no changes)'}`)
     } else {
-      setStatus(`Initial export — baseline saved:\n${treePath}\nEdit it, then "Apply update".`)
+      setStatus(
+        `Initial export — baseline saved:\n${treePath}\n` +
+          `Changes come back via ${applyName()} in the same folder — ` +
+          `click the import (⬇) icon to apply it.`
+      )
     }
   }
 
@@ -169,7 +266,12 @@ const AgentDiffTools: React.FC = () => {
       )
       return
     }
-    if (!window.confirm(`Apply this update to the current project?\n\n${summary(diff)}`)) {
+    const confirmed = await askConfirm({
+      heading: 'Apply this update?',
+      message: `Apply this update to the current project?\n\n${summary(diff)}`,
+      confirmLabel: 'Apply',
+    })
+    if (!confirmed) {
       setStatus('Apply cancelled.')
       return
     }
@@ -204,22 +306,27 @@ const AgentDiffTools: React.FC = () => {
 
   const onApplyClick = async () => {
     if (busy) return
-    const data = await bridgeRead(applyName())
-    if (data && data.__missing) {
-      setStatus(`No agent changes to apply yet (no ${applyName()}).`)
+    if (!(await bridgeAlive())) {
+      // no dev bridge — fall back to a file picker
+      fileInput.current?.click()
       return
     }
-    if (data) {
-      try {
-        await applyData(data)
-      } catch (err: any) {
-        console.error('[AgentDiffTools] apply failed', err)
-        setStatus(`Apply failed: ${err?.message || err}`)
-      }
+    const dir = await resolveExchangeDir()
+    if (!dir) {
+      setStatus('Apply cancelled — no directory chosen.')
       return
     }
-    // no dev bridge — fall back to a file picker
-    fileInput.current?.click()
+    const data = await bridgeRead(applyName(), dir)
+    if (!data || data.__missing) {
+      setStatus(`No agent changes to apply yet (no ${applyName()} in ${dir}).`)
+      return
+    }
+    try {
+      await applyData(data)
+    } catch (err: any) {
+      console.error('[AgentDiffTools] apply failed', err)
+      setStatus(`Apply failed: ${err?.message || err}`)
+    }
   }
 
   // Open a ProjectDiff as a draft overlay (review mode) rather than applying it.
@@ -227,21 +334,26 @@ const AgentDiffTools: React.FC = () => {
   // Nothing is written to the DHT — the draft is inert until Confirm.
   const onLoadDraftClick = async () => {
     if (busy) return
-    const data = await bridgeRead(draftName())
-    if (data && data.__missing) {
-      setStatus(`No draft to load yet (no ${draftName()}).`)
+    if (!(await bridgeAlive())) {
+      draftInput.current?.click()
       return
     }
-    if (data) {
-      if (!isProjectDiff(data)) {
-        setStatus(`${draftName()} is not a ProjectDiff.`)
-        return
-      }
-      enterDraftReview(store, data, projectId)
-      setStatus(`Draft opened for review.\n${summary(data)}`)
+    const dir = await resolveExchangeDir()
+    if (!dir) {
+      setStatus('Load draft cancelled — no directory chosen.')
       return
     }
-    draftInput.current?.click()
+    const data = await bridgeRead(draftName(), dir)
+    if (!data || data.__missing) {
+      setStatus(`No draft to load yet (no ${draftName()} in ${dir}).`)
+      return
+    }
+    if (!isProjectDiff(data)) {
+      setStatus(`${draftName()} is not a ProjectDiff.`)
+      return
+    }
+    enterDraftReview(store, data, projectId)
+    setStatus(`Draft opened for review.\n${summary(data)}`)
   }
 
   const onDraftFilePicked = async (e: React.ChangeEvent<HTMLInputElement>) => {
