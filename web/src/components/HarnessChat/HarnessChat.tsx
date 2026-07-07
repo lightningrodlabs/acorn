@@ -51,6 +51,7 @@ import {
   ProjectSnapshot,
 } from '../../migrating/projectDiff'
 import { setTextInputFocused } from '../../redux/ephemeral/keyboard/actions'
+import { askConfirm } from '../AskDialog/AskDialog'
 import {
   getHarnessClient,
   HarnessContentBlock,
@@ -143,9 +144,14 @@ async function decidePermission(
     const auto = req.options.find((o) => o.kind.startsWith('allow'))
     if (auto) return { outcome: 'selected', optionId: auto.optionId }
   }
-  const ok = window.confirm(
-    `The agent is requesting permission to: ${req.toolCall.title || 'act'}\n\nAllow?`
-  )
+  const ok = await askConfirm({
+    heading: 'Agent permission request',
+    message: `The agent is requesting permission to: ${
+      req.toolCall.title || 'act'
+    }\n\nAllow?`,
+    confirmLabel: 'Allow',
+    cancelLabel: 'Reject',
+  })
   const want = ok ? 'allow' : 'reject'
   const opt = req.options.find((o) => o.kind.startsWith(want))
   return opt

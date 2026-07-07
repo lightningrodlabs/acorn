@@ -21,6 +21,7 @@ import MarkdownDescription from '../MarkdownDescription/MarkdownDescription'
 import MetadataWithLabel from '../MetadataWithLabel/MetadataWithLabel'
 import ArtifactsField from './ArtifactsField'
 import CompletionCriteriaField from './CompletionCriteriaField'
+import { askConfirm } from '../AskDialog/AskDialog'
 import './OutcomeFieldsEditor.scss'
 
 // --- field-type registry -----------------------------------------------------
@@ -213,13 +214,15 @@ const OutcomeFieldsEditor: React.FC<OutcomeFieldsEditorProps> = ({
     )
     closeAdd()
   }
-  const removeSection = (key: string) => {
+  const removeSection = async (key: string) => {
     // guard against discarding real content; an empty section removes silently
-    if (
-      hasContent(fields[key]) &&
-      !window.confirm(`Remove the "${labelFor(key)}" section and discard its contents?`)
-    ) {
-      return
+    if (hasContent(fields[key])) {
+      const confirmed = await askConfirm({
+        heading: 'Remove section?',
+        message: `Remove the "${labelFor(key)}" section and discard its contents?`,
+        confirmLabel: 'Remove',
+      })
+      if (!confirmed) return
     }
     onChange(removeField(description, key))
   }

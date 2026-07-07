@@ -62,6 +62,7 @@ import { App } from 'electron'
 import { isWeaveContext } from '@theweave/api'
 import { writeMyLocalProfile } from '../utils'
 import { setMyLocalProfile } from '../redux/persistent/profiles/my-local-profile/actions'
+import { AskDialogHost } from '../components/AskDialog/AskDialog'
 
 export type AppStateProps = {
   /**
@@ -382,6 +383,8 @@ const App: React.FC<AppProps> = ({
                       updateProjectMeta,
                     }}
                   />
+                  {/* imperative prompt/confirm/alert host (askText & co.) */}
+                  <AskDialogHost />
                   {/* Loading Screen if no user agent, and also during checking whether migration is necessary */}
                   {!(agentAddress && finishMigrationChecker.hasChecked) && (
                     <LoadingScreen />

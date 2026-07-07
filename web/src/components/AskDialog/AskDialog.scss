@@ -1,0 +1,59 @@
+// Generic ask-dialog (in-app prompt/confirm/alert replacement)
+.ask-dialog-wrapper {
+  max-width: 30rem;
+}
+
+.ask-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 0.5rem 0.25rem;
+
+  .ask-dialog-message {
+    white-space: pre-wrap;
+  }
+
+  .ask-dialog-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem 0.6rem;
+    outline: none;
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 0.3rem;
+    font: 0.9rem var(--font-family-primary-medium);
+
+    &:focus {
+      border-color: var(--border-color-focused, #5f65ff);
+    }
+    &::placeholder {
+      color: var(--text-color-placeholder);
+    }
+  }
+
+  .ask-dialog-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.6rem;
+  }
+
+  // directory dialogs: picker-first, typed path as the fallback
+  .ask-dialog-dir-browse {
+    display: flex;
+    justify-content: center;
+  }
+  .ask-dialog-hint {
+    font: 0.8rem var(--font-family-primary-medium);
+    color: #c0532f;
+    white-space: pre-wrap;
+  }
+  .ask-dialog-dir-manual {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
+    .ask-dialog-dir-manual-label {
+      font: 0.8rem var(--font-family-primary-medium);
+      color: var(--text-color-secondary, #6a6a6a);
+    }
+  }
+}
