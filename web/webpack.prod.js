@@ -26,6 +26,11 @@ module.exports = {
       __ADMIN_PORT__: 1235,
       __APP_PORT__: 8889,
       'process.env.__DEV_MODE__': JSON.stringify(false),
+      // Must be DEFINED, not merely absent: the harness availability check reads
+      // `__DEV_MODE__ || __HARNESS__`, and `false || …` does not short-circuit —
+      // an undefined flag would leave a literal `process.env.__HARNESS__` in the
+      // bundle and throw ReferenceError in the browser (no process shim here).
+      'process.env.__HARNESS__': JSON.stringify(false),
     }),
     new HTMLWebpackPlugin({
       template: './src/index.html', //source

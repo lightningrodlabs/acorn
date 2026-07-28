@@ -29,6 +29,10 @@ module.exports = {
       __ADMIN_PORT__: process.env.ADMIN_WS_PORT,
       __APP_PORT__: process.env.APP_WS_PORT,
       'process.env.__DEV_MODE__': JSON.stringify(true),
+      // the dev server IS the harness host, so __DEV_MODE__ already grants
+      // availability; defined explicitly so the flag never survives as a bare
+      // `process.env` read in the bundle (see webpack.prod.js).
+      'process.env.__HARNESS__': JSON.stringify(false),
       'process.env.KANGAROO': process.env.KANGAROO,
     }),
     new HTMLWebpackPlugin({
