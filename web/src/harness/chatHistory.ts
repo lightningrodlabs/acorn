@@ -110,6 +110,31 @@ export function deriveTitle(messages: ChatMessage[]): string {
   return t.length > 60 ? t.slice(0, 57) + '…' : t
 }
 
+/** Build a session's stored record from its previous one plus this turn's
+ *  data — the single merge rule shared by upsertSession (whole-store form) and
+ *  persistTurn (per-session record). An explicit `agentName` wins, else the
+ *  prior record's stamp is kept; ditto plan snapshots (so a persist that
+ *  doesn't re-supply them doesn't drop them). */
+function mergeRecord(
+  prev: SessionRecord | undefined | null,
+  id: string,
+  messages: ChatMessage[],
+  now: number,
+  agentName?: string | null,
+  planSnapshots?: PlanSnapshot[] | null
+): SessionRecord {
+  const owner = agentName || prev?.agentName
+  const plans = planSnapshots != null ? planSnapshots : prev?.planSnapshots
+  return {
+    id,
+    title: deriveTitle(messages),
+    updatedAt: now,
+    messages,
+    ...(owner ? { agentName: owner } : {}),
+    ...(plans && plans.length ? { planSnapshots: plans } : {}),
+  }
+}
+
 /** Insert or replace a session's record and mark it current. Stamps the owning
  *  agent: an explicit `agentName` wins, else a prior record's stamp is kept.
  *  `keepCurrent` leaves the store's current pointer alone (unless unset) — a
@@ -126,18 +151,7 @@ export function upsertSession(
   keepCurrent?: boolean
 ): ChatStore {
   const prev = store.sessions.find((s) => s.id === id)
-  const owner = agentName || prev?.agentName
-  // Prefer explicitly-passed snapshots; else keep whatever the prior record held
-  // (so a persist that doesn't re-supply them doesn't drop them).
-  const plans = planSnapshots != null ? planSnapshots : prev?.planSnapshots
-  const record: SessionRecord = {
-    id,
-    title: deriveTitle(messages),
-    updatedAt: now,
-    messages,
-    ...(owner ? { agentName: owner } : {}),
-    ...(plans && plans.length ? { planSnapshots: plans } : {}),
-  }
+  const record = mergeRecord(prev, id, messages, now, agentName, planSnapshots)
   const sessions = prev
     ? store.sessions.map((s) => (s.id === id ? record : s))
     : [...store.sessions, record]
@@ -191,48 +205,214 @@ export const scopeProject = (
   agentName?: string | null
 ): string => (agentName ? `${projectId}::${agentName}` : projectId)
 
-const keyFor = (projectId: string) => `acorn:harnessChat:v1:${projectId}`
+/**
+ * v1 stored a project's WHOLE ChatStore as one JSON blob, so every write was a
+ * read-modify-write of every session — and with concurrent writers (two
+ * sessions persisting turns in one window, or two windows on one project) the
+ * last writer silently dropped the others' work. v2 gives each session its own
+ * key and the current-session pointer its own tiny key, so a writer only ever
+ * touches the session it owns: writers on different sessions physically cannot
+ * clobber each other ([[chat-history-concurrency]]). v1 (and the pre-picker
+ * legacy blob) migrate to v2 on first read, one-way.
+ */
+const V2 = 'acorn:harnessChat:v2:'
+const curKey = (projectId: string) => `${V2}${projectId}:cur`
+const sessPrefix = (projectId: string) => `${V2}${projectId}:s:`
+const sessKey = (projectId: string, id: string) =>
+  `${sessPrefix(projectId)}${id}`
+const v1KeyFor = (projectId: string) => `acorn:harnessChat:v1:${projectId}`
 const legacyKeyFor = (projectId: string) => `acorn:harnessChat:${projectId}`
+
+// Same-window change notification is a plain listener set (writers call
+// notifyChange directly); the browser's 'storage' event covers OTHER windows
+// (it fires only in windows that did not make the write).
+type ChatHistoryListener = (projectId: string) => void
+const listeners = new Set<ChatHistoryListener>()
+
+function notifyChange(projectId: string): void {
+  for (const l of [...listeners]) {
+    try {
+      l(projectId)
+    } catch (_) {}
+  }
+}
+
+/** Map a raw localStorage key from a cross-window 'storage' event back to the
+ *  scoped project id it belongs to, or null for unrelated keys. Pure. */
+export function changedProjectForKey(key: string | null): string | null {
+  if (!key || key.indexOf(V2) !== 0) return null
+  const rest = key.slice(V2.length)
+  if (rest.slice(-4) === ':cur') return rest.slice(0, -4)
+  const sIdx = rest.lastIndexOf(':s:')
+  return sIdx > 0 ? rest.slice(0, sIdx) : null
+}
+
+/**
+ * Listen for chat-store changes from ANY writer — another session persisting
+ * in this window, or another window entirely — so session pickers stay live
+ * instead of showing a stale list. `cb` receives the SCOPED project id that
+ * changed (see scopeProject). Returns an unsubscribe.
+ */
+export function subscribeChatHistory(
+  cb: (projectId: string) => void
+): () => void {
+  listeners.add(cb)
+  const onStorage = (e: StorageEvent) => {
+    const p = changedProjectForKey(e.key)
+    if (p) cb(p)
+  }
+  let onWindow = false
+  try {
+    window.addEventListener('storage', onStorage)
+    onWindow = true
+  } catch (_) {}
+  return () => {
+    listeners.delete(cb)
+    if (onWindow)
+      try {
+        window.removeEventListener('storage', onStorage)
+      } catch (_) {}
+  }
+}
+
+// Raw per-key accessors. Every write notifies, so open pickers refresh.
+function readSession(projectId: string, id: string): SessionRecord | null {
+  try {
+    const raw = localStorage.getItem(sessKey(projectId, id))
+    if (raw) return JSON.parse(raw)
+  } catch (_) {}
+  return null
+}
+function writeSession(projectId: string, record: SessionRecord): void {
+  try {
+    localStorage.setItem(sessKey(projectId, record.id), JSON.stringify(record))
+    notifyChange(projectId)
+  } catch (_) {}
+}
+function removeSessionRecord(projectId: string, id: string): void {
+  try {
+    localStorage.removeItem(sessKey(projectId, id))
+    notifyChange(projectId)
+  } catch (_) {}
+}
+function readCurrent(projectId: string): string | null {
+  try {
+    const raw = localStorage.getItem(curKey(projectId))
+    if (raw != null) return JSON.parse(raw)
+  } catch (_) {}
+  return null
+}
+function writeCurrent(projectId: string, id: string | null): void {
+  try {
+    localStorage.setItem(curKey(projectId), JSON.stringify(id))
+    notifyChange(projectId)
+  } catch (_) {}
+}
+function sessionIds(projectId: string): string[] {
+  const prefix = sessPrefix(projectId)
+  const out: string[] = []
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (key && key.indexOf(prefix) === 0) out.push(key.slice(prefix.length))
+    }
+  } catch (_) {}
+  return out
+}
+/** Whether this project already lives in the v2 layout. */
+function hasV2(projectId: string): boolean {
+  try {
+    if (localStorage.getItem(curKey(projectId)) != null) return true
+  } catch (_) {}
+  return sessionIds(projectId).length > 0
+}
+/** One-way v1/legacy → v2 migration, run implicitly by the first read/write. */
+function ensureV2(projectId: string): void {
+  if (!hasV2(projectId)) loadStore(projectId)
+}
 
 export function loadStore(projectId: string): ChatStore {
   try {
-    const raw = localStorage.getItem(keyFor(projectId))
-    if (raw) return JSON.parse(raw)
-    // migrate the single-session format written before the picker existed
+    if (hasV2(projectId)) {
+      const sessions: SessionRecord[] = []
+      for (const id of sessionIds(projectId)) {
+        const rec = readSession(projectId, id)
+        if (rec) sessions.push(rec)
+      }
+      return { currentId: readCurrent(projectId), sessions }
+    }
+    // migrate the v1 whole-store blob, then the pre-picker single-session format
+    const raw = localStorage.getItem(v1KeyFor(projectId))
+    if (raw) {
+      const store: ChatStore = JSON.parse(raw)
+      saveStore(projectId, store)
+      localStorage.removeItem(v1KeyFor(projectId))
+      return store
+    }
     const legacy = localStorage.getItem(legacyKeyFor(projectId))
     if (legacy) {
       const { sessionId, messages } = JSON.parse(legacy)
-      if (sessionId)
-        return upsertSession(emptyStore(), sessionId, messages || [], 0)
+      if (sessionId) {
+        const store = upsertSession(emptyStore(), sessionId, messages || [], 0)
+        saveStore(projectId, store)
+        localStorage.removeItem(legacyKeyFor(projectId))
+        return store
+      }
     }
   } catch (_) {}
   return emptyStore()
 }
 
+/**
+ * Whole-store replace. Runtime writers use the TARGETED ops below instead
+ * (persistTurn & co. touch only the session they own) — this remains for
+ * migration, tests, and the one-time reclaim, where replacing a scope's whole
+ * contents is the point.
+ */
 export function saveStore(projectId: string, store: ChatStore): void {
   try {
-    localStorage.setItem(keyFor(projectId), JSON.stringify(store))
+    const keep = new Set(store.sessions.map((s) => s.id))
+    for (const id of sessionIds(projectId))
+      if (!keep.has(id)) localStorage.removeItem(sessKey(projectId, id))
+    for (const s of store.sessions)
+      localStorage.setItem(sessKey(projectId, s.id), JSON.stringify(s))
+    localStorage.setItem(curKey(projectId), JSON.stringify(store.currentId))
+    notifyChange(projectId)
   } catch (_) {}
 }
 
 /** The agent scopes that have a stored chat for this project (null = the bare,
- *  pre-namespacing store). A snapshot, so callers may mutate storage while
- *  iterating it. */
+ *  pre-namespacing store). Scans both v2 keys and not-yet-migrated v1 blobs. A
+ *  snapshot, so callers may mutate storage while iterating it. */
 function scopeAgentsFor(projectId: string): (string | null)[] {
-  const base = keyFor(projectId)
-  const out: (string | null)[] = []
+  const found = new Set<string | null>()
   try {
+    const v1Base = v1KeyFor(projectId)
+    const v2Base = `${V2}${projectId}`
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i)
-      if (!key || key.indexOf(base) !== 0) continue
-      const rest = key.slice(base.length)
-      // '' → the bare project store; '::<agent>' → a scoped one. Anything else is
-      // a *different* project whose id merely starts with this one — skip it.
-      if (rest === '') out.push(null)
-      else if (rest.indexOf('::') === 0) out.push(rest.slice(2))
+      if (!key) continue
+      if (key.indexOf(v1Base) === 0) {
+        const rest = key.slice(v1Base.length)
+        // '' → the bare project store; '::<agent>' → a scoped one. Anything
+        // else is a *different* project whose id merely starts with this one.
+        if (rest === '') found.add(null)
+        else if (rest.indexOf('::') === 0) found.add(rest.slice(2))
+      } else if (key.indexOf(v2Base) === 0) {
+        const rest = key.slice(v2Base.length)
+        // ':cur' / ':s:<id>' → the bare scope; '::<agent>:cur' /
+        // '::<agent>:s:<id>' → a scoped one; anything else, another project.
+        if (rest === ':cur' || rest.indexOf(':s:') === 0) found.add(null)
+        else if (rest.indexOf('::') === 0) {
+          const tail = rest.slice(2)
+          const sIdx = tail.lastIndexOf(':s:')
+          if (tail.slice(-4) === ':cur') found.add(tail.slice(0, -4))
+          else if (sIdx > 0) found.add(tail.slice(0, sIdx))
+        }
+      }
     }
   } catch (_) {}
-  return out
+  return [...found]
 }
 
 /**
@@ -294,7 +474,8 @@ export function reclaimSessions(
       const store = loadStore(arg)
       const keep = store.sessions.filter((s) => !mine(s))
       if (keep.length === store.sessions.length) continue
-      for (const s of store.sessions) if (mine(s)) claimed.push({ ...s, agentName })
+      for (const s of store.sessions)
+        if (mine(s)) claimed.push({ ...s, agentName })
       saveStore(arg, {
         currentId: keep.some((s) => s.id === store.currentId)
           ? store.currentId
@@ -308,13 +489,15 @@ export function reclaimSessions(
       mine(s) ? { ...s, agentName } : s
     )
     const dirty =
-      claimed.length ||
-      backfilled.some((s, i) => s !== myStore.sessions[i])
+      claimed.length || backfilled.some((s, i) => s !== myStore.sessions[i])
     if (dirty) {
       const byId = new Map<string, SessionRecord>()
       for (const s of claimed) byId.set(s.id, s)
       for (const s of backfilled) byId.set(s.id, s) // own scope wins on collision
-      saveStore(myArg, { currentId: myStore.currentId, sessions: [...byId.values()] })
+      saveStore(myArg, {
+        currentId: myStore.currentId,
+        sessions: [...byId.values()],
+      })
     }
   } catch (_) {}
 }
@@ -334,24 +517,28 @@ export function moveSession(
   if ((fromAgent || null) === (toAgent || null)) return
   try {
     const fromArg = scopeProject(projectId, fromAgent)
-    const from = loadStore(fromArg)
-    const rec = from.sessions.find((s) => s.id === id)
+    ensureV2(fromArg)
+    const rec = readSession(fromArg, id)
     if (!rec) return
-    saveStore(fromArg, removeSession(from, id))
+    removeSessionRecord(fromArg, id)
+    if (readCurrent(fromArg) === id) writeCurrent(fromArg, null)
     const toArg = scopeProject(projectId, toAgent)
-    const to = loadStore(toArg)
-    const stamped: SessionRecord = { ...rec, ...(toAgent ? { agentName: toAgent } : {}) }
+    ensureV2(toArg)
+    const stamped: SessionRecord = {
+      ...rec,
+      ...(toAgent ? { agentName: toAgent } : {}),
+    }
     if (!toAgent) delete (stamped as { agentName?: string }).agentName
-    const exists = to.sessions.some((s) => s.id === id)
-    saveStore(toArg, {
-      currentId: to.currentId,
-      sessions: exists
-        ? to.sessions.map((s) => (s.id === id ? stamped : s))
-        : [...to.sessions, stamped],
-    })
+    writeSession(toArg, stamped)
   } catch (_) {}
 }
 
+/**
+ * Persist one session's turn. Writes ONLY that session's record (plus the
+ * current-session pointer when it changes) — never the whole store — so
+ * concurrent writers on other sessions, in this window or another, are never
+ * overwritten ([[chat-history-concurrency]]).
+ */
 export function persistTurn(
   projectId: string,
   id: string,
@@ -361,27 +548,29 @@ export function persistTurn(
   planSnapshots?: PlanSnapshot[] | null,
   keepCurrent?: boolean
 ): void {
-  saveStore(
+  ensureV2(projectId)
+  writeSession(
     projectId,
-    upsertSession(
-      loadStore(projectId),
+    mergeRecord(
+      readSession(projectId, id),
       id,
       messages,
       now,
       agentName,
-      planSnapshots,
-      keepCurrent
+      planSnapshots
     )
   )
+  const cur = readCurrent(projectId)
+  if (!(keepCurrent && cur) && cur !== id) writeCurrent(projectId, id)
 }
 
 /** Mark a session as the one to resume next time (the human displayed it). The
  *  session may not have a stored record yet (brand-new chat) — that's fine, the
  *  pointer is set anyway and its first persisted turn fills the record in. */
 export function setCurrentSession(projectId: string, id: string): void {
-  const store = loadStore(projectId)
-  if (store.currentId === id) return
-  saveStore(projectId, { ...store, currentId: id })
+  ensureV2(projectId)
+  if (readCurrent(projectId) === id) return
+  writeCurrent(projectId, id)
 }
 
 export function getSessionMessages(
@@ -417,15 +606,16 @@ export function migrateSession(
   now: number,
   agentName?: string | null
 ): ChatMessage[] {
-  const store = loadStore(projectId)
-  const found = store.sessions.find((s) => s.id === fromId)
+  ensureV2(projectId)
+  const found = readSession(projectId, fromId)
   if (!found) return []
+  removeSessionRecord(projectId, fromId)
   // `toId` is a fresh session minted by the current agent → stamp it as such.
   // Carry the plan history forward too, so it isn't lost on a re-home.
-  saveStore(
+  writeSession(
     projectId,
-    upsertSession(
-      removeSession(store, fromId),
+    mergeRecord(
+      readSession(projectId, toId),
       toId,
       found.messages,
       now,
@@ -433,6 +623,7 @@ export function migrateSession(
       found.planSnapshots
     )
   )
+  writeCurrent(projectId, toId)
   return found.messages
 }
 
@@ -441,13 +632,23 @@ export function reusableEmptySessionId(projectId: string): string | null {
   return emptySessionId(loadStore(projectId))
 }
 
-/** Keep at most one empty chat — drop other unused sessions. */
+/** Keep at most one empty chat — drop other unused sessions. Removes only the
+ *  pruned sessions' own keys; no surviving session's record is rewritten. */
 export function pruneEmptySessions(projectId: string, keepId: string): void {
-  saveStore(projectId, pruneEmpty(loadStore(projectId), keepId))
+  const store = loadStore(projectId)
+  const pruned = pruneEmpty(store, keepId)
+  if (pruned === store) return
+  const keep = new Set(pruned.sessions.map((s) => s.id))
+  for (const s of store.sessions)
+    if (!keep.has(s.id)) removeSessionRecord(projectId, s.id)
+  if (pruned.currentId !== store.currentId)
+    writeCurrent(projectId, pruned.currentId)
 }
 
 export function deleteSession(projectId: string, id: string): void {
-  saveStore(projectId, removeSession(loadStore(projectId), id))
+  ensureV2(projectId)
+  removeSessionRecord(projectId, id)
+  if (readCurrent(projectId) === id) writeCurrent(projectId, null)
 }
 
 /** A project's chats for one backing agent. `agentName` is null for the bare,
