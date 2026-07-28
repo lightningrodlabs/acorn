@@ -90,10 +90,13 @@ export class DevSidecarHarnessClient implements HarnessClient {
   private unavailableReason: string | null = null
 
   get available(): boolean {
-    // No sidecar in a production build. In dev, defer the real check to
-    // initialize(); a discovered unavailability latches here.
+    // Available wherever a sidecar host exists on our origin: the dev server
+    // (__DEV_MODE__) or the standalone harness host (__HARNESS__, set by
+    // webpack.standalone.js). The webhapp/Moss build sets neither, so the chat
+    // stays hidden there. Optimistic either way — initialize() is the real
+    // liveness check; a discovered unavailability latches here.
     if (this.unavailableReason) return false
-    return Boolean(process.env.__DEV_MODE__)
+    return Boolean(process.env.__DEV_MODE__ || process.env.__HARNESS__)
   }
 
   async initialize(): Promise<HarnessInfo> {

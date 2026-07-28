@@ -12,6 +12,8 @@
     "debug": "node --inspect ../node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "build:ui": "webpack --config webpack.dev.js",
+    "build:standalone": "webpack --config webpack.standalone.js",
+    "host": "node dev-harness/host.js",
     "zip:ui": "zip -r dist.zip dist",
     "build:webhapp": "hc web-app pack --output=./acorn.webhapp ./",
     "dev:we": "we-dev-cli --agent-idx 1 --dev-config we.dev.config.ts",
