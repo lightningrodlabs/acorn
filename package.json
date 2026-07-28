@@ -36,6 +36,7 @@
     "zip-ui": "cd web/dist && bestzip ../dist.zip *",
     "pack-happs": "bash happs/scripts/happ-pack.sh",
     "build-webhapp": "bash scripts/build-webhapp.sh",
+    "build-webhapp:standalone": "bash scripts/build-webhapp-standalone.sh",
     "postinstall": "yarn workspace zod-models run build",
     "desktop:happ": "KANGAROO=true yarn workspace acorn-ui hc-spin:happ",
     "desktop:webhapp": "KANGAROO=true yarn workspace acorn-ui hc-spin:webhapp",
