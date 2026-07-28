@@ -50,7 +50,15 @@ function acornToolsServerEntry() {
     type: 'stdio',
     command: process.execPath,
     args: [path.join(__dirname, 'acornToolsServer.js')],
-    env: [{ name: 'ACORN_WEB_PORT', value: String(process.env.WEB_PORT || '') }],
+    env: [
+      { name: 'ACORN_WEB_PORT', value: String(process.env.WEB_PORT || '') },
+      // Embedded in an Electron main process (Kangaroo), process.execPath is the
+      // Electron binary — without this the child comes up as a second GUI app
+      // instead of a Node interpreter. No-op outside Electron.
+      ...(process.versions.electron
+        ? [{ name: 'ELECTRON_RUN_AS_NODE', value: '1' }]
+        : []),
+    ],
   }
 }
 
@@ -370,7 +378,11 @@ async function getAgent() {
     opencodeAcornMcp: {
       type: 'local',
       command: [process.execPath, path.join(__dirname, 'acornToolsServer.js')],
-      environment: { ACORN_WEB_PORT: String(process.env.WEB_PORT || '') },
+      environment: {
+        ACORN_WEB_PORT: String(process.env.WEB_PORT || ''),
+        // see acornToolsServerEntry — Electron's execPath needs this to run as Node
+        ...(process.versions.electron ? { ELECTRON_RUN_AS_NODE: '1' } : {}),
+      },
       enabled: true,
     },
   })
