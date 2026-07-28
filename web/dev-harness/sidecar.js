@@ -231,8 +231,22 @@ function makeClient(state) {
       // restore the transcript from the renderer's own store instead, so drop them.
       if (state.replaying) return
       const update = toHarnessUpdate(params.update)
-      if (update)
+      if (update) {
+        // Remember which session last had an Acorn hosted tool pending: the MCP
+        // bridge's HTTP calls are sessionless, so when several turns are in
+        // flight this is the tiebreak that attributes the call that follows
+        // (see attributeToolSession).
+        if (
+          update.type === 'tool_call' &&
+          (update.status === 'pending' || update.status === 'in_progress') &&
+          /read_tree|propose_edits|acorn/i.test(update.title || '')
+        )
+          state.lastAcornToolSession = {
+            sessionId: params.sessionId,
+            at: Date.now(),
+          }
         pushToBinding(state, { t: 'update', sessionId: params.sessionId, update })
+      }
     },
     requestPermission: async (params) => {
       const requestId = state.nextPermissionId++
@@ -294,7 +308,9 @@ function makeDirectState(cfg) {
     skillSentSessions: new Set(),
     nextPermissionId: 1,
     pendingPermissions: new Map(),
-    activePromptIds: new Set(),
+    // in-flight turns: prompt frame id -> sessionId (feeds tool attribution)
+    activePrompts: new Map(),
+    lastAcornToolSession: null,
     nextToolId: 1,
     pendingToolCalls: new Map(),
   }
@@ -309,7 +325,7 @@ function makeDirectState(cfg) {
       model: cfg.model,
       apiKey: cfg.apiKey,
     }),
-    callTool: (name, args) => callRendererTool(name, args),
+    callTool: (name, args, sessionId) => callRendererTool(name, args, sessionId),
     pushUpdate: (sessionId, update) =>
       pushToBinding(state, { t: 'update', sessionId, update }),
     genSessionId: () => `direct-${++seq}`,
@@ -391,7 +407,11 @@ async function getAgent() {
 
     nextPermissionId: 1,
     pendingPermissions: new Map(),
-    activePromptIds: new Set(),
+    // in-flight turns: prompt frame id -> sessionId. Concurrent turns are
+    // expected (the renderer's session registry runs several sessions at once);
+    // this also feeds hosted-tool session attribution.
+    activePrompts: new Map(),
+    lastAcornToolSession: null,
     // hosted tool calls (read_tree / propose_edits) awaiting a renderer reply
     nextToolId: 1,
     pendingToolCalls: new Map(),
@@ -406,8 +426,11 @@ async function getAgent() {
     const reason = `agent process exited${
       code != null ? ` (code ${code})` : signal ? ` (${signal})` : ''
     }`
-    for (const id of state.activePromptIds)
+    for (const [id, sessionId] of state.activePrompts) {
       pushToBinding(state, { t: 'error', id, message: reason })
+      // an adopted turn has no pending id of its own — end it by session too
+      endTurnBySession(state, sessionId, 'cancelled')
+    }
     if (agent === state) agent = null
   })
   const input = Readable.toWeb(child.stdout)
@@ -523,6 +546,16 @@ async function handleFrame(ws, frame) {
         wsSend(ws, { t: 'sessionResumeFailed', id: frame.id })
         return
       }
+      // Which sessions are still held, and which are mid-turn? The renderer asks
+      // on connect: a reload drops this socket but not the agent, so turns keep
+      // running that the new renderer knows nothing about (it reattaches them).
+      case 'sessions':
+        wsSend(ws, {
+          t: 'sessionList',
+          id: frame.id,
+          sessions: sessionListFor(state),
+        })
+        return
       case 'prompt': {
         const userBlocks = (frame.blocks || []).map(toAcpBlock)
         // Uniform delivery for EVERY backend (see promptContext.js): on a session's
@@ -556,7 +589,7 @@ async function handleFrame(ws, frame) {
             state.direct ? 'direct' : 'acp'
           } firstTurn=${firstTurn} blocks=${blocks.length}`
         )
-        state.activePromptIds.add(frame.id)
+        state.activePrompts.set(frame.id, frame.sessionId)
         try {
           const res = await state.agent.prompt({
             sessionId: frame.sessionId,
@@ -567,8 +600,14 @@ async function handleFrame(ws, frame) {
             id: frame.id,
             stopReason: res.stopReason,
           })
+          endTurnBySession(state, frame.sessionId, res.stopReason)
+        } catch (err) {
+          // the correlated reply (an `error` frame, sent by the caller's catch)
+          // is meaningless to a renderer that adopted this turn — tell it too
+          endTurnBySession(state, frame.sessionId, 'cancelled')
+          throw err
         } finally {
-          state.activePromptIds.delete(frame.id)
+          state.activePrompts.delete(frame.id)
         }
         return
       }
@@ -606,7 +645,49 @@ async function handleFrame(ws, frame) {
  * a HarnessToolResult ({ ok, result } | { ok:false, error }). Fails fast (rather
  * than hanging the agent) when no renderer is attached.
  */
-function callRendererTool(tool, args) {
+/**
+ * Which session does a hosted tool call belong to? The MCP bridge's HTTP POSTs
+ * are sessionless, so with concurrent turns this must be inferred: an explicit
+ * id (the direct backend threads it) wins; else a single in-flight turn is
+ * unambiguous; else the session whose ACP `tool_call` update for an Acorn tool
+ * arrived last (the agent announces the call on its session just before the MCP
+ * request lands). Returns undefined when it genuinely can't tell — the renderer
+ * then falls back to its displayed project.
+ */
+/**
+ * What the host holds, for a renderer that just connected: every session still
+ * in memory, flagged with whether a turn is running on it right now. A reload
+ * drops the socket but not the agent, so `inFlight` is how the new renderer
+ * finds turns it never started (and adopts them).
+ */
+function sessionListFor(state) {
+  const busy = new Set(state.activePrompts.values())
+  return [...state.sessions].map((sessionId) => ({
+    sessionId,
+    inFlight: busy.has(sessionId),
+  }))
+}
+
+/**
+ * Announce a turn's end addressed by SESSION, alongside the correlated reply.
+ * A renderer that reattached after a reload never sent this prompt, so the
+ * correlation id means nothing to it; the session id does.
+ */
+function endTurnBySession(state, sessionId, stopReason) {
+  pushToBinding(state, { t: 'turnEnded', sessionId, stopReason })
+}
+
+function attributeToolSession(state, explicit) {
+  if (explicit) return explicit
+  const inFlight = new Set(state.activePrompts.values())
+  if (inFlight.size === 1) return inFlight.values().next().value
+  const last = state.lastAcornToolSession
+  if (last && Date.now() - last.at < 60_000 && inFlight.has(last.sessionId))
+    return last.sessionId
+  return undefined
+}
+
+function callRendererTool(tool, args, explicitSessionId) {
   return new Promise((resolve) => {
     const state = agent
     if (
@@ -621,6 +702,7 @@ function callRendererTool(tool, args) {
       return
     }
     const requestId = state.nextToolId++
+    const sessionId = attributeToolSession(state, explicitSessionId)
     const timer = setTimeout(() => {
       if (state.pendingToolCalls.has(requestId)) {
         state.pendingToolCalls.delete(requestId)
@@ -631,7 +713,7 @@ function callRendererTool(tool, args) {
       clearTimeout(timer)
       resolve(result)
     })
-    pushToBinding(state, { t: 'toolCall', requestId, call: { tool, args } })
+    pushToBinding(state, { t: 'toolCall', requestId, sessionId, call: { tool, args } })
   })
 }
 
@@ -749,4 +831,6 @@ module.exports = {
   HARNESS_PATH,
   callRendererTool,
   toolBridgeMiddleware,
+  attributeToolSession,
+  sessionListFor,
 }

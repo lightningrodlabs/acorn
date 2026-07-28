@@ -111,14 +111,19 @@ export function deriveTitle(messages: ChatMessage[]): string {
 }
 
 /** Insert or replace a session's record and mark it current. Stamps the owning
- *  agent: an explicit `agentName` wins, else a prior record's stamp is kept. */
+ *  agent: an explicit `agentName` wins, else a prior record's stamp is kept.
+ *  `keepCurrent` leaves the store's current pointer alone (unless unset) — a
+ *  BACKGROUND session streaming its turn must not steal "the chat you were
+ *  looking at" out from under a reload; displaying a chat is what makes it
+ *  current ([[setCurrentSession]]). */
 export function upsertSession(
   store: ChatStore,
   id: string,
   messages: ChatMessage[],
   now: number,
   agentName?: string | null,
-  planSnapshots?: PlanSnapshot[] | null
+  planSnapshots?: PlanSnapshot[] | null,
+  keepCurrent?: boolean
 ): ChatStore {
   const prev = store.sessions.find((s) => s.id === id)
   const owner = agentName || prev?.agentName
@@ -136,7 +141,8 @@ export function upsertSession(
   const sessions = prev
     ? store.sessions.map((s) => (s.id === id ? record : s))
     : [...store.sessions, record]
-  return { currentId: id, sessions }
+  const currentId = keepCurrent && store.currentId ? store.currentId : id
+  return { currentId, sessions }
 }
 
 export function removeSession(store: ChatStore, id: string): ChatStore {
@@ -352,12 +358,30 @@ export function persistTurn(
   messages: ChatMessage[],
   now: number,
   agentName?: string | null,
-  planSnapshots?: PlanSnapshot[] | null
+  planSnapshots?: PlanSnapshot[] | null,
+  keepCurrent?: boolean
 ): void {
   saveStore(
     projectId,
-    upsertSession(loadStore(projectId), id, messages, now, agentName, planSnapshots)
+    upsertSession(
+      loadStore(projectId),
+      id,
+      messages,
+      now,
+      agentName,
+      planSnapshots,
+      keepCurrent
+    )
   )
+}
+
+/** Mark a session as the one to resume next time (the human displayed it). The
+ *  session may not have a stored record yet (brand-new chat) — that's fine, the
+ *  pointer is set anyway and its first persisted turn fills the record in. */
+export function setCurrentSession(projectId: string, id: string): void {
+  const store = loadStore(projectId)
+  if (store.currentId === id) return
+  saveStore(projectId, { ...store, currentId: id })
 }
 
 export function getSessionMessages(

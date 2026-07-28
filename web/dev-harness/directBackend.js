@@ -103,7 +103,7 @@ function makeHttpChat({ baseURL, model, apiKey, fetchImpl }) {
  * @param {?string} o.skillText          clarity-trees skill markdown
  * @param {Array}  o.tools               acornToolsServer TOOLS
  * @param {function} o.chat              async (messages, tools) => {content,thinking,toolCalls}
- * @param {function} o.callTool          async (name, args) => {ok,result}|{ok:false,error}
+ * @param {function} o.callTool          async (name, args, sessionId) => {ok,result}|{ok:false,error}
  * @param {function} o.pushUpdate        (sessionId, update) => void  (renderer stream)
  * @param {function} o.genSessionId      () => string
  */
@@ -191,7 +191,7 @@ function makeDirectAgent(o) {
             })
             let result
             try {
-              result = await o.callTool(tc.name, tc.arguments)
+              result = await o.callTool(tc.name, tc.arguments, sessionId)
             } catch (e) {
               result = { ok: false, error: String((e && e.message) || e) }
             }

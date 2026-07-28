@@ -19,6 +19,7 @@ import {
   HarnessPermissionDecision,
   HarnessPermissionRequest,
   HarnessSession,
+  HarnessSessionInfo,
   HarnessToolCall,
   HarnessToolResult,
   HarnessTurnResult,
@@ -53,6 +54,10 @@ class SidecarSession implements HarnessSession {
     return this.client._onUpdate(this.id, cb)
   }
 
+  onTurnEnd(cb: (result: HarnessTurnResult) => void): Unsubscribe {
+    return this.client._onTurnEnd(this.id, cb)
+  }
+
   async dispose(): Promise<void> {
     this.cancel()
     this.client._disposeSession(this.id)
@@ -65,11 +70,22 @@ export class DevSidecarHarnessClient implements HarnessClient {
   private nextId = 1
   private pending = new Map<number, Pending>()
   private updateSubs = new Map<string, Set<(u: HarnessUpdate) => void>>()
+  // per-session turn-end listeners, for turns this renderer didn't start
+  private turnEndSubs = new Map<
+    string,
+    Set<(result: HarnessTurnResult) => void>
+  >()
   private permissionHandler:
-    | ((req: HarnessPermissionRequest) => Promise<HarnessPermissionDecision>)
+    | ((
+        req: HarnessPermissionRequest,
+        sessionId?: string
+      ) => Promise<HarnessPermissionDecision>)
     | null = null
   private toolHandler:
-    | ((call: HarnessToolCall) => Promise<HarnessToolResult>)
+    | ((
+        call: HarnessToolCall,
+        sessionId?: string
+      ) => Promise<HarnessToolResult>)
     | null = null
   private unavailableReason: string | null = null
 
@@ -102,6 +118,13 @@ export class DevSidecarHarnessClient implements HarnessClient {
     return new SidecarSession(reply.sessionId, this)
   }
 
+  async listSessions(): Promise<HarnessSessionInfo[]> {
+    await this._connect()
+    const reply = await this._request({ t: 'sessions', id: this._id() })
+    if (reply.t !== 'sessionList') throw new Error('sessions query failed')
+    return reply.sessions
+  }
+
   async resumeSession(sessionId: string): Promise<HarnessSession> {
     await this._connect()
     const reply = await this._request({
@@ -116,14 +139,18 @@ export class DevSidecarHarnessClient implements HarnessClient {
 
   onPermissionRequest(
     handler: (
-      req: HarnessPermissionRequest
+      req: HarnessPermissionRequest,
+      sessionId?: string
     ) => Promise<HarnessPermissionDecision>
   ): void {
     this.permissionHandler = handler
   }
 
   onToolCall(
-    handler: (call: HarnessToolCall) => Promise<HarnessToolResult>
+    handler: (
+      call: HarnessToolCall,
+      sessionId?: string
+    ) => Promise<HarnessToolResult>
   ): void {
     this.toolHandler = handler
   }
@@ -154,8 +181,22 @@ export class DevSidecarHarnessClient implements HarnessClient {
     return () => set?.delete(cb)
   }
 
+  _onTurnEnd(
+    sessionId: string,
+    cb: (result: HarnessTurnResult) => void
+  ): Unsubscribe {
+    let set = this.turnEndSubs.get(sessionId)
+    if (!set) {
+      set = new Set()
+      this.turnEndSubs.set(sessionId, set)
+    }
+    set.add(cb)
+    return () => set?.delete(cb)
+  }
+
   _disposeSession(sessionId: string): void {
     this.updateSubs.delete(sessionId)
+    this.turnEndSubs.delete(sessionId)
   }
 
   _send(frame: ClientFrame): void {
@@ -217,9 +258,15 @@ export class DevSidecarHarnessClient implements HarnessClient {
         subs?.forEach((cb) => cb(f.update))
         return
       }
+      case 'turnEnded': {
+        const f = frame
+        const subs = this.turnEndSubs.get(f.sessionId)
+        subs?.forEach((cb) => cb({ stopReason: f.stopReason }))
+        return
+      }
       case 'permissionRequest': {
         const decision: HarnessPermissionDecision = this.permissionHandler
-          ? await this.permissionHandler(frame.request)
+          ? await this.permissionHandler(frame.request, frame.sessionId)
           : { outcome: 'cancelled' }
         this._send({
           t: 'permissionDecision',
@@ -230,7 +277,7 @@ export class DevSidecarHarnessClient implements HarnessClient {
       }
       case 'toolCall': {
         const result: HarnessToolResult = this.toolHandler
-          ? await this.toolHandler(frame.call)
+          ? await this.toolHandler(frame.call, frame.sessionId)
           : { ok: false, error: 'no Acorn tool handler registered' }
         this._send({ t: 'toolResult', requestId: frame.requestId, result })
         return

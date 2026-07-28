@@ -47,7 +47,8 @@ export class MossHarnessClient implements HarnessClient {
 
   onPermissionRequest(
     _handler: (
-      req: HarnessPermissionRequest
+      req: HarnessPermissionRequest,
+      sessionId?: string
     ) => Promise<HarnessPermissionDecision>
   ): void {
     // no-op until the Weave harness affordance exists

@@ -178,6 +178,18 @@
     font-size: 0.68rem;
     color: #999;
   }
+  // live-turn status dot (session registry): a background session's turn keeps
+  // running while another chat is displayed — the picker shows where.
+  .hist-live {
+    font-size: 0.7rem;
+    &.running {
+      color: #2e9e44;
+      animation: hist-live-pulse 1.6s ease-in-out infinite;
+    }
+    &.stalled {
+      color: #d99a27;
+    }
+  }
   .hist-del {
     flex: none;
     border: none;
@@ -512,6 +524,16 @@
 @keyframes harness-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes hist-live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
   }
 }
 

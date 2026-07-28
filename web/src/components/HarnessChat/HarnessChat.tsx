@@ -27,9 +27,6 @@ import { resolveRef, nodeDisplayLabel } from '../../nodeRef'
 import { parseFields, serializeFields } from '../../outcomeFields'
 import {
   ChatMessage,
-  ChatSelection,
-  ChatToolCall,
-  PlanSnapshot,
   deriveTitle,
   deleteSession,
   getCurrentId,
@@ -38,13 +35,14 @@ import {
   listScopedSessions,
   migrateSession,
   moveSession,
-  persistTurn,
   reclaimSessions,
   pruneEmptySessions,
   reusableEmptySessionId,
   scopeProject,
+  setCurrentSession,
   SessionGroup,
 } from '../../harness/chatHistory'
+import { getSessionRegistry } from '../../harness/sessionRegistry'
 import {
   computeProjectDiff,
   isEmptyDiff,
@@ -57,16 +55,18 @@ import {
   HarnessContentBlock,
   HarnessPermissionDecision,
   HarnessPermissionRequest,
-  HarnessPlanEntry,
-  HarnessSession,
+  HarnessSessionInfo,
 } from '../../harness'
 
-// Thin vertical slice of the in-app LLM chat (LLM-direct-API branch): chat →
-// harness → reply, over the transport-neutral HarnessClient. Each turn carries
-// the live read_tree snapshot (resent only when it changed since last sent, so
-// the agent never works off a stale tree) plus the current selection. No tree
-// EDITS yet — the propose→draft→commit pipeline is the next branch; the ACP
-// plan / permission seams are already plumbed for it.
+// The in-app LLM chat (LLM-direct-API branch), as a VIEW over the session
+// registry (concurrent-sessions branch, leaf: session-registry). Per-session
+// live state — transport handle, busy flag, streaming transcript, plan,
+// activity clock — lives in the registry, NOT here, so several sessions can
+// run turns at once: switching the displayed session (or project) never
+// cancels, blocks, or hides a running turn, and a background turn keeps
+// streaming into its own entry. Each turn carries the live read_tree snapshot
+// (resent only when it changed since that session last saw it) plus the
+// current selection.
 
 // Seconds without any session/update before we flag a possible stall. ACP has
 // no heartbeat, so this is the best signal that the agent has gone quiet.
@@ -132,8 +132,9 @@ const selectionNote = (selected: SelectedNode[]): string =>
   'Context — node(s) currently selected in the tree:\n' +
   selected.map((s) => `- #${s.id} "${s.content}"`).join('\n')
 
-// On a permission request, allow/reject via a confirm for the slice. (The draft
-// pipeline will route this through the in-app review UI instead.)
+// On a permission request, allow/reject via a confirm for the slice. (The
+// attention-inbox leaf will queue these per-session instead of one global
+// modal; until then a background session's request still lands here.)
 async function decidePermission(
   req: HarnessPermissionRequest
 ): Promise<HarnessPermissionDecision> {
@@ -167,22 +168,11 @@ const HarnessChat: React.FC = () => {
   )
   const projectId = projectPage ? projectPage.params.projectId : null
   const store = useStore()
+  const registry = getSessionRegistry()
 
-  const sessionRef = useRef<HarnessSession | null>(null)
-  // the tree snapshot last handed to the agent — used to resend only on change
-  const lastTreeRef = useRef<ProjectSnapshot | null>(null)
-  const msgId = useRef(0)
-  // the session id the in-memory `messages` array currently belongs to. Set
-  // synchronously *before* setMessages so the persist effect can tell a coherent
-  // (sessionId, messages) pair from the transient mismatch during a session swap:
-  // React 16 commits setMessages and setSessionId in separate renders, so there's
-  // a frame where `messages` is the new chat's but `sessionId` is still the old
-  // one — persisting then would overwrite the old chat with the new chat's
-  // messages (lost chat + duplicate title in the picker).
-  const messagesSessionRef = useRef<string | null>(null)
-  // the project the in-memory session/transcript belongs to. Chats are
-  // per-project by default; switching projects resets the panel (the store stays
-  // keyed by project, leaving room for a future cross-project mode).
+  // the project the DISPLAYED chat belongs to. Chats are per-project by default;
+  // switching projects resets the panel display (background sessions keep
+  // streaming in the registry — see the switch effect below).
   const projectRef = useRef(projectId)
   // The backing agent (from initialize), used to namespace the persisted chat
   // store: sessions minted by one backend (OpenCode, claude-agent-acp, …) carry
@@ -195,27 +185,26 @@ const HarnessChat: React.FC = () => {
   // the latest connect() without forward-reference issues, and dedupe calls.
   const connectingRef = useRef(false)
   const connectRef = useRef<() => void>(() => {})
-  // current session id, persisted so a reload can resume (see resume effect)
-  const [sessionId, setSessionId] = useState<string | null>(null)
+  // which registry session the panel is showing (null = none, e.g. while
+  // connecting or when viewing a foreign agent's chat read-only). The ref
+  // mirrors it for the client-level tool-routing closure.
+  const [displayedId, setDisplayedId] = useState<string | null>(null)
+  const displayedIdRef = useRef<string | null>(null)
+  displayedIdRef.current = displayedId
   const [open, setOpen] = useState(false)
   const [phase, setPhase] = useState<'idle' | 'connecting' | 'ready' | 'error'>(
     'idle'
   )
   const [error, setError] = useState('')
-  const [messages, setMessages] = useState<ChatMessage[]>([])
+  // Transcript shown when NO live entry is displayed: a foreign agent's chat
+  // opened read-only, or the last chat surfaced while the harness is
+  // unreachable. Ignored whenever a live entry is displayed.
+  const [viewMessages, setViewMessages] = useState<ChatMessage[]>([])
   // Agent-message ids whose reasoning ("Thinking") block the user has expanded.
   // The in-flight message auto-expands while busy (see the transcript render);
   // this set holds explicit toggles, so completed turns stay collapsed until
   // opened. Reset whenever we swap the visible transcript (ids are reused).
   const [openThinking, setOpenThinking] = useState<Set<number>>(new Set())
-  const [plan, setPlan] = useState<HarnessPlanEntry[]>([])
-  // The agent's plan over the whole session, one snapshot per `plan` update.
-  // A ref (not state) — it feeds persistence + capture, not rendering — and is
-  // reset/restored alongside the session.
-  const planSnapshotsRef = useRef<PlanSnapshot[]>([])
-  // Node actionHashes this session proposed edits to (collected from propose_edits
-  // tool calls). Feeds the attach control's default-target (LCA of edited nodes).
-  const editedNodesRef = useRef<Set<string>>(new Set())
   // The in-panel "attach conversation" picker (null = closed). Replaces
   // window.prompt/confirm, which this webview doesn't support: it holds the
   // computed target + a human-editable override before the propose_edits draft.
@@ -233,14 +222,6 @@ const HarnessChat: React.FC = () => {
     copyAnyway: boolean
   } | null>(null)
   const [input, setInput] = useState('')
-  const [busy, setBusy] = useState(false)
-  // Liveness: ACP has no heartbeat, so "moving" = session/update notifications
-  // arriving. We track the time of the last update and surface a stall hint when
-  // the agent has gone quiet mid-turn. `activity` is a human label for the most
-  // recent update kind.
-  const activityAtRef = useRef(0)
-  const [idleSecs, setIdleSecs] = useState(0)
-  const [activity, setActivity] = useState('')
   // whether the chat textarea owns the keyboard — when true, the tree's global
   // shortcuts (Enter/arrows/Backspace) are suppressed so typing never disturbs
   // the tree. Mirrored into redux so the suppression is enforced globally.
@@ -257,6 +238,31 @@ const HarnessChat: React.FC = () => {
   const [moveFor, setMoveFor] = useState<string | null>(null)
   // MCP servers the agent can reach this session (e.g. "linear"), from initialize
   const [mcpServers, setMcpServers] = useState<string[]>([])
+
+  // Re-render on ANY registry change: the displayed entry's stream, but also
+  // background sessions (their status shows in the history picker).
+  const [, setRenderTick] = useState(0)
+  useEffect(() => registry.subscribe(() => setRenderTick((n) => n + 1)), [])
+  // While any turn is in flight anywhere, tick once a second so the stall
+  // clocks (banner + picker dots) advance even when no updates arrive — the
+  // whole point of a stall is that nothing else triggers a render.
+  const anyBusy = registry.anyBusy()
+  useEffect(() => {
+    if (!anyBusy) return
+    const t = setInterval(() => setRenderTick((n) => n + 1), 1000)
+    return () => clearInterval(t)
+  }, [anyBusy])
+
+  // --- the displayed session, derived from the registry every render ---
+  const entry = displayedId ? registry.get(displayedId) : undefined
+  const messages: ChatMessage[] = entry ? entry.messages : viewMessages
+  const busy = !!(entry && entry.busy)
+  const plan = entry ? entry.plan : []
+  const activity = entry ? entry.activity : ''
+  const idleSecs =
+    busy && entry
+      ? Math.max(0, Math.floor((Date.now() - entry.activityAt) / 1000))
+      : 0
 
   const setKeyboardOwnership = (own: boolean) => {
     setFocused(own)
@@ -335,45 +341,18 @@ const HarnessChat: React.FC = () => {
     if (el) el.scrollTop = el.scrollHeight
   }, [open])
 
-  // Persist session id + transcript so a renderer reload can resume: the sidecar
-  // keeps the agent + ACP session alive across the WS drop, so on reopen we
-  // reattach by id and restore the visible history.
-  useEffect(() => {
-    // guard against persisting the previous project's messages under the new
-    // project's key during a project switch (before the reset effect runs)
-    if (!projectId || !sessionId || projectRef.current !== projectId) return
-    // mid-swap: `messages` belong to a different session than `sessionId` (see
-    // messagesSessionRef) — don't persist this incoherent pair, or we'd clobber
-    // one chat's record with another chat's messages.
-    if (messagesSessionRef.current !== sessionId) return
-    persistTurn(
-      scopeProject(projectId, agentNameRef.current),
-      sessionId,
-      messages,
-      Date.now(),
-      agentNameRef.current,
-      planSnapshotsRef.current
-    )
-  }, [projectId, sessionId, messages])
-
-  // Switching projects: tear down the previous project's in-memory chat back to
-  // idle. If the panel was open it stays open and the auto-connect effect below
-  // reconnects to the NEW project's own session (transcript stored per-project),
-  // so streams never cross over but the chat follows the project.
+  // Switching projects: reset the panel DISPLAY back to idle and reconnect to
+  // the new project's own current chat. Registry sessions are untouched — a
+  // background turn keeps streaming while the human works in another project,
+  // and switching back re-displays it live (openSession's registry shortcut).
   useEffect(() => {
     if (projectRef.current === projectId) return
     projectRef.current = projectId
-    sessionRef.current = null
-    lastTreeRef.current = null
-    messagesSessionRef.current = null
     connectingRef.current = false
-    setSessionId(null)
-    setMessages([])
+    setDisplayedId(null)
+    setViewMessages([])
     setOpenThinking(new Set())
-    setPlan([])
-    planSnapshotsRef.current = []
-    editedNodesRef.current = new Set()
-    setBusy(false)
+    setAttach(null)
     setError('')
     setShowHistory(false)
     setReadOnlyAgent(null)
@@ -388,68 +367,11 @@ const HarnessChat: React.FC = () => {
     if (open && phase === 'idle' && projectId) connectRef.current()
   }, [open, phase, projectId])
 
-  // While a turn is in flight, tick "seconds since last update" so the UI can
-  // show progress and flag a stall (no built-in ACP heartbeat to lean on).
-  useEffect(() => {
-    if (!busy) return
-    const id = setInterval(
-      () => setIdleSecs(Math.floor((Date.now() - activityAtRef.current) / 1000)),
-      1000
-    )
-    return () => clearInterval(id)
-  }, [busy])
-
   if (!projectId) return null
   const client = getHarnessClient()
   // No harness host in this context (prod build / Moss without the affordance).
   if (!client.available) return null
 
-  const appendMessage = (
-    role: ChatMessage['role'],
-    text: string,
-    selection?: ChatSelection[]
-  ): number => {
-    const id = ++msgId.current
-    setMessages((prev) => [
-      ...prev,
-      {
-        id,
-        role,
-        text,
-        at: Date.now(),
-        ...(selection && selection.length ? { selection } : {}),
-      },
-    ])
-    return id
-  }
-  const updateMessage = (id: number, fn: (prev: string) => string) =>
-    setMessages((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, text: fn(m.text) } : m))
-    )
-  // Record a tool call structurally on its message (newest status wins per id),
-  // so the captured transcript preserves which tools ran — and which were
-  // propose_edits — not just the prose around them.
-  const recordToolCall = (id: number, tc: ChatToolCall) =>
-    setMessages((prev) =>
-      prev.map((m) => {
-        if (m.id !== id) return m
-        const existing = m.toolCalls || []
-        const at = existing.findIndex((c) => c.id === tc.id)
-        const toolCalls =
-          at >= 0
-            ? existing.map((c, i) => (i === at ? tc : c))
-            : [...existing, tc]
-        return { ...m, toolCalls }
-      })
-    )
-  // Accumulate the agent's reasoning stream onto its message, so it persists with
-  // the transcript (and can be re-read) instead of living in transient state.
-  const appendThinking = (id: number, text: string) =>
-    setMessages((prev) =>
-      prev.map((m) =>
-        m.id === id ? { ...m, thinking: (m.thinking || '') + text } : m
-      )
-    )
   const toggleThinking = (id: number) =>
     setOpenThinking((prev) => {
       const next = new Set(prev)
@@ -457,23 +379,30 @@ const HarnessChat: React.FC = () => {
       return next
     })
 
-  // Attach to a session: resume `target` if given and the host still has it
-  // (live reattach, or ACP session/load across a restart), else start fresh.
-  // Restores that session's transcript from the local store.
+  // Attach to a session and display it. If the session is already LIVE in the
+  // registry (e.g. it's mid-turn in the background), just swap the view to it —
+  // re-resuming would do nothing useful and must not disturb its stream. Else
+  // resume `target` if given and the host still has it (live reattach, or ACP
+  // session/load across a restart), else start fresh; the transcript is
+  // restored from the local store into the new registry entry.
   const openSession = async (target: string | null) => {
     setReadOnlyAgent(null) // leaving any read-only foreign-agent view
+    setViewMessages([])
     setOpenThinking(new Set()) // ids are reused across sessions — drop stale toggles
-    let session: HarnessSession | null = null
+    const live = target ? registry.get(target) : undefined
+    if (live && live.projectId === projectId) {
+      setDisplayedId(live.id)
+      setCurrentSession(chatKey(), live.id)
+      return
+    }
+    let session = null as Awaited<ReturnType<typeof client.newSession>> | null
+    let restored: ChatMessage[] = []
+    let restoredPlans = [] as ReturnType<typeof getSessionPlanSnapshots>
     if (target && client.resumeSession) {
       try {
         session = await client.resumeSession(target)
-        const restored = getSessionMessages(chatKey(), target)
-        // bind messages to this session before the setMessages commit (see ref)
-        messagesSessionRef.current = session.id
-        setMessages(restored)
-        msgId.current = restored.reduce((m, x) => Math.max(m, x.id), 0)
-        // restore the session's plan history so further updates append to it
-        planSnapshotsRef.current = getSessionPlanSnapshots(chatKey(), target)
+        restored = getSessionMessages(chatKey(), target)
+        restoredPlans = getSessionPlanSnapshots(chatKey(), target)
       } catch (_) {
         session = null
       }
@@ -484,7 +413,7 @@ const HarnessChat: React.FC = () => {
       // session). Don't drop the user's transcript — carry it forward onto the
       // new session id so the chat stays readable and continuable. A brand-new
       // chat (no target) just starts empty.
-      const carried = target
+      restored = target
         ? migrateSession(
             chatKey(),
             target,
@@ -493,22 +422,67 @@ const HarnessChat: React.FC = () => {
             agentNameRef.current
           )
         : []
-      // bind messages to this session before the setMessages commit (see ref)
-      messagesSessionRef.current = session.id
-      setMessages(carried)
-      msgId.current = carried.reduce((m, x) => Math.max(m, x.id), 0)
-      // carry the plan history onto the new id (migrateSession moved it), or
-      // start clean for a brand-new chat
-      planSnapshotsRef.current = target
+      restoredPlans = target
         ? getSessionPlanSnapshots(chatKey(), session.id)
         : []
     }
-    sessionRef.current = session
-    setSessionId(session.id)
-    // (re)attached ⇒ the next turn re-sends the full current tree (read_tree)
-    lastTreeRef.current = null
+    // A fresh registry entry starts with lastTree = null, so the next turn
+    // re-sends the full current tree (read_tree) to the (re)attached session.
+    registry.open({
+      id: session.id,
+      projectId,
+      chatKey: chatKey(),
+      agentName: agentNameRef.current,
+      session,
+      messages: restored,
+      planSnapshots: restoredPlans,
+    })
+    setDisplayedId(session.id)
+    setCurrentSession(chatKey(), session.id)
     // keep at most one empty chat — discard any unused ones we left behind
     pruneEmptySessions(chatKey(), session.id)
+  }
+
+  // A turn started before a renderer reload is still running on the HOST — the
+  // sidecar keeps the agent (and the ACP session) alive across the socket drop.
+  // Ask which sessions are mid-turn and adopt each one, so its output lands in
+  // its own transcript as it arrives instead of being lost until someone happens
+  // to click that chat. Only THIS project's chats under the CURRENT agent are
+  // candidates: another agent's session ids can't be resumed here, and another
+  // project's session belongs to that project's panel.
+  const reattachInFlight = async () => {
+    if (!client.listSessions || !client.resumeSession) return
+    let held: HarnessSessionInfo[]
+    try {
+      held = await client.listSessions()
+    } catch (_) {
+      return // an older host without the sessions query — nothing to adopt
+    }
+    const mine = listScopedSessions(projectId).find((g) =>
+      isCurrentAgent(g.agentName)
+    )
+    const known = new Set((mine ? mine.sessions : []).map((s) => s.id))
+    for (const info of held) {
+      if (!info.inFlight || !known.has(info.sessionId)) continue
+      if (registry.get(info.sessionId)?.busy) continue // already streaming here
+      if (!registry.get(info.sessionId)) {
+        try {
+          const session = await client.resumeSession(info.sessionId)
+          registry.open({
+            id: session.id,
+            projectId,
+            chatKey: chatKey(),
+            agentName: agentNameRef.current,
+            session,
+            messages: getSessionMessages(chatKey(), info.sessionId),
+            planSnapshots: getSessionPlanSnapshots(chatKey(), info.sessionId),
+          })
+        } catch (_) {
+          continue // the host lost it between the query and the resume
+        }
+      }
+      registry.adoptTurn(info.sessionId)
+    }
   }
 
   const connect = async () => {
@@ -518,18 +492,38 @@ const HarnessChat: React.FC = () => {
     setError('')
     try {
       client.onPermissionRequest(decidePermission)
-      // hosted callable tools (read_tree / propose_edits). propose_edits opens an
-      // inert draft for human review — it never writes to the DHT (L1).
-      client.onToolCall?.((call) => {
+      // Hosted callable tools (read_tree / propose_edits). propose_edits opens an
+      // inert draft for human review — it never writes to the DHT (L1). The call
+      // routes to the session the HOST attributed it to (concurrent sessions:
+      // the caller is not necessarily the displayed session, nor even the
+      // displayed PROJECT); unattributed calls fall back to the single busy
+      // session, then to whatever is displayed.
+      client.onToolCall?.((call, sessionId) => {
+        // Two distinct identities come out of attribution:
+        //   attributed — a session we can actually pin the call on (the host
+        //     said so, or exactly one turn is in flight anywhere). Feeds the
+        //     draft interlock stamp, so it must never guess.
+        //   routed — attributed, else the displayed session: the best project
+        //     to serve the call from when we genuinely can't tell the caller.
+        const attributed = registry.get(sessionId) || registry.soleBusy()
+        const routed = attributed || registry.get(displayedIdRef.current)
+        const pid = routed ? routed.projectId : projectRef.current
+        if (!pid)
+          return Promise.resolve({
+            ok: false as const,
+            error: 'no project open in Acorn',
+          })
         // Track which nodes the session proposes edits to, so the attach control
         // can default to the branch it shaped (LCA of those nodes).
-        if (call?.tool === 'propose_edits') {
+        if (call?.tool === 'propose_edits' && routed) {
           const diff = call.args && call.args.diff ? call.args.diff : call.args
           const outs = (diff && diff.outcomes) || {}
-          for (const k of Object.keys(outs.updated || {})) editedNodesRef.current.add(k)
-          for (const k of Object.keys(outs.added || {})) editedNodesRef.current.add(k)
+          registry.noteEditedNodes(routed.id, [
+            ...Object.keys(outs.updated || {}),
+            ...Object.keys(outs.added || {}),
+          ])
         }
-        return handleAcornToolCall(store, projectId, call)
+        return handleAcornToolCall(store, pid, call, attributed?.id)
       })
       const info = await client.initialize()
       // Scope the chat store to this backend before touching it: resuming a
@@ -542,19 +536,17 @@ const HarnessChat: React.FC = () => {
       reclaimSessions(projectId, agentNameRef.current)
       setMcpServers(info.mcpServers || [])
       await openSession(getCurrentId(chatKey())) // resume the last chat
+      await reattachInFlight()
       setPhase('ready')
     } catch (e: any) {
       setPhase('error')
       setError(e?.message || String(e))
       // Harness is unreachable, but the transcript is stored locally — surface
       // the last chat so it stays readable (read-only) instead of vanishing
-      // behind the error. We don't set sessionId, so the persist effect stays
-      // off and we can't clobber the saved record.
+      // behind the error. No displayed entry, so nothing here can persist (and
+      // clobber) the saved record.
       const lastId = getCurrentId(chatKey())
-      if (lastId) {
-        messagesSessionRef.current = lastId
-        setMessages(getSessionMessages(chatKey(), lastId))
-      }
+      if (lastId) setViewMessages(getSessionMessages(chatKey(), lastId))
     } finally {
       connectingRef.current = false
     }
@@ -574,36 +566,36 @@ const HarnessChat: React.FC = () => {
   }
   const pickSession = async (id: string) => {
     setShowHistory(false)
-    if (id !== sessionId) await openSession(id)
+    if (id !== displayedId) await openSession(id)
   }
   // Open another backend's chat read-only: restore its transcript for reading,
   // but don't attach a session (the attached agent can't resume a foreign ACP
   // id) — input stays disabled until the user starts a chat under this agent.
   const viewSession = (agentName: string | null, id: string) => {
     setShowHistory(false)
-    const restored = getSessionMessages(scopeProject(projectId, agentName), id)
-    sessionRef.current = null
-    setSessionId(null)
-    // null session id ⇒ the persist effect stays off, so viewing can't clobber
-    // the stored record. messagesSessionRef must not match any real session id.
-    messagesSessionRef.current = null
-    msgId.current = restored.reduce((m, x) => Math.max(m, x.id), 0)
-    setMessages(restored)
+    // no displayed entry ⇒ nothing can persist over the stored record
+    setDisplayedId(null)
+    setViewMessages(getSessionMessages(scopeProject(projectId, agentName), id))
     setOpenThinking(new Set())
     setReadOnlyAgent(prettyAgent(agentName))
   }
   const newChat = async () => {
     setShowHistory(false)
     // already sitting in an unused (and editable) chat — nothing to create
-    if (!readOnlyAgent && sessionRef.current && messages.length === 0) return
+    if (!readOnlyAgent && entry && !entry.busy && entry.messages.length === 0)
+      return
     // reuse an existing empty chat if there is one, else start fresh
     await openSession(reusableEmptySessionId(chatKey()))
   }
   const removeChat = async (agentName: string | null, id: string) => {
+    // a mid-turn session can't be deleted out from under its stream — its next
+    // persist would just resurrect the record, more confusingly
+    if (registry.get(id)?.busy) return
+    registry.remove(id)
     deleteSession(scopeProject(projectId, agentName), id)
     setSessionGroups(listScopedSessions(projectId))
     // dropped the chat we have open under the current agent → start fresh
-    if (isCurrentAgent(agentName) && id === sessionId) await openSession(null)
+    if (isCurrentAgent(agentName) && id === displayedId) await openSession(null)
   }
   // Agents a chat can be re-homed to: the attached backend plus any other
   // backend that already owns chats here, minus the chat's current owner.
@@ -621,29 +613,32 @@ const HarnessChat: React.FC = () => {
     id: string
   ) => {
     setMoveFor(null)
+    // as with delete: a mid-turn session keeps persisting under its own scope,
+    // which would immediately undo the move — finish or cancel the turn first
+    if (registry.get(id)?.busy) return
+    registry.remove(id)
     moveSession(projectId, fromAgent, toAgent, id)
     setSessionGroups(listScopedSessions(projectId))
     // moved the open chat out from under the current agent → reset to fresh
-    if (isCurrentAgent(fromAgent) && id === sessionId) await openSession(null)
+    if (isCurrentAgent(fromAgent) && id === displayedId) await openSession(null)
   }
 
   const send = async () => {
-    const session = sessionRef.current
     const text = input.trim()
-    if (!session || busy || !text) return
+    if (!entry || entry.busy || !text) return
     setInput('')
-    setPlan([])
     // Capture the selection AT SEND TIME and pin it on the user turn: it is the
     // conversation's ask-time anchor, and must not be re-read later (the human
     // moves the selection while the agent works).
     const liveState = store.getState() as any
     const selected = readSelection(liveState, projectId)
-    appendMessage('user', text, selected)
-    // Assemble the turn's context: current tree (only if it changed since we last
-    // sent it — keeps the agent current without resending a large unchanged tree)
-    // + the live selection (so "this"/"these" resolve) + the user's text last.
+    registry.appendMessage(entry.id, 'user', text, selected)
+    // Assemble the turn's context: current tree (only if it changed since THIS
+    // session last saw it — keeps the agent current without resending a large
+    // unchanged tree) + the live selection (so "this"/"these" resolve) + the
+    // user's text last.
     const snapshot = readTree(liveState, projectId)
-    const prev = lastTreeRef.current
+    const prev = registry.lastTree(entry.id) as ProjectSnapshot | null
     const treeChanged = !prev || !isEmptyDiff(computeProjectDiff(prev, snapshot))
     const blocks: HarnessContentBlock[] = []
     if (treeChanged) {
@@ -653,67 +648,15 @@ const HarnessChat: React.FC = () => {
         mimeType: 'application/json',
         text: JSON.stringify(snapshot),
       })
-      if (prev) appendMessage('system', '↻ sent updated tree')
-      lastTreeRef.current = snapshot
+      if (prev) registry.appendMessage(entry.id, 'system', '↻ sent updated tree')
+      registry.markTreeSent(entry.id, snapshot)
     }
     if (selected.length)
       blocks.push({ type: 'text', text: selectionNote(selected) })
     blocks.push({ type: 'text', text })
-    const agentId = appendMessage('agent', '')
-    // The agent text streamed so far this turn. Some ACP gateways (any where the
-    // stream's message id doesn't match the final one — e.g. non-native-Anthropic
-    // proxies) deliver the answer twice: once as live chunks, then again as a
-    // consolidated copy the adapter's own streamed-vs-final dedupe failed to drop.
-    // Guard here — skip a chunk that verbatim repeats the whole accumulation.
-    let agentText = ''
-    // every update is a heartbeat — reset the idle clock and label what's happening
-    const beat = (label: string) => {
-      activityAtRef.current = Date.now()
-      setIdleSecs(0)
-      setActivity(label)
-    }
-    const unsub = session.on('update', (u) => {
-      if (u.type === 'message') {
-        beat('Responding…')
-        if (agentText && u.text === agentText) return // consolidated duplicate
-        agentText += u.text
-        updateMessage(agentId, (p) => p + u.text)
-      } else if (u.type === 'thought') {
-        appendThinking(agentId, u.text)
-        beat('Thinking…')
-      } else if (u.type === 'plan') {
-        setPlan(u.entries)
-        // Append a session-level snapshot so the plan's evolution is captured for
-        // the transcript (the live `plan` state only shows the latest).
-        planSnapshotsRef.current = [
-          ...planSnapshotsRef.current,
-          { at: Date.now(), entries: u.entries },
-        ]
-        beat('Planning…')
-      } else if (u.type === 'tool_call') {
-        updateMessage(agentId, (p) => (p === '' ? `⚙ ${u.title} (${u.status})` : p))
-        recordToolCall(agentId, {
-          id: u.toolCallId,
-          title: u.title,
-          status: u.status,
-          ...(u.kind ? { kind: u.kind } : {}),
-        })
-        beat(`Running ${u.title || 'tool'}…`)
-      }
-    })
-    beat('Thinking…')
-    setBusy(true)
-    try {
-      const result = await session.prompt(blocks)
-      if (result.stopReason === 'refusal')
-        updateMessage(agentId, (p) => p || '(the agent declined)')
-    } catch (e: any) {
-      updateMessage(agentId, (p) => p || `(error: ${e?.message || e})`)
-    } finally {
-      unsub()
-      setBusy(false)
-      setActivity('')
-    }
+    // The turn streams into the session's registry entry whether or not it stays
+    // displayed — switching away neither cancels nor hides it.
+    await registry.runTurn(entry.id, blocks)
   }
 
   // Attach this session's captured conversation to the branch it shaped, as a
@@ -732,15 +675,15 @@ const HarnessChat: React.FC = () => {
   // nodes, anchor folded in; else the first-turn anchor) and show it for the
   // human to accept or override. No window.prompt — this webview lacks it.
   const openAttach = () => {
-    if (!projectId || !sessionId) return
+    if (!projectId || !entry) return
     const transcript = buildTranscript(
       {
-        id: sessionId,
-        title: deriveTitle(messages),
+        id: entry.id,
+        title: deriveTitle(entry.messages),
         updatedAt: Date.now(),
-        messages,
-        agentName: agentNameRef.current || undefined,
-        planSnapshots: planSnapshotsRef.current,
+        messages: entry.messages,
+        agentName: entry.agentName || undefined,
+        planSnapshots: entry.planSnapshots,
       },
       Date.now()
     )
@@ -753,7 +696,7 @@ const HarnessChat: React.FC = () => {
     const anchor = anchorSelection(transcript)[0]?.actionHash || null
     const { target, reason } = computeAttachTarget({
       tree: tree as any,
-      editedNodeIds: [...editedNodesRef.current],
+      editedNodeIds: [...entry.editedNodes],
       anchor,
     })
     // Nodes that already hold this session's conversation — so we reference
@@ -839,10 +782,24 @@ const HarnessChat: React.FC = () => {
       ...outcome,
       description: serializeFields({ ...fields, artifacts: nextArtifacts }),
     }
-    await handleAcornToolCall(store, projectId, {
-      tool: 'propose_edits',
-      args: { diff: { outcomes: { updated: { [chosen as string]: updatedOutcome } } } },
-    })
+    // Stamped with the DISPLAYED session: attaching ITS conversation is an act
+    // of that session, so the draft interlock treats it as the same proposer.
+    const res = await handleAcornToolCall(
+      store,
+      projectId,
+      {
+        tool: 'propose_edits',
+        args: {
+          diff: { outcomes: { updated: { [chosen as string]: updatedOutcome } } },
+        },
+      },
+      displayedIdRef.current || undefined
+    )
+    if (res.ok === false) {
+      const message = res.error
+      setAttach((prev) => (prev ? { ...prev, error: message } : prev))
+      return
+    }
     setAttach(null)
   }
 
@@ -870,6 +827,16 @@ const HarnessChat: React.FC = () => {
     )
   }
 
+  // Live status for a picker row: is that session running a turn right now
+  // (anywhere — including in the background while another chat is displayed)?
+  const liveStatus = (id: string): 'running' | 'stalled' | null => {
+    const live = registry.get(id)
+    if (!live || !live.busy) return null
+    return Date.now() - live.activityAt >= STALL_SECS * 1000
+      ? 'stalled'
+      : 'running'
+  }
+
   return (
     <div
       className={`harness-chat${focused ? ' keyboard-owned' : ''}`}
@@ -891,11 +858,13 @@ const HarnessChat: React.FC = () => {
           ref={histRef}
           onMouseDown={(e) => e.stopPropagation()}
         >
+          {/* stays enabled while a turn runs — switching sessions mid-turn is
+              the whole point of the session registry */}
           <button
             className="harness-chat-icon-btn"
             aria-label="Chat history"
             title="Resume a chat"
-            disabled={busy || phase !== 'ready'}
+            disabled={phase !== 'ready'}
             onClick={toggleHistory}
           >
             ≡
@@ -931,74 +900,91 @@ const HarnessChat: React.FC = () => {
                           <span className="hist-readonly-tag">read-only</span>
                         )}
                       </div>
-                      {g.sessions.map((s) => (
-                        <div
-                          key={s.id}
-                          className={`hist-row${
-                            mine && s.id === sessionId ? ' current' : ''
-                          }`}
-                        >
-                          <button
-                            className="hist-pick"
-                            title={
-                              mine
-                                ? s.title
-                                : `${s.title} (view only — chat lives under ${prettyAgent(
-                                    g.agentName
-                                  )})`
-                            }
-                            onClick={() =>
-                              mine
-                                ? pickSession(s.id)
-                                : viewSession(g.agentName, s.id)
-                            }
+                      {g.sessions.map((s) => {
+                        const status = mine ? liveStatus(s.id) : null
+                        return (
+                          <div
+                            key={s.id}
+                            className={`hist-row${
+                              mine && s.id === displayedId ? ' current' : ''
+                            }`}
                           >
-                            <span className="hist-title">{s.title}</span>
-                            <span className="hist-time">
-                              {relativeTime(s.updatedAt, Date.now())}
-                            </span>
-                          </button>
-                          <div className="hist-move-wrap">
                             <button
-                              className="hist-move"
-                              aria-label="Move chat to another agent"
-                              title="Move to another agent"
+                              className="hist-pick"
+                              title={
+                                mine
+                                  ? s.title
+                                  : `${s.title} (view only — chat lives under ${prettyAgent(
+                                      g.agentName
+                                    )})`
+                              }
                               onClick={() =>
-                                setMoveFor(moveFor === s.id ? null : s.id)
+                                mine
+                                  ? pickSession(s.id)
+                                  : viewSession(g.agentName, s.id)
                               }
                             >
-                              ⤳
-                            </button>
-                            {moveFor === s.id && (
-                              <div className="hist-move-menu">
-                                {moveTargets(g.agentName).length === 0 ? (
-                                  <span className="hist-move-empty">
-                                    no other agent
+                              <span className="hist-title">
+                                {status && (
+                                  <span
+                                    className={`hist-live ${status}`}
+                                    title={
+                                      status === 'running'
+                                        ? 'turn in progress'
+                                        : 'no updates for a while — possibly stalled'
+                                    }
+                                  >
+                                    ●{' '}
                                   </span>
-                                ) : (
-                                  moveTargets(g.agentName).map((a) => (
-                                    <button
-                                      key={a}
-                                      title={`Move to ${prettyAgent(a)}`}
-                                      onClick={() => doMove(g.agentName, a, s.id)}
-                                    >
-                                      → {prettyAgent(a)}
-                                    </button>
-                                  ))
                                 )}
-                              </div>
-                            )}
+                                {s.title}
+                              </span>
+                              <span className="hist-time">
+                                {relativeTime(s.updatedAt, Date.now())}
+                              </span>
+                            </button>
+                            <div className="hist-move-wrap">
+                              <button
+                                className="hist-move"
+                                aria-label="Move chat to another agent"
+                                title="Move to another agent"
+                                onClick={() =>
+                                  setMoveFor(moveFor === s.id ? null : s.id)
+                                }
+                              >
+                                ⤳
+                              </button>
+                              {moveFor === s.id && (
+                                <div className="hist-move-menu">
+                                  {moveTargets(g.agentName).length === 0 ? (
+                                    <span className="hist-move-empty">
+                                      no other agent
+                                    </span>
+                                  ) : (
+                                    moveTargets(g.agentName).map((a) => (
+                                      <button
+                                        key={a}
+                                        title={`Move to ${prettyAgent(a)}`}
+                                        onClick={() => doMove(g.agentName, a, s.id)}
+                                      >
+                                        → {prettyAgent(a)}
+                                      </button>
+                                    ))
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                            <button
+                              className="hist-del"
+                              aria-label="Delete chat"
+                              title="Delete"
+                              onClick={() => removeChat(g.agentName, s.id)}
+                            >
+                              ×
+                            </button>
                           </div>
-                          <button
-                            className="hist-del"
-                            aria-label="Delete chat"
-                            title="Delete"
-                            onClick={() => removeChat(g.agentName, s.id)}
-                          >
-                            ×
-                          </button>
-                        </div>
-                      ))}
+                        )
+                      })}
                     </div>
                   )
                 })}
@@ -1252,7 +1238,7 @@ const HarnessChat: React.FC = () => {
               }}
             />
             {busy ? (
-              <button onClick={() => sessionRef.current?.cancel()}>Stop</button>
+              <button onClick={() => entry?.session.cancel()}>Stop</button>
             ) : (
               <button
                 onClick={send}

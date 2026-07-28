@@ -29,6 +29,12 @@ import {
   enterDraftReview,
   updateDraftReview,
 } from '../components/diffReview/draftReview'
+import {
+  baselines,
+  hashSnapshot,
+  rebaseDiff,
+  describeRebase,
+} from './baselineRebase'
 
 // The tool surface the agent sees. The hosted MCP server mirrors these names +
 // descriptions in its tools/list; keep the two in sync.
@@ -55,21 +61,39 @@ export function isAcornToolTitle(title: string | undefined): boolean {
  * Run one hosted tool call against the store for `projectId`. Pure dispatch +
  * read; never calls a zome directly (propose_edits only touches the ephemeral
  * draft slice), so "nothing reaches the DHT until Confirm" holds by construction.
+ *
+ * `sessionId` is the harness session the call was attributed to. The draft
+ * slice is still one-per-window, so with concurrent sessions it is an
+ * INTERLOCK: a session may open a draft and revise its own, but a proposal
+ * from a different (or unattributable) session while someone else's draft is
+ * open is REJECTED with an error the agent can act on — a legible failure
+ * instead of silent cross-session contamination. (Per-session drafts replace
+ * this with real coexistence later.)
  */
 export async function handleAcornToolCall(
   store: Store,
   projectId: CellIdString,
-  call: HarnessToolCall
+  call: HarnessToolCall,
+  sessionId?: string
 ): Promise<HarnessToolResult> {
   try {
     switch (call.tool) {
       case 'read_tree': {
         const snapshot = readTree(store.getState() as RootState, projectId)
+        // Baseline stamping (baseline-rebase): record the served snapshot and
+        // return its id, so a later propose_edits can be three-way merged
+        // against exactly the state this agent read. The store also remembers
+        // the latest baseline per session, so proposals that don't echo the id
+        // still find their baseline.
+        const baselineId = baselines.record(snapshot, sessionId)
         // Expose each node's stable referents {actionHash, hashCodeId, handle?}
         // alongside the snapshot, so the agent can name nodes by handle / short id
         // without scraping. Kept separate from the outcome entries so the canonical
         // (diffable) snapshot is unchanged.
-        return { ok: true, result: { ...snapshot, nodeRefs: buildNodeRefs(snapshot) } }
+        return {
+          ok: true,
+          result: { ...snapshot, nodeRefs: buildNodeRefs(snapshot), baselineId },
+        }
       }
       case 'propose_edits': {
         // accept either { diff: {...} } or the diff object directly
@@ -87,7 +111,25 @@ export async function handleAcornToolCall(
         // Conservative — keys already pointing at a real or just-added node are left
         // untouched; only an alias that resolves is remapped to the canonical hash.
         const liveTree = readTree(store.getState() as RootState, projectId)
-        const { diff } = remapDiffRefs(liveTree, normalized)
+        const { diff: remapped } = remapDiffRefs(liveTree, normalized)
+        // Baseline rebase: three-way merge the proposal against the live tree
+        // when it has moved since the agent's read. The baseline is the id the
+        // agent echoes back (or the latest one served to its session), looked
+        // up in the RENDERER's store — an agent cannot fabricate a baseline.
+        // Human-only field changes are carried into the proposal (so Confirm
+        // can't revert them); same-field collisions keep the live value and are
+        // reported for the human to override in review.
+        const baselineId =
+          (call.args && (call.args.baseline || call.args.baselineId)) ||
+          baselines.latestForSession(sessionId)
+        const baseline = baselineId ? baselines.get(baselineId) : undefined
+        let diff = remapped
+        let rebaseNote: string | undefined
+        if (baseline && hashSnapshot(liveTree) !== baselineId) {
+          const rebased = rebaseDiff(baseline, liveTree, remapped)
+          diff = rebased.diff
+          rebaseNote = describeRebase(rebased)
+        }
         // Conversation artifacts are hidden from the agent (read_tree strips them)
         // and human-owned, so re-graft each edited node's live conversations back
         // into the proposal — Confirm replaces the outcome wholesale, so without
@@ -119,16 +161,42 @@ export async function handleAcornToolCall(
               .join('\n')}`,
           }
         const state = store.getState() as RootState
-        const alreadyOpen =
-          !!state.ui.draft.diff && state.ui.draft.projectId === projectId
+        const open = state.ui.draft
+        if (open.diff && open.projectId !== projectId)
+          // Previously this REPLACED the other project's draft outright —
+          // silent cross-project clobber. Refuse instead.
+          return {
+            ok: false,
+            error:
+              'propose_edits blocked: a draft for a different project is open ' +
+              'for human review. Ask the human to confirm or discard it, then ' +
+              're-propose.',
+          }
+        const alreadyOpen = !!open.diff && open.projectId === projectId
+        // The interlock: an open draft may only be revised by the session that
+        // proposed it. A draft with no stamp (file/apply path) stays revisable —
+        // pre-interlock behaviour, deliberately unchanged.
+        if (
+          alreadyOpen &&
+          open.sessionId &&
+          open.sessionId !== (sessionId || null)
+        )
+          return {
+            ok: false,
+            error:
+              'propose_edits blocked: a draft proposed by another session is ' +
+              'open for human review in this project. Wait for the human to ' +
+              'confirm or discard that draft, then re-propose.',
+          }
         if (alreadyOpen) updateDraftReview(store, diff, projectId)
-        else enterDraftReview(store, diff, projectId)
+        else enterDraftReview(store, diff, projectId, sessionId)
         // report what was proposed; the human reviews + confirms in the panel
         return {
           ok: true,
           result: {
             opened: true,
             note: 'Draft opened for human review — inert until Confirm. No DHT write.',
+            ...(rebaseNote ? { rebase: rebaseNote } : {}),
             summary: diffStats(diff),
           },
         }

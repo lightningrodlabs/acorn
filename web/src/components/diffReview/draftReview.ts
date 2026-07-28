@@ -37,6 +37,12 @@ import {
   unselectAll,
 } from '../../redux/ephemeral/selection/actions'
 import { fitToChanged } from './fitToChanged'
+import {
+  baselines,
+  hashSnapshot,
+  rebaseDiff,
+  describeRebase,
+} from '../../harness/baselineRebase'
 
 // A scope an added node can default to when the proposal omits one — a valid
 // (empty, unachieved) Small scope, so the Outcome entry passes the zome's schema.
@@ -122,12 +128,27 @@ export function refreshDraftGlow(store: Store, projectId: CellIdString): void {
 
 // Open a brand-new draft for review and light it up. The proposed outcomes are
 // completed against the live tree first, so the draft is committable.
+// `sessionId` stamps the proposing harness session (omit for the file/apply
+// path) — see the draft slice's interlock.
 export function enterDraftReview(
   store: Store,
   diff: ProjectDiff,
-  projectId: CellIdString
+  projectId: CellIdString,
+  sessionId?: string | null
 ): void {
-  store.dispatch(openDraft(completeProposedDiff(store, projectId, diff), projectId))
+  // the draft's values are merged against the live tree as of NOW — record it
+  // as this draft's baseline so Confirm can re-rebase if the tree moves again
+  const baselineId = baselines.record(
+    readTree(store.getState() as RootState, projectId)
+  )
+  store.dispatch(
+    openDraft(
+      completeProposedDiff(store, projectId, diff),
+      projectId,
+      sessionId,
+      baselineId
+    )
+  )
   refreshDraftGlow(store, projectId)
 }
 
@@ -138,7 +159,12 @@ export function updateDraftReview(
   diff: ProjectDiff,
   projectId: CellIdString
 ): void {
-  store.dispatch(updateDraft(completeProposedDiff(store, projectId, diff)))
+  const baselineId = baselines.record(
+    readTree(store.getState() as RootState, projectId)
+  )
+  store.dispatch(
+    updateDraft(completeProposedDiff(store, projectId, diff), baselineId)
+  )
   refreshDraftGlow(store, projectId)
 }
 
@@ -150,7 +176,7 @@ export function exitDraftReview(store: Store): void {
 }
 
 export type ConfirmResult =
-  | { ok: true; committed: number; empty?: boolean }
+  | { ok: true; committed: number; empty?: boolean; rebase?: string }
   | { ok: false; error: string }
 
 /**
@@ -168,7 +194,7 @@ export async function confirmDraft(
   projectId: CellIdString
 ): Promise<ConfirmResult> {
   const state = store.getState() as RootState
-  const draftDiff: ProjectDiff | null = activeEffectiveDiff(
+  let draftDiff: ProjectDiff | null = activeEffectiveDiff(
     state.ui.draft,
     projectId
   )
@@ -179,6 +205,22 @@ export async function confirmDraft(
     return { ok: true, committed: 0, empty: true }
   }
   const base = readTree(state, projectId)
+  // Confirm-time rebase (baseline-rebase): if the live tree moved while the
+  // draft sat open, three-way merge the effective diff against it so a human
+  // edit made during review is never silently reverted. Same-field collisions
+  // keep the live value; the summary is surfaced to the caller.
+  let rebaseNote: string | undefined
+  const { baselineId } = state.ui.draft
+  const draftBaseline = baselineId ? baselines.get(baselineId) : undefined
+  if (draftBaseline && hashSnapshot(base) !== baselineId) {
+    const rebased = rebaseDiff(draftBaseline, base, draftDiff)
+    draftDiff = rebased.diff
+    rebaseNote = describeRebase(rebased)
+    if (isEmptyEffective(draftDiff)) {
+      exitDraftReview(store)
+      return { ok: true, committed: 0, empty: true, rebase: rebaseNote }
+    }
+  }
   // malformed connections (no parent/child) can't be defaulted — refuse with a
   // clear message rather than letting them fail opaquely at create_connection
   const badConnections = validateConnections(draftDiff)
@@ -215,5 +257,5 @@ export async function confirmDraft(
   store.dispatch(unselectAll())
   store.dispatch(setChangedOutcomes(touched, liveStats))
   setTimeout(() => fitToChanged(store, touched), 800)
-  return { ok: true, committed: touched.length }
+  return { ok: true, committed: touched.length, rebase: rebaseNote }
 }

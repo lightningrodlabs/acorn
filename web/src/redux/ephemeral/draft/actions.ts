@@ -17,20 +17,31 @@ const CLEAR_DRAFT = 'CLEAR_DRAFT'
 
 /* action creators */
 
-// open (or replace) the draft for a project, resetting any prior decisions
-function openDraft(diff: ProjectDiff, projectId: CellIdString) {
+// open (or replace) the draft for a project, resetting any prior decisions.
+// `sessionId` stamps the proposing harness session (null/omitted for the
+// file/apply path) — the interlock that keeps another session's propose_edits
+// from silently merging into this draft.
+// `baselineId` names the tree snapshot the draft's values were merged against
+// (the live tree at open time) — Confirm re-rebases against it if the tree
+// moves again while the draft sits open.
+function openDraft(
+  diff: ProjectDiff,
+  projectId: CellIdString,
+  sessionId?: string | null,
+  baselineId?: string | null
+) {
   return {
     type: OPEN_DRAFT,
-    payload: { diff, projectId },
+    payload: { diff, projectId, sessionId, baselineId },
   }
 }
 
 // replace the proposed diff while keeping the draft open (e.g. the agent revised
 // its proposal). Decisions for changes that still exist are kept.
-function updateDraft(diff: ProjectDiff) {
+function updateDraft(diff: ProjectDiff, baselineId?: string | null) {
   return {
     type: UPDATE_DRAFT,
-    payload: { diff },
+    payload: { diff, baselineId },
   }
 }
 

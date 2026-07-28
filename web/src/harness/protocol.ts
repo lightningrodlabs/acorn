@@ -10,6 +10,7 @@ import {
   HarnessInfo,
   HarnessPermissionDecision,
   HarnessPermissionRequest,
+  HarnessSessionInfo,
   HarnessStopReason,
   HarnessToolCall,
   HarnessToolResult,
@@ -27,6 +28,9 @@ export type ClientFrame =
     }
   | { t: 'prompt'; id: number; sessionId: string; blocks: HarnessContentBlock[] }
   | { t: 'resumeSession'; id: number; sessionId: string }
+  // which sessions does the host still hold, and which are mid-turn? Asked on
+  // connect so a reload can reattach turns it did not start.
+  | { t: 'sessions'; id: number }
   | { t: 'cancel'; sessionId: string }
   | {
       t: 'permissionDecision'
@@ -48,9 +52,14 @@ export type ServerFrame =
   | { t: 'sessionResumed'; id: number; sessionId: string }
   | { t: 'sessionResumeFailed'; id: number }
   | { t: 'turnEnd'; id: number; stopReason: HarnessStopReason }
+  | { t: 'sessionList'; id: number; sessions: HarnessSessionInfo[] }
   | { t: 'error'; id: number; message: string }
   // unsolicited
   | { t: 'update'; sessionId: string; update: HarnessUpdate }
+  // A turn ended, addressed by SESSION rather than by the prompt's correlation
+  // id: a renderer that reattached after a reload never sent that prompt, so the
+  // correlated `turnEnd` means nothing to it. Sent alongside `turnEnd`, always.
+  | { t: 'turnEnded'; sessionId: string; stopReason: HarnessStopReason }
   | {
       t: 'permissionRequest'
       requestId: number
@@ -58,10 +67,14 @@ export type ServerFrame =
       request: HarnessPermissionRequest
     }
   // the agent invoked an Acorn-hosted tool; the renderer runs it and replies
-  // with a toolResult carrying the same requestId
+  // with a toolResult carrying the same requestId. `sessionId` is the session
+  // the sidecar attributed the call to (absent when it couldn't tell): the MCP
+  // bridge itself is sessionless, so the sidecar infers it — see sidecar.js
+  // attributeToolSession — and the renderer routes to that session's project.
   | {
       t: 'toolCall'
       requestId: number
+      sessionId?: string
       call: HarnessToolCall
     }
   | { t: 'unavailable'; reason: string }

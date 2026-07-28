@@ -1,5 +1,7 @@
-// Provides the browser globals the production code touches when run under
-// jest's `node` test environment (no jsdom installed).
+// Provides the globals the production code touches that neither of jest's
+// environments supplies: storage + location under `node`, and the text codecs
+// (@holochain/client's msgpack needs them) under `jsdom`.
+import { TextDecoder, TextEncoder } from 'util'
 
 class MemoryStorage {
   private store = new Map<string, string>()
@@ -26,7 +28,16 @@ class MemoryStorage {
 
 const g = globalThis as any
 
-g.localStorage = new MemoryStorage()
-g.window = g.window || {}
-g.window.localStorage = g.localStorage
-g.window.location = g.window.location || { protocol: 'http:', search: '' }
+// Only shim what the environment lacks: under `jsdom` (component tests) these
+// already exist as real, read-only accessors, and assigning over them throws.
+if (!g.TextEncoder) {
+  g.TextEncoder = TextEncoder
+  g.TextDecoder = TextDecoder
+}
+
+if (!g.localStorage) {
+  g.localStorage = new MemoryStorage()
+  g.window = g.window || {}
+  g.window.localStorage = g.localStorage
+  g.window.location = g.window.location || { protocol: 'http:', search: '' }
+}

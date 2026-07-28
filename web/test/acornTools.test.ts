@@ -104,6 +104,104 @@ describe('handleAcornToolCall', () => {
     expect(store.getState().ui.draft.diff).toBeNull()
   })
 
+  // --- the cross-session draft interlock -------------------------------------
+  // The draft slice is one-per-window until per-session drafts land, so with
+  // concurrent sessions an open draft may only be revised by the session that
+  // proposed it — anything else must fail LEGIBLY, never merge silently.
+  describe('draft interlock (concurrent sessions)', () => {
+    const propose = (
+      store: any,
+      content: string,
+      sessionId?: string,
+      projectId = PROJECT
+    ) =>
+      handleAcornToolCall(
+        store,
+        projectId,
+        {
+          tool: 'propose_edits',
+          args: {
+            diff: {
+              outcomes: {
+                added: { 'draft:1': { actionHash: 'draft:1', content } },
+              },
+            },
+          },
+        },
+        sessionId
+      )
+
+    test('a session may revise its OWN open draft', async () => {
+      const store = makeStore()
+      await propose(store, 'first', 'sessA')
+      const res = await propose(store, 'revised', 'sessA')
+      expect(res.ok).toBe(true)
+      expect(store.getState().ui.draft.sessionId).toBe('sessA')
+      expect(
+        store.getState().ui.draft.diff!.outcomes.added['draft:1'].content
+      ).toBe('revised')
+    })
+
+    test("another session's proposal is rejected, and the draft untouched", async () => {
+      const store = makeStore()
+      await propose(store, 'first', 'sessA')
+      const res = await propose(store, 'intruder', 'sessB')
+      expect(res.ok).toBe(false)
+      if (!res.ok) expect(res.error).toMatch(/another session/)
+      // the open draft still belongs to A, content unchanged
+      expect(store.getState().ui.draft.sessionId).toBe('sessA')
+      expect(
+        store.getState().ui.draft.diff!.outcomes.added['draft:1'].content
+      ).toBe('first')
+    })
+
+    test('an UNATTRIBUTABLE proposal cannot revise a stamped draft', async () => {
+      const store = makeStore()
+      await propose(store, 'first', 'sessA')
+      // the host couldn't tell which session called — it must not be allowed
+      // to impersonate the draft's owner
+      const res = await propose(store, 'mystery', undefined)
+      expect(res.ok).toBe(false)
+      expect(
+        store.getState().ui.draft.diff!.outcomes.added['draft:1'].content
+      ).toBe('first')
+    })
+
+    test('an unstamped draft (file/apply path) stays revisable by a session', async () => {
+      const store = makeStore()
+      // opened with no session stamp, as the human-driven file path does
+      await propose(store, 'from file', undefined)
+      expect(store.getState().ui.draft.sessionId).toBeNull()
+      const res = await propose(store, 'agent refinement', 'sessA')
+      expect(res.ok).toBe(true) // pre-interlock behaviour, deliberately kept
+      expect(
+        store.getState().ui.draft.diff!.outcomes.added['draft:1'].content
+      ).toBe('agent refinement')
+    })
+
+    test("a draft open for ANOTHER project blocks (never clobbers) a proposal", async () => {
+      const store = makeStore()
+      await propose(store, 'project one draft', 'sessA')
+      const res = await propose(store, 'other project', 'sessB', 'cell-other')
+      expect(res.ok).toBe(false)
+      if (!res.ok) expect(res.error).toMatch(/different project/)
+      // the first project's draft survives intact
+      expect(store.getState().ui.draft.projectId).toBe(PROJECT)
+      expect(
+        store.getState().ui.draft.diff!.outcomes.added['draft:1'].content
+      ).toBe('project one draft')
+    })
+
+    test('discarding the draft frees the slot for another session', async () => {
+      const store = makeStore()
+      await propose(store, 'first', 'sessA')
+      store.dispatch({ type: 'CLEAR_DRAFT' })
+      const res = await propose(store, 'fresh start', 'sessB')
+      expect(res.ok).toBe(true)
+      expect(store.getState().ui.draft.sessionId).toBe('sessB')
+    })
+  })
+
   test('a proposed added outcome is completed to a zome-valid Outcome', async () => {
     const store = makeStore()
     // an LLM minimal entry — missing the fields the integrity zome requires

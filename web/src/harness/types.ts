@@ -99,6 +99,13 @@ export interface HarnessInfo {
   mcpServers?: string[]
 }
 
+/** What the host still holds for a session, as reported on connect. */
+export interface HarnessSessionInfo {
+  sessionId: string
+  /** a turn is running on the host right now (possibly one WE didn't start) */
+  inFlight: boolean
+}
+
 export interface HarnessSession {
   readonly id: string
   /** Send a prompt; resolves when the WHOLE turn ends. Stream via `on('update')`. */
@@ -106,6 +113,14 @@ export interface HarnessSession {
   /** Cancel the in-flight turn (ACP `session/cancel`). */
   cancel(): void
   on(event: 'update', cb: (u: HarnessUpdate) => void): Unsubscribe
+  /**
+   * Learn that a turn ended WITHOUT having sent its prompt — the case after a
+   * reload, where the host kept running a turn the previous renderer started.
+   * `prompt()`'s promise belonged to that dead connection, so an adopted turn
+   * has no other way to know it finished. Optional: a provider that can't
+   * report a foreign turn's end simply omits it, and adoption is refused.
+   */
+  onTurnEnd?(cb: (result: HarnessTurnResult) => void): Unsubscribe
   dispose(): Promise<void>
 }
 
@@ -129,18 +144,33 @@ export interface HarnessClient {
    * persist sessions across reloads simply omits it.
    */
   resumeSession?(sessionId: string): Promise<HarnessSession>
-  /** Register the handler the host calls when the agent requests permission. */
+  /**
+   * Sessions the host still holds, and whether each is mid-turn. Asked on
+   * connect: a renderer reload drops the socket but not the agent, so turns can
+   * be running that this renderer knows nothing about. Optional — a provider
+   * without durable sessions omits it and nothing is reattached.
+   */
+  listSessions?(): Promise<HarnessSessionInfo[]>
+  /** Register the handler the host calls when the agent requests permission.
+   *  `sessionId` (when the host knows it) attributes the request to a session,
+   *  so concurrent sessions' requests can be told apart. */
   onPermissionRequest(
     handler: (
-      req: HarnessPermissionRequest
+      req: HarnessPermissionRequest,
+      sessionId?: string
     ) => Promise<HarnessPermissionDecision>
   ): void
   /**
    * Register the handler the host calls when the agent invokes an Acorn-hosted
    * tool (read_tree / propose_edits). Optional — a provider without the hosted
-   * callable-tool channel simply omits it.
+   * callable-tool channel simply omits it. `sessionId` (when the host could
+   * attribute the call) routes the call to that session's project — with
+   * concurrent sessions the displayed project is NOT necessarily the caller's.
    */
   onToolCall?(
-    handler: (call: HarnessToolCall) => Promise<HarnessToolResult>
+    handler: (
+      call: HarnessToolCall,
+      sessionId?: string
+    ) => Promise<HarnessToolResult>
   ): void
 }

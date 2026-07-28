@@ -14,6 +14,17 @@ export interface DraftState {
   diff: ProjectDiff | null
   // the project the draft belongs to — the overlay only applies to this project
   projectId: CellIdString | null
+  // the harness session that proposed this draft, or null for a draft opened
+  // outside a session (the file/apply path). With concurrent sessions this is
+  // the INTERLOCK stamp: only the owning session may revise the open draft;
+  // another session's propose_edits is rejected instead of silently merged.
+  // (Interim until per-session drafts — the draft slice stays one-per-window.)
+  sessionId: string | null
+  // baseline id (snapshot hash) of the tree state this draft's values were
+  // merged against — the live tree at open/update time. Confirm re-rebases
+  // against it when the tree has moved again (baseline-rebase). Null for
+  // pre-baseline drafts (file/apply path).
+  baselineId: string | null
   // per-change accept/reject decisions, keyed by changeKey (default-accept:
   // a change absent here is accepted; explicit false rejects it)
   decisions: DecisionMap
@@ -22,6 +33,8 @@ export interface DraftState {
 const defaultState: DraftState = {
   diff: null,
   projectId: null,
+  sessionId: null,
+  baselineId: null,
   decisions: {},
 }
 
@@ -34,6 +47,8 @@ export default function (state = defaultState, action: any): DraftState {
       return {
         diff: normalizeDiff(payload.diff),
         projectId: payload.projectId,
+        sessionId: payload.sessionId || null,
+        baselineId: payload.baselineId || null,
         decisions: {},
       }
     case UPDATE_DRAFT:
@@ -41,6 +56,7 @@ export default function (state = defaultState, action: any): DraftState {
       return {
         ...state,
         diff: normalizeDiff(payload.diff),
+        baselineId: payload.baselineId ?? state.baselineId,
       }
     case SET_CHANGE_DECISION:
       if (!state.diff) return state
