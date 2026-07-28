@@ -93,6 +93,14 @@ export interface SessionRecord {
    * sessions/backends that never emitted a plan.
    */
   planSnapshots?: PlanSnapshot[]
+  /**
+   * When the human archived this chat (ms epoch), unset for live chats. An
+   * archived chat leaves the always-visible stack but keeps its record — it is
+   * listed in the header's archive view, restorable, and only deletable from
+   * there. Archive-not-delete is the point: a transcript is never one
+   * mis-click from gone.
+   */
+  archivedAt?: number
 }
 
 export interface ChatStore {
@@ -132,6 +140,8 @@ function mergeRecord(
     messages,
     ...(owner ? { agentName: owner } : {}),
     ...(plans && plans.length ? { planSnapshots: plans } : {}),
+    // archived is a human act — a turn persisting must never un-archive
+    ...(prev?.archivedAt ? { archivedAt: prev.archivedAt } : {}),
   }
 }
 
@@ -649,6 +659,24 @@ export function deleteSession(projectId: string, id: string): void {
   ensureV2(projectId)
   removeSessionRecord(projectId, id)
   if (readCurrent(projectId) === id) writeCurrent(projectId, null)
+}
+
+/** Archive (true) or restore (false) a chat. Targeted single-record write, like
+ *  persistTurn. No-op for a session with no stored record yet (an empty chat
+ *  has nothing worth archiving). */
+export function setSessionArchived(
+  projectId: string,
+  id: string,
+  archived: boolean,
+  now: number
+): void {
+  ensureV2(projectId)
+  const rec = readSession(projectId, id)
+  if (!rec || !!rec.archivedAt === archived) return
+  const next = { ...rec }
+  if (archived) next.archivedAt = now
+  else delete next.archivedAt
+  writeSession(projectId, next)
 }
 
 /** A project's chats for one backing agent. `agentName` is null for the bare,

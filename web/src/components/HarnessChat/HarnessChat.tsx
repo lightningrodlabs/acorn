@@ -1,15 +1,8 @@
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouteMatch } from 'react-router-dom'
 import { useSelector, useStore } from 'react-redux'
 import useOnClickOutside from 'use-onclickoutside'
-import remarkGfm from 'remark-gfm'
-import RichText from '../RichText/RichText'
+import ChatStackItem from './ChatStackItem'
 
 import './HarnessChat.scss'
 import { CellIdString } from '../../types/shared'
@@ -29,7 +22,6 @@ import {
   ChatMessage,
   deriveTitle,
   deleteSession,
-  getCurrentId,
   getSessionMessages,
   getSessionPlanSnapshots,
   listScopedSessions,
@@ -39,10 +31,10 @@ import {
   pruneEmptySessions,
   reusableEmptySessionId,
   scopeProject,
-  setCurrentSession,
-  SessionGroup,
+  setSessionArchived,
+  subscribeChatHistory,
 } from '../../harness/chatHistory'
-import { getSessionRegistry } from '../../harness/sessionRegistry'
+import { getSessionRegistry, LiveSession } from '../../harness/sessionRegistry'
 import {
   computeProjectDiff,
   isEmptyDiff,
@@ -58,26 +50,24 @@ import {
   HarnessSessionInfo,
 } from '../../harness'
 
-// The in-app LLM chat (LLM-direct-API branch), as a VIEW over the session
-// registry (concurrent-sessions branch, leaf: session-registry). Per-session
-// live state — transport handle, busy flag, streaming transcript, plan,
-// activity clock — lives in the registry, NOT here, so several sessions can
-// run turns at once: switching the displayed session (or project) never
-// cancels, blocks, or hides a running turn, and a background turn keeps
-// streaming into its own entry. Each turn carries the live read_tree snapshot
-// (resent only when it changed since that session last saw it) plus the
-// current selection.
-
-// Seconds without any session/update before we flag a possible stall. ACP has
-// no heartbeat, so this is the best signal that the agent has gone quiet.
-const STALL_SECS = 20
+// The in-app LLM chat (LLM-direct-API branch). The panel IS the project's chat
+// list (multi-chat-panes): every non-archived chat renders as an item in one
+// always-visible stack — collapsed items are their own history rows, expanded
+// items are live chats — so there is no separate picker and no privileged
+// "displayed" session. Per-session live state (transport handle, busy flag,
+// streaming transcript, plan, activity clock) lives in the session registry,
+// NOT here, so several sessions run turns at once and collapsing, archiving, or
+// switching projects never cancels, blocks, or hides a running turn. The only
+// panel-level chat controls are ＋ (new chat) and the archive view (restore /
+// delete live there — a stack item can only be archived, never deleted).
 
 // The chat is a right-docked, full-height panel that pushes the map aside rather
-// than floating over it. Only its WIDTH is user-adjustable (drag the left edge);
-// we persist that as a UI preference shared across projects. While open the width
-// is published as `--acorn-chat-width` on <html>, which the map canvas subtracts
-// from its own width (see MapView.scss) so the tree reflows into the space left
-// of the panel and nothing is ever hidden behind it.
+// than floating over it. Only its WIDTH is user-adjustable (drag the left edge).
+// While open the width is published as `--acorn-chat-width` on <html>, which the
+// map canvas subtracts from its own width (see MapView.scss) so the tree reflows
+// into the space left of the panel and nothing is ever hidden behind it.
+// The global key is the default for projects without a saved layout; the pane
+// width proper persists per project (see PanelLayout).
 const WIDTH_KEY = 'acorn:harnessChat:width'
 const CHAT_WIDTH_VAR = '--acorn-chat-width'
 const DEFAULT_WIDTH = 360
@@ -99,10 +89,38 @@ const saveWidth = (w: number) => {
   } catch (_) {}
 }
 
+// Per-project pane layout: which chats are expanded and the pane width, so a
+// reload restores the workspace as it was left. (The stack's membership isn't
+// layout — it IS the chat store, minus archived chats.)
+interface PanelLayout {
+  width?: number
+  expanded?: string[]
+}
+const layoutKey = (projectId: string) => `acorn:harnessChat:layout:${projectId}`
+const loadLayout = (projectId: string | null): PanelLayout => {
+  if (!projectId) return {}
+  try {
+    return JSON.parse(localStorage.getItem(layoutKey(projectId)) || '{}')
+  } catch (_) {
+    return {}
+  }
+}
+const saveLayout = (projectId: string, layout: PanelLayout) => {
+  try {
+    localStorage.setItem(layoutKey(projectId), JSON.stringify(layout))
+  } catch (_) {}
+}
+const widthFor = (projectId: string | null): number => {
+  const w = loadLayout(projectId).width
+  return typeof w === 'number' && Number.isFinite(w)
+    ? clampWidth(w)
+    : loadWidth()
+}
+
 // Friendly display label for an agent identifier. The raw value is the stable
 // storage/identity key (an ACP `agentInfo.name` — e.g. the verbose package spec
 // "@agentclientprotocol/claude-agent-acp", or "OpenCode"); this only changes
-// what the picker shows. Unknown agents fall back to the last path segment, so
+// what the stack shows. Unknown agents fall back to the last path segment, so
 // any future backend still reads cleanly without needing an entry here.
 const AGENT_LABELS: { match: RegExp; label: string }[] = [
   { match: /claude/i, label: 'Claude' },
@@ -115,7 +133,7 @@ const prettyAgent = (agentName: string | null): string => {
   return hit ? hit.label : agentName.split('/').pop() || agentName
 }
 
-// Compact relative time for the history picker.
+// Compact relative time for collapsed rows and the archive view.
 const relativeTime = (then: number, now: number): string => {
   const s = Math.max(0, Math.floor((now - then) / 1000))
   if (s < 60) return 'just now'
@@ -162,6 +180,20 @@ async function decidePermission(
     : { outcome: 'cancelled' }
 }
 
+/** One chat in the stack (or the archive view), derived from the chat store
+ *  plus any live-only registry sessions that have no stored record yet. */
+interface ChatRow {
+  id: string
+  agentName: string | null
+  /** owned by the attached backend → resumable/writable here */
+  mine: boolean
+  title: string
+  updatedAt: number
+  archivedAt?: number
+  /** stored transcript — the render fallback when the row isn't live */
+  messages: ChatMessage[]
+}
+
 const HarnessChat: React.FC = () => {
   const projectPage = useRouteMatch<{ projectId: CellIdString }>(
     '/project/:projectId'
@@ -170,8 +202,8 @@ const HarnessChat: React.FC = () => {
   const store = useStore()
   const registry = getSessionRegistry()
 
-  // the project the DISPLAYED chat belongs to. Chats are per-project by default;
-  // switching projects resets the panel display (background sessions keep
+  // the project whose chats the panel is showing. Chats are per-project;
+  // switching projects swaps the whole stack (background sessions keep
   // streaming in the registry — see the switch effect below).
   const projectRef = useRef(projectId)
   // The backing agent (from initialize), used to namespace the persisted chat
@@ -185,30 +217,35 @@ const HarnessChat: React.FC = () => {
   // the latest connect() without forward-reference issues, and dedupe calls.
   const connectingRef = useRef(false)
   const connectRef = useRef<() => void>(() => {})
-  // which registry session the panel is showing (null = none, e.g. while
-  // connecting or when viewing a foreign agent's chat read-only). The ref
-  // mirrors it for the client-level tool-routing closure.
-  const [displayedId, setDisplayedId] = useState<string | null>(null)
-  const displayedIdRef = useRef<string | null>(null)
-  displayedIdRef.current = displayedId
+  // The stack: every non-archived chat of this project, one row each. Rows are
+  // refreshed from the store on membership changes, not derived per render —
+  // parsing every stored transcript on each streamed chunk would be waste.
+  const [rows, setRows] = useState<ChatRow[]>([])
+  // Stable stack order: existing rows keep their position while turns stream
+  // (re-sorting by updatedAt would make concurrently-streaming chats trade
+  // places on every chunk); new chats enter at the top.
+  const orderRef = useRef<string[]>([])
+  // which chats are expanded (the rest render as their own history rows)
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
+  // Layout persistence gate: the saved expanded set must not be clobbered by
+  // the empty pre-restore state (mount / project switch).
+  const layoutLoadedRef = useRef(false)
+  // The session the human last touched (focused or sent on) — the routing
+  // fallback for hosted tool calls that arrive unattributed. With no privileged
+  // "displayed" chat, last-interacted is the best stand-in for "the chat the
+  // human means". The draft-interlock stamp still never guesses (see connect).
+  const lastInteractedRef = useRef<string | null>(null)
   const [open, setOpen] = useState(false)
   const [phase, setPhase] = useState<'idle' | 'connecting' | 'ready' | 'error'>(
     'idle'
   )
   const [error, setError] = useState('')
-  // Transcript shown when NO live entry is displayed: a foreign agent's chat
-  // opened read-only, or the last chat surfaced while the harness is
-  // unreachable. Ignored whenever a live entry is displayed.
-  const [viewMessages, setViewMessages] = useState<ChatMessage[]>([])
-  // Agent-message ids whose reasoning ("Thinking") block the user has expanded.
-  // The in-flight message auto-expands while busy (see the transcript render);
-  // this set holds explicit toggles, so completed turns stay collapsed until
-  // opened. Reset whenever we swap the visible transcript (ids are reused).
-  const [openThinking, setOpenThinking] = useState<Set<number>>(new Set())
   // The in-panel "attach conversation" picker (null = closed). Replaces
   // window.prompt/confirm, which this webview doesn't support: it holds the
   // computed target + a human-editable override before the propose_edits draft.
   const [attach, setAttach] = useState<{
+    sessionId: string
+    title: string
     transcript: any
     tree: any
     target: string | null
@@ -221,48 +258,29 @@ const HarnessChat: React.FC = () => {
     // when the session is already held elsewhere, attach a full copy anyway
     copyAnyway: boolean
   } | null>(null)
-  const [input, setInput] = useState('')
-  // whether the chat textarea owns the keyboard — when true, the tree's global
+  // whether a chat textarea owns the keyboard — when true, the tree's global
   // shortcuts (Enter/arrows/Backspace) are suppressed so typing never disturbs
   // the tree. Mirrored into redux so the suppression is enforced globally.
   const [focused, setFocused] = useState(false)
-  // header history picker — all of this project's chats, grouped by the agent
-  // that owns them (the attached backend plus any other backends' stored chats).
-  const [showHistory, setShowHistory] = useState(false)
-  const [sessionGroups, setSessionGroups] = useState<SessionGroup[]>([])
-  // When set, we're showing another agent's chat read-only: its ACP session id
-  // can't be resumed by the attached backend, so input is disabled until the
-  // user starts/opens a chat under the current agent. Holds that agent's label.
-  const [readOnlyAgent, setReadOnlyAgent] = useState<string | null>(null)
-  // Session id whose "move to another agent" submenu is open (Part B).
-  const [moveFor, setMoveFor] = useState<string | null>(null)
+  // the header's archive view (restore / delete live there)
+  const [showArchived, setShowArchived] = useState(false)
+  const [archivedRows, setArchivedRows] = useState<ChatRow[]>([])
   // MCP servers the agent can reach this session (e.g. "linear"), from initialize
   const [mcpServers, setMcpServers] = useState<string[]>([])
 
-  // Re-render on ANY registry change: the displayed entry's stream, but also
-  // background sessions (their status shows in the history picker).
+  // Re-render on ANY registry change: every expanded item's stream, plus the
+  // live dots on collapsed rows.
   const [, setRenderTick] = useState(0)
   useEffect(() => registry.subscribe(() => setRenderTick((n) => n + 1)), [])
   // While any turn is in flight anywhere, tick once a second so the stall
-  // clocks (banner + picker dots) advance even when no updates arrive — the
-  // whole point of a stall is that nothing else triggers a render.
+  // clocks (banners + dots) advance even when no updates arrive — the whole
+  // point of a stall is that nothing else triggers a render.
   const anyBusy = registry.anyBusy()
   useEffect(() => {
     if (!anyBusy) return
     const t = setInterval(() => setRenderTick((n) => n + 1), 1000)
     return () => clearInterval(t)
   }, [anyBusy])
-
-  // --- the displayed session, derived from the registry every render ---
-  const entry = displayedId ? registry.get(displayedId) : undefined
-  const messages: ChatMessage[] = entry ? entry.messages : viewMessages
-  const busy = !!(entry && entry.busy)
-  const plan = entry ? entry.plan : []
-  const activity = entry ? entry.activity : ''
-  const idleSecs =
-    busy && entry
-      ? Math.max(0, Math.floor((Date.now() - entry.activityAt) / 1000))
-      : 0
 
   const setKeyboardOwnership = (own: boolean) => {
     setFocused(own)
@@ -284,26 +302,13 @@ const HarnessChat: React.FC = () => {
   )
 
   // Panel width (px) — the only adjustable dimension; the panel is docked to the
-  // right edge and spans the full viewport height.
-  const [width, setWidth] = useState<number>(loadWidth)
+  // right edge and spans the full viewport height. Per-project, with the global
+  // key as the default for projects without a saved layout.
+  const [width, setWidth] = useState<number>(() => widthFor(projectId))
 
-  // Close the history picker on any click outside it (transcript, textbox, the
-  // map — anywhere). Clicks on the toggle/dropdown are inside this ref, so the
-  // toggle button keeps handling its own open/close.
-  const histRef = useRef<HTMLDivElement>(null)
-  useOnClickOutside(histRef, () => {
-    setShowHistory(false)
-    setMoveFor(null)
-  })
-
-  // Auto-scroll: stick to the bottom unless the user has scrolled up.
-  const transcriptRef = useRef<HTMLDivElement>(null)
-  const atBottomRef = useRef(true)
-  const onTranscriptScroll = () => {
-    const el = transcriptRef.current
-    if (!el) return
-    atBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 40
-  }
+  // Close the archive view on any click outside it.
+  const archRef = useRef<HTMLDivElement>(null)
+  useOnClickOutside(archRef, () => setShowArchived(false))
 
   // Publish the panel's footprint (0 when closed) as a CSS variable on <html> and
   // nudge the map to recompute its usable width. The map's `resize` listener reads
@@ -327,38 +332,60 @@ const HarnessChat: React.FC = () => {
     []
   )
 
-  // Keep pinned to the bottom as content streams in (only if already at bottom).
-  useLayoutEffect(() => {
-    const el = transcriptRef.current
-    if (el && atBottomRef.current) el.scrollTop = el.scrollHeight
-  }, [messages, plan])
-
-  // Reopening the window scrolls to the latest.
-  useEffect(() => {
-    if (!open) return
-    atBottomRef.current = true
-    const el = transcriptRef.current
-    if (el) el.scrollTop = el.scrollHeight
-  }, [open])
-
-  // Switching projects: reset the panel DISPLAY back to idle and reconnect to
-  // the new project's own current chat. Registry sessions are untouched — a
-  // background turn keeps streaming while the human works in another project,
-  // and switching back re-displays it live (openSession's registry shortcut).
+  // Switching projects: swap to the new project's own stack. Registry sessions
+  // are untouched — a background turn keeps streaming while the human works in
+  // another project, and switching back re-lists it live.
   useEffect(() => {
     if (projectRef.current === projectId) return
     projectRef.current = projectId
     connectingRef.current = false
-    setDisplayedId(null)
-    setViewMessages([])
-    setOpenThinking(new Set())
     setAttach(null)
     setError('')
-    setShowHistory(false)
-    setReadOnlyAgent(null)
+    setShowArchived(false)
     setKeyboardOwnership(false)
+    // Gate persistence before emptying, so the in-between state never
+    // overwrites the layout we're about to restore for the new project.
+    layoutLoadedRef.current = false
+    orderRef.current = []
+    setRows([])
+    setArchivedRows([])
+    setExpandedIds(new Set())
+    setWidth(widthFor(projectId))
     setPhase('idle') // open is left as-is; auto-connect picks up the new project
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId])
+
+  // Persist this project's pane layout (width + expanded chats) whenever it
+  // changes — but only once the saved layout has been restored, so the
+  // pre-restore empty state can't clobber it.
+  useEffect(() => {
+    if (!projectId || !layoutLoadedRef.current) return
+    saveLayout(projectId, { width, expanded: [...expandedIds] })
+  }, [projectId, width, expandedIds])
+
+  // Keep the stack (and open archive view) fresh under concurrent writers
+  // ([[chat-history-concurrency]]): another session persisting in this window,
+  // or another window on this project. Leading-edge throttled — persists arrive
+  // per streamed chunk, and re-reading every stored transcript at that rate is
+  // waste; the stack's membership only changes rarely.
+  const refreshRowsRef = useRef<() => void>(() => {})
+  useEffect(() => {
+    if (!projectId) return
+    let cooling = false
+    let timer: ReturnType<typeof setTimeout> | null = null
+    const unsub = subscribeChatHistory((scoped) => {
+      if (scoped !== projectId && scoped.indexOf(projectId + '::') !== 0) return
+      if (cooling) return
+      cooling = true
+      refreshRowsRef.current()
+      timer = setTimeout(() => {
+        cooling = false
+      }, 400)
+    })
+    return () => {
+      unsub()
+      if (timer) clearTimeout(timer)
+    }
   }, [projectId])
 
   // Connect whenever the panel is open but not yet connected — on first open and
@@ -372,29 +399,73 @@ const HarnessChat: React.FC = () => {
   // No harness host in this context (prod build / Moss without the affordance).
   if (!client.available) return null
 
-  const toggleThinking = (id: number) =>
-    setOpenThinking((prev) => {
-      const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
-      return next
-    })
+  // Is this scope the backend we're attached to (so its chats are resumable)?
+  const isCurrentAgent = (agentName: string | null) =>
+    (agentName || null) === (agentNameRef.current || null)
 
-  // Attach to a session and display it. If the session is already LIVE in the
-  // registry (e.g. it's mid-turn in the background), just swap the view to it —
-  // re-resuming would do nothing useful and must not disturb its stream. Else
-  // resume `target` if given and the host still has it (live reattach, or ACP
-  // session/load across a restart), else start fresh; the transcript is
-  // restored from the local store into the new registry entry.
-  const openSession = async (target: string | null) => {
-    setReadOnlyAgent(null) // leaving any read-only foreign-agent view
-    setViewMessages([])
-    setOpenThinking(new Set()) // ids are reused across sessions — drop stale toggles
-    const live = target ? registry.get(target) : undefined
-    if (live && live.projectId === projectId) {
-      setDisplayedId(live.id)
-      setCurrentSession(chatKey(), live.id)
-      return
+  // Every chat of this project, one row each: stored records (across all agent
+  // scopes) plus live-only registry sessions that have no record yet (a
+  // brand-new chat isn't persisted until its first message).
+  const computeRows = (): { active: ChatRow[]; archived: ChatRow[] } => {
+    const active: ChatRow[] = []
+    const archived: ChatRow[] = []
+    for (const g of listScopedSessions(projectId)) {
+      for (const s of g.sessions) {
+        const row: ChatRow = {
+          id: s.id,
+          agentName: g.agentName,
+          mine: isCurrentAgent(g.agentName),
+          title: s.title,
+          updatedAt: s.updatedAt,
+          ...(s.archivedAt ? { archivedAt: s.archivedAt } : {}),
+          messages: s.messages,
+        }
+        ;(s.archivedAt ? archived : active).push(row)
+      }
     }
+    for (const e of registry.list(projectId)) {
+      if (!isCurrentAgent(e.agentName)) continue
+      if (active.some((r) => r.id === e.id)) continue
+      if (archived.some((r) => r.id === e.id)) continue
+      active.push({
+        id: e.id,
+        agentName: e.agentName,
+        mine: true,
+        title: deriveTitle(e.messages),
+        updatedAt: Date.now(),
+        messages: e.messages,
+      })
+    }
+    return { active, archived }
+  }
+
+  // Stable-order the active rows (see orderRef) and publish both lists.
+  const refreshRows = () => {
+    const { active, archived } = computeRows()
+    const byId = new Map(active.map((r) => [r.id, r]))
+    const kept = orderRef.current.filter((id) => byId.has(id))
+    const fresh = active
+      .filter((r) => kept.indexOf(r.id) < 0)
+      .sort((a, b) => b.updatedAt - a.updatedAt)
+      .map((r) => r.id)
+    orderRef.current = [...fresh, ...kept]
+    setRows(orderRef.current.map((id) => byId.get(id) as ChatRow))
+    setArchivedRows(archived.sort((a, b) => b.updatedAt - a.updatedAt))
+  }
+  refreshRowsRef.current = refreshRows
+
+  // Make `target` LIVE in the registry: if it already is (e.g. mid-turn in the
+  // background), it is returned untouched — re-resuming would do nothing useful
+  // and must not disturb its stream. Else resume `target` if given and the host
+  // still has it (live reattach, or ACP session/load across a restart), else
+  // start fresh; the transcript is restored from the local store into the new
+  // registry entry (under a NEW id when it had to migrate).
+  const ensureLive = async (
+    target: string | null
+  ): Promise<{ id: string; wasLive: boolean }> => {
+    const live = target ? registry.get(target) : undefined
+    if (live && live.projectId === projectId)
+      return { id: live.id, wasLive: true }
     let session = null as Awaited<ReturnType<typeof client.newSession>> | null
     let restored: ChatMessage[] = []
     let restoredPlans = [] as ReturnType<typeof getSessionPlanSnapshots>
@@ -437,17 +508,139 @@ const HarnessChat: React.FC = () => {
       messages: restored,
       planSnapshots: restoredPlans,
     })
-    setDisplayedId(session.id)
-    setCurrentSession(chatKey(), session.id)
-    // keep at most one empty chat — discard any unused ones we left behind
-    pruneEmptySessions(chatKey(), session.id)
+    return { id: session.id, wasLive: false }
+  }
+
+  // Expand/collapse a row. Expanding one of OUR chats resumes it live first
+  // (lazy — collapsed rows never hold a session open); a foreign chat just
+  // shows its stored transcript. Collapsing only hides the view: the session
+  // and any running turn are untouched.
+  const toggleExpand = async (row: ChatRow) => {
+    if (expandedIds.has(row.id)) {
+      setExpandedIds((prev) => {
+        const next = new Set(prev)
+        next.delete(row.id)
+        return next
+      })
+      return
+    }
+    let id = row.id
+    if (row.mine && phase === 'ready' && !registry.get(row.id)) {
+      id = (await ensureLive(row.id)).id
+      if (id !== row.id) refreshRows() // the transcript migrated to a fresh id
+    }
+    setExpandedIds((prev) => new Set(prev).add(id))
+  }
+
+  // ＋ — the only panel-level chat-creation control. Reuses an existing empty
+  // chat (live or stored) rather than piling up unused sessions.
+  const newChat = async () => {
+    const liveEmpty = registry
+      .list(projectId)
+      .find(
+        (e) => isCurrentAgent(e.agentName) && !e.busy && e.messages.length === 0
+      )
+    const target = liveEmpty ? liveEmpty.id : reusableEmptySessionId(chatKey())
+    const { id } = await ensureLive(target)
+    pruneEmptySessions(chatKey(), id)
+    setExpandedIds((prev) => new Set(prev).add(id))
+    refreshRows()
+  }
+
+  // Archive a chat: it leaves the stack but keeps its record — restorable (and
+  // only deletable) from the header's archive view. Mid-turn archiving is
+  // blocked (the menu disables it): the stream would keep persisting under a
+  // chat the human just dismissed.
+  const archiveChat = (row: ChatRow) => {
+    if (registry.get(row.id)?.busy) return
+    registry.remove(row.id)
+    setSessionArchived(
+      scopeProject(projectId, row.agentName),
+      row.id,
+      true,
+      Date.now()
+    )
+    setExpandedIds((prev) => {
+      const next = new Set(prev)
+      next.delete(row.id)
+      return next
+    })
+    refreshRows()
+  }
+
+  const restoreChat = (row: ChatRow) => {
+    setSessionArchived(
+      scopeProject(projectId, row.agentName),
+      row.id,
+      false,
+      Date.now()
+    )
+    refreshRows()
+  }
+
+  // Permanent delete — only reachable from the archive view, so a transcript is
+  // never one mis-click from gone.
+  const deleteArchived = (row: ChatRow) => {
+    if (registry.get(row.id)?.busy) return
+    registry.remove(row.id)
+    deleteSession(scopeProject(projectId, row.agentName), row.id)
+    refreshRows()
+  }
+
+  // Agents a chat can be re-homed to: the attached backend plus any other
+  // backend that already owns chats here, minus the chat's current owner.
+  const moveTargets = (fromAgent: string | null): string[] =>
+    Array.from(
+      new Set(
+        [agentNameRef.current, ...rows.map((r) => r.agentName)].filter(
+          (a): a is string => !!a && a !== (fromAgent || null)
+        )
+      )
+    )
+  const doMove = (row: ChatRow, toAgent: string) => {
+    // a mid-turn session keeps persisting under its own scope, which would
+    // immediately undo the move — finish or cancel the turn first
+    if (registry.get(row.id)?.busy) return
+    registry.remove(row.id)
+    moveSession(projectId, row.agentName, toAgent, row.id)
+    setExpandedIds((prev) => {
+      const next = new Set(prev)
+      next.delete(row.id)
+      return next
+    })
+    refreshRows()
+  }
+
+  // Restore this project's workspace: rows from the store, the saved expanded
+  // set (lazily resuming each expanded chat), and any turn still running on the
+  // host adopted AND expanded — a stream you left running belongs on screen.
+  const restoreLayout = async () => {
+    const saved = loadLayout(projectId)
+    const { active } = computeRows()
+    const expanded = new Set<string>()
+    for (const target of saved.expanded || []) {
+      const row = active.find((r) => r.id === target)
+      if (!row) continue
+      if (row.mine && !registry.get(row.id)) {
+        try {
+          expanded.add((await ensureLive(row.id)).id)
+        } catch (_) {} // the host lost it and the resume path failed — skip
+      } else {
+        expanded.add(row.id)
+      }
+    }
+    for (const e of registry.list(projectId))
+      if (e.busy && isCurrentAgent(e.agentName)) expanded.add(e.id)
+    setExpandedIds(expanded)
+    layoutLoadedRef.current = true
+    refreshRows()
   }
 
   // A turn started before a renderer reload is still running on the HOST — the
   // sidecar keeps the agent (and the ACP session) alive across the socket drop.
   // Ask which sessions are mid-turn and adopt each one, so its output lands in
   // its own transcript as it arrives instead of being lost until someone happens
-  // to click that chat. Only THIS project's chats under the CURRENT agent are
+  // to expand that chat. Only THIS project's chats under the CURRENT agent are
   // candidates: another agent's session ids can't be resumed here, and another
   // project's session belongs to that project's panel.
   const reattachInFlight = async () => {
@@ -495,18 +688,18 @@ const HarnessChat: React.FC = () => {
       // Hosted callable tools (read_tree / propose_edits). propose_edits opens an
       // inert draft for human review — it never writes to the DHT (L1). The call
       // routes to the session the HOST attributed it to (concurrent sessions:
-      // the caller is not necessarily the displayed session, nor even the
-      // displayed PROJECT); unattributed calls fall back to the single busy
-      // session, then to whatever is displayed.
+      // the caller is not necessarily in the displayed PROJECT); unattributed
+      // calls fall back to the single busy session, then to the chat the human
+      // last interacted with.
       client.onToolCall?.((call, sessionId) => {
         // Two distinct identities come out of attribution:
         //   attributed — a session we can actually pin the call on (the host
         //     said so, or exactly one turn is in flight anywhere). Feeds the
         //     draft interlock stamp, so it must never guess.
-        //   routed — attributed, else the displayed session: the best project
-        //     to serve the call from when we genuinely can't tell the caller.
+        //   routed — attributed, else the last-interacted session: the best
+        //     project to serve the call from when we can't tell the caller.
         const attributed = registry.get(sessionId) || registry.soleBusy()
-        const routed = attributed || registry.get(displayedIdRef.current)
+        const routed = attributed || registry.get(lastInteractedRef.current)
         const pid = routed ? routed.projectId : projectRef.current
         if (!pid)
           return Promise.resolve({
@@ -528,25 +721,26 @@ const HarnessChat: React.FC = () => {
       const info = await client.initialize()
       // Scope the chat store to this backend before touching it: resuming a
       // session minted by a different agent fails (and can corrupt the agent's
-      // stdio). Set synchronously so the resume below reads the right space.
+      // stdio). Set synchronously so everything below reads the right space.
       agentNameRef.current = info.agentName || null
       // Reclaim any of THIS backend's chats that earlier ended up in another
       // scope (e.g. pre-stamp data, or a chat opened under the wrong agent), and
       // backfill author stamps. Idempotent; only touches unstamped records.
       reclaimSessions(projectId, agentNameRef.current)
       setMcpServers(info.mcpServers || [])
-      await openSession(getCurrentId(chatKey())) // resume the last chat
       await reattachInFlight()
+      await restoreLayout()
+      // an empty project starts with one open chat ready to type into
+      if (computeRows().active.length === 0) await newChat()
       setPhase('ready')
     } catch (e: any) {
       setPhase('error')
       setError(e?.message || String(e))
-      // Harness is unreachable, but the transcript is stored locally — surface
-      // the last chat so it stays readable (read-only) instead of vanishing
-      // behind the error. No displayed entry, so nothing here can persist (and
-      // clobber) the saved record.
-      const lastId = getCurrentId(chatKey())
-      if (lastId) setViewMessages(getSessionMessages(chatKey(), lastId))
+      // Harness is unreachable, but the transcripts are stored locally — the
+      // stack still lists them (read-only: no live entries can exist, so
+      // nothing here can persist over the saved records).
+      layoutLoadedRef.current = true
+      refreshRows()
     } finally {
       connectingRef.current = false
     }
@@ -554,132 +748,70 @@ const HarnessChat: React.FC = () => {
   // expose the latest connect to the auto-connect effect
   connectRef.current = connect
 
-  // --- header history picker ---
-  // Is this group the backend we're attached to (so its chats are resumable)?
-  const isCurrentAgent = (agentName: string | null) =>
-    (agentName || null) === (agentNameRef.current || null)
-
-  const toggleHistory = () => {
-    setSessionGroups(listScopedSessions(projectId))
-    setMoveFor(null)
-    setShowHistory((s) => !s)
-  }
-  const pickSession = async (id: string) => {
-    setShowHistory(false)
-    if (id !== displayedId) await openSession(id)
-  }
-  // Open another backend's chat read-only: restore its transcript for reading,
-  // but don't attach a session (the attached agent can't resume a foreign ACP
-  // id) — input stays disabled until the user starts a chat under this agent.
-  const viewSession = (agentName: string | null, id: string) => {
-    setShowHistory(false)
-    // no displayed entry ⇒ nothing can persist over the stored record
-    setDisplayedId(null)
-    setViewMessages(getSessionMessages(scopeProject(projectId, agentName), id))
-    setOpenThinking(new Set())
-    setReadOnlyAgent(prettyAgent(agentName))
-  }
-  const newChat = async () => {
-    setShowHistory(false)
-    // already sitting in an unused (and editable) chat — nothing to create
-    if (!readOnlyAgent && entry && !entry.busy && entry.messages.length === 0)
-      return
-    // reuse an existing empty chat if there is one, else start fresh
-    await openSession(reusableEmptySessionId(chatKey()))
-  }
-  const removeChat = async (agentName: string | null, id: string) => {
-    // a mid-turn session can't be deleted out from under its stream — its next
-    // persist would just resurrect the record, more confusingly
-    if (registry.get(id)?.busy) return
-    registry.remove(id)
-    deleteSession(scopeProject(projectId, agentName), id)
-    setSessionGroups(listScopedSessions(projectId))
-    // dropped the chat we have open under the current agent → start fresh
-    if (isCurrentAgent(agentName) && id === displayedId) await openSession(null)
-  }
-  // Agents a chat can be re-homed to: the attached backend plus any other
-  // backend that already owns chats here, minus the chat's current owner.
-  const moveTargets = (fromAgent: string | null): string[] =>
-    Array.from(
-      new Set(
-        [agentNameRef.current, ...sessionGroups.map((g) => g.agentName)].filter(
-          (a): a is string => !!a && a !== (fromAgent || null)
-        )
-      )
-    )
-  const doMove = async (
-    fromAgent: string | null,
-    toAgent: string,
-    id: string
-  ) => {
-    setMoveFor(null)
-    // as with delete: a mid-turn session keeps persisting under its own scope,
-    // which would immediately undo the move — finish or cancel the turn first
-    if (registry.get(id)?.busy) return
-    registry.remove(id)
-    moveSession(projectId, fromAgent, toAgent, id)
-    setSessionGroups(listScopedSessions(projectId))
-    // moved the open chat out from under the current agent → reset to fresh
-    if (isCurrentAgent(fromAgent) && id === displayedId) await openSession(null)
-  }
-
-  const send = async () => {
-    const text = input.trim()
-    if (!entry || entry.busy || !text) return
-    setInput('')
-    // Capture the selection AT SEND TIME and pin it on the user turn: it is the
-    // conversation's ask-time anchor, and must not be re-read later (the human
-    // moves the selection while the agent works).
+  // Run one turn on `sess`, from whichever item it came. Captures the selection
+  // AT SEND TIME and pins it on the user turn: it is the conversation's
+  // ask-time anchor, and must not be re-read later (the human moves the
+  // selection while the agent works). The turn's context is the current tree
+  // (only if it changed since THIS session last saw it — keeps the agent
+  // current without resending a large unchanged tree) + the live selection (so
+  // "this"/"these" resolve) + the user's text last.
+  const sendTurn = async (sess: LiveSession, text: string) => {
+    if (!text || sess.busy) return
+    lastInteractedRef.current = sess.id
     const liveState = store.getState() as any
-    const selected = readSelection(liveState, projectId)
-    registry.appendMessage(entry.id, 'user', text, selected)
-    // Assemble the turn's context: current tree (only if it changed since THIS
-    // session last saw it — keeps the agent current without resending a large
-    // unchanged tree) + the live selection (so "this"/"these" resolve) + the
-    // user's text last.
-    const snapshot = readTree(liveState, projectId)
-    const prev = registry.lastTree(entry.id) as ProjectSnapshot | null
-    const treeChanged = !prev || !isEmptyDiff(computeProjectDiff(prev, snapshot))
+    const selected = readSelection(liveState, sess.projectId)
+    registry.appendMessage(sess.id, 'user', text, selected)
+    const snapshot = readTree(liveState, sess.projectId)
+    const prev = registry.lastTree(sess.id) as ProjectSnapshot | null
+    const treeChanged =
+      !prev || !isEmptyDiff(computeProjectDiff(prev, snapshot))
     const blocks: HarnessContentBlock[] = []
     if (treeChanged) {
       blocks.push({
         type: 'resource',
-        uri: `acorn://tree/${projectId}`,
+        uri: `acorn://tree/${sess.projectId}`,
         mimeType: 'application/json',
         text: JSON.stringify(snapshot),
       })
-      if (prev) registry.appendMessage(entry.id, 'system', '↻ sent updated tree')
-      registry.markTreeSent(entry.id, snapshot)
+      if (prev) registry.appendMessage(sess.id, 'system', '↻ sent updated tree')
+      registry.markTreeSent(sess.id, snapshot)
     }
     if (selected.length)
       blocks.push({ type: 'text', text: selectionNote(selected) })
     blocks.push({ type: 'text', text })
-    // The turn streams into the session's registry entry whether or not it stays
-    // displayed — switching away neither cancels nor hides it.
-    await registry.runTurn(entry.id, blocks)
+    // The turn streams into the session's registry entry whether or not its
+    // item stays expanded — collapsing neither cancels nor hides it.
+    await registry.runTurn(sess.id, blocks)
   }
 
-  // Attach this session's captured conversation to the branch it shaped, as a
+  // Attach a chat's captured conversation to the branch it shaped, as a
   // conversation artifact — via the propose_edits draft (human confirms). The
-  // target is computed (LCA of edited nodes; else the first-turn ask-time anchor;
-  // root-LCA asks first), never the live selection.
+  // target is computed (LCA of edited nodes; else the first-turn ask-time
+  // anchor; root-LCA asks first), never the live selection.
   // Human-readable one-liner for a node: "[handle] first 60 chars of content".
   const describeNode = (tree: any, hash: string): string => {
     const o = tree?.outcomes?.[hash]
     if (!o) return hash
-    const label = nodeDisplayLabel({ actionHash: hash, description: o.description })
+    const label = nodeDisplayLabel({
+      actionHash: hash,
+      description: o.description,
+    })
     return `[${label}] ${(o.content || '').slice(0, 60)}`
   }
 
-  // Open the in-panel attach picker: compute the default target (LCA of edited
-  // nodes, anchor folded in; else the first-turn anchor) and show it for the
-  // human to accept or override. No window.prompt — this webview lacks it.
-  const openAttach = () => {
-    if (!projectId || !entry) return
+  // Open the attach picker for one chat (from its ⋯ menu): compute the default
+  // target and show it for the human to accept or override. The chat is
+  // resumed live first so the transcript captured is the current one.
+  const openAttach = async (row: ChatRow) => {
+    if (!row.mine) return
+    const { id } = await ensureLive(row.id)
+    const entry = registry.get(id)
+    if (!entry) return
+    const title = deriveTitle(entry.messages)
     const transcript = buildTranscript(
       {
         id: entry.id,
-        title: deriveTitle(entry.messages),
+        title,
         updatedAt: Date.now(),
         messages: entry.messages,
         agentName: entry.agentName || undefined,
@@ -703,6 +835,8 @@ const HarnessChat: React.FC = () => {
     // rather than scatter duplicate copies of a growing transcript.
     const holders = findConversationHolders(tree as any, transcript.sessionId)
     setAttach({
+      sessionId: entry.id,
+      title,
       transcript,
       tree,
       target,
@@ -764,17 +898,18 @@ const HarnessChat: React.FC = () => {
         description: (tree as any).outcomes[holderElsewhere]?.description,
       })
       const already = (fields.artifacts || []).some(
-        (a) => a.type === 'conversation-ref' && (a.uri || '').trim() === holderRef
+        (a) =>
+          a.type === 'conversation-ref' && (a.uri || '').trim() === holderRef
       )
       nextArtifacts = already
         ? fields.artifacts || []
         : [
             ...(fields.artifacts || []),
-            makeConversationReference(holderRef, deriveTitle(messages)),
+            makeConversationReference(holderRef, attach.title),
           ]
     } else {
       // Full canonical copy — upsert by sessionId (grow, never duplicate).
-      const artifact = makeConversationArtifact(deriveTitle(messages), transcript)
+      const artifact = makeConversationArtifact(attach.title, transcript)
       nextArtifacts = upsertConversationArtifact(fields.artifacts, artifact)
     }
 
@@ -782,7 +917,7 @@ const HarnessChat: React.FC = () => {
       ...outcome,
       description: serializeFields({ ...fields, artifacts: nextArtifacts }),
     }
-    // Stamped with the DISPLAYED session: attaching ITS conversation is an act
+    // Stamped with the ATTACHING session: attaching ITS conversation is an act
     // of that session, so the draft interlock treats it as the same proposer.
     const res = await handleAcornToolCall(
       store,
@@ -790,10 +925,12 @@ const HarnessChat: React.FC = () => {
       {
         tool: 'propose_edits',
         args: {
-          diff: { outcomes: { updated: { [chosen as string]: updatedOutcome } } },
+          diff: {
+            outcomes: { updated: { [chosen as string]: updatedOutcome } },
+          },
         },
       },
-      displayedIdRef.current || undefined
+      attach.sessionId
     )
     if (res.ok === false) {
       const message = res.error
@@ -827,16 +964,6 @@ const HarnessChat: React.FC = () => {
     )
   }
 
-  // Live status for a picker row: is that session running a turn right now
-  // (anywhere — including in the background while another chat is displayed)?
-  const liveStatus = (id: string): 'running' | 'stalled' | null => {
-    const live = registry.get(id)
-    if (!live || !live.busy) return null
-    return Date.now() - live.activityAt >= STALL_SECS * 1000
-      ? 'stalled'
-      : 'running'
-  }
-
   return (
     <div
       className={`harness-chat${focused ? ' keyboard-owned' : ''}`}
@@ -853,141 +980,67 @@ const HarnessChat: React.FC = () => {
         <span className="harness-chat-mode">
           {focused ? '⌨ chat — tree keys paused' : 'tree keys active'}
         </span>
+        <button
+          className="harness-chat-icon-btn"
+          aria-label="New chat"
+          title="New chat"
+          disabled={phase !== 'ready'}
+          onClick={newChat}
+        >
+          ＋
+        </button>
         <div
-          className="harness-chat-history-wrap"
-          ref={histRef}
+          className="harness-chat-archive-wrap"
+          ref={archRef}
           onMouseDown={(e) => e.stopPropagation()}
         >
-          {/* stays enabled while a turn runs — switching sessions mid-turn is
-              the whole point of the session registry */}
           <button
             className="harness-chat-icon-btn"
-            aria-label="Chat history"
-            title="Resume a chat"
-            disabled={phase !== 'ready'}
-            onClick={toggleHistory}
+            aria-label="Archived chats"
+            title="Archived chats"
+            onClick={() => {
+              refreshRows()
+              setShowArchived((s) => !s)
+            }}
           >
-            ≡
+            🗂
           </button>
-          {showHistory && (
-            <div className="harness-chat-history">
-              <button className="hist-row hist-new" onClick={newChat}>
-                ＋ New chat
-              </button>
-              {sessionGroups.length === 0 && (
-                <div className="hist-empty">No saved chats yet</div>
+          {showArchived && (
+            <div className="harness-chat-archived">
+              {archivedRows.length === 0 && (
+                <div className="arch-empty">No archived chats</div>
               )}
-              {/* current agent's chats first (resumable), other backends after
-                  (read-only — their session ids can't be resumed here) */}
-              {[...sessionGroups]
-                .sort(
-                  (a, b) =>
-                    (isCurrentAgent(b.agentName) ? 1 : 0) -
-                    (isCurrentAgent(a.agentName) ? 1 : 0)
-                )
-                .map((g) => {
-                  const mine = isCurrentAgent(g.agentName)
-                  return (
-                    <div
-                      key={g.agentName || '∅'}
-                      className={`hist-group${mine ? ' current-agent' : ''}`}
-                    >
-                      <div className="hist-group-label">
-                        <span title={g.agentName || undefined}>
-                          {prettyAgent(g.agentName)}
-                        </span>
-                        {!mine && (
-                          <span className="hist-readonly-tag">read-only</span>
-                        )}
-                      </div>
-                      {g.sessions.map((s) => {
-                        const status = mine ? liveStatus(s.id) : null
-                        return (
-                          <div
-                            key={s.id}
-                            className={`hist-row${
-                              mine && s.id === displayedId ? ' current' : ''
-                            }`}
-                          >
-                            <button
-                              className="hist-pick"
-                              title={
-                                mine
-                                  ? s.title
-                                  : `${s.title} (view only — chat lives under ${prettyAgent(
-                                      g.agentName
-                                    )})`
-                              }
-                              onClick={() =>
-                                mine
-                                  ? pickSession(s.id)
-                                  : viewSession(g.agentName, s.id)
-                              }
-                            >
-                              <span className="hist-title">
-                                {status && (
-                                  <span
-                                    className={`hist-live ${status}`}
-                                    title={
-                                      status === 'running'
-                                        ? 'turn in progress'
-                                        : 'no updates for a while — possibly stalled'
-                                    }
-                                  >
-                                    ●{' '}
-                                  </span>
-                                )}
-                                {s.title}
-                              </span>
-                              <span className="hist-time">
-                                {relativeTime(s.updatedAt, Date.now())}
-                              </span>
-                            </button>
-                            <div className="hist-move-wrap">
-                              <button
-                                className="hist-move"
-                                aria-label="Move chat to another agent"
-                                title="Move to another agent"
-                                onClick={() =>
-                                  setMoveFor(moveFor === s.id ? null : s.id)
-                                }
-                              >
-                                ⤳
-                              </button>
-                              {moveFor === s.id && (
-                                <div className="hist-move-menu">
-                                  {moveTargets(g.agentName).length === 0 ? (
-                                    <span className="hist-move-empty">
-                                      no other agent
-                                    </span>
-                                  ) : (
-                                    moveTargets(g.agentName).map((a) => (
-                                      <button
-                                        key={a}
-                                        title={`Move to ${prettyAgent(a)}`}
-                                        onClick={() => doMove(g.agentName, a, s.id)}
-                                      >
-                                        → {prettyAgent(a)}
-                                      </button>
-                                    ))
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                            <button
-                              className="hist-del"
-                              aria-label="Delete chat"
-                              title="Delete"
-                              onClick={() => removeChat(g.agentName, s.id)}
-                            >
-                              ×
-                            </button>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  )
-                })}
+              {archivedRows.map((r) => (
+                <div key={r.id} className="arch-row">
+                  <span className="arch-title" title={r.title}>
+                    {r.title}
+                    {!r.mine && (
+                      <span className="chat-item-agent">
+                        {prettyAgent(r.agentName)}
+                      </span>
+                    )}
+                  </span>
+                  <span className="arch-time">
+                    {relativeTime(r.updatedAt, Date.now())}
+                  </span>
+                  <button
+                    className="arch-restore"
+                    aria-label="Restore chat"
+                    title="Restore to the stack"
+                    onClick={() => restoreChat(r)}
+                  >
+                    ↩
+                  </button>
+                  <button
+                    className="arch-del"
+                    aria-label="Delete chat"
+                    title="Delete permanently"
+                    onClick={() => deleteArchived(r)}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -1013,7 +1066,9 @@ const HarnessChat: React.FC = () => {
             {selectedNodes[0].content || `#${selectedNodes[0].id}`}
           </span>
           {selectedNodes.length > 1 && (
-            <span className="more">&nbsp;(+{selectedNodes.length - 1} more)</span>
+            <span className="more">
+              &nbsp;(+{selectedNodes.length - 1} more)
+            </span>
           )}
         </div>
       )}
@@ -1035,220 +1090,138 @@ const HarnessChat: React.FC = () => {
         <div className="harness-chat-status">Connecting to harness…</div>
       )}
 
-      {(phase === 'ready' || phase === 'error') && (
-        <>
-          <div
-            className="harness-chat-transcript"
-            ref={transcriptRef}
-            onScroll={onTranscriptScroll}
+      {phase === 'error' && (
+        <div className="harness-chat-input-error" role="alert">
+          <span className="error-text">{error}</span>
+          <button
+            className="reconnect"
+            onClick={() => {
+              setPhase('idle') // auto-connect effect picks it back up
+            }}
           >
-            {messages.map((m, i) => {
-              if (m.role !== 'agent')
-                return (
-                  <div key={m.id} className={`harness-msg ${m.role}`}>
-                    {/* User messages go through RichText too, so [[handle]] /
-                        [[123456]] references the human types are clickable —
-                        system notices (e.g. "↻ sent updated tree") stay plain. */}
-                    {m.role === 'user' ? (
-                      <RichText source={m.text} remarkPlugins={[remarkGfm]} />
-                    ) : (
-                      m.text
-                    )}
-                  </div>
-                )
-              // The in-flight agent message is the last one while busy — auto-open
-              // its reasoning so thinking stays visible live; once done it
-              // collapses, reopenable via the toggle (state in openThinking).
-              const streaming = busy && i === messages.length - 1
-              const open = streaming || openThinking.has(m.id)
-              return (
-                <React.Fragment key={m.id}>
-                  {m.thinking && (
-                    <div className={`harness-msg thought${open ? ' open' : ''}`}>
-                      <button
-                        className="thought-toggle"
-                        onClick={() => toggleThinking(m.id)}
-                      >
-                        {open ? '▾' : '▸'} Thinking
-                      </button>
-                      {open && <div className="thought-body">{m.thinking}</div>}
-                    </div>
-                  )}
-                  {(m.text || !streaming) && (
-                    <div className="harness-msg agent">
-                      <RichText source={m.text} remarkPlugins={[remarkGfm]} />
-                    </div>
-                  )}
-                </React.Fragment>
-              )
-            })}
-            {plan.length > 0 && (
-              <ul className="harness-plan">
-                {plan.map((e, i) => (
-                  <li key={i} className={`plan-${e.status}`}>
-                    {e.content}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-          {busy && (
-            <div
-              className={`harness-chat-thinking${
-                idleSecs >= STALL_SECS ? ' stalled' : ''
-              }`}
-            >
-              <span className="spinner" />
-              <span className="label">
-                {idleSecs >= STALL_SECS
-                  ? `No updates for ${idleSecs}s — still working, or stalled. Stop to cancel.`
-                  : `${activity || 'Thinking…'}${
-                      idleSecs >= 3 ? ` (${idleSecs}s)` : ''
-                    }`}
-              </span>
+            Reconnect
+          </button>
+        </div>
+      )}
+
+      {attach && (
+        <div className="harness-chat-attach">
+          <div className="harness-chat-attach-panel">
+            <div className="attach-target">
+              Attach “{attach.title}”{' '}
+              {attach.target ? (
+                <>
+                  to <strong>{attach.label}</strong>
+                  <span className="attach-why">
+                    {attach.reason === 'anchor'
+                      ? ' — the node open when this conversation began'
+                      : attach.reason === 'prompt'
+                      ? ' — this touched unrelated branches (tree root); pick a real node below'
+                      : ' — the branch this session shaped'}
+                  </span>
+                </>
+              ) : (
+                <>— no target could be computed; type a node below.</>
+              )}
             </div>
-          )}
-          <div className="harness-chat-input">
-            {phase === 'error' && (
-              <div className="harness-chat-input-error" role="alert">
-                <span className="error-text">{error}</span>
-                <button
-                  className="reconnect"
-                  onClick={() => {
-                    setPhase('idle') // auto-connect effect picks it back up
-                  }}
-                >
-                  Reconnect
-                </button>
-              </div>
-            )}
-            {readOnlyAgent && (
-              <div className="harness-chat-input-error" role="status">
-                <span className="error-text">
-                  Read-only — this chat belongs to {readOnlyAgent} and can't be
-                  continued here.
-                </span>
-                <button className="reconnect" onClick={() => newChat()}>
-                  New chat
-                </button>
-              </div>
-            )}
-            {!readOnlyAgent && messages.length > 0 && (
-              <div className="harness-chat-attach">
-                {!attach ? (
-                  <button
-                    type="button"
-                    className="harness-chat-attach-btn"
-                    title="Attach this conversation to the branch it shaped (opens a draft to confirm)"
-                    onClick={openAttach}
-                  >
-                    ⎘ Attach conversation to tree
-                  </button>
-                ) : (
-                  <div className="harness-chat-attach-panel">
-                    <div className="attach-target">
-                      {attach.target ? (
-                        <>
-                          Attach to <strong>{attach.label}</strong>
-                          <span className="attach-why">
-                            {attach.reason === 'anchor'
-                              ? ' — the node open when this conversation began'
-                              : attach.reason === 'prompt'
-                              ? ' — this touched unrelated branches (tree root); pick a real node below'
-                              : ' — the branch this session shaped'}
-                          </span>
-                        </>
-                      ) : (
-                        <>No target could be computed — type a node below.</>
-                      )}
-                    </div>
-                    <input
-                      className="attach-override"
-                      placeholder="override: handle / 6-digit id / actionHash (blank = accept above)"
-                      value={attach.override}
-                      onFocus={() => setKeyboardOwnership(true)}
-                      onBlur={() => setKeyboardOwnership(false)}
-                      onChange={(e) =>
-                        setAttach({ ...attach, override: e.target.value, error: '' })
-                      }
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault()
-                          submitAttach()
-                        }
-                      }}
-                    />
-                    {attach.holders.length > 0 && (
-                      <label className="attach-dedup">
-                        <span>
-                          This conversation is already retained
-                          {attach.holders.length > 1
-                            ? ` on ${attach.holders.length} nodes`
-                            : ' elsewhere'}
-                          . A link to it will be attached here instead of a
-                          second copy.
-                        </span>
-                        <span className="attach-copyanyway">
-                          <input
-                            type="checkbox"
-                            checked={attach.copyAnyway}
-                            onChange={(e) =>
-                              setAttach({ ...attach, copyAnyway: e.target.checked })
-                            }
-                          />
-                          attach a full copy anyway
-                        </span>
-                      </label>
-                    )}
-                    {attach.error && (
-                      <div className="attach-error" role="alert">
-                        {attach.error}
-                      </div>
-                    )}
-                    <div className="attach-actions">
-                      <button type="button" onClick={submitAttach}>
-                        Attach
-                      </button>
-                      <button type="button" onClick={() => setAttach(null)}>
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-            <textarea
-              value={input}
-              placeholder={
-                phase === 'error'
-                  ? 'Harness unreachable — reconnect to chat'
-                  : readOnlyAgent
-                  ? `Viewing ${readOnlyAgent}'s chat — start a new chat to write`
-                  : 'Ask about the tree…'
-              }
-              disabled={phase === 'error' || !!readOnlyAgent}
+            <input
+              className="attach-override"
+              placeholder="override: handle / 6-digit id / actionHash (blank = accept above)"
+              value={attach.override}
               onFocus={() => setKeyboardOwnership(true)}
               onBlur={() => setKeyboardOwnership(false)}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) =>
+                setAttach({ ...attach, override: e.target.value, error: '' })
+              }
               onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
+                if (e.key === 'Enter') {
                   e.preventDefault()
-                  send()
+                  submitAttach()
                 }
               }}
             />
-            {busy ? (
-              <button onClick={() => entry?.session.cancel()}>Stop</button>
-            ) : (
-              <button
-                onClick={send}
-                disabled={phase === 'error' || !!readOnlyAgent || !input.trim()}
-              >
-                Send
-              </button>
+            {attach.holders.length > 0 && (
+              <label className="attach-dedup">
+                <span>
+                  This conversation is already retained
+                  {attach.holders.length > 1
+                    ? ` on ${attach.holders.length} nodes`
+                    : ' elsewhere'}
+                  . A link to it will be attached here instead of a second copy.
+                </span>
+                <span className="attach-copyanyway">
+                  <input
+                    type="checkbox"
+                    checked={attach.copyAnyway}
+                    onChange={(e) =>
+                      setAttach({ ...attach, copyAnyway: e.target.checked })
+                    }
+                  />
+                  attach a full copy anyway
+                </span>
+              </label>
             )}
+            {attach.error && (
+              <div className="attach-error" role="alert">
+                {attach.error}
+              </div>
+            )}
+            <div className="attach-actions">
+              <button type="button" onClick={submitAttach}>
+                Attach
+              </button>
+              <button type="button" onClick={() => setAttach(null)}>
+                Cancel
+              </button>
+            </div>
           </div>
-        </>
+        </div>
+      )}
+
+      {(phase === 'ready' || phase === 'error') && (
+        <div className="chat-stack">
+          {rows.length === 0 && (
+            <div className="chat-stack-empty">
+              No chats yet —{' '}
+              <button onClick={newChat} disabled={phase !== 'ready'}>
+                ＋ start one
+              </button>
+            </div>
+          )}
+          {rows.map((row) => {
+            const entry = registry.get(row.id)
+            return (
+              <ChatStackItem
+                key={row.id}
+                title={entry ? deriveTitle(entry.messages) : row.title}
+                timeLabel={relativeTime(row.updatedAt, Date.now())}
+                agentLabel={row.mine ? null : prettyAgent(row.agentName)}
+                readOnly={!row.mine}
+                entry={entry}
+                storedMessages={row.messages}
+                expanded={expandedIds.has(row.id)}
+                canSend={phase === 'ready' && row.mine && !!entry}
+                onToggleExpand={() => toggleExpand(row)}
+                onSend={(text) => {
+                  const live = registry.get(row.id)
+                  if (live) sendTurn(live, text)
+                }}
+                onKeyboard={setKeyboardOwnership}
+                onInteract={() => {
+                  lastInteractedRef.current = row.id
+                }}
+                menu={{
+                  ...(row.mine ? { onAttach: () => openAttach(row) } : {}),
+                  onArchive: () => archiveChat(row),
+                  archiveDisabled: !!registry.get(row.id)?.busy,
+                  moveTargets: moveTargets(row.agentName),
+                  onMove: (toAgent) => doMove(row, toAgent),
+                  prettyAgent,
+                }}
+              />
+            )
+          })}
+        </div>
       )}
     </div>
   )
