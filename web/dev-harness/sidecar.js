@@ -25,7 +25,6 @@ const path = require('path')
 const os = require('os')
 const { spawn } = require('child_process')
 const { Readable, Writable } = require('node:stream')
-const { WebSocketServer } = require('ws')
 const { loadMcpServers, toAcpServers } = require('./mcpConfig')
 const { skillPromptBlocks, loadSkill } = require('./skill')
 const { composeFirstPrompt, composeTurn } = require('./promptContext')
@@ -62,9 +61,22 @@ function acornToolsServerEntry() {
   }
 }
 
+// Host-injectable runtime deps (the packaging seam): an embedding host whose
+// module resolution can't reach ws / @agentclientprotocol/sdk from THIS file's
+// on-disk location (the Kangaroo main process, where this file ships outside
+// the app bundle) provides them up front via injectHarnessDeps; the dev server
+// and standalone host rely on the require/import defaults below.
+let injectedDeps = {}
+function injectHarnessDeps(deps) {
+  injectedDeps = deps || {}
+}
+const getWebSocketServer = () =>
+  injectedDeps.WebSocketServer || require('ws').WebSocketServer
+
 // The ACP SDK is ESM-only; load it once via dynamic import from this CJS module.
 let acpPromise = null
 const loadAcp = () => {
+  if (injectedDeps.acp) return Promise.resolve(injectedDeps.acp)
   if (!acpPromise) acpPromise = import('@agentclientprotocol/sdk')
   return acpPromise
 }
@@ -792,6 +804,7 @@ function attachHarnessSidecar(server) {
   // noServer + a path-guarded upgrade handler that RETURNS on mismatch: a
   // {server,path}-bound ws server aborts (destroys) non-matching upgrades, which
   // would kill HMR. This mirrors how wds attaches its own socket.
+  const WebSocketServer = getWebSocketServer()
   const wss = new WebSocketServer({ noServer: true })
   server.on('upgrade', (req, socket, head) => {
     let pathname
@@ -840,6 +853,7 @@ function attachHarnessSidecar(server) {
 
 module.exports = {
   attachHarnessSidecar,
+  injectHarnessDeps,
   HARNESS_PATH,
   callRendererTool,
   toolBridgeMiddleware,
