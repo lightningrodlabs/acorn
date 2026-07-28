@@ -17,7 +17,7 @@
     "zip:ui": "zip -r dist.zip dist",
     "build:webhapp": "hc web-app pack --output=./acorn.webhapp ./",
     "dev:we": "we-dev-cli --agent-idx 1 --dev-config we.dev.config.ts",
-    "hc-spin:happ": "hc-spin -n ${N:-1} --ui-port 8081 ../happs/happ/workdir/acorn.happ",
+    "hc-spin:happ": "hc-spin -n ${N:-1} --ui-port ${UI_PORT:-8081} ../happs/happ/workdir/acorn.happ",
     "hc-spin:webhapp": "hc-spin -n ${N:-1} ../happs/happ/workdir/acorn.webhapp"
   },
   "devDependencies": {
