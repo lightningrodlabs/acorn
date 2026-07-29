@@ -188,6 +188,56 @@ changes; the Phase 1–2 extraction defines exactly the surface a port implement
 - **Triggers for the port**: committing to Tauri, and/or the primary backend
   becoming direct-API (or a Rust ACP agent) rather than a Node agent.
 
+## CI dev-build plan (acorn webhapp + acorn-desktop AppImage)
+
+Two existing pipelines to reuse, not replace: acorn's `release-webhapps.yaml`
+(fires on `happ-v*` tags; nix + cachix `holochain-ci`; `pack-happs` +
+`build-webhapp`; draft prerelease with webhapp/happ) and acorn-desktop's
+`release.yaml` (push to `release`; full platform matrix + signing).
+
+**Phase A — acorn: `dev-webhapp.yaml`.** `workflow_dispatch` (branch-choosable)
+clone of the release workflow that publishes a NON-draft prerelease tagged
+`happ-dev-<shortsha>` with `acorn.webhapp` + a `.sha256` file. Builds zomes from
+the branch — this is where "a new build of the DNA" happens; a changed integrity
+zome means a new DNA hash, which is fine because dev builds are network-isolated
+(Phase B). The existing release workflow names its release from package.json
+version, not the pushed tag (collision + `allowUpdates: false` failure), hence a
+separate workflow rather than tag-pattern reuse. Thanks to the runtime
+`__ACORN_HARNESS__` flag, the ordinary `build-webhapp` output is correct for
+desktop and Moss alike. Prereqs: merge `standalone-build` → `clarity-forge`,
+push the branch.
+
+**Phase B — acorn-desktop: dev identity in `write-configs.js`.** A `DEV_BUILD=1`
+env consumed where kangaroo.config.ts is materialized into
+`resources/kangaroo.config.json`: appId → `org.lightningrodlabs.acorn.dev`,
+productName → `Acorn Dev`, autoUpdates → false. Runtime data-dir identity comes
+from that json (filesystem.ts), and the default network seed is
+`${productName}-${breakingVersion}` (cli.ts) — so this one switch separates the
+dev build's profile AND its DHT network from a production install on the same
+machine. Without it, a dev AppImage sharing the production profile would see
+`kangaroo.happ` already installed and silently keep the OLD DNA under the new
+UI. electron-builder.yml stays untouched (its appId is desktop-integration
+cosmetics only).
+
+**Phase C — acorn-desktop: `dev-build.yaml`.** `workflow_dispatch` with a
+`webhapp_tag` input (an acorn `happ-dev-*` tag). Linux x64 only, no signing:
+node 22 + yarn, `fetch:binaries`, `write:configs` under `DEV_BUILD=1`, curl the
+webhapp release asset into `pouch/` + verify its `.sha256` (bypassing
+`fetch:webhapp`, which is pinned to the stable URL in kangaroo.config.ts), then
+`yarn build:appimage`; upload the AppImage as a workflow artifact (optionally
+also a `dev-*` prerelease for easy sharing). CI uses the COMMITTED vendored
+`harness/` — `sync-harness` stays a dev-time action, `prepare:harness` already
+runs inside `yarn build`.
+
+**Phase D — verify.** Dispatch A, dispatch C with A's tag, download, and check:
+no env → stock behavior, fresh `~/.config/org.lightningrodlabs.acorn.dev`
+profile; with `ACORN_HARNESS_CMD` → chat, tools round-trip; confirm the
+installed DNA hash matches the branch build (not a reused production DNA).
+
+Decisions to confirm before building: dispatch-only vs also push-triggered;
+artifact-only vs prerelease for the AppImage; whether the dev seed should be
+pinned explicitly instead of riding the productName default.
+
 ## Risks / gotchas
 
 - **Do not reuse `build:ui`** (one-shot `webpack.dev.js` build) for this: it bakes
