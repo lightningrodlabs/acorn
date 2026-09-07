@@ -21,6 +21,60 @@ build (`web/src/migrating/import`). This has NOT been exercised across the
 0.6 → 0.7 boundary by the upgrade work; treat it as untested until someone has
 done a real round trip, and say so in the curation changelog.
 
+## This DNA performs no validation
+
+**Neither integrity zome declares a `validate` callback.**
+`happs/happ/zomes/projects_integrity/src/lib.rs` is entry-type and link-type
+declarations only; `happs/happ/zomes/profiles_integrity/src/lib.rs` is the
+`Profile` struct plus its declarations. `grep -c hdk_extern` returns **0** on
+both. There is no `validate`, no `genesis_self_check` and no
+`validate_agent_joining` anywhere in the happ, so the conductor has no rules to
+run: **every entry and every link is accepted from every agent, with any
+content.** Concretely, on this line:
+
+- any agent in a project cell may create, update or delete any outcome,
+  connection, comment, vote, member, entry point, project meta or tag entry,
+  including ones authored by someone else — nothing compares the caller's key to
+  the record's author;
+- entries that *name* another agent (`Member`, `OutcomeMember`, `OutcomeVote`,
+  `Profile`) are not checked against the agent writing them, so an agent can
+  author a record attributing work or a vote to somebody else;
+- no link is checked either, so anything reachable through a link can be
+  unlisted by anyone.
+
+**The trust boundary is the Moss group *plus* the per-project clone seed.**
+Acorn's `projects` role is `provisioning: { strategy: create, deferred: true }`
+(`happs/happ/workdir/happ.yaml`), so no project cell exists at install time —
+**every project is a runtime clone**, created with a `network_seed` derived from
+a passphrase (`web/src/projects/installProject.ts`). That is a real second
+boundary and it is worth stating: joining the Moss group is not by itself enough
+to reach a project's data; an agent also has to be given that project's
+passphrase. Conversely, anyone who has the passphrase is fully trusted inside
+that project's cell, group membership or not. Share project passphrases
+accordingly.
+
+**This is not a regression introduced by the Holochain 0.7 upgrade.** The
+integrity zomes are byte-identical in source to the `12.0.x` line — the whole
+0.6 → 0.7 diff under `happs/happ/zomes/` is two `Cargo.toml` files and zero
+`.rs` files — so Acorn has behaved exactly this way for every release on the
+12.x line and before it. The upgrade neither added nor removed a rule.
+
+**Adding rules requires a new DNA line.** Validation code is compiled into the
+integrity wasm and hashed into the DNA, so rules cannot be added to `13.0.x`
+after this happ is frozen: they change the DNA hash and therefore start a new
+network. Doing it means bumping `dnaVersion`, cutting a new canonical happ and
+moving groups across, exactly as the 0.6 → 0.7 move did. If Acorn is ever aimed
+at larger or less closely-held groups, that is the point at which the author
+checks should be written — and they should be written against tests, which this
+repo does not yet have (there is no tryorama or sweettest suite for either
+zome).
+
+There *are* 771 lines of validator source in the tree, in eleven `validate.rs`
+files, all commented out of the module tree and all written against the
+Holochain 0.0.x API. **They are dead and they enforce nothing.** See
+`happs/happ/zomes/projects_integrity/src/project/VALIDATION.md` before assuming
+otherwise.
+
 ## Why the happ is frozen (never rebuilt)
 
 The zome wasm embeds the builder's absolute paths (`~/.cargo/...` and source
