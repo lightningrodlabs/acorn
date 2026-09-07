@@ -1,0 +1,84 @@
+name: "release-webhapp"
+
+# Cut an acorn release: build the current UI and pack it together with the
+# FROZEN canonical happ (downloaded from the happ-v* release), so the DNA — and
+# therefore the network — is identical to every previous install. The happ is
+# never rebuilt here (see scripts/release-happ.sh for why).
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release-webhapp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install nix
+        uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = flakes nix-command
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: holochain-ci
+
+      # The frozen DNA: the published webhapp MUST embed a happ with the
+      # sha256 recorded in .happ-sha256 (see RELEASE.md).
+      - name: Read the canonical happ sha256
+        run: echo "CANONICAL_HAPP_SHA256=$(tr -d '[:space:]' < .happ-sha256)" >> "$GITHUB_ENV"
+
+      - name: Download frozen canonical happ (never rebuilt)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          HAPP_TAG=$(tr -d '[:space:]' < .happ-version)
+          gh release download "$HAPP_TAG" -p acorn.happ -D happs/happ/workdir
+          echo "${CANONICAL_HAPP_SHA256}  happs/happ/workdir/acorn.happ" | sha256sum -c -
+
+      - name: Build UI and pack webhapp
+        run: |
+          nix develop --no-update-lock-file --accept-flake-config --command bash -c "\
+            yarn install --frozen-lockfile && \
+            yarn package"
+
+      - name: Verify the embedded DNA is unchanged
+        run: |
+          nix develop --no-update-lock-file --accept-flake-config --command bash -c "\
+            hc web-app unpack happs/happ/workdir/acorn.webhapp -o /tmp/verify"
+          echo "${CANONICAL_HAPP_SHA256}  /tmp/verify/acorn.happ" | sha256sum -c -
+
+      - name: Compute weave curation hashes
+        run: |
+          HAPP=$(sha256sum happs/happ/workdir/acorn.happ | awk '{print $1}')
+          WEBHAPP=$(sha256sum happs/happ/workdir/acorn.webhapp | awk '{print $1}')
+          UI=$(sha256sum web/dist.zip | awk '{print $1}')
+          {
+            echo "### Weave curation hashes for \`${GITHUB_REF_NAME}\`"
+            echo ""
+            echo '```json'
+            echo '"hashes": {'
+            echo "  \"happSha256\": \"${HAPP}\","
+            echo "  \"webhappSha256\": \"${WEBHAPP}\","
+            echo "  \"uiSha256\": \"${UI}\""
+            echo '}'
+            echo '```'
+          } | tee release-notes.md >> "$GITHUB_STEP_SUMMARY"
+
+      # NOT a draft: draft-release assets are not served at the public
+      # releases/download/<tag>/... URL (they 404), so Moss would download a
+      # "Not Found" body and fail with "invalid gzip header". Publishing makes
+      # the tag URL resolve. The real go-live gate is updating the curation list.
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "happs/happ/workdir/acorn.webhapp"
+          bodyFile: "release-notes.md"
+          draft: false
+          prerelease: true
+          token: ${{ secrets.GITHUB_TOKEN }}

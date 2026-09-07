@@ -18,6 +18,11 @@
 
         packages = (with pkgs; [
           nodejs_24
+          # acorn is a yarn workspace and both CI workflows drive it with yarn.
+          # holonix provides none, so without this the release workflow depends
+          # on whatever yarn the runner happens to have on $PATH.
+          yarn
+          # wasm-opt, for `yarn optimize:zomes` (the canonical happ build)
           binaryen
         ]);
 

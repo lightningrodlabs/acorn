@@ -34,7 +34,15 @@
     "moss:webhapp2": "yarn weave --agent-idx 2 --dev-config weave.dev.config.webhapp.ts",
     "weave-hash": "node scripts/weave-hash.mjs",
     "weave-help": "weave --help",
-    "weave": "env -u ELECTRON_RUN_AS_NODE TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\",\"target\":\"es2020\",\"esModuleInterop\":true}' weave"
+    "weave": "env -u ELECTRON_RUN_AS_NODE TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\",\"target\":\"es2020\",\"esModuleInterop\":true}' weave",
+    "build:zomes": "RUSTFLAGS='--cfg getrandom_backend=\"custom\"' cargo build --release --target-dir happs/target --target wasm32-unknown-unknown --manifest-path happs/Cargo.toml",
+    "optimize:zomes": "node scripts/wasm-opt-zomes.mjs",
+    "pack:happ": "hc dna pack --output=happs/happ/workdir/projects.dna happs/happ/workdir/dna/projects && hc app pack --output=happs/happ/workdir/acorn.happ happs/happ/workdir",
+    "build:happ": "yarn build:zomes && yarn pack:happ",
+    "build:happ:release": "yarn build:zomes && yarn optimize:zomes && yarn pack:happ",
+    "package": "rm -f web/dist.zip web/dist/*.js web/dist/*.js.map && yarn workspace acorn-ui build && yarn zip-ui && hc web-app pack --output=happs/happ/workdir/acorn.webhapp happs/happ/workdir && yarn weave-hash",
+    "release:happ": "bash scripts/release-happ.sh",
+    "release:webhapp": "APP_VER=$(node -p \"require('./web/package.json').version\") && git tag v$APP_VER && git push origin v$APP_VER"
   },
   "author": "Connor Turland <connor@sprillow.com>",
   "license": "CAL-1.0",
@@ -42,6 +50,7 @@
   "devDependencies": {
     "@theweave/cli": "0.16.0-dev.5",
     "bestzip": "^2.2.1",
+    "js-yaml": "^4.1.0",
     "typescript": "^5.9.3"
   },
   "resolutions": {
