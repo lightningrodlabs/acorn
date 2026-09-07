@@ -32,7 +32,7 @@ impl FetchLinks {
         if let Some(link_tag_inner) = link_tag {
             input = input.tag_prefix(link_tag_inner);
         }
-        Ok(get_links(input, get_options.strategy)?
+        Ok(get_links(input, get_options.strategy())?
             .into_iter()
             .map(|link: Link| {
                 get_latest.get_latest_for_entry::<EntryType>(

@@ -1,5 +1,12 @@
 [workspace]
 members = [
+  # hdk_crud is already an *implicit* member: it is a path dependency of the
+  # zomes below and lives inside the workspace directory, so cargo adds it
+  # automatically (confirmed with `cargo metadata --no-deps`). Listing it
+  # explicitly changes nothing but makes it obvious that the
+  # [workspace.dependencies] pins below govern it too -- it writes
+  # `hdk = { workspace = true }`.
+  "lib/hdk_crud",
   "happ/zomes/profiles",
   "happ/zomes/profiles_integrity",
   "happ/zomes/projects",
@@ -14,8 +21,12 @@ opt-level = "z"
 opt-level = "z"
 
 [workspace.dependencies]
-hdi = "0.7.0"
-hdk = "0.6.0"
-holo_hash = { version = "0.6.0", features = ["encoding"] }
-holochain_types = { version = "0.6.0" }
-holochain_serialized_bytes = "0.0.56"
+# Exact pins, deliberately. The DNA hash is a function of the compiled integrity
+# wasm, so a later rebuild against a different hdi/hdk would produce a different
+# network. Never relax these to caret ranges on a frozen DNA line, including for
+# a 0.7.1 point release.
+hdi = "=0.8.0"
+hdk = "=0.7.0"
+holo_hash = { version = "=0.7.0", features = ["encoding"] }
+holochain_types = { version = "=0.7.0" }
+holochain_serialized_bytes = "=0.0.57"

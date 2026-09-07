@@ -90,11 +90,11 @@ fn original_action_hash_with_entry<
         Some(record) => match record.entry().to_app_option::<T>().map_err(serialize_err)? {
             Some(entry) => Ok(Some((
                 entry,
-                match record.action() {
+                match &record.action().data {
                     // we DO want to return the action for the original
                     // instead of the updated, in our case
-                    Action::Update(update) => update.original_action_address.clone(),
-                    Action::Create(_) => record.action_address().clone(),
+                    ActionData::Update(update) => update.original_action_address.clone(),
+                    ActionData::Create(_) => record.action_address().clone(),
                     _ => {
                         unreachable!("Can't have returned a action for a nonexistent entry")
                     }

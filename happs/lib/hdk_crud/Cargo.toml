@@ -16,7 +16,7 @@ paste = "1.0.15"
 serde = "1.0.203"
 thiserror = "1"
 mockall = "0.9"
-fixt = { version = "0.6.0-rc.0", optional = true }
+fixt = { version = "=0.7.0", optional = true }
 mockall_double = { version = "0.2.0", optional = true }
 # specific so as to avoid wasm-bindgen dependency
 chrono = { version = "0.4.38", default-features = false, features = ["clock", "std", "oldtime", "serde"] }
