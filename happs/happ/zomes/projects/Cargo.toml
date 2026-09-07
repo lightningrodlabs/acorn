@@ -8,11 +8,11 @@ crate-type = ["cdylib", "rlib"]
 name = "projects"
 
 [dependencies]
-hdk_crud = { path = "../../../lib/hdk_crud", features = ["no_example"] }
+hdk_crud = { workspace = true }
 hdk = { workspace = true }
 holo_hash = { workspace = true }
 holochain_serialized_bytes = { workspace = true }
-projects_integrity = { path = "../projects_integrity" }
+projects_integrity = { workspace = true }
 paste = "*"
 chrono = { version = "*", default-features = false, features = ["clock", "std", "oldtime", "serde"] }
 # use whatever serde hdk uses

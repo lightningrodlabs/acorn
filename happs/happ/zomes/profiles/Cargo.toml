@@ -8,11 +8,11 @@ crate-type = ["cdylib", "rlib"]
 name = "profiles"
 
 [dependencies]
-hdk_crud = { path = "../../../lib/hdk_crud", features = ["no_example"] }
+hdk_crud = { workspace = true }
 hdk = { workspace = true }
 holo_hash = { workspace = true }
 holochain_serialized_bytes = { workspace = true }
-profiles_integrity = { path = "../profiles_integrity" }
+profiles_integrity = { workspace = true }
 chrono = { version = "*", default-features = false, features = ["clock", "std", "oldtime", "serde"] }
 paste = "*"
 serde = "*"

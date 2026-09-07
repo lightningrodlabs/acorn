@@ -30,3 +30,12 @@ hdk = "=0.7.0"
 holo_hash = { version = "=0.7.0", features = ["encoding"] }
 holochain_types = { version = "=0.7.0" }
 holochain_serialized_bytes = "=0.0.57"
+
+# Intra-repo crates, declared here so that no member Cargo.toml carries a
+# relative parent path of its own. Gate G2 greps for dependencies that escape
+# the repository (nobody else could build, CI could not verify); these never did
+# -- they resolve inside happs/ -- but the workspace form is what R4 prescribes
+# for a vendored crate and it makes the gate's grep unambiguous.
+hdk_crud = { path = "lib/hdk_crud", features = ["no_example"] }
+profiles_integrity = { path = "happ/zomes/profiles_integrity" }
+projects_integrity = { path = "happ/zomes/projects_integrity" }
