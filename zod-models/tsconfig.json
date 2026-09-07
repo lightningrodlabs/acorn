@@ -4,6 +4,10 @@
     "outDir": "./dist/",
     "declaration": true,
     "checkJs": false,
+    // typescript 5.9 (Global Constraints) rejects @types/node 20.8.9's
+    // Buffer/Uint8Array declarations; that failed the root `postinstall`,
+    // which runs this build. Types-only, no effect on emitted JS.
+    "skipLibCheck": true,
     "sourceMap": true,
     "noImplicitAny": false,
     "module": "ES6",

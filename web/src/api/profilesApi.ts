@@ -160,8 +160,8 @@ const WeaveProfilesApi = (profilesClient: ProfilesClient): IProfilesApi => {
             myWeaveProfile.entry,
             encodeHashToBase64(myPubKey)
           ),
-          createdAt: myWeaveProfile.action.timestamp,
-          updatedAt: myWeaveProfile.action.timestamp,
+          createdAt: myWeaveProfile.action.header.timestamp,
+          updatedAt: myWeaveProfile.action.header.timestamp,
         }
       } catch (e) {
         console.log('Error fetching whoami', e)

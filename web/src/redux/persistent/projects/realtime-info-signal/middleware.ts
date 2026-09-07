@@ -13,7 +13,7 @@ import ProjectsZomeApi from '../../../../api/projectsApi'
 import { cellIdFromString } from '../../../../utils'
 import { RootState } from '../../../reducer'
 import { CellIdString } from '../../../../types/shared'
-import { AppClient, AppWebsocket } from '@holochain/client'
+import { AppClient, AppWebsocket, WsClient } from '@holochain/client'
 import { getAppWs } from '../../../../hcWebsockets'
 
 const isOneOfRealtimeInfoAffectingActions = (action) => {
@@ -45,10 +45,13 @@ const realtimeInfoWatcher =
         const appWebsocket = await getAppWs()
         const projectsZomeApi = new ProjectsZomeApi(appWebsocket)
         let result = next(action)
-        if (
-          (appWebsocket as AppWebsocket).client.socket.readyState ===
-          (appWebsocket as AppWebsocket).client.socket.OPEN
-        ) {
+        // client 0.21 widened AppWebsocket.client from the concrete WsClient to
+        // the AppClientTransport interface (request + on only), so `.socket` is
+        // no longer on the declared type. The runtime object is unchanged when
+        // the transport IS a WsClient, which is the case for every path acorn
+        // uses, so this restores the 0.6 typing without changing the expression.
+        const wsClient = (appWebsocket as AppWebsocket).client as unknown as WsClient
+        if (wsClient.socket.readyState === wsClient.socket.OPEN) {
           let state: RootState = store.getState()
           const payload = getRealtimeInfo(state)
           // there is a chance that the project has been exited

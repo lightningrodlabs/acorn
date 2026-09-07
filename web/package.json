@@ -1,6 +1,7 @@
 {
   "name": "acorn-ui",
-  "version": "12.0.0",
+  "version": "13.0.0",
+  "dnaVersion": "13.0.0",
   "browser": {
     "child_process": false
   },
@@ -23,7 +24,7 @@
     "@babel/preset-env": "^7.21.4",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.21.4",
-    "@holochain/hc-spin": "^0.600.2-rc.0",
+    "@holochain/hc-spin": "^0.700.0",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
     "@storybook/addon-actions": "^7.0.7",
     "@storybook/addon-essentials": "^7.0.7",
@@ -63,10 +64,10 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.4",
-    "@holochain-open-dev/profiles": "^0.601.3",
-    "@holochain-open-dev/utils": "^0.601.0",
-    "@holochain/client": "0.20.4-rc.0",
-    "@theweave/api": "^0.6.6",
+    "@holochain-open-dev/profiles": "^0.701.0",
+    "@holochain-open-dev/utils": "^0.700.0",
+    "@holochain/client": "^0.21.0",
+    "@theweave/api": "0.7.0-dev.3",
     "@tweenjs/tween.js": "^18.6.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "buffer": "^6.0.3",
