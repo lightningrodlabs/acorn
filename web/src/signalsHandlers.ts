@@ -21,6 +21,10 @@ import {
   updatePeerState,
 } from './redux/ephemeral/realtime-info/actions'
 import { cellIdToString } from './utils'
+import { createEnsurePeerProfile } from './projects/ensurePeerProfile'
+import { fetchProjectProfilesFromCell } from './projects/fetchProjectProfilesFromCell'
+
+const ensurePeerProfile = createEnsurePeerProfile(fetchProjectProfilesFromCell)
 import {
   AppSignal,
   Signal,
@@ -141,6 +145,11 @@ export default (store): SignalCb => {
         waitForNextSignal
       )
       triggerRealtimeInfoAction(store, payload.data)
+      // keyed by our own cell for the project: the sender's projectId carries
+      // the sender's agent key, not ours
+      if (payload.data.projectId) {
+        void ensurePeerProfile(store, cellIdToString(cellId), payload.data.agentPubKey)
+      }
       return
     }
 

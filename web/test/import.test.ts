@@ -59,6 +59,7 @@ let createProjectsZomeApi: typeof iCreateProjectsZomeApi
 let projectsZomeApi: ProjectsZomeApi
 let importProject: typeof iImportProject
 let installProject: typeof iInstallProject
+let fetchProjectProfiles: jest.Mock
 let finalizeCreateProject: typeof iFinalizeCreateProject
 let createActionHashMapAndImportProjectData: typeof iCreateActionHashMapAndImportProjectData
 let baseRootState: typeof mockBaseRootState
@@ -127,6 +128,7 @@ beforeEach(() => {
   installProject = jest
     .fn()
     .mockResolvedValue({ cellIdString: mockCellIdString })
+  fetchProjectProfiles = jest.fn().mockResolvedValue([])
 
   finalizeCreateProject = jest.fn()
 
@@ -161,6 +163,7 @@ describe('importProjectsData()', () => {
       mockAppWs,
       importProject,
       installProject,
+      fetchProjectProfiles,
       store,
       mockMigrationData,
       onStep
@@ -190,6 +193,8 @@ describe('importProjectsData()', () => {
     )
 
     expect(installProject).toHaveBeenCalledTimes(2)
+    // joining the already-migrated project loads its members' profiles
+    expect(fetchProjectProfiles).toHaveBeenCalledWith(mockCellIdString)
     expect(installProject).toHaveBeenNthCalledWith(
       1,
       sampleGoodDataExport.projects[0].projectMeta.passphrase
@@ -227,6 +232,7 @@ describe('importProjectsData()', () => {
         mockAppWs,
         importProject,
         installProject,
+        fetchProjectProfiles,
         store,
         mockMigrationData,
         onStep
@@ -242,6 +248,7 @@ describe('importProjectsData()', () => {
         mockAppWs,
         importProject,
         installProject,
+        fetchProjectProfiles,
         store,
         mockMigrationData,
         onStep
@@ -257,6 +264,7 @@ describe('importProjectsData()', () => {
         mockAppWs,
         importProject,
         installProject,
+        fetchProjectProfiles,
         store,
         mockMigrationData,
         onStep

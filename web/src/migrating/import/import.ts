@@ -8,6 +8,7 @@ import {
   BackwardsCompatibleAllProjectsExportSchema,
 } from 'zod-models'
 import { internalJoinProject } from '../../projects/joinProject'
+import { fetchProjectProfilesFromCell } from '../../projects/fetchProjectProfilesFromCell'
 import { AppClient } from '@holochain/client'
 import { setMyLocalProfile } from '../../redux/persistent/profiles/my-local-profile/actions'
 import {
@@ -29,6 +30,7 @@ export async function internalImportProjectsData(
   appWs: AppClient,
   iImportProject: typeof importProject,
   iInstallProject: typeof installProject,
+  iFetchProjectProfiles: typeof fetchProjectProfilesFromCell,
   store: any,
   // main input data and callbacks
   migrationData: string,
@@ -94,7 +96,12 @@ export async function internalImportProjectsData(
   // join each project that has already been migrated by a peer
   for await (let projectData of migratedProjectsToJoin) {
     const passphrase = projectData.projectMeta.passphrase
-    await internalJoinProject(passphrase, store.dispatch, iInstallProject)
+    await internalJoinProject(
+      passphrase,
+      store.dispatch,
+      iInstallProject,
+      iFetchProjectProfiles
+    )
     stepsSoFar++
     onStep(stepsSoFar, totalSteps)
   }
@@ -110,6 +117,7 @@ export default async function importProjectsData(
     appWebsocket,
     importProject,
     installProject,
+    fetchProjectProfilesFromCell,
     store,
     migrationData,
     onStep

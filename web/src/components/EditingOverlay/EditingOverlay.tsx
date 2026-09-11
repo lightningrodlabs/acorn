@@ -6,7 +6,8 @@ import './EditingOverlay.scss'
 
 export type EditingOverlayProps = {
   isBeingEditedByOther: boolean
-  personEditing: WithActionHash<Profile>
+  // absent while the editor's profile has not reached us yet
+  personEditing?: WithActionHash<Profile>
 }
 
 const EditingOverlay: React.FC<EditingOverlayProps> = ({
@@ -16,7 +17,7 @@ const EditingOverlay: React.FC<EditingOverlayProps> = ({
 }) => {
   return (
     <div className="editing-overlay">
-      {isBeingEditedByOther && (
+      {isBeingEditedByOther && personEditing && (
         <div className="editing-overlay-avatar-wrapper">
           <Avatar
             withStatusBorder

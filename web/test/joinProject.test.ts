@@ -5,7 +5,13 @@ import mockWhoami from './mockWhoami'
 let passphrase: string
 let dispatch: any
 let iInstallProject: typeof installProject
+let iFetchProjectProfiles: jest.Mock
 let mockCellIdString: string
+const peerProfile = {
+  ...mockWhoami.entry,
+  agentPubKey: 'uhCAkPeerAgentPubKey',
+  firstName: 'Peer',
+}
 
 beforeEach(() => {
   passphrase = 'testPassphrase'
@@ -16,16 +22,24 @@ beforeEach(() => {
   iInstallProject = jest
     .fn()
     .mockResolvedValue({ cellIdString: mockCellIdString, whoami: mockWhoami })
+  iFetchProjectProfiles = jest.fn().mockResolvedValue([peerProfile])
 })
 
 describe('joinProject()', () => {
-  it('installs project and dispatches appropriate actions', async () => {
-    await internalJoinProject(passphrase, dispatch, iInstallProject)
+  it('installs the project, loads its members profiles, and dispatches appropriate actions', async () => {
+    await internalJoinProject(
+      passphrase,
+      dispatch,
+      iInstallProject,
+      iFetchProjectProfiles
+    )
 
     expect(iInstallProject).toHaveBeenCalledTimes(1)
     expect(iInstallProject).toHaveBeenCalledWith(passphrase)
+    expect(iFetchProjectProfiles).toHaveBeenCalledTimes(1)
+    expect(iFetchProjectProfiles).toHaveBeenCalledWith(mockCellIdString)
 
-    expect(dispatch).toHaveBeenCalledTimes(3)
+    expect(dispatch).toHaveBeenCalledTimes(4)
     expect(dispatch).toHaveBeenNthCalledWith(1, {
       type: 'JOIN_PROJECT_CELL_ID',
       payload: mockCellIdString,
@@ -37,12 +51,43 @@ describe('joinProject()', () => {
         whoami: mockWhoami,
       },
     })
+    // the profiles of the members already in the project, so that anything
+    // showing who is doing what (e.g. who is editing a card) can find them
     expect(dispatch).toHaveBeenNthCalledWith(3, {
+      type: 'FETCH_PROJECT_PROFILES',
+      payload: {
+        cellIdString: mockCellIdString,
+        profiles: [peerProfile],
+      },
+    })
+    // our own profile last, so it is present even if the fetch missed it
+    expect(dispatch).toHaveBeenNthCalledWith(4, {
       type: 'SET_PROJECT_MEMBER_PROFILE',
       payload: {
         cellIdString: mockCellIdString,
         profile: mockWhoami.entry,
       },
     })
+  })
+
+  it('still joins when loading the members profiles fails', async () => {
+    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {})
+    iFetchProjectProfiles = jest.fn().mockRejectedValue(new Error('offline'))
+
+    await expect(
+      internalJoinProject(
+        passphrase,
+        dispatch,
+        iInstallProject,
+        iFetchProjectProfiles
+      )
+    ).resolves.toBe(mockCellIdString)
+
+    expect(dispatch.mock.calls.map(([action]) => action.type)).toEqual([
+      'JOIN_PROJECT_CELL_ID',
+      'SET_PROJECT_WHOAMI',
+      'SET_PROJECT_MEMBER_PROFILE',
+    ])
+    consoleError.mockRestore()
   })
 })
