@@ -3554,10 +3554,10 @@
     "@msgpack/msgpack" "^2.8.0"
     js-base64 "^3.7.2"
 
-"@theweave/cli@0.16.0-dev.5":
-  version "0.16.0-dev.5"
-  resolved "https://registry.yarnpkg.com/@theweave/cli/-/cli-0.16.0-dev.5.tgz#6f9e38f30c7fd74243a29fc1a0370b9555f7fc03"
-  integrity sha512-PHzL1nq3bP3DoE5NTdtC6TLEJTdguU0hxfh4v2DsUVUm72v6UlcePBFVvL/EWVL/7kliH7uvfnR7dofHonVy7g==
+"@theweave/cli@0.16.0-dev.6":
+  version "0.16.0-dev.6"
+  resolved "https://registry.yarnpkg.com/@theweave/cli/-/cli-0.16.0-dev.6.tgz#25120d1ebd21016c0434c4d1fb64f4593dd3879c"
+  integrity sha512-bF1B04kvol5zVCExWxja4IJ8HeTzy/7befW5cQybwzSXbcxglvMFMTRlw/1BK3Yrq5BkmoGZHfb8bNwDyl9J1w==
   dependencies:
     "@electron-toolkit/preload" "^2.0.0"
     "@electron-toolkit/utils" "^2.0.0"

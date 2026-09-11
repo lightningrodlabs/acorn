@@ -52,7 +52,7 @@
   "license": "CAL-1.0",
   "dependencies": {},
   "devDependencies": {
-    "@theweave/cli": "0.16.0-dev.5",
+    "@theweave/cli": "0.16.0-dev.6",
     "bestzip": "^2.2.1",
     "concurrently": "^8.2.2",
     "js-yaml": "^4.1.0",
