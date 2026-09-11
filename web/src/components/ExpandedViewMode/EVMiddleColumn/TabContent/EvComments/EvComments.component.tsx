@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { isNearBottom } from './scrollPosition'
 import moment from 'moment'
 
 import {
@@ -45,6 +46,9 @@ const EvComments: React.FC<EvCommentsProps> = ({
   activeAgentPubKey,
 }) => {
   const commentHistoryRef = useRef<HTMLDivElement>(null)
+  // true while the reader is at the newest comments; a new comment then
+  // scrolls into view, but not while they have scrolled up to read back
+  const followNewestRef = useRef(true)
 
   // the state for capturing the
   // user input of the new comment
@@ -63,10 +67,21 @@ const EvComments: React.FC<EvCommentsProps> = ({
     }, 10)
   }, [])
 
+  // after a comment arrives (ours or a peer's) and has rendered, keep the
+  // newest one in view if the reader was following the newest
+  useEffect(() => {
+    if (followNewestRef.current && commentHistoryRef.current) {
+      commentHistoryRef.current.scrollTop =
+        commentHistoryRef.current.scrollHeight
+    }
+  }, [comments.length])
+
   const submitComment = async () => {
     if (value === '') {
       return
     }
+    // our own comment always scrolls into view
+    followNewestRef.current = true
     try {
       // when new comment created
       await createOutcomeComment({
@@ -76,11 +91,6 @@ const EvComments: React.FC<EvCommentsProps> = ({
         unixTimestamp: moment().unix(),
         isImported: false,
       })
-      // then scroll to bottom
-      if (commentHistoryRef.current) {
-        commentHistoryRef.current.scrollTop =
-          commentHistoryRef.current.scrollHeight
-      }
       // then reset the typing input
       setValue('')
     } catch (e) {
@@ -113,7 +123,13 @@ const EvComments: React.FC<EvCommentsProps> = ({
           comments.length !== 1 ? 's' : ''
         }`}
       />
-      <div className="comments-posted-wrapper" ref={commentHistoryRef}>
+      <div
+        className="comments-posted-wrapper"
+        ref={commentHistoryRef}
+        onScroll={(e) => {
+          followNewestRef.current = isNearBottom(e.currentTarget)
+        }}
+      >
         {comments.length === 0 && (
           <div className="comments-posted-list-item">
             <div className="comments-posted-list-item-empty">
