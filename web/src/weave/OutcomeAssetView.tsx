@@ -4,7 +4,9 @@ import { WAL } from '@theweave/api'
 import { encodeHashToBase64 } from '@holochain/client'
 import ConnectedExpandedViewMode from '../components/ExpandedViewMode/ExpandedViewMode.connector'
 import { AcornState } from './acornState'
-import { getAgentPubKey, getAppWs } from '../hcWebsockets'
+import { getAgentPubKey, getAppWs, getWeaveClient } from '../hcWebsockets'
+import { WeaveClientRenderInfo } from './WeaveClientRenderInfo'
+import { childOutcomeWal } from './mainViewTarget'
 import { CellIdString, ActionHashB64 } from '../types/shared'
 import AppWebsocketContext from '../context/AppWebsocketContext'
 import selectAndComputeOutcomes from '../selectors/computeOutcomes'
@@ -186,7 +188,17 @@ const OutcomeAssetView: React.FC<OutcomeAssetViewProps> = ({ wal }) => {
         <ConnectedExpandedViewMode
           activeAgentPubKey={encodeHashToBase64(agentPubKey)}
           projectId={projectId}
-          openExpandedView={() => {}}
+          // "Switch to" another card (e.g. a child): open Acorn's main view
+          // on that card, since this asset view only ever shows one
+          openExpandedView={(switchToActionHash: ActionHashB64) => {
+            const weaveClient = getWeaveClient()
+            const appletHash = new WeaveClientRenderInfo(
+              weaveClient.renderInfo
+            ).getAppletHash()
+            weaveClient
+              .openAppletMain(appletHash, childOutcomeWal(projectId, switchToActionHash))
+              .catch((e) => console.error('Could not open the card in Acorn', e))
+          }}
           onClose={() => {}}
           outcome={expandedViewOutcome} // Pass the computed outcome
           outcomeAndAncestors={expandedViewOutcomeAndAncestors} // Pass ancestors

@@ -10,7 +10,7 @@ import {
 import { useSelector } from 'react-redux'
 import { AppClient } from '@holochain/client'
 
-import { GO_TO_OUTCOME } from '../../searchParams'
+import { GO_TO_OUTCOME, OPEN_OUTCOME } from '../../searchParams'
 import MapView from './MapView/MapView.connector'
 import PriorityView from './PriorityView/PriorityView.connector'
 import TableView from './TableView/TableView.connector'
@@ -95,6 +95,7 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
   const goToOutcomeActionHash = searchParams.get(GO_TO_OUTCOME)
+  const openOutcomeActionHash = searchParams.get(OPEN_OUTCOME)
 
   const sendRealtimeInfoFrequency = 10000
 
@@ -161,6 +162,7 @@ const ProjectViewInner: React.FC<ProjectViewInnerProps> = ({
 
         // now, adjust the translation of the Map View
         goInstantlyToOutcome(goToOutcomeActionHash)
+        if (openOutcomeActionHash) openExpandedView(openOutcomeActionHash)
       } catch (error) {
         console.error('An error occurred while fetching data:', error)
       }

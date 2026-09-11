@@ -1,5 +1,5 @@
 import { ProfilesClient } from '@holochain-open-dev/profiles'
-import { AppClient } from '@holochain/client'
+import { AppClient, EntryHash } from '@holochain/client'
 import { RenderInfo, WAL } from '@theweave/api'
 
 export class WeaveClientRenderInfo {
@@ -54,6 +54,22 @@ export class WeaveClientRenderInfo {
       throw new Error('Not an applet view')
     }
     return this.renderInfo.profilesClient
+  }
+  getAppletHash(): EntryHash {
+    if (this.renderInfo.type !== 'applet-view') {
+      throw new Error('Not an applet view')
+    }
+    return this.renderInfo.appletHash
+  }
+  // set when Moss opens the main view on a particular asset (openAppletMain)
+  getMainViewWal(): WAL | undefined {
+    if (
+      this.renderInfo.type !== 'applet-view' ||
+      this.renderInfo.view.type !== 'main'
+    ) {
+      return undefined
+    }
+    return this.renderInfo.view.wal
   }
   getOutcomeWal(): WAL {
     if (

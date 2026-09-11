@@ -22,6 +22,7 @@ import { getComponentAndPropsForRenderMode, mossInit } from './indexForMoss'
 import { appletServices } from './weave/appletService'
 import App from './routes/App.connector' // Import App for main view
 import { WeaveClientRenderInfo } from './weave/WeaveClientRenderInfo'
+import { routeForWal } from './weave/mainViewTarget'
 
 const isWeaveDevMode = () => {
   return process.env.__DEV_MODE__ && !process.env.KANGAROO
@@ -70,6 +71,13 @@ const isWeaveDevMode = () => {
         weaveClientRenderInfo.getProfilesClient(),
         weaveClientRenderInfo.getAppletClient()
       )
+      // Moss opened the main view on a project or card (e.g. "Switch to" in a
+      // card's asset view): go there once the projects are known
+      const mainViewWal = weaveClientRenderInfo.getMainViewWal()
+      if (mainViewWal) {
+        const route = routeForWal(mainViewWal, store.getState().cells.projects)
+        if (route) window.location.hash = route
+      }
     })()
   }
 })()
