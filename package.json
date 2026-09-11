@@ -32,6 +32,10 @@
     "moss:happ2": "yarn weave --agent-idx 2 --dev-config weave.dev.config.ts --sync-time 45000",
     "moss:webhapp": "yarn weave --agent-idx 1 --dev-config weave.dev.config.webhapp.ts",
     "moss:webhapp2": "yarn weave --agent-idx 2 --dev-config weave.dev.config.webhapp.ts --sync-time 45000",
+    "launch:moss": "concurrently \"yarn moss:ui\" \"sleep 12 && yarn moss:happ\" \"sleep 32 && yarn moss:happ2\"",
+    "launch:moss-1": "concurrently \"yarn moss:ui\" \"sleep 12 && yarn moss:happ\"",
+    "start:moss": "yarn build:happ && yarn launch:moss",
+    "start:moss-1": "yarn build:happ && yarn launch:moss-1",
     "weave-hash": "node scripts/weave-hash.mjs",
     "weave-help": "weave --help",
     "weave": "env -u ELECTRON_RUN_AS_NODE TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\",\"target\":\"es2020\",\"esModuleInterop\":true}' weave",
@@ -50,6 +54,7 @@
   "devDependencies": {
     "@theweave/cli": "0.16.0-dev.5",
     "bestzip": "^2.2.1",
+    "concurrently": "^8.2.2",
     "js-yaml": "^4.1.0",
     "typescript": "^5.9.3"
   },

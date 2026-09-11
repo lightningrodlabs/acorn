@@ -28,10 +28,14 @@ Alternatively, instead of launching the ui separately, you can run `yarn run bui
 
 ### Acorn Moss Tool
 
-- In the first terminal window run `yarn run moss:ui`
-- In the second terminal window run `yarn run moss:happ`
+Inside `nix develop`, one command:
 
-If you want 2 agents, open a 3rd terminal window and run `yarn run moss:happ2`
+- `yarn start:moss` builds the happ, then starts the UI dev server (port 8081, hot reload) and two Moss agents in one group. `yarn start:moss-1` starts one agent.
+- `yarn launch:moss` / `yarn launch:moss-1` do the same without rebuilding the happ: they run whatever `happs/happ/workdir/acorn.happ` is.
+
+`start:moss` leaves a dev build in `happs/happ/workdir/acorn.happ`; before cutting a release, run `yarn build:happ:release` again (see RELEASE.md).
+
+The pieces can still be run in separate terminals: `yarn run moss:ui`, then `yarn run moss:happ`, and `yarn run moss:happ2` for a second agent.
 
 If you want to test the full webhapp, run `yarn run build-webhapp` then run `yarn run moss:webhapp`. If you want a second agent, run `yarn run moss:webhapp2`.
 
