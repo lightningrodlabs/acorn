@@ -13,6 +13,8 @@
 
 .comment-posted-content {
   margin-left: 1rem;
+  flex: 1;
+  min-width: 0;
 }
 
 .comment-posted-info {
@@ -37,4 +39,44 @@
   box-sizing: border-box;
   white-space: pre-wrap;
   line-height: 1.45;
+}
+
+.comment-posted-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #4d4d4d;
+}
+.comment-posted-actions button {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.75rem;
+  color: #4d4d4d;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.comment-posted-actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+// shown only while hovering the comment, so the list stays quiet
+.comment-posted-actions-on-hover {
+  visibility: hidden;
+}
+.comment-posted-wrapper:hover .comment-posted-actions-on-hover {
+  visibility: visible;
+}
+.comment-posted-edit textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.375rem;
+  resize: none;
 }

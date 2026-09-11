@@ -1,5 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { isNearBottom } from './scrollPosition'
+import {
+  canModifyComment,
+  commentWithContent,
+} from '../../../../CommentPosted/commentEdit'
 import moment from 'moment'
 
 import {
@@ -31,6 +35,11 @@ export type EvCommentsConnectorStateProps = {
 
 export type EvCommentsConnectorDispatchProps = {
   createOutcomeComment: (outcomeComment: OutcomeComment) => Promise<void>
+  updateOutcomeComment: (
+    outcomeComment: OutcomeComment,
+    actionHash: ActionHashB64
+  ) => Promise<void>
+  deleteOutcomeComment: (actionHash: ActionHashB64) => Promise<void>
 }
 
 export type EvCommentsProps = EvCommentsOwnProps &
@@ -43,6 +52,8 @@ const EvComments: React.FC<EvCommentsProps> = ({
   profiles,
   comments,
   createOutcomeComment,
+  updateOutcomeComment,
+  deleteOutcomeComment,
   activeAgentPubKey,
 }) => {
   const commentHistoryRef = useRef<HTMLDivElement>(null)
@@ -152,6 +163,14 @@ const EvComments: React.FC<EvCommentsProps> = ({
                 <CommentPosted
                   comment={comment}
                   creator={profiles[comment.creatorAgentPubKey]}
+                  canModify={canModifyComment(comment, activeAgentPubKey)}
+                  onEdit={(content) =>
+                    updateOutcomeComment(
+                      commentWithContent(comment, content),
+                      comment.actionHash
+                    )
+                  }
+                  onDelete={() => deleteOutcomeComment(comment.actionHash)}
                 />
               </div>
             )
