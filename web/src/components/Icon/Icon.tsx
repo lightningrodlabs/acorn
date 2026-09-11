@@ -26,6 +26,7 @@ function Icon({
 
   useEffect(() => {
     ;(async () => {
+      if (!name) return
       // @ts-ignore
       let importedIcon = await import(`../../images/${name}`)
       if (!unmounted) {

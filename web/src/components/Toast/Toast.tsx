@@ -20,7 +20,11 @@ const Toast: React.FC<ToastProps> = ({ toastState, setToastState }) => {
   )
   return (
     <div className={`toast ${recentType} ${isVisible ? 'visible' : ''} `}>
-      <Icon name={`${recentType}.svg`} className='toast-icon not-clickable' size='small'/>
+      {/* No toast has been shown yet on first render, so there is no type and
+          no icon to load: `${''}.svg` made Icon import '../../images/.svg'. */}
+      {recentType && (
+        <Icon name={`${recentType}.svg`} className='toast-icon not-clickable' size='small'/>
+      )}
       <div className="toast-text">{recentText}</div>
       <div className="toast-close">
       <ButtonClose
