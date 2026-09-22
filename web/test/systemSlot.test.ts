@@ -149,3 +149,84 @@ describe('prepareSystemSlot', () => {
     expect(Object.keys(writes)).toHaveLength(0) // nothing generated
   })
 })
+
+/**
+ * Per-backend seating matrix ([[backend-agent-seating]]) — one entry per
+ * harness route, each asserting HOW the Acorn agent definition seats there.
+ * Runtime behavior was probe-verified against a live `opencode acp` (1.17.8)
+ * on 2026-07-29 by dev-harness/probe-seating.js (capture mode: a dummy
+ * OpenAI-compatible endpoint records what opencode actually sends the model):
+ *   - agent.build.prompt REPLACES the built-in coding-agent prompt — the main
+ *     turn's system message begins with the Acorn text; no "You are opencode"
+ *     persona remains (only benign appended env/skills info).
+ *   - top-level `instructions` merely APPEND to whatever prompt is in play —
+ *     alone they bury the Acorn identity under ~10k chars of coding persona.
+ *   - with both levers (what the sidecar generates) the system slot is
+ *     Acorn-first: SEATED.
+ */
+describe('per-backend seating matrix', () => {
+  const makeIo = (files: Record<string, string> = {}) => {
+    const writes: Record<string, string> = {}
+    return {
+      io: {
+        readFileSync: (p: string) => {
+          if (files[p] == null) throw new Error('ENOENT')
+          return files[p]
+        },
+        writeFileSync: (p: string, data: string) => {
+          writes[p] = data
+        },
+      },
+      writes,
+    }
+  }
+
+  it('claude-agent-acp: seated by the sidecar (ACP _meta.systemPrompt from ACORN_SYSTEM_PROMPT_FILE), so systemSlot stays out of the way', () => {
+    const env = { ACORN_SYSTEM_PROMPT_FILE: 'web/dev-harness/acorn-system-prompt.md' }
+    const res = prepareSystemSlot({
+      cmd: 'npx -y @agentclientprotocol/claude-agent-acp',
+      env,
+      systemText: 'You are Acorn.',
+      tmpdir: '/t',
+      io: makeIo().io,
+    })
+    expect(res.env).toBe(env)
+    expect(res.note).toBeNull()
+  })
+
+  it('gemini: no adapter and no config seam — inline delivery (promptContext floor) is the only channel', () => {
+    const env = {}
+    const res = prepareSystemSlot({
+      cmd: 'gemini --experimental-acp',
+      env,
+      systemText: 'You are Acorn.',
+      tmpdir: '/t',
+      io: makeIo().io,
+    })
+    expect(res.env).toBe(env)
+    expect(res.note).toBeNull()
+  })
+
+  it('opencode: seated pre-spawn via generated config — the REPLACING lever (agent.build.prompt) carries the definition, instructions are the backup', () => {
+    const { io, writes } = makeIo({ '/cfg.json': JSON.stringify({ model: 'ollama/x' }) })
+    const res = prepareSystemSlot({
+      cmd: 'opencode acp',
+      env: { OPENCODE_CONFIG: '/cfg.json' },
+      systemText: 'You are the Acorn assistant.',
+      tmpdir: '/t',
+      io,
+    })
+    const written = JSON.parse(writes[res.env.OPENCODE_CONFIG])
+    // The probe-verified effective lever: full system-prompt REPLACE.
+    expect(written.agent[OPENCODE_PRIMARY_AGENT].prompt).toBe(
+      'You are the Acorn assistant.'
+    )
+    // The append-only backup lever (insufficient alone — probe-verified).
+    expect(written.instructions).toEqual(['/t/acorn-system-prompt.generated.md'])
+  })
+
+  // directBackend (yarn harness:ollama) builds the model request itself and
+  // puts the Acorn prompt directly in the system message — covered by
+  // directBackend.test.ts ('system prompt seats in the system slot' behavior),
+  // no systemSlot adapter involved.
+})

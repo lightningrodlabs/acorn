@@ -93,25 +93,51 @@ prompt to an absolute temp file, builds an *effective* config carrying it throug
 **two levers**, writes that next to it, and points `OPENCODE_CONFIG` there before
 spawning:
 
-1. `instructions: [<abs prompt file>]` — **the primary lever.** OpenCode's ACP
-   mode has a bug ([sst/opencode#8680](https://github.com/anomalyco/opencode/issues/8680)):
-   it ignores the configured default agent and runs whatever agent is first in
-   state (often a *subagent*), so an `agent.*.prompt` override may never be the
-   agent in play. Top-level `instructions` apply to the model regardless of
-   agent, so they survive the bug. (Absolute path ⇒ no dependence on the agent's
-   `web/` cwd — the old committed relative path misresolved to `web/web/…` and
-   loaded nothing.)
-2. `agent.build.prompt` = the prompt — secondary insurance for when ACP honors
-   the primary agent (or #8680 is fixed): a full system-prompt replace.
+1. `agent.build.prompt` = the prompt — **the effective lever**
+   (probe-verified 2026-07-29 against `opencode acp` 1.17.8, see below): ACP mode
+   *does* run the `build` primary agent, and this override **fully replaces** the
+   built-in coding-agent system prompt. The main turn's system message begins
+   with the Acorn text; only benign env/skills info is appended after it.
+   (The feared [sst/opencode#8680](https://github.com/anomalyco/opencode/issues/8680)
+   — ACP running a subagent instead of the configured primary — did not bite.)
+2. `instructions: [<abs prompt file>]` — the backup lever, kept for a future
+   OpenCode where #8680 *does* bite. Probe-verified caveat: `instructions`
+   **append** to whatever agent prompt is in play — alone they bury the Acorn
+   identity under ~10k chars of coding persona, so they are never sufficient by
+   themselves. (Absolute path ⇒ no dependence on the agent's `web/` cwd — the
+   old committed relative path misresolved to `web/web/…` and loaded nothing.)
 
-Confirm it fired via the startup log line `OpenCode system slot: instructions=[…]
-+ agent.build.prompt via generated config <path>`, and inspect the generated
-files under `/tmp/acorn-harness/`. The committed
+**Verify seating without touching a running sidecar:**
+[probe-seating.js](./probe-seating.js) spawns `opencode acp` headlessly with the
+same generated config and, in default *capture* mode, points the provider at a
+local dummy OpenAI endpoint so it can inspect exactly what opencode sends the
+model — verdict from the actual system slot, no model-quality noise:
+
+```bash
+cd web
+ACORN_HARNESS_CMD='opencode acp' node dev-harness/probe-seating.js            # both levers (what the sidecar seats)
+ACORN_HARNESS_CMD='opencode acp' node dev-harness/probe-seating.js --lever=agent|instructions|none
+ACORN_HARNESS_CMD='opencode acp' node dev-harness/probe-seating.js --live     # real-model smoke check (needs ollama)
+```
+
+At runtime, confirm the sidecar seated it via the startup log line `OpenCode
+system slot: instructions=[…] + agent.build.prompt via generated config <path>`,
+and inspect the generated files under `/tmp/acorn-harness/`. The committed
 [opencode.local.json](./opencode.local.json) no longer carries an `instructions`
-key — the sidecar owns system-slot seating. *(Caveat: `instructions` **appends**
-to OpenCode's own agent prompt rather than replacing it, and a tiny local model
-weighs identity weakly, so on `harness:local` identity may still wobble even with
-the prompt in the system slot — the tool/skill behaviour is the real signal.)*
+key — the sidecar owns system-slot seating. *(Caveat: a tiny local model weighs
+identity weakly — in a live probe LFM2.5 answered with a hallucinated vendor
+identity, though notably NOT as a coding agent — so on `harness:local` identity
+may still wobble even with the prompt correctly seated. The tool/skill behaviour
+is the real signal.)*
+
+#### Per-backend seating matrix
+
+| Route | Definition seats via | Status |
+| --- | --- | --- |
+| `harness:claude` / `harness:openrouter` | `ACORN_SYSTEM_PROMPT_FILE` → ACP `_meta.systemPrompt` (full preset replace) | ✓ seated (in daily use) |
+| `harness:ollama` (directBackend) | [systemSlot seat in the request itself](./directBackend.js) — Acorn prompt IS the system message | ✓ seated (unit-tested) |
+| `harness:local` (opencode acp) | generated config: `agent.build.prompt` replace (+ `instructions` backup) | ✓ seated (probe-verified 2026-07-29, capture mode) |
+| `harness:gemini` | none — inline floor only (prompt + skill as first-turn user text) | ~ partial: identity by prompt engineering |
 
 `_meta.systemPrompt` is **still sent** on `session/new` for agents that honor it
 (claude), but no backend depends on it for the working *context* — the inline copy
