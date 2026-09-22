@@ -33,8 +33,9 @@ import { isWeaveContext, WAL } from '@theweave/api' // Keep WAL for openAsset pr
 import { ProjectAssetMeta } from '../../hooks/useProjectAttachments' // Import type for props
 import { CellIdWrapper } from '../../domain/cellId'
 import Tooltip from '../Tooltip/Tooltip'
+import { shortDnaHash, useBaseDnaHashes } from '../../baseDnaInfo'
 
-// Get version from package.json
+// Bumped manually at release time (see DEVELOPERS.md versioning ritual)
 const APP_VERSION = '12.0.0'
 
 function ActiveEntryPoint({
@@ -115,6 +116,15 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
   const [openEntryPointPicker, setOpenEntryPointPicker] = useState(false)
   const [openAttachmentsPicker, setOpenAttachmentsPicker] = useState(false) // State for attachments dropdown
   const [isExportOpen, setIsExportOpen] = useState(false)
+  // base (provisioned) DNA hashes: two installs that show DIFFERENT short
+  // hashes here are on different networks — the answer to "why do I see
+  // nothing?" when a dev build's DNA differs from a release build's
+  const baseDnas = useBaseDnaHashes()
+  const versionTooltip =
+    `Version ${APP_VERSION}` +
+    Object.entries(baseDnas)
+      .map(([role, hash]) => ` · ${role} DNA ${shortDnaHash(hash)}`)
+      .join('')
   useOnClickOutside(entryPointsRef, () => setOpenEntryPointPicker(false))
   useOnClickOutside(exportProjectRef, () => setIsExportOpen(false))
   useOnClickOutside(attachmentsRef, () => setOpenAttachmentsPicker(false)) // Close attachments dropdown on click outside
@@ -181,7 +191,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
             {!myLocalProfile && (
               <div className="logo non-link withTooltip">
                 <img src="images/acorn-alpha-logo.png" className="logo-image" />
-                <Tooltip text={`Version ${APP_VERSION}`} />
+                <Tooltip text={versionTooltip} />
               </div>
             )}
 
@@ -189,7 +199,7 @@ const HeaderLeftPanel: React.FC<HeaderLeftPanelProps> = ({
             {myLocalProfile && (
               <NavLink to="/" className="logo withTooltip">
                 <img src="images/acorn-alpha-logo.png" className="logo-image" />
-                <Tooltip text={`Version ${APP_VERSION}`} />
+                <Tooltip text={versionTooltip} />
               </NavLink>
             )}
           </>

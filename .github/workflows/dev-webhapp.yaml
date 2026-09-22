@@ -1,0 +1,58 @@
+name: 'dev-webhapp'
+
+# Dev counterpart of release-webhapps.yaml: manually dispatched against ANY
+# branch, publishes a non-draft prerelease tagged happ-dev-<shortsha> with the
+# webhapp + happ + a sha256 file. Kept separate from the release workflow
+# because that one names its release from package.json's version (a dev tag
+# would collide with the existing happ-v<version> release).
+#
+# The DNA is built from the branch — a changed integrity zome means a NEW DNA
+# hash and therefore a separate network from release builds. That is expected
+# for dev builds; the UI's version tooltip shows the base DNA hashes so testers
+# can verify which network they are on.
+on:
+  workflow_dispatch:
+
+jobs:
+  publish-dev-happ:
+    permissions:
+      contents: write
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install nix
+        uses: cachix/install-nix-action@v20
+        with:
+          install_url: https://releases.nixos.org/nix/nix-2.23.0/install
+
+      - uses: cachix/cachix-action@v15
+        with:
+          name: holochain-ci
+
+      - name: Install and build
+        run: |
+          nix-store --gc
+          nix develop --command bash -c "holochain --version && yarn && yarn pack-happs && yarn build-webhapp"
+
+      - name: Checksums
+        run: |
+          cd happs/happ/workdir
+          shasum -a 256 acorn.webhapp | tee acorn.webhapp.sha256
+          shasum -a 256 acorn.happ
+
+      - name: Short sha
+        id: sha
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - id: create-release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: false
+          artifacts: happs/happ/workdir/acorn.webhapp,happs/happ/workdir/acorn.happ,happs/happ/workdir/acorn.webhapp.sha256
+          body: 'DEV build from `${{ github.ref_name }}` @ ${{ github.sha }}. Not for production use — the DNA may differ from release networks (compare base DNA hashes in the app''s version tooltip).'
+          name: 'Acorn hApp DEV ${{ github.ref_name }} @ ${{ steps.sha.outputs.SHORT_SHA }}'
+          tag: happ-dev-${{ steps.sha.outputs.SHORT_SHA }}
+          commit: ${{ github.sha }}
+          prerelease: true
+          draft: false
