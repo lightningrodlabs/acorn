@@ -23,8 +23,8 @@ opt-level = "z"
 [workspace.dependencies]
 # Exact pins, deliberately. The DNA hash is a function of the compiled integrity
 # wasm, so a later rebuild against a different hdi/hdk would produce a different
-# network. Never relax these to caret ranges on a frozen DNA line, including for
-# a 0.7.1 point release.
+# network. Never relax these to caret ranges. They are frozen per DNA line:
+# moving them means a new dnaVersion and network, as 14.0.0 did for 0.7.1.
 hdi = "=0.8.1"
 hdk = "=0.7.1"
 holo_hash = { version = "=0.7.1", features = ["encoding"] }
