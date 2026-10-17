@@ -25,10 +25,10 @@ opt-level = "z"
 # wasm, so a later rebuild against a different hdi/hdk would produce a different
 # network. Never relax these to caret ranges on a frozen DNA line, including for
 # a 0.7.1 point release.
-hdi = "=0.8.0"
-hdk = "=0.7.0"
-holo_hash = { version = "=0.7.0", features = ["encoding"] }
-holochain_types = { version = "=0.7.0" }
+hdi = "=0.8.1"
+hdk = "=0.7.1"
+holo_hash = { version = "=0.7.1", features = ["encoding"] }
+holochain_types = { version = "=0.7.1" }
 holochain_serialized_bytes = "=0.0.57"
 
 # Intra-repo crates, declared here so that no member Cargo.toml carries a
