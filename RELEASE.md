@@ -21,6 +21,23 @@ build (`web/src/migrating/import`). This has NOT been exercised across the
 0.6 → 0.7 boundary by the upgrade work; treat it as untested until someone has
 done a real round trip, and say so in the curation changelog.
 
+## 14.0.x is a new network again (Holochain 0.7.1)
+
+Acorn 14.0.x is built on Holochain 0.7.1 (hdk 0.7.1 / hdi 0.8.1) with the
+recv_remote_signal cap grant moved to the 0.7.1 `CapGrantEntry` shape. A
+hdk 0.7.0 zome's grant fails at `init` on a 0.7.1 conductor, and 0.7.0 and
+0.7.1 conductors do not gossip with each other, so this is a new DNA
+(`dnaVersion` 14.0.0, canonical happ `happ-v14.0.0`) and a new network:
+
+- it needs Moss 0.16.0-rc.1 or later;
+- it cannot see projects created on 13.0.x, and 13.0.x agents cannot see it;
+- a group has to upgrade together;
+- to carry a project over, use **Export** on 13.0.x and import the JSON into a
+  project created on 14.0.x. As with the 0.6 → 0.7 move this round trip has not
+  been exercised by the upgrade work; say so in the curation changelog.
+
+In the curation list this is a new `versionBranch`, `14.0.x`.
+
 ## This DNA performs no validation
 
 **Neither integrity zome declares a `validate` callback.**
@@ -60,14 +77,14 @@ integrity zomes are byte-identical in source to the `12.0.x` line — the whole
 12.x line and before it. The upgrade neither added nor removed a rule.
 
 **Adding rules requires a new DNA line.** Validation code is compiled into the
-integrity wasm and hashed into the DNA, so rules cannot be added to `13.0.x`
+integrity wasm and hashed into the DNA, so rules cannot be added to `14.0.x`
 after this happ is frozen: they change the DNA hash and therefore start a new
 network. Doing it means bumping `dnaVersion`, cutting a new canonical happ and
 moving groups across, exactly as the 0.6 → 0.7 move did. If Acorn is ever aimed
 at larger or less closely-held groups, that is the point at which the author
-checks should be written — and they should be written against tests, which this
-repo does not yet have (there is no tryorama or sweettest suite for either
-zome).
+checks should be written — and they should be written against tests. The only
+zome test so far is the minimal two-agent tryorama test in `tests/`
+(`yarn test:happ`); there is no sweettest suite.
 
 There *are* 771 lines of validator source in the tree, in eleven `validate.rs`
 files, all commented out of the module tree and all written against the

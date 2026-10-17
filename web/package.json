@@ -1,7 +1,7 @@
 {
   "name": "acorn-ui",
-  "version": "13.0.0",
-  "dnaVersion": "13.0.0",
+  "version": "14.0.0",
+  "dnaVersion": "14.0.0",
   "browser": {
     "child_process": false
   },
