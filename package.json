@@ -7,7 +7,8 @@
     "packages": [
       "web",
       "zod-models",
-      "weave-tool"
+      "weave-tool",
+      "tests"
     ]
   },
   "description": "Acorn is software that helps people create the future",
@@ -45,6 +46,9 @@
     "build:happ": "yarn build:zomes && yarn pack:happ",
     "build:happ:release": "yarn build:zomes && yarn optimize:zomes && yarn pack:happ",
     "package": "rm -f web/dist.zip web/dist/*.js web/dist/*.js.map && yarn workspace acorn-ui build && yarn zip-ui && hc web-app pack --output=happs/happ/workdir/acorn.webhapp happs/happ/workdir && yarn weave-hash",
+    "test": "yarn test:ui && yarn test:happ",
+    "test:ui": "yarn workspace acorn-ui test",
+    "test:happ": "yarn build:happ && yarn workspace acorn-tests test",
     "release:happ": "bash scripts/release-happ.sh",
     "release:webhapp": "APP_VER=$(node -p \"require('./web/package.json').version\") && git tag v$APP_VER && git push origin v$APP_VER"
   },
@@ -52,7 +56,7 @@
   "license": "CAL-1.0",
   "dependencies": {},
   "devDependencies": {
-    "@theweave/cli": "0.16.0-dev.6",
+    "@theweave/cli": "^0.16.0-rc.2",
     "bestzip": "^2.2.1",
     "concurrently": "^8.2.2",
     "js-yaml": "^4.1.0",
@@ -61,9 +65,9 @@
   "resolutions": {
     "**/@types/react": "16.14.0",
     "**/libsodium-wrappers": "0.7.15",
-    "**/@holochain/client": "^0.21.0"
+    "**/@holochain/client": "^0.21.1"
   },
   "overrides": {
-    "@holochain/client": "^0.21.0"
+    "@holochain/client": "^0.21.1"
   }
 }
