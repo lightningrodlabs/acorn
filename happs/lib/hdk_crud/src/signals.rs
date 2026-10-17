@@ -48,12 +48,11 @@ pub fn create_receive_signal_cap_grant() -> ExternResult<()> {
     let mut functions = HashSet::new();
     functions.insert((zome_info()?.name, "recv_remote_signal".into()));
 
-    create_cap_grant(CapGrantEntry {
-        tag: "".into(),
-        // empty access converts to unrestricted
-        access: ().into(),
-        functions: GrantedFunctions::Listed(functions),
-    })?;
+    create_cap_grant(CapGrantEntry::new_zome_call_grant(
+        "".into(),
+        GrantConstraint::Unrestricted,
+        GrantedFunctions::Listed(functions),
+    ))?;
     Ok(())
 }
 
