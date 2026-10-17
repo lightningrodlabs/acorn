@@ -1,0 +1,16 @@
+{
+  "name": "acorn-tests",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@holochain-open-dev/tryorama": "^0.21.0",
+    "@holochain/client": "^0.21.1",
+    "@msgpack/msgpack": "^2.7.0",
+    "typescript": "^5.9.3",
+    "vitest": "^1.0.0"
+  },
+  "type": "module"
+}
